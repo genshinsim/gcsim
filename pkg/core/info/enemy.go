@@ -22,7 +22,8 @@ type EnemyProfile struct {
 	HpBase                float64               `json:"-"`
 	HpGrowCurve           int                   `json:"-"`
 	Id                    int                   `json:"-"`
-	MonsterName           string                `json:"-"`
+	MonsterName           string                `json:"monster_name"`
+	Modified              bool                  `json:"modified"`
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {

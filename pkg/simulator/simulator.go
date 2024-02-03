@@ -242,6 +242,8 @@ func GenerateResult(cfg string, simcfg *info.ActionList, opts Options) (*model.S
 			ParticleDropThreshold: target.ParticleDropThreshold,
 			ParticleDropCount:     target.ParticleDropCount,
 			ParticleElement:       target.ParticleElement.String(),
+			Name:                  target.MonsterName,
+			Modified:              target.Modified,
 		}
 	}
 

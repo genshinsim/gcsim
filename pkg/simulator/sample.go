@@ -81,6 +81,8 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 			ParticleDropThreshold: target.ParticleDropThreshold,
 			ParticleDropCount:     target.ParticleDropCount,
 			ParticleElement:       target.ParticleElement.String(),
+			Name:                  target.MonsterName,
+			Modified:              target.Modified,
 		}
 	}
 

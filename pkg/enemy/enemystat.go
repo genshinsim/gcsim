@@ -7,7 +7,6 @@ import (
 )
 
 var monsterInfos = map[int]info.EnemyProfile{
-
 	21010101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -33,9 +32,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21010101,
-		MonsterName:  "Hili_None_01",
+		MonsterName:  "hilichurl",
 	},
-
 	21010103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -61,9 +59,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21010103,
-		MonsterName:  "Hili_None_01",
+		MonsterName:  "hilichurl",
 	},
-
 	21010104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -80,9 +77,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21010104,
-		MonsterName:   "Hili_None_01",
+		MonsterName:   "hilichurl",
 	},
-
 	21010105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -99,9 +95,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21010105,
-		MonsterName:   "Hili_None_01",
+		MonsterName:   "hilichurl",
 	},
-
 	21020101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -135,9 +130,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           21020101,
-		MonsterName:  "Brute_None_Shield",
+		MonsterName:  "woodenshieldwallmitachurl",
 	},
-
 	21020201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -171,9 +165,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           21020201,
-		MonsterName:  "Brute_None_Axe",
+		MonsterName:  "blazingaxemitachurl",
 	},
-
 	21020202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -207,9 +200,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           21020202,
-		MonsterName:  "Brute_None_Axe_AttackEnhance",
+		MonsterName:  "blazingaxemitachurl",
 	},
-
 	21020204: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -243,9 +235,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           21020204,
-		MonsterName:  "Brute_None_Axe",
+		MonsterName:  "blazingaxemitachurl",
 	},
-
 	21020299: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -262,9 +253,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        24451.19921875,
 		HpGrowCurve:   1,
 		Id:            21020299,
-		MonsterName:   "Brute_None_Axe_NoAI",
+		MonsterName:   "blazingaxemitachurl",
 	},
-
 	21020301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -298,9 +288,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           21020301,
-		MonsterName:  "Brute_None_RockShield",
+		MonsterName:  "rockshieldwallmitachurl",
 	},
-
 	21020401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -334,9 +323,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  1,
 		Id:           21020401,
-		MonsterName:  "Brute_Ice_None",
+		MonsterName:  "frostarmlawachurl",
 	},
-
 	21020501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -370,9 +358,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  1,
 		Id:           21020501,
-		MonsterName:  "Brute_Rock_None",
+		MonsterName:  "stonehidelawachurl",
 	},
-
 	21020601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -406,9 +393,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           21020601,
-		MonsterName:  "Brute_Ice_Shield",
+		MonsterName:  "iceshieldwallmitachurl",
 	},
-
 	21020701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -442,9 +428,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           21020701,
-		MonsterName:  "Brute_Electric_Axe",
+		MonsterName:  "cracklingaxemitachurl",
 	},
-
 	21020703: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -478,9 +463,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           21020703,
-		MonsterName:  "Brute_Electric_Axe_AttackEnhance",
+		MonsterName:  "cracklingaxemitachurl",
 	},
-
 	21020704: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -497,9 +481,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        40.75199890136719,
 		HpGrowCurve:   1,
 		Id:            21020704,
-		MonsterName:   "Brute_Electric_Axe",
+		MonsterName:   "cracklingaxemitachurl",
 	},
-
 	21020801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -533,9 +516,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  1,
 		Id:           21020801,
-		MonsterName:  "Brute_Electric_None",
+		MonsterName:  "thunderhelmlawachurl",
 	},
-
 	20010101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -561,9 +543,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20010101,
-		MonsterName:  "Slime_Grass_02",
+		MonsterName:  "dendroslime",
 	},
-
 	20010201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -593,9 +574,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010201,
-		MonsterName:  "Slime_Grass_03",
+		MonsterName:  "largedendroslime",
 	},
-
 	20010202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -625,9 +605,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010202,
-		MonsterName:  "Slime_Grass_03_AttackEnhance",
+		MonsterName:  "largedendroslime",
 	},
-
 	20010301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -653,9 +632,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20010301,
-		MonsterName:  "Slime_Wind_02",
+		MonsterName:  "anemoslime",
 	},
-
 	20010401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -685,9 +663,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010401,
-		MonsterName:  "Slime_Wind_03",
+		MonsterName:  "largeanemoslime",
 	},
-
 	20010403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -717,9 +694,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010403,
-		MonsterName:  "Slime_Wind_03_AttackEnhance",
+		MonsterName:  "largeanemoslime",
 	},
-
 	29010101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0,
@@ -736,9 +712,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        150,
 		HpGrowCurve:   1,
 		Id:            29010101,
-		MonsterName:   "Monster_Dragon_Dvalin_S01",
+		MonsterName:   "stormterror",
 	},
-
 	29010102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -755,9 +730,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        67.91999816894531,
 		HpGrowCurve:   1,
 		Id:            29010102,
-		MonsterName:   "Monster_Dragon_Dvalin_S04",
+		MonsterName:   "stormterror",
 	},
-
 	29010103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0,
@@ -774,9 +748,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        200,
 		HpGrowCurve:   1,
 		Id:            29010103,
-		MonsterName:   "Monster_Dragon_Dvalin_S00",
+		MonsterName:   "stormterror",
 	},
-
 	29010104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -793,9 +766,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        122.25599670410156,
 		HpGrowCurve:   1,
 		Id:            29010104,
-		MonsterName:   "Monster_Dragon_Dvalin_S04",
+		MonsterName:   "stormterror",
 	},
-
 	29020101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -812,9 +784,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        244.51199340820312,
 		HpGrowCurve:   1,
 		Id:            29020101,
-		MonsterName:   "Monster_Wolf_LupiBoreas",
+		MonsterName:   "lupusboreasdominatorofwolves",
 	},
-
 	29020102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -831,47 +802,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        244.51199340820312,
 		HpGrowCurve:   1,
 		Id:            29020102,
-		MonsterName:   "Monster_Wolf_LupiBoreas",
+		MonsterName:   "lupusboreasdominatorofwolves",
 	},
-
-	29030101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0.5,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        81.50399780273438,
-		HpGrowCurve:   1,
-		Id:            29030101,
-		MonsterName:   "Monster_Tartaglia",
-	},
-
-	29030102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0.5,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        81.50399780273438,
-		HpGrowCurve:   1,
-		Id:            29030102,
-		MonsterName:   "Monster_Tartaglia_EvilEye",
-	},
-
 	29030103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0,
@@ -888,47 +820,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        135.83999633789062,
 		HpGrowCurve:   1,
 		Id:            29030103,
-		MonsterName:   "Monster_Tartaglia_Harbinger",
+		MonsterName:   "childe",
 	},
-
-	29030104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0.5,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        81.50399780273438,
-		HpGrowCurve:   1,
-		Id:            29030104,
-		MonsterName:   "Monster_Tartaglia",
-	},
-
-	29030105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0.5,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        81.50399780273438,
-		HpGrowCurve:   1,
-		Id:            29030105,
-		MonsterName:   "Monster_Tartaglia_EvilEye",
-	},
-
 	29030106: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0,
@@ -945,9 +838,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        135.83999633789062,
 		HpGrowCurve:   1,
 		Id:            29030106,
-		MonsterName:   "Monster_Tartaglia_Harbinger",
+		MonsterName:   "childe",
 	},
-
 	29040101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -964,9 +856,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        489.02398681640625,
 		HpGrowCurve:   1,
 		Id:            29040101,
-		MonsterName:   "Monster_Dahaka",
+		MonsterName:   "azhdaha",
 	},
-
 	29040102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -983,9 +874,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        489.02398681640625,
 		HpGrowCurve:   1,
 		Id:            29040102,
-		MonsterName:   "Monster_Dahaka",
+		MonsterName:   "azhdaha",
 	},
-
 	29040103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1002,9 +892,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        489.02398681640625,
 		HpGrowCurve:   1,
 		Id:            29040103,
-		MonsterName:   "Monster_Dahaka",
+		MonsterName:   "azhdaha",
 	},
-
 	29040104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1021,9 +910,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        489.02398681640625,
 		HpGrowCurve:   1,
 		Id:            29040104,
-		MonsterName:   "Monster_Dahaka",
+		MonsterName:   "azhdaha",
 	},
-
 	29040111: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1040,28 +928,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        489.02398681640625,
 		HpGrowCurve:   1,
 		Id:            29040111,
-		MonsterName:   "Monster_Dahaka",
+		MonsterName:   "azhdaha",
 	},
-
-	29050101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.5,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        95.08799743652344,
-		HpGrowCurve:   2,
-		Id:            29050101,
-		MonsterName:   "Monster_LaSignora",
-	},
-
 	29050102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.699999988079071,
@@ -1078,28 +946,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        190.17599487304688,
 		HpGrowCurve:   2,
 		Id:            29050102,
-		MonsterName:   "Monster_LaSignora_Harbinger",
+		MonsterName:   "lasignora",
 	},
-
-	29050103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.5,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        135.83999633789062,
-		HpGrowCurve:   2,
-		Id:            29050103,
-		MonsterName:   "Monster_LaSignora",
-	},
-
 	29050104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.699999988079071,
@@ -1116,66 +964,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        271.67999267578125,
 		HpGrowCurve:   2,
 		Id:            29050104,
-		MonsterName:   "Monster_LaSignora_Harbinger",
+		MonsterName:   "lasignora",
 	},
-
-	29060101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        543.3599853515625,
-		HpGrowCurve:   2,
-		Id:            29060101,
-		MonsterName:   "Monster_Shougun",
-	},
-
-	29060102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        543.3599853515625,
-		HpGrowCurve:   2,
-		Id:            29060102,
-		MonsterName:   "Monster_Shougun",
-	},
-
-	29060201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        48.902400970458984,
-		HpGrowCurve:   2,
-		Id:            29060201,
-		MonsterName:   "Monster_Shougun_Mitakenarukami",
-	},
-
 	29060202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1192,9 +982,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        244.51199340820312,
 		HpGrowCurve:   2,
 		Id:            29060202,
-		MonsterName:   "Monster_Shougun_Mitakenarukami",
+		MonsterName:   "magatsumitakenarukaminomikoto",
 	},
-
 	29060203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1211,66 +1000,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        543.3599853515625,
 		HpGrowCurve:   2,
 		Id:            29060203,
-		MonsterName:   "Monster_Shougun_Mitakenarukami",
+		MonsterName:   "magatsumitakenarukaminomikoto",
 	},
-
-	29070101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.5,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        135.83999633789062,
-		HpGrowCurve:   2,
-		Id:            29070101,
-		MonsterName:   "Monster_Nada",
-	},
-
-	29070102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.30000001192092896,
-			attributes.Dendro:   0.30000001192092896,
-			attributes.Hydro:    0.30000001192092896,
-			attributes.Electro:  0.8999999761581421,
-			attributes.Anemo:    0.30000001192092896,
-			attributes.Cryo:     0.30000001192092896,
-			attributes.Geo:      0.30000001192092896,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        244.51199340820312,
-		HpGrowCurve:   2,
-		Id:            29070102,
-		MonsterName:   "Monster_Nada",
-	},
-
-	29070103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.5,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        271.67999267578125,
-		HpGrowCurve:   2,
-		Id:            29070103,
-		MonsterName:   "Monster_Nada",
-	},
-
 	29070104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.30000001192092896,
@@ -1287,9 +1018,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        244.51199340820312,
 		HpGrowCurve:   2,
 		Id:            29070104,
-		MonsterName:   "Monster_Nada",
+		MonsterName:   "shoukinokamitheprodigal",
 	},
-
 	29070105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.30000001192092896,
@@ -1306,47 +1036,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        122.25599670410156,
 		HpGrowCurve:   2,
 		Id:            29070105,
-		MonsterName:   "Monster_Nada",
+		MonsterName:   "shoukinokamitheprodigal",
 	},
-
-	29070106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.5,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        217.343994140625,
-		HpGrowCurve:   2,
-		Id:            29070106,
-		MonsterName:   "Monster_Nada",
-	},
-
-	29080101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.699999988079071,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        122.25599670410156,
-		HpGrowCurve:   2,
-		Id:            29080101,
-		MonsterName:   "Monster_Apep_Stage1",
-	},
-
 	29080102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1363,28 +1054,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        108.6719970703125,
 		HpGrowCurve:   2,
 		Id:            29080102,
-		MonsterName:   "Monster_Apep_Stage3",
+		MonsterName:   "guardianofapepsoasis",
 	},
-
-	29080103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.699999988079071,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  1,
-		HpBase:        244.51199340820312,
-		HpGrowCurve:   2,
-		Id:            29080103,
-		MonsterName:   "Monster_Apep_Stage1",
-	},
-
 	29080104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1401,180 +1072,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        217.343994140625,
 		HpGrowCurve:   2,
 		Id:            29080104,
-		MonsterName:   "Monster_Apep_Stage3",
+		MonsterName:   "guardianofapepsoasis",
 	},
-
-	29080201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        21.734399795532227,
-		HpGrowCurve:   2,
-		Id:            29080201,
-		MonsterName:   "Monster_Apep_Underling_SeedOfKarna",
-	},
-
-	29080202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        21.734399795532227,
-		HpGrowCurve:   2,
-		Id:            29080202,
-		MonsterName:   "Monster_Apep_Underling_SeedOfKarna",
-	},
-
-	29080301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        32.601600646972656,
-		HpGrowCurve:   2,
-		Id:            29080301,
-		MonsterName:   "Monster_Apep_Underling_SeedOfAshura",
-	},
-
-	29080302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        32.601600646972656,
-		HpGrowCurve:   2,
-		Id:            29080302,
-		MonsterName:   "Monster_Apep_Underling_SeedOfAshura",
-	},
-
-	29080401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        43.46879959106445,
-		HpGrowCurve:   2,
-		Id:            29080401,
-		MonsterName:   "Monster_Apep_Underling_SeedOfBrahma",
-	},
-
-	29080501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        43.46879959106445,
-		HpGrowCurve:   2,
-		Id:            29080501,
-		MonsterName:   "Monster_Apep_Underling_SeedOfArjuna",
-	},
-
-	29080601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        27.167999267578125,
-		HpGrowCurve:   2,
-		Id:            29080601,
-		MonsterName:   "Monster_Apep_Underling_SeedOfShiva",
-	},
-
-	29080701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        32.601600646972656,
-		HpGrowCurve:   2,
-		Id:            29080701,
-		MonsterName:   "Monster_Apep_Underling_SeedOfVishnu",
-	},
-
-	29080702: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        32.601600646972656,
-		HpGrowCurve:   2,
-		Id:            29080702,
-		MonsterName:   "Monster_Apep_Underling_SeedOfVishnu",
-	},
-
 	29090101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1591,9 +1090,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        543.3599853515625,
 		HpGrowCurve:   2,
 		Id:            29090101,
-		MonsterName:   "Monster_Ptahur_Devourer",
+		MonsterName:   "alldevouringnarwhal",
 	},
-
 	29090102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1610,28 +1108,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        543.3599853515625,
 		HpGrowCurve:   2,
 		Id:            29090102,
-		MonsterName:   "Monster_Ptahur_Devourer",
+		MonsterName:   "alldevouringnarwhal",
 	},
-
-	29090201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.699999988079071,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        326.0159912109375,
-		HpGrowCurve:   2,
-		Id:            29090201,
-		MonsterName:   "Monster_Ptahur_Phantom_01",
-	},
-
 	29090202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1648,28 +1126,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        326.0159912109375,
 		HpGrowCurve:   2,
 		Id:            29090202,
-		MonsterName:   "Monster_Ptahur_Phantom_01",
+		MonsterName:   "alldevouringnarwhal",
 	},
-
-	29090304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        271.67999267578125,
-		HpGrowCurve:   2,
-		Id:            29090304,
-		MonsterName:   "Monster_Ptahur_VertexGreater_01",
-	},
-
 	20020101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1699,9 +1157,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  1,
 		Id:           20020101,
-		MonsterName:  "Elemental_Wind_01",
+		MonsterName:  "eyeofthestorm",
 	},
-
 	20040101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1735,9 +1192,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           20040101,
-		MonsterName:  "Effigy_Electric_01",
+		MonsterName:  "electrohypostasis",
 	},
-
 	20040102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1771,9 +1227,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       149.4239959716797,
 		HpGrowCurve:  1,
 		Id:           20040102,
-		MonsterName:  "Effigy_Electric_02",
+		MonsterName:  "electrohypostasis",
 	},
-
 	20040201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1807,9 +1262,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           20040201,
-		MonsterName:  "Effigy_Wind_01",
+		MonsterName:  "anemohypostasis",
 	},
-
 	20040202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1843,9 +1297,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       149.4239959716797,
 		HpGrowCurve:  1,
 		Id:           20040202,
-		MonsterName:  "Effigy_Wind_02",
+		MonsterName:  "anemohypostasis",
 	},
-
 	20040301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1879,9 +1332,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           20040301,
-		MonsterName:  "Effigy_Rock_01",
+		MonsterName:  "geohypostasis",
 	},
-
 	20040302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1915,9 +1367,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       149.4239959716797,
 		HpGrowCurve:  1,
 		Id:           20040302,
-		MonsterName:  "Effigy_Rock_02",
+		MonsterName:  "geohypostasis",
 	},
-
 	20040401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1947,9 +1398,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  1,
 		Id:           20040401,
-		MonsterName:  "Effigy_Water_01",
+		MonsterName:  "hydrohypostasis",
 	},
-
 	20040402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -1983,9 +1433,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  2,
 		Id:           20040402,
-		MonsterName:  "Effigy_Water_02",
+		MonsterName:  "hydrohypostasis",
 	},
-
 	20040501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2015,9 +1464,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           20040501,
-		MonsterName:  "Effigy_Ice_01",
+		MonsterName:  "cryohypostasis",
 	},
-
 	20040502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2051,9 +1499,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  2,
 		Id:           20040502,
-		MonsterName:  "Effigy_Ice_01",
+		MonsterName:  "cryohypostasis",
 	},
-
 	20040601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2087,9 +1534,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           20040601,
-		MonsterName:  "Effigy_Fire_01",
+		MonsterName:  "pyrohypostasis",
 	},
-
 	20040602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2123,9 +1569,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  2,
 		Id:           20040602,
-		MonsterName:  "Effigy_Fire_02",
+		MonsterName:  "pyrohypostasis",
 	},
-
 	20040701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2159,9 +1604,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  1,
 		Id:           20040701,
-		MonsterName:  "Effigy_Grass_01",
+		MonsterName:  "dendrohypostasis",
 	},
-
 	20040702: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2195,9 +1639,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  2,
 		Id:           20040702,
-		MonsterName:  "Effigy_Grass_02",
+		MonsterName:  "dendrohypostasis",
 	},
-
 	20010501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2223,9 +1666,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20010501,
-		MonsterName:  "Slime_Electric_02",
+		MonsterName:  "electroslime",
 	},
-
 	20010503: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2242,9 +1684,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20010503,
-		MonsterName:   "Slime_Electric_02_SimpleStick",
+		MonsterName:   "electroslime",
 	},
-
 	20010601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2274,9 +1715,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010601,
-		MonsterName:  "Slime_Electric_03",
+		MonsterName:  "largeelectroslime",
 	},
-
 	20010604: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2306,9 +1746,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010604,
-		MonsterName:  "Slime_Electric_03_AttackEnhance",
+		MonsterName:  "largeelectroslime",
 	},
-
 	20010605: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2325,9 +1764,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20010605,
-		MonsterName:   "Slime_Electric_03_SimpleStick",
+		MonsterName:   "largeelectroslime",
 	},
-
 	20010701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2357,9 +1795,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010701,
-		MonsterName:  "Slime_Electric_03_Positive",
+		MonsterName:  "mutantelectroslime",
 	},
-
 	20010702: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2389,9 +1826,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010702,
-		MonsterName:  "Slime_Electric_03_Positive_AttackEnhance",
+		MonsterName:  "mutantelectroslime",
 	},
-
 	20010801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2417,9 +1853,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20010801,
-		MonsterName:  "Slime_Ice_02",
+		MonsterName:  "cryoslime",
 	},
-
 	20010802: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2445,9 +1880,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20010802,
-		MonsterName:  "Slime_Ice_02_Activity",
+		MonsterName:  "cryoslime",
 	},
-
 	20010901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2477,9 +1911,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010901,
-		MonsterName:  "Slime_Ice_03",
+		MonsterName:  "largecryoslime",
 	},
-
 	20010902: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2509,9 +1942,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010902,
-		MonsterName:  "Slime_Ice_03_Activity",
+		MonsterName:  "largecryoslime",
 	},
-
 	20010904: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2541,9 +1973,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20010904,
-		MonsterName:  "Slime_Ice_03_AttackEnhance",
+		MonsterName:  "largecryoslime",
 	},
-
 	20010905: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2560,9 +1991,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20010905,
-		MonsterName:   "Slime_Ice_03_SimpleStick",
+		MonsterName:   "largecryoslime",
 	},
-
 	20011001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2588,9 +2018,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20011001,
-		MonsterName:  "Slime_Water_02",
+		MonsterName:  "hydroslime",
 	},
-
 	20011101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2620,9 +2049,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20011101,
-		MonsterName:  "Slime_Water_03",
+		MonsterName:  "largehydroslime",
 	},
-
 	20011103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2652,9 +2080,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20011103,
-		MonsterName:  "Slime_Water_03_AttackEnhance",
+		MonsterName:  "largehydroslime",
 	},
-
 	20011601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2671,9 +2098,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20011601,
-		MonsterName:   "Effigy_Water_Underling_Ooze_01",
+		MonsterName:   "hydrohypostasissummon",
 	},
-
 	20011701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2690,9 +2116,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20011701,
-		MonsterName:   "Effigy_Water_Underling_Ooze_02",
+		MonsterName:   "hydrohypostasissummon",
 	},
-
 	20011801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2709,9 +2134,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20011801,
-		MonsterName:   "Effigy_Water_Underling_Ooze_03",
+		MonsterName:   "hydrohypostasissummon",
 	},
-
 	20011901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2728,9 +2152,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20011901,
-		MonsterName:   "Effigy_Water_Underling_Ooze_04",
+		MonsterName:   "hydrohypostasissummon",
 	},
-
 	20012001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2747,9 +2170,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20012001,
-		MonsterName:   "Effigy_Water_Underling_Ooze_05",
+		MonsterName:   "hydrohypostasissummon",
 	},
-
 	20012101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2766,9 +2188,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20012101,
-		MonsterName:   "Effigy_Water_Underling_Ooze_06",
+		MonsterName:   "hydrohypostasissummon",
 	},
-
 	20012201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2785,9 +2206,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20012201,
-		MonsterName:   "Effigy_Water_Underling_Ooze_07",
+		MonsterName:   "hydrohypostasissummon",
 	},
-
 	20050101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2809,9 +2229,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       135.83999633789062,
 		HpGrowCurve:  1,
 		Id:           20050101,
-		MonsterName:  "Monster_Oceanid",
+		MonsterName:  "oceanid",
 	},
-
 	20050102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2845,9 +2264,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       190.17599487304688,
 		HpGrowCurve:  1,
 		Id:           20050102,
-		MonsterName:  "Monster_Oceanid_02",
+		MonsterName:  "oceanid",
 	},
-
 	20050103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2881,9 +2299,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           20050103,
-		MonsterName:  "Monster_Oceanid_03",
+		MonsterName:  "oceanid",
 	},
-
 	20050201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     -0.4000000059604645,
@@ -2905,9 +2322,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           20050201,
-		MonsterName:  "Monster_Oceanid_Boar",
+		MonsterName:  "hydromimicboar",
 	},
-
 	20050202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2933,9 +2349,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       46.18560028076172,
 		HpGrowCurve:  1,
 		Id:           20050202,
-		MonsterName:  "Monster_Oceanid_Boar_02",
+		MonsterName:  "hydromimicboar",
 	},
-
 	20050203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -2961,9 +2376,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       46.18560028076172,
 		HpGrowCurve:  1,
 		Id:           20050203,
-		MonsterName:  "Monster_Oceanid_Boar_02",
+		MonsterName:  "hydromimicboar",
 	},
-
 	20050204: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     -0.4000000059604645,
@@ -2993,9 +2407,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           20050204,
-		MonsterName:  "Monster_Oceanid_Boar_03",
+		MonsterName:  "hydromimicboar",
 	},
-
 	20050301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3017,9 +2430,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20050301,
-		MonsterName:  "Monster_Oceanid_Crane",
+		MonsterName:  "hydromimiccrane",
 	},
-
 	20050302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3041,9 +2453,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20050302,
-		MonsterName:  "Monster_Oceanid_Crane",
+		MonsterName:  "hydromimiccrane",
 	},
-
 	20050401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3065,9 +2476,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           20050401,
-		MonsterName:  "Monster_Oceanid_Crab",
+		MonsterName:  "hydromimiccrab",
 	},
-
 	20050402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3089,9 +2499,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       8.150400161743164,
 		HpGrowCurve:  1,
 		Id:           20050402,
-		MonsterName:  "Monster_Oceanid_Crab_02",
+		MonsterName:  "hydromimiccrab",
 	},
-
 	20050403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3113,9 +2522,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           20050403,
-		MonsterName:  "Monster_Oceanid_Crab",
+		MonsterName:  "hydromimiccrab",
 	},
-
 	20050501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3145,9 +2553,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           20050501,
-		MonsterName:  "Monster_Oceanid_Tit",
+		MonsterName:  "hydromimicfinch",
 	},
-
 	20050502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3177,9 +2584,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           20050502,
-		MonsterName:  "Monster_Oceanid_Tit",
+		MonsterName:  "hydromimicfinch",
 	},
-
 	20050601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3201,9 +2607,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           20050601,
-		MonsterName:  "Monster_Oceanid_Wigeon",
+		MonsterName:  "hydromimicmallard",
 	},
-
 	20050602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3225,9 +2630,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           20050602,
-		MonsterName:  "Monster_Oceanid_Wigeon_02",
+		MonsterName:  "hydromimicmallard",
 	},
-
 	20050603: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3249,9 +2653,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           20050603,
-		MonsterName:  "Monster_Oceanid_Wigeon_02",
+		MonsterName:  "hydromimicmallard",
 	},
-
 	20050701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     -0.4000000059604645,
@@ -3273,9 +2676,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  1,
 		Id:           20050701,
-		MonsterName:  "Monster_Oceanid_Squirrel",
+		MonsterName:  "hydromimicsquirrel",
 	},
-
 	20050702: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3301,9 +2703,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       46.18560028076172,
 		HpGrowCurve:  1,
 		Id:           20050702,
-		MonsterName:  "Monster_Oceanid_Squirrel_02",
+		MonsterName:  "hydromimicsquirrel",
 	},
-
 	20050703: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     -0.4000000059604645,
@@ -3325,9 +2726,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  1,
 		Id:           20050703,
-		MonsterName:  "Monster_Oceanid_Squirrel",
+		MonsterName:  "hydromimicsquirrel",
 	},
-
 	20050801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3353,9 +2753,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           20050801,
-		MonsterName:  "Monster_Oceanid_Frog",
+		MonsterName:  "hydromimicfrog",
 	},
-
 	20050802: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3381,9 +2780,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           20050802,
-		MonsterName:  "Monster_Oceanid_Frog",
+		MonsterName:  "hydromimicfrog",
 	},
-
 	20050901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.15000000596046448,
@@ -3405,9 +2803,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20050901,
-		MonsterName:  "Monster_Oceanid_Falcon",
+		MonsterName:  "hydromimicraptor",
 	},
-
 	20051001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3437,9 +2834,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  2,
 		Id:           20051001,
-		MonsterName:  "Monster_Necalevia_Normal_01",
+		MonsterName:  "taintedwatersplittingphantasm",
 	},
-
 	20051002: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3473,45 +2869,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       991.6320190429688,
 		HpGrowCurve:  2,
 		Id:           20051002,
-		MonsterName:  "Monster_Necalevia_Normal_02",
+		MonsterName:  "veterantaintedwatersplittingphantasm",
 	},
-
-	20051003: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010042,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       198.32640075683594,
-		HpGrowCurve:  2,
-		Id:           20051003,
-		MonsterName:  "Monster_Necalevia_Normal_02",
-	},
-
 	20051401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3545,9 +2904,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       198.32640075683594,
 		HpGrowCurve:  2,
 		Id:           20051401,
-		MonsterName:  "Monster_Necalevia_Normal_02",
+		MonsterName:  "veterantaintedwatersplittingphantasm",
 	},
-
 	20051101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3577,9 +2935,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           20051101,
-		MonsterName:  "Monster_Necalevia_Big_01",
+		MonsterName:  "taintedwaterspoutingphantasm",
 	},
-
 	20051102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3613,45 +2970,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       885.6768188476562,
 		HpGrowCurve:  2,
 		Id:           20051102,
-		MonsterName:  "Monster_Necalevia_Big_02",
+		MonsterName:  "veterantaintedwaterspoutingphantasm",
 	},
-
-	20051103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010042,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       177.13536071777344,
-		HpGrowCurve:  2,
-		Id:           20051103,
-		MonsterName:  "Monster_Necalevia_Big_02",
-	},
-
 	20051501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3685,9 +3005,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       177.13536071777344,
 		HpGrowCurve:  2,
 		Id:           20051501,
-		MonsterName:  "Monster_Necalevia_Big_02",
+		MonsterName:  "veterantaintedwaterspoutingphantasm",
 	},
-
 	20051201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3717,9 +3036,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       298.8479919433594,
 		HpGrowCurve:  2,
 		Id:           20051201,
-		MonsterName:  "Monster_Narcissusborn_Normal_01",
+		MonsterName:  "hydrotulpa",
 	},
-
 	20051301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3736,9 +3054,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.601600646972656,
 		HpGrowCurve:   2,
 		Id:            20051301,
-		MonsterName:   "Monster_Narcissusborn_Underling_Small_01",
+		MonsterName:   "halftulpa",
 	},
-
 	20051601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3768,9 +3085,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       283.9056091308594,
 		HpGrowCurve:  2,
 		Id:           20051601,
-		MonsterName:  "Monster_Narcissusborn_Narzissenkreuz_01",
+		MonsterName:  "hydrotulpa",
 	},
-
 	20070101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3804,9 +3120,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       190.17599487304688,
 		HpGrowCurve:  2,
 		Id:           20070101,
-		MonsterName:  "Monster_Raijin_01",
+		MonsterName:  "thundermanifestation",
 	},
-
 	20070102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3840,9 +3155,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       244.51199340820312,
 		HpGrowCurve:  2,
 		Id:           20070102,
-		MonsterName:  "Monster_Raijin_02",
+		MonsterName:  "thundermanifestation",
 	},
-
 	21010201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3868,9 +3182,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21010201,
-		MonsterName:  "Hili_None_01_Club",
+		MonsterName:  "hilichurlfighter",
 	},
-
 	21010202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3887,9 +3200,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21010202,
-		MonsterName:   "Hili_None_01_Club",
+		MonsterName:   "hilichurlfighter",
 	},
-
 	21010299: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3906,9 +3218,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        24451.19921875,
 		HpGrowCurve:   1,
 		Id:            21010299,
-		MonsterName:   "Hili_None_01_Club_NoAI",
+		MonsterName:   "hilichurlfighter",
 	},
-
 	21010301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3934,9 +3245,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21010301,
-		MonsterName:  "Hili_None_01_Shield",
+		MonsterName:  "woodenshieldhilichurlguard",
 	},
-
 	21010401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3962,9 +3272,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21010401,
-		MonsterName:  "Hili_None_01_Range",
+		MonsterName:  "hilichurlshooter",
 	},
-
 	21010402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -3990,9 +3299,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21010402,
-		MonsterName:  "Hili_None_01_Range_Multi",
+		MonsterName:  "hilichurlshooter",
 	},
-
 	21010403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4009,9 +3317,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            21010403,
-		MonsterName:   "Hili_None_01_Range",
+		MonsterName:   "hilichurlshooter",
 	},
-
 	21010404: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4028,9 +3335,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            21010404,
-		MonsterName:   "Hili_None_01_Range",
+		MonsterName:   "hilichurlshooter",
 	},
-
 	21010501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4056,9 +3362,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21010501,
-		MonsterName:  "Hili_Fire_Range",
+		MonsterName:  "pyrohilichurlshooter",
 	},
-
 	21010502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4084,9 +3389,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21010502,
-		MonsterName:  "Hili_Fire_Range_Multi",
+		MonsterName:  "pyrohilichurlshooter",
 	},
-
 	21010503: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4112,9 +3416,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21010503,
-		MonsterName:  "Hili_Fire_Range",
+		MonsterName:  "pyrohilichurlshooter",
 	},
-
 	21010601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4140,9 +3443,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21010601,
-		MonsterName:  "Hili_Fire_Bomb",
+		MonsterName:  "hilichurlgrenadier",
 	},
-
 	21010603: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4168,9 +3470,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21010603,
-		MonsterName:  "Hili_Fire_Bomb_AttackEnhance",
+		MonsterName:  "hilichurlgrenadier",
 	},
-
 	21010701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4196,9 +3497,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21010701,
-		MonsterName:  "Hili_Fire_Rush",
+		MonsterName:  "hilichurlberserker",
 	},
-
 	21010901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4224,9 +3524,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21010901,
-		MonsterName:  "Hili_Ice_Range",
+		MonsterName:  "cryohilichurlshooter",
 	},
-
 	21010902: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4252,9 +3551,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21010902,
-		MonsterName:  "Hili_Ice_Range_Multi",
+		MonsterName:  "cryohilichurlshooter",
 	},
-
 	21011001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4280,9 +3578,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21011001,
-		MonsterName:  "Hili_Electric_Range",
+		MonsterName:  "electrohilichurlshooter",
 	},
-
 	21011002: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4308,9 +3605,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21011002,
-		MonsterName:  "Hili_Electric_Range_Multi",
+		MonsterName:  "electrohilichurlshooter",
 	},
-
 	21011201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4336,9 +3632,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21011201,
-		MonsterName:  "Hili_None_01_RockShield",
+		MonsterName:  "rockshieldhilichurlguard",
 	},
-
 	21011301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4364,9 +3659,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21011301,
-		MonsterName:  "Hili_Ice_Bomb",
+		MonsterName:  "cryohilichurlgrenadier",
 	},
-
 	21011302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4392,9 +3686,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           21011302,
-		MonsterName:  "Hili_Ice_Bomb_AttackEnhance",
+		MonsterName:  "cryohilichurlgrenadier",
 	},
-
 	21011401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4420,9 +3713,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21011401,
-		MonsterName:  "Hili_Ice_IceShield",
+		MonsterName:  "iceshieldhilichurlguard",
 	},
-
 	21011403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4448,9 +3740,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21011403,
-		MonsterName:  "Hili_Ice_IceShield_Activity",
+		MonsterName:  "iceshieldhilichurlguard",
 	},
-
 	21011501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4476,9 +3767,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           21011501,
-		MonsterName:  "Hili_Wei_NoWeapon_01",
+		MonsterName:  "unusualhilichurl",
 	},
-
 	21011601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4504,9 +3794,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21011601,
-		MonsterName:  "Hili_Electric_Bomb",
+		MonsterName:  "electrohilichurlgrenadier",
 	},
-
 	21011602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4532,9 +3821,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21011602,
-		MonsterName:  "Hili_Electric_Bomb_AttackEnhance",
+		MonsterName:  "electrohilichurlgrenadier",
 	},
-
 	21011603: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4560,9 +3848,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21011603,
-		MonsterName:  "Hili_Electric_Bomb",
+		MonsterName:  "electrohilichurlgrenadier",
 	},
-
 	20011201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4588,9 +3875,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20011201,
-		MonsterName:  "Slime_Fire_02",
+		MonsterName:  "pyroslime",
 	},
-
 	20011202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0,
@@ -4607,9 +3893,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        7,
 		HpGrowCurve:   1,
 		Id:            20011202,
-		MonsterName:   "Slime_Fire_Tutorial",
+		MonsterName:   "pyroslime",
 	},
-
 	20011204: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4626,9 +3911,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20011204,
-		MonsterName:   "Slime_Fire_02_SimpleStick",
+		MonsterName:   "pyroslime",
 	},
-
 	20011205: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4645,9 +3929,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20011205,
-		MonsterName:   "Slime_Fire_02_SimpleStick",
+		MonsterName:   "pyroslime",
 	},
-
 	20011301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4677,9 +3960,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20011301,
-		MonsterName:  "Slime_Fire_03",
+		MonsterName:  "largepyroslime",
 	},
-
 	20011304: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4709,9 +3991,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20011304,
-		MonsterName:  "Slime_Fire_03_AttackEnhance",
+		MonsterName:  "largepyroslime",
 	},
-
 	20011305: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4728,9 +4009,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20011305,
-		MonsterName:   "Slime_Fire_03_SimpleStick",
+		MonsterName:   "largepyroslime",
 	},
-
 	20011306: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4747,9 +4027,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20011306,
-		MonsterName:   "Slime_Fire_03_SimpleStick",
+		MonsterName:   "largepyroslime",
 	},
-
 	20011401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4775,9 +4054,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.867199897766113,
 		HpGrowCurve:  1,
 		Id:           20011401,
-		MonsterName:  "Slime_Rock_02",
+		MonsterName:  "geoslime",
 	},
-
 	20011501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4807,9 +4085,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20011501,
-		MonsterName:  "Slime_Rock_03",
+		MonsterName:  "largegeoslime",
 	},
-
 	20011502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4839,9 +4116,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           20011502,
-		MonsterName:  "Slime_Rock_03_AttackEnhance",
+		MonsterName:  "largegeoslime",
 	},
-
 	22010101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4875,9 +4151,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010101,
-		MonsterName:  "Abyss_Fire_01",
+		MonsterName:  "pyroabyssmage",
 	},
-
 	22010102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4911,9 +4186,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010102,
-		MonsterName:  "Abyss_Fire_01_ShieldEnhance",
+		MonsterName:  "pyroabyssmage",
 	},
-
 	22010103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4947,9 +4221,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010103,
-		MonsterName:  "Abyss_Fire_01_BlinkEnhance",
+		MonsterName:  "pyroabyssmage",
 	},
-
 	22010104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -4983,9 +4256,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010104,
-		MonsterName:  "Abyss_Fire_01_AttackEnhance",
+		MonsterName:  "pyroabyssmage",
 	},
-
 	22010201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5019,9 +4291,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010201,
-		MonsterName:  "Abyss_Ice_01",
+		MonsterName:  "cryoabyssmage",
 	},
-
 	22010202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5055,9 +4326,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010202,
-		MonsterName:  "Abyss_Ice_01_ShieldEnhance",
+		MonsterName:  "cryoabyssmage",
 	},
-
 	22010203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5091,9 +4361,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010203,
-		MonsterName:  "Abyss_Ice_01_BlinkEnhance",
+		MonsterName:  "cryoabyssmage",
 	},
-
 	22010204: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5127,9 +4396,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010204,
-		MonsterName:  "Abyss_Ice_01_AttackEnhance",
+		MonsterName:  "cryoabyssmage",
 	},
-
 	22010301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5163,9 +4431,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010301,
-		MonsterName:  "Abyss_Water_01",
+		MonsterName:  "hydroabyssmage",
 	},
-
 	22010302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5199,9 +4466,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010302,
-		MonsterName:  "Abyss_Water_01_ShieldEnhance",
+		MonsterName:  "hydroabyssmage",
 	},
-
 	22010303: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5235,9 +4501,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010303,
-		MonsterName:  "Abyss_Water_01_BlinkEnhance",
+		MonsterName:  "hydroabyssmage",
 	},
-
 	22010304: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5271,9 +4536,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010304,
-		MonsterName:  "Abyss_Water_01_AttackEnhance",
+		MonsterName:  "hydroabyssmage",
 	},
-
 	22010401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5307,9 +4571,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010401,
-		MonsterName:  "Abyss_Electric_01",
+		MonsterName:  "electroabyssmage",
 	},
-
 	22010403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5343,9 +4606,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010403,
-		MonsterName:  "Abyss_Electric_01_ShieldEnhance",
+		MonsterName:  "electroabyssmage",
 	},
-
 	22010404: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5379,9 +4641,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           22010404,
-		MonsterName:  "Abyss_Electric_01_AttackEnhance",
+		MonsterName:  "electroabyssmage",
 	},
-
 	22020101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5411,9 +4672,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22020101,
-		MonsterName:  "Invoker_Herald_Water_01",
+		MonsterName:  "abyssheraldwickedtorrents",
 	},
-
 	22020102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5443,9 +4703,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22020102,
-		MonsterName:  "Invoker_Herald_Water_01",
+		MonsterName:  "abyssheraldwickedtorrents",
 	},
-
 	22020103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5475,9 +4734,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22020103,
-		MonsterName:  "Invoker_Herald_Water_01",
+		MonsterName:  "abyssheraldwickedtorrents",
 	},
-
 	22020201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5507,9 +4765,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22020201,
-		MonsterName:  "Invoker_Herald_Ice_01",
+		MonsterName:  "abyssheraldfrostfall",
 	},
-
 	22030101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5539,9 +4796,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22030101,
-		MonsterName:  "Invoker_Deacon_Electric_01",
+		MonsterName:  "abysslectorvioletlightning",
 	},
-
 	22030102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5571,9 +4827,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22030102,
-		MonsterName:  "Invoker_Deacon_Electric_01",
+		MonsterName:  "abysslectorvioletlightning",
 	},
-
 	22030103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5603,9 +4858,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22030103,
-		MonsterName:  "Invoker_Deacon_Electric_01",
+		MonsterName:  "abysslectorvioletlightning",
 	},
-
 	22030201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5635,9 +4889,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22030201,
-		MonsterName:  "Invoker_Deacon_Fire_01",
+		MonsterName:  "abysslectorfathomlessflames",
 	},
-
 	22030202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -5667,9 +4920,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           22030202,
-		MonsterName:  "Invoker_Deacon_Fire_01",
+		MonsterName:  "abysslectorfathomlessflames",
 	},
-
 	22040101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -5695,9 +4947,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           22040101,
-		MonsterName:  "Hound_Kanis_Rock_01",
+		MonsterName:  "rockfondrifthoundwhelp",
 	},
-
 	22040102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -5723,9 +4974,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           22040102,
-		MonsterName:  "Hound_Kanis_Rock_01_Crystallization",
+		MonsterName:  "rockfondrifthoundwhelp",
 	},
-
 	22040201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -5751,9 +5001,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           22040201,
-		MonsterName:  "Hound_Kanis_Electric_01",
+		MonsterName:  "thundercravenrifthoundwhelp",
 	},
-
 	22040202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -5779,9 +5028,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           22040202,
-		MonsterName:  "Hound_Kanis_Electric_01_Crystallization",
+		MonsterName:  "thundercravenrifthoundwhelp",
 	},
-
 	22050101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.25,
@@ -5811,9 +5059,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           22050101,
-		MonsterName:  "Hound_Riftstalker_Rock_01",
+		MonsterName:  "rockfondrifthound",
 	},
-
 	22050102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.25,
@@ -5843,9 +5090,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           22050102,
-		MonsterName:  "Hound_Riftstalker_Rock_01_Crystallization",
+		MonsterName:  "rockfondrifthound",
 	},
-
 	22050201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.25,
@@ -5875,9 +5121,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           22050201,
-		MonsterName:  "Hound_Riftstalker_Electric_01",
+		MonsterName:  "thundercravenrifthound",
 	},
-
 	22050202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.25,
@@ -5907,9 +5152,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           22050202,
-		MonsterName:  "Hound_Riftstalker_Electric_01_Crystallization",
+		MonsterName:  "thundercravenrifthound",
 	},
-
 	22060101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.25,
@@ -5943,9 +5187,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       163.00799560546875,
 		HpGrowCurve:  2,
 		Id:           22060101,
-		MonsterName:  "Monster_Hound_Planelurker_01",
+		MonsterName:  "goldenwolflord",
 	},
-
 	22070101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.30000001192092896,
@@ -5979,9 +5222,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  2,
 		Id:           22070101,
-		MonsterName:  "ForlornVessel_Strong_Warbanner_Fire_01",
+		MonsterName:  "shadowyhuskstandardbearer",
 	},
-
 	22070102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.30000001192092896,
@@ -6015,9 +5257,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  2,
 		Id:           22070102,
-		MonsterName:  "ForlornVessel_Strong_Warbanner_Fire_02",
+		MonsterName:  "shadowyhuskstandardbearer",
 	},
-
 	22070201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6047,9 +5288,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       81.50399780273438,
 		HpGrowCurve:  2,
 		Id:           22070201,
-		MonsterName:  "ForlornVessel_Strong_Lance_Water_01",
+		MonsterName:  "shadowyhusklinebreaker",
 	},
-
 	22070202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6079,9 +5319,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       81.50399780273438,
 		HpGrowCurve:  2,
 		Id:           22070202,
-		MonsterName:  "ForlornVessel_Strong_Lance_Water_02",
+		MonsterName:  "shadowyhusklinebreaker",
 	},
-
 	22070301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6115,9 +5354,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           22070301,
-		MonsterName:  "ForlornVessel_Strong_Chargebow_Ice_01",
+		MonsterName:  "shadowyhuskdefender",
 	},
-
 	22070302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6151,9 +5389,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           22070302,
-		MonsterName:  "ForlornVessel_Strong_Chargebow_Ice_02",
+		MonsterName:  "shadowyhuskdefender",
 	},
-
 	22080101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6183,9 +5420,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           22080101,
-		MonsterName:  "Darkwraith_Strong_Wind_01",
+		MonsterName:  "blackserpentknightwindcutter",
 	},
-
 	22080201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6215,28 +5451,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  2,
 		Id:           22080201,
-		MonsterName:  "Darkwraith_Fat_Rock_01",
+		MonsterName:  "blackserpentknightrockbreakerax",
 	},
-
-	22090101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.5,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        95.08799743652344,
-		HpGrowCurve:   2,
-		Id:            22090101,
-		MonsterName:   "Darksign_Shadow_01",
-	},
-
 	22100101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6270,9 +5486,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       135.83999633789062,
 		HpGrowCurve:  2,
 		Id:           22100101,
-		MonsterName:  "Invoker_Archdeacon_01",
+		MonsterName:  "iniquitousbaptist",
 	},
-
 	22100201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6306,9 +5521,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       135.83999633789062,
 		HpGrowCurve:  2,
 		Id:           22100201,
-		MonsterName:  "Invoker_Archdeacon_01",
+		MonsterName:  "iniquitousbaptist",
 	},
-
 	22100202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6325,9 +5539,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        135.83999633789062,
 		HpGrowCurve:   2,
 		Id:            22100202,
-		MonsterName:   "Invoker_Archdeacon_01",
+		MonsterName:   "iniquitousbaptist",
 	},
-
 	22100301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6361,9 +5574,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       135.83999633789062,
 		HpGrowCurve:  2,
 		Id:           22100301,
-		MonsterName:  "Invoker_Archdeacon_01",
+		MonsterName:  "iniquitousbaptist",
 	},
-
 	22100401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6397,9 +5609,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       135.83999633789062,
 		HpGrowCurve:  2,
 		Id:           22100401,
-		MonsterName:  "Invoker_Archdeacon_01",
+		MonsterName:  "iniquitousbaptist",
 	},
-
 	22100501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6433,9 +5644,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       135.83999633789062,
 		HpGrowCurve:  2,
 		Id:           22100501,
-		MonsterName:  "Invoker_Archdeacon_01",
+		MonsterName:  "iniquitousbaptist",
 	},
-
 	22110101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6469,9 +5679,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       97.80480194091797,
 		HpGrowCurve:  2,
 		Id:           22110101,
-		MonsterName:  "Ovacua_Order_01",
+		MonsterName:  "largeshatterstonebreacherprimus",
 	},
-
 	22110102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6505,9 +5714,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       97.80480194091797,
 		HpGrowCurve:  2,
 		Id:           22110102,
-		MonsterName:  "Ovacua_Order_01",
+		MonsterName:  "largeshatterstonebreacherprimus",
 	},
-
 	22110201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6533,9 +5741,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           22110201,
-		MonsterName:  "Ovacua_Order_02",
+		MonsterName:  "shatterstonebreacherprimus",
 	},
-
 	22110202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6561,9 +5768,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           22110202,
-		MonsterName:  "Ovacua_Order_02",
+		MonsterName:  "shatterstonebreacherprimus",
 	},
-
 	22110301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6597,9 +5803,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       114.10559844970703,
 		HpGrowCurve:  2,
 		Id:           22110301,
-		MonsterName:  "Ovacua_Chaos_01",
+		MonsterName:  "largeovergrownbreacherprimus",
 	},
-
 	22110302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6633,9 +5838,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       114.10559844970703,
 		HpGrowCurve:  2,
 		Id:           22110302,
-		MonsterName:  "Ovacua_Chaos_01",
+		MonsterName:  "largeovergrownbreacherprimus",
 	},
-
 	22110402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6661,9 +5865,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  2,
 		Id:           22110402,
-		MonsterName:  "Ovacua_Chaos_02",
+		MonsterName:  "overgrownbreacherprimus",
 	},
-
 	22110403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6689,9 +5892,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  2,
 		Id:           22110403,
-		MonsterName:  "Ovacua_Chaos_02",
+		MonsterName:  "overgrownbreacherprimus",
 	},
-
 	21030101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6717,9 +5919,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030101,
-		MonsterName:  "Shaman_Water_01",
+		MonsterName:  "hydrosamachurl",
 	},
-
 	21030103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6745,9 +5946,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030103,
-		MonsterName:  "Shaman_Water_01_HealEnhance",
+		MonsterName:  "hydrosamachurl",
 	},
-
 	21030104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6773,9 +5973,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030104,
-		MonsterName:  "Shaman_Water_01_LostSamachurl",
+		MonsterName:  "hydrosamachurl",
 	},
-
 	21030201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6801,9 +6000,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030201,
-		MonsterName:  "Shaman_Grass_01",
+		MonsterName:  "dendrosamachurl",
 	},
-
 	21030203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6829,9 +6027,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030203,
-		MonsterName:  "Shaman_Grass_01_SupportEnhance",
+		MonsterName:  "dendrosamachurl",
 	},
-
 	21030301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6857,9 +6054,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030301,
-		MonsterName:  "Shaman_Wind_01",
+		MonsterName:  "anemosamachurl",
 	},
-
 	21030303: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6885,9 +6081,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030303,
-		MonsterName:  "Shaman_Wind_01_WindZoneEnhance",
+		MonsterName:  "anemosamachurl",
 	},
-
 	21030304: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6913,9 +6108,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030304,
-		MonsterName:  "Shaman_Wind_01_AttackEnhance",
+		MonsterName:  "anemosamachurl",
 	},
-
 	21030401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6941,9 +6135,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030401,
-		MonsterName:  "Shaman_Rock_01",
+		MonsterName:  "geosamachurl",
 	},
-
 	21030402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6969,9 +6162,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030402,
-		MonsterName:  "Shaman_Rock_01_SupportEnhance",
+		MonsterName:  "geosamachurl",
 	},
-
 	21030501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -6997,9 +6189,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030501,
-		MonsterName:  "Shaman_Ice_01",
+		MonsterName:  "cryosamachurl",
 	},
-
 	21030601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7025,9 +6216,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030601,
-		MonsterName:  "Shaman_Electric_01",
+		MonsterName:  "electrosamachurl",
 	},
-
 	21030603: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7053,9 +6243,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  1,
 		Id:           21030603,
-		MonsterName:  "Shaman_Electric_01_SupportEnhance",
+		MonsterName:  "electrosamachurl",
 	},
-
 	21030701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     2,
@@ -7089,9 +6278,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       320,
 		HpGrowCurve:  2,
 		Id:           21030701,
-		MonsterName:  "Shaman_None_01",
+		MonsterName:  "samachurlboss",
 	},
-
 	21040101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7121,9 +6309,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  2,
 		Id:           21040101,
-		MonsterName:  "Hilistray_Wind_01",
+		MonsterName:  "anemohilichurlrogue",
 	},
-
 	21040201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7153,9 +6340,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  2,
 		Id:           21040201,
-		MonsterName:  "Hilistray_Water_01",
+		MonsterName:  "hydrohilichurlrogue",
 	},
-
 	24010101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7189,9 +6375,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           24010101,
-		MonsterName:  "Defender_None_01",
+		MonsterName:  "ruinguard",
 	},
-
 	24010108: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7208,9 +6393,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        24451.19921875,
 		HpGrowCurve:   1,
 		Id:            24010108,
-		MonsterName:   "Defender_None_08",
+		MonsterName:   "ruinguard",
 	},
-
 	24010109: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7227,9 +6411,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        24451.19921875,
 		HpGrowCurve:   1,
 		Id:            24010109,
-		MonsterName:   "Defender_None_09",
+		MonsterName:   "ruinguard",
 	},
-
 	24010201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7263,9 +6446,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       81.50399780273438,
 		HpGrowCurve:  1,
 		Id:           24010201,
-		MonsterName:  "Formathr_None",
+		MonsterName:  "ruinhunter",
 	},
-
 	24010301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7299,9 +6481,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  1,
 		Id:           24010301,
-		MonsterName:  "Konungmathr_None",
+		MonsterName:  "ruingrader",
 	},
-
 	24010303: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7335,9 +6516,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       190.17599487304688,
 		HpGrowCurve:  1,
 		Id:           24010303,
-		MonsterName:  "Konungmathr_None_Dig",
+		MonsterName:  "ruingrader",
 	},
-
 	24010304: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7371,9 +6551,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  1,
 		Id:           24010304,
-		MonsterName:  "Konungmathr_None_WQ",
+		MonsterName:  "ruingrader",
 	},
-
 	24010305: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7407,9 +6586,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  1,
 		Id:           24010305,
-		MonsterName:  "Konungmathr_None_WQ",
+		MonsterName:  "ruingrader",
 	},
-
 	24010401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7439,9 +6617,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  2,
 		Id:           24010401,
-		MonsterName:  "Nithhoggr_None",
+		MonsterName:  "ruinserpent",
 	},
-
 	24020101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7471,9 +6648,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  2,
 		Id:           24020101,
-		MonsterName:  "Apparatus_Enigma_BionicDrone",
+		MonsterName:  "ruincruiser",
 	},
-
 	24020102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7503,9 +6679,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  2,
 		Id:           24020102,
-		MonsterName:  "Apparatus_Enigma_BionicDrone",
+		MonsterName:  "ruincruiser",
 	},
-
 	24020103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7535,9 +6710,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  2,
 		Id:           24020103,
-		MonsterName:  "Apparatus_Enigma_BionicDrone",
+		MonsterName:  "ruincruiser",
 	},
-
 	24020201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7567,9 +6741,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  2,
 		Id:           24020201,
-		MonsterName:  "Apparatus_Enigma_BionicFlora",
+		MonsterName:  "ruindestroyer",
 	},
-
 	24020202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7599,9 +6772,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  2,
 		Id:           24020202,
-		MonsterName:  "Apparatus_Enigma_BionicFlora",
+		MonsterName:  "ruindestroyer",
 	},
-
 	24020203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7631,9 +6803,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  2,
 		Id:           24020203,
-		MonsterName:  "Apparatus_Enigma_BionicFlora",
+		MonsterName:  "ruindestroyer",
 	},
-
 	24020301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7663,9 +6834,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       57.052799224853516,
 		HpGrowCurve:  2,
 		Id:           24020301,
-		MonsterName:  "Apparatus_Enigma_BionicInsecta",
+		MonsterName:  "ruindefender",
 	},
-
 	24020302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7695,9 +6865,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       57.052799224853516,
 		HpGrowCurve:  2,
 		Id:           24020302,
-		MonsterName:  "Apparatus_Enigma_BionicInsecta",
+		MonsterName:  "ruindefender",
 	},
-
 	24020303: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7727,9 +6896,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       57.052799224853516,
 		HpGrowCurve:  2,
 		Id:           24020303,
-		MonsterName:  "Apparatus_Enigma_BionicInsecta",
+		MonsterName:  "ruindefender",
 	},
-
 	24020304: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7759,9 +6927,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       57.052799224853516,
 		HpGrowCurve:  2,
 		Id:           24020304,
-		MonsterName:  "Apparatus_Enigma_BionicInsecta_Karkata",
+		MonsterName:  "ruindefender",
 	},
-
 	24020401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7791,9 +6958,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       57.052799224853516,
 		HpGrowCurve:  2,
 		Id:           24020401,
-		MonsterName:  "Apparatus_Enigma_BionicNettler",
+		MonsterName:  "ruinscout",
 	},
-
 	24020402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7823,9 +6989,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       57.052799224853516,
 		HpGrowCurve:  2,
 		Id:           24020402,
-		MonsterName:  "Apparatus_Enigma_BionicNettler",
+		MonsterName:  "ruinscout",
 	},
-
 	24020403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7855,9 +7020,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       57.052799224853516,
 		HpGrowCurve:  2,
 		Id:           24020403,
-		MonsterName:  "Apparatus_Enigma_BionicNettler",
+		MonsterName:  "ruinscout",
 	},
-
 	24021101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7887,9 +7051,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  2,
 		Id:           24021101,
-		MonsterName:  "Apparatus_Perpetual",
+		MonsterName:  "perpetualmechanicalarray",
 	},
-
 	24021102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7919,9 +7082,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  2,
 		Id:           24021102,
-		MonsterName:  "Apparatus_Perpetual",
+		MonsterName:  "perpetualmechanicalarray",
 	},
-
 	24030101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7951,9 +7113,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  2,
 		Id:           24030101,
-		MonsterName:  "Gargoyle_Airborne_01",
+		MonsterName:  "ruindrakeskywatch",
 	},
-
 	24030201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -7983,9 +7144,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           24030201,
-		MonsterName:  "Gargoyle_Ground_01",
+		MonsterName:  "ruindrakeearthguard",
 	},
-
 	24030301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8015,9 +7175,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       230.92799377441406,
 		HpGrowCurve:  2,
 		Id:           24030301,
-		MonsterName:  "Gargoyle_Fafnir_01",
+		MonsterName:  "aeonblightdrake",
 	},
-
 	24030302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8047,9 +7206,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       203.75999450683594,
 		HpGrowCurve:  2,
 		Id:           24030302,
-		MonsterName:  "Gargoyle_Fafnir_02",
+		MonsterName:  "aeonblightdrake",
 	},
-
 	24040101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8083,9 +7241,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       46.18560028076172,
 		HpGrowCurve:  2,
 		Id:           24040101,
-		MonsterName:  "Monolith_Ordinator_01",
+		MonsterName:  "primalconstructrepulsor",
 	},
-
 	24040201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8119,9 +7276,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       46.18560028076172,
 		HpGrowCurve:  2,
 		Id:           24040201,
-		MonsterName:  "Monolith_Ordinator_02",
+		MonsterName:  "primalconstructreshaper",
 	},
-
 	24040301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8155,9 +7311,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       46.18560028076172,
 		HpGrowCurve:  2,
 		Id:           24040301,
-		MonsterName:  "Monolith_Ordinator_03",
+		MonsterName:  "primalconstructprospector",
 	},
-
 	24050101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8187,9 +7342,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  2,
 		Id:           24050101,
-		MonsterName:  "Monolith_Starchild",
+		MonsterName:  "algorithmofsemiintransientmatrixofoverseernetwork",
 	},
-
 	24060101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8215,9 +7369,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           24060101,
-		MonsterName:  "MachinaIustitia_Sentry_01",
+		MonsterName:  "reconlogmek",
 	},
-
 	24060102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8243,9 +7396,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           24060102,
-		MonsterName:  "MachinaIustitia_Sentry_02",
+		MonsterName:  "reconlogmek",
 	},
-
 	24065101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8271,9 +7423,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           24065101,
-		MonsterName:  "MachinaIustitia_Sentry_03",
+		MonsterName:  "reconlogmek",
 	},
-
 	24065102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8299,9 +7450,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           24065102,
-		MonsterName:  "MachinaIustitia_Sentry_04",
+		MonsterName:  "reconlogmek",
 	},
-
 	24065103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8327,9 +7477,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           24065103,
-		MonsterName:  "MachinaIustitia_Sentry_05",
+		MonsterName:  "reconlogmek",
 	},
-
 	24068101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8355,9 +7504,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           24068101,
-		MonsterName:  "MachinaIustitia_Sentry_Cdoex",
+		MonsterName:  "reconlogmek",
 	},
-
 	24060201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8383,9 +7531,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       24.451200485229492,
 		HpGrowCurve:  2,
 		Id:           24060201,
-		MonsterName:  "MachinaIustitia_Pylon_01",
+		MonsterName:  "arithmeticenhancermek",
 	},
-
 	24060202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8411,9 +7558,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       24.451200485229492,
 		HpGrowCurve:  2,
 		Id:           24060202,
-		MonsterName:  "MachinaIustitia_Pylon_02",
+		MonsterName:  "arithmeticenhancermek",
 	},
-
 	24065201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8439,9 +7585,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       24.451200485229492,
 		HpGrowCurve:  2,
 		Id:           24065201,
-		MonsterName:  "MachinaIustitia_Pylon_03",
+		MonsterName:  "arithmeticenhancermek",
 	},
-
 	24065202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8467,9 +7612,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       24.451200485229492,
 		HpGrowCurve:  2,
 		Id:           24065202,
-		MonsterName:  "MachinaIustitia_Pylon_04",
+		MonsterName:  "arithmeticenhancermek",
 	},
-
 	24068201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8495,9 +7639,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       24.451200485229492,
 		HpGrowCurve:  2,
 		Id:           24068201,
-		MonsterName:  "MachinaIustitia_Pylon_Codex",
+		MonsterName:  "arithmeticenhancermek",
 	},
-
 	24060301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8514,9 +7657,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            24060301,
-		MonsterName:   "MachinaIustitia_Recon_01",
+		MonsterName:   "underwatersurveymek",
 	},
-
 	24060302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8533,9 +7675,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            24060302,
-		MonsterName:   "MachinaIustitia_Recon_02",
+		MonsterName:   "underwatersurveymek",
 	},
-
 	24065301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8552,9 +7693,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            24065301,
-		MonsterName:   "MachinaIustitia_Recon_03",
+		MonsterName:   "underwatersurveymek",
 	},
-
 	24065302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8571,9 +7711,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            24065302,
-		MonsterName:   "MachinaIustitia_Recon_04",
+		MonsterName:   "underwatersurveymek",
 	},
-
 	24068301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8590,9 +7729,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            24068301,
-		MonsterName:   "MachinaIustitia_Recon_Codex",
+		MonsterName:   "underwatersurveymek",
 	},
-
 	24060401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8618,9 +7756,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           24060401,
-		MonsterName:  "MachinaIustitia_Probe_01",
+		MonsterName:  "geologicalsurveymek",
 	},
-
 	24060402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8646,9 +7783,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           24060402,
-		MonsterName:  "MachinaIustitia_Probe_02",
+		MonsterName:  "geologicalsurveymek",
 	},
-
 	24065401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8674,9 +7810,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           24065401,
-		MonsterName:  "MachinaIustitia_Probe_03",
+		MonsterName:  "geologicalsurveymek",
 	},
-
 	24065402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8702,9 +7837,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           24065402,
-		MonsterName:  "MachinaIustitia_Probe_04",
+		MonsterName:  "geologicalsurveymek",
 	},
-
 	24068401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8730,9 +7864,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           24068401,
-		MonsterName:  "MachinaIustitia_Probe_Codex",
+		MonsterName:  "geologicalsurveymek",
 	},
-
 	24060501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8749,9 +7882,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            24060501,
-		MonsterName:   "MachinaIustitia_Nautilus_01",
+		MonsterName:   "underwaterpatrolmek",
 	},
-
 	24060502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8768,9 +7900,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            24060502,
-		MonsterName:   "MachinaIustitia_Nautilus_02",
+		MonsterName:   "underwaterpatrolmek",
 	},
-
 	24065501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8787,9 +7918,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            24065501,
-		MonsterName:   "MachinaIustitia_Nautilus_03",
+		MonsterName:   "underwaterpatrolmek",
 	},
-
 	24065502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8806,9 +7936,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            24065502,
-		MonsterName:   "MachinaIustitia_Nautilus_04",
+		MonsterName:   "underwaterpatrolmek",
 	},
-
 	24068501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8825,9 +7954,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            24068501,
-		MonsterName:   "MachinaIustitia_Nautilus_Codex",
+		MonsterName:   "underwaterpatrolmek",
 	},
-
 	24060601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8844,9 +7972,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        64.93779754638672,
 		HpGrowCurve:   1,
 		Id:            24060601,
-		MonsterName:   "MachinaIustitia_Frigate_01",
+		MonsterName:   "deepwaterassaultmek",
 	},
-
 	24060602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8863,9 +7990,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        64.93779754638672,
 		HpGrowCurve:   1,
 		Id:            24060602,
-		MonsterName:   "MachinaIustitia_Frigate_02",
+		MonsterName:   "deepwaterassaultmek",
 	},
-
 	24065601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8882,9 +8008,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        64.93779754638672,
 		HpGrowCurve:   1,
 		Id:            24065601,
-		MonsterName:   "MachinaIustitia_Frigate_03",
+		MonsterName:   "deepwaterassaultmek",
 	},
-
 	24065602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8901,9 +8026,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        64.93779754638672,
 		HpGrowCurve:   1,
 		Id:            24065602,
-		MonsterName:   "MachinaIustitia_Frigate_04",
+		MonsterName:   "deepwaterassaultmek",
 	},
-
 	24068601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8920,9 +8044,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        64.93779754638672,
 		HpGrowCurve:   1,
 		Id:            24068601,
-		MonsterName:   "MachinaIustitia_Frigate_Codex",
+		MonsterName:   "deepwaterassaultmek",
 	},
-
 	24060701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8948,9 +8071,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           24060701,
-		MonsterName:  "MachinaIustitia_Assimilator_01",
+		MonsterName:  "nimbleharvestermek",
 	},
-
 	24060702: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -8976,9 +8098,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           24060702,
-		MonsterName:  "MachinaIustitia_Assimilator_02",
+		MonsterName:  "nimbleharvestermek",
 	},
-
 	24065701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9004,9 +8125,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           24065701,
-		MonsterName:  "MachinaIustitia_Assimilator_03",
+		MonsterName:  "nimbleharvestermek",
 	},
-
 	24065702: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9032,9 +8152,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           24065702,
-		MonsterName:  "MachinaIustitia_Assimilator_04",
+		MonsterName:  "nimbleharvestermek",
 	},
-
 	24068701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9060,9 +8179,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  2,
 		Id:           24068701,
-		MonsterName:  "MachinaIustitia_Assimilator_Codex",
+		MonsterName:  "nimbleharvestermek",
 	},
-
 	24060801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9096,9 +8214,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           24060801,
-		MonsterName:  "MachinaIustitia_Ruggiero_01",
+		MonsterName:  "assaultspecialistmek",
 	},
-
 	24060802: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9132,9 +8249,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           24060802,
-		MonsterName:  "MachinaIustitia_Ruggiero_02",
+		MonsterName:  "assaultspecialistmek",
 	},
-
 	24065801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9168,9 +8284,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           24065801,
-		MonsterName:  "MachinaIustitia_Ruggiero_03",
+		MonsterName:  "assaultspecialistmek",
 	},
-
 	24065802: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9204,9 +8319,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           24065802,
-		MonsterName:  "MachinaIustitia_Ruggiero_04",
+		MonsterName:  "assaultspecialistmek",
 	},
-
 	24065803: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9240,9 +8354,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           24065803,
-		MonsterName:  "MachinaIustitia_Ruggiero_05",
+		MonsterName:  "assaultspecialistmek",
 	},
-
 	24068801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9276,9 +8389,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           24068801,
-		MonsterName:  "MachinaIustitia_Ruggiero_Codex",
+		MonsterName:  "assaultspecialistmek",
 	},
-
 	24060901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9312,9 +8424,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           24060901,
-		MonsterName:  "MachinaIustitia_Ruggiero_01",
+		MonsterName:  "suppressionspecialistmek",
 	},
-
 	24060902: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9348,9 +8459,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           24060902,
-		MonsterName:  "MachinaIustitia_Ruggiero_02",
+		MonsterName:  "suppressionspecialistmek",
 	},
-
 	24060903: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9367,9 +8477,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        54.33599853515625,
 		HpGrowCurve:   2,
 		Id:            24060903,
-		MonsterName:   "MachinaIustitia_Ruggiero_01",
+		MonsterName:   "suppressionspecialistmek",
 	},
-
 	24065901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9403,9 +8512,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           24065901,
-		MonsterName:  "MachinaIustitia_Ruggiero_03",
+		MonsterName:  "suppressionspecialistmek",
 	},
-
 	24065902: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9439,9 +8547,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           24065902,
-		MonsterName:  "MachinaIustitia_Ruggiero_04",
+		MonsterName:  "suppressionspecialistmek",
 	},
-
 	24068901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9475,9 +8582,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           24068901,
-		MonsterName:  "MachinaIustitia_Ruggiero_Codex",
+		MonsterName:  "suppressionspecialistmek",
 	},
-
 	24061001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9511,9 +8617,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       70.63680267333984,
 		HpGrowCurve:  2,
 		Id:           24061001,
-		MonsterName:  "MachinaIustitia_Bradamante_01",
+		MonsterName:  "annihilationspecialistmek",
 	},
-
 	24061002: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9547,9 +8652,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       70.63680267333984,
 		HpGrowCurve:  2,
 		Id:           24061002,
-		MonsterName:  "MachinaIustitia_Bradamante_02",
+		MonsterName:  "annihilationspecialistmek",
 	},
-
 	24066001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9583,9 +8687,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       70.63680267333984,
 		HpGrowCurve:  2,
 		Id:           24066001,
-		MonsterName:  "MachinaIustitia_Bradamante_03",
+		MonsterName:  "annihilationspecialistmek",
 	},
-
 	24066002: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9619,9 +8722,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       70.63680267333984,
 		HpGrowCurve:  2,
 		Id:           24066002,
-		MonsterName:  "MachinaIustitia_Bradamante_04",
+		MonsterName:  "annihilationspecialistmek",
 	},
-
 	24069001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9655,9 +8757,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       70.63680267333984,
 		HpGrowCurve:  2,
 		Id:           24069001,
-		MonsterName:  "MachinaIustitia_Bradamante_Codex",
+		MonsterName:  "annihilationspecialistmek",
 	},
-
 	24061101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9683,9 +8784,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24061101,
-		MonsterName:  "MachinaIustitia_LengthShifter_01",
+		MonsterName:  "areaalertmek",
 	},
-
 	24061102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9711,9 +8811,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24061102,
-		MonsterName:  "MachinaIustitia_LengthShifter_02",
+		MonsterName:  "areaalertmek",
 	},
-
 	24061103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9730,9 +8829,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.01759910583496,
 		HpGrowCurve:   2,
 		Id:            24061103,
-		MonsterName:   "MachinaIustitia_LengthShifter_01",
+		MonsterName:   "areaalertmek",
 	},
-
 	24066101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9758,9 +8856,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24066101,
-		MonsterName:  "MachinaIustitia_LengthShifter_03",
+		MonsterName:  "areaalertmek",
 	},
-
 	24066102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9786,9 +8883,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24066102,
-		MonsterName:  "MachinaIustitia_LengthShifter_04",
+		MonsterName:  "areaalertmek",
 	},
-
 	24066103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9805,9 +8901,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.01759910583496,
 		HpGrowCurve:   2,
 		Id:            24066103,
-		MonsterName:   "MachinaIustitia_LengthShifter_03",
+		MonsterName:   "areaalertmek",
 	},
-
 	24061105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9833,9 +8928,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24061105,
-		MonsterName:  "MachinaIustitia_LengthShifter_05",
+		MonsterName:  "areaalertmek",
 	},
-
 	24061106: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9861,9 +8955,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24061106,
-		MonsterName:  "MachinaIustitia_LengthShifter_06",
+		MonsterName:  "areaalertmek",
 	},
-
 	24066105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9889,9 +8982,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24066105,
-		MonsterName:  "MachinaIustitia_LengthShifter_07",
+		MonsterName:  "areaalertmek",
 	},
-
 	24066106: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9917,9 +9009,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24066106,
-		MonsterName:  "MachinaIustitia_LengthShifter_08",
+		MonsterName:  "areaalertmek",
 	},
-
 	24061109: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9945,9 +9036,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24061109,
-		MonsterName:  "MachinaIustitia_LengthShifter_01",
+		MonsterName:  "areaalertmek",
 	},
-
 	24061110: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -9973,9 +9063,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24061110,
-		MonsterName:  "MachinaIustitia_LengthShifter_02",
+		MonsterName:  "areaalertmek",
 	},
-
 	24066109: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10001,9 +9090,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24066109,
-		MonsterName:  "MachinaIustitia_LengthShifter_03",
+		MonsterName:  "areaalertmek",
 	},
-
 	24066110: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10029,9 +9117,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24066110,
-		MonsterName:  "MachinaIustitia_LengthShifter_04",
+		MonsterName:  "areaalertmek",
 	},
-
 	24069101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10057,9 +9144,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       19.01759910583496,
 		HpGrowCurve:  2,
 		Id:           24069101,
-		MonsterName:  "MachinaIustitia_LengthShifter_Codex",
+		MonsterName:  "areaalertmek",
 	},
-
 	24061201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10093,9 +9179,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           24061201,
-		MonsterName:  "MachinaIustitia_Excavator_01",
+		MonsterName:  "constructionspecialistmek",
 	},
-
 	24061202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10129,9 +9214,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           24061202,
-		MonsterName:  "MachinaIustitia_Excavator_02",
+		MonsterName:  "constructionspecialistmek",
 	},
-
 	24066201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10165,9 +9249,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           24066201,
-		MonsterName:  "MachinaIustitia_Excavator_03",
+		MonsterName:  "constructionspecialistmek",
 	},
-
 	24066202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10201,9 +9284,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           24066202,
-		MonsterName:  "MachinaIustitia_Excavator_04",
+		MonsterName:  "constructionspecialistmek",
 	},
-
 	24069201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10237,9 +9319,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           24069201,
-		MonsterName:  "MachinaIustitia_Excavator_Codex",
+		MonsterName:  "constructionspecialistmek",
 	},
-
 	24061301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10273,9 +9354,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       516.1920166015625,
 		HpGrowCurve:  2,
 		Id:           24061301,
-		MonsterName:  "MachinaIustitia_Pylon_01",
+		MonsterName:  "veteranarithmeticenhancermek",
 	},
-
 	24061302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10309,9 +9389,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       206.476806640625,
 		HpGrowCurve:  2,
 		Id:           24061302,
-		MonsterName:  "MachinaIustitia_Pylon_02",
+		MonsterName:  "veteranarithmeticenhancermek",
 	},
-
 	24061303: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10345,9 +9424,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       129.04800415039062,
 		HpGrowCurve:  2,
 		Id:           24061303,
-		MonsterName:  "MachinaIustitia_Pylon_03",
+		MonsterName:  "veteranarithmeticenhancermek",
 	},
-
 	24070101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10381,9 +9459,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       203.75999450683594,
 		HpGrowCurve:  2,
 		Id:           24070101,
-		MonsterName:  "Monster_MachinaIustitia_Nutcracker",
+		MonsterName:  "icewindsuite",
 	},
-
 	24070102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10417,9 +9494,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       203.75999450683594,
 		HpGrowCurve:  2,
 		Id:           24070102,
-		MonsterName:  "Monster_MachinaIustitia_Nutcracker",
+		MonsterName:  "icewindsuite",
 	},
-
 	24070201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10453,9 +9529,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       203.75999450683594,
 		HpGrowCurve:  2,
 		Id:           24070201,
-		MonsterName:  "Monster_MachinaIustitia_Nutcracker",
+		MonsterName:  "icewindsuite",
 	},
-
 	24070202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10489,9 +9564,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       203.75999450683594,
 		HpGrowCurve:  2,
 		Id:           24070202,
-		MonsterName:  "Monster_MachinaIustitia_Nutcracker",
+		MonsterName:  "icewindsuite",
 	},
-
 	24070301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10525,9 +9599,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       203.75999450683594,
 		HpGrowCurve:  2,
 		Id:           24070301,
-		MonsterName:  "Monster_MachinaIustitia_Nutcracker",
+		MonsterName:  "icewindsuite",
 	},
-
 	24080101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10557,9 +9630,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       213.268798828125,
 		HpGrowCurve:  2,
 		Id:           24080101,
-		MonsterName:  "Monster_MachinaIustitia_Gravitas_01",
+		MonsterName:  "experimentalfieldgenerator",
 	},
-
 	24080102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10589,9 +9661,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       213.268798828125,
 		HpGrowCurve:  2,
 		Id:           24080102,
-		MonsterName:  "Monster_MachinaIustitia_Gravitas_02",
+		MonsterName:  "experimentalfieldgenerator",
 	},
-
 	24810101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10608,9 +9679,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        108,
 		HpGrowCurve:   2,
 		Id:            24810101,
-		MonsterName:   "FungusFighterV2_TowerFire_01",
+		MonsterName:   "basicdefensivepyrotower",
 	},
-
 	24810201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10627,9 +9697,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        180,
 		HpGrowCurve:   2,
 		Id:            24810201,
-		MonsterName:   "FungusFighterV2_TowerFire_02",
+		MonsterName:   "advanceddefensivepyrotower",
 	},
-
 	24810301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10646,9 +9715,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        108,
 		HpGrowCurve:   2,
 		Id:            24810301,
-		MonsterName:   "FungusFighterV2_TowerElectric_01",
+		MonsterName:   "basicdefensiveelectrotower",
 	},
-
 	24810401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10665,9 +9733,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        180,
 		HpGrowCurve:   2,
 		Id:            24810401,
-		MonsterName:   "FungusFighterV2_TowerElectric_02",
+		MonsterName:   "advanceddefensiveelectrotower",
 	},
-
 	24810501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10684,9 +9751,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        108,
 		HpGrowCurve:   2,
 		Id:            24810501,
-		MonsterName:   "FungusFighterV2_TowerWater_01",
+		MonsterName:   "basicdefensivehydrotower",
 	},
-
 	24810601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10703,9 +9769,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        180,
 		HpGrowCurve:   2,
 		Id:            24810601,
-		MonsterName:   "FungusFighterV2_TowerWater_02",
+		MonsterName:   "advanceddefensivehydrotower",
 	},
-
 	24810701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10722,9 +9787,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        108,
 		HpGrowCurve:   2,
 		Id:            24810701,
-		MonsterName:   "FungusFighterV2_TowerIce_01",
+		MonsterName:   "basicdefensivecryotower",
 	},
-
 	24810801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10741,9 +9805,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        180,
 		HpGrowCurve:   2,
 		Id:            24810801,
-		MonsterName:   "FungusFighterV2_TowerIce_02",
+		MonsterName:   "advanceddefensivecryotower",
 	},
-
 	24810901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10760,9 +9823,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        108,
 		HpGrowCurve:   2,
 		Id:            24810901,
-		MonsterName:   "FungusFighterV2_TowerWind_01",
+		MonsterName:   "basicdefensiveanemotower",
 	},
-
 	24811001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10779,9 +9841,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        180,
 		HpGrowCurve:   2,
 		Id:            24811001,
-		MonsterName:   "FungusFighterV2_TowerWind_02",
+		MonsterName:   "advanceddefensiveanemotower",
 	},
-
 	24811101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10798,9 +9859,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        108,
 		HpGrowCurve:   2,
 		Id:            24811101,
-		MonsterName:   "FungusFighterV2_TowerPhysics_01",
+		MonsterName:   "defensivephysicaltower",
 	},
-
 	24920101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10817,9 +9877,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            24920101,
-		MonsterName:   "Balloon_SlimeBalloon_01",
+		MonsterName:   "automatonsmallslimeballoon",
 	},
-
 	24920201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10836,9 +9895,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            24920201,
-		MonsterName:   "Balloon_BigSlimeBalloon_01",
+		MonsterName:   "automatonlargeslimeballoon",
 	},
-
 	24920301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10855,28 +9913,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            24920301,
-		MonsterName:   "Balloon_FugusBalloon_01",
+		MonsterName:   "automatonfungusballoon",
 	},
-
-	24990101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        24451.19921875,
-		HpGrowCurve:   1,
-		Id:            24990101,
-		MonsterName:   "Monster_Alternate_01",
-	},
-
 	23010101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10906,9 +9944,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  1,
 		Id:           23010101,
-		MonsterName:  "Skirmisher_Male_Fat_SprayGun_Ice_01",
+		MonsterName:  "fatuiskirmishercryogunnerlegionnaire",
 	},
-
 	23010201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10938,9 +9975,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           23010201,
-		MonsterName:  "Skirmisher_Male_Fat_SprayGun_Water_01",
+		MonsterName:  "fatuiskirmisherhydrogunnerlegionnaire",
 	},
-
 	23010301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -10970,9 +10006,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  1,
 		Id:           23010301,
-		MonsterName:  "Skirmisher_Male_Strong_GreatHammer_Electric_01",
+		MonsterName:  "fatuiskirmisherelectrohammervanguard",
 	},
-
 	23010401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11002,9 +10037,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           23010401,
-		MonsterName:  "Skirmisher_Male_Standard_Staff_Rock_01",
+		MonsterName:  "fatuiskirmishergeochanterbracer",
 	},
-
 	23010501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11034,9 +10068,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           23010501,
-		MonsterName:  "Skirmisher_Male_Strong_Gloves_Wind_01",
+		MonsterName:  "fatuiskirmisheranemoboxervanguard",
 	},
-
 	23010601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11066,9 +10099,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           23010601,
-		MonsterName:  "Skirmisher_Male_Standard_Rifle_Fire_01",
+		MonsterName:  "fatuiskirmisherpyroslingerbracer",
 	},
-
 	23020101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.5,
@@ -11098,9 +10130,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  1,
 		Id:           23020101,
-		MonsterName:  "Fatuus_Fire_01",
+		MonsterName:  "fatuipyroagent",
 	},
-
 	23020102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.5,
@@ -11130,9 +10161,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  1,
 		Id:           23020102,
-		MonsterName:  "Fatuus_Fire_01_AttackEnhance",
+		MonsterName:  "fatuipyroagent",
 	},
-
 	23030101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11162,9 +10192,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  1,
 		Id:           23030101,
-		MonsterName:  "Fatuus_Summoner_01",
+		MonsterName:  "fatuielectrocicinmage",
 	},
-
 	23030102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11194,9 +10223,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  1,
 		Id:           23030102,
-		MonsterName:  "Fatuus_Summoner_01_AttackEnhance",
+		MonsterName:  "fatuielectrocicinmage",
 	},
-
 	23040101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11226,9 +10254,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  1,
 		Id:           23040101,
-		MonsterName:  "Fatuus_Mage_Ice_01",
+		MonsterName:  "fatuicryocicinmage",
 	},
-
 	23040102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11258,9 +10285,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  1,
 		Id:           23040102,
-		MonsterName:  "Fatuus_Mage_Ice_01_AttackEnhance",
+		MonsterName:  "fatuicryocicinmage",
 	},
-
 	23050101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11290,9 +10316,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       81.50399780273438,
 		HpGrowCurve:  2,
 		Id:           23050101,
-		MonsterName:  "Fatuus_Maiden_Water_01",
+		MonsterName:  "mirrormaiden",
 	},
-
 	23060101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11326,9 +10351,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  2,
 		Id:           23060101,
-		MonsterName:  "Fatuus_Escadron_Ice_01",
+		MonsterName:  "frostoperative",
 	},
-
 	23060201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11362,9 +10386,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           23060201,
-		MonsterName:  "Fatuus_Escadron_Wind_01",
+		MonsterName:  "windoperative",
 	},
-
 	23060301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11398,9 +10421,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       896.5440063476562,
 		HpGrowCurve:  2,
 		Id:           23060301,
-		MonsterName:  "Fatuus_Escadron_Ice_02",
+		MonsterName:  "veteranfrostoperative",
 	},
-
 	23060401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11434,9 +10456,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       850.3583984375,
 		HpGrowCurve:  2,
 		Id:           23060401,
-		MonsterName:  "Fatuus_Escadron_Wind_02",
+		MonsterName:  "veteranwindoperative",
 	},
-
 	23060302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11470,9 +10491,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       179.30880737304688,
 		HpGrowCurve:  2,
 		Id:           23060302,
-		MonsterName:  "Fatuus_Escadron_Ice_02",
+		MonsterName:  "veteranfrostoperative",
 	},
-
 	23060402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11506,9 +10526,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       170.07168579101562,
 		HpGrowCurve:  2,
 		Id:           23060402,
-		MonsterName:  "Fatuus_Escadron_Wind_02",
+		MonsterName:  "veteranwindoperative",
 	},
-
 	25010101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11538,9 +10557,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  1,
 		Id:           25010101,
-		MonsterName:  "Thoarder_Male_NoWeapon_01",
+		MonsterName:  "treasurehoardersliuliu",
 	},
-
 	25010102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11570,9 +10588,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  1,
 		Id:           25010102,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_01_02",
+		MonsterName:  "treasurehoardersliuliu",
 	},
-
 	25010103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11602,9 +10619,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  1,
 		Id:           25010103,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_01_03",
+		MonsterName:  "treasurehoardersliuliu",
 	},
-
 	25010104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11634,9 +10650,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  1,
 		Id:           25010104,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_01_04",
+		MonsterName:  "treasurehoardersliuliu",
 	},
-
 	25010105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11666,9 +10681,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           25010105,
-		MonsterName:  "Thoarder_Male_Slippie_01",
+		MonsterName:  "treasurehoardersliuliu",
 	},
-
 	25010106: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11698,9 +10712,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           25010106,
-		MonsterName:  "Thoarder_Male_Slippie_01",
+		MonsterName:  "treasurehoardersliuliu",
 	},
-
 	25010201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11730,9 +10743,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25010201,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02",
+		MonsterName:  "treasurehoardersscout",
 	},
-
 	25010203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11762,9 +10774,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25010203,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_03",
+		MonsterName:  "treasurehoardersscout",
 	},
-
 	25010204: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11794,9 +10805,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25010204,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_04",
+		MonsterName:  "treasurehoardersscout",
 	},
-
 	25010205: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11826,9 +10836,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25010205,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_05",
+		MonsterName:  "treasurehoardersscout",
 	},
-
 	25010206: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11858,9 +10867,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25010206,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_06",
+		MonsterName:  "treasurehoardersscout",
 	},
-
 	25010207: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11890,9 +10898,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25010207,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_07",
+		MonsterName:  "treasurehoardersscout",
 	},
-
 	25010208: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -11922,553 +10929,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25010208,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_08",
+		MonsterName:  "treasurehoardersscout",
 	},
-
-	25010209: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010209,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_09",
-	},
-
-	25010210: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010210,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_10",
-	},
-
-	25010211: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010211,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_11",
-	},
-
-	25010212: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010212,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_12",
-	},
-
-	25010213: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010213,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02_13",
-	},
-
-	25010214: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010214,
-		MonsterName:  "NPC_Quest_Male_Standard_Pabag_30363",
-	},
-
-	25010215: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010215,
-		MonsterName:  "NPC_Quest_Male_Standard_Papak_30364",
-	},
-
-	25010216: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010216,
-		MonsterName:  "NPC_Quest_Male_Standard_MafiaA_13441",
-	},
-
-	25010217: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010217,
-		MonsterName:  "NPC_Quest_Male_Standard_MafiaB_13442",
-	},
-
-	25010218: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010218,
-		MonsterName:  "NPC_Quest_Male_Standard_MafiaC_13457",
-	},
-
-	25010219: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010219,
-		MonsterName:  "NPC_Quest_Male_Standard_MafiaD_13393",
-	},
-
-	25010220: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010220,
-		MonsterName:  "NPC_Quest_Male_Standard_Thug01_13332",
-	},
-
-	25010221: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010221,
-		MonsterName:  "NPC_Quest_Male_Standard_Thug02_13333",
-	},
-
-	25010222: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010222,
-		MonsterName:  "NPC_Quest_Male_Standard_Thug03_13334",
-	},
-
-	25010223: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010223,
-		MonsterName:  "NPC_Quest_Male_Standard_AtmosphereMale_13619",
-	},
-
-	25010224: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010224,
-		MonsterName:  "NPC_Quest_Male_Standard_AtmosphereMale_13620",
-	},
-
-	25010225: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010225,
-		MonsterName:  "NPC_Quest_Male_Standard_Audience2_13310",
-	},
-
 	25010226: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -12485,137 +10947,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        16.300800323486328,
 		HpGrowCurve:   1,
 		Id:            25010226,
-		MonsterName:   "Thoarder_Male_Standard_NoWeapon_02",
+		MonsterName:   "treasurehoardersscout",
 	},
-
-	25010227: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010227,
-		MonsterName:  "NPC_Quest_Male_Standard_Audience4_13374",
-	},
-
-	25010228: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010228,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13776",
-	},
-
-	25010229: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010229,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13710",
-	},
-
-	25010230: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010230,
-		MonsterName:  "NPC_Quest_Male_Standard_Thug_21412",
-	},
-
 	25010301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -12645,9 +10978,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25010301,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Fire_01",
+		MonsterName:  "treasurehoarderspyropotioneer",
 	},
-
 	25010302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -12677,73 +11009,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25010302,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Fire_01",
+		MonsterName:  "treasurehoarderspyropotioneer",
 	},
-
-	25010303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010303,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13715",
-	},
-
-	25010304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010304,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13777",
-	},
-
 	25010401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -12773,137 +11040,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25010401,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Water_01",
+		MonsterName:  "treasurehoardershydropotioneer",
 	},
-
-	25010402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010402,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Water_01_02",
-	},
-
-	25010403: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010403,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Water_01_02",
-	},
-
-	25010404: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010404,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13713",
-	},
-
-	25010405: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010405,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13872",
-	},
-
 	25010501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -12933,73 +11071,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25010501,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Electric_01",
+		MonsterName:  "treasurehoarderselectropotioneer",
 	},
-
-	25010502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010502,
-		MonsterName:  "NPC_Quest_Male_Standard_Colter_13709",
-	},
-
-	25010503: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010503,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13711",
-	},
-
 	25010601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13029,9 +11102,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25010601,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Ice_01",
+		MonsterName:  "treasurehoarderscryopotioneer",
 	},
-
 	25010602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13061,73 +11133,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25010602,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Ice_02",
+		MonsterName:  "treasurehoarderscryopotioneer",
 	},
-
-	25010603: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010603,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Ice_03",
-	},
-
-	25010604: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010604,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13714",
-	},
-
 	25010701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13161,81 +11168,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           25010701,
-		MonsterName:  "Thoarder_Male_Fat_NoWeapon_01",
+		MonsterName:  "treasurehoardershandyman",
 	},
-
-	25010702: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25010702,
-		MonsterName:  "NPC_Quest_Male_Fat_Oppo_13873",
-	},
-
-	25010801: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       828.6240234375,
-		HpGrowCurve:  2,
-		Id:           25010801,
-		MonsterName:  "NPC_Quest_Male_Standard_Rocky_001",
-	},
-
 	25020101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13265,9 +11199,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           25020101,
-		MonsterName:  "Thoarder_Male_Crossbow_01",
+		MonsterName:  "treasurehoardersraptor",
 	},
-
 	25020102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13297,105 +11230,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           25020102,
-		MonsterName:  "Thoarder_Male_Crossbow_01_02",
+		MonsterName:  "treasurehoardersraptor",
 	},
-
-	25020103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25020103,
-		MonsterName:  "NPC_Quest_Male_Standard_Virgil_21027",
-	},
-
-	25020104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25020104,
-		MonsterName:  "NPC_Quest_Male_Standard_Truand_13335",
-	},
-
-	25020105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25020105,
-		MonsterName:  "Thoarder_Male_Crossbow_01_05",
-	},
-
 	25020201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13425,9 +11261,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25020201,
-		MonsterName:  "Thoarder_Male_Standard_Crossbow_02",
+		MonsterName:  "treasurehoardersmarksman",
 	},
-
 	25020204: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13457,9 +11292,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25020204,
-		MonsterName:  "Thoarder_Male_Standard_Crossbow_02_03",
+		MonsterName:  "treasurehoardersmarksman",
 	},
-
 	25020205: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13489,201 +11323,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  1,
 		Id:           25020205,
-		MonsterName:  "Thoarder_Male_Standard_Crossbow_02_04",
+		MonsterName:  "treasurehoardersmarksman",
 	},
-
-	25020206: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25020206,
-		MonsterName:  "Thoarder_Male_Standard_Crossbow_02_05",
-	},
-
-	25020207: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25020207,
-		MonsterName:  "Thoarder_Male_Standard_Crossbow_02_06",
-	},
-
-	25020208: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25020208,
-		MonsterName:  "Thoarder_Male_Standard_Crossbow_02_08",
-	},
-
-	25020209: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25020209,
-		MonsterName:  "Thoarder_Male_Standard_Crossbow_02_08",
-	},
-
-	25020210: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25020210,
-		MonsterName:  "NPC_Quest_Male_Standard_Oppo_13773",
-	},
-
-	25020211: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25020211,
-		MonsterName:  "NPC_Quest_Male_Standard_Walker_21363",
-	},
-
 	25030101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13713,9 +11354,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           25030101,
-		MonsterName:  "Thoarder_Male_Shovel_01",
+		MonsterName:  "treasurehoarderscarmen",
 	},
-
 	25030102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13745,9 +11385,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  2,
 		Id:           25030102,
-		MonsterName:  "Thoarder_Male_Fat_Shovel_01",
+		MonsterName:  "treasurehoarderscarmen",
 	},
-
 	25030103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13777,9 +11416,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  2,
 		Id:           25030103,
-		MonsterName:  "Thoarder_Male_Fat_Shovel_01",
+		MonsterName:  "treasurehoarderscarmen",
 	},
-
 	25030201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13813,45 +11451,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           25030201,
-		MonsterName:  "Thoarder_Male_Fat_Shovel_03",
+		MonsterName:  "treasurehoardersgravedigger",
 	},
-
-	25030202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25030202,
-		MonsterName:  "NPC_Quest_Male_Fat_Oppo_13775",
-	},
-
 	25030301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13885,81 +11486,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           25030301,
-		MonsterName:  "Thoarder_Male_Fat_Shovel_02",
+		MonsterName:  "treasurehoardersseaman",
 	},
-
-	25030302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25030302,
-		MonsterName:  "NPC_Quest_Male_Fat_Oppo_13774",
-	},
-
-	25030303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25030303,
-		MonsterName:  "NPC_Quest_Male_Fat_Oppo_13712",
-	},
-
 	25040101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -13993,9 +11521,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  1,
 		Id:           25040101,
-		MonsterName:  "Thoarder_Female_Hatchet_01",
+		MonsterName:  "treasurehoardersboss",
 	},
-
 	25040102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14025,9 +11552,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           25040102,
-		MonsterName:  "Thoarder_Female_Hatchet_02",
+		MonsterName:  "treasurehoardersboss",
 	},
-
 	25040103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14057,41 +11583,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           25040103,
-		MonsterName:  "Thoarder_Female_Hatchet_02",
+		MonsterName:  "treasurehoardersboss",
 	},
-
-	25040104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25040104,
-		MonsterName:  "Thoarder_Female_Hatchet_03",
-	},
-
 	25040105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14121,41 +11614,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           25040105,
-		MonsterName:  "Thoarder_Female_Hatchet_04",
+		MonsterName:  "treasurehoardersboss",
 	},
-
-	25040106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010020,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       95.08799743652344,
-		HpGrowCurve:  2,
-		Id:           25040106,
-		MonsterName:  "NPC_Quest_Female_Standard_TieDouer_21297",
-	},
-
 	25050101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14185,9 +11645,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25050101,
-		MonsterName:  "Millelith_Male_01",
+		MonsterName:  "millelithsoldier",
 	},
-
 	25050201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14221,9 +11680,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  1,
 		Id:           25050201,
-		MonsterName:  "Millelith_Male_02",
+		MonsterName:  "millelithsergeant",
 	},
-
 	25050301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14249,9 +11707,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25050301,
-		MonsterName:  "Aahigaru_Male_01",
+		MonsterName:  "shogunateinfantry",
 	},
-
 	25050401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14281,9 +11738,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  1,
 		Id:           25050401,
-		MonsterName:  "AahigaruTaisho_Male_01",
+		MonsterName:  "shogunateinfantrycaptain",
 	},
-
 	25050402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14313,9 +11769,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       32.601600646972656,
 		HpGrowCurve:  1,
 		Id:           25050402,
-		MonsterName:  "AahigaruTaisho_Male_01_02",
+		MonsterName:  "shogunateinfantrycaptain",
 	},
-
 	25050501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14341,9 +11796,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25050501,
-		MonsterName:  "Aahigaru_Male_02",
+		MonsterName:  "sangonomiyacohort",
 	},
-
 	25050502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14369,9 +11823,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  1,
 		Id:           25050502,
-		MonsterName:  "Aahigaru_Male_02_02",
+		MonsterName:  "sangonomiyacohort",
 	},
-
 	25050503: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14388,121 +11841,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        107.6500015258789,
 		HpGrowCurve:   2,
 		Id:            25050503,
-		MonsterName:   "Aahigaru_Male_03",
+		MonsterName:   "sangonomiyacohort",
 	},
-
-	25050601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25050601,
-		MonsterName:  "NPC_Fontaine_Male_Standard_Goncourt_5210",
-	},
-
-	25050602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25050602,
-		MonsterName:  "NPC_Fontaine_Male_Standard_Grainville_5236",
-	},
-
-	25050603: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25050603,
-		MonsterName:  "NPC_Quest_Male_Standard_Noailles_21072",
-	},
-
-	25050604: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25050604,
-		MonsterName:  "NPC_Fontaine_Male_Standard_Grainville_5236",
-	},
-
 	25060101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14536,9 +11876,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           25060101,
-		MonsterName:  "Thoarder_MuscleMan_NoWeapon_01",
+		MonsterName:  "treasurehoarderspugilist",
 	},
-
 	25060102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -14572,424 +11911,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           25060102,
-		MonsterName:  "Thoarder_MuscleMan_NoWeapon_01_02",
+		MonsterName:  "treasurehoarderspugilist",
 	},
-
-	25060103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060103,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Dedebaba_30362",
-	},
-
-	25060104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        135.83999633789062,
-		HpGrowCurve:   2,
-		Id:            25060104,
-		MonsterName:   "NPC_Fontaine_MuscleMan_Standard_Roussimoff_5262",
-	},
-
-	25060105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060105,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_AtmosphereMuscleMan_13621",
-	},
-
-	25060106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060106,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_AtmosphereMuscleMan_13622",
-	},
-
-	25060107: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060107,
-		MonsterName:  "Thoarder_MuscleMan_NoWeapon_01_07",
-	},
-
-	25060108: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060108,
-		MonsterName:  "Thoarder_MuscleMan_NoWeapon_01_08",
-	},
-
-	25060109: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060109,
-		MonsterName:  "Thoarder_MuscleMan_NoWeapon_01_09",
-	},
-
-	25060110: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060110,
-		MonsterName:  "Thoarder_MuscleMan_NoWeapon_01_08",
-	},
-
-	25060111: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060111,
-		MonsterName:  "Thoarder_MuscleMan_NoWeapon_01_09",
-	},
-
-	25060112: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060112,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Oppo_13874",
-	},
-
-	25060113: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060113,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Johnnie_21299",
-	},
-
-	25060201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       869.3759765625,
-		HpGrowCurve:  2,
-		Id:           25060201,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Zeppeli_001",
-	},
-
 	25070101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15023,153 +11946,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  1,
 		Id:           25070101,
-		MonsterName:  "Thoarder_MuscleMan_Hammer_01",
+		MonsterName:  "treasurehoarderscrusher",
 	},
-
-	25070102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25070102,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Oppo_13880",
-	},
-
-	25070103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25070103,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Oppo_13881",
-	},
-
-	25070104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25070104,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Oppo_13882",
-	},
-
-	25070105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       81.50399780273438,
-		HpGrowCurve:  2,
-		Id:           25070105,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_TieMing_21298",
-	},
-
 	25070201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15199,9 +11977,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  2,
 		Id:           25070201,
-		MonsterName:  "Thoarder_MuscleMan_Hammer_02",
+		MonsterName:  "treasurehoarderswallenstein",
 	},
-
 	25070202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15231,9 +12008,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  2,
 		Id:           25070202,
-		MonsterName:  "Thoarder_MuscleMan_Hammer_02",
+		MonsterName:  "treasurehoarderswallenstein",
 	},
-
 	25080101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15259,9 +12035,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           25080101,
-		MonsterName:  "Samurai_Ronin_01",
+		MonsterName:  "nobushijintouban",
 	},
-
 	25080201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15287,9 +12062,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           25080201,
-		MonsterName:  "Samurai_Ronin_02",
+		MonsterName:  "nobushihitsukeban",
 	},
-
 	25080202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15306,9 +12080,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        76.07039642333984,
 		HpGrowCurve:   2,
 		Id:            25080202,
-		MonsterName:   "Samurai_Ronin_04",
+		MonsterName:   "nobushihitsukeban",
 	},
-
 	25080301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15334,9 +12107,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           25080301,
-		MonsterName:  "Samurai_Ronin_03",
+		MonsterName:  "nobushikikouban",
 	},
-
 	25080401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15370,9 +12142,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       48.902400970458984,
 		HpGrowCurve:  2,
 		Id:           25080401,
-		MonsterName:  "Samurai_Hatamoto_01",
+		MonsterName:  "yorikisamurai",
 	},
-
 	25080402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15389,9 +12160,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        86.9375991821289,
 		HpGrowCurve:   2,
 		Id:            25080402,
-		MonsterName:   "Samurai_Hatamoto_02",
+		MonsterName:   "yorikisamurai",
 	},
-
 	25080403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15408,9 +12178,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        86.9375991821289,
 		HpGrowCurve:   2,
 		Id:            25080403,
-		MonsterName:   "Samurai_Hatamoto_03",
+		MonsterName:   "yorikisamurai",
 	},
-
 	25080404: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15427,9 +12196,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        86.9375991821289,
 		HpGrowCurve:   2,
 		Id:            25080404,
-		MonsterName:   "Samurai_Hatamoto_03",
+		MonsterName:   "yorikisamurai",
 	},
-
 	25080405: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15446,9 +12214,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        123.0199966430664,
 		HpGrowCurve:   2,
 		Id:            25080405,
-		MonsterName:   "Samurai_Hatamoto_04",
+		MonsterName:   "yorikisamurai",
 	},
-
 	25090101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15482,9 +12249,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       271.67999267578125,
 		HpGrowCurve:  1,
 		Id:           25090101,
-		MonsterName:  "Samurai_Ningyo_01",
+		MonsterName:  "maguukenki",
 	},
-
 	25090102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15518,9 +12284,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  1,
 		Id:           25090102,
-		MonsterName:  "Samurai_Ningyo_02",
+		MonsterName:  "maguukenki",
 	},
-
 	25090103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15554,9 +12319,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  1,
 		Id:           25090103,
-		MonsterName:  "Samurai_Ningyo_03",
+		MonsterName:  "maguukenki",
 	},
-
 	25090104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15590,9 +12354,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  1,
 		Id:           25090104,
-		MonsterName:  "Samurai_Ningyo_04",
+		MonsterName:  "maguukenki",
 	},
-
 	25090201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15626,9 +12389,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  1,
 		Id:           25090201,
-		MonsterName:  "Samurai_Ningyo_02",
+		MonsterName:  "maguukenkilonegale",
 	},
-
 	25090301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15662,9 +12424,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  1,
 		Id:           25090301,
-		MonsterName:  "Samurai_Ningyo_03",
+		MonsterName:  "maguukenkigallopingfrost",
 	},
-
 	25090401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15698,9 +12459,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       217.343994140625,
 		HpGrowCurve:  1,
 		Id:           25090401,
-		MonsterName:  "Samurai_Ningyo_04",
+		MonsterName:  "maguukenkimaskofterror",
 	},
-
 	25090105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15717,9 +12477,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        159.16200256347656,
 		HpGrowCurve:   2,
 		Id:            25090105,
-		MonsterName:   "Samurai_Ningyo_05",
+		MonsterName:   "maguukenki",
 	},
-
 	25090106: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15736,9 +12495,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        1097.375,
 		HpGrowCurve:   1,
 		Id:            25090106,
-		MonsterName:   "Samurai_Ningyo_FunFight_01",
+		MonsterName:   "maguukenki",
 	},
-
 	25100202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15755,9 +12513,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        137.2480010986328,
 		HpGrowCurve:   2,
 		Id:            25100202,
-		MonsterName:   "Samurai_Kairagi_07",
+		MonsterName:   "kairagifierymight",
 	},
-
 	25100101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15791,9 +12548,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           25100101,
-		MonsterName:  "Samurai_Kairagi_01",
+		MonsterName:  "kairagidancingthunder",
 	},
-
 	25100301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15827,9 +12583,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           25100301,
-		MonsterName:  "Samurai_Kairagi_03",
+		MonsterName:  "ochimushaensorcelledthunder",
 	},
-
 	25100201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15863,9 +12618,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           25100201,
-		MonsterName:  "Samurai_Kairagi_02",
+		MonsterName:  "kairagifierymight",
 	},
-
 	25100401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15899,9 +12653,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           25100401,
-		MonsterName:  "Samurai_Kairagi_04",
+		MonsterName:  "ochimushacankeredflame",
 	},
-
 	25100102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15918,9 +12671,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        103.2384033203125,
 		HpGrowCurve:   2,
 		Id:            25100102,
-		MonsterName:   "Samurai_Kairagi_05",
+		MonsterName:   "kairagidancingthunder",
 	},
-
 	25100302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15954,9 +12706,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       65.20320129394531,
 		HpGrowCurve:  2,
 		Id:           25100302,
-		MonsterName:  "Samurai_Kairagi_06",
+		MonsterName:  "ochimushaensorcelledthunder",
 	},
-
 	25110101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -15982,9 +12733,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       20.375999450683594,
 		HpGrowCurve:  2,
 		Id:           25110101,
-		MonsterName:  "Gator_Eremite_Rock_01",
+		MonsterName:  "spiritofomenstonedrake",
 	},
-
 	25110102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16010,9 +12760,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       20.375999450683594,
 		HpGrowCurve:  2,
 		Id:           25110102,
-		MonsterName:  "Gator_Eremite_Rock_02",
+		MonsterName:  "spiritofomenstonedrake",
 	},
-
 	25110201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16038,9 +12787,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       17.930879592895508,
 		HpGrowCurve:  2,
 		Id:           25110201,
-		MonsterName:  "Vulture_Eremite_Wind_01",
+		MonsterName:  "spiritofomenwindglede",
 	},
-
 	25110202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16066,9 +12814,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       17.930879592895508,
 		HpGrowCurve:  2,
 		Id:           25110202,
-		MonsterName:  "Vulture_Eremite_Wind_02",
+		MonsterName:  "spiritofomenwindglede",
 	},
-
 	25110301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     -0.5,
@@ -16094,9 +12841,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       17.930879592895508,
 		HpGrowCurve:  2,
 		Id:           25110301,
-		MonsterName:  "Scorpion_Eremite_Fire_01",
+		MonsterName:  "spiritofomenpyroscorpion",
 	},
-
 	25110401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16122,9 +12868,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       20.375999450683594,
 		HpGrowCurve:  2,
 		Id:           25110401,
-		MonsterName:  "Chrysopelea_Eremite_Grass_01",
+		MonsterName:  "spiritofomendendrospiritserpent",
 	},
-
 	25210101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16150,9 +12895,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210101,
-		MonsterName:  "Eremite_Female_Hatchet_01",
+		MonsterName:  "eremiteaxevanguard",
 	},
-
 	25210102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16178,9 +12922,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210102,
-		MonsterName:  "Eremite_Female_Hatchet_02",
+		MonsterName:  "eremiteaxevanguard",
 	},
-
 	25210103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16206,93 +12949,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210103,
-		MonsterName:  "Eremite_Female_Hatchet_03",
+		MonsterName:  "eremiteaxevanguard",
 	},
-
-	25210104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210104,
-		MonsterName:  "EremiteElite_Female_Hatchet_01",
-	},
-
-	25210105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210105,
-		MonsterName:  "EremiteElite_Female_Hatchet_02",
-	},
-
-	25210106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210106,
-		MonsterName:  "EremiteElite_Female_Hatchet_03",
-	},
-
 	25210107: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16318,65 +12976,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210107,
-		MonsterName:  "Eremite_Female_Hatchet_04",
+		MonsterName:  "eremiteaxevanguard",
 	},
-
-	25210108: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210108,
-		MonsterName:  "Eremite_Female_Hatchet_05",
-	},
-
-	25210109: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210109,
-		MonsterName:  "NPC_Quest_Female_Standard_Nailan_20933",
-	},
-
 	25210201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16402,9 +13003,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  2,
 		Id:           25210201,
-		MonsterName:  "Eremite_Male_Standard_Crossbow_01",
+		MonsterName:  "eremitecrossbow",
 	},
-
 	25210202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16430,9 +13030,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  2,
 		Id:           25210202,
-		MonsterName:  "Eremite_Male_Standard_Crossbow_02",
+		MonsterName:  "eremitecrossbow",
 	},
-
 	25210203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16458,93 +13057,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  2,
 		Id:           25210203,
-		MonsterName:  "Eremite_Male_Standard_Crossbow_03",
+		MonsterName:  "eremitecrossbow",
 	},
-
-	25210204: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210204,
-		MonsterName:  "EremiteElite_Male_Standard_Crossbow_01",
-	},
-
-	25210205: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210205,
-		MonsterName:  "EremiteElite_Male_Standard_Crossbow_02",
-	},
-
-	25210206: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210206,
-		MonsterName:  "EremiteElite_Male_Standard_Crossbow_03",
-	},
-
 	25210207: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16570,177 +13084,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  2,
 		Id:           25210207,
-		MonsterName:  "Eremite_Male_Standard_Crossbow_04",
+		MonsterName:  "eremitecrossbow",
 	},
-
-	25210208: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210208,
-		MonsterName:  "NPC_Quest_Male_Standard_Eremite_01",
-	},
-
-	25210209: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210209,
-		MonsterName:  "NPC_Quest_Male_Standard_Eremite_02",
-	},
-
-	25210210: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210210,
-		MonsterName:  "NPC_Sumeru_Male_Standard_Aderfi_4293",
-	},
-
-	25210211: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210211,
-		MonsterName:  "NPC_Quest_Male_Standard_Assassin02_20940",
-	},
-
-	25210212: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210212,
-		MonsterName:  "NPC_Quest_Male_Standard_Idrisi_13065",
-	},
-
-	25210213: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210213,
-		MonsterName:  "NPC_Quest_Male_Standard_Nasejuna_4283",
-	},
-
 	25210301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16766,9 +13111,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  2,
 		Id:           25210301,
-		MonsterName:  "Eremite_Male_Standard_Pole_01",
+		MonsterName:  "eremiteravenbeakhalberdier",
 	},
-
 	25210302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16794,9 +13138,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  2,
 		Id:           25210302,
-		MonsterName:  "Eremite_Male_Standard_Pole_02",
+		MonsterName:  "eremiteravenbeakhalberdier",
 	},
-
 	25210303: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -16822,205 +13165,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       16.300800323486328,
 		HpGrowCurve:  2,
 		Id:           25210303,
-		MonsterName:  "Eremite_Male_Standard_Pole_03",
+		MonsterName:  "eremiteravenbeakhalberdier",
 	},
-
-	25210304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210304,
-		MonsterName:  "EremiteElite_Male_Standard_Pole_01",
-	},
-
-	25210305: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210305,
-		MonsterName:  "EremiteElite_Male_Standard_Pole_02",
-	},
-
-	25210306: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210306,
-		MonsterName:  "EremiteElite_Male_Standard_Pole_03",
-	},
-
-	25210307: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210307,
-		MonsterName:  "Eremite_Male_Standard_Pole_01",
-	},
-
-	25210308: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210308,
-		MonsterName:  "NPC_Sumeru_Male_Standard_Warden03_4298",
-	},
-
-	25210309: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210309,
-		MonsterName:  "NPC_Sumeru_Male_Standard_Warden04_4299",
-	},
-
-	25210310: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210310,
-		MonsterName:  "NPC_Quest_Male_Standard_Eremite_13190",
-	},
-
 	25210401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17046,9 +13192,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210401,
-		MonsterName:  "Eremite_MuscleMan_Gloves_01",
+		MonsterName:  "eremitelinebreaker",
 	},
-
 	25210402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17074,9 +13219,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210402,
-		MonsterName:  "Eremite_MuscleMan_Gloves_02",
+		MonsterName:  "eremitelinebreaker",
 	},
-
 	25210403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17102,177 +13246,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210403,
-		MonsterName:  "Eremite_MuscleMan_Gloves_03",
+		MonsterName:  "eremitelinebreaker",
 	},
-
-	25210404: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210404,
-		MonsterName:  "EremiteElite_MuscleMan_Gloves_01",
-	},
-
-	25210405: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210405,
-		MonsterName:  "EremiteElite_MuscleMan_Gloves_02",
-	},
-
-	25210406: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210406,
-		MonsterName:  "EremiteElite_MuscleMan_Gloves_03",
-	},
-
-	25210407: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210407,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Eremite_01",
-	},
-
-	25210408: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210408,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Assassin01_20913",
-	},
-
-	25210409: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210409,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Tikriti_13108",
-	},
-
 	25210501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17298,9 +13273,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210501,
-		MonsterName:  "Eremite_MuscleMan_Simitar_01",
+		MonsterName:  "eremitesworddancer",
 	},
-
 	25210502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17326,9 +13300,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210502,
-		MonsterName:  "Eremite_MuscleMan_Simitar_02",
+		MonsterName:  "eremitesworddancer",
 	},
-
 	25210503: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17354,261 +13327,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           25210503,
-		MonsterName:  "Eremite_MuscleMan_Simitar_03",
+		MonsterName:  "eremitesworddancer",
 	},
-
-	25210504: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210504,
-		MonsterName:  "EremiteElite_MuscleMan_Simitar_01",
-	},
-
-	25210505: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210505,
-		MonsterName:  "EremiteElite_MuscleMan_Simitar_02",
-	},
-
-	25210506: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210506,
-		MonsterName:  "EremiteElite_MuscleMan_Simitar_03",
-	},
-
-	25210507: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210507,
-		MonsterName:  "Eremite_MuscleMan_Simitar_04",
-	},
-
-	25210508: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210508,
-		MonsterName:  "NPC_Sumeru_MuscleMan_Standard_Yuften_4294",
-	},
-
-	25210509: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210509,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Bashar_13107",
-	},
-
-	25210510: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210510,
-		MonsterName:  "NPC_Quest_MuscleMan_Standard_Pyrrho_20927",
-	},
-
-	25210601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210601,
-		MonsterName:  "Eremite_Male_Standard_NoWeapon_01",
-	},
-
-	25210602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210602,
-		MonsterName:  "Eremite_Male_Standard_NoWeapon_02",
-	},
-
 	25310101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17642,41 +13362,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       48.902400970458984,
 		HpGrowCurve:  2,
 		Id:           25310101,
-		MonsterName:  "Eremite_Female_Slim_PushDagger_01",
+		MonsterName:  "eremitedesertclearwater",
 	},
-
-	25310102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010022,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       48.902400970458984,
-		HpGrowCurve:  2,
-		Id:           25310102,
-		MonsterName:  "Eremite_Female_Slim_PushDagger_02",
-	},
-
 	25310201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17710,45 +13397,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       48.902400970458984,
 		HpGrowCurve:  2,
 		Id:           25310201,
-		MonsterName:  "Eremite_Male_Standard_Glaive_01",
+		MonsterName:  "eremitesunfrost",
 	},
-
-	25310202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010026,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       48.902400970458984,
-		HpGrowCurve:  2,
-		Id:           25310202,
-		MonsterName:  "Eremite_Male_Standard_Glaive_02",
-	},
-
 	25310301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17782,9 +13432,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           25310301,
-		MonsterName:  "Eremite_Male_Standard_Polearm_01",
+		MonsterName:  "eremitedaythunder",
 	},
-
 	25410101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17818,64 +13467,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  2,
 		Id:           25410101,
-		MonsterName:  "Eremite_Male_Strong_Katar_01",
+		MonsterName:  "eremitestoneenchanter",
 	},
-
-	25410102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        138.39999389648438,
-		HpGrowCurve:   2,
-		Id:            25410102,
-		MonsterName:   "Eremite_Male_Strong_Katar_02",
-	},
-
-	25410103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       67.91999816894531,
-		HpGrowCurve:  2,
-		Id:           25410103,
-		MonsterName:  "Eremite_Male_Strong_Katar_03",
-	},
-
 	25410201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17909,45 +13502,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       59.76959991455078,
 		HpGrowCurve:  2,
 		Id:           25410201,
-		MonsterName:  "Eremite_Female_Standard_Longbow_01",
+		MonsterName:  "eremitegalehunter",
 	},
-
-	25410202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       59.76959991455078,
-		HpGrowCurve:  2,
-		Id:           25410202,
-		MonsterName:  "Eremite_Female_Standard_Longbow_02",
-	},
-
 	25410301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -17981,65 +13537,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       59.76959991455078,
 		HpGrowCurve:  2,
 		Id:           25410301,
-		MonsterName:  "Eremite_Female_Standard_Oracle_01",
+		MonsterName:  "eremitescorchingloremaster",
 	},
-
-	25410302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010011,
-				HpPercent: 0.75,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       59.76959991455078,
-		HpGrowCurve:  2,
-		Id:           25410302,
-		MonsterName:  "Eremite_Female_Standard_Oracle_02",
-	},
-
-	25410303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010011,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       59.76959991455078,
-		HpGrowCurve:  2,
-		Id:           25410303,
-		MonsterName:  "Eremite_Female_Standard_Oracle_03",
-	},
-
 	25410401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18073,9 +13572,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       67.91999816894531,
 		HpGrowCurve:  2,
 		Id:           25410401,
-		MonsterName:  "Eremite_Female_Standard_Dancer_01",
+		MonsterName:  "eremitefloralringdancer",
 	},
-
 	26010101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18109,9 +13607,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           26010101,
-		MonsterName:  "Mimik_Ice",
+		MonsterName:  "cryowhopperflower",
 	},
-
 	26010102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18145,9 +13642,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           26010102,
-		MonsterName:  "Mimik_Ice_Activity",
+		MonsterName:  "cryowhopperflower",
 	},
-
 	26010103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18181,9 +13677,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       149.4239959716797,
 		HpGrowCurve:  2,
 		Id:           26010103,
-		MonsterName:  "Mimik_Fel",
+		MonsterName:  "cryowhopperflower",
 	},
-
 	26010104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18217,9 +13712,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       122.25599670410156,
 		HpGrowCurve:  2,
 		Id:           26010104,
-		MonsterName:  "Mimik_Fel_02",
+		MonsterName:  "cryowhopperflower",
 	},
-
 	26010201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.5,
@@ -18253,9 +13747,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           26010201,
-		MonsterName:  "Mimik_Fire",
+		MonsterName:  "pyrowhopperflower",
 	},
-
 	26010301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18289,9 +13782,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           26010301,
-		MonsterName:  "Mimik_Electric",
+		MonsterName:  "electrowhopperflower",
 	},
-
 	26020101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18325,9 +13817,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           26020101,
-		MonsterName:  "Regisvine_Ice",
+		MonsterName:  "cryoregisvine",
 	},
-
 	26020102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18361,9 +13852,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       149.4239959716797,
 		HpGrowCurve:  1,
 		Id:           26020102,
-		MonsterName:  "Regisvine_Ice_Activity",
+		MonsterName:  "cryoregisvine",
 	},
-
 	26020201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.699999988079071,
@@ -18397,9 +13887,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           26020201,
-		MonsterName:  "Regisvine_Fire",
+		MonsterName:  "pyroregisvine",
 	},
-
 	26020301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18433,9 +13922,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  1,
 		Id:           26020301,
-		MonsterName:  "Regisvine_Electric",
+		MonsterName:  "electroregisvine",
 	},
-
 	26030101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18465,9 +13953,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       40.75199890136719,
 		HpGrowCurve:  1,
 		Id:           26030101,
-		MonsterName:  "Wyrm_Rock",
+		MonsterName:  "geovishaphatchling",
 	},
-
 	26040101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18497,9 +13984,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           26040101,
-		MonsterName:  "Drake_Rock_01_Water",
+		MonsterName:  "geovishap",
 	},
-
 	26040102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18529,9 +14015,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           26040102,
-		MonsterName:  "Drake_Rock_01_Fire",
+		MonsterName:  "geovishap",
 	},
-
 	26040103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18561,9 +14046,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           26040103,
-		MonsterName:  "Drake_Rock_01_Ice",
+		MonsterName:  "geovishap",
 	},
-
 	26040104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18593,9 +14077,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  1,
 		Id:           26040104,
-		MonsterName:  "Drake_Rock_01_Elec",
+		MonsterName:  "geovishap",
 	},
-
 	26040201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.699999988079071,
@@ -18629,9 +14112,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       649.315185546875,
 		HpGrowCurve:  2,
 		Id:           26040201,
-		MonsterName:  "Drake_Rock_Fire_01",
+		MonsterName:  "rulerofthechizhangmountainsyiji",
 	},
-
 	26040202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.699999988079071,
@@ -18665,9 +14147,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       194.7945556640625,
 		HpGrowCurve:  2,
 		Id:           26040202,
-		MonsterName:  "Drake_Rock_Fire_02",
+		MonsterName:  "rulerofthechizhangmountainsyiji",
 	},
-
 	26040301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18701,9 +14182,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       649.315185546875,
 		HpGrowCurve:  2,
 		Id:           26040301,
-		MonsterName:  "Drake_Rock_Ice_01",
+		MonsterName:  "rulerofthechizhangmountainstianyu",
 	},
-
 	26040302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18737,9 +14217,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       194.7945556640625,
 		HpGrowCurve:  2,
 		Id:           26040302,
-		MonsterName:  "Drake_Rock_Ice_02",
+		MonsterName:  "rulerofthechizhangmountainstianyu",
 	},
-
 	26050101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18769,9 +14248,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       407.5199890136719,
 		HpGrowCurve:  1,
 		Id:           26050101,
-		MonsterName:  "Drake_Primo_Rock_01_Water",
+		MonsterName:  "primogeovishap",
 	},
-
 	26050201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18801,9 +14279,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       407.5199890136719,
 		HpGrowCurve:  1,
 		Id:           26050201,
-		MonsterName:  "Drake_Primo_Rock_01_Fire",
+		MonsterName:  "primogeovishap",
 	},
-
 	26050301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18833,9 +14310,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       407.5199890136719,
 		HpGrowCurve:  1,
 		Id:           26050301,
-		MonsterName:  "Drake_Primo_Rock_01_Ice",
+		MonsterName:  "primogeovishap",
 	},
-
 	26050401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18865,9 +14341,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       407.5199890136719,
 		HpGrowCurve:  1,
 		Id:           26050401,
-		MonsterName:  "Drake_Primo_Rock_01_Elec",
+		MonsterName:  "primogeovishap",
 	},
-
 	26050501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18897,9 +14372,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       407.5199890136719,
 		HpGrowCurve:  1,
 		Id:           26050501,
-		MonsterName:  "Drake_Primo_Rock_01_Activity",
+		MonsterName:  "primogeovishap",
 	},
-
 	26050601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18933,9 +14407,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       108.6719970703125,
 		HpGrowCurve:  2,
 		Id:           26050601,
-		MonsterName:  "Drake_DeepSea_Water_01",
+		MonsterName:  "primordialbathysmalvishap",
 	},
-
 	26050901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18961,9 +14434,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           26050901,
-		MonsterName:  "Drake_DeepSea_Water_02",
+		MonsterName:  "primordialbathysmalvishap",
 	},
-
 	26050701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -18997,9 +14469,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       163.00799560546875,
 		HpGrowCurve:  2,
 		Id:           26050701,
-		MonsterName:  "Drake_Deepsea_Ice_01",
+		MonsterName:  "rimebiterbathysmalvishap",
 	},
-
 	26051001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19025,9 +14496,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           26051001,
-		MonsterName:  "Drake_Deepsea_Ice_02",
+		MonsterName:  "rimebiterbathysmalvishap",
 	},
-
 	26050702: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19061,9 +14531,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       163.00799560546875,
 		HpGrowCurve:  2,
 		Id:           26050702,
-		MonsterName:  "Drake_Deepsea_Ice_03",
+		MonsterName:  "rimebiterbathysmalvishap",
 	},
-
 	26050703: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19097,9 +14566,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       185.18499755859375,
 		HpGrowCurve:  2,
 		Id:           26050703,
-		MonsterName:  "Drake_Deepsea_Ice_04",
+		MonsterName:  "rimebiterbathysmalvishap",
 	},
-
 	26050801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19133,9 +14601,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       163.00799560546875,
 		HpGrowCurve:  2,
 		Id:           26050801,
-		MonsterName:  "Drake_Deepsea_Electric_01",
+		MonsterName:  "bolteaterbathysmalvishap",
 	},
-
 	26051101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19161,9 +14628,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       54.33599853515625,
 		HpGrowCurve:  2,
 		Id:           26051101,
-		MonsterName:  "Drake_Deepsea_Electric_02",
+		MonsterName:  "bolteaterbathysmalvishap",
 	},
-
 	26050802: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19197,9 +14663,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       163.00799560546875,
 		HpGrowCurve:  2,
 		Id:           26050802,
-		MonsterName:  "Drake_Deepsea_Electric_03",
+		MonsterName:  "bolteaterbathysmalvishap",
 	},
-
 	26050803: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19233,9 +14698,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       185.18499755859375,
 		HpGrowCurve:  2,
 		Id:           26050803,
-		MonsterName:  "Drake_Deepsea_Electric_04",
+		MonsterName:  "bolteaterbathysmalvishap",
 	},
-
 	26060101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19261,9 +14725,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       6.791999816894531,
 		HpGrowCurve:  1,
 		Id:           26060101,
-		MonsterName:  "Cicin_Thunder_01",
+		MonsterName:  "electrocicin",
 	},
-
 	26060201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19289,9 +14752,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       6.791999816894531,
 		HpGrowCurve:  1,
 		Id:           26060201,
-		MonsterName:  "Cicin_Water_01",
+		MonsterName:  "hydrocicin",
 	},
-
 	26060301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19317,9 +14779,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       6.791999816894531,
 		HpGrowCurve:  1,
 		Id:           26060301,
-		MonsterName:  "Cicin_Ice_01",
+		MonsterName:  "cryocicin",
 	},
-
 	26080101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19336,9 +14797,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        81.50399780273438,
 		HpGrowCurve:   2,
 		Id:            26080101,
-		MonsterName:   "Eldritch_Minor",
+		MonsterName:   "beisht",
 	},
-
 	26090101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19360,9 +14820,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090101,
-		MonsterName:  "Fungus_Un_Gamma_Water_01",
+		MonsterName:  "floatinghydrofungus",
 	},
-
 	26090201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19384,9 +14843,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090201,
-		MonsterName:  "Fungus_Un_Delta_Grass_01",
+		MonsterName:  "floatingdendrofungus",
 	},
-
 	26090202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19408,9 +14866,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           26090202,
-		MonsterName:  "Fungus_Un_Delta_Grass_01_02",
+		MonsterName:  "floatingdendrofungus",
 	},
-
 	26090301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19432,9 +14889,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090301,
-		MonsterName:  "Fungus_Un_Delta_Wind_01",
+		MonsterName:  "floatinganemofungus",
 	},
-
 	26090401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19456,9 +14912,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090401,
-		MonsterName:  "Fungus_Trois_Epsilon_Electric_01",
+		MonsterName:  "whirlingelectrofungus",
 	},
-
 	26090501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19480,9 +14935,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090501,
-		MonsterName:  "Fungus_Trois_Alpha_Ice_01",
+		MonsterName:  "whirlingcryofungus",
 	},
-
 	26090601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -19504,9 +14958,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090601,
-		MonsterName:  "Fungus_Trois_Gamma_Fire_01",
+		MonsterName:  "whirlingpyrofungus",
 	},
-
 	26090701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -19528,9 +14981,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090701,
-		MonsterName:  "Fungus_Deux_Alpha_Fire_01",
+		MonsterName:  "stretchypyrofungus",
 	},
-
 	26090801: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19552,9 +15004,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090801,
-		MonsterName:  "Fungus_Deux_Epsilon_Wind_01",
+		MonsterName:  "stretchyanemofungus",
 	},
-
 	26090901: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19576,9 +15027,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26090901,
-		MonsterName:  "Fungus_Deux_Beta_Rock_01",
+		MonsterName:  "stretchygeofungus",
 	},
-
 	26091001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19600,9 +15050,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       13.583999633789062,
 		HpGrowCurve:  2,
 		Id:           26091001,
-		MonsterName:  "Fungus_Deux_Delta_Electric_01",
+		MonsterName:  "stretchyelectrofungus",
 	},
-
 	26090190: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19619,9 +15068,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        16.300800323486328,
 		HpGrowCurve:   2,
 		Id:            26090190,
-		MonsterName:   "Fungus_Un_Gamma_Water_Enemy",
+		MonsterName:   "floatinghydrofungus",
 	},
-
 	26090290: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19638,9 +15086,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        16.300800323486328,
 		HpGrowCurve:   2,
 		Id:            26090290,
-		MonsterName:   "Fungus_Un_Delta_Grass_Enemy",
+		MonsterName:   "floatingdendrofungus",
 	},
-
 	26090390: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19657,9 +15104,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        16.300800323486328,
 		HpGrowCurve:   2,
 		Id:            26090390,
-		MonsterName:   "Fungus_Un_Delta_Wind_Enemy",
+		MonsterName:   "floatinganemofungus",
 	},
-
 	26090490: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19676,9 +15122,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        21.734399795532227,
 		HpGrowCurve:   2,
 		Id:            26090490,
-		MonsterName:   "Fungus_Trois_Epsilon_Electric_Enemy",
+		MonsterName:   "whirlingelectrofungus",
 	},
-
 	26090590: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19695,9 +15140,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        21.734399795532227,
 		HpGrowCurve:   2,
 		Id:            26090590,
-		MonsterName:   "Fungus_Trois_Alpha_Ice_Enemy",
+		MonsterName:   "whirlingcryofungus",
 	},
-
 	26090690: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -19714,9 +15158,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        30.428159713745117,
 		HpGrowCurve:   2,
 		Id:            26090690,
-		MonsterName:   "Fungus_Trois_Gamma_Fire_Enemy",
+		MonsterName:   "whirlingpyrofungus",
 	},
-
 	26090790: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -19733,9 +15176,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        21.734399795532227,
 		HpGrowCurve:   2,
 		Id:            26090790,
-		MonsterName:   "Fungus_Deux_Alpha_Fire_Enemy",
+		MonsterName:   "stretchypyrofungus",
 	},
-
 	26090890: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19752,9 +15194,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        21.734399795532227,
 		HpGrowCurve:   2,
 		Id:            26090890,
-		MonsterName:   "Fungus_Deux_Epsilon_Wind_Enemy",
+		MonsterName:   "stretchyanemofungus",
 	},
-
 	26090990: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19771,9 +15212,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        43.46879959106445,
 		HpGrowCurve:   2,
 		Id:            26090990,
-		MonsterName:   "Fungus_Deux_Beta_Rock_Enemy",
+		MonsterName:   "stretchygeofungus",
 	},
-
 	26091090: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19790,9 +15230,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        21.734399795532227,
 		HpGrowCurve:   2,
 		Id:            26091090,
-		MonsterName:   "Fungus_Deux_Delta_Electric_Enemy",
+		MonsterName:   "stretchyelectrofungus",
 	},
-
 	26090191: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19809,9 +15248,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090191,
-		MonsterName:   "Fungus_Un_Gamma_Water_01_Capture",
+		MonsterName:   "floatinghydrofungus",
 	},
-
 	26090291: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19828,9 +15266,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090291,
-		MonsterName:   "Fungus_Un_Delta_Grass_01_Capture",
+		MonsterName:   "floatingdendrofungus",
 	},
-
 	26090391: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19847,9 +15284,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090391,
-		MonsterName:   "Fungus_Un_Delta_Wind_01_Capture",
+		MonsterName:   "floatinganemofungus",
 	},
-
 	26090491: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19866,9 +15302,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090491,
-		MonsterName:   "Fungus_Trois_Epsilon_Electric_01_Capture",
+		MonsterName:   "whirlingelectrofungus",
 	},
-
 	26090591: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19885,9 +15320,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090591,
-		MonsterName:   "Fungus_Trois_Alpha_Ice_01_Capture",
+		MonsterName:   "whirlingcryofungus",
 	},
-
 	26090691: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -19904,9 +15338,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090691,
-		MonsterName:   "Fungus_Trois_Gamma_Fire_01_Capture",
+		MonsterName:   "whirlingpyrofungus",
 	},
-
 	26090791: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.20000000298023224,
@@ -19923,9 +15356,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090791,
-		MonsterName:   "Fungus_Deux_Alpha_Fire_01_Capture",
+		MonsterName:   "stretchypyrofungus",
 	},
-
 	26090891: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19942,9 +15374,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090891,
-		MonsterName:   "Fungus_Deux_Epsilon_Wind_01_Capture",
+		MonsterName:   "stretchyanemofungus",
 	},
-
 	26090991: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19961,9 +15392,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26090991,
-		MonsterName:   "Fungus_Deux_Beta_Rock_01_Capture",
+		MonsterName:   "stretchygeofungus",
 	},
-
 	26091091: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -19980,9 +15410,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   2,
 		Id:            26091091,
-		MonsterName:   "Fungus_Deux_Delta_Electric_01_Capture",
+		MonsterName:   "stretchyelectrofungus",
 	},
-
 	26100101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20012,9 +15441,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           26100101,
-		MonsterName:  "Gator_Sacred_Water_01",
+		MonsterName:  "consecratedhornedcrocodile",
 	},
-
 	26100201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20044,9 +15472,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           26100201,
-		MonsterName:  "Panther_Sacred_Grass_01",
+		MonsterName:  "consecratedfangedbeast",
 	},
-
 	26100301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20076,9 +15503,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           26100301,
-		MonsterName:  "Vulture_Sacred_Fire_01",
+		MonsterName:  "consecratedredvulture",
 	},
-
 	26100401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20108,9 +15534,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           26100401,
-		MonsterName:  "Scorpion_Sacred_Electric_01",
+		MonsterName:  "consecratedscorpion",
 	},
-
 	26100501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20140,9 +15565,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       95.08799743652344,
 		HpGrowCurve:  2,
 		Id:           26100501,
-		MonsterName:  "Chrysopelea_Sacred_Wind_01",
+		MonsterName:  "consecratedflyingserpent",
 	},
-
 	26110101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.25,
@@ -20172,9 +15596,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       190.17599487304688,
 		HpGrowCurve:  2,
 		Id:           26110101,
-		MonsterName:  "Fungus_Raptor",
+		MonsterName:  "jadeplumeterrorshroom",
 	},
-
 	26120101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20200,9 +15623,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           26120101,
-		MonsterName:  "Fungus_Amanita_Unu_Anudatta_Grass_01",
+		MonsterName:  "wingeddendroshroom",
 	},
-
 	26120201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20228,9 +15650,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       38.03519821166992,
 		HpGrowCurve:  2,
 		Id:           26120201,
-		MonsterName:  "Fungus_Amanita_Unu_Svarita_Ices_01",
+		MonsterName:  "wingedcryoshroom",
 	},
-
 	26120301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20256,9 +15677,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       27.167999267578125,
 		HpGrowCurve:  2,
 		Id:           26120301,
-		MonsterName:  "Fungus_Amanita_Du_Anudatta_Water_01",
+		MonsterName:  "groundedhydroshroom",
 	},
-
 	26120401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20284,9 +15704,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       38.03519821166992,
 		HpGrowCurve:  2,
 		Id:           26120401,
-		MonsterName:  "Fungus_Amanita_Du_Udatta_Rock_01",
+		MonsterName:  "groundedgeoshroom",
 	},
-
 	26130101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.25,
@@ -20320,9 +15739,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       190.17599487304688,
 		HpGrowCurve:  2,
 		Id:           26130101,
-		MonsterName:  "Sandworm",
+		MonsterName:  "setekhwenut",
 	},
-
 	26151001: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20339,9 +15757,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26151001,
-		MonsterName:   "MantaRay_Larva_01",
+		MonsterName:   "huntersray",
 	},
-
 	26151002: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20358,9 +15775,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            26151002,
-		MonsterName:   "MantaRay_Larva_01_Large",
+		MonsterName:   "huntersray",
 	},
-
 	26151101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20377,9 +15793,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26151101,
-		MonsterName:   "MantaRay_Larva_02",
+		MonsterName:   "huntersray",
 	},
-
 	26151102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20396,9 +15811,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            26151102,
-		MonsterName:   "MantaRay_Larva_02_Large",
+		MonsterName:   "huntersray",
 	},
-
 	26152101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20415,9 +15829,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26152101,
-		MonsterName:   "HermitCrab_Larva_01_Sea",
+		MonsterName:   "armoredcrab",
 	},
-
 	26152102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20439,9 +15852,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.59552001953125,
 		HpGrowCurve:  2,
 		Id:           26152102,
-		MonsterName:  "HermitCrab_Larva_01_Land",
+		MonsterName:  "armoredcrab",
 	},
-
 	26152201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20458,9 +15870,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26152201,
-		MonsterName:   "HermitCrab_Larva_02_Sea",
+		MonsterName:   "armoredcrab",
 	},
-
 	26152202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20482,9 +15893,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.59552001953125,
 		HpGrowCurve:  2,
 		Id:           26152202,
-		MonsterName:  "HermitCrab_Larva_02_Land",
+		MonsterName:  "armoredcrab",
 	},
-
 	26153101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20501,9 +15911,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            26153101,
-		MonsterName:   "Seal_Larva_01_Sea",
+		MonsterName:   "blubberbeast",
 	},
-
 	26153102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20520,9 +15929,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26153102,
-		MonsterName:   "Seal_Larva_01_Small_Sea",
+		MonsterName:   "blubberbeast",
 	},
-
 	26153103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20544,9 +15952,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       17.65920066833496,
 		HpGrowCurve:  2,
 		Id:           26153103,
-		MonsterName:  "Seal_Larva_01_Land",
+		MonsterName:  "blubberbeast",
 	},
-
 	26153104: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20568,9 +15975,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       10.59552001953125,
 		HpGrowCurve:  2,
 		Id:           26153104,
-		MonsterName:  "Seal_Larva_01_Small_Land",
+		MonsterName:  "blubberbeast",
 	},
-
 	26154101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20587,9 +15993,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26154101,
-		MonsterName:   "JellyFish_Larva_01",
+		MonsterName:   "hatjellyfish",
 	},
-
 	26154201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20606,9 +16011,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26154201,
-		MonsterName:   "JellyFish_Larva_02",
+		MonsterName:   "hatjellyfish",
 	},
-
 	26154102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20625,9 +16029,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            26154102,
-		MonsterName:   "JellyFish_Larva_01_Large",
+		MonsterName:   "hatjellyfish",
 	},
-
 	26154202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20644,9 +16047,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        32.46889877319336,
 		HpGrowCurve:   1,
 		Id:            26154202,
-		MonsterName:   "JellyFish_Larva_02_Large",
+		MonsterName:   "hatjellyfish",
 	},
-
 	26155101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20663,9 +16065,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26155101,
-		MonsterName:   "SeaHorse_Larva_01",
+		MonsterName:   "bubblyseahorse",
 	},
-
 	26155201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20682,9 +16083,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26155201,
-		MonsterName:   "SeaHorse_Larva_02",
+		MonsterName:   "bubblyseahorse",
 	},
-
 	26155301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20701,9 +16101,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26155301,
-		MonsterName:   "SeaHorse_Larva_03",
+		MonsterName:   "bubblyseahorse",
 	},
-
 	26156101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20720,9 +16119,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26156101,
-		MonsterName:   "Octopus_Larva_01",
+		MonsterName:   "balloctopus",
 	},
-
 	26156201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20739,9 +16137,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26156201,
-		MonsterName:   "Octopus_Larva_02",
+		MonsterName:   "balloctopus",
 	},
-
 	26157101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20758,9 +16155,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26157101,
-		MonsterName:   "Aplysia_Larva_01",
+		MonsterName:   "angelicseahare",
 	},
-
 	26157201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20777,9 +16173,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        19.481340408325195,
 		HpGrowCurve:   1,
 		Id:            26157201,
-		MonsterName:   "Aplysia_Larva_02",
+		MonsterName:   "angelicseahare",
 	},
-
 	26160101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20796,9 +16191,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        64.93779754638672,
 		HpGrowCurve:   1,
 		Id:            26160101,
-		MonsterName:   "HermitCrab_Mature_01_Sea",
+		MonsterName:   "sternshieldcrab",
 	},
-
 	26160102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20820,9 +16214,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       35.31840133666992,
 		HpGrowCurve:  2,
 		Id:           26160102,
-		MonsterName:  "HermitCrab_Mature_01_Land",
+		MonsterName:  "sternshieldcrab",
 	},
-
 	26160201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20839,9 +16232,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        64.93779754638672,
 		HpGrowCurve:   1,
 		Id:            26160201,
-		MonsterName:   "Aplysia_Mature_01_Sea",
+		MonsterName:   "cherubicseahare",
 	},
-
 	26160202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20863,9 +16255,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       35.31840133666992,
 		HpGrowCurve:  2,
 		Id:           26160202,
-		MonsterName:  "Aplysia_Mature_01_Land",
+		MonsterName:  "cherubicseahare",
 	},
-
 	26160301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20882,9 +16273,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        64.93779754638672,
 		HpGrowCurve:   1,
 		Id:            26160301,
-		MonsterName:   "SeaHorse_Mature_01_Sea",
+		MonsterName:   "bubblerseahorse",
 	},
-
 	26160302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20906,9 +16296,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       35.31840133666992,
 		HpGrowCurve:  2,
 		Id:           26160302,
-		MonsterName:  "SeaHorse_Mature_01_Land",
+		MonsterName:  "bubblerseahorse",
 	},
-
 	26162101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20925,9 +16314,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        1753.320556640625,
 		HpGrowCurve:   1,
 		Id:            26162101,
-		MonsterName:   "HermitCrab_Mature_02",
+		MonsterName:   "locallegendarmoredcrab",
 	},
-
 	26162201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20944,9 +16332,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        1623.4449462890625,
 		HpGrowCurve:   1,
 		Id:            26162201,
-		MonsterName:   "MantaRay_Larva_03",
+		MonsterName:   "locallegendhuntersray",
 	},
-
 	26162301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20963,9 +16350,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        389.6268005371094,
 		HpGrowCurve:   1,
 		Id:            26162301,
-		MonsterName:   "Seal_Larva_02",
+		MonsterName:   "locallegendblubberbeast",
 	},
-
 	26162401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -20982,9 +16368,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        1753.320556640625,
 		HpGrowCurve:   1,
 		Id:            26162401,
-		MonsterName:   "Aplysia_Mature_02",
+		MonsterName:   "locallegendcherubicseahare",
 	},
-
 	26162501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21001,9 +16386,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        1753.320556640625,
 		HpGrowCurve:   1,
 		Id:            26162501,
-		MonsterName:   "JellyFish_Larva_03",
+		MonsterName:   "locallegendhatjellyfish",
 	},
-
 	26170101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.6000000238418579,
@@ -21037,9 +16421,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       163.00799560546875,
 		HpGrowCurve:  2,
 		Id:           26170101,
-		MonsterName:  "HermitCrab_Primo_01",
+		MonsterName:  "emperoroffireandiron",
 	},
-
 	26180101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21073,9 +16456,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       149.4239959716797,
 		HpGrowCurve:  2,
 		Id:           26180101,
-		MonsterName:  "SeaHorse_Primo_Electric_01",
+		MonsterName:  "millennialpearlseahorse",
 	},
-
 	26190101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21109,9 +16491,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       225.49440002441406,
 		HpGrowCurve:  2,
 		Id:           26190101,
-		MonsterName:  "Hermit_Normal_01",
+		MonsterName:  "solitarysuanni",
 	},
-
 	26190102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21145,9 +16526,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       225.49440002441406,
 		HpGrowCurve:  2,
 		Id:           26190102,
-		MonsterName:  "Hermit_WQ_01",
+		MonsterName:  "solitarysuanni",
 	},
-
 	26190103: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21181,9 +16561,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       225.49440002441406,
 		HpGrowCurve:  2,
 		Id:           26190103,
-		MonsterName:  "Hermit_Normal_02",
+		MonsterName:  "solitarysuanni",
 	},
-
 	26190201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21217,9 +16596,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       57.052799224853516,
 		HpGrowCurve:  2,
 		Id:           26190201,
-		MonsterName:  "Striped_01",
+		MonsterName:  "xuanwenbeast",
 	},
-
 	20060701: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21245,9 +16623,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           20060701,
-		MonsterName:  "Sylph_Grass_01",
+		MonsterName:  "dendrospecter",
 	},
-
 	20060101: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21273,9 +16650,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           20060101,
-		MonsterName:  "Sylph_Water_01",
+		MonsterName:  "hydrospecter",
 	},
-
 	20060201: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21301,9 +16677,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           20060201,
-		MonsterName:  "Sylph_Rock_01",
+		MonsterName:  "geospecter",
 	},
-
 	20060301: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21329,9 +16704,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           20060301,
-		MonsterName:  "Sylph_Wind_01",
+		MonsterName:  "anemospecter",
 	},
-
 	20060401: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21357,9 +16731,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           20060401,
-		MonsterName:  "Sylph_Ice_01",
+		MonsterName:  "cryospecter",
 	},
-
 	20060501: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21385,9 +16758,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           20060501,
-		MonsterName:  "Sylph_Electric_01",
+		MonsterName:  "electrospecter",
 	},
-
 	20060601: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21413,9 +16785,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:       21.734399795532227,
 		HpGrowCurve:  2,
 		Id:           20060601,
-		MonsterName:  "Sylph_Fire_01",
+		MonsterName:  "pyrospecter",
 	},
-
 	21010102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21432,9 +16803,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21010102,
-		MonsterName:   "Hili_None_01",
+		MonsterName:   "hilichurl",
 	},
-
 	21020102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21451,9 +16821,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        40.75199890136719,
 		HpGrowCurve:   1,
 		Id:            21020102,
-		MonsterName:   "Brute_None_Shield",
+		MonsterName:   "woodenshieldwallmitachurl",
 	},
-
 	21020203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21470,9 +16839,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            21020203,
-		MonsterName:   "Brute_None_Axe",
+		MonsterName:   "blazingaxemitachurl",
 	},
-
 	21020702: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21489,9 +16857,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        40.75199890136719,
 		HpGrowCurve:   1,
 		Id:            21020702,
-		MonsterName:   "Brute_Electric_Axe",
+		MonsterName:   "cracklingaxemitachurl",
 	},
-
 	21020302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21508,9 +16875,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        40.75199890136719,
 		HpGrowCurve:   1,
 		Id:            21020302,
-		MonsterName:   "Brute_None_RockShield",
+		MonsterName:   "rockshieldwallmitachurl",
 	},
-
 	21020402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21527,9 +16893,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        122.25599670410156,
 		HpGrowCurve:   1,
 		Id:            21020402,
-		MonsterName:   "Brute_Ice_None",
+		MonsterName:   "frostarmlawachurl",
 	},
-
 	21020502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21546,9 +16911,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        122.25599670410156,
 		HpGrowCurve:   1,
 		Id:            21020502,
-		MonsterName:   "Brute_Rock_None",
+		MonsterName:   "stonehidelawachurl",
 	},
-
 	21020802: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21565,9 +16929,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        122.25599670410156,
 		HpGrowCurve:   1,
 		Id:            21020802,
-		MonsterName:   "Brute_Electric_None",
+		MonsterName:   "thunderhelmlawachurl",
 	},
-
 	21020602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21584,9 +16947,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        40.75199890136719,
 		HpGrowCurve:   1,
 		Id:            21020602,
-		MonsterName:   "Brute_Ice_Shield",
+		MonsterName:   "iceshieldwallmitachurl",
 	},
-
 	20010302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21603,9 +16965,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20010302,
-		MonsterName:   "Slime_Wind_02",
+		MonsterName:   "anemoslime",
 	},
-
 	20010402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21622,9 +16983,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20010402,
-		MonsterName:   "Slime_Wind_03",
+		MonsterName:   "largeanemoslime",
 	},
-
 	20010502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21641,9 +17001,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20010502,
-		MonsterName:   "Slime_Electric_02",
+		MonsterName:   "electroslime",
 	},
-
 	20010602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21660,9 +17019,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20010602,
-		MonsterName:   "Slime_Electric_03",
+		MonsterName:   "largeelectroslime",
 	},
-
 	20010703: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21679,9 +17037,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20010703,
-		MonsterName:   "Slime_Electric_03_Positive",
+		MonsterName:   "mutantelectroslime",
 	},
-
 	20010803: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21698,9 +17055,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20010803,
-		MonsterName:   "Slime_Ice_02",
+		MonsterName:   "cryoslime",
 	},
-
 	20010903: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21717,9 +17073,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20010903,
-		MonsterName:   "Slime_Ice_03",
+		MonsterName:   "largecryoslime",
 	},
-
 	20011002: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21736,9 +17091,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20011002,
-		MonsterName:   "Slime_Water_02",
+		MonsterName:   "hydroslime",
 	},
-
 	20011102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21755,9 +17109,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20011102,
-		MonsterName:   "Slime_Water_03",
+		MonsterName:   "largehydroslime",
 	},
-
 	21010302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21774,9 +17127,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21010302,
-		MonsterName:   "Hili_None_01_Shield",
+		MonsterName:   "woodenshieldhilichurlguard",
 	},
-
 	21010702: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21793,9 +17145,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            21010702,
-		MonsterName:   "Hili_Fire_Rush",
+		MonsterName:   "hilichurlberserker",
 	},
-
 	21011202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21812,9 +17163,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21011202,
-		MonsterName:   "Hili_None_01_RockShield",
+		MonsterName:   "rockshieldhilichurlguard",
 	},
-
 	21011402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21831,9 +17181,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21011402,
-		MonsterName:   "Hili_Ice_IceShield",
+		MonsterName:   "iceshieldhilichurlguard",
 	},
-
 	20011203: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21850,9 +17199,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20011203,
-		MonsterName:   "Slime_Fire_02",
+		MonsterName:   "pyroslime",
 	},
-
 	20011302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21869,9 +17217,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20011302,
-		MonsterName:   "Slime_Fire_03",
+		MonsterName:   "largepyroslime",
 	},
-
 	20011402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21888,9 +17235,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        10.867199897766113,
 		HpGrowCurve:   1,
 		Id:            20011402,
-		MonsterName:   "Slime_Rock_02",
+		MonsterName:   "geoslime",
 	},
-
 	20011503: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21907,9 +17253,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            20011503,
-		MonsterName:   "Slime_Rock_03",
+		MonsterName:   "largegeoslime",
 	},
-
 	22010105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21926,9 +17271,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            22010105,
-		MonsterName:   "Abyss_Fire_01",
+		MonsterName:   "pyroabyssmage",
 	},
-
 	22010205: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21945,9 +17289,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            22010205,
-		MonsterName:   "Abyss_Ice_01",
+		MonsterName:   "cryoabyssmage",
 	},
-
 	22010305: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21964,9 +17307,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            22010305,
-		MonsterName:   "Abyss_Water_01",
+		MonsterName:   "hydroabyssmage",
 	},
-
 	22010402: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -21983,9 +17325,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        27.167999267578125,
 		HpGrowCurve:   1,
 		Id:            22010402,
-		MonsterName:   "Abyss_Electric_01",
+		MonsterName:   "electroabyssmage",
 	},
-
 	21030102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22002,9 +17343,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21030102,
-		MonsterName:   "Shaman_Water_01",
+		MonsterName:   "hydrosamachurl",
 	},
-
 	21030202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22021,9 +17361,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21030202,
-		MonsterName:   "Shaman_Grass_01",
+		MonsterName:   "dendrosamachurl",
 	},
-
 	21030302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22040,9 +17379,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21030302,
-		MonsterName:   "Shaman_Wind_01",
+		MonsterName:   "anemosamachurl",
 	},
-
 	21030403: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22059,9 +17397,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21030403,
-		MonsterName:   "Shaman_Rock_01",
+		MonsterName:   "geosamachurl",
 	},
-
 	21030502: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22078,9 +17415,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21030502,
-		MonsterName:   "Shaman_Ice_01",
+		MonsterName:   "cryosamachurl",
 	},
-
 	21030602: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22097,9 +17433,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        13.583999633789062,
 		HpGrowCurve:   1,
 		Id:            21030602,
-		MonsterName:   "Shaman_Electric_01",
+		MonsterName:   "electrosamachurl",
 	},
-
 	24010102: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22116,9 +17451,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        95.08799743652344,
 		HpGrowCurve:   1,
 		Id:            24010102,
-		MonsterName:   "Defender_None_01",
+		MonsterName:   "ruinguard",
 	},
-
 	24010202: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22135,9 +17469,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        54.33599853515625,
 		HpGrowCurve:   1,
 		Id:            24010202,
-		MonsterName:   "Formathr_None",
+		MonsterName:   "ruinhunter",
 	},
-
 	24010302: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22154,9 +17487,8 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        122.25599670410156,
 		HpGrowCurve:   1,
 		Id:            24010302,
-		MonsterName:   "Konungmathr_None",
+		MonsterName:   "ruingrader",
 	},
-
 	26040105: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro:     0.10000000149011612,
@@ -22173,16254 +17505,6 @@ var monsterInfos = map[int]info.EnemyProfile{
 		HpBase:        108.6719970703125,
 		HpGrowCurve:   1,
 		Id:            26040105,
-		MonsterName:   "Drake_Rock_01_Water",
+		MonsterName:   "geovishap",
 	},
-
-	28020901: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        815.0399780273438,
-		HpGrowCurve:   2,
-		Id:            28020901,
-		MonsterName:   "Inu_Shihandai_01",
-	},
-
-	28020902: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        203.75999450683594,
-		HpGrowCurve:   2,
-		Id:            28020902,
-		MonsterName:   "Inu_Shihandai_02",
-	},
-
-	28020903: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        95.08799743652344,
-		HpGrowCurve:   2,
-		Id:            28020903,
-		MonsterName:   "Inu_Shihandai_03",
-	},
-
-	28020904: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        117.63999938964844,
-		HpGrowCurve:   2,
-		Id:            28020904,
-		MonsterName:   "Inu_Shihandai_04",
-	},
-
-	28020905: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        1247.01123046875,
-		HpGrowCurve:   1,
-		Id:            28020905,
-		MonsterName:   "Inu_Shihandai_FunFight_01",
-	},
-
-	28020304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.30000001192092896,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010050,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22003100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       149.4239959716797,
-		HpGrowCurve:  1,
-		Id:           28020304,
-		MonsterName:  "Boar_04",
-	},
-
-	28020309: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.30000001192092896,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010050,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.25,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       149.4239959716797,
-		HpGrowCurve:  1,
-		Id:           28020309,
-		MonsterName:  "Boar_09",
-	},
-
-	28020315: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010050,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.25,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       133.56399536132812,
-		HpGrowCurve:  1,
-		Id:           28020315,
-		MonsterName:  "Boar_09",
-	},
-
-	28020318: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.30000001192092896,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        1344.8160400390625,
-		HpGrowCurve:   1,
-		Id:            28020318,
-		MonsterName:   "Boar_FunFight_03",
-	},
-
-	28021001: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     10,
-			attributes.Dendro:   10,
-			attributes.Hydro:    10,
-			attributes.Electro:  10,
-			attributes.Anemo:    10,
-			attributes.Cryo:     10,
-			attributes.Geo:      10,
-			attributes.Physical: 10,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   2,
-		Id:            28021001,
-		MonsterName:   "Tortoise_01",
-	},
-
-	28021002: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     10,
-			attributes.Dendro:   10,
-			attributes.Hydro:    10,
-			attributes.Electro:  10,
-			attributes.Anemo:    10,
-			attributes.Cryo:     10,
-			attributes.Geo:      10,
-			attributes.Physical: 10,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   2,
-		Id:            28021002,
-		MonsterName:   "Tortoise_02",
-	},
-
-	28021011: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     10,
-			attributes.Dendro:   10,
-			attributes.Hydro:    10,
-			attributes.Electro:  10,
-			attributes.Anemo:    10,
-			attributes.Cryo:     10,
-			attributes.Geo:      10,
-			attributes.Physical: 10,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   2,
-		Id:            28021011,
-		MonsterName:   "GiantTortoise_01",
-	},
-
-	28021012: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     10,
-			attributes.Dendro:   10,
-			attributes.Hydro:    10,
-			attributes.Electro:  10,
-			attributes.Anemo:    10,
-			attributes.Cryo:     10,
-			attributes.Geo:      10,
-			attributes.Physical: 10,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   2,
-		Id:            28021012,
-		MonsterName:   "GiantTortoise_02",
-	},
-
-	28020301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       2.7167999744415283,
-		HpGrowCurve:  1,
-		Id:           28020301,
-		MonsterName:  "Boar_01",
-	},
-
-	28020311: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        1.7421000003814697,
-		HpGrowCurve:   1,
-		Id:            28020311,
-		MonsterName:   "Boar_01_Hunt",
-	},
-
-	28020303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22003000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       2.7167999744415283,
-		HpGrowCurve:  1,
-		Id:           28020303,
-		MonsterName:  "Boar_03",
-	},
-
-	28020312: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.355999946594238,
-		HpGrowCurve:   1,
-		Id:            28020312,
-		MonsterName:   "Boar_03_Hunt",
-	},
-
-	28020319: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        53.42399978637695,
-		HpGrowCurve:   1,
-		Id:            28020319,
-		MonsterName:   "Boar_03_Hunt",
-	},
-
-	28020305: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22003000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       2.7167999744415283,
-		HpGrowCurve:  1,
-		Id:           28020305,
-		MonsterName:  "Boar_05",
-	},
-
-	28020306: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28020306,
-		MonsterName:   "Boar_06",
-	},
-
-	28020307: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28020307,
-		MonsterName:   "Boar_01",
-	},
-
-	28020308: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28020308,
-		MonsterName:   "Boar_05",
-	},
-
-	28020313: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22003300,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       2.7167999744415283,
-		HpGrowCurve:  1,
-		Id:           28020313,
-		MonsterName:  "Boar_Grass",
-	},
-
-	28020314: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22003200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020314,
-		MonsterName:  "Boar_Grass_Small",
-	},
-
-	28020316: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28020316,
-		MonsterName:   "Boar_Grass",
-	},
-
-	28020317: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28020317,
-		MonsterName:   "Boar_Grass_Small",
-	},
-
-	28020320: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       2.7167999744415283,
-		HpGrowCurve:  1,
-		Id:           28020320,
-		MonsterName:  "Boar_01",
-	},
-
-	28010101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010101,
-		MonsterName:   "Crab_01",
-	},
-
-	28010102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010102,
-		MonsterName:   "Crab_02",
-	},
-
-	28010103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010103,
-		MonsterName:   "Crab_03",
-	},
-
-	28010104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010104,
-		MonsterName:   "Crab_04",
-	},
-
-	28010105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010105,
-		MonsterName:   "Crab_05",
-	},
-
-	28010106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010106,
-		MonsterName:   "Crab_06",
-	},
-
-	28020101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020101,
-		MonsterName:  "Fox_01",
-	},
-
-	28020102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020102,
-		MonsterName:  "Fox_02",
-	},
-
-	28020103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020103,
-		MonsterName:  "Fox_03",
-	},
-
-	28020104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020104,
-		MonsterName:  "Fox_04",
-	},
-
-	28020105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28020105,
-		MonsterName:   "Fox_01",
-	},
-
-	28020106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28020106,
-		MonsterName:   "Fox_02",
-	},
-
-	28020107: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28020107,
-		MonsterName:   "Fox_02",
-	},
-
-	28020108: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020108,
-		MonsterName:  "Fox_01_03",
-	},
-
-	28020109: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28020109,
-		MonsterName:   "Fox_02",
-	},
-
-	28020110: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28020110,
-		MonsterName:   "Fox_01_03",
-	},
-
-	28020201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020201,
-		MonsterName:  "Squirrel_01",
-	},
-
-	28020202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28020202,
-		MonsterName:   "Squirrel_01",
-	},
-
-	28030101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030101,
-		MonsterName:  "Crane_01",
-	},
-
-	28030103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030103,
-		MonsterName:   "Crane_01",
-	},
-
-	28030102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030102,
-		MonsterName:  "Crane_02",
-	},
-
-	28030104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030104,
-		MonsterName:  "Crane_01_Lbis",
-	},
-
-	28030105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030105,
-		MonsterName:   "Crane_01",
-	},
-
-	28030106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030106,
-		MonsterName:   "Crane_01_Lbis",
-	},
-
-	28030107: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030107,
-		MonsterName:   "Crane_01",
-	},
-
-	28030201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030201,
-		MonsterName:  "Falcon_01",
-	},
-
-	28030202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030202,
-		MonsterName:  "Falcon_02",
-	},
-
-	28030203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030203,
-		MonsterName:  "Falcon_03",
-	},
-
-	28030204: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030204,
-		MonsterName:  "Falcon_04",
-	},
-
-	28050101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050101,
-		MonsterName:   "Wisp_Wind_01",
-	},
-
-	28050102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050102,
-		MonsterName:   "Wisp_Rock_01",
-	},
-
-	28050103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050103,
-		MonsterName:   "Wisp_Ice_01",
-	},
-
-	28050104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050104,
-		MonsterName:   "Wisp_Electric_01",
-	},
-
-	28050105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050105,
-		MonsterName:   "Wisp_Tokoyo_01",
-	},
-
-	28050106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050106,
-		MonsterName:   "Wisp_Grass_01",
-	},
-
-	28050107: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050107,
-		MonsterName:   "Wisp_Water_01",
-	},
-
-	28050108: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050108,
-		MonsterName:   "Wisp_Water_01",
-	},
-
-	28050301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050301,
-		MonsterName:   "Boltbug_Lightbug_01",
-	},
-
-	28050302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050302,
-		MonsterName:   "Boltbug_Lightbug_02",
-	},
-
-	28050401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050401,
-		MonsterName:   "Boltbug_Scarab_01",
-	},
-
-	28050501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050501,
-		MonsterName:   "Electrohercules_01",
-	},
-
-	28050502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050502,
-		MonsterName:   "Electrohercules_02",
-	},
-
-	28050503: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050503,
-		MonsterName:   "Electrohercules_03",
-	},
-
-	28050504: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050504,
-		MonsterName:   "Electrohercules_04",
-	},
-
-	28050505: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050505,
-		MonsterName:   "Electrohercules_05",
-	},
-
-	28050506: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050506,
-		MonsterName:   "Electrohercules_06",
-	},
-
-	28050507: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050507,
-		MonsterName:   "Electrohercules_07",
-	},
-
-	28050508: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050508,
-		MonsterName:   "Electrohercules_08",
-	},
-
-	28050509: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050509,
-		MonsterName:   "Electrohercules_09",
-	},
-
-	28050510: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050510,
-		MonsterName:   "Electrohercules_10",
-	},
-
-	28050511: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050511,
-		MonsterName:   "Electrohercules_11",
-	},
-
-	28050512: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050512,
-		MonsterName:   "Electrohercules_12",
-	},
-
-	28050701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050701,
-		MonsterName:   "Boltbug_MachinaIustitia_01",
-	},
-
-	28010201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010201,
-		MonsterName:   "Lizard_01",
-	},
-
-	28010202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010202,
-		MonsterName:   "Lizard_02",
-	},
-
-	28010203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010203,
-		MonsterName:   "Lizard_03",
-	},
-
-	28010204: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010204,
-		MonsterName:   "Salamander_01",
-	},
-
-	28010205: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010205,
-		MonsterName:   "Salamander_02",
-	},
-
-	28010206: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010206,
-		MonsterName:   "Salamander_03",
-	},
-
-	28010207: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010207,
-		MonsterName:   "Lizard_04",
-	},
-
-	28010208: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010208,
-		MonsterName:   "Lizard_05",
-	},
-
-	28010301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010301,
-		MonsterName:   "Frog_01",
-	},
-
-	28010302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010302,
-		MonsterName:   "Frog_02",
-	},
-
-	28010303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010303,
-		MonsterName:   "Frog_03",
-	},
-
-	28010304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010304,
-		MonsterName:   "Frog_04",
-	},
-
-	28010401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010401,
-		MonsterName:   "Eel_01",
-	},
-
-	28010402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010402,
-		MonsterName:   "Eel_02",
-	},
-
-	28010403: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010403,
-		MonsterName:   "Eel_03",
-	},
-
-	28010404: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28010404,
-		MonsterName:   "Eel_04",
-	},
-
-	28020302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020302,
-		MonsterName:  "Boar_02",
-	},
-
-	28020310: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.5080999732017517,
-		HpGrowCurve:   1,
-		Id:            28020310,
-		MonsterName:   "Boar_02_Hunt",
-	},
-
-	28030301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030301,
-		MonsterName:  "Pigeon_01",
-	},
-
-	28030302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030302,
-		MonsterName:  "Pigeon_02",
-	},
-
-	28030303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030303,
-		MonsterName:  "Pigeon_03",
-	},
-
-	28030304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030304,
-		MonsterName:  "Pigeon_04",
-	},
-
-	28030305: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030305,
-		MonsterName:  "Pigeon_05",
-	},
-
-	28030306: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030306,
-		MonsterName:  "Crow_01",
-	},
-
-	28030307: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030307,
-		MonsterName:   "Pigeon_01",
-	},
-
-	28030308: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030308,
-		MonsterName:   "Pigeon_02",
-	},
-
-	28030309: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030309,
-		MonsterName:   "Pigeon_03",
-	},
-
-	28030310: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030310,
-		MonsterName:   "Pigeon_04",
-	},
-
-	28030311: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030311,
-		MonsterName:   "Pigeon_05",
-	},
-
-	28030312: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030312,
-		MonsterName:   "Pigeon_01",
-	},
-
-	28030313: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030313,
-		MonsterName:  "Pigeon_Beak_01",
-	},
-
-	28030314: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030314,
-		MonsterName:   "Crow_01",
-	},
-
-	28030315: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030315,
-		MonsterName:   "Pigeon_Beak_01",
-	},
-
-	28030316: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030316,
-		MonsterName:   "Pigeon_Beak_01",
-	},
-
-	28030401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030401,
-		MonsterName:  "Tit_01",
-	},
-
-	28030402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030402,
-		MonsterName:  "Tit_02",
-	},
-
-	28030403: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030403,
-		MonsterName:  "Tit_03",
-	},
-
-	28030404: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030404,
-		MonsterName:  "Tit_04",
-	},
-
-	28030405: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030405,
-		MonsterName:   "Tit_06",
-	},
-
-	28030406: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030406,
-		MonsterName:   "Tit_01",
-	},
-
-	28030407: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030407,
-		MonsterName:   "Tit_02",
-	},
-
-	28030408: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030408,
-		MonsterName:   "Tit_03",
-	},
-
-	28030409: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030409,
-		MonsterName:   "Tit_04",
-	},
-
-	28030410: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030410,
-		MonsterName:   "Tit_04",
-	},
-
-	28030501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030501,
-		MonsterName:  "Wigeon_01",
-	},
-
-	28030502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030502,
-		MonsterName:  "Wigeon_02",
-	},
-
-	28030503: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030503,
-		MonsterName:  "Wigeon_03",
-	},
-
-	28030504: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030504,
-		MonsterName:   "Wigeon_01",
-	},
-
-	28030505: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030505,
-		MonsterName:   "Wigeon_01",
-	},
-
-	28030506: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030506,
-		MonsterName:   "Wigeon_02",
-	},
-
-	28030601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030601,
-		MonsterName:  "Swan_01",
-	},
-
-	28030602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030602,
-		MonsterName:  "Swan_02",
-	},
-
-	28030603: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030603,
-		MonsterName:  "Uka_01",
-	},
-
-	28030604: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030604,
-		MonsterName:  "Swan_01",
-	},
-
-	28030605: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030605,
-		MonsterName:  "Swan_02",
-	},
-
-	28030606: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001100,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030606,
-		MonsterName:  "Uka_01",
-	},
-
-	28030607: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030607,
-		MonsterName:   "Swan_01",
-	},
-
-	28030608: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030608,
-		MonsterName:   "Swan_02",
-	},
-
-	28030609: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030609,
-		MonsterName:   "Uka_01",
-	},
-
-	28030610: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030610,
-		MonsterName:   "Swan_01",
-	},
-
-	28030611: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030611,
-		MonsterName:   "Swan_02",
-	},
-
-	28030612: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030612,
-		MonsterName:   "Uka_01",
-	},
-
-	28030701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030701,
-		MonsterName:  "Albatross_01",
-	},
-
-	28030702: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030702,
-		MonsterName:  "Seagull_01",
-	},
-
-	28030703: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030703,
-		MonsterName:  "Eggplant_01",
-	},
-
-	28030704: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030704,
-		MonsterName:  "Eggplant_02",
-	},
-
-	28030705: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030705,
-		MonsterName:  "Fantail_01",
-	},
-
-	28030706: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030706,
-		MonsterName:  "Fantail_02",
-	},
-
-	28030707: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030707,
-		MonsterName:  "Larvivora_01",
-	},
-
-	28030708: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28030708,
-		MonsterName:  "Larvivora_02",
-	},
-
-	28030709: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030709,
-		MonsterName:   "Seagull_01",
-	},
-
-	28030710: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030710,
-		MonsterName:   "Albatross_01",
-	},
-
-	28030711: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030711,
-		MonsterName:   "Eggplant_01",
-	},
-
-	28030712: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030712,
-		MonsterName:   "Eggplant_02",
-	},
-
-	28030713: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030713,
-		MonsterName:   "Fantail_01",
-	},
-
-	28030714: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030714,
-		MonsterName:   "Fantail_02",
-	},
-
-	28030715: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030715,
-		MonsterName:   "Larvivora_01",
-	},
-
-	28030716: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28030716,
-		MonsterName:   "Larvivora_02",
-	},
-
-	28040101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22002000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28040101,
-		MonsterName:  "Fish_01",
-	},
-
-	28040102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22002000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28040102,
-		MonsterName:  "Fish_02",
-	},
-
-	28040103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22002000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28040103,
-		MonsterName:  "Fish_03",
-	},
-
-	28040104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040104,
-		MonsterName:   "Fish_04",
-	},
-
-	28040105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040105,
-		MonsterName:   "Fish_05",
-	},
-
-	28040106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040106,
-		MonsterName:   "Fish_06",
-	},
-
-	28040107: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040107,
-		MonsterName:   "Fish_07",
-	},
-
-	28040108: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040108,
-		MonsterName:   "Fish_08",
-	},
-
-	28040201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040201,
-		MonsterName:   "Fishable_Maritime_Heliobatis_01",
-	},
-
-	28040202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040202,
-		MonsterName:   "Fishable_Maritime_Heliobatis_02",
-	},
-
-	28040203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040203,
-		MonsterName:   "Fishable_Maritime_Heliobatis_03",
-	},
-
-	28040204: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040204,
-		MonsterName:   "Fishable_Maritime_Heliobatis_04",
-	},
-
-	28040205: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040205,
-		MonsterName:   "Fishable_Maritime_Heliobatis_05",
-	},
-
-	28040206: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040206,
-		MonsterName:   "Fishable_Maritime_Heliobatis_06",
-	},
-
-	28040301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040301,
-		MonsterName:   "Fishable_Maritime_Aspidorhynchus_01",
-	},
-
-	28040302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040302,
-		MonsterName:   "Fishable_Maritime_Aspidorhynchus_02",
-	},
-
-	28040303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040303,
-		MonsterName:   "Fishable_Maritime_Aspidorhynchus_03",
-	},
-
-	28040304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040304,
-		MonsterName:   "Fishable_Maritime_Aspidorhynchus_04",
-	},
-
-	28040305: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040305,
-		MonsterName:   "Fishable_Maritime_Aspidorhynchus_05",
-	},
-
-	28040401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040401,
-		MonsterName:   "Fishable_Maritime_Cheirolepis_01",
-	},
-
-	28040402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040402,
-		MonsterName:   "Fishable_Maritime_Cheirolepis_02",
-	},
-
-	28040501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040501,
-		MonsterName:   "Fishable_Maritime_Doryaspis_01",
-	},
-
-	28040502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040502,
-		MonsterName:   "Fishable_Maritime_Doryaspis_02",
-	},
-
-	28040503: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040503,
-		MonsterName:   "Fishable_Maritime_Doryaspis_03",
-	},
-
-	28040504: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040504,
-		MonsterName:   "Fishable_Maritime_Doryaspis_04",
-	},
-
-	28040505: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040505,
-		MonsterName:   "Fishable_Maritime_Doryaspis_05",
-	},
-
-	28040506: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040506,
-		MonsterName:   "Fishable_Maritime_Doryaspis_06",
-	},
-
-	28040601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040601,
-		MonsterName:   "Fishable_Maritime_Namazu_01",
-	},
-
-	28040602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040602,
-		MonsterName:   "Fishable_Maritime_Namazu_02",
-	},
-
-	28040701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040701,
-		MonsterName:   "Fishable_Ray_Stellamarisidae_01_02",
-	},
-
-	28040702: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040702,
-		MonsterName:   "Fishable_Ray_Stellamarisidae_01_03",
-	},
-
-	28040703: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040703,
-		MonsterName:   "Fishable_Ray_Stellamarisidae_02_01",
-	},
-
-	28040801: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040801,
-		MonsterName:   "Fishable_Maritime_Batdiodan_01",
-	},
-
-	28040802: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040802,
-		MonsterName:   "Fishable_Maritime_Batdiodan_02",
-	},
-
-	28040803: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040803,
-		MonsterName:   "Fishable_Maritime_Batdiodan_03",
-	},
-
-	28040804: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040804,
-		MonsterName:   "Fishable_Maritime_Batdiodan_04",
-	},
-
-	28040901: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040901,
-		MonsterName:   "Fishable_Maritime_Apsva_01",
-	},
-
-	28040902: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040902,
-		MonsterName:   "Fishable_Maritime_Apsva_02",
-	},
-
-	28040903: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28040903,
-		MonsterName:   "Fishable_Maritime_Apsva_03",
-	},
-
-	28041001: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28041001,
-		MonsterName:   "Fishable_Maritime_Coeur_01",
-	},
-
-	28041002: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28041002,
-		MonsterName:   "Fishable_Maritime_Coeur_02",
-	},
-
-	28041003: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28041003,
-		MonsterName:   "Fishable_Maritime_Coeur_03",
-	},
-
-	28041101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28041101,
-		MonsterName:   "Fishable_Maritime_MachinaIustitia_01",
-	},
-
-	28041102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28041102,
-		MonsterName:   "Fishable_Maritime_MachinaIustitia_02",
-	},
-
-	28041103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28041103,
-		MonsterName:   "Fishable_Maritime_MachinaIustitia_03",
-	},
-
-	28041104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28041104,
-		MonsterName:   "Fishable_Maritime_MachinaIustitia_04",
-	},
-
-	28041105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28041105,
-		MonsterName:   "Fishable_Maritime_MachinaIustitia_05",
-	},
-
-	28020401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020401,
-		MonsterName:   "DogPrick_01",
-	},
-
-	28020402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020402,
-		MonsterName:   "DogPrick_02",
-	},
-
-	28020403: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020403,
-		MonsterName:   "DogPrick_03",
-	},
-
-	28020404: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020404,
-		MonsterName:   "DogPrick_04",
-	},
-
-	28020405: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020405,
-		MonsterName:   "DogPrick_05",
-	},
-
-	28020406: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020406,
-		MonsterName:   "DogPrick_01_02",
-	},
-
-	28020407: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020407,
-		MonsterName:   "DogPrick_01",
-	},
-
-	28020408: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020408,
-		MonsterName:   "DogPrick_02",
-	},
-
-	28020409: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020409,
-		MonsterName:   "DogPrick_03",
-	},
-
-	28020410: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020410,
-		MonsterName:   "DogPrick_04",
-	},
-
-	28020411: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020411,
-		MonsterName:   "Dog_DropEar_01",
-	},
-
-	28020412: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020412,
-		MonsterName:   "Dog_DropEar_02",
-	},
-
-	28020413: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020413,
-		MonsterName:   "Dog_DropEar_03",
-	},
-
-	28020501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020501,
-		MonsterName:   "Cat_01",
-	},
-
-	28020502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020502,
-		MonsterName:   "Cat_02",
-	},
-
-	28020503: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020503,
-		MonsterName:   "Cat_03",
-	},
-
-	28020504: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020504,
-		MonsterName:   "Cat_04",
-	},
-
-	28020505: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020505,
-		MonsterName:   "Cat_05",
-	},
-
-	28020506: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020506,
-		MonsterName:   "Cat_06",
-	},
-
-	28020507: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020507,
-		MonsterName:   "Cat_07",
-	},
-
-	28020508: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020508,
-		MonsterName:   "Cat_01_02",
-	},
-
-	28020509: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020509,
-		MonsterName:   "Cat_03_02",
-	},
-
-	28020510: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020510,
-		MonsterName:   "Cat_02",
-	},
-
-	28020511: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020511,
-		MonsterName:   "Cat_03",
-	},
-
-	28020512: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020512,
-		MonsterName:   "Cat_04",
-	},
-
-	28020513: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020513,
-		MonsterName:   "Cat_05",
-	},
-
-	28020601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020601,
-		MonsterName:  "Marten_01",
-	},
-
-	28020602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020602,
-		MonsterName:  "Marten_02",
-	},
-
-	28020603: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020603,
-		MonsterName:  "Marten_03",
-	},
-
-	28020604: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020604,
-		MonsterName:  "Marten_04",
-	},
-
-	28020605: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000000,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       0.14000000059604645,
-		HpGrowCurve:  1,
-		Id:           28020605,
-		MonsterName:  "Marten_05",
-	},
-
-	28020701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020701,
-		MonsterName:   "Vulpes_01",
-	},
-
-	28020702: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020702,
-		MonsterName:   "Vulpes_01_02",
-	},
-
-	28020801: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020801,
-		MonsterName:   "Inu_Tanuki_01",
-	},
-
-	28020802: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020802,
-		MonsterName:   "Inu_Tanuki_02",
-	},
-
-	28020803: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28020803,
-		MonsterName:   "Inu_Tanuki_03",
-	},
-
-	28021101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28021101,
-		MonsterName:   "FontainePoddle_Lady_01",
-	},
-
-	28021102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28021102,
-		MonsterName:   "FontainePoddle_Guard_01",
-	},
-
-	28021103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28021103,
-		MonsterName:   "FontainePoddle_Gentleman_01",
-	},
-
-	28021201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28021201,
-		MonsterName:   "Beaver_01",
-	},
-
-	28022101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           28022101,
-		MonsterName:  "Goat_01",
-	},
-
-	28050201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050201,
-		MonsterName:   "Thoarder_Weasel_01",
-	},
-
-	28050202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050202,
-		MonsterName:   "Thoarder_Weasel_02",
-	},
-
-	28050203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050203,
-		MonsterName:   "Thoarder_Weasel_03",
-	},
-
-	28050204: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050204,
-		MonsterName:   "Thoarder_Weasel_01",
-	},
-
-	28050211: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050211,
-		MonsterName:   "Thoarder_Weasel_01",
-	},
-
-	28050212: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050212,
-		MonsterName:   "Thoarder_Weasel_02",
-	},
-
-	28050213: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050213,
-		MonsterName:   "Thoarder_Weasel_03",
-	},
-
-	28050221: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050221,
-		MonsterName:   "Thoarder_Weasel_01",
-	},
-
-	28050222: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050222,
-		MonsterName:   "Thoarder_Weasel_02",
-	},
-
-	28050223: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28050223,
-		MonsterName:   "Thoarder_Weasel_03",
-	},
-
-	28060101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           28060101,
-		MonsterName:  "Gator_01",
-	},
-
-	28060102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060102,
-		MonsterName:   "Gator_Strong_01",
-	},
-
-	28060103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060103,
-		MonsterName:   "Gator_01",
-	},
-
-	28060201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           28060201,
-		MonsterName:  "Panther_01",
-	},
-
-	28060202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060202,
-		MonsterName:   "Panther_Strong_01",
-	},
-
-	28060203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060203,
-		MonsterName:   "Panther_01",
-	},
-
-	28060301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22001200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       8.150400161743164,
-		HpGrowCurve:  1,
-		Id:           28060301,
-		MonsterName:  "Vulture_01",
-	},
-
-	28060302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        8.150400161743164,
-		HpGrowCurve:   1,
-		Id:            28060302,
-		MonsterName:   "Vulture_01",
-	},
-
-	28060401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           28060401,
-		MonsterName:  "Scorpion_01",
-	},
-
-	28060402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060402,
-		MonsterName:   "Scorpion_01",
-	},
-
-	28061501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22004200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       8.150400161743164,
-		HpGrowCurve:  1,
-		Id:           28061501,
-		MonsterName:  "Chrysopelea_01",
-	},
-
-	28061502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        8.150400161743164,
-		HpGrowCurve:   1,
-		Id:            28061502,
-		MonsterName:   "Chrysopelea_01",
-	},
-
-	28060501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       2.7167999744415283,
-		HpGrowCurve:  1,
-		Id:           28060501,
-		MonsterName:  "Megamoth_Desert_01",
-	},
-
-	28060502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       8.150400161743164,
-		HpGrowCurve:  1,
-		Id:           28060502,
-		MonsterName:  "Megamoth_Desert_02",
-	},
-
-	28060503: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           28060503,
-		MonsterName:  "Megamoth_Desert_03",
-	},
-
-	28070101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28070101,
-		MonsterName:   "MantaRay_Special_01",
-	},
-
-	28070102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28070102,
-		MonsterName:   "MantaRay_Enormous_01",
-	},
-
-	28070201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28070201,
-		MonsterName:   "HermitCrab_Special_01",
-	},
-
-	28070301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28070301,
-		MonsterName:   "Seal_Special_01",
-	},
-
-	28070302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28070302,
-		MonsterName:   "Seal_Enormous_01",
-	},
-
-	28070401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28070401,
-		MonsterName:   "JellyFish_Special_01",
-	},
-
-	28070402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28070402,
-		MonsterName:   "JellyFish_Enormous_01",
-	},
-
-	28070601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28070601,
-		MonsterName:   "Octopus_Larva_01",
-	},
-
-	28060701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000300,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           28060701,
-		MonsterName:  "Megamoth_Desert_04",
-	},
-
-	28060801: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000300,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           28060801,
-		MonsterName:  "Megamoth_Desert_05",
-	},
-
-	28060901: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000300,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           28060901,
-		MonsterName:  "Megamoth_Desert_06",
-	},
-
-	28061001: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           28061001,
-		MonsterName:  "Megamoth_Desert_07",
-	},
-
-	28061002: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           28061002,
-		MonsterName:  "Megamoth_Desert_08",
-	},
-
-	28060504: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28060504,
-		MonsterName:   "Megamoth_Desert_01",
-	},
-
-	28060505: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        8.150400161743164,
-		HpGrowCurve:   1,
-		Id:            28060505,
-		MonsterName:   "Megamoth_Desert_02",
-	},
-
-	28060506: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   1,
-		Id:            28060506,
-		MonsterName:   "Megamoth_Desert_03",
-	},
-
-	28060509: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        21.734399795532227,
-		HpGrowCurve:   1,
-		Id:            28060509,
-		MonsterName:   "Megamoth_Desert_04",
-	},
-
-	28060510: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        16.300800323486328,
-		HpGrowCurve:   1,
-		Id:            28060510,
-		MonsterName:   "Megamoth_Desert_05",
-	},
-
-	28060511: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        16.300800323486328,
-		HpGrowCurve:   1,
-		Id:            28060511,
-		MonsterName:   "Megamoth_Desert_06",
-	},
-
-	28060512: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060512,
-		MonsterName:   "Megamoth_Desert_07",
-	},
-
-	28060513: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060513,
-		MonsterName:   "Megamoth_Desert_08",
-	},
-
-	28060601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       2.7167999744415283,
-		HpGrowCurve:  1,
-		Id:           28060601,
-		MonsterName:  "Megamoth_Jungle_01",
-	},
-
-	28060602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       8.150400161743164,
-		HpGrowCurve:  1,
-		Id:           28060602,
-		MonsterName:  "Megamoth_Jungle_02",
-	},
-
-	28060603: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           28060603,
-		MonsterName:  "Megamoth_Jungle_03",
-	},
-
-	28061101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000300,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           28061101,
-		MonsterName:  "Megamoth_Jungle_04",
-	},
-
-	28061201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000300,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           28061201,
-		MonsterName:  "Megamoth_Jungle_05",
-	},
-
-	28061301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000300,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           28061301,
-		MonsterName:  "Megamoth_Jungle_06",
-	},
-
-	28061401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           28061401,
-		MonsterName:  "Megamoth_Jungle_07",
-	},
-
-	28061402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22000200,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           28061402,
-		MonsterName:  "Megamoth_Jungle_08",
-	},
-
-	28060609: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   1,
-		Id:            28060609,
-		MonsterName:   "Megamoth_Jungle_Strong_01",
-	},
-
-	28060604: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28060604,
-		MonsterName:   "Megamoth_Jungle_01",
-	},
-
-	28060605: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        8.150400161743164,
-		HpGrowCurve:   1,
-		Id:            28060605,
-		MonsterName:   "Megamoth_Jungle_02",
-	},
-
-	28060606: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   1,
-		Id:            28060606,
-		MonsterName:   "Megamoth_Jungle_03",
-	},
-
-	28060610: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        21.734399795532227,
-		HpGrowCurve:   1,
-		Id:            28060610,
-		MonsterName:   "Megamoth_Jungle_04",
-	},
-
-	28060611: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        16.300800323486328,
-		HpGrowCurve:   1,
-		Id:            28060611,
-		MonsterName:   "Megamoth_Jungle_05",
-	},
-
-	28060612: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        16.300800323486328,
-		HpGrowCurve:   1,
-		Id:            28060612,
-		MonsterName:   "Megamoth_Jungle_06",
-	},
-
-	28060613: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060613,
-		MonsterName:   "Megamoth_Jungle_07",
-	},
-
-	28060614: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28060614,
-		MonsterName:   "Megamoth_Jungle_08",
-	},
-
-	28220301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28220301,
-		MonsterName:   "Homeworld_Boar_01",
-	},
-
-	28220303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28220303,
-		MonsterName:   "Homeworld_Boar_03",
-	},
-
-	28220313: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2.7167999744415283,
-		HpGrowCurve:   1,
-		Id:            28220313,
-		MonsterName:   "Homeworld_Boar_Grass",
-	},
-
-	28220314: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220314,
-		MonsterName:   "Homeworld_Boar_Grass_Small",
-	},
-
-	28210101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210101,
-		MonsterName:   "Homeworld_Crab_01",
-	},
-
-	28210102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210102,
-		MonsterName:   "Homeworld_Crab_02",
-	},
-
-	28210103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210103,
-		MonsterName:   "Homeworld_Crab_03",
-	},
-
-	28210104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210104,
-		MonsterName:   "Homeworld_Crab_04",
-	},
-
-	28210105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210105,
-		MonsterName:   "Homeworld_Crab_05",
-	},
-
-	28220101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220101,
-		MonsterName:   "Homeworld_Fox_01",
-	},
-
-	28220102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220102,
-		MonsterName:   "Homeworld_Fox_02",
-	},
-
-	28220108: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220108,
-		MonsterName:   "Homeworld_Fox_03",
-	},
-
-	28220201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220201,
-		MonsterName:   "Homeworld_Squirrel_01",
-	},
-
-	28220401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220401,
-		MonsterName:   "Homeworld_DogPrick_01",
-	},
-
-	28220402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220402,
-		MonsterName:   "Homeworld_DogPrick_02",
-	},
-
-	28220403: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220403,
-		MonsterName:   "Homeworld_DogPrick_03",
-	},
-
-	28220404: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220404,
-		MonsterName:   "Homeworld_DogPrick_04",
-	},
-
-	28220405: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220405,
-		MonsterName:   "Homeworld_Dog_DropEar_01",
-	},
-
-	28220406: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220406,
-		MonsterName:   "Homeworld_Dog_DropEar_02",
-	},
-
-	28220407: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220407,
-		MonsterName:   "Homeworld_Dog_DropEar_03",
-	},
-
-	28220501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220501,
-		MonsterName:   "Homeworld_Cat_01",
-	},
-
-	28220502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220502,
-		MonsterName:   "Homeworld_Cat_02",
-	},
-
-	28220503: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220503,
-		MonsterName:   "Homeworld_Cat_03",
-	},
-
-	28220504: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220504,
-		MonsterName:   "Homeworld_Cat_04",
-	},
-
-	28220505: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220505,
-		MonsterName:   "Homeworld_Cat_05",
-	},
-
-	28220506: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220506,
-		MonsterName:   "Homeworld_Cat_06",
-	},
-
-	28220601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220601,
-		MonsterName:   "Homeworld_Marten_01",
-	},
-
-	28220602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220602,
-		MonsterName:   "Homeworld_Marten_02",
-	},
-
-	28220603: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220603,
-		MonsterName:   "Homeworld_Marten_03",
-	},
-
-	28220604: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220604,
-		MonsterName:   "Homeworld_Marten_04",
-	},
-
-	28220605: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28220605,
-		MonsterName:   "Homeworld_Marten_05",
-	},
-
-	28220701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        9999,
-		HpGrowCurve:   1,
-		Id:            28220701,
-		MonsterName:   "Homeworld_Vulpes_01",
-	},
-
-	28220901: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        203.75999450683594,
-		HpGrowCurve:   2,
-		Id:            28220901,
-		MonsterName:   "Homeworld_Inu_Shihandai_01",
-	},
-
-	28222101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        10.867199897766113,
-		HpGrowCurve:   1,
-		Id:            28222101,
-		MonsterName:   "Homeworld_Goat_01",
-	},
-
-	28230101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230101,
-		MonsterName:   "Homeworld_Crane_01",
-	},
-
-	28230102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230102,
-		MonsterName:   "Homeworld_Crane_02",
-	},
-
-	28230104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230104,
-		MonsterName:   "Homeworld_Crane_01_Lbis",
-	},
-
-	28250101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250101,
-		MonsterName:   "Homeworld_Wisp_Wind_01",
-	},
-
-	28250102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250102,
-		MonsterName:   "Homeworld_Wisp_Rock_01",
-	},
-
-	28250103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250103,
-		MonsterName:   "Homeworld_Wisp_Ice_01",
-	},
-
-	28250104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250104,
-		MonsterName:   "Homeworld_Wisp_Electric_01",
-	},
-
-	28250105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250105,
-		MonsterName:   "Homeworld_Wisp_Tokoyo_01",
-	},
-
-	28250106: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250106,
-		MonsterName:   "Homeworld_Wisp_Grass_01",
-	},
-
-	28250107: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250107,
-		MonsterName:   "Homeworld_Wisp_Water_01",
-	},
-
-	28250301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250301,
-		MonsterName:   "Homeworld_Boltbug_Lightbug_01",
-	},
-
-	28250302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250302,
-		MonsterName:   "Homeworld_Boltbug_Lightbug_02",
-	},
-
-	28250401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250401,
-		MonsterName:   "Homeworld_Boltbug_Scarab_01",
-	},
-
-	28250701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28250701,
-		MonsterName:   "HomeWorld_Boltbug_MachinaIustitia_01",
-	},
-
-	28210201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210201,
-		MonsterName:   "Homeworld_Lizard_01",
-	},
-
-	28210202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210202,
-		MonsterName:   "Homeworld_Lizard_02",
-	},
-
-	28210203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210203,
-		MonsterName:   "Homeworld_Lizard_03",
-	},
-
-	28210204: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210204,
-		MonsterName:   "Homeworld_Salamander_01",
-	},
-
-	28210205: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210205,
-		MonsterName:   "Homeworld_Salamander_02",
-	},
-
-	28210206: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210206,
-		MonsterName:   "Homeworld_Salamander_03",
-	},
-
-	28210207: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210207,
-		MonsterName:   "Homeworld_Lizard_04",
-	},
-
-	28210208: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210208,
-		MonsterName:   "Homeworld_Lizard_05",
-	},
-
-	28210301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210301,
-		MonsterName:   "Homeworld_Frog_01",
-	},
-
-	28210302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210302,
-		MonsterName:   "Homeworld_Frog_02",
-	},
-
-	28210303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210303,
-		MonsterName:   "Homeworld_Frog_03",
-	},
-
-	28210304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210304,
-		MonsterName:   "Homeworld_Frog_04",
-	},
-
-	28210401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210401,
-		MonsterName:   "Homeworld_Eel_01",
-	},
-
-	28210402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210402,
-		MonsterName:   "Homeworld_Eel_02",
-	},
-
-	28210403: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210403,
-		MonsterName:   "Homeworld_Eel_03",
-	},
-
-	28210404: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28210404,
-		MonsterName:   "Homeworld_Eel_04",
-	},
-
-	28230301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230301,
-		MonsterName:   "Homeworld_Pigeon_01",
-	},
-
-	28230302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230302,
-		MonsterName:   "Homeworld_Pigeon_02",
-	},
-
-	28230303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230303,
-		MonsterName:   "Homeworld_Pigeon_03",
-	},
-
-	28230304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230304,
-		MonsterName:   "Homeworld_Pigeon_04",
-	},
-
-	28230305: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230305,
-		MonsterName:   "Homeworld_Pigeon_05",
-	},
-
-	28230306: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230306,
-		MonsterName:   "Homeworld_Crow_01",
-	},
-
-	28230313: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230313,
-		MonsterName:   "Homeworld_Pigeon_Beak_01",
-	},
-
-	28230401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230401,
-		MonsterName:   "Homeworld_Tit_01",
-	},
-
-	28230402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230402,
-		MonsterName:   "Homeworld_Tit_02",
-	},
-
-	28230403: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230403,
-		MonsterName:   "Homeworld_Tit_03",
-	},
-
-	28230404: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230404,
-		MonsterName:   "Homeworld_Tit_04",
-	},
-
-	28230601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230601,
-		MonsterName:   "Homeworld_Swan_01",
-	},
-
-	28230602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230602,
-		MonsterName:   "Homeworld_Swan_02",
-	},
-
-	28230603: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230603,
-		MonsterName:   "Homeworld_Uka_01",
-	},
-
-	28230701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230701,
-		MonsterName:   "Homeworld_Albatross_01",
-	},
-
-	28230702: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230702,
-		MonsterName:   "Homeworld_Seagull_01",
-	},
-
-	28230703: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230703,
-		MonsterName:   "Homeworld_Eggplant_01",
-	},
-
-	28230704: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230704,
-		MonsterName:   "Homeworld_Eggplant_02",
-	},
-
-	28230705: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230705,
-		MonsterName:   "Homeworld_Fantail_01",
-	},
-
-	28230706: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230706,
-		MonsterName:   "Homeworld_Fantail_02",
-	},
-
-	28230707: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230707,
-		MonsterName:   "Homeworld_Larvivora_01",
-	},
-
-	28230708: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28230708,
-		MonsterName:   "Homeworld_Larvivora_02",
-	},
-
-	28240201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240201,
-		MonsterName:   "Homeworld_Fishable_Maritime_Heliobatis_01",
-	},
-
-	28240202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240202,
-		MonsterName:   "Homeworld_Fishable_Maritime_Heliobatis_02",
-	},
-
-	28240203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240203,
-		MonsterName:   "Homeworld_Fishable_Maritime_Heliobatis_03",
-	},
-
-	28240204: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240204,
-		MonsterName:   "Homeworld_Fishable_Maritime_Heliobatis_04",
-	},
-
-	28240205: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240205,
-		MonsterName:   "Homeworld_Fishable_Maritime_Heliobatis_05",
-	},
-
-	28240206: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240206,
-		MonsterName:   "Homeworld_Fishable_Maritime_Heliobatis_06",
-	},
-
-	28240301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240301,
-		MonsterName:   "Homeworld_Fishable_Maritime_Aspidorhynchus_01",
-	},
-
-	28240302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240302,
-		MonsterName:   "Homeworld_Fishable_Maritime_Aspidorhynchus_02",
-	},
-
-	28240303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240303,
-		MonsterName:   "Homeworld_Fishable_Maritime_Aspidorhynchus_03",
-	},
-
-	28240304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240304,
-		MonsterName:   "Homeworld_Fishable_Maritime_Aspidorhynchus_04",
-	},
-
-	28240305: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240305,
-		MonsterName:   "Homeworld_Fishable_Maritime_Aspidorhynchus_05",
-	},
-
-	28240401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240401,
-		MonsterName:   "Homeworld_Fishable_Maritime_Cheirolepis_01",
-	},
-
-	28240402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240402,
-		MonsterName:   "Homeworld_Fishable_Maritime_Cheirolepis_02",
-	},
-
-	28240501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240501,
-		MonsterName:   "Homeworld_Fishable_Maritime_Doryaspis_01",
-	},
-
-	28240502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240502,
-		MonsterName:   "Homeworld_Fishable_Maritime_Doryaspis_02",
-	},
-
-	28240503: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240503,
-		MonsterName:   "Homeworld_Fishable_Maritime_Doryaspis_03",
-	},
-
-	28240504: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240504,
-		MonsterName:   "Homeworld_Fishable_Maritime_Doryaspis_04",
-	},
-
-	28240505: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240505,
-		MonsterName:   "Homeworld_Fishable_Maritime_Doryaspis_05",
-	},
-
-	28240506: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240506,
-		MonsterName:   "Homeworld_Fishable_Maritime_Doryaspis_06",
-	},
-
-	28240601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240601,
-		MonsterName:   "Homeworld_Fishable_Maritime_Namazu_01",
-	},
-
-	28240602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240602,
-		MonsterName:   "Homeworld_Fishable_Maritime_Namazu_02",
-	},
-
-	28240701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240701,
-		MonsterName:   "Homeworld_Fishable_Ray_Stellamarisidae_01_02",
-	},
-
-	28240702: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240702,
-		MonsterName:   "Homeworld_Fishable_Ray_Stellamarisidae_01_03",
-	},
-
-	28240801: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240801,
-		MonsterName:   "Homeworld_Fishable_Maritime_Batdiodan_01",
-	},
-
-	28240802: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240802,
-		MonsterName:   "Homeworld_Fishable_Maritime_Batdiodan_02",
-	},
-
-	28240803: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240803,
-		MonsterName:   "Homeworld_Fishable_Maritime_Batdiodan_03",
-	},
-
-	28240804: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240804,
-		MonsterName:   "Homeworld_Fishable_Maritime_Batdiodan_04",
-	},
-
-	28240901: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240901,
-		MonsterName:   "Homeworld_Fishable_Maritime_Apsva_01",
-	},
-
-	28240902: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240902,
-		MonsterName:   "Homeworld_Fishable_Maritime_Apsva_02",
-	},
-
-	28240903: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28240903,
-		MonsterName:   "Homeworld_Fishable_Maritime_Apsva_03",
-	},
-
-	28241001: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28241001,
-		MonsterName:   "Homeworld_Fishable_Maritime_Coeur_01",
-	},
-
-	28241002: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28241002,
-		MonsterName:   "Homeworld_Fishable_Maritime_Coeur_02",
-	},
-
-	28241003: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28241003,
-		MonsterName:   "Homeworld_Fishable_Maritime_Coeur_03",
-	},
-
-	28241101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28241101,
-		MonsterName:   "Homeworld_Fishable_Maritime_MachinaIustitia_01",
-	},
-
-	28241102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28241102,
-		MonsterName:   "Homeworld_Fishable_Maritime_MachinaIustitia_02",
-	},
-
-	28241103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28241103,
-		MonsterName:   "Homeworld_Fishable_Maritime_MachinaIustitia_03",
-	},
-
-	28241104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28241104,
-		MonsterName:   "Homeworld_Fishable_Maritime_MachinaIustitia_04",
-	},
-
-	28241105: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0,
-			attributes.Dendro:   0,
-			attributes.Hydro:    0,
-			attributes.Electro:  0,
-			attributes.Anemo:    0,
-			attributes.Cryo:     0,
-			attributes.Geo:      0,
-			attributes.Physical: 0,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        0.14000000059604645,
-		HpGrowCurve:   1,
-		Id:            28241105,
-		MonsterName:   "Homeworld_Fishable_Maritime_MachinaIustitia_05",
-	},
-
-	21010181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21010181,
-		MonsterName:  "Hili_None_01",
-	},
-
-	21010281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21010281,
-		MonsterName:  "Hili_None_01_Club",
-	},
-
-	21010381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21010381,
-		MonsterName:  "Hili_None_01_Shield",
-	},
-
-	21010481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21010481,
-		MonsterName:  "Hili_None_01_Range",
-	},
-
-	21010482: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21010482,
-		MonsterName:  "Hili_None_01_Range_Multi",
-	},
-
-	21010581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21010581,
-		MonsterName:  "Hili_Fire_Range",
-	},
-
-	21010582: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21010582,
-		MonsterName:  "Hili_Fire_Range_Multi",
-	},
-
-	21010681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21010681,
-		MonsterName:  "Hili_Fire_Bomb",
-	},
-
-	21010781: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21010781,
-		MonsterName:  "Hili_Fire_Rush",
-	},
-
-	21010981: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21010981,
-		MonsterName:  "Hili_Ice_Range",
-	},
-
-	21010982: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21010982,
-		MonsterName:  "Hili_Ice_Range_Multi",
-	},
-
-	21011081: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21011081,
-		MonsterName:  "Hili_Electric_Range",
-	},
-
-	21011082: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21011082,
-		MonsterName:  "Hili_Electric_Range_Multi",
-	},
-
-	21011281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21011281,
-		MonsterName:  "Hili_None_01_RockShield",
-	},
-
-	21011381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           21011381,
-		MonsterName:  "Hili_Ice_Bomb",
-	},
-
-	21011481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21011481,
-		MonsterName:  "Hili_Ice_IceShield",
-	},
-
-	21011681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21011681,
-		MonsterName:  "Hili_Electric_Bomb",
-	},
-
-	21020181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           21020181,
-		MonsterName:  "Brute_None_Shield",
-	},
-
-	21020281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           21020281,
-		MonsterName:  "Brute_None_Axe",
-	},
-
-	21020282: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           21020282,
-		MonsterName:  "Brute_None_Axe",
-	},
-
-	21020381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           21020381,
-		MonsterName:  "Brute_None_RockShield",
-	},
-
-	21020382: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           21020382,
-		MonsterName:  "Brute_None_RockShield",
-	},
-
-	21020681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           21020681,
-		MonsterName:  "Brute_Ice_Shield",
-	},
-
-	21020781: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           21020781,
-		MonsterName:  "Brute_Electric_Axe",
-	},
-
-	21020782: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           21020782,
-		MonsterName:  "Brute_Electric_Axe",
-	},
-
-	21040181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.5,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       67.91999816894531,
-		HpGrowCurve:  2,
-		Id:           21040181,
-		MonsterName:  "Hilistray_Wind_01",
-	},
-
-	21040182: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.5,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       67.91999816894531,
-		HpGrowCurve:  2,
-		Id:           21040182,
-		MonsterName:  "Hilistray_Wind_01",
-	},
-
-	21040281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.5,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       67.91999816894531,
-		HpGrowCurve:  2,
-		Id:           21040281,
-		MonsterName:  "Hilistray_Water_01",
-	},
-
-	21040282: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.5,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       67.91999816894531,
-		HpGrowCurve:  2,
-		Id:           21040282,
-		MonsterName:  "Hilistray_Water_01",
-	},
-
-	21030181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.5,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030181,
-		MonsterName:  "Shaman_Water_01",
-	},
-
-	21030281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010013,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010013,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030281,
-		MonsterName:  "Shaman_Grass_01",
-	},
-
-	21030381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.5,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030381,
-		MonsterName:  "Shaman_Wind_01",
-	},
-
-	21030383: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.5,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030383,
-		MonsterName:  "Shaman_Wind_01",
-	},
-
-	21030481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030481,
-		MonsterName:  "Shaman_Rock_01",
-	},
-
-	21030482: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030482,
-		MonsterName:  "Shaman_Rock_01",
-	},
-
-	21030581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.5,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030581,
-		MonsterName:  "Shaman_Ice_01",
-	},
-
-	21030582: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.5,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030582,
-		MonsterName:  "Shaman_Ice_01",
-	},
-
-	21030681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.5,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030681,
-		MonsterName:  "Shaman_Electric_01",
-	},
-
-	21030282: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.5,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010013,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010013,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030282,
-		MonsterName:  "Shaman_Grass_01_SupportEnhance",
-	},
-
-	21030382: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.5,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  1,
-		Id:           21030382,
-		MonsterName:  "Shaman_Wind_01_WindZoneEnhance",
-	},
-
-	21020481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.699999988079071,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010050,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       122.25599670410156,
-		HpGrowCurve:  1,
-		Id:           21020481,
-		MonsterName:  "Brute_Ice_None",
-	},
-
-	21020482: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.699999988079071,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010050,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       122.25599670410156,
-		HpGrowCurve:  1,
-		Id:           21020482,
-		MonsterName:  "Brute_Ice_None",
-	},
-
-	21020581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.699999988079071,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010050,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       122.25599670410156,
-		HpGrowCurve:  1,
-		Id:           21020581,
-		MonsterName:  "Brute_Rock_None",
-	},
-
-	21020881: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.699999988079071,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010050,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       122.25599670410156,
-		HpGrowCurve:  1,
-		Id:           21020881,
-		MonsterName:  "Brute_Electric_None",
-	},
-
-	21020882: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.699999988079071,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010050,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010050,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       122.25599670410156,
-		HpGrowCurve:  1,
-		Id:           21020882,
-		MonsterName:  "Brute_Electric_None",
-	},
-
-	20010381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           20010381,
-		MonsterName:  "Slime_Wind_02",
-	},
-
-	20010581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           20010581,
-		MonsterName:  "Slime_Electric_02",
-	},
-
-	20010881: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           20010881,
-		MonsterName:  "Slime_Ice_02",
-	},
-
-	20011081: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           20011081,
-		MonsterName:  "Slime_Water_02",
-	},
-
-	20011281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010011,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           20011281,
-		MonsterName:  "Slime_Fire_02",
-	},
-
-	20011481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           20011481,
-		MonsterName:  "Slime_Rock_02",
-	},
-
-	20010481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010035,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           20010481,
-		MonsterName:  "Slime_Wind_03",
-	},
-
-	20010681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010034,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           20010681,
-		MonsterName:  "Slime_Electric_03",
-	},
-
-	20010981: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010036,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           20010981,
-		MonsterName:  "Slime_Ice_03",
-	},
-
-	20011181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010032,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           20011181,
-		MonsterName:  "Slime_Water_03",
-	},
-
-	20011381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010011,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010031,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           20011381,
-		MonsterName:  "Slime_Fire_03",
-	},
-
-	20011581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           20011581,
-		MonsterName:  "Slime_Rock_03",
-	},
-
-	20050281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       46.18560028076172,
-		HpGrowCurve:  1,
-		Id:           20050281,
-		MonsterName:  "Monster_Oceanid_Boar_02",
-	},
-
-	20050381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.15000000596046448,
-			attributes.Dendro:   0.15000000596046448,
-			attributes.Hydro:    0.15000000596046448,
-			attributes.Electro:  -0.4000000059604645,
-			attributes.Anemo:    0.15000000596046448,
-			attributes.Cryo:     0.15000000596046448,
-			attributes.Geo:      0.15000000596046448,
-			attributes.Physical: 0.15000000596046448,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       10.867199897766113,
-		HpGrowCurve:  1,
-		Id:           20050381,
-		MonsterName:  "Monster_Oceanid_Crane",
-	},
-
-	20050481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.15000000596046448,
-			attributes.Dendro:   0.15000000596046448,
-			attributes.Hydro:    0.15000000596046448,
-			attributes.Electro:  0.15000000596046448,
-			attributes.Anemo:    0.15000000596046448,
-			attributes.Cryo:     -0.4000000059604645,
-			attributes.Geo:      0.15000000596046448,
-			attributes.Physical: 0.15000000596046448,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           20050481,
-		MonsterName:  "Monster_Oceanid_Crab",
-	},
-
-	20050581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.15000000596046448,
-			attributes.Dendro:   0.15000000596046448,
-			attributes.Hydro:    0.15000000596046448,
-			attributes.Electro:  0.15000000596046448,
-			attributes.Anemo:    0.15000000596046448,
-			attributes.Cryo:     0.15000000596046448,
-			attributes.Geo:      -0.4000000059604645,
-			attributes.Physical: 0.15000000596046448,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010032,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           20050581,
-		MonsterName:  "Monster_Oceanid_Tit",
-	},
-
-	20050681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.15000000596046448,
-			attributes.Dendro:   0.15000000596046448,
-			attributes.Hydro:    0.15000000596046448,
-			attributes.Electro:  0.15000000596046448,
-			attributes.Anemo:    0.15000000596046448,
-			attributes.Cryo:     -0.4000000059604645,
-			attributes.Geo:      0.15000000596046448,
-			attributes.Physical: 0.15000000596046448,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           20050681,
-		MonsterName:  "Monster_Oceanid_Wigeon_02",
-	},
-
-	20050781: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     -0.4000000059604645,
-			attributes.Dendro:   0.15000000596046448,
-			attributes.Hydro:    0.15000000596046448,
-			attributes.Electro:  0.15000000596046448,
-			attributes.Anemo:    0.15000000596046448,
-			attributes.Cryo:     0.15000000596046448,
-			attributes.Geo:      0.15000000596046448,
-			attributes.Physical: 0.15000000596046448,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       19.01759910583496,
-		HpGrowCurve:  1,
-		Id:           20050781,
-		MonsterName:  "Monster_Oceanid_Squirrel",
-	},
-
-	20050881: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.15000000596046448,
-			attributes.Dendro:   0.15000000596046448,
-			attributes.Hydro:    0.15000000596046448,
-			attributes.Electro:  0.15000000596046448,
-			attributes.Anemo:    0.15000000596046448,
-			attributes.Cryo:     0.15000000596046448,
-			attributes.Geo:      -0.4000000059604645,
-			attributes.Physical: 0.15000000596046448,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           20050881,
-		MonsterName:  "Monster_Oceanid_Frog",
-	},
-
-	25010281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25010281,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_02",
-	},
-
-	25010381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010381,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Fire_01",
-	},
-
-	25010481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010481,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Water_01",
-	},
-
-	25010581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010581,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Electric_01",
-	},
-
-	25010681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  1,
-		Id:           25010681,
-		MonsterName:  "Thoarder_Male_Standard_NoWeapon_Ice_01",
-	},
-
-	25010781: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25010781,
-		MonsterName:  "Thoarder_Male_Fat_NoWeapon_01",
-	},
-
-	25020281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  1,
-		Id:           25020281,
-		MonsterName:  "Thoarder_Male_Standard_Crossbow_02",
-	},
-
-	25030281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25030281,
-		MonsterName:  "Thoarder_Male_Fat_Shovel_03",
-	},
-
-	25030381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25030381,
-		MonsterName:  "Thoarder_Male_Fat_Shovel_02",
-	},
-
-	25060181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25060181,
-		MonsterName:  "Thoarder_MuscleMan_NoWeapon_01",
-	},
-
-	25070181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  1,
-		Id:           25070181,
-		MonsterName:  "Thoarder_MuscleMan_Hammer_01",
-	},
-
-	25210181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210181,
-		MonsterName:  "Eremite_Female_Hatchet_01",
-	},
-
-	25210281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210281,
-		MonsterName:  "Eremite_Male_Standard_Crossbow_02",
-	},
-
-	25210381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       16.300800323486328,
-		HpGrowCurve:  2,
-		Id:           25210381,
-		MonsterName:  "Eremite_Male_Standard_Pole_03",
-	},
-
-	25210481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210481,
-		MonsterName:  "Eremite_MuscleMan_Gloves_01",
-	},
-
-	25210581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           25210581,
-		MonsterName:  "Eremite_MuscleMan_Simitar_02",
-	},
-
-	25310181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010022,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       48.902400970458984,
-		HpGrowCurve:  2,
-		Id:           25310181,
-		MonsterName:  "Eremite_Female_Slim_PushDagger_01",
-	},
-
-	25310182: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010022,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       48.902400970458984,
-		HpGrowCurve:  2,
-		Id:           25310182,
-		MonsterName:  "Eremite_Female_Slim_PushDagger_01",
-	},
-
-	25310281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010026,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       48.902400970458984,
-		HpGrowCurve:  2,
-		Id:           25310281,
-		MonsterName:  "Eremite_Male_Standard_Glaive_01",
-	},
-
-	25310282: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010026,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       48.902400970458984,
-		HpGrowCurve:  2,
-		Id:           25310282,
-		MonsterName:  "Eremite_Male_Standard_Glaive_01",
-	},
-
-	25310381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010024,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       54.33599853515625,
-		HpGrowCurve:  2,
-		Id:           25310381,
-		MonsterName:  "Eremite_Male_Standard_Polearm_01",
-	},
-
-	25310382: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010024,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       54.33599853515625,
-		HpGrowCurve:  2,
-		Id:           25310382,
-		MonsterName:  "Eremite_Male_Standard_Polearm_01",
-	},
-
-	25410181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       67.91999816894531,
-		HpGrowCurve:  2,
-		Id:           25410181,
-		MonsterName:  "Eremite_Male_Strong_Katar_01",
-	},
-
-	25410281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       59.76959991455078,
-		HpGrowCurve:  2,
-		Id:           25410281,
-		MonsterName:  "Eremite_Female_Standard_Longbow_01",
-	},
-
-	25410282: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       59.76959991455078,
-		HpGrowCurve:  2,
-		Id:           25410282,
-		MonsterName:  "Eremite_Female_Standard_Longbow_01",
-	},
-
-	25410381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010011,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       59.76959991455078,
-		HpGrowCurve:  2,
-		Id:           25410381,
-		MonsterName:  "Eremite_Female_Standard_Oracle_01",
-	},
-
-	25410382: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010011,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       59.76959991455078,
-		HpGrowCurve:  2,
-		Id:           25410382,
-		MonsterName:  "Eremite_Female_Standard_Oracle_01",
-	},
-
-	25410481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010013,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010013,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010013,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010013,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       67.91999816894531,
-		HpGrowCurve:  2,
-		Id:           25410481,
-		MonsterName:  "Eremite_Female_Standard_Dancer_01",
-	},
-
-	25080181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  2,
-		Id:           25080181,
-		MonsterName:  "Samurai_Ronin_01",
-	},
-
-	25080281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  2,
-		Id:           25080281,
-		MonsterName:  "Samurai_Ronin_02",
-	},
-
-	25080381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  2,
-		Id:           25080381,
-		MonsterName:  "Samurai_Ronin_03",
-	},
-
-	25100181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       65.20320129394531,
-		HpGrowCurve:  2,
-		Id:           25100181,
-		MonsterName:  "Samurai_Kairagi_01",
-	},
-
-	25100182: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       65.20320129394531,
-		HpGrowCurve:  2,
-		Id:           25100182,
-		MonsterName:  "Samurai_Kairagi_01",
-	},
-
-	25100183: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       65.20320129394531,
-		HpGrowCurve:  2,
-		Id:           25100183,
-		MonsterName:  "Samurai_Kairagi_01",
-	},
-
-	25100281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       65.20320129394531,
-		HpGrowCurve:  2,
-		Id:           25100281,
-		MonsterName:  "Samurai_Kairagi_02",
-	},
-
-	25100282: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       65.20320129394531,
-		HpGrowCurve:  2,
-		Id:           25100282,
-		MonsterName:  "Samurai_Kairagi_02",
-	},
-
-	25100283: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       65.20320129394531,
-		HpGrowCurve:  2,
-		Id:           25100283,
-		MonsterName:  "Samurai_Kairagi_02",
-	},
-
-	20060181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           20060181,
-		MonsterName:  "Sylph_Water_01",
-	},
-
-	20060281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           20060281,
-		MonsterName:  "Sylph_Rock_01",
-	},
-
-	20060381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           20060381,
-		MonsterName:  "Sylph_Wind_01",
-	},
-
-	20060382: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010015,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010015,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           20060382,
-		MonsterName:  "Sylph_Wind_01",
-	},
-
-	20060481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           20060481,
-		MonsterName:  "Sylph_Ice_01",
-	},
-
-	20060581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           20060581,
-		MonsterName:  "Sylph_Electric_01",
-	},
-
-	20060681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010011,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010011,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           20060681,
-		MonsterName:  "Sylph_Fire_01",
-	},
-
-	20060781: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010013,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010013,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       21.734399795532227,
-		HpGrowCurve:  2,
-		Id:           20060781,
-		MonsterName:  "Sylph_Grass_01",
-	},
-
-	26090181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.20000000298023224,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090181,
-		MonsterName:  "Fungus_Un_Gamma_Water_01",
-	},
-
-	26090281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.25,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090281,
-		MonsterName:  "Fungus_Un_Delta_Grass_01",
-	},
-
-	26090381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.20000000298023224,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090381,
-		MonsterName:  "Fungus_Un_Delta_Wind_01",
-	},
-
-	26090481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090481,
-		MonsterName:  "Fungus_Trois_Epsilon_Electric_01",
-	},
-
-	26090581: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.20000000298023224,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090581,
-		MonsterName:  "Fungus_Trois_Alpha_Ice_01",
-	},
-
-	26090681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.20000000298023224,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090681,
-		MonsterName:  "Fungus_Trois_Gamma_Fire_01",
-	},
-
-	26090781: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.20000000298023224,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090781,
-		MonsterName:  "Fungus_Deux_Alpha_Fire_01",
-	},
-
-	26090881: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.20000000298023224,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090881,
-		MonsterName:  "Fungus_Deux_Epsilon_Wind_01",
-	},
-
-	26090981: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.20000000298023224,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26090981,
-		MonsterName:  "Fungus_Deux_Beta_Rock_01",
-	},
-
-	26091081: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       13.583999633789062,
-		HpGrowCurve:  2,
-		Id:           26091081,
-		MonsterName:  "Fungus_Deux_Delta_Electric_01",
-	},
-
-	26120181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.4000000059604645,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010013,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010013,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  2,
-		Id:           26120181,
-		MonsterName:  "Fungus_Amanita_Unu_Anudatta_Grass_01",
-	},
-
-	26120281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.30000001192092896,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.30000001192092896,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       38.03519821166992,
-		HpGrowCurve:  2,
-		Id:           26120281,
-		MonsterName:  "Fungus_Amanita_Unu_Svarita_Ices_01",
-	},
-
-	26120381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.30000001192092896,
-			attributes.Hydro:    0.30000001192092896,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  2,
-		Id:           26120381,
-		MonsterName:  "Fungus_Amanita_Du_Anudatta_Water_01",
-	},
-
-	26120382: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.30000001192092896,
-			attributes.Hydro:    0.30000001192092896,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       27.167999267578125,
-		HpGrowCurve:  2,
-		Id:           26120382,
-		MonsterName:  "Fungus_Amanita_Du_Anudatta_Water_01",
-	},
-
-	26120481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.30000001192092896,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.30000001192092896,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       38.03519821166992,
-		HpGrowCurve:  2,
-		Id:           26120481,
-		MonsterName:  "Fungus_Amanita_Du_Udatta_Rock_01",
-	},
-
-	26120482: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.30000001192092896,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.30000001192092896,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       38.03519821166992,
-		HpGrowCurve:  2,
-		Id:           26120482,
-		MonsterName:  "Fungus_Amanita_Du_Udatta_Rock_01",
-	},
-
-	24010181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.699999988079071,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010040,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       95.08799743652344,
-		HpGrowCurve:  1,
-		Id:           24010181,
-		MonsterName:  "Defender_None_01",
-	},
-
-	24010182: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.699999988079071,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010040,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       95.08799743652344,
-		HpGrowCurve:  1,
-		Id:           24010182,
-		MonsterName:  "Defender_None_01",
-	},
-
-	24010281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010040,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       81.50399780273438,
-		HpGrowCurve:  1,
-		Id:           24010281,
-		MonsterName:  "Formathr_None",
-	},
-
-	24010381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.699999988079071,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010040,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       122.25599670410156,
-		HpGrowCurve:  1,
-		Id:           24010381,
-		MonsterName:  "Konungmathr_None",
-	},
-
-	24010382: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.699999988079071,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010040,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010040,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       122.25599670410156,
-		HpGrowCurve:  1,
-		Id:           24010382,
-		MonsterName:  "Konungmathr_None",
-	},
-
-	24020181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  2,
-		Id:           24020181,
-		MonsterName:  "Apparatus_Enigma_BionicDrone",
-	},
-
-	24020281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  2,
-		Id:           24020281,
-		MonsterName:  "Apparatus_Enigma_BionicFlora",
-	},
-
-	24020381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       57.052799224853516,
-		HpGrowCurve:  2,
-		Id:           24020381,
-		MonsterName:  "Apparatus_Enigma_BionicInsecta",
-	},
-
-	24020481: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       57.052799224853516,
-		HpGrowCurve:  2,
-		Id:           24020481,
-		MonsterName:  "Apparatus_Enigma_BionicNettler",
-	},
-
-	24030181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010030,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       67.91999816894531,
-		HpGrowCurve:  2,
-		Id:           24030181,
-		MonsterName:  "Gargoyle_Airborne_01",
-	},
-
-	24030281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.5,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010030,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       95.08799743652344,
-		HpGrowCurve:  2,
-		Id:           24030281,
-		MonsterName:  "Gargoyle_Ground_01",
-	},
-
-	24040181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       46.18560028076172,
-		HpGrowCurve:  2,
-		Id:           24040181,
-		MonsterName:  "Monolith_Ordinator_01",
-	},
-
-	24040281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       46.18560028076172,
-		HpGrowCurve:  2,
-		Id:           24040281,
-		MonsterName:  "Monolith_Ordinator_02",
-	},
-
-	24040381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010010,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010010,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       46.18560028076172,
-		HpGrowCurve:  2,
-		Id:           24040381,
-		MonsterName:  "Monolith_Ordinator_03",
-	},
-
-	26030181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       40.75199890136719,
-		HpGrowCurve:  1,
-		Id:           26030181,
-		MonsterName:  "Wyrm_Rock",
-	},
-
-	26040181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  1,
-		Id:           26040181,
-		MonsterName:  "Drake_Rock_01_Water",
-	},
-
-	26040182: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  1,
-		Id:           26040182,
-		MonsterName:  "Drake_Rock_01_Fire",
-	},
-
-	26040183: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  1,
-		Id:           26040183,
-		MonsterName:  "Drake_Rock_01_Ice",
-	},
-
-	26040184: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  1,
-		Id:           26040184,
-		MonsterName:  "Drake_Rock_01_Elec",
-	},
-
-	26040185: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  1,
-		Id:           26040185,
-		MonsterName:  "Drake_Rock_01_Water",
-	},
-
-	26040186: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  1,
-		Id:           26040186,
-		MonsterName:  "Drake_Rock_01_Fire",
-	},
-
-	26040187: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  1,
-		Id:           26040187,
-		MonsterName:  "Drake_Rock_01_Ice",
-	},
-
-	26040188: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.5,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010017,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010017,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010037,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  1,
-		Id:           26040188,
-		MonsterName:  "Drake_Rock_01_Elec",
-	},
-
-	26050681: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.30000001192092896,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010022,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  2,
-		Id:           26050681,
-		MonsterName:  "Drake_DeepSea_Water_01",
-	},
-
-	26050682: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.30000001192092896,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010012,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010012,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010022,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       108.6719970703125,
-		HpGrowCurve:  2,
-		Id:           26050682,
-		MonsterName:  "Drake_DeepSea_Water_01",
-	},
-
-	26051081: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.20000000298023224,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       54.33599853515625,
-		HpGrowCurve:  2,
-		Id:           26051081,
-		MonsterName:  "Drake_Deepsea_Ice_02",
-	},
-
-	26050781: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.20000000298023224,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       54.33599853515625,
-		HpGrowCurve:  2,
-		Id:           26050781,
-		MonsterName:  "Drake_Deepsea_Ice_02",
-	},
-
-	26051082: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.20000000298023224,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010016,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010016,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       54.33599853515625,
-		HpGrowCurve:  2,
-		Id:           26051082,
-		MonsterName:  "Drake_Deepsea_Ice_02",
-	},
-
-	26051181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       54.33599853515625,
-		HpGrowCurve:  2,
-		Id:           26051181,
-		MonsterName:  "Drake_Deepsea_Electric_02",
-	},
-
-	26050881: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       54.33599853515625,
-		HpGrowCurve:  2,
-		Id:           26050881,
-		MonsterName:  "Drake_Deepsea_Electric_02",
-	},
-
-	26051182: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010014,
-				HpPercent: 0.6,
-			},
-			{
-				DropId:    22010014,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 0,
-		HpBase:       54.33599853515625,
-		HpGrowCurve:  2,
-		Id:           26051182,
-		MonsterName:  "Drake_Deepsea_Electric_02",
-	},
-
-	26020181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.699999988079071,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010036,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010036,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010036,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010036,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 1,
-		HpBase:       95.08799743652344,
-		HpGrowCurve:  1,
-		Id:           26020181,
-		MonsterName:  "Regisvine_Ice",
-	},
-
-	26020281: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.699999988079071,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010031,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010031,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010031,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010031,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 1,
-		HpBase:       95.08799743652344,
-		HpGrowCurve:  1,
-		Id:           26020281,
-		MonsterName:  "Regisvine_Fire",
-	},
-
-	26020381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.699999988079071,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010034,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010034,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010034,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010034,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 1,
-		HpBase:       95.08799743652344,
-		HpGrowCurve:  1,
-		Id:           26020381,
-		MonsterName:  "Regisvine_Electric",
-	},
-
-	24021181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.699999988079071,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010030,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 1,
-		HpBase:       217.343994140625,
-		HpGrowCurve:  2,
-		Id:           24021181,
-		MonsterName:  "Apparatus_Perpetual",
-	},
-
-	24030381: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.699999988079071,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010030,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 1,
-		HpBase:       230.92799377441406,
-		HpGrowCurve:  2,
-		Id:           24030381,
-		MonsterName:  "Gargoyle_Fafnir_01",
-	},
-
-	24050181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010030,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010030,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010020,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 1,
-		HpBase:       217.343994140625,
-		HpGrowCurve:  2,
-		Id:           24050181,
-		MonsterName:  "Monolith_Starchild",
-	},
-
-	26110181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.25,
-			attributes.Dendro:   0.800000011920929,
-			attributes.Hydro:    0.25,
-			attributes.Electro:  0.25,
-			attributes.Anemo:    0.25,
-			attributes.Cryo:     0.25,
-			attributes.Geo:      0.25,
-			attributes.Physical: 0.25,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010033,
-				HpPercent: 0.66,
-			},
-			{
-				DropId:    22010033,
-				HpPercent: 0.33,
-			},
-			{
-				DropId:    22010043,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 1,
-		HpBase:       190.17599487304688,
-		HpGrowCurve:  2,
-		Id:           26110181,
-		MonsterName:  "Fungus_Raptor",
-	},
-
-	20040181: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{
-			{
-				DropId:    22010034,
-				HpPercent: 0.75,
-			},
-			{
-				DropId:    22010034,
-				HpPercent: 0.5,
-			},
-			{
-				DropId:    22010034,
-				HpPercent: 0.25,
-			},
-			{
-				DropId:    22010034,
-				HpPercent: 0,
-			},
-		},
-		FreezeResist: 1,
-		HpBase:       95.08799743652344,
-		HpGrowCurve:  1,
-		Id:           20040181,
-		MonsterName:  "Effigy_Electric_01",
-	},
-
-	30050701: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     -0.4000000059604645,
-			attributes.Dendro:   0.15000000596046448,
-			attributes.Hydro:    0.15000000596046448,
-			attributes.Electro:  0.15000000596046448,
-			attributes.Anemo:    0.15000000596046448,
-			attributes.Cryo:     0.15000000596046448,
-			attributes.Geo:      0.15000000596046448,
-			attributes.Physical: 0.15000000596046448,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2260.800048828125,
-		HpGrowCurve:   1,
-		Id:            30050701,
-		MonsterName:   "Partner_Oceanid_Squirrel",
-	},
-
-	30050501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2260.800048828125,
-		HpGrowCurve:   1,
-		Id:            30050501,
-		MonsterName:   "Partner_Oceanid_Tit",
-	},
-
-	30050601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2260.800048828125,
-		HpGrowCurve:   1,
-		Id:            30050601,
-		MonsterName:   "Partner_Oceanid_Wigeon_02",
-	},
-
-	31040101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.5,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        67.91999816894531,
-		HpGrowCurve:   1,
-		Id:            31040101,
-		MonsterName:   "Partner_Hilistray_Wind_01",
-	},
-
-	32110201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.30000001192092896,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        65.20320129394531,
-		HpGrowCurve:   2,
-		Id:            32110201,
-		MonsterName:   "Ovacua_Order_02",
-	},
-
-	34060101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        43.46879959106445,
-		HpGrowCurve:   2,
-		Id:            34060101,
-		MonsterName:   "Partner_MachinaIustitia_Sentry_01",
-	},
-
-	34060102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        43.46879959106445,
-		HpGrowCurve:   2,
-		Id:            34060102,
-		MonsterName:   "Partner_MachinaIustitia_Sentry_01",
-	},
-
-	34060901: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        54.33599853515625,
-		HpGrowCurve:   2,
-		Id:            34060901,
-		MonsterName:   "Partner_MachinaIustitia_Ruggiero_02",
-	},
-
-	35010201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35010201,
-		MonsterName:   "NPC_Fontaine_Male_Standard_Sonny_5132",
-	},
-
-	35010202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35010202,
-		MonsterName:   "NPC_Quest_Male_Standard_Rouge_21274",
-	},
-
-	35010203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35010203,
-		MonsterName:   "NPC_Quest_Male_Standard_Rocher_21161",
-	},
-
-	35010204: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35010204,
-		MonsterName:   "NPC_Quest_Male_Standard_TieChuaner_21362",
-	},
-
-	35010602: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        43.46879959106445,
-		HpGrowCurve:   1,
-		Id:            35010602,
-		MonsterName:   "Thoarder_Male_Standard_NoWeapon_Ice_02",
-	},
-
-	35020201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35020201,
-		MonsterName:   "NPC_Fontaine_Male_Standard_Blanc_5233",
-	},
-
-	35020202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35020202,
-		MonsterName:   "NPC_Fontaine_Male_Standard_Bleu_5232",
-	},
-
-	35040101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35040101,
-		MonsterName:   "NPC_Quest_Female_Standard_TieDouer_21297",
-	},
-
-	35060101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35060101,
-		MonsterName:   "NPC_Fontaine_MuscleMan_Standard_Luca_5131",
-	},
-
-	35060102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35060102,
-		MonsterName:   "NPC_Fontaine_MuscleMan_Standard_Chaussivert_5273",
-	},
-
-	35060103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35060103,
-		MonsterName:   "NPC_Quest_Muscleman_Standard_Valberry_21163",
-	},
-
-	35070101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        81.50399780273438,
-		HpGrowCurve:   2,
-		Id:            35070101,
-		MonsterName:   "NPC_Quest_MuscleMan_Standard_TieMing_21298",
-	},
-
-	35110101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        65.20320129394531,
-		HpGrowCurve:   1,
-		Id:            35110101,
-		MonsterName:   "NPC_Fontaine_Female_Standard_Genevieve_5260",
-	},
-
-	35110102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        65.20320129394531,
-		HpGrowCurve:   1,
-		Id:            35110102,
-		MonsterName:   "NPC_Fontaine_Female_Standard_Genevieve_5260",
-	},
-
-	35110103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        65.20320129394531,
-		HpGrowCurve:   1,
-		Id:            35110103,
-		MonsterName:   "NPC_Fontaine_Female_Standard_Genevieve_5260",
-	},
-
-	35110201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        57.052799224853516,
-		HpGrowCurve:   1,
-		Id:            35110201,
-		MonsterName:   "NPC_Fontaine_Male_Standard_Poiret_5261",
-	},
-
-	35110301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        57.052799224853516,
-		HpGrowCurve:   1,
-		Id:            35110301,
-		MonsterName:   "NPC_Fontaine_Male_Standard_Poiret_5261",
-	},
-
-	35210101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2260.800048828125,
-		HpGrowCurve:   1,
-		Id:            35210101,
-		MonsterName:   "Partner_Eremite_Female_Hatchet_01",
-	},
-
-	35210102: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        2260.800048828125,
-		HpGrowCurve:   1,
-		Id:            35210102,
-		MonsterName:   "Partner_Panther_01",
-	},
-
-	35210103: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35210103,
-		MonsterName:   "NPC_Quest_Female_Standard_Eremite_02",
-	},
-
-	35210104: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35210104,
-		MonsterName:   "NPC_Quest_Female_Standard_Madeleine_21169",
-	},
-
-	35210201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   1,
-		Id:            35210201,
-		MonsterName:   "NPC_Quest_Male_Standard_Idrisi_13065",
-	},
-
-	35210202: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        16.300800323486328,
-		HpGrowCurve:   2,
-		Id:            35210202,
-		MonsterName:   "NPC_Quest_Male_Standard_Badawi_13277",
-	},
-
-	35210203: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35210203,
-		MonsterName:   "NPC_Quest_Male_Standard_Eremite_01",
-	},
-
-	35210301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        16.300800323486328,
-		HpGrowCurve:   2,
-		Id:            35210301,
-		MonsterName:   "NPC_Quest_Male_Standard_Soldier_12801",
-	},
-
-	35210302: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        16.300800323486328,
-		HpGrowCurve:   2,
-		Id:            35210302,
-		MonsterName:   "NPC_Quest_Male_Standard_Soldier_12802",
-	},
-
-	35210303: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        16.300800323486328,
-		HpGrowCurve:   2,
-		Id:            35210303,
-		MonsterName:   "NPC_Quest_Male_Standard_Soldier_12804",
-	},
-
-	35210304: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35210304,
-		MonsterName:   "NPC_Quest_Male_Standard_Eremite_13190",
-	},
-
-	35210401: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        21.734399795532227,
-		HpGrowCurve:   2,
-		Id:            35210401,
-		MonsterName:   "NPC_Quest_MuscleMan_Standard_Soldier_12803",
-	},
-
-	35210402: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   1,
-		Id:            35210402,
-		MonsterName:   "NPC_Quest_MuscleMan_Standard_Tikriti_13108",
-	},
-
-	35210501: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        40.75199890136719,
-		HpGrowCurve:   2,
-		Id:            35210501,
-		MonsterName:   "Partner_Eremite_MuscleMan_Simitar_01",
-	},
-
-	35210502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   1,
-		Id:            35210502,
-		MonsterName:   "NPC_Quest_MuscleMan_Standard_Bashar_13107",
-	},
-
-	35310101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        4521.60009765625,
-		HpGrowCurve:   1,
-		Id:            35310101,
-		MonsterName:   "Partner_Eremite_Female_Slim_PushDagger_01",
-	},
-
-	35310301: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        4521.60009765625,
-		HpGrowCurve:   1,
-		Id:            35310301,
-		MonsterName:   "Partner_Eremite_Male_Standard_Polearm_01",
-	},
-
-	35410101: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        4521.60009765625,
-		HpGrowCurve:   1,
-		Id:            35410101,
-		MonsterName:   "Partner_Eremite_Male_Strong_Katar_01",
-	},
-
-	35410201: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: -0.20000000298023224,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        4521.60009765625,
-		HpGrowCurve:   1,
-		Id:            35410201,
-		MonsterName:   "Partner_Eremite_Female_Standard_Longbow_01",
-	},
-
-	36050601: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.30000001192092896,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.30000001192092896,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        45.84600067138672,
-		HpGrowCurve:   2,
-		Id:            36050601,
-		MonsterName:   "Drake_DeepSea_Water_01",
-	},
-
-	36090190: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.20000000298023224,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        20.375999450683594,
-		HpGrowCurve:   2,
-		Id:            36090190,
-		MonsterName:   "Partner_Fumgus_Un_Gamma_Water",
-	},
-
-	36090290: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.25,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        20.375999450683594,
-		HpGrowCurve:   2,
-		Id:            36090290,
-		MonsterName:   "Partner_Fumgus_Un_Delta_Grass",
-	},
-
-	36090390: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.20000000298023224,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        20.375999450683594,
-		HpGrowCurve:   2,
-		Id:            36090390,
-		MonsterName:   "Partner_Fumgus_Un_Delta_Wind",
-	},
-
-	36090490: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        27.167999267578125,
-		HpGrowCurve:   2,
-		Id:            36090490,
-		MonsterName:   "Partner_Fumgus_Trois_Epsilon_Electric",
-	},
-
-	36090590: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.20000000298023224,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        27.167999267578125,
-		HpGrowCurve:   2,
-		Id:            36090590,
-		MonsterName:   "Partner_Fumgus_Trois_Alpha_Ice",
-	},
-
-	36090690: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.20000000298023224,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        54.33599853515625,
-		HpGrowCurve:   2,
-		Id:            36090690,
-		MonsterName:   "Partner_Fumgus_Trois_Gamma_Fire",
-	},
-
-	36090790: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.20000000298023224,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        27.167999267578125,
-		HpGrowCurve:   2,
-		Id:            36090790,
-		MonsterName:   "Partner_Fumgus_Deux_Alpha_Fire",
-	},
-
-	36090890: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.20000000298023224,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        27.167999267578125,
-		HpGrowCurve:   2,
-		Id:            36090890,
-		MonsterName:   "Partner_Fumgus_Deux_Epsilon_Wind",
-	},
-
-	36090990: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.20000000298023224,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        54.33599853515625,
-		HpGrowCurve:   2,
-		Id:            36090990,
-		MonsterName:   "Partner_Fumgus_Deux_Beta_Rock",
-	},
-
-	36091090: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        27.167999267578125,
-		HpGrowCurve:   2,
-		Id:            36091090,
-		MonsterName:   "Partner_Fumgus_Deux_Delta_Electric",
-	},
-
-	36090191: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.20000000298023224,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        24.451200485229492,
-		HpGrowCurve:   2,
-		Id:            36090191,
-		MonsterName:   "Partner_Fumgus_Un_Gamma_Water",
-	},
-
-	36090291: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.25,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        24.451200485229492,
-		HpGrowCurve:   2,
-		Id:            36090291,
-		MonsterName:   "Partner_Fumgus_Un_Delta_Grass",
-	},
-
-	36090391: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.20000000298023224,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        24.451200485229492,
-		HpGrowCurve:   2,
-		Id:            36090391,
-		MonsterName:   "Partner_Fumgus_Un_Delta_Wind",
-	},
-
-	36090491: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        30.56399917602539,
-		HpGrowCurve:   2,
-		Id:            36090491,
-		MonsterName:   "Partner_Fumgus_Trois_Epsilon_Electric",
-	},
-
-	36090591: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.20000000298023224,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        36.67679977416992,
-		HpGrowCurve:   2,
-		Id:            36090591,
-		MonsterName:   "Partner_Fumgus_Trois_Alpha_Ice",
-	},
-
-	36090691: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.20000000298023224,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        36.67679977416992,
-		HpGrowCurve:   2,
-		Id:            36090691,
-		MonsterName:   "Partner_Fumgus_Trois_Gamma_Fire",
-	},
-
-	36090791: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.20000000298023224,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        30.56399917602539,
-		HpGrowCurve:   2,
-		Id:            36090791,
-		MonsterName:   "Partner_Fumgus_Deux_Alpha_Fire",
-	},
-
-	36090891: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.20000000298023224,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        24.451200485229492,
-		HpGrowCurve:   2,
-		Id:            36090891,
-		MonsterName:   "Partner_Fumgus_Deux_Epsilon_Wind",
-	},
-
-	36090991: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.20000000298023224,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        36.67679977416992,
-		HpGrowCurve:   2,
-		Id:            36090991,
-		MonsterName:   "Partner_Fumgus_Deux_Beta_Rock",
-	},
-
-	36091091: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        24.451200485229492,
-		HpGrowCurve:   2,
-		Id:            36091091,
-		MonsterName:   "Partner_Fumgus_Deux_Delta_Electric",
-	},
-
-	36090192: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.20000000298023224,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        28.526399612426758,
-		HpGrowCurve:   2,
-		Id:            36090192,
-		MonsterName:   "Partner_Fumgus_Un_Gamma_Water",
-	},
-
-	36090292: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.25,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        28.526399612426758,
-		HpGrowCurve:   2,
-		Id:            36090292,
-		MonsterName:   "Partner_Fumgus_Un_Delta_Grass",
-	},
-
-	36090392: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.20000000298023224,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        28.526399612426758,
-		HpGrowCurve:   2,
-		Id:            36090392,
-		MonsterName:   "Partner_Fumgus_Un_Delta_Wind",
-	},
-
-	36090492: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        35.65800094604492,
-		HpGrowCurve:   2,
-		Id:            36090492,
-		MonsterName:   "Partner_Fumgus_Trois_Epsilon_Electric",
-	},
-
-	36090592: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.20000000298023224,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        42.78960037231445,
-		HpGrowCurve:   2,
-		Id:            36090592,
-		MonsterName:   "Partner_Fumgus_Trois_Alpha_Ice",
-	},
-
-	36090692: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.20000000298023224,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        42.78960037231445,
-		HpGrowCurve:   2,
-		Id:            36090692,
-		MonsterName:   "Partner_Fumgus_Trois_Gamma_Fire",
-	},
-
-	36090792: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.20000000298023224,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        35.65800094604492,
-		HpGrowCurve:   2,
-		Id:            36090792,
-		MonsterName:   "Partner_Fumgus_Deux_Alpha_Fire",
-	},
-
-	36090892: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.20000000298023224,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        28.526399612426758,
-		HpGrowCurve:   2,
-		Id:            36090892,
-		MonsterName:   "Partner_Fumgus_Deux_Epsilon_Wind",
-	},
-
-	36090992: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.20000000298023224,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        35.65800094604492,
-		HpGrowCurve:   2,
-		Id:            36090992,
-		MonsterName:   "Partner_Fumgus_Deux_Beta_Rock",
-	},
-
-	36091092: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.20000000298023224,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.20000000298023224,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        28.526399612426758,
-		HpGrowCurve:   2,
-		Id:            36091092,
-		MonsterName:   "Partner_Fumgus_Deux_Delta_Electric",
-	},
-
-	38050590: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   1,
-		Id:            38050590,
-		MonsterName:   "Partner_Animal_Electrohercules_01",
-	},
-
-	38050591: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        13.583999633789062,
-		HpGrowCurve:   1,
-		Id:            38050591,
-		MonsterName:   "Partner_Animal_Electrohercules_02",
-	},
-
-	38060502: {
-		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     0.10000000149011612,
-			attributes.Dendro:   0.10000000149011612,
-			attributes.Hydro:    0.10000000149011612,
-			attributes.Electro:  0.10000000149011612,
-			attributes.Anemo:    0.10000000149011612,
-			attributes.Cryo:     0.10000000149011612,
-			attributes.Geo:      0.10000000149011612,
-			attributes.Physical: 0.10000000149011612,
-		},
-		ParticleDrops: []info.HpDrop{},
-		FreezeResist:  0,
-		HpBase:        67.91999816894531,
-		HpGrowCurve:   2,
-		Id:            38060502,
-		MonsterName:   "Partner_Animal_Megamoth_Jungle_01",
-	},
-}
-
-var monsterNameIds = map[string]int{
-	"Hili_None_01":                                           21010101,
-	"Brute_None_Shield":                                      21020101,
-	"Brute_None_Axe":                                         21020201,
-	"Brute_None_Axe_AttackEnhance":                           21020202,
-	"Brute_None_Axe_NoAI":                                    21020299,
-	"Brute_None_RockShield":                                  21020301,
-	"Brute_Ice_None":                                         21020401,
-	"Brute_Rock_None":                                        21020501,
-	"Brute_Ice_Shield":                                       21020601,
-	"Brute_Electric_Axe":                                     21020701,
-	"Brute_Electric_Axe_AttackEnhance":                       21020703,
-	"Brute_Electric_None":                                    21020801,
-	"Slime_Grass_02":                                         20010101,
-	"Slime_Grass_03":                                         20010201,
-	"Slime_Grass_03_AttackEnhance":                           20010202,
-	"Slime_Wind_02":                                          20010301,
-	"Slime_Wind_03":                                          20010401,
-	"Slime_Wind_03_AttackEnhance":                            20010403,
-	"Monster_Dragon_Dvalin_S01":                              29010101,
-	"Monster_Dragon_Dvalin_S04":                              29010102,
-	"Monster_Dragon_Dvalin_S00":                              29010103,
-	"Monster_Wolf_LupiBoreas":                                29020101,
-	"Monster_Tartaglia":                                      29030101,
-	"Monster_Tartaglia_EvilEye":                              29030102,
-	"Monster_Tartaglia_Harbinger":                            29030103,
-	"Monster_Dahaka":                                         29040101,
-	"Monster_LaSignora":                                      29050101,
-	"Monster_LaSignora_Harbinger":                            29050102,
-	"Monster_Shougun":                                        29060101,
-	"Monster_Shougun_Mitakenarukami":                         29060201,
-	"Monster_Nada":                                           29070101,
-	"Monster_Apep_Stage1":                                    29080101,
-	"Monster_Apep_Stage3":                                    29080102,
-	"Monster_Apep_Underling_SeedOfKarna":                     29080201,
-	"Monster_Apep_Underling_SeedOfAshura":                    29080301,
-	"Monster_Apep_Underling_SeedOfBrahma":                    29080401,
-	"Monster_Apep_Underling_SeedOfArjuna":                    29080501,
-	"Monster_Apep_Underling_SeedOfShiva":                     29080601,
-	"Monster_Apep_Underling_SeedOfVishnu":                    29080701,
-	"Monster_Ptahur_Devourer":                                29090101,
-	"Monster_Ptahur_Phantom_01":                              29090201,
-	"Monster_Ptahur_VertexGreater_01":                        29090304,
-	"Elemental_Wind_01":                                      20020101,
-	"Effigy_Electric_01":                                     20040101,
-	"Effigy_Electric_02":                                     20040102,
-	"Effigy_Wind_01":                                         20040201,
-	"Effigy_Wind_02":                                         20040202,
-	"Effigy_Rock_01":                                         20040301,
-	"Effigy_Rock_02":                                         20040302,
-	"Effigy_Water_01":                                        20040401,
-	"Effigy_Water_02":                                        20040402,
-	"Effigy_Ice_01":                                          20040501,
-	"Effigy_Fire_01":                                         20040601,
-	"Effigy_Fire_02":                                         20040602,
-	"Effigy_Grass_01":                                        20040701,
-	"Effigy_Grass_02":                                        20040702,
-	"Slime_Electric_02":                                      20010501,
-	"Slime_Electric_02_SimpleStick":                          20010503,
-	"Slime_Electric_03":                                      20010601,
-	"Slime_Electric_03_AttackEnhance":                        20010604,
-	"Slime_Electric_03_SimpleStick":                          20010605,
-	"Slime_Electric_03_Positive":                             20010701,
-	"Slime_Electric_03_Positive_AttackEnhance":               20010702,
-	"Slime_Ice_02":                                           20010801,
-	"Slime_Ice_02_Activity":                                  20010802,
-	"Slime_Ice_03":                                           20010901,
-	"Slime_Ice_03_Activity":                                  20010902,
-	"Slime_Ice_03_AttackEnhance":                             20010904,
-	"Slime_Ice_03_SimpleStick":                               20010905,
-	"Slime_Water_02":                                         20011001,
-	"Slime_Water_03":                                         20011101,
-	"Slime_Water_03_AttackEnhance":                           20011103,
-	"Effigy_Water_Underling_Ooze_01":                         20011601,
-	"Effigy_Water_Underling_Ooze_02":                         20011701,
-	"Effigy_Water_Underling_Ooze_03":                         20011801,
-	"Effigy_Water_Underling_Ooze_04":                         20011901,
-	"Effigy_Water_Underling_Ooze_05":                         20012001,
-	"Effigy_Water_Underling_Ooze_06":                         20012101,
-	"Effigy_Water_Underling_Ooze_07":                         20012201,
-	"Monster_Oceanid":                                        20050101,
-	"Monster_Oceanid_02":                                     20050102,
-	"Monster_Oceanid_03":                                     20050103,
-	"Monster_Oceanid_Boar":                                   20050201,
-	"Monster_Oceanid_Boar_02":                                20050202,
-	"Monster_Oceanid_Boar_03":                                20050204,
-	"Monster_Oceanid_Crane":                                  20050301,
-	"Monster_Oceanid_Crab":                                   20050401,
-	"Monster_Oceanid_Crab_02":                                20050402,
-	"Monster_Oceanid_Tit":                                    20050501,
-	"Monster_Oceanid_Wigeon":                                 20050601,
-	"Monster_Oceanid_Wigeon_02":                              20050602,
-	"Monster_Oceanid_Squirrel":                               20050701,
-	"Monster_Oceanid_Squirrel_02":                            20050702,
-	"Monster_Oceanid_Frog":                                   20050801,
-	"Monster_Oceanid_Falcon":                                 20050901,
-	"Monster_Necalevia_Normal_01":                            20051001,
-	"Monster_Necalevia_Normal_02":                            20051002,
-	"Monster_Necalevia_Big_01":                               20051101,
-	"Monster_Necalevia_Big_02":                               20051102,
-	"Monster_Narcissusborn_Normal_01":                        20051201,
-	"Monster_Narcissusborn_Underling_Small_01":               20051301,
-	"Monster_Narcissusborn_Narzissenkreuz_01":                20051601,
-	"Monster_Raijin_01":                                      20070101,
-	"Monster_Raijin_02":                                      20070102,
-	"Hili_None_01_Club":                                      21010201,
-	"Hili_None_01_Club_NoAI":                                 21010299,
-	"Hili_None_01_Shield":                                    21010301,
-	"Hili_None_01_Range":                                     21010401,
-	"Hili_None_01_Range_Multi":                               21010402,
-	"Hili_Fire_Range":                                        21010501,
-	"Hili_Fire_Range_Multi":                                  21010502,
-	"Hili_Fire_Bomb":                                         21010601,
-	"Hili_Fire_Bomb_AttackEnhance":                           21010603,
-	"Hili_Fire_Rush":                                         21010701,
-	"Hili_Ice_Range":                                         21010901,
-	"Hili_Ice_Range_Multi":                                   21010902,
-	"Hili_Electric_Range":                                    21011001,
-	"Hili_Electric_Range_Multi":                              21011002,
-	"Hili_None_01_RockShield":                                21011201,
-	"Hili_Ice_Bomb":                                          21011301,
-	"Hili_Ice_Bomb_AttackEnhance":                            21011302,
-	"Hili_Ice_IceShield":                                     21011401,
-	"Hili_Ice_IceShield_Activity":                            21011403,
-	"Hili_Wei_NoWeapon_01":                                   21011501,
-	"Hili_Electric_Bomb":                                     21011601,
-	"Hili_Electric_Bomb_AttackEnhance":                       21011602,
-	"Slime_Fire_02":                                          20011201,
-	"Slime_Fire_Tutorial":                                    20011202,
-	"Slime_Fire_02_SimpleStick":                              20011204,
-	"Slime_Fire_03":                                          20011301,
-	"Slime_Fire_03_AttackEnhance":                            20011304,
-	"Slime_Fire_03_SimpleStick":                              20011305,
-	"Slime_Rock_02":                                          20011401,
-	"Slime_Rock_03":                                          20011501,
-	"Slime_Rock_03_AttackEnhance":                            20011502,
-	"Abyss_Fire_01":                                          22010101,
-	"Abyss_Fire_01_ShieldEnhance":                            22010102,
-	"Abyss_Fire_01_BlinkEnhance":                             22010103,
-	"Abyss_Fire_01_AttackEnhance":                            22010104,
-	"Abyss_Ice_01":                                           22010201,
-	"Abyss_Ice_01_ShieldEnhance":                             22010202,
-	"Abyss_Ice_01_BlinkEnhance":                              22010203,
-	"Abyss_Ice_01_AttackEnhance":                             22010204,
-	"Abyss_Water_01":                                         22010301,
-	"Abyss_Water_01_ShieldEnhance":                           22010302,
-	"Abyss_Water_01_BlinkEnhance":                            22010303,
-	"Abyss_Water_01_AttackEnhance":                           22010304,
-	"Abyss_Electric_01":                                      22010401,
-	"Abyss_Electric_01_ShieldEnhance":                        22010403,
-	"Abyss_Electric_01_AttackEnhance":                        22010404,
-	"Invoker_Herald_Water_01":                                22020101,
-	"Invoker_Herald_Ice_01":                                  22020201,
-	"Invoker_Deacon_Electric_01":                             22030101,
-	"Invoker_Deacon_Fire_01":                                 22030201,
-	"Hound_Kanis_Rock_01":                                    22040101,
-	"Hound_Kanis_Rock_01_Crystallization":                    22040102,
-	"Hound_Kanis_Electric_01":                                22040201,
-	"Hound_Kanis_Electric_01_Crystallization":                22040202,
-	"Hound_Riftstalker_Rock_01":                              22050101,
-	"Hound_Riftstalker_Rock_01_Crystallization":              22050102,
-	"Hound_Riftstalker_Electric_01":                          22050201,
-	"Hound_Riftstalker_Electric_01_Crystallization":          22050202,
-	"Monster_Hound_Planelurker_01":                           22060101,
-	"ForlornVessel_Strong_Warbanner_Fire_01":                 22070101,
-	"ForlornVessel_Strong_Warbanner_Fire_02":                 22070102,
-	"ForlornVessel_Strong_Lance_Water_01":                    22070201,
-	"ForlornVessel_Strong_Lance_Water_02":                    22070202,
-	"ForlornVessel_Strong_Chargebow_Ice_01":                  22070301,
-	"ForlornVessel_Strong_Chargebow_Ice_02":                  22070302,
-	"Darkwraith_Strong_Wind_01":                              22080101,
-	"Darkwraith_Fat_Rock_01":                                 22080201,
-	"Darksign_Shadow_01":                                     22090101,
-	"Invoker_Archdeacon_01":                                  22100101,
-	"Ovacua_Order_01":                                        22110101,
-	"Ovacua_Order_02":                                        22110201,
-	"Ovacua_Chaos_01":                                        22110301,
-	"Ovacua_Chaos_02":                                        22110402,
-	"Shaman_Water_01":                                        21030101,
-	"Shaman_Water_01_HealEnhance":                            21030103,
-	"Shaman_Water_01_LostSamachurl":                          21030104,
-	"Shaman_Grass_01":                                        21030201,
-	"Shaman_Grass_01_SupportEnhance":                         21030203,
-	"Shaman_Wind_01":                                         21030301,
-	"Shaman_Wind_01_WindZoneEnhance":                         21030303,
-	"Shaman_Wind_01_AttackEnhance":                           21030304,
-	"Shaman_Rock_01":                                         21030401,
-	"Shaman_Rock_01_SupportEnhance":                          21030402,
-	"Shaman_Ice_01":                                          21030501,
-	"Shaman_Electric_01":                                     21030601,
-	"Shaman_Electric_01_SupportEnhance":                      21030603,
-	"Shaman_None_01":                                         21030701,
-	"Hilistray_Wind_01":                                      21040101,
-	"Hilistray_Water_01":                                     21040201,
-	"Defender_None_01":                                       24010101,
-	"Defender_None_08":                                       24010108,
-	"Defender_None_09":                                       24010109,
-	"Formathr_None":                                          24010201,
-	"Konungmathr_None":                                       24010301,
-	"Konungmathr_None_Dig":                                   24010303,
-	"Konungmathr_None_WQ":                                    24010304,
-	"Nithhoggr_None":                                         24010401,
-	"Apparatus_Enigma_BionicDrone":                           24020101,
-	"Apparatus_Enigma_BionicFlora":                           24020201,
-	"Apparatus_Enigma_BionicInsecta":                         24020301,
-	"Apparatus_Enigma_BionicInsecta_Karkata":                 24020304,
-	"Apparatus_Enigma_BionicNettler":                         24020401,
-	"Apparatus_Perpetual":                                    24021101,
-	"Gargoyle_Airborne_01":                                   24030101,
-	"Gargoyle_Ground_01":                                     24030201,
-	"Gargoyle_Fafnir_01":                                     24030301,
-	"Gargoyle_Fafnir_02":                                     24030302,
-	"Monolith_Ordinator_01":                                  24040101,
-	"Monolith_Ordinator_02":                                  24040201,
-	"Monolith_Ordinator_03":                                  24040301,
-	"Monolith_Starchild":                                     24050101,
-	"MachinaIustitia_Sentry_01":                              24060101,
-	"MachinaIustitia_Sentry_02":                              24060102,
-	"MachinaIustitia_Sentry_03":                              24065101,
-	"MachinaIustitia_Sentry_04":                              24065102,
-	"MachinaIustitia_Sentry_05":                              24065103,
-	"MachinaIustitia_Sentry_Cdoex":                           24068101,
-	"MachinaIustitia_Pylon_01":                               24060201,
-	"MachinaIustitia_Pylon_02":                               24060202,
-	"MachinaIustitia_Pylon_03":                               24065201,
-	"MachinaIustitia_Pylon_04":                               24065202,
-	"MachinaIustitia_Pylon_Codex":                            24068201,
-	"MachinaIustitia_Recon_01":                               24060301,
-	"MachinaIustitia_Recon_02":                               24060302,
-	"MachinaIustitia_Recon_03":                               24065301,
-	"MachinaIustitia_Recon_04":                               24065302,
-	"MachinaIustitia_Recon_Codex":                            24068301,
-	"MachinaIustitia_Probe_01":                               24060401,
-	"MachinaIustitia_Probe_02":                               24060402,
-	"MachinaIustitia_Probe_03":                               24065401,
-	"MachinaIustitia_Probe_04":                               24065402,
-	"MachinaIustitia_Probe_Codex":                            24068401,
-	"MachinaIustitia_Nautilus_01":                            24060501,
-	"MachinaIustitia_Nautilus_02":                            24060502,
-	"MachinaIustitia_Nautilus_03":                            24065501,
-	"MachinaIustitia_Nautilus_04":                            24065502,
-	"MachinaIustitia_Nautilus_Codex":                         24068501,
-	"MachinaIustitia_Frigate_01":                             24060601,
-	"MachinaIustitia_Frigate_02":                             24060602,
-	"MachinaIustitia_Frigate_03":                             24065601,
-	"MachinaIustitia_Frigate_04":                             24065602,
-	"MachinaIustitia_Frigate_Codex":                          24068601,
-	"MachinaIustitia_Assimilator_01":                         24060701,
-	"MachinaIustitia_Assimilator_02":                         24060702,
-	"MachinaIustitia_Assimilator_03":                         24065701,
-	"MachinaIustitia_Assimilator_04":                         24065702,
-	"MachinaIustitia_Assimilator_Codex":                      24068701,
-	"MachinaIustitia_Ruggiero_01":                            24060801,
-	"MachinaIustitia_Ruggiero_02":                            24060802,
-	"MachinaIustitia_Ruggiero_03":                            24065801,
-	"MachinaIustitia_Ruggiero_04":                            24065802,
-	"MachinaIustitia_Ruggiero_05":                            24065803,
-	"MachinaIustitia_Ruggiero_Codex":                         24068801,
-	"MachinaIustitia_Bradamante_01":                          24061001,
-	"MachinaIustitia_Bradamante_02":                          24061002,
-	"MachinaIustitia_Bradamante_03":                          24066001,
-	"MachinaIustitia_Bradamante_04":                          24066002,
-	"MachinaIustitia_Bradamante_Codex":                       24069001,
-	"MachinaIustitia_LengthShifter_01":                       24061101,
-	"MachinaIustitia_LengthShifter_02":                       24061102,
-	"MachinaIustitia_LengthShifter_03":                       24066101,
-	"MachinaIustitia_LengthShifter_04":                       24066102,
-	"MachinaIustitia_LengthShifter_05":                       24061105,
-	"MachinaIustitia_LengthShifter_06":                       24061106,
-	"MachinaIustitia_LengthShifter_07":                       24066105,
-	"MachinaIustitia_LengthShifter_08":                       24066106,
-	"MachinaIustitia_LengthShifter_Codex":                    24069101,
-	"MachinaIustitia_Excavator_01":                           24061201,
-	"MachinaIustitia_Excavator_02":                           24061202,
-	"MachinaIustitia_Excavator_03":                           24066201,
-	"MachinaIustitia_Excavator_04":                           24066202,
-	"MachinaIustitia_Excavator_Codex":                        24069201,
-	"Monster_MachinaIustitia_Nutcracker":                     24070101,
-	"Monster_MachinaIustitia_Gravitas_01":                    24080101,
-	"Monster_MachinaIustitia_Gravitas_02":                    24080102,
-	"FungusFighterV2_TowerFire_01":                           24810101,
-	"FungusFighterV2_TowerFire_02":                           24810201,
-	"FungusFighterV2_TowerElectric_01":                       24810301,
-	"FungusFighterV2_TowerElectric_02":                       24810401,
-	"FungusFighterV2_TowerWater_01":                          24810501,
-	"FungusFighterV2_TowerWater_02":                          24810601,
-	"FungusFighterV2_TowerIce_01":                            24810701,
-	"FungusFighterV2_TowerIce_02":                            24810801,
-	"FungusFighterV2_TowerWind_01":                           24810901,
-	"FungusFighterV2_TowerWind_02":                           24811001,
-	"FungusFighterV2_TowerPhysics_01":                        24811101,
-	"Balloon_SlimeBalloon_01":                                24920101,
-	"Balloon_BigSlimeBalloon_01":                             24920201,
-	"Balloon_FugusBalloon_01":                                24920301,
-	"Monster_Alternate_01":                                   24990101,
-	"Skirmisher_Male_Fat_SprayGun_Ice_01":                    23010101,
-	"Skirmisher_Male_Fat_SprayGun_Water_01":                  23010201,
-	"Skirmisher_Male_Strong_GreatHammer_Electric_01":         23010301,
-	"Skirmisher_Male_Standard_Staff_Rock_01":                 23010401,
-	"Skirmisher_Male_Strong_Gloves_Wind_01":                  23010501,
-	"Skirmisher_Male_Standard_Rifle_Fire_01":                 23010601,
-	"Fatuus_Fire_01":                                         23020101,
-	"Fatuus_Fire_01_AttackEnhance":                           23020102,
-	"Fatuus_Summoner_01":                                     23030101,
-	"Fatuus_Summoner_01_AttackEnhance":                       23030102,
-	"Fatuus_Mage_Ice_01":                                     23040101,
-	"Fatuus_Mage_Ice_01_AttackEnhance":                       23040102,
-	"Fatuus_Maiden_Water_01":                                 23050101,
-	"Fatuus_Escadron_Ice_01":                                 23060101,
-	"Fatuus_Escadron_Wind_01":                                23060201,
-	"Fatuus_Escadron_Ice_02":                                 23060301,
-	"Fatuus_Escadron_Wind_02":                                23060401,
-	"Thoarder_Male_NoWeapon_01":                              25010101,
-	"Thoarder_Male_Standard_NoWeapon_01_02":                  25010102,
-	"Thoarder_Male_Standard_NoWeapon_01_03":                  25010103,
-	"Thoarder_Male_Standard_NoWeapon_01_04":                  25010104,
-	"Thoarder_Male_Slippie_01":                               25010105,
-	"Thoarder_Male_Standard_NoWeapon_02":                     25010201,
-	"Thoarder_Male_Standard_NoWeapon_02_03":                  25010203,
-	"Thoarder_Male_Standard_NoWeapon_02_04":                  25010204,
-	"Thoarder_Male_Standard_NoWeapon_02_05":                  25010205,
-	"Thoarder_Male_Standard_NoWeapon_02_06":                  25010206,
-	"Thoarder_Male_Standard_NoWeapon_02_07":                  25010207,
-	"Thoarder_Male_Standard_NoWeapon_02_08":                  25010208,
-	"Thoarder_Male_Standard_NoWeapon_02_09":                  25010209,
-	"Thoarder_Male_Standard_NoWeapon_02_10":                  25010210,
-	"Thoarder_Male_Standard_NoWeapon_02_11":                  25010211,
-	"Thoarder_Male_Standard_NoWeapon_02_12":                  25010212,
-	"Thoarder_Male_Standard_NoWeapon_02_13":                  25010213,
-	"NPC_Quest_Male_Standard_Pabag_30363":                    25010214,
-	"NPC_Quest_Male_Standard_Papak_30364":                    25010215,
-	"NPC_Quest_Male_Standard_MafiaA_13441":                   25010216,
-	"NPC_Quest_Male_Standard_MafiaB_13442":                   25010217,
-	"NPC_Quest_Male_Standard_MafiaC_13457":                   25010218,
-	"NPC_Quest_Male_Standard_MafiaD_13393":                   25010219,
-	"NPC_Quest_Male_Standard_Thug01_13332":                   25010220,
-	"NPC_Quest_Male_Standard_Thug02_13333":                   25010221,
-	"NPC_Quest_Male_Standard_Thug03_13334":                   25010222,
-	"NPC_Quest_Male_Standard_AtmosphereMale_13619":           25010223,
-	"NPC_Quest_Male_Standard_AtmosphereMale_13620":           25010224,
-	"NPC_Quest_Male_Standard_Audience2_13310":                25010225,
-	"NPC_Quest_Male_Standard_Audience4_13374":                25010227,
-	"NPC_Quest_Male_Standard_Oppo_13776":                     25010228,
-	"NPC_Quest_Male_Standard_Oppo_13710":                     25010229,
-	"NPC_Quest_Male_Standard_Thug_21412":                     25010230,
-	"Thoarder_Male_Standard_NoWeapon_Fire_01":                25010301,
-	"NPC_Quest_Male_Standard_Oppo_13715":                     25010303,
-	"NPC_Quest_Male_Standard_Oppo_13777":                     25010304,
-	"Thoarder_Male_Standard_NoWeapon_Water_01":               25010401,
-	"Thoarder_Male_Standard_NoWeapon_Water_01_02":            25010402,
-	"NPC_Quest_Male_Standard_Oppo_13713":                     25010404,
-	"NPC_Quest_Male_Standard_Oppo_13872":                     25010405,
-	"Thoarder_Male_Standard_NoWeapon_Electric_01":            25010501,
-	"NPC_Quest_Male_Standard_Colter_13709":                   25010502,
-	"NPC_Quest_Male_Standard_Oppo_13711":                     25010503,
-	"Thoarder_Male_Standard_NoWeapon_Ice_01":                 25010601,
-	"Thoarder_Male_Standard_NoWeapon_Ice_02":                 25010602,
-	"Thoarder_Male_Standard_NoWeapon_Ice_03":                 25010603,
-	"NPC_Quest_Male_Standard_Oppo_13714":                     25010604,
-	"Thoarder_Male_Fat_NoWeapon_01":                          25010701,
-	"NPC_Quest_Male_Fat_Oppo_13873":                          25010702,
-	"NPC_Quest_Male_Standard_Rocky_001":                      25010801,
-	"Thoarder_Male_Crossbow_01":                              25020101,
-	"Thoarder_Male_Crossbow_01_02":                           25020102,
-	"NPC_Quest_Male_Standard_Virgil_21027":                   25020103,
-	"NPC_Quest_Male_Standard_Truand_13335":                   25020104,
-	"Thoarder_Male_Crossbow_01_05":                           25020105,
-	"Thoarder_Male_Standard_Crossbow_02":                     25020201,
-	"Thoarder_Male_Standard_Crossbow_02_03":                  25020204,
-	"Thoarder_Male_Standard_Crossbow_02_04":                  25020205,
-	"Thoarder_Male_Standard_Crossbow_02_05":                  25020206,
-	"Thoarder_Male_Standard_Crossbow_02_06":                  25020207,
-	"Thoarder_Male_Standard_Crossbow_02_08":                  25020208,
-	"NPC_Quest_Male_Standard_Oppo_13773":                     25020210,
-	"NPC_Quest_Male_Standard_Walker_21363":                   25020211,
-	"Thoarder_Male_Shovel_01":                                25030101,
-	"Thoarder_Male_Fat_Shovel_01":                            25030102,
-	"Thoarder_Male_Fat_Shovel_03":                            25030201,
-	"NPC_Quest_Male_Fat_Oppo_13775":                          25030202,
-	"Thoarder_Male_Fat_Shovel_02":                            25030301,
-	"NPC_Quest_Male_Fat_Oppo_13774":                          25030302,
-	"NPC_Quest_Male_Fat_Oppo_13712":                          25030303,
-	"Thoarder_Female_Hatchet_01":                             25040101,
-	"Thoarder_Female_Hatchet_02":                             25040102,
-	"Thoarder_Female_Hatchet_03":                             25040104,
-	"Thoarder_Female_Hatchet_04":                             25040105,
-	"NPC_Quest_Female_Standard_TieDouer_21297":               25040106,
-	"Millelith_Male_01":                                      25050101,
-	"Millelith_Male_02":                                      25050201,
-	"Aahigaru_Male_01":                                       25050301,
-	"AahigaruTaisho_Male_01":                                 25050401,
-	"AahigaruTaisho_Male_01_02":                              25050402,
-	"Aahigaru_Male_02":                                       25050501,
-	"Aahigaru_Male_02_02":                                    25050502,
-	"Aahigaru_Male_03":                                       25050503,
-	"NPC_Fontaine_Male_Standard_Goncourt_5210":               25050601,
-	"NPC_Fontaine_Male_Standard_Grainville_5236":             25050602,
-	"NPC_Quest_Male_Standard_Noailles_21072":                 25050603,
-	"Thoarder_MuscleMan_NoWeapon_01":                         25060101,
-	"Thoarder_MuscleMan_NoWeapon_01_02":                      25060102,
-	"NPC_Quest_MuscleMan_Standard_Dedebaba_30362":            25060103,
-	"NPC_Fontaine_MuscleMan_Standard_Roussimoff_5262":        25060104,
-	"NPC_Quest_MuscleMan_Standard_AtmosphereMuscleMan_13621": 25060105,
-	"NPC_Quest_MuscleMan_Standard_AtmosphereMuscleMan_13622": 25060106,
-	"Thoarder_MuscleMan_NoWeapon_01_07":                      25060107,
-	"Thoarder_MuscleMan_NoWeapon_01_08":                      25060108,
-	"Thoarder_MuscleMan_NoWeapon_01_09":                      25060109,
-	"NPC_Quest_MuscleMan_Standard_Oppo_13874":                25060112,
-	"NPC_Quest_MuscleMan_Standard_Johnnie_21299":             25060113,
-	"NPC_Quest_MuscleMan_Standard_Zeppeli_001":               25060201,
-	"Thoarder_MuscleMan_Hammer_01":                           25070101,
-	"NPC_Quest_MuscleMan_Standard_Oppo_13880":                25070102,
-	"NPC_Quest_MuscleMan_Standard_Oppo_13881":                25070103,
-	"NPC_Quest_MuscleMan_Standard_Oppo_13882":                25070104,
-	"NPC_Quest_MuscleMan_Standard_TieMing_21298":             25070105,
-	"Thoarder_MuscleMan_Hammer_02":                           25070201,
-	"Samurai_Ronin_01":                                       25080101,
-	"Samurai_Ronin_02":                                       25080201,
-	"Samurai_Ronin_04":                                       25080202,
-	"Samurai_Ronin_03":                                       25080301,
-	"Samurai_Hatamoto_01":                                    25080401,
-	"Samurai_Hatamoto_02":                                    25080402,
-	"Samurai_Hatamoto_03":                                    25080403,
-	"Samurai_Hatamoto_04":                                    25080405,
-	"Samurai_Ningyo_01":                                      25090101,
-	"Samurai_Ningyo_02":                                      25090102,
-	"Samurai_Ningyo_03":                                      25090103,
-	"Samurai_Ningyo_04":                                      25090104,
-	"Samurai_Ningyo_05":                                      25090105,
-	"Samurai_Ningyo_FunFight_01":                             25090106,
-	"Samurai_Kairagi_07":                                     25100202,
-	"Samurai_Kairagi_01":                                     25100101,
-	"Samurai_Kairagi_03":                                     25100301,
-	"Samurai_Kairagi_02":                                     25100201,
-	"Samurai_Kairagi_04":                                     25100401,
-	"Samurai_Kairagi_05":                                     25100102,
-	"Samurai_Kairagi_06":                                     25100302,
-	"Gator_Eremite_Rock_01":                                  25110101,
-	"Gator_Eremite_Rock_02":                                  25110102,
-	"Vulture_Eremite_Wind_01":                                25110201,
-	"Vulture_Eremite_Wind_02":                                25110202,
-	"Scorpion_Eremite_Fire_01":                               25110301,
-	"Chrysopelea_Eremite_Grass_01":                           25110401,
-	"Eremite_Female_Hatchet_01":                              25210101,
-	"Eremite_Female_Hatchet_02":                              25210102,
-	"Eremite_Female_Hatchet_03":                              25210103,
-	"EremiteElite_Female_Hatchet_01":                         25210104,
-	"EremiteElite_Female_Hatchet_02":                         25210105,
-	"EremiteElite_Female_Hatchet_03":                         25210106,
-	"Eremite_Female_Hatchet_04":                              25210107,
-	"Eremite_Female_Hatchet_05":                              25210108,
-	"NPC_Quest_Female_Standard_Nailan_20933":                 25210109,
-	"Eremite_Male_Standard_Crossbow_01":                      25210201,
-	"Eremite_Male_Standard_Crossbow_02":                      25210202,
-	"Eremite_Male_Standard_Crossbow_03":                      25210203,
-	"EremiteElite_Male_Standard_Crossbow_01":                 25210204,
-	"EremiteElite_Male_Standard_Crossbow_02":                 25210205,
-	"EremiteElite_Male_Standard_Crossbow_03":                 25210206,
-	"Eremite_Male_Standard_Crossbow_04":                      25210207,
-	"NPC_Quest_Male_Standard_Eremite_01":                     25210208,
-	"NPC_Quest_Male_Standard_Eremite_02":                     25210209,
-	"NPC_Sumeru_Male_Standard_Aderfi_4293":                   25210210,
-	"NPC_Quest_Male_Standard_Assassin02_20940":               25210211,
-	"NPC_Quest_Male_Standard_Idrisi_13065":                   25210212,
-	"NPC_Quest_Male_Standard_Nasejuna_4283":                  25210213,
-	"Eremite_Male_Standard_Pole_01":                          25210301,
-	"Eremite_Male_Standard_Pole_02":                          25210302,
-	"Eremite_Male_Standard_Pole_03":                          25210303,
-	"EremiteElite_Male_Standard_Pole_01":                     25210304,
-	"EremiteElite_Male_Standard_Pole_02":                     25210305,
-	"EremiteElite_Male_Standard_Pole_03":                     25210306,
-	"NPC_Sumeru_Male_Standard_Warden03_4298":                 25210308,
-	"NPC_Sumeru_Male_Standard_Warden04_4299":                 25210309,
-	"NPC_Quest_Male_Standard_Eremite_13190":                  25210310,
-	"Eremite_MuscleMan_Gloves_01":                            25210401,
-	"Eremite_MuscleMan_Gloves_02":                            25210402,
-	"Eremite_MuscleMan_Gloves_03":                            25210403,
-	"EremiteElite_MuscleMan_Gloves_01":                       25210404,
-	"EremiteElite_MuscleMan_Gloves_02":                       25210405,
-	"EremiteElite_MuscleMan_Gloves_03":                       25210406,
-	"NPC_Quest_MuscleMan_Standard_Eremite_01":                25210407,
-	"NPC_Quest_MuscleMan_Standard_Assassin01_20913":          25210408,
-	"NPC_Quest_MuscleMan_Standard_Tikriti_13108":             25210409,
-	"Eremite_MuscleMan_Simitar_01":                           25210501,
-	"Eremite_MuscleMan_Simitar_02":                           25210502,
-	"Eremite_MuscleMan_Simitar_03":                           25210503,
-	"EremiteElite_MuscleMan_Simitar_01":                      25210504,
-	"EremiteElite_MuscleMan_Simitar_02":                      25210505,
-	"EremiteElite_MuscleMan_Simitar_03":                      25210506,
-	"Eremite_MuscleMan_Simitar_04":                           25210507,
-	"NPC_Sumeru_MuscleMan_Standard_Yuften_4294":              25210508,
-	"NPC_Quest_MuscleMan_Standard_Bashar_13107":              25210509,
-	"NPC_Quest_MuscleMan_Standard_Pyrrho_20927":              25210510,
-	"Eremite_Male_Standard_NoWeapon_01":                      25210601,
-	"Eremite_Male_Standard_NoWeapon_02":                      25210602,
-	"Eremite_Female_Slim_PushDagger_01":                      25310101,
-	"Eremite_Female_Slim_PushDagger_02":                      25310102,
-	"Eremite_Male_Standard_Glaive_01":                        25310201,
-	"Eremite_Male_Standard_Glaive_02":                        25310202,
-	"Eremite_Male_Standard_Polearm_01":                       25310301,
-	"Eremite_Male_Strong_Katar_01":                           25410101,
-	"Eremite_Male_Strong_Katar_02":                           25410102,
-	"Eremite_Male_Strong_Katar_03":                           25410103,
-	"Eremite_Female_Standard_Longbow_01":                     25410201,
-	"Eremite_Female_Standard_Longbow_02":                     25410202,
-	"Eremite_Female_Standard_Oracle_01":                      25410301,
-	"Eremite_Female_Standard_Oracle_02":                      25410302,
-	"Eremite_Female_Standard_Oracle_03":                      25410303,
-	"Eremite_Female_Standard_Dancer_01":                      25410401,
-	"Mimik_Ice":                                              26010101,
-	"Mimik_Ice_Activity":                                     26010102,
-	"Mimik_Fel":                                              26010103,
-	"Mimik_Fel_02":                                           26010104,
-	"Mimik_Fire":                                             26010201,
-	"Mimik_Electric":                                         26010301,
-	"Regisvine_Ice":                                          26020101,
-	"Regisvine_Ice_Activity":                                 26020102,
-	"Regisvine_Fire":                                         26020201,
-	"Regisvine_Electric":                                     26020301,
-	"Wyrm_Rock":                                              26030101,
-	"Drake_Rock_01_Water":                                    26040101,
-	"Drake_Rock_01_Fire":                                     26040102,
-	"Drake_Rock_01_Ice":                                      26040103,
-	"Drake_Rock_01_Elec":                                     26040104,
-	"Drake_Rock_Fire_01":                                     26040201,
-	"Drake_Rock_Fire_02":                                     26040202,
-	"Drake_Rock_Ice_01":                                      26040301,
-	"Drake_Rock_Ice_02":                                      26040302,
-	"Drake_Primo_Rock_01_Water":                              26050101,
-	"Drake_Primo_Rock_01_Fire":                               26050201,
-	"Drake_Primo_Rock_01_Ice":                                26050301,
-	"Drake_Primo_Rock_01_Elec":                               26050401,
-	"Drake_Primo_Rock_01_Activity":                           26050501,
-	"Drake_DeepSea_Water_01":                                 26050601,
-	"Drake_DeepSea_Water_02":                                 26050901,
-	"Drake_Deepsea_Ice_01":                                   26050701,
-	"Drake_Deepsea_Ice_02":                                   26051001,
-	"Drake_Deepsea_Ice_03":                                   26050702,
-	"Drake_Deepsea_Ice_04":                                   26050703,
-	"Drake_Deepsea_Electric_01":                              26050801,
-	"Drake_Deepsea_Electric_02":                              26051101,
-	"Drake_Deepsea_Electric_03":                              26050802,
-	"Drake_Deepsea_Electric_04":                              26050803,
-	"Cicin_Thunder_01":                                       26060101,
-	"Cicin_Water_01":                                         26060201,
-	"Cicin_Ice_01":                                           26060301,
-	"Eldritch_Minor":                                         26080101,
-	"Fungus_Un_Gamma_Water_01":                               26090101,
-	"Fungus_Un_Delta_Grass_01":                               26090201,
-	"Fungus_Un_Delta_Grass_01_02":                            26090202,
-	"Fungus_Un_Delta_Wind_01":                                26090301,
-	"Fungus_Trois_Epsilon_Electric_01":                       26090401,
-	"Fungus_Trois_Alpha_Ice_01":                              26090501,
-	"Fungus_Trois_Gamma_Fire_01":                             26090601,
-	"Fungus_Deux_Alpha_Fire_01":                              26090701,
-	"Fungus_Deux_Epsilon_Wind_01":                            26090801,
-	"Fungus_Deux_Beta_Rock_01":                               26090901,
-	"Fungus_Deux_Delta_Electric_01":                          26091001,
-	"Fungus_Un_Gamma_Water_Enemy":                            26090190,
-	"Fungus_Un_Delta_Grass_Enemy":                            26090290,
-	"Fungus_Un_Delta_Wind_Enemy":                             26090390,
-	"Fungus_Trois_Epsilon_Electric_Enemy":                    26090490,
-	"Fungus_Trois_Alpha_Ice_Enemy":                           26090590,
-	"Fungus_Trois_Gamma_Fire_Enemy":                          26090690,
-	"Fungus_Deux_Alpha_Fire_Enemy":                           26090790,
-	"Fungus_Deux_Epsilon_Wind_Enemy":                         26090890,
-	"Fungus_Deux_Beta_Rock_Enemy":                            26090990,
-	"Fungus_Deux_Delta_Electric_Enemy":                       26091090,
-	"Fungus_Un_Gamma_Water_01_Capture":                       26090191,
-	"Fungus_Un_Delta_Grass_01_Capture":                       26090291,
-	"Fungus_Un_Delta_Wind_01_Capture":                        26090391,
-	"Fungus_Trois_Epsilon_Electric_01_Capture":               26090491,
-	"Fungus_Trois_Alpha_Ice_01_Capture":                      26090591,
-	"Fungus_Trois_Gamma_Fire_01_Capture":                     26090691,
-	"Fungus_Deux_Alpha_Fire_01_Capture":                      26090791,
-	"Fungus_Deux_Epsilon_Wind_01_Capture":                    26090891,
-	"Fungus_Deux_Beta_Rock_01_Capture":                       26090991,
-	"Fungus_Deux_Delta_Electric_01_Capture":                  26091091,
-	"Gator_Sacred_Water_01":                                  26100101,
-	"Panther_Sacred_Grass_01":                                26100201,
-	"Vulture_Sacred_Fire_01":                                 26100301,
-	"Scorpion_Sacred_Electric_01":                            26100401,
-	"Chrysopelea_Sacred_Wind_01":                             26100501,
-	"Fungus_Raptor":                                          26110101,
-	"Fungus_Amanita_Unu_Anudatta_Grass_01":                   26120101,
-	"Fungus_Amanita_Unu_Svarita_Ices_01":                     26120201,
-	"Fungus_Amanita_Du_Anudatta_Water_01":                    26120301,
-	"Fungus_Amanita_Du_Udatta_Rock_01":                       26120401,
-	"Sandworm":                                               26130101,
-	"MantaRay_Larva_01":                                      26151001,
-	"MantaRay_Larva_01_Large":                                26151002,
-	"MantaRay_Larva_02":                                      26151101,
-	"MantaRay_Larva_02_Large":                                26151102,
-	"HermitCrab_Larva_01_Sea":                                26152101,
-	"HermitCrab_Larva_01_Land":                               26152102,
-	"HermitCrab_Larva_02_Sea":                                26152201,
-	"HermitCrab_Larva_02_Land":                               26152202,
-	"Seal_Larva_01_Sea":                                      26153101,
-	"Seal_Larva_01_Small_Sea":                                26153102,
-	"Seal_Larva_01_Land":                                     26153103,
-	"Seal_Larva_01_Small_Land":                               26153104,
-	"JellyFish_Larva_01":                                     26154101,
-	"JellyFish_Larva_02":                                     26154201,
-	"JellyFish_Larva_01_Large":                               26154102,
-	"JellyFish_Larva_02_Large":                               26154202,
-	"SeaHorse_Larva_01":                                      26155101,
-	"SeaHorse_Larva_02":                                      26155201,
-	"SeaHorse_Larva_03":                                      26155301,
-	"Octopus_Larva_01":                                       26156101,
-	"Octopus_Larva_02":                                       26156201,
-	"Aplysia_Larva_01":                                       26157101,
-	"Aplysia_Larva_02":                                       26157201,
-	"HermitCrab_Mature_01_Sea":                               26160101,
-	"HermitCrab_Mature_01_Land":                              26160102,
-	"Aplysia_Mature_01_Sea":                                  26160201,
-	"Aplysia_Mature_01_Land":                                 26160202,
-	"SeaHorse_Mature_01_Sea":                                 26160301,
-	"SeaHorse_Mature_01_Land":                                26160302,
-	"HermitCrab_Mature_02":                                   26162101,
-	"MantaRay_Larva_03":                                      26162201,
-	"Seal_Larva_02":                                          26162301,
-	"Aplysia_Mature_02":                                      26162401,
-	"JellyFish_Larva_03":                                     26162501,
-	"HermitCrab_Primo_01":                                    26170101,
-	"SeaHorse_Primo_Electric_01":                             26180101,
-	"Hermit_Normal_01":                                       26190101,
-	"Hermit_WQ_01":                                           26190102,
-	"Hermit_Normal_02":                                       26190103,
-	"Striped_01":                                             26190201,
-	"Sylph_Grass_01":                                         20060701,
-	"Sylph_Water_01":                                         20060101,
-	"Sylph_Rock_01":                                          20060201,
-	"Sylph_Wind_01":                                          20060301,
-	"Sylph_Ice_01":                                           20060401,
-	"Sylph_Electric_01":                                      20060501,
-	"Sylph_Fire_01":                                          20060601,
-	"Inu_Shihandai_01":                                       28020901,
-	"Inu_Shihandai_02":                                       28020902,
-	"Inu_Shihandai_03":                                       28020903,
-	"Inu_Shihandai_04":                                       28020904,
-	"Inu_Shihandai_FunFight_01":                              28020905,
-	"Boar_04":                                                28020304,
-	"Boar_09":                                                28020309,
-	"Boar_FunFight_03":                                       28020318,
-	"Tortoise_01":                                            28021001,
-	"Tortoise_02":                                            28021002,
-	"GiantTortoise_01":                                       28021011,
-	"GiantTortoise_02":                                       28021012,
-	"Boar_01":                                                28020301,
-	"Boar_01_Hunt":                                           28020311,
-	"Boar_03":                                                28020303,
-	"Boar_03_Hunt":                                           28020312,
-	"Boar_05":                                                28020305,
-	"Boar_06":                                                28020306,
-	"Boar_Grass":                                             28020313,
-	"Boar_Grass_Small":                                       28020314,
-	"Crab_01":                                                28010101,
-	"Crab_02":                                                28010102,
-	"Crab_03":                                                28010103,
-	"Crab_04":                                                28010104,
-	"Crab_05":                                                28010105,
-	"Crab_06":                                                28010106,
-	"Fox_01":                                                 28020101,
-	"Fox_02":                                                 28020102,
-	"Fox_03":                                                 28020103,
-	"Fox_04":                                                 28020104,
-	"Fox_01_03":                                              28020108,
-	"Squirrel_01":                                            28020201,
-	"Crane_01":                                               28030101,
-	"Crane_02":                                               28030102,
-	"Crane_01_Lbis":                                          28030104,
-	"Falcon_01":                                              28030201,
-	"Falcon_02":                                              28030202,
-	"Falcon_03":                                              28030203,
-	"Falcon_04":                                              28030204,
-	"Wisp_Wind_01":                                           28050101,
-	"Wisp_Rock_01":                                           28050102,
-	"Wisp_Ice_01":                                            28050103,
-	"Wisp_Electric_01":                                       28050104,
-	"Wisp_Tokoyo_01":                                         28050105,
-	"Wisp_Grass_01":                                          28050106,
-	"Wisp_Water_01":                                          28050107,
-	"Boltbug_Lightbug_01":                                    28050301,
-	"Boltbug_Lightbug_02":                                    28050302,
-	"Boltbug_Scarab_01":                                      28050401,
-	"Electrohercules_01":                                     28050501,
-	"Electrohercules_02":                                     28050502,
-	"Electrohercules_03":                                     28050503,
-	"Electrohercules_04":                                     28050504,
-	"Electrohercules_05":                                     28050505,
-	"Electrohercules_06":                                     28050506,
-	"Electrohercules_07":                                     28050507,
-	"Electrohercules_08":                                     28050508,
-	"Electrohercules_09":                                     28050509,
-	"Electrohercules_10":                                     28050510,
-	"Electrohercules_11":                                     28050511,
-	"Electrohercules_12":                                     28050512,
-	"Boltbug_MachinaIustitia_01":                             28050701,
-	"Lizard_01":                                              28010201,
-	"Lizard_02":                                              28010202,
-	"Lizard_03":                                              28010203,
-	"Salamander_01":                                          28010204,
-	"Salamander_02":                                          28010205,
-	"Salamander_03":                                          28010206,
-	"Lizard_04":                                              28010207,
-	"Lizard_05":                                              28010208,
-	"Frog_01":                                                28010301,
-	"Frog_02":                                                28010302,
-	"Frog_03":                                                28010303,
-	"Frog_04":                                                28010304,
-	"Eel_01":                                                 28010401,
-	"Eel_02":                                                 28010402,
-	"Eel_03":                                                 28010403,
-	"Eel_04":                                                 28010404,
-	"Boar_02":                                                28020302,
-	"Boar_02_Hunt":                                           28020310,
-	"Pigeon_01":                                              28030301,
-	"Pigeon_02":                                              28030302,
-	"Pigeon_03":                                              28030303,
-	"Pigeon_04":                                              28030304,
-	"Pigeon_05":                                              28030305,
-	"Crow_01":                                                28030306,
-	"Pigeon_Beak_01":                                         28030313,
-	"Tit_01":                                                 28030401,
-	"Tit_02":                                                 28030402,
-	"Tit_03":                                                 28030403,
-	"Tit_04":                                                 28030404,
-	"Tit_06":                                                 28030405,
-	"Wigeon_01":                                              28030501,
-	"Wigeon_02":                                              28030502,
-	"Wigeon_03":                                              28030503,
-	"Swan_01":                                                28030601,
-	"Swan_02":                                                28030602,
-	"Uka_01":                                                 28030603,
-	"Albatross_01":                                           28030701,
-	"Seagull_01":                                             28030702,
-	"Eggplant_01":                                            28030703,
-	"Eggplant_02":                                            28030704,
-	"Fantail_01":                                             28030705,
-	"Fantail_02":                                             28030706,
-	"Larvivora_01":                                           28030707,
-	"Larvivora_02":                                           28030708,
-	"Fish_01":                                                28040101,
-	"Fish_02":                                                28040102,
-	"Fish_03":                                                28040103,
-	"Fish_04":                                                28040104,
-	"Fish_05":                                                28040105,
-	"Fish_06":                                                28040106,
-	"Fish_07":                                                28040107,
-	"Fish_08":                                                28040108,
-	"Fishable_Maritime_Heliobatis_01":                        28040201,
-	"Fishable_Maritime_Heliobatis_02":                        28040202,
-	"Fishable_Maritime_Heliobatis_03":                        28040203,
-	"Fishable_Maritime_Heliobatis_04":                        28040204,
-	"Fishable_Maritime_Heliobatis_05":                        28040205,
-	"Fishable_Maritime_Heliobatis_06":                        28040206,
-	"Fishable_Maritime_Aspidorhynchus_01":                    28040301,
-	"Fishable_Maritime_Aspidorhynchus_02":                    28040302,
-	"Fishable_Maritime_Aspidorhynchus_03":                    28040303,
-	"Fishable_Maritime_Aspidorhynchus_04":                    28040304,
-	"Fishable_Maritime_Aspidorhynchus_05":                    28040305,
-	"Fishable_Maritime_Cheirolepis_01":                       28040401,
-	"Fishable_Maritime_Cheirolepis_02":                       28040402,
-	"Fishable_Maritime_Doryaspis_01":                         28040501,
-	"Fishable_Maritime_Doryaspis_02":                         28040502,
-	"Fishable_Maritime_Doryaspis_03":                         28040503,
-	"Fishable_Maritime_Doryaspis_04":                         28040504,
-	"Fishable_Maritime_Doryaspis_05":                         28040505,
-	"Fishable_Maritime_Doryaspis_06":                         28040506,
-	"Fishable_Maritime_Namazu_01":                            28040601,
-	"Fishable_Maritime_Namazu_02":                            28040602,
-	"Fishable_Ray_Stellamarisidae_01_02":                     28040701,
-	"Fishable_Ray_Stellamarisidae_01_03":                     28040702,
-	"Fishable_Ray_Stellamarisidae_02_01":                     28040703,
-	"Fishable_Maritime_Batdiodan_01":                         28040801,
-	"Fishable_Maritime_Batdiodan_02":                         28040802,
-	"Fishable_Maritime_Batdiodan_03":                         28040803,
-	"Fishable_Maritime_Batdiodan_04":                         28040804,
-	"Fishable_Maritime_Apsva_01":                             28040901,
-	"Fishable_Maritime_Apsva_02":                             28040902,
-	"Fishable_Maritime_Apsva_03":                             28040903,
-	"Fishable_Maritime_Coeur_01":                             28041001,
-	"Fishable_Maritime_Coeur_02":                             28041002,
-	"Fishable_Maritime_Coeur_03":                             28041003,
-	"Fishable_Maritime_MachinaIustitia_01":                   28041101,
-	"Fishable_Maritime_MachinaIustitia_02":                   28041102,
-	"Fishable_Maritime_MachinaIustitia_03":                   28041103,
-	"Fishable_Maritime_MachinaIustitia_04":                   28041104,
-	"Fishable_Maritime_MachinaIustitia_05":                   28041105,
-	"DogPrick_01":                                            28020401,
-	"DogPrick_02":                                            28020402,
-	"DogPrick_03":                                            28020403,
-	"DogPrick_04":                                            28020404,
-	"DogPrick_05":                                            28020405,
-	"DogPrick_01_02":                                         28020406,
-	"Dog_DropEar_01":                                         28020411,
-	"Dog_DropEar_02":                                         28020412,
-	"Dog_DropEar_03":                                         28020413,
-	"Cat_01":                                                 28020501,
-	"Cat_02":                                                 28020502,
-	"Cat_03":                                                 28020503,
-	"Cat_04":                                                 28020504,
-	"Cat_05":                                                 28020505,
-	"Cat_06":                                                 28020506,
-	"Cat_07":                                                 28020507,
-	"Cat_01_02":                                              28020508,
-	"Cat_03_02":                                              28020509,
-	"Marten_01":                                              28020601,
-	"Marten_02":                                              28020602,
-	"Marten_03":                                              28020603,
-	"Marten_04":                                              28020604,
-	"Marten_05":                                              28020605,
-	"Vulpes_01":                                              28020701,
-	"Vulpes_01_02":                                           28020702,
-	"Inu_Tanuki_01":                                          28020801,
-	"Inu_Tanuki_02":                                          28020802,
-	"Inu_Tanuki_03":                                          28020803,
-	"FontainePoddle_Lady_01":                                 28021101,
-	"FontainePoddle_Guard_01":                                28021102,
-	"FontainePoddle_Gentleman_01":                            28021103,
-	"Beaver_01":                                              28021201,
-	"Goat_01":                                                28022101,
-	"Thoarder_Weasel_01":                                     28050201,
-	"Thoarder_Weasel_02":                                     28050202,
-	"Thoarder_Weasel_03":                                     28050203,
-	"Gator_01":                                               28060101,
-	"Gator_Strong_01":                                        28060102,
-	"Panther_01":                                             28060201,
-	"Panther_Strong_01":                                      28060202,
-	"Vulture_01":                                             28060301,
-	"Scorpion_01":                                            28060401,
-	"Chrysopelea_01":                                         28061501,
-	"Megamoth_Desert_01":                                     28060501,
-	"Megamoth_Desert_02":                                     28060502,
-	"Megamoth_Desert_03":                                     28060503,
-	"MantaRay_Special_01":                                    28070101,
-	"MantaRay_Enormous_01":                                   28070102,
-	"HermitCrab_Special_01":                                  28070201,
-	"Seal_Special_01":                                        28070301,
-	"Seal_Enormous_01":                                       28070302,
-	"JellyFish_Special_01":                                   28070401,
-	"JellyFish_Enormous_01":                                  28070402,
-	"Megamoth_Desert_04":                                     28060701,
-	"Megamoth_Desert_05":                                     28060801,
-	"Megamoth_Desert_06":                                     28060901,
-	"Megamoth_Desert_07":                                     28061001,
-	"Megamoth_Desert_08":                                     28061002,
-	"Megamoth_Jungle_01":                                     28060601,
-	"Megamoth_Jungle_02":                                     28060602,
-	"Megamoth_Jungle_03":                                     28060603,
-	"Megamoth_Jungle_04":                                     28061101,
-	"Megamoth_Jungle_05":                                     28061201,
-	"Megamoth_Jungle_06":                                     28061301,
-	"Megamoth_Jungle_07":                                     28061401,
-	"Megamoth_Jungle_08":                                     28061402,
-	"Megamoth_Jungle_Strong_01":                              28060609,
-	"Homeworld_Boar_01":                                      28220301,
-	"Homeworld_Boar_03":                                      28220303,
-	"Homeworld_Boar_Grass":                                   28220313,
-	"Homeworld_Boar_Grass_Small":                             28220314,
-	"Homeworld_Crab_01":                                      28210101,
-	"Homeworld_Crab_02":                                      28210102,
-	"Homeworld_Crab_03":                                      28210103,
-	"Homeworld_Crab_04":                                      28210104,
-	"Homeworld_Crab_05":                                      28210105,
-	"Homeworld_Fox_01":                                       28220101,
-	"Homeworld_Fox_02":                                       28220102,
-	"Homeworld_Fox_03":                                       28220108,
-	"Homeworld_Squirrel_01":                                  28220201,
-	"Homeworld_DogPrick_01":                                  28220401,
-	"Homeworld_DogPrick_02":                                  28220402,
-	"Homeworld_DogPrick_03":                                  28220403,
-	"Homeworld_DogPrick_04":                                  28220404,
-	"Homeworld_Dog_DropEar_01":                               28220405,
-	"Homeworld_Dog_DropEar_02":                               28220406,
-	"Homeworld_Dog_DropEar_03":                               28220407,
-	"Homeworld_Cat_01":                                       28220501,
-	"Homeworld_Cat_02":                                       28220502,
-	"Homeworld_Cat_03":                                       28220503,
-	"Homeworld_Cat_04":                                       28220504,
-	"Homeworld_Cat_05":                                       28220505,
-	"Homeworld_Cat_06":                                       28220506,
-	"Homeworld_Marten_01":                                    28220601,
-	"Homeworld_Marten_02":                                    28220602,
-	"Homeworld_Marten_03":                                    28220603,
-	"Homeworld_Marten_04":                                    28220604,
-	"Homeworld_Marten_05":                                    28220605,
-	"Homeworld_Vulpes_01":                                    28220701,
-	"Homeworld_Inu_Shihandai_01":                             28220901,
-	"Homeworld_Goat_01":                                      28222101,
-	"Homeworld_Crane_01":                                     28230101,
-	"Homeworld_Crane_02":                                     28230102,
-	"Homeworld_Crane_01_Lbis":                                28230104,
-	"Homeworld_Wisp_Wind_01":                                 28250101,
-	"Homeworld_Wisp_Rock_01":                                 28250102,
-	"Homeworld_Wisp_Ice_01":                                  28250103,
-	"Homeworld_Wisp_Electric_01":                             28250104,
-	"Homeworld_Wisp_Tokoyo_01":                               28250105,
-	"Homeworld_Wisp_Grass_01":                                28250106,
-	"Homeworld_Wisp_Water_01":                                28250107,
-	"Homeworld_Boltbug_Lightbug_01":                          28250301,
-	"Homeworld_Boltbug_Lightbug_02":                          28250302,
-	"Homeworld_Boltbug_Scarab_01":                            28250401,
-	"HomeWorld_Boltbug_MachinaIustitia_01":                   28250701,
-	"Homeworld_Lizard_01":                                    28210201,
-	"Homeworld_Lizard_02":                                    28210202,
-	"Homeworld_Lizard_03":                                    28210203,
-	"Homeworld_Salamander_01":                                28210204,
-	"Homeworld_Salamander_02":                                28210205,
-	"Homeworld_Salamander_03":                                28210206,
-	"Homeworld_Lizard_04":                                    28210207,
-	"Homeworld_Lizard_05":                                    28210208,
-	"Homeworld_Frog_01":                                      28210301,
-	"Homeworld_Frog_02":                                      28210302,
-	"Homeworld_Frog_03":                                      28210303,
-	"Homeworld_Frog_04":                                      28210304,
-	"Homeworld_Eel_01":                                       28210401,
-	"Homeworld_Eel_02":                                       28210402,
-	"Homeworld_Eel_03":                                       28210403,
-	"Homeworld_Eel_04":                                       28210404,
-	"Homeworld_Pigeon_01":                                    28230301,
-	"Homeworld_Pigeon_02":                                    28230302,
-	"Homeworld_Pigeon_03":                                    28230303,
-	"Homeworld_Pigeon_04":                                    28230304,
-	"Homeworld_Pigeon_05":                                    28230305,
-	"Homeworld_Crow_01":                                      28230306,
-	"Homeworld_Pigeon_Beak_01":                               28230313,
-	"Homeworld_Tit_01":                                       28230401,
-	"Homeworld_Tit_02":                                       28230402,
-	"Homeworld_Tit_03":                                       28230403,
-	"Homeworld_Tit_04":                                       28230404,
-	"Homeworld_Swan_01":                                      28230601,
-	"Homeworld_Swan_02":                                      28230602,
-	"Homeworld_Uka_01":                                       28230603,
-	"Homeworld_Albatross_01":                                 28230701,
-	"Homeworld_Seagull_01":                                   28230702,
-	"Homeworld_Eggplant_01":                                  28230703,
-	"Homeworld_Eggplant_02":                                  28230704,
-	"Homeworld_Fantail_01":                                   28230705,
-	"Homeworld_Fantail_02":                                   28230706,
-	"Homeworld_Larvivora_01":                                 28230707,
-	"Homeworld_Larvivora_02":                                 28230708,
-	"Homeworld_Fishable_Maritime_Heliobatis_01":              28240201,
-	"Homeworld_Fishable_Maritime_Heliobatis_02":              28240202,
-	"Homeworld_Fishable_Maritime_Heliobatis_03":              28240203,
-	"Homeworld_Fishable_Maritime_Heliobatis_04":              28240204,
-	"Homeworld_Fishable_Maritime_Heliobatis_05":              28240205,
-	"Homeworld_Fishable_Maritime_Heliobatis_06":              28240206,
-	"Homeworld_Fishable_Maritime_Aspidorhynchus_01":          28240301,
-	"Homeworld_Fishable_Maritime_Aspidorhynchus_02":          28240302,
-	"Homeworld_Fishable_Maritime_Aspidorhynchus_03":          28240303,
-	"Homeworld_Fishable_Maritime_Aspidorhynchus_04":          28240304,
-	"Homeworld_Fishable_Maritime_Aspidorhynchus_05":          28240305,
-	"Homeworld_Fishable_Maritime_Cheirolepis_01":             28240401,
-	"Homeworld_Fishable_Maritime_Cheirolepis_02":             28240402,
-	"Homeworld_Fishable_Maritime_Doryaspis_01":               28240501,
-	"Homeworld_Fishable_Maritime_Doryaspis_02":               28240502,
-	"Homeworld_Fishable_Maritime_Doryaspis_03":               28240503,
-	"Homeworld_Fishable_Maritime_Doryaspis_04":               28240504,
-	"Homeworld_Fishable_Maritime_Doryaspis_05":               28240505,
-	"Homeworld_Fishable_Maritime_Doryaspis_06":               28240506,
-	"Homeworld_Fishable_Maritime_Namazu_01":                  28240601,
-	"Homeworld_Fishable_Maritime_Namazu_02":                  28240602,
-	"Homeworld_Fishable_Ray_Stellamarisidae_01_02":           28240701,
-	"Homeworld_Fishable_Ray_Stellamarisidae_01_03":           28240702,
-	"Homeworld_Fishable_Maritime_Batdiodan_01":               28240801,
-	"Homeworld_Fishable_Maritime_Batdiodan_02":               28240802,
-	"Homeworld_Fishable_Maritime_Batdiodan_03":               28240803,
-	"Homeworld_Fishable_Maritime_Batdiodan_04":               28240804,
-	"Homeworld_Fishable_Maritime_Apsva_01":                   28240901,
-	"Homeworld_Fishable_Maritime_Apsva_02":                   28240902,
-	"Homeworld_Fishable_Maritime_Apsva_03":                   28240903,
-	"Homeworld_Fishable_Maritime_Coeur_01":                   28241001,
-	"Homeworld_Fishable_Maritime_Coeur_02":                   28241002,
-	"Homeworld_Fishable_Maritime_Coeur_03":                   28241003,
-	"Homeworld_Fishable_Maritime_MachinaIustitia_01":         28241101,
-	"Homeworld_Fishable_Maritime_MachinaIustitia_02":         28241102,
-	"Homeworld_Fishable_Maritime_MachinaIustitia_03":         28241103,
-	"Homeworld_Fishable_Maritime_MachinaIustitia_04":         28241104,
-	"Homeworld_Fishable_Maritime_MachinaIustitia_05":         28241105,
-	"Partner_Oceanid_Squirrel":                               30050701,
-	"Partner_Oceanid_Tit":                                    30050501,
-	"Partner_Oceanid_Wigeon_02":                              30050601,
-	"Partner_Hilistray_Wind_01":                              31040101,
-	"Partner_MachinaIustitia_Sentry_01":                      34060101,
-	"Partner_MachinaIustitia_Ruggiero_02":                    34060901,
-	"NPC_Fontaine_Male_Standard_Sonny_5132":                  35010201,
-	"NPC_Quest_Male_Standard_Rouge_21274":                    35010202,
-	"NPC_Quest_Male_Standard_Rocher_21161":                   35010203,
-	"NPC_Quest_Male_Standard_TieChuaner_21362":               35010204,
-	"NPC_Fontaine_Male_Standard_Blanc_5233":                  35020201,
-	"NPC_Fontaine_Male_Standard_Bleu_5232":                   35020202,
-	"NPC_Fontaine_MuscleMan_Standard_Luca_5131":              35060101,
-	"NPC_Fontaine_MuscleMan_Standard_Chaussivert_5273":       35060102,
-	"NPC_Quest_Muscleman_Standard_Valberry_21163":            35060103,
-	"NPC_Fontaine_Female_Standard_Genevieve_5260":            35110101,
-	"NPC_Fontaine_Male_Standard_Poiret_5261":                 35110201,
-	"Partner_Eremite_Female_Hatchet_01":                      35210101,
-	"Partner_Panther_01":                                     35210102,
-	"NPC_Quest_Female_Standard_Eremite_02":                   35210103,
-	"NPC_Quest_Female_Standard_Madeleine_21169":              35210104,
-	"NPC_Quest_Male_Standard_Badawi_13277":                   35210202,
-	"NPC_Quest_Male_Standard_Soldier_12801":                  35210301,
-	"NPC_Quest_Male_Standard_Soldier_12802":                  35210302,
-	"NPC_Quest_Male_Standard_Soldier_12804":                  35210303,
-	"NPC_Quest_MuscleMan_Standard_Soldier_12803":             35210401,
-	"Partner_Eremite_MuscleMan_Simitar_01":                   35210501,
-	"Partner_Eremite_Female_Slim_PushDagger_01":              35310101,
-	"Partner_Eremite_Male_Standard_Polearm_01":               35310301,
-	"Partner_Eremite_Male_Strong_Katar_01":                   35410101,
-	"Partner_Eremite_Female_Standard_Longbow_01":             35410201,
-	"Partner_Fumgus_Un_Gamma_Water":                          36090190,
-	"Partner_Fumgus_Un_Delta_Grass":                          36090290,
-	"Partner_Fumgus_Un_Delta_Wind":                           36090390,
-	"Partner_Fumgus_Trois_Epsilon_Electric":                  36090490,
-	"Partner_Fumgus_Trois_Alpha_Ice":                         36090590,
-	"Partner_Fumgus_Trois_Gamma_Fire":                        36090690,
-	"Partner_Fumgus_Deux_Alpha_Fire":                         36090790,
-	"Partner_Fumgus_Deux_Epsilon_Wind":                       36090890,
-	"Partner_Fumgus_Deux_Beta_Rock":                          36090990,
-	"Partner_Fumgus_Deux_Delta_Electric":                     36091090,
-	"Partner_Animal_Electrohercules_01":                      38050590,
-	"Partner_Animal_Electrohercules_02":                      38050591,
-	"Partner_Animal_Megamoth_Jungle_01":                      38060502,
 }

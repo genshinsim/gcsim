@@ -8,35 +8,14 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
 	"text/template"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
-
-//nolint:tagliatelle // need to match datamine
-type propGrowCurve struct {
-	GrowCurve string `json:"growCurve"`
-}
-
-//nolint:tagliatelle // need to match datamine
-type monsterExcelConfig struct {
-	MonsterName     string          `json:"monsterName"`
-	Typ             string          `json:"type"`
-	HpDrops         []info.HpDrop   `json:"hpDrops"`
-	KillDropId      int             `json:"killDropId"`
-	HpBase          float64         `json:"hpBase"`
-	PropGrowCurves  []propGrowCurve `json:"propGrowCurves"`
-	FireSubHurt     float64         `json:"fireSubHurt"`
-	GrassSubHurt    float64         `json:"grassSubHurt"`
-	WaterSubHurt    float64         `json:"waterSubHurt"`
-	ElecSubHurt     float64         `json:"elecSubHurt"`
-	WindSubHurt     float64         `json:"windSubHurt"`
-	IceSubHurt      float64         `json:"iceSubHurt"`
-	RockSubHurt     float64         `json:"rockSubHurt"`
-	PhysicalSubHurt float64         `json:"physicalSubHurt"`
-	Id              int             `json:"id"`
-}
 
 var elementMap = template.FuncMap{
 	"Pyro":     func() attributes.Element { return attributes.Pyro },
@@ -49,10 +28,108 @@ var elementMap = template.FuncMap{
 	"Physical": func() attributes.Element { return attributes.Physical },
 }
 
+var keyRegex = regexp.MustCompile(`\W+`) // for removing spaces
+
 func main() {
-	if err := runCodeGen(); err != nil {
+	dir := os.Getenv("EXCEL_BIN_OUTPUT")
+	if len(dir) == 0 {
+		dir = "./GenshinData/ExcelBinOutput"
+	}
+
+	var configs []monsterExcelConfig
+	var describeConfigs []monsterDescribeExcelConfig
+	var textMap map[string]string
+
+	if err := openConfig(&configs, dir, "MonsterExcelConfigData.json"); err != nil {
 		log.Fatalf("err: %v\n", err)
 	}
+	if err := openConfig(&describeConfigs, dir, "MonsterDescribeExcelConfigData.json"); err != nil {
+		log.Fatalf("err: %v\n", err)
+	}
+	if err := openConfig(&textMap, dir, "..", "TextMap", "TextMapEN.json"); err != nil {
+		log.Fatalf("err: %v\n", err)
+	}
+
+	profiles := getEnemyProfiles(configs, describeConfigs, textMap)
+	if err := runCodeGen(profiles); err != nil {
+		log.Fatalf("err: %v\n", err)
+	}
+
+	names := getEnemyNames(profiles)
+	if err := runShortcuts(names); err != nil {
+		log.Fatalf("err: %v\n", err)
+	}
+}
+
+func getEnemyProfiles(configs []monsterExcelConfig, describeConfigs []monsterDescribeExcelConfig, textMap map[string]string) []info.EnemyProfile {
+	profiles := make([]info.EnemyProfile, 0, len(configs))
+	for i := range configs {
+		monsterName := getMonsterName(configs[i].DescribeId, describeConfigs, textMap)
+		if monsterName == "" { // not valid
+			continue
+		}
+
+		info := toEnemyProfile(&configs[i])
+		info.MonsterName = monsterName
+		profiles = append(profiles, info)
+	}
+	return profiles
+}
+
+func getEnemyNames(profiles []info.EnemyProfile) map[string]int {
+	names := make(map[string]int, len(profiles))
+	for i := range profiles {
+		v := &profiles[i]
+		names[v.MonsterName] = v.Id
+	}
+	return names
+}
+
+func runCodeGen(profiles []info.EnemyProfile) error {
+	buf := new(bytes.Buffer)
+	writer := bufio.NewWriter(buf)
+	if err := writeMonsterInfo(profiles, writer); err != nil {
+		return err
+	}
+	writer.Flush()
+	content, err := format.Source(buf.Bytes())
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile("enemystat.go.txt", content, 0o644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func runShortcuts(names map[string]int) error {
+	fdata, err := os.Create("enemies.go.txt")
+	if err != nil {
+		return err
+	}
+	defer fdata.Close()
+	tdata, err := template.New("outshortcuts").Parse(tmplShortcuts)
+	if err != nil {
+		return err
+	}
+	if err := tdata.Execute(fdata, names); err != nil {
+		return err
+	}
+	return nil
+}
+
+func openConfig(result interface{}, path ...string) error {
+	jsonFile := filepath.Join(path...)
+	data, err := os.ReadFile(jsonFile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(data, &result)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func toEnemyProfile(enemyInfo *monsterExcelConfig) info.EnemyProfile {
@@ -67,7 +144,10 @@ func toEnemyProfile(enemyInfo *monsterExcelConfig) info.EnemyProfile {
 		}
 		pd := v
 		pd.HpPercent /= 100
-		drops = append(drops, pd)
+		drops = append(drops, info.HpDrop{
+			DropId:    pd.DropId,
+			HpPercent: pd.HpPercent,
+		})
 	}
 	if enemyInfo.KillDropId != 0 {
 		// add killDropId as particle drop
@@ -96,42 +176,11 @@ func toEnemyProfile(enemyInfo *monsterExcelConfig) info.EnemyProfile {
 		HpBase:        enemyInfo.HpBase,
 		HpGrowCurve:   hpGrowCurve,
 		Id:            enemyInfo.Id,
-		MonsterName:   enemyInfo.MonsterName,
+		MonsterName:   "",
 	}
 }
 
-func runCodeGen() error {
-	configs, err := readMonsterConfigs()
-	if err != nil {
-		return err
-	}
-	buf := new(bytes.Buffer)
-	writer := bufio.NewWriter(buf)
-	err = writeMonsterInfo(configs, writer)
-	if err != nil {
-		return err
-	}
-	err = writeNameIds(configs, writer)
-	if err != nil {
-		return err
-	}
-	writer.Flush()
-	content, err := format.Source(buf.Bytes())
-	if err != nil {
-		return err
-	}
-	err = os.WriteFile("enemystat.go", content, 0o644)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func writeMonsterInfo(configs []monsterExcelConfig, out *bufio.Writer) error {
-	profiles := make([]info.EnemyProfile, len(configs))
-	for i := range configs {
-		profiles[i] = toEnemyProfile(&configs[i])
-	}
+func writeMonsterInfo(profiles []info.EnemyProfile, out *bufio.Writer) error {
 	t, err := template.New("enemystat").Funcs(elementMap).Parse(tmplEnemyStats)
 	if err != nil {
 		return err
@@ -143,42 +192,23 @@ func writeMonsterInfo(configs []monsterExcelConfig, out *bufio.Writer) error {
 	return nil
 }
 
-func writeNameIds(configs []monsterExcelConfig, out *bufio.Writer) error {
-	used := []*monsterExcelConfig{}
-	visited := map[string]bool{}
-	for i := range configs {
-		v := &configs[i]
-		if _, ok := visited[v.MonsterName]; !ok {
-			visited[v.MonsterName] = true
-			used = append(used, v)
+func getMonsterName(describeId int, describeConfigs []monsterDescribeExcelConfig, textMap map[string]string) string {
+	for i := range describeConfigs {
+		// find the info
+		describeInfo := &describeConfigs[i]
+		if describeInfo.Id != describeId {
+			continue
 		}
-	}
-	t, err := template.New("enemyname").Parse(tmplNames)
-	if err != nil {
-		return err
-	}
-	err = t.Execute(out, used)
-	if err != nil {
-		return err
-	}
-	return nil
-}
 
-func readMonsterConfigs() ([]monsterExcelConfig, error) {
-	dir := os.Getenv("EXCEL_BIN_OUTPUT")
-	if len(dir) == 0 {
-		dir = "./GenshinData/ExcelBinOutput"
+		// get the key
+		text := textMap[strconv.Itoa(describeInfo.NameTextMapHash)]
+		if text == "" {
+			return ""
+		}
+		text = keyRegex.ReplaceAllString(text, "")
+		return strings.ToLower(text)
 	}
-	dat, err := os.ReadFile(filepath.Join(dir, "MonsterExcelConfigData.json"))
-	if err != nil {
-		return nil, err
-	}
-	parsed := []monsterExcelConfig{}
-	err = json.Unmarshal(dat, &parsed)
-	if err != nil {
-		return nil, err
-	}
-	return parsed, nil
+	return ""
 }
 
 var tmplEnemyStats = `// Code generated DO NOT EDIT.
@@ -190,7 +220,7 @@ import (
 )
 
 var monsterInfos = map[int]info.EnemyProfile{
-{{range .}}
+{{- range .}}
 	{{.Id}}: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro: {{index .Resist Pyro}},
@@ -215,12 +245,16 @@ var monsterInfos = map[int]info.EnemyProfile{
 		Id: {{.Id}},
 		MonsterName : "{{.MonsterName}}",
 	},
-{{end}}
+{{- end}}
 }
 
 `
 
-var tmplNames = `var monsterNameIds = map[string]int{ {{range .}}
-"{{.MonsterName}}": {{.Id}}, {{end}}
+var tmplShortcuts = `package shortcut
+
+var MonsterNameToID = map[string]int{
+{{- range $key, $value := .}}
+	"{{$key}}": {{$value}},
+{{- end}}
 }
 `

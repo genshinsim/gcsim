@@ -36,6 +36,8 @@ message Enemy {
     double particle_drop_threshold = 5 [json_name="particle_drop_threshold"];
     double particle_drop_count = 6 [json_name="particle_drop_count"];
     string particle_element = 7 [json_name="particle_element"];
+    string name = 8 [json_name="name"];
+    bool modified = 9 [json_name="modified"];
 }
 
 message Coord {

@@ -72,6 +72,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 				r.FreezeResist = v
+				r.Modified = true
 			default:
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}
@@ -92,6 +93,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 				p.res.Settings.DamageMode = true
+				r.Modified = true
 			}
 		case keywordResist:
 			// this sets all resistance
@@ -104,15 +106,11 @@ func parseTarget(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 
-			// TODO: make this more elegant...
-			r.Resist[attributes.Electro] += amt
-			r.Resist[attributes.Cryo] += amt
-			r.Resist[attributes.Hydro] += amt
-			r.Resist[attributes.Physical] += amt
-			r.Resist[attributes.Pyro] += amt
-			r.Resist[attributes.Geo] += amt
-			r.Resist[attributes.Dendro] += amt
-			r.Resist[attributes.Anemo] += amt
+			res := []attributes.Element{attributes.Electro, attributes.Cryo, attributes.Hydro, attributes.Physical, attributes.Pyro, attributes.Geo, attributes.Dendro, attributes.Anemo}
+			for _, attr := range res {
+				r.Resist[attr] += amt
+			}
+			r.Modified = true
 		case keywordParticleThreshold:
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err != nil {
@@ -124,6 +122,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 			}
 			r.ParticleDropThreshold = amt
 			r.ParticleDrops = nil // separate particle system
+			r.Modified = true
 		case keywordParticleDropCount:
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err != nil {
@@ -134,6 +133,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 			r.ParticleDropCount = amt
+			r.Modified = true
 		case keywordParticleElement:
 			item, err := p.acceptSeqReturnLast(itemAssign, itemElementKey)
 			if err != nil {
@@ -142,6 +142,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 			if ele, ok := eleKeys[item.Val]; ok {
 				r.ParticleElement = ele
 			}
+			r.Modified = true
 		case itemElementKey:
 			s := n.Val
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
@@ -154,6 +155,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 			}
 
 			r.Resist[eleKeys[s]] += amt
+			r.Modified = true
 		case itemTerminateLine:
 			p.res.Targets = append(p.res.Targets, r)
 			return parseRows, nil

@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 var levelMultiplier = [][]float64{
@@ -214,38 +215,9 @@ var levelMultiplier = [][]float64{
 	},
 }
 
-var shortcuts = map[string]string{
-	"aeonblightdrake":   "Gargoyle_Fafnir_01",
-	"asimon":            "Monolith_Starchild",
-	"bathysmalvishap":   "Drake_DeepSea_Water_01",
-	"bolteater":         "Drake_Deepsea_Electric_01",
-	"earthguard":        "Gargoyle_Ground_01",
-	"geovishap":         "Drake_Rock_01_Water",
-	"goldenwolflord":    "Monster_Hound_Planelurker_01",
-	"hilichurl":         "Hili_None_01",
-	"kairagi_electro":   "Samurai_Kairagi_01",
-	"kairagi_pyro":      "Samurai_Kairagi_02",
-	"lawachurl_geo":     "Brute_Rock_None",
-	"maguukenki":        "Samurai_Ningyo_01",
-	"maguukenki_anemo":  "Samurai_Ningyo_02",
-	"maguukenki_cryo":   "Samurai_Ningyo_03",
-	"maguukenki_masked": "Samurai_Ningyo_04",
-	"mirrormaiden":      "Fatuus_Maiden_Water_01",
-	"mitachurl":         "Brute_None_Axe",
-	"primogeovishap":    "Drake_Primo_Rock_01_Water",
-	"rimebiter":         "Drake_Deepsea_Ice_01",
-	"ruincruiser":       "Apparatus_Enigma_BionicDrone",
-	"ruindefender":      "Apparatus_Enigma_BionicInsecta",
-	"ruindestroyer":     "Apparatus_Enigma_BionicFlora",
-	"ruingrader":        "Konungmathr_None",
-	"ruinguard":         "Defender_None_01",
-	"ruinscout":         "Apparatus_Enigma_BionicNettler",
-	"ruinserpent":       "Nithhoggr_None",
-}
-
 var abyssHpMultipliers = map[string]float64{
-	"Nithhoggr_None":               2.0,
-	"Monster_Hound_Planelurker_01": 2.0,
+	"ruinserpent":    2.0,
+	"goldenwolflord": 2.0,
 }
 
 type TargetParams struct {
@@ -258,6 +230,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 		return fmt.Errorf("invalid target level: must be between 1 and 100")
 	}
 	if name == "dummy" {
+		profile.Modified = true
 		profile.ParticleDropThreshold = 0
 		profile.ParticleDropCount = 0
 		profile.ParticleElement = 0
@@ -272,6 +245,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 	if err != nil {
 		return err
 	}
+	enemyInfo.Modified = false
 	enemyInfo.Level = profile.Level
 	enemyInfo.Pos = profile.Pos
 	enemyInfo.HP = enemyInfo.HpBase * levelMultiplier[enemyInfo.HpGrowCurve-1][enemyInfo.Level-1]
@@ -296,11 +270,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 
 //go:generate go run github.com/genshinsim/gcsim/scripts/enemystat
 func getMonsterInfo(name string) (info.EnemyProfile, error) {
-	codeName, ok := shortcuts[name]
-	if !ok {
-		codeName = name
-	}
-	id, ok := monsterNameIds[codeName]
+	id, ok := shortcut.MonsterNameToID[name]
 	if !ok {
 		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
 	}
