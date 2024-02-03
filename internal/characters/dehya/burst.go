@@ -24,11 +24,11 @@ var (
 )
 
 func init() {
-	kickFrames = frames.InitAbilSlice(72)            // Q -> Dash/Walk
-	kickFrames[action.ActionAttack] = 75             // Q -> N1
-	kickFrames[action.ActionSkill] = 71              // Q -> E
-	kickFrames[action.ActionJump] = 73               // Q -> J
-	kickFrames[action.ActionSwap] = burstKickHitmark // Q -> Swap
+	kickFrames = frames.InitAbilSlice(76) // Q -> N1
+	kickFrames[action.ActionSkill] = 71
+	kickFrames[action.ActionDash] = 73
+	kickFrames[action.ActionJump] = 73
+	kickFrames[action.ActionSwap] = burstKickHitmark
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
