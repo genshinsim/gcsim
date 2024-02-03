@@ -353,23 +353,24 @@ func (s *Simulation) handleHurt() {
 		amt := s.cfg.HurtSettings.Min + s.C.Rand.Float64()*(s.cfg.HurtSettings.Max-s.cfg.HurtSettings.Min)
 		s.cfg.HurtSettings.Active = false
 
-		ai := combat.AttackInfo{
-			ActorIndex: s.C.Player.Active(),
-			Abil:       "Hurt",
-			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Durability: 0,
-			Element:    s.cfg.HurtSettings.Element,
-			FlatDmg:    amt,
-		}
-		ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
-		ap.SkipTargets[targets.TargettablePlayer] = false
-		ap.SkipTargets[targets.TargettableEnemy] = true
-		ap.SkipTargets[targets.TargettableGadget] = true
-
-		s.C.QueueAttack(ai, ap, -1, f) // -1 to avoid snapshot
+		s.C.Tasks.Add(func() {
+			ai := combat.AttackInfo{
+				ActorIndex: s.C.Player.Active(),
+				Abil:       "Hurt",
+				AttackTag:  attacks.AttackTagNone,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Durability: 0,
+				Element:    s.cfg.HurtSettings.Element,
+				FlatDmg:    amt,
+			}
+			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			s.C.QueueAttack(ai, ap, -1, 0) // -1 to avoid snapshot
+		}, f)
 
 		s.C.Log.NewEventBuildMsg(glog.LogHurtEvent, -1, "hurt queued (once)").
 			Write("last", s.cfg.HurtSettings.LastHurt).
@@ -383,23 +384,24 @@ func (s *Simulation) handleHurt() {
 		amt := s.cfg.HurtSettings.Min + s.C.Rand.Float64()*(s.cfg.HurtSettings.Max-s.cfg.HurtSettings.Min)
 		s.cfg.HurtSettings.LastHurt = s.C.F + f
 
-		ai := combat.AttackInfo{
-			ActorIndex: s.C.Player.Active(),
-			Abil:       "Hurt",
-			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Durability: 0,
-			Element:    s.cfg.HurtSettings.Element,
-			FlatDmg:    amt,
-		}
-		ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
-		ap.SkipTargets[targets.TargettablePlayer] = false
-		ap.SkipTargets[targets.TargettableEnemy] = true
-		ap.SkipTargets[targets.TargettableGadget] = true
-
-		s.C.QueueAttack(ai, ap, -1, f) // -1 to avoid snapshot
+		s.C.Tasks.Add(func() {
+			ai := combat.AttackInfo{
+				ActorIndex: s.C.Player.Active(),
+				Abil:       "Hurt",
+				AttackTag:  attacks.AttackTagNone,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Durability: 0,
+				Element:    s.cfg.HurtSettings.Element,
+				FlatDmg:    amt,
+			}
+			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			s.C.QueueAttack(ai, ap, -1, 0) // -1 to avoid snapshot
+		}, f)
 
 		s.C.Log.NewEventBuildMsg(glog.LogHurtEvent, -1, "hurt queued").
 			Write("last", s.cfg.HurtSettings.LastHurt).
