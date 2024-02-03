@@ -26,7 +26,8 @@
         "dendro%": "Dendro-SCH-Bonus",
         "anemo%": "Anemo-SCH-Bonus",
         "geo%": "Geo-SCH-Bonus",
-        "cryo%": "Kryo-SCH-Bonus"
+        "cryo%": "Kryo-SCH-Bonus",
+        "modified": "Geändert"
     },
     "actions": {
         "attack": "Standardangriff",
@@ -55,7 +56,7 @@
         "swirl-hydro": "Verwirbelung (Hydro)",
         "swirl-pyro": "Verwirbelung (Pyro)",
         "swirl-cryo": "Verwirbelung (Kryo)",
-        "electrocharged": "Unter Strom", 
+        "electrocharged": "Unter Strom",
         "shatter": "Eisbrecher",
         "burning": "In Flammen",
         "quicken": "Urwuchs",
@@ -365,5 +366,9 @@
         "dash_data_header": "Gesamtverzögerung des Rennens aufgrund der Abklingzeit pro Iteration",
         "ignore_burst_energy_title": "\"Spezialfähigkeit-Energiekosten ignorieren\"-Modus ist aktiviert",
         "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen."
+    },
+    "states": {
+        "true": "wahr",
+        "false": "unwahr"
     }
 }

@@ -26,7 +26,8 @@
         "dendro%": "Dendro DMG Bonus",
         "anemo%": "Anemo DMG Bonus",
         "geo%": "Geo DMG Bonus",
-        "cryo%": "Cryo DMG Bonus"
+        "cryo%": "Cryo DMG Bonus",
+        "modified": "Modified"
     },
     "actions": {
         "attack": "Normal Attack",
@@ -55,7 +56,7 @@
         "swirl-hydro": "Swirl (Hydro)",
         "swirl-pyro": "Swirl (Pyro)",
         "swirl-cryo": "Swirl (Cryo)",
-        "electrocharged": "Electrocharged", 
+        "electrocharged": "Electrocharged",
         "shatter": "Shatter",
         "burning": "Burning",
         "quicken": "Quicken",
@@ -365,5 +366,9 @@
         "dash_data_header": "Total Sprint Delay Due To Cooldown Per Iteration",
         "ignore_burst_energy_title": "\"Ignore Elemental Burst Energy Costs\" Mode Is Enabled",
         "ignore_burst_energy_body": "The simulation is ignoring Elemental Burst energy requirements. This may result in inaccurate simulations."
+    },
+    "states": {
+        "true": "true",
+        "false": "false"
     }
 }

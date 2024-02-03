@@ -226,6 +226,8 @@ export interface Enemy {
   particle_drop_threshold?: number;
   particle_drop_count?: number;
   particle_element?: number;
+  modified?: boolean;
+  name?: string;
 }
 
 export interface Coord {

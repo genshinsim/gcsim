@@ -26,7 +26,8 @@
         "dendro%": "풀 원소 피해 보너스",
         "anemo%": "바람 원소 피해 보너스",
         "geo%": "바위 원소 피해 보너스",
-        "cryo%": "얼음 원소 피해 보너스"
+        "cryo%": "얼음 원소 피해 보너스",
+        "modified": "수정됨"
     },
     "actions": {
         "attack": "일반 공격",
@@ -55,7 +56,7 @@
         "swirl-hydro": "확산 (물)",
         "swirl-pyro": "확산 (얼음)",
         "swirl-cryo": "확산 (번개)",
-        "electrocharged": "감전", 
+        "electrocharged": "감전",
         "shatter": "쇄빙",
         "burning": "연소",
         "quicken": "활성",
@@ -377,5 +378,9 @@
         "dash_data_header": "이터레이션 당 재사용 대기시간으로 인한 총 대시 지연 시간",
         "ignore_burst_energy_title": "\"원소 폭발 에너지 요구량 무시\" 모드 활성화",
         "ignore_burst_energy_body": "시뮬레이션이 원소 폭발 에너지 요구량을 무시합니다. 이는 부정확한 시뮬레이션을 초래할 수 있습니다."
+    },
+    "states": {
+        "true": "참",
+        "false": "거짓"
     }
 }

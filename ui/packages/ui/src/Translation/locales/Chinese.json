@@ -26,7 +26,8 @@
         "dendro%": "草元素伤害加成",
         "anemo%": "风元素伤害加成",
         "geo%": "岩元素伤害加成",
-        "cryo%": "冰元素伤害加成"
+        "cryo%": "冰元素伤害加成",
+        "modified": "改装"
     },
     "actions": {
         "attack": "普通攻击",
@@ -55,7 +56,7 @@
         "swirl-hydro": "扩散 (水)",
         "swirl-pyro": "扩散 (火)",
         "swirl-cryo": "扩散 (冰)",
-        "electrocharged": "感电", 
+        "electrocharged": "感电",
         "shatter": "碎冰",
         "burning": "燃烧",
         "quicken": "原激化",
@@ -365,5 +366,9 @@
         "dash_data_header": "每次迭代因冷却时间造成的冲刺延迟总量",
         "ignore_burst_energy_title": "\"忽略元素爆发能量成本 \"模式已启用",
         "ignore_burst_energy_body": "模拟忽略了元素爆发的能量需求。这可能导致模拟不准确。"
+    },
+    "states": {
+        "true": "真",
+        "false": "错误"
     }
 }
