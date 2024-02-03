@@ -7,7 +7,6 @@
 package player
 
 import (
-	"errors"
 	"fmt"
 	"math"
 
@@ -49,7 +48,6 @@ type Handler struct {
 
 	// airborne source
 	airborne AirborneSource
-	abUntil  int
 
 	// swap
 	SwapCD int
@@ -290,10 +288,6 @@ func (h *Handler) Tick() {
 			h.Stam = MaxStam
 		}
 	}
-	// remove airborne
-	if *h.F > h.abUntil {
-		h.airborne = Grounded
-	}
 	if h.SwapCD > 0 {
 		h.SwapCD--
 	}
@@ -311,22 +305,23 @@ const (
 	AirborneXiao
 	AirborneVenti
 	AirborneKazuha
+	AirborneXianyun
 	TerminateAirborne
 )
 
-func (h *Handler) SetAirborne(src AirborneSource, delay int) error {
+func (h *Handler) SetAirborne(src AirborneSource) error {
 	if src < Grounded || src >= TerminateAirborne {
 		// do nothing
 		return fmt.Errorf("invalid airborne source: %v", src)
 	}
-	if delay <= 0 {
-		return errors.New("airborne delay must be greater than 0")
-	}
 	h.airborne = src
-	h.abUntil = *h.F + delay
 	return nil
 }
 
 func (h *Handler) Airborne() AirborneSource {
 	return h.airborne
 }
+
+const (
+	XianyunAirborneBuff = "xianyun-airborne-buff"
+)
