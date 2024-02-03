@@ -9,43 +9,29 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-const burstKey = "dehya-burst"
-const kickKey = "dehya-burst-kick"
-const burstDoT1Hitmark = 105
-const kickHitmark = 46 // 6 hits minimum
-const punchSlowHitmark = 43
+const (
+	burstKey              = "dehya-burst"
+	burstDuration         = burstPunchSlowHitmark*5 - 1 // minimum until 6 punches, -1 so that 7th does not get queued
+	kickKey               = "dehya-burst-kick"
+	burstPunch1Hitmark    = 105
+	burstPunchSlowHitmark = 50
+	burstKickHitmark      = 46
+)
 
-var burstFrames []int
-var kickFrames []int
-var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27}
+var (
+	kickFrames    []int
+	punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27}
+)
 
 func init() {
-	//TODO: Deprecate bursty frames in favor of a constant?
-	burstFrames = frames.InitAbilSlice(burstDoT1Hitmark) // Q -> D/J
-
-	kickFrames = frames.InitAbilSlice(72)       // Q -> Dash/Walk
-	kickFrames[action.ActionAttack] = 75        // Q -> N1
-	kickFrames[action.ActionSkill] = 71         // Q -> E
-	kickFrames[action.ActionJump] = 73          // Q -> J
-	kickFrames[action.ActionSwap] = kickHitmark // Q -> Swap
+	kickFrames = frames.InitAbilSlice(72)            // Q -> Dash/Walk
+	kickFrames[action.ActionAttack] = 75             // Q -> N1
+	kickFrames[action.ActionSkill] = 71              // Q -> E
+	kickFrames[action.ActionJump] = 73               // Q -> J
+	kickFrames[action.ActionSwap] = burstKickHitmark // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	c.burstJumpCancel = false
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Flame-Mane's Fist",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   50,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       burstPunchAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c.c1FlatDmgRatioQ + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
-	}
-
 	c.c6Count = 0
 	c.sanctumSavedDur = 0
 	if c.StatusIsActive(dehyaFieldKey) {
@@ -53,64 +39,44 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.pickUpField()
 	}
 
-	// Setting burstKey status immediately to handle cancels before first punch
-	c.AddStatus(burstKey, 240+burstDoT1Hitmark, false)
 	c.Core.Tasks.Add(func() {
 		c.burstHitSrc = 0
 		c.burstCounter = 0
-		c.burstPunch(c.burstHitSrc, true)
-	}, burstDoT1Hitmark)
-
-	// Jumping immediately will let first punch land, may fix later
-	c.Core.QueueAttack(
-		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
-		burstDoT1Hitmark,
-		burstDoT1Hitmark,
-		c.c4CB(),
-		c.c6CB(),
-	)
+		c.AddStatus(burstKey, burstDuration, false)
+		c.burstPunchFunc(c.burstHitSrc)()
+	}, burstPunch1Hitmark)
 
 	c.ConsumeEnergy(15) //TODO: If this is ping related, this could be closer to 1 at 0 ping
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(burstFrames),
-		AnimationLength: burstFrames[action.ActionSkill],
-		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
+		Frames:          func(action.Action) int { return burstPunch1Hitmark },
+		AnimationLength: burstPunch1Hitmark,
+		CanQueueAfter:   burstPunch1Hitmark,
 		State:           action.BurstState,
 	}, nil
 }
 
-func (c *char) burstPunch(src int, auto bool) action.Info {
-	hitmark := punchSlowHitmark
-	if !auto {
-		hitmark = punchHitmarks[c.burstCounter]
-	}
-
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Flame-Mane's Fist",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   50,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       burstPunchAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c.c1FlatDmgRatioQ + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
-	}
-
-	c.Core.Tasks.Add(func() {
+func (c *char) burstPunchFunc(src int) func() {
+	return func() {
 		if c.burstHitSrc != src {
 			return
 		}
 		if c.Core.Player.Active() != c.Index {
 			return
 		}
-		if c.burstJumpCancel { // prevent punches if you jump cancel burst
-			return
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Flame-Mane's Fist",
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   50,
+			Element:    attributes.Pyro,
+			Durability: 25,
+			Mult:       burstPunchAtk[c.TalentLvlBurst()],
+			FlatDmg:    (c.c1FlatDmgRatioQ + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
 		}
 		c.Core.QueueAttack(
 			ai,
@@ -122,45 +88,36 @@ func (c *char) burstPunch(src int, auto bool) action.Info {
 		)
 		if !c.StatusIsActive(burstKey) {
 			c.burstHitSrc++
-			c.AddStatus(kickKey, kickHitmark, false)
-			c.burstKick(c.burstHitSrc)
-
+			c.AddStatus(kickKey, burstKickHitmark, false)
+			c.Core.Tasks.Add(c.burstKickFunc(c.burstHitSrc), burstKickHitmark)
 			return
 		}
 		c.burstCounter++
 		c.burstHitSrc++
-		c.burstPunch(c.burstHitSrc, true)
-	}, hitmark)
-
-	return action.Info{
-		Frames:          func(action.Action) int { return hitmark },
-		AnimationLength: hitmark,
-		CanQueueAfter:   hitmark,
-		State:           action.Idle, // TODO: cannot use burst state because burst state implies iframes
+		c.Core.Tasks.Add(c.burstPunchFunc(c.burstHitSrc), burstPunchSlowHitmark)
 	}
 }
 
-func (c *char) burstKick(src int) action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Incineration Drive",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   100,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       burstKickAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c.c1FlatDmgRatioQ + burstKickHP[c.TalentLvlBurst()]) * c.MaxHP(),
-	}
-
-	c.Core.Tasks.Add(func() {
+func (c *char) burstKickFunc(src int) func() {
+	return func() {
 		if src != c.burstHitSrc { // prevents duplicates
 			return
 		}
 		if c.Core.Player.Active() != c.Index {
 			return
+		}
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Incineration Drive",
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   100,
+			Element:    attributes.Pyro,
+			Durability: 25,
+			Mult:       burstKickAtk[c.TalentLvlBurst()],
+			FlatDmg:    (c.c1FlatDmgRatioQ + burstKickHP[c.TalentLvlBurst()]) * c.MaxHP(),
 		}
 		c.Core.QueueAttack(
 			ai,
@@ -176,13 +133,6 @@ func (c *char) burstKick(src int) action.Info {
 				c.addField(dur)
 			}, 1)
 		}
-	}, kickHitmark)
-
-	return action.Info{
-		Frames:          frames.NewAbilFunc(kickFrames),
-		AnimationLength: kickFrames[action.ActionAttack],
-		CanQueueAfter:   kickFrames[action.ActionSwap], // earliest cancel
-		State:           action.Idle,                   // TODO: cannot use burst state because burst state implies iframes
 	}
 }
 
@@ -198,4 +148,30 @@ func (c *char) UseBurstAction() *action.Info {
 		return &out
 	}
 	return nil
+}
+
+func (c *char) burstPunch(src int, auto bool) action.Info {
+	hitmark := burstPunchSlowHitmark
+	if !auto {
+		hitmark = punchHitmarks[c.burstCounter]
+	}
+
+	c.Core.Tasks.Add(c.burstPunchFunc(src), hitmark)
+
+	return action.Info{
+		Frames:          func(action.Action) int { return hitmark },
+		AnimationLength: hitmark,
+		CanQueueAfter:   hitmark,
+		State:           action.Idle, // TODO: cannot use burst state because burst state implies iframes
+	}
+}
+
+func (c *char) burstKick(src int) action.Info {
+	c.Core.Tasks.Add(c.burstKickFunc(src), burstKickHitmark)
+	return action.Info{
+		Frames:          frames.NewAbilFunc(kickFrames),
+		AnimationLength: kickFrames[action.ActionAttack],
+		CanQueueAfter:   kickFrames[action.ActionSwap], // earliest cancel
+		State:           action.Idle,                   // TODO: cannot use burst state because burst state implies iframes
+	}
 }

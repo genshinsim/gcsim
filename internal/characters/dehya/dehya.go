@@ -1,8 +1,6 @@
 package dehya
 
 import (
-	"errors"
-
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -30,7 +28,6 @@ type char struct {
 	c1FlatDmgRatioE    float64
 	c1FlatDmgRatioQ    float64
 	c6Count            int
-	burstJumpCancel    bool
 }
 
 func init() {
@@ -77,7 +74,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 		return true, action.NoFailure
 	}
 	if a == action.ActionAttack && (c.StatusIsActive(burstKey) || c.StatusIsActive(kickKey)) {
-		return false, action.NoFailure
+		return true, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
 }
@@ -90,27 +87,9 @@ func (c *char) onExitField() {
 		c.DeleteStatus(burstKey)
 		if dur := c.sanctumSavedDur; dur > 0 { // place field
 			c.sanctumSavedDur = 0
-			c.QueueCharTask(func() { c.addField(dur) }, kickHitmark)
+			c.QueueCharTask(func() { c.addField(dur) }, burstKickHitmark)
 		}
 
 		return false
 	}, "dehya-exit")
-}
-
-func (c *char) Jump(p map[string]int) (action.Info, error) {
-	if !c.StatusIsActive(burstKey) {
-		if c.StatusIsActive(kickKey) {
-			return action.Info{}, errors.New("can't jump cancel burst kick")
-		}
-		return c.Character.Jump(p)
-	}
-
-	c.burstJumpCancel = true
-	c.DeleteStatus(burstKey)
-
-	if dur := c.sanctumSavedDur; dur > 0 { // place field
-		c.sanctumSavedDur = 0
-		c.QueueCharTask(func() { c.addField(dur) }, kickHitmark)
-	}
-	return c.Character.Jump(p)
 }
