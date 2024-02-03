@@ -6,6 +6,7 @@ import (
 	"go/format"
 	"log"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -79,6 +80,8 @@ func writePBToFile(path string, dm *model.AvatarData) error {
 		log.Printf("error marshalling %v data to proto\n", dm.Key)
 		return err
 	}
+	// hack to work around stupid prototext not stable (on purpose - google u suck)
+	b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
 	return os.WriteFile(path, b, os.ModePerm)
 }
 

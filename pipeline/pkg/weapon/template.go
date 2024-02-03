@@ -6,6 +6,7 @@ import (
 	"go/format"
 	"log"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -38,6 +39,8 @@ func (g *Generator) GenerateTemplate() error {
 			log.Printf("error marshalling %v data to proto\n", v.Key)
 			return err
 		}
+		// hack to work around stupid prototext not stable (on purpose - google u suck)
+		b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
 		os.WriteFile(fmt.Sprintf("%v/data_gen.pb", v.RelativePath), b, os.ModePerm)
 
 		buff := new(bytes.Buffer)
