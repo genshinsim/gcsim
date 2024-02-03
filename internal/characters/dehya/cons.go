@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -15,6 +17,10 @@ import (
 // ·Molten Inferno's DMG will be increased by 3.6% of her Max HP.
 // ·Leonine Bite's DMG will be increased by 6% of her Max HP.
 func (c *char) c1() {
+	c.c1var = []float64{0.0, 0.0}
+	if c.Base.Cons < 1 {
+		return
+	}
 	c.c1var = []float64{0.06, 0.036}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = 0.2
@@ -31,6 +37,9 @@ func (c *char) c1() {
 // Additionally, when a Fiery Sanctum exists on the field, DMG dealt by its next coordinated attack will be
 // increased by 50% when active character(s) within the Fiery Sanctum field are attacked.
 func (c *char) c2() {
+	if c.Base.Cons < 2 {
+		return
+	}
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
@@ -42,6 +51,24 @@ func (c *char) c2() {
 			return val, true
 		},
 	})
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+		char := args[0].(int)
+		// don't trigger if active char not hit
+		if char != c.Core.Player.Active() {
+			return false
+		}
+		// field needs to be active
+		if !c.StatusIsActive(dehyaFieldKey) {
+			return false
+		}
+		// player needs to be in field
+		if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
+			return false
+		}
+		c.Core.Log.NewEvent("dehya-sanctum-c2-damage activated", glog.LogCharacterEvent, c.Index)
+		c.hasC2DamageBuff = true
+		return false
+	}, "dehya-c2")
 }
 
 // When Flame-Mane's Fist and Incineration Drive attacks unleashed during Leonine Bite hit opponents,
@@ -79,6 +106,9 @@ func (c *char) c4cb() combat.AttackCBFunc {
 // it will cause the CRIT DMG of Leonine Bite to increase by 15% for the rest of Blazing Lioness's duration and extend that duration by 0.5s.
 // This effect can be triggered every 0.2s. The duration can be extended for a maximum of 2s and CRIT DMG can be increased by a maximum of 60% this way.
 func (c *char) c6() {
+	if c.Base.Cons < 6 {
+		return
+	}
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.CR] = 0.1
 

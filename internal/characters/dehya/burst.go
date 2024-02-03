@@ -21,9 +21,7 @@ var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27
 
 func init() {
 	//TODO: Deprecate bursty frames in favor of a constant?
-	burstFrames = frames.InitAbilSlice(102) // Q -> D/J
-	burstFrames[action.ActionSwap] = 102    // Q -> Swap
-	burstFrames[action.ActionSkill] = 105   // Q -> E
+	burstFrames = frames.InitAbilSlice(burstDoT1Hitmark) // Q -> D/J
 
 	kickFrames = frames.InitAbilSlice(72)       // Q -> Dash/Walk
 	kickFrames[action.ActionAttack] = 75        // Q -> N1
@@ -52,7 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.sanctumSavedDur = 0
 	if c.StatusIsActive(dehyaFieldKey) {
 		// pick up field at start
-		c.removeField()
+		c.pickUpField()
 	}
 
 	// Setting burstKey status immediately to handle cancels before first punch
@@ -138,7 +136,7 @@ func (c *char) burstPunch(src int, auto bool) action.Info {
 		Frames:          func(action.Action) int { return hitmark },
 		AnimationLength: hitmark,
 		CanQueueAfter:   hitmark,
-		State:           action.BurstState,
+		State:           action.Idle, // TODO: cannot use burst state because burst state implies iframes
 	}
 }
 
@@ -184,7 +182,7 @@ func (c *char) burstKick(src int) action.Info {
 		Frames:          frames.NewAbilFunc(kickFrames),
 		AnimationLength: kickFrames[action.ActionAttack],
 		CanQueueAfter:   kickFrames[action.ActionSwap], // earliest cancel
-		State:           action.BurstState,
+		State:           action.Idle,                   // TODO: cannot use burst state because burst state implies iframes
 	}
 }
 

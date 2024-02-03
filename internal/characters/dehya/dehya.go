@@ -16,18 +16,20 @@ import (
 type char struct {
 	*tmpl.Character
 	// tracking skill information
-	hasRecastSkill  bool
-	hasC2DamageBuff bool
-	skillArea       combat.AttackPattern
-	skillAttackInfo combat.AttackInfo
-	skillSnapshot   combat.Snapshot
-	sanctumSavedDur int
-	sanctumICD      int
-	burstCounter    int
-	burstHitSrc     int // I am using this value as a counter because if I use frame I can get duplicates
-	c1var           []float64
-	c6count         int
-	burstJumpCancel bool
+	hasRecastSkill     bool
+	hasC2DamageBuff    bool
+	skillArea          combat.AttackPattern
+	skillAttackInfo    combat.AttackInfo
+	skillSnapshot      combat.Snapshot
+	skillRedmanesBlood float64
+	skillSelfDoTQueued bool
+	sanctumSavedDur    int
+	sanctumICD         int
+	burstCounter       int
+	burstHitSrc        int // I am using this value as a counter because if I use frame I can get duplicates
+	c1var              []float64
+	c6count            int
+	burstJumpCancel    bool
 }
 
 func init() {
@@ -52,20 +54,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.onExitField()
-	c.skillHook()
+
+	c.skillHurtHook()
+	c.skillDmgHook()
+
 	c.a4()
-	c.c1var = []float64{0.0, 0.0}
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
-	if c.Base.Cons >= 2 {
-		// TODO: figure out damage mitigation and move out of c2
-		c.skillHurtHook()
-		c.c2()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
+
+	c.c1()
+	c.c2()
+	c.c6()
 
 	return nil
 }
@@ -89,7 +86,6 @@ func (c *char) onExitField() {
 		if !c.StatusIsActive(burstKey) && !c.StatusIsActive(kickKey) {
 			return false
 		}
-		c.a1()
 		c.DeleteStatus(burstKey)
 		if dur := c.sanctumSavedDur; dur > 0 { // place field
 			c.sanctumSavedDur = 0
