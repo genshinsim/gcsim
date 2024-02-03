@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -85,28 +84,27 @@ func (c *char) c2() {
 const c4Key = "dehya-c4"
 const c4ICDKey = "dehya-c4-icd"
 
-func (c *char) c4cb() combat.AttackCBFunc {
+func (c *char) c4CB() combat.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		e := a.Target.(*enemy.Enemy)
-		if e.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
-
 		if c.StatusIsActive(c4ICDKey) {
 			return
 		}
+		c.AddStatus(c4ICDKey, 0.2*60, true)
+
 		c.AddEnergy(c4Key, 1.5)
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
-			Target:  c.Core.Player.Active(),
-			Message: "Dehya C4 healing",
+			Target:  c.Index,
+			Message: "An Oath Abiding (C4)",
 			Src:     0.025 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
-		c.AddStatus(c4ICDKey, 0.2*60, false)
 	}
 }
 

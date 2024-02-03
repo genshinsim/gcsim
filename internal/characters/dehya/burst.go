@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
 		burstDoT1Hitmark,
 		burstDoT1Hitmark,
-		c.c4cb(),
+		c.c4CB(),
 		c.c6cb(),
 	)
 
@@ -117,7 +117,7 @@ func (c *char) burstPunch(src int, auto bool) action.Info {
 			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
 			0,
 			0,
-			c.c4cb(),
+			c.c4CB(),
 			c.c6cb(),
 		)
 		if !c.StatusIsActive(burstKey) {
@@ -167,7 +167,7 @@ func (c *char) burstKick(src int) action.Info {
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 6.5),
 			0,
 			0,
-			c.c4cb(),
+			c.c4CB(),
 		)
 		if dur := c.sanctumSavedDur; dur > 0 { // place field with 1f delay to avoid self-trigger
 			c.sanctumSavedDur = 0
