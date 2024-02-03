@@ -22,9 +22,8 @@ func (g *GoldenMajesty) SetIndex(idx int)        { g.Index = idx }
 func (g *GoldenMajesty) Init() error             { return nil }
 func (g *GoldenMajesty) Data() *model.WeaponData { return g.data }
 
-func NewGoldenMajesty(data *model.WeaponData) core.NewWeaponFunc {
-	w := &GoldenMajesty{data: data}
-	return w.NewWeapon
+func NewGoldenMajesty(data *model.WeaponData) *GoldenMajesty {
+	return &GoldenMajesty{data: data}
 }
 
 func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

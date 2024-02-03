@@ -24,9 +24,8 @@ func (w *Wavebreaker) SetIndex(idx int)        { w.Index = idx }
 func (w *Wavebreaker) Init() error             { return nil }
 func (w *Wavebreaker) Data() *model.WeaponData { return w.data }
 
-func NewWavebreaker(data *model.WeaponData) core.NewWeaponFunc {
-	w := &Wavebreaker{data: data}
-	return w.NewWeapon
+func NewWavebreaker(data *model.WeaponData) *Wavebreaker {
+	return &Wavebreaker{data: data}
 }
 
 func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
