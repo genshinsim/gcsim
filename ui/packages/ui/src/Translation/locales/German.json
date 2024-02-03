@@ -27,7 +27,7 @@
         "anemo%": "Anemo-SCH-Bonus",
         "geo%": "Geo-SCH-Bonus",
         "cryo%": "Kryo-SCH-Bonus",
-        "modified": "Geändert"
+        "modified": "Modifiziert"
     },
     "actions": {
         "attack": "Standardangriff",
@@ -369,6 +369,6 @@
     },
     "states": {
         "true": "wahr",
-        "false": "unwahr"
+        "false": "falsch"
     }
 }
