@@ -41,7 +41,7 @@ func (g *Generator) GenerateTemplate() error {
 		}
 		// hack to work around stupid prototext not stable (on purpose - google u suck)
 		b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
-		os.WriteFile(fmt.Sprintf("%v/data_gen.pb", v.RelativePath), b, os.ModePerm)
+		os.WriteFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), b, os.ModePerm)
 
 		buff := new(bytes.Buffer)
 		d := weaponData{
@@ -73,7 +73,7 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
-//go:embed data_gen.pb
+//go:embed data_gen.textproto
 var pbData []byte
 var base *model.WeaponData
 

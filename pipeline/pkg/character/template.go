@@ -38,7 +38,7 @@ func (g *Generator) GenerateCharTemplate() error {
 			log.Printf("No data found for %v; skipping", v.Key)
 			continue
 		}
-		err = writePBToFile(fmt.Sprintf("%v/data_gen.pb", v.RelativePath), dm)
+		err = writePBToFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), dm)
 		if err != nil {
 			return err
 		}
@@ -127,7 +127,7 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
-//go:embed data_gen.pb
+//go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
 
