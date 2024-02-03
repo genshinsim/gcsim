@@ -17,8 +17,8 @@ import (
 var particleIDToElement = []attributes.Element{
 	attributes.NoElement,
 	attributes.Pyro,
-	attributes.Dendro,
 	attributes.Hydro,
+	attributes.Dendro,
 	attributes.Electro,
 	attributes.Anemo,
 	attributes.Cryo,
