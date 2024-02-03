@@ -1,14 +1,15 @@
-id: 10000085
-key: "freminet"
+id: 10000090
+key: "chevreuse"
 rarity: QUALITY_PURPLE
-body: BODY_BOY
-element: Ice
-weapon_class: WEAPON_CLAYMORE
-icon_name: "UI_AvatarIcon_Freminet"
+body: BODY_GIRL
+region: ASSOC_TYPE_FONTAINE
+element: Fire
+weapon_class: WEAPON_POLE
+icon_name: "UI_AvatarIcon_Chevreuse"
 stats: {
-   base_hp: 1012.0880126953125
-   base_atk: 21.369600296020508
-   base_def: 59.39955139160156
+   base_hp: 1002.9700927734375
+   base_atk: 16.205280303955078
+   base_def: 50.701351165771484
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -24,43 +25,43 @@ stats: {
          prop_type: FIGHT_PROP_BASE_ATTACK
       }
       add_props: {
-         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         prop_type: FIGHT_PROP_HP_PERCENT
       }
    }
    promo_data: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 756.08154296875
+         value: 749.27001953125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 44.3745002746582
+         value: 37.87649917602539
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 15.964559555053711
+         value: 12.106457710266113
       }
       add_props: {
-         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         prop_type: FIGHT_PROP_HP_PERCENT
       }
    }
    promo_data: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1293.29736328125
+         value: 1281.6461181640625
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 75.90374755859375
+         value: 64.78874969482422
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 27.30780029296875
+         value: 20.70841407775879
       }
       add_props: {
-         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         prop_type: FIGHT_PROP_HP_PERCENT
          value: 0.05999999865889549
       }
    }
@@ -68,18 +69,18 @@ stats: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2009.585205078125
+         value: 1991.4808349609375
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 117.9427490234375
+         value: 100.6717529296875
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 42.43212127685547
+         value: 32.17769241333008
       }
       add_props: {
-         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         prop_type: FIGHT_PROP_HP_PERCENT
          value: 0.11999999731779099
       }
    }
@@ -87,18 +88,18 @@ stats: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2546.801025390625
+         value: 2523.85693359375
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 149.4720001220703
+         value: 127.58399963378906
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 53.775360107421875
+         value: 40.77964782714844
       }
       add_props: {
-         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         prop_type: FIGHT_PROP_HP_PERCENT
          value: 0.11999999731779099
       }
    }
@@ -106,18 +107,18 @@ stats: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3084.016845703125
+         value: 3056.23291015625
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 181.00125122070312
+         value: 154.49624633789062
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 65.11859893798828
+         value: 49.3816032409668
       }
       add_props: {
-         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         prop_type: FIGHT_PROP_HP_PERCENT
          value: 0.18000000715255737
       }
    }
@@ -125,26 +126,26 @@ stats: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3621.232666015625
+         value: 3588.609130859375
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 212.53050231933594
+         value: 181.4084930419922
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 76.46183776855469
+         value: 57.98356246948242
       }
       add_props: {
-         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         prop_type: FIGHT_PROP_HP_PERCENT
          value: 0.23999999463558197
       }
    }
 }
 skill_details: {
-   skill: 10852
-   burst: 10855
-   attack: 10851
+   skill: 10902
+   burst: 10905
+   attack: 10901
    burst_energy_cost: 60
 }
-name_text_hash_map: 4201964354
+name_text_hash_map: 540313842

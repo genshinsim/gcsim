@@ -2,6 +2,7 @@ id: 10000083
 key: "lynette"
 rarity: QUALITY_PURPLE
 body: BODY_GIRL
+region: ASSOC_TYPE_FONTAINE
 element: Wind
 weapon_class: WEAPON_SWORD_ONE_HAND
 icon_name: "UI_AvatarIcon_Linette"

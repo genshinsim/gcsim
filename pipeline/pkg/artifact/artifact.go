@@ -2,7 +2,6 @@ package artifact
 
 import (
 	"fmt"
-	"log"
 	"sort"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/data/artifact"
@@ -67,7 +66,6 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 		}
 		ad.Key = v.Key
 		g.data[v.Key] = ad
-		log.Printf("%v loaded ok\n", v.Key)
 	}
 
 	return g, nil

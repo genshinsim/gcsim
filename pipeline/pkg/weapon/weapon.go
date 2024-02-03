@@ -63,7 +63,6 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 		}
 		w.Key = v.Key
 		g.data[v.Key] = w
-		log.Printf("%v loaded ok\n", v.Key)
 	}
 
 	return g, nil

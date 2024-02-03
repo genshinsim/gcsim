@@ -6,6 +6,7 @@ import (
 	"go/format"
 	"log"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -37,7 +38,7 @@ func (g *Generator) GenerateCharTemplate() error {
 			log.Printf("No data found for %v; skipping", v.Key)
 			continue
 		}
-		err = writePBToFile(fmt.Sprintf("%v/data_gen.pb", v.RelativePath), dm)
+		err = writePBToFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), dm)
 		if err != nil {
 			return err
 		}
@@ -79,6 +80,8 @@ func writePBToFile(path string, dm *model.AvatarData) error {
 		log.Printf("error marshalling %v data to proto\n", dm.Key)
 		return err
 	}
+	// hack to work around stupid prototext not stable (on purpose - google u suck)
+	b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
 	return os.WriteFile(path, b, os.ModePerm)
 }
 
@@ -124,7 +127,7 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
-//go:embed data_gen.pb
+//go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
 

@@ -2417,7 +2417,8 @@ export namespace model {
         ASSOC_TYPE_SUMERU = 5,
         ASSOC_TYPE_FATUI = 6,
         ASSOC_TYPE_RANGER = 7,
-        ASSOC_TYPE_MAINACTOR = 8
+        ASSOC_TYPE_MAINACTOR = 8,
+        ASSOC_TYPE_FONTAINE = 9
     }
 
     /** Element enum. */

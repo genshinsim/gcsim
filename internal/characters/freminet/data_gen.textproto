@@ -1,14 +1,15 @@
-id: 10000088
-key: "charlotte"
+id: 10000085
+key: "freminet"
 rarity: QUALITY_PURPLE
-body: BODY_GIRL
+body: BODY_BOY
+region: ASSOC_TYPE_FONTAINE
 element: Ice
-weapon_class: WEAPON_CATALYST
-icon_name: "UI_AvatarIcon_Charlotte"
+weapon_class: WEAPON_CLAYMORE
+icon_name: "UI_AvatarIcon_Freminet"
 stats: {
-   base_hp: 902.673095703125
-   base_atk: 14.513520240783691
-   base_def: 45.779998779296875
+   base_hp: 1012.0880126953125
+   base_atk: 21.369600296020508
+   base_def: 59.39955139160156
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -31,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 674.343017578125
+         value: 756.08154296875
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 34.20000076293945
+         value: 44.3745002746582
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 10.842597007751465
+         value: 15.964559555053711
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -49,15 +50,15 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1153.4814453125
+         value: 1293.29736328125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 58.5
+         value: 75.90374755859375
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 18.546546936035156
+         value: 27.30780029296875
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -68,15 +69,15 @@ stats: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1792.332763671875
+         value: 2009.585205078125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 90.9000015258789
+         value: 117.9427490234375
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 28.8184814453125
+         value: 42.43212127685547
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -87,15 +88,15 @@ stats: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2271.47119140625
+         value: 2546.801025390625
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 115.19999694824219
+         value: 149.4720001220703
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 36.522430419921875
+         value: 53.775360107421875
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -106,15 +107,15 @@ stats: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2750.609619140625
+         value: 3084.016845703125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 139.5
+         value: 181.00125122070312
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 44.226383209228516
+         value: 65.11859893798828
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -125,15 +126,15 @@ stats: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3229.748046875
+         value: 3621.232666015625
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 163.8000030517578
+         value: 212.53050231933594
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 51.93033218383789
+         value: 76.46183776855469
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -142,9 +143,9 @@ stats: {
    }
 }
 skill_details: {
-   skill: 10882
-   burst: 10885
-   attack: 10881
-   burst_energy_cost: 80
+   skill: 10852
+   burst: 10855
+   attack: 10851
+   burst_energy_cost: 60
 }
-name_text_hash_map: 3831162130
+name_text_hash_map: 4201964354

@@ -1,17 +1,18 @@
-id: 10000086
-key: "wriothesley"
-rarity: QUALITY_ORANGE
-body: BODY_MALE
+id: 10000088
+key: "charlotte"
+rarity: QUALITY_PURPLE
+body: BODY_GIRL
+region: ASSOC_TYPE_FONTAINE
 element: Ice
 weapon_class: WEAPON_CATALYST
-icon_name: "UI_AvatarIcon_Wriothesley"
+icon_name: "UI_AvatarIcon_Charlotte"
 stats: {
-   base_hp: 1058.1851806640625
-   base_atk: 24.20599937438965
-   base_def: 59.411190032958984
-   hp_curve: GROW_CURVE_HP_S5
-   atk_curve: GROW_CURVE_ATTACK_S5
-   def_cruve: GROW_CURVE_HP_S5
+   base_hp: 902.673095703125
+   base_atk: 14.513520240783691
+   base_def: 45.779998779296875
+   hp_curve: GROW_CURVE_HP_S4
+   atk_curve: GROW_CURVE_ATTACK_S4
+   def_cruve: GROW_CURVE_HP_S4
    promo_data: {
       max_level: 20
       add_props: {
@@ -24,127 +25,127 @@ stats: {
          prop_type: FIGHT_PROP_BASE_ATTACK
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL_HURT
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
       }
    }
    promo_data: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 907.2981567382812
+         value: 674.343017578125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 50.94089889526367
+         value: 34.20000076293945
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 20.752939224243164
+         value: 10.842597007751465
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL_HURT
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
       }
    }
    promo_data: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1551.957275390625
+         value: 1153.4814453125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 87.13574981689453
+         value: 58.5
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 35.498451232910156
+         value: 18.546546936035156
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.09600000083446503
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.05999999865889549
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2411.5029296875
+         value: 1792.332763671875
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 135.3955535888672
+         value: 90.9000015258789
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 55.15913009643555
+         value: 28.8184814453125
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.19200000166893005
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.11999999731779099
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3056.162109375
+         value: 2271.47119140625
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 171.59039306640625
+         value: 115.19999694824219
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 69.9046401977539
+         value: 36.522430419921875
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.19200000166893005
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.11999999731779099
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3700.8212890625
+         value: 2750.609619140625
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 207.78524780273438
+         value: 139.5
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 84.650146484375
+         value: 44.226383209228516
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.2879999876022339
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.18000000715255737
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 4345.48046875
+         value: 3229.748046875
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 243.9801025390625
+         value: 163.8000030517578
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 99.39566040039062
+         value: 51.93033218383789
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.3840000033378601
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.23999999463558197
       }
    }
 }
 skill_details: {
-   skill: 10862
-   burst: 10865
-   attack: 10861
-   burst_energy_cost: 60
+   skill: 10882
+   burst: 10885
+   attack: 10881
+   burst_energy_cost: 80
 }
-name_text_hash_map: 370151050
+name_text_hash_map: 3831162130
