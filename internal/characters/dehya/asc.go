@@ -10,13 +10,15 @@ const (
 	a1ReductionKey      = "dehya-a1-reduction"
 	a1ReductionDuration = 6 * 60
 	a1ReductionMult     = 0.6
+	a1ICDKey            = "dehya-a1-icd"
+	a1ICD               = 2 * 60
 	a4ICDKey            = "dehya-a4-icd"
+	a4ICD               = 20 * 60
 	a4HealMsg           = "Stalwart and True (A4)"
 	a4Threshold         = 0.4
 	a4InitialHealRatio  = 0.2
 	a4DoTHealRatio      = 0.06
 	a4DoTHealInterval   = 2 * 60
-	a4ICD               = 20 * 60
 )
 
 // Within 6 seconds after Dehya retrieves the Fiery Sanctum field through Molten Inferno: Ranging Flame
@@ -26,6 +28,10 @@ func (c *char) a1Reduction() {
 	if c.Base.Ascension < 1 {
 		return
 	}
+	if c.StatusIsActive(a1ICDKey) {
+		return
+	}
+	c.AddStatus(a1ICDKey, a1ICD, true)
 	c.AddStatus(a1ReductionKey, a1ReductionDuration, true)
 }
 
