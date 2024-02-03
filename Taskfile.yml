@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - task: protos
+      - task: embed
+      - task: pipeline
+  protos:
+    cmds:
+      - protoc --experimental_allow_proto3_optional --go_out=module=github.com/genshinsim/gcsim:. --go-grpc_out=module=github.com/genshinsim/gcsim:. protos/**/*.proto
+      - go run scripts/bsontags/main.go -dir ./pkg/model -verbose
+      - go run scripts/bsontags/main.go -dir ./backend/pkg/services/db -verbose
+      - go run scripts/bsontags/main.go -dir ./backend/pkg/services/share -verbose
+      - task: protos-to-ts
+  protos-to-ts:
+    dir: ./ui
+    cmds:
+      - yarn gen:ts
+  embed:
+    cmds:
+      - sh -c "scripts/build_preview.sh"
+  pipeline:
+    cmds:
+      - go run pipeline/cmd/generate/main.go
+

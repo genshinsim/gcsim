@@ -22,9 +22,8 @@ func (l *Lithic) SetIndex(idx int)        { l.Index = idx }
 func (l *Lithic) Init() error             { return nil }
 func (l *Lithic) Data() *model.WeaponData { return l.data }
 
-func NewLithic(data *model.WeaponData) core.NewWeaponFunc {
-	l := &Lithic{data: data}
-	return l.NewWeapon
+func NewLithic(data *model.WeaponData) *Lithic {
+	return &Lithic{data: data}
 }
 
 func (l *Lithic) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

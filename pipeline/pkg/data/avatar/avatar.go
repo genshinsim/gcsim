@@ -252,8 +252,12 @@ func (a *DataSource) parsePromoData(c *model.AvatarData, err error) error {
 			MaxLevel: v.UnlockMaxLevel,
 		}
 		for j, x := range v.AddProps {
+			s, ok := model.StatType_value[x.PropType]
+			if !ok {
+				multierr.Append(err, fmt.Errorf("promote data idx %v, add prop idx %v has unrecognized stat type", i, j))
+			}
 			p := &model.PromotionAddProp{
-				PropType: model.StatType(model.StatType_value[x.PropType]),
+				PropType: model.StatType(s),
 				Value:    x.Value,
 			}
 			if p.PropType == model.StatType_INVALID_STAT_TYPE {

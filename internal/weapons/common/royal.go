@@ -25,9 +25,8 @@ func (r *Royal) SetIndex(idx int)        { r.Index = idx }
 func (r *Royal) Init() error             { return nil }
 func (r *Royal) Data() *model.WeaponData { return r.data }
 
-func NewRoyal(data *model.WeaponData) core.NewWeaponFunc {
-	r := &Royal{data: data}
-	return r.NewWeapon
+func NewRoyal(data *model.WeaponData) *Royal {
+	return &Royal{data: data}
 }
 
 func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

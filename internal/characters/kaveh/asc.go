@@ -21,6 +21,11 @@ func (c *char) a1() {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+		char := args[0].(int)
+		// don't trigger if kaveh was not hit
+		if char != c.Index {
+			return false
+		}
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagBloom &&
 			atk.Info.AttackTag != attacks.AttackTagHyperbloom &&

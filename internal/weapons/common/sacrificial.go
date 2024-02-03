@@ -23,9 +23,8 @@ func (s *Sacrificial) SetIndex(idx int)        { s.Index = idx }
 func (s *Sacrificial) Init() error             { return nil }
 func (s *Sacrificial) Data() *model.WeaponData { return s.data }
 
-func NewSacrificial(data *model.WeaponData) core.NewWeaponFunc {
-	s := &Sacrificial{data: data}
-	return s.NewWeapon
+func NewSacrificial(data *model.WeaponData) *Sacrificial {
+	return &Sacrificial{data: data}
 }
 
 func (s *Sacrificial) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

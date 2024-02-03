@@ -32,7 +32,9 @@ func New(core *core.Core, pos geometry.Point, r float64) *Player {
 func (p *Player) Type() targets.TargettableType { return targets.TargettablePlayer }
 
 func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
-	p.Core.Combat.Events.Emit(event.OnPlayerHit, p, atk)
+	activeChar := p.Core.Player.Active()
+	p.Core.Combat.Events.Emit(event.OnPlayerHit, activeChar, atk)
+
 	var amp string
 	var cata string
 	var dmg float64
@@ -43,11 +45,10 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 
 	dmg, crit = p.calc(atk)
 
-	active := p.Core.Player.Active()
-	dmgLeft := p.Core.Player.Shields.OnDamage(active, active, dmg, atk.Info.Element)
+	dmgLeft := p.Core.Player.Shields.OnDamage(activeChar, activeChar, dmg, atk.Info.Element)
 	if dmgLeft > 0 {
 		p.Core.Player.Drain(player.DrainInfo{
-			ActorIndex: active,
+			ActorIndex: activeChar,
 			Abil:       atk.Info.Abil,
 			Amount:     dmgLeft,
 			External:   true,
