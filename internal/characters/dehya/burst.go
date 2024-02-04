@@ -42,7 +42,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(func() {
 		c.burstHitSrc = 0
 		c.burstCounter = 0
-		c.AddStatus(burstKey, burstDuration, false)
+		c.AddStatus(burstKey, burstDuration, true)
 		c.burstPunchFunc(c.burstHitSrc)()
 	}, burstPunch1Hitmark)
 
@@ -88,7 +88,7 @@ func (c *char) burstPunchFunc(src int) func() {
 		)
 		if !c.StatusIsActive(burstKey) {
 			c.burstHitSrc++
-			c.AddStatus(kickKey, burstKickHitmark, false)
+			c.AddStatus(kickKey, burstKickHitmark, true)
 			c.Core.Tasks.Add(c.burstKickFunc(c.burstHitSrc), burstKickHitmark)
 			return
 		}
