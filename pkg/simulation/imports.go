@@ -122,6 +122,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/wanderer"
 	_ "github.com/genshinsim/gcsim/internal/characters/wriothesley"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiangling"
+	_ "github.com/genshinsim/gcsim/internal/characters/xianyun"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiao"
 	_ "github.com/genshinsim/gcsim/internal/characters/xingqiu"
 	_ "github.com/genshinsim/gcsim/internal/characters/xinyan"
