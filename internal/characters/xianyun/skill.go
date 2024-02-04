@@ -18,7 +18,10 @@ const (
 	skillSecondRecastHitmark = 18
 	skillStateDur            = 2 * 60
 	skillStateKey            = "cloud-transmogrification"
-	leapKey                  = "xianyun-leap"
+
+	// assuming the skill hitbox is the same size as the plunge collision hitbox
+	skillRadius = 1.5
+	leapKey     = "xianyun-leap"
 
 	particleCount  = 5
 	particleICD    = 0.2 * 60
@@ -74,8 +77,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1),
-		0,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius),
+		skillPressHitmark,
 		skillPressHitmark,
 	)
 

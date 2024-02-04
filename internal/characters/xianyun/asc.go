@@ -13,44 +13,51 @@ import (
 
 const starwickerKey = "xianyun-starwicker-count"
 const starwickerICDKey = "xianyun-starwicker-icd"
+const a1Key = "xianyun-a1"
+const a1Dur = 20 * 60
+
+var a1Crit = []float64{0.0, 0.04, 0.06, 0.08, 0.10}
 
 // a1: For every enemy hit by Driftcloud Wave,
 // all party members gain 1 stack of Boost, lasting 20s, max 4 stacks.
 // Boost increases Plunge DMG's Crit Rate by 4%/6%/8%/10%,
 // each stack's duration is calculated independently.
-func (c *char) a1() combat.AttackCBFunc {
+
+func (c *char) a1() {
+	for idx, char := range c.Core.Player.Chars() {
+		mCR := make([]float64, attributes.EndStatType)
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("xianyun-a1-buff", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != attacks.AttackTagPlunge {
+					return nil, false
+				}
+				stackCount := min(c.a1Buffer[idx], 4)
+				if stackCount == 0 {
+					return nil, false
+				}
+				mCR[attributes.CR] = a1Crit[stackCount]
+				return mCR, true
+			},
+		})
+	}
+}
+
+func (c *char) a1cb() combat.AttackCBFunc {
 	c.a1Count = 0
 	return func(a combat.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
-		c.a1Count += 1
-		if c.a1Count > 4 {
-			c.a1Count = 4
+		for i, char := range c.Core.Player.Chars() {
+			idx := i
+			c.a1Buffer[idx] += 1
+			char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
+			char.QueueCharTask(func() {
+				c.a1Buffer[idx] -= 1
+				char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
+			}, a1Dur)
 		}
-		boost := 0
-		stackDuration := 20 * 60
-		var crBuff float64 = 0.0
-		if c.a1Count != 0 {
-			crBuff = 0.02 + 0.02*float64(c.a1Count)
-		}
-		mCR := make([]float64, attributes.EndStatType)
-		mCR[attributes.CR] = crBuff
-		addStackMod := func(idx int, duration int) {
-			for _, char := range c.Core.Player.Chars() {
-				char.AddAttackMod(character.AttackMod{
-					Base: modifier.NewBaseWithHitlag("Xianyun-a1-buff", stackDuration),
-					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-						if atk.Info.AttackTag != attacks.AttackTagPlunge {
-							return nil, false
-						}
-						return mCR, true
-					},
-				})
-			}
-		}
-		addStackMod(boost, 20)
-		boost = (boost + 1) % 4
 	}
 }
 

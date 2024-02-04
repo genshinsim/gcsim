@@ -18,6 +18,10 @@ type char struct {
 	skillCounter int
 	skillSrc     int
 	a1Count      int
+	a1Buffer     []int
+	a4Max        float64
+	a4Ratio      float64
+
 	// leapFrames  []int
 }
 
@@ -31,9 +35,17 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 3
 	c.skillSrc = -1
 
+	// The number of characters in s.Player.Chars() is wrong at this point, so we need to do it in Init()
+	// c.a1Buffer = make([]int, len(c.Core.Player.Chars()))
+
+	c.a4Max = 9000
+	c.a4Ratio = 2.0
+
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)
 	}
+
+	c.a1()
 
 	w.Character = &c
 
@@ -42,6 +54,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	// c.a4()
+	c.a1Buffer = make([]int, len(c.Core.Player.Chars()))
+
 	return nil
 }
 

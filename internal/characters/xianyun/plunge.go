@@ -49,7 +49,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		skillHitmark,
 		skillHitmark,
 		c.particleCB,
-		c.a1(),
+		c.a1cb(),
 	)
 	// reset window after leap
 	c.DeleteStatus(skillStateKey)
