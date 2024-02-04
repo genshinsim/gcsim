@@ -196,7 +196,7 @@ func (p *Parser) acceptOptionalTargetParams() (enemy.TargetParams, error) {
 		}
 
 		switch i.Val {
-		case "mult", "hp_multiplier":
+		case "hp_mult":
 			result.HpMultiplier, err = itemNumberToFloat64(item)
 			if err != nil {
 				return result, err

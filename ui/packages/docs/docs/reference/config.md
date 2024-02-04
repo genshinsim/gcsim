@@ -171,7 +171,7 @@ Optimal params may be added to the target type via `[]` after the enemy name.
 #### Optional target type params
 | name | description | default |
 | --- | --- | --- |
-| `mult` / `hp_multiplier` | HP multiplier for the enemy. The default is the Spiral Abyss multiplier. | 2.5 |
+| `hp_mult` | HP multiplier for the enemy. The default is the Spiral Abyss multiplier. | 2.5 |
 | `particles` | Use particle theresholds from the enemy. Use `0` if you want to use a custom threshold (`pacticle_threshold`). | 1 |
 
 :::info
