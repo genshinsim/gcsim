@@ -85,7 +85,7 @@ func init() {
 	percentDelay5[keys.Razor] = 18
 	percentDelay5[keys.Sayu] = 24
 	percentDelay5[keys.Xinyan] = 28
-	percentDelay5[keys.Dehya] = 21
+	percentDelay5[keys.Dehya] = 22
 
 	percentDelay5[keys.Aether] = 8
 	percentDelay5[keys.AetherAnemo] = 8
@@ -165,6 +165,8 @@ func Get0PercentN0Delay(activeChar *character.CharWrapper) int {
 		return 0
 	case keys.Navia:
 		return 19
+	case keys.Dehya:
+		return 22
 	}
 	return 0
 }
