@@ -1,6 +1,8 @@
 package yelan
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -10,18 +12,27 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var aimedFrames []int
+var aimedFrames [][]int
 var aimedBarbFrames []int
 
-const aimedHitmark = 86
+var aimedHitmarks = []int{15, 86}
+
 const aimedBarbHitmark = 32
 
 func init() {
-	// TODO: confirm that aim->x is the same for all cancels
-	aimedFrames = frames.InitAbilSlice(96)
-	aimedFrames[action.ActionDash] = aimedHitmark
-	aimedFrames[action.ActionJump] = aimedHitmark
+	aimedFrames = make([][]int, 2)
 
+	// Aimed Shot
+	aimedFrames[0] = frames.InitAbilSlice(25)
+	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
+	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
+
+	// Fully-Charged Aimed Shot
+	aimedFrames[1] = frames.InitAbilSlice(96)
+	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
+	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
+
+	// Breakthrough Barb
 	aimedBarbFrames = frames.InitAbilSlice(42)
 	aimedBarbFrames[action.ActionDash] = aimedBarbHitmark
 	aimedBarbFrames[action.ActionJump] = aimedBarbHitmark
@@ -29,13 +40,23 @@ func init() {
 
 // Aimed charge attack damage queue generator
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
+	hold, ok := p["hold"]
+	if !ok {
+		hold = attacks.AimParamLv1
+	}
+	switch hold {
+	case attacks.AimParamPhys:
+	case attacks.AimParamLv1:
+	default:
+		return action.Info{}, fmt.Errorf("invalid hold param supplied, got %v", hold)
+	}
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
 	}
 	weakspot := p["weakspot"]
 
-	if c.breakthrough {
+	if c.breakthrough && hold == attacks.AimParamLv1 {
 		c.breakthrough = false
 		c.Core.Log.NewEvent("breakthrough state deleted", glog.LogCharacterEvent, c.Index)
 
@@ -73,7 +94,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
-		Abil:         "Aim Charge Attack",
+		Abil:         "Fully-Charged Aimed Shot",
 		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       attacks.ICDTagNone,
 		ICDGroup:     attacks.ICDGroupDefault,
@@ -82,6 +103,11 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		Durability:   25,
 		Mult:         fullaim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
+	}
+	if hold < attacks.AimParamLv1 {
+		ai.Abil = "Aimed Shot"
+		ai.Element = attributes.Physical
+		ai.Mult = aim[c.TalentLvlAttack()]
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -92,14 +118,14 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 			0.1,
 			1,
 		),
-		aimedHitmark,
-		aimedHitmark+travel,
+		aimedHitmarks[hold],
+		aimedHitmarks[hold]+travel,
 	)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(aimedFrames),
-		AnimationLength: aimedFrames[action.InvalidAction],
-		CanQueueAfter:   aimedHitmark,
+		Frames:          frames.NewAbilFunc(aimedFrames[hold]),
+		AnimationLength: aimedFrames[hold][action.InvalidAction],
+		CanQueueAfter:   aimedHitmarks[hold],
 		State:           action.AimState,
 	}, nil
 }
