@@ -1,3 +1,29 @@
-package_name: "candace"
+package_name: candace
 genshin_id: 10000072
-key: "candace"
+key: candace
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+            - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+        attack_4:
+            - 4 # 4-Hit DMG|{param4:F1P}
+        charge:
+            - 5 # Charged Attack DMG|{param5:F1P}
+    skill:
+        skillDmg:
+            - 0 # Shield DMG Absorption|{param0:F1P} Max HP+{param1:I}
+            - 3 # Charged Up DMG|{param3:F1P} Max HP
+        skillShieldFlat:
+            - 1 # Shield DMG Absorption|{param0:F1P} Max HP+{param1:I}
+        skillShieldPct:
+            - 0 # Shield DMG Absorption|{param0:F1P} Max HP+{param1:I}
+    burst:
+        burstDmg:
+            - 0 # Skill DMG|{param0:F1P} Max HP
+        burstWaveDmg:
+            - 0 # Skill DMG|{param0:F1P} Max HP

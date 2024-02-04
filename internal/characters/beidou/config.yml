@@ -1,3 +1,29 @@
-package_name: "beidou"
+package_name: beidou
 genshin_id: 10000024
-key: "beidou"
+key: beidou
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+        attack_5:
+            - 4 # 5-Hit DMG|{param4:P}
+    skill:
+        shieldBase:
+            - 1 # FIXME: Shield DMG Absorption|{param0:F1P} Max HP+{param1:I} -- old=1386 new=1386.3678
+        shieldPer:
+            - 0 # Shield DMG Absorption|{param0:F1P} Max HP+{param1:I}
+        skillbonus:
+            - 3 # DMG Bonus on Hit Taken|{param3:P}
+    burst:
+        burstonhit:
+            - 0 # Skill DMG|{param0:P}
+        burstproc:
+            - 1 # Lightning DMG|{param1:F1P}
+        skillbase:
+            - 0 # Skill DMG|{param0:P}

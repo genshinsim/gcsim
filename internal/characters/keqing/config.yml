@@ -1,3 +1,34 @@
-package_name: "keqing"
+package_name: keqing
 genshin_id: 10000042
-key: "keqing"
+key: keqing
+skill_data_mapping:
+    # FIXME: 1-Hit DMG|{param0:F1P} count 2, expected 1
+    # FIXME: 2-Hit DMG|{param1:F1P} count 0, expected 1
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}+{param4:F1P}
+            - 4 # 4-Hit DMG|{param3:F1P}+{param4:F1P}
+        attack_5:
+            - 5 # 5-Hit DMG|{param5:F1P}
+        charge:
+            - 6 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
+            - 7 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
+    skill:
+        skill:
+            - 0 # Lightning Stiletto DMG|{param0:F1P}
+        skillCA:
+            - 2 # Thunderclap Slash DMG|{param2:F1P}×2
+        skillPress:
+            - 1 # Slashing DMG|{param1:P}
+    burst:
+        burstDot:
+            - 1 # Consecutive Slash DMG|{param1:F1P}×8
+        burstFinal:
+            - 2 # Last Attack DMG|{param2:P}
+        burstInitial:
+            - 0 # Skill DMG|{param0:F1P}

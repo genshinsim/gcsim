@@ -1,3 +1,25 @@
-package_name: "itto"
+package_name: itto
 genshin_id: 10000057
-key: "itto"
+key: itto
+skill_data_mapping:
+    attack:
+        akCombo:
+            - 5 # Arataki Kesagiri Combo Slash DMG|{param5:F1P}
+        akFinal:
+            - 6 # Arataki Kesagiri Final Slash DMG|{param6:F1P}
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+        saichiSlash:
+            - 4 # Saichimonji Slash DMG|{param4:F1P}
+    skill:
+        skill:
+            - 0 # Skill DMG|{param0:P}
+    burst:
+        defconv:
+            - 1 # ATK Bonus|{param1:F1P} DEF

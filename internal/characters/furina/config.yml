@@ -1,3 +1,37 @@
-package_name: "furina"
+package_name: furina
 genshin_id: 10000089
-key: "furina"
+key: furina
+skill_data_mapping:
+    attack:
+        arkhe:
+            - 9 # Spiritbreath Thorn/Surging Blade DMG|{param9:F1P}
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+        charge:
+            - 4 # Charged Attack DMG|{param4:F1P}
+    skill:
+        skillChevalmarin:
+            - 3 # Surintendante Chevalmarin DMG|{param3:F2P} Max HP
+        skillCrabaletta:
+            - 4 # Mademoiselle Crabaletta DMG|{param4:F2P} Max HP
+        skillOusiaBubble:
+            - 0 # Ousia Bubble DMG|{param0:F1P} Max HP
+        skillSingerHealFlat:
+            - 9 # Singer of Many Waters Healing|{param8:F2P} Max HP+{param9:I}
+        skillSingerHealScale:
+            - 8 # Singer of Many Waters Healing|{param8:F2P} Max HP+{param9:I}
+        skillUsher:
+            - 2 # Gentilhomme Usher DMG|{param2:F2P} Max HP
+    burst:
+        burstDMG:
+            - 0 # Skill DMG|{param0:F1P} Max HP
+        burstFanfareDMGRatio:
+            - 4 # Fanfare to DMG Increase Conversion Ratio|{param4:F2P}
+        burstFanfareHBRatio:
+            - 5 # Fanfare to Incoming Healing Bonus Conversion Ratio|{param5:F2P}

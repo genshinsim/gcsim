@@ -1,3 +1,26 @@
-package_name: "lisa"
+package_name: lisa
 genshin_id: 10000006
-key: "lisa"
+key: lisa
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+        charge:
+            - 4 # Charged Attack DMG|{param4:P}
+    skill:
+        skillHold:
+            - 0 # Non-Conductive Hold DMG|{param0:P}
+            - 1 # Stack 1 Conductive Hold DMG|{param1:P}
+            - 2 # Stack 2 Conductive Hold DMG|{param2:P}
+            - 3 # Stack 3 Conductive Hold DMG|{param3:P}
+        skillPress:
+            - 5 # #{LAYOUT_MOBILE#Tapping}{LAYOUT_PC#Press}{LAYOUT_PS#Press} DMG|{param5:F1P}
+    burst:
+        burst:
+            - 0 # Discharge DMG|{param0:F1P}

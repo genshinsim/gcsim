@@ -1,3 +1,32 @@
-package_name: "ganyu"
+package_name: ganyu
 genshin_id: 10000037
-key: "ganyu"
+key: ganyu
+skill_data_mapping:
+    # FIXME: 3-Hit DMG|{param2:F1P} count 2, expected 1
+    # FIXME: 4-Hit DMG|{param3:F1P} count 0, expected 1
+    attack:
+        aim:
+            - 6 # Aimed Shot|{param6:F1P}
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_5:
+            - 4 # 5-Hit DMG|{param4:F1P}
+        attack_6:
+            - 5 # 6-Hit DMG|{param5:F1P}
+        ffa:
+            - 8 # Frostflake Arrow DMG|{param8:P}
+        ffb:
+            - 9 # Frostflake Arrow Bloom DMG|{param9:P}
+        fullaim:
+            - 7 # Aimed Shot Charge Level 1|{param7:P}
+    skill:
+        lotus:
+            - 1 # Skill DMG|{param1:P}
+    burst:
+        shower:
+            - 0 # Ice Shard DMG|{param0:P}

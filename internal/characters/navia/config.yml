@@ -1,3 +1,25 @@
-package_name: "navia"
+package_name: navia
 genshin_id: 10000091
-key: "navia"
+key: navia
+skill_data_mapping:
+    # FIXME: 3-Hit DMG|{param2:F1P}×3 count 3, expected 1
+    attack:
+        auto_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        auto_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        auto_3:
+            - 2 # 3-Hit DMG|{param2:F1P}×3
+            - 2 # 3-Hit DMG|{param2:F1P}×3
+            - 2 # 3-Hit DMG|{param2:F1P}×3
+        auto_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+    skill:
+        skillblade:
+            - 4 # Surging Blade DMG|{param4:F1P}
+        skillshotgun:
+            - 0 # Rosula Shardshot Base DMG|{param0:F1P}
+    burst:
+        burst:
+            - 0 # Skill DMG|{param0:F1P}
+            - 1 # Cannon Fire Support DMG|{param1:F1P}

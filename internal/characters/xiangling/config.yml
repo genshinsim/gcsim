@@ -1,3 +1,32 @@
-package_name: "xiangling"
+package_name: xiangling
 genshin_id: 10000023
-key: "xiangling"
+key: xiangling
+skill_data_mapping:
+    # FIXME: 4-Hit DMG|{param3:F1P}*4 count 4, expected 1
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}+{param2:F1P}
+            - 2 # 3-Hit DMG|{param2:F1P}+{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}*4
+            - 3 # 4-Hit DMG|{param3:F1P}*4
+            - 3 # 4-Hit DMG|{param3:F1P}*4
+            - 3 # 4-Hit DMG|{param3:F1P}*4
+        attack_5:
+            - 4 # 5-Hit DMG|{param4:F1P}
+        nc:
+            - 5 # Charged Attack DMG|{param5:P}
+    skill:
+        guobaTick:
+            - 0 # Flame DMG|{param0:P}
+    burst:
+        pyronadoInitial:
+            - 0 # 1-Hit Swing DMG|{param0:F1P}
+            - 1 # 2-Hit Swing DMG|{param1:F1P}
+            - 2 # 3-Hit Swing DMG|{param2:P}
+        pyronadoSpin:
+            - 3 # Pyronado DMG|{param3:P}

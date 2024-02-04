@@ -1,3 +1,31 @@
-package_name: "tighnari"
+package_name: tighnari
 genshin_id: 10000069
-key: "tighnari"
+key: tighnari
+skill_data_mapping:
+    # FIXME: 3-Hit DMG|{param2:F1P}×2 count 2, expected 1
+    attack:
+        aim:
+            - 4 # Aimed Shot|{param4:F1P}
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}×2
+            - 2 # 3-Hit DMG|{param2:F1P}×2
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+        clusterbloom:
+            - 7 # Clusterbloom Arrow DMG|{param7:F1P}
+        fullaim:
+            - 5 # Level 1 Aimed Shot|{param5:P}
+        wreath:
+            - 6 # Wreath Arrow DMG|{param6:F1P}
+    skill:
+        skill:
+            - 0 # Skill DMG|{param0:F1P}
+    burst:
+        burst:
+            - 0 # Tanglevine Shaft DMG|{param0:F1P}
+        burstSecond:
+            - 1 # Secondary Tanglevine Shaft DMG|{param1:F1P}

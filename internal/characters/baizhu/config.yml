@@ -1,3 +1,35 @@
-package_name: "baizhu"
+package_name: baizhu
 genshin_id: 10000082
-key: "baizhu"
+key: baizhu
+skill_data_mapping:
+    # FIXME: 3-Hit DMG|{param2:F1P}×2 count 2, expected 1
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}×2
+            - 2 # 3-Hit DMG|{param2:F1P}×2
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+        charge:
+            - 4 # Charged Attack DMG|{param4:F1P}
+    skill:
+        skillDamage:
+            - 0 # Skill DMG|{param0:F1P}
+        skillHealFlat:
+            - 2 # Healing|{param1:F2P} Max HP+{param2:I}
+        skillHealPP:
+            - 1 # Healing|{param1:F2P} Max HP+{param2:I}
+    burst:
+        burstAtk:
+            - 6 # Spiritvein DMG|{param6:F1P}
+        burstHealFlat:
+            - 5 # Seamless Shield Healing|{param4:F2P} Max HP+{param5:I}
+        burstHealPP:
+            - 4 # Seamless Shield Healing|{param4:F2P} Max HP+{param5:I}
+        burstShieldFlat:
+            - 1 # Seamless Shield DMG Absorption|{param0:F2P} Max HP+{param1:I}
+        burstShieldPP:
+            - 0 # Seamless Shield DMG Absorption|{param0:F2P} Max HP+{param1:I}

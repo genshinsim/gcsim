@@ -1,3 +1,25 @@
-package_name: "kaeya"
+package_name: kaeya
 genshin_id: 10000015
-key: "kaeya"
+key: kaeya
+skill_data_mapping:
+    # FIXME: 2-Hit DMG|{param1:F1P} count 4, expected 1
+    # FIXME: 3-Hit DMG|{param2:F1P} count 0, expected 1
+    # FIXME: 4-Hit DMG|{param3:F1P} count 0, expected 1
+    # FIXME: 5-Hit DMG|{param4:F1P} count 0, expected 1
+    attack:
+        auto_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        auto_2:
+            - 1 # FIXME: 2-Hit DMG|{param1:F1P} -- old=0.3612 new=0.51686
+            - 1 # FIXME: 2-Hit DMG|{param1:F1P} -- old=0.3354 new=0.51686
+            - 1 # FIXME: 2-Hit DMG|{param1:F1P} -- old=0.4558 new=0.51686
+            - 1 # FIXME: 2-Hit DMG|{param1:F1P} -- old=0.43 new=0.51686
+        charge:
+            - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+            - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+    skill:
+        skill:
+            - 0 # Skill DMG|{param0:P}
+    burst:
+        burst:
+            - 0 # Skill DMG|{param0:F1P}
