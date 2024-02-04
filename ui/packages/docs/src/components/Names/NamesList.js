@@ -2,6 +2,7 @@ import React from "react";
 import character_data from "./character_data.json";
 import weapon_data from "./weapon_data.json";
 import artifact_data from "./artifact_data.json";
+import enemy_data from "./enemy_data.json";
 
 export default function NamesList({ item_key, data_src }) {
   let data = character_data;
@@ -11,6 +12,9 @@ export default function NamesList({ item_key, data_src }) {
       break;
     case "artifact":
       data = artifact_data;
+      break;
+    case "enemy":
+      data = enemy_data;
       break;
   }
   if (!(item_key in data)) {
