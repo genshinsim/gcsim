@@ -24,7 +24,10 @@ var types = [...]string{
 }
 
 func init() {
-	agg.Register(NewAgg)
+	agg.Register(agg.Config{
+		Name: "shield",
+		New:  NewAgg,
+	})
 }
 
 type buffer struct {

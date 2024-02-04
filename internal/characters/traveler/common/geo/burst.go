@@ -33,7 +33,7 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 49    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) (action.Info, error) {
+func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	hits, ok := p["hits"]
 	if !ok {
 		hits = 4 // assume all 4 instances of shockwave dmg hit the enemy
@@ -52,6 +52,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagTravelerWakeOfEarth,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   100,
 		Element:    attributes.Geo,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -139,12 +140,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 type wall struct {
 	src    int
 	expiry int
-	char   *char
+	char   *Traveler
 	dir    geometry.Point
 	pos    geometry.Point
 }
 
-func (c *char) newWall(dur int, dir, pos geometry.Point) *wall {
+func (c *Traveler) newWall(dur int, dir, pos geometry.Point) *wall {
 	return &wall{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,

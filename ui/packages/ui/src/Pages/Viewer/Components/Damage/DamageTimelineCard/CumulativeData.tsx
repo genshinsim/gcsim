@@ -37,10 +37,7 @@ export function useData(input?: CharacterBucketStats, names?: string[]): ChartDa
       };
     }
     
-    const duration = Math.floor(((data.length-1) * bucket_size) / 60);
-    if (duration < data[data.length-1].x) {
-      data.pop();
-    }
+    const duration = ((data.length - 1) * bucket_size) / 60;
 
     return {
       data: data,

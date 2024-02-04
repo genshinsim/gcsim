@@ -50,8 +50,8 @@ type AvatarExcel struct {
 	DefenseBase     float64         `json:"defenseBase"`
 	PropGrowCurves  []PropGrowCurve `json:"propGrowCurves"`
 	ID              int32           `json:"id"`
-	// NameTextMapHash int32           `json:"nameTextMapHash"`
-	UseType string `json:"useType,omitempty"`
+	NameTextMapHash int64           `json:"nameTextMapHash"`
+	UseType         string          `json:"useType,omitempty"`
 }
 
 //nolint:tagliatelle // need to match datamine
@@ -60,7 +60,7 @@ type PropGrowCurve struct {
 	GrowCurve string `json:"growCurve"`
 }
 
-type TextMap map[int32]string
+type TextMap map[int64]string
 
 //nolint:tagliatelle // need to match datamine
 type AvatarSkillDepot struct {
@@ -79,9 +79,9 @@ type AvatarSkillDepot struct {
 
 //nolint:tagliatelle // need to match datamine
 type AvatarSkillExcel struct {
-	ID           int32  `json:"id"`
-	CostElemType string `json:"costElemType,omitempty"`
-	// NameTextMapHash    int32     `json:"nameTextMapHash"`
+	ID              int32  `json:"id"`
+	CostElemType    string `json:"costElemType,omitempty"`
+	NameTextMapHash int64  `json:"nameTextMapHash"`
 	// AbilityName        string    `json:"abilityName"`
 	// DescTextMapHash    int32       `json:"descTextMapHash"`
 	// SkillIcon          string    `json:"skillIcon"`
@@ -95,6 +95,7 @@ type AvatarSkillExcel struct {
 	// BuffIcon           string    `json:"buffIcon"`
 	// GlobalValueKey     string    `json:"globalValueKey"`
 	// CostStamina        float64   `json:"costStamina,omitempty"`
+	ProudSkillGroupID int32 `json:"proudSkillGroupId"`
 }
 
 //nolint:tagliatelle // need to match datamine
@@ -167,4 +168,45 @@ type WeaponPromote struct {
 	PromoteLevel   int32 `json:"promoteLevel,omitempty"`
 	// RequiredPlayerLevel int32 `json:"requiredPlayerLevel,omitempty"`
 	// CoinCost            int32 `json:"coinCost,omitempty"`
+}
+
+//nolint:tagliatelle // need to match datamine
+type ReliquarySetExcel struct {
+	SetID        int64 `json:"setId"`
+	EquipAffixID int64 `json:"EquipAffixId"`
+}
+
+//nolint:tagliatelle // need to match datamine
+type EquipAffixExcel struct {
+	AffixID         int64 `json:"affixId"`
+	ID              int64 `json:"id"`
+	NameTextMapHash int64 `json:"nameTextMapHash"`
+	Level           int32 `json:"level"`
+	// DescTextMapHash            int32         `json:"descTextMapHash"`
+	// AddProps []AddProp `json:"addProps"`
+}
+
+//nolint:tagliatelle // need to match datamine
+type ProudSkillExcel struct {
+	ProudSkillID          int32  `json:"proudSkillId"`
+	ProudSkillGroupID     int32  `json:"proudSkillGroupId"`
+	Level                 int32  `json:"level"`
+	ProudSkillType        int32  `json:"proudSkillType"`
+	NameTextMapHash       int64  `json:"nameTextMapHash"`
+	DescTextMapHash       int64  `json:"descTextMapHash"`
+	UnlockDescTextMapHash int64  `json:"unlockDescTextMapHash"`
+	Icon                  string `json:"icon"`
+	// CoinCost              int    `json:"coinCost"`
+	// CostItems             []struct {
+	// 	ID    int `json:"id,omitempty"`
+	// 	Count int `json:"count,omitempty"`
+	// } `json:"costItems"`
+	// FilterConds      []string      `json:"filterConds"`
+	// BreakLevel       int           `json:"breakLevel"`
+	// ParamDescList    []interface{} `json:"paramDescList"`
+	// LifeEffectParams []string      `json:"lifeEffectParams"`
+	// OpenConfig       string        `json:"openConfig"`
+	// AddProps []struct {
+	// } `json:"addProps"`
+	ParamList []float64 `json:"paramList"`
 }

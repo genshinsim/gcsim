@@ -3,6 +3,7 @@ package simulation
 import (
 	"errors"
 	"fmt"
+	"runtime/debug"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -237,7 +238,8 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 			return queuePhase, nil
 		}
 		// this is now unexpected since action should be ready now
-		return nil, err
+		// wrap the error for more context
+		return nil, fmt.Errorf("error encountered on %v executing %v: %w", q.Char.String(), q.Action.String(), err)
 	}
 	//TODO: this check here is probably unnecessary
 	if l := s.popQueue(); l > 0 {
@@ -308,7 +310,7 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 		// recover from panic if one occured. Set err to nil otherwise.
 		if r := recover(); r != nil {
 			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
-			err = fmt.Errorf("simulation panic occured: %v", r)
+			err = fmt.Errorf("simulation panic occured: %v \n"+string(debug.Stack()), r)
 		}
 	}()
 	res, err = s.run()

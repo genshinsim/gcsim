@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { GraphAxisBottom, GraphAxisLeft, GraphGridRows, NoData } from "../../Util";
 import { RenderTooltip, TooltipData, useTooltipHandles } from "./Tooltip";
 import { VerticalLine } from "./VerticalLine";
+import { specialLocales } from "@ui/Translation/i18n";
 
 type Props = {
   width: number;
@@ -39,7 +40,7 @@ const Graph = ({
   const numVerticalTicks = 7;
   const numHorizontalTicks = Math.min(width / 80, 12);
   
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { xScale, yScale, xLin, delta } = useScales(data, xMax, yMax);
   const tooltip = useTooltip<TooltipData>();
   const tooltipHandles = useTooltipHandles(
@@ -89,10 +90,11 @@ const Graph = ({
               scale={yScale}
               numTicks={numVerticalTicks}
               labelOffset={55}
+              labelProps={specialLocales.includes(i18n.resolvedLanguage) ? { transform: "scale(1 1) translate(40 160)", style: { writingMode: "vertical-lr" }, textAnchor: "middle" } : undefined}
               tickFormat={s => s.toLocaleString(
                   i18n.language, { notation: 'compact', maximumSignificantDigits: 3 })}
               tickLabelX={0}
-              label="# iterations" />
+              label={t<string>("result.num_of_iterations")} />
           <GraphAxisBottom
               hideAxisLine
               top={yMax}

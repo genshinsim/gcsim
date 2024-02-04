@@ -118,6 +118,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   51.75,
 		Element:    attributes.Hydro,
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],

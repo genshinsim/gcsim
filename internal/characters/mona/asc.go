@@ -67,6 +67,6 @@ func (c *char) a4() {
 			},
 		})
 	}
-	c.a4Stats[attributes.HydroP] = 0.2 * (1 + c.NonExtraStat(attributes.ER))
+	c.a4Stats[attributes.HydroP] = 0.2 * c.NonExtraStat(attributes.ER)
 	c.QueueCharTask(c.a4, 60)
 }

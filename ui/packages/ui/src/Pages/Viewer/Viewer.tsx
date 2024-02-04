@@ -1,5 +1,5 @@
-import { Alert, Intent } from "@blueprintjs/core";
-import { useCallback, useMemo, useState } from "react";
+import { Alert, Callout, Intent, Position, Toaster } from "@blueprintjs/core";
+import { useCallback, useMemo, useRef, useState } from "react";
 import ConfigUI, { useConfig } from "./Tabs/Config";
 import SampleUI, { useSample } from "./Tabs/Sample";
 import Results from "./Tabs/Results";
@@ -12,11 +12,15 @@ import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import queryString from "query-string";
 import { useHistory } from "react-router";
 import { RootState, useAppSelector } from "@ui/Stores/store";
+import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
+import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
+import { useTranslation } from "react-i18next";
 
 type ViewerProps = {
   running: boolean;
   data: SimResults | null;
   hash: string | null;
+  recoveryConfig: string | null;
   error: string | null;
   src: ResultSource;
   redirect: string;
@@ -28,7 +32,8 @@ type ViewerProps = {
 // above viewer in the hierarchy tree. The viewer can perform whatever additional calculations it
 // wants (linreg, stat optimizations, etc) but these computations are *never* stored in the data and
 // only exist as long as the page is loaded.
-export default ({ running, data, hash = "", error, src, redirect, exec, retry }: ViewerProps) => {
+export default ({ running, data, hash = "", recoveryConfig, error, src, redirect, exec, retry }: ViewerProps) => {
+  const { t } = useTranslation();
   const parsed = queryString.parse(location.hash);
   const [tabId, setTabId] = useState((parsed.tab as string) ?? "results");
 
@@ -45,7 +50,7 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
   const sample = useSample(running, data, sampleOnLoad, sampler);
   const config = useConfig(data, exec);
   const names = useMemo(
-      () => data?.character_details?.map(c => c.name), [data?.character_details]);
+      () => data?.character_details?.map(c => t<string>("character_names." + c.name, { ns: "game" })), [data?.character_details, t]);
 
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} running={running} names={names} />,
@@ -74,26 +79,30 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
         current={data?.statistics?.iterations}
         total={data?.simulator_settings?.iterations}
       />
-      <ErrorAlert msg={error} redirect={redirect} retry={retry} />
+      <ErrorAlert msg={error} recoveryConfig={recoveryConfig} redirect={redirect} retry={retry} />
     </div>
   );
 };
 
 const ErrorAlert = ({
       msg,
+      recoveryConfig,
       redirect,
       retry,
     }: {
       msg: string | null;
+      recoveryConfig: string | null;
       redirect: string;
       retry?: () => void;
     }) => {
+  const { t } = useTranslation();
+  const copyToast = useRef<Toaster>(null);
   const history = useHistory();
 
   let cancelButtonText: string | undefined;
   let onCancel: (() => void) | undefined;
   if (retry != null) {
-    cancelButtonText = "Retry";
+    cancelButtonText = t<string>("viewer.retry");
     onCancel = () => retry();
   }
 
@@ -104,11 +113,26 @@ const ErrorAlert = ({
       onCancel={onCancel}
       canEscapeKeyCancel={false}
       canOutsideClickCancel={false}
-      confirmButtonText="Close"
+      confirmButtonText={t<string>("viewer.return_to_sim")}
       cancelButtonText={cancelButtonText}
       intent={Intent.DANGER}
     >
-      <p>{msg}</p>
+      <div className="flex flex-col gap-2 mb-1">
+        <Callout intent={Intent.DANGER} title={t<string>("viewer.error_encountered")}>
+          <pre className="whitespace-pre-wrap pl-5">{msg}</pre>
+        </Callout>
+        {recoveryConfig != null ? (
+          <>
+            <CopyToClipboard
+              copyToast={copyToast}
+              config={recoveryConfig}
+              className="hidden ml-[7px] sm:flex"
+            />
+            <SendToSimulator config={recoveryConfig} />
+          </>
+        ) : null}
+      </div>
+      <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </Alert>
   );
 };

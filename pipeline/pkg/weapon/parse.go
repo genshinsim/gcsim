@@ -3,6 +3,7 @@ package weapon
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/pipeline"
 	"gopkg.in/yaml.v2"
@@ -34,6 +35,7 @@ func readWeapon(path string) (Config, error) {
 	if err != nil {
 		return c, fmt.Errorf("error reading %v: %w", path, err)
 	}
+	c.RelativePath = strings.TrimSuffix(path, "/config.yml")
 	err = yaml.Unmarshal(data, &c)
 	if err != nil {
 		return c, fmt.Errorf("error parsing config %v: %w", path, err)

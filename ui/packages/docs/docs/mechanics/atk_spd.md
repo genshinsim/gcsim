@@ -6,12 +6,12 @@ sidebar_position: 3
 ## Attack Speed
 
 Animation Speed (ATK SPD) is a character stat that increases the animation speed of a character's Normal Attacks and thus decreases the amount of frames that they take. 
-ATK SPD starts at 100% (normal animation speed) and caps at 160%.
+In gcsim, ATK SPD starts at 0 (normal animation speed, 100% ATK SPD) and caps at 0.6 (160% ATK SPD).
 
 In gcsim, ATK SPD is modelled like this:
 
 $$
-\text{action frames with ATK SPD(action frames, Current ATK SPD)} = \lfloor \text{action frames} * \frac{300\% - \text{Current ATK SPD}}{2} \rfloor
+\text{action frames with ATK SPD(action frames, Current ATK SPD)} = \text{action frames} - \lfloor \text{min}(\text{Current ATK SPD}, 0.1+\frac{\text{Current ATK SPD}-0.1}{2}) * \text{action frames}\rfloor
 $$
 
 
@@ -30,7 +30,7 @@ Eula's N1 if followed by N2 takes 34 frames at 60 fps.
 If she currently has 130% ATK SPD, then her N1 will take this amount of frames:
 
 $$
-\text{action frames with ATK SPD(34, 130\%)} = \lfloor 34 * \frac{300\% - 130\%}{2} \rfloor = \lfloor 34 * \frac{170\%}{2} \rfloor = \lfloor 34 * 85\% \rfloor = \lfloor 28.9 \rfloor = 28
+\text{action frames with ATK SPD(34, 0.3)} = 34 - \lfloor \text{min}(0.3, 0.1+\frac{0.3-0.1}{2}) * 34 \rfloor = 34 - \lfloor \text{min}(0.3, 0.2) * 34 \rfloor = 34 - \lfloor 0.2 * 34 \rfloor = 34 - \lfloor 6.8 \rfloor = 34 - 6 = 28
 $$
 
 ## Overall Animation Speed

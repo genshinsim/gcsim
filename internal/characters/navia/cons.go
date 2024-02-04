@@ -52,6 +52,7 @@ func (c *char) c2() combat.AttackCBFunc {
 			ICDTag:     attacks.ICDTagElementalBurst,
 			ICDGroup:   attacks.ICDGroupNaviaBurst,
 			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   50,
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       burst[1][c.TalentLvlBurst()],

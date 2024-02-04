@@ -5,6 +5,7 @@ import Pako from "pako";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import SamplePage from "./SamplePage";
+import { useTranslation } from "react-i18next";
 
 export const LocalSample = ({}) => {
   const [sample, setSample] = useState<Sample | null>(null);
@@ -25,6 +26,7 @@ export const LocalSample = ({}) => {
 };
 
 export const UploadSample = ({}) => {
+  const { t } = useTranslation();
   const [sample, setSample] = useState<Sample | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -55,7 +57,7 @@ export const UploadSample = ({}) => {
       <div className="p-8">
         <div {...getRootProps({ className: dzClass })}>
           <input {...getInputProps()} />
-          <span className="text-lg">Drop sample file here, or click to select file</span>
+          <span className="text-lg">{t<string>("sample.drop_text")}</span>
         </div>
       </div>
     );

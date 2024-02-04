@@ -1,127 +1,209 @@
 {
   "data": {
     "archaicpetra": {
-      "text_map_id": "2040573235"
+      "id": "15014",
+      "text_map_id": "2040573235",
+      "key": "archaicpetra"
     },
     "berserker": {
-      "text_map_id": "855894507"
+      "id": "10005",
+      "text_map_id": "855894507",
+      "key": "berserker"
     },
     "blizzardstrayer": {
-      "text_map_id": "933076627"
+      "id": "14001",
+      "text_map_id": "933076627",
+      "key": "blizzardstrayer"
     },
     "bloodstainedchivalry": {
-      "text_map_id": "1541919827"
+      "id": "15008",
+      "text_map_id": "1541919827",
+      "key": "bloodstainedchivalry"
     },
     "braveheart": {
-      "text_map_id": "3535784755"
+      "id": "10002",
+      "text_map_id": "3535784755",
+      "key": "braveheart"
     },
     "crimsonwitchofflames": {
-      "text_map_id": "1524173875"
+      "id": "15006",
+      "text_map_id": "1524173875",
+      "key": "crimsonwitchofflames"
     },
     "deepwoodmemories": {
-      "text_map_id": "1675079283"
+      "id": "15025",
+      "text_map_id": "1675079283",
+      "key": "deepwoodmemories"
     },
     "defenderswill": {
-      "text_map_id": "4082302819"
+      "id": "10003",
+      "text_map_id": "4082302819",
+      "key": "defenderswill"
     },
     "desertpavilionchronicle": {
-      "text_map_id": "2538235187"
+      "id": "15027",
+      "text_map_id": "2538235187",
+      "key": "desertpavilionchronicle"
     },
     "echoesofanoffering": {
-      "text_map_id": "3626268211"
+      "id": "15024",
+      "text_map_id": "3626268211",
+      "key": "echoesofanoffering"
     },
     "emblemofseveredfate": {
-      "text_map_id": "2276480763"
+      "id": "15020",
+      "text_map_id": "2276480763",
+      "key": "emblemofseveredfate"
     },
     "flowerofparadiselost": {
-      "text_map_id": "3094139291"
+      "id": "15028",
+      "text_map_id": "3094139291",
+      "key": "flowerofparadiselost"
     },
     "gambler": {
-      "text_map_id": "1186209435"
+      "id": "10008",
+      "text_map_id": "1186209435",
+      "key": "gambler"
     },
     "gildeddreams": {
-      "text_map_id": "4145306051"
+      "id": "15026",
+      "text_map_id": "4145306051",
+      "key": "gildeddreams"
     },
     "gladiatorsfinale": {
-      "text_map_id": "1212345779"
+      "id": "15001",
+      "text_map_id": "1212345779",
+      "key": "gladiatorsfinale"
     },
     "goldentroupe": {
-      "text_map_id": "3410220315"
+      "id": "15032",
+      "text_map_id": "3410220315",
+      "key": "goldentroupe"
     },
     "heartofdepth": {
-      "text_map_id": "156294403"
+      "id": "15016",
+      "text_map_id": "156294403",
+      "key": "heartofdepth"
     },
     "huskofopulentdreams": {
-      "text_map_id": "2546254811"
+      "id": "15021",
+      "text_map_id": "2546254811",
+      "key": "huskofopulentdreams"
     },
     "instructor": {
-      "text_map_id": "3890292467"
+      "id": "10007",
+      "text_map_id": "3890292467",
+      "key": "instructor"
     },
     "lavawalker": {
-      "text_map_id": "1632377563"
+      "id": "14003",
+      "text_map_id": "1632377563",
+      "key": "lavawalker"
     },
     "maidenbeloved": {
-      "text_map_id": "83115355"
+      "id": "14004",
+      "text_map_id": "83115355",
+      "key": "maidenbeloved"
     },
     "marechausseehunter": {
-      "text_map_id": "1249831867"
+      "id": "15031",
+      "text_map_id": "1249831867",
+      "key": "marechausseehunter"
     },
     "martialartist": {
-      "text_map_id": "2890909531"
+      "id": "10006",
+      "text_map_id": "2890909531",
+      "key": "martialartist"
     },
     "nighttimewhispersintheechoingwoods": {
-      "text_map_id": "279470883"
+      "id": "15034",
+      "text_map_id": "279470883",
+      "key": "nighttimewhispersintheechoingwoods"
     },
     "noblesseoblige": {
-      "text_map_id": "1751039235"
+      "id": "15007",
+      "text_map_id": "1751039235",
+      "key": "noblesseoblige"
     },
     "nymphsdream": {
-      "text_map_id": "1925210475"
+      "id": "15029",
+      "text_map_id": "1925210475",
+      "key": "nymphsdream"
     },
     "oceanhuedclam": {
-      "text_map_id": "1756609915"
+      "id": "15022",
+      "text_map_id": "1756609915",
+      "key": "oceanhuedclam"
     },
     "paleflame": {
-      "text_map_id": "862591315"
+      "id": "15018",
+      "text_map_id": "862591315",
+      "key": "paleflame"
     },
     "resolutionofsojourner": {
-      "text_map_id": "2364208851"
+      "id": "10001",
+      "text_map_id": "2364208851",
+      "key": "resolutionofsojourner"
     },
     "retracingbolide": {
-      "text_map_id": "1438974835"
+      "id": "15015",
+      "text_map_id": "1438974835",
+      "key": "retracingbolide"
     },
     "scholar": {
-      "text_map_id": "3618167299"
+      "id": "10012",
+      "text_map_id": "3618167299",
+      "key": "scholar"
     },
     "shimenawasreminiscence": {
-      "text_map_id": "4144069251"
+      "id": "15019",
+      "text_map_id": "4144069251",
+      "key": "shimenawasreminiscence"
     },
     "songofdayspast": {
-      "text_map_id": "2803305851"
+      "id": "15033",
+      "text_map_id": "2803305851",
+      "key": "songofdayspast"
     },
     "tenacityofthemillelith": {
-      "text_map_id": "1337666507"
+      "id": "15017",
+      "text_map_id": "1337666507",
+      "key": "tenacityofthemillelith"
     },
     "theexile": {
-      "text_map_id": "2764598579"
+      "id": "10009",
+      "text_map_id": "2764598579",
+      "key": "theexile"
     },
     "thunderingfury": {
-      "text_map_id": "2512309395"
+      "id": "15005",
+      "text_map_id": "2512309395",
+      "key": "thunderingfury"
     },
     "thundersoother": {
-      "text_map_id": "1873342283"
+      "id": "14002",
+      "text_map_id": "1873342283",
+      "key": "thundersoother"
     },
     "vermillionhereafter": {
-      "text_map_id": "1558036915"
+      "id": "15023",
+      "text_map_id": "1558036915",
+      "key": "vermillionhereafter"
     },
     "viridescentvenerer": {
-      "text_map_id": "1562601179"
+      "id": "15002",
+      "text_map_id": "1562601179",
+      "key": "viridescentvenerer"
     },
     "vourukashasglow": {
-      "text_map_id": "235897163"
+      "id": "15030",
+      "text_map_id": "235897163",
+      "key": "vourukashasglow"
     },
     "wandererstroupe": {
-      "text_map_id": "147298547"
+      "id": "15003",
+      "text_map_id": "147298547",
+      "key": "wandererstroupe"
     }
   }
 }

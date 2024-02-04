@@ -1,6 +1,8 @@
 package character
 
 import (
+	"bytes"
+	"encoding/json"
 	"os"
 
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -23,14 +25,26 @@ func (g *Generator) writeCharDataJSON(path string) error {
 		// hide promodata from ui json; not needed
 		x := proto.Clone(v).(*model.AvatarData)
 		x.Stats = nil
+		// trim stat scaling too
+		x.SkillDetails.SkillScaling = nil
+		x.SkillDetails.AttackScaling = nil
+		x.SkillDetails.BurstScaling = nil
 		data[v.Key] = x
 	}
 	m := &model.AvatarDataMap{
 		Data: data,
 	}
-	s := protojson.Format(m)
+	s, err := protojson.Marshal(m)
+	if err != nil {
+		return err
+	}
+	dst := &bytes.Buffer{}
+	err = json.Indent(dst, s, "", "  ")
+	if err != nil {
+		return err
+	}
 	os.Remove(path)
-	err := os.WriteFile(path, []byte(s), 0o644)
+	err = os.WriteFile(path, dst.Bytes(), 0o644)
 	if err != nil {
 		return err
 	}

@@ -1,12 +1,13 @@
 package venti
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var highPlungeFrames []int
@@ -23,14 +24,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	// check if hold skill was used
 	lastAct := c.Core.Player.LastAction
 	if lastAct.Char != c.Index || lastAct.Type != action.ActionSkill || lastAct.Param["hold"] != 0 {
-		c.Core.Log.NewEvent("high_plunge should be preceded by hold skill", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionHighPlunge)
-		return action.Info{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}, nil
+		return action.Info{}, errors.New("high_plunge should be preceded by hold skill")
 	}
 
 	ai := combat.AttackInfo{

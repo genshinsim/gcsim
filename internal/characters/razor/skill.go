@@ -151,6 +151,7 @@ func (c *char) SkillHold(burstActive int) action.Info {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   300,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],

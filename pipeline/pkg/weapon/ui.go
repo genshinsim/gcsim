@@ -1,6 +1,8 @@
 package weapon
 
 import (
+	"bytes"
+	"encoding/json"
 	"os"
 
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -28,9 +30,17 @@ func (g *Generator) writeDataJSON(path string) error {
 	m := &model.WeaponDataMap{
 		Data: data,
 	}
-	s := protojson.Format(m)
+	s, err := protojson.Marshal(m)
+	if err != nil {
+		return err
+	}
+	dst := &bytes.Buffer{}
+	err = json.Indent(dst, s, "", "  ")
+	if err != nil {
+		return err
+	}
 	os.Remove(path)
-	err := os.WriteFile(path, []byte(s), 0o644)
+	err = os.WriteFile(path, dst.Bytes(), 0o644)
 	if err != nil {
 		return err
 	}

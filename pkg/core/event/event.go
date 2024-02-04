@@ -4,7 +4,7 @@ type Event int
 
 const (
 	OnEnemyHit     Event = iota // target, AttackEvent
-	OnPlayerHit                 // target, AttackEvent
+	OnPlayerHit                 // char, AttackEvent
 	OnGadgetHit                 // target, AttackEvent
 	OnEnemyDamage               // target, AttackEvent, amount, crit
 	OnGadgetDamage              // target, AttackEvent
@@ -53,6 +53,7 @@ const (
 	OnCharacterHit     // nil <- this is for when the character is going to get hit but might be shielded from dmg
 	OnCharacterHurt    // amount
 	OnHeal             // src char, target character, amount, overheal
+	OnPlayerPreHPDrain // Draininfo to modify
 	OnPlayerHPDrain    // DrainInfo
 	// ability use
 	OnActionFailed // ActiveCharIndex, action.Action, param, action.ActionFailure

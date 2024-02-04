@@ -62,6 +62,6 @@ func (c *char) a4() {
 			},
 		})
 	}
-	c.a4Stats[attributes.ElectroP] = c.NonExtraStat(attributes.ER) * 0.4 // 100 * 0.004
+	c.a4Stats[attributes.ElectroP] = (max(c.NonExtraStat(attributes.ER)-1, 0)) * 0.4 // 100 * 0.004
 	c.QueueCharTask(c.a4, 30)
 }

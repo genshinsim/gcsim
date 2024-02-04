@@ -1,11 +1,18 @@
-package hunter
+package huntersbow
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.HuntersBow, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.HuntersBow, NewWeapon)
+}
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+	w := common.NewNoEffect(base)
+	return w.NewWeapon(c, char, p)
 }

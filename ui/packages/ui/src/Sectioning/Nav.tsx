@@ -46,7 +46,7 @@ export default ({}) => {
       href="https://docs.gcsim.app"
       target="_blank"
     >
-      <span>Documentation</span>
+      <span>{t<string>("nav.documentation")}</span>
     </AnchorButton>,
     <AnchorButton
       key="update"
@@ -55,7 +55,7 @@ export default ({}) => {
       href="https://github.com/genshinsim/gcsim/releases"
       target="_blank"
     >
-      <span>Releases</span>
+      <span>{t<string>("nav.releases")}</span>
     </AnchorButton>,
     <AnchorButton
       key="discord"
@@ -65,7 +65,8 @@ export default ({}) => {
       rel="noreferrer"
       icon={<FaDiscord size="24px" color="#abb3bf" />}
     >
-      <span>{"Discord"}</span>
+      {/* no localization needed */}
+      <span>Discord</span>
     </AnchorButton>,
   ];
 
@@ -105,8 +106,10 @@ export default ({}) => {
                 <option value="en">{t<string>("nav.english")}</option>
                 <option value="zh">{t<string>("nav.chinese")}</option>
                 <option value="ja">{t<string>("nav.japanese")}</option>
+                <option value="ko">{t<string>("nav.korean")}</option>
                 <option value="es">{t<string>("nav.spanish")}</option>
                 <option value="ru">{t<string>("nav.russian")}</option>
+                <option value="de">{t<string>("nav.german")}</option>
               </HTMLSelect>
             </Navbar.Group>
             <Navbar.Group
@@ -125,7 +128,7 @@ export default ({}) => {
       </Navbar>
       <Collapse isOpen={isOpen}>
         {/* Navbar's CSS will overwrite height and padding unless marked as important */}
-        <Navbar className="!h-full !py-2 flex flex-col gap-0.5">
+        <Navbar className="!h-full !py-2 flex min-[902px]:!hidden flex-col gap-0.5">
           {PageNavs}
           <HTMLSelect
             className="my-1 ml-2 self-center"
@@ -135,8 +138,10 @@ export default ({}) => {
             <option value="en">{t<string>("nav.english")}</option>
             <option value="zh">{t<string>("nav.chinese")}</option>
             <option value="ja">{t<string>("nav.japanese")}</option>
+            <option value="ko">{t<string>("nav.korean")}</option>
             <option value="es">{t<string>("nav.spanish")}</option>
             <option value="ru">{t<string>("nav.russian")}</option>
+            <option value="de">{t<string>("nav.german")}</option>
           </HTMLSelect>
         </Navbar>
       </Collapse>

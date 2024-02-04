@@ -8,7 +8,7 @@ import (
 )
 
 // Reduces Starfell Sword's CD by 2s.
-func (c *char) a1() {
+func (c *Traveler) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -16,7 +16,7 @@ func (c *char) a1() {
 }
 
 // The final hit of a Normal Attack combo triggers a collapse, dealing 60% of ATK as AoE Geo DMG.
-func (c *char) a4() {
+func (c *Traveler) a4() {
 	if c.Base.Ascension < 4 || c.NormalCounter != c.NormalHitNum-1 {
 		return
 	}
@@ -27,6 +27,7 @@ func (c *char) a4() {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   13.5,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       0.6,

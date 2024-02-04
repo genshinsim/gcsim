@@ -1,6 +1,7 @@
 package geo
 
 import (
+	"github.com/genshinsim/gcsim/internal/characters/traveler/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -9,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-type char struct {
+type Traveler struct {
 	*tmpl.Character
 	skillCD     int
 	burstArea   combat.AttackPattern // needed for c1
@@ -17,28 +18,25 @@ type char struct {
 	gender      int
 }
 
-func NewChar(gender int) core.NewCharacterFunc {
-	return func(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
-		c := char{
-			gender: gender,
-		}
-		c.Character = tmpl.NewWithWrapper(s, w)
-
-		c.Base.Element = attributes.Geo
-		c.EnergyMax = 60
-		c.BurstCon = 3
-		c.SkillCon = 5
-		c.NormalHitNum = normalHitNum
-
-		c.skillCD = 6 * 60
-
-		w.Character = &c
-
-		return nil
+func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile, gender int) (*Traveler, error) {
+	c := Traveler{
+		gender: gender,
 	}
+	c.Character = tmpl.NewWithWrapper(s, w)
+
+	c.Base.Atk += common.TravelerBaseAtkIncrease(p)
+	c.Base.Element = attributes.Geo
+	c.EnergyMax = 60
+	c.BurstCon = 3
+	c.SkillCon = 5
+	c.NormalHitNum = normalHitNum
+
+	c.skillCD = 6 * 60
+
+	return &c, nil
 }
 
-func (c *char) Init() error {
+func (c *Traveler) Init() error {
 	c.a1()
 	// setup number of C1 ticks
 	c.c1TickCount = 15

@@ -343,8 +343,42 @@
       "ability": "swap",
       "legal": true
     }
-  ],  
+  ],
   "charlotte": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "chevreuse": [
     {
       "ability": "attack",
       "legal": true
@@ -1996,7 +2030,7 @@
     },
     {
       "ability": "aim",
-      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+      "legal": true
     },
     {
       "ability": "skill",
@@ -2335,6 +2369,40 @@
     {
       "ability": "swap",
       "notes": "Swapping while Windfavored state is active is not legal."
+    }
+  ],
+  "wriothesley": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
     }
   ],
   "xiangling": [

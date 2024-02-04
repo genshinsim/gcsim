@@ -48,13 +48,14 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 	// delay damage event to end of the frame
 	e.Core.Combat.Tasks.Add(func() {
 		// apply the damage
-		e.applyDamage(atk, dmg)
-		e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, dmg, crit)
+		actualDmg := e.applyDamage(atk, dmg)
+		e.Core.Combat.TotalDamage += actualDmg
+		e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, actualDmg, crit)
 		// callbacks
 		cb := combat.AttackCB{
 			Target:      e,
 			AttackEvent: atk,
-			Damage:      dmg,
+			Damage:      actualDmg,
 			IsCrit:      crit,
 		}
 		for _, f := range atk.Callbacks {
@@ -81,7 +82,8 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 		atk.Info.NoImpulse = true
 	}
 
-	// check shatter first
+	// check poise dmg and then shatter first
+	e.PoiseDMGCheck(atk)
 	e.ShatterCheck(atk)
 
 	checkBurningICD := func() {
@@ -169,16 +171,18 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	return damage, isCrit
 }
 
-func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
+func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) float64 {
 	// record dmg
-	e.hp -= damage
-	e.damageTaken += damage //TODO: do we actually need this?
+	// do not let hp become negative because this function can be called multiple times in same frame
+	actualDmg := min(damage, e.hp) // do not let dmg be greater than remaining enemy hp
+	e.hp -= actualDmg
+	e.damageTaken += actualDmg //TODO: do we actually need this?
 
 	// check if target is dead
 	if e.Core.Flags.DamageMode && e.hp <= 0 {
 		e.Kill()
 		e.Core.Events.Emit(event.OnTargetDied, e, atk)
-		return
+		return actualDmg
 	}
 
 	// apply auras
@@ -202,4 +206,8 @@ func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
 				Write("after", e.Reactable.ActiveAuraString())
 		}
 	}
+	// just return damage without considering enemy hp here for both:
+	// - damage mode if target not dead (otherwise would have entered the death if statement)
+	// - duration mode (no concept of killing blow)
+	return damage
 }

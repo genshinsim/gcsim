@@ -1,6 +1,7 @@
 import { Colors, Icon } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import { memo, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   title: string;
@@ -49,6 +50,7 @@ const TitleWithTooltip = ({ title, tooltip }: TitleProps) => {
 const TitleWithTooltipMemo = memo(TitleWithTooltip);
 
 const RefreshStatus = ({ timer }: { timer: number }) => {
+  const { t } = useTranslation();
   const [time, setTime] = useState(timeRemaining(timer));
   
   useEffect(() => {
@@ -61,7 +63,7 @@ const RefreshStatus = ({ timer }: { timer: number }) => {
   return (
     <div className="text-gray-400 outline-0 text-xs flex gap-1 cursor-default">
       <Icon icon="refresh" color={Colors.GRAY1} size={12} className="pt-[3px]" />
-      <span>{time + "s"}</span>
+      <span>{time + t<string>("result.seconds_short")}</span>
     </div>
   );
 };

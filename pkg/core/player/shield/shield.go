@@ -13,6 +13,7 @@ const (
 	ZhongliJadeShield
 	DionaSkill
 	BeidouThunderShield
+	BeidouC1
 	XinyanSkill
 	XinyanC2
 	KaeyaC4
@@ -30,6 +31,7 @@ const (
 
 type Shield interface {
 	ShieldOwner() int
+	ShieldTarget() int // -1 to apply to all characters, character index otherwise
 	Key() int
 	Type() Type
 	ShieldStrength(ele attributes.Element, bonus float64) float64

@@ -1763,6 +1763,9 @@ export namespace model {
 
         /** AvatarData skill_details */
         skill_details?: (model.IAvatarSkillsData|null);
+
+        /** AvatarData name_text_hash_map */
+        name_text_hash_map?: (number|Long|null);
     }
 
     /** Represents an AvatarData. */
@@ -1806,6 +1809,9 @@ export namespace model {
 
         /** AvatarData skill_details. */
         public skill_details?: (model.IAvatarSkillsData|null);
+
+        /** AvatarData name_text_hash_map. */
+        public name_text_hash_map: (number|Long);
 
         /**
          * Gets the default type url for AvatarData
@@ -1892,6 +1898,15 @@ export namespace model {
 
         /** AvatarSkillsData burst_energy_cost */
         burst_energy_cost?: (number|null);
+
+        /** AvatarSkillsData attack_scaling */
+        attack_scaling?: (model.IAvatarSkillExcelIndexData[]|null);
+
+        /** AvatarSkillsData skill_scaling */
+        skill_scaling?: (model.IAvatarSkillExcelIndexData[]|null);
+
+        /** AvatarSkillsData burst_scaling */
+        burst_scaling?: (model.IAvatarSkillExcelIndexData[]|null);
     }
 
     /** Represents an AvatarSkillsData. */
@@ -1915,8 +1930,89 @@ export namespace model {
         /** AvatarSkillsData burst_energy_cost. */
         public burst_energy_cost: number;
 
+        /** AvatarSkillsData attack_scaling. */
+        public attack_scaling: model.IAvatarSkillExcelIndexData[];
+
+        /** AvatarSkillsData skill_scaling. */
+        public skill_scaling: model.IAvatarSkillExcelIndexData[];
+
+        /** AvatarSkillsData burst_scaling. */
+        public burst_scaling: model.IAvatarSkillExcelIndexData[];
+
         /**
          * Gets the default type url for AvatarSkillsData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an AvatarSkillExcelIndexData. */
+    interface IAvatarSkillExcelIndexData {
+
+        /** AvatarSkillExcelIndexData group_id */
+        group_id?: (number|null);
+
+        /** AvatarSkillExcelIndexData index */
+        index?: (number|null);
+
+        /** AvatarSkillExcelIndexData level_data */
+        level_data?: (model.IAvatarSkillExcelLevelData[]|null);
+    }
+
+    /** Represents an AvatarSkillExcelIndexData. */
+    class AvatarSkillExcelIndexData implements IAvatarSkillExcelIndexData {
+
+        /**
+         * Constructs a new AvatarSkillExcelIndexData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IAvatarSkillExcelIndexData);
+
+        /** AvatarSkillExcelIndexData group_id. */
+        public group_id: number;
+
+        /** AvatarSkillExcelIndexData index. */
+        public index: number;
+
+        /** AvatarSkillExcelIndexData level_data. */
+        public level_data: model.IAvatarSkillExcelLevelData[];
+
+        /**
+         * Gets the default type url for AvatarSkillExcelIndexData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an AvatarSkillExcelLevelData. */
+    interface IAvatarSkillExcelLevelData {
+
+        /** AvatarSkillExcelLevelData level */
+        level?: (number|null);
+
+        /** AvatarSkillExcelLevelData value */
+        value?: (number|null);
+    }
+
+    /** Represents an AvatarSkillExcelLevelData. */
+    class AvatarSkillExcelLevelData implements IAvatarSkillExcelLevelData {
+
+        /**
+         * Constructs a new AvatarSkillExcelLevelData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IAvatarSkillExcelLevelData);
+
+        /** AvatarSkillExcelLevelData level. */
+        public level: number;
+
+        /** AvatarSkillExcelLevelData value. */
+        public value: number;
+
+        /**
+         * Gets the default type url for AvatarSkillExcelLevelData
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -1970,6 +2066,9 @@ export namespace model {
 
         /** WeaponData base_stats */
         base_stats?: (model.IWeaponStatsData|null);
+
+        /** WeaponData name_text_hash_map */
+        name_text_hash_map?: (number|Long|null);
     }
 
     /** Represents a WeaponData. */
@@ -1998,6 +2097,9 @@ export namespace model {
 
         /** WeaponData base_stats. */
         public base_stats?: (model.IWeaponStatsData|null);
+
+        /** WeaponData name_text_hash_map. */
+        public name_text_hash_map: (number|Long);
 
         /**
          * Gets the default type url for WeaponData
@@ -2109,11 +2211,14 @@ export namespace model {
     /** Properties of an ArtifactData. */
     interface IArtifactData {
 
-        /** ArtifactData id */
-        id?: (number|null);
+        /** ArtifactData set_id */
+        set_id?: (number|Long|null);
 
         /** ArtifactData text_map_id */
-        text_map_id?: (string|null);
+        text_map_id?: (number|Long|null);
+
+        /** ArtifactData key */
+        key?: (string|null);
     }
 
     /** Represents an ArtifactData. */
@@ -2125,11 +2230,14 @@ export namespace model {
          */
         constructor(properties?: model.IArtifactData);
 
-        /** ArtifactData id. */
-        public id: number;
+        /** ArtifactData set_id. */
+        public set_id: (number|Long);
 
         /** ArtifactData text_map_id. */
-        public text_map_id: string;
+        public text_map_id: (number|Long);
+
+        /** ArtifactData key. */
+        public key: string;
 
         /**
          * Gets the default type url for ArtifactData
@@ -2309,7 +2417,8 @@ export namespace model {
         ASSOC_TYPE_SUMERU = 5,
         ASSOC_TYPE_FATUI = 6,
         ASSOC_TYPE_RANGER = 7,
-        ASSOC_TYPE_MAINACTOR = 8
+        ASSOC_TYPE_MAINACTOR = 8,
+        ASSOC_TYPE_FONTAINE = 9
     }
 
     /** Element enum. */
@@ -2342,7 +2451,7 @@ export namespace model {
         FIGHT_PROP_ELEMENT_MASTERY = 8,
         FIGHT_PROP_CRITICAL = 9,
         FIGHT_PROP_CRITICAL_HURT = 10,
-        FIGHT_PROP_HEAL = 11,
+        FIGHT_PROP_HEAL_ADD = 11,
         FIGHT_PROP_FIRE_ADD_HURT = 12,
         FIGHT_PROP_WATER_ADD_HURT = 13,
         FIGHT_PROP_GRASS_ADD_HURT = 14,
@@ -2817,6 +2926,9 @@ export namespace model {
         /** SimulationStatistics cumulative_damage_contribution */
         cumulative_damage_contribution?: (model.ICharacterBucketStats|null);
 
+        /** SimulationStatistics cumulative_damage */
+        cumulative_damage?: (model.ITargetBucketStats|null);
+
         /** SimulationStatistics shields */
         shields?: ({ [k: string]: model.IShieldInfo }|null);
 
@@ -2916,6 +3028,9 @@ export namespace model {
 
         /** SimulationStatistics cumulative_damage_contribution. */
         public cumulative_damage_contribution?: (model.ICharacterBucketStats|null);
+
+        /** SimulationStatistics cumulative_damage. */
+        public cumulative_damage?: (model.ITargetBucketStats|null);
 
         /** SimulationStatistics shields. */
         public shields: { [k: string]: model.IShieldInfo };
@@ -3291,6 +3406,123 @@ export namespace model {
 
         /**
          * Gets the default type url for CharacterBuckets
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a TargetBucketStats. */
+    interface ITargetBucketStats {
+
+        /** TargetBucketStats bucket_size */
+        bucket_size?: (number|null);
+
+        /** TargetBucketStats targets */
+        targets?: ({ [k: string]: model.ITargetBuckets }|null);
+    }
+
+    /** Represents a TargetBucketStats. */
+    class TargetBucketStats implements ITargetBucketStats {
+
+        /**
+         * Constructs a new TargetBucketStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ITargetBucketStats);
+
+        /** TargetBucketStats bucket_size. */
+        public bucket_size: number;
+
+        /** TargetBucketStats targets. */
+        public targets: { [k: string]: model.ITargetBuckets };
+
+        /**
+         * Gets the default type url for TargetBucketStats
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a TargetBuckets. */
+    interface ITargetBuckets {
+
+        /** TargetBuckets overall */
+        overall?: (model.ITargetBucket|null);
+
+        /** TargetBuckets target */
+        target?: (model.ITargetBucket|null);
+    }
+
+    /** Represents a TargetBuckets. */
+    class TargetBuckets implements ITargetBuckets {
+
+        /**
+         * Constructs a new TargetBuckets.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ITargetBuckets);
+
+        /** TargetBuckets overall. */
+        public overall?: (model.ITargetBucket|null);
+
+        /** TargetBuckets target. */
+        public target?: (model.ITargetBucket|null);
+
+        /**
+         * Gets the default type url for TargetBuckets
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a TargetBucket. */
+    interface ITargetBucket {
+
+        /** TargetBucket min */
+        min?: (number[]|null);
+
+        /** TargetBucket max */
+        max?: (number[]|null);
+
+        /** TargetBucket Q1 */
+        Q1?: (number[]|null);
+
+        /** TargetBucket Q2 */
+        Q2?: (number[]|null);
+
+        /** TargetBucket Q3 */
+        Q3?: (number[]|null);
+    }
+
+    /** Represents a TargetBucket. */
+    class TargetBucket implements ITargetBucket {
+
+        /**
+         * Constructs a new TargetBucket.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ITargetBucket);
+
+        /** TargetBucket min. */
+        public min: number[];
+
+        /** TargetBucket max. */
+        public max: number[];
+
+        /** TargetBucket Q1. */
+        public Q1: number[];
+
+        /** TargetBucket Q2. */
+        public Q2: number[];
+
+        /** TargetBucket Q3. */
+        public Q3: number[];
+
+        /**
+         * Gets the default type url for TargetBucket
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */

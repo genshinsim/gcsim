@@ -14,6 +14,7 @@ var eventToReaction = map[event.Event]reactions.ReactionType{
 	event.OnMelt:               reactions.Melt,
 	event.OnVaporize:           reactions.Vaporize,
 	event.OnFrozen:             reactions.Freeze,
+	event.OnShatter:            reactions.Shatter,
 	event.OnElectroCharged:     reactions.ElectroCharged,
 	event.OnSwirlHydro:         reactions.SwirlHydro,
 	event.OnSwirlCryo:          reactions.SwirlCryo,
@@ -33,7 +34,10 @@ var eventToReaction = map[event.Event]reactions.ReactionType{
 }
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "reaction",
+		New:  NewStat,
+	})
 }
 
 type buffer struct {

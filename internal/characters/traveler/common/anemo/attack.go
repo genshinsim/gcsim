@@ -63,7 +63,7 @@ func init() {
 	attackFrames[1][4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) (action.Info, error) {
+func (c *Traveler) Attack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),

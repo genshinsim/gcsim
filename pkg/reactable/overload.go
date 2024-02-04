@@ -39,23 +39,28 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 	// trigger event before attack is queued. this gives time for other actions to modify it
 	r.core.Events.Emit(event.OnOverload, r.self, a)
 
-	// trigger an overload attack
-	atk := combat.AttackInfo{
-		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Key(),
-		Abil:             string(reactions.Overload),
-		AttackTag:        attacks.AttackTagOverloadDamage,
-		ICDTag:           attacks.ICDTagOverloadDamage,
-		ICDGroup:         attacks.ICDGroupReactionB,
-		StrikeType:       attacks.StrikeTypeBlunt,
-		Element:          attributes.Pyro,
-		IgnoreDefPercent: 1,
+	// 0.1s gcd on overload attack
+	if !(r.overloadGCD != -1 && r.core.F < r.overloadGCD) {
+		r.overloadGCD = r.core.F + 0.1*60
+		// trigger an overload attack
+		atk := combat.AttackInfo{
+			ActorIndex:       a.Info.ActorIndex,
+			DamageSrc:        r.self.Key(),
+			Abil:             string(reactions.Overload),
+			AttackTag:        attacks.AttackTagOverloadDamage,
+			ICDTag:           attacks.ICDTagOverloadDamage,
+			ICDGroup:         attacks.ICDGroupReactionB,
+			StrikeType:       attacks.StrikeTypeBlunt,
+			PoiseDMG:         90,
+			Element:          attributes.Pyro,
+			IgnoreDefPercent: 1,
+		}
+		char := r.core.Player.ByIndex(a.Info.ActorIndex)
+		em := char.Stat(attributes.EM)
+		flatdmg, snap := calcReactionDmg(char, atk, em)
+		atk.FlatDmg = 2 * flatdmg
+		r.core.QueueAttackWithSnap(atk, snap, combat.NewCircleHitOnTarget(r.self, nil, 3), 1)
 	}
-	char := r.core.Player.ByIndex(a.Info.ActorIndex)
-	em := char.Stat(attributes.EM)
-	flatdmg, snap := calcReactionDmg(char, atk, em)
-	atk.FlatDmg = 2 * flatdmg
-	r.core.QueueAttackWithSnap(atk, snap, combat.NewCircleHitOnTarget(r.self, nil, 3), 1)
 
 	return true
 }

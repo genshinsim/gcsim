@@ -3,9 +3,8 @@ import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { range } from "lodash-es";
 import { memo, useMemo } from "react";
-import { all_filter } from ".";
 import {
-  DataColors,
+  useDataColors,
   FloatStatTooltipContent,
   HorizontalBarStack,
   NoData,
@@ -15,13 +14,13 @@ type Props = {
   width: number;
   height: number;
   names?: string[];
+  all_filter: string;
   filter: string;
   dps?: SourceStats[];
 };
 
-const margin = { top: 0, left: 300, right: 20, bottom: 40 };
-
 export const BarChartLegend = ({ names }: { names?: string[] }) => {
+  const { DataColors } = useDataColors();
   if (names == null) {
     return null;
   }
@@ -41,8 +40,9 @@ export const BarChartLegend = ({ names }: { names?: string[] }) => {
   );
 };
 
-const Graph = ({ width, dps, names, filter }: Props) => {
-  const { data, sources, xMax } = useData(filter, dps, names);
+const Graph = ({ width, dps, names, all_filter, filter }: Props) => {
+  const { DataColors } = useDataColors();
+  const { data, sources, xMax } = useData(all_filter, filter, dps, names);
 
   const sourceNames = sources.map((s) => s.name);
 
@@ -68,7 +68,7 @@ const Graph = ({ width, dps, names, filter }: Props) => {
       stat={(d, k) => d.data[names[k]].data}
       barColor={(k) => DataColors.character(k)}
       hoverColor={(k) => DataColors.characterLabel(k)}
-      margin={margin}
+      margin={{ top: 0, left: width*0.15, right: width*0.02, bottom: 20 }}
       tooltipContent={(d, k) => (
         <FloatStatTooltipContent
           title={names[k] + ": " + d.source}
@@ -113,6 +113,7 @@ type ChartData = {
 };
 
 function useData(
+  all_filter: string,
   filter: string,
   dps?: SourceStats[],
   names?: string[]
@@ -202,5 +203,5 @@ function useData(
         .filter((v) => v.mean > 0),
       xMax: maxDPS,
     };
-  }, [filter, dps, names]);
+  }, [all_filter, filter, dps, names]);
 }

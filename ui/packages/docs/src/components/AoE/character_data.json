@@ -1077,7 +1077,7 @@
     "cons": [
       {
         "ability": "C6",
-        "shape": "Circle", 
+        "shape": "Circle",
         "center": "GlobalValue",
         "radius": 3.5,
         "notes": "Spawns on target that the C6 proc'd on. Heal is 5m instead of 3m."
@@ -1143,11 +1143,115 @@
       {
         "ability": "Q",
         "shape": "Circle",
-        "center": "Player", 
+        "center": "Player",
         "offsetY": 4.5,
         "radius": 6,
         "notes": "Heal is 7m instead of 6m."
-    }
+      }
+    ]
+  },
+  "chevreuse": {
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 3,
+        "notes": "Spawns at X: -1.5/1.5m offset from the target that the C2 proc'd on."
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.6,
+        "boxY": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.4,
+        "radius": 1.6
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.6,
+        "boxY": 2      
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.4,
+        "radius": 1.6
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1,
+        "boxX": 1.5,
+        "boxY": 4   
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 2,
+        "boxY": 6
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 3,
+        "boxY": 7
+      },
+      {
+        "ability": "E-Overcharged-Ball",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }, 
+      {
+        "ability": "E-Surging-Blade",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2,
+        "notes": "Spawns on the first enemy hit by E."
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      },
+      {
+        "ability": "Q-Explosive-Shell",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 6,
+        "fanAngle": 60,
+        "notes" : "There are 8 shells which split the 6m radius around the Q hit pos into 8 equal parts. Each shell attack extends to the edge of the radius."
+      }
     ]
   },
   "chongyun": {
@@ -7584,6 +7688,138 @@
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 5
+      }
+    ]
+  },
+  "wriothesley": {
+    "cons": [
+      {
+        "ability": "C6",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.8,
+        "boxX": 4,
+        "boxY": 5
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.5,
+        "boxY": 3
+      },
+      {
+        "ability": "N4-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N4-2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N5",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 3,
+        "boxY": 3
+      },
+      {
+        "ability": "E-N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.4,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.4,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N3",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.8,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N4-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.4,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N4-2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.4,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N5",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 3.4,
+        "boxY": 3.4
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.2,
+        "boxX": 2.8,
+        "boxY": 3.6
+      },
+      {
+        "ability": "CA-Gracious-Rebuke",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.8,
+        "boxX": 4,
+        "boxY": 5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 8,
+        "boxY": 16
+      },
+      {
+        "ability": "Q-Surging-Blade",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 10,
+        "boxY": 16
       }
     ]
   },

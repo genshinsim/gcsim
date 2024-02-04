@@ -10,7 +10,7 @@ export const initialState: UserInfo = {
   role: 0,
   permalinks: [],
   data: {
-    settings: { showTips: true, showBuilder: true },
+    settings: { showTips: true, showBuilder: true, showNameSearch: true },
   },
 };
 

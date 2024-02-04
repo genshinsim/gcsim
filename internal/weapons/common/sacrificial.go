@@ -11,17 +11,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Sacrificial struct {
 	Index int
+	data  *model.WeaponData
 }
 
-func (b *Sacrificial) SetIndex(idx int) { b.Index = idx }
-func (b *Sacrificial) Init() error      { return nil }
+func (s *Sacrificial) SetIndex(idx int)        { s.Index = idx }
+func (s *Sacrificial) Init() error             { return nil }
+func (s *Sacrificial) Data() *model.WeaponData { return s.data }
 
-func NewSacrificial(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Sacrificial{}
+func NewSacrificial(data *model.WeaponData) *Sacrificial {
+	return &Sacrificial{data: data}
+}
+
+func (s *Sacrificial) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	r := p.Refine
 
 	const icdKey = "sacrificial-cd"
@@ -63,5 +69,5 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p info.WeaponProf
 		return false
 	}, fmt.Sprintf("sac-%v", char.Base.Key.String()))
 
-	return w, nil
+	return s, nil
 }

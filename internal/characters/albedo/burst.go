@@ -29,6 +29,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   100,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -63,6 +64,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			return
 		}
 		ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
+		ai.PoiseDMG = 30
 		ai.Mult = burstPerBloom[c.TalentLvlBurst()]
 
 		// C2 damage is recalculated once on burstHitmark

@@ -66,7 +66,7 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 
 	er = c.Stat(attributes.ER)
 
-	amt = amt * (1 + er) * p.Num
+	amt = amt * er * p.Num
 
 	pre := c.Energy
 

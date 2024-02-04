@@ -22,7 +22,10 @@ var elements = [...]attributes.Element{
 const normalized = "normalized"
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "shield",
+		New:  NewStat,
+	})
 }
 
 type buffer struct {

@@ -43,6 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   80,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       charge[c.sealCount][c.TalentLvlAttack()],

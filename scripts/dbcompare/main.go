@@ -37,10 +37,10 @@ func main() {
 		panic(err)
 	}
 	// fmt.Println(len(res))
-	fmt.Println("id,original,next,err")
+	fmt.Println("id,original,next,diff,err")
 	for _, v := range res {
 		dps, err := runSim(v)
-		fmt.Printf("%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, err)
+		fmt.Printf("%v,%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, dps-v.Summary.MeanDpsPerTarget, err)
 	}
 }
 
@@ -57,6 +57,7 @@ func runSim(w dbEntry) (float64, error) {
 	}
 	simcfg.Settings.Iterations = 1000
 	simcfg.Settings.NumberOfWorkers = 30
+	simcfg.Settings.CollectStats = []string{"overview"}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30)*time.Second)
 	defer cancel()

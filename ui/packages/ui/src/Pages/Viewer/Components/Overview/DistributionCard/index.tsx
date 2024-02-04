@@ -4,12 +4,14 @@ import { ParentSize } from "@visx/responsive";
 import { useState } from "react";
 import { CardTitle, useRefresh } from "../../Util";
 import { HistogramGraph } from "./HistogramGraph";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   data: SimResults | null;
 }
 
 export default ({ data }: Props) => {
+  const { t } = useTranslation();
   const [graph, setGraph] = useState("dps");
   const stats = useGraphDataRefresh(data);
 
@@ -56,18 +58,19 @@ function useGraphDataRefresh(data: SimResults | null): Stats | null {
 }
 
 const GraphTitle = ({ graph }: { graph: string }) => {
+  const { t } = useTranslation();
   if (graph === "dps") {
-    return <CardTitle title="DPS Distribution" tooltip="test" />;
+    return <CardTitle title={t<string>("result.dist", { d: "DPS" })} tooltip="test" />;
   } else if (graph === "eps") {
-    return <CardTitle title="EPS Distribution" tooltip="test" />;
+    return <CardTitle title={t<string>("result.dist", { d: "EPS" })} tooltip="test" />;
   } else if (graph === "rps") {
-    return <CardTitle title="RPS Distribution" tooltip="test" />;
+    return <CardTitle title={t<string>("result.dist", { d: "RPS" })} tooltip="test" />;
   } else if (graph === "hps") {
-    return <CardTitle title="HPS Distribution" tooltip="test" />;
+    return <CardTitle title={t<string>("result.dist", { d: "HPS" })} tooltip="test" />;
   } else if (graph === "shp") {
-    return <CardTitle title="SHP Distribution" tooltip="test" />;
+    return <CardTitle title={t<string>("result.dist", { d: "SHP" })} tooltip="test" />;
   } else if (graph === "dur") {
-    return <CardTitle title="Duration Distribution" tooltip="test" />;
+    return <CardTitle title={t<string>("result.dist", { d: "Dur" })} tooltip="test" />;
   }
   return null;
 };

@@ -100,7 +100,7 @@ func init() {
 	skillShortHoldFrames[1][action.ActionWalk] = 80    // Short Hold E -> Walk
 }
 
-func (c *char) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]int) (action.Info, error) {
+func (c *Traveler) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]int) (action.Info, error) {
 	c.torrentSurge(hitmark, spiritHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 10*60, cdStart)
 
@@ -117,7 +117,7 @@ func (c *char) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]i
 	}, nil
 }
 
-func (c *char) skillShortHold(travel int) (action.Info, error) {
+func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 	aiHold := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dewdrop (Hold)",
@@ -158,7 +158,7 @@ func (c *char) skillShortHold(travel int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) skillHold(travel, holdTicks int) (action.Info, error) {
+func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
 	aiHold := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dewdrop (Hold)",
@@ -205,7 +205,7 @@ func (c *char) skillHold(travel, holdTicks int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) Skill(p map[string]int) (action.Info, error) {
+func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"] == 1
 	holdTicks := p["hold_ticks"]
 	if hold {
@@ -248,7 +248,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 }
 
-func (c *char) skillParticleCB(a combat.AttackCB) {
+func (c *Traveler) skillParticleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -264,7 +264,7 @@ func (c *char) skillParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay)
 }
 
-func (c *char) torrentSurge(hitmark, spiritHitmark int) {
+func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Torrent Surge",
@@ -304,7 +304,7 @@ func (c *char) torrentSurge(hitmark, spiritHitmark int) {
 	}
 }
 
-func (c *char) skillLosingHP(ai *combat.AttackInfo) {
+func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
 	if c.StatusIsActive(skillLosingHPICDKey) {
 		return
 	}

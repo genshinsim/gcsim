@@ -4,15 +4,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type NoEffect struct {
 	Index int
+	data  *model.WeaponData
 }
 
-func (b *NoEffect) SetIndex(idx int) { b.Index = idx }
-func (b *NoEffect) Init() error      { return nil }
+func (n *NoEffect) SetIndex(idx int)        { n.Index = idx }
+func (n *NoEffect) Init() error             { return nil }
+func (n *NoEffect) Data() *model.WeaponData { return n.data }
 
-func NewNoEffect(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	return &NoEffect{}, nil
+func NewNoEffect(data *model.WeaponData) *NoEffect {
+	return &NoEffect{data: data}
+}
+
+func (n *NoEffect) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+	return n, nil
 }

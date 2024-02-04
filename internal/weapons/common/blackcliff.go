@@ -10,19 +10,26 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Blackcliff struct {
 	Index int
+	data  *model.WeaponData
 }
 
-func (b *Blackcliff) SetIndex(idx int) { b.Index = idx }
-func (b *Blackcliff) Init() error      { return nil }
+func (b *Blackcliff) SetIndex(idx int)        { b.Index = idx }
+func (b *Blackcliff) Init() error             { return nil }
+func (b *Blackcliff) Data() *model.WeaponData { return b.data }
 
-func NewBlackcliff(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	b := &Blackcliff{}
+func NewBlackcliff(data *model.WeaponData) *Blackcliff {
+	return &Blackcliff{
+		data: data,
+	}
+}
 
+func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	atk := 0.09 + float64(p.Refine)*0.03
 	index := 0
 	stackKey := []string{

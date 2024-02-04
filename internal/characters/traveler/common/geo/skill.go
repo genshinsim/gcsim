@@ -53,7 +53,7 @@ func init() {
 	skillFrames[1][1][action.ActionSwap] = 40    // Short Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) (action.Info, error) {
+func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	shortHold, ok := p["short_hold"]
 	if !ok || shortHold < 0 {
 		shortHold = 0
@@ -62,6 +62,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		shortHold = 1
 	}
 
+	noMeteorite := p["no_meteorite"] == 1
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Starfell Sword",
@@ -69,6 +71,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ICDTag:             attacks.ICDTagElementalArt,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           133.2,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -90,13 +93,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.makeParticleCB(),
 	)
 
-	c.Core.Tasks.Add(func() {
-		dur := 30 * 60
-		if c.Base.Cons >= 6 {
-			dur += 600
-		}
-		c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
-	}, skillHitmark[shortHold])
+	if !noMeteorite {
+		c.Core.Tasks.Add(func() {
+			dur := 30 * 60
+			if c.Base.Cons >= 6 {
+				dur += 600
+			}
+			c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
+		}, skillHitmark[shortHold])
+	}
 
 	c.SetCDWithDelay(action.ActionSkill, c.skillCD, skillCDStart[shortHold])
 
@@ -108,7 +113,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *Traveler) makeParticleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
@@ -130,12 +135,12 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 type stone struct {
 	src    int
 	expiry int
-	char   *char
+	char   *Traveler
 	dir    geometry.Point
 	pos    geometry.Point
 }
 
-func (c *char) newStone(dur int, dir, pos geometry.Point) *stone {
+func (c *Traveler) newStone(dur int, dir, pos geometry.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -154,6 +159,7 @@ func (s *stone) OnDestruct() {
 			ICDTag:             attacks.ICDTagElementalArt,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
+			PoiseDMG:           133.2,
 			Element:            attributes.Geo,
 			Durability:         50,
 			Mult:               skill[s.char.TalentLvlSkill()],

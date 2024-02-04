@@ -31,6 +31,7 @@ type AttackInfo struct {
 	DamageSrc        targets.TargetKey // source of this attack; should be a unique key identifying the target
 	Abil             string            // name of ability triggering the damage
 	AttackTag        attacks.AttackTag
+	PoiseDMG         float64 // only needed on blunt attacks for frozen consumption before shatter for now
 	ICDTag           attacks.ICDTag
 	ICDGroup         attacks.ICDGroup
 	Element          attributes.Element   // element of ability

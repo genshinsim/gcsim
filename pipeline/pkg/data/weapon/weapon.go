@@ -34,13 +34,14 @@ func (d *DataSource) GetWeaponData(id int32) (*model.WeaponData, error) {
 
 func (d *DataSource) parseWeapon(id int32) (*model.WeaponData, error) {
 	var err error
-	_, ok := d.weaponExcel[id]
+	data, ok := d.weaponExcel[id]
 	if !ok {
 		return nil, fmt.Errorf("weapon with id %v not found", id)
 	}
 	w := &model.WeaponData{
-		Id:        id,
-		BaseStats: &model.WeaponStatsData{},
+		Id:              id,
+		BaseStats:       &model.WeaponStatsData{},
+		NameTextHashMap: data.NameTextMapHash,
 	}
 	err = d.parseRarity(w, err)
 	err = d.parseWeaponClass(w, err)

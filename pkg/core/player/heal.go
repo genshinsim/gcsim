@@ -94,7 +94,8 @@ type DrainInfo struct {
 	External   bool
 }
 
-func (h *Handler) Drain(di DrainInfo) {
+func (h *Handler) Drain(di DrainInfo) float64 {
+	h.Events.Emit(event.OnPlayerPreHPDrain, &di)
 	c := h.chars[di.ActorIndex]
 
 	prevHPRatio := c.CurrentHPRatio()
@@ -109,4 +110,5 @@ func (h *Handler) Drain(di DrainInfo) {
 		Write("current_hp", c.CurrentHP()).
 		Write("max_hp", c.MaxHP())
 	h.Events.Emit(event.OnPlayerHPDrain, di)
+	return di.Amount
 }

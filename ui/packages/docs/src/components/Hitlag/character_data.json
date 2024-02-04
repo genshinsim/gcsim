@@ -470,6 +470,47 @@
       }
     ]
   },
+  "chevreuse": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3-2",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.1,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ]
+  },
   "chongyun": {
     "normal": [
       {
@@ -1025,14 +1066,14 @@
       },
       {
         "ability": "E-Lv.0",
-        "hitHaltTime": 0.10,
+        "hitHaltTime": 0.1,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": false
       },
       {
         "ability": "E-Lv.1/2/3-Cryo",
-        "hitHaltTime": 0.10,
+        "hitHaltTime": 0.1,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": false
@@ -3029,6 +3070,86 @@
         "hitHaltTime": 0.1,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
+  "wriothesley": {
+    "normal": [
+      {
+        "ability": "E-N1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N3",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N4-1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N4-2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N5",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "CA-Gracious-Rebuke",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.03,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Surging-Blade",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "cons": [
+      {
+        "ability": "C6",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.03,
+        "canBeDefenseHalt": false,
         "deployable": false
       }
     ]

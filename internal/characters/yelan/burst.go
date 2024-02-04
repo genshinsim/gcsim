@@ -102,6 +102,8 @@ func (c *char) summonExquisiteThrow() {
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
 		ai.Abil = "Yelan C2 Proc"
+		ai.ICDTag = attacks.ICDTagNone
+		ai.ICDGroup = attacks.ICDGroupDefault
 		ai.FlatDmg = 14.0 / 100 * c.MaxHP()
 		c.c2icd = c.Core.F + 1.8*60
 		//TODO: frames timing on this?

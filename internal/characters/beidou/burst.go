@@ -75,8 +75,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// create a shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: c.Index,
+			Target:     -1,
 			Src:        c.Core.F,
-			ShieldType: shield.BeidouThunderShield,
+			ShieldType: shield.BeidouC1,
 			Name:       "Beidou C1",
 			HP:         .16 * c.MaxHP(),
 			Ele:        attributes.Electro,

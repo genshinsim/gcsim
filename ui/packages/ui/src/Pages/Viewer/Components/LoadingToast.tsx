@@ -9,6 +9,7 @@ import {
 import classNames from "classnames";
 import { MutableRefObject, RefObject, useEffect, useRef } from "react";
 import { ResultSource } from "..";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   running: boolean;
@@ -21,6 +22,7 @@ type Props = {
 
 // TODO: Add translations + number format
 export default ({ running, src, error, current, total, cancel }: Props) => {
+  const { t } = useTranslation();
   const loadingToast = useRef<Toaster>(null);
   const key = useRef<string | undefined>(undefined);
 
@@ -33,7 +35,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
     if (current == undefined || total == undefined) {
       key.current = loadingToast.current?.show(
         {
-          message: "Loading...",
+          message: t<string>("sim.loading"),
           icon: "refresh",
           intent: Intent.PRIMARY,
           isCloseButtonShown: false,
@@ -47,7 +49,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
     if (current >= total && src == ResultSource.Loaded) {
       key.current = loadingToast.current?.show(
         {
-          message: "Loaded " + current + " iterations!",
+          message: t<string>("sim.loaded", { i: current }),
           icon: "tick",
           intent: Intent.SUCCESS,
           isCloseButtonShown: true,
@@ -102,11 +104,12 @@ const ProgressToast = ({
       toastKey: MutableRefObject<string | undefined>;
       loadingToast: RefObject<Toaster>;
     }) => {
+  const { t } = useTranslation();
   const val = current / total;
   return (
     <div className="flex flex-row items-center justify-between gap-2">
       <div className="min-w-fit">
-        Running ({current}/{total})
+        {t<string>("sim.running")} ({current}/{total})
       </div>
       <ProgressBar
         className={classNames("basis-1/2 flex-auto sm:min-w-", {
@@ -115,7 +118,7 @@ const ProgressToast = ({
         intent={val < 1 ? Intent.PRIMARY : Intent.SUCCESS}
         value={val}
       />
-      {action(val, toastKey, loadingToast, cancel)}
+      {action(val, toastKey, loadingToast, cancel, t<string>("db.cancel"))}
     </div>
   );
 };
@@ -124,7 +127,8 @@ function action(
   val: number,
   key: MutableRefObject<string | undefined>,
   loadingToast: RefObject<Toaster>,
-  cancel: () => void
+  cancel: () => void,
+  cancelText: string
 ) {
   if (val >= 1) {
     return null;
@@ -132,7 +136,7 @@ function action(
   return (
     <Button
       className="!min-w-fit"
-      text="Cancel"
+      text={cancelText}
       intent={Intent.DANGER}
       onClick={() => {
         cancel();

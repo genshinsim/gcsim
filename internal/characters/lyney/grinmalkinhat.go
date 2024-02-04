@@ -89,6 +89,7 @@ func (g *GrinMalkinHat) skillPyrotechnic(reason string) func() {
 func (g *GrinMalkinHat) skillExplode() {
 	g.pyrotechnicAI.ICDTag = attacks.ICDTagLyneyEndBoomEnhanced
 	g.pyrotechnicAI.StrikeType = attacks.StrikeTypeBlunt
+	g.pyrotechnicAI.PoiseDMG = 90
 
 	// needed for amos and slingshot to work correctly
 	g.pyrotechnicSnapshot.SourceFrame = g.Core.F

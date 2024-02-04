@@ -34,7 +34,7 @@ export function runSim(pool: Executor, cfg: string): AppThunk {
     );
 
     pool.run(cfg, updateResult).catch((err) => {
-      dispatch(viewerActions.setError({ error: err }));
+      dispatch(viewerActions.setError({ recoveryConfig: cfg, error: err }));
     });
   };
 }
@@ -57,6 +57,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
       userActions.setUserSettings({
         showTips: !settings.showTips,
         showBuilder: settings.showBuilder,
+        showNameSearch: settings.showNameSearch,
       })
     );
   };
@@ -71,6 +72,17 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
       userActions.setUserSettings({
         showTips: settings.showTips,
         showBuilder: !settings.showBuilder,
+        showNameSearch: settings.showNameSearch,
+      })
+    );
+  };
+
+  const toggleNameSearch = () => {
+    dispatch(
+      userActions.setUserSettings({
+        showTips: settings.showTips,
+        showBuilder: settings.showBuilder,
+        showNameSearch: !settings.showNameSearch,
       })
     );
   };
@@ -79,24 +91,29 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
     <Menu>
       <MenuItem
         icon="help"
-        text={settings.showTips ? "Hide Tooltips" : "Show Tooltips"}
+        text={settings.showTips ? t<string>("simple.tools_hide_tooltips") : t<string>("simple.tools_show_tooltips")}
         onClick={toggleTips}
       />
       <MenuItem
         icon="people"
-        text={settings.showBuilder ? "Hide Builder" : "Show Builder"}
+        text={settings.showBuilder ? t<string>("simple.tools_hide_builder") : t<string>("simple.tools_show_builder")}
         onClick={toggleBuilder}
+      />
+      <MenuItem
+        icon="search"
+        text={settings.showNameSearch ? t<string>("simple.tools_hide_name_search") : t<string>("simple.tools_show_name_search")}
+        onClick={toggleNameSearch}
       />
       <MenuDivider />
       <MenuItem
-          text="Sample Upload"
+          text={t<string>("simple.tools_sample_upload")}
           icon="helper-management"
           onClick={() => history.push("/sample/upload")}/>
-      <MenuItem icon="cut" text="Substat Snippets" disabled />
+      <MenuItem icon="cut" text={t<string>("simple.tools_substat_snippets")} disabled />
       <MenuDivider />
 
-      <MenuItem text="Import from GO" icon="import" onClick={() => setOpenGOODImport(true)} />
-      <MenuItem text="Import from Enka" icon="import" onClick={() => setOpenImportFromEnka(true)} />
+      <MenuItem text={t<string>("simple.tools_import", { src: "GO" })} icon="import" onClick={() => setOpenGOODImport(true)} />
+      <MenuItem text={t<string>("simple.tools_import", { src: "Enka" })} icon="import" onClick={() => setOpenImportFromEnka(true)} />
     </Menu>
   );
 
@@ -111,7 +128,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
             placement="top"
             className="basis-full md:basis-1/2"
             popoverClassName={Classes.POPOVER_DISMISS}>
-          <Button icon="wrench" fill text="Tools" />
+          <Button icon="wrench" fill text={t<string>("simple.tools")} />
         </Popover2>
         <Button
             icon="play"

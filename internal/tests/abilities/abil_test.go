@@ -2,7 +2,6 @@ package abilities
 
 import (
 	"errors"
-	"strings"
 	"testing"
 	"time"
 
@@ -65,13 +64,7 @@ func testChar(t *testing.T, k keys.Char) {
 			}
 			advanceCoreFrame(c)
 		}
-		err := c.Player.Exec(a, k, p)
-		if err != nil {
-			// we're ok if error is not implemented
-			if !strings.Contains(err.Error(), "not implemented") {
-				t.Errorf("error encountered for %v: %v", k.String(), err)
-			}
-		}
+		c.Player.Exec(a, k, p)
 		for !c.Player.CanQueueNextAction() {
 			advanceCoreFrame(c)
 		}

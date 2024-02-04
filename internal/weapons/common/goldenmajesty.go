@@ -9,18 +9,24 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type GoldenMajesty struct {
 	Index int
+	data  *model.WeaponData
 }
 
-func (b *GoldenMajesty) SetIndex(idx int) { b.Index = idx }
-func (b *GoldenMajesty) Init() error      { return nil }
+func (g *GoldenMajesty) SetIndex(idx int)        { g.Index = idx }
+func (g *GoldenMajesty) Init() error             { return nil }
+func (g *GoldenMajesty) Data() *model.WeaponData { return g.data }
 
-func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &GoldenMajesty{}
+func NewGoldenMajesty(data *model.WeaponData) *GoldenMajesty {
+	return &GoldenMajesty{data: data}
+}
+
+func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	r := p.Refine
 
 	const buffKey = "golden-majesty"
@@ -62,7 +68,7 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p info.WeaponPr
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				m[attributes.ATKP] = atkbuff * float64(stacks)
-				if char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded() {
+				if c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
 					m[attributes.ATKP] *= 2
 				}
 				return m, true
@@ -71,5 +77,5 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p info.WeaponPr
 		return false
 	}, key)
 
-	return w, nil
+	return g, nil
 }

@@ -7,6 +7,7 @@
 package player
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -44,6 +45,9 @@ type Handler struct {
 	Stam            float64
 	LastStamUse     int
 	stamPercentMods []stamPercentMod
+
+	// airborne source
+	airborne AirborneSource
 
 	// swap
 	SwapCD int
@@ -293,3 +297,31 @@ func (h *Handler) Tick() {
 		c.Tick()
 	}
 }
+
+type AirborneSource int
+
+const (
+	Grounded AirborneSource = iota
+	AirborneXiao
+	AirborneVenti
+	AirborneKazuha
+	AirborneXianyun
+	TerminateAirborne
+)
+
+func (h *Handler) SetAirborne(src AirborneSource) error {
+	if src < Grounded || src >= TerminateAirborne {
+		// do nothing
+		return fmt.Errorf("invalid airborne source: %v", src)
+	}
+	h.airborne = src
+	return nil
+}
+
+func (h *Handler) Airborne() AirborneSource {
+	return h.airborne
+}
+
+const (
+	XianyunAirborneBuff = "xianyun-airborne-buff"
+)

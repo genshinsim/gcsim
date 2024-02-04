@@ -47,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		Base:         modifier.NewBase("beacon-of-the-reed-sea-hp", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
-			if c.Player.Shields.PlayerIsShielded() {
+			if c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
 				return nil, false
 			}
 			return mHP, true

@@ -4,24 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sort"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/data/dm"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/multierr"
 )
 
-/**
-
-Avatar data is found in AvatarExcelConfigData.json
-
-
-
-**/
-
 type DataSource struct {
 	avatarExcel map[int32]dm.AvatarExcel
 	skillDepot  map[int32]dm.AvatarSkillDepot
 	skillExcel  map[int32]dm.AvatarSkillExcel
+	proudSkill  map[int32][]dm.ProudSkillExcel
 	fetterInfo  map[int32]dm.AvatarFetterInfo
 	promoteData map[int32][]dm.AvatarPromote
 }
@@ -49,6 +43,10 @@ func NewDataSource(root string) (*DataSource, error) {
 	if err != nil {
 		return nil, err
 	}
+	a.proudSkill, err = loadProudSkillExcelData(root + "/" + ProudSkillExcelConfigData)
+	if err != nil {
+		return nil, err
+	}
 
 	return a, nil
 }
@@ -59,13 +57,14 @@ func (a *DataSource) GetAvatarData(id, sub int32) (*model.AvatarData, error) {
 
 func (a *DataSource) parseChar(id, sub int32) (*model.AvatarData, error) {
 	var err error
-	_, ok := a.avatarExcel[id]
+	data, ok := a.avatarExcel[id]
 	if !ok {
 		return nil, fmt.Errorf("char with id %v not found", id)
 	}
 	c := &model.AvatarData{
-		SkillDetails: &model.AvatarSkillsData{},
-		Stats:        &model.AvatarStatsData{},
+		SkillDetails:    &model.AvatarSkillsData{},
+		Stats:           &model.AvatarStatsData{},
+		NameTextHashMap: data.NameTextMapHash,
 	}
 	c.Id = id
 	c.SubId = sub
@@ -181,7 +180,78 @@ func (a *DataSource) parseSkillIDs(c *model.AvatarData, err error) error {
 	c.SkillDetails.BurstEnergyCost = se.CostElemVal
 	c.SkillDetails.Attack = sd.Skills[0]
 	c.SkillDetails.Skill = sd.Skills[1]
+
+	c.SkillDetails.AttackScaling, err = a.parseSkillScaling(c.SkillDetails.Attack, err)
+	c.SkillDetails.SkillScaling, err = a.parseSkillScaling(c.SkillDetails.Skill, err)
+	c.SkillDetails.BurstScaling, err = a.parseSkillScaling(c.SkillDetails.Burst, err)
+
 	return err
+}
+
+func (a *DataSource) parseSkillScaling(skillDepotID int32, err error) ([]*model.AvatarSkillExcelIndexData, error) {
+	// steps:
+	// skillDepotId -> skillExcel -> proudGroupID
+	se, ok := a.skillExcel[skillDepotID]
+	if !ok {
+		return nil, multierr.Append(err, fmt.Errorf("skill depot id %v not found in skill excel data", skillDepotID))
+	}
+	pgs, ok := a.proudSkill[se.ProudSkillGroupID]
+	if !ok {
+		return nil, multierr.Append(err, fmt.Errorf("proud group  id %v not found in proud group excel data", se.ProudSkillGroupID))
+	}
+	// this is a sanity check to make sure the result is sized to the max of paramlist
+	// realistically we expect paramlist to be all the same size..
+	max := 0
+	for _, v := range pgs {
+		if len(v.ParamList) > max {
+			max = len(v.ParamList)
+		}
+	}
+	// make one AvatarSkillExcelData per entry in paramlist
+	res := make([]*model.AvatarSkillExcelIndexData, max)
+	for i := range res {
+		res[i] = &model.AvatarSkillExcelIndexData{
+			Index: int32(i),
+		}
+	}
+	// ranging through pgs ranges through the levels
+	for _, v := range pgs {
+		for i, p := range v.ParamList {
+			res[i].LevelData = append(res[i].LevelData, &model.AvatarSkillExcelLevelData{
+				Level: v.Level,
+				Value: p,
+			})
+		}
+	}
+
+	// purge and scaling data that is all 0s
+	n := 0
+	for _, v := range res {
+		allNil := true
+
+		for _, ld := range v.LevelData {
+			if ld.Value != 0 {
+				allNil = false
+				break
+			}
+		}
+
+		if !allNil {
+			res[n] = v
+			n++
+		}
+	}
+	res = res[:n]
+
+	// sort by lvl
+	for idx := range res {
+		// could prob be in the same loop as above
+		sort.Slice(res[idx].LevelData, func(i, j int) bool {
+			return res[idx].LevelData[i].Level < res[idx].LevelData[j].Level
+		})
+	}
+
+	return res, err
 }
 
 func (a *DataSource) parseElement(c *model.AvatarData, err error) error {
@@ -251,8 +321,12 @@ func (a *DataSource) parsePromoData(c *model.AvatarData, err error) error {
 			MaxLevel: v.UnlockMaxLevel,
 		}
 		for j, x := range v.AddProps {
+			s, ok := model.StatType_value[x.PropType]
+			if !ok {
+				multierr.Append(err, fmt.Errorf("promote data idx %v, add prop idx %v has unrecognized stat type", i, j))
+			}
 			p := &model.PromotionAddProp{
-				PropType: model.StatType(model.StatType_value[x.PropType]),
+				PropType: model.StatType(s),
 				Value:    x.Value,
 			}
 			if p.PropType == model.StatType_INVALID_STAT_TYPE {

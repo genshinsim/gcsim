@@ -11,19 +11,25 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Wavebreaker struct {
 	Index int
+	data  *model.WeaponData
 }
 
-func (b *Wavebreaker) SetIndex(idx int) { b.Index = idx }
-func (b *Wavebreaker) Init() error      { return nil }
+func (w *Wavebreaker) SetIndex(idx int)        { w.Index = idx }
+func (w *Wavebreaker) Init() error             { return nil }
+func (w *Wavebreaker) Data() *model.WeaponData { return w.data }
 
-func NewWavebreaker(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+func NewWavebreaker(data *model.WeaponData) *Wavebreaker {
+	return &Wavebreaker{data: data}
+}
+
+func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	r := p.Refine
-	b := &Wavebreaker{}
 
 	per := 0.09 + 0.03*float64(r)
 	max := 0.3 + 0.1*float64(r)
@@ -60,5 +66,5 @@ func NewWavebreaker(c *core.Core, char *character.CharWrapper, p info.WeaponProf
 		return true
 	}, fmt.Sprintf("wavebreaker-%v", char.Base.Key.String()))
 
-	return b, nil
+	return w, nil
 }

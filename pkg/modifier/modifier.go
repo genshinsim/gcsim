@@ -35,11 +35,13 @@ func (t *Base) Extend(key string, logger glog.Logger, index, amt int) {
 		t.extension = 0
 	}
 	t.event.SetEnded(t.Expiry())
-	logger.NewEvent("mod extended", glog.LogStatusEvent, -1).
+	logger.NewEvent("mod extended", glog.LogStatusEvent, index).
 		Write("key", key).
 		Write("amt", amt).
-		Write("expiry", t.Expiry())
+		Write("expiry", t.Expiry()).
+		Write("ext", t.extension)
 }
+
 func (t *Base) SetExpiry(f int) {
 	if t.Dur == -1 {
 		t.ModExpiry = -1

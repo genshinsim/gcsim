@@ -18,11 +18,11 @@ type LeaLotus struct {
 	*gadget.Gadget
 	*reactable.Reactable
 	burstAtk     *combat.AttackEvent
-	char         *char
+	char         *Traveler
 	hitboxRadius float64
 }
 
-func (c *char) newLeaLotusLamp() *LeaLotus {
+func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	player := c.Core.Combat.Player()
 	c.burstPos = geometry.CalcOffsetPoint(
@@ -87,6 +87,7 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 
 	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", atk.Info.Abil), glog.LogCharacterEvent, s.char.Index)
 
+	s.PoiseDMGCheck(atk)
 	s.ShatterCheck(atk)
 
 	if atk.Info.Durability > 0 {

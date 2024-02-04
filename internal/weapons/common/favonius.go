@@ -10,18 +10,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Favonius struct {
 	Index int
+	data  *model.WeaponData
 }
 
-func (b *Favonius) SetIndex(idx int) { b.Index = idx }
-func (b *Favonius) Init() error      { return nil }
+func (b *Favonius) SetIndex(idx int)        { b.Index = idx }
+func (b *Favonius) Init() error             { return nil }
+func (b *Favonius) Data() *model.WeaponData { return b.data }
 
-func NewFavonius(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	b := &Favonius{}
+func NewFavonius(data *model.WeaponData) *Favonius {
+	return &Favonius{data: data}
+}
 
+func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	const icdKey = "favonius-cd"
 
 	prob := 0.50 + float64(p.Refine)*0.1

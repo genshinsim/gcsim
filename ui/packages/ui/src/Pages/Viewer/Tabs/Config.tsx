@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import Editor from "react-simple-code-editor";
 import { Button, Callout, Intent, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
 import { SimResults } from '@gcsim/types';
@@ -13,6 +13,7 @@ import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-gcsim";
 import "prismjs/themes/prism-tomorrow.css";
 import { useHistory } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 type UseConfigData = {
   cfg?: string;
@@ -31,6 +32,7 @@ type ConfigProps = {
 };
 
 const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -45,7 +47,7 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
           <ExecutorSettingsButton />
           <Button
               icon="refresh"
-              text="Rerun"
+              text={t<string>("viewer.rerun")}
               intent={Intent.SUCCESS}
               disabled={config.error !== "" || (!config.validated && config.modified)}
               loading={!config.isReady || running}
@@ -86,12 +88,13 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
 };
 
 const Error = ({ error, cfg }: { error: string, cfg: string}) => {
+  const { t } = useTranslation();
   if (error === "" || cfg === "") {
     return null;
   }
   return (
     <div className="px-6 pt-4">
-      <Callout intent={Intent.DANGER} title="Error: Config Invalid">
+      <Callout intent={Intent.DANGER} title={t<string>("viewer.error_encountered") + + t<string>("viewer.config_invalid")}>
         <pre className="whitespace-pre-wrap pl-5">{error}</pre>
       </Callout>
     </div>
