@@ -792,6 +792,11 @@
     },
     {
       "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default), 2/3/4 for Fully-Charged Aimed Shot (1/2/3 Kindling Arrow)."
+    },
+    {
+      "ability": "aim",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
     },
@@ -799,11 +804,6 @@
       "ability": "aim",
       "param": "weakspot",
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
-    },
-    {
-      "ability": "aim",
-      "param": "kindling",
-      "desc": "Number of Kindling Arrow hits, Default 0, minimum 0, maximum 3."
     },
     {
       "ability": "aim",

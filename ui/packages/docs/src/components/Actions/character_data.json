@@ -2693,7 +2693,7 @@
     },
     {
       "ability": "aim",
-      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+      "legal": true
     },
     {
       "ability": "skill",
