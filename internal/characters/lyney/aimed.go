@@ -1,6 +1,8 @@
 package lyney
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -12,12 +14,12 @@ import (
 )
 
 var (
-	aimedFrames     []int
+	aimedFrames     [][]int
+	aimedHitmarks   = []int{15, 72}
 	aimedPropFrames []int
 )
 
 const (
-	aimedRelease     = 72
 	aimedPropRelease = 103
 
 	skillAlignedICDKey = "lyney-aligned-icd"
@@ -32,24 +34,37 @@ const (
 )
 
 func init() {
-	aimedFrames = frames.InitAbilSlice(80)
-	aimedFrames[action.ActionDash] = aimedRelease
-	aimedFrames[action.ActionJump] = aimedRelease
+	aimedFrames = make([][]int, 2)
 
+	// Aimed Shot
+	aimedFrames[0] = frames.InitAbilSlice(23)
+	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
+	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
+
+	// Fully-Charged Aimed Shot
+	aimedFrames[1] = frames.InitAbilSlice(80)
+	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
+	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
+
+	// Fully-Charged Aimed Shot (Prop Arrow)
 	aimedPropFrames = frames.InitAbilSlice(111)
 	aimedPropFrames[action.ActionDash] = aimedPropRelease
 	aimedPropFrames[action.ActionJump] = aimedPropRelease
 }
 
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
-	level, ok := p["level"]
+	hold, ok := p["hold"]
 	if !ok {
-		level = 1
+		hold = attacks.AimParamLv2
 	}
-	if level == 1 {
+	switch hold {
+	case attacks.AimParamPhys:
+	case attacks.AimParamLv1:
+	case attacks.AimParamLv2:
 		return c.PropAimed(p)
+	default:
+		return action.Info{}, fmt.Errorf("invalid hold param supplied, got %v", hold)
 	}
-
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -58,7 +73,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
-		Abil:                 "Aim (Charged)",
+		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
 		ICDGroup:             attacks.ICDGroupDefault,
@@ -72,7 +87,11 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-
+	if hold < attacks.AimParamLv1 {
+		ai.Abil = "Aimed Shot"
+		ai.Element = attributes.Physical
+		ai.Mult = aim[c.TalentLvlAttack()]
+	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHit(
@@ -82,15 +101,15 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 			0.1,
 			1,
 		),
-		aimedRelease,
-		aimedRelease+travel,
+		aimedHitmarks[hold],
+		aimedHitmarks[hold]+travel,
 		c.makeC4CB(),
 	)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(aimedFrames),
-		AnimationLength: aimedFrames[action.InvalidAction],
-		CanQueueAfter:   aimedRelease,
+		Frames:          frames.NewAbilFunc(aimedFrames[hold]),
+		AnimationLength: aimedFrames[hold][action.InvalidAction],
+		CanQueueAfter:   aimedHitmarks[hold],
 		State:           action.AimState,
 	}, nil
 }
@@ -108,7 +127,7 @@ func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 
 	propAI := combat.AttackInfo{
 		ActorIndex:           c.Index,
-		Abil:                 "Prop Arrow",
+		Abil:                 "Fully-Charged Aimed Shot (Prop Arrow)",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
 		ICDGroup:             attacks.ICDGroupDefault,

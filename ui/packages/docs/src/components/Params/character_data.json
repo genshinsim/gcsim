@@ -473,8 +473,8 @@
     },
     {
       "ability": "aim",
-      "param": "level",
-      "desc": "0 for Charge Level 1, 1 for Charge Level 2 (default)."
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot, 2 for Prop Arrow (default)."
     },
     {
       "ability": "aim",
