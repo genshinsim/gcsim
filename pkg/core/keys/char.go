@@ -98,6 +98,7 @@ const (
 	Venti
 	Xiangling
 	Xiao
+	Xianyun
 	Xingqiu
 	Xinyan
 	Yanfei
@@ -197,6 +198,7 @@ var charNames = []string{
 	"venti",
 	"xiangling",
 	"xiao",
+	"xianyun",
 	"xingqiu",
 	"xinyan",
 	"yanfei",
