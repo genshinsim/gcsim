@@ -26,7 +26,6 @@ func init() {
 	leapFrames[action.ActionDash] = 43
 	leapFrames[action.ActionJump] = 50
 	leapFrames[action.ActionSwap] = 50
-
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
@@ -65,7 +64,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		c.particleCB,
 		c.a1(),
 	)
-	//reset window after leap
+	// reset window after leap
 	c.DeleteStatus(eWindowKey)
 	return act, nil
 }

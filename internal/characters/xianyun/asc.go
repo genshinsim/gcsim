@@ -48,7 +48,6 @@ func (c *char) a1() combat.AttackCBFunc {
 					},
 				})
 			}
-
 		}
 		addStackMod(boost, 20)
 		boost = (boost + 1) % 4
@@ -92,7 +91,7 @@ func (c *char) a4() {
 			stats, _ := c.Stats()
 			amt := a4ScalingATKp * ((c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK])
 
-			//A4 cap
+			// A4 cap
 			if c.Base.Cons < 2 && amt >= 8500 {
 				amt = 8500
 			} else if amt >= 13500 {

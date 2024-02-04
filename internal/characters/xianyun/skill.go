@@ -23,7 +23,6 @@ const (
 )
 
 func init() {
-
 	skillLeapFrames = make([][]int, 3)
 	// skill -> x (can only use skill, plunge or wait(?))
 	skillLeapFrames[0] = frames.InitAbilSlice(41)
@@ -38,7 +37,6 @@ func init() {
 	// skill (recast) -> x (can only use skill, plunge or wait(?))
 	skillLeapFrames[2] = frames.InitAbilSlice(30)
 	skillLeapFrames[2][action.ActionHighPlunge] = 42
-
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -66,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		})
 	}
 	if c.eCounter == 0 {
-		//Adeptal Aspect Trail DMG
+		// Adeptal Aspect Trail DMG
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Adeptal Aspect Trail",

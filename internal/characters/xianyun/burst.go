@@ -44,7 +44,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 7}, 4)
 	c.Core.QueueAttack(ai, burstArea, burstHitmark, burstHitmark)
 
-	//init heal
+	// init heal
 	stats, _ := c.Stats()
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
