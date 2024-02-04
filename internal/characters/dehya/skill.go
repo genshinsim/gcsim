@@ -30,22 +30,24 @@ const (
 	skillSelfDoTInterval   = 1 * 60
 	skillICDKey            = "dehya-skill-icd"
 	dehyaFieldKey          = "dehya-field-status"
+	dehyaFieldDuration     = 12 * 60
 	sanctumPickupExtension = 24 // On recast from Burst/Skill-2 the field duration is extended by 0.4s
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(25) // E -> Swap/Dash/Walk
-	skillFrames[action.ActionAttack] = 39  // E -> N1
-	skillFrames[action.ActionSkill] = 30   // E -> E
-	skillFrames[action.ActionJump] = 28    // E -> J
-	skillFrames[action.ActionBurst] = 29   // E -> Q
+	skillFrames = frames.InitAbilSlice(39) // E -> N1
+	skillFrames[action.ActionSkill] = 30
+	skillFrames[action.ActionBurst] = 29
+	skillFrames[action.ActionDash] = 26
+	skillFrames[action.ActionJump] = 28
+	skillFrames[action.ActionSwap] = 25
 
-	skillRecastFrames = frames.InitAbilSlice(44) // E -> Swap/Walk
-	skillRecastFrames[action.ActionAttack] = 74  // E -> N1
-	skillRecastFrames[action.ActionSkill] = 45   // E -> E
-	skillRecastFrames[action.ActionDash] = 45    // E -> D
-	skillRecastFrames[action.ActionJump] = 50    // E -> J
-	skillRecastFrames[action.ActionBurst] = 45   // E -> Q
+	skillRecastFrames = frames.InitAbilSlice(74) // E -> N1
+	skillRecastFrames[action.ActionSkill] = 45
+	skillRecastFrames[action.ActionBurst] = 45
+	skillRecastFrames[action.ActionDash] = 45
+	skillRecastFrames[action.ActionJump] = 49
+	skillRecastFrames[action.ActionSwap] = 44
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -53,10 +55,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if burstAction != nil {
 		return *burstAction, nil
 	}
+	needPickup := false
 	if c.StatusIsActive(dehyaFieldKey) {
-		// If recast has been used, sanctum needs to be placed anew
+		// If recast has been used, sanctum needs to picked up right before placing again
 		if c.hasRecastSkill {
-			c.pickUpField()
+			needPickup = true
 		} else {
 			c.hasRecastSkill = true
 			return c.skillRecast()
@@ -65,45 +68,44 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.hasRecastSkill = false
 	c.hasC2DamageBuff = false
-	// Initial cast duration is always 12s
-	dur := 720
 
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Molten Inferno",
-		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt,
-		PoiseDMG:           50,
-		Element:            attributes.Pyro,
-		Durability:         25,
-		Mult:               skill[c.TalentLvlSkill()],
-		FlatDmg:            c.c1FlatDmgRatioE * c.MaxHP(),
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: false,
+		ActorIndex: c.Index,
+		Abil:       "Molten Inferno",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   50,
+		Element:    attributes.Pyro,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
+		FlatDmg:    c.c1FlatDmgRatioE * c.MaxHP(),
 	}
 	// TODO: damage frame
 	c.skillSnapshot = c.Snapshot(&ai)
 
+	// do initial attack
 	player := c.Core.Combat.Player()
-	// assuming tap e for hitbox offset
 	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.8}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
-
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
-	c.Core.Tasks.Add(func() { // place field
-		c.addField(dur)
+	// handle field
+	c.AddStatus(skillICDKey, skillHitmark+1, false) // add skill icd so field cannot proc from initial attack
+	c.Core.Tasks.Add(func() {
+		if needPickup {
+			c.pickUpField()
+		}
+		c.addField(dehyaFieldDuration)
 	}, skillHitmark+1)
 
-	c.AddStatus(skillICDKey, skillHitmark+1, false)
 	c.SetCDWithDelay(action.ActionSkill, 20*60, 18)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}, nil
 }
@@ -128,7 +130,7 @@ func (c *char) skillDmgHook() {
 		}
 
 		// this ICD is most likely tied to the construct, so it's not hitlag extendable
-		c.AddStatus(skillICDKey, 150, false) // proc every 2.5s
+		c.AddStatus(skillICDKey, 2.5*60, false)
 
 		c.Core.QueueAttackWithSnap(
 			c.skillAttackInfo,
@@ -137,11 +139,9 @@ func (c *char) skillDmgHook() {
 			2,
 		)
 
-		// Set buff flag to false with 2f delay to line up with activation delay
+		// set buff flag to false with 3f delay to happen right after the DoT hits
 		if c.hasC2DamageBuff {
-			c.Core.Tasks.Add(func() {
-				c.hasC2DamageBuff = false
-			}, 2)
+			c.Core.Tasks.Add(func() { c.hasC2DamageBuff = false }, 3)
 		}
 
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
@@ -152,20 +152,19 @@ func (c *char) skillDmgHook() {
 
 func (c *char) skillRecast() (action.Info, error) {
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Ranging Flame",
-		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt,
-		PoiseDMG:           50,
-		Element:            attributes.Pyro,
-		Durability:         25,
-		Mult:               skillReposition[c.TalentLvlSkill()],
-		FlatDmg:            c.c1FlatDmgRatioE * c.MaxHP(),
-		HitlagHaltFrames:   0.02 * 60,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: false,
+		ActorIndex:       c.Index,
+		Abil:             "Ranging Flame",
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeBlunt,
+		PoiseDMG:         50,
+		Element:          attributes.Pyro,
+		Durability:       25,
+		Mult:             skillReposition[c.TalentLvlSkill()],
+		FlatDmg:          c.c1FlatDmgRatioE * c.MaxHP(),
+		HitlagHaltFrames: 0.02 * 60,
+		HitlagFactor:     0.01,
 	}
 
 	// pick up field at start
@@ -193,7 +192,7 @@ func (c *char) skillRecast() (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
 		AnimationLength: skillRecastFrames[action.InvalidAction],
-		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillRecastFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
@@ -212,21 +211,6 @@ func (c *char) pickUpField() {
 }
 
 func (c *char) addField(dur int) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               skillDoTAbil,
-		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             attacks.ICDTagElementalArt,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeDefault,
-		Element:            attributes.Pyro,
-		Durability:         25,
-		Mult:               skillDotAtk[c.TalentLvlSkill()],
-		FlatDmg:            (c.c1FlatDmgRatioE + skillDotHP[c.TalentLvlSkill()]) * c.MaxHP(),
-		HitlagHaltFrames:   0.02 * 60,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: false,
-	}
 	// places field
 	c.AddStatus(dehyaFieldKey, dur, false)
 	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
@@ -235,7 +219,21 @@ func (c *char) addField(dur int) {
 		Write("DoT tick CD", c.StatusDuration(skillICDKey))
 
 	// snapshot for ticks
-	c.skillAttackInfo = ai
+	c.skillAttackInfo = combat.AttackInfo{
+		ActorIndex:       c.Index,
+		Abil:             skillDoTAbil,
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Element:          attributes.Pyro,
+		Durability:       25,
+		Mult:             skillDotAtk[c.TalentLvlSkill()],
+		FlatDmg:          (c.c1FlatDmgRatioE + skillDotHP[c.TalentLvlSkill()]) * c.MaxHP(),
+		HitlagHaltFrames: 0.02 * 60,
+		HitlagFactor:     0.01,
+		IsDeployable:     true,
+	}
 	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
 }
 
