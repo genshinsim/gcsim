@@ -147,6 +147,11 @@
     },
     {
       "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default)."
+    },
+    {
+      "ability": "aim",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
     },
