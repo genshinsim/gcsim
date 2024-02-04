@@ -78,11 +78,8 @@ func (c *char) a4() {
 			return false
 		}
 
-		var a4ScalingATKp float64 = 170 / 100
+		var a4ScalingATKp float64 = c.a4Ratio
 
-		if c.Base.Cons >= 2 {
-			a4ScalingATKp = 340 / 100
-		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagPlunge:
 		default:
@@ -99,11 +96,7 @@ func (c *char) a4() {
 			amt := a4ScalingATKp * ((c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK])
 
 			// A4 cap
-			if c.Base.Cons < 2 && amt >= 8500 {
-				amt = 8500
-			} else if amt >= 13500 {
-				amt = 13500
-			}
+			amt = min(c.a4Max, amt)
 
 			c.Tags[starwickerKey]--
 
