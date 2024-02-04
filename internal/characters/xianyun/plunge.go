@@ -1,7 +1,6 @@
 package xianyun
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -9,15 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var leapFrames []int
-var plungeHoldFrames []int
-
-// a1 is 1 frame before this
-const plungePressHitmark = 36
-const plungeHoldHitmark = 41
+var plungeHitmarks = []int{20, 30, 40}
+var plungeRadius = []float64{4, 5, 6.5}
 
 // TODO: missing plunge -> skill
 func init() {
@@ -31,19 +26,11 @@ func init() {
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	// last action must be skill (for leap)
 	if !c.StatusIsActive(skillStateKey) {
-		return action.Info{}, errors.New("xiangyun plunge used while not in cloud transmogrification state")
+		return action.Info{}, fmt.Errorf("xiangyun plunge used while not in cloud transmogrification state")
 	}
 
-	act := action.Info{
-		State: action.PlungeAttackState,
-	}
-
-	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, c.skillRadius)
-	skillHitmark := 1
-	act.Frames = frames.NewAbilFunc(leapFrames)
-	act.AnimationLength = leapFrames[action.InvalidAction]
-	act.CanQueueAfter = leapFrames[action.ActionSkill] // can only plunge after skill
-
+	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, plungeRadius[c.skillCounter-1])
+	skillHitmark := plungeHitmarks[c.skillCounter-1]
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Chasing Crane %v", c.skillCounter),
@@ -58,7 +45,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(skillArea.Shape.Pos(), nil, 8, 120),
+		skillArea,
 		skillHitmark,
 		skillHitmark,
 		c.particleCB,
@@ -69,5 +56,10 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	c.skillCounter = 0
 	c.skillSrc = -1
 
-	return act, nil
+	return action.Info{
+		Frames:          frames.NewAbilFunc(leapFrames),
+		State:           action.PlungeAttackState,
+		AnimationLength: leapFrames[action.InvalidAction],
+		CanQueueAfter:   leapFrames[action.ActionSkill],
+	}, nil
 }

@@ -17,8 +17,6 @@ type char struct {
 	*tmpl.Character
 	skillCounter int
 	skillSrc     int
-	skillHeight  float64
-	skillRadius  float64
 	a1Count      int
 	// leapFrames  []int
 }
