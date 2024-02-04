@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillLeapFrames [][]int
@@ -18,8 +16,13 @@ const (
 	skillPressHitmark        = 1
 	skillFirstRecastHitmark  = 41
 	skillSecondRecastHitmark = 18
+	skillStateDur            = 2 * 60
+	skillStateKey            = "cloud-transmogrification"
 	leapKey                  = "xianyun-leap"
-	particleICDKey           = "xianyun-particleICD-key"
+
+	particleCount  = 5
+	particleICD    = 0.2 * 60
+	particleICDKey = "xianyun-particle-icd"
 )
 
 func init() {
@@ -41,63 +44,47 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// check if first leap
-	if !c.StatusIsActive(eWindowKey) {
-		c.eCounter = 0
+	if !c.StatusIsActive(skillStateKey) {
+		c.skillCounter = 0
+		c.SetCD(action.ActionSkill, 10*60)
 	}
 
-	if c.eCounter == 3 {
-		c.eCounter = 0
+	if c.skillCounter == 3 {
+		// Didn't plunge after the previous triple skill
+		c.skillCounter = 0
+		c.SetCD(action.ActionSkill, 10*60)
 	}
+
 	//C2: After using White Clouds at Dawn, Xianyun's ATK will be increased by 20% for 15s.
 	if c.Base.Cons >= 2 {
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.ATKP] = 0.20
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("xianyun-C2", 15*60),
-			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				if c.Core.Player.Active() == c.Index {
-					return m, true
-				}
-				return nil, false
-			},
-		})
+		c.c2buff()
 	}
-	if c.eCounter == 0 {
-		// Adeptal Aspect Trail DMG
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Adeptal Aspect Trail",
-			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Anemo,
-			Durability: 0,
-			Mult:       skillPress[c.TalentLvlSkill()],
-		}
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 0),
-			0,
-			skillPressHitmark,
-		)
+
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Adeptal Aspect Trail",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Anemo,
+		Durability: 0,
+		Mult:       skillPress[c.TalentLvlSkill()],
 	}
-	c.AddStatus(eWindowKey, 2*60, true)
-	idx := c.eCounter
-	c.eCounter++
-	switch c.eCounter {
-	case 1:
-		c.SetCD(action.ActionSkill, 12*60)
-		c.skillHeight = 3.0
-		c.skillRadius = 4.0
-	case 2:
-		c.skillHeight = 4.0
-		c.skillRadius = 5.0
-	case 3:
-		c.skillHeight = 5.0
-		c.skillRadius = 6.5
-	}
+
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1),
+		0,
+		skillPressHitmark,
+	)
+
+	c.skillSrc = c.Core.F
+	c.QueueCharTask(c.cooldownReduce(c.Core.F), skillStateDur)
+	c.AddStatus(skillStateKey, skillStateDur, true)
+
+	idx := c.skillCounter
+	c.skillCounter++
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillLeapFrames[idx]),
@@ -107,6 +94,16 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+func (c *char) cooldownReduce(src int) func() {
+	return func() {
+		if c.skillSrc != src {
+			return
+		}
+		// If Xianyun does not use Driftcloud Wave while in this state, the next CD of White Clouds at Dawn will be decreased by 3s.
+		c.ReduceActionCooldown(action.ActionSkill, 3*60)
+	}
+}
+
 func (c *char) particleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
@@ -114,8 +111,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.AddStatus(particleICDKey, particleICD, true)
 
-	count := 5.0
-	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
+	c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Anemo, c.ParticleDelay)
 }

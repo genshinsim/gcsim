@@ -7,9 +7,9 @@ element: Wind
 weapon_class: WEAPON_CATALYST
 icon_name: "UI_AvatarIcon_Xianyun"
 stats: {
-   base_hp: 991.4528198242188
-   base_atk: 27.185199737548828
-   base_def: 62.223201751708984
+   base_hp: 810.32202
+   base_atk: 26.06800
+   base_def: 44.57335
    hp_curve: GROW_CURVE_HP_S5
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
@@ -32,113 +32,113 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 850.0811157226562
+         value: 694.77783
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 53.35200119018555
+         value: 38.2185
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 23.307147979736328
+         value: 22.34932
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
       }
    }
    promo_data: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1454.086181640625
+         value: 1188.43579
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 91.26000213623047
+         value: 65.37375
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 39.867488861083984
+         value: 38.2291
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL
-         value: 0.04800000041723251
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.072
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2259.42626953125
+         value: 1846.64636
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 141.8040008544922
+         value: 101.58075
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 61.94794464111328
+         value: 59.40214
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL
-         value: 0.09600000083446503
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2863.43115234375
+         value: 2340.3042
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 179.71200561523438
+         value: 128.73599
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 78.50828552246094
+         value: 75.28192
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL
-         value: 0.09600000083446503
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3467.436279296875
+         value: 2833.96216
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 217.6199951171875
+         value: 155.89125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 95.0686264038086
+         value: 91.1617
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL
-         value: 0.14399999380111694
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.216
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 4071.441162109375
+         value: 3327.62012
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 255.5279998779297
+         value: 183.04649
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 111.62897491455078
+         value: 107.04148
       }
       add_props: {
-         prop_type: FIGHT_PROP_CRITICAL
-         value: 0.19200000166893005
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.288
       }
    }
 }

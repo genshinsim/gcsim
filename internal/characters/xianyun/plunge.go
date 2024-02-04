@@ -30,8 +30,8 @@ func init() {
 
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	// last action must be skill (for leap)
-	if c.Core.Player.LastAction.Type != action.ActionSkill {
-		return action.Info{}, errors.New("xiangyun plunge used without skill; last action before plunge must be skill")
+	if !c.StatusIsActive(skillStateKey) {
+		return action.Info{}, errors.New("xiangyun plunge used while not in cloud transmogrification state")
 	}
 
 	act := action.Info{
@@ -46,14 +46,14 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Chasing Crane %v", c.eCounter),
+		Abil:       fmt.Sprintf("Chasing Crane %v", c.skillCounter),
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
-		Mult:       leap[c.eCounter-1][c.TalentLvlSkill()],
+		Mult:       leap[c.skillCounter-1][c.TalentLvlSkill()],
 	}
 
 	c.Core.QueueAttack(
@@ -65,6 +65,9 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		c.a1(),
 	)
 	// reset window after leap
-	c.DeleteStatus(eWindowKey)
+	c.DeleteStatus(skillStateKey)
+	c.skillCounter = 0
+	c.skillSrc = -1
+
 	return act, nil
 }

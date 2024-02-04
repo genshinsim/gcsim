@@ -15,14 +15,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	eCounter    int
-	skillHeight float64
-	skillRadius float64
-	a1Count     int
+	skillCounter int
+	skillSrc     int
+	skillHeight  float64
+	skillRadius  float64
+	a1Count      int
 	// leapFrames  []int
 }
-
-const eWindowKey = "xianyun-e-window"
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
@@ -32,10 +31,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = 4
 	c.SkillCon = 5
 	c.BurstCon = 3
-
-	c.skillHeight = 0
-	c.skillRadius = 0
-	c.eCounter = 0
+	c.skillSrc = -1
 
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)
@@ -53,7 +49,7 @@ func (c *char) Init() error {
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to use next skill
-	if a == action.ActionSkill && c.StatusIsActive(eWindowKey) {
+	if a == action.ActionSkill && c.StatusIsActive(skillStateKey) {
 		return true, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
