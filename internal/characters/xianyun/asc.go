@@ -54,7 +54,6 @@ func (c *char) a1cb() combat.AttackCBFunc {
 			c.a1Buffer[idx] += 1
 			char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
 			char.QueueCharTask(func() {
-				c.a1Buffer[idx] -= 1
 				char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
 			}, a1Dur)
 		}
@@ -63,8 +62,8 @@ func (c *char) a1cb() combat.AttackCBFunc {
 
 // TODO: ?? plunge
 // a4: When the Starwicker created by Stars Gather at Dusk has Adeptal Assistance stacks,
-// nearby active characters' Plunging Attack shockwave DMG will be increased by 170% of Xianyun's ATK.
-// The maximum DMG increase that can be achieved this way is 8,500.
+// nearby active characters' Plunging Attack shockwave DMG will be increased by 200% of Xianyun's ATK.
+// The maximum DMG increase that can be achieved this way is 9000.
 // TODO: Each Plunging Attack shockwave DMG instance can only apply this increased DMG effect to a single opponent.
 // Each character can trigger this effect once every 0.4s.
 func (c *char) a4() {
