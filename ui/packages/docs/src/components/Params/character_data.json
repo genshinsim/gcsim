@@ -264,6 +264,11 @@
     },
     {
       "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot, 2 for Frostflake Arrow (default)."
+    },
+    {
+      "ability": "aim",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
     },
