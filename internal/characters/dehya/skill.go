@@ -93,12 +93,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// handle field
 	c.AddStatus(skillICDKey, skillHitmark+1, false) // add skill icd so field cannot proc from initial attack
-	c.Core.Tasks.Add(func() {
-		if needPickup {
-			c.pickUpField()
-		}
-		c.addField(dehyaFieldDuration)
-	}, skillHitmark+1)
+	if needPickup {
+		c.Core.Tasks.Add(func() { c.pickUpField() }, skillHitmark-1)
+	}
+	c.Core.Tasks.Add(func() { c.addField(dehyaFieldDuration) }, skillHitmark+1)
 
 	c.SetCDWithDelay(action.ActionSkill, 20*60, 18)
 
@@ -201,10 +199,10 @@ func (c *char) skillRecast() (action.Info, error) {
 func (c *char) pickUpField() {
 	c.a1Reduction()
 	c.sanctumICD = c.StatusDuration(skillICDKey)
-	c.sanctumSavedDur = c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F // dur gets extended on field recast by a low margin, apparently
+	c.sanctumSavedDur = c.StatusDuration(dehyaFieldKey) + sanctumPickupExtension // dur gets extended on field recast by a low margin, apparently
 	c.Core.Log.NewEvent("sanctum picked up", glog.LogCharacterEvent, c.Index).
-		Write("Duration Remaining ", c.sanctumSavedDur).
-		Write("DoT tick CD", c.StatusDuration(skillICDKey))
+		Write("Duration Remaining", c.sanctumSavedDur).
+		Write("DoT tick CD", c.sanctumICD)
 	c.Core.Tasks.Add(func() {
 		c.DeleteStatus(dehyaFieldKey)
 	}, 1)
@@ -214,7 +212,7 @@ func (c *char) addField(dur int) {
 	// places field
 	c.AddStatus(dehyaFieldKey, dur, false)
 	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
-		Write("Duration Remaining ", dur).
+		Write("Duration Remaining", dur).
 		Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
 		Write("DoT tick CD", c.StatusDuration(skillICDKey))
 
