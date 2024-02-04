@@ -6601,8 +6601,7 @@
         "center": "PrimaryTarget",
         "offsetY": -0.5,
         "boxX": 0.1,
-        "boxY": 1,
-        "notes": "not implemented yet"
+        "boxY": 1
       },
       {
         "ability": "Aim-Head",
@@ -6610,8 +6609,7 @@
         "center": "PrimaryTarget",
         "offsetY": -0.5,
         "boxX": 0.1,
-        "boxY": 1,
-        "notes": "not implemented yet"
+        "boxY": 1
       },
       {
         "ability": "FullAim",

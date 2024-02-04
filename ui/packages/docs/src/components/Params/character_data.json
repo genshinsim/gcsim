@@ -661,6 +661,11 @@
     },
     {
       "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default), 2 for Wreath Arrow. If his E state is active, then hold is 2 by default."
+    },
+    {
+      "ability": "aim",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
     },
@@ -668,11 +673,6 @@
       "ability": "aim",
       "param": "weakspot",
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
-    },
-    {
-      "ability": "aim",
-      "param": "level",
-      "desc": "0 for Charge Level 1 (default), 1 for Charge Level 2. If his E state is active, then level is 1 by default."
     },
     {
       "ability": "aim",

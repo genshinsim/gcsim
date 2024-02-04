@@ -1,6 +1,8 @@
 package tighnari
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -9,35 +11,47 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-var aimedFrames []int
+var aimedFrames [][]int
+var aimedHitmarks = []int{14, 86}
 var aimedWreathFrames []int
 
-const aimedHitmark = 86
 const aimedWreathHitmark = 175
 
 func init() {
-	aimedFrames = frames.InitAbilSlice(94)
-	aimedFrames[action.ActionDash] = aimedHitmark
-	aimedFrames[action.ActionJump] = aimedHitmark
+	aimedFrames = make([][]int, 2)
 
+	// Aimed Shot
+	aimedFrames[0] = frames.InitAbilSlice(23)
+	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
+	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
+
+	// Fully-Charged Aimed Shot
+	aimedFrames[1] = frames.InitAbilSlice(94)
+	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
+	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
+
+	// Fully-Charged Aimed Shot (Wreath Arrow)
 	aimedWreathFrames = frames.InitAbilSlice(183)
 	aimedWreathFrames[action.ActionDash] = aimedWreathHitmark
 	aimedWreathFrames[action.ActionJump] = aimedWreathHitmark
 }
 
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
-	level, ok := p["level"]
+	hold, ok := p["hold"]
 	if !ok {
-		level = 0
+		hold = attacks.AimParamLv1
 	}
-
 	if c.StatusIsActive(vijnanasuffusionStatus) {
-		level = 1
+		hold = attacks.AimParamLv2
 	}
-	if level == 1 {
+	switch hold {
+	case attacks.AimParamPhys:
+	case attacks.AimParamLv1:
+	case attacks.AimParamLv2:
 		return c.WreathAimed(p)
+	default:
+		return action.Info{}, fmt.Errorf("invalid hold param supplied, got %v", hold)
 	}
-
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -46,7 +60,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
-		Abil:                 "Aim (Charged)",
+		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
 		ICDGroup:             attacks.ICDGroupDefault,
@@ -60,7 +74,11 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-
+	if hold < attacks.AimParamLv1 {
+		ai.Abil = "Aimed Shot"
+		ai.Element = attributes.Physical
+		ai.Mult = aim[c.TalentLvlAttack()]
+	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHit(
@@ -70,14 +88,14 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 			0.1,
 			1,
 		),
-		aimedHitmark,
-		aimedHitmark+travel,
+		aimedHitmarks[hold],
+		aimedHitmarks[hold]+travel,
 	)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(aimedFrames),
-		AnimationLength: aimedFrames[action.InvalidAction],
-		CanQueueAfter:   aimedHitmark,
+		Frames:          frames.NewAbilFunc(aimedFrames[hold]),
+		AnimationLength: aimedFrames[hold][action.InvalidAction],
+		CanQueueAfter:   aimedHitmarks[hold],
 		State:           action.AimState,
 	}, nil
 }
@@ -112,7 +130,7 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
-		Abil:                 "Wreath Arrow",
+		Abil:                 "Fully-Charged Aimed Shot (Wreath Arrow)",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
 		ICDGroup:             attacks.ICDGroupDefault,
