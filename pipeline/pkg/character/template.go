@@ -18,7 +18,14 @@ import (
 type charData struct {
 	Config
 	Data         *model.AvatarData
+	NASlice      map[string]*naSlice
 	SkillLvlData []skillLvlData
+}
+
+type naSlice struct {
+	Names []string
+	Count []int
+	Is3D  bool
 }
 
 type skillLvlData struct {
@@ -109,6 +116,29 @@ func (c *charData) buildSkillData(dm *model.AvatarData) error {
 	c.SkillLvlData = append(c.SkillLvlData, atk...)
 	c.SkillLvlData = append(c.SkillLvlData, skill...)
 	c.SkillLvlData = append(c.SkillLvlData, burst...)
+
+	// merge NA data into a single slice
+	for _, v := range c.SkillLvlData {
+		if !strings.Contains(v.Name, "_") {
+			continue
+		}
+
+		base := strings.Split(v.Name, "_")[0]
+		if c.NASlice == nil {
+			c.NASlice = make(map[string]*naSlice)
+		}
+		if c.NASlice[base] == nil {
+			c.NASlice[base] = &naSlice{}
+		}
+
+		slice := c.NASlice[base]
+		slice.Names = append(slice.Names, v.Name)
+		slice.Count = append(slice.Count, len(v.Params))
+		if len(v.Params) > 1 {
+			slice.Is3D = true
+		}
+	}
+
 	return nil
 }
 
@@ -177,6 +207,23 @@ func init() {
 func (x *{{.CharStructName}}) Data() *model.AvatarData {
 	return base
 }
+{{- if ne (len .NASlice) 0 }}
+
+var (
+{{- range $key, $slice := .NASlice }}
+	{{ $key }} = [][] {{- if $slice.Is3D -}} [] {{- end -}} float64{
+{{- range $i, $name := $slice.Names }}
+	{{- if or (gt (index $slice.Count $i) 1) (not $slice.Is3D) }}
+		{{ $name }},
+	{{- else }}
+		{ {{- $name -}} },
+	{{- end }}
+{{- end }}
+	}
+{{- end }}
+)
+
+{{- end }}
 {{- if .SkillLvlData }}
 
 var (
