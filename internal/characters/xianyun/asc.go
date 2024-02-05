@@ -71,13 +71,13 @@ func (c *char) a4() {
 	}
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != attacks.AttackTagPlunge {
+		ae := args[1].(*combat.AttackEvent)
+		if ae.Info.AttackTag != attacks.AttackTagPlunge {
 			return false
 		}
 
 		// Collision has 0 durability. Don't buff collision damage
-		if atk.Info.Durability == 0 {
+		if ae.Info.Durability == 0 {
 			return false
 		}
 
@@ -89,20 +89,21 @@ func (c *char) a4() {
 			return false
 		}
 
-		amt := c.a4Ratio * c.Stat(attributes.BaseATK) * (1 + c.Stat(attributes.ATKP) + c.Stat(attributes.ATK))
+		atk := c.Base.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
+		amt := c.a4Ratio * atk
 
 		// A4 cap
 		amt = min(c.a4Max, amt)
 
-		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("Xianyun Starwicker proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
-				Write("before", atk.Info.FlatDmg).
-				Write("addition", amt).
-				Write("effect_ends_at", c.StatusExpiry(StarwickerKey)).
-				Write("starwicker_left", c.Tags[StarwickerKey])
-		}
+		c.Core.Log.NewEvent("Xianyun Starwicker proc dmg add", glog.LogPreDamageMod, ae.Info.ActorIndex).
+			Write("atk", atk).
+			Write("ratio", c.a4Ratio).
+			Write("before", ae.Info.FlatDmg).
+			Write("addition", amt).
+			Write("effect_ends_at", c.StatusExpiry(StarwickerKey)).
+			Write("starwicker_left", c.Tags[StarwickerKey])
 
-		atk.Info.FlatDmg += amt
+		ae.Info.FlatDmg += amt
 		c.AddStatus(a4ICDKey, 0.4*60, true)
 
 		return false
