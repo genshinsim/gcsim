@@ -41,19 +41,21 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.a4Max = 9000
 	c.a4Ratio = 2.0
 
-	if c.Base.Cons >= 1 {
-		c.SetNumCharges(action.ActionSkill, 2)
-	}
-
 	w.Character = &c
 
 	return nil
 }
 
 func (c *char) Init() error {
-	// c.a4()
 	c.a1Buffer = make([]int, len(c.Core.Player.Chars()))
 	c.a1()
+	c.a4()
+	if c.Base.Cons >= 1 {
+		c.SetNumCharges(action.ActionSkill, 2)
+	}
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
 	return nil
 }
 

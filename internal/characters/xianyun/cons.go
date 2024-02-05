@@ -6,6 +6,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+func (c *char) c2() {
+	c.a4Max = 18000
+	c.a4Ratio = 4
+}
+
 func (c *char) c2buff() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.20

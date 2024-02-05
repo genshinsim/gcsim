@@ -13,10 +13,10 @@ import (
 var burstFrames []int
 
 const (
-	burstStart   = 47
-	burstHitmark = 78
-	burstKey     = "xianyun-burst"
-
+	burstStart    = 47
+	burstHitmark  = 78
+	burstKey      = "xianyun-burst"
+	starwickerKey = "xianyun-starwicker-count"
 	// 16 seconds duration
 	burstDuration  = 16 * 60
 	burstRadius    = 7

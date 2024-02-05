@@ -11,8 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const starwickerKey = "xianyun-starwicker-count"
-const starwickerICDKey = "xianyun-starwicker-icd"
+const a4ICDKey = "xianyun-a4-icd"
 const a1Key = "xianyun-a1"
 const a1Dur = 20 * 60
 
@@ -70,46 +69,37 @@ func (c *char) a4() {
 	c.SetTag(starwickerKey, 8)
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		if c.StatusIsActive(starwickerICDKey) {
+		if c.StatusIsActive(a4ICDKey) {
 			return false
 		}
-		if !c.StatusIsActive(burstKey) {
-			return false
-		}
-
-		var a4ScalingATKp float64 = c.a4Ratio
-
-		switch atk.Info.AttackTag {
-		case attacks.AttackTagPlunge:
-		default:
+		if c.Tags[starwickerKey] == 0 {
 			return false
 		}
 
-		// char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
-		if !c.StatusIsActive(starwickerKey) {
+		if atk.Info.AttackTag != attacks.AttackTagPlunge {
 			return false
 		}
 
-		if c.Tags[starwickerKey] > 0 {
-			stats, _ := c.Stats()
-			amt := a4ScalingATKp * ((c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK])
-
-			// A4 cap
-			amt = min(c.a4Max, amt)
-
-			c.Tags[starwickerKey]--
-
-			if c.Core.Flags.LogDebug {
-				c.Core.Log.NewEvent("Xianyun Starwicker proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
-					Write("before", atk.Info.FlatDmg).
-					Write("addition", amt).
-					Write("effect_ends_at", c.StatusExpiry(starwickerKey)).
-					Write("starwicker_left", c.Tags[starwickerKey])
-			}
-
-			atk.Info.FlatDmg += amt
-			c.AddStatus(starwickerICDKey, 0.4*60, true)
+		// Collision has 0 durability. Don't buff collision damage
+		if atk.Info.Durability == 0 {
+			return false
 		}
+
+		amt := c.a4Ratio * c.Stat(attributes.BaseATK) * (1 + c.Stat(attributes.ATKP) + c.Stat(attributes.ATK))
+
+		// A4 cap
+		amt = min(c.a4Max, amt)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("Xianyun Starwicker proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
+				Write("before", atk.Info.FlatDmg).
+				Write("addition", amt).
+				Write("effect_ends_at", c.StatusExpiry(starwickerKey)).
+				Write("starwicker_left", c.Tags[starwickerKey])
+		}
+
+		atk.Info.FlatDmg += amt
+		c.AddStatus(a4ICDKey, 0.4*60, true)
 
 		return false
 	}, "xianyun-starwicker-hook")
