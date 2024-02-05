@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"path/filepath"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/artifact"
 	"github.com/genshinsim/gcsim/pipeline/pkg/character"
@@ -28,17 +29,19 @@ func main() {
 	flag.StringVar(&cfg.charPath, "char", "./internal/characters", "folder to look for character files")
 	flag.StringVar(&cfg.weapPath, "weap", "./internal/weapons", "folder to look for weapon files")
 	flag.StringVar(&cfg.artifactPath, "art", "./internal/artifacts", "folder to look for artifact files")
-	flag.StringVar(&cfg.excelPath, "excels", "./pipeline/data/ExcelBinOutput", "folder to look for excel data dump")
+	flag.StringVar(&cfg.excelPath, "excels", "./pipeline/data", "folder to look for excel data dump")
 	flag.StringVar(&cfg.uiOut, "outui", "./ui/packages/ui/src/Data", "folder to output generated json for UI")
 	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
 	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/ui/src/Translation/locales", "folder to output generated json for DB")
 	flag.Parse()
 
+	excels := filepath.Join(cfg.excelPath, "ExcelBinOutput")
+
 	// generate character data
 	log.Println("running pipeline for characters...")
 	g, err := character.NewGenerator(character.GeneratorConfig{
 		Root:   cfg.charPath,
-		Excels: cfg.excelPath,
+		Excels: excels,
 	})
 	if err != nil {
 		panic(err)
@@ -66,7 +69,7 @@ func main() {
 	log.Println("running pipeline for weapons...")
 	gw, err := weapon.NewGenerator(weapon.GeneratorConfig{
 		Root:   cfg.weapPath,
-		Excels: cfg.excelPath,
+		Excels: excels,
 	})
 	if err != nil {
 		panic(err)
@@ -88,7 +91,7 @@ func main() {
 	log.Println("running pipeline for artifacts...")
 	ga, err := artifact.NewGenerator(artifact.GeneratorConfig{
 		Root:   cfg.artifactPath,
-		Excels: cfg.excelPath,
+		Excels: excels,
 	})
 	if err != nil {
 		panic(err)
@@ -106,13 +109,13 @@ func main() {
 		Weapons:    gw.Data(),
 		Artifacts:  ga.Data(),
 		Languages: map[string]string{
-			"English":  "./pipeline/data/TextMap/TextMapEN.json",
-			"Chinese":  "./pipeline/data/TextMap/TextMapCHS.json",
-			"Japanese": "./pipeline/data/TextMap/TextMapJP.json",
-			"Korean":   "./pipeline/data/TextMap/TextMapKR.json",
-			"Spanish":  "./pipeline/data/TextMap/TextMapES.json",
-			"Russian":  "./pipeline/data/TextMap/TextMapRU.json",
-			"German":   "./pipeline/data/TextMap/TextMapDE.json",
+			"English":  filepath.Join(cfg.excelPath, "TextMap", "TextMapEN.json"),
+			"Chinese":  filepath.Join(cfg.excelPath, "TextMap", "TextMapCHS.json"),
+			"Japanese": filepath.Join(cfg.excelPath, "TextMap", "TextMapJP.json"),
+			"Korean":   filepath.Join(cfg.excelPath, "TextMap", "TextMapKR.json"),
+			"Spanish":  filepath.Join(cfg.excelPath, "TextMap", "TextMapES.json"),
+			"Russian":  filepath.Join(cfg.excelPath, "TextMap", "TextMapRU.json"),
+			"German":   filepath.Join(cfg.excelPath, "TextMap", "TextMapDE.json"),
 		},
 	}
 	ts, err := translation.NewGenerator(transCfg)
