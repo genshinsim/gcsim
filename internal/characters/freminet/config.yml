@@ -21,7 +21,9 @@ skill_data_mapping:
             - 4 # Level 1 Shattering Pressure DMG|{param4:F1P} Cryo + {param5:F1P} Physical
             - 6 # Level 2 Shattering Pressure DMG|{param6:F1P} Cryo + {param7:F1P} Physical
             - 8 # Level 3 Shattering Pressure DMG|{param8:F1P} Cryo + {param9:F1P} Physical
+            - -1 # Level 4 Shattering Pressure DMG|{param10:F1P}
         skillPressurePhys:
+            - -1 # Level 0 Shattering Pressure DMG|{param3:F1P}
             - 5 # Level 1 Shattering Pressure DMG|{param4:F1P} Cryo + {param5:F1P} Physical
             - 7 # Level 2 Shattering Pressure DMG|{param6:F1P} Cryo + {param7:F1P} Physical
             - 9 # Level 3 Shattering Pressure DMG|{param8:F1P} Cryo + {param9:F1P} Physical
@@ -31,7 +33,3 @@ skill_data_mapping:
     burst:
         burst:
             - 0 # Skill DMG|{param0:F1P}
-        skillPressureCryo:
-            - 4 # FIXME: <missing text>
-        skillPressurePhys:
-            - 4 # FIXME: <missing text>

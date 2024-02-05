@@ -22,11 +22,11 @@ skill_data_mapping:
         skillDmgCont:
             - 4 # Herald of Frost DMG|{param4:F1P}
         skillHealContFlat:
-            - 3 # FIXME: Continuous Regeneration|{param2:F2P} ATK+{param3:I} -- old=451 new=450.5507
+            - 3 # Continuous Regeneration|{param2:F2P} ATK+{param3:I}
         skillHealContPer:
             - 2 # Continuous Regeneration|{param2:F2P} ATK+{param3:I}
         skillHealOnHitFlat:
-            - 1 # FIXME: Regeneration on Hit|{param0:F2P} ATK+{param1:I} -- old=67 new=67.40786
+            - 1 # Regeneration on Hit|{param0:F2P} ATK+{param1:I}
         skillHealOnHitPer:
             - 0 # Regeneration on Hit|{param0:F2P} ATK+{param1:I}
         skillInitialDmg:
@@ -35,6 +35,6 @@ skill_data_mapping:
         burstDmg:
             - 2 # Skill DMG|{param2:P}
         burstHealFlat:
-            - 1 # FIXME: Healing|{param0:F1P} ATK+{param1:I} -- old=577 new=577.3388
+            - 1 # Healing|{param0:F1P} ATK+{param1:I}
         burstHealPer:
             - 0 # Healing|{param0:F1P} ATK+{param1:I}

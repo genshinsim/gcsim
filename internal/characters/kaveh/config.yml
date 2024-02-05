@@ -18,4 +18,4 @@ skill_data_mapping:
         burst:
             - 0 # Skill DMG|{param0:F1P}
         burstDmgBonus:
-            - 2 # FIXME: Dendro Core Burst DMG Bonus|{param2:F1P} -- old=0.275 new=0.27488
+            - 2 # Dendro Core Burst DMG Bonus|{param2:F1P}

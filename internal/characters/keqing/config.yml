@@ -2,12 +2,11 @@ package_name: keqing
 genshin_id: 10000042
 key: keqing
 skill_data_mapping:
-    # FIXME: 1-Hit DMG|{param0:F1P} count 2, expected 1
-    # FIXME: 2-Hit DMG|{param1:F1P} count 0, expected 1
     attack:
         attack_1:
             - 0 # 1-Hit DMG|{param0:F1P}
-            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
         attack_3:
             - 2 # 3-Hit DMG|{param2:F1P}
         attack_4:

@@ -2,8 +2,6 @@ package_name: yoimiya
 genshin_id: 10000049
 key: yoimiya
 skill_data_mapping:
-    # FIXME: 1-Hit DMG|{param0:F1P}×2 count 2, expected 1
-    # FIXME: 4-Hit DMG|{param3:F1P}×2 count 2, expected 1
     attack:
         aim:
             - 5 # Aimed Shot|{param5:F1P}

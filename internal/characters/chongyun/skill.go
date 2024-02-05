@@ -138,7 +138,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.Status.Add("chongyunfield", 600)
 	}, skillHitmark)
 
-	//TODO: delay between when frost field start ticking?
+	// TODO: delay between when frost field start ticking?
 	for i := 0; i <= 600; i += 60 {
 		c.Core.Tasks.Add(func() {
 			if src != c.fieldSrc {
@@ -179,8 +179,9 @@ func (c *char) onSwapHook() {
 			return false
 		}
 		// add infusion on swap
+		dur := int(infuseDur[c.TalentLvlSkill()] * 60)
 		c.Core.Log.NewEvent("chongyun adding infusion on swap", glog.LogCharacterEvent, c.Index).
-			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+			Write("expiry", c.Core.F+dur)
 		active := c.Core.Player.ActiveChar()
 		c.infuse(active)
 		return false
@@ -188,7 +189,7 @@ func (c *char) onSwapHook() {
 }
 
 func (c *char) infuse(active *character.CharWrapper) {
-	dur := infuseDur[c.TalentLvlSkill()]
+	dur := int(infuseDur[c.TalentLvlSkill()] * 60)
 	// c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
 		active.AddCooldownMod(character.CooldownMod{

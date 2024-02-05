@@ -20,7 +20,7 @@ skill_data_mapping:
         skilldot:
             - 3 # Grass Ring of Sanctification DMG|{param3:F1P}
         skillhealflat:
-            - 2 # FIXME: Grass Ring of Sanctification Healing|{param1:F1P} Max HP+{param2:I} -- old=289 new=288.8908
+            - 2 # Grass Ring of Sanctification Healing|{param1:F1P} Max HP+{param2:I}
         skillhealpp:
             - 1 # Grass Ring of Sanctification Healing|{param1:F1P} Max HP+{param2:I}
     burst:

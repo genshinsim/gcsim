@@ -2,7 +2,6 @@ package_name: thoma
 genshin_id: 10000050
 key: thoma
 skill_data_mapping:
-    # FIXME: 3-Hit DMG|{param2:F1P}×2 count 2, expected 1
     attack:
         attack_1:
             - 0 # 1-Hit DMG|{param0:F1P}
@@ -17,9 +16,9 @@ skill_data_mapping:
             - 4 # Charged Attack DMG|{param4:P}
     skill:
         shieldflat:
-            - 2 # FIXME: Shield DMG Absorption|{param1:F1P} Max HP+{param2:I} -- old=693 new=693.33484
+            - 2 # Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
         shieldflatmax:
-            - 5 # FIXME: Max Shield DMG Absorption|{param4:F1P} Max HP+{param5:I} -- old=1887 new=1887.4199
+            - 5 # Max Shield DMG Absorption|{param4:F1P} Max HP+{param5:I}
         shieldpp:
             - 1 # Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
         shieldppmax:
@@ -32,6 +31,6 @@ skill_data_mapping:
         burstproc:
             - 1 # Fiery Collapse DMG|{param1:P}
         burstshieldflat:
-            - 3 # FIXME: Shield DMG Absorption|{param2:F1P} Max HP+{param3:I} -- old=110 new=110.03398
+            - 3 # Shield DMG Absorption|{param2:F1P} Max HP+{param3:I}
         burstshieldpp:
             - 2 # Shield DMG Absorption|{param2:F1P} Max HP+{param3:I}

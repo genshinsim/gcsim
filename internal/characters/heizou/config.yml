@@ -17,8 +17,6 @@ skill_data_mapping:
             - 6 # 5-Hit DMG|{param6:F1P}
         charge:
             - 7 # Charged Attack|{param7:F1P}
-        hits:
-            - 10 # FIXME: Low/High Plunge DMG|{param10:P}/{param11:P} -- old=1 new=1.136335
     skill:
         convicBonus:
             - 2 # Conviction DMG Bonus|{param2:F1P}

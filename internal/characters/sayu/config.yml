@@ -27,12 +27,12 @@ skill_data_mapping:
         burst:
             - 0 # Skill Activation DMG|{param0:P}
         burstHealFlat:
-            - 4 # FIXME: Muji-Muji Daruma Healing|{param5:F1P} ATK+{param4:I} -- old=500 new=500.3603
+            - 4 # Muji-Muji Daruma Healing|{param5:F1P} ATK+{param4:I}
         burstHealPP:
             - 5 # Muji-Muji Daruma Healing|{param5:F1P} ATK+{param4:I}
         burstSkill:
             - 3 # Muji-Muji Daruma DMG|{param3:P}
         initHealFlat:
-            - 1 # FIXME: Skill Activation Healing|{param2:F1P} ATK+{param1:I} -- old=577 new=577.3388
+            - 1 # Skill Activation Healing|{param2:F1P} ATK+{param1:I}
         initHealPP:
             - 2 # Skill Activation Healing|{param2:F1P} ATK+{param1:I}

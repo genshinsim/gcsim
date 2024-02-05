@@ -21,9 +21,10 @@ skill_data_mapping:
             - 5 # Explosion DMG|{param5:P}
         skill:
             - 0 # #{LAYOUT_MOBILE#Tap}{LAYOUT_PC#Press}{LAYOUT_PS#Press} DMG|{param0:P}
-        skillHold:
+        skillHold_1:
             - 1 # Charge Level 1 DMG|{param1:F1P}+{param2:F1P}
             - 2 # Charge Level 1 DMG|{param1:F1P}+{param2:F1P}
+        skillHold_2:
             - 3 # Charge Level 2 DMG|{param3:F1P}+{param4:F1P}
             - 4 # Charge Level 2 DMG|{param3:F1P}+{param4:F1P}
     burst:
@@ -32,6 +33,6 @@ skill_data_mapping:
         burstatk:
             - 3 # ATK Bonus Ratio|{param3:P}
         bursthp:
-            - 2 # FIXME: Continuous Regeneration Per Sec|{param1:F2P} Max HP+{param2:I} -- old=577 new=577.3388
+            - 2 # Continuous Regeneration Per Sec|{param1:F2P} Max HP+{param2:I}
         bursthpp:
             - 1 # Continuous Regeneration Per Sec|{param1:F2P} Max HP+{param2:I}

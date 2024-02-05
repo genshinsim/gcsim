@@ -15,17 +15,17 @@ skill_data_mapping:
             - 4 # Charged Attack DMG|{param4:P}
     skill:
         prochp:
-            - 3 # FIXME: HP Regeneration Per Hit|{param2:F2P} Max HP+{param3:I} -- old=72 new=72.2227
+            - 3 # HP Regeneration Per Hit|{param2:F2P} Max HP+{param3:I}
         prochpp:
             - 2 # HP Regeneration Per Hit|{param2:F2P} Max HP+{param3:I}
         skill:
             - 4 # Droplet DMG|{param4:F1P}
         skillhp:
-            - 1 # FIXME: Continuous Regeneration|{param0:F2P} Max HP+{param1:I} -- old=385.18 new=385.18774
+            - 1 # Continuous Regeneration|{param0:F2P} Max HP+{param1:I}
         skillhpp:
             - 0 # Continuous Regeneration|{param0:F2P} Max HP+{param1:I}
     burst:
         bursthp:
-            - 1 # FIXME: Regeneration|{param0:F1P} Max HP+{param1:I} -- old=1694 new=1694.2819
+            - 1 # Regeneration|{param0:F1P} Max HP+{param1:I}
         bursthpp:
             - 0 # Regeneration|{param0:F1P} Max HP+{param1:I}

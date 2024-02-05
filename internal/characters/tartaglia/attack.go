@@ -134,7 +134,7 @@ func init() {
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
 func (c *char) meleeAttack() action.Info {
-	for i, mult := range eAttack[c.NormalCounter] {
+	for i, mult := range attackE[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),

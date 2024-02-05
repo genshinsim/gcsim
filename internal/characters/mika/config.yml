@@ -6,7 +6,7 @@ skill_data_mapping:
         attack_1:
             - 0 # 1-Hit DMG|{param0:F1P}
         attack_2:
-            - 1 # FIXME: 2-Hit DMG|{param1:F1P} -- old=0.415 new=0.415019
+            - 1 # 2-Hit DMG|{param1:F1P}
         attack_3:
             - 2 # 3-Hit DMG|{param2:F1P}
         attack_4:

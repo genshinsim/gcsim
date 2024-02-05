@@ -3,8 +3,8 @@ genshin_id: 10000027
 key: ningguang
 skill_data_mapping:
     attack:
-        attack_N:
-            - 0 # FIXME: Normal Attack DMG|{param0:F1P} -- old=0.28 new=0.28
+        attack:
+            - 0 # Normal Attack DMG|{param0:F1P}
         charge:
             - 1 # Charged Attack DMG|{param1:P}
         jade:

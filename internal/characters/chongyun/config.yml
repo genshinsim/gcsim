@@ -14,8 +14,8 @@ skill_data_mapping:
     skill:
         skill:
             - 0 # Skill DMG|{param0:P}
+        infuseDur:
+            - 1 # Infusion Duration|{param1:F1}s
     burst:
         burst:
             - 0 # Skill DMG|{param0:P}
-        infuseDur:
-            - 2 # FIXME: Energy Cost|{param2:I} -- old=120 new=40

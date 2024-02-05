@@ -24,4 +24,4 @@ skill_data_mapping:
         explosion:
             - 1 # Illusory Bubble Explosion DMG|{param1:P}
         omenDuration:
-            - 5 # FIXME: Energy Cost|{param5:I} -- old=240 new=60
+            - 3 # Omen Duration|{param3:F1}s

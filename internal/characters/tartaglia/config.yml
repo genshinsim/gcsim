@@ -24,12 +24,17 @@ skill_data_mapping:
         rtFlash:
             - 8 # Riptide Flash DMG|{param8:F1P}×3
     skill:
-        eAttack:
+        attackE_1:
             - 1 # 1-Hit DMG|{param1:F1P}
+        attackE_2:
             - 2 # 2-Hit DMG|{param2:F1P}
+        attackE_3:
             - 3 # 3-Hit DMG|{param3:F1P}
+        attackE_4:
             - 4 # 4-Hit DMG|{param4:F1P}
+        attackE_5:
             - 5 # 5-Hit DMG|{param5:F1P}
+        attackE_6:
             - 6 # 6-Hit DMG|{param6:F1P}+{param7:F1P}
             - 7 # 6-Hit DMG|{param6:F1P}+{param7:F1P}
         eCharge:

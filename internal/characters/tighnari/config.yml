@@ -2,7 +2,6 @@ package_name: tighnari
 genshin_id: 10000069
 key: tighnari
 skill_data_mapping:
-    # FIXME: 3-Hit DMG|{param2:F1P}×2 count 2, expected 1
     attack:
         aim:
             - 4 # Aimed Shot|{param4:F1P}

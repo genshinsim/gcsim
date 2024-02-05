@@ -23,7 +23,7 @@ skill_data_mapping:
             - 3 # Charge Level 1 DMG|{param3:F1P} DEF
             - 4 # Charge Level 2 DMG|{param4:F1P} DEF
         skillShieldFlat:
-            - 1 # FIXME: Shield DMG Absorption|{param0:P} Max HP+{param1:I} -- old=1155 new=1155.4323
+            - 1 # Shield DMG Absorption|{param0:P} Max HP+{param1:I}
         skillShieldPct:
             - 0 # Shield DMG Absorption|{param0:P} Max HP+{param1:I}
     burst:

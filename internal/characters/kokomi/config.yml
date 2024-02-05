@@ -15,7 +15,7 @@ skill_data_mapping:
         skillDmg:
             - 2 # Ripple DMG|{param2:F1P}
         skillHealFlat:
-            - 1 # FIXME: Regeneration|{param0:F1P} Max HP+{param1:I} -- old=424 new=423.7063
+            - 1 # Regeneration|{param0:F1P} Max HP+{param1:I}
         skillHealPct:
             - 0 # Regeneration|{param0:F1P} Max HP+{param1:I}
     burst:
@@ -28,6 +28,6 @@ skill_data_mapping:
         burstDmg:
             - 0 # Skill DMG|{param0:F1P} Max HP
         burstHealFlat:
-            - 2 # FIXME: HP Regeneration Per Hit|{param1:F2P} Max HP+{param2:I} -- old=77 new=77.03738
+            - 2 # HP Regeneration Per Hit|{param1:F2P} Max HP+{param2:I}
         burstHealPct:
             - 1 # HP Regeneration Per Hit|{param1:F2P} Max HP+{param2:I}

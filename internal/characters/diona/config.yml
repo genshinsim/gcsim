@@ -21,17 +21,17 @@ skill_data_mapping:
         paw:
             - 0 # Icy Paw DMG|{param0:F1P} per Paw
         pawShieldFlat:
-            - 2 # FIXME: Base Shield DMG Absorption|{param1:F1P} Max HP+{param2:I} -- old=693 new=692.8066
+            - 2 # Base Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
         pawShieldPer:
             - 1 # Base Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
+        pawDur:
+            - 5 # Duration|{param5:F1}s per Paw
     burst:
         burst:
             - 0 # Skill DMG|{param0:P}
         burstDot:
             - 1 # Continuous Field DMG|{param1:F1P}
         burstHealFlat:
-            - 3 # FIXME: HP Regeneration Over Time|{param2:F2P} Max HP+{param3:I} -- old=513 new=513.19006
+            - 3 # HP Regeneration Over Time|{param2:F2P} Max HP+{param3:I}
         burstHealPer:
             - 2 # HP Regeneration Over Time|{param2:F2P} Max HP+{param3:I}
-        pawDur:
-            - 5 # FIXME: Energy Cost|{param5:I} -- old=108 new=80

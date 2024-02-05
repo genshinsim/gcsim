@@ -22,12 +22,12 @@ skill_data_mapping:
         burst:
             - 0 # Burst DMG|{param0:P}
         burstDotHealFlat:
-            - 5 # FIXME: Continuous Regeneration|{param4:F2P} ATK+{param5:I}/s -- old=154 new=154.03249
+            - 5 # Continuous Regeneration|{param4:F2P} ATK+{param5:I}/s
         burstDotHealPer:
             - 4 # Continuous Regeneration|{param4:F2P} ATK+{param5:I}/s
         burstEnter:
             - 1 # Field Entering/Exiting DMG|{param1:F1P}
         burstInitialHealFlat:
-            - 3 # FIXME: Field Activation Healing|{param2:P} ATK+{param3:I} -- old=1540 new=1540.3248
+            - 3 # Field Activation Healing|{param2:P} ATK+{param3:I}
         burstInitialHealPer:
             - 2 # Field Activation Healing|{param2:P} ATK+{param3:I}

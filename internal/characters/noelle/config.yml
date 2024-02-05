@@ -19,11 +19,11 @@ skill_data_mapping:
         shieldDmg:
             - 5 # Skill DMG|{param5:P} DEF
         shieldFlat:
-            - 6 # FIXME: DMG Absorption|{param0:P} DEF+{param6:I} -- old=770 new=769.7851
+            - 6 # DMG Absorption|{param0:P} DEF+{param6:I}
         shieldHeal:
             - 1 # Healing|{param1:F1P} DEF+{param7:I}
         shieldHealFlat:
-            - 7 # FIXME: Healing|{param1:F1P} DEF+{param7:I} -- old=103 new=102.71802
+            - 7 # Healing|{param1:F1P} DEF+{param7:I}
     burst:
         burst:
             - 0 # Burst DMG|{param0:F1P}
