@@ -1,6 +1,8 @@
 package sara
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -10,22 +12,30 @@ import (
 )
 
 var aimedFrames [][]int
+var aimedA1Frames []int
 
-var aimedHitmarks = []int{86, 50}
+var aimedHitmarks = []int{15, 86}
+
+const aimedA1Hitmark = 50
 
 func init() {
+	// outside of E status
 	aimedFrames = make([][]int, 2)
 
-	// outside of E status
-	aimedFrames[0] = frames.InitAbilSlice(96)
+	// Aimed Shot
+	aimedFrames[0] = frames.InitAbilSlice(25)
 	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
 	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
 
-	// inside of E status
-	aimedFrames[1] = frames.InitAbilSlice(60)
-	aimedFrames[1][action.ActionBurst] = 62
-	aimedFrames[1][action.ActionDash] = 52
-	aimedFrames[1][action.ActionJump] = 52
+	// Fully-Charged Aimed Shot
+	aimedFrames[1] = frames.InitAbilSlice(96)
+	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
+	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
+
+	// Fully-Charged Aimed Shot (Crowfeather)
+	aimedA1Frames = frames.InitAbilSlice(60)
+	aimedA1Frames[action.ActionDash] = aimedA1Hitmark
+	aimedA1Frames[action.ActionJump] = aimedA1Hitmark
 }
 
 // Aimed charge attack damage queue generator
@@ -33,6 +43,16 @@ func init() {
 // Has two parameters, "travel", used to set the number of frames that the arrow is in the air (default = 10)
 // weak_point, used to determine if an arrow is hitting a weak point (default = 1 for true)
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
+	hold, ok := p["hold"]
+	if !ok {
+		hold = attacks.AimParamLv1
+	}
+	switch hold {
+	case attacks.AimParamPhys:
+	case attacks.AimParamLv1:
+	default:
+		return action.Info{}, fmt.Errorf("invalid hold param supplied, got %v", hold)
+	}
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -41,26 +61,48 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	// A1:
 	// While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
-	skillActive := 0
-	if c.Base.Ascension >= 1 && c.Core.Status.Duration(coverKey) > 0 {
-		skillActive = 1
-	}
+	skillActive := c.Base.Ascension >= 1 && c.Core.Status.Duration(coverKey) > 0
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
-		Abil:                 "Aim Charge Attack",
+		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
 		ICDGroup:             attacks.ICDGroupDefault,
 		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Electro,
 		Durability:           25,
-		Mult:                 aimChargeFull[c.TalentLvlAttack()],
+		Mult:                 fullaim[c.TalentLvlAttack()],
 		HitWeakPoint:         weakspot == 1,
 		HitlagHaltFrames:     .12 * 60,
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
+	if hold < attacks.AimParamLv1 {
+		ai.Abil = "Aimed Shot"
+		ai.Element = attributes.Physical
+		ai.Mult = aim[c.TalentLvlAttack()]
+	}
+
+	var a action.Info
+
+	if skillActive && hold == attacks.AimParamLv1 {
+		ai.Abil += " (A1)"
+		a = action.Info{
+			Frames:          frames.NewAbilFunc(aimedA1Frames),
+			AnimationLength: aimedA1Frames[action.InvalidAction],
+			CanQueueAfter:   aimedA1Hitmark,
+			State:           action.AimState,
+		}
+	} else {
+		a = action.Info{
+			Frames:          frames.NewAbilFunc(aimedFrames[hold]),
+			AnimationLength: aimedFrames[hold][action.InvalidAction],
+			CanQueueAfter:   aimedHitmarks[hold],
+			State:           action.AimState,
+		}
+	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHit(
@@ -70,12 +112,12 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 			0.1,
 			1,
 		),
-		aimedHitmarks[skillActive],
-		aimedHitmarks[skillActive]+travel,
+		a.CanQueueAfter,
+		a.CanQueueAfter+travel,
 	)
 
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
-	if c.Core.Status.Duration(coverKey) > 0 {
+	if skillActive && hold == attacks.AimParamLv1 {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tengu Juurai: Ambush",
@@ -91,16 +133,11 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 		// TODO: snapshot?
 		// Particles are emitted after the ambush thing hits
-		c.Core.QueueAttack(ai, ap, aimedHitmarks[skillActive], aimedHitmarks[skillActive]+travel+90, c.makeA4CB(), c.particleCB)
-		c.attackBuff(ap, aimedHitmarks[skillActive]+travel+90)
+		c.Core.QueueAttack(ai, ap, aimedA1Hitmark, aimedA1Hitmark+travel+90, c.makeA4CB(), c.particleCB)
+		c.attackBuff(ap, aimedA1Hitmark+travel+90)
 
 		c.Core.Status.Delete(coverKey)
 	}
 
-	return action.Info{
-		Frames:          func(next action.Action) int { return aimedFrames[skillActive][next] },
-		AnimationLength: aimedFrames[skillActive][action.InvalidAction],
-		CanQueueAfter:   aimedHitmarks[skillActive],
-		State:           action.AimState,
-	}, nil
+	return a, nil
 }

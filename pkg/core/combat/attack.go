@@ -3,6 +3,7 @@ package combat
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -31,6 +32,7 @@ func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
 }
 
 func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
+	h.Events.Emit(event.OnApplyAttack, a)
 	// died := false
 	var total float64
 	var landed bool

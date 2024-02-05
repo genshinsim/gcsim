@@ -8,6 +8,7 @@ const (
 	OnGadgetHit                 // target, AttackEvent
 	OnEnemyDamage               // target, AttackEvent, amount, crit
 	OnGadgetDamage              // target, AttackEvent
+	OnApplyAttack               // AttackEvent
 	// reaction related
 	// OnReactionOccured // target, AttackEvent
 	// OnTransReaction   // target, AttackEvent

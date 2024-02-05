@@ -12,8 +12,8 @@ import (
 
 // C1:
 // Fires 2 additional arrows per Aimed Shot, each dealing 33% of the original arrow's DMG.
-func (c *char) c1(ai combat.AttackInfo, travel int) {
-	ai.Abil = "Aim (Charged) C1"
+func (c *char) c1(ai combat.AttackInfo, hitmark, travel int) {
+	ai.Abil += " (C1)"
 	ai.Mult /= 3.0
 	for i := 0; i < 2; i++ {
 		c.Core.QueueAttack(
@@ -25,8 +25,8 @@ func (c *char) c1(ai combat.AttackInfo, travel int) {
 				0.1,
 				1,
 			),
-			aimedHitmark,
-			aimedHitmark+travel,
+			hitmark,
+			hitmark+travel,
 		)
 	}
 }

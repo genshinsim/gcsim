@@ -141,12 +141,8 @@ export function ImportFromEnkaDialog(props: Props) {
   );
 }
 
-function hasAlphabet(input: string) {
-  return !/^\d+$/.test(input);
-}
-
 function validateUid(uid: string) {
-  if (uid.length !== 9 || hasAlphabet(uid)) {
+  if (!/^(18|[1-35-9])\d{8}$/.test(uid)) {
     AppToaster.show({
       message: "Invalid UID",
       intent: "danger",
