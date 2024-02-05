@@ -64,9 +64,6 @@ func (c *char) BurstCast() {
 		burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 		c.Core.QueueAttack(ai, burstArea, 0, 0)
 
-		c.AddStatus(burstKey, burstDuration, false)
-		c.AddStatus(starwickerKey, burstDuration, true)
-
 		atk := c.Stat(attributes.BaseATK) * (1 + c.Stat(attributes.ATKP) + c.Stat(attributes.ATK))
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
@@ -76,8 +73,11 @@ func (c *char) BurstCast() {
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
+		c.AddStatus(burstKey, burstDuration, false)
+		c.AddStatus(starwickerKey, burstDuration, true)
+		c.starwickerStacks = 8
+
 		c.plungeDoTTrigger()
-		c.a4()
 
 		for i := burstStart; i <= burstStart+burstDuration; i += 2.5 * 60 {
 			c.Core.Tasks.Add(c.BurstHealDoT, i+2.5*60)
@@ -114,6 +114,12 @@ func (c *char) plungeDoTTrigger() {
 			burstDoTDelay,
 			burstDoTDelay,
 		)
+		c.QueueCharTask(func() {
+			c.starwickerStacks--
+			if c.starwickerStacks == 0 {
+				c.DeleteStatus(starwickerKey)
+			}
+		}, burstDoTDelay)
 		return false
 	}, "xianyun-starwicker-plunge-DoT-hook")
 }

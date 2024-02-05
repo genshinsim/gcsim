@@ -43,11 +43,14 @@ func (c *char) a1() {
 }
 
 func (c *char) a1cb() combat.AttackCBFunc {
-	c.a1Count = 0
+	if c.Base.Ascension < 1 {
+		return nil
+	}
 	return func(a combat.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
+
 		for i, char := range c.Core.Player.Chars() {
 			idx := i
 			c.a1Buffer[idx] += 1
@@ -66,22 +69,26 @@ func (c *char) a1cb() combat.AttackCBFunc {
 // TODO: Each Plunging Attack shockwave DMG instance can only apply this increased DMG effect to a single opponent.
 // Each character can trigger this effect once every 0.4s.
 func (c *char) a4() {
-	c.SetTag(starwickerKey, 8)
+	if c.Base.Ascension < 4 {
+		return
+	}
+
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		if c.StatusIsActive(a4ICDKey) {
-			return false
-		}
-		if c.Tags[starwickerKey] == 0 {
-			return false
-		}
-
 		if atk.Info.AttackTag != attacks.AttackTagPlunge {
 			return false
 		}
 
 		// Collision has 0 durability. Don't buff collision damage
 		if atk.Info.Durability == 0 {
+			return false
+		}
+
+		if !c.StatusIsActive(starwickerKey) {
+			return false
+		}
+
+		if c.StatusIsActive(a4ICDKey) {
 			return false
 		}
 

@@ -15,12 +15,12 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	skillCounter int
-	skillSrc     int
-	a1Count      int
-	a1Buffer     []int
-	a4Max        float64
-	a4Ratio      float64
+	skillCounter     int
+	skillSrc         int
+	a1Buffer         []int
+	a4Max            float64
+	a4Ratio          float64
+	starwickerStacks int
 
 	// leapFrames  []int
 }
