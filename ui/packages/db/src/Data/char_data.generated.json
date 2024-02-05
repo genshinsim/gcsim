@@ -1302,6 +1302,23 @@
       },
       "name_text_hash_map ": "1130996346"
     },
+    "xianyun": {
+      "id": 10000093,
+      "key": "xianyun",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Liuyun",
+      "skill_details": {
+        "skill": 10932,
+        "burst": 10935,
+        "attack": 10931,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "3648220770"
+    },
     "xiao": {
       "id": 10000026,
       "key": "xiao",

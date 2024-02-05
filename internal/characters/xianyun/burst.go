@@ -107,7 +107,7 @@ func (c *char) plungeDoTTrigger() {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
-			Mult:       burstdot[c.TalentLvlBurst()],
+			Mult:       burstDoT[c.TalentLvlBurst()],
 		}
 		c.Core.QueueAttack(
 			ai,
@@ -131,7 +131,7 @@ func (c *char) BurstHealDoT() {
 		Caller:  c.Index,
 		Target:  -1,
 		Message: "Starwicker-Heal-DoT",
-		Src:     healdotp[c.TalentLvlBurst()]*atk + healdotflat[c.TalentLvlBurst()],
+		Src:     healDoTp[c.TalentLvlBurst()]*atk + healdotflat[c.TalentLvlBurst()],
 		Bonus:   c.Stat(attributes.Heal),
 	})
 }

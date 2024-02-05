@@ -94,7 +94,7 @@ var (
 		1.5198,
 	}
 
-	low_plunge = []float64{
+	lowPlunge = []float64{
 		1.1363,
 		1.2288,
 		1.3213,
@@ -112,7 +112,7 @@ var (
 		3.039,
 	}
 
-	high_plunge = []float64{
+	highPlunge = []float64{
 		1.4193,
 		1.5349,
 		1.6504,
@@ -235,7 +235,7 @@ var (
 		2.43,
 		2.565,
 	}
-	burstdot = []float64{
+	burstDoT = []float64{
 		0.392,
 		0.4214,
 		0.4508,
@@ -286,7 +286,7 @@ var (
 		1704.61,
 		1825.0,
 	}
-	healdotp = []float64{
+	healDoTp = []float64{
 		0.4301,
 		0.4623,
 		0.4946,

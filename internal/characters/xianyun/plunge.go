@@ -141,7 +141,7 @@ func (c *char) lowPlunge(p map[string]int) (action.Info, error) {
 		PoiseDMG:   poiseDMG,
 		Element:    attributes.Anemo,
 		Durability: 25,
-		Mult:       low_plunge[c.TalentLvlAttack()],
+		Mult:       lowPlunge[c.TalentLvlAttack()],
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -185,7 +185,7 @@ func (c *char) highPlunge(p map[string]int) (action.Info, error) {
 		PoiseDMG:   poiseDMG,
 		Element:    attributes.Anemo,
 		Durability: 25,
-		Mult:       high_plunge[c.TalentLvlAttack()],
+		Mult:       highPlunge[c.TalentLvlAttack()],
 	}
 	c.Core.QueueAttack(
 		ai,
