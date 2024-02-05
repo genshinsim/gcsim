@@ -54,7 +54,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	// reset window after leap
 	c.DeleteStatus(skillStateKey)
 	c.skillCounter = 0
-	c.skillSrc = -1
+	c.skillSrc = noSrcVal
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(leapFrames),

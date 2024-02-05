@@ -59,9 +59,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	//C2: After using White Clouds at Dawn, Xianyun's ATK will be increased by 20% for 15s.
-	if c.Base.Cons >= 2 {
-		c.c2buff()
-	}
+	c.c2buff()
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

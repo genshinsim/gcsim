@@ -79,8 +79,8 @@ func (c *char) BurstCast() {
 
 		c.plungeDoTTrigger()
 
-		for i := burstStart; i <= burstStart+burstDuration; i += 2.5 * 60 {
-			c.Core.Tasks.Add(c.BurstHealDoT, i+2.5*60)
+		for i := burstStart + int(2.5*60); i <= burstStart+burstDuration; i += 2.5 * 60 {
+			c.Core.Tasks.Add(c.BurstHealDoT, i)
 		}
 	}, burstHitmark)
 }

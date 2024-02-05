@@ -13,6 +13,8 @@ func init() {
 	core.RegisterCharFunc(keys.Xianyun, NewChar)
 }
 
+const noSrcVal = -1
+
 type char struct {
 	*tmpl.Character
 	skillCounter     int
@@ -33,10 +35,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = 4
 	c.SkillCon = 5
 	c.BurstCon = 3
-	c.skillSrc = -1
 
-	// The number of characters in s.Player.Chars() is wrong at this point, so we need to do it in Init()
-	// c.a1Buffer = make([]int, len(c.Core.Player.Chars()))
+	c.skillSrc = noSrcVal
 
 	c.a4Max = 9000
 	c.a4Ratio = 2.0
@@ -50,12 +50,10 @@ func (c *char) Init() error {
 	c.a1Buffer = make([]int, len(c.Core.Player.Chars()))
 	c.a1()
 	c.a4()
-	if c.Base.Cons >= 1 {
-		c.SetNumCharges(action.ActionSkill, 2)
-	}
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
+
+	c.c1()
+	c.c2()
+
 	return nil
 }
 
