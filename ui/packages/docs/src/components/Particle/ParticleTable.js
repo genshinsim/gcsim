@@ -31,7 +31,7 @@ const elements = [
 ];
 
 function ParticleInfo(item_key, { drop_id, hp_percent }) {
-  const count = (drop_id / 10) % 10;
+  const count = Math.floor(drop_id / 10) % 10;
   const element = elements[drop_id % 10];
   return (
     <tr key={item_key}>

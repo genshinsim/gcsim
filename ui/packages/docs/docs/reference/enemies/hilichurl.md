@@ -1,5 +1,5 @@
 ---
-title: Hilichurl
+title: "Hilichurl"
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";
