@@ -73,7 +73,7 @@ func (g *Generator) GenerateCharTemplate() error {
 		if err != nil {
 			return err
 		}
-		os.WriteFile(fmt.Sprintf("%v/%v_gen.go", v.RelativePath, v.PackageName), dst, os.ModePerm)
+		os.WriteFile(fmt.Sprintf("%v/%v_gen.go", v.RelativePath, v.PackageName), dst, 0o644)
 	}
 
 	return nil
@@ -97,7 +97,7 @@ func writePBToFile(path string, dm *model.AvatarData) error {
 	}
 	// hack to work around stupid prototext not stable (on purpose - google u suck)
 	b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
-	return os.WriteFile(path, b, os.ModePerm)
+	return os.WriteFile(path, b, 0o644)
 }
 
 func (c *charData) buildSkillData(dm *model.AvatarData) error {
