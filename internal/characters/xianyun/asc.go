@@ -81,7 +81,7 @@ func (c *char) a4() {
 			return false
 		}
 
-		if !c.StatusIsActive(starwickerKey) {
+		if !c.StatusIsActive(StarwickerKey) {
 			return false
 		}
 
@@ -98,8 +98,8 @@ func (c *char) a4() {
 			c.Core.Log.NewEvent("Xianyun Starwicker proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 				Write("before", atk.Info.FlatDmg).
 				Write("addition", amt).
-				Write("effect_ends_at", c.StatusExpiry(starwickerKey)).
-				Write("starwicker_left", c.Tags[starwickerKey])
+				Write("effect_ends_at", c.StatusExpiry(StarwickerKey)).
+				Write("starwicker_left", c.Tags[StarwickerKey])
 		}
 
 		atk.Info.FlatDmg += amt

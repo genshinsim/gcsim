@@ -13,10 +13,11 @@ import (
 var burstFrames []int
 
 const (
-	burstStart    = 47
-	burstHitmark  = 78
-	burstKey      = "xianyun-burst"
-	starwickerKey = "xianyun-starwicker-count"
+	StarwickerKey = "xianyun-starwicker"
+
+	burstStart   = 47
+	burstHitmark = 78
+	burstKey     = "xianyun-burst"
 	// 16 seconds duration
 	burstDuration  = 16 * 60
 	burstRadius    = 7
@@ -74,7 +75,7 @@ func (c *char) BurstCast() {
 		})
 
 		c.AddStatus(burstKey, burstDuration, false)
-		c.AddStatus(starwickerKey, burstDuration, true)
+		c.AddStatus(StarwickerKey, burstDuration, true)
 		c.starwickerStacks = 8
 
 		c.plungeDoTTrigger()
@@ -117,7 +118,7 @@ func (c *char) plungeDoTTrigger() {
 		c.QueueCharTask(func() {
 			c.starwickerStacks--
 			if c.starwickerStacks == 0 {
-				c.DeleteStatus(starwickerKey)
+				c.DeleteStatus(StarwickerKey)
 			}
 		}, burstDoTDelay)
 		return false
