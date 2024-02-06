@@ -11,7 +11,7 @@ import (
 
 const (
 	burstKey              = "dehya-burst"
-	burstDuration         = burstPunchSlowHitmark*5 - 1 // minimum until 6 punches, -1 so that 7th does not get queued
+	burstDuration         = 4.1 * 60
 	kickKey               = "dehya-burst-kick"
 	burstPunch1Hitmark    = 105
 	burstPunchSlowHitmark = 50
