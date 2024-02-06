@@ -13,6 +13,7 @@ import (
 
 var (
 	attackFrames          [][]int
+	attackHits            = []int{1, 1, 1, 3, 1}
 	attackHitmarks        = [][]int{{12}, {13}, {21}, {13, 19, 27}, {31}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.09}, {0.12}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false, true}, {true}}
@@ -47,7 +48,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	for i := 0; i < hits[c.NormalCounter]; i++ {
+	for i := 0; i < attackHits[c.NormalCounter]; i++ {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),

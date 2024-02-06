@@ -1,3 +1,34 @@
-package_name: "chevreuse"
+package_name: chevreuse
 genshin_id: 10000090
-key: "chevreuse"
+key: chevreuse
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+            - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+        attack_4:
+            - 4 # 4-Hit DMG|{param4:F1P}
+        charge:
+            - 5 # Charged Attack DMG|{param5:F1P}
+    skill:
+        arkhe:
+            - 6 # Surging Blade DMG|{param6:F1P}
+        skillHold:
+            - 1 # Hold DMG|{param1:F1P}
+        skillHpFlat:
+            - 5 # HP Regeneration Over Time|{param4:F2P} Max HP+{param5:I}
+        skillHpRegen:
+            - 4 # HP Regeneration Over Time|{param4:F2P} Max HP+{param5:I}
+        skillOvercharged:
+            - 2 # Overcharged Ball DMG|{param2:F1P}
+        skillPress:
+            - 0 # #{LAYOUT_MOBILE#Tap}{LAYOUT_PC#Press}{LAYOUT_PS#Press} DMG|{param0:F1P}
+    burst:
+        burst:
+            - 0 # Explosive Grenade DMG|{param0:F1P}
+        burstSecondary:
+            - 1 # Secondary Explosive Shell DMG|{param1:F1P}

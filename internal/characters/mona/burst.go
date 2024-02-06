@@ -107,7 +107,7 @@ func (c *char) burstDamageBonus() {
 func (c *char) burstHook() {
 	// hook on to OnDamage; leave this always active
 	// since freeze will trigger an attack, this should be ok
-	//TODO: this implementation would currently cause bubble to break immediately on the first EC tick.
+	// TODO: this implementation would currently cause bubble to break immediately on the first EC tick.
 	// According to: https://docs.google.com/document/d/1pXlgCaYEpoizMIP9-QKlSkQbmRicWfrEoxb9USWD1Ro/edit#
 	// only 2nd ec tick should break
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
@@ -140,7 +140,8 @@ func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	// remove bubble tag
 	t.DeleteStatus(bubbleKey)
 	// add omen debuff
-	t.AddStatus(omenKey, omenDuration[c.TalentLvlBurst()], true)
+	dur := int(omenDuration[c.TalentLvlBurst()] * 60)
+	t.AddStatus(omenKey, dur, true)
 	// trigger dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

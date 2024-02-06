@@ -1,3 +1,33 @@
-package_name: "noelle"
+package_name: noelle
 genshin_id: 10000034
-key: "noelle"
+key: noelle
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:P}
+    skill:
+        healChance:
+            - 2 # Healing Triggering Chance|{param2:P}
+        shieldDef:
+            - 0 # DMG Absorption|{param0:P} DEF+{param6:I}
+        shieldDmg:
+            - 5 # Skill DMG|{param5:P} DEF
+        shieldFlat:
+            - 6 # DMG Absorption|{param0:P} DEF+{param6:I}
+        shieldHeal:
+            - 1 # Healing|{param1:F1P} DEF+{param7:I}
+        shieldHealFlat:
+            - 7 # Healing|{param1:F1P} DEF+{param7:I}
+    burst:
+        burst:
+            - 0 # Burst DMG|{param0:F1P}
+        burstskill:
+            - 1 # Skill DMG|{param1:F1P}
+        defconv:
+            - 2 # ATK Bonus|{param2:P} DEF
