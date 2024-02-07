@@ -134,8 +134,7 @@ func (c *Character) Burst(map[string]int) (action.Info, error) {
 }
 
 func (c *Character) NextQueueItemIsValid(a action.Action, p map[string]int) error {
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		switch c.Weapon.Class {
 		case info.WeaponClassSword, info.WeaponClassSpear:
 			// cannot do charge on most sword/polearm characters without attack beforehand

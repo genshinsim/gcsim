@@ -94,8 +94,7 @@ func (c *char) Condition(fields []string) (any, error) {
 
 func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
 	// can use charge without attack beforehand unlike most of the other sword users
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		return nil
 	}
 	return c.NextQueueItemIsValid(a, p)
