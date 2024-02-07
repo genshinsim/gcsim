@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -129,4 +131,18 @@ func (c *Character) Skill(map[string]int) (action.Info, error) {
 }
 func (c *Character) Burst(map[string]int) (action.Info, error) {
 	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.CharWrapper.Base.Key)
+}
+
+func (c *Character) NextQueueItemIsValid(next action.Eval) error {
+	switch next.Action {
+	case action.ActionCharge:
+		switch c.Weapon.Class {
+		case info.WeaponClassSword, info.WeaponClassSpear:
+			// cannot do charge on most sword/polearm characters without attack beforehand
+			if c.Core.Player.LastAction.Type != action.ActionAttack {
+				return fmt.Errorf("%v: %w", c.CharWrapper.Base.Key, player.ErrInvalidChargeAction)
+			}
+		}
+	}
+	return nil
 }
