@@ -1,6 +1,8 @@
 package wriothesley
 
 import (
+	"fmt"
+
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -8,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -82,4 +85,15 @@ func (c *char) Condition(fields []string) (any, error) {
 	default:
 		return c.Character.Condition(fields)
 	}
+}
+
+func (c *char) NextQueueItemIsValid(next action.Eval) error {
+	// cannot use charge without attack beforehand unlike most of the other catalyst users
+	switch next.Action {
+	case action.ActionCharge:
+		if c.Core.Player.LastAction.Type != action.ActionAttack {
+			return fmt.Errorf("%v: %v", c.CharWrapper.Base.Key, player.ErrInvalidChargeAction)
+		}
+	}
+	return c.NextQueueItemIsValid(next)
 }

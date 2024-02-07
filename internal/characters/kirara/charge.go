@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var (
@@ -29,10 +28,6 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	if c.Core.Player.LastAction.Type != action.ActionAttack {
-		return action.Info{}, player.ErrInvalidChargeAction
-	}
-
 	for i, mult := range charge {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
