@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var chargeFrames [][]int
@@ -33,6 +34,10 @@ func init() {
 }
 
 func (c *Traveler) ChargeAttack(p map[string]int) (action.Info, error) {
+	if c.Core.Player.LastAction.Type != action.ActionAttack {
+		return action.Info{}, player.ErrInvalidChargeAction
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagExtra,

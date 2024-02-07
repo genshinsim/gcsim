@@ -6,7 +6,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -40,7 +40,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -283,7 +283,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -317,7 +317,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -385,7 +385,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -488,7 +488,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -900,7 +900,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -934,7 +934,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -968,7 +968,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1006,7 +1006,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1040,7 +1040,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1074,7 +1074,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1143,7 +1143,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1177,7 +1177,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1245,7 +1245,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1313,7 +1313,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1381,7 +1381,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1449,7 +1449,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1619,7 +1619,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1722,7 +1722,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1756,7 +1756,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1825,7 +1825,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1928,7 +1928,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1962,7 +1962,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2029,8 +2029,12 @@
       "legal": true
     },
     {
+      "ability": "charge",
+      "notes": "Only available if in skill state. Need to use attack right before charge."
+    },
+    {
       "ability": "aim",
-      "legal": true
+      "notes": "Only available if not in skill state."
     },
     {
       "ability": "skill",
@@ -2064,7 +2068,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2132,7 +2136,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2166,7 +2170,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2200,7 +2204,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2234,7 +2238,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2268,7 +2272,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2378,7 +2382,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2412,7 +2416,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2446,7 +2450,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2488,7 +2492,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2625,7 +2629,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2727,7 +2731,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -2761,7 +2765,7 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
