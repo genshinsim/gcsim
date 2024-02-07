@@ -133,6 +133,12 @@ func queuePhase(s *Simulation) (stateFn, error) {
 		// we do the same skip here as if eval doesn't have any more ations
 		return s.advanceFrames(1, queuePhase)
 	}
+	// check if the next queue item is valid
+	// example: most sword characters can't do charge if the previous action was not attack
+	currentChar := s.C.Player.ActiveChar()
+	if err := currentChar.NextQueueItemIsValid(*next); err != nil {
+		return nil, err
+	}
 	// handle sleep here since it's just a frame skip before requeing next
 	if next.Action == action.ActionWait {
 		return s.handleWait(next)
@@ -149,7 +155,7 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	}
 	// append swap if called for char is not active
 	// check if NoChar incase this is some special action that does not require a character
-	if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
+	if next.Char != keys.NoChar && next.Char != currentChar.Base.Key {
 		s.queue = append(s.queue, &action.Eval{
 			Char:   next.Char,
 			Action: action.ActionSwap,

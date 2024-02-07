@@ -32,6 +32,9 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot { return comb
 func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }
+func (c *Character) NextQueueItemIsValid(next action.Eval) error {
+	return nil
+}
 func (c *Character) ActionStam(a action.Action, p map[string]int) float64 { return 0 }
 func (c *Character) ReduceActionCooldown(a action.Action, v int)          {}
 func (c *Character) ResetActionCooldown(a action.Action)                  {}

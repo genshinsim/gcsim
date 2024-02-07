@@ -1,8 +1,12 @@
 package character
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
@@ -36,4 +40,18 @@ func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action
 		}
 	}
 	return true, action.NoFailure
+}
+
+func (c *Character) NextQueueItemIsValid(next action.Eval) error {
+	switch next.Action {
+	case action.ActionCharge:
+		switch c.Weapon.Class {
+		case info.WeaponClassSword, info.WeaponClassSpear:
+			// cannot do charge on most sword/polearm characters without attack beforehand
+			if c.Core.Player.LastAction.Type != action.ActionAttack {
+				return fmt.Errorf("%v: %v", c.CharWrapper.Base.Key, player.ErrInvalidChargeAction)
+			}
+		}
+	}
+	return nil
 }
