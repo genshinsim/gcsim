@@ -92,11 +92,11 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) NextQueueItemIsValid(next action.Eval) error {
+func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
 	// can use charge without attack beforehand unlike most of the other sword users
-	switch next.Action {
+	switch a {
 	case action.ActionCharge:
 		return nil
 	}
-	return c.NextQueueItemIsValid(next)
+	return c.NextQueueItemIsValid(a, p)
 }

@@ -69,12 +69,12 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) NextQueueItemIsValid(next action.Eval) error {
-	switch next.Action {
+func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+	switch a {
 	case action.ActionCharge:
 		if c.Core.Player.LastAction.Type != action.ActionAttack {
 			return fmt.Errorf("%v: %v", c.CharWrapper.Base.Key, player.ErrInvalidChargeAction)
 		}
 	}
-	return c.NextQueueItemIsValid(next)
+	return c.NextQueueItemIsValid(a, p)
 }

@@ -158,7 +158,7 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	}
 	// check if the next queue item is valid
 	// example: most sword characters can't do charge if the previous action was not attack
-	if err := currentChar.NextQueueItemIsValid(*next); err != nil {
+	if err := currentChar.NextQueueItemIsValid(next.Action, next.Param); err != nil {
 		return nil, err
 	}
 	s.queue = append(s.queue, next)

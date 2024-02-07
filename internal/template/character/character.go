@@ -133,8 +133,8 @@ func (c *Character) Burst(map[string]int) (action.Info, error) {
 	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.CharWrapper.Base.Key)
 }
 
-func (c *Character) NextQueueItemIsValid(next action.Eval) error {
-	switch next.Action {
+func (c *Character) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+	switch a {
 	case action.ActionCharge:
 		switch c.Weapon.Class {
 		case info.WeaponClassSword, info.WeaponClassSpear:

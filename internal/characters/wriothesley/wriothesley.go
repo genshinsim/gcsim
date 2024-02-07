@@ -87,13 +87,13 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) NextQueueItemIsValid(next action.Eval) error {
+func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
 	// cannot use charge without attack beforehand unlike most of the other catalyst users
-	switch next.Action {
+	switch a {
 	case action.ActionCharge:
 		if c.Core.Player.LastAction.Type != action.ActionAttack {
 			return fmt.Errorf("%v: %v", c.CharWrapper.Base.Key, player.ErrInvalidChargeAction)
 		}
 	}
-	return c.NextQueueItemIsValid(next)
+	return c.NextQueueItemIsValid(a, p)
 }
