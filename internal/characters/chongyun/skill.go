@@ -12,7 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -20,6 +19,7 @@ var skillFrames []int
 
 const (
 	skillHitmark   = 36
+	skillFieldKey  = "chongyunfield"
 	particleICDKey = "chongyun-particle-icd"
 )
 
@@ -32,11 +32,6 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	// if fieldSrc is < duration then this is prob a sac proc
-	// we need to stop the old field from ticking (by changing fieldSrc)
-	// and also trigger a4 delayed damage
-	src := c.Core.F
-
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Spirit Blade: Chonghua's Layered Frost",
@@ -52,92 +47,34 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames:   0.09 * 60,
 		CanBeDefenseHalted: false,
 	}
+
+	// handle field expiry (a4) on field end via sac greatsword / large amount of cd reduction
+	// need src to invalidate field ticks and a4 task
+	src := c.Core.F
+	c.fieldSrc = c.Core.F
+	// if the field is still up then need to invalidate existing a4 task and do damage before resnapshotting for new a4
+	// need to do this before the new skill area is determined
+	if c.Core.Status.Duration(skillFieldKey) > 0 {
+		c.a4(skillHitmark+45, c.Core.F, true) // ~45f from field expiring
+	}
+
+	// handle field damage / skill area
 	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 8)
-	c4CB := c.makeC4Callback()
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 2.5),
 		0,
 		skillHitmark,
 		c.particleCB,
-		c4CB,
+		c.makeC4Callback(),
 	)
 
-	ai = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Spirit Blade: Chonghua's Layered Frost (A4)",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   100,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
-	}
-	a4CB := func(a combat.AttackCB) {
-		e, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		e.AddResistMod(combat.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("chongyun-a4", 480),
-			Ele:   attributes.Cryo,
-			Value: -0.10,
-		})
-	}
-	snap := c.Snapshot(&ai)
-
-	// A4:
-	// When the field created by Spirit Blade: Chonghua's Layered Frost disappears,
-	// another spirit blade will be summoned to strike nearby opponents,
-	// dealing 100% of Chonghua's Layered Frost's Skill DMG as AoE Cryo DMG.
-	// Opponents hit by this blade will have their Cryo RES decreased by 10% for 8s.
-	hasA4 := c.Base.Ascension >= 4
-
-	// if field is overwriting last
-	// TODO: should really just make this a struct, keep a reference, and compare the reference instead
-	// of playing around with this int field
-	if src-c.fieldSrc < 600 && hasA4 {
-		// we're overriding previous field so trigger A4 here
-		atk := c.a4Snap
-		c.Core.QueueAttackEvent(atk, 1)
-	}
-
-	c.fieldSrc = src
-
-	if hasA4 {
-		// override previous snap
-		c.a4Snap = &combat.AttackEvent{
-			Info:     ai,
-			Snapshot: snap,
-		}
-		c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, a4CB)
-		if c4CB != nil {
-			c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, c4CB)
-		}
-
-		// A4 delayed damage + cryo resist shred
-		// TODO: assuming this is NOT affected by hitlag since it should be tied to deployable?
-		c.Core.Tasks.Add(func() {
-			// if src changed then that means the field changed already
-			if src != c.fieldSrc {
-				return
-			}
-			enemy := c.Core.Combat.ClosestEnemyWithinArea(c.skillArea, nil)
-			if enemy != nil {
-				c.a4Snap.Pattern = combat.NewCircleHitOnTarget(enemy, nil, 3.5)
-			} else {
-				c.a4Snap.Pattern = combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 3.5)
-			}
-			// TODO: this needs to be fixed still for sac gs
-			c.Core.QueueAttackEvent(c.a4Snap, 0)
-		}, 665)
-	}
+	// handle field creation
 	c.QueueCharTask(func() {
-		c.Core.Status.Add("chongyunfield", 600)
+		c.Core.Status.Add(skillFieldKey, 600)
 	}, skillHitmark)
 
+	// handle field ticks
 	// TODO: delay between when frost field start ticking?
 	for i := 0; i <= 600; i += 60 {
 		c.Core.Tasks.Add(func() {
@@ -151,6 +88,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.infuse(active)
 		}, i+skillHitmark)
 	}
+
+	// handle field expiry (a4) on field end via expiry
+	c.a4(655, c.Core.F, false)
 
 	c.SetCDWithDelay(action.ActionSkill, 900, 34)
 
