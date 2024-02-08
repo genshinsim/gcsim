@@ -149,23 +149,11 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	}
 	// append swap if called for char is not active
 	// check if NoChar incase this is some special action that does not require a character
-	nextQueueItemChar := s.C.Player.ActiveChar()
-	if next.Char != keys.NoChar && next.Char != nextQueueItemChar.Base.Key {
-		nextQueueItemChar, _ = s.C.Player.ByKey(next.Char)
+	if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
 		s.queue = append(s.queue, &action.Eval{
 			Char:   next.Char,
 			Action: action.ActionSwap,
 		})
-	}
-	// check if the next queue item is valid
-	// example: most sword characters can't do charge if the previous action was not attack
-	if err := nextQueueItemChar.NextQueueItemIsValid(next.Action, next.Param); err != nil {
-		switch {
-		case errors.Is(err, player.ErrInvalidChargeAction):
-			return nil, fmt.Errorf("%v: %w", nextQueueItemChar.Base.Key, player.ErrInvalidChargeAction)
-		default:
-			return nil, err
-		}
 	}
 	s.queue = append(s.queue, next)
 	return actionReadyCheckPhase, nil
@@ -177,6 +165,18 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 		return nil, errors.New("unexpected queue length is 0")
 	}
 	q := s.queue[0]
+
+	// check if the next queue item is valid
+	// example: most sword characters can't do charge if the previous action was not attack
+	char, _ := s.C.Player.ByKey(q.Char)
+	if err := char.NextQueueItemIsValid(q.Action, q.Param); err != nil {
+		switch {
+		case errors.Is(err, player.ErrInvalidChargeAction):
+			return nil, fmt.Errorf("%v: %w", char.Base.Key, player.ErrInvalidChargeAction)
+		default:
+			return nil, err
+		}
+	}
 
 	//TODO: this loop should be optimized to skip more than 1 frame at a time
 	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
