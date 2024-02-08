@@ -40,3 +40,15 @@ type monsterDescribeExcelConfig struct {
 	Icon            string `json:"icon"`
 	// ...
 }
+
+type curveConfig struct {
+	Type  string  `json:"type"`
+	Value float64 `json:"value"`
+	// ...
+}
+
+//nolint:tagliatelle // need to match datamine
+type monsterCurveExcelConfig struct {
+	Level      int           `json:"level"`
+	CurveInfos []curveConfig `json:"curveInfos"`
+}

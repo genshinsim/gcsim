@@ -1,10 +1,7 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"encoding/json"
-	"go/format"
 	"log"
 	"os"
 	"path/filepath"
@@ -38,12 +35,16 @@ func main() {
 
 	var configs []monsterExcelConfig
 	var describeConfigs []monsterDescribeExcelConfig
+	var curveConfigs []monsterCurveExcelConfig
 	var textMap map[string]string
 
 	if err := openConfig(&configs, dir, "MonsterExcelConfigData.json"); err != nil {
 		log.Fatalf("err: %v\n", err)
 	}
 	if err := openConfig(&describeConfigs, dir, "MonsterDescribeExcelConfigData.json"); err != nil {
+		log.Fatalf("err: %v\n", err)
+	}
+	if err := openConfig(&curveConfigs, dir, "MonsterCurveExcelConfigData.json"); err != nil {
 		log.Fatalf("err: %v\n", err)
 	}
 	if err := openConfig(&textMap, dir, "..", "TextMap", "TextMapEN.json"); err != nil {
@@ -55,6 +56,11 @@ func main() {
 		log.Fatalf("err: %v\n", err)
 	}
 
+	curves := getGrowthMult(curveConfigs)
+	if err := runGrowthMult(curves); err != nil {
+		log.Fatalf("err: %v\n", err)
+	}
+
 	names := getEnemyNames(profiles)
 	if err := runShortcuts(names); err != nil {
 		log.Fatalf("err: %v\n", err)
@@ -62,16 +68,27 @@ func main() {
 }
 
 func getEnemyProfiles(configs []monsterExcelConfig, describeConfigs []monsterDescribeExcelConfig, textMap map[string]string) []info.EnemyProfile {
+	visited := map[string]bool{}
 	profiles := make([]info.EnemyProfile, 0, len(configs))
 	for i := range configs {
-		monsterName := getMonsterName(configs[i].DescribeId, describeConfigs, textMap)
+		enemy := &configs[i]
+		monsterName := getMonsterName(enemy.DescribeId, describeConfigs, textMap)
 		if monsterName == "" { // not valid
 			continue
 		}
+		if enemy.PropGrowCurves[0].GrowCurve == "" { // no hp grow?
+			continue
+		}
 
-		info := toEnemyProfile(&configs[i])
+		// is already added
+		if _, ok := visited[monsterName]; ok {
+			continue
+		}
+
+		info := toEnemyProfile(enemy)
 		info.MonsterName = monsterName
 		profiles = append(profiles, info)
+		visited[monsterName] = true
 	}
 	return profiles
 }
@@ -86,21 +103,33 @@ func getEnemyNames(profiles []info.EnemyProfile) map[string]int {
 }
 
 func runCodeGen(profiles []info.EnemyProfile) error {
-	buf := new(bytes.Buffer)
-	writer := bufio.NewWriter(buf)
-	if err := writeMonsterInfo(profiles, writer); err != nil {
-		return err
-	}
-	writer.Flush()
-	content, err := format.Source(buf.Bytes())
+	fdata, err := os.Create("enemycurves.go.txt")
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile("enemystat.go.txt", content, 0o644)
+	defer fdata.Close()
+	tdata, err := template.New("enemycurves").Funcs(elementMap).Funcs(template.FuncMap{
+		"curveString": statCurveString,
+	}).Parse(tmplEnemyStats)
 	if err != nil {
 		return err
 	}
-	return nil
+	return tdata.Execute(fdata, profiles)
+}
+
+func runGrowthMult(profiles []map[info.EnemyStatCurve]float64) error {
+	fdata, err := os.Create("enemygrowth.go.txt")
+	if err != nil {
+		return err
+	}
+	defer fdata.Close()
+	tdata, err := template.New("enemygrowth").Funcs(template.FuncMap{
+		"curveString": statCurveString,
+	}).Parse(tmplGrowth)
+	if err != nil {
+		return err
+	}
+	return tdata.Execute(fdata, profiles)
 }
 
 func runShortcuts(names map[string]int) error {
@@ -113,10 +142,7 @@ func runShortcuts(names map[string]int) error {
 	if err != nil {
 		return err
 	}
-	if err := tdata.Execute(fdata, names); err != nil {
-		return err
-	}
-	return nil
+	return tdata.Execute(fdata, names)
 }
 
 func openConfig(result interface{}, path ...string) error {
@@ -133,10 +159,7 @@ func openConfig(result interface{}, path ...string) error {
 }
 
 func toEnemyProfile(enemyInfo *monsterExcelConfig) info.EnemyProfile {
-	hpGrowCurve := 1
-	if enemyInfo.PropGrowCurves[0].GrowCurve == "GROW_CURVE_HP_2" {
-		hpGrowCurve = 2
-	}
+	hpGrowCurve := getStatCurve(enemyInfo.PropGrowCurves[0].GrowCurve)
 	drops := []info.HpDrop{}
 	for _, v := range enemyInfo.HpDrops {
 		if v.DropId == 0 || v.HpPercent == 0 {
@@ -180,18 +203,6 @@ func toEnemyProfile(enemyInfo *monsterExcelConfig) info.EnemyProfile {
 	}
 }
 
-func writeMonsterInfo(profiles []info.EnemyProfile, out *bufio.Writer) error {
-	t, err := template.New("enemystat").Funcs(elementMap).Parse(tmplEnemyStats)
-	if err != nil {
-		return err
-	}
-	err = t.Execute(out, profiles)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func getMonsterName(describeId int, describeConfigs []monsterDescribeExcelConfig, textMap map[string]string) string {
 	for i := range describeConfigs {
 		// find the info
@@ -211,15 +222,58 @@ func getMonsterName(describeId int, describeConfigs []monsterDescribeExcelConfig
 	return ""
 }
 
+func getGrowthMult(curveConfigs []monsterCurveExcelConfig) []map[info.EnemyStatCurve]float64 {
+	growthMult := make([]map[info.EnemyStatCurve]float64, 0)
+	for i := range curveConfigs {
+		curve := &curveConfigs[i]
+
+		levelGrowth := make(map[info.EnemyStatCurve]float64, 0)
+		for j := range curve.CurveInfos {
+			info := &curve.CurveInfos[j]
+
+			if stat := getStatCurve(info.Type); stat != 0 {
+				levelGrowth[stat] = info.Value
+			}
+		}
+		growthMult = append(growthMult, levelGrowth)
+	}
+	return growthMult
+}
+
+// TODO: protobuf?
+func getStatCurve(typ string) info.EnemyStatCurve {
+	switch typ {
+	case "GROW_CURVE_HP":
+		return info.GROW_CURVE_HP
+	case "GROW_CURVE_HP_2":
+		return info.GROW_CURVE_HP_2
+	case "GROW_CURVE_HP_ENVIRONMENT":
+		return info.GROW_CURVE_HP_ENVIRONMENT
+	}
+	return 0
+}
+
+func statCurveString(stat info.EnemyStatCurve) string {
+	switch stat {
+	case info.GROW_CURVE_HP:
+		return "GROW_CURVE_HP"
+	case info.GROW_CURVE_HP_2:
+		return "GROW_CURVE_HP_2"
+	case info.GROW_CURVE_HP_ENVIRONMENT:
+		return "GROW_CURVE_HP_ENVIRONMENT"
+	}
+	return ""
+}
+
 var tmplEnemyStats = `// Code generated DO NOT EDIT.
-package enemy
+package curves
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var monsterInfos = map[int]info.EnemyProfile{
+var EnemyMap = map[int]info.EnemyProfile{
 {{- range .}}
 	{{.Id}}: {
 		Resist: map[attributes.Element]float64{
@@ -233,17 +287,20 @@ var monsterInfos = map[int]info.EnemyProfile{
 			attributes.Physical: {{index .Resist Physical}},
 		},
 		ParticleDrops: []info.HpDrop{
-		{{range .ParticleDrops}} {{if .DropId}} {
+		{{- range .ParticleDrops}}
+			{{- if .DropId}}
+			{
 				DropId: {{.DropId}},
 				HpPercent: {{.HpPercent}},
 			},
-		{{end}} {{end}}
+			{{- end}}
+		{{- end}}
 		},
 		FreezeResist: {{.FreezeResist}},
 		HpBase: {{.HpBase}},
-		HpGrowCurve: {{.HpGrowCurve}},
+		HpGrowCurve: info.{{curveString .HpGrowCurve}},
 		Id: {{.Id}},
-		MonsterName : "{{.MonsterName}}",
+		MonsterName: "{{.MonsterName}}",
 	},
 {{- end}}
 }
@@ -255,6 +312,22 @@ var tmplShortcuts = `package shortcut
 var MonsterNameToID = map[string]int{
 {{- range $key, $value := .}}
 	"{{$key}}": {{$value}},
+{{- end}}
+}
+`
+
+var tmplGrowth = `package curves
+
+import "github.com/genshinsim/gcsim/pkg/core/info"
+
+// EnemyStatGrowthMult provide multiplier for each lvl with 0 being lvl 1
+var EnemyStatGrowthMult = []map[info.EnemyStatCurve]float64{
+{{- range $key, $value := .}}
+	{
+	{{- range $stat, $mult := $value}}
+		info.{{curveString $stat}}: {{$mult}},
+	{{- end}}
+	},
 {{- end}}
 }
 `

@@ -4,6 +4,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
 
+// TODO: protobuf?
+type EnemyStatCurve int
+
+//nolint:stylecheck,revive // want to match dm here
+const (
+	GROW_CURVE_HP EnemyStatCurve = iota + 1
+	GROW_CURVE_HP_2
+	GROW_CURVE_HP_ENVIRONMENT
+)
+
 type HpDrop struct {
 	DropId    int     `json:"drop_id"`
 	HpPercent float64 `json:"hp_percent"`
@@ -20,7 +30,7 @@ type EnemyProfile struct {
 	FreezeResist          float64               `json:"freeze_resist"`
 	ParticleDrops         []HpDrop              `json:"-"`
 	HpBase                float64               `json:"-"`
-	HpGrowCurve           int                   `json:"-"`
+	HpGrowCurve           EnemyStatCurve        `json:"-"`
 	Id                    int                   `json:"-"`
 	MonsterName           string                `json:"monster_name"`
 	Modified              bool                  `json:"modified"`
