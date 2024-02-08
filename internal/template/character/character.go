@@ -139,7 +139,7 @@ func (c *Character) NextQueueItemIsValid(a action.Action, p map[string]int) erro
 		case info.WeaponClassSword, info.WeaponClassSpear:
 			// cannot do charge on most sword/polearm characters without attack beforehand
 			if c.Core.Player.LastAction.Type != action.ActionAttack {
-				return fmt.Errorf("%v: %w", c.CharWrapper.Base.Key, player.ErrInvalidChargeAction)
+				return player.ErrInvalidChargeAction
 			}
 		}
 	}

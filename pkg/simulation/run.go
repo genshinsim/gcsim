@@ -159,7 +159,12 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	// check if the next queue item is valid
 	// example: most sword characters can't do charge if the previous action was not attack
 	if err := currentChar.NextQueueItemIsValid(next.Action, next.Param); err != nil {
-		return nil, err
+		switch {
+		case errors.Is(err, player.ErrInvalidChargeAction):
+			return nil, fmt.Errorf("%v: %w", currentChar.Base.Key, player.ErrInvalidChargeAction)
+		default:
+			return nil, err
+		}
 	}
 	s.queue = append(s.queue, next)
 	return actionReadyCheckPhase, nil
