@@ -160,19 +160,19 @@ All configs must have at least one enemy specified. Otherwise you will get an er
 To use custom HP or resistances with `type`, include them after `type`.
 Example:
 ```
-target lvl=100 type=eremitegalehunter[mult=1] radius=2 pos=0,2.4 hp=10000;
+target lvl=100 type=eremitegalehunter[hp_mult=1] radius=2 pos=0,2.4 hp=10000;
 ```
 :::
 
 :::info
-Optimal params may be added to the target type via `[]` after the enemy name.
+Optional params may be added to the target type via `[]` after the enemy name.
 :::
 
 #### Optional target type params
 | name | description | default |
 | --- | --- | --- |
 | `hp_mult` | HP multiplier for the enemy. The default is the Spiral Abyss multiplier. | 2.5 |
-| `particles` | Use particle theresholds from the enemy. Use `0` if you want to use a custom threshold (`pacticle_threshold`). | 1 |
+| `particles` | Use particle theresholds from the enemy. Use `0` if you want to use a custom threshold (`particle_threshold`). | 1 |
 
 :::info
 If you have multiple targets, make sure to set their starting position properly. 
