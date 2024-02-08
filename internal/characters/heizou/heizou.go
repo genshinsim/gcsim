@@ -84,5 +84,5 @@ func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
 	if a == action.ActionCharge && c.Core.Player.LastAction.Type != action.ActionAttack {
 		return player.ErrInvalidChargeAction
 	}
-	return c.NextQueueItemIsValid(a, p)
+	return c.Character.NextQueueItemIsValid(a, p)
 }
