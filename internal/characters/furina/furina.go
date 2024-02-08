@@ -97,5 +97,5 @@ func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
 	if a == action.ActionCharge {
 		return nil
 	}
-	return c.NextQueueItemIsValid(a, p)
+	return c.Character.NextQueueItemIsValid(a, p)
 }
