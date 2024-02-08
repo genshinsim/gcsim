@@ -111,6 +111,12 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
       { leading: true, trailing: true }
     )
   );
+  const handleSetError = (_: string | null, error: string | null) => {
+    if (error == null) {
+      return;
+    }
+    setError(error);
+  };
 
   return (
     <UpgradableViewer
@@ -126,7 +132,7 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
         mode={mode}
         gitCommit={gitCommit}
         setResult={updateResult.current}
-        setError={setError} />
+        setError={handleSetError} />
   );
 };
 
