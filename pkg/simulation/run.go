@@ -151,6 +151,7 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	// check if NoChar incase this is some special action that does not require a character
 	currentChar := s.C.Player.ActiveChar()
 	if next.Char != keys.NoChar && next.Char != currentChar.Base.Key {
+		currentChar, _ = s.C.Player.ByKey(next.Char)
 		s.queue = append(s.queue, &action.Eval{
 			Char:   next.Char,
 			Action: action.ActionSwap,
