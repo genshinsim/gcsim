@@ -178,7 +178,7 @@ issues:
     - linters:
         - stylecheck
         - revive
-      text: ".*Id should be .*ID"
+      text: ".*Ids? should be .*IDs?"
     - linters:
         - tagliatelle
       text: "got '_id' want 'id'" # play nice with MongoDB
