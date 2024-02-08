@@ -6,6 +6,7 @@ import (
 	"go/format"
 	"log"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -38,7 +39,9 @@ func (g *Generator) GenerateTemplate() error {
 			log.Printf("error marshalling %v data to proto\n", v.Key)
 			return err
 		}
-		os.WriteFile(fmt.Sprintf("%v/data_gen.pb", v.RelativePath), b, os.ModePerm)
+		// hack to work around stupid prototext not stable (on purpose - google u suck)
+		b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
+		os.WriteFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), b, 0o644)
 
 		buff := new(bytes.Buffer)
 		d := weaponData{
@@ -54,7 +57,7 @@ func (g *Generator) GenerateTemplate() error {
 		if err != nil {
 			return err
 		}
-		os.WriteFile(fmt.Sprintf("%v/%v_gen.go", v.RelativePath, v.PackageName), dst, os.ModePerm)
+		os.WriteFile(fmt.Sprintf("%v/%v_gen.go", v.RelativePath, v.PackageName), dst, 0o644)
 	}
 
 	return nil
@@ -70,7 +73,7 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
-//go:embed data_gen.pb
+//go:embed data_gen.textproto
 var pbData []byte
 var base *model.WeaponData
 

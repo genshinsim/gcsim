@@ -1,3 +1,21 @@
-package_name: "chongyun"
+package_name: chongyun
 genshin_id: 10000036
-key: "chongyun"
+key: chongyun
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:P}
+    skill:
+        skill:
+            - 0 # Skill DMG|{param0:P}
+        infuseDur:
+            - 1 # Infusion Duration|{param1:F1}s
+    burst:
+        burst:
+            - 0 # Skill DMG|{param0:P}

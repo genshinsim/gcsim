@@ -31,6 +31,10 @@ const (
 	PhyP
 	AtkSpd
 	DmgP
+	DelimBaseStat
+	BaseHP
+	BaseATK
+	BaseDEF
 	// delim
 	EndStatType
 )
@@ -92,6 +96,10 @@ var StatTypeString = [...]string{
 	"phys%",
 	"atkspd%",
 	"dmg%",
+	"",
+	"base_hp",
+	"base_atk",
+	"base_def",
 }
 
 func StrToStatType(s string) Stat {

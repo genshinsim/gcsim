@@ -7,8 +7,9 @@ import (
 )
 
 // Handler keeps track of all the active shields
-// Note that there's no need to distinguish between characters here since the shields are shared
-// However we do care which is active since only active is shielded
+// However we do care which is active since:
+// - global shields: only active is shielded
+// - 1 character shields: active only shieled if is target of shield
 type Handler struct {
 	shields []Shield
 	log     glog.Logger
@@ -31,8 +32,14 @@ func New(f *int, log glog.Logger, events event.Eventter) *Handler {
 
 func (h *Handler) Count() int { return len(h.shields) }
 
-func (h *Handler) PlayerIsShielded() bool {
-	return len(h.shields) > 0
+func (h *Handler) CharacterIsShielded(char, active int) bool {
+	for _, v := range h.shields {
+		target := v.ShieldTarget()
+		if (target == -1 && char == active) || target == char {
+			return true
+		}
+	}
+	return false
 }
 
 func (h *Handler) Get(t Type) Shield {
@@ -46,10 +53,10 @@ func (h *Handler) Get(t Type) Shield {
 
 // TODO: do shields get affected by hitlag? if so.. which timer? active char?
 func (h *Handler) Add(shd Shield) {
-	// we always assume over write of the same type
+	// we always assume over write of the same type and target
 	ind := -1
 	for i, v := range h.shields {
-		if v.Type() == shd.Type() {
+		if v.Type() == shd.Type() && v.ShieldTarget() == shd.ShieldTarget() {
 			ind = i
 		}
 	}
@@ -78,12 +85,16 @@ func (h *Handler) List() []Shield {
 	return h.shields
 }
 
-func (h *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float64 {
+func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element) float64 {
 	// find shield bonuses
 	bonus := h.ShieldBonus()
 	min := dmg // min of damage taken
 	n := 0
 	for _, v := range h.shields {
+		target := v.ShieldTarget()
+		if !((target == -1 && char == active) || target == char) {
+			continue
+		}
 		preHp := v.CurrentHP()
 		taken, ok := v.OnDamage(dmg, ele, bonus)
 		h.log.NewEvent(

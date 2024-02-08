@@ -1,3 +1,21 @@
-package_name: "kaveh"
+package_name: kaveh
 genshin_id: 10000081
-key: "kaveh"
+key: kaveh
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+    skill:
+        skill:
+            - 0 # Skill DMG|{param0:F1P}
+    burst:
+        burst:
+            - 0 # Skill DMG|{param0:F1P}
+        burstDmgBonus:
+            - 2 # Dendro Core Burst DMG Bonus|{param2:F1P}

@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
-//go:embed data_gen.pb
+//go:embed data_gen.textproto
 var pbData []byte
 var base *model.WeaponData
 

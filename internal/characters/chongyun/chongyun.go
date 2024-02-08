@@ -17,7 +17,7 @@ type char struct {
 	*tmpl.Character
 	skillArea combat.AttackPattern
 	fieldSrc  int
-	a4Snap    *combat.AttackEvent
+	a4Snap    combat.Snapshot
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

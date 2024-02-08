@@ -41,6 +41,20 @@ message AvatarSkillsData {
   int32 burst = 2 [ json_name = "burst" ];
   int32 attack = 3 [ json_name = "attack" ];
   double burst_energy_cost = 4 [ json_name = "burst_energy_cost" ];
+  repeated AvatarSkillExcelIndexData attack_scaling = 5 [ json_name = "attack_scaling"];
+  repeated AvatarSkillExcelIndexData skill_scaling = 6 [ json_name = "skill_scaling"];
+  repeated AvatarSkillExcelIndexData burst_scaling = 7 [ json_name = "burst_scaling"];
+}
+
+message AvatarSkillExcelIndexData {
+  int32 group_id = 1 [ json_name = "group_id" ];
+  int32 index = 2 [ json_name = "index"]; // position in the param list
+  repeated AvatarSkillExcelLevelData level_data = 3 [ json_name = "level_data" ];
+}
+
+message AvatarSkillExcelLevelData {
+  int32 level = 1 [ json_name = "level" ];
+  double value = 2 [ json_name = "value" ];
 }
 
 message WeaponDataMap {
@@ -73,7 +87,7 @@ message ArtifactDataMap {
 }
 
 message ArtifactData { 
-  int32 id = 1 [ json_name = "id" ]; 
+  int64 set_id = 1 [ json_name = "id" ]; 
   int64 text_map_id = 2 [ json_name = "text_map_id"];
   string key = 3 [ json_name = "key" ];
 }

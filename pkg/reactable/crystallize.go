@@ -97,6 +97,7 @@ func NewCrystallizeShield(index int, typ attributes.Element, src, lvl int, em fl
 	}
 
 	s.Tmpl.ActorIndex = index
+	s.Tmpl.Target = -1
 	s.Tmpl.Ele = typ
 	s.Tmpl.ShieldType = shield.Crystallize
 	s.Tmpl.Name = "Crystallize " + typ.String()

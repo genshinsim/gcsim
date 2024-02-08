@@ -1,3 +1,50 @@
-package_name: "raiden"
+package_name: raiden
 genshin_id: 10000052
-key: "raiden"
+key: raiden
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}+{param4:F1P}
+            - 3 # 4-Hit DMG|{param3:F1P}+{param4:F1P}
+        attack_5:
+            - 5 # 5-Hit DMG|{param5:F1P}
+        charge:
+            - 6 # Charged Attack DMG|{param6:F1P}
+    skill:
+        skill:
+            - 0 # Skill DMG|{param0:F1P}
+        skillBurstBonus:
+            - 3 # Elemental Burst DMG Bonus|{param3:F2P} Per Energy
+        skillTick:
+            - 1 # Coordinated ATK DMG|{param1:F1P}
+    burst:
+        attackB_1:
+            - 4 # 1-Hit DMG|{param4:F1P}
+        attackB_2:
+            - 5 # 2-Hit DMG|{param5:F1P}
+        attackB_3:
+            - 6 # 3-Hit DMG|{param6:F1P}
+        attackB_4:
+            - 7 # 4-Hit DMG|{param7:F1P}+{param8:F1P}
+            - 8 # 4-Hit DMG|{param7:F1P}+{param8:F1P}
+        attackB_5:
+            - 9 # 5-Hit DMG|{param9:F1P}
+        burstBase:
+            - 0 # Musou no Hitotachi Base DMG|{param0:P}
+        burstRestore:
+            - 16 # Musou Isshin Energy Restoration|{param16:F1}
+        chargeSword:
+            - 10 # Charged Attack DMG|{param10:F1P}+{param11:F1P}
+            - 11 # Charged Attack DMG|{param10:F1P}+{param11:F1P}
+        resolveBaseBonus:
+            - 1 # Resolve Bonus|{param1:F2P} Initial/{param2:F2P} ATK DMG Per Stack
+        resolveBonus:
+            - 2 # Resolve Bonus|{param1:F2P} Initial/{param2:F2P} ATK DMG Per Stack
+        resolveStackGain:
+            - 3 # Resolve Stacks Gained|{param3:F2} Per Energy Consumed

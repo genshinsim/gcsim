@@ -17,7 +17,7 @@ var aimedFrames [][]int
 var aimedHitmarks = []int{15, 86}
 
 func init() {
-	aimedFrames = make([][]int, 3)
+	aimedFrames = make([][]int, 2)
 
 	// Aimed Shot
 	aimedFrames[0] = frames.InitAbilSlice(23)

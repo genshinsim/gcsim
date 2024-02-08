@@ -22,9 +22,8 @@ func (b *Favonius) SetIndex(idx int)        { b.Index = idx }
 func (b *Favonius) Init() error             { return nil }
 func (b *Favonius) Data() *model.WeaponData { return b.data }
 
-func NewFavonius(data *model.WeaponData) core.NewWeaponFunc {
-	b := &Favonius{data: data}
-	return b.NewWeapon
+func NewFavonius(data *model.WeaponData) *Favonius {
+	return &Favonius{data: data}
 }
 
 func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

@@ -17,6 +17,9 @@ type Config struct {
 	Key            string   `yaml:"key,omitempty"`
 	Shortcuts      []string `yaml:"shortcuts,omitempty"`
 
+	// skill data generation
+	SkillDataMapping map[string]map[string][]int `yaml:"skill_data_mapping"`
+
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
 }
@@ -52,6 +55,7 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	g.chars = chars
 
 	for _, v := range chars {
+		// validate char config
 		if _, ok := g.data[v.Key]; ok {
 			return nil, fmt.Errorf("duplicated key %v found; second instance at %v", v.Key, v.RelativePath)
 		}
@@ -62,7 +66,6 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 		}
 		char.Key = v.Key
 		g.data[v.Key] = char
-		log.Printf("%v loaded ok\n", v.Key)
 	}
 
 	return g, nil

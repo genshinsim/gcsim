@@ -1,3 +1,35 @@
-package_name: "alhaitham"
+package_name: alhaitham
 genshin_id: 10000078
-key: "alhaitham"
+key: alhaitham
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+        attack_4:
+            - 4 # 4-Hit DMG|{param4:F1P}
+        attack_5:
+            - 5 # 5-Hit DMG|{param5:F1P}
+        charge:
+            - 6 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
+            - 6 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
+        lowPlunge:
+            - 10 # Low/High Plunge DMG|{param10:P}/{param11:P}
+    skill:
+        mirrorAtk:
+            - 3 # 1-Mirror Projection Attack DMG|{param3:F1P} ATK+{param4:F1P} Elemental Mastery
+        mirrorEm:
+            - 4 # 1-Mirror Projection Attack DMG|{param3:F1P} ATK+{param4:F1P} Elemental Mastery
+        rushAtk:
+            - 0 # Rush Attack DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+        rushEm:
+            - 1 # Rush Attack DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+    burst:
+        burstAtk:
+            - 0 # Single-Instance DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+        burstEm:
+            - 1 # Single-Instance DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery

@@ -190,7 +190,7 @@ func SetupResonance(s *core.Core) {
 					return false
 				}
 				atk := args[1].(*combat.AttackEvent)
-				if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
+				if s.Player.Shields.CharacterIsShielded(atk.Info.ActorIndex, s.Player.Active()) {
 					t.AddResistMod(combat.ResistMod{
 						Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
 						Ele:   attributes.Geo,
@@ -203,7 +203,7 @@ func SetupResonance(s *core.Core) {
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.DmgP] = .15
 			atkf := func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == ae.Info.ActorIndex {
+				if s.Player.Shields.CharacterIsShielded(ae.Info.ActorIndex, s.Player.Active()) {
 					return val, true
 				}
 				return nil, false
@@ -353,23 +353,24 @@ func (s *Simulation) handleHurt() {
 		amt := s.cfg.HurtSettings.Min + s.C.Rand.Float64()*(s.cfg.HurtSettings.Max-s.cfg.HurtSettings.Min)
 		s.cfg.HurtSettings.Active = false
 
-		ai := combat.AttackInfo{
-			ActorIndex: s.C.Player.Active(),
-			Abil:       "Hurt",
-			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Durability: 0,
-			Element:    s.cfg.HurtSettings.Element,
-			FlatDmg:    amt,
-		}
-		ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
-		ap.SkipTargets[targets.TargettablePlayer] = false
-		ap.SkipTargets[targets.TargettableEnemy] = true
-		ap.SkipTargets[targets.TargettableGadget] = true
-
-		s.C.QueueAttack(ai, ap, -1, f) // -1 to avoid snapshot
+		s.C.Tasks.Add(func() {
+			ai := combat.AttackInfo{
+				ActorIndex: s.C.Player.Active(),
+				Abil:       "Hurt",
+				AttackTag:  attacks.AttackTagNone,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Durability: 0,
+				Element:    s.cfg.HurtSettings.Element,
+				FlatDmg:    amt,
+			}
+			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			s.C.QueueAttack(ai, ap, -1, 0) // -1 to avoid snapshot
+		}, f)
 
 		s.C.Log.NewEventBuildMsg(glog.LogHurtEvent, -1, "hurt queued (once)").
 			Write("last", s.cfg.HurtSettings.LastHurt).
@@ -383,23 +384,24 @@ func (s *Simulation) handleHurt() {
 		amt := s.cfg.HurtSettings.Min + s.C.Rand.Float64()*(s.cfg.HurtSettings.Max-s.cfg.HurtSettings.Min)
 		s.cfg.HurtSettings.LastHurt = s.C.F + f
 
-		ai := combat.AttackInfo{
-			ActorIndex: s.C.Player.Active(),
-			Abil:       "Hurt",
-			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Durability: 0,
-			Element:    s.cfg.HurtSettings.Element,
-			FlatDmg:    amt,
-		}
-		ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
-		ap.SkipTargets[targets.TargettablePlayer] = false
-		ap.SkipTargets[targets.TargettableEnemy] = true
-		ap.SkipTargets[targets.TargettableGadget] = true
-
-		s.C.QueueAttack(ai, ap, -1, f) // -1 to avoid snapshot
+		s.C.Tasks.Add(func() {
+			ai := combat.AttackInfo{
+				ActorIndex: s.C.Player.Active(),
+				Abil:       "Hurt",
+				AttackTag:  attacks.AttackTagNone,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Durability: 0,
+				Element:    s.cfg.HurtSettings.Element,
+				FlatDmg:    amt,
+			}
+			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			s.C.QueueAttack(ai, ap, -1, 0) // -1 to avoid snapshot
+		}, f)
 
 		s.C.Log.NewEventBuildMsg(glog.LogHurtEvent, -1, "hurt queued").
 			Write("last", s.cfg.HurtSettings.LastHurt).
