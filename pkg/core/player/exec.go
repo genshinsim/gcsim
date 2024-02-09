@@ -15,10 +15,15 @@ import (
 //   - Insufficient energy (burst only)
 //   - Ability on cooldown
 //   - Player currently in animation
-var ErrActionNotReady = errors.New("action is not ready yet; cannot be executed")
-var ErrPlayerNotReady = errors.New("player still in animation; cannot execute action")
-var ErrInvalidAirborneAction = errors.New("player must use low_plunge or high_plunge while airborne")
-var ErrActionNoOp = errors.New("action is a noop")
+var (
+	// exec-specfic errors
+	ErrActionNotReady        = errors.New("action is not ready yet; cannot be executed")
+	ErrPlayerNotReady        = errors.New("player still in animation; cannot execute action")
+	ErrInvalidAirborneAction = errors.New("player must use low_plunge or high_plunge while airborne")
+	ErrActionNoOp            = errors.New("action is a noop")
+	// shared character-specific errors
+	ErrInvalidChargeAction = errors.New("need to use attack right before charge")
+)
 
 // ReadyCheck returns nil action is ready, else returns error representing why action is not ready
 func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int) error {

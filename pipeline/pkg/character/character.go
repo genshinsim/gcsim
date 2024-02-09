@@ -18,8 +18,7 @@ type Config struct {
 	Shortcuts      []string `yaml:"shortcuts,omitempty"`
 
 	// skill data generation
-	GenerateSkillData bool                      `yaml:"generate_skill_data"`
-	SkillDataMapping  map[string]map[int]string `yaml:"skill_data_mapping"`
+	SkillDataMapping map[string]map[string][]int `yaml:"skill_data_mapping"`
 
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
@@ -57,10 +56,6 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 
 	for _, v := range chars {
 		// validate char config
-		err := validateConfig(v)
-		if err != nil {
-			return nil, fmt.Errorf("invalid %v config: %w", v.Key, err)
-		}
 		if _, ok := g.data[v.Key]; ok {
 			return nil, fmt.Errorf("duplicated key %v found; second instance at %v", v.Key, v.RelativePath)
 		}
@@ -74,22 +69,6 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	}
 
 	return g, nil
-}
-
-func validateConfig(cfg Config) error {
-	// make sure no duplicated variable names
-	names := make(map[string]bool)
-
-	for _, v := range cfg.SkillDataMapping {
-		for _, varname := range v {
-			if _, ok := names[varname]; ok {
-				return fmt.Errorf("duplicate var name %v", varname)
-			}
-			names[varname] = true
-		}
-	}
-
-	return nil
 }
 
 func (g *Generator) Data() []*model.AvatarData {

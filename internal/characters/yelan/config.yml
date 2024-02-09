@@ -1,3 +1,28 @@
-package_name: "yelan"
+package_name: yelan
 genshin_id: 10000060
-key: "yelan"
+key: yelan
+skill_data_mapping:
+    attack:
+        aim:
+            - 4 # Aimed Shot|{param4:F1P}
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
+            - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
+        barb:
+            - 6 # Breakthrough Barb DMG|{param6:F2P} Max HP
+        fullaim:
+            - 5 # Fully-Charged Aimed Shot|{param5:P}
+    skill:
+        skill:
+            - 0 # Skill DMG|{param0:F1P} Max HP
+    burst:
+        burst:
+            - 0 # Skill DMG|{param0:F2P} Max HP
+        burstDice:
+            - 1 # Exquisite Throw DMG|{param1:F2P} Max HP ×3

@@ -1,3 +1,33 @@
-package_name: "kokomi"
+package_name: kokomi
 genshin_id: 10000054
-key: "kokomi"
+key: kokomi
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        charge:
+            - 3 # Charged Attack DMG|{param3:P}
+    skill:
+        skillDmg:
+            - 2 # Ripple DMG|{param2:F1P}
+        skillHealFlat:
+            - 1 # Regeneration|{param0:F1P} Max HP+{param1:I}
+        skillHealPct:
+            - 0 # Regeneration|{param0:F1P} Max HP+{param1:I}
+    burst:
+        burstBonusCharge:
+            - 4 # Charged Attack DMG Bonus|{param4:F1P} Max HP
+        burstBonusNormal:
+            - 3 # Normal Attack DMG Bonus|{param3:F1P} Max HP
+        burstBonusSkill:
+            - 8 # Bake-Kurage DMG Bonus|{param8:F1P} Max HP
+        burstDmg:
+            - 0 # Skill DMG|{param0:F1P} Max HP
+        burstHealFlat:
+            - 2 # HP Regeneration Per Hit|{param1:F2P} Max HP+{param2:I}
+        burstHealPct:
+            - 1 # HP Regeneration Per Hit|{param1:F2P} Max HP+{param2:I}

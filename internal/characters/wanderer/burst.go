@@ -59,8 +59,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.Tasks.Add(c.c2, delay)
-
 	for i := 0; i < 5; i++ {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 			delay+burstSnapshotDelay, delay+burstHitmark+i*burstHitmarkDelay)

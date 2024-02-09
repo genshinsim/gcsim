@@ -1,3 +1,28 @@
-package_name: "albedo"
+package_name: albedo
 genshin_id: 10000038
-key: "albedo"
+key: albedo
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}
+        attack_5:
+            - 4 # 5-Hit DMG|{param4:F1P}
+        charge:
+            - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+            - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+    skill:
+        skill:
+            - 0 # Skill DMG|{param0:P}
+        skillTick:
+            - 1 # Transient Blossom DMG|{param1:P} DEF
+    burst:
+        burst:
+            - 0 # Burst DMG|{param0:P}
+        burstPerBloom:
+            - 1 # Fatal Blossom DMG|{param1:F1P} each
