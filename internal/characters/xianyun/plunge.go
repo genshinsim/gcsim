@@ -54,15 +54,15 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("Xiangyun plunge while airborne due to Venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute.")
+		return action.Info{}, fmt.Errorf("xiangyun plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute.")
 	case player.AirborneXianyun:
 		return c.highPlunge(p)
 	default:
-		return action.Info{}, fmt.Errorf("Xiangyun high_plunge cannot be used")
+		return action.Info{}, fmt.Errorf("xiangyun high_plunge cannot be used")
 	}
 }
 
-func (c *char) driftcloudWave(p map[string]int) (action.Info, error) {
+func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, plungeRadius[c.skillCounter-1])
 	skillHitmark := plungeHitmarks[c.skillCounter-1]
 	ai := combat.AttackInfo{
@@ -119,6 +119,10 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) lowPlunge(p map[string]int) (action.Info, error) {
+	if c.Core.Player.CurrentState() != action.JumpState {
+		return action.Info{}, errors.New("only plunge after using jump")
+	}
+
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not Xianyun does a collision hit

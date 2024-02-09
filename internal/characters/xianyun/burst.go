@@ -70,15 +70,15 @@ func (c *char) BurstCast() {
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Starwicker-Heal-Initial",
-			Src:     instantHealp[c.TalentLvlBurst()]*atk + instantHealFlat[c.TalentLvlBurst()],
+			Src:     healInstantP[c.TalentLvlBurst()]*atk + healInstantFlat[c.TalentLvlBurst()],
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
 		c.AddStatus(burstKey, burstDuration, false)
-		c.AddStatus(StarwickerKey, burstDuration, true)
+		for _, char := range c.Core.Player.Chars() {
+			char.AddStatus(StarwickerKey, burstDuration, true)
+		}
 		c.starwickerStacks = 8
-
-		c.plungeDoTTrigger()
 
 		for i := burstStart + int(2.5*60); i <= burstStart+burstDuration; i += 2.5 * 60 {
 			c.Core.Tasks.Add(c.BurstHealDoT, i)
@@ -86,17 +86,28 @@ func (c *char) BurstCast() {
 	}, burstHitmark)
 }
 
-func (c *char) plungeDoTTrigger() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+func (c *char) burstPlungeDoTTrigger() {
+	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...interface{}) bool {
+		// ApplyAttack occurs only once per attack, so we do not need to add an ICD status
+		atk := args[0].(*combat.AttackEvent)
 
 		if atk.Info.AttackTag != attacks.AttackTagPlunge {
 			return false
 		}
+
 		if atk.Info.Durability == 0 {
 			// plunge collisions have 0 durability
 			return false
 		}
+
+		if !c.Core.Player.ActiveChar().StatusIsActive(StarwickerKey) {
+			return false
+		}
+
+		if c.starwickerStacks <= 0 {
+			return false
+		}
+
 		aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstDoTRadius)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -107,7 +118,7 @@ func (c *char) plungeDoTTrigger() {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
-			Mult:       burstDoT[c.TalentLvlBurst()],
+			Mult:       burstDot[c.TalentLvlBurst()],
 		}
 		c.Core.QueueAttack(
 			ai,
@@ -118,6 +129,8 @@ func (c *char) plungeDoTTrigger() {
 		c.QueueCharTask(func() {
 			c.starwickerStacks--
 			if c.starwickerStacks == 0 {
+				// Delay stack reduction and status removal until after the burstDotDelay
+				// so that A4 can still proc on the attack that triggers the burstDot.
 				c.DeleteStatus(StarwickerKey)
 			}
 		}, burstDoTDelay)
@@ -131,7 +144,7 @@ func (c *char) BurstHealDoT() {
 		Caller:  c.Index,
 		Target:  -1,
 		Message: "Starwicker-Heal-DoT",
-		Src:     healDoTp[c.TalentLvlBurst()]*atk + healdotflat[c.TalentLvlBurst()],
+		Src:     healDotP[c.TalentLvlBurst()]*atk + healDotFlat[c.TalentLvlBurst()],
 		Bonus:   c.Stat(attributes.Heal),
 	})
 }
