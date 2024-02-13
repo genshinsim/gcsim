@@ -11,9 +11,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c1ICDkey = "yaoyao-c1-stam-icd"
-const c2ICDkey = "yaoyao-c2-icd"
-const c6MegaRadishRad = 4.0
+const (
+	c1ICDkey        = "yaoyao-c1-stam-icd"
+	c2ICDkey        = "yaoyao-c2-icd"
+	c6MegaRadishRad = 4.0
+	c6HealMsg       = "Radish C6"
+)
 
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
@@ -85,27 +88,12 @@ func (yg *yuegui) c6(target geometry.Point) {
 	}
 	hi := player.HealInfo{
 		Caller:  yg.c.Index,
-		Message: "Radish C6",
+		Message: c6HealMsg,
 		Src:     yg.c.MaxHP() * 0.075,
 		Bonus:   yg.c.Stat(attributes.Heal),
 	}
 
 	c6MegaRadishAoE := combat.NewCircleHitOnTarget(target, nil, c6MegaRadishRad)
-	c6MegaRadishAoE.SkipTargets[targets.TargettablePlayer] = false
-	done := false
-	heal := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy && a.Target.Type() != targets.TargettablePlayer {
-			return
-		}
-
-		if done {
-			return
-		}
-		if yg.Core.Combat.Player().IsWithinArea(c6MegaRadishAoE) {
-			hi.Target = yg.Core.Player.Active()
-			yg.c.Core.Player.Heal(hi)
-			done = true
-		}
-	}
-	yg.Core.QueueAttackWithSnap(ai, yg.snap, c6MegaRadishAoE, c6TravelDelay, heal)
+	yg.Core.Tasks.Add(yg.c.heal(c6MegaRadishAoE, hi), c6TravelDelay)
+	yg.Core.QueueAttackWithSnap(ai, yg.snap, c6MegaRadishAoE, c6TravelDelay)
 }

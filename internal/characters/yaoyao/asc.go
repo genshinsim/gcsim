@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const a4Status = "yaoyao-a4"
@@ -33,7 +32,6 @@ func (c *char) a1Throw() {
 	target := enemy.Pos()
 
 	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
-	radishExplodeAoE.SkipTargets[targets.TargettablePlayer] = false
 
 	c.QueueCharTask(func() {
 		var hi player.HealInfo
@@ -50,12 +48,13 @@ func (c *char) a1Throw() {
 			hi = c.getSkillHealInfo(&snap)
 		}
 
+		delay := 1
+		c.Core.Tasks.Add(c.heal(radishExplodeAoE, hi), delay)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
 			radishExplodeAoE,
-			1,
-			c.makeHealCB(radishExplodeAoE, hi),
+			delay,
 			c.makeC2CB(),
 		)
 	}, travelDelay-1)

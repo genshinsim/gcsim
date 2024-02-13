@@ -4,6 +4,10 @@ import "github.com/genshinsim/gcsim/pkg/core/player"
 
 func (c *char) radishHeal(hi player.HealInfo) {
 	c.Core.Player.Heal(hi)
+	// c1 and a4 should not proc on c6 radish
+	if hi.Message == c6HealMsg {
+		return
+	}
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
