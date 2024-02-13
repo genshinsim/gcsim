@@ -56,6 +56,8 @@ func (c *char) a1cb() combat.AttackCBFunc {
 			c.a1Buffer[idx] += 1
 			char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
 			char.QueueCharTask(func() {
+				// tags currently aren't visible in the results UI
+				// the user can still access it using .char.tags.xianyun-a1
 				char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
 			}, a1Dur)
 		}

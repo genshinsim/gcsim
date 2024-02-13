@@ -1,6 +1,8 @@
 package xianyun
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -47,15 +49,18 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// check if first leap
+
 	if !c.StatusIsActive(skillStateKey) {
 		c.skillCounter = 0
 		c.SetCD(action.ActionSkill, 10*60)
+		c.skillEnemiesHit = nil
 	}
 
 	if c.skillCounter == 3 {
 		// Didn't plunge after the previous triple skill
 		c.skillCounter = 0
 		c.SetCD(action.ActionSkill, 10*60)
+		c.skillEnemiesHit = nil
 	}
 
 	//C2: After using White Clouds at Dawn, Xianyun's ATK will be increased by 20% for 15s.
@@ -75,12 +80,20 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius),
-		skillPressHitmark,
-		skillPressHitmark,
-	)
+	aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius)
+	targets := c.Core.Combat.EnemiesWithinArea(aoe, func(t combat.Enemy) bool {
+		return slices.Contains[[]targets.TargetKey](c.skillEnemiesHit, t.Key())
+	})
+
+	for _, t := range targets {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewSingleTargetHit(t.Key()),
+			skillPressHitmark,
+			skillPressHitmark,
+		)
+		c.skillEnemiesHit = append(c.skillEnemiesHit, t.Key())
+	}
 
 	c.skillSrc = c.Core.F
 	c.QueueCharTask(c.cooldownReduce(c.Core.F), skillStateDur)

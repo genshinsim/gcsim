@@ -17,7 +17,7 @@ var plungeHitmarks = []int{20, 30, 40}
 var plungeRadius = []float64{4, 5, 6.5}
 
 var highPlungeFrames []int
-var lowPlungeFrames []int
+var lowPlungeFramesXY []int
 
 const collisionHitmark = 38
 const highPlungeHitmark = 46
@@ -38,11 +38,11 @@ func init() {
 	highPlungeFrames[action.ActionSwap] = 64
 
 	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(62)
-	lowPlungeFrames[action.ActionAttack] = 60
-	lowPlungeFrames[action.ActionSkill] = 59
-	lowPlungeFrames[action.ActionDash] = 60
-	lowPlungeFrames[action.ActionJump] = 61
+	lowPlungeFramesXY = frames.InitAbilSlice(62)
+	lowPlungeFramesXY[action.ActionAttack] = 60
+	lowPlungeFramesXY[action.ActionSkill] = 59
+	lowPlungeFramesXY[action.ActionDash] = 60
+	lowPlungeFramesXY[action.ActionJump] = 61
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
@@ -54,9 +54,9 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("xiangyun plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute.")
+		return action.Info{}, fmt.Errorf("xiangyun plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute")
 	case player.AirborneXianyun:
-		return c.highPlunge(p)
+		return c.highPlungeXY(p)
 	default:
 		return action.Info{}, fmt.Errorf("xiangyun high_plunge cannot be used")
 	}
@@ -88,6 +88,7 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 	// reset window after leap
 	c.DeleteStatus(skillStateKey)
 	c.skillCounter = 0
+	c.skillEnemiesHit = nil
 	c.skillSrc = noSrcVal
 
 	return action.Info{
@@ -112,13 +113,13 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneVenti:
 		return action.Info{}, fmt.Errorf("xiangyun plunge while airborne due to venti hold E is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute")
 	case player.AirborneXianyun:
-		return c.lowPlunge(p)
+		return c.lowPlungeXY(p)
 	default:
 		return action.Info{}, fmt.Errorf("xiangyun low_plunge cannot be used")
 	}
 }
 
-func (c *char) lowPlunge(p map[string]int) (action.Info, error) {
+func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
 		return action.Info{}, errors.New("only plunge after using jump")
 	}
@@ -155,14 +156,14 @@ func (c *char) lowPlunge(p map[string]int) (action.Info, error) {
 	)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(lowPlungeFrames),
-		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFrames[action.ActionSkill],
+		Frames:          frames.NewAbilFunc(lowPlungeFramesXY),
+		AnimationLength: lowPlungeFramesXY[action.InvalidAction],
+		CanQueueAfter:   lowPlungeFramesXY[action.ActionSkill],
 		State:           action.PlungeAttackState,
 	}, nil
 }
 
-func (c *char) highPlunge(p map[string]int) (action.Info, error) {
+func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
 		return action.Info{}, errors.New("only plunge after using jump")
 	}

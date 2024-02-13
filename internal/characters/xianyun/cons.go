@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+var c2buffMod []float64 = nil
+
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
@@ -26,13 +28,17 @@ func (c *char) c2buff() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATKP] = 0.20
+
+	if c2buffMod == nil {
+		c2buffMod = make([]float64, attributes.EndStatType)
+		c2buffMod[attributes.ATKP] = 0.20
+	}
+
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("xianyun-c2", 15*60),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
-			return m, true
+			return c2buffMod, true
 		},
 	})
 }
