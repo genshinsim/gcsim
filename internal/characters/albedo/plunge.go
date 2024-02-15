@@ -1,4 +1,4 @@
-package bennett
+package albedo
 
 import (
 	"fmt"
@@ -15,27 +15,27 @@ var highPlungeFrames []int
 var lowPlungeFrames []int
 
 const collisionHitmark = 30
-const highPlungeHitmark = 35
-const lowPlungeHitmark = 33
+const highPlungeHitmark = 34
+const lowPlungeHitmark = 35
 
 func init() {
 	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(68)
-	highPlungeFrames[action.ActionAttack] = 47
-	highPlungeFrames[action.ActionSkill] = 46
-	highPlungeFrames[action.ActionBurst] = 47
-	highPlungeFrames[action.ActionDash] = 38
-	highPlungeFrames[action.ActionWalk] = 67
-	highPlungeFrames[action.ActionSwap] = 54
+	highPlungeFrames = frames.InitAbilSlice(66)
+	highPlungeFrames[action.ActionAttack] = 44
+	highPlungeFrames[action.ActionSkill] = 43
+	highPlungeFrames[action.ActionBurst] = 42
+	highPlungeFrames[action.ActionDash] = 39
+	highPlungeFrames[action.ActionJump] = 61
+	highPlungeFrames[action.ActionSwap] = 47
 
 	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(67)
-	lowPlungeFrames[action.ActionAttack] = 45
-	lowPlungeFrames[action.ActionSkill] = 46
-	lowPlungeFrames[action.ActionBurst] = 46
+	lowPlungeFrames = frames.InitAbilSlice(64)
+	lowPlungeFrames[action.ActionAttack] = 41
+	lowPlungeFrames[action.ActionSkill] = 42
+	lowPlungeFrames[action.ActionBurst] = 40
 	lowPlungeFrames[action.ActionDash] = 36
-	lowPlungeFrames[action.ActionWalk] = 66
-	lowPlungeFrames[action.ActionSwap] = 53
+	lowPlungeFrames[action.ActionJump] = 59
+	lowPlungeFrames[action.ActionSwap] = 46
 }
 
 // High Plunge attack damage queue generator
