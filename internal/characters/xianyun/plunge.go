@@ -12,11 +12,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var leapFrames []int
-var plungeHitmarks = []int{20, 30, 40}
+var driftcloudFrames [][]int
+var plungeHitmarks = []int{35, 40, 46}
 var plungeRadius = []float64{4, 5, 6.5}
 
-var highPlungeFrames []int
+var highPlungeFramesXY []int
 var lowPlungeFramesXY []int
 
 const collisionHitmark = 38
@@ -25,17 +25,40 @@ const lowPlungeHitmark = 44
 
 // TODO: missing plunge -> skill
 func init() {
+	driftcloudFrames = make([][]int, 3)
 	// skill (press) -> high plunge -> x
-	leapFrames = frames.InitAbilSlice(55) // max
-	leapFrames[action.ActionDash] = 43
-	leapFrames[action.ActionJump] = 50
-	leapFrames[action.ActionSwap] = 50
+	driftcloudFrames[0] = frames.InitAbilSlice(65) // max
+	driftcloudFrames[0][action.ActionAttack] = 57
+	driftcloudFrames[0][action.ActionCharge] = 56
+	driftcloudFrames[0][action.ActionSkill] = 56
+	driftcloudFrames[0][action.ActionBurst] = 54
+	driftcloudFrames[0][action.ActionDash] = 51
+	driftcloudFrames[0][action.ActionJump] = 56
+	driftcloudFrames[0][action.ActionSwap] = 49
+
+	driftcloudFrames[1] = frames.InitAbilSlice(70) // max
+	driftcloudFrames[1][action.ActionAttack] = 60
+	driftcloudFrames[1][action.ActionCharge] = 61
+	driftcloudFrames[1][action.ActionSkill] = 55
+	driftcloudFrames[1][action.ActionBurst] = 61
+	driftcloudFrames[1][action.ActionDash] = 55
+	driftcloudFrames[1][action.ActionJump] = 62
+	driftcloudFrames[1][action.ActionSwap] = 53
+
+	driftcloudFrames[2] = frames.InitAbilSlice(76) // max
+	driftcloudFrames[2][action.ActionAttack] = 66
+	driftcloudFrames[2][action.ActionCharge] = 67
+	driftcloudFrames[2][action.ActionSkill] = 64
+	driftcloudFrames[2][action.ActionBurst] = 67
+	driftcloudFrames[2][action.ActionDash] = 63
+	driftcloudFrames[2][action.ActionJump] = 68
+	driftcloudFrames[2][action.ActionSwap] = 62
 
 	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(66)
-	highPlungeFrames[action.ActionAttack] = 61
-	highPlungeFrames[action.ActionJump] = 65
-	highPlungeFrames[action.ActionSwap] = 64
+	highPlungeFramesXY = frames.InitAbilSlice(66)
+	highPlungeFramesXY[action.ActionAttack] = 61
+	highPlungeFramesXY[action.ActionJump] = 65
+	highPlungeFramesXY[action.ActionSwap] = 64
 
 	// low_plunge -> x
 	lowPlungeFramesXY = frames.InitAbilSlice(62)
@@ -54,11 +77,11 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("xiangyun plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute")
+		return action.Info{}, fmt.Errorf("xianyun plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute")
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("xiangyun high_plunge cannot be used")
+		return action.Info{}, fmt.Errorf("xianyun high_plunge cannot be used")
 	}
 }
 
@@ -92,10 +115,10 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 	c.skillSrc = noSrcVal
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(leapFrames),
+		Frames:          frames.NewAbilFunc(driftcloudFrames[c.skillCounter-1]),
 		State:           action.PlungeAttackState,
-		AnimationLength: leapFrames[action.InvalidAction],
-		CanQueueAfter:   leapFrames[action.ActionSkill],
+		AnimationLength: driftcloudFrames[c.skillCounter-1][action.InvalidAction],
+		CanQueueAfter:   driftcloudFrames[c.skillCounter-1][action.ActionSwap],
 	}, nil
 }
 
@@ -111,11 +134,11 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("xiangyun plunge while airborne due to venti hold E is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute")
+		return action.Info{}, fmt.Errorf("xianyun plunge while airborne due to venti hold E is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute")
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("xiangyun low_plunge cannot be used")
+		return action.Info{}, fmt.Errorf("xianyun low_plunge cannot be used")
 	}
 }
 
@@ -200,9 +223,9 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(highPlungeFrames),
-		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionAttack],
+		Frames:          frames.NewAbilFunc(highPlungeFramesXY),
+		AnimationLength: highPlungeFramesXY[action.InvalidAction],
+		CanQueueAfter:   highPlungeFramesXY[action.ActionAttack],
 		State:           action.PlungeAttackState,
 	}, nil
 }

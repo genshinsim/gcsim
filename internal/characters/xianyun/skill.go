@@ -12,14 +12,11 @@ import (
 )
 
 var skillLeapFrames [][]int
-var skillRecastFrames []int
 
 const (
-	skillPressHitmark        = 1
-	skillFirstRecastHitmark  = 41
-	skillSecondRecastHitmark = 18
-	skillStateDur            = 2 * 60
-	skillStateKey            = "cloud-transmogrification"
+	skillPressHitmark = 3
+	skillStateDur     = 2 * 60
+	skillStateKey     = "cloud-transmogrification"
 
 	// assuming the skill hitbox is the same size as the plunge collision hitbox
 	skillRadius = 1.5
@@ -33,18 +30,40 @@ const (
 func init() {
 	skillLeapFrames = make([][]int, 3)
 	// skill -> x (can only use skill, plunge or wait(?))
-	skillLeapFrames[0] = frames.InitAbilSlice(41)
-	skillLeapFrames[0][action.ActionHighPlunge] = 28
-	skillLeapFrames[0][action.ActionSkill] = skillFirstRecastHitmark
+	skillLeapFrames[0] = frames.InitAbilSlice(244)
+
+	skillLeapFrames[0][action.ActionSkill] = 14
+	skillLeapFrames[0][action.ActionBurst] = 40
+	skillLeapFrames[0][action.ActionDash] = 39
+	skillLeapFrames[0][action.ActionJump] = 41
+	skillLeapFrames[0][action.ActionWalk] = 43
+	skillLeapFrames[0][action.ActionSwap] = 36
+	skillLeapFrames[0][action.ActionHighPlunge] = 13
+	skillLeapFrames[0][action.ActionLowPlunge] = 13
 
 	// skill (recast) -> x (can only use skill, plunge or wait(?))
-	skillLeapFrames[1] = frames.InitAbilSlice(46)
-	skillLeapFrames[1][action.ActionHighPlunge] = 10
-	skillLeapFrames[1][action.ActionSkill] = skillSecondRecastHitmark
+	skillLeapFrames[1] = frames.InitAbilSlice(135)
+	skillLeapFrames[1][action.ActionSkill] = 15
+	skillLeapFrames[1][action.ActionBurst] = 61
+	skillLeapFrames[1][action.ActionDash] = 60
+	skillLeapFrames[1][action.ActionJump] = 60
+	skillLeapFrames[1][action.ActionWalk] = 66
+	skillLeapFrames[1][action.ActionSwap] = 59
+	skillLeapFrames[1][action.ActionHighPlunge] = 14
+	skillLeapFrames[1][action.ActionLowPlunge] = 14
+	// skillLeapFrames[1][action.ActionHighPlunge] = 10
+	// skillLeapFrames[1][action.ActionSkill] = skillSecondRecastHitmark
 
 	// skill (recast) -> x (can only use skill, plunge or wait(?))
-	skillLeapFrames[2] = frames.InitAbilSlice(30)
-	skillLeapFrames[2][action.ActionHighPlunge] = 42
+	skillLeapFrames[2] = frames.InitAbilSlice(130)
+	skillLeapFrames[2][action.ActionSkill] = 128
+	skillLeapFrames[2][action.ActionBurst] = 126
+	skillLeapFrames[2][action.ActionDash] = 130
+	skillLeapFrames[2][action.ActionJump] = 129
+	skillLeapFrames[2][action.ActionWalk] = 125
+	skillLeapFrames[2][action.ActionSwap] = 126
+	skillLeapFrames[2][action.ActionHighPlunge] = 18
+	skillLeapFrames[2][action.ActionLowPlunge] = 18
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -52,14 +71,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	if !c.StatusIsActive(skillStateKey) {
 		c.skillCounter = 0
-		c.SetCD(action.ActionSkill, 10*60)
+		c.SetCD(action.ActionSkill, 12*60)
 		c.skillEnemiesHit = nil
 	}
 
 	if c.skillCounter == 3 {
 		// Didn't plunge after the previous triple skill
 		c.skillCounter = 0
-		c.SetCD(action.ActionSkill, 10*60)
+		c.SetCD(action.ActionSkill, 12*60)
 		c.skillEnemiesHit = nil
 	}
 

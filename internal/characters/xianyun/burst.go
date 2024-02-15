@@ -15,8 +15,8 @@ var burstFrames []int
 const (
 	StarwickerKey = "xianyun-starwicker"
 
-	burstStart   = 47
-	burstHitmark = 78
+	burstHeal    = 2.5 * 60
+	burstHitmark = 75
 	burstKey     = "xianyun-burst"
 	// 16 seconds duration
 	burstDuration  = 16 * 60
@@ -27,17 +27,18 @@ const (
 
 // TODO: dummy frame data from shenhe
 func init() {
-	burstFrames = frames.InitAbilSlice(100) // Q -> E
-	burstFrames[action.ActionAttack] = 99   // Q -> N1
-	burstFrames[action.ActionDash] = 78     // Q -> D
-	burstFrames[action.ActionJump] = 79     // Q -> J
-	burstFrames[action.ActionWalk] = 98     // Q -> Walk
-	burstFrames[action.ActionSwap] = 98     // Q -> Swap
+	burstFrames = frames.InitAbilSlice(103) // Q -> J
+	burstFrames[action.ActionAttack] = 101  // Q -> N1
+	burstFrames[action.ActionCharge] = 102  // Q -> CA
+	burstFrames[action.ActionSkill] = 101   // Q -> E
+	burstFrames[action.ActionDash] = 101    // Q -> D
+	burstFrames[action.ActionWalk] = 101    // Q -> Walk
+	burstFrames[action.ActionSwap] = 99     // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 18*60)
-	c.ConsumeEnergy(4)
+	c.ConsumeEnergy(18)
 	c.BurstCast()
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -80,8 +81,8 @@ func (c *char) BurstCast() {
 		}
 		c.starwickerStacks = 8
 
-		for i := burstStart + int(2.5*60); i <= burstStart+burstDuration; i += 2.5 * 60 {
-			c.Core.Tasks.Add(c.BurstHealDoT, i)
+		for i := burstHeal; i <= burstHeal+burstDuration; i += 2.5 * 60 {
+			c.Core.Tasks.Add(c.BurstHealDoT, int(i))
 		}
 	}, burstHitmark)
 }

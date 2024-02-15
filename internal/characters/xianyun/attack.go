@@ -12,7 +12,7 @@ import (
 
 var (
 	attackFrames   [][]int
-	attackHitmarks = []int{17, 18, 28, 28}
+	attackHitmarks = []int{12, 14, 34, 38}
 	attackRadius   = []float64{1, 1, 1, 2}
 )
 
@@ -21,21 +21,48 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	// TODO: using sucrose frame
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 20)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 34)
 	attackFrames[0][action.ActionAttack] = 17
+	attackFrames[0][action.ActionCharge] = 19
+	attackFrames[0][action.ActionSkill] = attackHitmarks[0]
+	attackFrames[0][action.ActionBurst] = attackHitmarks[0]
+	attackFrames[0][action.ActionDash] = attackHitmarks[0]
+	attackFrames[0][action.ActionJump] = attackHitmarks[0]
+	attackFrames[0][action.ActionSwap] = attackHitmarks[0]
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 26)
-	attackFrames[1][action.ActionCharge] = 18
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 38)
+	attackFrames[1][action.ActionAttack] = 24
+	attackFrames[1][action.ActionCharge] = 23
+	attackFrames[1][action.ActionSkill] = attackHitmarks[1]
+	attackFrames[1][action.ActionBurst] = attackHitmarks[1]
+	attackFrames[1][action.ActionDash] = attackHitmarks[1]
+	attackFrames[1][action.ActionJump] = attackHitmarks[1]
+	attackFrames[1][action.ActionSwap] = attackHitmarks[1]
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 33)
-	attackFrames[2][action.ActionCharge] = 28
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 65)
+	attackFrames[2][action.ActionAttack] = 40
+	attackFrames[2][action.ActionCharge] = 40
+	attackFrames[2][action.ActionSkill] = attackHitmarks[2]
+	attackFrames[2][action.ActionBurst] = attackHitmarks[2]
+	attackFrames[2][action.ActionDash] = attackHitmarks[2]
+	attackFrames[2][action.ActionJump] = attackHitmarks[2]
+	attackFrames[2][action.ActionSwap] = attackHitmarks[2]
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[2], 54)
-	attackFrames[3][action.ActionAttack] = 51
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[2], 93)
+	attackFrames[3][action.ActionAttack] = 92
+	attackFrames[3][action.ActionAttack] = 91
+	attackFrames[3][action.ActionSkill] = attackHitmarks[3]
+	attackFrames[3][action.ActionBurst] = attackHitmarks[3]
+	attackFrames[3][action.ActionDash] = attackHitmarks[3]
+	attackFrames[3][action.ActionJump] = attackHitmarks[3]
+	attackFrames[3][action.ActionSwap] = attackHitmarks[3]
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 10
+	}
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -57,7 +84,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			attackRadius[c.NormalCounter],
 		),
 		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter]+travel,
 	)
 
 	defer c.AdvanceNormalIndex()
