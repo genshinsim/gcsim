@@ -77,11 +77,11 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("%s high_plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute", c.Base.Key.String())
+		return action.Info{}, fmt.Errorf("xianyun plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute")
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, fmt.Errorf("xianyun high_plunge cannot be used")
 	}
 }
 
@@ -135,11 +135,11 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("%s low_plunge while airborne due to venti hold E is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute", c.Base.Key.String())
+		return action.Info{}, fmt.Errorf("xianyun plunge while airborne due to venti hold E is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute")
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, fmt.Errorf("xianyun low_plunge cannot be used")
 	}
 }
 
