@@ -132,7 +132,9 @@ func (c *char) burstPlungeDoTTrigger() {
 			if c.starwickerStacks == 0 {
 				// Delay stack reduction and status removal until after the burstDotDelay
 				// so that A4 can still proc on the attack that triggers the burstDot.
-				c.DeleteStatus(StarwickerKey)
+				for _, char := range c.Core.Player.Chars() {
+					char.DeleteStatus(StarwickerKey)
+				}
 			}
 		}, burstDoTDelay)
 		return false

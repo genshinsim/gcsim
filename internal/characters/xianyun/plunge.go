@@ -86,8 +86,9 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
-	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, plungeRadius[c.skillCounter-1])
-	skillHitmark := plungeHitmarks[c.skillCounter-1]
+	skillInd := c.skillCounter - 1
+	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, plungeRadius[skillInd])
+	skillHitmark := plungeHitmarks[skillInd]
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Chasing Crane %v", c.skillCounter),
@@ -97,7 +98,7 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
-		Mult:       leap[c.skillCounter-1][c.TalentLvlSkill()],
+		Mult:       leap[skillInd][c.TalentLvlSkill()],
 	}
 
 	c.Core.QueueAttack(
@@ -115,10 +116,10 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 	c.skillSrc = noSrcVal
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(driftcloudFrames[c.skillCounter-1]),
+		Frames:          frames.NewAbilFunc(driftcloudFrames[skillInd]),
 		State:           action.PlungeAttackState,
-		AnimationLength: driftcloudFrames[c.skillCounter-1][action.InvalidAction],
-		CanQueueAfter:   driftcloudFrames[c.skillCounter-1][action.ActionSwap],
+		AnimationLength: driftcloudFrames[skillInd][action.InvalidAction],
+		CanQueueAfter:   driftcloudFrames[skillInd][action.ActionSwap],
 	}, nil
 }
 
