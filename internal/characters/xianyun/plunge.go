@@ -77,11 +77,11 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("%s high_plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute", c.Base.Key.String())	case player.AirborneXianyun:
+		return action.Info{}, fmt.Errorf("%s high_plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute", c.Base.Key.String())
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-        return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
 	}
 }
 
