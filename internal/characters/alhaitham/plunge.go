@@ -95,6 +95,8 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
 		highPlungeHitmarkXY,
 		highPlungeHitmarkXY,
+		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
+		c.projectionAttack,
 	)
 
 	return action.Info{
@@ -189,11 +191,14 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],
 	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadius),
 		lowPlungeHitmarkXY,
 		lowPlungeHitmarkXY,
+		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
+		c.projectionAttack,
 	)
 
 	return action.Info{
