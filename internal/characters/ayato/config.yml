@@ -16,6 +16,12 @@ skill_data_mapping:
             - 4 # 5-Hit DMG|{param4:F1P}
         ca:
             - 5 # Charged Attack DMG|{param5:F1P}
+        collision:
+            - 7 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         shunsuiken:
             - 0 # Shunsuiken 1-Hit DMG|{param0:F1P}
