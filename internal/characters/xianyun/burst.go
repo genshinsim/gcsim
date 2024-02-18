@@ -13,7 +13,7 @@ import (
 var burstFrames []int
 
 const (
-	StarwickerKey = "xianyun-starwicker"
+	StarwickerKey = player.XianyunAirborneBuff
 
 	burstHeal    = 2.5 * 60
 	burstHitmark = 75
