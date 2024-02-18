@@ -1,7 +1,6 @@
 package bennett
 
 import (
-	"github.com/genshinsim/gcsim/internal/characters/xianyun"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -16,7 +15,7 @@ func init() {
 }
 
 func (c *char) Jump(p map[string]int) (action.Info, error) {
-	if c.StatusIsActive(xianyun.StarwickerKey) {
+	if c.StatusIsActive(player.XianyunAirborneBuff) {
 		c.Core.Player.SetAirborne(player.AirborneXianyun)
 		return action.Info{
 			Frames:          frames.NewAbilFunc(xianyunJumpFrames),
