@@ -108,13 +108,15 @@
   "finaleofthedeep": [],
   "flowingpurity": [],
   "fleuvecendreferryman": [
-    "fleuve"
+    "fleuve",
+    "pipe"
   ],
   "forestregalia": [
     "regalia"
   ],
   "freedomsworn": [
-    "freedom"
+    "freedom",
+    "fs"
   ],
   "frostbearer": [],
   "fruitoffulfillment": [
@@ -190,7 +192,8 @@
     "missive"
   ],
   "mistsplitterreforged": [
-    "mistsplitter"
+    "mistsplitter",
+    "mist"
   ],
   "mitternachtswaltz": [
     "mitternacht",
@@ -359,6 +362,7 @@
   ],
   "thefirstgreatmagic": [
     "firstgreatmagic",
+    "tfgm",
     "fgm"
   ],
   "theflute": [

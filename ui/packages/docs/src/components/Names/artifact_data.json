@@ -30,7 +30,10 @@
     "desertpavilion",
     "dpc"
   ],
-  "vourukashasglow": [],
+  "vourukashasglow": [
+    "vourukasha",
+    "vg"
+  ],
   "echoesofanoffering": [
     "echoes"
   ],
@@ -83,7 +86,9 @@
     "noblesse",
     "no"
   ],
-  "nymphsdream": [],
+  "nymphsdream": [
+    "nymph"
+  ],
   "oceanhuedclam": [
     "ohc",
     "clam"
