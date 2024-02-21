@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -17,9 +18,12 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark = 98
-	burstDur     = 18.2 * 60
-	burstKey     = "furina-burst"
+	burstHitmark            = 98
+	burstDur                = 18.2 * 60
+	burstKey                = "furina-burst"
+	fanfareDebounceKey      = "furina-fanfare-debounce"
+	fanfareDrainToGainDelay = 6                                // estimation
+	fanfareDebounceDur      = 30 + fanfareDrainToGainDelay - 1 // estimation
 )
 
 func init() {
@@ -32,11 +36,40 @@ func init() {
 	burstFrames[action.ActionSwap] = 111   // Q -> Swap
 }
 
-func (c *char) addFanfare(amt float64) {
-	if c.Base.Cons >= 2 {
-		amt *= 3.5
+func (c *char) addFanfareFunc(amt float64) func() {
+	return func() {
+		if c.Base.Cons >= 2 {
+			amt *= 3.5
+		}
+		prevFanfare := c.curFanfare
+		c.curFanfare = min(c.maxC2Fanfare, c.curFanfare+amt)
+		c.Core.Log.NewEvent("Gained Fanfare", glog.LogCharacterEvent, c.Index).
+			Write("previous fanfare", prevFanfare).
+			Write("current fanfare", c.curFanfare)
 	}
-	c.curFanfare = min(c.maxC2Fanfare, c.curFanfare+amt)
+}
+
+func (c *char) queueFanfareGain(amt float64) {
+	// determine delay between hp drain and actual fanfare change based on debounce status being up or not
+	var delay int
+	if !c.StatusIsActive(fanfareDebounceKey) {
+		// leave a 1f window open for drains of other chars in same frame to queue fanfare gain until debounce status is added
+		// use a char bool to make sure only 1 debounce status add task is queued at a time
+		if !c.fanfareDebounceTaskQueued {
+			c.fanfareDebounceTaskQueued = true
+			c.Core.Tasks.Add(func() {
+				c.AddStatus(fanfareDebounceKey, fanfareDebounceDur, false) // TODO: unsure about hitlag
+				c.fanfareDebounceTaskQueued = false
+			}, 1)
+		}
+		// fanfare gain from drain has a delay even after drain is confirmed via server
+		delay = fanfareDrainToGainDelay
+	} else {
+		// fanfare gain from drain has to be delayed until debounce status is gone
+		delay = c.StatusDuration(fanfareDebounceKey)
+	}
+	// queue fanfare change
+	c.Core.Tasks.Add(c.addFanfareFunc(amt), delay)
 }
 
 func (c *char) burstInit() {
@@ -65,7 +98,7 @@ func (c *char) burstInit() {
 
 		char := c.Core.Player.ByIndex(di.ActorIndex)
 		amt := di.Amount / char.MaxHP() * 100
-		c.addFanfare(amt)
+		c.queueFanfareGain(amt)
 
 		return false
 	}, "furina-fanfare-on-hp-drain")
@@ -90,7 +123,7 @@ func (c *char) burstInit() {
 		char := c.Core.Player.ByIndex(target)
 		amt := (amount - overheal) / char.MaxHP() * 100
 
-		c.addFanfare(amt)
+		c.queueFanfareGain(amt)
 
 		return false
 	}, "furina-fanfare-on-heal")
