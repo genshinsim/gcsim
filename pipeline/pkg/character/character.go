@@ -22,10 +22,15 @@ type Config struct {
 	SkillDataMapping map[string]map[string][]int `yaml:"skill_data_mapping"`
 
 	// param validation
-	ActionParamKeys map[string][]string `yaml:"action_param_keys"`
+	ActionParamKeys map[string][]paramData `yaml:"action_param_keys"`
 
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
+}
+
+type paramData struct {
+	Param string `yaml:"param,omitempty"`
+	Desc  string `yaml:"desc,omitempty"`
 }
 
 type Generator struct {

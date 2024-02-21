@@ -23,7 +23,7 @@ type charData struct {
 	Data         *model.AvatarData
 	NASlice      map[string]*naSlice
 	SkillLvlData []skillLvlData
-	ParamKeys    map[int][]string
+	ParamKeys    map[int][]paramData
 }
 
 type naSlice struct {
@@ -119,7 +119,7 @@ func (c *charData) buildValidation() error {
 	if c.KeyVarName == "" {
 		c.KeyVarName = cases.Title(language.AmericanEnglish).String(c.Key)
 	}
-	c.ParamKeys = map[int][]string{}
+	c.ParamKeys = make(map[int][]paramData)
 	for k, v := range c.ActionParamKeys {
 		a := action.StringToAction(k)
 		if a == action.InvalidAction {
@@ -238,7 +238,7 @@ var paramKeysValidation = map[action.Action][]string {
 	{{- range $key, $slice := .ParamKeys}}
 	{{$key}}: {
 		{{- range $val := $slice -}}
-		"{{$val}}",
+		"{{$val.Param}}",
 		{{- end -}}
 	},
 	{{- end}}
