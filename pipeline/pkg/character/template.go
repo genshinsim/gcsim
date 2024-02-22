@@ -10,7 +10,10 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/model"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/proto"
 )
@@ -20,6 +23,7 @@ type charData struct {
 	Data         *model.AvatarData
 	NASlice      map[string]*naSlice
 	SkillLvlData []skillLvlData
+	ParamKeys    map[int][]paramData
 }
 
 type naSlice struct {
@@ -42,9 +46,10 @@ type skillParam struct {
 func (g *Generator) GenerateCharTemplate() error {
 	t, err := template.New("chartemplate").Parse(tmpl)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to build template: %w", err)
 	}
-	for _, v := range g.chars {
+	for i := range g.chars {
+		v := g.chars[i]
 		dm, ok := g.data[v.Key]
 		if !ok {
 			log.Printf("No data found for %v; skipping", v.Key)
@@ -52,7 +57,7 @@ func (g *Generator) GenerateCharTemplate() error {
 		}
 		err = writePBToFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), dm)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to write PB file: %w", err)
 		}
 
 		buff := new(bytes.Buffer)
@@ -63,15 +68,25 @@ func (g *Generator) GenerateCharTemplate() error {
 		if d.CharStructName == "" {
 			d.CharStructName = "char"
 		}
+		if d.ActionParamKeys != nil {
+			err := d.buildValidation()
+			if err != nil {
+				return fmt.Errorf("failed to build validation map for %v: %w", v.Key, err)
+			}
+		}
 		err := d.buildSkillData(dm)
 		if err != nil {
 			return fmt.Errorf("%v: %w", v.Key, err)
 		}
-		t.Execute(buff, d)
+		err = t.Execute(buff, d)
+		if err != nil {
+			return fmt.Errorf("failed to execute template for %v: %w", v.Key, err)
+		}
 		src := buff.Bytes()
 		dst, err := format.Source(src)
 		if err != nil {
-			return err
+			fmt.Println(string(src))
+			return fmt.Errorf("failed to gofmt on %v: %w", v.RelativePath, err)
 		}
 		os.WriteFile(fmt.Sprintf("%v/%v_gen.go", v.RelativePath, v.PackageName), dst, 0o644)
 	}
@@ -98,6 +113,22 @@ func writePBToFile(path string, dm *model.AvatarData) error {
 	// hack to work around stupid prototext not stable (on purpose - google u suck)
 	b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
 	return os.WriteFile(path, b, 0o644)
+}
+
+func (c *charData) buildValidation() error {
+	if c.KeyVarName == "" {
+		c.KeyVarName = cases.Title(language.AmericanEnglish).String(c.Key)
+	}
+	c.ParamKeys = make(map[int][]paramData)
+	for k, v := range c.ActionParamKeys {
+		a := action.StringToAction(k)
+		if a == action.InvalidAction {
+			return fmt.Errorf("invalid action string: %v", k)
+		}
+		c.ParamKeys[int(a)] = v
+	}
+
+	return nil
 }
 
 func (c *charData) buildSkillData(dm *model.AvatarData) error {
@@ -190,11 +221,29 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
+	{{if ne (len .ParamKeys) 0 -}}
+	"slices"
+	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/gcs/validation"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	{{- end }}
 )
 
 //go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
+{{if ne (len .ParamKeys) 0 -}}
+var paramKeysValidation = map[action.Action][]string {
+	{{- range $key, $slice := .ParamKeys}}
+	{{$key}}: {
+		{{- range $val := $slice -}}
+		"{{$val.Param}}",
+		{{- end -}}
+	},
+	{{- end}}
+}
+{{- end}}
 
 func init() {
 	base = &model.AvatarData{}
@@ -202,7 +251,24 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	{{- if ne (len .ParamKeys) 0}}
+	validation.RegisterCharParamValidationFunc(keys.{{.KeyVarName}}, ValidateParamKeys){{end}}
 }
+
+{{if ne (len .ParamKeys) 0 -}}
+func ValidateParamKeys(a action.Action, keys []string) error {
+	valid, ok := paramKeysValidation[a]
+	if !ok {
+		return nil
+	}
+	for _, v := range keys {
+		if !slices.Contains(valid, v) {
+			return fmt.Errorf("key %v is invalid for action %v", v, a.String())
+		}
+	}
+	return nil
+}
+{{- end}}
 
 func (x *{{.CharStructName}}) Data() *model.AvatarData {
 	return base

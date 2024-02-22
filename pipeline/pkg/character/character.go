@@ -15,13 +15,22 @@ type Config struct {
 	GenshinID      int32    `yaml:"genshin_id,omitempty"`
 	SubID          int32    `yaml:"sub_id,omitempty"`
 	Key            string   `yaml:"key,omitempty"`
+	KeyVarName     string   `yaml:"key_var_name,omitempty"`
 	Shortcuts      []string `yaml:"shortcuts,omitempty"`
 
 	// skill data generation
 	SkillDataMapping map[string]map[string][]int `yaml:"skill_data_mapping"`
 
+	// param validation
+	ActionParamKeys map[string][]paramData `yaml:"action_param_keys"`
+
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
+}
+
+type paramData struct {
+	Param string `yaml:"param,omitempty"`
+	Desc  string `yaml:"desc,omitempty"`
 }
 
 type Generator struct {
@@ -54,7 +63,8 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	}
 	g.chars = chars
 
-	for _, v := range chars {
+	for i := range chars {
+		v := chars[i]
 		// validate char config
 		if _, ok := g.data[v.Key]; ok {
 			return nil, fmt.Errorf("duplicated key %v found; second instance at %v", v.Key, v.RelativePath)
