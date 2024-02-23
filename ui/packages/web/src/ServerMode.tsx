@@ -5,10 +5,22 @@ import React, { ReactNode, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 let exec: ServerExecutor | undefined;
+const urlKey = "server-mode-url";
+const defaultURL = "http://127.0.0.1:54321";
 
 const ServerMode = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation();
-  const [url, setURL] = React.useState("http://127.0.0.1:54321");
+  const [url, setURL] = React.useState<string>((): string => {
+    const saved = localStorage.getItem(urlKey);
+    if (saved === null) {
+      localStorage.setItem(urlKey, defaultURL);
+      return defaultURL;
+    }
+    return saved;
+  });
+  React.useEffect(() => {
+    localStorage.setItem(urlKey, url);
+  }, [url]);
 
   React.useEffect(() => {
     if (exec != null) {

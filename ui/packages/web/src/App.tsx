@@ -3,8 +3,15 @@ import React from "react";
 import ServerMode from "./ServerMode";
 import WasmMode from "./WasmMode";
 
+const serverModeKey = "use-server-mode";
+
 const App = ({}) => {
-  const [serverMode, setServerMode] = React.useState(false);
+  const [serverMode, setServerMode] = React.useState<boolean>((): boolean => {
+    return localStorage.getItem(serverModeKey) === "true";
+  });
+  React.useEffect(() => {
+    localStorage.setItem(serverModeKey, serverMode.toString());
+  }, [serverMode]);
 
   const children = (
     <Switch
