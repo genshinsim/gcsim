@@ -44,7 +44,7 @@ const ServerMode = ({ children }: { children: ReactNode }) => {
       <FormGroup className="!m-0" label={t<string>("simple.workers")}>
         {children}
         <FormGroup
-          helperText="default: http://127.0.0.1.54321"
+          helperText="default: http://127.0.0.1:54321"
           label="Server URL"
           labelFor="text-input"
           labelInfo="(required)"
