@@ -75,7 +75,7 @@ func RunWithConfigCustomStats[T any](ctx context.Context, cfg string, simcfg *in
 		}
 	}
 
-	result, err := simulator.GenerateResult(cfg, simcfg, opts)
+	result, err := simulator.GenerateResult(cfg, simcfg)
 	if err != nil {
 		return result, err
 	}

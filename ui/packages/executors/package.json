@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@gcsim/types": "workspace:^",
+    "axios": "^1.6.7",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
