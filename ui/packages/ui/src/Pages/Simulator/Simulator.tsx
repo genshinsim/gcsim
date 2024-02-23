@@ -33,7 +33,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
   const [isReady, setReady] = useState<boolean | null>(null);
   useEffect(() => {
     const interval = setInterval(() => {
-      setReady(exec().ready());
+      exec().ready().then(res => setReady(res))
     }, 250);
     return () => clearInterval(interval);
   }, [exec]);

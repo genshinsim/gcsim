@@ -5,34 +5,41 @@ import { Executor } from "./Executor";
 export class ServerExecutor implements Executor {
   private ipaddr: string;
   private id: string; //unique id for this instance
-
-  //dumbass way to track ready status
-  private is_ready: boolean;
-  private ready_check_in_progress: boolean;
   private is_running: boolean;
+  private ready_cache: boolean | undefined;
 
   constructor(ipaddr: string) {
     this.ipaddr = ipaddr;
     this.id = "id" + new Date().getTime();
-    this.is_ready = false;
-    this.ready_check_in_progress = false;
     this.is_running = false;
-    this.ready_check();
   }
 
-  private async ready_check() {
-    if (this.ready_check_in_progress) {
-      return;
+  public set_url(ipaddr: string) {
+    this.ipaddr = ipaddr;
+    console.log("updating url ", ipaddr);
+    this.ready_cache = undefined;
+  }
+
+  public ready(): Promise<boolean> {
+    if (this.ready_cache != undefined) {
+      const ready = this.ready_cache;
+      return new Promise((resolve) => resolve(ready));
     }
-    this.ready_check_in_progress = true;
-    const resp = await axios.get(`${this.ipaddr}/ready/${this.id}`);
-    this.is_ready = resp.status == 200;
-    console.log("done ready check", this.is_ready);
-    this.ready_check_in_progress = false;
-  }
 
-  public ready(): boolean {
-    return this.is_ready;
+    this.ready_cache = undefined;
+    const c = this;
+    return new Promise((resolve) => {
+      axios
+        .get(`${this.ipaddr}/ready/${this.id}`)
+        .then(function (resp) {
+          c.ready_cache = resp.status == 200;
+          resolve(resp.status == 200);
+        })
+        .catch(function (error) {
+          c.ready_cache = false;
+          resolve(false);
+        });
+    });
   }
 
   public running(): boolean {

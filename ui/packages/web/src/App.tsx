@@ -4,7 +4,7 @@ import ServerMode from "./ServerMode";
 import WasmMode from "./WasmMode";
 
 const App = ({}) => {
-  const [serverMode, setServerMode] = React.useState(true);
+  const [serverMode, setServerMode] = React.useState(false);
 
   const children = (
     <Switch
