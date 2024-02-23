@@ -74,7 +74,7 @@ export class ServerExecutor implements Executor {
           }
         })
         .catch(function (error) {
-          reject(error);
+          reject(error.message);
         });
     });
   }
@@ -93,7 +93,7 @@ export class ServerExecutor implements Executor {
           resolve(resp.data);
         })
         .catch(function (error) {
-          reject(error);
+          reject(error.message);
         });
     });
   }
@@ -125,10 +125,10 @@ export class ServerExecutor implements Executor {
               }, 100);
             }
           })
-          .catch(function (error) {
+          .catch(function (resp) {
             //this should be either 404 or 500 if something went wrong
-            console.log("something went wrong fetch updated results", error);
-            reject(error);
+            console.log("something went wrong fetch updated results", resp);
+            reject(resp.message);
           });
       };
       axios
@@ -143,7 +143,7 @@ export class ServerExecutor implements Executor {
         .catch(function (error) {
           //this should be bad requests
           console.log(error);
-          reject(error);
+          reject(error.message);
           c.is_running = false;
         });
     });
