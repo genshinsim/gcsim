@@ -89,7 +89,7 @@ export class ServerExecutor implements Executor {
         })
         .then(function (resp) {
           //resp should be json body?
-          console.log(resp);
+          console.log("sample resp", resp);
           resolve(resp.data);
         })
         .catch(function (error) {
@@ -109,24 +109,42 @@ export class ServerExecutor implements Executor {
           .get(`${this.ipaddr}/results/${this.id}`)
           .then(function (resp) {
             console.log("result resp", resp);
-            const simres = JSON.parse(resp.data.result);
-            updateResult(simres, resp.data.hash);
-            //if not done make another update request
+            //handle error first before attempting to parse since data could be empty
+            if (resp.data.error !== "") {
+              c.is_running = false;
+              reject(resp.data.error);
+              return;
+            }
+            //sanity check just in case result is blank; shouldn't happen though
+            if (resp.data.result === "") {
+              c.is_running = false;
+              reject("unexpected response from server: blank result");
+              return;
+            }
+            let simres: SimResults;
+            try {
+              simres = JSON.parse(resp.data.result);
+              updateResult(simres, resp.data.hash);
+            } catch (e) {
+              c.is_running = false;
+              console.log("error decoding sim result");
+              reject("could not unmarshall sim result: " + e);
+              return;
+            }
+            //end sim now
             if (resp.data.done) {
               c.is_running = false;
-              if (resp.data.error !== "") {
-                reject(resp.data.error);
-              } else {
-                resolve(true);
-              }
-            } else {
-              setTimeout(() => {
-                update();
-              }, 100);
+              resolve(true);
+              return;
             }
+            //otherwise keep making update polling
+            setTimeout(() => {
+              update();
+            }, 100);
           })
           .catch(function (resp) {
             //this should be either 404 or 500 if something went wrong
+            c.is_running = false;
             console.log("something went wrong fetch updated results", resp);
             reject(resp.message);
           });
@@ -142,7 +160,7 @@ export class ServerExecutor implements Executor {
         })
         .catch(function (error) {
           //this should be bad requests
-          console.log(error);
+          console.log("error executing run", error);
           reject(error.message);
           c.is_running = false;
         });

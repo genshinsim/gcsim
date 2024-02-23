@@ -190,34 +190,50 @@ func (s *Server) latest() http.HandlerFunc {
 			Result string `json:"result"`
 			Hash   string `json:"hash"`
 			Done   bool   `json:"done"`
-			Error  error  `json:"error"`
+			Error  string `json:"error"`
 		}
 		res.Done = wk.done
-		b, err := wk.result.MarshalJSON()
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-		res.Result = string(b)
-		res.Hash, err = wk.result.Sign(s.ShareKey)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-		res.Error = wk.err
 
-		// at this point if worker is done, we should go ahead and delete the worker so it can be ready
-		// for next run
-		if res.Done {
-			s.Lock()
-			delete(s.pool, id)
-			s.Unlock()
+		// regardless of what results looks like, we should delete worker if done
+		defer func() {
+			if res.Done {
+				s.Lock()
+				delete(s.pool, id)
+				s.Unlock()
+			}
+		}()
+
+		s.Log.Info("found data", "id", id, "res.Error", res.Error, "res.Done", res.Done)
+		if wk.err == nil {
+			// if no error then we expect there to be some kind of result
+			if wk.result == nil {
+				s.Log.Info("unexpected result is nil", "id", id)
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("unexpected result is blank"))
+				return
+			}
+			b, err := wk.result.MarshalJSON()
+			if err != nil {
+				s.Log.Info("error marshalling result to json", "id", id, "err", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte(err.Error()))
+				return
+			}
+			res.Result = string(b)
+			res.Hash, err = wk.result.Sign(s.ShareKey)
+			if err != nil {
+				s.Log.Info("error signing result", "id", id, "err", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte(err.Error()))
+				return
+			}
+		} else {
+			res.Error = wk.err.Error()
 		}
 
 		msg, err := json.Marshal(res)
 		if err != nil {
+			s.Log.Info("error marshalling final response to json", "id", id, "err", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
@@ -232,13 +248,16 @@ func (s *Server) cancel() http.HandlerFunc {
 		id := chi.URLParam(r, "id")
 		wk, ok := s.pool[id]
 		if !ok {
+			s.Log.Info("cancel request received; worker does not exist", "id", id)
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
 		if wk.done {
+			s.Log.Info("cancel request received; already done", "id", id)
 			w.WriteHeader(http.StatusOK)
 			return
 		}
+		s.Log.Info("cancelling run", "id", id)
 		close(wk.cancel)
 		wk.done = true
 		w.WriteHeader(http.StatusOK)

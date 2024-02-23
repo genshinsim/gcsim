@@ -56,7 +56,7 @@ func (w *worker) run(workerCount, flushInterval int) {
 		return
 	}
 	simcfg.Settings.NumberOfWorkers = workerCount
-	w.log.Info("parse ok", "id", w.id, "cfg", simcfg)
+	w.log.Info("parse ok", "id", w.id)
 
 	aggregators, err := setupAggregators(simcfg)
 	if err != nil {
@@ -71,9 +71,9 @@ func (w *worker) run(workerCount, flushInterval int) {
 	errCh := make(chan error)
 	workChan := make(chan job)
 	for i := 0; i < simcfg.Settings.NumberOfWorkers; i++ {
-		w.log.Info("spawning worker", "id", w.id, "i", i)
 		go w.iter(workChan, respCh, errCh)
 	}
+	w.log.Info("spawned worker", "id", w.id, "count", simcfg.Settings.NumberOfWorkers)
 	go func() {
 		// make all the seeds
 		wip := 0

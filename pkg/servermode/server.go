@@ -46,6 +46,8 @@ func New(opts ...ConfigOpt) (*Server, error) {
 	s.Router = chi.NewRouter()
 	s.routes()
 
+	s.Log.Info("server initialized")
+
 	return s, nil
 }
 
