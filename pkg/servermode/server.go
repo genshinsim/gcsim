@@ -68,6 +68,13 @@ func WithShareKey(key string) ConfigOpt {
 	}
 }
 
+func WithTimeout(dur time.Duration) ConfigOpt {
+	return func(cfg *Config) error {
+		cfg.Timeout = dur
+		return nil
+	}
+}
+
 func (s *Server) routes() {
 	s.Log.Debug("setting up server routes for preview generation server")
 	s.Router.Use(middleware.Logger)

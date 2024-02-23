@@ -3,6 +3,7 @@ package servermode
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/genshinsim/gcsim/pkg/simulator"
@@ -167,6 +168,9 @@ func (s *Server) run() http.HandlerFunc {
 					// context must have timed out
 					close(wk.cancel)
 					wk.done = true
+					if wk.err == nil {
+						wk.err = fmt.Errorf("execution timed out after %s", s.Timeout)
+					}
 					return
 				}
 			}
