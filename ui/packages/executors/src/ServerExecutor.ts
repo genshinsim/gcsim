@@ -73,8 +73,17 @@ export class ServerExecutor implements Executor {
             });
           }
         })
-        .catch(function (error) {
-          reject(error.message);
+        .catch(function (resp) {
+          console.log("something went wrong validating", resp);
+          if (resp.code === "ERR_NETWORK") {
+            reject("Network error encountered communicating with server");
+          }
+          {
+            reject(
+              "Unknown error encountered communicating with server: " +
+                resp.message
+            );
+          }
         });
     });
   }
@@ -92,8 +101,17 @@ export class ServerExecutor implements Executor {
           console.log("sample resp", resp);
           resolve(resp.data);
         })
-        .catch(function (error) {
-          reject(error.message);
+        .catch(function (resp) {
+          console.log("something went wrong fetch sample", resp);
+          if (resp.code === "ERR_NETWORK") {
+            reject("Network error encountered communicating with server");
+          }
+          {
+            reject(
+              "Unknown error encountered communicating with server: " +
+                resp.message
+            );
+          }
         });
     });
   }
@@ -146,7 +164,15 @@ export class ServerExecutor implements Executor {
             //this should be either 404 or 500 if something went wrong
             c.is_running = false;
             console.log("something went wrong fetch updated results", resp);
-            reject(resp.message);
+            if (resp.code === "ERR_NETWORK") {
+              reject("Network error encountered communicating with server");
+            }
+            {
+              reject(
+                "Unknown error encountered communicating with server: " +
+                  resp.message
+              );
+            }
           });
       };
       axios
