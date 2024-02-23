@@ -152,11 +152,11 @@ func (s *Server) run() http.HandlerFunc {
 		s.Unlock()
 
 		// start worker
-		go wk.run(s.cfg.WorkerCount)
+		go wk.run(s.WorkerCount, s.FlushInterval)
 
 		// add a timeout
 		go func() {
-			ctx, cancel := context.WithTimeout(context.Background(), s.cfg.Timeout)
+			ctx, cancel := context.WithTimeout(context.Background(), s.Timeout)
 			defer cancel()
 			for {
 				select {
@@ -200,7 +200,7 @@ func (s *Server) latest() http.HandlerFunc {
 			return
 		}
 		res.Result = string(b)
-		res.Hash, err = wk.result.Sign(s.cfg.ShareKey)
+		res.Hash, err = wk.result.Sign(s.ShareKey)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))

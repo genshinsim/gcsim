@@ -36,7 +36,7 @@ func (w *worker) handleErr(err error) {
 	w.result = nil
 }
 
-func (w *worker) run(workerCount int) {
+func (w *worker) run(workerCount, flushInterval int) {
 	w.log.Info("worker run started", "id", w.id)
 	// handle panic
 	defer func() {
@@ -124,8 +124,8 @@ iters:
 			break iters
 		}
 		// flush and update results
-		if count > lastFlush+10 {
-			w.log.Info("flushing results", "id", w.id, "count", count, "flush", lastFlush)
+		if count-lastFlush > flushInterval {
+			w.log.Debug("flushing results", "id", w.id, "count", count, "flush", lastFlush)
 			lastFlush = count
 			stats := flush(aggregators)
 			w.result.Statistics = stats

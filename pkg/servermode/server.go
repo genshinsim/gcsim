@@ -13,42 +13,57 @@ import (
 	"github.com/go-chi/cors"
 )
 
+type ConfigOpt func(cfg *Config) error
+
 type Config struct {
-	ShareKey    string
-	Timeout     time.Duration
-	WorkerCount int
+	ShareKey      string
+	Timeout       time.Duration
+	WorkerCount   int
+	FlushInterval int
+	Log           *slog.Logger
 }
 
 type Server struct {
 	Router *chi.Mux
-	Log    *slog.Logger
-	cfg    Config
+	Config
 
 	// track work
 	sync.Mutex                    // lock for when we need to update results i.e. at flush or final
 	pool       map[string]*worker // tracker workers
 }
 
-func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
-	s := &Server{
-		cfg:  cfg,
-		pool: make(map[string]*worker),
-	}
-	s.Router = chi.NewRouter()
-	for _, f := range cust {
-		err := f(s)
-		if err != nil {
+func New(opts ...ConfigOpt) (*Server, error) {
+	cfg := &Config{}
+	for _, opt := range opts {
+		if err := opt(cfg); err != nil {
 			return nil, err
 		}
 	}
-	if s.Log == nil {
-		s.Log = slog.New(slog.NewTextHandler(os.Stdout, nil))
-		s.Log.Info("logger initiated")
+	s := &Server{
+		Config: *cfg,
+		pool:   make(map[string]*worker),
 	}
-
+	s.Router = chi.NewRouter()
 	s.routes()
 
 	return s, nil
+}
+
+func WithDefaults() ConfigOpt {
+	return func(cfg *Config) error {
+		cfg.Log = slog.New(slog.NewTextHandler(os.Stdout, nil))
+		cfg.Timeout = time.Minute * 10
+		cfg.WorkerCount = 10
+		cfg.FlushInterval = 25
+		return nil
+	}
+}
+
+func WithShareKey(key string) ConfigOpt {
+	return func(cfg *Config) error {
+		cfg.ShareKey = key
+		return nil
+	}
 }
 
 func (s *Server) routes() {

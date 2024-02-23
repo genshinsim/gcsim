@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/genshinsim/gcsim/pkg/servermode"
 )
@@ -18,11 +17,10 @@ func main() {
 		shareKey = os.Getenv("GCSIM_SHARE_KEY")
 	}
 
-	server, err := servermode.New(servermode.Config{
-		ShareKey:    shareKey,
-		Timeout:     time.Minute * 10,
-		WorkerCount: 10,
-	})
+	server, err := servermode.New(
+		servermode.WithDefaults(),
+		servermode.WithShareKey(shareKey),
+	)
 
 	if err != nil {
 		panic(err)
