@@ -143,3 +143,4 @@ jobs:
           files: |
             LICENSE
             gcsim.exe
+            server.exe
