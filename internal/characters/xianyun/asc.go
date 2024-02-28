@@ -54,11 +54,16 @@ func (c *char) a1cb() combat.AttackCBFunc {
 		for i, char := range c.Core.Player.Chars() {
 			idx := i
 			c.a1Buffer[idx] += 1
+			char.AddStatus(a1Key, a1Dur, true)
 			char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
 			char.QueueCharTask(func() {
 				// tags currently aren't visible in the results UI
 				// the user can still access it using .char.tags.xianyun-a1
+				c.a1Buffer[idx] -= 1
 				char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
+
+				// TODO: Don't need to specifically remove A1 Status because it will have expired at the same time
+				char.DeleteStatus(a1Key)
 			}, a1Dur)
 		}
 	}
@@ -71,6 +76,9 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
+
+	c.a4Max = 9000
+	c.a4Ratio = 2.0
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)

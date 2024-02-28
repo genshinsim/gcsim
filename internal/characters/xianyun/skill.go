@@ -67,21 +67,18 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	// check if first leap
+	if !c.StatusIsActive(skillStateKey) || c.skillCounter == 3 { // Didn't plunge after the previous triple skill
+		// check if first leap
 
-	if !c.StatusIsActive(skillStateKey) {
 		c.skillCounter = 0
-		c.SetCD(action.ActionSkill, 12*60)
+		if c.Base.Cons >= 6 && c.StatusIsActive(c6key) {
+			c.skillWasC6 = true
+		} else {
+			c.SetCD(action.ActionSkill, 12*60)
+			c.skillWasC6 = false
+		}
 		c.skillEnemiesHit = nil
 	}
-
-	if c.skillCounter == 3 {
-		// Didn't plunge after the previous triple skill
-		c.skillCounter = 0
-		c.SetCD(action.ActionSkill, 12*60)
-		c.skillEnemiesHit = nil
-	}
-
 	//C2: After using White Clouds at Dawn, Xianyun's ATK will be increased by 20% for 15s.
 	c.c2buff()
 
@@ -139,14 +136,20 @@ func (c *char) cooldownReduce(src int) func() {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
-		return
+func (c *char) particleCB() func(combat.AttackCB) {
+	// Particles are not produced if the skill was from c6
+	if c.skillWasC6 {
+		return nil
 	}
-	if c.StatusIsActive(particleICDKey) {
-		return
-	}
-	c.AddStatus(particleICDKey, particleICD, true)
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, particleICD, true)
 
-	c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Anemo, c.ParticleDelay)
+		c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Anemo, c.ParticleDelay)
+	}
 }

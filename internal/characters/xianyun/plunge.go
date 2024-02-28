@@ -89,31 +89,29 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 	skillInd := c.skillCounter - 1
 	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, plungeRadius[skillInd])
 	skillHitmark := plungeHitmarks[skillInd]
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Chasing Crane %v", c.skillCounter),
-		AttackTag:  attacks.AttackTagPlunge,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Anemo,
-		Durability: 25,
-		Mult:       leap[skillInd][c.TalentLvlSkill()],
-	}
+	c.QueueCharTask(func() {
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       fmt.Sprintf("Chasing Crane %v", c.skillCounter),
+			AttackTag:  attacks.AttackTagPlunge,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
+			Element:    attributes.Anemo,
+			Durability: 25,
+			Mult:       leap[skillInd][c.TalentLvlSkill()],
+		}
+		snap := c.Snapshot(&ai)
+		c.c6mod(&snap)
 
-	c.Core.QueueAttack(
-		ai,
-		skillArea,
-		skillHitmark,
-		skillHitmark,
-		c.particleCB,
-		c.a1cb(),
-	)
-	// reset window after leap
-	c.DeleteStatus(skillStateKey)
-	c.skillCounter = 0
-	c.skillEnemiesHit = nil
-	c.skillSrc = noSrcVal
+		c.Core.QueueAttackWithSnap(ai, snap, skillArea, 0, c.particleCB(), c.a1cb(), c.c4cb(), c.c6cb())
+
+		// reset window after leap
+		c.DeleteStatus(skillStateKey)
+		c.skillCounter = 0
+		c.skillEnemiesHit = nil
+		c.skillSrc = noSrcVal
+	}, skillHitmark)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(driftcloudFrames[skillInd]),

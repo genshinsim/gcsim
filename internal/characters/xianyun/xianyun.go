@@ -20,6 +20,7 @@ type char struct {
 	*tmpl.Character
 	skillCounter     int
 	skillSrc         int
+	skillWasC6       bool
 	skillEnemiesHit  []targets.TargetKey
 	a1Buffer         []int
 	a4Max            float64
@@ -39,10 +40,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 3
 
 	c.skillSrc = noSrcVal
-	c.skillEnemiesHit = nil
-
-	c.a4Max = 9000
-	c.a4Ratio = 2.0
 
 	w.Character = &c
 

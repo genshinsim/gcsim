@@ -76,6 +76,7 @@ func (c *char) BurstCast() {
 		})
 
 		c.AddStatus(burstKey, burstDuration, false)
+		c.c6()
 		for _, char := range c.Core.Player.Chars() {
 			char.AddStatus(StarwickerKey, burstDuration, true)
 		}
