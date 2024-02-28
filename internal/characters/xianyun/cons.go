@@ -10,16 +10,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var c2buffMod []float64
-
+const c2Key = "xianyun-c2"
 const c4Icd = "xianyun-c4-icd"
-const c6key = "xianyun-c6"
+const c6Key = "xianyun-c6"
 
+const c2Dur = 15 * 60
 const c4IcdDur = 5 * 60
 const c6Dur = 16 * 60
 
-var c4ratio = []float64{0, 0.5, 0.8, 1.5}
-var c6buff = []float64{0, 0.15, 0.35, 0.7}
+var c4Ratio = []float64{0, 0.5, 0.8, 1.5}
+var c6Buff = []float64{0, 0.15, 0.35, 0.7}
+var c2BuffMod []float64
 
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
@@ -33,8 +34,8 @@ func (c *char) c2() {
 		return
 	}
 
-	c2buffMod = make([]float64, attributes.EndStatType)
-	c2buffMod[attributes.ATKP] = 0.20
+	c2BuffMod = make([]float64, attributes.EndStatType)
+	c2BuffMod[attributes.ATKP] = 0.20
 
 	c.a4Max = 18000
 	c.a4Ratio = 4
@@ -46,15 +47,14 @@ func (c *char) c2buff() {
 	}
 
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("xianyun-c2", 15*60),
+		Base:         modifier.NewBase(c2Key, c2Dur),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
-			return c2buffMod, true
+			return c2BuffMod, true
 		},
 	})
 }
 
-// TODO: C4 Xianyun
 func (c *char) c4cb() func(a combat.AttackCB) {
 	if c.Base.Cons < 4 {
 		return nil
@@ -69,7 +69,7 @@ func (c *char) c4cb() func(a combat.AttackCB) {
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Mystery Millet Gourmet (C4)",
-			Src:     c4ratio[c.skillCounter] * atk,
+			Src:     c4Ratio[c.skillCounter] * atk,
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
@@ -77,13 +77,12 @@ func (c *char) c4cb() func(a combat.AttackCB) {
 	}
 }
 
-// TODO: C6 Xianyun
 func (c *char) c6() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	c.AddStatus(c6key, c6Dur, true)
-	c.SetTag(c6key, 8)
+	c.AddStatus(c6Key, c6Dur, true)
+	c.SetTag(c6Key, 8)
 }
 
 func (c *char) c6mod(snap *combat.Snapshot) {
@@ -94,7 +93,7 @@ func (c *char) c6mod(snap *combat.Snapshot) {
 		return
 	}
 	old := snap.Stats[attributes.CD]
-	snap.Stats[attributes.CD] += c6buff[c.skillCounter]
+	snap.Stats[attributes.CD] += c6Buff[c.skillCounter]
 	c.Core.Log.NewEvent("c6 adding crit DMG", glog.LogCharacterEvent, c.Index).
 		Write("old", old).
 		Write("new", snap.Stats[attributes.CD])
@@ -108,9 +107,9 @@ func (c *char) c6cb() func(a combat.AttackCB) {
 		if !c.skillWasC6 {
 			return
 		}
-		c.SetTag(c6key, c.Tag(c6key)-1)
-		if c.Tag(c6key) <= 0 {
-			c.DeleteStatus(c6key)
+		c.SetTag(c6Key, c.Tag(c6Key)-1)
+		if c.Tag(c6Key) <= 0 {
+			c.DeleteStatus(c6Key)
 		}
 		c.skillWasC6 = false
 	}

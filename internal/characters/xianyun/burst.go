@@ -70,7 +70,7 @@ func (c *char) BurstCast() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
-			Message: "Starwicker-Heal-Initial",
+			Message: "Stars Gather at Dusk Heal (Initial)",
 			Src:     healInstantP[c.TalentLvlBurst()]*atk + healInstantFlat[c.TalentLvlBurst()],
 			Bonus:   c.Stat(attributes.Heal),
 		})
@@ -113,7 +113,7 @@ func (c *char) burstPlungeDoTTrigger() {
 		aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstDoTRadius)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Starwicker Plunge DoT Damage",
+			Abil:       "Starwicker Damage",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -147,7 +147,7 @@ func (c *char) BurstHealDoT() {
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
 		Target:  -1,
-		Message: "Starwicker-Heal-DoT",
+		Message: "Starwicker Heal (DoT)",
 		Src:     healDotP[c.TalentLvlBurst()]*atk + healDotFlat[c.TalentLvlBurst()],
 		Bonus:   c.Stat(attributes.Heal),
 	})

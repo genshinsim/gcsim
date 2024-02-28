@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		// check if first leap
 
 		c.skillCounter = 0
-		if c.Base.Cons >= 6 && c.StatusIsActive(c6key) {
+		if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 			c.skillWasC6 = true
 		} else {
 			c.SetCD(action.ActionSkill, 12*60)
