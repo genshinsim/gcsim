@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var c2buffMod []float64 = nil
+var c2buffMod []float64
 
 const c4Icd = "xianyun-c4-icd"
 const c6key = "xianyun-c6"
