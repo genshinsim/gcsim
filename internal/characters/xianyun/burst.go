@@ -85,10 +85,11 @@ func (c *char) BurstCast() {
 			char.AddStatus(StarwickerKey, burstDuration, false)
 		}
 
-		c.starwickerStacks = 8
+		c.adeptalAssistStacks = 8
 
 		// TODO: From the frames sheet the heal timings are kind of all over the place
 		for i := burstHeal; i <= burstHeal+burstDuration; i += 2.5 * 60 {
+			// Unaffected by hitlag
 			c.Core.Tasks.Add(c.BurstHealDoT, i)
 		}
 	}, burstHitmark)
@@ -112,7 +113,7 @@ func (c *char) burstPlungeDoTTrigger() {
 			return false
 		}
 
-		if c.starwickerStacks <= 0 {
+		if c.adeptalAssistStacks <= 0 {
 			return false
 		}
 
@@ -135,8 +136,8 @@ func (c *char) burstPlungeDoTTrigger() {
 			burstDoTDelay,
 		)
 		c.QueueCharTask(func() {
-			c.starwickerStacks--
-			if c.starwickerStacks == 0 {
+			c.adeptalAssistStacks--
+			if c.adeptalAssistStacks == 0 {
 				// Delay stack reduction and status removal until after the attack lands
 				// so that A4 can still proc on the attack that triggers the burstDot.
 				for _, char := range c.Core.Player.Chars() {

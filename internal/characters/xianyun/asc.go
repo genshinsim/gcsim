@@ -54,8 +54,6 @@ func (c *char) a1cb() combat.AttackCBFunc {
 		for i, char := range c.Core.Player.Chars() {
 			idx := i
 			c.a1Buffer[idx] += 1
-
-			// TODO: Check if hitlag extendable (and if so, is it Xianyun's hitlag or the character's hitlag)
 			char.AddStatus(a1Key, a1Dur, true)
 			char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
 			char.QueueCharTask(func() {

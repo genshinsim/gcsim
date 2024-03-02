@@ -18,14 +18,14 @@ const noSrcVal = -1
 
 type char struct {
 	*tmpl.Character
-	skillCounter     int
-	skillSrc         int
-	skillWasC6       bool
-	skillEnemiesHit  []targets.TargetKey
-	a1Buffer         []int
-	a4Max            float64
-	a4Ratio          float64
-	starwickerStacks int
+	skillCounter        int
+	skillSrc            int
+	skillWasC6          bool
+	skillEnemiesHit     []targets.TargetKey
+	a1Buffer            []int
+	a4Max               float64
+	a4Ratio             float64
+	adeptalAssistStacks int
 
 	// leapFrames  []int
 }
@@ -64,4 +64,13 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 		return true, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "adeptal-assistance":
+		return c.adeptalAssistStacks, nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }
