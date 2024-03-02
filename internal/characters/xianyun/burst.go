@@ -15,7 +15,7 @@ var burstFrames []int
 const (
 	StarwickerKey = player.XianyunAirborneBuff
 
-	burstHeal    = 2.5 * 60
+	burstHeal    = 4 // First heal is about 4f after hitmark
 	burstHitmark = 75
 	burstKey     = "xianyun-burst"
 	// 16 seconds duration
@@ -43,13 +43,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
 
 func (c *char) BurstCast() {
-	// init heal
+	// initial heal
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -76,14 +76,29 @@ func (c *char) BurstCast() {
 		})
 
 		c.AddStatus(burstKey, burstDuration, false)
+
 		c.c6()
+
 		for _, char := range c.Core.Player.Chars() {
-			char.AddStatus(StarwickerKey, burstDuration, true)
+			// Due to the mechanism for how other characters check if they can do higher jumps
+			// The other characters need to have the buff status on themselves.
+
+			// TODO: Duration is just a big number for now because -1 makes .char.mods.xianyun-airborne-buff return 0
+			char.AddStatus(StarwickerKey, 10000, false)
 		}
+
+		// Assuming Q duration is only affected by hitlag on Xianyun
+		c.QueueCharTask(func() {
+			for _, char := range c.Core.Player.Chars() {
+				char.DeleteStatus(StarwickerKey)
+			}
+		}, burstDuration)
+
 		c.starwickerStacks = 8
 
+		// TODO: From the frames sheet the heal timings are kind of all over the place
 		for i := burstHeal; i <= burstHeal+burstDuration; i += 2.5 * 60 {
-			c.Core.Tasks.Add(c.BurstHealDoT, int(i))
+			c.Core.Tasks.Add(c.BurstHealDoT, i)
 		}
 	}, burstHitmark)
 }
@@ -113,7 +128,7 @@ func (c *char) burstPlungeDoTTrigger() {
 		aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstDoTRadius)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Starwicker Damage",
+			Abil:       "Starwicker",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -131,15 +146,15 @@ func (c *char) burstPlungeDoTTrigger() {
 		c.QueueCharTask(func() {
 			c.starwickerStacks--
 			if c.starwickerStacks == 0 {
-				// Delay stack reduction and status removal until after the burstDotDelay
+				// Delay stack reduction and status removal until after the attack lands
 				// so that A4 can still proc on the attack that triggers the burstDot.
 				for _, char := range c.Core.Player.Chars() {
 					char.DeleteStatus(StarwickerKey)
 				}
 			}
-		}, burstDoTDelay)
+		}, 1)
 		return false
-	}, "xianyun-starwicker-plunge-DoT-hook")
+	}, "xianyun-starwicker-plunge-hook")
 }
 
 func (c *char) BurstHealDoT() {
@@ -147,7 +162,7 @@ func (c *char) BurstHealDoT() {
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
 		Target:  -1,
-		Message: "Starwicker Heal (DoT)",
+		Message: "Starwicker Heal",
 		Src:     healDotP[c.TalentLvlBurst()]*atk + healDotFlat[c.TalentLvlBurst()],
 		Bonus:   c.Stat(attributes.Heal),
 	})
