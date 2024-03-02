@@ -43,7 +43,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Mult:       charged[c.TalentLvlAttack()],
 	}
 
-	// skip CA windup if we're in NA/CA animation
+	// skip CA windup if we're in NA/CA/Plunge animation
+	// CA windup after plunge is rolled into the Plunge -> CA frames
 	windup := 0
 	switch c.Core.Player.CurrentState() {
 	case action.NormalAttackState, action.ChargeAttackState:
