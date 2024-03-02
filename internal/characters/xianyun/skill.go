@@ -29,9 +29,9 @@ const (
 
 func init() {
 	skillLeapFrames = make([][]int, 3)
-	// skill -> x (can only use skill, plunge or wait(?))
 	skillLeapFrames[0] = frames.InitAbilSlice(244)
 
+	skillLeapFrames[0][action.ActionAttack] = 221
 	skillLeapFrames[0][action.ActionSkill] = 14
 	skillLeapFrames[0][action.ActionBurst] = 40
 	skillLeapFrames[0][action.ActionDash] = 39
@@ -41,8 +41,7 @@ func init() {
 	skillLeapFrames[0][action.ActionHighPlunge] = 13
 	skillLeapFrames[0][action.ActionLowPlunge] = 13
 
-	// skill (recast) -> x (can only use skill, plunge or wait(?))
-	skillLeapFrames[1] = frames.InitAbilSlice(135)
+	skillLeapFrames[1] = frames.InitAbilSlice(243)
 	skillLeapFrames[1][action.ActionSkill] = 15
 	skillLeapFrames[1][action.ActionBurst] = 61
 	skillLeapFrames[1][action.ActionDash] = 60
@@ -51,11 +50,8 @@ func init() {
 	skillLeapFrames[1][action.ActionSwap] = 59
 	skillLeapFrames[1][action.ActionHighPlunge] = 14
 	skillLeapFrames[1][action.ActionLowPlunge] = 14
-	// skillLeapFrames[1][action.ActionHighPlunge] = 10
-	// skillLeapFrames[1][action.ActionSkill] = skillSecondRecastHitmark
 
-	// skill (recast) -> x (can only use skill, plunge or wait(?))
-	skillLeapFrames[2] = frames.InitAbilSlice(130)
+	skillLeapFrames[2] = frames.InitAbilSlice(178)
 	skillLeapFrames[2][action.ActionSkill] = 128
 	skillLeapFrames[2][action.ActionBurst] = 126
 	skillLeapFrames[2][action.ActionDash] = 130
@@ -67,12 +63,15 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	// Check for first leap
 	if !c.StatusIsActive(skillStateKey) || c.skillCounter == 3 { // Didn't plunge after the previous triple skill
-		// check if first leap
-
 		c.skillCounter = 0
 		if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 			c.skillWasC6 = true
+			c.SetTag(c6Key, c.Tag(c6Key)-1)
+			if c.Tag(c6Key) <= 0 {
+				c.DeleteStatus(c6Key)
+			}
 		} else {
 			c.SetCD(action.ActionSkill, 12*60)
 			c.skillWasC6 = false
@@ -121,7 +120,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillLeapFrames[idx]),
 		AnimationLength: skillLeapFrames[idx][action.InvalidAction],
-		CanQueueAfter:   skillLeapFrames[idx][action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillLeapFrames[idx][action.ActionHighPlunge], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

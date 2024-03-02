@@ -89,28 +89,9 @@ func (c *char) c6mod(snap *combat.Snapshot) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	if !c.skillWasC6 {
-		return
-	}
 	old := snap.Stats[attributes.CD]
 	snap.Stats[attributes.CD] += c6Buff[c.skillCounter]
 	c.Core.Log.NewEvent("c6 adding crit DMG", glog.LogCharacterEvent, c.Index).
 		Write("old", old).
 		Write("new", snap.Stats[attributes.CD])
-}
-
-func (c *char) c6cb() func(a combat.AttackCB) {
-	if c.Base.Cons < 6 {
-		return nil
-	}
-	return func(a combat.AttackCB) {
-		if !c.skillWasC6 {
-			return
-		}
-		c.SetTag(c6Key, c.Tag(c6Key)-1)
-		if c.Tag(c6Key) <= 0 {
-			c.DeleteStatus(c6Key)
-		}
-		c.skillWasC6 = false
-	}
 }

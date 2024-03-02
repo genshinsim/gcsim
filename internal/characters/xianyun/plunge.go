@@ -92,7 +92,7 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       fmt.Sprintf("Chasing Crane %v", c.skillCounter),
+			Abil:       fmt.Sprintf("Driftcloud Wave %v", c.skillCounter),
 			AttackTag:  attacks.AttackTagPlunge,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -104,7 +104,7 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 		snap := c.Snapshot(&ai)
 		c.c6mod(&snap)
 
-		c.Core.QueueAttackWithSnap(ai, snap, skillArea, 0, c.particleCB(), c.a1cb(), c.c4cb(), c.c6cb())
+		c.Core.QueueAttackWithSnap(ai, snap, skillArea, 0, c.particleCB(), c.a1cb(), c.c4cb())
 
 		// reset window after leap
 		c.DeleteStatus(skillStateKey)
@@ -155,7 +155,6 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	poiseDMG := 100.0
 	lowPlungeRadius := 3.0
 
 	ai := combat.AttackInfo{
@@ -165,7 +164,6 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
-		PoiseDMG:   poiseDMG,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],
@@ -199,7 +197,6 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	poiseDMG := 150.0
 	highPlungeRadius := 5.0
 
 	ai := combat.AttackInfo{
@@ -209,7 +206,6 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
-		PoiseDMG:   poiseDMG,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       highPlunge[c.TalentLvlAttack()],
