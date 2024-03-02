@@ -82,17 +82,8 @@ func (c *char) BurstCast() {
 		for _, char := range c.Core.Player.Chars() {
 			// Due to the mechanism for how other characters check if they can do higher jumps
 			// The other characters need to have the buff status on themselves.
-
-			// TODO: Duration is just a big number for now because -1 makes .char.mods.xianyun-airborne-buff return 0
-			char.AddStatus(StarwickerKey, 10000, false)
+			char.AddStatus(StarwickerKey, burstDuration, false)
 		}
-
-		// Assuming Q duration is only affected by hitlag on Xianyun
-		c.QueueCharTask(func() {
-			for _, char := range c.Core.Player.Chars() {
-				char.DeleteStatus(StarwickerKey)
-			}
-		}, burstDuration)
 
 		c.starwickerStacks = 8
 
