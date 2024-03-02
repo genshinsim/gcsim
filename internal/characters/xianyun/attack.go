@@ -13,7 +13,7 @@ import (
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{12, 14, 34, 38}
-	attackRadius   = []float64{1, 1, 1, 2}
+	attackRadius   = []float64{0.8, 0.8, 0.8, 1}
 )
 
 const normalHitNum = 4
