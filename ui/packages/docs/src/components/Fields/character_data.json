@@ -230,5 +230,13 @@
       ],
       "desc": "Whether Chevreuse has an Overcharged Ball or not."
     }
+  ],
+  "xianyun": [
+    {
+      "fields": [
+        ".xianyun.adeptal-assistance"
+      ],
+      "desc": "Number of Adeptal Assistance stacks."
+    }
   ]
 }
