@@ -13,6 +13,7 @@ require (
 	github.com/diamondburned/arikawa/v3 v3.3.3
 	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/go-chi/chi v1.5.5
+	github.com/go-chi/cors v1.2.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jaevor/go-nanoid v1.3.0
 	github.com/mailru/easyjson v0.7.7

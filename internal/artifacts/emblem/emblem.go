@@ -29,7 +29,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ER] = 0.20
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("esr-2pc", -1),
+			Base:         modifier.NewBase("emblem-2pc", -1),
 			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -46,7 +46,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = amt
 
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("esr-4pc", -1),
+			Base: modifier.NewBase("emblem-4pc", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false

@@ -120,7 +120,7 @@ export function useConfig(data: SimResults | null, exec: ExecutorSupplier<Execut
   // check worker ready state every 250ms so run button becomes available when workers do
   useEffect(() => {
     const interval = setInterval(() => {
-      setReady(exec().ready());
+      exec().ready().then(res => setReady(res))
     }, 250);
     return () => clearInterval(interval);
   }, [exec]);
