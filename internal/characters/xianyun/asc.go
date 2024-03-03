@@ -69,6 +69,11 @@ func (c *char) a1cb() combat.AttackCBFunc {
 	}
 }
 
+func (c *char) a4AtkUpdate() {
+	c.a4Atk = c.Base.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
+	c.Core.Tasks.Add(c.a4AtkUpdate, 0.5*60)
+}
+
 // a4: When the Starwicker created by Stars Gather at Dusk has Adeptal Assistance stacks,
 // nearby active characters' Plunging Attack shockwave DMG will be increased by 200% of Xianyun's ATK.
 // The maximum DMG increase that can be achieved this way is 9000.
@@ -76,6 +81,7 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
+	c.a4AtkUpdate()
 
 	c.a4Max = 9000
 	c.a4Ratio = 2.0
@@ -99,14 +105,13 @@ func (c *char) a4() {
 			return false
 		}
 
-		atk := c.Base.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
-		amt := c.a4Ratio * atk
+		amt := c.a4Ratio * c.a4Atk
 
 		// A4 cap
 		amt = min(c.a4Max, amt)
 
 		c.Core.Log.NewEvent("Xianyun Starwicker proc dmg add", glog.LogPreDamageMod, ae.Info.ActorIndex).
-			Write("atk", atk).
+			Write("atk", c.a4Atk).
 			Write("ratio", c.a4Ratio).
 			Write("before", ae.Info.FlatDmg).
 			Write("addition", amt).
