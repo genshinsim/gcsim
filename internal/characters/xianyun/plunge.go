@@ -203,7 +203,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	highPlungeRadius := 5.0
+	highPlungeRadius := 3.5
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

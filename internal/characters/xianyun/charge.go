@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var chargeFrames []int
@@ -54,7 +53,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 3),
+		// TODO: Find actual radius of CA projectile
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		chargeHitmark-windup,
 		chargeHitmark-windup+travel,
 	)

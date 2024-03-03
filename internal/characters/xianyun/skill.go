@@ -18,7 +18,7 @@ const (
 	skillStateDur     = 2 * 60
 	skillStateKey     = "cloud-transmogrification"
 
-	// assuming the skill hitbox is the same size as the plunge collision hitbox
+	// TODO: Find skill hitbox. Currently assuming the skill hitbox is the same size as the plunge collision hitbox
 	skillRadius = 1.5
 	leapKey     = "xianyun-leap"
 
