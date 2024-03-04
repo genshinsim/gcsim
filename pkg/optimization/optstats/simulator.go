@@ -38,22 +38,17 @@ func RunWithConfigCustomStats[T any](ctx context.Context, cfg string, simcfg *in
 	pool := WorkerNewWithCustomStats(simcfg.Settings.NumberOfWorkers, respCh, errCh, customCh)
 	pool.StopCh = make(chan bool)
 
-	seeds := make([]int64, simcfg.Settings.Iterations)
-	src := rand.NewSource(seed)
-	for i := 0; i < simcfg.Settings.Iterations; i++ {
-		seeds[i] = src.Int63()
-	}
-
 	// spin off a go func that will queue jobs for as long as the total queued < iter
 	// this should block as queue gets full
 	go func() {
+		src := rand.NewSource(seed)
 		// make all the seeds
 		wip := 0
 		for wip < simcfg.Settings.Iterations {
 			pool.QueueCh <- JobCustomStats[T]{
 				Cfg:     simcfg.Copy(),
 				Actions: gcsl.Copy(),
-				Seed:    seeds[wip],
+				Seed:    src.Int63(),
 				Cstat:   cstat,
 			}
 			wip++
