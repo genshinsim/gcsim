@@ -280,7 +280,7 @@ func (c *Traveler) absorbCheckE(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.eAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.eAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.eAbsorb {
 		case attributes.Cryo:
 			c.eICDTag = attacks.ICDTagElementalArtCryo

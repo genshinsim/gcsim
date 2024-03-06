@@ -300,7 +300,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 			return
 		}
 
-		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 		if c.eAbsorb != attributes.NoElement {
 			switch c.eAbsorb {
 			case attributes.Pyro:
