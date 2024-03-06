@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/discord"
@@ -51,11 +52,21 @@ func main() {
 	}
 	log.Printf("starting discord bot with mapping: %v", mapping)
 
+	announceChanStr := os.Getenv("DISCORD_ANNOUNCE_CHAN")
+	if announceChanStr == "" {
+		announceChanStr = "930897876672970842" // submit-to-db-here channel by default
+	}
+	announceChan, err := strconv.ParseInt(announceChanStr, 10, 64)
+	if err != nil {
+		log.Panicf("error parsing announce channel id: %v", err)
+	}
+
 	b, err := discord.New(discord.Config{
 		Token:   os.Getenv("DISCORD_BOT_TOKEN"),
 		Backend: store,
 		//TODO: consider moving this mapping to models maybe?
-		TagMapping: mapping,
+		TagMapping:   mapping,
+		AnnounceChan: announceChan,
 	}, func(b *discord.Bot) error {
 		b.Log = sugar
 		return nil
