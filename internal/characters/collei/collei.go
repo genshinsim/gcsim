@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var dendroEvents = []event.Event{event.OnBurning, event.OnQuicken, event.OnAggravate, event.OnSpread, event.OnBloom, event.OnHyperbloom, event.OnBurgeon}
@@ -51,4 +52,11 @@ func (c *char) Init() error {
 		c.c2()
 	}
 	return nil
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if k == model.AnimationXingqiuN0StartDelay {
+		return 11
+	}
+	return c.AnimationStartDelay(k)
 }

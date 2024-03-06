@@ -21,7 +21,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	if c.StatusIsActive(BurstKey) {
+	if c.StatusIsActive(burstKey) {
 		return c.chargeB()
 	}
 

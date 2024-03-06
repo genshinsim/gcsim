@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type char struct {
@@ -92,4 +93,15 @@ func (c *char) onExitField() {
 
 		return false
 	}, "dehya-exit")
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 22
+	case model.AnimationYelanN0StartDelay:
+		return 22
+	default:
+		return c.AnimationStartDelay(k)
+	}
 }

@@ -32,7 +32,7 @@ func init() {
 
 // Once fully charged, deal Hydro DMG and apply the Riptide status.
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
-	if c.StatusIsActive(MeleeKey) {
+	if c.StatusIsActive(meleeKey) {
 		return action.Info{}, errors.New("aim called when not in ranged stance")
 	}
 	hold, ok := p["hold"]

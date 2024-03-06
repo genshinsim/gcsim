@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -54,4 +55,11 @@ func (c *char) Init() error {
 		c.c4buff[attributes.ElectroP] = .20
 	}
 	return nil
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if k == model.AnimationXingqiuN0StartDelay {
+		return 7
+	}
+	return c.AnimationStartDelay(k)
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -60,4 +61,15 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	}
 
 	return ds
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 25
+	case model.AnimationYelanN0StartDelay:
+		return 23
+	default:
+		return c.AnimationStartDelay(k)
+	}
 }

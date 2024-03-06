@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -46,7 +47,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if c.StatusIsActive(SkillKey) {
+	if c.StatusIsActive(skillKey) {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
@@ -76,5 +77,17 @@ func (c *char) Condition(fields []string) (any, error) {
 		return c.skydwellerPoints, nil
 	default:
 		return c.Character.Condition(fields)
+	}
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		if c.StatusIsActive(skillKey) {
+			return 12
+		}
+		return 0
+	default:
+		return c.AnimationStartDelay(k)
 	}
 }

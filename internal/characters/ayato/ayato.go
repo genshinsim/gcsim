@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -64,7 +65,7 @@ func (c *char) Init() error {
 func (c *char) AdvanceNormalIndex() {
 	c.NormalCounter++
 
-	if c.StatusIsActive(SkillBuffKey) {
+	if c.StatusIsActive(skillBuffKey) {
 		if c.NormalCounter == c.shunsuikenCounter {
 			c.NormalCounter = 0
 		}
@@ -79,7 +80,7 @@ func (c *char) AdvanceNormalIndex() {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.StatusIsActive(SkillBuffKey) {
+	if c.StatusIsActive(skillBuffKey) {
 		switch ai.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
@@ -93,7 +94,19 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index).
 			Write("damage_added", flatdmg).
 			Write("stacks", c.stacks).
-			Write("expiry", c.StatusExpiry(SkillBuffKey))
+			Write("expiry", c.StatusExpiry(skillBuffKey))
 	}
 	return ds
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		if c.StatusIsActive(skillBuffKey) {
+			return 17
+		}
+		return 15
+	default:
+		return c.AnimationStartDelay(k)
+	}
 }
