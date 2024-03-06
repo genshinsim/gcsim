@@ -23,4 +23,11 @@ tasks:
   pipeline:
     cmds:
       - go run pipeline/cmd/generate/main.go
-
+  wasm:
+    dir: cmd/wasm
+    cmds:
+      - go build -o '{{.OUT | default "main.wasm"}}' -ldflags="-X 'main.shareKey=${{if eq OS "windows"}}env:{{end}}GCSIM_SHARE_KEY'"
+      - echo "compiled wasm successfully!"
+    env:
+      GOOS: js 
+      GOARCH: wasm
