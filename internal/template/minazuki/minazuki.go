@@ -26,10 +26,9 @@ type Watcher struct {
 	tickerFreq  int
 
 	// other fields including optional overrides
-	state               action.AnimationState   // the state change we are watching for
-	checkAnimationDelay bool                    // if we should check for delay
-	delayKey            model.AnimationDelayKey // delay key used to check delay func
-	shouldDelay         func() bool             // function to be called to see if delayed should be applied
+	state       action.AnimationState   // the state change we are watching for
+	delayKey    model.AnimationDelayKey // delay key used to check delay func
+	shouldDelay func() bool             // function to be called to see if delayed should be applied
 
 	tickSrc int
 }
@@ -78,8 +77,8 @@ func WithMandatory(key keys.Char, abil, statusKey, icdKey string, tickerFreq int
 
 func WithAnimationDelayCheck(key model.AnimationDelayKey, shouldDelay func() bool) Config {
 	return func(w *Watcher) error {
-		w.checkAnimationDelay = true
 		w.delayKey = key
+		w.shouldDelay = shouldDelay
 		return nil
 	}
 }
@@ -110,7 +109,7 @@ func (w *Watcher) stateChangeHook() {
 		}
 		// if we need to check for delay, and there is delay then we skip the rest of
 		// this animation check and instead restart a ticker func after delay
-		if w.checkAnimationDelay && w.shouldDelay() {
+		if w.shouldDelay() {
 			if delay := w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey); delay > 0 {
 				w.core.Log.NewEvent(fmt.Sprintf("%v delay on state change", w.abil), glog.LogCharacterEvent, c.Index).
 					Write("delay", delay)
@@ -164,7 +163,7 @@ func (w *Watcher) tickerFunc(src int) func() {
 		}
 		// TODO: i THINK this check is not relevant because the ticksrc would have been reset already
 		// by the state change watcher
-		if w.checkAnimationDelay && w.shouldDelay() {
+		if w.shouldDelay() {
 			// only nesting the if so it's easier to read...
 			s := w.core.Player.CurrentStateStart()
 			if w.core.F-s < w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey) {
