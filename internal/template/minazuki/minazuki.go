@@ -116,7 +116,7 @@ func (w *Watcher) stateChangeHook() {
 				// it's sufficient to just restart the ticker function since that'll kill any existing
 				// and restart the check every 60s from the delay
 				w.tickSrc = w.core.F
-				c.QueueCharTask(w.tickerFunc(w.core.F), 60) // check every 1sec
+				c.QueueCharTask(w.tickerFunc(w.core.F), delay)
 				return false
 			}
 		}
@@ -133,7 +133,7 @@ func (w *Watcher) stateChangeHook() {
 			Write("icd", c.StatusExpiry(w.icdKey))
 		w.tickSrc = w.core.F
 		// use the hitlag affected queue for this
-		c.QueueCharTask(w.tickerFunc(w.core.F), w.tickerFreq) // check every 1sec
+		c.QueueCharTask(w.tickerFunc(w.core.F), w.tickerFreq)
 
 		return false
 	}, "xq-burst-animation-check")
@@ -182,6 +182,6 @@ func (w *Watcher) tickerFunc(src int) func() {
 		w.triggerFunc()
 		// in theory this should not hit an icd?
 		// use the hitlag affected queue for this
-		c.QueueCharTask(w.tickerFunc(src), w.tickerFreq) // check every 1sec
+		c.QueueCharTask(w.tickerFunc(src), w.tickerFreq)
 	}
 }
