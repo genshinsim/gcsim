@@ -83,6 +83,6 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 		}
 		return 9
 	default:
-		return c.AnimationStartDelay(k)
+		return c.Character.AnimationStartDelay(k)
 	}
 }

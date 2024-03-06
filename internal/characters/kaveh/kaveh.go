@@ -70,6 +70,6 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	case model.AnimationYelanN0StartDelay:
 		return 23
 	default:
-		return c.AnimationStartDelay(k)
+		return c.Character.AnimationStartDelay(k)
 	}
 }

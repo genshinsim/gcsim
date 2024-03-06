@@ -1,8 +1,8 @@
 package xingqiu
 
 import (
-	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
+	"github.com/genshinsim/gcsim/internal/template/minazuki"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -20,6 +20,7 @@ type char struct {
 	nextRegen     bool
 	burstCounter  int
 	orbitalActive bool
+	burstWatcher  *minazuki.Watcher
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -38,16 +39,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a4()
-	(&common.NAHook{
-		C:           c.CharWrapper,
-		AbilName:    "xingqiu burst",
-		Core:        c.Core,
-		AbilKey:     burstKey,
-		AbilProcICD: 60,
-		AbilICDKey:  burstICDKey,
-		DelayFunc:   common.Get5PercentN0Delay,
-		SummonFunc:  c.summonSwordWave,
-	}).Enable()
+
+	w, err := minazuki.New(
+		minazuki.WithMandatory(keys.Xingqiu, "xingqiu burst", burstKey, burstICDKey, 60, c.summonSwordWave, c.Core),
+		minazuki.WithAnimationDelayCheck(model.AnimationXingqiuN0StartDelay, c.shouldDelay),
+	)
+	if err != nil {
+		return err
+	}
+	c.burstWatcher = w
 	return nil
 }
 
@@ -55,5 +55,9 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	if k == model.AnimationXingqiuN0StartDelay {
 		return 7
 	}
-	return c.AnimationStartDelay(k)
+	return c.Character.AnimationStartDelay(k)
+}
+
+func (c *char) shouldDelay() bool {
+	return c.Core.Player.ActiveChar().NormalCounter == 1
 }

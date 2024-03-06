@@ -52,6 +52,6 @@ func (c *Traveler) AnimationStartDelay(k model.AnimationDelayKey) int {
 			return 7
 		}
 	default:
-		return c.AnimationStartDelay(k)
+		return c.Character.AnimationStartDelay(k)
 	}
 }

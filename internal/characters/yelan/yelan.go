@@ -1,8 +1,8 @@
 package yelan
 
 import (
-	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
+	"github.com/genshinsim/gcsim/internal/template/minazuki"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -30,6 +30,7 @@ type char struct {
 	c2icd        int
 	c6count      int
 	c4count      int // keep track of number of enemies tagged
+	burstWatcher *minazuki.Watcher
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
@@ -61,16 +62,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 func (c *char) Init() error {
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a1()
-	(&common.NAHook{
-		C:           c.CharWrapper,
-		AbilName:    "yelan burst",
-		Core:        c.Core,
-		AbilKey:     burstKey,
-		AbilProcICD: 60,
-		AbilICDKey:  burstICDKey,
-		DelayFunc:   common.Get0PercentN0Delay,
-		SummonFunc:  c.summonExquisiteThrow,
-	}).Enable()
+
+	w, err := minazuki.New(
+		minazuki.WithMandatory(keys.Yelan, "yelan burst", burstKey, burstICDKey, 60, c.burstWaveWrapper, c.Core),
+		minazuki.WithAnimationDelayCheck(model.AnimationYelanN0StartDelay, c.shouldDelay),
+	)
+	if err != nil {
+		return err
+	}
+	c.burstWatcher = w
 	return nil
 }
 
@@ -87,5 +87,9 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	if k == model.AnimationXingqiuN0StartDelay {
 		return 9
 	}
-	return c.AnimationStartDelay(k)
+	return c.Character.AnimationStartDelay(k)
+}
+
+func (c *char) shouldDelay() bool {
+	return c.Core.Player.ActiveChar().NormalCounter == 1
 }

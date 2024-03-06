@@ -47,5 +47,5 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	if k == model.AnimationXingqiuN0StartDelay {
 		return 15
 	}
-	return c.AnimationStartDelay(k)
+	return c.Character.AnimationStartDelay(k)
 }

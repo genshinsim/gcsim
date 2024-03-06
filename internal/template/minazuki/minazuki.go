@@ -38,8 +38,8 @@ type Config func(w *Watcher) error
 func New(cfg ...Config) (*Watcher, error) {
 	w := &Watcher{
 		// defaults
-		state:       action.NormalAttackState,
-		shouldDelay: func() bool { return false },
+		delayKey: model.InvalidAnimationDelayKey,
+		state:    action.NormalAttackState,
 	}
 	for _, f := range cfg {
 		err := f(w)
@@ -66,6 +66,7 @@ func WithMandatory(key keys.Char, abil, statusKey, icdKey string, tickerFreq int
 			return errors.New("ticker frequency cannot be 0")
 		}
 		w.key = key
+		w.abil = abil
 		w.statusKey = statusKey
 		w.icdKey = icdKey
 		w.triggerFunc = triggerFunc
@@ -96,47 +97,55 @@ func (w *Watcher) Kill() {
 
 func (w *Watcher) stateChangeHook() {
 	w.core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
-		//TODO: can this ever fail?
-		c, _ := w.core.Player.ByKey(w.key)
-		// check if buff is up
-		if !c.StatusIsActive(w.statusKey) {
-			return false
-		}
 		next := args[1].(action.AnimationState)
 		// ignore if it's not the state we are looking for
 		if next != w.state {
 			return false
 		}
-		// if we need to check for delay, and there is delay then we skip the rest of
-		// this animation check and instead restart a ticker func after delay
-		if w.shouldDelay() {
+
+		// if we need to check for delay, and there is a delay, then we delay the execution
+		// of this state check
+		// note that this is less performant because we don't actually need to do this check
+		// if say the status is not active at all
+		// however this just simpler to read so... performance hit shouldn't be that big
+		if w.shouldDelay != nil { //TODO: to maintain old implementation equivalent; should be removed
+			// if w.shouldDelay() {
 			if delay := w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey); delay > 0 {
-				w.core.Log.NewEvent(fmt.Sprintf("%v delay on state change", w.abil), glog.LogCharacterEvent, c.Index).
+				c, _ := w.core.Player.ByKey(w.key)
+				w.core.Log.NewEventBuildMsg(glog.LogDebugEvent, c.Index, w.abil, " delay on state change").
 					Write("delay", delay)
-				// it's sufficient to just restart the ticker function since that'll kill any existing
-				// and restart the check every 60s from the delay
-				w.tickSrc = w.core.F
-				c.QueueCharTask(w.tickerFunc(w.core.F), delay)
+				w.core.Tasks.Add(w.onStateChange(next), delay)
 				return false
 			}
 		}
+		w.onStateChange(next)()
 
-		// otherwise there is no delay and we can proceed as normal
-		// ignore if on ICD
-		if c.StatusIsActive(w.icdKey) {
-			return false
+		return false
+	}, fmt.Sprintf("%v-burst-state-change-hook", w.key.String()))
+}
+
+func (w *Watcher) onStateChange(next action.AnimationState) func() {
+	return func() {
+		//TODO: can this ever fail?
+		c, _ := w.core.Player.ByKey(w.key)
+		if !c.StatusIsActive(w.statusKey) {
+			return
 		}
-		// this should start a new ticker if not on ICD and state is correct
+		if c.StatusIsActive(w.icdKey) {
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " not triggered on state change; on icd").
+				Write("icd", c.StatusExpiry(w.icdKey)).
+				Write("icd_key", w.icdKey)
+			return
+		}
 		w.triggerFunc()
 		w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " triggered on state change").
 			Write("state", next).
-			Write("icd", c.StatusExpiry(w.icdKey))
+			Write("icd", c.StatusExpiry(w.icdKey)).
+			Write("icd_key", w.icdKey)
 		w.tickSrc = w.core.F
 		// use the hitlag affected queue for this
 		c.QueueCharTask(w.tickerFunc(w.core.F), w.tickerFreq)
-
-		return false
-	}, "xq-burst-animation-check")
+	}
 }
 
 func (w *Watcher) tickerFunc(src int) func() {
@@ -145,6 +154,9 @@ func (w *Watcher) tickerFunc(src int) func() {
 		c, _ := w.core.Player.ByKey(w.key)
 		// check if buff is up
 		if !c.StatusIsActive(w.statusKey) {
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " not triggered on tick; on icd").
+				Write("icd", c.StatusExpiry(w.icdKey)).
+				Write("icd_key", w.icdKey)
 			return
 		}
 		if w.tickSrc != src {
@@ -156,14 +168,12 @@ func (w *Watcher) tickerFunc(src int) func() {
 		// stop if we are no longer in the right animation state
 		state := w.core.Player.CurrentState()
 		if state != w.state {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " tick check stoped, wrong state").
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " tick check stopped, wrong state").
 				Write("src", src).
 				Write("state", state)
 			return
 		}
-		// TODO: i THINK this check is not relevant because the ticksrc would have been reset already
-		// by the state change watcher
-		if w.shouldDelay() {
+		if w.shouldDelay != nil && w.shouldDelay() {
 			// only nesting the if so it's easier to read...
 			s := w.core.Player.CurrentStateStart()
 			if w.core.F-s < w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey) {
