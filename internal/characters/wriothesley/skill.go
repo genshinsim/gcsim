@@ -55,6 +55,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+func (c *char) skillBuffActive() bool {
+	return c.StatusIsActive(skillKey) && c.CurrentHPRatio() > 0.5
+}
+
 func (c *char) particleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return

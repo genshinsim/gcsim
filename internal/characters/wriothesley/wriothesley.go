@@ -52,7 +52,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	// apply skill multiplier
-	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
+	if c.skillBuffActive() && ai.AttackTag == attacks.AttackTagNormal {
 		ai.Mult *= skill[c.TalentLvlSkill()]
 	}
 
