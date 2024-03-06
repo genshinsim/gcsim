@@ -103,7 +103,7 @@ func (c *char) absorbCheckA1() {
 	a1Proc := false // for C4
 	// max 2 A1 elements from absorb check
 	for i := 0; i < 2; i++ {
-		absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
+		absorbCheck := c.Core.Combat.AbsorbCheck(c.Index, a1AbsorbCheckLocation, c.a1ValidBuffs...)
 		if absorbCheck == attributes.NoElement {
 			continue
 		}
