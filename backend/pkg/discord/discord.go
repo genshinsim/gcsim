@@ -36,9 +36,10 @@ type DBStatus struct {
 }
 
 type Config struct {
-	Token      string
-	Backend    Backend
-	TagMapping map[string]model.DBTag
+	Token        string
+	Backend      Backend
+	TagMapping   map[string]model.DBTag
+	AnnounceChan int64
 }
 
 type Bot struct {
@@ -78,6 +79,10 @@ func New(cfg Config, cust ...func(*Bot) error) (*Bot, error) {
 
 	if b.Backend == nil {
 		return nil, errors.New("no backend provided")
+	}
+
+	if b.AnnounceChan == 0 {
+		return nil, errors.New("no announce chan provided")
 	}
 
 	return b, nil
