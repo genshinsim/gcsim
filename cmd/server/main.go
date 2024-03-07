@@ -39,13 +39,13 @@ func main() {
 	flag.StringVar(&opt.port, "port", "54321", "port to listen on (default: 54321)")
 	flag.StringVar(&opt.shareKey, "sharekey", "", "share key to use (default: build flag OR GCSIM_SHARE_KEY env variable if not available)")
 	flag.IntVar(&opt.timeout, "timeout", 5*60, "how long to run each sim for in seconds before timing out (default: 300s)")
-	flag.BoolVar(&opt.update, "update", true, "run autoupdater (default: true)")
+	flag.BoolVar(&opt.update, "update", false, "run autoupdater (default: false)")
 	flag.Parse()
 
 	if opt.update {
 		err := update(version)
 		if err != nil {
-			fmt.Printf("Error running autoupdater: %v. Please update manually or run this executabe with -update=false to skip autoupdate\n", err)
+			fmt.Printf("Error running autoupdater: %v. Please update manually or run this executable with -update=false to skip autoupdate\n", err)
 			fmt.Print("Press 'Enter' to exit...")
 			bufio.NewReader(os.Stdin).ReadBytes('\n')
 			os.Exit(1)
