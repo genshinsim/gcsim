@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -52,7 +53,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	// apply skill multiplier
-	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
+	if c.skillBuffActive() && ai.AttackTag == attacks.AttackTagNormal {
 		ai.Mult *= skill[c.TalentLvlSkill()]
 	}
 
@@ -91,4 +92,15 @@ func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
 		return player.ErrInvalidChargeAction
 	}
 	return c.Character.NextQueueItemIsValid(a, p)
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 12
+	case model.AnimationYelanN0StartDelay:
+		return 4
+	default:
+		return c.Character.AnimationStartDelay(k)
+	}
 }

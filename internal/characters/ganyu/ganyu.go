@@ -4,13 +4,16 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
 	core.RegisterCharFunc(keys.Ganyu, NewChar)
+	hacks.RegisterNOSpecialChar(keys.Ganyu)
 }
 
 type char struct {
@@ -46,4 +49,11 @@ func (c *char) Init() error {
 		c.c4()
 	}
 	return nil
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if k == model.AnimationXingqiuN0StartDelay {
+		return 10
+	}
+	return c.Character.AnimationStartDelay(k)
 }

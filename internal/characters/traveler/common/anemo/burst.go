@@ -110,7 +110,7 @@ func (c *Traveler) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.qAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.qAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.qAbsorb {
 		case attributes.Cryo:
 			c.qICDTag = attacks.ICDTagElementalBurstCryo

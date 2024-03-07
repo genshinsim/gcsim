@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (h *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attributes.Element {
+func (h *Handler) AbsorbCheck(idx int, p AttackPattern, prio ...attributes.Element) attributes.Element {
 	// check targets for collision first
 	for _, e := range prio {
 		for _, x := range h.enemies {
@@ -17,7 +17,7 @@ func (h *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 				h.Log.NewEvent(
 					"infusion check (e) picked up "+e.String(),
 					glog.LogElementEvent,
-					-1,
+					idx,
 				).
 					Write("source", "enemy").
 					Write("key", t.Key())

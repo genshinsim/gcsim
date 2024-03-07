@@ -47,6 +47,7 @@ type Character interface {
 	AddEnergy(src string, amt float64)
 
 	ApplyHitlag(factor, dur float64)
+	AnimationStartDelay(model.AnimationDelayKey) int
 
 	Condition([]string) (any, error)
 

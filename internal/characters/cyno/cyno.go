@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -50,7 +51,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) AdvanceNormalIndex() {
-	if c.StatusIsActive(BurstKey) {
+	if c.StatusIsActive(burstKey) {
 		c.normalBCounter++
 		if c.normalBCounter == burstHitNum {
 			c.normalBCounter = 0
@@ -69,7 +70,7 @@ func (c *char) ResetNormalCounter() {
 }
 
 func (c *char) NextNormalCounter() int {
-	if c.StatusIsActive(BurstKey) {
+	if c.StatusIsActive(burstKey) {
 		return c.normalBCounter + 1
 	}
 	return c.NormalCounter + 1
@@ -79,7 +80,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 	if a != action.ActionSkill {
 		return c.Character.ActionReady(a, p)
 	}
-	if c.StatusIsActive(BurstKey) {
+	if c.StatusIsActive(burstKey) {
 		if c.AvailableCDCharge[action.ActionLowPlunge] <= 0 {
 			return false, action.SkillCD
 		}
@@ -102,5 +103,17 @@ func (c *char) ResetActionCooldown(a action.Action) {
 	c.Character.ResetActionCooldown(a)
 	if a == action.ActionSkill {
 		c.Character.ResetActionCooldown(action.ActionLowPlunge)
+	}
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		if c.StatusIsActive(burstKey) {
+			return 12
+		}
+		return 10
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
 }

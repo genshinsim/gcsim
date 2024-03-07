@@ -157,4 +157,6 @@ func (c *char) summonSwordWave() {
 		c.numSwords = 2
 		c.nextRegen = false
 	}
+
+	c.AddStatus(burstICDKey, 60, true)
 }

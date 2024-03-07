@@ -74,12 +74,10 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			skillIndex := 0
 			var particleCB combat.AttackCBFunc
 			var chillingPenalty combat.AttackCBFunc
-			if c.StatusIsActive(skillKey) {
+			if c.skillBuffActive() {
 				skillIndex = 1
-				if c.CurrentHPRatio() > 0.5 {
-					particleCB = c.particleCB
-					chillingPenalty = c.chillingPenalty
-				}
+				particleCB = c.particleCB
+				chillingPenalty = c.chillingPenalty
 			}
 			c.Core.QueueAttack(
 				ai,

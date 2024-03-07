@@ -25,7 +25,7 @@ func init() {
 func (c *char) Dash(p map[string]int) (action.Info, error) {
 	delay := c.checkForSkillEnd()
 
-	if c.StatusIsActive(SkillKey) {
+	if c.StatusIsActive(skillKey) {
 		return c.WindfavoredDash(p)
 	}
 

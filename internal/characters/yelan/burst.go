@@ -73,6 +73,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+func (c *char) burstWaveWrapper() {
+	c.summonExquisiteThrow()
+	c.AddStatus(burstICDKey, 60, true)
+}
+
 func (c *char) summonExquisiteThrow() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

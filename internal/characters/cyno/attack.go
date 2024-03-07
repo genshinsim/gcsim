@@ -39,7 +39,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	if c.StatusIsActive(BurstKey) {
+	if c.StatusIsActive(burstKey) {
 		return c.attackB() // go to burst mode attacks
 	}
 	c2CB := c.makeC2CB()
