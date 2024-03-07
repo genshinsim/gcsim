@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var highPlungeFrames []int
@@ -36,6 +37,7 @@ func init() {
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
 	if c.Core.Player.CurrentState() != action.JumpState {
 		return action.Info{}, errors.New("only plunge after using jump")
 	}
@@ -88,6 +90,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
 	if c.Core.Player.CurrentState() != action.JumpState {
 		return action.Info{}, errors.New("only plunge after using jump")
 	}

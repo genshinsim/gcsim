@@ -55,6 +55,7 @@ func init() {
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
 	switch c.Core.Player.Airborne() {
 	case player.AirborneVenti:
 		return action.Info{}, fmt.Errorf("%s high_plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute", c.Base.Key.String())
@@ -108,6 +109,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
 	// last action hold skill
 	if c.Core.Player.LastAction.Type == action.ActionSkill &&
 		c.Core.Player.LastAction.Param["hold"] == 1 {
