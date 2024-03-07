@@ -268,7 +268,7 @@ func (b *Bot) cmdReject(ctx context.Context, data cmdroute.CommandData) *api.Int
 
 	var opts struct {
 		Id     string `discord:"id"`
-		Reason string `discord:"reason"`
+		Reason string `discord:"reason?"`
 	}
 	if err := data.Options.Unmarshal(&opts); err != nil {
 		return errorResponse(err)
