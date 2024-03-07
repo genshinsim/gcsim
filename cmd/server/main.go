@@ -45,7 +45,7 @@ func main() {
 	if opt.update {
 		err := update(version)
 		if err != nil {
-			fmt.Printf("Error running autoupdater: %v. Please update manually or run this executabe with -update=false to skip autoupdate\n", err)
+			fmt.Printf("Error running autoupdater: %v. Please update manually or run this executable with -update=false to skip autoupdate\n", err)
 			fmt.Print("Press 'Enter' to exit...")
 			bufio.NewReader(os.Stdin).ReadBytes('\n')
 			os.Exit(1)
