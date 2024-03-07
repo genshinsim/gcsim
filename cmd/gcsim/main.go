@@ -82,7 +82,7 @@ func mainImpl() error {
 can be viewed in the browser via "go tool pprof -http=localhost:3000 cpu.prof" (insert your desired host/port/filename, requires Graphviz)`)
 	flag.StringVar(&opt.memprofile, "memprofile", "", `write memory profile to a file. supply file path (otherwise empty string for disabled). 
 can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (insert your desired host/port/filename, requires Graphviz)`)
-	flag.BoolVar(&opt.update, "update", true, "run autoupdater (default: true)")
+	flag.BoolVar(&opt.update, "update", false, "run autoupdater (default: false)")
 
 	flag.Parse()
 
