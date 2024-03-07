@@ -117,8 +117,6 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	switch c.Core.Player.Airborne() {
-	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("%s low_plunge while airborne due to venti hold E is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute", c.Base.Key.String())
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
