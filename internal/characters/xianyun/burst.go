@@ -66,7 +66,7 @@ func (c *char) BurstCast() {
 		burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 		c.Core.QueueAttack(ai, burstArea, 0, 0)
 
-		atk := c.Base.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
+		atk := c.getTotalAtk()
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
@@ -150,7 +150,7 @@ func (c *char) burstPlungeDoTTrigger() {
 }
 
 func (c *char) BurstHealDoT() {
-	atk := c.Base.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
+	atk := c.getTotalAtk()
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
 		Target:  -1,

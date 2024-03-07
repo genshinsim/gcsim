@@ -70,7 +70,7 @@ func (c *char) a1cb() combat.AttackCBFunc {
 }
 
 func (c *char) a4AtkUpdate() {
-	c.a4Atk = c.Base.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
+	c.a4Atk = c.getTotalAtk()
 	c.Core.Tasks.Add(c.a4AtkUpdate, 0.5*60)
 }
 

@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -82,4 +83,9 @@ func (c *char) Condition(fields []string) (any, error) {
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	return 10
+}
+
+func (c *char) getTotalAtk() float64 {
+	stats, _ := c.Stats()
+	return c.Base.Atk*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
 }
