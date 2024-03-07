@@ -4,7 +4,7 @@
   "packageManager": "yarn@3.2.4",
   "private": true,
   "scripts": {
-    "build:wasm:web": "cd ../../../cmd/wasm && ./build.sh -o ../../ui/packages/web/public/main.wasm && echo \"compiled wasm successfully!\"",
+    "build:wasm:web": "task wasm OUT=../../ui/packages/web/public/main.wasm",
     "watch:web": "watch \"yarn run build:wasm:web\" ../../../pkg ../../../internal ../../../cmd/wasm"
   },
   "dependencies": {
