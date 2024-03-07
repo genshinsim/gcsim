@@ -15,7 +15,7 @@ func init() {
 }
 
 func (c *char) Jump(p map[string]int) (action.Info, error) {
-	if c.StatusIsActive(StarwickerKey) {
+	if c.StatusIsActive(player.XianyunAirborneBuff) {
 		c.Core.Player.SetAirborne(player.AirborneXianyun)
 		return action.Info{
 			Frames:          frames.NewAbilFunc(burstJumpFrames),

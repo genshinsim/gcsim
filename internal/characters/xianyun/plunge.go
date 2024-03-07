@@ -119,6 +119,9 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 		c.skillSrc = noSrcVal
 	}, skillHitmark)
 
+	// In case the user does Xianyun QEJP
+	c.Core.Player.SetAirborne(player.Grounded)
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(driftcloudFrames[skillInd]),
 		State:           action.PlungeAttackState,
@@ -181,6 +184,8 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		lowPlungeHitmark,
 	)
 
+	c.Core.Player.SetAirborne(player.Grounded)
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFramesXY),
 		AnimationLength: lowPlungeFramesXY[action.InvalidAction],
@@ -222,6 +227,8 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		highPlungeHitmark,
 		highPlungeHitmark,
 	)
+
+	c.Core.Player.SetAirborne(player.Grounded)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFramesXY),
