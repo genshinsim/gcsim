@@ -75,10 +75,12 @@ func init() {
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
+
 	// last action must be skill (for leap)
 	// dont need to check airborne for this because she can plunge if she's on the ground anyways
 	if c.StatusIsActive(skillStateKey) {
-		return c.driftcloudWave(p)
+		return c.driftcloudWave()
 	}
 
 	switch c.Core.Player.Airborne() {
@@ -91,7 +93,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	}
 }
 
-func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
+func (c *char) driftcloudWave() (action.Info, error) {
 	skillInd := c.skillCounter - 1
 	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, plungeRadius[skillInd])
 	skillHitmark := plungeHitmarks[skillInd]
@@ -119,9 +121,6 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 		c.skillSrc = noSrcVal
 	}, skillHitmark)
 
-	// In case the user does Xianyun QEJP
-	c.Core.Player.SetAirborne(player.Grounded)
-
 	return action.Info{
 		Frames:          frames.NewAbilFunc(driftcloudFrames[skillInd]),
 		State:           action.PlungeAttackState,
@@ -134,10 +133,12 @@ func (c *char) driftcloudWave(_ map[string]int) (action.Info, error) {
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
+
 	// last action must be skill (for leap)
 	// dont need to check airborne for this because she can plunge if she's on the ground anyways
 	if c.StatusIsActive(skillStateKey) {
-		return c.driftcloudWave(p)
+		return c.driftcloudWave()
 	}
 
 	switch c.Core.Player.Airborne() {
@@ -184,8 +185,6 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		lowPlungeHitmark,
 	)
 
-	c.Core.Player.SetAirborne(player.Grounded)
-
 	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFramesXY),
 		AnimationLength: lowPlungeFramesXY[action.InvalidAction],
@@ -227,8 +226,6 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		highPlungeHitmark,
 		highPlungeHitmark,
 	)
-
-	c.Core.Player.SetAirborne(player.Grounded)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFramesXY),
