@@ -39,7 +39,10 @@ tasks:
     vars:
       WIN_CMD: Get-CimInstance -ClassName Win32_PRocess -Filter "CommandLine LIKE '%GCSIM_SERVER%'" | ForEach-Object -Process {taskkill /F /PID $_.ProcessId}
     cmds:
-      - cmd: '{{if eq OS "windows"}}powershell {{shellQuote .WIN_CMD}}{{else}}pkill -f GCSIM_SERVER=1{{end}}'
+      - cmd: powershell {{shellQuote .WIN_CMD}}
+        platforms: [windows]
         ignore_error: true
+      - cmd: pkill -f GCSIM_SERVER=1
+        platforms: [linux, darwin]
       - go run cmd/server/main.go GCSIM_SERVER=1
 
