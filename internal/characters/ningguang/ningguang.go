@@ -106,8 +106,7 @@ func (c *char) Condition(fields []string) (any, error) {
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	switch k {
 	case model.AnimationXingqiuN0StartDelay:
-		c.xingqiuN0Delay() //TODO: return this in later release; here so linter stops complaining
-		return (15 + 5 + 13) / 3
+		return c.xingqiuN0Delay()
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
