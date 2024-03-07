@@ -22,7 +22,7 @@ func (c *char) aimedApplyRiptide(a combat.AttackCB) {
 	// covers:
 	// - fully-charged aimed shot regardless of E state
 	// - phys aimed shot in E state
-	if a.AttackEvent.Info.Element == attributes.Hydro || (c.StatusIsActive(MeleeKey) && a.AttackEvent.Info.Element == attributes.Physical) {
+	if a.AttackEvent.Info.Element == attributes.Hydro || (c.StatusIsActive(meleeKey) && a.AttackEvent.Info.Element == attributes.Physical) {
 		c.applyRiptide("aimed shot", t)
 	}
 }
@@ -66,7 +66,7 @@ func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 			return
 		}
 
-		if c.StatusIsActive(MeleeKey) {
+		if c.StatusIsActive(meleeKey) {
 			c.rtSlashTick(t)
 		} else {
 			c.rtFlashTick(t)
@@ -130,7 +130,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
+		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Key()).
 		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
@@ -146,7 +146,7 @@ func (c *char) rtSlashCallback(a combat.AttackCB) {
 	}
 	// do nothing if E is not activated
 	// - this can also be triggered by an aimed shot if E state is up when it hits the enemy
-	if !c.StatusIsActive(MeleeKey) {
+	if !c.StatusIsActive(meleeKey) {
 		return
 	}
 	// do nothing if no riptide on target
@@ -184,7 +184,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
+		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Key()).
 		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
@@ -226,7 +226,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
+		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Key()).
 		Write("rtExpiry", t.StatusExpiry(riptideKey))
 

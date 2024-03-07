@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -50,4 +51,11 @@ func (c *char) Condition(fields []string) (any, error) {
 	default:
 		return c.Character.Condition(fields)
 	}
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if k == model.AnimationXingqiuN0StartDelay {
+		return 9
+	}
+	return c.Character.AnimationStartDelay(k)
 }

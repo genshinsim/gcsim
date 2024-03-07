@@ -104,4 +104,6 @@ func (c *char) summonFieryCollapse() {
 		11,
 		shieldCb,
 	)
+
+	c.AddStatus(burstICDKey, 60, true)
 }

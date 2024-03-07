@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -99,5 +100,28 @@ func (c *char) Condition(fields []string) (any, error) {
 		return int(c.prevAttack), nil
 	default:
 		return c.Character.Condition(fields)
+	}
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		c.xingqiuN0Delay() //TODO: return this in later release; here so linter stops complaining
+		return (15 + 5 + 13) / 3
+	default:
+		return c.Character.AnimationStartDelay(k)
+	}
+}
+
+func (c *char) xingqiuN0Delay() int {
+	switch c.prevAttack {
+	case attackTypeLeft:
+		return 15
+	case attackTypeRight:
+		return 5
+	case attackTypeTwirl:
+		return 13
+	default:
+		return 0
 	}
 }

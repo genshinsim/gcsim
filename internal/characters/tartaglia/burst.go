@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	center := c.Core.Combat.Player()
 	radius := 6.0
 
-	if c.StatusIsActive(MeleeKey) {
+	if c.StatusIsActive(meleeKey) {
 		ai.Abil = "Melee Stance: Light of Obliteration"
 		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.Mult = meleeBurst[c.TalentLvlBurst()]
@@ -82,7 +82,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		cb,
 	)
 
-	if c.StatusIsActive(MeleeKey) {
+	if c.StatusIsActive(meleeKey) {
 		c.ConsumeEnergy(71)
 		c.SetCDWithDelay(action.ActionBurst, 900, 66)
 	} else {

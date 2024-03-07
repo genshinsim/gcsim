@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -15,7 +16,7 @@ const (
 	riptideKey         = "riptide"
 	riptideSlashICDKey = "riptide-slash-icd"
 	particleICDKey     = "tartaglia-particle-icd"
-	MeleeKey           = "tartagliamelee"
+	meleeKey           = "tartagliamelee"
 )
 
 func init() {
@@ -72,4 +73,16 @@ func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
 		return player.ErrInvalidChargeAction
 	}
 	return c.Character.NextQueueItemIsValid(a, p)
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		if c.StatusIsActive(meleeKey) {
+			return 12
+		}
+		return 9
+	default:
+		return c.Character.AnimationStartDelay(k)
+	}
 }
