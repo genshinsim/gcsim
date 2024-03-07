@@ -34,13 +34,12 @@ tasks:
   dev-server-mode:
     desc: watches for change and launches server mode
     watch: true
-    platforms:
-      - "darwin"
-      - "linux"
     sources:
       - '**/*.go'
+    vars:
+      WIN_CMD: Get-CimInstance -ClassName Win32_PRocess -Filter "CommandLine LIKE '%GCSIM_SERVER%'" | ForEach-Object -Process {taskkill /F /PID $_.ProcessId}
     cmds:
-      - cmd: pkill -f GCSIM_SERVER=1
+      - cmd: '{{if eq OS "windows"}}powershell {{shellQuote .WIN_CMD}}{{else}}pkill -f GCSIM_SERVER=1{{end}}'
         ignore_error: true
       - go run cmd/server/main.go GCSIM_SERVER=1
 
