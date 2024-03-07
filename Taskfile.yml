@@ -44,5 +44,6 @@ tasks:
         ignore_error: true
       - cmd: pkill -f GCSIM_SERVER=1
         platforms: [linux, darwin]
+        ignore_error: true
       - go run cmd/server/main.go GCSIM_SERVER=1
 
