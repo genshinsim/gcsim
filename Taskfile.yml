@@ -31,3 +31,16 @@ tasks:
     env:
       GOOS: js 
       GOARCH: wasm
+  dev-server-mode:
+    desc: watches for change and launches server mode
+    watch: true
+    platforms:
+      - "darwin"
+      - "linux"
+    sources:
+      - '**/*.go'
+    cmds:
+      - cmd: pkill -f GCSIM_SERVER=1
+        ignore_error: true
+      - go run cmd/server/main.go GCSIM_SERVER=1
+
