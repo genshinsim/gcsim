@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -13,6 +14,7 @@ import (
 
 func init() {
 	core.RegisterCharFunc(keys.Ningguang, NewChar)
+	hacks.RegisterNOSpecialChar(keys.Ningguang)
 }
 
 type char struct {
