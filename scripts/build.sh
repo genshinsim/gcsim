@@ -8,3 +8,4 @@ LDFLAGS=(
 )
 
 GOOS=windows GOARCH=amd64 go build -ldflags="${LDFLAGS[*]}" ./cmd/gcsim
+GOOS=windows GOARCH=amd64 go build -ldflags="${LDFLAGS[*]}" ./cmd/server

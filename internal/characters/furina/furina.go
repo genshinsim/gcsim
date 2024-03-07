@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -32,16 +33,17 @@ func (a Arkhe) String() string {
 
 type char struct {
 	*tmpl.Character
-	curFanfare          float64
-	maxQFanfare         float64
-	maxC2Fanfare        float64
-	burstBuff           []float64
-	a4Buff              []float64
-	a4IntervalReduction float64
-	lastSummonSrc       int
-	arkhe               Arkhe
-	c6Count             int
-	c6HealSrc           int
+	curFanfare                float64
+	maxQFanfare               float64
+	maxC2Fanfare              float64
+	fanfareDebounceTaskQueued bool
+	burstBuff                 []float64
+	a4Buff                    []float64
+	a4IntervalReduction       float64
+	lastSummonSrc             int
+	arkhe                     Arkhe
+	c6Count                   int
+	c6HealSrc                 int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -98,4 +100,11 @@ func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
 		return nil
 	}
 	return c.Character.NextQueueItemIsValid(a, p)
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if k == model.AnimationXingqiuN0StartDelay {
+		return 13
+	}
+	return c.Character.AnimationStartDelay(k)
 }

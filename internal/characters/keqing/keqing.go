@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -65,4 +66,11 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 		return 25
 	}
 	return c.Character.ActionStam(a, p)
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if k == model.AnimationXingqiuN0StartDelay {
+		return 8
+	}
+	return c.Character.AnimationStartDelay(k)
 }

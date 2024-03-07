@@ -21,7 +21,7 @@ const a1Key = "cyno-a1"
 //
 // - other parts of a1 depend on the status that this task applies so they don't need an extra ascension check
 func (c *char) a1() {
-	if !c.StatusIsActive(BurstKey) {
+	if !c.StatusIsActive(burstKey) {
 		return
 	}
 	c.a1Extended = false

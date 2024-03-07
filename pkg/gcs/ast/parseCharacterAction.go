@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -61,6 +62,17 @@ Loop:
 			}
 			if param == nil {
 				param = &MapExpr{Pos: n.pos}
+			}
+			// validate params
+			// TODO: this is inefficient but we don't have a "compile" step yet
+			m := param.(*MapExpr).Fields
+			keys := make([]string, 0, len(m))
+			for k := range m {
+				keys = append(keys, k)
+			}
+			err = validation.ValidateCharParamKeys(charKey, actionKey, keys)
+			if err != nil {
+				return nil, fmt.Errorf("character %v: %w", charKey, err)
 			}
 			expr.Args = append(expr.Args, param)
 

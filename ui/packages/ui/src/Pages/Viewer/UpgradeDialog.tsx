@@ -220,7 +220,7 @@ const UpgradeButton = ({
   const [isReady, setReady] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
-      setReady(exec().ready());
+      exec().ready().then(res => setReady(res))
     }, 250);
     return () => clearInterval(interval);
   }, [exec]);

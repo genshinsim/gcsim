@@ -25,8 +25,8 @@ export class WasmExecutor implements Executor {
     this.runStarted = 0;
   }
 
-  public ready(): boolean {
-    return !this.isRunning;
+  public ready(): Promise<boolean> {
+    return new Promise((resolve) => resolve(!this.isRunning))
   }
 
   public running(): boolean {
