@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 // ActionStam provides default implementation for stam cost for charge and dash
@@ -114,6 +115,26 @@ func (c *Character) Jump(p map[string]int) (action.Info, error) {
 	case info.BodyLoli:
 		f = 29
 	}
+
+	if c.StatusIsActive(player.XianyunAirborneBuff) {
+		c.Core.Player.SetAirborne(player.AirborneXianyun)
+		return action.Info{
+			Frames: func(a action.Action) int {
+				switch a {
+				case action.ActionLowPlunge:
+					return 5
+				case action.ActionHighPlunge:
+					return 6
+				default:
+					return 60
+				}
+			},
+			AnimationLength: 60,
+			CanQueueAfter:   5, // earliest cancel
+			State:           action.JumpState,
+		}, nil
+	}
+
 	return action.Info{
 		Frames:          func(action.Action) int { return f },
 		AnimationLength: f,
