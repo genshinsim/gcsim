@@ -14,9 +14,9 @@ import (
 var highPlungeFrames []int
 var lowPlungeFrames []int
 
-const collisionHitmark = 37
-const highPlungeHitmark = 44
-const lowPlungeHitmark = 42
+const lowPlungeHitmark = 44
+const highPlungeHitmark = 45
+const collisionHitmark = lowPlungeHitmark - 6
 
 func init() {
 	// high_plunge -> x

@@ -17,9 +17,9 @@ var lowPlungeFramesAL []int
 
 const lowPlungeHitmarkAL = 38
 
-const collisionHitmarkXY = 37
-const highPlungeHitmarkXY = 45
-const lowPlungeHitmarkXY = 42
+const lowPlungeHitmarkXY = 46
+const highPlungeHitmarkXY = 48
+const collisionHitmarkXY = lowPlungeHitmarkXY - 6
 
 var highPlungeFramesXY []int
 var lowPlungeFramesXY []int
