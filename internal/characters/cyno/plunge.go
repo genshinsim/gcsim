@@ -149,7 +149,7 @@ func (c *char) lowPlungeBXY(p map[string]int) (action.Info, error) {
 		Element:        attributes.Electro,
 		IgnoreInfusion: true,
 		Durability:     25,
-		Mult:           lowPlunge[c.TalentLvlAttack()],
+		Mult:           lowPlungeB[c.TalentLvlBurst()],
 	}
 	c.Core.QueueAttack(
 		ai,
