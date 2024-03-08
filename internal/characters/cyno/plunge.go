@@ -123,7 +123,7 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
+		CanQueueAfter:   lowPlungeFrames[action.ActionSkill],
 		State:           action.PlungeAttackState,
 	}, nil
 }
@@ -160,7 +160,7 @@ func (c *char) lowPlungeBXY(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFramesB),
 		AnimationLength: lowPlungeFramesB[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFramesB[action.ActionDash],
+		CanQueueAfter:   lowPlungeFramesB[action.ActionSkill],
 		State:           action.PlungeAttackState,
 	}, nil
 }
@@ -213,7 +213,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionDash],
+		CanQueueAfter:   highPlungeFrames[action.ActionSkill],
 		State:           action.PlungeAttackState,
 	}, nil
 }
@@ -250,7 +250,7 @@ func (c *char) highPlungeBXY(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFramesB),
 		AnimationLength: highPlungeFramesB[action.InvalidAction],
-		CanQueueAfter:   highPlungeFramesB[action.ActionDash],
+		CanQueueAfter:   highPlungeFramesB[action.ActionSkill],
 		State:           action.PlungeAttackState,
 	}, nil
 }
