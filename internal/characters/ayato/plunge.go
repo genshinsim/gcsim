@@ -19,14 +19,6 @@ const highPlungeHitmark = 47
 const collisionHitmark = lowPlungeHitmark - 6
 
 func init() {
-	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(76)
-	highPlungeFrames[action.ActionAttack] = 56
-	highPlungeFrames[action.ActionSkill] = 56
-	highPlungeFrames[action.ActionBurst] = 56
-	highPlungeFrames[action.ActionDash] = 47
-	highPlungeFrames[action.ActionSwap] = 63
-
 	// low_plunge -> x
 	lowPlungeFrames = frames.InitAbilSlice(75)
 	lowPlungeFrames[action.ActionAttack] = 55
@@ -35,61 +27,14 @@ func init() {
 	lowPlungeFrames[action.ActionDash] = 45
 	lowPlungeFrames[action.ActionJump] = 73
 	lowPlungeFrames[action.ActionSwap] = 62
-}
 
-// High Plunge attack damage queue generator
-// Use the "collision" optional argument if you want to do a falling hit on the way down
-// Default = 0
-func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
-	defer c.Core.Player.SetAirborne(player.Grounded)
-	switch c.Core.Player.Airborne() {
-	case player.AirborneVenti:
-		return action.Info{}, fmt.Errorf("%s high_plunge while airborne due to venti is unimplemented due to lack of frame data. Please see https://docs.gcsim.app/mechanics/frames for how to contribute", c.Base.Key.String())
-	case player.AirborneXianyun:
-		return c.highPlungeXY(p)
-	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
-	}
-}
-
-func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
-	collision, ok := p["collision"]
-	if !ok {
-		collision = 0 // Whether or not collision hit
-	}
-
-	if collision > 0 {
-		c.plungeCollision(collisionHitmark)
-	}
-
-	poiseDMG := 150.0
-	highPlungeRadius := 5.0
-
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "High Plunge",
-		AttackTag:  attacks.AttackTagPlunge,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   poiseDMG,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       highPlunge[c.TalentLvlAttack()],
-	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
-		highPlungeHitmark,
-		highPlungeHitmark,
-	)
-
-	return action.Info{
-		Frames:          frames.NewAbilFunc(highPlungeFrames),
-		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionDash],
-		State:           action.PlungeAttackState,
-	}, nil
+	// high_plunge -> x
+	highPlungeFrames = frames.InitAbilSlice(76)
+	highPlungeFrames[action.ActionAttack] = 56
+	highPlungeFrames[action.ActionSkill] = 56
+	highPlungeFrames[action.ActionBurst] = 56
+	highPlungeFrames[action.ActionDash] = 47
+	highPlungeFrames[action.ActionSwap] = 63
 }
 
 // Low Plunge attack damage queue generator
@@ -141,6 +86,59 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
+		State:           action.PlungeAttackState,
+	}, nil
+}
+
+// High Plunge attack damage queue generator
+// Use the "collision" optional argument if you want to do a falling hit on the way down
+// Default = 0
+func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
+	switch c.Core.Player.Airborne() {
+	case player.AirborneXianyun:
+		return c.highPlungeXY(p)
+	default:
+		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+	}
+}
+
+func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
+	collision, ok := p["collision"]
+	if !ok {
+		collision = 0 // Whether or not collision hit
+	}
+
+	if collision > 0 {
+		c.plungeCollision(collisionHitmark)
+	}
+
+	poiseDMG := 150.0
+	highPlungeRadius := 5.0
+
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "High Plunge",
+		AttackTag:  attacks.AttackTagPlunge,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   poiseDMG,
+		Element:    attributes.Physical,
+		Durability: 25,
+		Mult:       highPlunge[c.TalentLvlAttack()],
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
+		highPlungeHitmark,
+		highPlungeHitmark,
+	)
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(highPlungeFrames),
+		AnimationLength: highPlungeFrames[action.InvalidAction],
+		CanQueueAfter:   highPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 	}, nil
 }
