@@ -53,7 +53,7 @@ func (c *char) c6BonusDMG() float64 {
 	return scaleHP * c.MaxHP()
 }
 
-func (c *char) c6BonusDMGArkhe() float64 {
+func (c *char) c6BonusDMGNoExtra() float64 {
 	scaleHP := 0.18
 	return scaleHP * c.MaxHP()
 }
