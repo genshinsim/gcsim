@@ -18,6 +18,12 @@ skill_data_mapping:
             - 6 # 6-Hit DMG|{param6:F1P}
         charge:
             - 7 # Charged Attack|{param7:F1P}
+        collision:
+            - 9 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 11 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         bb:
             - 2 # Blood Blossom DMG|{param2:P}
