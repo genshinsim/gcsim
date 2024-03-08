@@ -18,6 +18,12 @@ const collisionHitmark = 38
 const highPlungeHitmark = 46
 const lowPlungeHitmark = 44
 
+const lowPlungePoiseDMG = 100.0
+const lowPlungeRadius = 3.0
+
+const highPlungePoiseDMG = 150.0
+const highPlungeRadius = 5.0
+
 func init() {
 	// high_plunge -> x
 	highPlungeFrames = frames.InitAbilSlice(66)
@@ -51,10 +57,10 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	poiseDMG := 150.0
-	highPlungeRadius := 5.0
+	highPlungeRadius := highPlungeRadius
+	highPlungePoiseDMG := highPlungePoiseDMG
 	if c.StatusIsActive(burstBuffKey) {
-		poiseDMG = 225
+		highPlungePoiseDMG = 225
 		highPlungeRadius = 6
 	}
 
@@ -65,10 +71,10 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   poiseDMG,
+		PoiseDMG:   highPlungePoiseDMG,
 		Element:    attributes.Physical,
 		Durability: 25,
-		Mult:       highplunge[c.TalentLvlAttack()],
+		Mult:       highPlunge[c.TalentLvlAttack()],
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -104,10 +110,10 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	poiseDMG := 100.0
-	lowPlungeRadius := 3.0
+	lowPlungeRadius := lowPlungeRadius
+	lowPlungePoiseDMG := lowPlungePoiseDMG
 	if c.StatusIsActive(burstBuffKey) {
-		poiseDMG = 150
+		lowPlungePoiseDMG = 150
 		lowPlungeRadius = 4
 	}
 
@@ -118,10 +124,10 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   poiseDMG,
+		PoiseDMG:   lowPlungePoiseDMG,
 		Element:    attributes.Physical,
 		Durability: 25,
-		Mult:       lowplunge[c.TalentLvlAttack()],
+		Mult:       lowPlunge[c.TalentLvlAttack()],
 	}
 	c.Core.QueueAttack(
 		ai,
