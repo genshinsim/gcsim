@@ -139,16 +139,17 @@ func (c *char) lowPlungeBXY(p map[string]int) (action.Info, error) {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Low Plunge",
-		AttackTag:  attacks.AttackTagPlunge,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   lowPlungePoiseDMGB,
-		Element:    attributes.Electro,
-		Durability: 25,
-		Mult:       lowPlunge[c.TalentLvlAttack()],
+		ActorIndex:     c.Index,
+		Abil:           "Low Plunge",
+		AttackTag:      attacks.AttackTagPlunge,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeBlunt,
+		PoiseDMG:       lowPlungePoiseDMGB,
+		Element:        attributes.Electro,
+		IgnoreInfusion: true,
+		Durability:     25,
+		Mult:           lowPlunge[c.TalentLvlAttack()],
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -229,16 +230,17 @@ func (c *char) highPlungeBXY(p map[string]int) (action.Info, error) {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "High Plunge (Q)",
-		AttackTag:  attacks.AttackTagPlunge,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   highPlungePoiseDMGB,
-		Element:    attributes.Electro,
-		Durability: 25,
-		Mult:       highPlungeB[c.TalentLvlBurst()],
+		ActorIndex:     c.Index,
+		Abil:           "High Plunge (Q)",
+		AttackTag:      attacks.AttackTagPlunge,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeBlunt,
+		PoiseDMG:       highPlungePoiseDMGB,
+		Element:        attributes.Electro,
+		IgnoreInfusion: true,
+		Durability:     25,
+		Mult:           highPlungeB[c.TalentLvlBurst()],
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -276,15 +278,16 @@ func (c *char) plungeCollision(delay int) {
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollisionB(delay int) {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Plunge Collision",
-		AttackTag:  attacks.AttackTagPlunge,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Electro,
-		Durability: 0,
-		Mult:       collisionB[c.TalentLvlBurst()],
+		ActorIndex:     c.Index,
+		Abil:           "Plunge Collision",
+		AttackTag:      attacks.AttackTagPlunge,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeSlash,
+		Element:        attributes.Electro,
+		IgnoreInfusion: true,
+		Durability:     0,
+		Mult:           collisionB[c.TalentLvlBurst()],
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), delay, delay)
 }
