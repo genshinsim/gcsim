@@ -18,6 +18,12 @@ const lowPlungeHitmark = 45
 const highPlungeHitmark = 47
 const collisionHitmark = lowPlungeHitmark - 6
 
+const lowPlungePoiseDMG = 100.0
+const lowPlungeRadius = 3.0
+
+const highPlungePoiseDMG = 150.0
+const highPlungeRadius = 5.0
+
 func init() {
 	// low_plunge -> x
 	lowPlungeFrames = frames.InitAbilSlice(75)
@@ -60,9 +66,6 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	poiseDMG := 100.0
-	lowPlungeRadius := 3.0
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
@@ -70,7 +73,7 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   poiseDMG,
+		PoiseDMG:   lowPlungePoiseDMG,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],
@@ -113,9 +116,6 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	poiseDMG := 150.0
-	highPlungeRadius := 5.0
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
@@ -123,7 +123,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   poiseDMG,
+		PoiseDMG:   highPlungePoiseDMG,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       highPlunge[c.TalentLvlAttack()],

@@ -18,11 +18,15 @@ const lowPlungeHitmark = 44
 const highPlungeHitmark = 45
 const collisionHitmark = lowPlungeHitmark - 6
 
+const lowPlungeRadius = 3.0
+
+const highPlungeRadius = 3.5
+
 func init() {
 	// low_plunge -> x
 	lowPlungeFrames = frames.InitAbilSlice(66)
 	lowPlungeFrames[action.ActionAttack] = 57
-	lowPlungeFrames[action.ActionCharge] = 55
+	lowPlungeFrames[action.ActionCharge] = 55 + 9
 	lowPlungeFrames[action.ActionSkill] = 43
 	lowPlungeFrames[action.ActionBurst] = 42
 	lowPlungeFrames[action.ActionDash] = 44
@@ -31,7 +35,7 @@ func init() {
 	// high_plunge -> x
 	highPlungeFrames = frames.InitAbilSlice(68)
 	highPlungeFrames[action.ActionAttack] = 59
-	highPlungeFrames[action.ActionCharge] = 57
+	highPlungeFrames[action.ActionCharge] = 57 + 8
 	highPlungeFrames[action.ActionSkill] = 45
 	highPlungeFrames[action.ActionBurst] = 44
 	highPlungeFrames[action.ActionDash] = 45
@@ -62,9 +66,6 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	poiseDMG := 50.0
-	lowPlungeRadius := 3.0
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
@@ -72,7 +73,6 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
-		PoiseDMG:   poiseDMG,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],
@@ -115,9 +115,6 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	poiseDMG := 100.0
-	highPlungeRadius := 3.5
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
@@ -125,7 +122,6 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
-		PoiseDMG:   poiseDMG,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       highPlunge[c.TalentLvlAttack()],
