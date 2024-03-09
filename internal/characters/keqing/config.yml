@@ -17,6 +17,12 @@ skill_data_mapping:
         charge:
             - 6 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
             - 7 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
+        collision:
+            - 9 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 11 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         skill:
             - 0 # Lightning Stiletto DMG|{param0:F1P}
