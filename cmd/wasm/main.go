@@ -1,4 +1,4 @@
-//go:build !codeanalysis && wasm
+//go:build !codeanalysis && js && wasm
 
 package main
 
