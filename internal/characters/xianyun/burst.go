@@ -89,7 +89,7 @@ func (c *char) BurstCast() {
 		// TODO: From the frames sheet the heal timings are kind of all over the place
 		for i := burstHeal; i <= burstHeal+burstDuration; i += 2.5 * 60 {
 			// Unaffected by hitlag
-			c.Core.Tasks.Add(c.BurstHealDoT, i)
+			c.Core.Tasks.Add(c.burstHealDoT, i)
 		}
 
 		c.a4StartUpdate()
@@ -157,7 +157,7 @@ func (c *char) burstPlungeDoTTrigger() {
 	}, "xianyun-starwicker-plunge-hook")
 }
 
-func (c *char) BurstHealDoT() {
+func (c *char) burstHealDoT() {
 	atk := c.getTotalAtk()
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
