@@ -123,7 +123,6 @@ func (c *char) a4() {
 		c.Core.Log.NewEvent("Xianyun A4 proc dmg add", glog.LogPreDamageMod, ae.Info.ActorIndex).
 			Write("atk", c.a4Atk).
 			Write("ratio", c.a4Ratio).
-			Write("before", ae.Info.FlatDmg).
 			Write("addition", amt)
 
 		ae.Info.FlatDmg += amt
