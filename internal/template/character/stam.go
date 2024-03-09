@@ -115,8 +115,6 @@ func (c *Character) DashToJumpLength() int {
 	switch c.CharBody {
 	case info.BodyGirl, info.BodyLoli:
 		return 4
-	case info.BodyMale, info.BodyLady:
-		return 3
 	case info.BodyBoy:
 		return 2
 	default:
@@ -129,16 +127,14 @@ func (c *Character) Jump(p map[string]int) (action.Info, error) {
 		c.Core.Player.SetAirborne(player.AirborneXianyun)
 		// 4/8 for claymore/bow/catalyst and 5/9 for sword/polearm
 		lowPlunge := 4
-		switch c.Weapon.Class {
-		case info.WeaponClassSword, info.WeaponClassSpear:
-			lowPlunge = 5
-		}
-
 		highPlunge := 8
 		switch c.Weapon.Class {
 		case info.WeaponClassSword, info.WeaponClassSpear:
+			lowPlunge = 5
 			highPlunge = 9
 		}
+
+		animLength := 60 // Upperbound for jump for high/low plunge
 		return action.Info{
 			Frames: func(a action.Action) int {
 				switch a {
@@ -147,10 +143,10 @@ func (c *Character) Jump(p map[string]int) (action.Info, error) {
 				case action.ActionHighPlunge:
 					return highPlunge
 				default:
-					return 60
+					return animLength // This is expected to later lead to action error because no other action besides plunges can be done while AirborneXianyun
 				}
 			},
-			AnimationLength: 60,
+			AnimationLength: animLength,
 			CanQueueAfter:   lowPlunge, // earliest cancel
 			State:           action.JumpState,
 		}, nil
@@ -167,12 +163,10 @@ func (c *Character) Jump(p map[string]int) (action.Info, error) {
 func (c *Character) JumpLength() int {
 	if c.Core.Player.LastAction.Type == action.ActionDash {
 		switch c.CharBody {
-		case info.BodyLoli, info.BodyLady, info.BodyMale:
-			return 37
 		case info.BodyGirl, info.BodyBoy:
 			return 34
 		default:
-			return 36
+			return 37
 		}
 	}
 	switch c.CharBody {
