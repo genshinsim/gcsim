@@ -98,6 +98,8 @@ var CharNameToKey = map[string]keys.Char{
 	"xiangling":               keys.Xiangling,
 	"xl":                      keys.Xiangling,
 	"xianyun":                 keys.Xianyun,
+	"liuyun":                  keys.Xianyun,
+	"cloudretainer":           keys.Xianyun,
 	"xiao":                    keys.Xiao,
 	"xingqiu":                 keys.Xingqiu,
 	"xq":                      keys.Xingqiu,
