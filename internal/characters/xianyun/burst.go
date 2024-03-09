@@ -13,8 +13,6 @@ import (
 var burstFrames []int
 
 const (
-	StarwickerKey = player.XianyunAirborneBuff
-
 	burstHeal    = 4 // First heal is about 4f after hitmark
 	burstHitmark = 75
 	burstKey     = "xianyun-burst"
@@ -82,7 +80,7 @@ func (c *char) BurstCast() {
 		for _, char := range c.Core.Player.Chars() {
 			// Due to the mechanism for how other characters check if they can do higher jumps
 			// The other characters need to have the buff status on themselves.
-			char.AddStatus(StarwickerKey, burstDuration, false)
+			char.AddStatus(player.XianyunAirborneBuff, burstDuration, false)
 		}
 
 		c.adeptalAssistStacks = 8
@@ -111,7 +109,7 @@ func (c *char) burstPlungeDoTTrigger() {
 			return false
 		}
 
-		if !c.Core.Player.ActiveChar().StatusIsActive(StarwickerKey) {
+		if !c.Core.Player.ActiveChar().StatusIsActive(player.XianyunAirborneBuff) {
 			return false
 		}
 
@@ -143,7 +141,7 @@ func (c *char) burstPlungeDoTTrigger() {
 				// Delay stack reduction and status removal until after the attack lands
 				// so that A4 can still proc on the attack that triggers the burstDot.
 				for _, char := range c.Core.Player.Chars() {
-					char.DeleteStatus(StarwickerKey)
+					char.DeleteStatus(player.XianyunAirborneBuff)
 				}
 			}
 		}, 1)

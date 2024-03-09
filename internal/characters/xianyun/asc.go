@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -108,7 +109,7 @@ func (c *char) a4() {
 			return false
 		}
 
-		if !c.StatusIsActive(StarwickerKey) {
+		if !c.StatusIsActive(player.XianyunAirborneBuff) {
 			return false
 		}
 
@@ -126,8 +127,8 @@ func (c *char) a4() {
 			Write("ratio", c.a4Ratio).
 			Write("before", ae.Info.FlatDmg).
 			Write("addition", amt).
-			Write("effect_ends_at", c.StatusExpiry(StarwickerKey)).
-			Write("starwicker_left", c.Tags[StarwickerKey])
+			Write("effect_ends_at", c.StatusExpiry(player.XianyunAirborneBuff)).
+			Write("starwicker_left", c.Tags[player.XianyunAirborneBuff])
 
 		ae.Info.FlatDmg += amt
 		c.AddStatus(a4ICDKey, 0.4*60, true)
