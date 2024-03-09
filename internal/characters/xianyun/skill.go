@@ -66,7 +66,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Check for first leap
 	if !c.StatusIsActive(skillStateKey) || c.skillCounter == 3 { // Didn't plunge after the previous triple skill
 		c.skillCounter = 0
-		if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
+		if c.StatusIsActive(c6Key) {
 			c.skillWasC6 = true
 			c.SetTag(c6Key, c.Tag(c6Key)-1)
 			if c.Tag(c6Key) <= 0 {
