@@ -29,7 +29,7 @@ func init() {
 	// skill (press) -> high plunge -> x
 	driftcloudFrames[0] = frames.InitAbilSlice(65) // max
 	driftcloudFrames[0][action.ActionAttack] = 57
-	driftcloudFrames[0][action.ActionCharge] = 56 + 7 // Windup 7 frames
+	driftcloudFrames[0][action.ActionCharge] = 56 - 7 // Windup 7 frames
 	driftcloudFrames[0][action.ActionSkill] = 56
 	driftcloudFrames[0][action.ActionBurst] = 54
 	driftcloudFrames[0][action.ActionDash] = 51
@@ -38,7 +38,7 @@ func init() {
 
 	driftcloudFrames[1] = frames.InitAbilSlice(70) // max
 	driftcloudFrames[1][action.ActionAttack] = 60
-	driftcloudFrames[1][action.ActionCharge] = 61 + 7 // Windup 7 frames
+	driftcloudFrames[1][action.ActionCharge] = 61 - 7 // Windup 7 frames
 	driftcloudFrames[1][action.ActionSkill] = 55
 	driftcloudFrames[1][action.ActionBurst] = 61
 	driftcloudFrames[1][action.ActionDash] = 55
@@ -47,7 +47,7 @@ func init() {
 
 	driftcloudFrames[2] = frames.InitAbilSlice(76) // max
 	driftcloudFrames[2][action.ActionAttack] = 66
-	driftcloudFrames[2][action.ActionCharge] = 67 + 7 // Windup 7 frames
+	driftcloudFrames[2][action.ActionCharge] = 67 - 7 // Windup 7 frames
 	driftcloudFrames[2][action.ActionSkill] = 64
 	driftcloudFrames[2][action.ActionBurst] = 67
 	driftcloudFrames[2][action.ActionDash] = 63
@@ -57,7 +57,7 @@ func init() {
 	// high_plunge -> x
 	highPlungeFramesXY = frames.InitAbilSlice(68)
 	highPlungeFramesXY[action.ActionAttack] = 59
-	highPlungeFramesXY[action.ActionCharge] = 59 + 5 // Windup 5 frames
+	highPlungeFramesXY[action.ActionCharge] = 59 - 5 // Windup 5 frames
 	highPlungeFramesXY[action.ActionSkill] = 59
 	highPlungeFramesXY[action.ActionBurst] = 59 // Assumed to be the same as skill
 	highPlungeFramesXY[action.ActionDash] = 46
@@ -67,7 +67,7 @@ func init() {
 	// low_plunge -> x
 	lowPlungeFramesXY = frames.InitAbilSlice(65)
 	lowPlungeFramesXY[action.ActionAttack] = 56
-	lowPlungeFramesXY[action.ActionCharge] = 57 + 7 // Windup 7 frames
+	lowPlungeFramesXY[action.ActionCharge] = 57 - 7 // Windup 7 frames
 	lowPlungeFramesXY[action.ActionSkill] = 59
 	lowPlungeFramesXY[action.ActionBurst] = 59 // Assumed to be the same as skill
 	lowPlungeFramesXY[action.ActionDash] = 44
@@ -125,7 +125,7 @@ func (c *char) driftcloudWave() (action.Info, error) {
 		Frames:          frames.NewAbilFunc(driftcloudFrames[skillInd]),
 		State:           action.PlungeAttackState,
 		AnimationLength: driftcloudFrames[skillInd][action.InvalidAction],
-		CanQueueAfter:   driftcloudFrames[skillInd][action.ActionSwap],
+		CanQueueAfter:   driftcloudFrames[skillInd][action.ActionCharge],
 	}, nil
 }
 
