@@ -26,6 +26,7 @@ type char struct {
 	skillEnemiesHit     []targets.TargetKey
 	a1Buffer            []int
 	a4Atk               float64
+	a4src               int
 	a4Max               float64
 	a4Ratio             float64
 	adeptalAssistStacks int

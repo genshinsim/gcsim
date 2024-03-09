@@ -92,6 +92,8 @@ func (c *char) BurstCast() {
 			// Unaffected by hitlag
 			c.Core.Tasks.Add(c.BurstHealDoT, i)
 		}
+
+		c.a4StartUpdate()
 	}, burstHitmark)
 }
 

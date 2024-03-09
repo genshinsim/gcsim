@@ -67,9 +67,23 @@ func (c *char) a1cb() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) a4AtkUpdate() {
-	c.a4Atk = c.getTotalAtk()
-	c.Core.Tasks.Add(c.a4AtkUpdate, 0.5*60)
+func (c *char) a4StartUpdate() {
+	if c.Base.Ascension < 4 {
+		return
+	}
+
+	c.a4src = c.Core.F
+	c.Core.Tasks.Add(c.a4AtkUpdate(c.Core.F), 0)
+}
+
+func (c *char) a4AtkUpdate(src int) func() {
+	return func() {
+		if c.a4src != src {
+			return
+		}
+		c.a4Atk = c.getTotalAtk()
+		c.Core.Tasks.Add(c.a4AtkUpdate(src), 0.5*60)
+	}
 }
 
 // a4: When the Starwicker created by Stars Gather at Dusk has Adeptal Assistance stacks,
@@ -79,7 +93,6 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.a4AtkUpdate()
 
 	c.a4Max = 9000
 	c.a4Ratio = 2.0
