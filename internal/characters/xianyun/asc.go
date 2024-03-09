@@ -62,9 +62,6 @@ func (c *char) a1cb() combat.AttackCBFunc {
 				// the user can still access it using .char.tags.xianyun-a1
 				c.a1Buffer[idx] -= 1
 				char.SetTag(a1Key, min(c.a1Buffer[idx], 4))
-
-				// TODO: Don't need to specifically remove A1 Status because it should have expired at the same time
-				char.DeleteStatus(a1Key)
 			}, a1Dur)
 		}
 	}
