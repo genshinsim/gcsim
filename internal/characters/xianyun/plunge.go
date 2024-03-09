@@ -1,7 +1,6 @@
 package xianyun
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -146,10 +145,6 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
-	if c.Core.Player.CurrentState() != action.JumpState {
-		return action.Info{}, errors.New("only plunge after using jump")
-	}
-
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not Xianyun does a collision hit
@@ -188,10 +183,6 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
-	if c.Core.Player.CurrentState() != action.JumpState {
-		return action.Info{}, errors.New("only plunge after using jump")
-	}
-
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not Xianyun does a collision hit
