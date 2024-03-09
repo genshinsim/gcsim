@@ -67,7 +67,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 	if a == action.ActionSkill && c.StatusIsActive(skillStateKey) {
 		return true, action.NoFailure
 	}
-	if (a == action.ActionAim || a == action.ActionCharge) && c.StatusIsActive(skillStateKey) {
+	if (a == action.ActionAttack || a == action.ActionCharge) && c.StatusIsActive(skillStateKey) {
 		return false, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
