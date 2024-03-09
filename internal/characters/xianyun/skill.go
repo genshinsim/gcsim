@@ -38,18 +38,18 @@ func init() {
 	skillLeapFrames[0][action.ActionJump] = 41
 	skillLeapFrames[0][action.ActionWalk] = 43
 	skillLeapFrames[0][action.ActionSwap] = 36
-	skillLeapFrames[0][action.ActionHighPlunge] = 13
-	skillLeapFrames[0][action.ActionLowPlunge] = 13
+	skillLeapFrames[0][action.ActionHighPlunge] = 14
+	skillLeapFrames[0][action.ActionLowPlunge] = 14
 
 	skillLeapFrames[1] = frames.InitAbilSlice(243)
 	skillLeapFrames[1][action.ActionSkill] = 15
-	skillLeapFrames[1][action.ActionBurst] = 61
+	skillLeapFrames[1][action.ActionBurst] = 60
 	skillLeapFrames[1][action.ActionDash] = 60
 	skillLeapFrames[1][action.ActionJump] = 60
 	skillLeapFrames[1][action.ActionWalk] = 66
 	skillLeapFrames[1][action.ActionSwap] = 59
-	skillLeapFrames[1][action.ActionHighPlunge] = 14
-	skillLeapFrames[1][action.ActionLowPlunge] = 14
+	skillLeapFrames[1][action.ActionHighPlunge] = 15
+	skillLeapFrames[1][action.ActionLowPlunge] = 15
 
 	skillLeapFrames[2] = frames.InitAbilSlice(178)
 	skillLeapFrames[2][action.ActionSkill] = 128
