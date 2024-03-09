@@ -20,7 +20,6 @@ const (
 
 	// TODO: Find skill hitbox. Currently assuming the skill hitbox is the same size as the plunge collision hitbox
 	skillRadius = 1.5
-	leapKey     = "xianyun-leap"
 
 	particleCount  = 5
 	particleICD    = 0.2 * 60
