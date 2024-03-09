@@ -30,8 +30,6 @@ type char struct {
 	a4Max               float64
 	a4Ratio             float64
 	adeptalAssistStacks int
-
-	// leapFrames  []int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
