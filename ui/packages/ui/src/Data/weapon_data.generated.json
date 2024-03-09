@@ -192,6 +192,14 @@
       "image_name": "UI_EquipIcon_Sword_Steel",
       "name_text_hash_map ": "479076483"
     },
+    "cranesechoingcall": {
+      "id": 14515,
+      "key": "cranesechoingcall",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_MountainGale",
+      "name_text_hash_map ": "3660626387"
+    },
     "crescentpike": {
       "id": 13403,
       "key": "crescentpike",
