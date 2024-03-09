@@ -120,7 +120,7 @@ func (c *char) a4() {
 		// A4 cap
 		amt := min(c.a4Max, c.a4Ratio*c.a4Atk)
 
-		c.Core.Log.NewEvent("Xianyun Starwicker proc dmg add", glog.LogPreDamageMod, ae.Info.ActorIndex).
+		c.Core.Log.NewEvent("Xianyun A4 proc dmg add", glog.LogPreDamageMod, ae.Info.ActorIndex).
 			Write("atk", c.a4Atk).
 			Write("ratio", c.a4Ratio).
 			Write("before", ae.Info.FlatDmg).
