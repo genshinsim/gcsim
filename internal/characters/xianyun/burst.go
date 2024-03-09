@@ -110,7 +110,11 @@ func (c *char) burstPlungeDoTTrigger() {
 			return false
 		}
 
-		if !c.Core.Player.ActiveChar().StatusIsActive(player.XianyunAirborneBuff) {
+		active := c.Core.Player.ActiveChar()
+		if active.Index != atk.Info.ActorIndex {
+			return false
+		}
+		if !active.StatusIsActive(player.XianyunAirborneBuff) {
 			return false
 		}
 
