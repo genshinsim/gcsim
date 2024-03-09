@@ -36,3 +36,4 @@ backend/docker/binary
 computebin
 .cache
 .npm
+.task/

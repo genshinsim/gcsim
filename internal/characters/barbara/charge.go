@@ -75,10 +75,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		}
 	}
 
-	// skip CA windup if we're in NA/CA animation
+	// skip CA windup if we're in NA animation
 	windup := 0
-	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState, action.ChargeAttackState:
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
 		windup = 14
 	}
 

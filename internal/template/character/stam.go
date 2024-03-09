@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 // ActionStam provides default implementation for stam cost for charge and dash
@@ -48,10 +49,18 @@ func (c *Character) Dash(p map[string]int) (action.Info, error) {
 	c.QueueDashStaminaConsumption(p)
 
 	length := c.DashLength()
+	dashJumpLength := c.DashToJumpLength()
 	return action.Info{
-		Frames:          func(action.Action) int { return length },
+		Frames: func(a action.Action) int {
+			switch a {
+			case action.ActionJump:
+				return dashJumpLength
+			default:
+				return length
+			}
+		},
 		AnimationLength: length,
-		CanQueueAfter:   length,
+		CanQueueAfter:   dashJumpLength,
 		State:           action.DashState,
 	}, nil
 }
@@ -102,24 +111,76 @@ func (c *Character) DashLength() int {
 	}
 }
 
-func (c *Character) Jump(p map[string]int) (action.Info, error) {
-	f := 30
+func (c *Character) DashToJumpLength() int {
 	switch c.CharBody {
-	case info.BodyBoy, info.BodyGirl:
-		f = 31
-	case info.BodyMale:
-		f = 28
-	case info.BodyLady:
-		f = 32
-	case info.BodyLoli:
-		f = 29
+	case info.BodyGirl, info.BodyLoli:
+		return 4
+	case info.BodyBoy:
+		return 2
+	default:
+		return 3
 	}
+}
+
+func (c *Character) Jump(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(player.XianyunAirborneBuff) {
+		c.Core.Player.SetAirborne(player.AirborneXianyun)
+		// 4/8 for claymore/bow/catalyst and 5/9 for sword/polearm
+		lowPlunge := 4
+		highPlunge := 8
+		switch c.Weapon.Class {
+		case info.WeaponClassSword, info.WeaponClassSpear:
+			lowPlunge = 5
+			highPlunge = 9
+		}
+
+		animLength := 60 // Upperbound for jump for high/low plunge
+		return action.Info{
+			Frames: func(a action.Action) int {
+				switch a {
+				case action.ActionLowPlunge:
+					return lowPlunge
+				case action.ActionHighPlunge:
+					return highPlunge
+				default:
+					return animLength // This is expected to later lead to action error because no other action besides plunges can be done while AirborneXianyun
+				}
+			},
+			AnimationLength: animLength,
+			CanQueueAfter:   lowPlunge, // earliest cancel
+			State:           action.JumpState,
+		}, nil
+	}
+	f := c.JumpLength()
 	return action.Info{
 		Frames:          func(action.Action) int { return f },
 		AnimationLength: f,
 		CanQueueAfter:   f,
 		State:           action.JumpState,
 	}, nil
+}
+
+func (c *Character) JumpLength() int {
+	if c.Core.Player.LastAction.Type == action.ActionDash {
+		switch c.CharBody {
+		case info.BodyGirl, info.BodyBoy:
+			return 34
+		default:
+			return 37
+		}
+	}
+	switch c.CharBody {
+	case info.BodyBoy, info.BodyGirl:
+		return 31
+	case info.BodyMale:
+		return 28
+	case info.BodyLady:
+		return 32
+	case info.BodyLoli:
+		return 29
+	default:
+		return 30
+	}
 }
 
 func (c *Character) Walk(p map[string]int) (action.Info, error) {
