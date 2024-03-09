@@ -7960,29 +7960,25 @@
         "ability": "E",
         "shape": "Circle",
         "center": "Player",
-        "radius": 1.5,
-        "notes": "Character does not move"
+        "radius": 1.5
       },
       {
         "ability": "E-Plunge",
         "shape": "Circle",
         "center": "Player",
-        "radius": 4.0,
-        "notes": "Character does not move"
+        "radius": 4.0
       },
       {
         "ability": "EE-Plunge",
         "shape": "Circle",
         "center": "Player",
-        "radius": 5.0,
-        "notes": "Character does not move"
+        "radius": 5.0
       },
       {
         "ability": "EEE-Plunge",
         "shape": "Circle",
         "center": "Player",
-        "radius": 6.5,
-        "notes": "Character does not move"
+        "radius": 6.5
       }
     ],
     "plunge": [
