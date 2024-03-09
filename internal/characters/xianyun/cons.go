@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -59,7 +60,12 @@ func (c *char) c4cb() func(a combat.AttackCB) {
 	if c.Base.Cons < 4 {
 		return nil
 	}
+
 	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+
 		if c.StatusIsActive(c4Icd) {
 			return
 		}
