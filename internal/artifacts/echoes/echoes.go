@@ -83,19 +83,24 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			dmgAdded = snATK * 0.7
 			atk.Info.FlatDmg += dmgAdded
 			c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
+				Write("dmg_added", dmgAdded).
 				Write("buff_expiry", s.procExpireF).
-				Write("dmg_added", dmgAdded)
+				Write("icd_up", s.icd)
 
 			return false
 		}
 
 		// If Artifact set effect is still on CD then ignore
 		if c.F < s.icd {
+			c.Log.NewEvent("echoes 4pc failed to proc due icd", glog.LogArtifactEvent, char.Index).
+				Write("icd_up", s.icd)
 			return false
 		}
 
 		if c.Rand.Float64() > s.prob {
 			s.prob += 0.2
+			c.Log.NewEvent("echoes 4pc failed to proc due to chance", glog.LogArtifactEvent, char.Index).
+				Write("probabability_now", s.prob)
 			return false
 		}
 
@@ -105,13 +110,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.procExpireF = c.F + procDuration
 		s.icd = c.F + 12 // 0.2s
 
-		c.Log.NewEvent("echoes 4pc proc'd", glog.LogArtifactEvent, char.Index).
-			Write("probability", s.prob).
-			Write("icd", s.icd).
-			Write("buff_expiry", s.procExpireF).
-			Write("dmg_added", dmgAdded)
-
 		s.prob = 0.36
+
+		c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
+			Write("dmg_added", dmgAdded).
+			Write("buff_expiry", s.procExpireF).
+			Write("icd_up", s.icd)
 
 		return false
 	}, fmt.Sprintf("echoes-4pc-%v", char.Base.Key.String()))
