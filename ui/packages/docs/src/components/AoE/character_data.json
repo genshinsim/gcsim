@@ -7952,7 +7952,8 @@
         "ability": "CA",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 3
+        "radius": 3,
+        "notes": "This is an approximation because the projectile does single target damage to every enemy it collides with on the path"
       }
     ],
     "skill": [
