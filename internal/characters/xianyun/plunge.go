@@ -96,7 +96,7 @@ func (c *char) driftcloudWave() (action.Info, error) {
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       fmt.Sprintf("Driftcloud Wave %v", c.skillCounter),
+			Abil:       fmt.Sprintf("Driftcloud Wave (%v Leaps)", c.skillCounter),
 			AttackTag:  attacks.AttackTagPlunge,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
