@@ -70,12 +70,11 @@ func (c *char) c4cb() func(a combat.AttackCB) {
 			return
 		}
 
-		atk := c.Base.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Mystery Millet Gourmet (C4)",
-			Src:     c4Ratio[c.skillCounter] * atk,
+			Src:     c4Ratio[c.skillCounter] * c.getTotalAtk(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
