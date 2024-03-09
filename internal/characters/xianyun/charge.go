@@ -54,7 +54,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		// TODO: Find actual radius of CA projectile
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			3,
+		),
 		chargeHitmark-windup,
 		chargeHitmark-windup+travel,
 	)
