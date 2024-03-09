@@ -12,11 +12,12 @@ import (
 )
 
 var skillLeapFrames [][]int
+var skillStateDur = []int{220, 238, 179}
 
 const (
 	skillPressHitmark = 3
-	skillStateDur     = 2 * 60
-	skillStateKey     = "cloud-transmogrification"
+
+	skillStateKey = "cloud-transmogrification"
 
 	// TODO: Find skill hitbox. Currently assuming the skill hitbox is the same size as the plunge collision hitbox
 	skillRadius = 1.5
@@ -110,16 +111,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	c.skillSrc = c.Core.F
-	c.QueueCharTask(c.cooldownReduce(c.Core.F), skillStateDur)
-	c.AddStatus(skillStateKey, skillStateDur, true)
+	c.QueueCharTask(c.cooldownReduce(c.Core.F), skillStateDur[c.skillCounter])
+	c.AddStatus(skillStateKey, skillStateDur[c.skillCounter], true)
 
-	idx := c.skillCounter
-	c.skillCounter++
+	defer func() { c.skillCounter++ }()
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillLeapFrames[idx]),
-		AnimationLength: skillLeapFrames[idx][action.InvalidAction],
-		CanQueueAfter:   skillLeapFrames[idx][action.ActionHighPlunge], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillLeapFrames[c.skillCounter]),
+		AnimationLength: skillLeapFrames[c.skillCounter][action.InvalidAction],
+		CanQueueAfter:   skillLeapFrames[c.skillCounter][action.ActionHighPlunge], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
