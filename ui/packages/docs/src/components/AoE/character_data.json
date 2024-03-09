@@ -7960,7 +7960,8 @@
         "ability": "E",
         "shape": "Circle",
         "center": "Player",
-        "radius": 1.5
+        "radius": 1.5,
+        "notes": "This is an approximation because we do not simulate E damage triggering on collision between character model and enemy."
       },
       {
         "ability": "E-Plunge",
