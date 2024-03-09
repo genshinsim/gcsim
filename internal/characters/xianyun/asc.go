@@ -25,13 +25,14 @@ var a1Crit = []float64{0.0, 0.04, 0.06, 0.08, 0.10}
 func (c *char) a1() {
 	for idx, char := range c.Core.Player.Chars() {
 		mCR := make([]float64, attributes.EndStatType)
+		i := idx
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("xianyun-a1-buff", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagPlunge {
 					return nil, false
 				}
-				stackCount := min(c.a1Buffer[idx], 4)
+				stackCount := min(c.a1Buffer[i], 4)
 				if stackCount == 0 {
 					return nil, false
 				}
