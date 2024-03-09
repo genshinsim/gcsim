@@ -124,9 +124,7 @@ func (c *char) a4() {
 			Write("atk", c.a4Atk).
 			Write("ratio", c.a4Ratio).
 			Write("before", ae.Info.FlatDmg).
-			Write("addition", amt).
-			Write("effect_ends_at", c.StatusExpiry(player.XianyunAirborneBuff)).
-			Write("starwicker_left", c.Tags[player.XianyunAirborneBuff])
+			Write("addition", amt)
 
 		ae.Info.FlatDmg += amt
 		c.AddStatus(a4ICDKey, 0.4*60, true)

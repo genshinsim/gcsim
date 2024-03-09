@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -137,6 +138,9 @@ func (c *char) burstPlungeDoTTrigger() {
 		)
 		c.QueueCharTask(func() {
 			c.adeptalAssistStacks--
+			c.Core.Log.NewEvent("Xianyun Adeptal Assistance stack consumed", glog.LogPreDamageMod, c.Core.Player.Active()).
+				Write("effect_ends_at", c.StatusExpiry(player.XianyunAirborneBuff)).
+				Write("stacks_left", c.adeptalAssistStacks)
 			if c.adeptalAssistStacks == 0 {
 				// Delay stack reduction and status removal until after the attack lands
 				// so that A4 can still proc on the attack that triggers the burstDot.
