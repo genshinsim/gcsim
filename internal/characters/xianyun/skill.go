@@ -97,7 +97,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius)
 	targets := c.Core.Combat.EnemiesWithinArea(aoe, func(t combat.Enemy) bool {
-		return slices.Contains[[]targets.TargetKey](c.skillEnemiesHit, t.Key())
+		return !slices.Contains[[]targets.TargetKey](c.skillEnemiesHit, t.Key())
 	})
 
 	for _, t := range targets {
