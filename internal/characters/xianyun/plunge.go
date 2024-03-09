@@ -77,7 +77,6 @@ func init() {
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	defer c.Core.Player.SetAirborne(player.Grounded)
 
-	// last action must be skill (for leap)
 	// dont need to check airborne for this because she can plunge if she's on the ground anyways
 	if c.StatusIsActive(skillStateKey) {
 		return c.driftcloudWave()
@@ -135,7 +134,6 @@ func (c *char) driftcloudWave() (action.Info, error) {
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	defer c.Core.Player.SetAirborne(player.Grounded)
 
-	// last action must be skill (for leap)
 	// dont need to check airborne for this because she can plunge if she's on the ground anyways
 	if c.StatusIsActive(skillStateKey) {
 		return c.driftcloudWave()
