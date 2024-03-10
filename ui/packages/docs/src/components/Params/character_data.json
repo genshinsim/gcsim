@@ -1093,6 +1093,16 @@
       "ability": "attack",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "yelan": [
