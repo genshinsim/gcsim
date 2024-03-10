@@ -1,5 +1,5 @@
 ---
-title: xianyun
+title: Xianyun
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
