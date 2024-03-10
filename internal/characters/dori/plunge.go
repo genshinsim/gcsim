@@ -1,13 +1,14 @@
 package dori
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -30,7 +31,7 @@ func init() {
 	lowPlungeFrames[action.ActionAttack] = 50
 	lowPlungeFrames[action.ActionSkill] = 51
 	lowPlungeFrames[action.ActionBurst] = 51
-	lowPlungeFrames[action.ActionDash] = 38
+	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFrames[action.ActionSwap] = 62
 
 	// high_plunge -> x
@@ -38,7 +39,7 @@ func init() {
 	highPlungeFrames[action.ActionAttack] = 52
 	highPlungeFrames[action.ActionSkill] = 53
 	highPlungeFrames[action.ActionBurst] = 52
-	highPlungeFrames[action.ActionDash] = 40
+	highPlungeFrames[action.ActionDash] = highPlungeHitmark
 	highPlungeFrames[action.ActionJump] = 79
 	highPlungeFrames[action.ActionSwap] = 64
 }
@@ -52,7 +53,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}
 }
 
@@ -80,7 +81,7 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmark,
 		lowPlungeHitmark,
 	)
@@ -102,7 +103,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("high_plunge can only be used while airborne")
 	}
 }
 
@@ -130,7 +131,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmark,
 		highPlungeHitmark,
 	)
@@ -157,5 +158,5 @@ func (c *char) plungeCollision(delay int) {
 		Durability: 0,
 		Mult:       collision[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), delay, delay)
 }

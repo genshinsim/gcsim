@@ -313,6 +313,16 @@
       "ability": "burst",
       "param": "c2_travel",
       "desc": "Projectile travel time for Jinni Toop. Default 10 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "eula": [
