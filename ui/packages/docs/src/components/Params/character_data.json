@@ -758,6 +758,16 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), value between 1 and 241 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (41), subtracted by 1 to account for requiring a 1 to activate."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "nilou": [
