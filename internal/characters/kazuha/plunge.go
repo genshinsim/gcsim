@@ -2,7 +2,6 @@ package kazuha
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -55,7 +54,7 @@ func init() {
 	lowPlungeFrames[action.ActionAttack] = 52
 	lowPlungeFrames[action.ActionSkill] = 52
 	lowPlungeFrames[action.ActionBurst] = 51
-	lowPlungeFrames[action.ActionDash] = 46
+	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFrames[action.ActionJump] = 69
 	lowPlungeFrames[action.ActionSwap] = 53
 
@@ -64,7 +63,7 @@ func init() {
 	highPlungeFrames[action.ActionAttack] = 54
 	highPlungeFrames[action.ActionSkill] = 53
 	highPlungeFrames[action.ActionBurst] = 53
-	highPlungeFrames[action.ActionDash] = 47
+	highPlungeFrames[action.ActionDash] = highPlungeHitmark
 	highPlungeFrames[action.ActionJump] = 69
 	highPlungeFrames[action.ActionSwap] = 55
 }
@@ -75,14 +74,14 @@ func init() {
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	if c.Core.Player.LastAction.Type == action.ActionSkill {
-		return action.Info{}, fmt.Errorf("%s cannot low_plunge after skill", c.Base.Key.String())
+		return action.Info{}, errors.New("cannot low_plunge after skill")
 	}
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}
 }
 
@@ -110,7 +109,7 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmark,
 		lowPlungeHitmark,
 	)
@@ -133,14 +132,13 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("high_plunge can only be used while airborne")
 	}
 }
 
 func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 	// last action must be skill without glide cancel
-	if c.Core.Player.LastAction.Type != action.ActionSkill ||
-		c.Core.Player.LastAction.Param["glide_cancel"] != 0 {
+	if c.Core.Player.LastAction.Param["glide_cancel"] != 0 {
 		return action.Info{}, errors.New("only plunge after skill without glide cancel")
 	}
 
@@ -161,13 +159,25 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 		act.AnimationLength = plungeHoldFrames[action.InvalidAction]
 		act.CanQueueAfter = plungeHoldFrames[action.ActionDash] // earliest cancel
 	}
-	collision, ok := p["collision"]
+	collisionParam, ok := p["collision"]
 	if !ok {
-		collision = 0 // Whether or not collision hit
+		collisionParam = 0 // Whether or not collision hit
 	}
 
-	if collision > 0 {
-		c.plungeCollision(hitmark - 6)
+	if collisionParam > 0 {
+		ai := combat.AttackInfo{
+			ActorIndex:     c.Index,
+			Abil:           "Plunge Collision",
+			AttackTag:      attacks.AttackTagPlunge,
+			ICDTag:         attacks.ICDTagNone,
+			ICDGroup:       attacks.ICDGroupDefault,
+			StrikeType:     attacks.StrikeTypeSlash,
+			Element:        attributes.Anemo,
+			IgnoreInfusion: true,
+			Durability:     0,
+			Mult:           collision[c.TalentLvlAttack()],
+		}
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), hitmark-6, hitmark-6)
 	}
 
 	// aoe dmg
@@ -244,7 +254,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmark,
 		highPlungeHitmark,
 	)
@@ -271,5 +281,5 @@ func (c *char) plungeCollision(delay int) {
 		Durability: 0,
 		Mult:       collision[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), delay, delay)
 }

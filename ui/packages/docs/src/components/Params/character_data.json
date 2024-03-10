@@ -551,11 +551,6 @@
   ],
   "kazuha": [
     {
-      "ability": "high_plunge",
-      "param": "collide",
-      "desc": "0 for no collision dmg (default), 1 for collision dmg."
-    },
-    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
@@ -564,6 +559,16 @@
       "ability": "skill",
       "param": "glide_cancel",
       "desc": "0 for no Glide Cancel (default), 1 for Glide Cancel. Using high_plunge after Skill with a Glide Cancel is not allowed."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "kirara": [
