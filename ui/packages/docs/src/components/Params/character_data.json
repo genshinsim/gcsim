@@ -481,6 +481,18 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "hutao": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "itto": [
     {
       "ability": "skill",
