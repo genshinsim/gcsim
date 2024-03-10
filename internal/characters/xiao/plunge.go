@@ -11,85 +11,73 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
+var lowPlungeFramesX []int
+var highPlungeFramesX []int
 
-const collisionHitmark = 38
-const highPlungeHitmark = 46
-const lowPlungeHitmark = 44
+var lowPlungeFramesXY []int
+var highPlungeFramesXY []int
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+var lowPlungeFramesXYX []int
+var highPlungeFramesXYX []int
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const lowPlungeHitmarkX = 44
+const highPlungeHitmarkX = 46
+const collisionHitmarkX = lowPlungeHitmarkX - 6
+
+const lowPlungeHitmarkXY = 42 + 3
+const highPlungeHitmarkXY = 43 + 3
+const collisionHitmarkXY = lowPlungeHitmarkXY - 6
+
+const lowPlungeHitmarkXYX = 43 + 3
+const highPlungeHitmarkXYX = 44 + 3
+const collisionHitmarkXYX = lowPlungeHitmarkXYX - 6
 
 func init() {
-	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(66)
-	highPlungeFrames[action.ActionAttack] = 61
-	highPlungeFrames[action.ActionJump] = 65
-	highPlungeFrames[action.ActionSwap] = 64
+	// from xiao
+	lowPlungeFramesX = frames.InitAbilSlice(62)
+	lowPlungeFramesX[action.ActionAttack] = 60
+	lowPlungeFramesX[action.ActionSkill] = 59
+	lowPlungeFramesX[action.ActionDash] = 60
+	lowPlungeFramesX[action.ActionJump] = 61
 
-	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(62)
-	lowPlungeFrames[action.ActionAttack] = 60
-	lowPlungeFrames[action.ActionSkill] = 59
-	lowPlungeFrames[action.ActionDash] = 60
-	lowPlungeFrames[action.ActionJump] = 61
-}
+	highPlungeFramesX = frames.InitAbilSlice(66)
+	highPlungeFramesX[action.ActionAttack] = 61
+	highPlungeFramesX[action.ActionJump] = 65
+	highPlungeFramesX[action.ActionSwap] = 64
 
-// High Plunge attack damage queue generator
-// Use the "collision" optional argument if you want to do a falling hit on the way down
-// Default = 0
-func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
-	defer c.Core.Player.SetAirborne(player.Grounded)
-	if c.Core.Player.CurrentState() != action.JumpState {
-		return action.Info{}, errors.New("only plunge after using jump")
-	}
+	// from xianyun
+	lowPlungeFramesXY = frames.InitAbilSlice(73)
+	lowPlungeFramesXY[action.ActionAttack] = 59
+	lowPlungeFramesXY[action.ActionSkill] = 58
+	lowPlungeFramesXY[action.ActionBurst] = 58
+	lowPlungeFramesXY[action.ActionDash] = 58
+	lowPlungeFramesXY[action.ActionJump] = 58
+	lowPlungeFramesXY[action.ActionSwap] = 62
 
-	collision, ok := p["collision"]
-	if !ok {
-		collision = 0 // Whether or not Xiao does a collision hit
-	}
+	highPlungeFramesXY = frames.InitAbilSlice(75)
+	highPlungeFramesXY[action.ActionAttack] = 60
+	highPlungeFramesXY[action.ActionSkill] = 60
+	highPlungeFramesXY[action.ActionBurst] = 61
+	highPlungeFramesXY[action.ActionDash] = 62
+	highPlungeFramesXY[action.ActionJump] = 60
+	highPlungeFramesXY[action.ActionSwap] = 63
 
-	if collision > 0 {
-		c.plungeCollision(collisionHitmark)
-	}
+	// from xiao + xianyun
+	lowPlungeFramesXYX = frames.InitAbilSlice(73)
+	lowPlungeFramesXYX[action.ActionAttack] = 59
+	lowPlungeFramesXYX[action.ActionSkill] = 58
+	lowPlungeFramesXYX[action.ActionBurst] = 58 // assumed to be same as skill
+	lowPlungeFramesXYX[action.ActionDash] = 59
+	lowPlungeFramesXYX[action.ActionJump] = 60
+	lowPlungeFramesXYX[action.ActionSwap] = 62
 
-	highPlungeRadius := highPlungeRadius
-	highPlungePoiseDMG := highPlungePoiseDMG
-	if c.StatusIsActive(burstBuffKey) {
-		highPlungePoiseDMG = 225
-		highPlungeRadius = 6
-	}
-
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "High Plunge",
-		AttackTag:  attacks.AttackTagPlunge,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   highPlungePoiseDMG,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       highPlunge[c.TalentLvlAttack()],
-	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
-		highPlungeHitmark,
-		highPlungeHitmark,
-		c.c6cb(),
-	)
-
-	return action.Info{
-		Frames:          frames.NewAbilFunc(highPlungeFrames),
-		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionAttack],
-		State:           action.PlungeAttackState,
-	}, nil
+	highPlungeFramesXYX = frames.InitAbilSlice(75)
+	highPlungeFramesXYX[action.ActionAttack] = 61
+	highPlungeFramesXYX[action.ActionSkill] = 62
+	highPlungeFramesXYX[action.ActionBurst] = 62 // assumed to be same as skill
+	highPlungeFramesXYX[action.ActionDash] = 62
+	highPlungeFramesXYX[action.ActionJump] = 62
+	highPlungeFramesXYX[action.ActionSwap] = 64
 }
 
 // Low Plunge attack damage queue generator
@@ -106,15 +94,50 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		collision = 0 // Whether or not Xiao does a collision hit
 	}
 
-	if collision > 0 {
-		c.plungeCollision(collisionHitmark)
-	}
-
-	lowPlungeRadius := lowPlungeRadius
-	lowPlungePoiseDMG := lowPlungePoiseDMG
-	if c.StatusIsActive(burstBuffKey) {
+	var a action.Info
+	var lowPlungeRadius float64
+	var lowPlungePoiseDMG float64
+	var lowPlungeHitmark int
+	var collisionHitmark int
+	switch {
+	case c.StatusIsActive(player.XianyunAirborneBuff) && c.StatusIsActive(burstBuffKey):
+		a = action.Info{
+			Frames:          frames.NewAbilFunc(lowPlungeFramesXYX),
+			AnimationLength: lowPlungeFramesXYX[action.InvalidAction],
+			CanQueueAfter:   lowPlungeFramesXYX[action.ActionSkill],
+			State:           action.PlungeAttackState,
+		}
 		lowPlungePoiseDMG = 150
 		lowPlungeRadius = 4
+		lowPlungeHitmark = lowPlungeHitmarkXYX
+		collisionHitmark = collisionHitmarkXYX
+	case c.StatusIsActive(player.XianyunAirborneBuff):
+		a = action.Info{
+			Frames:          frames.NewAbilFunc(lowPlungeFramesXY),
+			AnimationLength: lowPlungeFramesXY[action.InvalidAction],
+			CanQueueAfter:   lowPlungeFramesXY[action.ActionSkill],
+			State:           action.PlungeAttackState,
+		}
+		lowPlungePoiseDMG = 100
+		lowPlungeRadius = 3
+		lowPlungeHitmark = lowPlungeHitmarkXY
+		collisionHitmark = collisionHitmarkXY
+	default:
+		// assumed to be Xiao burst active
+		a = action.Info{
+			Frames:          frames.NewAbilFunc(lowPlungeFramesX),
+			AnimationLength: lowPlungeFramesX[action.InvalidAction],
+			CanQueueAfter:   lowPlungeFramesX[action.ActionSkill],
+			State:           action.PlungeAttackState,
+		}
+		lowPlungePoiseDMG = 150
+		lowPlungeRadius = 4
+		lowPlungeHitmark = highPlungeHitmarkX
+		collisionHitmark = collisionHitmarkX
+	}
+
+	if collision > 0 {
+		c.plungeCollision(collisionHitmark)
 	}
 
 	ai := combat.AttackInfo{
@@ -137,12 +160,90 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		c.c6cb(),
 	)
 
-	return action.Info{
-		Frames:          frames.NewAbilFunc(lowPlungeFrames),
-		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFrames[action.ActionSkill],
-		State:           action.PlungeAttackState,
-	}, nil
+	return a, nil
+}
+
+// High Plunge attack damage queue generator
+// Use the "collision" optional argument if you want to do a falling hit on the way down
+// Default = 0
+func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
+	if c.Core.Player.CurrentState() != action.JumpState {
+		return action.Info{}, errors.New("only plunge after using jump")
+	}
+
+	collision, ok := p["collision"]
+	if !ok {
+		collision = 0 // Whether or not Xiao does a collision hit
+	}
+
+	var a action.Info
+	var highPlungeRadius float64
+	var highPlungePoiseDMG float64
+	var highPlungeHitmark int
+	var collisionHitmark int
+	switch {
+	case c.StatusIsActive(player.XianyunAirborneBuff) && c.StatusIsActive(burstBuffKey):
+		a = action.Info{
+			Frames:          frames.NewAbilFunc(highPlungeFramesXYX),
+			AnimationLength: highPlungeFramesXYX[action.InvalidAction],
+			CanQueueAfter:   highPlungeFramesXYX[action.ActionAttack],
+			State:           action.PlungeAttackState,
+		}
+		highPlungePoiseDMG = 225
+		highPlungeRadius = 6
+		highPlungeHitmark = highPlungeHitmarkXYX
+		collisionHitmark = collisionHitmarkXYX
+	case c.StatusIsActive(player.XianyunAirborneBuff):
+		a = action.Info{
+			Frames:          frames.NewAbilFunc(highPlungeFramesXY),
+			AnimationLength: highPlungeFramesXY[action.InvalidAction],
+			CanQueueAfter:   highPlungeFramesXY[action.ActionAttack],
+			State:           action.PlungeAttackState,
+		}
+		highPlungePoiseDMG = 150
+		highPlungeRadius = 5
+		highPlungeHitmark = highPlungeHitmarkXY
+		collisionHitmark = collisionHitmarkXY
+	default:
+		// assumed to be Xiao burst active
+		a = action.Info{
+			Frames:          frames.NewAbilFunc(highPlungeFramesX),
+			AnimationLength: highPlungeFramesX[action.InvalidAction],
+			CanQueueAfter:   highPlungeFramesX[action.ActionAttack],
+			State:           action.PlungeAttackState,
+		}
+		highPlungePoiseDMG = 225
+		highPlungeRadius = 6
+		highPlungeHitmark = highPlungeHitmarkX
+		collisionHitmark = collisionHitmarkX
+	}
+
+	if collision > 0 {
+		c.plungeCollision(collisionHitmark)
+	}
+
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "High Plunge",
+		AttackTag:  attacks.AttackTagPlunge,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   highPlungePoiseDMG,
+		Element:    attributes.Physical,
+		Durability: 25,
+		Mult:       highPlunge[c.TalentLvlAttack()],
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
+		highPlungeHitmark,
+		highPlungeHitmark,
+		c.c6cb(),
+	)
+
+	return a, nil
 }
 
 // Plunge normal falling attack damage queue generator
