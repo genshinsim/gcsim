@@ -1,7 +1,7 @@
 package barbara
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -29,7 +29,7 @@ func init() {
 	lowPlungeFrames[action.ActionCharge] = 55 - 9
 	lowPlungeFrames[action.ActionSkill] = 43
 	lowPlungeFrames[action.ActionBurst] = 42
-	lowPlungeFrames[action.ActionDash] = 44
+	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFrames[action.ActionSwap] = 48
 
 	// high_plunge -> x
@@ -38,7 +38,7 @@ func init() {
 	highPlungeFrames[action.ActionCharge] = 57 - 8
 	highPlungeFrames[action.ActionSkill] = 45
 	highPlungeFrames[action.ActionBurst] = 44
-	highPlungeFrames[action.ActionDash] = 45
+	highPlungeFrames[action.ActionDash] = highPlungeHitmark
 	highPlungeFrames[action.ActionJump] = 67
 	highPlungeFrames[action.ActionSwap] = 50
 }
@@ -52,7 +52,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}
 }
 
@@ -101,7 +101,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("high_plunge can only be used while airborne")
 	}
 }
 
