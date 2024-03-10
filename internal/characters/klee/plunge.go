@@ -1,7 +1,7 @@
 package klee
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -14,7 +14,7 @@ import (
 var highPlungeFrames []int
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 46
+const lowPlungeHitmark = 47
 const highPlungeHitmark = 48
 const collisionHitmark = lowPlungeHitmark - 6
 
@@ -29,6 +29,7 @@ func init() {
 	lowPlungeFrames[action.ActionCharge] = 59 - 6
 	lowPlungeFrames[action.ActionSkill] = 58
 	lowPlungeFrames[action.ActionBurst] = 45
+	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFrames[action.ActionJump] = 66
 	lowPlungeFrames[action.ActionSwap] = 50
 
@@ -38,7 +39,7 @@ func init() {
 	highPlungeFrames[action.ActionCharge] = 61 - 6
 	highPlungeFrames[action.ActionSkill] = 61
 	highPlungeFrames[action.ActionBurst] = 47
-	highPlungeFrames[action.ActionDash] = 48
+	highPlungeFrames[action.ActionDash] = highPlungeHitmark
 	highPlungeFrames[action.ActionJump] = 68
 	highPlungeFrames[action.ActionSwap] = 53
 }
@@ -52,7 +53,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}
 }
 
@@ -101,7 +102,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("high_plunge can only be used while airborne")
 	}
 }
 

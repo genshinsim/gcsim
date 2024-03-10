@@ -635,6 +635,16 @@
       "ability": "skill",
       "param": "release",
       "desc": "0 for Skill cancel (relevant for 4pc Crimson Witch stacks), 1 for Skill (default)."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "kokomi": [
