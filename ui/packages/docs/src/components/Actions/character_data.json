@@ -17,6 +17,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -26,7 +34,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -52,7 +60,11 @@
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be skill[hold=1]."
+      "notes": "Previous action must be skill[hold=1] or a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -157,6 +169,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -166,7 +186,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -223,6 +243,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -294,6 +322,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -303,7 +339,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -360,6 +396,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -499,6 +543,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -508,7 +560,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -534,6 +586,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -543,7 +603,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -569,6 +629,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -578,7 +646,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -638,6 +706,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -647,7 +723,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -671,6 +747,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -775,6 +859,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -807,6 +899,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -911,6 +1011,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -920,7 +1028,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -979,8 +1087,12 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "high_plunge",
-      "notes": "Previous action must be skill."
+      "notes": "Previous action must be skill or a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -992,7 +1104,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -1051,6 +1163,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1060,7 +1180,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -1085,6 +1205,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot be used while in skill state."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot be used while in skill state."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1094,7 +1222,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -1118,6 +1246,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -1154,6 +1290,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1163,7 +1307,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -1220,6 +1364,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -1392,6 +1544,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1562,6 +1722,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1571,7 +1739,7 @@
     },
     {
       "ability": "walk",
-      "notes": "Normal Attacks do not have legal walk cancels recorded, but Skill and Burst do."
+      "notes": "Normal Attacks do not have legal walk cancels recorded, but Skill, Burst and Low/High Plunge do."
     },
     {
       "ability": "swap",
@@ -1699,6 +1867,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1767,6 +1943,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1776,7 +1960,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -1973,6 +2157,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1982,7 +2174,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -2007,6 +2199,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -2016,7 +2216,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -2393,6 +2593,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -2427,6 +2635,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -2436,7 +2652,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -2462,11 +2678,11 @@
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be jump or must be still in Cloud Transmogrification state (Xianyun E)."
+      "notes": "Previous action must be jump buffed via Xianyun's burst for example or must be still in Cloud Transmogrification state (Xianyun E)."
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be jump or must be still in Cloud Transmogrification state (Xianyun E)."
+      "notes": "Previous action must be jump buffed via Xianyun's burst for example or must be still in Cloud Transmogrification state (Xianyun E)."
     },
     {
       "ability": "dash",
@@ -2504,11 +2720,11 @@
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be jump."
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be jump."
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -2520,7 +2736,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -2614,6 +2830,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -2623,7 +2847,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -2648,6 +2872,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -2657,7 +2889,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",

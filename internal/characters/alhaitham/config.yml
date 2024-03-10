@@ -17,8 +17,12 @@ skill_data_mapping:
         charge:
             - 6 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
             - 6 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
+        collision:
+            - 9 # Plunge DMG|{param6:F1P}
         lowPlunge:
-            - 10 # Low/High Plunge DMG|{param10:P}/{param11:P}
+            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 11 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         mirrorAtk:
             - 3 # 1-Mirror Projection Attack DMG|{param3:F1P} ATK+{param4:F1P} Elemental Mastery
