@@ -2678,11 +2678,11 @@
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be jump or must be still in Cloud Transmogrification state (Xianyun E)."
+      "notes": "Previous action must be jump buffed via Xianyun's burst for example or must be still in Cloud Transmogrification state (Xianyun E)."
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be jump or must be still in Cloud Transmogrification state (Xianyun E)."
+      "notes": "Previous action must be jump buffed via Xianyun's burst for example or must be still in Cloud Transmogrification state (Xianyun E)."
     },
     {
       "ability": "dash",

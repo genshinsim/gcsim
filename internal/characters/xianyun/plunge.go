@@ -22,6 +22,10 @@ const collisionHitmark = 38
 const highPlungeHitmark = 46
 const lowPlungeHitmark = 44
 
+const lowPlungeRadius = 3.0
+
+const highPlungeRadius = 3.5
+
 // TODO: missing plunge -> skill
 func init() {
 	driftcloudFrames = make([][]int, 3)
@@ -154,8 +158,6 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	lowPlungeRadius := 3.0
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
@@ -191,8 +193,6 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	if collision > 0 {
 		c.plungeCollision(collisionHitmark)
 	}
-
-	highPlungeRadius := 3.5
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
