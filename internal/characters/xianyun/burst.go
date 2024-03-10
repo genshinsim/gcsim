@@ -38,7 +38,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(18)
-	c.BurstCast()
+	c.burstCast()
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
@@ -47,7 +47,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) BurstCast() {
+func (c *char) burstCast() {
 	// initial heal
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
