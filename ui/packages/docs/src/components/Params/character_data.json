@@ -165,6 +165,16 @@
       "ability": "skill",
       "param": "hold_c4",
       "desc": "If 1, trigger C4. Default 0."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "candace": [
