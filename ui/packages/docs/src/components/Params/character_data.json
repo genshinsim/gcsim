@@ -194,6 +194,16 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), value between 1 and 809 for Hold. The number determines the E duration in frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "chevreuse": [

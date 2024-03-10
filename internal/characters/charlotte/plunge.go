@@ -1,7 +1,7 @@
 package charlotte
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -26,20 +26,20 @@ func init() {
 	// low_plunge -> x
 	lowPlungeFrames = frames.InitAbilSlice(65)
 	lowPlungeFrames[action.ActionAttack] = 57
-	lowPlungeFrames[action.ActionCharge] = 56 + 9
+	lowPlungeFrames[action.ActionCharge] = 56 - 9
 	lowPlungeFrames[action.ActionSkill] = 57
-	lowPlungeFrames[action.ActionBurst] = 57
-	lowPlungeFrames[action.ActionDash] = 44
+	lowPlungeFrames[action.ActionBurst] = 56
+	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFrames[action.ActionWalk] = 64
 	lowPlungeFrames[action.ActionSwap] = 48
 
 	// high_plunge -> x
 	highPlungeFrames = frames.InitAbilSlice(67)
 	highPlungeFrames[action.ActionAttack] = 59
-	highPlungeFrames[action.ActionCharge] = 58 + 8
+	highPlungeFrames[action.ActionCharge] = 58 - 8
 	highPlungeFrames[action.ActionSkill] = 58
 	highPlungeFrames[action.ActionBurst] = 59
-	highPlungeFrames[action.ActionDash] = 46
+	highPlungeFrames[action.ActionDash] = highPlungeHitmark
 	highPlungeFrames[action.ActionWalk] = 66
 	highPlungeFrames[action.ActionSwap] = 50
 }
@@ -53,7 +53,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}
 }
 
@@ -88,7 +88,7 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFrames[action.ActionBurst],
+		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 	}, nil
 }
@@ -102,7 +102,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("high_plunge can only be used while airborne")
 	}
 }
 
@@ -137,7 +137,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionBurst],
+		CanQueueAfter:   highPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 	}, nil
 }
