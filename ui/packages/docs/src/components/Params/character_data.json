@@ -996,6 +996,18 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "wriothesley": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "xiangling": [
     {
       "ability": "skill",
