@@ -508,6 +508,16 @@
       "ability": "burst",
       "param": "prestack",
       "desc": "Whether to grant a stack from performing N1 right before Q. 0 for no prestack, 1 for prestack. Default 0."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "jean": [
