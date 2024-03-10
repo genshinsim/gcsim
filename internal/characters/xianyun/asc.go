@@ -74,7 +74,7 @@ func (c *char) a4StartUpdate() {
 	}
 
 	c.a4src = c.Core.F
-	c.Core.Tasks.Add(c.a4AtkUpdate(c.Core.F), 0)
+	c.a4AtkUpdate(c.Core.F)()
 }
 
 func (c *char) a4AtkUpdate(src int) func() {
