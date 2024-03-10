@@ -396,6 +396,18 @@
       "desc": "0 to use E (default), 1 to use Recast E. Recast E is only possible if Oz is active and Recast E is not on cooldown."
     }
   ],
+  "freminet": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "ganyu": [
     {
       "ability": "attack",
