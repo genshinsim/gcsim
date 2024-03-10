@@ -26,7 +26,7 @@ func init() {
 	// low_plunge -> x
 	lowPlungeFrames = frames.InitAbilSlice(66)
 	lowPlungeFrames[action.ActionAttack] = 57
-	lowPlungeFrames[action.ActionCharge] = 55 + 9
+	lowPlungeFrames[action.ActionCharge] = 55 - 9
 	lowPlungeFrames[action.ActionSkill] = 43
 	lowPlungeFrames[action.ActionBurst] = 42
 	lowPlungeFrames[action.ActionDash] = 44
@@ -35,7 +35,7 @@ func init() {
 	// high_plunge -> x
 	highPlungeFrames = frames.InitAbilSlice(68)
 	highPlungeFrames[action.ActionAttack] = 59
-	highPlungeFrames[action.ActionCharge] = 57 + 8
+	highPlungeFrames[action.ActionCharge] = 57 - 8
 	highPlungeFrames[action.ActionSkill] = 45
 	highPlungeFrames[action.ActionBurst] = 44
 	highPlungeFrames[action.ActionDash] = 45
