@@ -31,12 +31,6 @@ const lowPlungeRadius = 3.0
 const highPlungePoiseDMG = 150.0
 const highPlungeRadius = 5.0
 
-const lowPlungePoiseDMGB = 100.0
-const lowPlungeRadiusB = 3.0
-
-const highPlungePoiseDMGB = 150.0
-const highPlungeRadiusB = 5.0
-
 func init() {
 	// low_plunge -> x
 	lowPlungeFrames = frames.InitAbilSlice(75)
@@ -140,7 +134,7 @@ func (c *char) lowPlungeBXY(p map[string]int) (action.Info, error) {
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
-		PoiseDMG:       lowPlungePoiseDMGB,
+		PoiseDMG:       lowPlungePoiseDMG,
 		Element:        attributes.Pyro,
 		IgnoreInfusion: true,
 		Durability:     25,
@@ -148,7 +142,7 @@ func (c *char) lowPlungeBXY(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadiusB),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadius),
 		lowPlungeHitmarkB,
 		lowPlungeHitmarkB,
 	)
@@ -231,7 +225,7 @@ func (c *char) highPlungeBXY(p map[string]int) (action.Info, error) {
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
-		PoiseDMG:       highPlungePoiseDMGB,
+		PoiseDMG:       highPlungePoiseDMG,
 		Element:        attributes.Pyro,
 		IgnoreInfusion: true,
 		Durability:     25,
@@ -239,7 +233,7 @@ func (c *char) highPlungeBXY(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadiusB),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
 		highPlungeHitmarkB,
 		highPlungeHitmarkB,
 	)
@@ -267,7 +261,7 @@ func (c *char) plungeCollision(delay int) {
 		Mult:       collision[c.TalentLvlAttack()],
 	}
 
-	if c.Base.Cons >= 6 && c.StatusIsActive(paramitaBuff) {
+	if c.StatusIsActive(paramitaBuff) {
 		ai.Element = attributes.Pyro
 		ai.IgnoreInfusion = true
 	}
