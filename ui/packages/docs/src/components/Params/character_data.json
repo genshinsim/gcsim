@@ -814,6 +814,16 @@
       "ability": "burst",
       "param": "extend",
       "desc": "Number of seconds to extend Burst by. Value must be between 0 and 10. Default 10."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "razor": [
