@@ -14,13 +14,15 @@ import (
 	"strconv"
 	"strings"
 
+	selfupdate "github.com/creativeprojects/go-selfupdate"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/optimization"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
 var (
-	shareKey string
+	shareKey      string
+	updateVersion string
 )
 
 type opts struct {
@@ -40,6 +42,7 @@ type opts struct {
 	options          string
 	cpuprofile       string
 	memprofile       string
+	update           bool
 }
 
 const resultServeFile = "serve_data.json"
@@ -79,8 +82,19 @@ func mainImpl() error {
 can be viewed in the browser via "go tool pprof -http=localhost:3000 cpu.prof" (insert your desired host/port/filename, requires Graphviz)`)
 	flag.StringVar(&opt.memprofile, "memprofile", "", `write memory profile to a file. supply file path (otherwise empty string for disabled). 
 can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (insert your desired host/port/filename, requires Graphviz)`)
+	flag.BoolVar(&opt.update, "update", false, "run autoupdater (default: false)")
 
 	flag.Parse()
+
+	if opt.update {
+		err := update(updateVersion)
+		if err != nil {
+			fmt.Printf("Error running autoupdater: %v. Please update manually or run this executable with -update=false to skip autoupdate\n", err)
+			fmt.Print("Press 'Enter' to exit...")
+			bufio.NewReader(os.Stdin).ReadBytes('\n')
+			os.Exit(1)
+		}
+	}
 
 	_, err := os.Stat(opt.config)
 	usedCLI := false
@@ -307,5 +321,30 @@ func writeSample(seed uint64, outputPath, config string, gz bool, simopt simulat
 	sample.Save(outputPath, gz)
 	fmt.Printf("Generated sample with seed %v to %s\n", seed, outputPath)
 
+	return nil
+}
+
+func update(version string) error {
+	latest, found, err := selfupdate.DetectLatest(context.Background(), selfupdate.ParseSlug("genshinsim/gcsim"))
+	if err != nil {
+		return fmt.Errorf("error occurred while detecting version: %w", err)
+	}
+	if !found {
+		return fmt.Errorf("latest version for %s/%s could not be found from github repository", runtime.GOOS, runtime.GOARCH)
+	}
+
+	if latest.LessOrEqual(version) {
+		log.Printf("Current version (%s) is the latest", version)
+		return nil
+	}
+
+	exe, err := os.Executable()
+	if err != nil {
+		return errors.New("could not locate executable path")
+	}
+	if err := selfupdate.UpdateTo(context.Background(), latest.AssetURL, latest.AssetName, exe); err != nil {
+		return fmt.Errorf("error occurred while updating binary: %w", err)
+	}
+	log.Printf("Successfully updated to version %s", latest.Version())
 	return nil
 }

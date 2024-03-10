@@ -97,6 +97,7 @@ const (
 	Thoma
 	Venti
 	Xiangling
+	Xianyun
 	Xiao
 	Xingqiu
 	Xinyan
@@ -196,6 +197,7 @@ var charNames = []string{
 	"thoma",
 	"venti",
 	"xiangling",
+	"xianyun",
 	"xiao",
 	"xingqiu",
 	"xinyan",
@@ -294,6 +296,7 @@ var charPrettyName = []string{
 	"Thoma",
 	"Venti",
 	"Xiangling",
+	"Xianyun",
 	"Xiao",
 	"Xingqiu",
 	"Xinyan",
@@ -388,6 +391,7 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Thoma:            attributes.Pyro,
 	Venti:            attributes.Anemo,
 	Xiangling:        attributes.Pyro,
+	Xianyun:          attributes.Anemo,
 	Xiao:             attributes.Anemo,
 	Xingqiu:          attributes.Hydro,
 	Xinyan:           attributes.Pyro,

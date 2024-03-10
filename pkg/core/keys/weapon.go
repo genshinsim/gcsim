@@ -57,6 +57,7 @@ var weaponNames = []string{
 	"cinnabarspindle",
 	"compoundbow",
 	"coolsteel",
+	"cranesechoingcall",
 	"crescentpike",
 	"darkironsword",
 	"deathmatch",
@@ -239,6 +240,7 @@ const (
 	CinnabarSpindle
 	CompoundBow
 	CoolSteel
+	CranesEchoingCall
 	CrescentPike
 	DarkIronSword
 	Deathmatch

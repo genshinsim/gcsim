@@ -46,6 +46,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"compoundbow":                     keys.CompoundBow,
 	"compound":                        keys.CompoundBow,
 	"coolsteel":                       keys.CoolSteel,
+	"cranesechoingcall":               keys.CranesEchoingCall,
+	"crane":                           keys.CranesEchoingCall,
 	"crescentpike":                    keys.CrescentPike,
 	"cpike":                           keys.CrescentPike,
 	"pike":                            keys.CrescentPike,

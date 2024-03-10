@@ -1174,7 +1174,7 @@
         "shape": "Box",
         "center": "Player",
         "boxX": 1.6,
-        "boxY": 2      
+        "boxY": 2
       },
       {
         "ability": "N3-2",
@@ -1189,7 +1189,7 @@
         "center": "Player",
         "offsetY": 1,
         "boxX": 1.5,
-        "boxY": 4   
+        "boxY": 4
       }
     ],
     "charge": [
@@ -1222,7 +1222,7 @@
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 5
-      }, 
+      },
       {
         "ability": "E-Surging-Blade",
         "shape": "Circle",
@@ -1244,7 +1244,7 @@
         "center": "GlobalValue",
         "radius": 6,
         "fanAngle": 60,
-        "notes" : "There are 8 shells which split the 6m radius around the Q hit pos into 8 equal parts. Each shell attack extends to the edge of the radius."
+        "notes": "There are 8 shells which split the 6m radius around the Q hit pos into 8 equal parts. Each shell attack extends to the edge of the radius."
       }
     ]
   },
@@ -7917,6 +7917,104 @@
         "center": "Player",
         "radius": 2.5,
         "notes": "Pyronado mechanics (collision) are not properly implemented yet."
+      }
+    ]
+  },
+  "xianyun": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.0
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3,
+        "notes": "This is an approximation because the projectile does single target damage to every enemy it collides with on the path."
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 1.5,
+        "notes": "This is an approximation because we do not simulate E damage triggering on collision between character model and enemy."
+      },
+      {
+        "ability": "E-Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4.0
+      },
+      {
+        "ability": "EE-Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5.0
+      },
+      {
+        "ability": "EEE-Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6.5
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 1.5
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 7
+      },
+      {
+        "ability": "Q-Starwicker",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4.8
       }
     ]
   },

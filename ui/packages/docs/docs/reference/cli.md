@@ -29,6 +29,7 @@ The gcsim CLI accepts the following options:
 | `-v` | Whether to enable verbose output. This is exclusive to `-substatOptim` and `-substatOptimFull` at the moment. | - | disabled |
 | `-cpuprofile` | Create a CPU profile file. Used to analyse the performance of gcsim. The results can be viewed in the browser via `go tool pprof -http=localhost:3000` for example (requires [Graphviz](https://graphviz.org/)). | Output file path. | disabled |
 | `-memprofile` | Create a memory profile file. Used to analyse the performance of gcsim. The results can be viewed in the browser via `go tool pprof -http=localhost:3000` for example (requires [Graphviz](https://graphviz.org/)). | Output file path. | disabled | 
+| `-update` | Run autoupdater | - | false |
 
 ### Input
 
