@@ -1,7 +1,7 @@
 package heizou
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -28,7 +28,7 @@ func init() {
 	lowPlungeFrames[action.ActionAttack] = 68
 	lowPlungeFrames[action.ActionSkill] = 67
 	lowPlungeFrames[action.ActionBurst] = 67
-	lowPlungeFrames[action.ActionDash] = 44
+	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFrames[action.ActionSwap] = 60
 
 	// high_plunge -> x
@@ -36,7 +36,7 @@ func init() {
 	highPlungeFrames[action.ActionAttack] = 69
 	highPlungeFrames[action.ActionSkill] = 70
 	highPlungeFrames[action.ActionBurst] = 69
-	highPlungeFrames[action.ActionDash] = 47
+	highPlungeFrames[action.ActionDash] = highPlungeHitmark
 	highPlungeFrames[action.ActionWalk] = 76
 	highPlungeFrames[action.ActionSwap] = 62
 }
@@ -50,7 +50,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}
 }
 
@@ -85,7 +85,7 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFrames[action.ActionBurst],
+		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 	}, nil
 }
@@ -99,7 +99,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("high_plunge can only be used while airborne")
 	}
 }
 
@@ -134,7 +134,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionBurst],
+		CanQueueAfter:   highPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 	}, nil
 }
