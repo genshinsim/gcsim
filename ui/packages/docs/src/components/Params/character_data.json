@@ -21,6 +21,16 @@
       "ability": "low_plunge",
       "param": "short",
       "desc": "0 for normal low plunge (default), 1 for short low plunge. The short version is 20 frames shorter."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Does not apply to low_plunge from skill[hold=1]."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "aloy": [

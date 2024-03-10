@@ -60,7 +60,11 @@
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be skill[hold=1]."
+      "notes": "Previous action must be skill[hold=1] or a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",

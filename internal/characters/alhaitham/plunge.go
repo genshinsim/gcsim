@@ -2,7 +2,6 @@ package alhaitham
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -43,7 +42,7 @@ func init() {
 	lowPlungeFramesXY[action.ActionAttack] = 53
 	lowPlungeFramesXY[action.ActionSkill] = 54
 	lowPlungeFramesXY[action.ActionBurst] = 55
-	lowPlungeFramesXY[action.ActionDash] = 46
+	lowPlungeFramesXY[action.ActionDash] = lowPlungeHitmarkXY
 	lowPlungeFramesXY[action.ActionJump] = 73
 	lowPlungeFramesXY[action.ActionSwap] = 61
 
@@ -52,7 +51,7 @@ func init() {
 	highPlungeFramesXY[action.ActionAttack] = 56
 	highPlungeFramesXY[action.ActionSkill] = 56
 	highPlungeFramesXY[action.ActionBurst] = 56
-	highPlungeFramesXY[action.ActionDash] = 48
+	highPlungeFramesXY[action.ActionDash] = highPlungeHitmarkXY
 	highPlungeFramesXY[action.ActionJump] = 76
 	highPlungeFramesXY[action.ActionSwap] = 64
 }
@@ -69,16 +68,11 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("low_plunge can only be used while airborne or after hold skill")
 	}
 }
 
 func (c *char) lowPlungeAl(p map[string]int) (action.Info, error) {
-	if c.Core.Player.LastAction.Type != action.ActionSkill ||
-		c.Core.Player.LastAction.Param["hold"] != 1 {
-		return action.Info{}, errors.New("only plunge after hold skill ends")
-	}
-
 	short := p["short"]
 	skip := 0
 	if short > 0 {
@@ -92,7 +86,7 @@ func (c *char) lowPlungeAl(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   100,
+		PoiseDMG:   lowPlungePoiseDMG,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],
@@ -140,7 +134,7 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmarkXY,
 		lowPlungeHitmarkXY,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
@@ -164,7 +158,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.highPlungeXY(p)
 	default:
-		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
+		return action.Info{}, errors.New("high_plunge can only be used while airborne")
 	}
 }
 
@@ -192,7 +186,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmarkXY,
 		highPlungeHitmarkXY,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
@@ -221,5 +215,12 @@ func (c *char) plungeCollision(delay int) {
 		Durability: 0,
 		Mult:       collision[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), delay, delay)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1),
+		delay,
+		delay,
+		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
+		c.projectionAttack,
+	)
 }
