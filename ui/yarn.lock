@@ -17394,8 +17394,8 @@ __metadata:
 
 "prismjs@https://github.com/srliao/prism.git":
   version: 1.28.0
-  resolution: "prismjs@https://github.com/srliao/prism.git#commit=2772812ff2870fd0a2851a15e70aed1c13bad701"
-  checksum: 1177eea7f54545b757c26521350daca85b8fa7b9ba72252b1efe47362ef1988f59ac5f0814a973d377a4aa14d3e5a3f84cde750243486458194dbd9ddc8feb13
+  resolution: "prismjs@https://github.com/srliao/prism.git#commit=5f26f41ae9b3dff710b04266834a528c7081ad99"
+  checksum: 0542d1095dc98a9d999df98099db27e790e8f11dd4911d033c36e09a76302f6841927f40fa5277a3464e80baa606ed80a9557e5a07e42fbb1d314ab029351cfa
   languageName: node
   linkType: hard
 
