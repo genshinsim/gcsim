@@ -571,6 +571,18 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "keqing": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "kirara": [
     {
       "ability": "skill",
