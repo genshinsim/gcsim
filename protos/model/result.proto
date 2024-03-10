@@ -117,6 +117,9 @@ message SimulationStatistics {
 
   // target aura uptime
   repeated SourceStats target_aura_uptime = 29 [json_name="target_aura_uptime"];
+
+  //misc statistics at the end of each sim
+  repeated EndStats end_stats = 32 [json_name="end_stats"];
 }
 
 message SignedSimulationStatistics {
@@ -210,4 +213,8 @@ message FailedActions {
 message ShieldInfo {
   map<string, DescriptiveStats> hp = 1 [json_name="hp"];
   DescriptiveStats uptime = 2 [json_name="uptime"];
+}
+
+message EndStats {
+  DescriptiveStats ending_energy = 1 [json_name="ending_energy"];
 }

@@ -71,7 +71,8 @@ const (
 	OnStateChange // prev, next
 	OnEnemyAdded  // t
 	OnTick
-	EndEventTypes // elim
+	OnSimEndedSuccessfully // nil
+	EndEventTypes          // elim
 )
 
 type Handler struct {
