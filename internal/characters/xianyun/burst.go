@@ -22,6 +22,11 @@ const (
 	burstRadius    = 7
 	burstDoTRadius = 4.8
 	burstDoTDelay  = 5
+	// TODO: fragile
+	// used to make sure that only 1 plunge dmg instance consumes an adeptal assistance stack
+	// purely needed because of kazuha a1 right now
+	lossKey = "xianyun-burst-loss-icd"
+	lossIcd = 3
 )
 
 // TODO: dummy frame data from shenhe
@@ -121,6 +126,11 @@ func (c *char) burstPlungeDoTTrigger() {
 		if c.adeptalAssistStacks <= 0 {
 			return false
 		}
+
+		if c.StatusIsActive(lossKey) {
+			return false
+		}
+		c.AddStatus(lossKey, lossIcd, false)
 
 		aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstDoTRadius)
 		ai := combat.AttackInfo{
