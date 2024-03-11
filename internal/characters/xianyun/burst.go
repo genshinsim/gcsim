@@ -1,6 +1,8 @@
 package xianyun
 
 import (
+	"strings"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -106,7 +108,11 @@ func (c *char) burstPlungeDoTTrigger() {
 		// ApplyAttack occurs only once per attack, so we do not need to add an ICD status
 		atk := args[0].(*combat.AttackEvent)
 
-		if atk.Info.AttackTag != attacks.AttackTagPlunge {
+		// TODO: fragile
+		// needs to be like this because of raiden q plunge being burst dmg not plunge dmg
+		if atk.Info.AttackTag != attacks.AttackTagPlunge &&
+			!strings.Contains(atk.Info.Abil, "Low Plunge") &&
+			!strings.Contains(atk.Info.Abil, "High Plunge") {
 			return false
 		}
 
