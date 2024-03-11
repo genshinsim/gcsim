@@ -140,19 +140,18 @@ func (c *char) burstPlungeDoTTrigger() {
 			burstDoTDelay,
 			burstDoTDelay,
 		)
-		c.QueueCharTask(func() {
-			c.adeptalAssistStacks--
-			c.Core.Log.NewEvent("Xianyun Adeptal Assistance stack consumed", glog.LogPreDamageMod, c.Core.Player.Active()).
-				Write("effect_ends_at", c.StatusExpiry(player.XianyunAirborneBuff)).
-				Write("stacks_left", c.adeptalAssistStacks)
-			if c.adeptalAssistStacks == 0 {
-				// Delay stack reduction and status removal until after the attack lands
-				// so that A4 can still proc on the attack that triggers the burstDot.
-				for _, char := range c.Core.Player.Chars() {
-					char.DeleteStatus(player.XianyunAirborneBuff)
-				}
+		c.adeptalAssistStacks--
+		c.Core.Log.NewEvent("Xianyun Adeptal Assistance stack consumed", glog.LogPreDamageMod, c.Core.Player.Active()).
+			Write("effect_ends_at", c.StatusExpiry(player.XianyunAirborneBuff)).
+			Write("stacks_left", c.adeptalAssistStacks)
+		if c.adeptalAssistStacks == 0 {
+			// Delay stack reduction and status removal until after the attack lands
+			// so that A4 can still proc on the attack that triggers the burstDot.
+			for _, char := range c.Core.Player.Chars() {
+				char.DeleteStatus(player.XianyunAirborneBuff)
 			}
-		}, 1)
+		}
+		c.AddStatus(a4WindowKey, 1, false)
 		return false
 	}, "xianyun-starwicker-plunge-hook")
 }

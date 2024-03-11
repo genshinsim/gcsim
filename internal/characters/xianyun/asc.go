@@ -6,13 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const a4ICDKey = "xianyun-a4-icd"
+const a4WindowKey = "xianyun-a4-window"
 const a1Key = "xianyun-a1"
 const a1Dur = 20 * 60
 
@@ -109,7 +109,7 @@ func (c *char) a4() {
 			return false
 		}
 
-		if !c.StatusIsActive(player.XianyunAirborneBuff) {
+		if !c.StatusIsActive(a4WindowKey) {
 			return false
 		}
 
