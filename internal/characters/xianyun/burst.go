@@ -152,7 +152,7 @@ func (c *char) burstPlungeDoTTrigger() {
 					char.DeleteStatus(player.XianyunAirborneBuff)
 				}
 			}
-		}, 1)
+		}, 0)
 		return false
 	}, "xianyun-starwicker-plunge-hook")
 }
