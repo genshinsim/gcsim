@@ -52,7 +52,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			ai.Element = attributes.Hydro
 			ai.IgnoreInfusion = true
 		}
-		c.Core.QueueAttack(ai, ap, chargeHitmark-windup, chargeHitmark-windup, c6cb)
+		c.Core.QueueAttack(ai, ap, 0, 0, c6cb)
 	}, chargeHitmark-windup)
 
 	arkheChangeFunc := func() {
