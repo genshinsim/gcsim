@@ -87,7 +87,10 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 
 	seed := time.Now().UnixNano()
 	init := optstats.NewDamageAggBuffer(stats.simcfg)
-	optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerDmgStat, init.Add)
+	_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerDmgStat, init.Add)
+	if err != nil {
+		stats.optimizer.logger.Fatal(err.Error())
+	}
 	init.Flush()
 	// TODO: Test if median or mean gives better results
 	initialMean := mean(init.ExpectedDps)
@@ -99,7 +102,10 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		stats.simcfg.Characters = stats.charProfilesCopy
 
 		a := optstats.NewDamageAggBuffer(stats.simcfg)
-		optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerDmgStat, a.Add)
+		_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerDmgStat, a.Add)
+		if err != nil {
+			stats.optimizer.logger.Fatal(err.Error())
+		}
 		a.Flush()
 
 		substatGradients[idxSubstat] = mean(a.ExpectedDps) - initialMean
