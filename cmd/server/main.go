@@ -22,11 +22,12 @@ var (
 )
 
 type opts struct {
-	host     string
-	port     string
-	shareKey string
-	timeout  int
-	update   bool
+	host        string
+	port        string
+	shareKey    string
+	timeout     int
+	update      bool
+	showVersion bool
 }
 
 func main() {
@@ -40,7 +41,13 @@ func main() {
 	flag.StringVar(&opt.shareKey, "sharekey", "", "share key to use (default: build flag OR GCSIM_SHARE_KEY env variable if not available)")
 	flag.IntVar(&opt.timeout, "timeout", 5*60, "how long to run each sim for in seconds before timing out (default: 300s)")
 	flag.BoolVar(&opt.update, "update", false, "run autoupdater (default: false)")
+	flag.BoolVar(&opt.showVersion, "version", false, "show currrent version")
 	flag.Parse()
+
+	if opt.showVersion {
+		fmt.Println("Running version: ", version)
+		return
+	}
 
 	if opt.update {
 		err := update(version)
@@ -70,7 +77,19 @@ func main() {
 }
 
 func update(version string) error {
-	latest, found, err := selfupdate.DetectLatest(context.Background(), selfupdate.ParseSlug("genshinsim/gcsim"))
+	src, err := selfupdate.NewGitHubSource(selfupdate.GitHubConfig{})
+	if err != nil {
+		return fmt.Errorf("error creating GitHub source: %w", err)
+	}
+	updater, err := selfupdate.NewUpdater(selfupdate.Config{
+		Source:  src,
+		Filters: []string{"server_.+"},
+	})
+	if err != nil {
+		return fmt.Errorf("error creating updater: %w", err)
+	}
+
+	latest, found, err := updater.DetectLatest(context.Background(), selfupdate.ParseSlug("genshinsim/gcsim"))
 	if err != nil {
 		return fmt.Errorf("error occurred while detecting version: %w", err)
 	}
@@ -82,6 +101,8 @@ func update(version string) error {
 		log.Printf("Current version (%s) is the latest", version)
 		return nil
 	}
+
+	log.Printf("Found latest version %v published at %v (%v), greater than current version %v\n", latest.Name, latest.PublishedAt, latest.AssetName, version)
 
 	exe, err := os.Executable()
 	if err != nil {
