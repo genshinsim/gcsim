@@ -63,7 +63,7 @@ func init() {
 	highPlungeFramesXY[action.ActionCharge] = 59 - 5 // Windup 5 frames
 	highPlungeFramesXY[action.ActionSkill] = 59
 	highPlungeFramesXY[action.ActionBurst] = 59 // Assumed to be the same as skill
-	highPlungeFramesXY[action.ActionDash] = 46
+	highPlungeFramesXY[action.ActionDash] = highPlungeHitmark
 	highPlungeFramesXY[action.ActionWalk] = 67
 	highPlungeFramesXY[action.ActionSwap] = 51
 
@@ -73,7 +73,7 @@ func init() {
 	lowPlungeFramesXY[action.ActionCharge] = 57 - 7 // Windup 7 frames
 	lowPlungeFramesXY[action.ActionSkill] = 59
 	lowPlungeFramesXY[action.ActionBurst] = 59 // Assumed to be the same as skill
-	lowPlungeFramesXY[action.ActionDash] = 44
+	lowPlungeFramesXY[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFramesXY[action.ActionSwap] = 48
 }
 
