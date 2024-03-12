@@ -40,8 +40,8 @@ skill_data_mapping:
         chargeB:
             - 6 # Charged Attack DMG|{param6:F1P}
         collisionB:
-            - 7 # Plunge DMG|{param6:F1P}
+            - 8 # Plunge DMG|{param6:F1P}
         lowPlungeB:
-            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlungeB:
             - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlungeB:
+            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
