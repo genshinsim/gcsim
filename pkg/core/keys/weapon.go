@@ -199,6 +199,7 @@ var weaponNames = []string{
 	"tulaytullahsremembrance",
 	"twinnephrite",
 	"ultimateoverlordsmegamagicsword",
+	"urakumisugiri",
 	"verdict",
 	"vortexvanquisher",
 	"wanderingevenstar",
@@ -382,6 +383,7 @@ const (
 	TulaytullahsRemembrance
 	TwinNephrite
 	UltimateOverlordsMegaMagicSword
+	UrakuMisugiri
 	Verdict
 	VortexVanquisher
 	WanderingEvenstar
