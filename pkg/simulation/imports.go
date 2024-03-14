@@ -324,6 +324,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofnarzissenkreuz"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/toukaboushigure"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/travelershandysword"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/urakumisugiri"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/wolffang"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/xiphos"
 )
