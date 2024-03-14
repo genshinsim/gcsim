@@ -1,5 +1,5 @@
 ---
-title: UrakuMisugiri
+title: Uraku Misugiri
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
