@@ -29,46 +29,56 @@ const (
 	buffKey = "urakumisugiri-increase-buff"
 )
 
+// Normal Attack DMG is increased by 16/20/24/28/32% and Elemental Skill DMG is increased by 24/30/36/42/48%.
+// After a nearby active character deals Geo DMG, the aforementioned effects increase by 100% for 15s.
+// Additionally, the wielder's DEF is increased by 20/25/30/35/40%.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
+	r := p.Refine
 
+	normalDmg := 0.12 + 0.04*float64(r)
+	skillDmg := 0.18 + 0.06*float64(r)
+	defIncrease := 0.15 + 0.05*float64(r)
+
+	mNormal := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("urakumisugiri-na", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil, false
 			}
-			value := make([]float64, attributes.EndStatType)
-			value[attributes.DmgP] = 0.12 + 0.04*float64(p.Refine)
+
+			mNormal[attributes.DmgP] = normalDmg
 			if char.StatusIsActive(buffKey) {
-				value[attributes.DmgP] = 0.14 + 0.08*float64(p.Refine)
+				mNormal[attributes.DmgP] *= 2
 			}
-			return value, true
+			return mNormal, true
 		},
 	})
 
+	mSkill := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("urakumisugiri-skill", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 				return nil, false
 			}
-			value := make([]float64, attributes.EndStatType)
-			value[attributes.DmgP] = 0.18 + 0.06*float64(p.Refine)
+
+			mSkill[attributes.DmgP] = skillDmg
 			if char.StatusIsActive(buffKey) {
-				value[attributes.DmgP] = 0.36 + 0.12*float64(p.Refine)
+				mSkill[attributes.DmgP] *= 2
 			}
-			return value, true
+			return mSkill, true
 		},
 	})
 
+	mDef := make([]float64, attributes.EndStatType)
+	mDef[attributes.DEFP] = defIncrease
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("urakumisugiri-def", -1),
 		AffectedStat: attributes.DEFP,
 		Amount: func() ([]float64, bool) {
-			value := make([]float64, attributes.EndStatType)
-			value[attributes.DEFP] = 0.15 + 0.05*float64(p.Refine)
-			return value, true
+			return mDef, true
 		},
 	})
 
