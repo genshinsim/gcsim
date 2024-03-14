@@ -218,24 +218,20 @@ func (c *CharWrapper) clampHPDebt() {
 	}
 }
 
-func (c *CharWrapper) SetHPDebtByAmount(amt float64) {
+func (c *CharWrapper) setHPDebtByAmount(amt float64) {
 	c.currentHPDebt = amt
-	c.clampHPDebt()
-}
-
-func (c *CharWrapper) SetHPDebtByRatio(r float64) {
-	c.currentHPDebt = r * c.MaxHP()
 	c.clampHPDebt()
 }
 
 func (c *CharWrapper) ModifyHPDebtByAmount(amt float64) {
 	newHPDebt := c.currentHPDebt + amt
-	c.SetHPDebtByAmount(newHPDebt)
+	c.setHPDebtByAmount(newHPDebt)
+	c.events.Emit(event.OnHPDebt, c.Index, amt)
 }
 
 func (c *CharWrapper) ModifyHPDebtByRatio(r float64) {
 	newHPDebt := c.currentHPDebt + r*c.MaxHP()
-	c.SetHPDebtByAmount(newHPDebt)
+	c.setHPDebtByAmount(newHPDebt)
 }
 
 func (c *CharWrapper) consCheck() {
