@@ -232,6 +232,14 @@
       "image_name": "UI_EquipIcon_Claymore_Reasoning",
       "name_text_hash_map ": "3097441915"
     },
+    "dialoguesofthedesertsages": {
+      "id": 13426,
+      "key": "dialoguesofthedesertsages",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Caduceus",
+      "name_text_hash_map ": "2847771107"
+    },
     "dodocotales": {
       "id": 14413,
       "key": "dodocotales",
