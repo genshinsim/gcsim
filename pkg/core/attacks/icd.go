@@ -58,6 +58,7 @@ const (
 	ICDTagFurinaUsher
 	ICDTagCharlotteMark
 	ICDTagCharlotteKamera
+	ICDTagChioriSkill
 	ICDTagLength
 )
 
@@ -101,6 +102,7 @@ const (
 	ICDGroupCharlotteMark
 	ICDGroupCharlotteKamera
 	ICDGroupChevreuseBurstMines
+	ICDGroupChioriSkill
 	ICDGroupLength
 )
 
@@ -146,6 +148,7 @@ func init() {
 	ICDGroupResetTimer[ICDGroupCharlotteMark] = 720
 	ICDGroupResetTimer[ICDGroupCharlotteKamera] = 240
 	ICDGroupResetTimer[ICDGroupChevreuseBurstMines] = 300
+	ICDGroupResetTimer[ICDGroupChioriSkill] = 114 //TODO: verify this?
 
 	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
 	ICDGroupEleApplicationSequence[ICDGroupDefault] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
@@ -184,6 +187,7 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupCharlotteMark] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
 	ICDGroupEleApplicationSequence[ICDGroupCharlotteKamera] = []float64{1, 0, 0, 0, 1, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupChevreuseBurstMines] = []float64{1, 0, 0, 1, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupChioriSkill] = []float64{1, 0, 0, 0}
 
 	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
 	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -224,4 +228,5 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupCharlotteMark] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupCharlotteKamera] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupChevreuseBurstMines] = []float64{1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupChioriSkill] = []float64{1, 1, 1, 1, 1}
 }
