@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillPressFrames []int
@@ -24,6 +25,8 @@ const (
 	dollLife           = 17*60 + 30
 
 	skillSecondPressDelay = 0
+
+	particleICDKey = "chiori-particle-icd"
 )
 
 func init() {
@@ -153,7 +156,7 @@ func (c *char) skillDollAttack() {
 		//TODO: c1 modify aoe size
 		hitbox = combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2)
 	}
-	c.Core.QueueAttackWithSnap(ai, snap, hitbox, 0)
+	c.Core.QueueAttackWithSnap(ai, snap, hitbox, 0, c.particleCB)
 }
 
 func (c *char) rockDollAttack() {
@@ -178,7 +181,7 @@ func (c *char) rockDollAttack() {
 		//TODO: c1 modify aoe size
 		hitbox = combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2)
 	}
-	c.Core.QueueAttackWithSnap(ai, snap, hitbox, 0)
+	c.Core.QueueAttackWithSnap(ai, snap, hitbox, 0, c.particleCB)
 }
 
 func (c *char) skillDollConstructCheck() {
@@ -203,4 +206,17 @@ func (c *char) skillDollConstructCheck() {
 
 	// make sure this check doesn't happen again
 	c.kill(c.constructChecker)
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+	if c.Core.Rand.Float64() < 0.67 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Geo, c.ParticleDelay)
+	}
 }
