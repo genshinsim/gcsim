@@ -14,10 +14,6 @@ func init() {
 	core.RegisterCharFunc(keys.Chiori, NewChar)
 }
 
-const (
-	a1TailorMadeWindowKey = "chiori-a2-tailor-made"
-)
-
 type char struct {
 	*tmpl.Character
 
@@ -31,6 +27,13 @@ type char struct {
 	a1AttackCount int
 
 	a4buff []float64
+
+	// cons
+	geoCount int
+	kinus    []*ticker
+	c2Ticker *ticker
+
+	c4count int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -53,6 +56,10 @@ func (c *char) Init() error {
 		c.a4buff = make([]float64, attributes.EndStatType)
 		c.a4buff[attributes.GeoP] = 0.20
 	}
+
+	c.c2init()
+	c.c4init()
+
 	return nil
 }
 

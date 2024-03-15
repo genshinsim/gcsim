@@ -44,6 +44,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2), burstHitmark-burstSnapshotTiming)
 	}, burstSnapshotTiming)
 
+	c.c2()
+
 	c.ConsumeEnergy(10)                //TODO: delay??
 	c.SetCD(action.ActionBurst, 60*15) //TODO: delay??
 

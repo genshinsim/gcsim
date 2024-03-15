@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	a1TailorMadeWindowKey    = "chiori-a2-tailor-made"
 	a1TailorMadeWindowLength = 120 //TODO: i made this up; should be from button press
 	a1GeoInfusionKey         = "chiori-tailoring"
 	a1SeizeTheMoment         = "chiori-tapestry"
@@ -63,6 +64,9 @@ func (c *char) a1() {
 		default:
 			return false
 		}
+		if atk.Info.ActorIndex != c.Core.Player.Active() {
+			return false
+		}
 
 		c.a1AttackCount++
 		c.Core.Status.Add(a1SeizeTheMomentICD, 120)
@@ -95,6 +99,8 @@ func (c *char) a1Tapestry() {
 	c.Core.Status.Add(a1SeizeTheMoment, 8*60)
 	c.DeleteStatus(a1TailorMadeWindowKey)
 	c.Core.Log.NewEvent("a1 seize the moment triggered", glog.LogCharacterEvent, c.Index)
+	c.c4()
+	c.c6()
 }
 
 func (c *char) tryTriggerA1Tailoring() {
@@ -111,6 +117,8 @@ func (c *char) a1Tailoring() {
 	c.a1Triggered = true
 	// she can't use skill again if she triggers this
 	c.DeleteStatus(a1TailorMadeWindowKey)
+	c.c4()
+	c.c6()
 	c.Core.Log.NewEvent("a1 geo infusion triggered", glog.LogCharacterEvent, c.Index)
 	c.Core.Player.AddWeaponInfuse(
 		c.Index,

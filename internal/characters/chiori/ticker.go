@@ -18,6 +18,8 @@ type ticker struct {
 
 	cb       func()
 	interval int
+
+	onDeath func()
 }
 
 // kill stops any existing ticker from ticking
@@ -25,6 +27,9 @@ func (g *ticker) kill() {
 	g.alive = false
 	g.cb = nil
 	g.interval = 0
+	if g.onDeath != nil {
+		g.onDeath()
+	}
 }
 
 func newTicker(c *core.Core, life int) *ticker {

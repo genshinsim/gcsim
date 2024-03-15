@@ -96,7 +96,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		cc.cb = c.skillDollConstructCheck
 		cc.interval = 18
 		c.Core.Tasks.Add(cc.tick, 6) //TODO: i made this delay up; not sure how quick first check is
-
 		c.constructChecker = cc
 	}, skillDollForm)
 
@@ -147,8 +146,14 @@ func (c *char) skillDollAttack() {
 	snap := c.Snapshot(&ai)
 	ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 	ai.FlatDmg *= turretDefScaling[c.TalentLvlSkill()]
+
 	//TODO: hit box size
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2), 0)
+	hitbox := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2)
+	if c.c1Active() {
+		//TODO: c1 modify aoe size
+		hitbox = combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2)
+	}
+	c.Core.QueueAttackWithSnap(ai, snap, hitbox, 0)
 }
 
 func (c *char) rockDollAttack() {
@@ -166,8 +171,14 @@ func (c *char) rockDollAttack() {
 	snap := c.Snapshot(&ai)
 	ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 	ai.FlatDmg *= turretDefScaling[c.TalentLvlSkill()]
+
 	//TODO: hit box size
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2), 0)
+	hitbox := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2)
+	if c.c1Active() {
+		//TODO: c1 modify aoe size
+		hitbox = combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2)
+	}
+	c.Core.QueueAttackWithSnap(ai, snap, hitbox, 0)
 }
 
 func (c *char) skillDollConstructCheck() {
@@ -175,8 +186,9 @@ func (c *char) skillDollConstructCheck() {
 	// if there is still a rock doll alive, we should kill it
 	c.kill(c.rockDoll)
 
+	// TODO: i'm assuming the c1 check happens here
 	// now check for constructs; if nothing found do nothing
-	if c.Core.Constructs.Count() == 0 {
+	if !c.c1Active() && c.Core.Constructs.Count() == 0 {
 		return
 	}
 

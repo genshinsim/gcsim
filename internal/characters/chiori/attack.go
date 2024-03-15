@@ -59,12 +59,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			attackFanAngles[c.NormalCounter],
 		)
 
-		c.Core.QueueAttack(
-			ai,
-			ap,
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
-		)
+		c.Core.Tasks.Add(func() {
+			snap := c.Snapshot(&ai)
+			c.c6AttackMod(&ai, &snap)
+			c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
+		}, attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
