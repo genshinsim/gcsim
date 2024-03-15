@@ -87,22 +87,12 @@ func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 	return nil
 }
 
-// Exec mirrors the idea of the in game buttons where you can press the button but
-// it may be greyed out. If grey'd out it will return ErrActionNotReady. Otherwise
-// if action was executed successfully then it will return nil
+// Exec will forcefully execute an action t regardless if t is ready or not. The assumption is
+// that whatever caller of Exec would have first checked ReadyCheck where ever relevant
+// before calling Exec.
 //
-// The function takes 2 params:
-//   - ActionType
-//   - Param
-//
-// # Just like in game this will always try and execute on the currently active character
-//
-// This function can be called as many times per frame as desired. However, it will only
-// execute if the animation state allows for it
-//
-// Note that although wait is not strictly a button in game, it is still a valid action.
-// When wait is executed, it will simply put the player in a lock animation state for
-// the requested number of frames
+// The separation allows for forcefully execution of certain actions such as swap bypassing
+// swapCD if any
 func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error {
 	char := h.chars[h.active]
 
