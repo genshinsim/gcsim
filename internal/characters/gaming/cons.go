@@ -16,6 +16,8 @@ const c2Key = "gaming-c2"
 const c4Key = "gaming-c4"
 const c4IcdKey = "gaming-c4"
 
+// When the Suanni Man Chai from Suanni's Gilded Dance meets back up with Gaming,
+// it will heal 15% of Gaming's HP.
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
@@ -23,7 +25,7 @@ func (c *char) c1() {
 
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
-		Target:  c.Core.Player.Active(),
+		Target:  c.Index,
 		Message: "Bringer of Blessing (C1)",
 		Type:    player.HealTypePercent,
 		Src:     0.15,
