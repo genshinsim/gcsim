@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const (
@@ -13,6 +15,8 @@ const (
 	a1GeoInfusionKey         = "chiori-tailoring"
 	a1SeizeTheMoment         = "chiori-tapestry"
 	a1SeizeTheMomentICD      = "chiori-seize-the-moment-icd"
+
+	a4BuffKey = "chiori-a4"
 )
 
 // Gain different effects depending on the next action you take within a short
@@ -131,4 +135,18 @@ func (c *char) a1Window() {
 		}
 		c.a1Tailoring()
 	}, a1TailorMadeWindowLength)
+}
+
+// When a nearby party member creates a Geo Construct, Chiori will gain 20% Geo DMG Bonus for 20s.
+func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(a4BuffKey, 20*60),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return c.a4buff, true
+		},
+	})
 }

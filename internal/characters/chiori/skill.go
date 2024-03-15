@@ -187,6 +187,8 @@ func (c *char) skillDollConstructCheck() {
 	c.Core.Tasks.Add(rd.tick, skillRockDollAttackDelay)
 	c.rockDoll = rd
 
+	c.a4()
+
 	// make sure this check doesn't happen again
 	c.kill(c.constructChecker)
 }
