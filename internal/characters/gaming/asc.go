@@ -8,26 +8,33 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1key = "gaming-a1"
+const a1Key = "gaming-a1"
 
-/*
-For 1s after hitting an opponent with Bestial Ascent's Plunging Attack: Charmed Cloudstrider,
-
-	Gaming will recover 10% of his HP.
-*/
-func (c *char) a1() {
+// After Bestial Ascent's Plunging Attack: Charmed Cloudstrider hits an opponent,
+// Gaming will regain 1.5% of his Max HP once every 0.2s for 0.8s.
+func (c *char) makeA1CB() combat.AttackCBFunc {
 	if c.Base.Ascension < 1 {
-		return
+		return nil
 	}
-	c.AddStatus(a1key, 0.8*60, true)
-	c.QueueCharTask(c.a1Heal, 0.2*60)
+
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(a1Key) {
+			return
+		}
+		c.AddStatus(a1Key, 0.8*60, true)
+		c.QueueCharTask(c.a1Heal, 0.2*60)
+	}
 }
 
 func (c *char) a1Heal() {
-	if !c.StatusIsActive(a1key) {
+	if !c.StatusIsActive(a1Key) {
 		return
 	}
 	c.Core.Player.Heal(player.HealInfo{
