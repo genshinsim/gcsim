@@ -132,7 +132,14 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		if h.active == h.charPos[k] {
 			return ErrActionNoOp
 		}
-		h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String())
+		if h.SwapCD > 0 {
+			// since we allow force swap, this is ok but will emit an extra log anyways just in case
+			h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String(), " (bypassed cd)").
+				Write("swap_cd", h.SwapCD)
+			h.SwapCD = 0
+		} else {
+			h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String())
+		}
 
 		x := action.Info{
 			Frames: func(action.Action) int {
