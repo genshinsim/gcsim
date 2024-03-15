@@ -3203,7 +3203,6 @@ __metadata:
     lodash-es: ^4.17.21
     merge: ^2.1.1
     pako: ^2.1.0
-    prismjs: "https://github.com/srliao/prism.git"
     query-string: ^8.1.0
     react: ^18.2.0
     react-ace: ^10.1.0
@@ -17419,13 +17418,6 @@ __metadata:
   peerDependencies:
     react: ">=0.14.9"
   checksum: c18806dcbc4c0b4fd6fd15bd06b4f7c0a6da98d93af235c3e970854994eb9b59e23315abb6cfc29e69da26d36709a47e25da85ab27fed81b6812f0a52caf6dfa
-  languageName: node
-  linkType: hard
-
-"prismjs@https://github.com/srliao/prism.git":
-  version: 1.28.0
-  resolution: "prismjs@https://github.com/srliao/prism.git#commit=5f26f41ae9b3dff710b04266834a528c7081ad99"
-  checksum: 0542d1095dc98a9d999df98099db27e790e8f11dd4911d033c36e09a76302f6841927f40fa5277a3464e80baa606ed80a9557e5a07e42fbb1d314ab029351cfa
   languageName: node
   linkType: hard
 
