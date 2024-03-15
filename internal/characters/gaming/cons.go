@@ -33,11 +33,15 @@ func (c *char) c1() {
 	})
 }
 
+// When Gaming receives healing and this instance of healing overflows,
+// his ATK will be increased by 20% for 5s.
 func (c *char) c2() {
 	if c.Base.Cons < 2 {
 		return
 	}
 
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.2
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		hi := args[0].(*player.HealInfo)
 		overheal := args[3].(float64)
@@ -50,23 +54,16 @@ func (c *char) c2() {
 			return false
 		}
 
-		c.AddStatus(c2Key, 5*60, true)
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(c2Key, 5*60),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 
 		return false
-	}, c2Key+"-onheal")
-
-	c2buff := make([]float64, attributes.EndStatType)
-	c2buff[attributes.ATKP] = 0.2
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(c2Key+"-atk", 5*60),
-		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
-			if !c.StatusIsActive(c2Key) {
-				return nil, false
-			}
-			return c2buff, true
-		},
-	})
+	}, c2Key+"-on-heal")
 }
 
 func (c *char) c4() {
