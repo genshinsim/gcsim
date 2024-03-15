@@ -104,24 +104,7 @@ func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 // When wait is executed, it will simply put the player in a lock animation state for
 // the requested number of frames
 func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error {
-	// check animation state
-	if h.IsAnimationLocked(t) {
-		return ErrPlayerNotReady
-	}
-
 	char := h.chars[h.active]
-	// check for energy, cd, etc..
-	//TODO: make sure there is a default check for charge attack/dash stams in char implementation
-	// this should deal with Ayaka/Mona's drain vs straight up consumption
-	if ok, reason := char.ActionReady(t, param); !ok {
-		h.Events.Emit(event.OnActionFailed, h.active, t, param, reason)
-		return ErrActionNotReady
-	}
-
-	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
-		req := h.AbilStamCost(char.Index, t, param)
-		return req, h.Stam >= req
-	}
 
 	// special airborne handler; if airborne the next action MUST be attack otherwise error
 	if h.airborne != Grounded && t != action.ActionLowPlunge && t != action.ActionHighPlunge {
@@ -131,38 +114,11 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	var err error
 	switch t {
 	case action.ActionCharge: // require special calc for stam
-		amt, ok := stamCheck(t, param)
-		if !ok {
-			h.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
-				Write("have", h.Stam).
-				Write("cost", amt)
-			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.InsufficientStamina)
-			return ErrActionNotReady
-		}
-		// use stam
-		h.Stam -= amt
+		h.Stam -= h.AbilStamCost(char.Index, t, param)
 		h.LastStamUse = *h.F
 		h.Events.Emit(event.OnStamUse, t)
 		err = h.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
-	case action.ActionDash: // require special calc for stam
-		// dash handles it in the action itself
-		amt, ok := stamCheck(t, param)
-		if !ok {
-			h.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
-				Write("have", h.Stam).
-				Write("cost", amt)
-			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.InsufficientStamina)
-			return ErrActionNotReady
-		}
-
-		// dash is still on cooldown and is locked out, cannot dash again until CD expires
-		if h.DashLockout && h.DashCDExpirationFrame > *h.F {
-			h.Log.NewEvent("dash on cooldown", glog.LogWarnings, -1).
-				Write("dash_cd_expiration", h.DashCDExpirationFrame-*h.F)
-			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.DashCD)
-			return ErrActionNotReady
-		}
-
+	case action.ActionDash:
 		err = h.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
 		err = h.useAbility(t, param, char.Jump)
@@ -186,12 +142,6 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		if h.active == h.charPos[k] {
 			return ErrActionNoOp
 		}
-		if h.SwapCD > 0 {
-			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.SwapCD)
-			return ErrActionNotReady
-		}
-		// otherwise swap at the end of timer
-		// log here that we're starting a swap
 		h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String())
 
 		x := action.Info{
