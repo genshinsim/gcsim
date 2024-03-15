@@ -1,9 +1,6 @@
 package gaming
 
 import (
-	"strings"
-
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -15,6 +12,7 @@ import (
 
 const c2Key = "gaming-c2"
 const c4Key = "gaming-c4"
+const c6Key = "gaming-c6"
 
 // When the Suanni Man Chai from Suanni's Gilded Dance meets back up with Gaming,
 // it will heal 15% of Gaming's HP.
@@ -84,24 +82,25 @@ func (c *char) makeC4CB() combat.AttackCBFunc {
 	}
 }
 
+// Bestial Ascent's Plunging Attack: Charmed Cloudstrider CRIT Rate increased by 20% and CRIT DMG increased by 40%,
+// and its attack radius will be increased.
 func (c *char) c6() {
 	if c.Base.Cons < 6 {
+		c.ePlungeRadius = 4
 		return
 	}
+	c.ePlungeRadius = 6
 
-	c6Buff := make([]float64, attributes.EndStatType)
-	c6Buff[attributes.CR] = 0.2
-	c6Buff[attributes.CD] = 0.4
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.2
+	m[attributes.CD] = 0.4
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("gaming-c6", -1),
+		Base: modifier.NewBase(c6Key, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagPlunge {
+			if atk.Info.Abil != ePlungeKey {
 				return nil, false
 			}
-			if !strings.Contains(atk.Info.Abil, ePlungeKey) {
-				return nil, false
-			}
-			return c6Buff, true
+			return m, true
 		},
 	})
 }

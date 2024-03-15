@@ -91,7 +91,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 4.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, c.ePlungeRadius),
 		hitmark,
 		hitmark,
 		c.particleCB,
