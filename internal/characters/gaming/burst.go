@@ -49,13 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		})
 	}, burstStart)
 
-	c.Core.Tasks.Add(func() {
-		// TODO: unsure if this is accurate when casting burst again while man chai is still out
-		// currently assuming new man chai does not replace the one that's still out
-		if !c.StatusIsActive(manChaiKey) {
-			c.queueManChai()
-		}
-	}, burstHitmark+1)
+	c.Core.Tasks.Add(c.queueManChai, burstHitmark+1)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -88,6 +82,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) queueManChai() {
+	// new man chai can't spawn if one is currently active
+	if c.StatusIsActive(manChaiKey) {
+		return
+	}
 	c.AddStatus(manChaiKey, c.manChaiWalkBack, false)
 	c.QueueCharTask(func() {
 		c.ResetActionCooldown(action.ActionSkill)
