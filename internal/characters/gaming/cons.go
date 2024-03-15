@@ -9,12 +9,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const c2Key = "gaming-c2"
 const c4Key = "gaming-c4"
-const c4IcdKey = "gaming-c4"
 
 // When the Suanni Man Chai from Suanni's Gilded Dance meets back up with Gaming,
 // it will heal 15% of Gaming's HP.
@@ -66,15 +66,22 @@ func (c *char) c2() {
 	}, c2Key+"-on-heal")
 }
 
-func (c *char) c4() {
+// When Bestial Ascent's Plunging Attack: Charmed Cloudstrider hits an opponent,
+// it will restore 2 Energy to Gaming. This effect can be triggered once every 0.2s.
+func (c *char) makeC4CB() combat.AttackCBFunc {
 	if c.Base.Cons < 4 {
-		return
+		return nil
 	}
-	if c.StatusIsActive(c4IcdKey) {
-		return
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(c4Key) {
+			return
+		}
+		c.AddStatus(c4Key, 0.2*60, true)
+		c.AddEnergy(c4Key, 2)
 	}
-	c.AddStatus(c4IcdKey, 0.2*60, true)
-	c.AddEnergy(c4Key, 2)
 }
 
 func (c *char) c6() {

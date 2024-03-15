@@ -96,6 +96,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		hitmark,
 		c.particleCB,
 		c.makeA1CB(),
+		c.makeC4CB(),
 		c.onHit,
 	)
 
@@ -117,5 +118,4 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 func (c *char) onHit(a combat.AttackCB) {
 	c.spawnManchai(a)
-	c.c4()
 }
