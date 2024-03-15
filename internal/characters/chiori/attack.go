@@ -23,7 +23,7 @@ var (
 	attackFanAngles       = []float64{180, 360, 360, 360}
 )
 
-const normalHitNum = 5
+const normalHitNum = 4
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -68,6 +68,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	defer c.AdvanceNormalIndex()
+
+	c.tryTriggerA1Tailoring()
 
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),

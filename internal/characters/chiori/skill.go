@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var skillPressFrames []int
@@ -21,6 +22,8 @@ const (
 	// some doll stuff
 	dollAttackInterval = 216 // 3.6s
 	dollLife           = 17*60 + 30
+
+	skillSecondPressDelay = 0
 )
 
 func init() {
@@ -42,6 +45,10 @@ func init() {
 // this manner, and its duration is independently counted.
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	// if this is second press, swap and activate a1
+	if c.StatusIsActive(a1TailorMadeWindowKey) {
+		return c.skillRecast()
+	}
 	// can hold to aim
 	if p["hold"] == 1 {
 		//TODO: handle skill hold
@@ -93,11 +100,34 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.constructChecker = cc
 	}, skillDollForm)
 
+	c.a1Window()
+	c.SetCDWithDelay(action.ActionSkill, 15*60, 1) //TODO: what's the delay here?
+
 	//TODO: frames to fix
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionJump],
+		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) skillRecast() (action.Info, error) {
+	c.a1Tapestry()
+	// find next char
+	next := c.Index + 1
+	if next >= len(c.Core.Player.Chars()) {
+		next = 0
+	}
+	k := c.Core.Player.ByIndex(next).Base.Key
+	c.Core.Tasks.Add(func() {
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, "forcing swap to ", k.String())
+		c.Core.Player.Exec(action.ActionSwap, k, nil)
+	}, 1)
+	return action.Info{
+		Frames:          func(action.Action) int { return skillSecondPressDelay + c.Core.Player.Delays.Swap },
+		AnimationLength: skillSecondPressDelay + c.Core.Player.Delays.Swap,
+		CanQueueAfter:   skillSecondPressDelay + c.Core.Player.Delays.Swap,
 		State:           action.SkillState,
 	}, nil
 }

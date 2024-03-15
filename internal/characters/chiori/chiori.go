@@ -3,6 +3,7 @@ package chiori
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -12,6 +13,10 @@ func init() {
 	core.RegisterCharFunc(keys.Chiori, NewChar)
 }
 
+const (
+	a1TailorMadeWindowKey = "chiori-a2-tailor-made"
+)
+
 type char struct {
 	*tmpl.Character
 
@@ -19,6 +24,10 @@ type char struct {
 	skillDoll        *ticker
 	constructChecker *ticker
 	rockDoll         *ticker
+
+	// a1 tracking
+	a1Triggered   bool
+	a1AttackCount int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -35,5 +44,14 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
+	c.a1()
 	return nil
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	// check if stiletto is on-field
+	if a == action.ActionSkill && c.StatusIsActive(a1TailorMadeWindowKey) {
+		return true, action.NoFailure
+	}
+	return c.Character.ActionReady(a, p)
 }
