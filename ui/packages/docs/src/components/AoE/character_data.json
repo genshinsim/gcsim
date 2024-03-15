@@ -2971,6 +2971,83 @@
       }
     ]
   },
+  "gaming": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 2,
+        "fanAngle": 270
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.7,
+        "boxX": 2.5,
+        "boxY": 4
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 2
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      },
+      {
+        "ability": "E-Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4
+      },
+      {
+        "ability": "E-Low_Plunge-C6",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5
+      }
+    ]
+  },
   "ganyu": {
     "normal": [
       {

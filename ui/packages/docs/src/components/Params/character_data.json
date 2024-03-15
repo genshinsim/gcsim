@@ -420,6 +420,33 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "gaming": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Does not apply to the Plunge from E."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Does not apply to the Plunge from E."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "man_chai_delay",
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay is 92 frames."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "man_chai_delay",
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay is 92 frames."
+    },
+    {
+      "ability": "burst",
+      "param": "man_chai_delay",
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay is 92 frames."
+    }
+  ],
   "ganyu": [
     {
       "ability": "attack",
