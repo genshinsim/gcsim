@@ -86,10 +86,10 @@ func (c *char) makeC4CB() combat.AttackCBFunc {
 // and its attack radius will be increased.
 func (c *char) c6() {
 	if c.Base.Cons < 6 {
-		c.ePlungeRadius = 4
+		c.specialPlungeRadius = 4
 		return
 	}
-	c.ePlungeRadius = 6
+	c.specialPlungeRadius = 6
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.2
@@ -97,7 +97,7 @@ func (c *char) c6() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c6Key, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.Abil != ePlungeKey {
+			if atk.Info.Abil != specialPlungeKey {
 				return nil, false
 			}
 			return m, true

@@ -124,8 +124,8 @@ var (
 		1.6260180473327637,
 		1.7155239582061768,
 	}
-	// attack: highplunge = [10]
-	highplunge = []float64{
+	// attack: highPlunge = [10]
+	highPlunge = []float64{
 		1.602084994316101,
 		1.7324880361557007,
 		1.8628900051116943,
@@ -142,8 +142,8 @@ var (
 		4.061100006103516,
 		4.284646987915039,
 	}
-	// attack: lowplunge = [9]
-	lowplunge = []float64{
+	// attack: lowPlunge = [9]
+	lowPlunge = []float64{
 		1.2826379537582397,
 		1.3870389461517334,
 		1.4914400577545166,

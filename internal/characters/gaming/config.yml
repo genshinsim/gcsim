@@ -13,9 +13,9 @@ skill_data_mapping:
             - 3 # 4-Hit DMG|{param3:F1P}
         collision:
             - 8 # Plunge DMG|{param8:F1P}
-        lowplunge:
+        lowPlunge:
             - 9 # Low Plunge DMG|{param9:P}
-        highplunge:
+        highPlunge:
             - 10 # High Plunge DMG|{param10:P}
     skill:
         skill:

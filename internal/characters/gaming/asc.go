@@ -73,7 +73,7 @@ func (c *char) a4() {
 			if c.CurrentHPRatio() < 0.5 {
 				return nil, false
 			}
-			if atk.Info.Abil != ePlungeKey {
+			if atk.Info.Abil != specialPlungeKey {
 				return nil, false
 			}
 			return mDmg, true

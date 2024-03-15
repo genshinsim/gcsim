@@ -13,41 +13,57 @@ import (
 var burstFrames []int
 
 const (
-	burstKey      = "gaming-wushou"
-	lionKey       = "gaming-manchai"
-	burstHitmark  = 44 // TODO
-	gamingBurstCd = 15 // seconds
+	burstKey         = "gaming-q"
+	burstStart       = int(0.6 * 60)
+	burstDuration    = 12 * 60
+	burstHitmark     = 60
+	burstCD          = 15 * 60
+	burstEnergyFrame = 7
+	manChaiKey       = "gaming-man-chai"
+	manChaiParam     = "man_chai_delay"
 )
 
 func init() {
-	// TODO : TAKEN FROM FREMINET
-	burstFrames = frames.InitAbilSlice(65)
-	burstFrames[action.ActionAttack] = 52
-	burstFrames[action.ActionSkill] = 52
-	burstFrames[action.ActionDash] = 53
-	burstFrames[action.ActionJump] = 52
-	burstFrames[action.ActionSwap] = 51
+	burstFrames = frames.InitAbilSlice(66)
+	burstFrames[action.ActionAttack] = 63
+	burstFrames[action.ActionSkill] = 63
+	burstFrames[action.ActionJump] = 65
+	burstFrames[action.ActionWalk] = 63
+	burstFrames[action.ActionSwap] = 77
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	c.AddStatus(burstKey, 12*60, true)
-	// spawn manchai manually
-	if !c.StatusIsActive(lionKey) {
-		c.AddStatus(lionKey, lionWalkBack, false)
-		c.QueueCharTask(func() {
-			c.ResetActionCooldown(action.ActionSkill)
-			c.DeleteStatus(lionKey)
-			c.c1()
-		}, lionWalkBack)
+	if p[manChaiParam] > 0 {
+		c.manChaiWalkBack = p[manChaiParam]
 	}
+
+	c.Core.Tasks.Add(func() {
+		c.AddStatus(burstKey, burstDuration, true)
+		c.Core.Player.Heal(player.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Index,
+			Message: "Suanni's Gilded Dance (Q)",
+			Type:    player.HealTypePercent,
+			Src:     0.3,
+			Bonus:   c.Stat(attributes.Heal),
+		})
+	}, burstStart)
+
+	c.Core.Tasks.Add(func() {
+		// TODO: unsure if this is accurate when casting burst again while man chai is still out
+		// currently assuming new man chai does not replace the one that's still out
+		if !c.StatusIsActive(manChaiKey) {
+			c.queueManChai()
+		}
+	}, burstHitmark+1)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Horned Lion's Gilded Dance (Q)",
+		Abil:       "Suanni's Gilded Dance (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagNone,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -60,24 +76,24 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		burstHitmark,
 	)
 
-	c.Core.Player.Heal(player.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
-		Message: "Horned Lion's Gilded Dance (Q)",
-		Type:    player.HealTypePercent,
-		Src:     0.3,
-		Bonus:   c.Stat(attributes.Heal),
-	})
-
-	c.SetCD(action.ActionBurst, 60*gamingBurstCd)
-	c.ConsumeEnergy(4) // TODO
+	c.SetCD(action.ActionBurst, burstCD)
+	c.ConsumeEnergy(burstEnergyFrame)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
 	}, nil
+}
+
+func (c *char) queueManChai() {
+	c.AddStatus(manChaiKey, c.manChaiWalkBack, false)
+	c.QueueCharTask(func() {
+		c.ResetActionCooldown(action.ActionSkill)
+		c.DeleteStatus(manChaiKey)
+		c.c1()
+	}, c.manChaiWalkBack)
 }
 
 func (c *char) onExitField() {

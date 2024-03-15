@@ -14,7 +14,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	ePlungeRadius float64
+	specialPlungeRadius float64
+	manChaiWalkBack     int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -24,7 +25,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.EnergyMax = 60
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.NormalHitNum = 4
+	c.NormalHitNum = normalHitNum
+	c.manChaiWalkBack = 92 // default assumption
+
 	w.Character = &c
 
 	return nil
