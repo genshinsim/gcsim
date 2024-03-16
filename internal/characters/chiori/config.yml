@@ -7,6 +7,14 @@ action_param_keys:
   skill:
     - param: "hold"
 
+icd_tags:
+  - ICDTagChioriSkill
+icd_groups:
+  - group_name: ICDGroupChioriSkill
+    reset_timer: 114
+    ele_app_sequence: [1, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1]
+
 # generate skill scaling data
 generate_skill_data: true
 skill_data_mapping:
