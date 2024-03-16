@@ -22,6 +22,7 @@ type config struct {
 	uiOut    string
 	dbOut    string
 	transOut string
+	icdPath  string
 }
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
 	flag.StringVar(&cfg.uiOut, "outui", "./ui/packages/ui/src/Data", "folder to output generated json for UI")
 	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
 	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/ui/src/Translation/locales", "folder to output generated json for DB")
+	flag.StringVar(&cfg.icdPath, "icd", "./pkg/core/attacks", "file to store generated icd data")
 	flag.Parse()
 
 	excels := filepath.Join(cfg.excelPath, "ExcelBinOutput")
@@ -61,6 +63,12 @@ func main() {
 
 	log.Println("generate character template data...")
 	err = g.GenerateCharTemplate()
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("generate character icd data...")
+	err = g.GenerateICDData(cfg.icdPath)
 	if err != nil {
 		panic(err)
 	}

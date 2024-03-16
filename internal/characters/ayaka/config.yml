@@ -2,32 +2,95 @@ package_name: ayaka
 genshin_id: 10000002
 key: ayaka
 skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}×3
-            - 3 # 4-Hit DMG|{param3:F1P}×3
-            - 3 # 4-Hit DMG|{param3:F1P}×3
-        attack_5:
-            - 6 # 5-Hit DMG|{param6:F1P}
-        ca:
-            - 7 # Charged Attack DMG|{param7:F1P}×3
-        collision:
-            - 9 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 11 # Low/High Plunge DMG|{param7:P}/{param8:P}
+  attack:
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}
+    attack_4:
+      - 3 # 4-Hit DMG|{param3:F1P}×3
+      - 3 # 4-Hit DMG|{param3:F1P}×3
+      - 3 # 4-Hit DMG|{param3:F1P}×3
+    attack_5:
+      - 6 # 5-Hit DMG|{param6:F1P}
+    ca:
+      - 7 # Charged Attack DMG|{param7:F1P}×3
+    collision:
+      - 9 # Plunge DMG|{param6:F1P}
+    lowPlunge:
+      - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
+    highPlunge:
+      - 11 # Low/High Plunge DMG|{param7:P}/{param8:P}
+  skill:
     skill:
-        skill:
-            - 0 # Skill DMG|{param0:P}
-    burst:
-        burstBloom:
-            - 1 # Bloom DMG|{param1:P}
-        burstCut:
-            - 0 # Cutting DMG|{param0:P}
+      - 0 # Skill DMG|{param0:P}
+  burst:
+    burstBloom:
+      - 1 # Bloom DMG|{param1:P}
+    burstCut:
+      - 0 # Cutting DMG|{param0:P}
+icd_groups:
+  - group_name: ICDGroupAyakaExtraAttack
+    reset_timer: 30
+    ele_app_sequence:
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+      ]
+    damage_sequence:
+      [
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+      ]
