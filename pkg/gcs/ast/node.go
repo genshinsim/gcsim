@@ -375,7 +375,9 @@ func (s *SwitchStmt) String() string {
 
 func (s *SwitchStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString("switch ")
-	s.Condition.writeTo(sb)
+	if s.Condition != nil {
+		s.Condition.writeTo(sb)
+	}
 	sb.WriteString(" {\n")
 	for _, v := range s.Cases {
 		v.writeTo(sb)

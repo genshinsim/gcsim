@@ -10,7 +10,7 @@ import (
 
 // parseAction returns a node contain a character action, or a block of node containing
 // a list of character actions
-func (p *Parser) parseAction() (Stmt, error) {
+func (p *Parser) parseAction() (Node, error) {
 	char, err := p.consume(itemCharacterKey)
 	if err != nil {
 		// this really shouldn't happen since we already checked
@@ -99,6 +99,10 @@ Loop:
 		}
 	}
 	// check for optional flags
+
+	if len(actions) == 1 {
+		return actions[0], nil
+	}
 
 	// build stmt
 	b := newBlockStmt(char.pos)

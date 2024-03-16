@@ -153,6 +153,10 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	// append swap if called for char is not active
 	// check if NoChar incase this is some special action that does not require a character
 	if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
+		// sanity check if action is from a valid char
+		if _, ok := s.C.Player.ByKey(next.Char); !ok {
+			return nil, fmt.Errorf("can't execute action %v: %v is not on this team", next.Action, next.Char)
+		}
 		s.queue = append(s.queue, &action.Eval{
 			Char:   next.Char,
 			Action: action.ActionSwap,
