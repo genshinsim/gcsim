@@ -4,10 +4,9 @@ import { Character } from "@gcsim/types";
 import { debounce } from "lodash-es";
 import { useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { SectionDivider, Viewport } from "../../Components";
+import { ConfigEditor, SectionDivider, Viewport } from "../../Components";
 import { appActions, defaultStats } from "../../Stores/appSlice";
 import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
-import { ActionList } from "./Components";
 import { OmnibarBlock } from "./Components/OmnibarBlock";
 import { Team } from "./Team";
 import { Toolbox } from "./Toolbox";
@@ -73,7 +72,11 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
 
           <ActionListTooltip />
 
-          <ActionList cfg={cfg} onChange={onChange} />
+          <ConfigEditor
+            cfg={cfg}
+            onChange={onChange}
+            hideThemeSelector={false}
+          />
 
           <div className="sticky bottom-0 bg-bp4-dark-gray-100 flex flex-col gap-y-1 z-10">
             {err !== "" && cfg !== "" ? (
