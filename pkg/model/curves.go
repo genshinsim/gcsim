@@ -2605,3 +2605,1006 @@ var WeaponGrowCurveByLvl = []map[WeaponCurveType]float64{
 		WeaponCurveType_GROW_CURVE_CRITICAL_301: 4.998000144958496,
 	},
 }
+
+var EnemyStatGrowthMult = []map[MonsterCurveType]float64{
+	{
+		MonsterCurveType_GROW_CURVE_HP:             5.36785888671875,
+		MonsterCurveType_GROW_CURVE_HP_2:           5.404888153076172,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 17.165605545043945,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6.818904876708984,
+		MonsterCurveType_GROW_CURVE_HP_2:           6.867565155029297,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 18.53504753112793,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             8.421231269836426,
+		MonsterCurveType_GROW_CURVE_HP_2:           8.483288764953613,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 19.90485382080078,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10.174839973449707,
+		MonsterCurveType_GROW_CURVE_HP_2:           10.25220775604248,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 21.27490234375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12.079870223999023,
+		MonsterCurveType_GROW_CURVE_HP_2:           12.174544334411621,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 22.64539909362793,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             14.137960433959961,
+		MonsterCurveType_GROW_CURVE_HP_2:           14.251988410949707,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 24.649612426757812,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             16.34827995300293,
+		MonsterCurveType_GROW_CURVE_HP_2:           16.48380470275879,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 26.640642166137695,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             17.507360458374023,
+		MonsterCurveType_GROW_CURVE_HP_2:           17.656360626220703,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 28.868587493896484,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             19.267820358276367,
+		MonsterCurveType_GROW_CURVE_HP_2:           19.43610191345215,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 31.367679595947266,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             21.098649978637695,
+		MonsterCurveType_GROW_CURVE_HP_2:           21.287471771240234,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 34.14334487915039,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             24.06382942199707,
+		MonsterCurveType_GROW_CURVE_HP_2:           24.350191116333008,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 37.20100021362305,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             27.146570205688477,
+		MonsterCurveType_GROW_CURVE_HP_2:           27.538501739501953,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 40.65999984741211,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             30.34872055053711,
+		MonsterCurveType_GROW_CURVE_HP_2:           30.8546085357666,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 44.4466667175293,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             33.90171813964844,
+		MonsterCurveType_GROW_CURVE_HP_2:           34.542476654052734,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 48.56351852416992,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             37.58708953857422,
+		MonsterCurveType_GROW_CURVE_HP_2:           38.372718811035156,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 53.74848175048828,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             41.40679931640625,
+		MonsterCurveType_GROW_CURVE_HP_2:           42.34790802001953,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 59.0818977355957,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             46.00102996826172,
+		MonsterCurveType_GROW_CURVE_HP_2:           47.130226135253906,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 64.4200439453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             50.0535888671875,
+		MonsterCurveType_GROW_CURVE_HP_2:           51.37316131591797,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 69.72445678710938,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             54.181541442871094,
+		MonsterCurveType_GROW_CURVE_HP_2:           57.933082580566406,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 75.12313842773438,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             65.16490173339844,
+		MonsterCurveType_GROW_CURVE_HP_2:           62.65643310546875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 80.58477783203125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             68.61109161376953,
+		MonsterCurveType_GROW_CURVE_HP_2:           67.49970245361328,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 86.11203002929688,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             72.10563659667969,
+		MonsterCurveType_GROW_CURVE_HP_2:           72.46275329589844,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 91.70374298095703,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             75.35813903808594,
+		MonsterCurveType_GROW_CURVE_HP_2:           77.45362091064453,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 97.24462890625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             79.78938293457031,
+		MonsterCurveType_GROW_CURVE_HP_2:           82.53305053710938,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 102.8126449584961,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             84.30027770996094,
+		MonsterCurveType_GROW_CURVE_HP_2:           87.70266723632812,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 108.40956115722656,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             88.93609619140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           92.40437316894531,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 113.20169067382812,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             93.66512298583984,
+		MonsterCurveType_GROW_CURVE_HP_2:           97.3886947631836,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 118.1029052734375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             98.48837280273438,
+		MonsterCurveType_GROW_CURVE_HP_2:           102.55675506591797,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 122.97931671142578,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             103.40689849853516,
+		MonsterCurveType_GROW_CURVE_HP_2:           109.56382751464844,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 129.72732543945312,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             108.42169952392578,
+		MonsterCurveType_GROW_CURVE_HP_2:           116.67918395996094,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 136.29290771484375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             114.4719009399414,
+		MonsterCurveType_GROW_CURVE_HP_2:           123.90554809570312,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 142.6708526611328,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             120.654296875,
+		MonsterCurveType_GROW_CURVE_HP_2:           131.39303588867188,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 149.02902221679688,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             125.74400329589844,
+		MonsterCurveType_GROW_CURVE_HP_2:           139.20303344726562,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 155.4169921875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             148.70449829101562,
+		MonsterCurveType_GROW_CURVE_HP_2:           147.34231567382812,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 161.82550048828125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             153.7545928955078,
+		MonsterCurveType_GROW_CURVE_HP_2:           156.63198852539062,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 169.10630798339844,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             158.88600158691406,
+		MonsterCurveType_GROW_CURVE_HP_2:           166.41990661621094,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 176.51808166503906,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             165.8800048828125,
+		MonsterCurveType_GROW_CURVE_HP_2:           176.60276794433594,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 184.07273864746094,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             173.58090209960938,
+		MonsterCurveType_GROW_CURVE_HP_2:           187.1258087158203,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 191.7095184326172,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             181.4102020263672,
+		MonsterCurveType_GROW_CURVE_HP_2:           198.1142578125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 199.55691528320312,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             198.38409423828125,
+		MonsterCurveType_GROW_CURVE_HP_2:           209.4999237060547,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 207.38204956054688,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             207.9781036376953,
+		MonsterCurveType_GROW_CURVE_HP_2:           221.35829162597656,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 215.39889526367188,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             217.7366943359375,
+		MonsterCurveType_GROW_CURVE_HP_2:           234.3136749267578,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 224.16566467285156,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             227.02490234375,
+		MonsterCurveType_GROW_CURVE_HP_2:           248.21856689453125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 233.50216674804688,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             236.46530151367188,
+		MonsterCurveType_GROW_CURVE_HP_2:           263.03790283203125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 243.35057067871094,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             264.5140075683594,
+		MonsterCurveType_GROW_CURVE_HP_2:           281.44781494140625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 256.0630798339844,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             273.7571105957031,
+		MonsterCurveType_GROW_CURVE_HP_2:           300.16461181640625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 268.5434875488281,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             289.6474914550781,
+		MonsterCurveType_GROW_CURVE_HP_2:           319.93707275390625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 281.52606201171875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             305.86279296875,
+		MonsterCurveType_GROW_CURVE_HP_2:           340.7965393066406,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 295.0136413574219,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             322.4075012207031,
+		MonsterCurveType_GROW_CURVE_HP_2:           362.8451232910156,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 309.06719970703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             367.8212890625,
+		MonsterCurveType_GROW_CURVE_HP_2:           386.0079650878906,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 323.6015930175781,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             384.5918884277344,
+		MonsterCurveType_GROW_CURVE_HP_2:           405.8198547363281,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 336.7575378417969,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             401.5548095703125,
+		MonsterCurveType_GROW_CURVE_HP_2:           426.7508850097656,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 350.5303039550781,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             418.71240234375,
+		MonsterCurveType_GROW_CURVE_HP_2:           448.3360595703125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 364.4826965332031,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             436.06671142578125,
+		MonsterCurveType_GROW_CURVE_HP_2:           470.6085205078125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 378.6191711425781,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             452.5111083984375,
+		MonsterCurveType_GROW_CURVE_HP_2:           500.87493896484375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 398.60040283203125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             466.2409973144531,
+		MonsterCurveType_GROW_CURVE_HP_2:           529.1299438476562,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 416.39825439453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             483.8348083496094,
+		MonsterCurveType_GROW_CURVE_HP_2:           558.1856689453125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 434.3869934082031,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             503.1842956542969,
+		MonsterCurveType_GROW_CURVE_HP_2:           588.0836181640625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 452.5668029785156,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             522.7799072265625,
+		MonsterCurveType_GROW_CURVE_HP_2:           619.6229858398438,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 471.42626953125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             616.99462890625,
+		MonsterCurveType_GROW_CURVE_HP_2:           652.1600952148438,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 490.4816589355469,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             637.3270874023438,
+		MonsterCurveType_GROW_CURVE_HP_2:           685.42822265625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 509.5042724609375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             659.6903076171875,
+		MonsterCurveType_GROW_CURVE_HP_2:           725.2860107421875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 532.7717895507812,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             682.2833251953125,
+		MonsterCurveType_GROW_CURVE_HP_2:           766.4551391601562,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 556.393310546875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             711.7286987304688,
+		MonsterCurveType_GROW_CURVE_HP_2:           808.56494140625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 580.10302734375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             734.9008178710938,
+		MonsterCurveType_GROW_CURVE_HP_2:           857.3944091796875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 607.8949584960938,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             753.9569091796875,
+		MonsterCurveType_GROW_CURVE_HP_2:           899.7022705078125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 630.2013549804688,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             829.3079223632812,
+		MonsterCurveType_GROW_CURVE_HP_2:           943.454345703125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 652.8668212890625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             855.3966064453125,
+		MonsterCurveType_GROW_CURVE_HP_2:           987.485595703125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 675.1863403320312,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             879.7073974609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           1032.8477783203125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 697.7826538085938,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             960.8342895507812,
+		MonsterCurveType_GROW_CURVE_HP_2:           1078.6290283203125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 720.1703491210938,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             987.2562866210938,
+		MonsterCurveType_GROW_CURVE_HP_2:           1125.0859375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 742.4546508789062,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1016.3079833984375,
+		MonsterCurveType_GROW_CURVE_HP_2:           1176.6754150390625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 765.2055053710938,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1037.4150390625,
+		MonsterCurveType_GROW_CURVE_HP_2:           1225.497314453125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 784.3746337890625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1067.75,
+		MonsterCurveType_GROW_CURVE_HP_2:           1276.6015625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 803.4011840820312,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1098.4119873046875,
+		MonsterCurveType_GROW_CURVE_HP_2:           1349.673828125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 830.9207763671875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1123.7750244140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           1419.612060546875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 854.4033203125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1153.1190185546875,
+		MonsterCurveType_GROW_CURVE_HP_2:           1492.4434814453125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 877.759765625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1182.760009765625,
+		MonsterCurveType_GROW_CURVE_HP_2:           1566.433837890625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 900.1172485351562,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1210.2330322265625,
+		MonsterCurveType_GROW_CURVE_HP_2:           1645.94091796875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 923.7666625976562,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1366.7349853515625,
+		MonsterCurveType_GROW_CURVE_HP_2:           1740.03369140625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 946.3702392578125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1394.866943359375,
+		MonsterCurveType_GROW_CURVE_HP_2:           1832.4423828125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 968.6341552734375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1423.2469482421875,
+		MonsterCurveType_GROW_CURVE_HP_2:           1926.5064697265625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 991.0293579101562,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1440.9090576171875,
+		MonsterCurveType_GROW_CURVE_HP_2:           2018.1666259765625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1013.527099609375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1485.468017578125,
+		MonsterCurveType_GROW_CURVE_HP_2:           2109.6982421875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1036.1329345703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1503.56005859375,
+		MonsterCurveType_GROW_CURVE_HP_2:           2223.06787109375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1066.6236572265625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1532.9100341796875,
+		MonsterCurveType_GROW_CURVE_HP_2:           2317.1689453125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1089.9642333984375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1563.946044921875,
+		MonsterCurveType_GROW_CURVE_HP_2:           2412.80419921875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1114.9644775390625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1598.8089599609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           2510.077880859375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1141.66259765625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1634.0799560546875,
+		MonsterCurveType_GROW_CURVE_HP_2:           2613.84326171875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1171.9417724609375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1792.8509521484375,
+		MonsterCurveType_GROW_CURVE_HP_2:           2731.175537109375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1202.813720703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1835.4229736328125,
+		MonsterCurveType_GROW_CURVE_HP_2:           2831.96142578125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1233.93994140625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1882.427978515625,
+		MonsterCurveType_GROW_CURVE_HP_2:           2934.134521484375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1264.69970703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1930.0469970703125,
+		MonsterCurveType_GROW_CURVE_HP_2:           3063.6953125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1305.689453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             1996.6610107421875,
+		MonsterCurveType_GROW_CURVE_HP_2:           3191.60498046875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1346.0843505859375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2042.759033203125,
+		MonsterCurveType_GROW_CURVE_HP_2:           3344.277099609375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1411.7381591796875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2055.587890625,
+		MonsterCurveType_GROW_CURVE_HP_2:           3495.40087890625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1468.87451171875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2069.80908203125,
+		MonsterCurveType_GROW_CURVE_HP_2:           3644.670654296875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1524.041259765625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2256.93701171875,
+		MonsterCurveType_GROW_CURVE_HP_2:           3791.2685546875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1576.96630859375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2272.52392578125,
+		MonsterCurveType_GROW_CURVE_HP_2:           3934.9931640625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1627.613037109375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2706.501953125,
+		MonsterCurveType_GROW_CURVE_HP_2:           4082.745849609375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1674.8092041015625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2770.43310546875,
+		MonsterCurveType_GROW_CURVE_HP_2:           4213.19140625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1719.824462890625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2835.451416015625,
+		MonsterCurveType_GROW_CURVE_HP_2:           4347.95849609375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1764.716552734375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2901.570556640625,
+		MonsterCurveType_GROW_CURVE_HP_2:           4485.7998046875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1809.401123046875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             2968.80419921875,
+		MonsterCurveType_GROW_CURVE_HP_2:           4590.93359375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1843.1929931640625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             3199.58056640625,
+		MonsterCurveType_GROW_CURVE_HP_2:           4720.8876953125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1884.97998046875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             3272.79931640625,
+		MonsterCurveType_GROW_CURVE_HP_2:           4825.01416015625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1900.6527099609375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             3347.234130859375,
+		MonsterCurveType_GROW_CURVE_HP_2:           4906.4521484375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1916.3758544921875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             3422.899169921875,
+		MonsterCurveType_GROW_CURVE_HP_2:           4988.69775390625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1932.1495361328125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             3499.808349609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           5071.7578125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1947.9739990234375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             3938.62744140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           5167.5302734375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1963.8492431640625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4026.07470703125,
+		MonsterCurveType_GROW_CURVE_HP_2:           5252.99658203125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1979.775390625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4114.93798828125,
+		MonsterCurveType_GROW_CURVE_HP_2:           5339.302734375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 1995.752685546875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4205.23291015625,
+		MonsterCurveType_GROW_CURVE_HP_2:           5426.455078125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2011.7811279296875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4296.97509765625,
+		MonsterCurveType_GROW_CURVE_HP_2:           5514.46044921875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2027.86083984375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4496.22265625,
+		MonsterCurveType_GROW_CURVE_HP_2:           5603.3251953125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2055.471923828125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4593.1923828125,
+		MonsterCurveType_GROW_CURVE_HP_2:           5671.8017578125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2074.89453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4691.69140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           5743.353515625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2094.380859375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4791.736328125,
+		MonsterCurveType_GROW_CURVE_HP_2:           5818.0478515625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2113.930908203125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             4893.3427734375,
+		MonsterCurveType_GROW_CURVE_HP_2:           5895.955078125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2133.544921875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             5299.34619140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           5977.14990234375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2153.222900390625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             5399.216796875,
+		MonsterCurveType_GROW_CURVE_HP_2:           6049.20849609375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2172.965087890625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             5500.46240234375,
+		MonsterCurveType_GROW_CURVE_HP_2:           6124.5068359375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2192.771728515625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             5603.09765625,
+		MonsterCurveType_GROW_CURVE_HP_2:           6203.11865234375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2212.642822265625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             5707.13525390625,
+		MonsterCurveType_GROW_CURVE_HP_2:           6285.123046875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2232.57861328125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             5812.59033203125,
+		MonsterCurveType_GROW_CURVE_HP_2:           6370.60107421875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2252.5791015625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             5919.47509765625,
+		MonsterCurveType_GROW_CURVE_HP_2:           6459.6376953125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2261.164794921875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6027.80419921875,
+		MonsterCurveType_GROW_CURVE_HP_2:           6549.5830078125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2269.771484375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6137.591796875,
+		MonsterCurveType_GROW_CURVE_HP_2:           6640.4423828125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2278.399169921875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6248.8505859375,
+		MonsterCurveType_GROW_CURVE_HP_2:           6732.22314453125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2287.048095703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6361.59521484375,
+		MonsterCurveType_GROW_CURVE_HP_2:           6824.93212890625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2295.71826171875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6475.8388671875,
+		MonsterCurveType_GROW_CURVE_HP_2:           6918.5751953125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2304.40966796875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6591.595703125,
+		MonsterCurveType_GROW_CURVE_HP_2:           7013.15966796875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2313.122314453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6708.87939453125,
+		MonsterCurveType_GROW_CURVE_HP_2:           7108.69140625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2321.8564453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6827.70361328125,
+		MonsterCurveType_GROW_CURVE_HP_2:           7205.17822265625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2330.611572265625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             6948.08251953125,
+		MonsterCurveType_GROW_CURVE_HP_2:           7302.62548828125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2339.388427734375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             7070.029296875,
+		MonsterCurveType_GROW_CURVE_HP_2:           7401.04052734375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2348.1865234375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             7193.5576171875,
+		MonsterCurveType_GROW_CURVE_HP_2:           7500.4296875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2357.00634765625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             7318.68212890625,
+		MonsterCurveType_GROW_CURVE_HP_2:           7600.80029296875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2365.847412109375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             7445.416015625,
+		MonsterCurveType_GROW_CURVE_HP_2:           7702.15771484375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2374.710205078125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             7573.77294921875,
+		MonsterCurveType_GROW_CURVE_HP_2:           7804.50927734375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2383.5947265625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             7703.7666015625,
+		MonsterCurveType_GROW_CURVE_HP_2:           7907.86181640625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2392.500732421875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             7835.4111328125,
+		MonsterCurveType_GROW_CURVE_HP_2:           8012.2216796875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2401.428466796875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             7968.720703125,
+		MonsterCurveType_GROW_CURVE_HP_2:           8117.595703125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2410.378173828125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             8103.7080078125,
+		MonsterCurveType_GROW_CURVE_HP_2:           8223.990234375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2419.349609375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             8240.3876953125,
+		MonsterCurveType_GROW_CURVE_HP_2:           8331.4111328125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2428.3427734375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             8378.7724609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           8439.8671875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2437.35791015625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             8518.8779296875,
+		MonsterCurveType_GROW_CURVE_HP_2:           8549.3623046875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2446.39501953125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             8660.7158203125,
+		MonsterCurveType_GROW_CURVE_HP_2:           8659.9052734375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2455.4541015625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             8804.3017578125,
+		MonsterCurveType_GROW_CURVE_HP_2:           8771.501953125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2464.53515625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             8949.6474609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           8884.1591796875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2473.63818359375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             9096.7685546875,
+		MonsterCurveType_GROW_CURVE_HP_2:           8997.8828125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2482.763427734375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             9245.6787109375,
+		MonsterCurveType_GROW_CURVE_HP_2:           9112.6806640625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2491.910888671875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             9396.3896484375,
+		MonsterCurveType_GROW_CURVE_HP_2:           9228.55859375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2501.08056640625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             9548.9169921875,
+		MonsterCurveType_GROW_CURVE_HP_2:           9345.5224609375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2510.2724609375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             9703.2744140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           9463.5810546875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2519.486572265625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             9859.4755859375,
+		MonsterCurveType_GROW_CURVE_HP_2:           9582.73828125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2528.72314453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10017.5341796875,
+		MonsterCurveType_GROW_CURVE_HP_2:           9703.0029296875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2537.98193359375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10177.462890625,
+		MonsterCurveType_GROW_CURVE_HP_2:           9824.380859375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2547.26318359375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10339.27734375,
+		MonsterCurveType_GROW_CURVE_HP_2:           9946.87890625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2556.567138671875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10502.9892578125,
+		MonsterCurveType_GROW_CURVE_HP_2:           10070.5029296875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2565.893310546875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10585.5615234375,
+		MonsterCurveType_GROW_CURVE_HP_2:           10195.2607421875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2575.2421875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10668.6142578125,
+		MonsterCurveType_GROW_CURVE_HP_2:           10321.158203125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2584.61376953125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10752.1484375,
+		MonsterCurveType_GROW_CURVE_HP_2:           10448.201171875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2594.0078125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10836.1650390625,
+		MonsterCurveType_GROW_CURVE_HP_2:           10576.3984375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2603.424560546875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             10920.66796875,
+		MonsterCurveType_GROW_CURVE_HP_2:           10705.7548828125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2612.864013671875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11005.65625,
+		MonsterCurveType_GROW_CURVE_HP_2:           10836.27734375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2622.326416015625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11091.1337890625,
+		MonsterCurveType_GROW_CURVE_HP_2:           10967.97265625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2631.8115234375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11177.1005859375,
+		MonsterCurveType_GROW_CURVE_HP_2:           11100.84765625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2641.319580078125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11263.560546875,
+		MonsterCurveType_GROW_CURVE_HP_2:           11234.9091796875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2650.8505859375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11350.5126953125,
+		MonsterCurveType_GROW_CURVE_HP_2:           11370.1630859375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2660.404541015625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11437.9609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           11506.6162109375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2669.9814453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11525.90625,
+		MonsterCurveType_GROW_CURVE_HP_2:           11644.275390625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2679.581298828125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11614.349609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           11783.1474609375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2689.204345703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11703.2939453125,
+		MonsterCurveType_GROW_CURVE_HP_2:           11923.2392578125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2698.8505859375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11792.7412109375,
+		MonsterCurveType_GROW_CURVE_HP_2:           12064.5556640625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2708.519775390625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11882.69140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           12207.10546875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2718.21240234375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             11973.1474609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           12350.8935546875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2727.92822265625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12064.1103515625,
+		MonsterCurveType_GROW_CURVE_HP_2:           12495.9287109375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2737.66748046875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12155.5830078125,
+		MonsterCurveType_GROW_CURVE_HP_2:           12642.21484375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2747.429931640625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12247.56640625,
+		MonsterCurveType_GROW_CURVE_HP_2:           12789.7607421875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2757.2158203125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12340.0625,
+		MonsterCurveType_GROW_CURVE_HP_2:           12938.572265625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2767.025146484375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12433.072265625,
+		MonsterCurveType_GROW_CURVE_HP_2:           13088.6552734375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2776.858154296875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12526.5986328125,
+		MonsterCurveType_GROW_CURVE_HP_2:           13240.017578125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2786.714599609375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12620.6416015625,
+		MonsterCurveType_GROW_CURVE_HP_2:           13392.666015625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2796.594482421875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12715.205078125,
+		MonsterCurveType_GROW_CURVE_HP_2:           13546.60546875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2806.498046875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12810.2890625,
+		MonsterCurveType_GROW_CURVE_HP_2:           13701.8447265625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2816.425537109375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             12905.8955078125,
+		MonsterCurveType_GROW_CURVE_HP_2:           13858.3876953125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2826.37646484375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13002.02734375,
+		MonsterCurveType_GROW_CURVE_HP_2:           14016.244140625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2836.35107421875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13098.685546875,
+		MonsterCurveType_GROW_CURVE_HP_2:           14175.4189453125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2846.349609375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13195.87109375,
+		MonsterCurveType_GROW_CURVE_HP_2:           14335.91796875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2856.3720703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13293.5869140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           14497.75,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2866.41845703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13391.833984375,
+		MonsterCurveType_GROW_CURVE_HP_2:           14660.919921875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2876.48876953125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13490.61328125,
+		MonsterCurveType_GROW_CURVE_HP_2:           14825.4345703125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2886.582763671875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13589.9287109375,
+		MonsterCurveType_GROW_CURVE_HP_2:           14991.30078125,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2896.701171875,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13689.7802734375,
+		MonsterCurveType_GROW_CURVE_HP_2:           15158.5263671875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2906.843505859375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13790.169921875,
+		MonsterCurveType_GROW_CURVE_HP_2:           15327.1162109375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2916.888916015625,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13891.1005859375,
+		MonsterCurveType_GROW_CURVE_HP_2:           15497.0771484375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2927.079345703125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             13992.572265625,
+		MonsterCurveType_GROW_CURVE_HP_2:           15668.4169921875,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2937.2939453125,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             14094.5869140625,
+		MonsterCurveType_GROW_CURVE_HP_2:           15841.1416015625,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2947.53271484375,
+	},
+	{
+		MonsterCurveType_GROW_CURVE_HP:             14197.1474609375,
+		MonsterCurveType_GROW_CURVE_HP_2:           16016.2568359375,
+		MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT: 2957.7958984375,
+	},
+}

@@ -2,38 +2,24 @@ package info
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
-
-// TODO: protobuf?
-type EnemyStatCurve int
-
-//nolint:stylecheck,revive // want to match dm here
-const (
-	GROW_CURVE_HP EnemyStatCurve = iota + 1
-	GROW_CURVE_HP_2
-	GROW_CURVE_HP_ENVIRONMENT
-)
-
-type HpDrop struct {
-	DropId    int     `json:"drop_id"`
-	HpPercent float64 `json:"hp_percent"`
-}
 
 type EnemyProfile struct {
-	Level                 int                   `json:"level"`
-	HP                    float64               `json:"hp"`
-	Resist                attributes.ElementMap `json:"resist"`
-	Pos                   Coord                 `json:"-"`
-	ParticleDropThreshold float64               `json:"particle_drop_threshold"` // drop particle every x dmg dealt
-	ParticleDropCount     float64               `json:"particle_drop_count"`
-	ParticleElement       attributes.Element    `json:"particle_element"`
-	FreezeResist          float64               `json:"freeze_resist"`
-	ParticleDrops         []HpDrop              `json:"-"`
-	HpBase                float64               `json:"-"`
-	HpGrowCurve           EnemyStatCurve        `json:"-"`
-	Id                    int                   `json:"-"`
-	MonsterName           string                `json:"monster_name"`
-	Modified              bool                  `json:"modified"`
+	Level                 int                    `json:"level"`
+	HP                    float64                `json:"hp"`
+	Resist                attributes.ElementMap  `json:"resist"`
+	Pos                   Coord                  `json:"-"`
+	ParticleDropThreshold float64                `json:"particle_drop_threshold"` // drop particle every x dmg dealt
+	ParticleDropCount     float64                `json:"particle_drop_count"`
+	ParticleElement       attributes.Element     `json:"particle_element"`
+	FreezeResist          float64                `json:"freeze_resist"`
+	ParticleDrops         []model.MonsterHPDrop  `json:"-"`
+	HpBase                float64                `json:"-"`
+	HpGrowCurve           model.MonsterCurveType `json:"-"`
+	Id                    int                    `json:"-"`
+	MonsterName           string                 `json:"monster_name"`
+	Modified              bool                   `json:"modified"`
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {

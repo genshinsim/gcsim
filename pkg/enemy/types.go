@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/curves"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -42,7 +42,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 	enemyInfo.Modified = false
 	enemyInfo.Level = profile.Level
 	enemyInfo.Pos = profile.Pos
-	enemyInfo.HP = enemyInfo.HpBase * curves.EnemyStatGrowthMult[enemyInfo.Level-1][enemyInfo.HpGrowCurve]
+	enemyInfo.HP = enemyInfo.HpBase * model.EnemyStatGrowthMult[enemyInfo.Level-1][enemyInfo.HpGrowCurve]
 	if params.HpMultiplier != 0 {
 		enemyInfo.HP *= params.HpMultiplier
 	} else {
@@ -56,7 +56,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 		enemyInfo.ParticleDropThreshold = profile.ParticleDropThreshold
 		enemyInfo.ParticleDropCount = profile.ParticleDropCount
 		enemyInfo.ParticleElement = profile.ParticleElement
-		enemyInfo.ParticleDrops = []info.HpDrop{}
+		enemyInfo.ParticleDrops = []model.MonsterHPDrop{}
 	}
 	*profile = enemyInfo
 	return nil
@@ -68,9 +68,37 @@ func getMonsterInfo(name string) (info.EnemyProfile, error) {
 	if !ok {
 		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
 	}
-	result, ok := curves.EnemyMap[id]
+	result, ok := model.EnemyMap[id]
 	if !ok {
 		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
 	}
-	return result.Clone(), nil
+
+	// clone hp drops
+	hpDrops := make([]model.MonsterHPDrop, 0, len(result.BaseStats.HpDrop))
+	for i := range result.BaseStats.HpDrop {
+		hpDrop := result.BaseStats.HpDrop[i]
+		hpDrops = append(hpDrops, model.MonsterHPDrop{
+			DropId:    hpDrop.DropId,
+			HpPercent: hpDrop.HpPercent,
+		})
+	}
+
+	return info.EnemyProfile{
+		Resist: attributes.ElementMap{
+			attributes.Pyro:     result.BaseStats.Resist.FireResist,
+			attributes.Dendro:   result.BaseStats.Resist.GrassResist,
+			attributes.Hydro:    result.BaseStats.Resist.WaterResist,
+			attributes.Electro:  result.BaseStats.Resist.ElectricResist,
+			attributes.Anemo:    result.BaseStats.Resist.WindResist,
+			attributes.Cryo:     result.BaseStats.Resist.IceResist,
+			attributes.Geo:      result.BaseStats.Resist.RockResist,
+			attributes.Physical: result.BaseStats.Resist.PhysicalResist,
+		},
+		FreezeResist:  result.BaseStats.FreezeResist,
+		ParticleDrops: hpDrops,
+		HpBase:        result.BaseStats.BaseHp,
+		HpGrowCurve:   result.BaseStats.HpCurve,
+		Id:            int(result.Id),
+		MonsterName:   result.Key,
+	}, nil
 }
