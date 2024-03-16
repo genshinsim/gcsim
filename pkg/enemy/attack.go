@@ -191,7 +191,6 @@ func (e *Enemy) tryHPDropParticle() (float64, attributes.Element) {
 		// 22010017: 1 particle geo
 		diff := info.DropId - 22010000
 		if diff < 0 || diff >= 100 {
-			log.Printf("WARN: invalid particle DropId `%v` found, ignoring", info.DropId)
 			return 0, attributes.NoElement
 		}
 		count := (info.DropId / 10) % 10 // 2nd digit is particle count
