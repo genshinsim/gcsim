@@ -3,7 +3,7 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "../../util/mode-gcsim.js";
 //manually import supported themes cause we can't get for loop to work here
-import { FormGroup, HTMLSelect } from "@blueprintjs/core";
+import { FormGroup, HTMLSelect, NumericInput } from "@blueprintjs/core";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-kuroir";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -39,21 +39,26 @@ type Props = {
   hideThemeSelector?: boolean;
 };
 
-const LOCALSTORAGE_KEY = "gcsim-config-editor-theme";
+const LOCALSTORAGE_THEME_KEY = "gcsim-config-editor-theme";
+const LOCALSTORAGE_FONT_SIZE_KEY = "gcsim-config-editor-font-size";
 
 export function ConfigEditor(props: Props) {
   const { t } = useTranslation();
   const [theme, setTheme] = React.useState<Theme>(() => {
-    return localStorage.getItem(LOCALSTORAGE_KEY) ?? "tomorrow_night";
+    return localStorage.getItem(LOCALSTORAGE_THEME_KEY) ?? "tomorrow_night";
+  });
+  const [fontSize, setFontSize] = React.useState(() => {
+    return Number(localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY)) ?? 14;
   });
   React.useEffect(() => {
-    localStorage.setItem(LOCALSTORAGE_KEY, theme);
-  }, [theme]);
+    localStorage.setItem(LOCALSTORAGE_THEME_KEY, theme);
+    localStorage.setItem(LOCALSTORAGE_FONT_SIZE_KEY, fontSize.toString());
+  }, [theme, fontSize]);
   const hideThemeSelector = props.hideThemeSelector ?? true;
   return (
     <div className="p-1 md:p-2">
       {hideThemeSelector ? null : (
-        <div className="mb-1 w-full flex flex-row-reverse">
+        <div className="my-1 w-full flex flex-col gap-0.5 items-center md:flex-row-reverse md:gap-4 md:items-start">
           <FormGroup label={t<string>("simple.editor_theme")} inline>
             <HTMLSelect onChange={(e) => setTheme(e.currentTarget.value)}>
               {themes.map((t) => (
@@ -62,6 +67,12 @@ export function ConfigEditor(props: Props) {
                 </option>
               ))}
             </HTMLSelect>
+          </FormGroup>
+          <FormGroup label={t<string>("simple.font_size")} inline>
+            <NumericInput
+              defaultValue={fontSize}
+              onValueChange={(e) => setFontSize(e)}
+            />
           </FormGroup>
         </div>
       )}
@@ -77,7 +88,7 @@ export function ConfigEditor(props: Props) {
         }}
         setOptions={{
           maxLines: Infinity,
-          fontSize: 14,
+          fontSize: fontSize,
           tabSize: 2,
           highlightActiveLine: false,
         }}
