@@ -218,8 +218,10 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 1*60, false)
-	if c.Core.Rand.Float64() < 0.67 {
-		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Geo, c.ParticleDelay)
+	c.AddStatus(particleICDKey, 3*60, false)
+	count := 1.0
+	if c.Core.Rand.Float64() < 0.2 {
+		count = 2.0
 	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
 }
