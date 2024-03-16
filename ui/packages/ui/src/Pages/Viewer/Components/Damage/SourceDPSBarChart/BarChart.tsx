@@ -44,7 +44,11 @@ const Graph = ({ width, dps, names, all_filter, filter }: Props) => {
   const { DataColors } = useDataColors();
   const { data, sources, xMax } = useData(all_filter, filter, dps, names);
 
-  const sourceNames = sources.map((s) => s.name);
+  let maxChars = 0;
+  const sourceNames = sources.map((s) => {
+    maxChars = Math.max(maxChars, s.name.length);
+    return s.name;
+  });
 
   if (dps == null || names == null) {
     return <NoData />;
@@ -77,8 +81,8 @@ const Graph = ({ width, dps, names, all_filter, filter }: Props) => {
       hoverColor={(k) => DataColors.characterLabel(k)}
         margin={{
           top: 0,
-          left: minwidth * 0.15,
-          right: minwidth * 0.02,
+          left: maxChars * 8,
+          right: 10,
           bottom: 20,
         }}
       tooltipContent={(d, k) => (
