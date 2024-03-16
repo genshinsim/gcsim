@@ -170,6 +170,7 @@
         "documentation": "documentación",
         "documentation_post": " que incluye un simple tutorial en como escribir listas secuenciales.",
         "documentation_pre": "Alternativamente, checa nuestra ",
+        "editor_theme": "Tema del editor",
         "generate_sample": "Generar una muestra al cargar la página",
         "hide_all_tips": "Ocultar todos los tips",
         "import": "Importar",

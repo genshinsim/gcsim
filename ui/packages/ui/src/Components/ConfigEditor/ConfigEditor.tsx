@@ -16,6 +16,7 @@ import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-xcode";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export const themes = [
   "monokai",
@@ -41,6 +42,7 @@ type Props = {
 const LOCALSTORAGE_KEY = "gcsim-config-editor-theme";
 
 export function ConfigEditor(props: Props) {
+  const { t } = useTranslation();
   const [theme, setTheme] = React.useState<Theme>(() => {
     return localStorage.getItem(LOCALSTORAGE_KEY) ?? "tomorrow_night";
   });
@@ -52,7 +54,7 @@ export function ConfigEditor(props: Props) {
     <div className="p-1 md:p-2">
       {hideThemeSelector ? null : (
         <div className="mb-1 w-full flex flex-row-reverse">
-          <FormGroup label="Editor Theme" inline>
+          <FormGroup label={t<string>("simple.editor_theme")} inline>
             <HTMLSelect onChange={(e) => setTheme(e.currentTarget.value)}>
               {themes.map((t) => (
                 <option key={t} selected={t == theme}>
