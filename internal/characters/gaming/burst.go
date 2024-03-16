@@ -87,7 +87,7 @@ func (c *char) queueManChai() {
 		return
 	}
 	c.AddStatus(manChaiKey, c.manChaiWalkBack, false)
-	c.QueueCharTask(func() {
+	c.Core.Tasks.Add(func() {
 		// can't link up if off-field
 		if c.Core.Player.Active() != c.Index {
 			return
