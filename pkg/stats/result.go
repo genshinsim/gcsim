@@ -33,6 +33,8 @@ type Result struct {
 	Characters    []CharacterResult `json:"characters"     msg:"characters"`
 	Enemies       []EnemyResult     `json:"enemies"        msg:"enemies"`
 	TargetOverlap bool              `json:"target_overlap" msg:"target_overlap"`
+
+	EndStats []EndStats `json:"end_stats" msg:"end_stats"`
 }
 
 type CharacterResult struct {
@@ -144,4 +146,8 @@ type ShieldSingleInterval struct {
 	Start int     `json:"start" msg:"start"`
 	End   int     `json:"end"   msg:"end"`
 	HP    float64 `json:"hp"    msg:"hp"`
+}
+
+type EndStats struct {
+	EndingEnergy float64 `json:"ending_energy" msg:"ending_energy"`
 }

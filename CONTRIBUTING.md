@@ -12,9 +12,10 @@ Character PR checklist:
 
 - [ ] New character package
 - [ ] Config in character package
-- [ ] Run pipeline with added config (generates character curve, talent stats, .generated.json files)
+- [ ] Run pipeline with added config (generates character curve, talent stats, `.generated.json` files)
 - [ ] Character key
 - [ ] Shortcuts for character key
+- [ ] Update `mode_gcsim.js` with shortcuts for syntax highlighting
 - [ ] Add Character package to imports
 - [ ] Normal Attack
 - [ ] Charge Attack / Aimed Shot
@@ -43,7 +44,7 @@ Weapon PR checklist:
 
 - [ ] New weapon package
 - [ ] Config in weapon package
-- [ ] Run pipeline with added config (generates weapon curve, .generated.json files)
+- [ ] Run pipeline with added config (generates weapon curve, `.generated.json` files)
 - [ ] Weapon key
 - [ ] Shortcuts for weapon key
 - [ ] Add weapon package to imports
@@ -54,7 +55,7 @@ Artifact PR checklist:
 
 - [ ] New artifact package
 - [ ] Config in artifacts package
-- [ ] Run pipeline with added config (generates .generated.json files)
+- [ ] Run pipeline with added config (generates `.generated.json` files)
 - [ ] Artifact key
 - [ ] Shortcuts for artifact key
 - [ ] Add artifact package to imports
@@ -73,9 +74,10 @@ Character PR checklist:
 
 - [ ] New character package
 - [ ] Config in character package
-- [ ] Run pipeline with added config (generates character curve, talent stats, .generated.json files)
+- [ ] Run pipeline with added config (generates character curve, talent stats, `.generated.json` files)
 - [ ] Character key
 - [ ] Shortcuts for character key
+- [ ] Update `mode_gcsim.js` with shortcuts for syntax highlighting
 - [ ] Add Character package to imports
 - [ ] Normal Attack
 - [ ] Charge Attack / Aimed Shot
@@ -104,7 +106,7 @@ Weapon PR checklist:
 
 - [ ] New weapon package
 - [ ] Config in weapon package
-- [ ] Run pipeline with added config (generates weapon curve, .generated.json files)
+- [ ] Run pipeline with added config (generates weapon curve, `.generated.json` files)
 - [ ] Weapon key
 - [ ] Shortcuts for weapon key
 - [ ] Add weapon package to imports
@@ -115,7 +117,7 @@ Artifact PR checklist:
 
 - [ ] New artifact package
 - [ ] Config in artifacts package
-- [ ] Run pipeline with added config (generates .generated.json files)
+- [ ] Run pipeline with added config (generates `.generated.json` files)
 - [ ] Artifact key
 - [ ] Shortcuts for artifact key
 - [ ] Add artifact package to imports

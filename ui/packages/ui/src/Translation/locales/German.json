@@ -170,6 +170,7 @@
         "documentation": "Dokumentation",
         "documentation_post": " an, welche ein einfaches Tutorial zum Schreiben von sequentiellen Listen enthält.",
         "documentation_pre": "Ansonsten, schauen Sie sich unsere ",
+        "editor_theme": "Editor-Theme",
         "generate_sample": "Beispiel beim Laden der Seite erzeugen",
         "hide_all_tips": "Alle Tipps ausblenden",
         "import": "Importieren",
@@ -199,7 +200,12 @@
         "video_post": " an um anzufangen.",
         "video_pre": "Fügen Sie Figuren zu ihrem Team hinzu um zu beginnen. Schauen Sie sich dieses ",
         "weapons": "Waffen",
-        "workers": "Arbeiter"
+        "workers": "Arbeiter",
+        "server_mode_enable": "Servermodus aktivieren (nur für Fortgeschrittene)",
+        "server_mode_disable": "Servermodus deaktivieren (nur für Fortgeschrittene)",
+        "server_mode_url": "Server URL",
+        "server_mode_required": "(erforderlich)",
+        "server_mode_default": "Default: "
     },
     "src": {
         "this_page_is": "Diese Seite ist noch nicht implementiert. Bleiben Sie dran!"
@@ -253,7 +259,8 @@
         "metadata_created": "erstellt",
         "metadata_commit": "commit",
         "metadata_swap_delay": "figurwechselverzögerung",
-        "metadata_energy": "<0>energie</0> <1>{{p}}</1> <2>alle</2> <3>{{s}}</3> <4>bis</4> <5>{{e}}</5>"
+        "metadata_energy": "<0>energie</0> <1>{{p}}</1> <2>alle</2> <3>{{s}}</3> <4>bis</4> <5>{{e}}</5>",
+        "ending_energy": "Charakterenergie am Ende der Simulation"
     },
     "viewer": {
         "ability_usage_count": "Anzahl an eingesetzten Fähigkeiten (Durchschnitt)",

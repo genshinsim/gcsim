@@ -9,16 +9,12 @@ import {
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { SimResults } from "@gcsim/types";
 import React, { useEffect, useMemo, useState } from "react";
-import AceEditor from "react-ace";
 import ExecutorSettingsButton from "../../../Components/Buttons/ExecutorSettingsButton";
 import { useAppDispatch } from "../../../Stores/store";
 import { useConfigValidateListener } from "../../Simulator";
 import { runSim } from "../../Simulator/Toolbox";
-//THESE IMPORTS NEEDS TO BE AFTER IMPORTING AceEditor
-import "ace-builds/src-noconflict/ext-language_tools";
-import "ace-builds/src-noconflict/theme-tomorrow_night";
-import "../../../util/mode-gcsim";
 
+import { ConfigEditor } from "@ui/Components";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 
@@ -71,22 +67,7 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
         <Error error={config.error} cfg={config.cfg} />
       </div>
       <div>
-        <AceEditor
-          mode="gcsim"
-          theme="tomorrow_night"
-          width="100%"
-          onChange={config.setCfg}
-          value={config.cfg}
-          name="UNIQUE_ID_OF_DIV"
-          editorProps={{
-            $blockScrolling: true,
-          }}
-          setOptions={{
-            maxLines: Infinity,
-            fontSize: 14,
-            tabSize: 2,
-          }}
-        />
+        <ConfigEditor cfg={config.cfg} onChange={config.setCfg} />
       </div>
     </div>
   );

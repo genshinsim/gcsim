@@ -26,7 +26,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
-	c.manChaiWalkBack = 92 // default assumption
 
 	w.Character = &c
 

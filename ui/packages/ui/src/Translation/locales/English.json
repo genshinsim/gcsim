@@ -55,7 +55,7 @@
         "swirl-hydro": "Swirl (Hydro)",
         "swirl-pyro": "Swirl (Pyro)",
         "swirl-cryo": "Swirl (Cryo)",
-        "electrocharged": "Electrocharged", 
+        "electrocharged": "Electrocharged",
         "shatter": "Shatter",
         "burning": "Burning",
         "quicken": "Quicken",
@@ -170,6 +170,7 @@
         "documentation": "documentation",
         "documentation_post": " which includes a simple tutorial on how to write a config from scratch.",
         "documentation_pre": "Alternatively, check out our ",
+        "editor_theme": "Editor Theme",
         "generate_sample": "Generate sample on page load",
         "hide_all_tips": "Hide all tips",
         "import": "Import",
@@ -199,7 +200,12 @@
         "video_post": " to get started.",
         "video_pre": "Get started by adding characters in to your team. Check out this ",
         "weapons": "Weapons",
-        "workers": "Workers"
+        "workers": "Workers",
+        "server_mode_enable": "Enable server mode (advanced users only)",
+        "server_mode_disable": "Disable server mode (advanced users only)",
+        "server_mode_url": "Server URL",
+        "server_mode_required": "(required)",
+        "server_mode_default": "Default: "
     },
     "src": {
         "this_page_is": "This page is not implemented yet. Stay tuned!"
@@ -253,7 +259,8 @@
         "metadata_created": "created",
         "metadata_commit": "commit",
         "metadata_swap_delay": "character swap delay",
-        "metadata_energy": "<0>energy</0> <1>{{p}}</1> <2>every</2> <3>{{s}}</3> <4>to</4> <5>{{e}}</5>"
+        "metadata_energy": "<0>energy</0> <1>{{p}}</1> <2>every</2> <3>{{s}}</3> <4>to</4> <5>{{e}}</5>",
+        "ending_energy": "Character Energy at End of Simulation"
     },
     "viewer": {
         "ability_usage_count": "Ability Usage Count (Average)",

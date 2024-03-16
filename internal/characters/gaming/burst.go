@@ -35,6 +35,8 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if p[manChaiParam] > 0 {
 		c.manChaiWalkBack = p[manChaiParam]
+	} else {
+		c.manChaiWalkBack = 100
 	}
 
 	c.Core.Tasks.Add(func() {
@@ -87,7 +89,11 @@ func (c *char) queueManChai() {
 		return
 	}
 	c.AddStatus(manChaiKey, c.manChaiWalkBack, false)
-	c.QueueCharTask(func() {
+	c.Core.Tasks.Add(func() {
+		// can't link up if off-field
+		if c.Core.Player.Active() != c.Index {
+			return
+		}
 		c.ResetActionCooldown(action.ActionSkill)
 		c.DeleteStatus(manChaiKey)
 		c.c1()
