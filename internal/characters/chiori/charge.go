@@ -8,13 +8,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: all frames below copied from bennett
-var chargeFrames []int
-var chargeHitmarks = []int{10, 21}
+var (
+	chargeFrames []int
+	// TODO: charge hitmark frames
+	chargeHitmarks        = []int{10, 21}
+	chargeHitlagHaltFrame = []float64{0, 0.06}
+	chargeDefHalt         = []bool{false, true}
+	chargeRadius          = []float64{2.3, 2.4}
+	chargeOffsets         = []float64{1.4, 1.6}
+)
 
 func init() {
+	// TODO: charge cancel frames
 	chargeFrames = frames.InitAbilSlice(55)
 	chargeFrames[action.ActionSkill] = 41
 	chargeFrames[action.ActionBurst] = 41
@@ -24,23 +32,25 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	// TODO: below is just copied from bennett
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNormalAttack,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
+		ActorIndex:   c.Index,
+		AttackTag:    attacks.AttackTagExtra,
+		ICDTag:       attacks.ICDTagNormalAttack,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeSlash,
+		Element:      attributes.Physical,
+		Durability:   25,
+		HitlagFactor: 0.01,
 	}
 
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
+		ai.HitlagHaltFrames = chargeHitlagHaltFrame[i] * 60
+		ai.CanBeDefenseHalted = chargeDefHalt[i]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.2),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: chargeOffsets[i]}, chargeRadius[i]),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 		)
