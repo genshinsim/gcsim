@@ -1,8 +1,6 @@
 package chiori
 
 import (
-	"errors"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -52,12 +50,25 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(a1TailorMadeWindowKey) {
 		return c.skillRecast()
 	}
-	// can hold to aim
-	if p["hold"] == 1 {
-		//TODO: handle skill hold
-		return action.Info{}, errors.New("chiori skill hold not implemented yet")
+	delay := p["hold"]
+	if delay < 0 {
+		delay = 0
 	}
 
+	// splitting this is currently not necessary but allows for future change
+	// if hold does something special
+	c.handleSkill(delay)
+
+	//TODO: frames to fix
+	return action.Info{
+		Frames:          frames.NewAbilFunc(skillPressFrames),
+		AnimationLength: skillPressFrames[action.InvalidAction],
+		CanQueueAfter:   skillPressFrames[action.ActionJump],
+		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) handleSkill(holdDelay int) {
 	c.Core.Tasks.Add(func() {
 		ai := combat.AttackInfo{
 			Abil:       "Fluttering Hasode (Blink)",
@@ -75,7 +86,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ai.FlatDmg *= thrustDefScaling[c.TalentLvlSkill()]
 		//TODO: hit box size
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2), 0)
-	}, skillHitmark)
+	}, skillHitmark+holdDelay)
 
 	//TODO: not sure if this is a task or should be on hit from trust
 	c.Core.Tasks.Add(func() {
@@ -100,18 +111,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		cc.interval = 18
 		c.Core.Tasks.Add(cc.tick, 6) //TODO: i made this delay up; not sure how quick first check is
 		c.constructChecker = cc
-	}, skillDollForm)
+	}, skillDollForm+holdDelay)
 
 	c.a1Window()
-	c.SetCDWithDelay(action.ActionSkill, 15*60, 1) //TODO: what's the delay here?
-
-	//TODO: frames to fix
-	return action.Info{
-		Frames:          frames.NewAbilFunc(skillPressFrames),
-		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionJump],
-		State:           action.SkillState,
-	}, nil
+	c.SetCDWithDelay(action.ActionSkill, 15*60, holdDelay+1) //TODO: what's the delay here?
 }
 
 func (c *char) skillRecast() (action.Info, error) {
