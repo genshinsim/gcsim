@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import enemy_data from "./enemy_data.json";
-import abyss_mult from "./abyss_mult.json";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -19,18 +18,6 @@ const TD = styled.td`
 const TH = styled.th`
   padding: 0.5rem;
 `;
-
-function AbyssMult({ item_key }) {
-  console.log(item_key);
-  if (!(item_key in abyss_mult)) {
-    return "";
-  }
-  return (
-    <React.Fragment>
-      The values shown above will be multiplied by <code>{abyss_mult[item_key].toPrecision(2)}</code> by default.
-    </React.Fragment>
-  );
-}
 
 export default function HPTable({ item_key, data_src }) {
   let data = enemy_data;
@@ -56,7 +43,6 @@ export default function HPTable({ item_key, data_src }) {
         </Thead>
         <tbody>{rows}</tbody>
       </Table>
-      <AbyssMult item_key={item_key} />
     </div>
   );
 }

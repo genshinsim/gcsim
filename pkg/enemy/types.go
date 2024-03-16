@@ -9,11 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
-var abyssHpMultipliers = map[string]float64{
-	"ruinserpent":    2.0,
-	"goldenwolflord": 2.0,
-}
-
 type TargetParams struct {
 	HpMultiplier float64
 	Particles    bool
@@ -46,11 +41,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 	if params.HpMultiplier != 0 {
 		enemyInfo.HP *= params.HpMultiplier
 	} else {
-		mult, ok := abyssHpMultipliers[enemyInfo.MonsterName]
-		if !ok {
-			mult = 2.5
-		}
-		enemyInfo.HP *= mult
+		enemyInfo.HP *= 2.5 // default abyss multiplier
 	}
 	if !params.Particles {
 		enemyInfo.ParticleDropThreshold = profile.ParticleDropThreshold
