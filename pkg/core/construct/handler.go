@@ -1,6 +1,7 @@
 package construct
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -11,14 +12,16 @@ type Handler struct {
 	consNoLimit []Construct
 	log         glog.Logger
 	f           *int
+	evt         event.Eventter
 }
 
-func New(f *int, log glog.Logger) *Handler {
+func New(f *int, log glog.Logger, evt event.Eventter) *Handler {
 	return &Handler{
 		constructs:  make([]Construct, 0, 3),
 		consNoLimit: make([]Construct, 0, 3),
 		f:           f,
 		log:         log,
+		evt:         evt,
 	}
 }
 
@@ -68,6 +71,8 @@ func (h *Handler) NewConstruct(c Construct, refresh bool, constructs *[]Construc
 			(*constructs)[i] = nil
 		}
 	}
+
+	h.evt.Emit(event.OnConstructSpawned)
 
 	h.cleanOutNils(constructs)
 }
