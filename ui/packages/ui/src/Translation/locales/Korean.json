@@ -266,7 +266,8 @@
         "metadata_created": "생성 날짜",
         "metadata_commit": "커밋",
         "metadata_swap_delay": "캐릭터 교체 지연",
-        "metadata_energy": "<0>에너지</0> <1>{{s}}</1> <2>에서</2> <3>{{e}}</3> <4>마다</4> <5>{{p}}</5>"
+        "metadata_energy": "<0>에너지</0> <1>{{s}}</1> <2>에서</2> <3>{{e}}</3> <4>마다</4> <5>{{p}}</5>",
+        "ending_energy": "시뮬레이션 종료 시 캐릭터 에너지"
     },
     "viewer": {
         "ability_usage_count": "능력 사용 횟수 (평균)",
