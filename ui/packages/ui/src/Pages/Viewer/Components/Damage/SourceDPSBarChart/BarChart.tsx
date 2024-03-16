@@ -50,9 +50,16 @@ const Graph = ({ width, dps, names, all_filter, filter }: Props) => {
     return <NoData />;
   }
 
+  let minwidth = width;
+  if (width < 900) {
+    minwidth = 900;
+  }
+
+  //see we can force this div to be a min width
   return (
+    <div style={{ width: minwidth }}>
     <HorizontalBarStack<Row, number>
-      width={width}
+        width={minwidth}
       height={data.length * 40}
       xDomain={[0, xMax]}
       yDomain={sourceNames}
@@ -68,7 +75,12 @@ const Graph = ({ width, dps, names, all_filter, filter }: Props) => {
       stat={(d, k) => d.data[names[k]].data}
       barColor={(k) => DataColors.character(k)}
       hoverColor={(k) => DataColors.characterLabel(k)}
-      margin={{ top: 0, left: width*0.15, right: width*0.02, bottom: 20 }}
+        margin={{
+          top: 0,
+          left: minwidth * 0.15,
+          right: minwidth * 0.02,
+          bottom: 20,
+        }}
       tooltipContent={(d, k) => (
         <FloatStatTooltipContent
           title={names[k] + ": " + d.source}
@@ -78,6 +90,7 @@ const Graph = ({ width, dps, names, all_filter, filter }: Props) => {
         />
       )}
     />
+    </div>
   );
 };
 
