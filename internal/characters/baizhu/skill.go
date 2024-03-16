@@ -73,7 +73,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) chain(src, count int) combat.AttackCBFunc {
 	if count == 3 {
-		c.skillHealing()
 		return nil
 	}
 	return func(a combat.AttackCB) {
@@ -91,9 +90,12 @@ func (c *char) chain(src, count int) combat.AttackCBFunc {
 		atk := *c.skillAtk
 		atk.SourceFrame = src
 		atk.Pattern = combat.NewCircleHitOnTarget(next, nil, 0.6)
-		cb := c.chain(src, count+1)
+		nextCount := count + 1
+		cb := c.chain(src, nextCount)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
+		} else {
+			c.Core.Tasks.Add(c.skillHealing, delay)
 		}
 		c.Core.QueueAttackEvent(&atk, delay)
 	}

@@ -8,7 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -51,7 +53,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	// apply skill multiplier
-	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
+	if c.skillBuffActive() && ai.AttackTag == attacks.AttackTagNormal {
 		ai.Mult *= skill[c.TalentLvlSkill()]
 	}
 
@@ -81,5 +83,24 @@ func (c *char) Condition(fields []string) (any, error) {
 		return c.graciousRebukeReady(), nil
 	default:
 		return c.Character.Condition(fields)
+	}
+}
+
+func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+	// cannot use charge without attack beforehand unlike most of the other catalyst users
+	if a == action.ActionCharge && c.Core.Player.LastAction.Type != action.ActionAttack {
+		return player.ErrInvalidChargeAction
+	}
+	return c.Character.NextQueueItemIsValid(a, p)
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 12
+	case model.AnimationYelanN0StartDelay:
+		return 4
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
 }

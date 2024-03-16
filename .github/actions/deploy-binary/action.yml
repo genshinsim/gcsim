@@ -33,3 +33,4 @@ runs:
       files: |
         LICENSE
         gcsim.exe
+        server.exe

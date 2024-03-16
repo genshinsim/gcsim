@@ -155,7 +155,7 @@ func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcs
 		}
 	}
 
-	result, err := GenerateResult(cfg, simcfg, opts)
+	result, err := GenerateResult(cfg, simcfg)
 	if err != nil {
 		return result, err
 	}
@@ -171,7 +171,7 @@ func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcs
 }
 
 // Note: this generation should be iteration independent (iterations do not change output)
-func GenerateResult(cfg string, simcfg *info.ActionList, opts Options) (*model.SimulationResult, error) {
+func GenerateResult(cfg string, simcfg *info.ActionList) (*model.SimulationResult, error) {
 	out := &model.SimulationResult{
 		// THIS MUST ALWAYS BE IN SYNC WITH THE VIEWER UPGRADE DIALOG IN UI
 		// ONLY CHANGE SCHEMA WHEN THE RESULTS SCHEMA CHANGES. THIS INCLUDES AGG RESULTS CHANGES

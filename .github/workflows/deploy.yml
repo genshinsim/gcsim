@@ -46,6 +46,14 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
+
+      - name: deploy-wasm
+        uses: ./.github/actions/deploy-wasm
+        with:
+          rcloneConfig: ${{ secrets.CF_RCLONE }}
+          branch: ${{ steps.branch-name.outputs.base_ref_branch }}
+          shareKey: ${{ secrets.AES_KEY }}
+
       - name: deploy-db
         uses: ./.github/actions/deploy-db
         with:
@@ -62,14 +70,7 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
-      
-      - name: deploy-wasm
-        uses: ./.github/actions/deploy-wasm
-        with:
-          rcloneConfig: ${{ secrets.CF_RCLONE }}
-          branch: ${{ steps.branch-name.outputs.base_ref_branch }}
-          shareKey: ${{ secrets.AES_KEY }}
-      
+
       # build backend artifacts
       - name: build db
         uses: ./.github/actions/build-backend-binary
@@ -142,4 +143,11 @@ jobs:
         with:
           files: |
             LICENSE
-            gcsim.exe
+            gcsim_windows_amd64.exe
+            gcsim_darwin_arm64
+            gcsim_darwin_amd64
+            gcsim_linux_amd64
+            server_windows_amd64.exe
+            server_darwin_arm64
+            server_darwin_amd64
+            server_linux_amd64

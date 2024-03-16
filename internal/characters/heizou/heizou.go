@@ -7,7 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -76,4 +78,19 @@ func (c *char) Condition(fields []string) (any, error) {
 	default:
 		return c.Character.Condition(fields)
 	}
+}
+
+func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+	// cannot use charge without attack beforehand unlike most of the other catalyst users
+	if a == action.ActionCharge && c.Core.Player.LastAction.Type != action.ActionAttack {
+		return player.ErrInvalidChargeAction
+	}
+	return c.Character.NextQueueItemIsValid(a, p)
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if k == model.AnimationXingqiuN0StartDelay {
+		return 10
+	}
+	return c.Character.AnimationStartDelay(k)
 }

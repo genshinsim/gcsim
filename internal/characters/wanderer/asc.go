@@ -30,7 +30,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if !c.StatusIsActive(SkillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
+		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
 			return
 		}
 
@@ -103,7 +103,7 @@ func (c *char) absorbCheckA1() {
 	a1Proc := false // for C4
 	// max 2 A1 elements from absorb check
 	for i := 0; i < 2; i++ {
-		absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
+		absorbCheck := c.Core.Combat.AbsorbCheck(c.Index, a1AbsorbCheckLocation, c.a1ValidBuffs...)
 		if absorbCheck == attributes.NoElement {
 			continue
 		}

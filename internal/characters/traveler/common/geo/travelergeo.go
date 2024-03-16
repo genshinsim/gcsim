@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Traveler struct {
@@ -44,4 +45,17 @@ func (c *Traveler) Init() error {
 		c.c1TickCount = 20
 	}
 	return nil
+}
+
+func (c *Traveler) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		if c.gender == 0 {
+			return 8
+		} else {
+			return 7
+		}
+	default:
+		return c.Character.AnimationStartDelay(k)
+	}
 }

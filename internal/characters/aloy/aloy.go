@@ -3,6 +3,7 @@ package aloy
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -10,6 +11,7 @@ import (
 
 func init() {
 	core.RegisterCharFunc(keys.Aloy, NewChar)
+	hacks.RegisterNOSpecialChar(keys.Aloy)
 }
 
 type char struct {

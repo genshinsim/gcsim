@@ -86,23 +86,15 @@ func (c *char) newYueguiJump() {
 	c.numYueguiJumping += 1
 }
 
-func (c *char) makeHealCB(area combat.AttackPattern, hi player.HealInfo) func(combat.AttackCB) {
-	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy && a.Target.Type() != targets.TargettablePlayer {
+func (c *char) heal(area combat.AttackPattern, hi player.HealInfo) func() {
+	return func() {
+		if !c.Core.Combat.Player().IsWithinArea(area) {
 			return
 		}
-
-		if done {
-			return
+		if hi.Target != -1 {
+			hi.Target = c.Core.Player.Active()
 		}
-		if c.Core.Combat.Player().IsWithinArea(area) {
-			if hi.Target != -1 {
-				hi.Target = c.Core.Player.Active()
-			}
-			c.radishHeal(hi)
-			done = true
-		}
+		c.radishHeal(hi)
 	}
 }
 
@@ -142,16 +134,16 @@ func (yg *yuegui) throw() {
 		target = yg.Core.Combat.Player().Pos()
 	}
 	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
-	radishExplodeAoE.SkipTargets[targets.TargettablePlayer] = false
 	yg.c.QueueCharTask(func() {
 		ai, hi := yg.getInfos()
 
+		delay := 1
+		yg.Core.Tasks.Add(yg.c.heal(radishExplodeAoE, hi), delay)
 		yg.Core.QueueAttackWithSnap(
 			ai,
 			yg.snap,
 			radishExplodeAoE,
-			1,
-			yg.c.makeHealCB(radishExplodeAoE, hi),
+			delay,
 			yg.makeParticleCB(),
 			yg.c.makeC2CB(),
 		)

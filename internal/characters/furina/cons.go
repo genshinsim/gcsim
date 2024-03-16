@@ -25,6 +25,9 @@ func (c *char) c2() {
 		Base:         modifier.NewBase(c2BuffKey, -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
+			if !c.StatusIsActive(burstKey) {
+				return nil, false
+			}
 			m[attributes.HPP] = max(c.curFanfare-c.maxQFanfare, 0) * 0.0035
 			return m, true
 		},
@@ -50,7 +53,7 @@ func (c *char) c6BonusDMG() float64 {
 	return scaleHP * c.MaxHP()
 }
 
-func (c *char) c6BonusDMGArkhe() float64 {
+func (c *char) c6BonusDMGNoExtra() float64 {
 	scaleHP := 0.18
 	return scaleHP * c.MaxHP()
 }

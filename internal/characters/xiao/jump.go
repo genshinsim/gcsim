@@ -3,6 +3,7 @@ package xiao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var burstJumpFrames []int
@@ -14,7 +15,7 @@ func init() {
 }
 
 func (c *char) Jump(p map[string]int) (action.Info, error) {
-	if c.StatusIsActive(burstBuffKey) {
+	if c.StatusIsActive(burstBuffKey) && !c.StatusIsActive(player.XianyunAirborneBuff) {
 		return action.Info{
 			Frames:          frames.NewAbilFunc(burstJumpFrames),
 			AnimationLength: burstJumpFrames[action.InvalidAction],

@@ -515,6 +515,23 @@
       },
       "name_text_hash_map ": "2180900234"
     },
+    "gaming": {
+      "id": 10000092,
+      "key": "gaming",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Gaming",
+      "skill_details": {
+        "skill": 10922,
+        "burst": 10925,
+        "attack": 10921,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2822240322"
+    },
     "ganyu": {
       "id": 10000037,
       "key": "ganyu",
@@ -1301,6 +1318,23 @@
         "burst_energy_cost": 80
       },
       "name_text_hash_map ": "1130996346"
+    },
+    "xianyun": {
+      "id": 10000093,
+      "key": "xianyun",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Liuyun",
+      "skill_details": {
+        "skill": 10932,
+        "burst": 10935,
+        "attack": 10931,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "3648220770"
     },
     "xiao": {
       "id": 10000026,

@@ -143,7 +143,7 @@ func (b *BogglecatBox) absorbRoutine(absorbedElement attributes.Element) {
 }
 
 func (b *BogglecatBox) absorbCheck() {
-	absorbedElement := b.Core.Combat.AbsorbCheck(combat.NewCircleHitOnTarget(b.pos, nil, 0.48), attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+	absorbedElement := b.Core.Combat.AbsorbCheck(b.char.Index, combat.NewCircleHitOnTarget(b.pos, nil, 0.48), attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 	if absorbedElement == attributes.NoElement {
 		return
 	}

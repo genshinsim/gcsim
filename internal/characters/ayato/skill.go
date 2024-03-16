@@ -17,7 +17,7 @@ func init() {
 	skillFrames = frames.InitAbilSlice(21)
 }
 
-const SkillBuffKey = "soukaikanka"
+const skillBuffKey = "soukaikanka"
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	delay := p["illusion_delay"]
@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, delay)
 
 	// start skill buff on cast
-	c.AddStatus(SkillBuffKey, 6*60, true)
+	c.AddStatus(skillBuffKey, 6*60, true)
 	// figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6Ready = true
@@ -96,7 +96,7 @@ func (c *char) onExitField() {
 		}
 		// clear skill status on field exit
 		c.stacks = 0
-		c.DeleteStatus(SkillBuffKey)
+		c.DeleteStatus(skillBuffKey)
 		// queue up a4
 		c.Core.Tasks.Add(c.a4, 60)
 		return false

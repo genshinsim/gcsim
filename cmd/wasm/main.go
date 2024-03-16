@@ -1,4 +1,4 @@
-//go:build !codeanalysis
+//go:build !codeanalysis && js && wasm
 
 package main
 
@@ -189,12 +189,7 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 		aggregators = append(aggregators, a)
 	}
 
-	opts := simulator.Options{
-		GZIPResult:       false,
-		ResultSaveToPath: "",
-		ConfigPath:       "",
-	}
-	result, err := simulator.GenerateResult(cfg, simcfg, opts)
+	result, err := simulator.GenerateResult(cfg, simcfg)
 	if err != nil {
 		return marshal(err)
 	}

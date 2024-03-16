@@ -57,10 +57,12 @@ var weaponNames = []string{
 	"cinnabarspindle",
 	"compoundbow",
 	"coolsteel",
+	"cranesechoingcall",
 	"crescentpike",
 	"darkironsword",
 	"deathmatch",
 	"debateclub",
+	"dialoguesofthedesertsages",
 	"dodocotales",
 	"dragonsbane",
 	"dragonspinespear",
@@ -198,6 +200,7 @@ var weaponNames = []string{
 	"tulaytullahsremembrance",
 	"twinnephrite",
 	"ultimateoverlordsmegamagicsword",
+	"urakumisugiri",
 	"verdict",
 	"vortexvanquisher",
 	"wanderingevenstar",
@@ -239,10 +242,12 @@ const (
 	CinnabarSpindle
 	CompoundBow
 	CoolSteel
+	CranesEchoingCall
 	CrescentPike
 	DarkIronSword
 	Deathmatch
 	DebateClub
+	DialoguesOfTheDesertSages
 	DodocoTales
 	DragonsBane
 	DragonspineSpear
@@ -380,6 +385,7 @@ const (
 	TulaytullahsRemembrance
 	TwinNephrite
 	UltimateOverlordsMegaMagicSword
+	UrakuMisugiri
 	Verdict
 	VortexVanquisher
 	WanderingEvenstar

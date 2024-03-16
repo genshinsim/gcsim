@@ -54,6 +54,11 @@ func init() {
 					Description: "id of the entry",
 					Required:    true,
 				},
+				&discord.StringOption{
+					OptionName:  "reason",
+					Description: "reason for rejection (will ping submitter if not blank)",
+					Required:    false,
+				},
 			},
 		},
 		api.CreateCommandData{
@@ -217,6 +222,29 @@ func (b *Bot) cmdApprove(ctx context.Context, data cmdroute.CommandData) *api.In
 		}
 	}
 
+	entry, err := b.Backend.GetDBEntry(opts.Id)
+	if err != nil {
+		return &api.InteractionResponseData{
+			Content: option.NewNullableString(fmt.Sprintf("Unexpected error. Approve succeeded but error getting entry details: %v", err)),
+		}
+	}
+
+	_, err = b.s.Client.SendMessage(
+		discord.ChannelID(b.AnnounceChan),
+		fmt.Sprintf(
+			"<@%v>: your entry with id %v (<%v>) has been added to %v.",
+			entry.Submitter,
+			entry.Id,
+			shareLink(entry),
+			tag.String(),
+		),
+	)
+	if err != nil {
+		return &api.InteractionResponseData{
+			Content: option.NewNullableString(fmt.Sprintf("Unexpected error. Approve succeeded but error announce: %v", err)),
+		}
+	}
+
 	return &api.InteractionResponseData{
 		Content: option.NewNullableString(fmt.Sprintf("%v approved!", opts.Id)),
 	}
@@ -239,7 +267,8 @@ func (b *Bot) cmdReject(ctx context.Context, data cmdroute.CommandData) *api.Int
 	}
 
 	var opts struct {
-		Id string `discord:"id"`
+		Id     string `discord:"id"`
+		Reason string `discord:"reason?"`
 	}
 	if err := data.Options.Unmarshal(&opts); err != nil {
 		return errorResponse(err)
@@ -251,6 +280,32 @@ func (b *Bot) cmdReject(ctx context.Context, data cmdroute.CommandData) *api.Int
 	if err != nil {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString(fmt.Sprintf("Reject failed due to error: %v", err)),
+		}
+	}
+
+	if opts.Reason != "" {
+		entry, err := b.Backend.GetDBEntry(opts.Id)
+		if err != nil {
+			return &api.InteractionResponseData{
+				Content: option.NewNullableString(fmt.Sprintf("Unexpected error. Reject succeeded but error getting entry details: %v", err)),
+			}
+		}
+
+		_, err = b.s.Client.SendMessage(
+			discord.ChannelID(b.AnnounceChan),
+			fmt.Sprintf(
+				"<@%v>: your entry with id %v (<%v>) has been rejected by %v. Reason given: %v",
+				entry.Submitter,
+				entry.Id,
+				shareLink(entry),
+				tag.String(),
+				opts.Reason,
+			),
+		)
+		if err != nil {
+			return &api.InteractionResponseData{
+				Content: option.NewNullableString(fmt.Sprintf("Unexpected error. Reject succeeded but error announce: %v", err)),
+			}
 		}
 	}
 
@@ -449,4 +504,11 @@ func (b *Bot) cmdReplaceDesc(ctx context.Context, data cmdroute.CommandData) *ap
 	return &api.InteractionResponseData{
 		Content: option.NewNullableString(fmt.Sprintf("Description for DB entry with id %v has been reworded", opts.Id)),
 	}
+}
+
+func shareLink(e *db.Entry) string {
+	if e.IsDbValid {
+		return fmt.Sprintf("https://gcsim.app/db/%v", e.Id)
+	}
+	return fmt.Sprintf("https://gcsim.app/sh/%v", e.ShareKey)
 }

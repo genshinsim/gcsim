@@ -19,6 +19,12 @@ skill_data_mapping:
             - 4 # 5-Hit DMG|{param4:F1P}
         nc:
             - 5 # Charged Attack DMG|{param5:P}
+        collision:
+            - 7 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         guobaTick:
             - 0 # Flame DMG|{param0:P}

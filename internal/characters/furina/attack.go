@@ -70,7 +70,7 @@ func (c *char) arkheCB(a combat.AttackCB) {
 		// https://www.youtube.com/watch?v=sbKIEzelynE
 		// Furina's 18% Max HP boost applies to her Arkhe attacks
 		if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
-			ai.FlatDmg = c.c6BonusDMGArkhe()
+			ai.FlatDmg = c.c6BonusDMGNoExtra()
 		}
 
 		ap := combat.NewBoxHitOnTarget(

@@ -2491,6 +2491,7 @@ export namespace model {
         DB_TAG_GEO_SIMPS = 4,
         DB_TAG_ITTO_SIMPS = 5,
         DB_TAG_RANDOM_DELAYS = 6,
+        DB_TAG_ARFOIRE_NEWBIES = 7,
         DB_TAG_ADMIN_DO_NOT_USE = 99999999
     }
 
@@ -2946,6 +2947,9 @@ export namespace model {
 
         /** SimulationStatistics target_aura_uptime */
         target_aura_uptime?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics end_stats */
+        end_stats?: (model.IEndStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -3049,6 +3053,9 @@ export namespace model {
 
         /** SimulationStatistics target_aura_uptime. */
         public target_aura_uptime: model.ISourceStats[];
+
+        /** SimulationStatistics end_stats. */
+        public end_stats: model.IEndStats[];
 
         /**
          * Gets the default type url for SimulationStatistics
@@ -3664,6 +3671,33 @@ export namespace model {
 
         /**
          * Gets the default type url for ShieldInfo
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an EndStats. */
+    interface IEndStats {
+
+        /** EndStats ending_energy */
+        ending_energy?: (model.IDescriptiveStats|null);
+    }
+
+    /** Represents an EndStats. */
+    class EndStats implements IEndStats {
+
+        /**
+         * Constructs a new EndStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IEndStats);
+
+        /** EndStats ending_energy. */
+        public ending_energy?: (model.IDescriptiveStats|null);
+
+        /**
+         * Gets the default type url for EndStats
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */

@@ -15,6 +15,12 @@ skill_data_mapping:
             - 5 # Charged Attack|{param3:P}/{param4:P}/{param5:P}/{param6:P}/{param7:P}
             - 6 # Charged Attack|{param3:P}/{param4:P}/{param5:P}/{param6:P}/{param7:P}
             - 7 # Charged Attack|{param3:P}/{param4:P}/{param5:P}/{param6:P}/{param7:P}
+        collision:
+            - 15 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 16 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 17 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         skill:
             - 0 # Skill DMG|{param0:P}

@@ -83,6 +83,9 @@ export interface Statistics {
   character_actions?: SourceStats[];
 
   target_aura_uptime?: SourceStats[];
+
+  // end stats
+  end_stats?: EndStats[];
 }
 
 export interface SummaryStat {
@@ -173,6 +176,10 @@ export interface TargetBucket {
   q1?: number[];
   q2?: number[];
   q3?: number[];
+}
+
+export interface EndStats {
+  ending_energy?: FloatStat;
 }
 
 export interface BucketStats {

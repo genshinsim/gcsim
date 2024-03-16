@@ -171,6 +171,7 @@
         "documentation": "documentación",
         "documentation_post": " que incluye un simple tutorial en como escribir listas secuenciales.",
         "documentation_pre": "Alternativamente, checa nuestra ",
+        "editor_theme": "Tema del editor",
         "generate_sample": "Generar una muestra al cargar la página",
         "hide_all_tips": "Ocultar todos los tips",
         "import": "Importar",
@@ -200,7 +201,12 @@
         "video_post": " como guía inicial.",
         "video_pre": "Empieza por agregar miembros de equipo. checa este ",
         "weapons": "Armas",
-        "workers": "Trabajadores"
+        "workers": "Trabajadores",
+        "server_mode_enable": "Activar el modo servidor (sólo usuarios avanzados)",
+        "server_mode_disable": "Desactivar el modo servidor (sólo usuarios avanzados)",
+        "server_mode_url": "URL del servidor",
+        "server_mode_required": "(necesario)",
+        "server_mode_default": "Valor por defecto: "
     },
     "src": {
         "this_page_is": "Esta página no está implementada aún. Manténganse al tanto!"
@@ -254,7 +260,8 @@
         "metadata_created": "creado",
         "metadata_commit": "commit",
         "metadata_swap_delay": "retraso de cambio de personaje",
-        "metadata_energy": "<0>energía</0> <1>{{p}}</1> <2>cada</2> <3>{{s}}</3> <4>a</4> <5>{{e}}</5>"
+        "metadata_energy": "<0>energía</0> <1>{{p}}</1> <2>cada</2> <3>{{s}}</3> <4>a</4> <5>{{e}}</5>",
+        "ending_energy": "Energía del personaje al final de la simulación"
     },
     "viewer": {
         "ability_usage_count": "Recuento de uso de habilidad elemental (Promedio)",

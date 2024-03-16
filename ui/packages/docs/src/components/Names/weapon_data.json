@@ -26,7 +26,8 @@
     "boundlessblue"
   ],
   "balladofthefjords": [
-    "ballad"
+    "ballad",
+    "fjords"
   ],
   "beaconofthereedsea": [
     "beacon"
@@ -57,6 +58,9 @@
     "compound"
   ],
   "coolsteel": [],
+  "cranesechoingcall": [
+    "crane"
+  ],
   "crescentpike": [
     "cpike",
     "pike"
@@ -64,8 +68,13 @@
   "darkironsword": [],
   "deathmatch": [],
   "debateclub": [],
+  "dialoguesofthedesertsages": [
+    "dialogues"
+  ],
   "dodocotales": [],
-  "dragonsbane": [],
+  "dragonsbane": [
+    "dbane"
+  ],
   "dragonspinespear": [],
   "dullblade": [],
   "elegyfortheend": [
@@ -105,16 +114,20 @@
     "festering"
   ],
   "filletblade": [],
-  "finaleofthedeep": [],
+  "finaleofthedeep": [
+    "finale"
+  ],
   "flowingpurity": [],
   "fleuvecendreferryman": [
-    "fleuve"
+    "fleuve",
+    "pipe"
   ],
   "forestregalia": [
     "regalia"
   ],
   "freedomsworn": [
-    "freedom"
+    "freedom",
+    "fs"
   ],
   "frostbearer": [],
   "fruitoffulfillment": [
@@ -190,7 +203,8 @@
     "missive"
   ],
   "mistsplitterreforged": [
-    "mistsplitter"
+    "mistsplitter",
+    "mist"
   ],
   "mitternachtswaltz": [
     "mitternacht",
@@ -359,6 +373,7 @@
   ],
   "thefirstgreatmagic": [
     "firstgreatmagic",
+    "tfgm",
     "fgm"
   ],
   "theflute": [
@@ -399,7 +414,12 @@
   "twinnephrite": [],
   "ultimateoverlordsmegamagicsword": [
     "megamagicsword",
-    "uomms"
+    "uomms",
+    "melusineclaymore"
+  ],
+  "urakumisugiri": [
+    "uraku",
+    "misugiri"
   ],
   "verdict": [],
   "vortexvanquisher": [

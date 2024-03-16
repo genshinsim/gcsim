@@ -8,7 +8,8 @@
     "bs"
   ],
   "bloodstainedchivalry": [
-    "bloodstained"
+    "bloodstained",
+    "bsc"
   ],
   "braveheart": [
     "brave"
@@ -30,12 +31,17 @@
     "desertpavilion",
     "dpc"
   ],
-  "vourukashasglow": [],
+  "vourukashasglow": [
+    "vourukasha",
+    "vg"
+  ],
   "echoesofanoffering": [
     "echoes"
   ],
   "emblemofseveredfate": [
-    "emblem"
+    "emblem",
+    "eosf",
+    "esf"
   ],
   "flowerofparadiselost": [
     "paradiselost",
@@ -83,7 +89,9 @@
     "noblesse",
     "no"
   ],
-  "nymphsdream": [],
+  "nymphsdream": [
+    "nymph"
+  ],
   "oceanhuedclam": [
     "ohc",
     "clam"

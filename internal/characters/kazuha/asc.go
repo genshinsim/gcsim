@@ -19,7 +19,7 @@ func (c *char) absorbCheckA1(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.Index, c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.a1Absorb != attributes.NoElement {
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,

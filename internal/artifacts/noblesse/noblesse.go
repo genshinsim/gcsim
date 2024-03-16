@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -24,27 +25,20 @@ type Set struct {
 	Index             int
 	nob2buff          []float64
 	nob4buff          []float64
+	charKey           keys.Char
 	charIsSpecialCase bool
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error      { return nil }
-
-var specialChars = [keys.EndCharKeys]bool{}
-
-func init() {
-	specialChars[keys.AetherAnemo] = true
-	specialChars[keys.LumineAnemo] = true
-	specialChars[keys.Ningguang] = true
-	specialChars[keys.Beidou] = true
-	specialChars[keys.Sayu] = true
-	specialChars[keys.Aloy] = true
-	specialChars[keys.Ganyu] = true
+func (s *Set) Init() error {
+	s.charIsSpecialCase = hacks.NOCharIsSpecial(s.charKey)
+	return nil
 }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		core: c,
+		core:    c,
+		charKey: char.Base.Key,
 	}
 
 	if count >= 2 {
@@ -65,7 +59,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		buffDuration := 720 // 12s * 60
 		s.nob4buff = make([]float64, attributes.EndStatType)
 		s.nob4buff[attributes.ATKP] = 0.2
-		s.charIsSpecialCase = specialChars[char.Base.Key]
 
 		//TODO: this used to be post. need to check
 		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {

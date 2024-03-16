@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var (
@@ -29,11 +28,7 @@ func init() {
 // hitWeakPoint: tartaglia can proc Prototype Cresent's Passive on Geovishap's weakspots.
 // Evidence: https://youtu.be/oOfeu5pW0oE
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	if c.Core.Player.LastAction.Type != action.ActionAttack {
-		return action.Info{}, player.ErrInvalidChargeAction
-	}
-
-	if !c.StatusIsActive(MeleeKey) {
+	if !c.StatusIsActive(meleeKey) {
 		return action.Info{}, errors.New("charge called when not in melee stance")
 	}
 

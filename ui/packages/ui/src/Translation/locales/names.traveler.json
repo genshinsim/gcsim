@@ -1,0 +1,100 @@
+{
+  "English": {
+    "character_names": {
+      "aetherelectro": "Aether (Electro)",
+      "lumineelectro": "Lumine (Electro)",
+      "aetheranemo": "Aether (Anemo)",
+      "lumineanemo": "Lumine (Anemo)",
+      "aethergeo": "Aether (Geo)",
+      "luminegeo": "Lumine (Geo)",
+      "aetherhydro": "Aether (Hydro)",
+      "luminehydro": "Lumine (Hydro)",
+      "aetherdendro": "Aether (Dendro)",
+      "luminedendro": "Lumine (Dendro)"
+    }
+  },
+  "Chinese": {
+    "character_names": {
+      "aetherelectro": "空 (雷元素)",
+      "lumineelectro": "荧 (雷元素)",
+      "aetheranemo": "空 (风元素)",
+      "lumineanemo": "荧 (风元素)",
+      "aethergeo": "空 (岩元素)",
+      "luminegeo": "荧 (岩元素)",
+      "aetherhydro": "空 (水元素)",
+      "luminehydro": "荧 (水元素)",
+      "aetherdendro": "空 (草元素)",
+      "luminedendro": "荧 (草元素)"
+    }
+  },
+  "Japanese": {
+    "character_names": {
+      "aetherelectro": "空 (雷元素)",
+      "lumineelectro": "蛍 (雷元素)",
+      "aetheranemo": "空 (風元素)",
+      "lumineanemo": "蛍 (風元素)",
+      "aethergeo": "空 (岩元素)",
+      "luminegeo": "蛍 (岩元素)",
+      "aetherhydro": "空 (水元素)",
+      "luminehydro": "蛍 (水元素)",
+      "aetherdendro": "空 (草元素)",
+      "luminedendro": "蛍 (草元素)"
+    }
+  },
+  "Korean": {
+    "character_names": {
+      "aetherelectro": "아이테르 (번개)",
+      "lumineelectro": "루미네 (번개)",
+      "aetheranemo": "아이테르 (바람)",
+      "lumineanemo": "루미네 (바람)",
+      "aethergeo": "아이테르 (바위)",
+      "luminegeo": "루미네 (바위)",
+      "aetherhydro": "아이테르 (물)",
+      "luminehydro": "루미네 (물)",
+      "aetherdendro": "아이테르 (풀)",
+      "luminedendro": "루미네 (풀)"
+    }
+  },
+  "Spanish": {
+    "character_names": {
+      "aetherelectro": "Éter (Electro)",
+      "lumineelectro": "Lumina (Electro)",
+      "aetheranemo": "Éter (Anemo)",
+      "lumineanemo": "Lumina (Anemo)",
+      "aethergeo": "Éter (Geo)",
+      "luminegeo": "Lumina (Geo)",
+      "aetherhydro": "Éter (Hydro)",
+      "luminehydro": "Lumina (Hydro)",
+      "aetherdendro": "Éter (Dendro)",
+      "luminedendro": "Lumina (Dendro)"
+    }
+  },
+  "Russian": {
+    "character_names": {
+      "aetherelectro": "Итэр (Электро)",
+      "lumineelectro": "Люмин (Электро)",
+      "aetheranemo": "Итэр (Анемо)",
+      "lumineanemo": "Люмин (Анемо)",
+      "aethergeo": "Итэр (Гео)",
+      "luminegeo": "Люмин (Гео)",
+      "aetherhydro": "Итэр (Гидро)",
+      "luminehydro": "Люмин (Гидро)",
+      "aetherdendro": "Итэр (Дендро)",
+      "luminedendro": "Люмин (Дендро)"
+    }
+  },
+  "German": {
+    "character_names": {
+      "aetherelectro": "Leer (Elektro)",
+      "lumineelectro": "Lumine (Elektro)",
+      "aetheranemo": "Leer (Anemo)",
+      "lumineanemo": "Lumine (Anemo)",
+      "aethergeo": "Leer (Geo)",
+      "luminegeo": "Lumine (Geo)",
+      "aetherhydro": "Leer (Hydro)",
+      "luminehydro": "Lumine (Hydro)",
+      "aetherdendro": "Leer (Dendro)",
+      "luminedendro": "Lumine (Dendro)"
+    }
+  }
+}

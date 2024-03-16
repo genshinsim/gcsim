@@ -111,7 +111,7 @@ func (s SlashType) Next(stacks int, c6Proc bool) SlashType {
 }
 
 func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
-	switch animState := c.Core.Player.CurrentState(); animState {
+	switch c.Core.Player.CurrentState() {
 	// attack -> x
 	case action.NormalAttackState:
 		switch curSlash {
@@ -168,7 +168,19 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 		case LeftSlash, FinalSlash:
 			return 17
 		}
+
+	// low/high plunge -> x
+	case action.PlungeAttackState:
+		switch curSlash {
+		// plunge -> CA0
+		case SaichiSlash:
+			return 11
+		// plunge -> CA1/CAF
+		case LeftSlash, FinalSlash:
+			return 10
+		}
 	}
+
 	return 0
 }
 

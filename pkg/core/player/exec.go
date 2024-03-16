@@ -87,41 +87,14 @@ func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 	return nil
 }
 
-// Exec mirrors the idea of the in game buttons where you can press the button but
-// it may be greyed out. If grey'd out it will return ErrActionNotReady. Otherwise
-// if action was executed successfully then it will return nil
+// Exec will forcefully execute an action t regardless if t is ready or not. The assumption is
+// that whatever caller of Exec would have first checked ReadyCheck where ever relevant
+// before calling Exec.
 //
-// The function takes 2 params:
-//   - ActionType
-//   - Param
-//
-// # Just like in game this will always try and execute on the currently active character
-//
-// This function can be called as many times per frame as desired. However, it will only
-// execute if the animation state allows for it
-//
-// Note that although wait is not strictly a button in game, it is still a valid action.
-// When wait is executed, it will simply put the player in a lock animation state for
-// the requested number of frames
+// The separation allows for forcefully execution of certain actions such as swap bypassing
+// swapCD if any
 func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error {
-	// check animation state
-	if h.IsAnimationLocked(t) {
-		return ErrPlayerNotReady
-	}
-
 	char := h.chars[h.active]
-	// check for energy, cd, etc..
-	//TODO: make sure there is a default check for charge attack/dash stams in char implementation
-	// this should deal with Ayaka/Mona's drain vs straight up consumption
-	if ok, reason := char.ActionReady(t, param); !ok {
-		h.Events.Emit(event.OnActionFailed, h.active, t, param, reason)
-		return ErrActionNotReady
-	}
-
-	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
-		req := h.AbilStamCost(char.Index, t, param)
-		return req, h.Stam >= req
-	}
 
 	// special airborne handler; if airborne the next action MUST be attack otherwise error
 	if h.airborne != Grounded && t != action.ActionLowPlunge && t != action.ActionHighPlunge {
@@ -131,38 +104,11 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	var err error
 	switch t {
 	case action.ActionCharge: // require special calc for stam
-		amt, ok := stamCheck(t, param)
-		if !ok {
-			h.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
-				Write("have", h.Stam).
-				Write("cost", amt)
-			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.InsufficientStamina)
-			return ErrActionNotReady
-		}
-		// use stam
-		h.Stam -= amt
+		h.Stam -= h.AbilStamCost(char.Index, t, param)
 		h.LastStamUse = *h.F
 		h.Events.Emit(event.OnStamUse, t)
 		err = h.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
-	case action.ActionDash: // require special calc for stam
-		// dash handles it in the action itself
-		amt, ok := stamCheck(t, param)
-		if !ok {
-			h.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
-				Write("have", h.Stam).
-				Write("cost", amt)
-			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.InsufficientStamina)
-			return ErrActionNotReady
-		}
-
-		// dash is still on cooldown and is locked out, cannot dash again until CD expires
-		if h.DashLockout && h.DashCDExpirationFrame > *h.F {
-			h.Log.NewEvent("dash on cooldown", glog.LogWarnings, -1).
-				Write("dash_cd_expiration", h.DashCDExpirationFrame-*h.F)
-			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.DashCD)
-			return ErrActionNotReady
-		}
-
+	case action.ActionDash:
 		err = h.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
 		err = h.useAbility(t, param, char.Jump)
@@ -187,12 +133,13 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			return ErrActionNoOp
 		}
 		if h.SwapCD > 0 {
-			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.SwapCD)
-			return ErrActionNotReady
+			// since we allow force swap, this is ok but will emit an extra log anyways just in case
+			h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String(), " (bypassed cd)").
+				Write("swap_cd", h.SwapCD)
+			h.SwapCD = 0
+		} else {
+			h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String())
 		}
-		// otherwise swap at the end of timer
-		// log here that we're starting a swap
-		h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String())
 
 		x := action.Info{
 			Frames: func(action.Action) int {

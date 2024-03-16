@@ -41,6 +41,7 @@
     "furina": [
         "furinadefontaine"
     ],
+    "gaming": [],
     "ganyu": [],
     "gorou": [],
     "hutao": [
@@ -162,6 +163,10 @@
     ],
     "xiangling": [
         "xl"
+    ],
+    "xianyun": [
+        "liuyun",
+        "cloudretainer"
     ],
     "xiao": [],
     "xingqiu": [

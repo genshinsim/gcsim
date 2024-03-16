@@ -36,3 +36,13 @@ backend/docker/binary
 computebin
 .cache
 .npm
+.task/
+# release binaries to avoid tinting repo
+gcsim_windows_amd64.exe
+gcsim_darwin_arm64
+gcsim_darwin_amd64
+gcsim_linux_amd64
+server_windows_amd64.exe
+server_darwin_arm64
+server_darwin_amd64
+server_linux_amd64
