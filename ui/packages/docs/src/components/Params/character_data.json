@@ -434,17 +434,17 @@
     {
       "ability": "low_plunge",
       "param": "man_chai_delay",
-      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay is 92 frames."
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 92 frames."
     },
     {
       "ability": "high_plunge",
       "param": "man_chai_delay",
-      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay is 92 frames."
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 92 frames."
     },
     {
       "ability": "burst",
       "param": "man_chai_delay",
-      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay is 92 frames."
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 100 frames."
     }
   ],
   "ganyu": [

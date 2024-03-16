@@ -189,6 +189,8 @@ func (c *char) plungeCollision(delay int) {
 func (c *char) specialPlunge(p map[string]int) (action.Info, error) {
 	if p[manChaiParam] > 0 {
 		c.manChaiWalkBack = p[manChaiParam]
+	} else {
+		c.manChaiWalkBack = 92
 	}
 
 	ai := combat.AttackInfo{
