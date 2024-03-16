@@ -254,7 +254,8 @@
         "metadata_created": "erstellt",
         "metadata_commit": "commit",
         "metadata_swap_delay": "figurwechselverzögerung",
-        "metadata_energy": "<0>energie</0> <1>{{p}}</1> <2>alle</2> <3>{{s}}</3> <4>bis</4> <5>{{e}}</5>"
+        "metadata_energy": "<0>energie</0> <1>{{p}}</1> <2>alle</2> <3>{{s}}</3> <4>bis</4> <5>{{e}}</5>",
+        "ending_energy": "Charakterenergie am Ende der Simulation"
     },
     "viewer": {
         "ability_usage_count": "Anzahl an eingesetzten Fähigkeiten (Durchschnitt)",

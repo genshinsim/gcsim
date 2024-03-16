@@ -254,7 +254,8 @@
         "metadata_created": "creado",
         "metadata_commit": "commit",
         "metadata_swap_delay": "retraso de cambio de personaje",
-        "metadata_energy": "<0>energía</0> <1>{{p}}</1> <2>cada</2> <3>{{s}}</3> <4>a</4> <5>{{e}}</5>"
+        "metadata_energy": "<0>energía</0> <1>{{p}}</1> <2>cada</2> <3>{{s}}</3> <4>a</4> <5>{{e}}</5>",
+        "ending_energy": "Energía del personaje al final de la simulación"
     },
     "viewer": {
         "ability_usage_count": "Recuento de uso de habilidad elemental (Promedio)",

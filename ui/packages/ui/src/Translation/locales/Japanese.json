@@ -254,7 +254,8 @@
         "metadata_created": "作成",
         "metadata_commit": "コミット",
         "metadata_swap_delay": "キャラクタスワップ ディレイ",
-        "metadata_energy": "<0>エネルギー</0><1>{{p}}</1> <3>{{s}}</3><4>~</4><5>{{e}}</5><2>ごと</2>"
+        "metadata_energy": "<0>エネルギー</0><1>{{p}}</1> <3>{{s}}</3><4>~</4><5>{{e}}</5><2>ごと</2>",
+        "ending_energy": "シミュレーション終了時のキャラクター・エネルギー"
     },
     "viewer": {
         "ability_usage_count": "能力使用回数 (平均値)",

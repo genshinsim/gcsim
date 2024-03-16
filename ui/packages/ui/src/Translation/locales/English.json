@@ -55,7 +55,7 @@
         "swirl-hydro": "Swirl (Hydro)",
         "swirl-pyro": "Swirl (Pyro)",
         "swirl-cryo": "Swirl (Cryo)",
-        "electrocharged": "Electrocharged", 
+        "electrocharged": "Electrocharged",
         "shatter": "Shatter",
         "burning": "Burning",
         "quicken": "Quicken",
@@ -254,7 +254,8 @@
         "metadata_created": "created",
         "metadata_commit": "commit",
         "metadata_swap_delay": "character swap delay",
-        "metadata_energy": "<0>energy</0> <1>{{p}}</1> <2>every</2> <3>{{s}}</3> <4>to</4> <5>{{e}}</5>"
+        "metadata_energy": "<0>energy</0> <1>{{p}}</1> <2>every</2> <3>{{s}}</3> <4>to</4> <5>{{e}}</5>",
+        "ending_energy": "Character Energy at End of Simulation"
     },
     "viewer": {
         "ability_usage_count": "Ability Usage Count (Average)",
