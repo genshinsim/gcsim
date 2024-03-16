@@ -1,36 +1,44 @@
 package_name: lyney
 genshin_id: 10000084
 key: lyney
+icd_tags:
+  - ICDTagLyneyEndBoom
+  - ICDTagLyneyEndBoomEnhanced
+icd_groups:
+  - group_name: ICDGroupLyneyExtra
+    reset_timer: 60
+    ele_app_sequence: [1, 0, 0, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1]
 skill_data_mapping:
-    attack:
-        aim:
-            - 8 # Aimed Shot|{param8:F1P}
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-        attack_4:
-            - 4 # 4-Hit DMG|{param4:F1P}
-        fullaim:
-            - 9 # Aimed Shot Charge Level 1|{param9:F1P}
-        prop:
-            - 10 # Prop Arrow DMG|{param10:F1P}
-        propAligned:
-            - 15 # Spiritbreath Thorn DMG|{param15:F1P}
-        propHP:
-            - 12 # Grin-Malkin Hat Inherited HP|{param12:P}
-        propPyrotechnic:
-            - 14 # Pyrotechnic Strike DMG|{param14:F1P}
+  attack:
+    aim:
+      - 8 # Aimed Shot|{param8:F1P}
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+    attack_4:
+      - 4 # 4-Hit DMG|{param4:F1P}
+    fullaim:
+      - 9 # Aimed Shot Charge Level 1|{param9:F1P}
+    prop:
+      - 10 # Prop Arrow DMG|{param10:F1P}
+    propAligned:
+      - 15 # Spiritbreath Thorn DMG|{param15:F1P}
+    propHP:
+      - 12 # Grin-Malkin Hat Inherited HP|{param12:P}
+    propPyrotechnic:
+      - 14 # Pyrotechnic Strike DMG|{param14:F1P}
+  skill:
     skill:
-        skill:
-            - 0 # Skill DMG|{param0:F1P}
-        skillBonus:
-            - 1 # Skill DMG Bonus|{param1:F1P} ATK/Stack
+      - 0 # Skill DMG|{param0:F1P}
+    skillBonus:
+      - 1 # Skill DMG Bonus|{param1:F1P} ATK/Stack
+  burst:
     burst:
-        burst:
-            - 0 # Skill DMG|{param0:F1P}
-        explosiveFirework:
-            - 1 # Explosive Firework DMG|{param1:F1P}
+      - 0 # Skill DMG|{param0:F1P}
+    explosiveFirework:
+      - 1 # Explosive Firework DMG|{param1:F1P}
