@@ -200,7 +200,12 @@
         "video_post": " como guía inicial.",
         "video_pre": "Empieza por agregar miembros de equipo. checa este ",
         "weapons": "Armas",
-        "workers": "Trabajadores"
+        "workers": "Trabajadores",
+        "server_mode_enable": "Activar el modo servidor (sólo usuarios avanzados)",
+        "server_mode_disable": "Desactivar el modo servidor (sólo usuarios avanzados)",
+        "server_mode_url": "URL del servidor",
+        "server_mode_required": "(necesario)",
+        "server_mode_default": "Valor por defecto: "
     },
     "src": {
         "this_page_is": "Esta página no está implementada aún. Manténganse al tanto!"

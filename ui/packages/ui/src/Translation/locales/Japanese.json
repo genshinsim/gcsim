@@ -200,7 +200,12 @@
         "video_post": "をチェックしてください！",
         "video_pre": "編成にキャラクターを追加して開始しましょう！使い方はこの",
         "weapons": "武器",
-        "workers": "ワーカー"
+        "workers": "ワーカー",
+        "server_mode_enable": "サーバーモードを有効にする（上級ユーザーのみ）",
+        "server_mode_disable": "サーバーモードを無効にする（上級ユーザーのみ）",
+        "server_mode_url": "サーバーのURL",
+        "server_mode_required": "(必須)",
+        "server_mode_default": "デフォルト: "
     },
     "src": {
         "this_page_is": "このページはまだ実装されていません。いましばらくお待ちください！"

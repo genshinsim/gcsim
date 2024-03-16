@@ -2,10 +2,12 @@ import { Switch } from "@blueprintjs/core";
 import React from "react";
 import ServerMode from "./ServerMode";
 import WasmMode from "./WasmMode";
+import { useTranslation } from "react-i18next";
 
 const serverModeKey = "use-server-mode";
 
 const App = ({}) => {
+  const { t } = useTranslation();
   const [serverMode, setServerMode] = React.useState<boolean>((): boolean => {
     return localStorage.getItem(serverModeKey) === "true";
   });
@@ -19,8 +21,7 @@ const App = ({}) => {
       onChange={() => setServerMode(!serverMode)}
       labelElement={
         <span>
-          {`${serverMode ? "Turn off" : "Use"} server mode`} (advanced users
-          only)
+          {t<string>(serverMode ? "simple.server_mode_disable" : "simple.server_mode_enable")}
         </span>
       }
     />
