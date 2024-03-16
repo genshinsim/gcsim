@@ -150,7 +150,7 @@ target lvl=88 resist=0.1 pos=0,0 radius=2 freeze_resist=0.8 hp=9999 particle_thr
 | `particle_threshold` | Only available if the `hp` is set. Determines after how much damage the enemy drops elemental particles. Example: If the enemy has 500 HP and this is set to 200, then the enemy will drop particles at 300 and 100 HP. | - |
 | `particle_drop_count` | Only available if the `hp` is set. Number of elemental particles to drop at `particle_threshold`. | - |
 | `particle_element` | Only available if the `hp` is set. Element of the particle at `particle_threshold`. Defaults to clear if not set. | - |
-| `type` | Sets the stats of the in-game enemy by name. Overwrite HP and resistances of the target. | - |
+| `type` | Sets the stats of the target to the one specified in this parameter by name. This overwrites HP, resistances, particle threshold and particle drop count. | - |
 
 :::danger
 All configs must have at least one enemy specified. Otherwise you will get an error. 
