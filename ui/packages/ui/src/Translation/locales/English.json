@@ -171,6 +171,7 @@
         "documentation_post": " which includes a simple tutorial on how to write a config from scratch.",
         "documentation_pre": "Alternatively, check out our ",
         "editor_theme": "Editor Theme",
+        "font_size": "Font Size",
         "generate_sample": "Generate sample on page load",
         "hide_all_tips": "Hide all tips",
         "import": "Import",
