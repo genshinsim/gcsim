@@ -35,6 +35,8 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if p[manChaiParam] > 0 {
 		c.manChaiWalkBack = p[manChaiParam]
+	} else {
+		c.manChaiWalkBack = 100
 	}
 
 	c.Core.Tasks.Add(func() {
