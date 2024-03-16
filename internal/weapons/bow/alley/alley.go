@@ -70,12 +70,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 		next := args[1].(int)
-		w.lastActiveChange = c.F
 		if next == char.Index {
 			w.active = true
+			w.lastActiveChange = c.F
 			w.char.QueueCharTask(w.decStack(char, c.F), 240) // on field for more than 4s, start decreasing stacks
 		} else if prev == char.Index {
 			w.active = false
+			w.lastActiveChange = c.F
 			c.Tasks.Add(w.incStack(char, c.F), 60)
 		}
 		return false

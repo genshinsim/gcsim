@@ -15,6 +15,12 @@ skill_data_mapping:
             - 3 # 4-Hit DMG|{param3:F1P}
         charge:
             - 4 # Charged Attack DMG|{param4:F1P}
+        collision:
+            - 6 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         skillChevalmarin:
             - 3 # Surintendante Chevalmarin DMG|{param3:F2P} Max HP

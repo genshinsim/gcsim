@@ -17,6 +17,12 @@ skill_data_mapping:
             - 3 # 4-Hit DMG|{param3:F1P}
         saichiSlash:
             - 4 # Saichimonji Slash DMG|{param4:F1P}
+        collision:
+            - 8 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         skill:
             - 0 # Skill DMG|{param0:P}

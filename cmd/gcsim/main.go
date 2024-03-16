@@ -325,7 +325,19 @@ func writeSample(seed uint64, outputPath, config string, gz bool, simopt simulat
 }
 
 func update(version string) error {
-	latest, found, err := selfupdate.DetectLatest(context.Background(), selfupdate.ParseSlug("genshinsim/gcsim"))
+	src, err := selfupdate.NewGitHubSource(selfupdate.GitHubConfig{})
+	if err != nil {
+		return fmt.Errorf("error creating GitHub source: %w", err)
+	}
+	updater, err := selfupdate.NewUpdater(selfupdate.Config{
+		Source:  src,
+		Filters: []string{"gcsim_.+"},
+	})
+	if err != nil {
+		return fmt.Errorf("error creating updater: %w", err)
+	}
+
+	latest, found, err := updater.DetectLatest(context.Background(), selfupdate.ParseSlug("genshinsim/gcsim"))
 	if err != nil {
 		return fmt.Errorf("error occurred while detecting version: %w", err)
 	}
@@ -337,6 +349,8 @@ func update(version string) error {
 		log.Printf("Current version (%s) is the latest", version)
 		return nil
 	}
+
+	log.Printf("Found latest version %v published at %v (%v), greater than current version %v\n", latest.Name, latest.PublishedAt, latest.AssetName, version)
 
 	exe, err := os.Executable()
 	if err != nil {

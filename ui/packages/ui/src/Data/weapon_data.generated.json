@@ -232,6 +232,14 @@
       "image_name": "UI_EquipIcon_Claymore_Reasoning",
       "name_text_hash_map ": "3097441915"
     },
+    "dialoguesofthedesertsages": {
+      "id": 13426,
+      "key": "dialoguesofthedesertsages",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Caduceus",
+      "name_text_hash_map ": "2847771107"
+    },
     "dodocotales": {
       "id": 14413,
       "key": "dodocotales",
@@ -1327,6 +1335,14 @@
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Champion",
       "name_text_hash_map ": "933442195"
+    },
+    "urakumisugiri": {
+      "id": 11514,
+      "key": "urakumisugiri",
+      "rarity": 5,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Needle",
+      "name_text_hash_map ": "1818340435"
     },
     "verdict": {
       "id": 12512,

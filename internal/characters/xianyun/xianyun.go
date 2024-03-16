@@ -62,7 +62,8 @@ func (c *char) Init() error {
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to use next skill
-	if a == action.ActionSkill && (c.StatusIsActive(skillStateKey) || c.StatusIsActive(c6Key)) {
+	// can't use skill when at 3 skills executed without a plunge
+	if a == action.ActionSkill && (c.StatusIsActive(skillStateKey) || c.StatusIsActive(c6Key)) && c.skillCounter < 3 {
 		return true, action.NoFailure
 	}
 	if (a == action.ActionAttack || a == action.ActionCharge) && c.StatusIsActive(skillStateKey) {

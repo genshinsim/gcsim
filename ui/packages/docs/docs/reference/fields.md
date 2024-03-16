@@ -34,6 +34,7 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 | `state` | - | - | - | Evaluates to the current state of the player. | 
 | `previous-char` | - | - | - | Evaluates to the char that executed the previous action. Use `.keys.char.<char name>` for comparison. | 
 | `previous-action` | - | - | - | Evaluates to the previously executed action. Use `.action.<action name>` for comparison. | 
+| `airborne` | - | - | - | `1` if the player is airborne (via buffed jump from Xianyun Q for example), `0` otherwise. | 
 | character name | `cons` | - | - | Evaluates to the character's constellation count. |
 | character name | `energy` | - | - | Evaluates to the character's current energy. |
 | character name | `energymax` | - | - | Evaluates to the character's maximum energy. |

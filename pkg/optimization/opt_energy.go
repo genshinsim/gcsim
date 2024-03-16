@@ -80,7 +80,10 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 
 	seed := time.Now().UnixNano()
 	a := optstats.NewEnergyAggBuffer(stats.simcfg)
-	optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerERStat, a.Add)
+	_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerERStat, a.Add)
+	if err != nil {
+		stats.optimizer.logger.Fatal(err.Error())
+	}
 	a.Flush()
 	for idxChar := range stats.charProfilesERBaseline {
 		// erDiff is the amount of ER we need

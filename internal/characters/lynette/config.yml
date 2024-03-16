@@ -15,6 +15,12 @@ skill_data_mapping:
         charge:
             - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
             - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+        collision:
+            - 8 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         skill:
             - 0 # Enigma Thrust DMG|{param0:F1P}

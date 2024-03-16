@@ -1,4 +1,16 @@
 {
+  "albedo": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "alhaitham": [
     {
       "ability": "skill",
@@ -9,6 +21,16 @@
       "ability": "low_plunge",
       "param": "short",
       "desc": "0 for normal low plunge (default), 1 for short low plunge. The short version is 20 frames shorter."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Does not apply to low_plunge from skill[hold=1]."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "aloy": [
@@ -85,6 +107,16 @@
       "ability": "dash",
       "param": "f",
       "desc": "Number of frames to add to minimum dash length. Default 0 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "ayato": [
@@ -92,6 +124,28 @@
       "ability": "skill",
       "param": "illusion_delay",
       "desc": "Illusion explosion delay in frames. Default 35 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "barbara": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "beidou": [
@@ -111,6 +165,16 @@
       "ability": "skill",
       "param": "hold_c4",
       "desc": "If 1, trigger C4. Default 0."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "candace": [
@@ -130,6 +194,16 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), value between 1 and 809 for Hold. The number determines the E duration in frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "chevreuse": [
@@ -159,6 +233,42 @@
       "ability": "aim",
       "param": "weakspot",
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    }
+  ],
+  "cyno": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "dehya": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "diluc": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "diona": [
@@ -203,6 +313,16 @@
       "ability": "burst",
       "param": "c2_travel",
       "desc": "Projectile travel time for Jinni Toop. Default 10 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "eula": [
@@ -210,6 +330,16 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "faruzan": [
@@ -266,6 +396,57 @@
       "desc": "0 to use E (default), 1 to use Recast E. Recast E is only possible if Oz is active and Recast E is not on cooldown."
     }
   ],
+  "freminet": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "furina": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "gaming": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Does not apply to the Plunge from E."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Does not apply to the Plunge from E."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "man_chai_delay",
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 92 frames."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "man_chai_delay",
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 92 frames."
+    },
+    {
+      "ability": "burst",
+      "param": "man_chai_delay",
+      "desc": "Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 100 frames."
+    }
+  ],
   "ganyu": [
     {
       "ability": "attack",
@@ -315,6 +496,28 @@
       "ability": "skill",
       "param": "hold",
       "desc": "Hold until max stacks. Default 0 (false), non-zero value for true."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "hutao": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "itto": [
@@ -332,6 +535,16 @@
       "ability": "burst",
       "param": "prestack",
       "desc": "Whether to grant a stack from performing N1 right before Q. 0 for no prestack, 1 for prestack. Default 0."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "jean": [
@@ -351,12 +564,19 @@
       "desc": "0 for Tap (default), value between 1 and 300 for Hold. Triggering C1 requires hold >= 60."
     }
   ],
-  "kazuha": [
+  "kaveh": [
     {
-      "ability": "high_plunge",
-      "param": "collide",
+      "ability": "low_plunge",
+      "param": "collision",
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "kazuha": [
     {
       "ability": "skill",
       "param": "hold",
@@ -366,6 +586,28 @@
       "ability": "skill",
       "param": "glide_cancel",
       "desc": "0 for no Glide Cancel (default), 1 for Glide Cancel. Using high_plunge after Skill with a Glide Cancel is not allowed."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "keqing": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "kirara": [
@@ -420,6 +662,16 @@
       "ability": "skill",
       "param": "release",
       "desc": "0 for Skill cancel (relevant for 4pc Crimson Witch stacks), 1 for Skill (default)."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "kokomi": [
@@ -453,6 +705,16 @@
       "ability": "burst",
       "param": "vivid_travel",
       "desc": "Projectile travel time for Vivid Shots. Default 15 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "lyney": [
@@ -523,6 +785,16 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), value between 1 and 241 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (41), subtracted by 1 to account for requiring a 1 to activate."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "nilou": [
@@ -569,6 +841,28 @@
       "ability": "burst",
       "param": "extend",
       "desc": "Number of seconds to extend Burst by. Value must be between 0 and 10. Default 10."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "raiden": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "razor": [
@@ -624,6 +918,18 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
+  "sucrose": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "tartaglia": [
@@ -717,11 +1023,33 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "wriothesley": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "xiangling": [
     {
       "ability": "skill",
       "param": "a4_delay",
       "desc": "Number of frames until the active character picks up the Chili Pepper (A4) relative to Guoba Expiry. A negative value indicates that it is not picked up. Default -1, maximum 600."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "wanderer": [
@@ -775,6 +1103,16 @@
       "ability": "attack",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "yanfei": [
@@ -782,6 +1120,16 @@
       "ability": "attack",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "yelan": [

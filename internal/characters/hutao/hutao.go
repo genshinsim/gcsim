@@ -93,6 +93,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		switch ai.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
+		case attacks.AttackTagPlunge:
 		default:
 			return ds
 		}

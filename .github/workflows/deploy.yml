@@ -46,6 +46,14 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
+
+      - name: deploy-wasm
+        uses: ./.github/actions/deploy-wasm
+        with:
+          rcloneConfig: ${{ secrets.CF_RCLONE }}
+          branch: ${{ steps.branch-name.outputs.base_ref_branch }}
+          shareKey: ${{ secrets.AES_KEY }}
+
       - name: deploy-db
         uses: ./.github/actions/deploy-db
         with:
@@ -62,14 +70,7 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
-      
-      - name: deploy-wasm
-        uses: ./.github/actions/deploy-wasm
-        with:
-          rcloneConfig: ${{ secrets.CF_RCLONE }}
-          branch: ${{ steps.branch-name.outputs.base_ref_branch }}
-          shareKey: ${{ secrets.AES_KEY }}
-      
+
       # build backend artifacts
       - name: build db
         uses: ./.github/actions/build-backend-binary

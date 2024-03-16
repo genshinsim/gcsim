@@ -82,6 +82,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gcsim/internal/characters/freminet"
 	_ "github.com/genshinsim/gcsim/internal/characters/furina"
+	_ "github.com/genshinsim/gcsim/internal/characters/gaming"
 	_ "github.com/genshinsim/gcsim/internal/characters/ganyu"
 	_ "github.com/genshinsim/gcsim/internal/characters/gorou"
 	_ "github.com/genshinsim/gcsim/internal/characters/heizou"
@@ -265,6 +266,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/catch"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/crescent"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/deathmatch"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dialoguesofthedesertsages"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dragonbane"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dragonspine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/engulfing"
@@ -325,6 +327,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofnarzissenkreuz"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/toukaboushigure"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/travelershandysword"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/urakumisugiri"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/wolffang"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/xiphos"
 )

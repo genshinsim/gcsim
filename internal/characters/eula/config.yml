@@ -15,6 +15,13 @@ skill_data_mapping:
         auto_5:
             - 4 # 5-Hit DMG|{param4:F1P}+{param4:F1P}
             - 4 # 5-Hit DMG|{param4:F1P}+{param4:F1P}
+
+        collision:
+            - 9 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 11 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         icewhirl:
             - 2 # Icewhirl Brand DMG|{param2:P}

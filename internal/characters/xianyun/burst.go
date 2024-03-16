@@ -1,6 +1,8 @@
 package xianyun
 
 import (
+	"strings"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -22,6 +24,11 @@ const (
 	burstRadius    = 7
 	burstDoTRadius = 4.8
 	burstDoTDelay  = 5
+	// TODO: fragile
+	// used to make sure that only 1 plunge dmg instance consumes an adeptal assistance stack
+	// purely needed because of kazuha a1 right now
+	lossKey = "xianyun-burst-loss-icd"
+	lossIcd = 3
 )
 
 // TODO: dummy frame data from shenhe
@@ -101,7 +108,11 @@ func (c *char) burstPlungeDoTTrigger() {
 		// ApplyAttack occurs only once per attack, so we do not need to add an ICD status
 		atk := args[0].(*combat.AttackEvent)
 
-		if atk.Info.AttackTag != attacks.AttackTagPlunge {
+		// TODO: fragile
+		// needs to be like this because of raiden q plunge being burst dmg not plunge dmg
+		if atk.Info.AttackTag != attacks.AttackTagPlunge &&
+			!strings.Contains(atk.Info.Abil, "Low Plunge") &&
+			!strings.Contains(atk.Info.Abil, "High Plunge") {
 			return false
 		}
 
@@ -122,6 +133,11 @@ func (c *char) burstPlungeDoTTrigger() {
 			return false
 		}
 
+		if c.StatusIsActive(lossKey) {
+			return false
+		}
+		c.AddStatus(lossKey, lossIcd, false)
+
 		aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstDoTRadius)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -140,19 +156,17 @@ func (c *char) burstPlungeDoTTrigger() {
 			burstDoTDelay,
 			burstDoTDelay,
 		)
-		c.QueueCharTask(func() {
-			c.adeptalAssistStacks--
-			c.Core.Log.NewEvent("Xianyun Adeptal Assistance stack consumed", glog.LogPreDamageMod, c.Core.Player.Active()).
-				Write("effect_ends_at", c.StatusExpiry(player.XianyunAirborneBuff)).
-				Write("stacks_left", c.adeptalAssistStacks)
-			if c.adeptalAssistStacks == 0 {
-				// Delay stack reduction and status removal until after the attack lands
-				// so that A4 can still proc on the attack that triggers the burstDot.
-				for _, char := range c.Core.Player.Chars() {
-					char.DeleteStatus(player.XianyunAirborneBuff)
-				}
+		c.adeptalAssistStacks--
+		c.Core.Log.NewEvent("Xianyun Adeptal Assistance stack consumed", glog.LogPreDamageMod, c.Core.Player.Active()).
+			Write("effect_ends_at", c.StatusExpiry(player.XianyunAirborneBuff)).
+			Write("stacks_left", c.adeptalAssistStacks)
+		if c.adeptalAssistStacks == 0 {
+			for _, char := range c.Core.Player.Chars() {
+				char.DeleteStatus(player.XianyunAirborneBuff)
 			}
-		}, 1)
+		}
+		// keep a window open for a4 to be able to apply
+		c.AddStatus(a4WindowKey, 1, false)
 		return false
 	}, "xianyun-starwicker-plunge-hook")
 }

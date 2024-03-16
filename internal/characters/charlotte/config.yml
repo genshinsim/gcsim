@@ -13,6 +13,12 @@ skill_data_mapping:
             - 2 # 3-Hit DMG|{param2:F1P}
         charge:
             - 3 # Charged Attack DMG|{param3:F1P}
+        collision:
+            - 5 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 6 # Low/High Plunge DMG|{param7:P}/{param8:P}
+        highPlunge:
+            - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill:
         skillHold:
             - 1 # Photo DMG (Hold)|{param1:F1P}

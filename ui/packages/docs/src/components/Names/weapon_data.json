@@ -26,7 +26,8 @@
     "boundlessblue"
   ],
   "balladofthefjords": [
-    "ballad"
+    "ballad",
+    "fjords"
   ],
   "beaconofthereedsea": [
     "beacon"
@@ -67,8 +68,13 @@
   "darkironsword": [],
   "deathmatch": [],
   "debateclub": [],
+  "dialoguesofthedesertsages": [
+    "dialogues"
+  ],
   "dodocotales": [],
-  "dragonsbane": [],
+  "dragonsbane": [
+    "dbane"
+  ],
   "dragonspinespear": [],
   "dullblade": [],
   "elegyfortheend": [
@@ -108,7 +114,9 @@
     "festering"
   ],
   "filletblade": [],
-  "finaleofthedeep": [],
+  "finaleofthedeep": [
+    "finale"
+  ],
   "flowingpurity": [],
   "fleuvecendreferryman": [
     "fleuve",
@@ -406,7 +414,12 @@
   "twinnephrite": [],
   "ultimateoverlordsmegamagicsword": [
     "megamagicsword",
-    "uomms"
+    "uomms",
+    "melusineclaymore"
+  ],
+  "urakumisugiri": [
+    "uraku",
+    "misugiri"
   ],
   "verdict": [],
   "vortexvanquisher": [
