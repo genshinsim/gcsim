@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -51,11 +50,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a1()
-
-	if c.Base.Ascension >= 4 {
-		c.a4buff = make([]float64, attributes.EndStatType)
-		c.a4buff[attributes.GeoP] = 0.20
-	}
+	c.a4()
 
 	c.c2init()
 	c.c4init()

@@ -150,11 +150,16 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(a4BuffKey, 20*60),
-		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return c.a4buff, true
-		},
-	})
+	c.a4buff = make([]float64, attributes.EndStatType)
+	c.a4buff[attributes.GeoP] = 0.20
+	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...interface{}) bool {
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(a4BuffKey, 20*60),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return c.a4buff, true
+			},
+		})
+		return false
+	}, "chiori-a4")
 }
