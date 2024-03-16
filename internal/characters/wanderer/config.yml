@@ -1,30 +1,44 @@
 package_name: wanderer
 genshin_id: 10000075
 key: wanderer
+icd_tags:
+  - ICDTagWandererC6
+  - ICDTagWandererA4
+icd_groups:
+  - group_name: ICDGroupWandererC6
+    reset_timer: 120
+    ele_app_sequence:
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+  - group_name: ICDGroupWandererA4
+    reset_timer: 60
+    ele_app_sequence:
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-        charge:
-            - 4 # Charged Attack DMG|{param4:F1P}
-        highPlunge:
-            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        lowPlunge:
-            - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        plunge:
-            - 6 # Plunge DMG|{param6:F1P}
+  attack:
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+    charge:
+      - 4 # Charged Attack DMG|{param4:F1P}
+    highPlunge:
+      - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
+    lowPlunge:
+      - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
+    plunge:
+      - 6 # Plunge DMG|{param6:F1P}
+  skill:
     skill:
-        skill:
-            - 0 # Skill DMG|{param0:F1P}
-        skillCABonus:
-            - 2 # Kuugo: Toufukai DMG|{param2:F1P} Charged Attack DMG
-        skillNABonus:
-            - 1 # Kuugo: Fushoudan DMG|{param1:F1P} Normal Attack DMG
+      - 0 # Skill DMG|{param0:F1P}
+    skillCABonus:
+      - 2 # Kuugo: Toufukai DMG|{param2:F1P} Charged Attack DMG
+    skillNABonus:
+      - 1 # Kuugo: Fushoudan DMG|{param1:F1P} Normal Attack DMG
+  burst:
     burst:
-        burst:
-            - 0 # Skill DMG|{param0:F1P}×5
+      - 0 # Skill DMG|{param0:F1P}×5

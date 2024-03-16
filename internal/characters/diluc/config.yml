@@ -2,30 +2,67 @@ package_name: diluc
 genshin_id: 10000016
 key: diluc
 skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:P}
-        collision:
-            - 8 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
+  attack:
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}
+    attack_4:
+      - 3 # 4-Hit DMG|{param3:P}
+    collision:
+      - 8 # Plunge DMG|{param6:F1P}
+    lowPlunge:
+      - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
+    highPlunge:
+      - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
+  skill:
     skill:
-        skill:
-            - 0 # 1-Hit DMG|{param0:F1P}
-            - 1 # 2-Hit DMG|{param1:F1P}
-            - 2 # 3-Hit DMG|{param2:P}
-    burst:
-        burstDOT:
-            - 1 # DoT|{param1:F1P}
-        burstExplode:
-            - 0 # Slashing DMG|{param0:P}
-        burstInitial:
-            - 0 # Slashing DMG|{param0:P}
+      - 0 # 1-Hit DMG|{param0:F1P}
+      - 1 # 2-Hit DMG|{param1:F1P}
+      - 2 # 3-Hit DMG|{param2:P}
+  burst:
+    burstDOT:
+      - 1 # DoT|{param1:F1P}
+    burstExplode:
+      - 0 # Slashing DMG|{param0:P}
+    burstInitial:
+      - 0 # Slashing DMG|{param0:P}
+icd_groups:
+  - group_name: ICDGroupDiluc
+    reset_timer: 300
+    ele_app_sequence:
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+      ]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
