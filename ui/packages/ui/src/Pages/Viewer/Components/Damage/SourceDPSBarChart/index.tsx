@@ -65,7 +65,7 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
           <BarChartLegend names={names} />
         </div>
       </div>
-      <ParentSize className="overflow-x-scroll">
+      <ParentSize className="overflow-x-auto">
         {({ width, height }) => (
           <BarChart
             width={width}
