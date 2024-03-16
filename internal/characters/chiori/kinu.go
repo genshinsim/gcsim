@@ -15,7 +15,7 @@ import (
 // Kinu will leave the field after 1 attack or after lasting 3s.
 func (c *char) createKinu() {
 	// TODO:  is this right???
-	t := newTicker(c.Core, 180)
+	t := newTicker(c.Core, 180, nil)
 	// add a on dmg sub based on this ticker
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		if !t.alive {

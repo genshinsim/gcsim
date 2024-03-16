@@ -95,7 +95,7 @@ func (c *char) handleSkill(holdDelay int) {
 		c.kill(c.constructChecker)
 
 		// create new doll
-		doll := newTicker(c.Core, dollLife) // .5s longer
+		doll := newTicker(c.Core, dollLife, nil) // .5s longer
 		doll.cb = c.skillDollAttack
 		doll.interval = dollAttackInterval // 3.6s
 
@@ -106,7 +106,7 @@ func (c *char) handleSkill(holdDelay int) {
 		c.skillDoll = doll
 
 		// associated construct tracker; ticks every 0.3s
-		cc := newTicker(c.Core, dollLife)
+		cc := newTicker(c.Core, dollLife, nil)
 		cc.cb = c.skillDollConstructCheck
 		cc.interval = 18
 		c.Core.Tasks.Add(cc.tick, 6) //TODO: i made this delay up; not sure how quick first check is
@@ -199,7 +199,7 @@ func (c *char) skillDollConstructCheck() {
 	}
 
 	// create a new rockdoll and delete this ticker (so that we don't self delete)
-	rd := newTicker(c.Core, dollLife)
+	rd := newTicker(c.Core, dollLife, nil)
 	rd.cb = c.rockDollAttack
 	rd.interval = dollAttackInterval
 	c.Core.Tasks.Add(rd.tick, skillRockDollAttackDelay)

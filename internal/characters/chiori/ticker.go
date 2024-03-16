@@ -20,7 +20,10 @@ type ticker struct {
 	interval int
 
 	onDeath func()
+	queuer
 }
+
+type queuer func(cb func(), delay int)
 
 // kill stops any existing ticker from ticking
 func (g *ticker) kill() {
@@ -32,7 +35,7 @@ func (g *ticker) kill() {
 	}
 }
 
-func newTicker(c *core.Core, life int) *ticker {
+func newTicker(c *core.Core, life int, q queuer) *ticker {
 	// note we don't check if life <= 0 here
 	// if life is <= 0 then this will cause gadget to kill itself
 	// the next time tasks are checked
@@ -40,6 +43,10 @@ func newTicker(c *core.Core, life int) *ticker {
 		alive:     true,
 		c:         c,
 		liveUntil: c.F + life,
+		queuer:    q,
+	}
+	if g.queuer == nil {
+		g.queuer = c.Tasks.Add
 	}
 	c.Tasks.Add(func() {
 		g.kill()
@@ -64,6 +71,6 @@ func (g *ticker) tick() {
 	}
 	// queue next action
 	if g.interval > 0 && g.c.F+g.interval <= g.liveUntil {
-		g.c.Tasks.Add(g.tick, g.interval)
+		g.queuer(g.tick, g.interval)
 	}
 }

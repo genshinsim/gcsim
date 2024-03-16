@@ -54,7 +54,7 @@ func (c *char) c2() {
 		return
 	}
 	c.kill(c.c2Ticker)
-	t := newTicker(c.Core, 600)
+	t := newTicker(c.Core, 600, c.QueueCharTask)
 	t.cb = c.createKinu
 	t.interval = 180 // every 3 sec
 	//TODO: no idea when first one comes out. so let's just do 1 frame for now
