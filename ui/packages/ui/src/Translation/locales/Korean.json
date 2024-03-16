@@ -212,7 +212,12 @@
         "video_post": "를 참고해 시작해봅시다.",
         "video_pre": "팀에 캐릭터를 추가하는 것부터 시작하세요. 이 ",
         "weapons": "무기",
-        "workers": "워커"
+        "workers": "워커",
+        "server_mode_enable": "서버 모드 활성화(고급 사용자만 해당)",
+        "server_mode_disable": "서버 모드 비활성화(고급 사용자만 해당)",
+        "server_mode_url": "서버 URL",
+        "server_mode_required": "(필수)",
+        "server_mode_default": "기본값: "
     },
     "src": {
         "this_page_is": "이 페이지는 아직 지원되지 않습니다. 기대해주세요!"

@@ -200,7 +200,12 @@
         "video_post": "来了解更多。",
         "video_pre": "开始添加角色到你的队伍中吧。查看这个",
         "weapons": "武器",
-        "workers": "工作器"
+        "workers": "工作器",
+        "server_mode_enable": "启用服务器模式（仅限高级用户）",
+        "server_mode_disable": "禁用服务器模式（仅限高级用户）",
+        "server_mode_url": "服务器URL",
+        "server_mode_required": "(所需)",
+        "server_mode_default": "默认: "
     },
     "src": {
         "this_page_is": "此页面正在施工中。敬请期待！"
