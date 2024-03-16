@@ -42,7 +42,7 @@ const (
 // When on the field, if Chiori does not either Press her Elemental Skill or use
 // a Normal Attack within a short time after using Fluttering Hasode's upward
 // sweep, the Tailoring effect will be triggered by default.
-func (c *char) a1() {
+func (c *char) a1init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -94,13 +94,10 @@ func (c *char) a1() {
 }
 
 func (c *char) a1Tapestry() {
-	c.a1Triggered = true
+	c.triggerA1()
 	//TODO: should this be per char status for hitlag?
 	c.Core.Status.Add(a1SeizeTheMoment, 8*60)
-	c.DeleteStatus(a1TailorMadeWindowKey)
 	c.Core.Log.NewEvent("a1 seize the moment triggered", glog.LogCharacterEvent, c.Index)
-	c.c4()
-	c.c6()
 }
 
 func (c *char) tryTriggerA1Tailoring() {
@@ -114,11 +111,7 @@ func (c *char) tryTriggerA1Tailoring() {
 }
 
 func (c *char) a1Tailoring() {
-	c.a1Triggered = true
-	// she can't use skill again if she triggers this
-	c.DeleteStatus(a1TailorMadeWindowKey)
-	c.c4()
-	c.c6()
+	c.triggerA1()
 	c.Core.Log.NewEvent("a1 geo infusion triggered", glog.LogCharacterEvent, c.Index)
 	c.Core.Player.AddWeaponInfuse(
 		c.Index,
@@ -130,7 +123,15 @@ func (c *char) a1Tailoring() {
 	)
 }
 
-func (c *char) a1Window() {
+func (c *char) triggerA1() {
+	c.a1Triggered = true
+	// she can't use skill again if she triggers this
+	c.DeleteStatus(a1TailorMadeWindowKey)
+	c.c4()
+	c.c6()
+}
+
+func (c *char) activateA1Window() {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -146,7 +147,7 @@ func (c *char) a1Window() {
 }
 
 // When a nearby party member creates a Geo Construct, Chiori will gain 20% Geo DMG Bonus for 20s.
-func (c *char) a4() {
+func (c *char) a4init() {
 	if c.Base.Ascension < 4 {
 		return
 	}

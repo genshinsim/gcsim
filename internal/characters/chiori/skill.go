@@ -113,7 +113,7 @@ func (c *char) handleSkill(holdDelay int) {
 		c.constructChecker = cc
 	}, skillDollForm+holdDelay)
 
-	c.a1Window()
+	c.activateA1Window()
 	c.SetCDWithDelay(action.ActionSkill, 15*60, holdDelay+1) //TODO: what's the delay here?
 }
 
