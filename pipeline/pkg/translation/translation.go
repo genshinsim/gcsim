@@ -18,6 +18,7 @@ type GeneratorConfig struct {
 	Characters []*model.AvatarData
 	Weapons    []*model.WeaponData
 	Artifacts  []*model.ArtifactData
+	Enemies    []*model.MonsterData
 	Languages  map[string]string // map of languages and their corresponding textmap
 }
 
@@ -40,6 +41,7 @@ type outData struct {
 	CharacterNames map[string]string `json:"character_names"`
 	WeaponNames    map[string]string `json:"weapon_names"`
 	ArtifactNames  map[string]string `json:"artifact_names"`
+	EnemyNames     map[string]string `json:"enemy_names"`
 }
 
 func (g *Generator) writeTranslationJSON(path string) error {
@@ -57,6 +59,7 @@ func (g *Generator) writeTranslationJSON(path string) error {
 			CharacterNames: make(map[string]string),
 			WeaponNames:    make(map[string]string),
 			ArtifactNames:  make(map[string]string),
+			EnemyNames:     make(map[string]string),
 		}
 		// load generator for this language
 		tp := g.Languages[k]
@@ -88,6 +91,14 @@ func (g *Generator) writeTranslationJSON(path string) error {
 				continue
 			}
 			data.ArtifactNames[v.Key] = s
+		}
+		for _, v := range g.Enemies {
+			s, err := src.Get(v.NameTextHashMap)
+			if err != nil {
+				fmt.Printf("error getting string for set %v id %v\n", v.Key, v.NameTextHashMap)
+				continue
+			}
+			data.EnemyNames[v.Key] = s
 		}
 
 		out[k] = data

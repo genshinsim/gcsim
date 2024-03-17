@@ -26,7 +26,8 @@
         "dendro%": "Dendro-SCH-Bonus",
         "anemo%": "Anemo-SCH-Bonus",
         "geo%": "Geo-SCH-Bonus",
-        "cryo%": "Kryo-SCH-Bonus"
+        "cryo%": "Kryo-SCH-Bonus",
+        "modified": "Modifiziert"
     },
     "actions": {
         "attack": "Standardangriff",
@@ -55,7 +56,7 @@
         "swirl-hydro": "Verwirbelung (Hydro)",
         "swirl-pyro": "Verwirbelung (Pyro)",
         "swirl-cryo": "Verwirbelung (Kryo)",
-        "electrocharged": "Unter Strom", 
+        "electrocharged": "Unter Strom",
         "shatter": "Eisbrecher",
         "burning": "In Flammen",
         "quicken": "Urwuchs",
@@ -171,6 +172,8 @@
         "documentation_post": " an, welche ein einfaches Tutorial zum Schreiben von sequentiellen Listen enthält.",
         "documentation_pre": "Ansonsten, schauen Sie sich unsere ",
         "editor_theme": "Editor-Theme",
+        "enemies": "Gegner",
+        "font_size": "Schriftgröße",
         "generate_sample": "Beispiel beim Laden der Seite erzeugen",
         "hide_all_tips": "Alle Tipps ausblenden",
         "import": "Importieren",
@@ -372,5 +375,9 @@
         "dash_data_header": "Gesamtverzögerung des Rennens aufgrund der Abklingzeit pro Iteration",
         "ignore_burst_energy_title": "\"Spezialfähigkeit-Energiekosten ignorieren\"-Modus ist aktiviert",
         "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen."
+    },
+    "states": {
+        "true": "wahr",
+        "false": "falsch"
     }
 }

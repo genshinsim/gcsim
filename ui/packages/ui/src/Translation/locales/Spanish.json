@@ -26,7 +26,8 @@
         "dendro%": "Bono de Daño Dendro",
         "anemo%": "Bono de Daño Anemo",
         "geo%": "Bono de Daño Geo",
-        "cryo%": "Bono de Daño Cryo"
+        "cryo%": "Bono de Daño Cryo",
+        "modified": "Modificado"
     },
     "actions": {
         "attack": "Ataque Normal",
@@ -55,7 +56,7 @@
         "swirl-hydro": "Torbellino (Hydro)",
         "swirl-pyro": "Torbellino (Pyro)",
         "swirl-cryo": "Torbellino (Cryo)",
-        "electrocharged": "Electrocargado", 
+        "electrocharged": "Electrocargado",
         "shatter": "Rompehielos",
         "burning": "Quemadura",
         "quicken": "Aceleración",
@@ -171,6 +172,8 @@
         "documentation_post": " que incluye un simple tutorial en como escribir listas secuenciales.",
         "documentation_pre": "Alternativamente, checa nuestra ",
         "editor_theme": "Tema del editor",
+        "enemies": "Enemigos",
+        "font_size": "Tamaño de fuente",
         "generate_sample": "Generar una muestra al cargar la página",
         "hide_all_tips": "Ocultar todos los tips",
         "import": "Importar",
@@ -372,5 +375,9 @@
         "dash_data_header": "Retraso total en esprintar debido al TdE por iteración",
         "ignore_burst_energy_title": "Modo \"Ignorar Costes de Energía de Habilidad Definitiva\" activado",
         "ignore_burst_energy_body": "La simulación ignora los requisitos de Habilidad Definitiva. Esto puede dar lugar a simulaciones imprecisas."
+    },
+    "states": {
+        "true": "true",
+        "false": "false"
     }
 }

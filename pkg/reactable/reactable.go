@@ -171,7 +171,7 @@ func (r *Reactable) AuraCount() int {
 }
 
 func (r *Reactable) React(a *combat.AttackEvent) {
-	//TODO: double check order of reactions
+	// TODO: double check order of reactions
 	switch a.Info.Element {
 	case attributes.Electro:
 		// hyperbloom

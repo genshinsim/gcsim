@@ -69,8 +69,8 @@ func (a *ActionList) Copy() *ActionList {
 	r := *a
 
 	r.Targets = make([]EnemyProfile, len(a.Targets))
-	for i, v := range a.Targets {
-		r.Targets[i] = v.Clone()
+	for i := range a.Targets {
+		r.Targets[i] = a.Targets[i].Clone()
 	}
 
 	r.Characters = make([]CharacterProfile, len(a.Characters))

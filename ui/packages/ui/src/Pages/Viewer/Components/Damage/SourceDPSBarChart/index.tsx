@@ -2,9 +2,9 @@ import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
 import { SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CardTitle, useRefreshWithTimer } from "../../Util";
 import { BarChart, BarChartLegend } from "./BarChart";
-import { useTranslation } from "react-i18next";
 
 type Props = {
   data: SimResults | null;
@@ -65,7 +65,7 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
           <BarChartLegend names={names} />
         </div>
       </div>
-      <ParentSize>
+      <ParentSize className="overflow-x-auto">
         {({ width, height }) => (
           <BarChart
             width={width}
@@ -91,7 +91,11 @@ const Options = ({
   graphs: Graphs;
 }) => {
   const { t } = useTranslation();
-  const label = <span className="text-xs font-mono text-gray-400">{t<string>("result.type")}</span>;
+  const label = (
+    <span className="text-xs font-mono text-gray-400">
+      {t<string>("result.type")}
+    </span>
+  );
 
   return (
     <FormGroup label={label} inline={true} className="!mb-2">
@@ -117,7 +121,9 @@ const Filters = ({
 }) => {
   const { t } = useTranslation();
   const label = (
-    <span className="text-xs font-mono text-gray-400">{t<string>("db.character")}</span>
+    <span className="text-xs font-mono text-gray-400">
+      {t<string>("db.character")}
+    </span>
   );
 
   return (
