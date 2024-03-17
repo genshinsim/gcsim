@@ -311,6 +311,23 @@
       },
       "name_text_hash_map ": "540313842"
     },
+    "chiori": {
+      "id": 10000094,
+      "key": "chiori",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Rock",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Chiori",
+      "skill_details": {
+        "skill": 10942,
+        "burst": 10945,
+        "attack": 10941,
+        "burst_energy_cost": 50
+      },
+      "name_text_hash_map ": "1944606922"
+    },
     "chongyun": {
       "id": 10000036,
       "key": "chongyun",

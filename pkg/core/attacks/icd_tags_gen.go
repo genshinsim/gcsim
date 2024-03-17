@@ -5,6 +5,7 @@ const (
 	ICDTagGeneratedStart ICDTag = iota + EndDefaultICDTags + 1
 	ICDTagCharlotteMark
 	ICDTagCharlotteKamera
+	ICDTagChioriSkill
 	ICDTagColleiSprout
 	ICDTagCynoBolt
 	ICDTagDoriC2

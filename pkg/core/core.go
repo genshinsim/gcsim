@@ -93,7 +93,7 @@ func New(opt Opt) (*Core, error) {
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)
-	c.Constructs = construct.New(&c.F, c.Log)
+	c.Constructs = construct.New(&c.F, c.Log, c.Events)
 	c.Player = player.New(
 		player.Opt{
 			F:            &c.F,
