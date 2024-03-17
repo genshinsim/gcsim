@@ -14,7 +14,7 @@ type EnemyProfile struct {
 	ParticleDropCount     float64                `json:"particle_drop_count"`
 	ParticleElement       attributes.Element     `json:"particle_element"`
 	FreezeResist          float64                `json:"freeze_resist"`
-	ParticleDrops         []model.MonsterHPDrop  `json:"-"`
+	ParticleDrops         []*model.MonsterHPDrop `json:"-"`
 	HpBase                float64                `json:"-"`
 	HpGrowCurve           model.MonsterCurveType `json:"-"`
 	Id                    int                    `json:"-"`

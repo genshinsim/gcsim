@@ -33,11 +33,12 @@ func SetupTargetsInCore(core *core.Core, p geometry.Point, r float64, targets []
 	core.Combat.SetPlayer(player)
 
 	// add targets
-	for i, v := range targets {
+	for i := range targets {
+		v := &targets[i]
 		if v.Pos.R == 0 {
 			return fmt.Errorf("target cannot have 0 radius (index %v): %v", i, v)
 		}
-		e := enemy.New(core, v)
+		e := enemy.New(core, *v)
 		core.Combat.AddEnemy(e)
 		// s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
 	}

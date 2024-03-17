@@ -47,7 +47,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 		enemyInfo.ParticleDropThreshold = profile.ParticleDropThreshold
 		enemyInfo.ParticleDropCount = profile.ParticleDropCount
 		enemyInfo.ParticleElement = profile.ParticleElement
-		enemyInfo.ParticleDrops = []model.MonsterHPDrop{}
+		enemyInfo.ParticleDrops = []*model.MonsterHPDrop{}
 	}
 	*profile = enemyInfo
 	return nil
@@ -65,10 +65,10 @@ func getMonsterInfo(name string) (info.EnemyProfile, error) {
 	}
 
 	// clone hp drops
-	hpDrops := make([]model.MonsterHPDrop, 0, len(result.BaseStats.HpDrop))
+	hpDrops := make([]*model.MonsterHPDrop, 0, len(result.BaseStats.HpDrop))
 	for i := range result.BaseStats.HpDrop {
 		hpDrop := result.BaseStats.HpDrop[i]
-		hpDrops = append(hpDrops, model.MonsterHPDrop{
+		hpDrops = append(hpDrops, &model.MonsterHPDrop{
 			DropId:    hpDrop.DropId,
 			HpPercent: hpDrop.HpPercent,
 		})

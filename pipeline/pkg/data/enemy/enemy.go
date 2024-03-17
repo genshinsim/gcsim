@@ -49,8 +49,8 @@ func (a *DataSource) GetMonsters() []*model.MonsterData {
 	visited := map[string]bool{}
 	monsters := make([]*model.MonsterData, 0, len(a.monsterExcel))
 
-	for _, v := range a.monsterExcel {
-		monster, err := a.ParseMonsterData(&v)
+	for i := range a.monsterExcel {
+		monster, err := a.ParseMonsterData(&a.monsterExcel[i])
 		if err != nil {
 			// ignoring
 			continue

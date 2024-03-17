@@ -63,7 +63,8 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 	}
 
 	sample.TargetDetails = make([]*model.Enemy, len(simcfg.Targets))
-	for i, target := range simcfg.Targets {
+	for i := range simcfg.Targets {
+		target := &simcfg.Targets[i]
 		resist := make(map[string]float64)
 		for k, v := range target.Resist {
 			resist[k.String()] = v
