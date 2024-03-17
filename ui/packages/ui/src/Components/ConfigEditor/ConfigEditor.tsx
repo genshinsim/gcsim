@@ -48,7 +48,7 @@ export function ConfigEditor(props: Props) {
     return localStorage.getItem(LOCALSTORAGE_THEME_KEY) ?? "tomorrow_night";
   });
   const [fontSize, setFontSize] = React.useState(() => {
-    return localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY) ?? 14;
+    return localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY) ? Number(localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY)) : 14;
   });
   React.useEffect(() => {
     localStorage.setItem(LOCALSTORAGE_THEME_KEY, theme);
