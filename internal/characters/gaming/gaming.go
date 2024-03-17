@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -38,4 +39,15 @@ func (c *char) Init() error {
 	c.c6()
 	c.onExitField()
 	return nil
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 18
+	case model.AnimationYelanN0StartDelay:
+		return 18
+	default:
+		return c.Character.AnimationStartDelay(k)
+	}
 }
