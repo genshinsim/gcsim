@@ -7,3 +7,4 @@ export type IArtifact = string;
 export type IWeapon = string;
 export type IStat = string;
 export type IAction = string;
+export type IEnemy = string;

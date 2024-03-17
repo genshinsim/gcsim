@@ -1,8 +1,16 @@
 import { Button, Intent, Position, Toaster } from "@blueprintjs/core";
-import { IAction, IArtifact, ICharacter, IStat, IWeapon } from "@gcsim/types";
+import {
+  IAction,
+  IArtifact,
+  ICharacter,
+  IEnemy,
+  IStat,
+  IWeapon,
+} from "@gcsim/types";
 import { ArtifactSelect, WeaponSelect } from "@ui/Components/Select";
 import { ActionSelect } from "@ui/Components/Select/ActionSelect";
 import { CharacterSelect } from "@ui/Components/Select/CharacterSelect";
+import { EnemySelect } from "@ui/Components/Select/EnemySelect";
 import { StatSelect } from "@ui/Components/Select/StatSelect";
 import { useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -14,6 +22,7 @@ export function OmnibarBlock() {
   const [weaponsOpen, setWeaponsOpen] = useState(false);
   const [actionsOpen, setActionsOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
+  const [enemiesOpen, setEnemiesOpen] = useState(false);
 
   const copyToast = useRef<Toaster>(null);
 
@@ -97,6 +106,29 @@ export function OmnibarBlock() {
         />
       </div>
       <div className="flex flex-row gap-1.5 my-1 mx-2">
+        <Button
+          icon="virus"
+          fill
+          onClick={() => {
+            setEnemiesOpen(true);
+          }}
+        >
+          <Trans>simple.enemies</Trans>
+        </Button>
+        <EnemySelect
+          isOpen={enemiesOpen}
+          onClose={() => setEnemiesOpen(false)}
+          onSelect={(enemy: IEnemy) => {
+            setActionsOpen(false);
+            navigator.clipboard.writeText(enemy ?? "").then(() => {
+              copyToast.current?.show({
+                message: `${t("simple.copied_to_clipboard", { item: enemy })}`,
+                intent: Intent.SUCCESS,
+                timeout: 2000,
+              });
+            });
+          }}
+        />
         <Button
           icon="walk"
           fill
