@@ -27,32 +27,34 @@ const travelers = [
 ];
 
 let trans = {
-  English: { artifact_names: {}, character_names: {}, weapon_names: {} },
-  Chinese: { artifact_names: {}, character_names: {}, weapon_names: {} },
-  Japanese: { artifact_names: {}, character_names: {}, weapon_names: {} },
-  Spanish: { artifact_names: {}, character_names: {}, weapon_names: {} },
-  Russian: { artifact_names: {}, character_names: {}, weapon_names: {} },
-  German: { artifact_names: {}, character_names: {}, weapon_names: {} },
+  English: { artifact_names: {}, character_names: {}, enemy_names: {}, weapon_names: {} },
+  Chinese: { artifact_names: {}, character_names: {}, enemy_names: {}, weapon_names: {} },
+  Japanese: { artifact_names: {}, character_names: {}, enemy_names: {}, weapon_names: {} },
+  Korean: { artifact_names: {}, character_names: {}, enemy_names: {}, weapon_names: {} },
+  Spanish: { artifact_names: {}, character_names: {}, enemy_names: {}, weapon_names: {} },
+  Russian: { artifact_names: {}, character_names: {}, enemy_names: {}, weapon_names: {} },
+  German: { artifact_names: {}, character_names: {}, enemy_names: {}, weapon_names: {} },
 };
+
+const languages = {
+  English: "EN",
+  Chinese: "CHS",
+  Japanese: "JP",
+  Korean: "KR",
+  Spanish: "ES",
+  Russian: "RU",
+  German: "DE"
+}
 
 names.forEach((e) => {
   const eng = genshindb.characters(e);
   if (!eng) return;
-  //key is e 
-  let key = e
+  //key is e
 
-  const cn = genshindb.characters(e, { resultLanguage: "CHS" });
-  const jp = genshindb.characters(e, { resultLanguage: "JP" });
-  const es = genshindb.characters(e, { resultLanguage: "ES" });
-  const ru = genshindb.characters(e, { resultLanguage: "RU" });
-  const de = genshindb.characters(e, { resultLanguage: "DE" });
-
-  trans["English"]["character_names"][e] = eng.name;
-  trans["Chinese"]["character_names"][e] = cn.name;
-  trans["Japanese"]["character_names"][e] = jp.name;
-  trans["Spanish"]["character_names"][e] = es.name;
-  trans["Russian"]["character_names"][e] = ru.name;
-  trans["German"]["character_names"][e] = de.name;
+  for (const [langName, langCode] of Object.entries(languages)) {
+    const lang = genshindb.characters(e, { resultLanguage: langCode });
+    trans[langName]["character_names"][e] = lang.name;
+  }
 });
 
 travelers.map((e) => {
@@ -62,43 +64,21 @@ travelers.map((e) => {
   
   const eng = genshindb.talents(key);
   if (!mcm || !mcf || !eng) return;
-
-  //abit hacky,  we only want what's in brackets
-  const cn = genshindb.talents(key, { resultLanguage: "CHS" });
-  const jp = genshindb.talents(key, { resultLanguage: "JP" });
-  const es = genshindb.talents(key, { resultLanguage: "ES" });
-  const ru = genshindb.talents(key, { resultLanguage: "RU" });
-  const de = genshindb.talents(key, { resultLanguage: "DE" });
-
-  //names have to be right language too...
-  const mcn = genshindb.characters("aether", { resultLanguage: "CHS" });
-  const mjp = genshindb.characters("aether", { resultLanguage: "JP" });
-  const mes = genshindb.characters("aether", { resultLanguage: "ES" });
-  const mru = genshindb.characters("aether", { resultLanguage: "RU" });
-  const mde = genshindb.characters("aether", { resultLanguage: "DE" });
-
-  const fcn = genshindb.characters("lumine", { resultLanguage: "CHS" });
-  const fjp = genshindb.characters("lumine", { resultLanguage: "JP" });
-  const fes = genshindb.characters("lumine", { resultLanguage: "ES" });
-  const fru = genshindb.characters("lumine", { resultLanguage: "RU" });
-  const fde = genshindb.characters("lumine", { resultLanguage: "DE" });
-
-  trans["English"]["character_names"][`aether${e}`] = eng.name.replace(/.*?(\(.*\)).*/, `${mcm.name} $1`);
-  trans["Chinese"]["character_names"][`aether${e}`] = cn.name.replace(/.*?(\(.*\)).*/, `${mcn.name} $1`);
-  trans["Japanese"]["character_names"][`aether${e}`] = jp.name.replace(/.*?(\(.*\)).*/, `${mjp.name} $1`);
-  trans["Spanish"]["character_names"][`aether${e}`] = es.name.replace(/.*?(\(.*\)).*/, `${mes.name} $1`);
-  trans["Russian"]["character_names"][`aether${e}`] = ru.name.replace(/.*?(\(.*\)).*/, `${mru.name} $1`);
-  trans["German"]["character_names"][`aether${e}`] = de.name.replace(/.*?(\(.*\)).*/, `${mde.name} $1`);
-
-  trans["English"]["character_names"][`lumine${e}`] = eng.name.replace(/.*?(\(.*\)).*/, `${mcf.name} $1`);
-  trans["Chinese"]["character_names"][`lumine${e}`] = cn.name.replace(/.*?(\(.*\)).*/, `${fcn.name} $1`);
-  trans["Japanese"]["character_names"][`lumine${e}`] = jp.name.replace(/.*?(\(.*\)).*/, `${fjp.name} $1`);
-  trans["Spanish"]["character_names"][`lumine${e}`] = es.name.replace(/.*?(\(.*\)).*/, `${fes.name} $1`);
-  trans["Russian"]["character_names"][`lumine${e}`] = ru.name.replace(/.*?(\(.*\)).*/, `${fru.name} $1`);
-  trans["German"]["character_names"][`lumine${e}`] = de.name.replace(/.*?(\(.*\)).*/, `${fde.name} $1`);
+  
+  for (const [langName, langCode] of Object.entries(languages)) {
+    //abit hacky,  we only want what's in brackets
+    const lang = genshindb.talents(key, { resultLanguage: langCode });
+    
+    //names have to be right language too...
+    const aether = genshindb.characters("aether", { resultLanguage: langCode });
+    const lumine = genshindb.characters("lumine", { resultLanguage: langCode });
+    
+    trans[langName]["character_names"][`aether${e}`] = lang.name.replace(/.*?(\(.*\)).*/, `${aether.name} $1`);
+    trans[langName]["character_names"][`lumine${e}`] = lang.name.replace(/.*?(\(.*\)).*/, `${lumine.name} $1`);
+  }
 });
 
-//download weapons and sets :(
+//download weapons, sets and enemies :(
 
 const weapons = genshindb.weapons("names", { matchCategories: true });
 
@@ -116,19 +96,10 @@ weapons.forEach((e) => {
   const key = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
   weap[key] = eng.name;
 
-  const cn = genshindb.weapons(e, { resultLanguage: "CHS" });
-  const jp = genshindb.weapons(e, { resultLanguage: "JP" });
-  const es = genshindb.weapons(e, { resultLanguage: "ES" });
-  const ru = genshindb.weapons(e, { resultLanguage: "RU" });
-  const de = genshindb.weapons(e, { resultLanguage: "DE" });
-
-  trans["English"]["weapon_names"][key] = eng.name;
-  trans["Chinese"]["weapon_names"][key] = cn.name;
-  trans["Japanese"]["weapon_names"][key] = jp.name;
-  trans["Spanish"]["weapon_names"][key] = es.name;
-  trans["Russian"]["weapon_names"][key] = ru.name;
-  trans["German"]["weapon_names"][key] = de.name;
-
+  for (const [langName, langCode] of Object.entries(languages)) {
+    const lang = genshindb.weapons(e, { resultLanguage: langCode });
+    trans[langName]["weapon_names"][key] = lang.name;
+  }
 });
 
 
@@ -139,23 +110,31 @@ sets.forEach((e) => {
   const eng = genshindb.artifacts(e);
   if (!eng) return;
 
-  let art = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
-  setMap[art] = eng.name;
+  const key = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
+  setMap[key] = eng.name;
 
-  const cn = genshindb.artifacts(e, { resultLanguage: "CHS" });
-  const jp = genshindb.artifacts(e, { resultLanguage: "JP" });
-  const es = genshindb.artifacts(e, { resultLanguage: "ES" });
-  const ru = genshindb.artifacts(e, { resultLanguage: "RU" });
-  const de = genshindb.artifacts(e, { resultLanguage: "DE" });
-
-  trans["English"]["artifact_names"][art] = eng.name;
-  trans["Chinese"]["artifact_names"][art] = cn.name;
-  trans["Japanese"]["artifact_names"][art] = jp.name;
-  trans["Spanish"]["artifact_names"][art] = es.name;
-  trans["Russian"]["artifact_names"][art] = ru.name;
-  trans["German"]["artifact_names"][art] = de.name;
-
+  for (const [langName, langCode] of Object.entries(languages)) {
+    const lang = genshindb.artifacts(e, { resultLanguage: langCode });
+    trans[langName]["artifact_names"][key] = lang.name;
+  }
 });
+
+let enemiesMap = {};
+const enemies = genshindb.enemies("names", { matchCategories: true });
+
+enemies.forEach((e) => {
+  const eng = genshindb.enemies(e);
+  if (!eng) return;
+
+  const key = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
+  enemiesMap[key] = eng.name;
+
+  for (const [langName, langCode] of Object.entries(languages)) {
+    const lang = genshindb.enemies(e, { resultLanguage: langCode });
+    trans[langName]["enemy_names"][key] = lang.name;
+  }
+});
+
 
 fs.writeFileSync(
   "./IngameNames.json",

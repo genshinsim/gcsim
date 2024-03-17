@@ -10,7 +10,7 @@ message AvatarDataMap {
 
 message AvatarData {
   int32 id = 1 [ json_name = "id" ];
-  int32 sub_id = 2 [json_name = "sub_id"];
+  int32 sub_id = 2 [ json_name = "sub_id" ];
   string key = 3 [ json_name = "key" ];
   QualityType rarity = 4 [ json_name = "rarity" ];
   BodyType body = 5 [ json_name = "body" ];
@@ -20,7 +20,7 @@ message AvatarData {
   string icon_name = 9 [ json_name = "icon_name" ];
   AvatarStatsData stats = 10 [ json_name = "stats" ];
   AvatarSkillsData skill_details = 11 [ json_name = "skill_details" ];
-  int64 name_text_hash_map = 12 [ json_name = "name_text_hash_map "];
+  int64 name_text_hash_map = 12 [ json_name = "name_text_hash_map " ];
 }
 
 message AvatarStatsData {
@@ -41,15 +41,19 @@ message AvatarSkillsData {
   int32 burst = 2 [ json_name = "burst" ];
   int32 attack = 3 [ json_name = "attack" ];
   double burst_energy_cost = 4 [ json_name = "burst_energy_cost" ];
-  repeated AvatarSkillExcelIndexData attack_scaling = 5 [ json_name = "attack_scaling"];
-  repeated AvatarSkillExcelIndexData skill_scaling = 6 [ json_name = "skill_scaling"];
-  repeated AvatarSkillExcelIndexData burst_scaling = 7 [ json_name = "burst_scaling"];
+  repeated AvatarSkillExcelIndexData attack_scaling = 5
+      [ json_name = "attack_scaling" ];
+  repeated AvatarSkillExcelIndexData skill_scaling = 6
+      [ json_name = "skill_scaling" ];
+  repeated AvatarSkillExcelIndexData burst_scaling = 7
+      [ json_name = "burst_scaling" ];
 }
 
 message AvatarSkillExcelIndexData {
   int32 group_id = 1 [ json_name = "group_id" ];
-  int32 index = 2 [ json_name = "index"]; // position in the param list
-  repeated AvatarSkillExcelLevelData level_data = 3 [ json_name = "level_data" ];
+  int32 index = 2 [ json_name = "index" ]; // position in the param list
+  repeated AvatarSkillExcelLevelData level_data = 3
+      [ json_name = "level_data" ];
 }
 
 message AvatarSkillExcelLevelData {
@@ -63,32 +67,33 @@ message WeaponDataMap {
 
 message WeaponData {
   int32 id = 1 [ json_name = "id" ];
-  string key = 2 [json_name = "key"];
-  int32 rarity = 3 [ json_name = "rarity" ]; //for whatever reason weapon rarity is a number
+  string key = 2 [ json_name = "key" ];
+  int32 rarity = 3
+      [ json_name = "rarity" ]; // for whatever reason weapon rarity is a number
   WeaponClass weapon_class = 4 [ json_name = "weapon_class" ];
   string image_name = 5 [ json_name = "image_name" ];
   WeaponStatsData base_stats = 6 [ json_name = "base_stats" ];
-  int64 name_text_hash_map = 7 [ json_name = "name_text_hash_map "];
+  int64 name_text_hash_map = 7 [ json_name = "name_text_hash_map " ];
 }
 
 message WeaponStatsData {
-  repeated WeaponProp base_props = 1 [ json_name = "base_props"];
+  repeated WeaponProp base_props = 1 [ json_name = "base_props" ];
   repeated PromotionData promo_data = 2 [ json_name = "promo_data" ];
 }
 
 message WeaponProp {
   StatType prop_type = 1 [ json_name = "prop_type" ];
   double initial_value = 2 [ json_name = "initial_value" ];
-  WeaponCurveType curve = 3 [json_name = "curve"];
+  WeaponCurveType curve = 3 [ json_name = "curve" ];
 }
 
 message ArtifactDataMap {
   map<string, ArtifactData> data = 1 [ json_name = "data" ];
 }
 
-message ArtifactData { 
-  int64 set_id = 1 [ json_name = "id" ]; 
-  int64 text_map_id = 2 [ json_name = "text_map_id"];
+message ArtifactData {
+  int64 set_id = 1 [ json_name = "id" ];
+  int64 text_map_id = 2 [ json_name = "text_map_id" ];
   string key = 3 [ json_name = "key" ];
 }
 
@@ -100,4 +105,35 @@ message PromotionData {
 message PromotionAddProp {
   StatType prop_type = 1 [ json_name = "prop_type" ];
   double value = 2 [ json_name = "value" ];
+}
+
+message MonsterData {
+  int32 id = 1 [ json_name = "id" ];
+  string key = 2 [ json_name = "key" ];
+  MonsterStatsData base_stats = 3 [ json_name = "base_stats" ];
+  int64 name_text_hash_map = 4 [ json_name = "name_text_hash_map" ];
+}
+
+message MonsterStatsData {
+  double base_hp = 1 [ json_name = "base_hp" ];
+  MonsterCurveType hp_curve = 2 [ json_name = "hp_curve" ];
+  MonsterResistData resist = 3 [ json_name = "resist" ];
+  double freeze_resist = 4 [ json_name = "freeze_resist" ];
+  repeated MonsterHPDrop hp_drop = 5 [ json_name = "hp_drop" ];
+}
+
+message MonsterResistData {
+  double fire_resist = 1 [ json_name = "fire_resist" ];
+  double grass_resist = 2 [ json_name = "grass_resist" ];
+  double water_resist = 3 [ json_name = "water_resist" ];
+  double electric_resist = 4 [ json_name = "electric_resist" ];
+  double wind_resist = 5 [ json_name = "wind_resist" ];
+  double ice_resist = 6 [ json_name = "ice_resist" ];
+  double rock_resist = 7 [ json_name = "rock_resist" ];
+  double physical_resist = 8 [ json_name = "physical_resist" ];
+}
+
+message MonsterHPDrop {
+  int32 drop_id = 1 [ json_name = "drop_id" ];
+  double hp_percent = 2 [ json_name = "hp_percent" ];
 }

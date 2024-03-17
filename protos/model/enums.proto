@@ -12,7 +12,7 @@ enum AvatarCurveType {
 
 enum QualityType {
   INVALID_QUALITY_TYPE = 0;
-  QUALITY_ORANGE_SP = 6; //the special 6 star aka aloy 
+  QUALITY_ORANGE_SP = 6; // the special 6 star aka aloy
   QUALITY_ORANGE = 5;
   QUALITY_PURPLE = 4;
 }
@@ -48,6 +48,13 @@ enum WeaponClass {
   WEAPON_CATALYST = 5;
 }
 
+enum MonsterCurveType {
+  INVALID_MONSTER_CURVE = 0;
+  GROW_CURVE_HP = 1;
+  GROW_CURVE_HP_2 = 2;
+  GROW_CURVE_HP_ENVIRONMENT = 3;
+}
+
 enum BodyType {
   INVALID_BODY_TYPE = 0;
   BODY_UNKNOWN = 1;
@@ -66,8 +73,8 @@ enum ZoneType {
   ASSOC_TYPE_INAZUMA = 4;
   ASSOC_TYPE_SUMERU = 5;
   ASSOC_TYPE_FATUI = 6;
-  ASSOC_TYPE_RANGER = 7; //aloy pls
-  ASSOC_TYPE_MAINACTOR = 8; //traveler is cool
+  ASSOC_TYPE_RANGER = 7;    // aloy pls
+  ASSOC_TYPE_MAINACTOR = 8; // traveler is cool
   ASSOC_TYPE_FONTAINE = 9;
 }
 
@@ -136,6 +143,7 @@ enum DBTag {
   DB_TAG_GEO_SIMPS = 4;
   DB_TAG_ITTO_SIMPS = 5;
   DB_TAG_RANDOM_DELAYS = 6;
-  DB_TAG_ARFOIRE_NEWBIES = 7; //reissue4917 (1070054618895233035) tag for newbie players
+  DB_TAG_ARFOIRE_NEWBIES =
+      7; // reissue4917 (1070054618895233035) tag for newbie players
   DB_TAG_ADMIN_DO_NOT_USE = 99999999;
 }
