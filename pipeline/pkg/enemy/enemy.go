@@ -31,3 +31,7 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 
 	return g, nil
 }
+
+func (g *Generator) Data() []*model.MonsterData {
+	return g.data
+}

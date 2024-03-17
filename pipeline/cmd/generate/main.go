@@ -129,6 +129,7 @@ func main() {
 		Characters: g.Data(),
 		Weapons:    gw.Data(),
 		Artifacts:  ga.Data(),
+		Enemies:    ge.Data(),
 		Languages: map[string]string{
 			"English":  filepath.Join(cfg.excelPath, "TextMap", "TextMapEN.json"),
 			"Chinese":  filepath.Join(cfg.excelPath, "TextMap", "TextMapCHS.json"),
