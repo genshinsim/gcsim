@@ -1,8 +1,11 @@
-module github.com/genshinsim/gcsim
+module github.com/genshinsim/gcsim/v2
 
 go 1.21
 
-replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
+replace (
+	github.com/genshinsim/gcsim => ./
+	github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
+)
 
 require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
@@ -13,6 +16,7 @@ require (
 	github.com/dgraph-io/badger/v3 v3.2103.5
 	github.com/diamondburned/arikawa/v3 v3.3.3
 	github.com/eclipse/paho.mqtt.golang v1.4.3
+	github.com/genshinsim/gcsim v0.0.0-00010101000000-000000000000
 	github.com/go-chi/chi v1.5.5
 	github.com/go-chi/cors v1.2.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -72,7 +76,6 @@ require (
 	github.com/imdario/mergo v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
-	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
