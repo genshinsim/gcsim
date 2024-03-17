@@ -21,6 +21,8 @@ type SubstatOptimizerDetails struct {
 	artifactSets4Star      []keys.Set
 	substatValues          []float64
 	mainstatValues         []float64
+	mainstatTol            float64
+	fourstarMod            float64
 	charSubstatFinal       [][]int
 	charSubstatLimits      [][]int
 	charSubstatRarityMod   []float64

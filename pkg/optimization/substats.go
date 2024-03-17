@@ -54,10 +54,7 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 		int(o.optionsMap["fixed_substats_count"]),
 	)
 
-	fourStarFound := o.details.setStatLimits()
-	if fourStarFound {
-		o.logger.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
-	}
+	o.details.setStatLimits()
 
 	o.details.setInitialSubstats(o.details.fixedSubstatCount)
 	o.logger.Info("Starting ER Optimization...")
@@ -175,6 +172,9 @@ func NewSubstatOptimizerDetails(
 	s.mainstatValues[attributes.HPP] = 0.466
 	s.mainstatValues[attributes.DEFP] = 0.583
 
+	s.mainstatTol = 0.005
+	s.fourstarMod = 0.746514762 // The average coefficient to convert 5* main stats to 4* main stats
+
 	// Only includes damage related substats scaling. Ignores things like HP for Barbara
 	s.charRelevantSubstats = map[keys.Char][]attributes.Stat{
 		keys.Albedo:      {attributes.DEFP},
@@ -214,15 +214,34 @@ func NewSubstatOptimizerDetails(
 	return &s
 }
 
+func (stats *SubstatOptimizerDetails) isMainStatInTolerance(idxChar, idxStat int, mod float64) bool {
+	lower := stats.mainstatValues[idxStat] * (1 - stats.mainstatTol) * mod
+	upper := stats.mainstatValues[idxStat] * (1 + stats.mainstatTol) * mod
+	val := stats.simcfg.Characters[idxChar].Stats[idxStat]
+	return lower < val && val < upper
+}
+
 // Obtain substat count limits based on main stats and also determine 4* set status
 // TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
 // Most people will have 1 5* artifact which messes things up
 // TODO: Check whether taking like an average of the two stat values is good enough?
-func (stats *SubstatOptimizerDetails) setStatLimits() bool {
-	profileIncludesFourStar := false
-
+func (stats *SubstatOptimizerDetails) setStatLimits() {
 	for i := range stats.simcfg.Characters {
+		fourStarCount := 0
+		// Display warning message for 4* sets
+		stats.charSubstatRarityMod[i] = 1
+		for set, cnt := range stats.simcfg.Characters[i].Sets {
+			for _, fourStar := range stats.artifactSets4Star {
+				if set == fourStar {
+					fourStarCount += cnt
+				}
+			}
+		}
+		stats.charSubstatRarityMod[i] = 1 - 0.4*float64(fourStarCount)
+
 		stats.charSubstatLimits[i] = make([]int, attributes.EndStatType)
+
+		fourStarMainsCount := 0
 		for idxStat, stat := range stats.mainstatValues {
 			if stat == 0 {
 				continue
@@ -230,23 +249,23 @@ func (stats *SubstatOptimizerDetails) setStatLimits() bool {
 			if stats.simcfg.Characters[i].Stats[idxStat] == 0 {
 				stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap
 			} else {
-				stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * int(math.Round(stats.simcfg.Characters[i].Stats[idxStat]/stats.mainstatValues[idxStat])))
-			}
-		}
-
-		// Display warning message for 4* sets
-		stats.charSubstatRarityMod[i] = 1
-		for set := range stats.simcfg.Characters[i].Sets {
-			for _, fourStar := range stats.artifactSets4Star {
-				if set == fourStar {
-					profileIncludesFourStar = true
-					stats.charSubstatRarityMod[i] = 0.8
+				switch {
+				case stats.isMainStatInTolerance(i, idxStat, 1.0):
+					stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * int(math.Round(stats.simcfg.Characters[i].Stats[idxStat]/stats.mainstatValues[idxStat])))
+				case stats.isMainStatInTolerance(i, idxStat, stats.fourstarMod):
+					stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * int(math.Round(stats.simcfg.Characters[i].Stats[idxStat]/stats.mainstatValues[idxStat])))
+					fourStarMainsCount++
+				default:
+					stats.optimizer.logger.Fatalln("Mainstat", attributes.Stat(idxStat), ":", stat, "is not a valid 4* or 5* mainstat value")
 				}
 			}
 		}
+		if fourStarMainsCount != fourStarCount {
+			stats.optimizer.logger.Fatalln("Use listed", fourStarCount, "four star set artifacts, but found", fourStarMainsCount, "4* mainstats")
+		}
 	}
 
-	return profileIncludesFourStar
+	return
 }
 
 // Helper function to pretty print substat counts. Stolen from similar function that takes in the float array
