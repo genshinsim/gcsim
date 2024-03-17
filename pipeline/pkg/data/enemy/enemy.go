@@ -39,7 +39,7 @@ func NewDataSource(root string) (*DataSource, error) {
 	}
 
 	// TODO: crutch to get enemy names
-	e.textMap, err = textmap.NewTextMapSource(filepath.Join(root, "..", TextMapConfigData))
+	e.textMap, err = textmap.NewTextMapSource(filepath.Join(root, "..", TextMapData))
 	if err != nil {
 		return nil, err
 	}

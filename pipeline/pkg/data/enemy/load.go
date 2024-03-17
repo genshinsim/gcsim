@@ -13,7 +13,7 @@ const (
 	MonsterDescribeExcelConfigData = `MonsterDescribeExcelConfigData.json`
 	MonsterCurveExcelConfigData    = `MonsterCurveExcelConfigData.json`
 
-	TextMapConfigData = `TextMap/TextMapEN.json`
+	TextMapData = `TextMap/TextMapEN.json`
 )
 
 func load(path string, res any) error {
