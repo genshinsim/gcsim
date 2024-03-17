@@ -7,22 +7,31 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const (
-	a1TailorMadeWindowKey    = "chiori-a2-tailor-made"
-	a1TailorMadeWindowLength = 120 //TODO: i made this up; should be from button press
-	a1GeoInfusionKey         = "chiori-tailoring"
-	a1SeizeTheMoment         = "chiori-tapestry"
-	a1SeizeTheMomentICD      = "chiori-seize-the-moment-icd"
-
-	a4BuffKey = "chiori-a4"
+	// A1
+	// window in which a1 can be used after skill
+	a1WindowKey = "chiori-a1-window"
+	// Tapestry - coordinated attacks
+	a1SeizeTheMomentKey         = "chiori-seize-the-moment"
+	a1SeizeTheMomentDuration    = 8 * 60
+	a1SeizeTheMomentICDKey      = "chiori-seize-the-moment-icd"
+	a1SeizeTheMomentICD         = 2 * 60
+	a1SeizeTheMomentAttackLimit = 2
+	// Tailoring - geo infusion
+	a1GeoInfusionKey      = "chiori-tailoring"
+	a1GeoInfusionDuration = 5 * 60
+	// A4
+	a4BuffKey  = "chiori-a4"
+	a4Duration = 20 * 60
 )
 
 // Gain different effects depending on the next action you take within a short
 // duration after using Fluttering Hasode's upward sweep. If you Press the
-// Elemental Skill, you will trigger the Tapestry effect. If you your Normal
+// Elemental Skill, you will trigger the Tapestry effect. If you (Press/Tap) your Normal
 // Attack, the Tailoring effect will be triggered instead.
 //
 // Tapestry
@@ -42,20 +51,20 @@ const (
 // When on the field, if Chiori does not either Press her Elemental Skill or use
 // a Normal Attack within a short time after using Fluttering Hasode's upward
 // sweep, the Tailoring effect will be triggered by default.
-func (c *char) a1init() {
+func (c *char) a1TapestrySetup() {
 	if c.Base.Ascension < 1 {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		if c.a1AttackCount >= 2 {
+		// seize the moment not active
+		if !c.StatusIsActive(a1SeizeTheMomentKey) {
 			return false
 		}
-		if c.Core.Status.Duration(a1SeizeTheMoment) == 0 {
+		// seize the moment on icd
+		if c.StatusIsActive(a1SeizeTheMomentICDKey) {
 			return false
 		}
-		if c.Core.Status.Duration(a1SeizeTheMomentICD) > 0 {
-			return false
-		}
+		// attack not na/ca/plunge
 		atk := args[1].(*combat.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
@@ -64,103 +73,131 @@ func (c *char) a1init() {
 		default:
 			return false
 		}
+		// atk not by active char
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
+		// atk not within 30m of player
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		if !t.IsWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 30)) {
+			return false
+		}
 
-		c.a1AttackCount++
-		c.Core.Status.Add(a1SeizeTheMomentICD, 120)
+		// apply icd
+		c.AddStatus(a1SeizeTheMomentICDKey, a1SeizeTheMomentICD, true)
 
+		// deal dmg
 		ai := combat.AttackInfo{
 			Abil:       "Fluttering Hasode (Seize the Moment)",
 			ActorIndex: c.Index,
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagChioriSkill,
 			ICDGroup:   attacks.ICDGroupChioriSkill,
-			StrikeType: attacks.StrikeTypeBlunt,
+			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       thrustAtkScaling[c.TalentLvlSkill()],
 		}
-
 		snap := c.Snapshot(&ai)
 		ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 		ai.FlatDmg *= thrustDefScaling[c.TalentLvlSkill()]
-		//TODO: hit box size
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 1.2), 0)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(t, nil, 2.5), 0)
+
+		// increment attack count and delete seize the moment if reached limit
+		c.a1AttackCount++
+		if c.a1AttackCount == a1SeizeTheMomentAttackLimit {
+			c.DeleteStatus(a1SeizeTheMomentKey)
+		}
 
 		return false
-	}, a1SeizeTheMoment)
+	}, a1SeizeTheMomentKey)
 }
 
-func (c *char) a1Tapestry() {
-	c.triggerA1()
-	//TODO: should this be per char status for hitlag?
-	c.Core.Status.Add(a1SeizeTheMoment, 8*60)
-	c.Core.Log.NewEvent("a1 seize the moment triggered", glog.LogCharacterEvent, c.Index)
-}
-
-func (c *char) tryTriggerA1Tailoring() {
+// tap and hold skill have different start and duration for a1 window
+// so a1 activation is based on the supplied values
+func (c *char) activateA1Window(start, duration int) {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	if !c.StatusIsActive(a1TailorMadeWindowKey) {
-		return
-	}
-	c.a1Tailoring()
+	c.QueueCharTask(func() {
+		c.AddStatus(a1WindowKey, duration, true)
+		// When on the field, if Chiori does not either Press her Elemental Skill or use
+		// a Normal Attack within a short time after using Fluttering Hasode's upward
+		// sweep, the Tailoring effect will be triggered by default.
+		c.a1Triggered = false
+		c.QueueCharTask(func() {
+			if c.a1Triggered {
+				return
+			}
+			c.a1Tailoring()
+		}, duration)
+	}, start)
+}
+
+func (c *char) commonA1Trigger() {
+	c.a1Triggered = true
+	// she can't use skill again if she triggers this
+	c.DeleteStatus(a1WindowKey)
+	c.c4Activation()
+	c.c6CooldownReduction()
+}
+
+func (c *char) a1Tapestry() {
+	c.commonA1Trigger()
+
+	c.Core.Log.NewEvent("a1 tapestry triggered", glog.LogCharacterEvent, c.Index)
+	c.AddStatus(a1SeizeTheMomentKey, a1SeizeTheMomentDuration, true)
+	c.a1AttackCount = 0
 }
 
 func (c *char) a1Tailoring() {
-	c.triggerA1()
-	c.Core.Log.NewEvent("a1 geo infusion triggered", glog.LogCharacterEvent, c.Index)
+	c.commonA1Trigger()
+
+	c.Core.Log.NewEvent("a1 tailoring triggered", glog.LogCharacterEvent, c.Index)
 	c.Core.Player.AddWeaponInfuse(
 		c.Index,
 		a1GeoInfusionKey,
 		attributes.Geo,
-		300, // 5 s
+		a1GeoInfusionDuration,
 		true,
 		attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 	)
 }
 
-func (c *char) triggerA1() {
-	c.a1Triggered = true
-	// she can't use skill again if she triggers this
-	c.DeleteStatus(a1TailorMadeWindowKey)
-	c.c4()
-	c.c6()
-}
-
-func (c *char) activateA1Window() {
+// tailoring proc via na can fail if it was already triggered via a1 window expiring
+func (c *char) tryTriggerA1TailoringNA() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.a1Triggered = false
-	c.a1AttackCount = 0
-	c.AddStatus(a1TailorMadeWindowKey, a1TailorMadeWindowLength, false) //TODO: hitlag on this?
-	c.QueueCharTask(func() {
-		if c.a1Triggered {
-			return
-		}
-		c.a1Tailoring()
-	}, a1TailorMadeWindowLength)
+	if !c.StatusIsActive(a1WindowKey) {
+		return
+	}
+	c.a1Tailoring()
 }
 
 // When a nearby party member creates a Geo Construct, Chiori will gain 20% Geo DMG Bonus for 20s.
-func (c *char) a4init() {
+func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.a4buff = make([]float64, attributes.EndStatType)
-	c.a4buff[attributes.GeoP] = 0.20
+	c.a4Buff = make([]float64, attributes.EndStatType)
+	c.a4Buff[attributes.GeoP] = 0.20
 	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...interface{}) bool {
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a4BuffKey, 20*60),
-			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return c.a4buff, true
-			},
-		})
+		c.applyA4Buff()
 		return false
-	}, "chiori-a4")
+	}, a4BuffKey)
+}
+
+// needs to be callable separately because of c1 rock doll activating a4
+func (c *char) applyA4Buff() {
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(a4BuffKey, a4Duration),
+		AffectedStat: attributes.GeoP,
+		Amount: func() ([]float64, bool) {
+			return c.a4Buff, true
+		},
+	})
 }

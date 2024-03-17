@@ -12,9 +12,8 @@ func (c *char) kill(t *ticker) {
 
 // generic ticker for dolls to use
 type ticker struct {
-	c         *core.Core
-	alive     bool
-	liveUntil int
+	c     *core.Core
+	alive bool
 
 	cb       func()
 	interval int
@@ -40,15 +39,17 @@ func newTicker(c *core.Core, life int, q queuer) *ticker {
 	// if life is <= 0 then this will cause gadget to kill itself
 	// the next time tasks are checked
 	g := &ticker{
-		alive:     true,
-		c:         c,
-		liveUntil: c.F + life,
-		queuer:    q,
+		alive:  true,
+		c:      c,
+		queuer: q,
 	}
 	if g.queuer == nil {
 		g.queuer = c.Tasks.Add
 	}
-	c.Tasks.Add(func() {
+	g.queuer(func() {
+		if !g.alive {
+			return
+		}
 		g.kill()
 	}, life)
 	return g
@@ -59,18 +60,12 @@ func (g *ticker) tick() {
 	if !g.alive {
 		return
 	}
-	// sanity check: ideally shouldn't happen
-	// TODO: is this < or <=
-	if g.liveUntil < g.c.F {
-		g.kill()
-		return
-	}
 	// execute cb
 	if g.cb != nil {
 		g.cb()
 	}
 	// queue next action
-	if g.interval > 0 && g.c.F+g.interval <= g.liveUntil {
+	if g.interval > 0 {
 		g.queuer(g.tick, g.interval)
 	}
 }

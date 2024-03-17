@@ -70,7 +70,7 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupChevreuseBurstMines] = []float64{1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupChioriSkill] = 114
-	ICDGroupEleApplicationSequence[ICDGroupChioriSkill] = []float64{1, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupChioriSkill] = []float64{1, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupChioriSkill] = []float64{1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupColleiBurst] = 180

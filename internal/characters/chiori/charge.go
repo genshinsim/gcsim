@@ -12,9 +12,8 @@ import (
 )
 
 var (
-	chargeFrames []int
-	// TODO: charge hitmark frames
-	chargeHitmarks        = []int{10, 21}
+	chargeFrames          []int
+	chargeHitmarks        = []int{25, 26}
 	chargeHitlagHaltFrame = []float64{0, 0.06}
 	chargeDefHalt         = []bool{false, true}
 	chargeRadius          = []float64{2.3, 2.4}
@@ -22,13 +21,13 @@ var (
 )
 
 func init() {
-	// TODO: charge cancel frames
-	chargeFrames = frames.InitAbilSlice(55)
-	chargeFrames[action.ActionSkill] = 41
-	chargeFrames[action.ActionBurst] = 41
+	chargeFrames = frames.InitAbilSlice(44) // CA -> Walk
+	chargeFrames[action.ActionAttack] = 39
+	chargeFrames[action.ActionSkill] = 39
+	chargeFrames[action.ActionBurst] = 39
 	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
 	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionSwap] = 44
+	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {

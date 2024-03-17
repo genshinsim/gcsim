@@ -12,7 +12,7 @@ icd_tags:
 icd_groups:
   - group_name: ICDGroupChioriSkill
     reset_timer: 114
-    ele_app_sequence: [1, 0, 0, 0]
+    ele_app_sequence: [1, 0, 0, 0, 0]
     damage_sequence: [1, 1, 1, 1, 1]
 
 # generate skill scaling data

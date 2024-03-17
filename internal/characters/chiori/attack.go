@@ -12,15 +12,13 @@ import (
 )
 
 var (
-	attackFrames [][]int
-	// TODO: attack hitmark frames
-	attackHitmarks        = [][]int{{25 - 1}, {20 - 1}, {20 - 1, 59 - 20 - 1}, {62 - 1}}
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{17}, {16}, {24, 32}, {37}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06, 0}, {0}}
 	attackHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.01, 0.01}, {0.05}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true, false}, {true}}
 	attackHitboxes        = [][]float64{{1.6}, {1.8}, {1.8, 3.6}, {2.8}}
 	attackOffsets         = []float64{0.5, 0.6, -0.6, 0.9}
-	attackFanAngles       = []float64{360, 360, 360, 360}
 )
 
 const normalHitNum = 4
@@ -28,11 +26,17 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	// TODO: attack cancel frames
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 25)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 20)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 59)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 62)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 22) // N1 -> CA
+	attackFrames[0][action.ActionAttack] = 19                                // N1 -> N2 rerecorded
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 33) // N2 -> CA
+	attackFrames[1][action.ActionAttack] = 22                                // N2 -> N3 rerecorded
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 42) // N3 -> CA
+	attackFrames[2][action.ActionAttack] = 41                                // N3 -> N4
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 59) // N4 -> N1
+	attackFrames[3][action.ActionCharge] = 500                               // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -52,11 +56,10 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 
-		ap := combat.NewCircleHitOnTargetFanAngle(
+		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
-			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 2 {
 			ap = combat.NewBoxHitOnTarget(
@@ -69,14 +72,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 		c.Core.Tasks.Add(func() {
 			snap := c.Snapshot(&ai)
-			c.c6AttackMod(&ai, &snap)
+			c.c6NAIncrease(&ai, &snap)
 			c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
 
-	c.tryTriggerA1Tailoring()
+	c.tryTriggerA1TailoringNA()
 
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),

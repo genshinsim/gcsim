@@ -11,15 +11,16 @@ import (
 var burstFrames []int
 
 const (
-	// TODO: burst hitmark, energy frames
-	burstHitmark        = 100
-	burstSnapshotTiming = 100 - 1 // TODO: snapshot timing?
+	burstHitmark        = 92
+	burstSnapshotTiming = burstHitmark - 1 // TODO: snapshot timing?
 	burstEnergyFrame    = 10
 )
 
 func init() {
-	// TODO: burst cancel frames (adjust CanQueueAfter)
-	burstFrames = frames.InitAbilSlice(103)
+	burstFrames = frames.InitAbilSlice(101)
+	burstFrames[action.ActionSkill] = 100
+	burstFrames[action.ActionDash] = 100
+	burstFrames[action.ActionSwap] = 99
 }
 
 // Twin swords leave their sheaths as Chiori slices with the clean cuts
@@ -63,7 +64,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionJump],
+		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
 	}, nil
 }
