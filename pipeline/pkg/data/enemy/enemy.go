@@ -3,6 +3,7 @@ package enemy
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -38,7 +39,7 @@ func NewDataSource(root string) (*DataSource, error) {
 	}
 
 	// TODO: crutch to get enemy names
-	e.textMap, err = textmap.NewTextMapSource(root + "/../TextMap/TextMapEN.json")
+	e.textMap, err = textmap.NewTextMapSource(filepath.Join(root, "..", TextMapConfigData))
 	if err != nil {
 		return nil, err
 	}
