@@ -39,6 +39,9 @@ Character PR checklist:
 - [ ] Particles
 - [ ] Frames
 - [ ] Update documentation
+- [ ] Update substat optimizer (charRelevantSubstats) if using hp% / def% as a significant scaling stat 
+- [ ] Xingqiu/Yelan N0 (optional)
+- [ ] Xianyun Plunge (optional)
 
 Weapon PR checklist:
 
@@ -101,6 +104,9 @@ Character PR checklist:
 - [ ] Particles
 - [ ] Frames
 - [ ] Update documentation
+- [ ] Update substat optimizer (charRelevantSubstats) if using hp% / def% as a significant scaling stat 
+- [ ] Xingqiu/Yelan N0 (optional)
+- [ ] Xianyun Plunge (optional)
 
 Weapon PR checklist:
 
