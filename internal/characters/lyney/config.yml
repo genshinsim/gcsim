@@ -42,3 +42,8 @@ skill_data_mapping:
       - 0 # Skill DMG|{param0:F1P}
     explosiveFirework:
       - 1 # Explosive Firework DMG|{param1:F1P}
+
+documentation:
+  fields_data:
+    - fields: [.lyney.propSurplusStacks]
+      desc: Number of Prop Surplus stacks.

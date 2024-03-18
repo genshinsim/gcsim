@@ -35,3 +35,8 @@ skill_data_mapping:
     burst:
       - 0 # Skill DMG|{param0:F1P}
       - 1 # Cannon Fire Support DMG|{param1:F1P}
+
+documentation:
+  fields_data:
+    - fields: [.navia.shrapnel]
+      desc: Number of Crystal Shrapnel stacks.

@@ -64,3 +64,12 @@ icd_groups:
         0,
       ]
     damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+documentation:
+  fields_data:
+    - fields: [.fischl.oz]
+      desc: Whether Oz is active or not.
+    - fields: [.fischl.oz-source]
+      desc: The source frame Oz is spawned on.
+    - fields: [.fischl.oz-duration]
+      desc: Number of frames until Oz disappears if he is active, 0 otherwise.

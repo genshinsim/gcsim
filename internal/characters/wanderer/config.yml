@@ -42,3 +42,8 @@ skill_data_mapping:
   burst:
     burst:
       - 0 # Skill DMG|{param0:F1P}×5
+
+documentation:
+  fields_data:
+    - fields: [.wanderer.skydweller-points]
+      desc: Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state.

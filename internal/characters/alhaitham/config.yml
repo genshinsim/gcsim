@@ -47,3 +47,10 @@ skill_data_mapping:
       - 0 # Single-Instance DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
     burstEm:
       - 1 # Single-Instance DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+
+documentation:
+  fields_data:
+    - fields: [.alhaitham.mirrors]
+      desc: Current number of Mirrors that Alhaitham has.
+    - fields: [.alhaitham.c2-stacks]
+      desc: Number of C2 stacks that are currently active.

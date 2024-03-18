@@ -30,3 +30,8 @@ skill_data_mapping:
             - 0 # Skill DMG|{param0:F2P}×5
         burstOusia:
             - 1 # Surging Blade DMG|{param1:F2P}
+
+documentation:
+    fields_data:
+        - fields: [.wriothesley.gracious-rebuke]
+          desc: Whether Wriothesley currently has a Gracious Rebuke or not.

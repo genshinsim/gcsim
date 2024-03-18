@@ -39,3 +39,8 @@ skill_data_mapping:
       - 0 # Skill DMG|{param0:F2P} Max HP
     burstDice:
       - 1 # Exquisite Throw DMG|{param1:F2P} Max HP ×3
+
+documentation:
+  fields_data:
+    - fields: [.yelan.breakthrough]
+      desc: Whether Yelan is in the Breakthrough state or not.
