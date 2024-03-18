@@ -268,7 +268,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() {
 				if fourStarMainsCount != 0 {
 					msgEnd = " is not a valid sum of 4* or 5* mainstats"
 				}
-				stats.optimizer.logger.Fatal(char.Base.Key, " mainstat ", attributes.Stat(idxStat), "=", val, msgEnd)
+				stats.optimizer.logger.Warn(char.Base.Key, " mainstat ", attributes.Stat(idxStat), "=", val, msgEnd)
 			}
 		}
 		if fourStarMainsCount != fourStarCount {
