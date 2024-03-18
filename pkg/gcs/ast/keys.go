@@ -86,6 +86,7 @@ var eleKeys = map[string]attributes.Element{
 	"dendro":   attributes.Dendro,
 	"geo":      attributes.Geo,
 	"physical": attributes.Physical,
+	"none":     attributes.NoElement,
 }
 
 var actionKeys = map[string]action.Action{

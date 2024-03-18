@@ -7,6 +7,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/artifact"
 	"github.com/genshinsim/gcsim/pipeline/pkg/character"
+	"github.com/genshinsim/gcsim/pipeline/pkg/enemy"
 	"github.com/genshinsim/gcsim/pipeline/pkg/translation"
 	"github.com/genshinsim/gcsim/pipeline/pkg/weapon"
 )
@@ -19,9 +20,11 @@ type config struct {
 	excelPath    string
 
 	// output paths
+	pkgOut   string
 	uiOut    string
 	dbOut    string
 	transOut string
+	icdPath  string
 }
 
 func main() {
@@ -30,9 +33,11 @@ func main() {
 	flag.StringVar(&cfg.weapPath, "weap", "./internal/weapons", "folder to look for weapon files")
 	flag.StringVar(&cfg.artifactPath, "art", "./internal/artifacts", "folder to look for artifact files")
 	flag.StringVar(&cfg.excelPath, "excels", "./pipeline/data", "folder to look for excel data dump")
+	flag.StringVar(&cfg.pkgOut, "outpkg", "./pkg", "for to output generated go files to pkg")
 	flag.StringVar(&cfg.uiOut, "outui", "./ui/packages/ui/src/Data", "folder to output generated json for UI")
 	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
 	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/ui/src/Translation/locales", "folder to output generated json for DB")
+	flag.StringVar(&cfg.icdPath, "icd", "./pkg/core/attacks", "file to store generated icd data")
 	flag.Parse()
 
 	excels := filepath.Join(cfg.excelPath, "ExcelBinOutput")
@@ -61,6 +66,12 @@ func main() {
 
 	log.Println("generate character template data...")
 	err = g.GenerateCharTemplate()
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("generate character icd data...")
+	err = g.GenerateICDData(cfg.icdPath)
 	if err != nil {
 		panic(err)
 	}
@@ -103,11 +114,30 @@ func main() {
 		panic(err)
 	}
 
+	// generate enemy data
+	log.Println("running pipeline for enemies...")
+	ge, err := enemy.NewGenerator(enemy.GeneratorConfig{
+		Root:   cfg.charPath,
+		Excels: excels,
+	})
+	if err != nil {
+		panic(err)
+	}
+	err = ge.GenerateEnemyStats(cfg.pkgOut)
+	if err != nil {
+		panic(err)
+	}
+	err = ge.GenerateEnemyShortcuts(cfg.pkgOut)
+	if err != nil {
+		panic(err)
+	}
+
 	// generate translation data
 	transCfg := translation.GeneratorConfig{
 		Characters: g.Data(),
 		Weapons:    gw.Data(),
 		Artifacts:  ga.Data(),
+		Enemies:    ge.Data(),
 		Languages: map[string]string{
 			"English":  filepath.Join(cfg.excelPath, "TextMap", "TextMapEN.json"),
 			"Chinese":  filepath.Join(cfg.excelPath, "TextMap", "TextMapCHS.json"),

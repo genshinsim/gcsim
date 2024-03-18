@@ -136,6 +136,7 @@ const (
 	Wriothesley
 	Chevreuse
 	Gaming
+	Chiori
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -237,6 +238,7 @@ var charNames = []string{
 	"wriothesley",
 	"chevreuse",
 	"gaming",
+	"chiori",
 	"test_char_do_not_use",
 }
 
@@ -337,6 +339,7 @@ var charPrettyName = []string{
 	"Wriothesley",
 	"Chevreuse",
 	"Gaming",
+	"Chiori",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -433,5 +436,6 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Wriothesley:      attributes.Cryo,
 	Chevreuse:        attributes.Pyro,
 	Gaming:           attributes.Pyro,
+	Chiori:           attributes.Geo,
 	TestCharDoNotUse: attributes.Geo,
 }

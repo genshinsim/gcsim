@@ -1413,6 +1413,127 @@
       }
     ]
   },
+  "chiori": {
+    "asc": [
+      {
+        "ability": "A1-Tapestry",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2.5,
+        "notes": "Spawns on target that A1 Tapestry proc'd on."
+      }
+    ],
+    "cons": [
+      {
+        "ability": "Kinu",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.2
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 1.6
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 1.8
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.6,
+        "boxX": 1.8,
+        "boxY": 3.6
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.6,
+        "boxX": 1.8,
+        "boxY": 3.6
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.9,
+        "radius": 2.8
+      }
+    ], 
+    "charge": [
+      {
+        "ability": "CA-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.4,
+        "radius": 2.3
+      },
+      {
+        "ability": "CA-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.6,
+        "radius": 2.4
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-UpwardThrust",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 5.5,
+        "boxY": 3.5
+      },
+      {
+        "ability": "E-Tamoto",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.2
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 12,
+        "notes": "This is an approximation because we do not actually know the real AoE."
+      }
+    ]
+  },
   "chongyun": {
     "asc": [
       {

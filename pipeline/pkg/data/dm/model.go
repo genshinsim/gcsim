@@ -210,3 +210,48 @@ type ProudSkillExcel struct {
 	// } `json:"addProps"`
 	ParamList []float64 `json:"paramList"`
 }
+
+//nolint:tagliatelle // need to match datamine
+type HpDrop struct {
+	DropId    int32   `json:"dropId"`
+	HpPercent float64 `json:"hpPercent"`
+}
+
+//nolint:tagliatelle // need to match datamine
+type MonsterExcel struct {
+	MonsterName     string          `json:"monsterName"`
+	Typ             string          `json:"type"`
+	HpDrops         []HpDrop        `json:"hpDrops"`
+	DescribeId      int32           `json:"describeId"`
+	KillDropId      int32           `json:"killDropId"`
+	HpBase          float64         `json:"hpBase"`
+	PropGrowCurves  []PropGrowCurve `json:"propGrowCurves"`
+	FireSubHurt     float64         `json:"fireSubHurt"`
+	GrassSubHurt    float64         `json:"grassSubHurt"`
+	WaterSubHurt    float64         `json:"waterSubHurt"`
+	ElecSubHurt     float64         `json:"elecSubHurt"`
+	WindSubHurt     float64         `json:"windSubHurt"`
+	IceSubHurt      float64         `json:"iceSubHurt"`
+	RockSubHurt     float64         `json:"rockSubHurt"`
+	PhysicalSubHurt float64         `json:"physicalSubHurt"`
+	Id              int32           `json:"id"`
+	// ...
+}
+
+//nolint:tagliatelle // need to match datamine
+type MonsterDescribeExcel struct {
+	Id              int32  `json:"id"`
+	NameTextMapHash int64  `json:"nameTextMapHash"`
+	Icon            string `json:"icon"`
+	// ...
+}
+
+//nolint:tagliatelle // need to match datamine
+type MonsterCurveExcel struct {
+	Level      int32 `json:"level"`
+	CurveInfos []struct {
+		Type  string  `json:"type"`
+		Value float64 `json:"value"`
+		// ...
+	} `json:"curveInfos"`
+}
