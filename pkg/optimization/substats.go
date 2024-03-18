@@ -2,7 +2,6 @@ package optimization
 
 import (
 	"fmt"
-	"math"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -99,6 +98,7 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 			if value <= 0 {
 				continue
 			}
+			value *= statsFinal.charSubstatRarityMod[idxChar]
 			finalString += fmt.Sprintf(" %v=%.6g", attributes.StatTypeString[idxSubstat], value*float64(statsFinal.fixedSubstatCount+statsFinal.charSubstatFinal[idxChar][idxSubstat]))
 		}
 
@@ -204,6 +204,7 @@ func NewSubstatOptimizerDetails(
 	s.charSubstatLimits = make([][]int, len(simcfg.Characters))
 	s.charSubstatRarityMod = make([]float64, len(simcfg.Characters))
 	s.charProfilesInitial = make([]info.CharacterProfile, len(simcfg.Characters))
+	s.charTotalSubstats = make([]int, len(simcfg.Characters))
 
 	// Need to make an exception in energy calcs for these characters for optimization purposes
 	s.charWithFavonius = make([]bool, len(simcfg.Characters))
@@ -215,9 +216,9 @@ func NewSubstatOptimizerDetails(
 	return &s
 }
 
-func (stats *SubstatOptimizerDetails) isMainStatInTolerance(idxChar, idxStat int, mod float64) bool {
-	lower := stats.mainstatValues[idxStat] * (1 - stats.mainstatTol) * mod
-	upper := stats.mainstatValues[idxStat] * (1 + stats.mainstatTol) * mod
+func (stats *SubstatOptimizerDetails) isMainStatInTolerance(idxChar, idxStat, fiveStarCount, fourStarCount int) bool {
+	lower := stats.mainstatValues[idxStat] * (1 - stats.mainstatTol) * (float64(fiveStarCount) + stats.fourstarMod*float64(fourStarCount))
+	upper := stats.mainstatValues[idxStat] * (1 + stats.mainstatTol) * (float64(fiveStarCount) + stats.fourstarMod*float64(fourStarCount))
 	val := stats.simcfg.Characters[idxChar].Stats[idxStat]
 	return lower < val && val < upper
 }
@@ -227,10 +228,8 @@ func (stats *SubstatOptimizerDetails) isMainStatInTolerance(idxChar, idxStat int
 // Most people will have 1 5* artifact which messes things up
 // TODO: Check whether taking like an average of the two stat values is good enough?
 func (stats *SubstatOptimizerDetails) setStatLimits() {
-	for i := range stats.simcfg.Characters {
+	for i, char := range stats.simcfg.Characters {
 		fourStarCount := 0
-		// Display warning message for 4* sets
-		stats.charSubstatRarityMod[i] = 1
 		for set, cnt := range stats.simcfg.Characters[i].Sets {
 			for _, fourStar := range stats.artifactSets4Star {
 				if set == fourStar {
@@ -238,7 +237,6 @@ func (stats *SubstatOptimizerDetails) setStatLimits() {
 				}
 			}
 		}
-		stats.charSubstatRarityMod[i] = 1 - 0.4*float64(fourStarCount)
 
 		stats.charSubstatLimits[i] = make([]int, attributes.EndStatType)
 
@@ -249,24 +247,38 @@ func (stats *SubstatOptimizerDetails) setStatLimits() {
 			}
 			if stats.simcfg.Characters[i].Stats[idxStat] == 0 {
 				stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap
-			} else {
-				switch {
-				case stats.isMainStatInTolerance(i, idxStat, 1.0):
-					stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * int(math.Round(stats.simcfg.Characters[i].Stats[idxStat]/stats.mainstatValues[idxStat])))
-				case stats.isMainStatInTolerance(i, idxStat, stats.fourstarMod):
-					stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * int(math.Round(stats.simcfg.Characters[i].Stats[idxStat]/stats.mainstatValues[idxStat])))
-					fourStarMainsCount++
-				default:
-					stats.optimizer.logger.Fatalln("Mainstat", attributes.Stat(idxStat), ":", stat, "is not a valid 4* or 5* mainstat value")
+				continue
+			}
+
+			found := false
+			// there can be at most 3 main stats of the same stat
+			for main5 := 0; !found && main5 < 3; main5++ {
+				for main4 := 0; !found && main4 < 3-main4; main4++ {
+					if stats.isMainStatInTolerance(i, idxStat, main5, main4) {
+						// Currently the max limit per substat is not adjusted for 4* mains
+						stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * (main5 + main4))
+						fourStarMainsCount += main4
+						found = true
+					}
 				}
+			}
+			if !found {
+				val := char.Stats[idxStat]
+				msgEnd := " is not a valid multiple of 5* mainstats"
+				if fourStarMainsCount != 0 {
+					msgEnd = " is not a valid sum of 4* or 5* mainstats"
+				}
+				stats.optimizer.logger.Fatal(char.Base.Key, " mainstat ", attributes.Stat(idxStat), "=", val, msgEnd)
 			}
 		}
 		if fourStarMainsCount != fourStarCount {
-			stats.optimizer.logger.Fatalln("Use listed", fourStarCount, "four star set artifacts, but found", fourStarMainsCount, "4* mainstats")
+			stats.optimizer.logger.Warn("User gave ", char.Base.Key, fourStarCount, " four star set artifacts, but found ", fourStarMainsCount, " 4* mainstats")
 		}
-	}
 
-	return
+		// TODO: replace 2 with a user configurable reduction per 4*
+		stats.charTotalSubstats[i] = max(stats.totalLiquidSubstats-2*fourStarCount, 0) + stats.fixedSubstatCount
+		stats.charSubstatRarityMod[i] = 1.0 - 0.04*float64(fourStarCount)
+	}
 }
 
 // Helper function to pretty print substat counts. Stolen from similar function that takes in the float array

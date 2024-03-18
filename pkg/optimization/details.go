@@ -25,6 +25,7 @@ type SubstatOptimizerDetails struct {
 	fourstarMod            float64
 	charSubstatFinal       [][]int
 	charSubstatLimits      [][]int
+	charTotalSubstats      []int
 	charSubstatRarityMod   []float64
 	charProfilesInitial    []info.CharacterProfile
 	charWithFavonius       []bool

@@ -67,7 +67,7 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats() {
 		output +=
 			fmt.Sprintf("%v: %.4g, ",
 				stats.charProfilesInitial[i].Base.Key.String(),
-				float64(stats.charSubstatFinal[i][attributes.ER])*stats.substatValues[attributes.ER],
+				float64(stats.charSubstatFinal[i][attributes.ER])*stats.substatValues[attributes.ER]*stats.charSubstatRarityMod[i],
 			)
 	}
 	stats.optimizer.logger.Info(output)
