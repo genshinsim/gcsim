@@ -31,3 +31,8 @@ skill_data_mapping:
       - 0 # Skill DMG|{param0:P}
     burstBonus:
       - 1 # Charged Attack DMG Bonus|{param1:P}
+
+documentation:
+  fields_data:
+    - fields: [.yanfei.seal-count]
+      desc: Number of Scarlet Seals.

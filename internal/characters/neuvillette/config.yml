@@ -25,3 +25,10 @@ skill_data_mapping:
       - 0 # Skill DMG|{param0:F2P} Max HP
     burstWaterfall:
       - 1 # Waterfall DMG|{param1:F2P} Max HP
+
+documentation:
+  fields_data:
+    - fields: [.neuvillette.droplets]
+      desc: "Number of Sourcewater droplets in range for Charged Attack Empowerment: Legal Evaluation."
+    - fields: [.neuvillette.droplets-c6]
+      desc: Number of Sourcewater droplets in range for C6.

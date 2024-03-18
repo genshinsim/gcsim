@@ -33,3 +33,12 @@ skill_data_mapping:
             - 0 # Burst DMG|{param0:P}
         burstPerBloom:
             - 1 # Fatal Blossom DMG|{param1:F1P} each
+
+documentation:
+    fields_data:
+        - fields: [.albedo.elevator]
+          desc: Evaluates to 1 if skill is currently active
+        - fields: [.albedo.c2stacks]
+          desc: Current number of C2 stacks
+        - fields: [".<character>.mods.albedo-a4"]
+          desc: Whether or not Albedo A4 buff is active on the specified character

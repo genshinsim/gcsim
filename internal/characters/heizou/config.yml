@@ -35,3 +35,8 @@ skill_data_mapping:
             - 0 # Fudou Style Vacuum Slugger DMG|{param0:F1P}
         burstIris:
             - 1 # Windmuster Iris DMG|{param1:F1P}
+
+documentation:
+    fields_data:
+        - fields: [.heizou.declension]
+          desc: Number of Declension stacks.

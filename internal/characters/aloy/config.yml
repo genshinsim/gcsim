@@ -32,3 +32,8 @@ skill_data_mapping:
     burst:
         burst:
             - 0 # Skill DMG|{param0:P}
+
+documentation:
+    fields_data:
+        - fields: [.aloy.coil]
+          desc: Current number of coil stacks.

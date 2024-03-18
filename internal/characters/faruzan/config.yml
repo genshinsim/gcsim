@@ -25,3 +25,8 @@ skill_data_mapping:
             - 0 # Skill DMG|{param0:F1P}
         burstBuff:
             - 1 # Anemo DMG Bonus|{param1:F1P}
+
+documentation:
+    fields_data:
+        - fields: [.faruzan.hurricane-count]
+          desc: Current number of Hurricane Arrows that Faruzan can fire off.

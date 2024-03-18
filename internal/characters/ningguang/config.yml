@@ -15,3 +15,10 @@ skill_data_mapping:
     burst:
         burst:
             - 0 # DMG Per Gem|{param0:F1P}
+
+documentation:
+    fields_data:
+        - fields: [.ningguang.prevAttack]
+          desc: "Returns a number representing the previous N1 version. Possible values are: 0 = Left, 1 = Right, 2 = Twirl."
+        - fields: [.ningguang.jadeCount]
+          desc: Number of Star Jades.

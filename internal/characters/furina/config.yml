@@ -50,3 +50,12 @@ skill_data_mapping:
       - 4 # Fanfare to DMG Increase Conversion Ratio|{param4:F2P}
     burstFanfareHBRatio:
       - 5 # Fanfare to Incoming Healing Bonus Conversion Ratio|{param5:F2P}
+
+documentation:
+  fields_data:
+    - fields: [.furina.ousia]
+      desc: Whether Furina is in the Ousia Arke.
+    - fields: [.furina.fanfare]
+      desc: Current amount of fanfare.
+    - fields: [.furina.c6-count]
+      desc: Number of c6 effects triggered.
