@@ -35,3 +35,7 @@ skill_data_mapping:
     burst:
         burst:
             - 0 # Skill DMG|{param0:P}
+documentation:
+    fields_data:
+        - fields: [.zhongli.shielded]
+          desc: Evaluates to 1 if player is currently shielded
