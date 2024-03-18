@@ -3,8 +3,8 @@ package model
 
 var EnemyMap = map[int]*MonsterData{
 	21010101: {
-		Id: 21010101,
-		Key: "hilichurl",
+		Id:              21010101,
+		Key:             "hilichurl",
 		NameTextHashMap: 2823299104,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -33,8 +33,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21020101: {
-		Id: 21020101,
-		Key: "woodenshieldwallmitachurl",
+		Id:              21020101,
+		Key:             "woodenshieldwallmitachurl",
 		NameTextHashMap: 2998946096,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -71,8 +71,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21020201: {
-		Id: 21020201,
-		Key: "blazingaxemitachurl",
+		Id:              21020201,
+		Key:             "blazingaxemitachurl",
 		NameTextHashMap: 2414837496,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -109,8 +109,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21020301: {
-		Id: 21020301,
-		Key: "rockshieldwallmitachurl",
+		Id:              21020301,
+		Key:             "rockshieldwallmitachurl",
 		NameTextHashMap: 1611076776,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -147,8 +147,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21020401: {
-		Id: 21020401,
-		Key: "frostarmlawachurl",
+		Id:              21020401,
+		Key:             "frostarmlawachurl",
 		NameTextHashMap: 3926747992,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.25599670410156,
@@ -185,8 +185,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21020501: {
-		Id: 21020501,
-		Key: "stonehidelawachurl",
+		Id:              21020501,
+		Key:             "stonehidelawachurl",
 		NameTextHashMap: 1204583624,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.25599670410156,
@@ -223,8 +223,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21020601: {
-		Id: 21020601,
-		Key: "iceshieldwallmitachurl",
+		Id:              21020601,
+		Key:             "iceshieldwallmitachurl",
 		NameTextHashMap: 3749655912,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -261,8 +261,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21020701: {
-		Id: 21020701,
-		Key: "cracklingaxemitachurl",
+		Id:              21020701,
+		Key:             "cracklingaxemitachurl",
 		NameTextHashMap: 3382922248,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -299,8 +299,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21020801: {
-		Id: 21020801,
-		Key: "thunderhelmlawachurl",
+		Id:              21020801,
+		Key:             "thunderhelmlawachurl",
 		NameTextHashMap: 805439664,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.25599670410156,
@@ -337,8 +337,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010101: {
-		Id: 20010101,
-		Key: "dendroslime",
+		Id:              20010101,
+		Key:             "dendroslime",
 		NameTextHashMap: 2173510696,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -367,8 +367,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010201: {
-		Id: 20010201,
-		Key: "largedendroslime",
+		Id:              20010201,
+		Key:             "largedendroslime",
 		NameTextHashMap: 220962224,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -401,8 +401,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010301: {
-		Id: 20010301,
-		Key: "anemoslime",
+		Id:              20010301,
+		Key:             "anemoslime",
 		NameTextHashMap: 1511587408,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -431,8 +431,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010401: {
-		Id: 20010401,
-		Key: "largeanemoslime",
+		Id:              20010401,
+		Key:             "largeanemoslime",
 		NameTextHashMap: 1527751472,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -465,8 +465,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	29010102: {
-		Id: 29010102,
-		Key: "stormterror",
+		Id:              29010102,
+		Key:             "stormterror",
 		NameTextHashMap: 390703016,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -482,13 +482,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	29020101: {
-		Id: 29020101,
-		Key: "lupusboreasdominatorofwolves",
+		Id:              29020101,
+		Key:             "lupusboreasdominatorofwolves",
 		NameTextHashMap: 1869267944,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  244.51199340820312,
@@ -504,13 +503,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	29030103: {
-		Id: 29030103,
-		Key: "childe",
+		Id:              29030103,
+		Key:             "childe",
 		NameTextHashMap: 2530909488,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  135.83999633789062,
@@ -526,13 +524,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	29040101: {
-		Id: 29040101,
-		Key: "azhdaha",
+		Id:              29040101,
+		Key:             "azhdaha",
 		NameTextHashMap: 3423290768,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  489.02398681640625,
@@ -548,13 +545,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.4000000059604645,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	29050102: {
-		Id: 29050102,
-		Key: "lasignora",
+		Id:              29050102,
+		Key:             "lasignora",
 		NameTextHashMap: 1726738920,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  190.17599487304688,
@@ -570,13 +566,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	29060202: {
-		Id: 29060202,
-		Key: "magatsumitakenarukaminomikoto",
+		Id:              29060202,
+		Key:             "magatsumitakenarukaminomikoto",
 		NameTextHashMap: 976885856,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  244.51199340820312,
@@ -592,13 +587,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	29070104: {
-		Id: 29070104,
-		Key: "shoukinokamitheprodigal",
+		Id:              29070104,
+		Key:             "shoukinokamitheprodigal",
 		NameTextHashMap: 2221926632,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  244.51199340820312,
@@ -614,13 +608,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.30000001192092896,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	29080102: {
-		Id: 29080102,
-		Key: "guardianofapepsoasis",
+		Id:              29080102,
+		Key:             "guardianofapepsoasis",
 		NameTextHashMap: 3115382544,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -636,13 +629,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	29090101: {
-		Id: 29090101,
-		Key: "alldevouringnarwhal",
+		Id:              29090101,
+		Key:             "alldevouringnarwhal",
 		NameTextHashMap: 2530298840,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  543.3599853515625,
@@ -658,13 +650,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	20020101: {
-		Id: 20020101,
-		Key: "eyeofthestorm",
+		Id:              20020101,
+		Key:             "eyeofthestorm",
 		NameTextHashMap: 352893312,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -697,8 +688,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20040101: {
-		Id: 20040101,
-		Key: "electrohypostasis",
+		Id:              20040101,
+		Key:             "electrohypostasis",
 		NameTextHashMap: 2576416432,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -735,8 +726,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20040201: {
-		Id: 20040201,
-		Key: "anemohypostasis",
+		Id:              20040201,
+		Key:             "anemohypostasis",
 		NameTextHashMap: 1388893264,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -773,8 +764,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20040301: {
-		Id: 20040301,
-		Key: "geohypostasis",
+		Id:              20040301,
+		Key:             "geohypostasis",
 		NameTextHashMap: 1590609280,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -811,8 +802,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20040401: {
-		Id: 20040401,
-		Key: "hydrohypostasis",
+		Id:              20040401,
+		Key:             "hydrohypostasis",
 		NameTextHashMap: 2176969488,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.25599670410156,
@@ -845,8 +836,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20040501: {
-		Id: 20040501,
-		Key: "cryohypostasis",
+		Id:              20040501,
+		Key:             "cryohypostasis",
 		NameTextHashMap: 937574560,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -879,8 +870,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20040601: {
-		Id: 20040601,
-		Key: "pyrohypostasis",
+		Id:              20040601,
+		Key:             "pyrohypostasis",
 		NameTextHashMap: 374969768,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -917,8 +908,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20040701: {
-		Id: 20040701,
-		Key: "dendrohypostasis",
+		Id:              20040701,
+		Key:             "dendrohypostasis",
 		NameTextHashMap: 2841278344,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.25599670410156,
@@ -955,8 +946,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010501: {
-		Id: 20010501,
-		Key: "electroslime",
+		Id:              20010501,
+		Key:             "electroslime",
 		NameTextHashMap: 960731328,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -985,8 +976,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010601: {
-		Id: 20010601,
-		Key: "largeelectroslime",
+		Id:              20010601,
+		Key:             "largeelectroslime",
 		NameTextHashMap: 2835495304,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -1019,8 +1010,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010701: {
-		Id: 20010701,
-		Key: "mutantelectroslime",
+		Id:              20010701,
+		Key:             "mutantelectroslime",
 		NameTextHashMap: 3389920104,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -1053,8 +1044,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010801: {
-		Id: 20010801,
-		Key: "cryoslime",
+		Id:              20010801,
+		Key:             "cryoslime",
 		NameTextHashMap: 678013664,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1083,8 +1074,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20010901: {
-		Id: 20010901,
-		Key: "largecryoslime",
+		Id:              20010901,
+		Key:             "largecryoslime",
 		NameTextHashMap: 2368926680,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -1117,8 +1108,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20011001: {
-		Id: 20011001,
-		Key: "hydroslime",
+		Id:              20011001,
+		Key:             "hydroslime",
 		NameTextHashMap: 1266302080,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1147,8 +1138,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20011101: {
-		Id: 20011101,
-		Key: "largehydroslime",
+		Id:              20011101,
+		Key:             "largehydroslime",
 		NameTextHashMap: 1883787496,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -1181,8 +1172,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20011601: {
-		Id: 20011601,
-		Key: "hydrohypostasissummon",
+		Id:              20011601,
+		Key:             "hydrohypostasissummon",
 		NameTextHashMap: 544132088,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -1198,13 +1189,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	20050101: {
-		Id: 20050101,
-		Key: "oceanid",
+		Id:              20050101,
+		Key:             "oceanid",
 		NameTextHashMap: 1194478280,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  135.83999633789062,
@@ -1229,8 +1219,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20050201: {
-		Id: 20050201,
-		Key: "hydromimicboar",
+		Id:              20050201,
+		Key:             "hydromimicboar",
 		NameTextHashMap: 3750306112,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -1255,8 +1245,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20050301: {
-		Id: 20050301,
-		Key: "hydromimiccrane",
+		Id:              20050301,
+		Key:             "hydromimiccrane",
 		NameTextHashMap: 1411333056,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1281,8 +1271,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20050401: {
-		Id: 20050401,
-		Key: "hydromimiccrab",
+		Id:              20050401,
+		Key:             "hydromimiccrab",
 		NameTextHashMap: 3859189664,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -1307,8 +1297,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20050501: {
-		Id: 20050501,
-		Key: "hydromimicfinch",
+		Id:              20050501,
+		Key:             "hydromimicfinch",
 		NameTextHashMap: 1517871784,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -1341,8 +1331,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20050601: {
-		Id: 20050601,
-		Key: "hydromimicmallard",
+		Id:              20050601,
+		Key:             "hydromimicmallard",
 		NameTextHashMap: 2454508744,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -1367,8 +1357,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20050701: {
-		Id: 20050701,
-		Key: "hydromimicsquirrel",
+		Id:              20050701,
+		Key:             "hydromimicsquirrel",
 		NameTextHashMap: 2695145104,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.01759910583496,
@@ -1393,8 +1383,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20050801: {
-		Id: 20050801,
-		Key: "hydromimicfrog",
+		Id:              20050801,
+		Key:             "hydromimicfrog",
 		NameTextHashMap: 2270056128,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -1423,8 +1413,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20050901: {
-		Id: 20050901,
-		Key: "hydromimicraptor",
+		Id:              20050901,
+		Key:             "hydromimicraptor",
 		NameTextHashMap: 1727202056,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1449,8 +1439,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20051001: {
-		Id: 20051001,
-		Key: "taintedwatersplittingphantasm",
+		Id:              20051001,
+		Key:             "taintedwatersplittingphantasm",
 		NameTextHashMap: 453148552,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -1483,8 +1473,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20051002: {
-		Id: 20051002,
-		Key: "veterantaintedwatersplittingphantasm",
+		Id:              20051002,
+		Key:             "veterantaintedwatersplittingphantasm",
 		NameTextHashMap: 2970448672,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  991.6320190429688,
@@ -1521,8 +1511,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20051101: {
-		Id: 20051101,
-		Key: "taintedwaterspoutingphantasm",
+		Id:              20051101,
+		Key:             "taintedwaterspoutingphantasm",
 		NameTextHashMap: 3501806728,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.33599853515625,
@@ -1555,8 +1545,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20051102: {
-		Id: 20051102,
-		Key: "veterantaintedwaterspoutingphantasm",
+		Id:              20051102,
+		Key:             "veterantaintedwaterspoutingphantasm",
 		NameTextHashMap: 3144622032,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  885.6768188476562,
@@ -1593,8 +1583,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20051201: {
-		Id: 20051201,
-		Key: "hydrotulpa",
+		Id:              20051201,
+		Key:             "hydrotulpa",
 		NameTextHashMap: 773794872,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  298.8479919433594,
@@ -1627,8 +1617,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20051301: {
-		Id: 20051301,
-		Key: "halftulpa",
+		Id:              20051301,
+		Key:             "halftulpa",
 		NameTextHashMap: 1629142200,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -1644,13 +1634,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	20070101: {
-		Id: 20070101,
-		Key: "thundermanifestation",
+		Id:              20070101,
+		Key:             "thundermanifestation",
 		NameTextHashMap: 3258515928,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  190.17599487304688,
@@ -1687,8 +1676,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21010201: {
-		Id: 21010201,
-		Key: "hilichurlfighter",
+		Id:              21010201,
+		Key:             "hilichurlfighter",
 		NameTextHashMap: 1502883680,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -1717,8 +1706,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21010301: {
-		Id: 21010301,
-		Key: "woodenshieldhilichurlguard",
+		Id:              21010301,
+		Key:             "woodenshieldhilichurlguard",
 		NameTextHashMap: 2491960152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -1747,8 +1736,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21010401: {
-		Id: 21010401,
-		Key: "hilichurlshooter",
+		Id:              21010401,
+		Key:             "hilichurlshooter",
 		NameTextHashMap: 3261111696,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1777,8 +1766,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21010501: {
-		Id: 21010501,
-		Key: "pyrohilichurlshooter",
+		Id:              21010501,
+		Key:             "pyrohilichurlshooter",
 		NameTextHashMap: 41061376,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1807,8 +1796,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21010601: {
-		Id: 21010601,
-		Key: "hilichurlgrenadier",
+		Id:              21010601,
+		Key:             "hilichurlgrenadier",
 		NameTextHashMap: 4024598056,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -1837,8 +1826,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21010701: {
-		Id: 21010701,
-		Key: "hilichurlberserker",
+		Id:              21010701,
+		Key:             "hilichurlberserker",
 		NameTextHashMap: 3251673344,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -1867,8 +1856,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21010901: {
-		Id: 21010901,
-		Key: "cryohilichurlshooter",
+		Id:              21010901,
+		Key:             "cryohilichurlshooter",
 		NameTextHashMap: 2598026680,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1897,8 +1886,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21011001: {
-		Id: 21011001,
-		Key: "electrohilichurlshooter",
+		Id:              21011001,
+		Key:             "electrohilichurlshooter",
 		NameTextHashMap: 2963928784,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1927,8 +1916,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21011201: {
-		Id: 21011201,
-		Key: "rockshieldhilichurlguard",
+		Id:              21011201,
+		Key:             "rockshieldhilichurlguard",
 		NameTextHashMap: 1779087448,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -1957,8 +1946,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21011301: {
-		Id: 21011301,
-		Key: "cryohilichurlgrenadier",
+		Id:              21011301,
+		Key:             "cryohilichurlgrenadier",
 		NameTextHashMap: 2456790112,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -1987,8 +1976,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21011401: {
-		Id: 21011401,
-		Key: "iceshieldhilichurlguard",
+		Id:              21011401,
+		Key:             "iceshieldhilichurlguard",
 		NameTextHashMap: 3034104928,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -2017,8 +2006,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21011501: {
-		Id: 21011501,
-		Key: "unusualhilichurl",
+		Id:              21011501,
+		Key:             "unusualhilichurl",
 		NameTextHashMap: 1868726720,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -2047,8 +2036,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21011601: {
-		Id: 21011601,
-		Key: "electrohilichurlgrenadier",
+		Id:              21011601,
+		Key:             "electrohilichurlgrenadier",
 		NameTextHashMap: 2167729272,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -2077,8 +2066,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20011201: {
-		Id: 20011201,
-		Key: "pyroslime",
+		Id:              20011201,
+		Key:             "pyroslime",
 		NameTextHashMap: 3113209704,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -2107,8 +2096,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20011301: {
-		Id: 20011301,
-		Key: "largepyroslime",
+		Id:              20011301,
+		Key:             "largepyroslime",
 		NameTextHashMap: 3104668424,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -2141,8 +2130,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20011401: {
-		Id: 20011401,
-		Key: "geoslime",
+		Id:              20011401,
+		Key:             "geoslime",
 		NameTextHashMap: 1304425088,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.867199897766113,
@@ -2171,8 +2160,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20011501: {
-		Id: 20011501,
-		Key: "largegeoslime",
+		Id:              20011501,
+		Key:             "largegeoslime",
 		NameTextHashMap: 2254956112,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -2205,8 +2194,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22010101: {
-		Id: 22010101,
-		Key: "pyroabyssmage",
+		Id:              22010101,
+		Key:             "pyroabyssmage",
 		NameTextHashMap: 2415438104,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -2243,8 +2232,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22010201: {
-		Id: 22010201,
-		Key: "cryoabyssmage",
+		Id:              22010201,
+		Key:             "cryoabyssmage",
 		NameTextHashMap: 1321463096,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -2281,8 +2270,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22010301: {
-		Id: 22010301,
-		Key: "hydroabyssmage",
+		Id:              22010301,
+		Key:             "hydroabyssmage",
 		NameTextHashMap: 2267848368,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -2319,8 +2308,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22010401: {
-		Id: 22010401,
-		Key: "electroabyssmage",
+		Id:              22010401,
+		Key:             "electroabyssmage",
 		NameTextHashMap: 1299643312,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -2357,8 +2346,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22020101: {
-		Id: 22020101,
-		Key: "abyssheraldwickedtorrents",
+		Id:              22020101,
+		Key:             "abyssheraldwickedtorrents",
 		NameTextHashMap: 2159496136,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -2391,8 +2380,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22020201: {
-		Id: 22020201,
-		Key: "abyssheraldfrostfall",
+		Id:              22020201,
+		Key:             "abyssheraldfrostfall",
 		NameTextHashMap: 1561834088,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -2425,8 +2414,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22030101: {
-		Id: 22030101,
-		Key: "abysslectorvioletlightning",
+		Id:              22030101,
+		Key:             "abysslectorvioletlightning",
 		NameTextHashMap: 626343048,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -2459,8 +2448,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22030201: {
-		Id: 22030201,
-		Key: "abysslectorfathomlessflames",
+		Id:              22030201,
+		Key:             "abysslectorfathomlessflames",
 		NameTextHashMap: 1167557096,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -2493,8 +2482,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22040101: {
-		Id: 22040101,
-		Key: "rockfondrifthoundwhelp",
+		Id:              22040101,
+		Key:             "rockfondrifthoundwhelp",
 		NameTextHashMap: 4040204456,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -2523,8 +2512,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22040201: {
-		Id: 22040201,
-		Key: "thundercravenrifthoundwhelp",
+		Id:              22040201,
+		Key:             "thundercravenrifthoundwhelp",
 		NameTextHashMap: 717375112,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -2553,8 +2542,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22050101: {
-		Id: 22050101,
-		Key: "rockfondrifthound",
+		Id:              22050101,
+		Key:             "rockfondrifthound",
 		NameTextHashMap: 2930642328,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -2587,8 +2576,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22050201: {
-		Id: 22050201,
-		Key: "thundercravenrifthound",
+		Id:              22050201,
+		Key:             "thundercravenrifthound",
 		NameTextHashMap: 2530429496,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -2621,8 +2610,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22060101: {
-		Id: 22060101,
-		Key: "goldenwolflord",
+		Id:              22060101,
+		Key:             "goldenwolflord",
 		NameTextHashMap: 2218442544,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  163.00799560546875,
@@ -2659,8 +2648,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22070101: {
-		Id: 22070101,
-		Key: "shadowyhuskstandardbearer",
+		Id:              22070101,
+		Key:             "shadowyhuskstandardbearer",
 		NameTextHashMap: 3775538896,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -2697,8 +2686,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22070201: {
-		Id: 22070201,
-		Key: "shadowyhusklinebreaker",
+		Id:              22070201,
+		Key:             "shadowyhusklinebreaker",
 		NameTextHashMap: 1930273248,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  81.50399780273438,
@@ -2731,8 +2720,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22070301: {
-		Id: 22070301,
-		Key: "shadowyhuskdefender",
+		Id:              22070301,
+		Key:             "shadowyhuskdefender",
 		NameTextHashMap: 784327392,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.33599853515625,
@@ -2769,8 +2758,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22080101: {
-		Id: 22080101,
-		Key: "blackserpentknightwindcutter",
+		Id:              22080101,
+		Key:             "blackserpentknightwindcutter",
 		NameTextHashMap: 3259944648,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -2803,8 +2792,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22080201: {
-		Id: 22080201,
-		Key: "blackserpentknightrockbreakerax",
+		Id:              22080201,
+		Key:             "blackserpentknightrockbreakerax",
 		NameTextHashMap: 2575257792,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -2837,8 +2826,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22100101: {
-		Id: 22100101,
-		Key: "iniquitousbaptist",
+		Id:              22100101,
+		Key:             "iniquitousbaptist",
 		NameTextHashMap: 1840128168,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  135.83999633789062,
@@ -2875,8 +2864,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22110101: {
-		Id: 22110101,
-		Key: "largeshatterstonebreacherprimus",
+		Id:              22110101,
+		Key:             "largeshatterstonebreacherprimus",
 		NameTextHashMap: 3303466144,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  97.80480194091797,
@@ -2913,8 +2902,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22110201: {
-		Id: 22110201,
-		Key: "shatterstonebreacherprimus",
+		Id:              22110201,
+		Key:             "shatterstonebreacherprimus",
 		NameTextHashMap: 3351302096,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -2943,8 +2932,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22110301: {
-		Id: 22110301,
-		Key: "largeovergrownbreacherprimus",
+		Id:              22110301,
+		Key:             "largeovergrownbreacherprimus",
 		NameTextHashMap: 1920243392,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  114.10559844970703,
@@ -2981,8 +2970,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	22110402: {
-		Id: 22110402,
-		Key: "overgrownbreacherprimus",
+		Id:              22110402,
+		Key:             "overgrownbreacherprimus",
 		NameTextHashMap: 3120151760,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -3011,8 +3000,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21030101: {
-		Id: 21030101,
-		Key: "hydrosamachurl",
+		Id:              21030101,
+		Key:             "hydrosamachurl",
 		NameTextHashMap: 1980056728,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -3041,8 +3030,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21030201: {
-		Id: 21030201,
-		Key: "dendrosamachurl",
+		Id:              21030201,
+		Key:             "dendrosamachurl",
 		NameTextHashMap: 1473826984,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -3071,8 +3060,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21030301: {
-		Id: 21030301,
-		Key: "anemosamachurl",
+		Id:              21030301,
+		Key:             "anemosamachurl",
 		NameTextHashMap: 10553112,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -3101,8 +3090,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21030401: {
-		Id: 21030401,
-		Key: "geosamachurl",
+		Id:              21030401,
+		Key:             "geosamachurl",
 		NameTextHashMap: 3338079384,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -3131,8 +3120,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21030501: {
-		Id: 21030501,
-		Key: "cryosamachurl",
+		Id:              21030501,
+		Key:             "cryosamachurl",
 		NameTextHashMap: 1785924728,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -3161,8 +3150,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21030601: {
-		Id: 21030601,
-		Key: "electrosamachurl",
+		Id:              21030601,
+		Key:             "electrosamachurl",
 		NameTextHashMap: 1596748696,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -3191,8 +3180,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21030701: {
-		Id: 21030701,
-		Key: "samachurlboss",
+		Id:              21030701,
+		Key:             "samachurlboss",
 		NameTextHashMap: 4115780424,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  320,
@@ -3229,8 +3218,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21040101: {
-		Id: 21040101,
-		Key: "anemohilichurlrogue",
+		Id:              21040101,
+		Key:             "anemohilichurlrogue",
 		NameTextHashMap: 3952856048,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -3263,8 +3252,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	21040201: {
-		Id: 21040201,
-		Key: "hydrohilichurlrogue",
+		Id:              21040201,
+		Key:             "hydrohilichurlrogue",
 		NameTextHashMap: 2508757576,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -3297,8 +3286,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24010101: {
-		Id: 24010101,
-		Key: "ruinguard",
+		Id:              24010101,
+		Key:             "ruinguard",
 		NameTextHashMap: 1418628360,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -3335,8 +3324,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24010201: {
-		Id: 24010201,
-		Key: "ruinhunter",
+		Id:              24010201,
+		Key:             "ruinhunter",
 		NameTextHashMap: 4243053360,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  81.50399780273438,
@@ -3373,8 +3362,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24010301: {
-		Id: 24010301,
-		Key: "ruingrader",
+		Id:              24010301,
+		Key:             "ruingrader",
 		NameTextHashMap: 399632552,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.25599670410156,
@@ -3411,8 +3400,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24010401: {
-		Id: 24010401,
-		Key: "ruinserpent",
+		Id:              24010401,
+		Key:             "ruinserpent",
 		NameTextHashMap: 2345695136,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.343994140625,
@@ -3445,8 +3434,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24020101: {
-		Id: 24020101,
-		Key: "ruincruiser",
+		Id:              24020101,
+		Key:             "ruincruiser",
 		NameTextHashMap: 2360166000,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -3479,8 +3468,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24020201: {
-		Id: 24020201,
-		Key: "ruindestroyer",
+		Id:              24020201,
+		Key:             "ruindestroyer",
 		NameTextHashMap: 2106038440,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -3513,8 +3502,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24020301: {
-		Id: 24020301,
-		Key: "ruindefender",
+		Id:              24020301,
+		Key:             "ruindefender",
 		NameTextHashMap: 2390298952,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  57.052799224853516,
@@ -3547,8 +3536,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24020401: {
-		Id: 24020401,
-		Key: "ruinscout",
+		Id:              24020401,
+		Key:             "ruinscout",
 		NameTextHashMap: 545245072,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  57.052799224853516,
@@ -3581,8 +3570,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24021101: {
-		Id: 24021101,
-		Key: "perpetualmechanicalarray",
+		Id:              24021101,
+		Key:             "perpetualmechanicalarray",
 		NameTextHashMap: 4062249480,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.343994140625,
@@ -3615,8 +3604,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24030101: {
-		Id: 24030101,
-		Key: "ruindrakeskywatch",
+		Id:              24030101,
+		Key:             "ruindrakeskywatch",
 		NameTextHashMap: 1874960408,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -3649,8 +3638,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24030201: {
-		Id: 24030201,
-		Key: "ruindrakeearthguard",
+		Id:              24030201,
+		Key:             "ruindrakeearthguard",
 		NameTextHashMap: 745177296,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -3683,8 +3672,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24030301: {
-		Id: 24030301,
-		Key: "aeonblightdrake",
+		Id:              24030301,
+		Key:             "aeonblightdrake",
 		NameTextHashMap: 392391024,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  230.92799377441406,
@@ -3717,8 +3706,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24040101: {
-		Id: 24040101,
-		Key: "primalconstructrepulsor",
+		Id:              24040101,
+		Key:             "primalconstructrepulsor",
 		NameTextHashMap: 3640705344,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  46.18560028076172,
@@ -3755,8 +3744,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24040201: {
-		Id: 24040201,
-		Key: "primalconstructreshaper",
+		Id:              24040201,
+		Key:             "primalconstructreshaper",
 		NameTextHashMap: 3433160376,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  46.18560028076172,
@@ -3793,8 +3782,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24040301: {
-		Id: 24040301,
-		Key: "primalconstructprospector",
+		Id:              24040301,
+		Key:             "primalconstructprospector",
 		NameTextHashMap: 960036488,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  46.18560028076172,
@@ -3831,8 +3820,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24050101: {
-		Id: 24050101,
-		Key: "algorithmofsemiintransientmatrixofoverseernetwork",
+		Id:              24050101,
+		Key:             "algorithmofsemiintransientmatrixofoverseernetwork",
 		NameTextHashMap: 1856265352,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.343994140625,
@@ -3865,8 +3854,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24060101: {
-		Id: 24060101,
-		Key: "reconlogmek",
+		Id:              24060101,
+		Key:             "reconlogmek",
 		NameTextHashMap: 2479279968,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -3895,8 +3884,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24060201: {
-		Id: 24060201,
-		Key: "arithmeticenhancermek",
+		Id:              24060201,
+		Key:             "arithmeticenhancermek",
 		NameTextHashMap: 1945068152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  24.451200485229492,
@@ -3925,8 +3914,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24060301: {
-		Id: 24060301,
-		Key: "underwatersurveymek",
+		Id:              24060301,
+		Key:             "underwatersurveymek",
 		NameTextHashMap: 2641906440,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.481340408325195,
@@ -3942,13 +3931,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24060401: {
-		Id: 24060401,
-		Key: "geologicalsurveymek",
+		Id:              24060401,
+		Key:             "geologicalsurveymek",
 		NameTextHashMap: 1822391752,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -3977,8 +3965,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24060501: {
-		Id: 24060501,
-		Key: "underwaterpatrolmek",
+		Id:              24060501,
+		Key:             "underwaterpatrolmek",
 		NameTextHashMap: 723416032,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.46889877319336,
@@ -3994,13 +3982,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24060601: {
-		Id: 24060601,
-		Key: "deepwaterassaultmek",
+		Id:              24060601,
+		Key:             "deepwaterassaultmek",
 		NameTextHashMap: 3481979704,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  64.93779754638672,
@@ -4016,13 +4003,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24060701: {
-		Id: 24060701,
-		Key: "nimbleharvestermek",
+		Id:              24060701,
+		Key:             "nimbleharvestermek",
 		NameTextHashMap: 2198763648,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -4051,8 +4037,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24060801: {
-		Id: 24060801,
-		Key: "assaultspecialistmek",
+		Id:              24060801,
+		Key:             "assaultspecialistmek",
 		NameTextHashMap: 68049912,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  65.20320129394531,
@@ -4089,8 +4075,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24060901: {
-		Id: 24060901,
-		Key: "suppressionspecialistmek",
+		Id:              24060901,
+		Key:             "suppressionspecialistmek",
 		NameTextHashMap: 1387101112,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.33599853515625,
@@ -4127,8 +4113,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24061001: {
-		Id: 24061001,
-		Key: "annihilationspecialistmek",
+		Id:              24061001,
+		Key:             "annihilationspecialistmek",
 		NameTextHashMap: 1733932512,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  70.63680267333984,
@@ -4165,8 +4151,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24061101: {
-		Id: 24061101,
-		Key: "areaalertmek",
+		Id:              24061101,
+		Key:             "areaalertmek",
 		NameTextHashMap: 3720326080,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.01759910583496,
@@ -4195,8 +4181,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24061201: {
-		Id: 24061201,
-		Key: "constructionspecialistmek",
+		Id:              24061201,
+		Key:             "constructionspecialistmek",
 		NameTextHashMap: 3581880152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -4233,8 +4219,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24061301: {
-		Id: 24061301,
-		Key: "veteranarithmeticenhancermek",
+		Id:              24061301,
+		Key:             "veteranarithmeticenhancermek",
 		NameTextHashMap: 381672496,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  516.1920166015625,
@@ -4271,8 +4257,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24070101: {
-		Id: 24070101,
-		Key: "icewindsuite",
+		Id:              24070101,
+		Key:             "icewindsuite",
 		NameTextHashMap: 242731664,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  203.75999450683594,
@@ -4309,8 +4295,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24080101: {
-		Id: 24080101,
-		Key: "experimentalfieldgenerator",
+		Id:              24080101,
+		Key:             "experimentalfieldgenerator",
 		NameTextHashMap: 3214543168,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  213.268798828125,
@@ -4343,8 +4329,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	24810101: {
-		Id: 24810101,
-		Key: "basicdefensivepyrotower",
+		Id:              24810101,
+		Key:             "basicdefensivepyrotower",
 		NameTextHashMap: 3995841000,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108,
@@ -4360,13 +4346,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24810201: {
-		Id: 24810201,
-		Key: "advanceddefensivepyrotower",
+		Id:              24810201,
+		Key:             "advanceddefensivepyrotower",
 		NameTextHashMap: 1952925880,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  180,
@@ -4382,13 +4367,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24810301: {
-		Id: 24810301,
-		Key: "basicdefensiveelectrotower",
+		Id:              24810301,
+		Key:             "basicdefensiveelectrotower",
 		NameTextHashMap: 2001019136,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108,
@@ -4404,13 +4388,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24810401: {
-		Id: 24810401,
-		Key: "advanceddefensiveelectrotower",
+		Id:              24810401,
+		Key:             "advanceddefensiveelectrotower",
 		NameTextHashMap: 973459312,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  180,
@@ -4426,13 +4409,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24810501: {
-		Id: 24810501,
-		Key: "basicdefensivehydrotower",
+		Id:              24810501,
+		Key:             "basicdefensivehydrotower",
 		NameTextHashMap: 391056656,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108,
@@ -4448,13 +4430,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24810601: {
-		Id: 24810601,
-		Key: "advanceddefensivehydrotower",
+		Id:              24810601,
+		Key:             "advanceddefensivehydrotower",
 		NameTextHashMap: 693132112,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  180,
@@ -4470,13 +4451,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24810701: {
-		Id: 24810701,
-		Key: "basicdefensivecryotower",
+		Id:              24810701,
+		Key:             "basicdefensivecryotower",
 		NameTextHashMap: 706010336,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108,
@@ -4492,13 +4472,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24810801: {
-		Id: 24810801,
-		Key: "advanceddefensivecryotower",
+		Id:              24810801,
+		Key:             "advanceddefensivecryotower",
 		NameTextHashMap: 3289322152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  180,
@@ -4514,13 +4493,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24810901: {
-		Id: 24810901,
-		Key: "basicdefensiveanemotower",
+		Id:              24810901,
+		Key:             "basicdefensiveanemotower",
 		NameTextHashMap: 4171513648,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108,
@@ -4536,13 +4514,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24811001: {
-		Id: 24811001,
-		Key: "advanceddefensiveanemotower",
+		Id:              24811001,
+		Key:             "advanceddefensiveanemotower",
 		NameTextHashMap: 146399424,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  180,
@@ -4558,13 +4535,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24811101: {
-		Id: 24811101,
-		Key: "defensivephysicaltower",
+		Id:              24811101,
+		Key:             "defensivephysicaltower",
 		NameTextHashMap: 444889392,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108,
@@ -4580,13 +4556,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24920101: {
-		Id: 24920101,
-		Key: "automatonsmallslimeballoon",
+		Id:              24920101,
+		Key:             "automatonsmallslimeballoon",
 		NameTextHashMap: 1647913616,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -4602,13 +4577,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24920201: {
-		Id: 24920201,
-		Key: "automatonlargeslimeballoon",
+		Id:              24920201,
+		Key:             "automatonlargeslimeballoon",
 		NameTextHashMap: 2117269760,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -4624,13 +4598,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24920301: {
-		Id: 24920301,
-		Key: "automatonfungusballoon",
+		Id:              24920301,
+		Key:             "automatonfungusballoon",
 		NameTextHashMap: 652910120,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -4646,13 +4619,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	23010101: {
-		Id: 23010101,
-		Key: "fatuiskirmishercryogunnerlegionnaire",
+		Id:              23010101,
+		Key:             "fatuiskirmishercryogunnerlegionnaire",
 		NameTextHashMap: 995929064,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.33599853515625,
@@ -4685,8 +4657,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23010201: {
-		Id: 23010201,
-		Key: "fatuiskirmisherhydrogunnerlegionnaire",
+		Id:              23010201,
+		Key:             "fatuiskirmisherhydrogunnerlegionnaire",
 		NameTextHashMap: 12762888,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -4719,8 +4691,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23010301: {
-		Id: 23010301,
-		Key: "fatuiskirmisherelectrohammervanguard",
+		Id:              23010301,
+		Key:             "fatuiskirmisherelectrohammervanguard",
 		NameTextHashMap: 1919409584,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.33599853515625,
@@ -4753,8 +4725,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23010401: {
-		Id: 23010401,
-		Key: "fatuiskirmishergeochanterbracer",
+		Id:              23010401,
+		Key:             "fatuiskirmishergeochanterbracer",
 		NameTextHashMap: 3627495392,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -4787,8 +4759,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23010501: {
-		Id: 23010501,
-		Key: "fatuiskirmisheranemoboxervanguard",
+		Id:              23010501,
+		Key:             "fatuiskirmisheranemoboxervanguard",
 		NameTextHashMap: 1426306032,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -4821,8 +4793,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23010601: {
-		Id: 23010601,
-		Key: "fatuiskirmisherpyroslingerbracer",
+		Id:              23010601,
+		Key:             "fatuiskirmisherpyroslingerbracer",
 		NameTextHashMap: 1434878968,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -4855,8 +4827,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23020101: {
-		Id: 23020101,
-		Key: "fatuipyroagent",
+		Id:              23020101,
+		Key:             "fatuipyroagent",
 		NameTextHashMap: 3750143024,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -4889,8 +4861,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23030101: {
-		Id: 23030101,
-		Key: "fatuielectrocicinmage",
+		Id:              23030101,
+		Key:             "fatuielectrocicinmage",
 		NameTextHashMap: 1010609776,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -4923,8 +4895,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23040101: {
-		Id: 23040101,
-		Key: "fatuicryocicinmage",
+		Id:              23040101,
+		Key:             "fatuicryocicinmage",
 		NameTextHashMap: 4010466472,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -4957,8 +4929,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23050101: {
-		Id: 23050101,
-		Key: "mirrormaiden",
+		Id:              23050101,
+		Key:             "mirrormaiden",
 		NameTextHashMap: 1709717640,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  81.50399780273438,
@@ -4991,8 +4963,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23060101: {
-		Id: 23060101,
-		Key: "frostoperative",
+		Id:              23060101,
+		Key:             "frostoperative",
 		NameTextHashMap: 2059788056,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -5029,8 +5001,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23060201: {
-		Id: 23060201,
-		Key: "windoperative",
+		Id:              23060201,
+		Key:             "windoperative",
 		NameTextHashMap: 3887106408,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -5067,8 +5039,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23060301: {
-		Id: 23060301,
-		Key: "veteranfrostoperative",
+		Id:              23060301,
+		Key:             "veteranfrostoperative",
 		NameTextHashMap: 544837160,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  896.5440063476562,
@@ -5105,8 +5077,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	23060401: {
-		Id: 23060401,
-		Key: "veteranwindoperative",
+		Id:              23060401,
+		Key:             "veteranwindoperative",
 		NameTextHashMap: 3448422640,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  850.3583984375,
@@ -5143,8 +5115,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25010101: {
-		Id: 25010101,
-		Key: "treasurehoardersliuliu",
+		Id:              25010101,
+		Key:             "treasurehoardersliuliu",
 		NameTextHashMap: 2720944320,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -5177,8 +5149,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25010201: {
-		Id: 25010201,
-		Key: "treasurehoardersscout",
+		Id:              25010201,
+		Key:             "treasurehoardersscout",
 		NameTextHashMap: 3059200712,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  16.300800323486328,
@@ -5211,8 +5183,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25010301: {
-		Id: 25010301,
-		Key: "treasurehoarderspyropotioneer",
+		Id:              25010301,
+		Key:             "treasurehoarderspyropotioneer",
 		NameTextHashMap: 1087023424,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -5245,8 +5217,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25010401: {
-		Id: 25010401,
-		Key: "treasurehoardershydropotioneer",
+		Id:              25010401,
+		Key:             "treasurehoardershydropotioneer",
 		NameTextHashMap: 3798548888,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -5279,8 +5251,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25010501: {
-		Id: 25010501,
-		Key: "treasurehoarderselectropotioneer",
+		Id:              25010501,
+		Key:             "treasurehoarderselectropotioneer",
 		NameTextHashMap: 1521590128,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -5313,8 +5285,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25010601: {
-		Id: 25010601,
-		Key: "treasurehoarderscryopotioneer",
+		Id:              25010601,
+		Key:             "treasurehoarderscryopotioneer",
 		NameTextHashMap: 361009392,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -5347,8 +5319,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25010701: {
-		Id: 25010701,
-		Key: "treasurehoardershandyman",
+		Id:              25010701,
+		Key:             "treasurehoardershandyman",
 		NameTextHashMap: 3123684272,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5385,8 +5357,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25020101: {
-		Id: 25020101,
-		Key: "treasurehoardersraptor",
+		Id:              25020101,
+		Key:             "treasurehoardersraptor",
 		NameTextHashMap: 3627181320,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5419,8 +5391,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25020201: {
-		Id: 25020201,
-		Key: "treasurehoardersmarksman",
+		Id:              25020201,
+		Key:             "treasurehoardersmarksman",
 		NameTextHashMap: 3413949720,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  16.300800323486328,
@@ -5453,8 +5425,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25030101: {
-		Id: 25030101,
-		Key: "treasurehoarderscarmen",
+		Id:              25030101,
+		Key:             "treasurehoarderscarmen",
 		NameTextHashMap: 531388104,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -5487,8 +5459,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25030201: {
-		Id: 25030201,
-		Key: "treasurehoardersgravedigger",
+		Id:              25030201,
+		Key:             "treasurehoardersgravedigger",
 		NameTextHashMap: 28706096,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5525,8 +5497,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25030301: {
-		Id: 25030301,
-		Key: "treasurehoardersseaman",
+		Id:              25030301,
+		Key:             "treasurehoardersseaman",
 		NameTextHashMap: 1603081168,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5563,8 +5535,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25040101: {
-		Id: 25040101,
-		Key: "treasurehoardersboss",
+		Id:              25040101,
+		Key:             "treasurehoardersboss",
 		NameTextHashMap: 1914087968,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -5601,8 +5573,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25050101: {
-		Id: 25050101,
-		Key: "millelithsoldier",
+		Id:              25050101,
+		Key:             "millelithsoldier",
 		NameTextHashMap: 1541768712,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -5635,8 +5607,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25050201: {
-		Id: 25050201,
-		Key: "millelithsergeant",
+		Id:              25050201,
+		Key:             "millelithsergeant",
 		NameTextHashMap: 4161693360,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -5673,8 +5645,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25050301: {
-		Id: 25050301,
-		Key: "shogunateinfantry",
+		Id:              25050301,
+		Key:             "shogunateinfantry",
 		NameTextHashMap: 1175126584,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -5703,8 +5675,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25050401: {
-		Id: 25050401,
-		Key: "shogunateinfantrycaptain",
+		Id:              25050401,
+		Key:             "shogunateinfantrycaptain",
 		NameTextHashMap: 1300846616,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.601600646972656,
@@ -5737,8 +5709,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25050501: {
-		Id: 25050501,
-		Key: "sangonomiyacohort",
+		Id:              25050501,
+		Key:             "sangonomiyacohort",
 		NameTextHashMap: 2581117880,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -5767,8 +5739,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25060101: {
-		Id: 25060101,
-		Key: "treasurehoarderspugilist",
+		Id:              25060101,
+		Key:             "treasurehoarderspugilist",
 		NameTextHashMap: 557874744,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5805,8 +5777,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25070101: {
-		Id: 25070101,
-		Key: "treasurehoarderscrusher",
+		Id:              25070101,
+		Key:             "treasurehoarderscrusher",
 		NameTextHashMap: 2325739152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5843,8 +5815,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25070201: {
-		Id: 25070201,
-		Key: "treasurehoarderswallenstein",
+		Id:              25070201,
+		Key:             "treasurehoarderswallenstein",
 		NameTextHashMap: 4260216696,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -5877,8 +5849,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25080101: {
-		Id: 25080101,
-		Key: "nobushijintouban",
+		Id:              25080101,
+		Key:             "nobushijintouban",
 		NameTextHashMap: 2854295616,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5907,8 +5879,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25080201: {
-		Id: 25080201,
-		Key: "nobushihitsukeban",
+		Id:              25080201,
+		Key:             "nobushihitsukeban",
 		NameTextHashMap: 2410706536,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5937,8 +5909,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25080301: {
-		Id: 25080301,
-		Key: "nobushikikouban",
+		Id:              25080301,
+		Key:             "nobushikikouban",
 		NameTextHashMap: 628782592,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -5967,8 +5939,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25080401: {
-		Id: 25080401,
-		Key: "yorikisamurai",
+		Id:              25080401,
+		Key:             "yorikisamurai",
 		NameTextHashMap: 2183303536,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  48.902400970458984,
@@ -6005,8 +5977,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25090101: {
-		Id: 25090101,
-		Key: "maguukenki",
+		Id:              25090101,
+		Key:             "maguukenki",
 		NameTextHashMap: 1759704776,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  271.67999267578125,
@@ -6043,8 +6015,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25090201: {
-		Id: 25090201,
-		Key: "maguukenkilonegale",
+		Id:              25090201,
+		Key:             "maguukenkilonegale",
 		NameTextHashMap: 1312052256,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.343994140625,
@@ -6081,8 +6053,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25090301: {
-		Id: 25090301,
-		Key: "maguukenkigallopingfrost",
+		Id:              25090301,
+		Key:             "maguukenkigallopingfrost",
 		NameTextHashMap: 2743685832,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.343994140625,
@@ -6119,8 +6091,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25090401: {
-		Id: 25090401,
-		Key: "maguukenkimaskofterror",
+		Id:              25090401,
+		Key:             "maguukenkimaskofterror",
 		NameTextHashMap: 2823011544,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.343994140625,
@@ -6157,8 +6129,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25100202: {
-		Id: 25100202,
-		Key: "kairagifierymight",
+		Id:              25100202,
+		Key:             "kairagifierymight",
 		NameTextHashMap: 2117605600,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  137.2480010986328,
@@ -6174,13 +6146,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: -0.20000000298023224,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	25100101: {
-		Id: 25100101,
-		Key: "kairagidancingthunder",
+		Id:              25100101,
+		Key:             "kairagidancingthunder",
 		NameTextHashMap: 756201560,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  65.20320129394531,
@@ -6217,8 +6188,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25100301: {
-		Id: 25100301,
-		Key: "ochimushaensorcelledthunder",
+		Id:              25100301,
+		Key:             "ochimushaensorcelledthunder",
 		NameTextHashMap: 3213672968,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  65.20320129394531,
@@ -6255,8 +6226,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25100401: {
-		Id: 25100401,
-		Key: "ochimushacankeredflame",
+		Id:              25100401,
+		Key:             "ochimushacankeredflame",
 		NameTextHashMap: 3794652600,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  65.20320129394531,
@@ -6293,8 +6264,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25110101: {
-		Id: 25110101,
-		Key: "spiritofomenstonedrake",
+		Id:              25110101,
+		Key:             "spiritofomenstonedrake",
 		NameTextHashMap: 1974811384,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  20.375999450683594,
@@ -6323,8 +6294,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25110201: {
-		Id: 25110201,
-		Key: "spiritofomenwindglede",
+		Id:              25110201,
+		Key:             "spiritofomenwindglede",
 		NameTextHashMap: 212096752,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  17.930879592895508,
@@ -6353,8 +6324,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25110301: {
-		Id: 25110301,
-		Key: "spiritofomenpyroscorpion",
+		Id:              25110301,
+		Key:             "spiritofomenpyroscorpion",
 		NameTextHashMap: 1475388712,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  17.930879592895508,
@@ -6383,8 +6354,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25110401: {
-		Id: 25110401,
-		Key: "spiritofomendendrospiritserpent",
+		Id:              25110401,
+		Key:             "spiritofomendendrospiritserpent",
 		NameTextHashMap: 2282634880,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  20.375999450683594,
@@ -6413,8 +6384,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25210101: {
-		Id: 25210101,
-		Key: "eremiteaxevanguard",
+		Id:              25210101,
+		Key:             "eremiteaxevanguard",
 		NameTextHashMap: 4033438760,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -6443,8 +6414,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25210201: {
-		Id: 25210201,
-		Key: "eremitecrossbow",
+		Id:              25210201,
+		Key:             "eremitecrossbow",
 		NameTextHashMap: 570914008,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  16.300800323486328,
@@ -6473,8 +6444,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25210301: {
-		Id: 25210301,
-		Key: "eremiteravenbeakhalberdier",
+		Id:              25210301,
+		Key:             "eremiteravenbeakhalberdier",
 		NameTextHashMap: 208498888,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  16.300800323486328,
@@ -6503,8 +6474,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25210401: {
-		Id: 25210401,
-		Key: "eremitelinebreaker",
+		Id:              25210401,
+		Key:             "eremitelinebreaker",
 		NameTextHashMap: 941545672,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -6533,8 +6504,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25210501: {
-		Id: 25210501,
-		Key: "eremitesworddancer",
+		Id:              25210501,
+		Key:             "eremitesworddancer",
 		NameTextHashMap: 2346894216,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -6563,8 +6534,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25310101: {
-		Id: 25310101,
-		Key: "eremitedesertclearwater",
+		Id:              25310101,
+		Key:             "eremitedesertclearwater",
 		NameTextHashMap: 2370874928,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  48.902400970458984,
@@ -6601,8 +6572,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25310201: {
-		Id: 25310201,
-		Key: "eremitesunfrost",
+		Id:              25310201,
+		Key:             "eremitesunfrost",
 		NameTextHashMap: 3916342008,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  48.902400970458984,
@@ -6639,8 +6610,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25310301: {
-		Id: 25310301,
-		Key: "eremitedaythunder",
+		Id:              25310301,
+		Key:             "eremitedaythunder",
 		NameTextHashMap: 3814441896,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.33599853515625,
@@ -6677,8 +6648,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25410101: {
-		Id: 25410101,
-		Key: "eremitestoneenchanter",
+		Id:              25410101,
+		Key:             "eremitestoneenchanter",
 		NameTextHashMap: 3908443880,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -6715,8 +6686,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25410201: {
-		Id: 25410201,
-		Key: "eremitegalehunter",
+		Id:              25410201,
+		Key:             "eremitegalehunter",
 		NameTextHashMap: 4217422888,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  59.76959991455078,
@@ -6753,8 +6724,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25410301: {
-		Id: 25410301,
-		Key: "eremitescorchingloremaster",
+		Id:              25410301,
+		Key:             "eremitescorchingloremaster",
 		NameTextHashMap: 2089267960,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  59.76959991455078,
@@ -6791,8 +6762,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	25410401: {
-		Id: 25410401,
-		Key: "eremitefloralringdancer",
+		Id:              25410401,
+		Key:             "eremitefloralringdancer",
 		NameTextHashMap: 1917817184,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.91999816894531,
@@ -6829,8 +6800,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26010101: {
-		Id: 26010101,
-		Key: "cryowhopperflower",
+		Id:              26010101,
+		Key:             "cryowhopperflower",
 		NameTextHashMap: 883066616,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -6867,8 +6838,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26010201: {
-		Id: 26010201,
-		Key: "pyrowhopperflower",
+		Id:              26010201,
+		Key:             "pyrowhopperflower",
 		NameTextHashMap: 516009168,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -6905,8 +6876,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26010301: {
-		Id: 26010301,
-		Key: "electrowhopperflower",
+		Id:              26010301,
+		Key:             "electrowhopperflower",
 		NameTextHashMap: 235094848,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -6943,8 +6914,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26020101: {
-		Id: 26020101,
-		Key: "cryoregisvine",
+		Id:              26020101,
+		Key:             "cryoregisvine",
 		NameTextHashMap: 1058177408,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -6981,8 +6952,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26020201: {
-		Id: 26020201,
-		Key: "pyroregisvine",
+		Id:              26020201,
+		Key:             "pyroregisvine",
 		NameTextHashMap: 184117072,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -7019,8 +6990,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26020301: {
-		Id: 26020301,
-		Key: "electroregisvine",
+		Id:              26020301,
+		Key:             "electroregisvine",
 		NameTextHashMap: 3366866392,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -7057,8 +7028,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26030101: {
-		Id: 26030101,
-		Key: "geovishaphatchling",
+		Id:              26030101,
+		Key:             "geovishaphatchling",
 		NameTextHashMap: 2176598456,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.75199890136719,
@@ -7091,8 +7062,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26040101: {
-		Id: 26040101,
-		Key: "geovishap",
+		Id:              26040101,
+		Key:             "geovishap",
 		NameTextHashMap: 94524776,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -7125,8 +7096,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26040201: {
-		Id: 26040201,
-		Key: "rulerofthechizhangmountainsyiji",
+		Id:              26040201,
+		Key:             "rulerofthechizhangmountainsyiji",
 		NameTextHashMap: 1195283304,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  649.315185546875,
@@ -7163,8 +7134,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26040301: {
-		Id: 26040301,
-		Key: "rulerofthechizhangmountainstianyu",
+		Id:              26040301,
+		Key:             "rulerofthechizhangmountainstianyu",
 		NameTextHashMap: 218690344,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  649.315185546875,
@@ -7201,8 +7172,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26050101: {
-		Id: 26050101,
-		Key: "primogeovishap",
+		Id:              26050101,
+		Key:             "primogeovishap",
 		NameTextHashMap: 1057217072,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  407.5199890136719,
@@ -7235,8 +7206,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26050601: {
-		Id: 26050601,
-		Key: "primordialbathysmalvishap",
+		Id:              26050601,
+		Key:             "primordialbathysmalvishap",
 		NameTextHashMap: 2607892752,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.6719970703125,
@@ -7273,8 +7244,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26050701: {
-		Id: 26050701,
-		Key: "rimebiterbathysmalvishap",
+		Id:              26050701,
+		Key:             "rimebiterbathysmalvishap",
 		NameTextHashMap: 1409593464,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  163.00799560546875,
@@ -7311,8 +7282,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26050801: {
-		Id: 26050801,
-		Key: "bolteaterbathysmalvishap",
+		Id:              26050801,
+		Key:             "bolteaterbathysmalvishap",
 		NameTextHashMap: 780741856,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  163.00799560546875,
@@ -7349,8 +7320,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26060101: {
-		Id: 26060101,
-		Key: "electrocicin",
+		Id:              26060101,
+		Key:             "electrocicin",
 		NameTextHashMap: 2662118744,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  6.791999816894531,
@@ -7379,8 +7350,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26060201: {
-		Id: 26060201,
-		Key: "hydrocicin",
+		Id:              26060201,
+		Key:             "hydrocicin",
 		NameTextHashMap: 5464472,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  6.791999816894531,
@@ -7409,8 +7380,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26060301: {
-		Id: 26060301,
-		Key: "cryocicin",
+		Id:              26060301,
+		Key:             "cryocicin",
 		NameTextHashMap: 1902456384,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  6.791999816894531,
@@ -7439,8 +7410,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26080101: {
-		Id: 26080101,
-		Key: "beisht",
+		Id:              26080101,
+		Key:             "beisht",
 		NameTextHashMap: 4026370056,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  81.50399780273438,
@@ -7456,13 +7427,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 1,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26090101: {
-		Id: 26090101,
-		Key: "floatinghydrofungus",
+		Id:              26090101,
+		Key:             "floatinghydrofungus",
 		NameTextHashMap: 2148393144,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7487,8 +7457,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26090201: {
-		Id: 26090201,
-		Key: "floatingdendrofungus",
+		Id:              26090201,
+		Key:             "floatingdendrofungus",
 		NameTextHashMap: 1307880752,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7513,8 +7483,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26090301: {
-		Id: 26090301,
-		Key: "floatinganemofungus",
+		Id:              26090301,
+		Key:             "floatinganemofungus",
 		NameTextHashMap: 3688247560,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7539,8 +7509,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26090401: {
-		Id: 26090401,
-		Key: "whirlingelectrofungus",
+		Id:              26090401,
+		Key:             "whirlingelectrofungus",
 		NameTextHashMap: 4191543160,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7565,8 +7535,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26090501: {
-		Id: 26090501,
-		Key: "whirlingcryofungus",
+		Id:              26090501,
+		Key:             "whirlingcryofungus",
 		NameTextHashMap: 4127966472,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7591,8 +7561,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26090601: {
-		Id: 26090601,
-		Key: "whirlingpyrofungus",
+		Id:              26090601,
+		Key:             "whirlingpyrofungus",
 		NameTextHashMap: 1899331960,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7617,8 +7587,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26090701: {
-		Id: 26090701,
-		Key: "stretchypyrofungus",
+		Id:              26090701,
+		Key:             "stretchypyrofungus",
 		NameTextHashMap: 3502126912,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7643,8 +7613,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26090801: {
-		Id: 26090801,
-		Key: "stretchyanemofungus",
+		Id:              26090801,
+		Key:             "stretchyanemofungus",
 		NameTextHashMap: 2124724528,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7669,8 +7639,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26090901: {
-		Id: 26090901,
-		Key: "stretchygeofungus",
+		Id:              26090901,
+		Key:             "stretchygeofungus",
 		NameTextHashMap: 2193662336,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7695,8 +7665,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26091001: {
-		Id: 26091001,
-		Key: "stretchyelectrofungus",
+		Id:              26091001,
+		Key:             "stretchyelectrofungus",
 		NameTextHashMap: 3419745752,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.583999633789062,
@@ -7721,8 +7691,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26100101: {
-		Id: 26100101,
-		Key: "consecratedhornedcrocodile",
+		Id:              26100101,
+		Key:             "consecratedhornedcrocodile",
 		NameTextHashMap: 2762852304,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -7755,8 +7725,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26100201: {
-		Id: 26100201,
-		Key: "consecratedfangedbeast",
+		Id:              26100201,
+		Key:             "consecratedfangedbeast",
 		NameTextHashMap: 3698647272,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -7789,8 +7759,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26100301: {
-		Id: 26100301,
-		Key: "consecratedredvulture",
+		Id:              26100301,
+		Key:             "consecratedredvulture",
 		NameTextHashMap: 471079112,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -7823,8 +7793,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26100401: {
-		Id: 26100401,
-		Key: "consecratedscorpion",
+		Id:              26100401,
+		Key:             "consecratedscorpion",
 		NameTextHashMap: 2093292568,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -7857,8 +7827,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26100501: {
-		Id: 26100501,
-		Key: "consecratedflyingserpent",
+		Id:              26100501,
+		Key:             "consecratedflyingserpent",
 		NameTextHashMap: 2495079336,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.08799743652344,
@@ -7891,8 +7861,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26110101: {
-		Id: 26110101,
-		Key: "jadeplumeterrorshroom",
+		Id:              26110101,
+		Key:             "jadeplumeterrorshroom",
 		NameTextHashMap: 1551254368,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  190.17599487304688,
@@ -7925,8 +7895,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26120101: {
-		Id: 26120101,
-		Key: "wingeddendroshroom",
+		Id:              26120101,
+		Key:             "wingeddendroshroom",
 		NameTextHashMap: 3206484936,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -7955,8 +7925,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26120201: {
-		Id: 26120201,
-		Key: "wingedcryoshroom",
+		Id:              26120201,
+		Key:             "wingedcryoshroom",
 		NameTextHashMap: 3547346360,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  38.03519821166992,
@@ -7985,8 +7955,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26120301: {
-		Id: 26120301,
-		Key: "groundedhydroshroom",
+		Id:              26120301,
+		Key:             "groundedhydroshroom",
 		NameTextHashMap: 3396957208,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.167999267578125,
@@ -8015,8 +7985,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26120401: {
-		Id: 26120401,
-		Key: "groundedgeoshroom",
+		Id:              26120401,
+		Key:             "groundedgeoshroom",
 		NameTextHashMap: 46325200,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  38.03519821166992,
@@ -8045,8 +8015,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26130101: {
-		Id: 26130101,
-		Key: "setekhwenut",
+		Id:              26130101,
+		Key:             "setekhwenut",
 		NameTextHashMap: 4140228680,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  190.17599487304688,
@@ -8083,8 +8053,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26151001: {
-		Id: 26151001,
-		Key: "huntersray",
+		Id:              26151001,
+		Key:             "huntersray",
 		NameTextHashMap: 1540072464,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.481340408325195,
@@ -8100,13 +8070,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26152101: {
-		Id: 26152101,
-		Key: "armoredcrab",
+		Id:              26152101,
+		Key:             "armoredcrab",
 		NameTextHashMap: 1684159544,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.481340408325195,
@@ -8122,13 +8091,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26153101: {
-		Id: 26153101,
-		Key: "blubberbeast",
+		Id:              26153101,
+		Key:             "blubberbeast",
 		NameTextHashMap: 1164130192,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.46889877319336,
@@ -8144,13 +8112,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26154101: {
-		Id: 26154101,
-		Key: "hatjellyfish",
+		Id:              26154101,
+		Key:             "hatjellyfish",
 		NameTextHashMap: 2955045776,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.481340408325195,
@@ -8166,13 +8133,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26155101: {
-		Id: 26155101,
-		Key: "bubblyseahorse",
+		Id:              26155101,
+		Key:             "bubblyseahorse",
 		NameTextHashMap: 2552310592,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.481340408325195,
@@ -8188,13 +8154,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26156101: {
-		Id: 26156101,
-		Key: "balloctopus",
+		Id:              26156101,
+		Key:             "balloctopus",
 		NameTextHashMap: 2667392352,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.481340408325195,
@@ -8210,13 +8175,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26157101: {
-		Id: 26157101,
-		Key: "angelicseahare",
+		Id:              26157101,
+		Key:             "angelicseahare",
 		NameTextHashMap: 3467903536,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.481340408325195,
@@ -8232,13 +8196,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26160101: {
-		Id: 26160101,
-		Key: "sternshieldcrab",
+		Id:              26160101,
+		Key:             "sternshieldcrab",
 		NameTextHashMap: 654631136,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  64.93779754638672,
@@ -8254,13 +8217,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26160201: {
-		Id: 26160201,
-		Key: "cherubicseahare",
+		Id:              26160201,
+		Key:             "cherubicseahare",
 		NameTextHashMap: 4031845888,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  64.93779754638672,
@@ -8276,13 +8238,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26160301: {
-		Id: 26160301,
-		Key: "bubblerseahorse",
+		Id:              26160301,
+		Key:             "bubblerseahorse",
 		NameTextHashMap: 597164232,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  64.93779754638672,
@@ -8298,13 +8259,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26162101: {
-		Id: 26162101,
-		Key: "locallegendarmoredcrab",
+		Id:              26162101,
+		Key:             "locallegendarmoredcrab",
 		NameTextHashMap: 1008315040,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1753.320556640625,
@@ -8320,13 +8280,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26162201: {
-		Id: 26162201,
-		Key: "locallegendhuntersray",
+		Id:              26162201,
+		Key:             "locallegendhuntersray",
 		NameTextHashMap: 2197390984,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1623.4449462890625,
@@ -8342,13 +8301,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26162301: {
-		Id: 26162301,
-		Key: "locallegendblubberbeast",
+		Id:              26162301,
+		Key:             "locallegendblubberbeast",
 		NameTextHashMap: 3222616904,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  389.6268005371094,
@@ -8364,13 +8322,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26162401: {
-		Id: 26162401,
-		Key: "locallegendcherubicseahare",
+		Id:              26162401,
+		Key:             "locallegendcherubicseahare",
 		NameTextHashMap: 2597609624,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1753.320556640625,
@@ -8386,13 +8343,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26162501: {
-		Id: 26162501,
-		Key: "locallegendhatjellyfish",
+		Id:              26162501,
+		Key:             "locallegendhatjellyfish",
 		NameTextHashMap: 1353174704,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1753.320556640625,
@@ -8408,13 +8364,12 @@ var EnemyMap = map[int]*MonsterData{
 				PhysicalResist: 0.10000000149011612,
 			},
 			FreezeResist: 0,
-			HpDrop: []*MonsterHPDrop{
-			},
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	26170101: {
-		Id: 26170101,
-		Key: "emperoroffireandiron",
+		Id:              26170101,
+		Key:             "emperoroffireandiron",
 		NameTextHashMap: 2025251152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  163.00799560546875,
@@ -8451,8 +8406,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26180101: {
-		Id: 26180101,
-		Key: "millennialpearlseahorse",
+		Id:              26180101,
+		Key:             "millennialpearlseahorse",
 		NameTextHashMap: 1979419840,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  149.4239959716797,
@@ -8489,8 +8444,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26190101: {
-		Id: 26190101,
-		Key: "solitarysuanni",
+		Id:              26190101,
+		Key:             "solitarysuanni",
 		NameTextHashMap: 3892364272,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  225.49440002441406,
@@ -8527,8 +8482,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	26190201: {
-		Id: 26190201,
-		Key: "xuanwenbeast",
+		Id:              26190201,
+		Key:             "xuanwenbeast",
 		NameTextHashMap: 1200705960,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  57.052799224853516,
@@ -8565,8 +8520,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20060701: {
-		Id: 20060701,
-		Key: "dendrospecter",
+		Id:              20060701,
+		Key:             "dendrospecter",
 		NameTextHashMap: 2872478496,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -8595,8 +8550,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20060101: {
-		Id: 20060101,
-		Key: "hydrospecter",
+		Id:              20060101,
+		Key:             "hydrospecter",
 		NameTextHashMap: 3055427504,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -8625,8 +8580,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20060201: {
-		Id: 20060201,
-		Key: "geospecter",
+		Id:              20060201,
+		Key:             "geospecter",
 		NameTextHashMap: 1129726256,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -8655,8 +8610,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20060301: {
-		Id: 20060301,
-		Key: "anemospecter",
+		Id:              20060301,
+		Key:             "anemospecter",
 		NameTextHashMap: 1685659344,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -8685,8 +8640,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20060401: {
-		Id: 20060401,
-		Key: "cryospecter",
+		Id:              20060401,
+		Key:             "cryospecter",
 		NameTextHashMap: 1061667664,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -8715,8 +8670,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20060501: {
-		Id: 20060501,
-		Key: "electrospecter",
+		Id:              20060501,
+		Key:             "electrospecter",
 		NameTextHashMap: 4056559040,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -8745,8 +8700,8 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 	20060601: {
-		Id: 20060601,
-		Key: "pyrospecter",
+		Id:              20060601,
+		Key:             "pyrospecter",
 		NameTextHashMap: 3663897528,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.734399795532227,
@@ -8775,4 +8730,3 @@ var EnemyMap = map[int]*MonsterData{
 		},
 	},
 }
-
