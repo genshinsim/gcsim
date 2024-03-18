@@ -28,8 +28,20 @@ type Config struct {
 	ICDGroups []ICDGroupData `yaml:"icd_groups"`
 	ICDTags   []string       `yaml:"icd_tags"`
 
+	// doc related
+	Documentation DocConfig `yaml:"documentation"`
+
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
+}
+
+type DocConfig struct {
+	FieldsData []FieldDocData `json:"fields_data" yaml:"fields_data"`
+}
+
+type FieldDocData struct {
+	Fields []string `json:"fields" yaml:"fields"`
+	Desc   string   `json:"desc"   yaml:"desc"`
 }
 
 type ICDGroupData struct {
