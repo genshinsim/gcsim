@@ -238,5 +238,13 @@
       ],
       "desc": "Whether Yelan is in the Breakthrough state or not."
     }
+  ],
+  "zhongli": [
+    {
+      "fields": [
+        ".zhongli.shielded"
+      ],
+      "desc": "Evaluates to 1 if player is currently shielded"
+    }
   ]
 }
