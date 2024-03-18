@@ -272,7 +272,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() {
 			}
 		}
 		if fourStarMainsCount != fourStarCount {
-			stats.optimizer.logger.Warn("User gave ", char.Base.Key, fourStarCount, " four star set artifacts, but found ", fourStarMainsCount, " 4* mainstats")
+			stats.optimizer.logger.Warn("User gave ", char.Base.Key, fourStarCount, "x 4* set artifacts, but found ", fourStarMainsCount, "x 4* mainstats")
 		}
 
 		// TODO: replace 2 with a user configurable reduction per 4*
