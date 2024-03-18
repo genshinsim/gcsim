@@ -192,6 +192,7 @@ func NewSubstatOptimizerDetails(
 		keys.Neuvillette: {attributes.HPP},
 		keys.Furina:      {attributes.HPP},
 		keys.Chevreuse:   {attributes.HPP},
+		keys.Chiori:      {attributes.DEFP},
 	}
 
 	// Final output array that holds [character][substat_count]
