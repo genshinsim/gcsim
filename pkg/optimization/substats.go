@@ -228,9 +228,10 @@ func (stats *SubstatOptimizerDetails) isMainStatInTolerance(idxChar, idxStat, fi
 // Most people will have 1 5* artifact which messes things up
 // TODO: Check whether taking like an average of the two stat values is good enough?
 func (stats *SubstatOptimizerDetails) setStatLimits() {
-	for i, char := range stats.simcfg.Characters {
+	for i := range stats.simcfg.Characters {
+		char := &stats.simcfg.Characters[i]
 		fourStarCount := 0
-		for set, cnt := range stats.simcfg.Characters[i].Sets {
+		for set, cnt := range char.Sets {
 			for _, fourStar := range stats.artifactSets4Star {
 				if set == fourStar {
 					fourStarCount += cnt
@@ -245,7 +246,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() {
 			if stat == 0 {
 				continue
 			}
-			if stats.simcfg.Characters[i].Stats[idxStat] == 0 {
+			if char.Stats[idxStat] == 0 {
 				stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap
 				continue
 			}
