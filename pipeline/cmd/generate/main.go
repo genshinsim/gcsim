@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/artifact"
@@ -32,13 +33,22 @@ func main() {
 	flag.StringVar(&cfg.charPath, "char", "./internal/characters", "folder to look for character files")
 	flag.StringVar(&cfg.weapPath, "weap", "./internal/weapons", "folder to look for weapon files")
 	flag.StringVar(&cfg.artifactPath, "art", "./internal/artifacts", "folder to look for artifact files")
-	flag.StringVar(&cfg.excelPath, "excels", "./pipeline/data", "folder to look for excel data dump")
+	flag.StringVar(&cfg.excelPath, "excels", "", "folder to look for excel data dump")
 	flag.StringVar(&cfg.pkgOut, "outpkg", "./pkg", "for to output generated go files to pkg")
 	flag.StringVar(&cfg.uiOut, "outui", "./ui/packages/ui/src/Data", "folder to output generated json for UI")
 	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
 	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/ui/src/Translation/locales", "folder to output generated json for DB")
 	flag.StringVar(&cfg.icdPath, "icd", "./pkg/core/attacks", "file to store generated icd data")
 	flag.Parse()
+
+	//try env first
+	if cfg.excelPath == "" {
+		cfg.excelPath = os.Getenv("GENSHIN_DATA_REPO")
+	}
+	//if not, use default
+	if cfg.excelPath == "" {
+		cfg.excelPath = "./pipeline/data"
+	}
 
 	excels := filepath.Join(cfg.excelPath, "ExcelBinOutput")
 
