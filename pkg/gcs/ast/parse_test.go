@@ -193,6 +193,16 @@ func TestField(t *testing.T) {
 	spew.Config.Dump(prog)
 }
 
+func TestActionStartLine(t *testing.T) {
+	p := New(`xingqiu attack; skill`)
+	_, prog, err := p.Parse()
+	if err == nil {
+		t.Errorf("xingqiu attack; skill parsed incorrectly without error")
+		t.FailNow()
+	}
+	spew.Config.Dump(prog)
+}
+
 func parseAndPrint(s string, t *testing.T) {
 	p := New(s)
 	_, prog, err := p.Parse()
