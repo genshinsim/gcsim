@@ -43,11 +43,11 @@ func main() {
 	flag.StringVar(&cfg.docRoot, "outdocs", "./ui/packages/docs/src/components", "file to store generated icd data")
 	flag.Parse()
 
-	//try env first
+	// try env first
 	if cfg.excelPath == "" {
 		cfg.excelPath = os.Getenv("GENSHIN_DATA_REPO")
 	}
-	//if not, use default
+	// if not, use default
 	if cfg.excelPath == "" {
 		cfg.excelPath = "./pipeline/data"
 	}
