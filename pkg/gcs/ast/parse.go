@@ -173,6 +173,8 @@ func parseRows(p *Parser) (parseFn, error) {
 		return parseOptions, nil
 	case itemEOF:
 		return nil, nil
+	case itemActionKey:
+		return nil, fmt.Errorf("ln%v: unexpected line starts with an action: %v", n.line, n.Val)
 	default: // default should be look for gcsl
 		node, err := p.parseStatement()
 		p.prog.append(node)
