@@ -66,7 +66,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 
 	totalSubs := stats.getCharSubstatTotal(idxChar)
 	stats.optimizer.logger.Debug(char.Base.Key.Pretty())
-	stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+	stats.optimizer.logger.Debug(PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	for totalSubs > stats.totalLiquidSubstats {
 		amount := -1
 		switch {
@@ -79,19 +79,16 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 		}
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, amount)
 
-		// loops multiple gradients while totalSubs-stats.totalLiquidSubstats >= 20
+		// loops multiple gradients while totalSubs-stats.totalLiquidSubstats >= 25
 		// this should be most correct because the first 5 to 6 substats have 0 effect on dps
 		for ok := true; ok; ok = totalSubs-stats.totalLiquidSubstats >= 25 {
-			// stats.optimizer.logger.Info("PRE  ", substatGradients)
 			allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
-			// stats.optimizer.logger.Info("POST ", substatGradients)
-			// stats.optimizer.logger.Info("--------------------------------------")
 			totalSubs = stats.getCharSubstatTotal(idxChar)
 			opDebug = append(opDebug, allocDebug...)
+
 			// filter out substats that are at minimum
 			newRelevantSubstats := []attributes.Stat{}
 			newSubstatGrad := []float64{}
-
 			removedGrad := -100000000.0
 			for idxSub, substat := range relevantSubstats {
 				if stats.charSubstatFinal[idxChar][substat] > 0 {
@@ -111,9 +108,9 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 			relevantSubstats = newRelevantSubstats
 			substatGradients = newSubstatGrad
 		}
-		stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+		stats.optimizer.logger.Debug(PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	}
-	opDebug = append(opDebug, "Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+	opDebug = append(opDebug, PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	stats.optimizer.logger.Debug(char.Base.Key, " has relevant substats:", stats.charRelevantSubstats[idxChar])
 	return opDebug
 }

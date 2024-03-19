@@ -249,6 +249,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() bool {
 // Helper function to pretty print substat counts. Stolen from similar function that takes in the float array
 func PrettyPrintStatsCounts(statsCounts []int) string {
 	var sb strings.Builder
+	sb.WriteString("Liquid Substat Counts: ")
 	for i, v := range statsCounts {
 		if v > 0 {
 			sb.WriteString(attributes.StatTypeString[i])

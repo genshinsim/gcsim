@@ -117,6 +117,6 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 		stats.charMaxExtraERSubs[idxChar] += 1
 	}
 
-	opDebug = append(opDebug, "Final Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+	opDebug = append(opDebug, "Final "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	return opDebug
 }
