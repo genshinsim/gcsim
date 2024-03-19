@@ -55,16 +55,18 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 		stats.charProfilesCopy[idxChar].Stats[attributes.CR] -= FavCritRateBias * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
 	}
 
-	relevantSubstats := stats.charRelevantSubstats[idxChar]
+	var relevantSubstats []attributes.Stat
+	relevantSubstats = append(relevantSubstats, stats.charRelevantSubstats[idxChar]...)
 
 	// start from max liquid in all relevant substats
 	for _, substat := range relevantSubstats {
 		stats.charProfilesCopy[idxChar].Stats[substat] += float64(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat]) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 		stats.charSubstatFinal[idxChar][substat] = stats.charSubstatLimits[idxChar][substat]
 	}
-	stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+
 	totalSubs := stats.getCharSubstatTotal(idxChar)
 	stats.optimizer.logger.Debug(char.Base.Key.Pretty())
+	stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	for totalSubs > stats.totalLiquidSubstats {
 		amount := -1
 		switch {
@@ -77,29 +79,39 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 		}
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, amount)
 
-		// loops multiple gradients while totalSubs-stats.totalLiquidSubstats >= 25
+		// loops multiple gradients while totalSubs-stats.totalLiquidSubstats >= 20
 		// this should be most correct because the first 5 to 6 substats have 0 effect on dps
 		for ok := true; ok; ok = totalSubs-stats.totalLiquidSubstats >= 25 {
+			// stats.optimizer.logger.Info("PRE  ", substatGradients)
 			allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
+			// stats.optimizer.logger.Info("POST ", substatGradients)
+			// stats.optimizer.logger.Info("--------------------------------------")
 			totalSubs = stats.getCharSubstatTotal(idxChar)
 			opDebug = append(opDebug, allocDebug...)
 			// filter out substats that are at minimum
 			newRelevantSubstats := []attributes.Stat{}
 			newSubstatGrad := []float64{}
+
+			removedGrad := -100000000.0
 			for idxSub, substat := range relevantSubstats {
 				if stats.charSubstatFinal[idxChar][substat] > 0 {
 					newRelevantSubstats = append(newRelevantSubstats, substat)
 					newSubstatGrad = append(newSubstatGrad, substatGradients[idxSub])
+				} else {
+					removedGrad = max(removedGrad, substatGradients[idxSub])
 				}
 			}
-			if stats.getCharSubstatTotal(idxChar)-stats.totalLiquidSubstats >= 15 {
-				stats.charRelevantSubstats[idxChar] = newRelevantSubstats
+			// only update the charRelevantSubstats when the gradient of the removed substats is very small
+			// this is used later in the opt_allstats
+			if stats.getCharSubstatTotal(idxChar)-stats.totalLiquidSubstats >= 15 ||
+				removedGrad >= -100 {
+				stats.charRelevantSubstats[idxChar] = nil
+				stats.charRelevantSubstats[idxChar] = append(stats.charRelevantSubstats[idxChar], newRelevantSubstats...)
 			}
 			relevantSubstats = newRelevantSubstats
 			substatGradients = newSubstatGrad
-
-			stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 		}
+		stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	}
 	opDebug = append(opDebug, "Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	stats.optimizer.logger.Debug(char.Base.Key, " has relevant substats:", stats.charRelevantSubstats[idxChar])
