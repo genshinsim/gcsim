@@ -220,7 +220,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() bool {
 
 	for i := range stats.simcfg.Characters {
 		stats.charSubstatLimits[i] = make([]int, attributes.EndStatType)
-		for idxStat, stat := range stats.mainstatValues {
+		for idxStat, stat := range stats.substatValues {
 			if stat == 0 {
 				continue
 			}
