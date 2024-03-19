@@ -5,19 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
-
-// TODO: Seems like this should be configurable
-func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char info.CharacterProfile) []attributes.Stat {
-	// Get relevant substats, and add additional ones for special characters if needed
-	relevantSubstats := []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD, attributes.EM}
-	// RIP crystallize...
-	if keys.CharKeyToEle[char.Base.Key] == attributes.Geo {
-		relevantSubstats = []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD}
-	}
-	return relevantSubstats
-}
 
 // Calculate per-character per-substat "gradients" at initial state using finite differences
 // We use ignore_burst_energy mode to remove noise from energy, and the custom damage collector
@@ -67,12 +55,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 		stats.charProfilesCopy[idxChar].Stats[attributes.CR] -= FavCritRateBias * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
 	}
 
-	relevantSubstats := stats.getNonErSubstatsToOptimizeForChar(char)
-
-	addlSubstats := stats.charRelevantSubstats[char.Base.Key]
-	if len(addlSubstats) > 0 {
-		relevantSubstats = append(relevantSubstats, addlSubstats...)
-	}
+	relevantSubstats := stats.charRelevantSubstats[idxChar]
 
 	// start from max liquid in all relevant substats
 	for _, substat := range relevantSubstats {
@@ -83,18 +66,33 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 	stats.optimizer.logger.Debug(char.Base.Key.Pretty())
 	for totalSubs > stats.totalLiquidSubstats {
 		amount := -1
-		if totalSubs-stats.totalLiquidSubstats >= 8 {
-			// reduce 5 at a time to quickly go from 10 liquid in an useless sub to 0 liquid
+		switch {
+		case totalSubs-stats.totalLiquidSubstats >= 15:
+			amount = -20
+		case totalSubs-stats.totalLiquidSubstats >= 8:
 			amount = -5
-		} else if totalSubs-stats.totalLiquidSubstats >= 4 {
+		case totalSubs-stats.totalLiquidSubstats >= 4:
 			amount = -2
 		}
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, amount)
 		allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
+
+		// filter out substats that are at minimum
+		newRelevantSubstats := []attributes.Stat{}
+		for _, substat := range relevantSubstats {
+			if stats.charSubstatFinal[idxChar][substat] > 0 {
+				newRelevantSubstats = append(newRelevantSubstats, substat)
+			}
+		}
+		if stats.getCharSubstatTotal(idxChar)-stats.totalLiquidSubstats >= 8 {
+			stats.charRelevantSubstats[idxChar] = newRelevantSubstats
+		}
+		relevantSubstats = newRelevantSubstats
 		opDebug = append(opDebug, allocDebug...)
 		totalSubs = stats.getCharSubstatTotal(idxChar)
 		stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	}
 	opDebug = append(opDebug, "Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+	stats.optimizer.logger.Info(char.Base.Key, " has relevant substats:", stats.charRelevantSubstats[idxChar])
 	return opDebug
 }

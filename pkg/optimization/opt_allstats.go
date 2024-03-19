@@ -38,12 +38,8 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 	var opDebug []string
 	opDebug = append(opDebug, fmt.Sprintf("%v", char.Base.Key))
 
-	relevantSubstats := stats.getNonErSubstatsToOptimizeForChar(char)
+	relevantSubstats := stats.charRelevantSubstats[idxChar]
 
-	addlSubstats := stats.charRelevantSubstats[char.Base.Key]
-	if len(addlSubstats) > 0 {
-		relevantSubstats = append(relevantSubstats, addlSubstats...)
-	}
 	totalSubs := stats.getCharSubstatTotal(idxChar)
 	if totalSubs != stats.totalLiquidSubstats {
 		opDebug = append(opDebug, fmt.Sprint("Character has", totalSubs, "total liquid subs allocated but expected", stats.totalLiquidSubstats))

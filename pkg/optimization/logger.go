@@ -12,7 +12,6 @@ func newLogger(verbose bool) *zap.SugaredLogger {
 	zapcfg.EncoderConfig.CallerKey = ""
 	zapcfg.EncoderConfig.StacktraceKey = ""
 	zapcfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-
 	if verbose {
 		zapcfg.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 	}
