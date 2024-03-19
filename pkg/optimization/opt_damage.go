@@ -68,31 +68,39 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 		amount := -1
 		switch {
 		case totalSubs-stats.totalLiquidSubstats >= 15:
-			amount = -20
+			amount = -20 // will get clamped to either 10/8 depending on the substat limit
 		case totalSubs-stats.totalLiquidSubstats >= 8:
 			amount = -5
 		case totalSubs-stats.totalLiquidSubstats >= 4:
 			amount = -2
 		}
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, amount)
-		allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
 
-		// filter out substats that are at minimum
-		newRelevantSubstats := []attributes.Stat{}
-		for _, substat := range relevantSubstats {
-			if stats.charSubstatFinal[idxChar][substat] > 0 {
-				newRelevantSubstats = append(newRelevantSubstats, substat)
+		// loops multiple gradients while totalSubs-stats.totalLiquidSubstats >= 25
+		// this should be most correct because the first 5 to 6 substats have 0 effect on dps
+		for ok := true; ok; ok = totalSubs-stats.totalLiquidSubstats >= 25 {
+			allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
+			totalSubs = stats.getCharSubstatTotal(idxChar)
+			opDebug = append(opDebug, allocDebug...)
+			// filter out substats that are at minimum
+			newRelevantSubstats := []attributes.Stat{}
+			newSubstatGrad := []float64{}
+			for idxSub, substat := range relevantSubstats {
+				if stats.charSubstatFinal[idxChar][substat] > 0 {
+					newRelevantSubstats = append(newRelevantSubstats, substat)
+					newSubstatGrad = append(newSubstatGrad, substatGradients[idxSub])
+				}
 			}
+			if stats.getCharSubstatTotal(idxChar)-stats.totalLiquidSubstats >= 15 {
+				stats.charRelevantSubstats[idxChar] = newRelevantSubstats
+			}
+			relevantSubstats = newRelevantSubstats
+			substatGradients = newSubstatGrad
+
+			stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 		}
-		if stats.getCharSubstatTotal(idxChar)-stats.totalLiquidSubstats >= 8 {
-			stats.charRelevantSubstats[idxChar] = newRelevantSubstats
-		}
-		relevantSubstats = newRelevantSubstats
-		opDebug = append(opDebug, allocDebug...)
-		totalSubs = stats.getCharSubstatTotal(idxChar)
-		stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	}
 	opDebug = append(opDebug, "Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
-	stats.optimizer.logger.Info(char.Base.Key, " has relevant substats:", stats.charRelevantSubstats[idxChar])
+	stats.optimizer.logger.Debug(char.Base.Key, " has relevant substats:", stats.charRelevantSubstats[idxChar])
 	return opDebug
 }
