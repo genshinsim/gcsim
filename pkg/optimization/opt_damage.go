@@ -62,6 +62,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 		stats.charProfilesCopy[idxChar].Stats[substat] += float64(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat]) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 		stats.charSubstatFinal[idxChar][substat] = stats.charSubstatLimits[idxChar][substat]
 	}
+	stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	totalSubs := stats.getCharSubstatTotal(idxChar)
 	stats.optimizer.logger.Debug(char.Base.Key.Pretty())
 	for totalSubs > stats.totalLiquidSubstats {
