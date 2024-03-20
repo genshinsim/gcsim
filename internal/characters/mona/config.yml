@@ -1,6 +1,11 @@
 package_name: mona
 genshin_id: 10000041
 key: mona
+action_param_keys:
+  dash:
+    - param: "f"
+  skill:
+    - param: "hold"
 icd_tags:
   - ICDTagMonaWaterDamage
 skill_data_mapping:

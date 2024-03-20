@@ -1,6 +1,10 @@
 package_name: candace
 genshin_id: 10000072
 key: candace
+action_param_keys:
+    skill: 
+        - param: "hold"
+        - param: "perfect"
 skill_data_mapping:
     attack:
         attack_1:

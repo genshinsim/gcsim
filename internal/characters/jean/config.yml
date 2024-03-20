@@ -1,6 +1,12 @@
 package_name: jean
 genshin_id: 10000003
 key: jean
+action_param_keys:
+    burst:
+        - param: "enter"
+        - param: "enter_delay"
+    skill:
+        - param: "hold"
 skill_data_mapping:
     attack:
         auto_1:
