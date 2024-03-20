@@ -4,13 +4,25 @@ package klee
 import (
 	_ "embed"
 
+	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
+	"slices"
 )
 
 //go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
+var paramKeysValidation = map[action.Action][]string{
+	1: {"bounce", "mine", "mine_delay", "release"},
+	3: {"travel"},
+	4: {"travel"},
+	5: {"collision"},
+	6: {"collision"},
+}
 
 func init() {
 	base = &model.AvatarData{}
@@ -18,6 +30,20 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	validation.RegisterCharParamValidationFunc(keys.Klee, ValidateParamKeys)
+}
+
+func ValidateParamKeys(a action.Action, keys []string) error {
+	valid, ok := paramKeysValidation[a]
+	if !ok {
+		return nil
+	}
+	for _, v := range keys {
+		if !slices.Contains(valid, v) {
+			return fmt.Errorf("key %v is invalid for action %v", v, a.String())
+		}
+	}
+	return nil
 }
 
 func (x *char) Data() *model.AvatarData {

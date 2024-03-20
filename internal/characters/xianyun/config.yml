@@ -4,7 +4,7 @@ key: xianyun
 action_param_keys:
   attack:
     - param: "travel"
-  charged:
+  charge:
     - param: "travel"
   low_plunge:
     - param: "collision"
