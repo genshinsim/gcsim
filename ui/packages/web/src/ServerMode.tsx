@@ -44,10 +44,10 @@ const ServerMode = ({ children }: { children: ReactNode }) => {
       <FormGroup className="!m-0" label={t<string>("simple.workers")}>
         {children}
         <FormGroup
-          helperText="default: http://127.0.0.1:54321"
-          label="Server URL"
+          helperText={t<string>("simple.server_mode_default") + "http://127.0.0.1:54321"}
+          label={t<string>("simple.server_mode_url")}
           labelFor="text-input"
-          labelInfo="(required)"
+          labelInfo={t<string>("simple.server_mode_required")}
         >
           <InputGroup
             id="text-input"

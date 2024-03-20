@@ -567,7 +567,7 @@ type WeaponData struct {
 
 	Id              int32            `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	Key             string           `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
-	Rarity          int32            `protobuf:"varint,3,opt,name=rarity,proto3" json:"rarity,omitempty" bson:"rarity,omitempty"` //for whatever reason weapon rarity is a number
+	Rarity          int32            `protobuf:"varint,3,opt,name=rarity,proto3" json:"rarity,omitempty" bson:"rarity,omitempty"` // for whatever reason weapon rarity is a number
 	WeaponClass     WeaponClass      `protobuf:"varint,4,opt,name=weapon_class,proto3,enum=model.WeaponClass" json:"weapon_class,omitempty" bson:"weapon_class,omitempty"`
 	ImageName       string           `protobuf:"bytes,5,opt,name=image_name,proto3" json:"image_name,omitempty" bson:"image_name,omitempty"`
 	BaseStats       *WeaponStatsData `protobuf:"bytes,6,opt,name=base_stats,proto3" json:"base_stats,omitempty" bson:"base_stats,omitempty"`
@@ -993,6 +993,314 @@ func (x *PromotionAddProp) GetValue() float64 {
 	return 0
 }
 
+type MonsterData struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id              int32             `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Key             string            `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	BaseStats       *MonsterStatsData `protobuf:"bytes,3,opt,name=base_stats,proto3" json:"base_stats,omitempty" bson:"base_stats,omitempty"`
+	NameTextHashMap int64             `protobuf:"varint,4,opt,name=name_text_hash_map,proto3" json:"name_text_hash_map,omitempty" bson:"name_text_hash_map,omitempty"`
+}
+
+func (x *MonsterData) Reset() {
+	*x = MonsterData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protos_model_data_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MonsterData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MonsterData) ProtoMessage() {}
+
+func (x *MonsterData) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_model_data_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MonsterData.ProtoReflect.Descriptor instead.
+func (*MonsterData) Descriptor() ([]byte, []int) {
+	return file_protos_model_data_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *MonsterData) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *MonsterData) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *MonsterData) GetBaseStats() *MonsterStatsData {
+	if x != nil {
+		return x.BaseStats
+	}
+	return nil
+}
+
+func (x *MonsterData) GetNameTextHashMap() int64 {
+	if x != nil {
+		return x.NameTextHashMap
+	}
+	return 0
+}
+
+type MonsterStatsData struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	BaseHp       float64            `protobuf:"fixed64,1,opt,name=base_hp,proto3" json:"base_hp,omitempty" bson:"base_hp,omitempty"`
+	HpCurve      MonsterCurveType   `protobuf:"varint,2,opt,name=hp_curve,proto3,enum=model.MonsterCurveType" json:"hp_curve,omitempty" bson:"hp_curve,omitempty"`
+	Resist       *MonsterResistData `protobuf:"bytes,3,opt,name=resist,proto3" json:"resist,omitempty" bson:"resist,omitempty"`
+	FreezeResist float64            `protobuf:"fixed64,4,opt,name=freeze_resist,proto3" json:"freeze_resist,omitempty" bson:"freeze_resist,omitempty"`
+	HpDrop       []*MonsterHPDrop   `protobuf:"bytes,5,rep,name=hp_drop,proto3" json:"hp_drop,omitempty" bson:"hp_drop,omitempty"`
+}
+
+func (x *MonsterStatsData) Reset() {
+	*x = MonsterStatsData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protos_model_data_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MonsterStatsData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MonsterStatsData) ProtoMessage() {}
+
+func (x *MonsterStatsData) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_model_data_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MonsterStatsData.ProtoReflect.Descriptor instead.
+func (*MonsterStatsData) Descriptor() ([]byte, []int) {
+	return file_protos_model_data_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *MonsterStatsData) GetBaseHp() float64 {
+	if x != nil {
+		return x.BaseHp
+	}
+	return 0
+}
+
+func (x *MonsterStatsData) GetHpCurve() MonsterCurveType {
+	if x != nil {
+		return x.HpCurve
+	}
+	return MonsterCurveType_INVALID_MONSTER_CURVE
+}
+
+func (x *MonsterStatsData) GetResist() *MonsterResistData {
+	if x != nil {
+		return x.Resist
+	}
+	return nil
+}
+
+func (x *MonsterStatsData) GetFreezeResist() float64 {
+	if x != nil {
+		return x.FreezeResist
+	}
+	return 0
+}
+
+func (x *MonsterStatsData) GetHpDrop() []*MonsterHPDrop {
+	if x != nil {
+		return x.HpDrop
+	}
+	return nil
+}
+
+type MonsterResistData struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FireResist     float64 `protobuf:"fixed64,1,opt,name=fire_resist,proto3" json:"fire_resist,omitempty" bson:"fire_resist,omitempty"`
+	GrassResist    float64 `protobuf:"fixed64,2,opt,name=grass_resist,proto3" json:"grass_resist,omitempty" bson:"grass_resist,omitempty"`
+	WaterResist    float64 `protobuf:"fixed64,3,opt,name=water_resist,proto3" json:"water_resist,omitempty" bson:"water_resist,omitempty"`
+	ElectricResist float64 `protobuf:"fixed64,4,opt,name=electric_resist,proto3" json:"electric_resist,omitempty" bson:"electric_resist,omitempty"`
+	WindResist     float64 `protobuf:"fixed64,5,opt,name=wind_resist,proto3" json:"wind_resist,omitempty" bson:"wind_resist,omitempty"`
+	IceResist      float64 `protobuf:"fixed64,6,opt,name=ice_resist,proto3" json:"ice_resist,omitempty" bson:"ice_resist,omitempty"`
+	RockResist     float64 `protobuf:"fixed64,7,opt,name=rock_resist,proto3" json:"rock_resist,omitempty" bson:"rock_resist,omitempty"`
+	PhysicalResist float64 `protobuf:"fixed64,8,opt,name=physical_resist,proto3" json:"physical_resist,omitempty" bson:"physical_resist,omitempty"`
+}
+
+func (x *MonsterResistData) Reset() {
+	*x = MonsterResistData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protos_model_data_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MonsterResistData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MonsterResistData) ProtoMessage() {}
+
+func (x *MonsterResistData) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_model_data_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MonsterResistData.ProtoReflect.Descriptor instead.
+func (*MonsterResistData) Descriptor() ([]byte, []int) {
+	return file_protos_model_data_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *MonsterResistData) GetFireResist() float64 {
+	if x != nil {
+		return x.FireResist
+	}
+	return 0
+}
+
+func (x *MonsterResistData) GetGrassResist() float64 {
+	if x != nil {
+		return x.GrassResist
+	}
+	return 0
+}
+
+func (x *MonsterResistData) GetWaterResist() float64 {
+	if x != nil {
+		return x.WaterResist
+	}
+	return 0
+}
+
+func (x *MonsterResistData) GetElectricResist() float64 {
+	if x != nil {
+		return x.ElectricResist
+	}
+	return 0
+}
+
+func (x *MonsterResistData) GetWindResist() float64 {
+	if x != nil {
+		return x.WindResist
+	}
+	return 0
+}
+
+func (x *MonsterResistData) GetIceResist() float64 {
+	if x != nil {
+		return x.IceResist
+	}
+	return 0
+}
+
+func (x *MonsterResistData) GetRockResist() float64 {
+	if x != nil {
+		return x.RockResist
+	}
+	return 0
+}
+
+func (x *MonsterResistData) GetPhysicalResist() float64 {
+	if x != nil {
+		return x.PhysicalResist
+	}
+	return 0
+}
+
+type MonsterHPDrop struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	DropId    int32   `protobuf:"varint,1,opt,name=drop_id,proto3" json:"drop_id,omitempty" bson:"drop_id,omitempty"`
+	HpPercent float64 `protobuf:"fixed64,2,opt,name=hp_percent,proto3" json:"hp_percent,omitempty" bson:"hp_percent,omitempty"`
+}
+
+func (x *MonsterHPDrop) Reset() {
+	*x = MonsterHPDrop{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protos_model_data_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MonsterHPDrop) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MonsterHPDrop) ProtoMessage() {}
+
+func (x *MonsterHPDrop) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_model_data_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MonsterHPDrop.ProtoReflect.Descriptor instead.
+func (*MonsterHPDrop) Descriptor() ([]byte, []int) {
+	return file_protos_model_data_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *MonsterHPDrop) GetDropId() int32 {
+	if x != nil {
+		return x.DropId
+	}
+	return 0
+}
+
+func (x *MonsterHPDrop) GetHpPercent() float64 {
+	if x != nil {
+		return x.HpPercent
+	}
+	return 0
+}
+
 var File_protos_model_data_proto protoreflect.FileDescriptor
 
 var file_protos_model_data_proto_rawDesc = []byte{
@@ -1163,10 +1471,59 @@ var file_protos_model_data_proto_rawDesc = []byte{
 	0x70, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0f, 0x2e, 0x6d,
 	0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x54, 0x79, 0x70, 0x65, 0x52, 0x09, 0x70,
 	0x72, 0x6f, 0x70, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x42, 0x27,
-	0x5a, 0x25, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x65, 0x6e,
-	0x73, 0x68, 0x69, 0x6e, 0x73, 0x69, 0x6d, 0x2f, 0x67, 0x63, 0x73, 0x69, 0x6d, 0x2f, 0x70, 0x6b,
-	0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x98,
+	0x01, 0x0a, 0x0b, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72, 0x44, 0x61, 0x74, 0x61, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10,
+	0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79,
+	0x12, 0x37, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x4d, 0x6f, 0x6e,
+	0x73, 0x74, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x44, 0x61, 0x74, 0x61, 0x52, 0x0a, 0x62,
+	0x61, 0x73, 0x65, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x12, 0x2e, 0x0a, 0x12, 0x6e, 0x61, 0x6d,
+	0x65, 0x5f, 0x74, 0x65, 0x78, 0x74, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x5f, 0x6d, 0x61, 0x70, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x12, 0x6e, 0x61, 0x6d, 0x65, 0x5f, 0x74, 0x65, 0x78, 0x74,
+	0x5f, 0x68, 0x61, 0x73, 0x68, 0x5f, 0x6d, 0x61, 0x70, 0x22, 0xe9, 0x01, 0x0a, 0x10, 0x4d, 0x6f,
+	0x6e, 0x73, 0x74, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18,
+	0x0a, 0x07, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x68, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52,
+	0x07, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x68, 0x70, 0x12, 0x33, 0x0a, 0x08, 0x68, 0x70, 0x5f, 0x63,
+	0x75, 0x72, 0x76, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x17, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x2e, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72, 0x43, 0x75, 0x72, 0x76, 0x65, 0x54,
+	0x79, 0x70, 0x65, 0x52, 0x08, 0x68, 0x70, 0x5f, 0x63, 0x75, 0x72, 0x76, 0x65, 0x12, 0x30, 0x0a,
+	0x06, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e,
+	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x73,
+	0x69, 0x73, 0x74, 0x44, 0x61, 0x74, 0x61, 0x52, 0x06, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x12,
+	0x24, 0x0a, 0x0d, 0x66, 0x72, 0x65, 0x65, 0x7a, 0x65, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0d, 0x66, 0x72, 0x65, 0x65, 0x7a, 0x65, 0x5f, 0x72,
+	0x65, 0x73, 0x69, 0x73, 0x74, 0x12, 0x2e, 0x0a, 0x07, 0x68, 0x70, 0x5f, 0x64, 0x72, 0x6f, 0x70,
+	0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x4d,
+	0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72, 0x48, 0x50, 0x44, 0x72, 0x6f, 0x70, 0x52, 0x07, 0x68, 0x70,
+	0x5f, 0x64, 0x72, 0x6f, 0x70, 0x22, 0xb5, 0x02, 0x0a, 0x11, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65,
+	0x72, 0x52, 0x65, 0x73, 0x69, 0x73, 0x74, 0x44, 0x61, 0x74, 0x61, 0x12, 0x20, 0x0a, 0x0b, 0x66,
+	0x69, 0x72, 0x65, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01,
+	0x52, 0x0b, 0x66, 0x69, 0x72, 0x65, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x12, 0x22, 0x0a,
+	0x0c, 0x67, 0x72, 0x61, 0x73, 0x73, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x01, 0x52, 0x0c, 0x67, 0x72, 0x61, 0x73, 0x73, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73,
+	0x74, 0x12, 0x22, 0x0a, 0x0c, 0x77, 0x61, 0x74, 0x65, 0x72, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73,
+	0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0c, 0x77, 0x61, 0x74, 0x65, 0x72, 0x5f, 0x72,
+	0x65, 0x73, 0x69, 0x73, 0x74, 0x12, 0x28, 0x0a, 0x0f, 0x65, 0x6c, 0x65, 0x63, 0x74, 0x72, 0x69,
+	0x63, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0f,
+	0x65, 0x6c, 0x65, 0x63, 0x74, 0x72, 0x69, 0x63, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x12,
+	0x20, 0x0a, 0x0b, 0x77, 0x69, 0x6e, 0x64, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x01, 0x52, 0x0b, 0x77, 0x69, 0x6e, 0x64, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73,
+	0x74, 0x12, 0x1e, 0x0a, 0x0a, 0x69, 0x63, 0x65, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x18,
+	0x06, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0a, 0x69, 0x63, 0x65, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73,
+	0x74, 0x12, 0x20, 0x0a, 0x0b, 0x72, 0x6f, 0x63, 0x6b, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74,
+	0x18, 0x07, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0b, 0x72, 0x6f, 0x63, 0x6b, 0x5f, 0x72, 0x65, 0x73,
+	0x69, 0x73, 0x74, 0x12, 0x28, 0x0a, 0x0f, 0x70, 0x68, 0x79, 0x73, 0x69, 0x63, 0x61, 0x6c, 0x5f,
+	0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0f, 0x70, 0x68,
+	0x79, 0x73, 0x69, 0x63, 0x61, 0x6c, 0x5f, 0x72, 0x65, 0x73, 0x69, 0x73, 0x74, 0x22, 0x49, 0x0a,
+	0x0d, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72, 0x48, 0x50, 0x44, 0x72, 0x6f, 0x70, 0x12, 0x18,
+	0x0a, 0x07, 0x64, 0x72, 0x6f, 0x70, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x07, 0x64, 0x72, 0x6f, 0x70, 0x5f, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x68, 0x70, 0x5f, 0x70,
+	0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0a, 0x68, 0x70,
+	0x5f, 0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x42, 0x27, 0x5a, 0x25, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x65, 0x6e, 0x73, 0x68, 0x69, 0x6e, 0x73, 0x69,
+	0x6d, 0x2f, 0x67, 0x63, 0x73, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65,
+	0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1181,7 +1538,7 @@ func file_protos_model_data_proto_rawDescGZIP() []byte {
 	return file_protos_model_data_proto_rawDescData
 }
 
-var file_protos_model_data_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_protos_model_data_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_protos_model_data_proto_goTypes = []interface{}{
 	(*AvatarDataMap)(nil),             // 0: model.AvatarDataMap
 	(*AvatarData)(nil),                // 1: model.AvatarData
@@ -1197,53 +1554,62 @@ var file_protos_model_data_proto_goTypes = []interface{}{
 	(*ArtifactData)(nil),              // 11: model.ArtifactData
 	(*PromotionData)(nil),             // 12: model.PromotionData
 	(*PromotionAddProp)(nil),          // 13: model.PromotionAddProp
-	nil,                               // 14: model.AvatarDataMap.DataEntry
-	nil,                               // 15: model.WeaponDataMap.DataEntry
-	nil,                               // 16: model.ArtifactDataMap.DataEntry
-	(QualityType)(0),                  // 17: model.QualityType
-	(BodyType)(0),                     // 18: model.BodyType
-	(ZoneType)(0),                     // 19: model.ZoneType
-	(Element)(0),                      // 20: model.Element
-	(WeaponClass)(0),                  // 21: model.WeaponClass
-	(AvatarCurveType)(0),              // 22: model.AvatarCurveType
-	(StatType)(0),                     // 23: model.StatType
-	(WeaponCurveType)(0),              // 24: model.WeaponCurveType
+	(*MonsterData)(nil),               // 14: model.MonsterData
+	(*MonsterStatsData)(nil),          // 15: model.MonsterStatsData
+	(*MonsterResistData)(nil),         // 16: model.MonsterResistData
+	(*MonsterHPDrop)(nil),             // 17: model.MonsterHPDrop
+	nil,                               // 18: model.AvatarDataMap.DataEntry
+	nil,                               // 19: model.WeaponDataMap.DataEntry
+	nil,                               // 20: model.ArtifactDataMap.DataEntry
+	(QualityType)(0),                  // 21: model.QualityType
+	(BodyType)(0),                     // 22: model.BodyType
+	(ZoneType)(0),                     // 23: model.ZoneType
+	(Element)(0),                      // 24: model.Element
+	(WeaponClass)(0),                  // 25: model.WeaponClass
+	(AvatarCurveType)(0),              // 26: model.AvatarCurveType
+	(StatType)(0),                     // 27: model.StatType
+	(WeaponCurveType)(0),              // 28: model.WeaponCurveType
+	(MonsterCurveType)(0),             // 29: model.MonsterCurveType
 }
 var file_protos_model_data_proto_depIdxs = []int32{
-	14, // 0: model.AvatarDataMap.data:type_name -> model.AvatarDataMap.DataEntry
-	17, // 1: model.AvatarData.rarity:type_name -> model.QualityType
-	18, // 2: model.AvatarData.body:type_name -> model.BodyType
-	19, // 3: model.AvatarData.region:type_name -> model.ZoneType
-	20, // 4: model.AvatarData.element:type_name -> model.Element
-	21, // 5: model.AvatarData.weapon_class:type_name -> model.WeaponClass
+	18, // 0: model.AvatarDataMap.data:type_name -> model.AvatarDataMap.DataEntry
+	21, // 1: model.AvatarData.rarity:type_name -> model.QualityType
+	22, // 2: model.AvatarData.body:type_name -> model.BodyType
+	23, // 3: model.AvatarData.region:type_name -> model.ZoneType
+	24, // 4: model.AvatarData.element:type_name -> model.Element
+	25, // 5: model.AvatarData.weapon_class:type_name -> model.WeaponClass
 	2,  // 6: model.AvatarData.stats:type_name -> model.AvatarStatsData
 	3,  // 7: model.AvatarData.skill_details:type_name -> model.AvatarSkillsData
-	22, // 8: model.AvatarStatsData.hp_curve:type_name -> model.AvatarCurveType
-	22, // 9: model.AvatarStatsData.atk_curve:type_name -> model.AvatarCurveType
-	22, // 10: model.AvatarStatsData.def_cruve:type_name -> model.AvatarCurveType
+	26, // 8: model.AvatarStatsData.hp_curve:type_name -> model.AvatarCurveType
+	26, // 9: model.AvatarStatsData.atk_curve:type_name -> model.AvatarCurveType
+	26, // 10: model.AvatarStatsData.def_cruve:type_name -> model.AvatarCurveType
 	12, // 11: model.AvatarStatsData.promo_data:type_name -> model.PromotionData
 	4,  // 12: model.AvatarSkillsData.attack_scaling:type_name -> model.AvatarSkillExcelIndexData
 	4,  // 13: model.AvatarSkillsData.skill_scaling:type_name -> model.AvatarSkillExcelIndexData
 	4,  // 14: model.AvatarSkillsData.burst_scaling:type_name -> model.AvatarSkillExcelIndexData
 	5,  // 15: model.AvatarSkillExcelIndexData.level_data:type_name -> model.AvatarSkillExcelLevelData
-	15, // 16: model.WeaponDataMap.data:type_name -> model.WeaponDataMap.DataEntry
-	21, // 17: model.WeaponData.weapon_class:type_name -> model.WeaponClass
+	19, // 16: model.WeaponDataMap.data:type_name -> model.WeaponDataMap.DataEntry
+	25, // 17: model.WeaponData.weapon_class:type_name -> model.WeaponClass
 	8,  // 18: model.WeaponData.base_stats:type_name -> model.WeaponStatsData
 	9,  // 19: model.WeaponStatsData.base_props:type_name -> model.WeaponProp
 	12, // 20: model.WeaponStatsData.promo_data:type_name -> model.PromotionData
-	23, // 21: model.WeaponProp.prop_type:type_name -> model.StatType
-	24, // 22: model.WeaponProp.curve:type_name -> model.WeaponCurveType
-	16, // 23: model.ArtifactDataMap.data:type_name -> model.ArtifactDataMap.DataEntry
+	27, // 21: model.WeaponProp.prop_type:type_name -> model.StatType
+	28, // 22: model.WeaponProp.curve:type_name -> model.WeaponCurveType
+	20, // 23: model.ArtifactDataMap.data:type_name -> model.ArtifactDataMap.DataEntry
 	13, // 24: model.PromotionData.add_props:type_name -> model.PromotionAddProp
-	23, // 25: model.PromotionAddProp.prop_type:type_name -> model.StatType
-	1,  // 26: model.AvatarDataMap.DataEntry.value:type_name -> model.AvatarData
-	7,  // 27: model.WeaponDataMap.DataEntry.value:type_name -> model.WeaponData
-	11, // 28: model.ArtifactDataMap.DataEntry.value:type_name -> model.ArtifactData
-	29, // [29:29] is the sub-list for method output_type
-	29, // [29:29] is the sub-list for method input_type
-	29, // [29:29] is the sub-list for extension type_name
-	29, // [29:29] is the sub-list for extension extendee
-	0,  // [0:29] is the sub-list for field type_name
+	27, // 25: model.PromotionAddProp.prop_type:type_name -> model.StatType
+	15, // 26: model.MonsterData.base_stats:type_name -> model.MonsterStatsData
+	29, // 27: model.MonsterStatsData.hp_curve:type_name -> model.MonsterCurveType
+	16, // 28: model.MonsterStatsData.resist:type_name -> model.MonsterResistData
+	17, // 29: model.MonsterStatsData.hp_drop:type_name -> model.MonsterHPDrop
+	1,  // 30: model.AvatarDataMap.DataEntry.value:type_name -> model.AvatarData
+	7,  // 31: model.WeaponDataMap.DataEntry.value:type_name -> model.WeaponData
+	11, // 32: model.ArtifactDataMap.DataEntry.value:type_name -> model.ArtifactData
+	33, // [33:33] is the sub-list for method output_type
+	33, // [33:33] is the sub-list for method input_type
+	33, // [33:33] is the sub-list for extension type_name
+	33, // [33:33] is the sub-list for extension extendee
+	0,  // [0:33] is the sub-list for field type_name
 }
 
 func init() { file_protos_model_data_proto_init() }
@@ -1421,6 +1787,54 @@ func file_protos_model_data_proto_init() {
 				return nil
 			}
 		}
+		file_protos_model_data_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MonsterData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_protos_model_data_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MonsterStatsData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_protos_model_data_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MonsterResistData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_protos_model_data_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MonsterHPDrop); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1428,7 +1842,7 @@ func file_protos_model_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_protos_model_data_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   17,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

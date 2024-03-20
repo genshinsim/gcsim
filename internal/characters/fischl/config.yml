@@ -1,27 +1,84 @@
 package_name: fischl
 genshin_id: 10000031
 key: fischl
-skill_data_mapping:
+action_param_keys:
     attack:
-        aim:
-            - 5 # Aimed Shot|{param5:F1P}
-        auto_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        auto_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        auto_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        auto_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        auto_5:
-            - 4 # 5-Hit DMG|{param4:F1P}
-        fullaim:
-            - 6 # Fully-Charged Aimed Shot|{param6:P}
+      - param: "travel"
+    aim:
+      - param: "hold"
+      - param: "travel"
+      - param: "weakspot"
     skill:
-        birdAtk:
-            - 0 # Oz''s ATK DMG|{param0:F1P}
-        birdSum:
-            - 1 # Summoning DMG|{param1:P}
+      - param: "recast"
+skill_data_mapping:
+  attack:
+    aim:
+      - 5 # Aimed Shot|{param5:F1P}
+    auto_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    auto_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    auto_3:
+      - 2 # 3-Hit DMG|{param2:F1P}
+    auto_4:
+      - 3 # 4-Hit DMG|{param3:F1P}
+    auto_5:
+      - 4 # 5-Hit DMG|{param4:F1P}
+    fullaim:
+      - 6 # Fully-Charged Aimed Shot|{param6:P}
+  skill:
+    birdAtk:
+      - 0 # Oz''s ATK DMG|{param0:F1P}
+    birdSum:
+      - 1 # Summoning DMG|{param1:P}
+  burst:
     burst:
-        burst:
-            - 0 # Falling Thunder DMG|{param0:P}
+      - 0 # Falling Thunder DMG|{param0:P}
+icd_groups:
+  - group_name: ICDGroupFischl
+    reset_timer: 300
+    ele_app_sequence:
+      [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+      ]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+documentation:
+  fields_data:
+    - fields: [.fischl.oz]
+      desc: Whether Oz is active or not.
+    - fields: [.fischl.oz-source]
+      desc: The source frame Oz is spawned on.
+    - fields: [.fischl.oz-duration]
+      desc: Number of frames until Oz disappears if he is active, 0 otherwise.

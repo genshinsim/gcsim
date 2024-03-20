@@ -1,0 +1,62 @@
+package_name: "chiori"
+genshin_id: 10000094
+key: "chiori"
+
+# generate param key validation code
+action_param_keys:
+  skill:
+    - param: "hold"
+
+icd_tags:
+  - ICDTagChioriSkill
+icd_groups:
+  - group_name: ICDGroupChioriSkill
+    reset_timer: 114
+    ele_app_sequence: [1, 0, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1]
+
+# generate skill scaling data
+generate_skill_data: true
+skill_data_mapping:
+  attack: # Normal Attack: Weaving Blade
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+    attack_4:
+      - 4 # 4-Hit DMG|{param4:F1P}
+    charge:
+      - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+      - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+      # - 7 # Charged Attack Stamina Cost|{param7:F1}
+    plunge:
+      - 8 # Plunge DMG|{param8:F1P}
+    lowPlunge:
+      - 9 # Low/High Plunge DMG|{param9:P}/{param10:P}
+    highPlunge:
+      - 10 # Low/High Plunge DMG|{param9:P}/{param10:P}
+  skill: # Fluttering Hasode
+    turretAtkScaling:
+      - 0 # Automaton Doll: Sode Slash|{param0:P} ATK+{param1:P} DEF
+    turretDefScaling:
+      - 1 # Automaton Doll: Sode Slash|{param0:P} ATK+{param1:P} DEF
+    turretDuration:
+      - 2 # Automaton Doll: Sode Duration|{param2:F1}s
+    turretInterval:
+      - 3 # Automaton Doll: Sode Attack Interval|{param3:F1}s
+    thrustAtkScaling:
+      - 4 # Upward Thrust Attack DMG|{param4:P} ATK+{param5:P} DEF
+    thrustDefScaling:
+      - 5 # Upward Thrust Attack DMG|{param4:P} ATK+{param5:P} DEF
+      # - 6 # CD|{param6:F1}s
+  burst: # Hiyoku: Twin Blades
+    burstAtkScaling:
+      - 0 # Skill DMG|{param0:P} ATK+{param1:P} DEF
+    burstDefScaling:
+      - 1 # Skill DMG|{param0:P} ATK+{param1:P} DEF
+    burstCD:
+      - 2 # CD|{param2:F1}s
+      # - 3 # Energy Cost|{param3:I}

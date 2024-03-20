@@ -1,6 +1,11 @@
 package_name: hutao
 genshin_id: 10000046
 key: hutao
+action_param_keys:
+    low_plunge:
+        - param: "collision"
+    high_plunge:
+        - param: "collision"
 skill_data_mapping:
     attack:
         attack_1:

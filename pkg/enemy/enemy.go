@@ -24,8 +24,9 @@ type Enemy struct {
 	hp      float64
 	maxhp   float64
 
-	damageTaken      float64
-	lastParticleDrop int
+	damageTaken       float64
+	lastParticleDrop  int
+	particleDropIndex int // for custom HP drops
 
 	// mods
 	mods []modifier.Mod

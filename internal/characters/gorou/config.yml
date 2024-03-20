@@ -1,6 +1,13 @@
 package_name: gorou
 genshin_id: 10000055
 key: gorou
+action_param_keys:
+    attack:
+        - param: "travel"
+    aim:
+        - param: "hold"
+        - param: "travel"
+        - param: "weakspot"
 skill_data_mapping:
     attack:
         aim:

@@ -24,8 +24,31 @@ type Config struct {
 	// param validation
 	ActionParamKeys map[string][]paramData `yaml:"action_param_keys"`
 
+	// icd groups
+	ICDGroups []ICDGroupData `yaml:"icd_groups"`
+	ICDTags   []string       `yaml:"icd_tags"`
+
+	// doc related
+	Documentation DocConfig `yaml:"documentation"`
+
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
+}
+
+type DocConfig struct {
+	FieldsData []FieldDocData `json:"fields_data" yaml:"fields_data"`
+}
+
+type FieldDocData struct {
+	Fields []string `json:"fields" yaml:"fields"`
+	Desc   string   `json:"desc"   yaml:"desc"`
+}
+
+type ICDGroupData struct {
+	GroupName      string    `yaml:"group_name"`
+	ResetTimer     int       `yaml:"reset_timer"`
+	EleAppSequence []float64 `yaml:"ele_app_sequence"`
+	DamageSequence []float64 `yaml:"damage_sequence"`
 }
 
 type paramData struct {

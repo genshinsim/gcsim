@@ -1,6 +1,16 @@
 package_name: diona
 genshin_id: 10000039
 key: diona
+action_param_keys:
+    attack:
+        - param: "travel"
+    aim:
+        - param: "hold"
+        - param: "travel"
+        - param: "weakspot"
+    skill:
+        - param: "hold"
+        - param: "travel"
 skill_data_mapping:
     attack:
         aim:

@@ -62,6 +62,7 @@ var weaponNames = []string{
 	"darkironsword",
 	"deathmatch",
 	"debateclub",
+	"dialoguesofthedesertsages",
 	"dodocotales",
 	"dragonsbane",
 	"dragonspinespear",
@@ -199,6 +200,7 @@ var weaponNames = []string{
 	"tulaytullahsremembrance",
 	"twinnephrite",
 	"ultimateoverlordsmegamagicsword",
+	"urakumisugiri",
 	"verdict",
 	"vortexvanquisher",
 	"wanderingevenstar",
@@ -245,6 +247,7 @@ const (
 	DarkIronSword
 	Deathmatch
 	DebateClub
+	DialoguesOfTheDesertSages
 	DodocoTales
 	DragonsBane
 	DragonspineSpear
@@ -382,6 +385,7 @@ const (
 	TulaytullahsRemembrance
 	TwinNephrite
 	UltimateOverlordsMegaMagicSword
+	UrakuMisugiri
 	Verdict
 	VortexVanquisher
 	WanderingEvenstar

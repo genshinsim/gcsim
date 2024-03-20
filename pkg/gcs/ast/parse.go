@@ -102,8 +102,8 @@ func (p *Parser) Parse() (*info.ActionList, Node, error) {
 
 	// check all targets have hp if damage mode
 	if p.res.Settings.DamageMode {
-		for i, v := range p.res.Targets {
-			if v.HP == 0 {
+		for i := range p.res.Targets {
+			if p.res.Targets[i].HP == 0 {
 				p.res.Errors = append(p.res.Errors, fmt.Errorf("damage mode is activated; target #%v does not have hp set", i+1))
 			}
 		}
@@ -173,6 +173,8 @@ func parseRows(p *Parser) (parseFn, error) {
 		return parseOptions, nil
 	case itemEOF:
 		return nil, nil
+	case itemActionKey:
+		return nil, fmt.Errorf("ln%v: unexpected line starts with an action: %v", n.line, n.Val)
 	default: // default should be look for gcsl
 		node, err := p.parseStatement()
 		p.prog.append(node)

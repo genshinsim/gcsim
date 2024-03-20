@@ -26,7 +26,8 @@
         "dendro%": "草元素ダメージ",
         "anemo%": "風元素ダメージ",
         "geo%": "岩元素ダメージ",
-        "cryo%": "氷元素ダメージ"
+        "cryo%": "氷元素ダメージ",
+        "modified": "変更"
     },
     "actions": {
         "attack": "通常攻撃",
@@ -55,7 +56,7 @@
         "swirl-hydro": "拡散 (水)",
         "swirl-pyro": "拡散 (炎)",
         "swirl-cryo": "拡散 (氷)",
-        "electrocharged": "感電", 
+        "electrocharged": "感電",
         "shatter": "氷砕き",
         "burning": "燃焼",
         "quicken": "原激化",
@@ -170,6 +171,9 @@
         "documentation": "資料",
         "documentation_post": "もありますのでご活用ください。",
         "documentation_pre": "また、シミュレーターの使い方や使用できる要素をまとめた",
+        "editor_theme": "エディターのテーマ",
+        "enemies": "敵",
+        "font_size": "フォントサイズ",
         "generate_sample": "ページロード時にサンプルを生成",
         "hide_all_tips": "すべてのチュートリアルを隠す",
         "import": "インポート",
@@ -199,7 +203,12 @@
         "video_post": "をチェックしてください！",
         "video_pre": "編成にキャラクターを追加して開始しましょう！使い方はこの",
         "weapons": "武器",
-        "workers": "ワーカー"
+        "workers": "ワーカー",
+        "server_mode_enable": "サーバーモードを有効にする（上級ユーザーのみ）",
+        "server_mode_disable": "サーバーモードを無効にする（上級ユーザーのみ）",
+        "server_mode_url": "サーバーのURL",
+        "server_mode_required": "(必須)",
+        "server_mode_default": "デフォルト: "
     },
     "src": {
         "this_page_is": "このページはまだ実装されていません。いましばらくお待ちください！"
@@ -253,7 +262,8 @@
         "metadata_created": "作成",
         "metadata_commit": "コミット",
         "metadata_swap_delay": "キャラクタスワップ ディレイ",
-        "metadata_energy": "<0>エネルギー</0><1>{{p}}</1> <3>{{s}}</3><4>~</4><5>{{e}}</5><2>ごと</2>"
+        "metadata_energy": "<0>エネルギー</0><1>{{p}}</1> <3>{{s}}</3><4>~</4><5>{{e}}</5><2>ごと</2>",
+        "ending_energy": "シミュレーション終了時のキャラクター・エネルギー"
     },
     "viewer": {
         "ability_usage_count": "能力使用回数 (平均値)",
@@ -365,5 +375,9 @@
         "dash_data_header": "反復ごとのクールダウンによるダッシュディレイの合計",
         "ignore_burst_energy_title": "「元素爆発のエネルギーコストを無視する」モードが有効になっている。",
         "ignore_burst_energy_body": "シミュレーションは元素爆発のエネルギー要件を無視している。その結果、シミュレーションが不正確になる可能性がある。"
+    },
+    "states": {
+        "true": "真",
+        "false": "嘘"
     }
 }

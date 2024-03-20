@@ -1,6 +1,11 @@
 package_name: lisa
 genshin_id: 10000006
 key: lisa
+action_param_keys:
+    skill:
+        - param: "hold"
+icd_tags:
+    - ICDTagLisaElectro
 skill_data_mapping:
     attack:
         attack_1:

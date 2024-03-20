@@ -83,6 +83,9 @@ export interface Statistics {
   character_actions?: SourceStats[];
 
   target_aura_uptime?: SourceStats[];
+
+  // end stats
+  end_stats?: EndStats[];
 }
 
 export interface SummaryStat {
@@ -175,6 +178,10 @@ export interface TargetBucket {
   q3?: number[];
 }
 
+export interface EndStats {
+  ending_energy?: FloatStat;
+}
+
 export interface BucketStats {
   bucket_size?: number;
   buckets?: FloatStat[];
@@ -226,6 +233,8 @@ export interface Enemy {
   particle_drop_threshold?: number;
   particle_drop_count?: number;
   particle_element?: number;
+  modified?: boolean;
+  name?: string;
 }
 
 export interface Coord {

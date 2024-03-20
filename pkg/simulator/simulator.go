@@ -224,7 +224,8 @@ func GenerateResult(cfg string, simcfg *info.ActionList) (*model.SimulationResul
 		},
 	}
 
-	for i, target := range simcfg.Targets {
+	for i := range simcfg.Targets {
+		target := &simcfg.Targets[i]
 		resist := make(map[string]float64)
 		for k, v := range target.Resist {
 			resist[k.String()] = v
@@ -242,6 +243,8 @@ func GenerateResult(cfg string, simcfg *info.ActionList) (*model.SimulationResul
 			ParticleDropThreshold: target.ParticleDropThreshold,
 			ParticleDropCount:     target.ParticleDropCount,
 			ParticleElement:       target.ParticleElement.String(),
+			Name:                  target.MonsterName,
+			Modified:              target.Modified,
 		}
 	}
 

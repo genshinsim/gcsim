@@ -1,14 +1,9 @@
-import Editor from "react-simple-code-editor";
 import "@fontsource/fira-mono";
-
-//@ts-ignore
-import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-gcsim";
-
-// import Prism from "prismjs";
-import "prismjs/themes/prism-tomorrow.css";
-
-// Prism.highlight("stuff",Prism.languages)
+import AceEditor from "react-ace";
+//THESE IMPORTS NEEDS TO BE AFTER IMPORTING AceEditor
+import "ace-builds/src-noconflict/ext-language_tools";
+import "ace-builds/src-noconflict/theme-tomorrow_night";
+import "../../../util/mode-gcsim.js";
 
 type Props = {
   cfg: string;
@@ -21,27 +16,20 @@ export function ActionList(props: Props) {
   // };
   return (
     <div className="p-1 md:p-2">
-      <Editor
+      <AceEditor
+        mode="gcsim"
+        theme="tomorrow_night"
+        width="100%"
+        onChange={props.onChange}
         value={props.cfg}
-        onValueChange={(code) => props.onChange(code)}
-        textareaId="codeArea"
-        className="editor"
-        highlight={(code) =>
-          highlight(code, languages.gcsim)
-            .split("\n")
-            .map(
-              //@ts-ignore
-              (line, i) =>
-                `<span class='editorLineNumber'>${i + 1}</span>${line}`
-            )
-            .join("\n")
-        }
-        insertSpaces
-        padding={10}
-        style={{
-          fontFamily: '"Fira Mono", monospace',
+        name="UNIQUE_ID_OF_DIV"
+        editorProps={{
+          $blockScrolling: true,
+        }}
+        setOptions={{
+          maxLines: Infinity,
           fontSize: 14,
-          backgroundColor: "rgb(45 45 45)",
+          tabSize: 2,
         }}
       />
     </div>

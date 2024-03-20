@@ -456,6 +456,44 @@
       "legal": true
     }
   ],
+  "chiori": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "notes": "Need to use attack right before charge."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be skill[hold=1]."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Everything except normal followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "chongyun": [
     {
       "ability": "attack",
@@ -907,6 +945,48 @@
     {
       "ability": "high_plunge",
       "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "gaming": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be skill or a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be skill or a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",

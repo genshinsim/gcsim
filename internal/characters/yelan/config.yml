@@ -1,28 +1,55 @@
 package_name: yelan
 genshin_id: 10000060
 key: yelan
+action_param_keys:
+  attack:
+    - param: "travel"
+  aim:
+    - param: "hold"
+    - param: "travel"
+    - param: "weakspot"
+  skill:
+    - param: "marked"
+icd_tags:
+  - ICDTagYelanBreakthrough
+  - ICDTagYelanBurst
+icd_groups:
+  - group_name: ICDGroupYelanBreakthrough
+    reset_timer: 18
+    ele_app_sequence: [1, 0, 0, 0]
+    damage_sequence: [1, 0, 0, 0]
+  - group_name: ICDGroupYelanBurst
+    reset_timer: 120
+    ele_app_sequence:
+      [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 skill_data_mapping:
-    attack:
-        aim:
-            - 4 # Aimed Shot|{param4:F1P}
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
-            - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
-        barb:
-            - 6 # Breakthrough Barb DMG|{param6:F2P} Max HP
-        fullaim:
-            - 5 # Fully-Charged Aimed Shot|{param5:P}
+  attack:
+    aim:
+      - 4 # Aimed Shot|{param4:F1P}
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}
+    attack_4:
+      - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
+      - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
+    barb:
+      - 6 # Breakthrough Barb DMG|{param6:F2P} Max HP
+    fullaim:
+      - 5 # Fully-Charged Aimed Shot|{param5:P}
+  skill:
     skill:
-        skill:
-            - 0 # Skill DMG|{param0:F1P} Max HP
+      - 0 # Skill DMG|{param0:F1P} Max HP
+  burst:
     burst:
-        burst:
-            - 0 # Skill DMG|{param0:F2P} Max HP
-        burstDice:
-            - 1 # Exquisite Throw DMG|{param1:F2P} Max HP ×3
+      - 0 # Skill DMG|{param0:F2P} Max HP
+    burstDice:
+      - 1 # Exquisite Throw DMG|{param1:F2P} Max HP ×3
+
+documentation:
+  fields_data:
+    - fields: [.yelan.breakthrough]
+      desc: Whether Yelan is in the Breakthrough state or not.

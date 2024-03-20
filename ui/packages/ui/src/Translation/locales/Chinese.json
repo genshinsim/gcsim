@@ -26,7 +26,8 @@
         "dendro%": "草元素伤害加成",
         "anemo%": "风元素伤害加成",
         "geo%": "岩元素伤害加成",
-        "cryo%": "冰元素伤害加成"
+        "cryo%": "冰元素伤害加成",
+        "modified": "改装"
     },
     "actions": {
         "attack": "普通攻击",
@@ -55,7 +56,7 @@
         "swirl-hydro": "扩散 (水)",
         "swirl-pyro": "扩散 (火)",
         "swirl-cryo": "扩散 (冰)",
-        "electrocharged": "感电", 
+        "electrocharged": "感电",
         "shatter": "碎冰",
         "burning": "燃烧",
         "quicken": "原激化",
@@ -170,6 +171,9 @@
         "documentation": "文档",
         "documentation_post": "，其中包含有关如何编写顺序列表的简单教程。",
         "documentation_pre": "或者，查看我们的",
+        "editor_theme": "编辑器主题",
+        "enemies": "敌人",
+        "font_size": "字体大小",
         "generate_sample": "在页面加载时生成样本",
         "hide_all_tips": "隐藏所有小提示",
         "import": "导入",
@@ -199,7 +203,12 @@
         "video_post": "来了解更多。",
         "video_pre": "开始添加角色到你的队伍中吧。查看这个",
         "weapons": "武器",
-        "workers": "工作器"
+        "workers": "工作器",
+        "server_mode_enable": "启用服务器模式（仅限高级用户）",
+        "server_mode_disable": "禁用服务器模式（仅限高级用户）",
+        "server_mode_url": "服务器URL",
+        "server_mode_required": "(所需)",
+        "server_mode_default": "默认: "
     },
     "src": {
         "this_page_is": "此页面正在施工中。敬请期待！"
@@ -253,7 +262,8 @@
         "metadata_created": "创建时间",
         "metadata_commit": "提交",
         "metadata_swap_delay": "角色切换延迟",
-        "metadata_energy": "<0>能量</0> <1>{{p}}</1> <2>每</2> <3>{{s}}</3> <4>-</4> <5>{{e}}</5>"
+        "metadata_energy": "<0>能量</0> <1>{{p}}</1> <2>每</2> <3>{{s}}</3> <4>-</4> <5>{{e}}</5>",
+        "ending_energy": "模拟结束时角色的能量"
     },
     "viewer": {
         "ability_usage_count": "天赋使用次数（平均）",
@@ -365,5 +375,9 @@
         "dash_data_header": "每次迭代因冷却时间造成的冲刺延迟总量",
         "ignore_burst_energy_title": "\"忽略元素爆发能量成本 \"模式已启用",
         "ignore_burst_energy_body": "模拟忽略了元素爆发的能量需求。这可能导致模拟不准确。"
+    },
+    "states": {
+        "true": "真",
+        "false": "错误"
     }
 }

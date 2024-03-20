@@ -3,6 +3,7 @@ import { Enemy } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
 import { IconAnemo, IconCryo, IconDendro, IconElectro, IconGeo, IconHydro, IconPhysical, IconPyro } from "../../../../../Components/Icons";
 import { DataColorsConst } from "../../Util";
+import { isNumber } from "lodash-es";
 
 type Props = {
   id: number;
@@ -23,12 +24,17 @@ export const EnemyCard = (props: Props) => {
   );
 };
 
-const EnemyTitle = ({ id }: Props) => {
+const EnemyTitle = ({ id, enemy }: Props) => {
   const { t } = useTranslation();
+  let name = enemy?.name;
+  if (name) {
+    name = `(${t("game:enemy_names." + name)})`;
+  }
+
   return (
     <div className="flex flex-row items-end gap-3">
       <div className="text-gray-400 text-lg" style={{ color: DataColorsConst.qualitative5(id) }}>
-        {t<string>("viewer.target")} {id+1}
+        {t<string>("viewer.target")} {id+1} {name}
       </div>
     </div>
   );
@@ -36,26 +42,31 @@ const EnemyTitle = ({ id }: Props) => {
 
 const EnemyInfo = ({ enemy }: Props) => {
   const { t } = useTranslation();
+  const modified = enemy?.modified ?? false;
   return (
     <div className="flex flex-row font-mono gap-3 h-full items-center">
       <InfoItem name={t<string>("character.lvl")} value={enemy?.level} />
       <InfoItem name={t<string>("stats.hp")} value={enemy?.hp} />
+      <InfoItem name={t<string>("stats.modified")} value={t<string>("states." + modified.toString())} />
     </div>
   );
 };
 
-const InfoItem = ({ name, value }: { name: string, value?: number }) => {
+const InfoItem = ({ name, value }: { name: string, value?: number | string }) => {
   const { i18n } = useTranslation();
 
   if (value == null) {
     return null;
+  }
+  if (isNumber(value)) {
+    value = value.toLocaleString(i18n.language);
   }
 
   return (
     <div className="flex flex-row gap-1 text-xs items-center">
       <div className="text-gray-400">{name}</div>
       <div className="font-black text-current text-sm text-bp4-light-gray-500">
-        {value?.toLocaleString(i18n.language)}
+        {value}
       </div>
     </div>
   );

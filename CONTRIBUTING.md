@@ -12,18 +12,17 @@ Character PR checklist:
 
 - [ ] New character package
 - [ ] Config in character package
-- [ ] Run pipeline with added config
+- [ ] Run pipeline with added config (generates character curve, talent stats, `.generated.json` files)
 - [ ] Character key
 - [ ] Shortcuts for character key
+- [ ] Update `mode_gcsim.js` with shortcuts for syntax highlighting
 - [ ] Add Character package to imports
-- [ ] Character talent stats
-- [ ] Character curve
 - [ ] Normal Attack
+- [ ] Charge Attack / Aimed Shot
 - [ ] Skill
 - [ ] Burst
 - [ ] A1
 - [ ] A4
-- [ ] C0
 - [ ] C1
 - [ ] C2
 - [ ] C3
@@ -40,33 +39,32 @@ Character PR checklist:
 - [ ] Particles
 - [ ] Frames
 - [ ] Update documentation
-- [ ] Update localization (IngameNames.json)
+- [ ] Update substat optimizer (charRelevantSubstats) if using hp% / def% as a significant scaling stat 
+- [ ] Xingqiu/Yelan N0 (optional)
+- [ ] Xianyun Plunge (optional)
 
 Weapon PR checklist:
 
 - [ ] New weapon package
 - [ ] Config in weapon package
-- [ ] Run pipeline with added config
+- [ ] Run pipeline with added config (generates weapon curve, `.generated.json` files)
 - [ ] Weapon key
 - [ ] Shortcuts for weapon key
 - [ ] Add weapon package to imports
-- [ ] Weapon curve
 - [ ] Weapon passive (might include an attack)
 - [ ] Update documentation
-- [ ] Update localization (IngameNames.json)
 
 Artifact PR checklist:
 
 - [ ] New artifact package
 - [ ] Config in artifacts package
-- [ ] Run pipeline with added config
+- [ ] Run pipeline with added config (generates `.generated.json` files)
 - [ ] Artifact key
 - [ ] Shortcuts for artifact key
 - [ ] Add artifact package to imports
 - [ ] 2pc
 - [ ] 4pc
 - [ ] Update documentation
-- [ ] Update localization (IngameNames.json)
 
 Please try to be explicit about what is complete or incomplete.
 
@@ -79,19 +77,17 @@ Character PR checklist:
 
 - [ ] New character package
 - [ ] Config in character package
-- [ ] Run pipeline with added config
+- [ ] Run pipeline with added config (generates character curve, talent stats, `.generated.json` files)
 - [ ] Character key
 - [ ] Shortcuts for character key
+- [ ] Update `mode_gcsim.js` with shortcuts for syntax highlighting
 - [ ] Add Character package to imports
-- [ ] Character talent stats
-- [ ] Character curve
 - [ ] Normal Attack
 - [ ] Charge Attack / Aimed Shot
 - [ ] Skill
 - [ ] Burst
 - [ ] A1
 - [ ] A4
-- [ ] C0
 - [ ] C1
 - [ ] C2
 - [ ] C3
@@ -108,33 +104,32 @@ Character PR checklist:
 - [ ] Particles
 - [ ] Frames
 - [ ] Update documentation
-- [ ] Update localization (IngameNames.json)
+- [ ] Update substat optimizer (charRelevantSubstats) if using hp% / def% as a significant scaling stat 
+- [ ] Xingqiu/Yelan N0 (optional)
+- [ ] Xianyun Plunge (optional)
 
 Weapon PR checklist:
 
 - [ ] New weapon package
 - [ ] Config in weapon package
-- [ ] Run pipeline with added config
+- [ ] Run pipeline with added config (generates weapon curve, `.generated.json` files)
 - [ ] Weapon key
 - [ ] Shortcuts for weapon key
 - [ ] Add weapon package to imports
-- [ ] Weapon curve
-- [ ] Weapon passive
+- [ ] Weapon passive (might include an attack)
 - [ ] Update documentation
-- [ ] Update localization (IngameNames.json)
 
 Artifact PR checklist:
 
 - [ ] New artifact package
 - [ ] Config in artifacts package
-- [ ] Run pipeline with added config
+- [ ] Run pipeline with added config (generates `.generated.json` files)
 - [ ] Artifact key
 - [ ] Shortcuts for artifact key
 - [ ] Add artifact package to imports
 - [ ] 2pc
 - [ ] 4pc
 - [ ] Update documentation
-- [ ] Update localization (IngameNames.json)
 
 ````
 </details>

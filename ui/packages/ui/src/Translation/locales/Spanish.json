@@ -26,7 +26,8 @@
         "dendro%": "Bono de Daño Dendro",
         "anemo%": "Bono de Daño Anemo",
         "geo%": "Bono de Daño Geo",
-        "cryo%": "Bono de Daño Cryo"
+        "cryo%": "Bono de Daño Cryo",
+        "modified": "Modificado"
     },
     "actions": {
         "attack": "Ataque Normal",
@@ -55,7 +56,7 @@
         "swirl-hydro": "Torbellino (Hydro)",
         "swirl-pyro": "Torbellino (Pyro)",
         "swirl-cryo": "Torbellino (Cryo)",
-        "electrocharged": "Electrocargado", 
+        "electrocharged": "Electrocargado",
         "shatter": "Rompehielos",
         "burning": "Quemadura",
         "quicken": "Aceleración",
@@ -170,6 +171,9 @@
         "documentation": "documentación",
         "documentation_post": " que incluye un simple tutorial en como escribir listas secuenciales.",
         "documentation_pre": "Alternativamente, checa nuestra ",
+        "editor_theme": "Tema del editor",
+        "enemies": "Enemigos",
+        "font_size": "Tamaño de fuente",
         "generate_sample": "Generar una muestra al cargar la página",
         "hide_all_tips": "Ocultar todos los tips",
         "import": "Importar",
@@ -199,7 +203,12 @@
         "video_post": " como guía inicial.",
         "video_pre": "Empieza por agregar miembros de equipo. checa este ",
         "weapons": "Armas",
-        "workers": "Trabajadores"
+        "workers": "Trabajadores",
+        "server_mode_enable": "Activar el modo servidor (sólo usuarios avanzados)",
+        "server_mode_disable": "Desactivar el modo servidor (sólo usuarios avanzados)",
+        "server_mode_url": "URL del servidor",
+        "server_mode_required": "(necesario)",
+        "server_mode_default": "Valor por defecto: "
     },
     "src": {
         "this_page_is": "Esta página no está implementada aún. Manténganse al tanto!"
@@ -253,7 +262,8 @@
         "metadata_created": "creado",
         "metadata_commit": "commit",
         "metadata_swap_delay": "retraso de cambio de personaje",
-        "metadata_energy": "<0>energía</0> <1>{{p}}</1> <2>cada</2> <3>{{s}}</3> <4>a</4> <5>{{e}}</5>"
+        "metadata_energy": "<0>energía</0> <1>{{p}}</1> <2>cada</2> <3>{{s}}</3> <4>a</4> <5>{{e}}</5>",
+        "ending_energy": "Energía del personaje al final de la simulación"
     },
     "viewer": {
         "ability_usage_count": "Recuento de uso de habilidad elemental (Promedio)",
@@ -365,5 +375,9 @@
         "dash_data_header": "Retraso total en esprintar debido al TdE por iteración",
         "ignore_burst_energy_title": "Modo \"Ignorar Costes de Energía de Habilidad Definitiva\" activado",
         "ignore_burst_energy_body": "La simulación ignora los requisitos de Habilidad Definitiva. Esto puede dar lugar a simulaciones imprecisas."
+    },
+    "states": {
+        "true": "true",
+        "false": "false"
     }
 }

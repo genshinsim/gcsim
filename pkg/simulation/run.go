@@ -70,6 +70,8 @@ func (s *Simulation) run() (stats.Result, error) {
 		return s.resFromCurrentState(), err
 	}
 
+	s.C.Events.Emit(event.OnSimEndedSuccessfully)
+
 	return s.gatherResult(), nil
 }
 
@@ -81,6 +83,7 @@ func (s *Simulation) gatherResult() stats.Result {
 		DPS:         s.C.Combat.TotalDamage * 60 / float64(s.C.F),
 		Characters:  make([]stats.CharacterResult, len(s.C.Player.Chars())),
 		Enemies:     make([]stats.EnemyResult, s.C.Combat.EnemyCount()),
+		EndStats:    make([]stats.EndStats, len(s.C.Player.Chars())),
 	}
 
 	for i := range s.cfg.Characters {

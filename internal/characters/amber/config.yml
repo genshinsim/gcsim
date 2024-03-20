@@ -1,25 +1,41 @@
 package_name: amber
 genshin_id: 10000021
 key: amber
+action_param_keys:
+  attack: 
+      - param: "travel"
+  aim:
+      - param: "hold"
+      - param: "travel"
+      - param: "weakspot"
+      - param: "bunny"
+  skill:
+      - param: "hold"
+icd_groups:
+  - group_name: ICDGroupAmber
+    reset_timer: 60
+    ele_app_sequence:
+      [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 skill_data_mapping:
-    attack:
-        aim:
-            - 5 # Aimed Shot|{param5:F1P}
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        attack_5:
-            - 4 # 5-Hit DMG|{param4:F1P}
-        fullaim:
-            - 6 # Fully-Charged Aimed Shot|{param6:P}
-    skill:
-        bunnyExplode:
-            - 1 # Explosion DMG|{param1:P}
-    burst:
-        burstTick:
-            - 0 # Fiery Rain DMG Per Wave|{param0:F1P}
+  attack:
+    aim:
+      - 5 # Aimed Shot|{param5:F1P}
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}
+    attack_4:
+      - 3 # 4-Hit DMG|{param3:F1P}
+    attack_5:
+      - 4 # 5-Hit DMG|{param4:F1P}
+    fullaim:
+      - 6 # Fully-Charged Aimed Shot|{param6:P}
+  skill:
+    bunnyExplode:
+      - 1 # Explosion DMG|{param1:P}
+  burst:
+    burstTick:
+      - 0 # Fiery Rain DMG Per Wave|{param0:F1P}

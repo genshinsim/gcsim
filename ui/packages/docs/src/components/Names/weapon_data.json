@@ -68,6 +68,9 @@
   "darkironsword": [],
   "deathmatch": [],
   "debateclub": [],
+  "dialoguesofthedesertsages": [
+    "dialogues"
+  ],
   "dodocotales": [],
   "dragonsbane": [
     "dbane"
@@ -413,6 +416,10 @@
     "megamagicsword",
     "uomms",
     "melusineclaymore"
+  ],
+  "urakumisugiri": [
+    "uraku",
+    "misugiri"
   ],
   "verdict": [],
   "vortexvanquisher": [

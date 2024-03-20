@@ -511,6 +511,47 @@
       }
     ]
   },
+  "chiori": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3-1",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "chongyun": {
     "normal": [
       {
@@ -1122,6 +1163,38 @@
       {
         "ability": "N4",
         "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
+  "gaming": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.10,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.12,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false

@@ -56,15 +56,7 @@ export class ServerExecutor implements Executor {
           //resp should be json body?
           console.log(resp);
           if (typeof resp.data == "string") {
-            resolve({
-              characters: [],
-              errors: [resp.data],
-              player_initial_pos: {
-                x: 0,
-                y: 0,
-                r: 0,
-              },
-            });
+            reject(resp.data);
           } else {
             resolve({
               characters: resp.data.characters,

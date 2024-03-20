@@ -150,10 +150,29 @@ target lvl=88 resist=0.1 pos=0,0 radius=2 freeze_resist=0.8 hp=9999 particle_thr
 | `particle_threshold` | Only available if the `hp` is set. Determines after how much damage the enemy drops elemental particles. Example: If the enemy has 500 HP and this is set to 200, then the enemy will drop particles at 300 and 100 HP. | - |
 | `particle_drop_count` | Only available if the `hp` is set. Number of elemental particles to drop at `particle_threshold`. | - |
 | `particle_element` | Only available if the `hp` is set. Element of the particle at `particle_threshold`. Defaults to clear if not set. | - |
+| `type` | Sets the stats of the target to the one specified in this parameter by name. This overwrites HP, resistances, particle threshold and particle drop count. The `dummy` parameter sets a huge amount of HP to the target with 10% resistance to all types of elemental damage and no particle generation. | - |
 
 :::danger
 All configs must have at least one enemy specified. Otherwise you will get an error. 
 :::
+
+:::info
+To use custom HP or resistances with `type`, include them after `type`.
+Example:
+```
+target lvl=100 type=eremitegalehunter[hp_mult=1] radius=2 pos=0,2.4 hp=10000;
+```
+:::
+
+:::info
+Optional params may be added to the target type via `[]` after the enemy name.
+:::
+
+#### Optional target type params
+| name | description | default |
+| --- | --- | --- |
+| `hp_mult` | HP multiplier for the enemy. The default multiplier is 2.5 (Spiral Abyss, Floor 12). | 2.5 |
+| `particles` | Use particle theresholds from the enemy. Use `0` if you want to use a custom threshold (`particle_threshold`). | 1 |
 
 :::info
 If you have multiple targets, make sure to set their starting position properly. 
