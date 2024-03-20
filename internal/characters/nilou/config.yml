@@ -1,6 +1,9 @@
 package_name: nilou
 genshin_id: 10000070
 key: nilou
+action_param_keys:
+  skill:
+    - param: "travel"
 icd_tags:
   - ICDTagNilouTranquilityAura
 icd_groups:

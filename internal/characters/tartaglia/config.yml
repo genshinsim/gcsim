@@ -1,6 +1,15 @@
 package_name: tartaglia
 genshin_id: 10000033
 key: tartaglia
+action_param_keys:
+  attack:
+    - param: "travel"
+  aim:
+    - param: "hold"
+    - param: "travel"
+    - param: "weakspot"
+  charge:
+    - param: "hitWeakPoint"
 icd_tags:
   - ICDTagTartagliaRiptideFlash
 skill_data_mapping:

@@ -1,6 +1,14 @@
 package_name: alhaitham
 genshin_id: 10000078
 key: alhaitham
+action_param_keys:
+  skill: 
+      - param: "hold"
+  high_plunge:
+      - param: "collision"
+  low_plunge:
+      - param: "collision"
+      - param: "short"
 icd_groups:
   - group_name: ICDGroupAlhaithamProjectionAttack
     reset_timer: 720

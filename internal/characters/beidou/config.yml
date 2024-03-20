@@ -1,6 +1,9 @@
 package_name: beidou
 genshin_id: 10000024
 key: beidou
+action_param_keys:
+    skill: 
+        - param: "counter"
 skill_data_mapping:
     attack:
         attack_1:

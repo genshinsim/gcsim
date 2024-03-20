@@ -1,6 +1,11 @@
 package_name: cyno
 genshin_id: 10000071
 key: cyno
+action_param_keys:
+    low_plunge:
+      - param: "collision"
+    high_plunge:
+      - param: "collision"
 icd_tags:
   - ICDTagCynoBolt
 icd_groups:

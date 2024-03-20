@@ -1,6 +1,13 @@
 package_name: yaemiko
 genshin_id: 10000058
 key: yaemiko
+action_param_keys:
+  attack:
+    - param: "travel"
+  low_plunge:
+    - param: "collision"
+  high_plunge:
+    - param: "collision"
 skill_data_mapping:
   attack:
     attack_1:
