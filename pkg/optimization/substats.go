@@ -194,6 +194,7 @@ func NewSubstatOptimizerDetails(
 
 	s.charRelevantSubstats = make([][]attributes.Stat, len(simcfg.Characters))
 	for i := range simcfg.Characters {
+		// ER is omitted because there is a dedicated ER step.
 		s.charRelevantSubstats[i] = []attributes.Stat{
 			attributes.HPP,
 			attributes.HP,
@@ -204,7 +205,6 @@ func NewSubstatOptimizerDetails(
 			attributes.CR,
 			attributes.CD,
 			attributes.EM,
-			attributes.ER,
 		}
 	}
 
