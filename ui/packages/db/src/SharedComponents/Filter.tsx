@@ -109,7 +109,7 @@ function TagFilter() {
   const t = (s: string) => translation<string>(s);
   const sortedTagnames = Object.keys(tagData)
     .filter((key) => {
-      return key !== "0" && key !== "1";
+      return key !== "0" && key !== "1" && key !== "2";
     })
     .map((key) => {
       return {
@@ -129,7 +129,7 @@ function TagFilter() {
         <div className="">{tagIsOpen ? "-" : "+"}</div>
       </button>
       <Collapse isOpen={tagIsOpen}>
-        <div className="flex flex-row gap-2 mt-2 bg-gray-800 p-1">
+        <div className="grid grid-cols-3 gap-2 mt-2 bg-gray-800 p-1">
           {sortedTagnames.map((t) => (
             <TagFilterButton key={t.key} name={t.name} tag={t.key} />
           ))}

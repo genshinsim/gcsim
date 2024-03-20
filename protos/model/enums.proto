@@ -139,11 +139,12 @@ enum DBTag {
   DB_TAG_INVALID = 0;
   DB_TAG_GCSIM = 1;
   DB_TAG_TESTING = 2;
-  DB_TAG_KQM_GUIDE = 3;
-  DB_TAG_GEO_SIMPS = 4;
   DB_TAG_ITTO_SIMPS = 5;
   DB_TAG_RANDOM_DELAYS = 6;
-  DB_TAG_ARFOIRE_NEWBIES =
-      7; // reissue4917 (1070054618895233035) tag for newbie players
+  DB_TAG_ARFOIRE_NEWBIES = 7; // reissue4917 (1070054618895233035) tag for newbie players
+  DB_TAG_APL = 8;
   DB_TAG_ADMIN_DO_NOT_USE = 99999999;
+
+  reserved 3; //DB_TAG_KQM_GUIDE
+  reserved 4; //DB_TAG_GEO_SIMPS
 }
