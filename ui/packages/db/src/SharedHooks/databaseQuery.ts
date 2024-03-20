@@ -27,7 +27,7 @@ export function craftQuery(
   if (filter.customFilter) {
     let parsedFilter;
     try {
-      parsedFilter = JSON.parse(`{${filter.customFilter}}`);
+      parsedFilter = JSON.parse(`${filter.customFilter}`);
     } catch (e) {
       console.log("invalid custom filter", e, filter.customFilter);
     }
