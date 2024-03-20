@@ -27,6 +27,5 @@
     {
       "mode": "auto"
     }
-  ],
-  "deepscan.ignoreConfirmWarning": true
+  ]
 }
