@@ -14,8 +14,8 @@
         "blurb": "Sims of Itto doing Itto things (maintained by Tris)."
     },
     "6": {
-        "display_name": "Input Delays",
-        "blurb": "Sims that utilize a lot of input delays before executing actions, or have variance in their swap_delay instead of fixed. Usually involving randomized distributions. They are trying to model what happens when sims are not frame-perfectly executed, especially for reaction heavy teams that are sensitive to timing."
+        "display_name": "Action Execution Delays",
+        "blurb": "Sims that utilize a lot of delays before executing actions, or have variance in their swap_delay instead of fixed. Usually involving randomized distributions. They are trying to model what happens when sims are not frame-perfectly executed, especially for reaction heavy teams that are sensitive to timing."
     },
     "7": {
         "display_name": "Arfoire for Newbies",
