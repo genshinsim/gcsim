@@ -83,7 +83,7 @@ func (s *service) sub() error {
 	if err != nil {
 		return err
 	}
-	err = s.c.Notify(db.TopicSubmissionTooOld, s.onDBPurge)
+	err = s.c.Subscribe(db.TopicSubmissionTooOld, s.onDBPurge)
 	if err != nil {
 		return err
 	}
