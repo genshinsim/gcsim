@@ -31,7 +31,8 @@
     "build:docs": "yarn workspace @gcsim/docs build",
     "deploy:workers": "yarn workspace @gcsim/workers deploy",
     "start:workers": "yarn workspace @gcsim/workers start",
-    "gen": "yarn workspace @gcsim/types gen:ts"
+    "gen": "yarn workspace @gcsim/types gen:ts",
+    "storybook": "yarn workspace @gcsim/storybook storybook"
   },
   "devDependencies": {
     "@types/eslint": "^8",
