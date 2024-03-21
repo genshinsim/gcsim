@@ -24,5 +24,9 @@
     "8": {
         "display_name": "APL",
         "blurb": "Collection of simulations with rotation written as a priority list (also frequently know as action priority list, or APL)"
+    },
+    "9": {
+        "display_name": "Guides",
+        "blurb": "Collection of simulations used by various guide writers for KQM, etc..."
     }
 }
