@@ -72,7 +72,7 @@ Loop:
 			}
 			err = validation.ValidateCharParamKeys(charKey, actionKey, keys)
 			if err != nil {
-				return nil, fmt.Errorf("character %v: %w", charKey, err)
+				return nil, fmt.Errorf("ln%v: character %v: %w", n.line, charKey, err)
 			}
 			expr.Args = append(expr.Args, param)
 

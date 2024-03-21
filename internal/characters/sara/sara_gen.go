@@ -4,13 +4,22 @@ package sara
 import (
 	_ "embed"
 
+	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
+	"slices"
 )
 
 //go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
+var paramKeysValidation = map[action.Action][]string{
+	3: {"travel"},
+	7: {"hold", "travel", "weakspot"},
+}
 
 func init() {
 	base = &model.AvatarData{}
@@ -18,6 +27,20 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	validation.RegisterCharParamValidationFunc(keys.Sara, ValidateParamKeys)
+}
+
+func ValidateParamKeys(a action.Action, keys []string) error {
+	valid, ok := paramKeysValidation[a]
+	if !ok {
+		return nil
+	}
+	for _, v := range keys {
+		if !slices.Contains(valid, v) {
+			return fmt.Errorf("key %v is invalid for action %v", v, a.String())
+		}
+	}
+	return nil
 }
 
 func (x *char) Data() *model.AvatarData {
