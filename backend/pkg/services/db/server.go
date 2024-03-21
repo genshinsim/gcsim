@@ -6,9 +6,11 @@ import (
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/model"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 )
 
 type Store interface {
@@ -137,7 +139,19 @@ func (s *Server) notify(topic string, msg protoreflect.ProtoMessage) {
 func (s *Server) cleanup() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
-	entries, err := s.GetAll(ctx, &GetAllRequest{})
+	var err error
+	opt := &QueryOpt{}
+	sort := bson.M{
+		"create_date": -1,
+	}
+	opt.Sort, err = structpb.NewStruct(sort)
+	if err != nil {
+		s.Log.Infow("error generating sort options", "err", err)
+		return err
+	}
+	entries, err := s.GetAll(ctx, &GetAllRequest{
+		Query: opt,
+	})
 	if err != nil {
 		return err
 	}
