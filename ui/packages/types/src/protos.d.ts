@@ -2697,6 +2697,7 @@ export namespace model {
         DB_TAG_RANDOM_DELAYS = 6,
         DB_TAG_ARFOIRE_NEWBIES = 7,
         DB_TAG_APL = 8,
+        DB_TAG_GUIDES = 9,
         DB_TAG_ADMIN_DO_NOT_USE = 99999999
     }
 
