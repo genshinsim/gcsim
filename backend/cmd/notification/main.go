@@ -84,6 +84,9 @@ func (s *service) sub() error {
 		return err
 	}
 	err = s.c.Notify(db.TopicSubmissionTooOld, s.onDBPurge)
+	if err != nil {
+		return err
+	}
 
 	s.info("notification service now online")
 	return nil
