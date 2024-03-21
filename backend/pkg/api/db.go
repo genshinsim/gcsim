@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
+	"github.com/go-chi/chi"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -105,5 +106,40 @@ func (s *Server) getDB() http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		writer.Write(data)
 		// w.Write(data)
+	}
+}
+
+func (s *Server) getByID() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		key := chi.URLParam(r, "id")
+
+		resp, err := s.dbClient.GetOne(r.Context(), &db.GetOneRequest{Id: key})
+		if err != nil {
+			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
+				http.Error(w, "not found", http.StatusNotFound)
+				return
+			}
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			s.Log.Errorw("unexpected error getting share", "err", err)
+			return
+		}
+		data, err := marshalOptions().Marshal(resp.GetData())
+		if err != nil {
+			s.Log.Warnw("error query db - cannot marshal result", "err", err)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+		writer, err := gzip.NewWriterLevel(w, gzip.BestCompression)
+		if err != nil {
+			s.Log.Warnw("error query db - cannot write gzip result", "err", err)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+		defer writer.Close()
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Encoding", "gzip")
+		w.WriteHeader(http.StatusOK)
+		writer.Write(data)
 	}
 }
