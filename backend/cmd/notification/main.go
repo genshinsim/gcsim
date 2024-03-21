@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/containrrr/shoutrrr"
 	"github.com/genshinsim/gcsim/backend/pkg/notify"
@@ -82,9 +83,23 @@ func (s *service) sub() error {
 	if err != nil {
 		return err
 	}
+	err = s.c.Notify(db.TopicSubmissionTooOld, s.onDBPurge)
+	if err != nil {
+		return err
+	}
 
 	s.info("notification service now online")
 	return nil
+}
+
+func (s *service) onDBPurge(topic string, payload []byte) {
+	m := &db.Entry{}
+	err := protojson.Unmarshal(payload, m)
+	if err != nil {
+		log.Println("error marshalling event:", err)
+		return
+	}
+	s.info(fmt.Sprintf("DB submission %v (link https://gcsim.app/sh/%v) is too old and should be purged (created %v)", m.Id, m.ShareKey, time.Unix(int64(m.CreateDate), 0).Format("Jan 2 15:04:05 MST 2006")))
 }
 
 func (s *service) onDBReplace(topic string, payload []byte) {

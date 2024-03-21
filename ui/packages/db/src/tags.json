@@ -3,25 +3,26 @@
         "display_name": "Invalid"
     },
     "1": {
-        "display_name": "GCsim"
+        "display_name": "gcsim",
+        "blurb": "These untagged simulations are simulations that are meant to serve as examples for users looking for similar simulations to write their own. There are no rules or criteria for these simulations and any simultation that are different from what exists already will qualify."
     },
     "2": {
         "display_name": "Internal Test"
     },
-    "3": {
-        "display_name": "KQM Guide",
-        "blurb": "Sims for the KQM guide."
-    },
-    "4": {
-        "display_name": "Geo"
-    },
     "5": {
-        "display_name": "Itto Simps"
+        "display_name": "Itto Simps",
+        "blurb": "Itto doing Itto things (maintained by Tris)"
     },
     "6": {
-        "display_name": "Random Frame Delays"
+        "display_name": "Random Frame Delays",
+        "blurb": "Collection of simulationsi that utilize random delays in their rotation"
     },
     "7": {
-        "display_name": "Arfoire for Newbies"
+        "display_name": "Arfoire for Newbies",
+        "blurb": "Arfoire's collection of simulations targetted towards new players"
+    },
+    "8": {
+        "display_name": "APL",
+        "blurb": "Collection of simulations with rotation written as a priority list (also frequently know as action priority list, or APL)"
     }
 }
