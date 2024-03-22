@@ -4489,6 +4489,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@gcsim/data@workspace:packages/data":
+  version: 0.0.0-use.local
+  resolution: "@gcsim/data@workspace:packages/data"
+  languageName: unknown
+  linkType: soft
+
 "@gcsim/db@workspace:^, @gcsim/db@workspace:packages/db":
   version: 0.0.0-use.local
   resolution: "@gcsim/db@workspace:packages/db"

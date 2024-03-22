@@ -1,92 +1,97 @@
-import { db, model } from "@gcsim/types"
-import { AvatarCard } from "../AvatarCard/AvatarCard";
+import tagData from "@gcsim/data/src/tags.json";
+import { db, model } from "@gcsim/types";
 import { Card, CardContent, CardFooter } from "../../common/ui/card";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "../../common/ui/table";
-import { prettyPrintNumberStr } from "../../lib/helper";
-import { Long } from "protobufjs";
-
-
-const DBDetails = ({ summary, create_date }: { summary: db.IEntrySummary, create_date: number | Long | null }) => {
-    let date = "unknown";
-    if (create_date) {
-        date = new Date((create_date as number) * 1000).toLocaleDateString();
-    }
-    return (
-        <Table className="w-full grow">
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="priority-5 font-semibold">sim mode</TableHead>
-                    <TableHead className="priority-5 font-semibold">target count</TableHead>
-                    <TableHead className="priority-1 font-semibold">dps per target</TableHead>
-                    <TableHead className="priority-1 font-semibold">avg sim time</TableHead>
-                    <TableHead className="priority-3 font-semibold">create date</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                <TableRow>
-                    <TableHead className="priority-5">{summary.mode ? "ttk" : "duration"}</TableHead>
-                    <TableHead className="priority-5">{summary.target_count}</TableHead>
-                    <TableHead className="priority-1">{prettyPrintNumberStr(summary.mean_dps_per_target?.toFixed(2) ?? "")}</TableHead>
-                    <TableHead className="priority-1">
-                        {summary.sim_duration?.mean
-                            ? `${summary.sim_duration.mean.toPrecision(3)}s`
-                            : "unknown"}
-                    </TableHead>
-                    <TableHead className="priority-3">{date}</TableHead>
-                </TableRow>
-            </TableBody>
-        </Table>
-    )
-
-}
+import { AvatarCard } from "../AvatarCard/AvatarCard";
+import { CardBadge } from "../CardBadge/CardBadge";
 
 type DBCardProps = {
-    entry: db.IEntry
+  entry: db.IEntry;
 
-    //optional send to simulator
-    footer?: JSX.Element
-}
+  //optional send to simulator
+  footer?: JSX.Element;
+};
 
 export const DBCard = ({ entry, footer }: DBCardProps) => {
-    const team: (model.ICharacter | null)[] = entry.summary?.team ?? [];
-    if (team.length < 4) {
-        const diff = 4 - team.length;
-        for (let i = 0; i < diff; i++) {
-            team.push(null);
-        }
+  const team: (model.ICharacter | null)[] = entry.summary?.team ?? [];
+  if (team.length < 4) {
+    const diff = 4 - team.length;
+    for (let i = 0; i < diff; i++) {
+      team.push(null);
     }
-    return (
-        <Card className="m-2 bg-slate-800 min-[1300px]:w-[1225px] ">
-            <CardContent className="p-3 flex flex-col  gap-y-2">
-                <div className="flex flex-row flex-wrap gap-y-2 place-content-center">
-                    <AvatarCard chars={team} className="min-[420px]:w-[420px] -ml-2" />
-                    {
-                        entry.summary ? <DBDetails summary={entry.summary} create_date={entry.create_date ? entry.create_date : null} /> : null
-                    }
+  }
+  let date = "unknown";
+  if (entry.create_date) {
+    date = new Date((entry.create_date as number) * 1000).toLocaleDateString();
+  }
+  const tags = entry.accepted_tags
+    ?.filter((tag) => tag !== 1)
+    .map((tag) => (
+      <CardBadge
+        key={tag}
+        value={tagData[tag]?.display_name ?? null}
+        valueCase=""
+        valueSize="text-xs"
+        className="bg-teal-800"
+      />
+    ));
 
-                </div>
-                <div className="flex-grow flex flex-col  text-gray-400 font-san font-medium text-sm">
-                    <div className="block w-0 min-w-full">
-                        <span className="font-semibold text-orange-300">
-                            {entry.submitter === "migrated"
-                                ? "Unknown author: "
-                                : `Submitted by ${entry.submitter}: `}
-                        </span>
-                        {entry.description}
-                    </div>
-                </div>
-            </CardContent>
-            <CardFooter className="flex flex-row flex-wrap gap-y-2 p-3 pt-0">
-                {
-                    footer ?
-                        <div className="flex flex-row flex-wrap justify-end w-full">
-                            {footer}
-                        </div>
-                        : null
+  return (
+    <Card className="m-2 bg-slate-800 min-[1300px]:w-[1225px] ">
+      <CardContent className="p-3 flex flex-col gap-y-2">
+        <div className="flex flex-row flex-wrap gap-2 place-content-center">
+          <Card className="flex flex-col bg-slate-800 border-0 pt-1 min-[420px]:basis-0">
+            <AvatarCard chars={team} className="min-[420px]:w-[420px] flex-1" />
+            <div className="flex flex-row flex-wrap gap-1 p-2 max-w-[95%] place-content-evenly">
+              <CardBadge
+                title="mode"
+                value={entry.summary?.mode ? "ttk" : "duration"}
+              />
+              <CardBadge
+                title="target count"
+                value={(entry.summary?.target_count ?? 0).toString()}
+              />
+              <CardBadge
+                title="dps/target"
+                value={(entry.summary?.mean_dps_per_target ?? 0).toLocaleString(
+                  navigator.language,
+                  {
+                    notation: "compact",
+                    minimumSignificantDigits: 3,
+                    maximumSignificantDigits: 3,
+                  }
+                )}
+              />
+              <CardBadge
+                valueCase="lowercase"
+                title="avg sim time"
+                value={
+                  entry.summary?.sim_duration?.mean
+                    ? `${entry.summary?.sim_duration.mean.toPrecision(3)}s`
+                    : "unknown"
                 }
-            </CardFooter>
-        </Card>
-    )
-
-
-}
+              />
+              <CardBadge valueCase="lowercase" title="created" value={date} />
+              {tags}
+            </div>
+          </Card>
+          <div className="flex flex-col grow min-w-[40%] text-gray-200 p-2 self-stretch">
+            <div className="block w-0 min-w-full">
+              <span className="font-semibold text-orange-300">
+                {entry.submitter === "migrated"
+                  ? "Unknown author: "
+                  : `Submitted by ${entry.submitter}: `}
+              </span>
+              {entry.description}
+            </div>
+            {footer ? (
+              <div className="mt-auto flex flex-row flex-wrap justify-end w-full pt-2">
+                {footer}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex flex-row flex-wrap gap-y-2 p-3 pt-0"></CardFooter>
+    </Card>
+  );
+};
