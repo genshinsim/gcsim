@@ -17,7 +17,7 @@ export const CardBadge = ({
   bold,
   bright,
   valueCase = "uppercase",
-  valueSize = "text-sm",
+  valueSize = "text-xs",
   className,
 }: CardBadgeProps) => {
   if (value === null) {
@@ -29,7 +29,11 @@ export const CardBadge = ({
   return (
     <Badge className={className}>
       {title != null && <span className={titleCls}>{title}</span>}
-      <span className={`${bold ? "font-bold" : ""} ${valueSize} ${valueCase}`}>
+      <span
+        className={`${
+          bold ? "font-bold" : ""
+        } ${valueSize} ${valueCase} text-mono`}
+      >
         {value}
       </span>
     </Badge>

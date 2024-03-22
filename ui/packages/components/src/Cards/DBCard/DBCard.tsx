@@ -30,7 +30,6 @@ export const DBCard = ({ entry, footer }: DBCardProps) => {
         key={tag}
         value={tagData[tag]?.display_name ?? null}
         valueCase=""
-        valueSize="text-xs"
         className="bg-teal-800"
       />
     ));
@@ -41,7 +40,7 @@ export const DBCard = ({ entry, footer }: DBCardProps) => {
         <div className="flex flex-row flex-wrap gap-2 place-content-center">
           <Card className="flex flex-col bg-slate-800 border-0 pt-1 min-[420px]:basis-0">
             <AvatarCard chars={team} className="min-[420px]:w-[420px] flex-1" />
-            <div className="flex flex-row flex-wrap gap-1 p-2 max-w-[95%] place-content-evenly">
+            <div className="flex flex-row flex-wrap gap-1 p-2 max-w-full justify-center">
               <CardBadge
                 title="mode"
                 value={entry.summary?.mode ? "ttk" : "duration"}
