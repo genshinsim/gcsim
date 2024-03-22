@@ -26,7 +26,8 @@ export const initialCharFilter = charNames.reduce((acc, charName) => {
 }, {} as CharFilter);
 
 export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
-  acc[tag] = { state: ItemFilterState.none, tag };
+  // Guide tag is 9
+  acc[tag] = tag === "9" ? { state: ItemFilterState.exclude, tag } : { state: ItemFilterState.none, tag };
   return acc;
 }, {} as TagFilter);
 
@@ -74,19 +75,19 @@ export interface CharFilter {
 
 export type CharFilterState =
   | {
-      charName: string;
-      state: ItemFilterState.include;
-      weapon?: string;
-      sets?: ArtifactSetFilter;
-    }
+    charName: string;
+    state: ItemFilterState.include;
+    weapon?: string;
+    sets?: ArtifactSetFilter;
+  }
   | {
-      state: ItemFilterState.none;
-      charName: string;
-    }
+    state: ItemFilterState.none;
+    charName: string;
+  }
   | {
-      state: ItemFilterState.exclude;
-      charName: string;
-    };
+    state: ItemFilterState.exclude;
+    charName: string;
+  };
 
 export interface TagFilter {
   //tag key (int)
@@ -95,17 +96,17 @@ export interface TagFilter {
 
 export type TagFilterState =
   | {
-      tag: string;
-      state: ItemFilterState.include;
-    }
+    tag: string;
+    state: ItemFilterState.include;
+  }
   | {
-      state: ItemFilterState.none;
-      tag: string;
-    }
+    state: ItemFilterState.none;
+    tag: string;
+  }
   | {
-      state: ItemFilterState.exclude;
-      tag: string;
-    };
+    state: ItemFilterState.exclude;
+    tag: string;
+  };
 
 export const FilterDispatchContext = createContext<
   React.Dispatch<FilterActions>
@@ -129,13 +130,13 @@ interface CustomFilterAction {
 
 interface CharFilterReducerAction {
   type:
-    | "handleChar"
-    | "removeChar"
-    | "includeChar"
-    | "includeWeapon"
-    | "nullWeapon"
-    | "includeSet"
-    | "nullSet";
+  | "handleChar"
+  | "removeChar"
+  | "includeChar"
+  | "includeWeapon"
+  | "nullWeapon"
+  | "includeSet"
+  | "nullSet";
   char: string;
   weapon?: string;
   set?: string;
