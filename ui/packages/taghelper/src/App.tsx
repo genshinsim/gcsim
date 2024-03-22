@@ -81,12 +81,15 @@ function App({ id }: { id: string }) {
         <DBCard
           key={e.id ?? "entry-" + i}
           entry={e}
+          skipTags={-1}
           footer={
             <a
               href={"https://gcsim.app/db/" + e["_id"]}
-              className=" text-red-600 font-extrabold ml-auto mr-auto"
+              className=" ml-auto mr-auto"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Result Viewer
+              <Button className="bg-blue-600">Result Viewer</Button>
             </a>
           }
         />
@@ -111,12 +114,15 @@ function App({ id }: { id: string }) {
         {main !== null ? (
           <DBCard
             entry={main}
+            skipTags={-1}
             footer={
               <a
                 href={"https://gcsim.app/db/" + id}
-                className=" text-red-600 font-extrabold ml-auto mr-auto"
+                className=" ml-auto mr-auto"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Result Viewer
+                <Button className="bg-blue-600">Result Viewer</Button>
               </a>
             }
           />
