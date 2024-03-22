@@ -101,6 +101,10 @@ export type TagFilterState =
   | {
       state: ItemFilterState.none;
       tag: string;
+    }
+  | {
+      state: ItemFilterState.exclude;
+      tag: string;
     };
 
 export const FilterDispatchContext = createContext<
@@ -293,6 +297,9 @@ export function filterReducer(
           newFilterState = ItemFilterState.include;
           break;
         case ItemFilterState.include:
+          newFilterState = ItemFilterState.exclude;
+          break;
+        case ItemFilterState.exclude:
           newFilterState = ItemFilterState.none;
           break;
       }

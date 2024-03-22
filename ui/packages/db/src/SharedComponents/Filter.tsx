@@ -149,11 +149,18 @@ function TagFilterButton({ tag, name }: { tag; name: string }) {
       tag: tag,
     });
   };
-
-  const intent =
-    filter.tagFilter[tag].state === ItemFilterState.include
-      ? Intent.SUCCESS
-      : Intent.NONE;
+  let intent;
+  switch (filter.tagFilter[tag].state) {
+    case ItemFilterState.include:
+      intent = Intent.SUCCESS;
+      break;
+    case ItemFilterState.exclude:
+      intent = Intent.DANGER;
+      break;
+    default:
+      intent = Intent.NONE;
+      break;
+  }
 
   return (
     <Button intent={intent} onClick={handleClick}>
