@@ -39,7 +39,7 @@ export const DBCard = ({ entry, footer }: DBCardProps) => {
       <CardContent className="p-3 flex flex-col gap-y-2">
         <div className="flex flex-row flex-wrap gap-2 place-content-center">
           <Card className="flex flex-col bg-slate-800 border-0 pt-1 min-[420px]:basis-0">
-            <AvatarCard chars={team} className="min-[420px]:w-[420px] flex-1" />
+            <AvatarCard chars={team} className="min-[420px]:w-[420px]" />
             <div className="flex flex-row flex-wrap gap-1 p-2 max-w-full justify-center">
               <CardBadge
                 title="mode"
