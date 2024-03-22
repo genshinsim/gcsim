@@ -6,12 +6,13 @@ import { CardBadge } from "../CardBadge/CardBadge";
 
 type DBCardProps = {
   entry: db.IEntry;
+  skipTags?: number | number[];
 
   //optional send to simulator
   footer?: JSX.Element;
 };
 
-export const DBCard = ({ entry, footer }: DBCardProps) => {
+export const DBCard = ({ entry, footer, skipTags = 1 }: DBCardProps) => {
   const team: (model.ICharacter | null)[] = entry.summary?.team ?? [];
   if (team.length < 4) {
     const diff = 4 - team.length;
@@ -24,7 +25,13 @@ export const DBCard = ({ entry, footer }: DBCardProps) => {
     date = new Date((entry.create_date as number) * 1000).toLocaleDateString();
   }
   const tags = entry.accepted_tags
-    ?.filter((tag) => tag !== 1)
+    ?.filter((tag) => {
+      if (Array.isArray(skipTags)) {
+        return !skipTags.includes(tag);
+      } else {
+        return tag !== skipTags;
+      }
+    })
     .map((tag) => (
       <CardBadge
         key={tag}
