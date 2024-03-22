@@ -26,8 +26,7 @@ export const initialCharFilter = charNames.reduce((acc, charName) => {
 }, {} as CharFilter);
 
 export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
-  // Guide tag is 9
-  acc[tag] = tag === "9" ? { state: ItemFilterState.exclude, tag } : { state: ItemFilterState.none, tag };
+  acc[tag] = tagData[tag].default_exclude ? { state: ItemFilterState.exclude, tag } : { state: ItemFilterState.none, tag };
   return acc;
 }, {} as TagFilter);
 

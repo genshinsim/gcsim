@@ -27,6 +27,7 @@
     },
     "9": {
         "display_name": "Guides",
-        "blurb": "Collection of simulations used by various guide writers for KQM, etc..."
+        "blurb": "Collection of simulations used by various guide writers for KQM, etc...",
+        "default_exclude": true
     }
 }
