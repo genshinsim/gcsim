@@ -30,6 +30,7 @@
     "build:embed": "yarn workspace @gcsim/embed build",
     "build:db": "yarn workspace @gcsim/db build",
     "build:docs": "yarn workspace @gcsim/docs build",
+    "build:taghelper": "yarn workspace @gcsim/taghelper build",
     "deploy:workers": "yarn workspace @gcsim/workers deploy",
     "start:workers": "yarn workspace @gcsim/workers start",
     "gen": "yarn workspace @gcsim/types gen:ts",
