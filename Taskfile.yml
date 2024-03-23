@@ -12,7 +12,12 @@ tasks:
       - go run scripts/bsontags/main.go -dir ./pkg/model -verbose
       - go run scripts/bsontags/main.go -dir ./backend/pkg/services/db -verbose
       - go run scripts/bsontags/main.go -dir ./backend/pkg/services/share -verbose
+      - task: msgp
       - task: protos-to-ts
+  msgp:
+    dir: ./pkg/stats
+    cmds:
+      - go generate
   protos-to-ts:
     dir: ./ui
     cmds:

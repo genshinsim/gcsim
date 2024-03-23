@@ -25,7 +25,7 @@ export const Home = () => {
                     Simpact is a database of gcsim simulations submitted and maintained by gcsim users.
                 </p>
                 <p className="m-2">
-                    The database consists of various tags, each tag representing a collection of sims. These collections are maintained by volunteers and each collection follow their own rules.
+                    The database consists of various tags, each tag representing a collection of sims. These collections are maintained by volunteers and each collection follows their own rules.
                 </p>
                 <p className="m-2">Below are the current available tags:</p>
                 <ul className="list-disc m-4 ml-8">

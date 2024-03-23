@@ -164,6 +164,7 @@ func (s *Server) routes() {
 
 		r.Route("/db", func(r chi.Router) {
 			r.Get("/", s.getDB())
+			r.Get("/id/{id}", s.getByID())
 		})
 	})
 }
