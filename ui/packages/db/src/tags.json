@@ -5,7 +5,7 @@
     "1": {
         "display_name": "gcsim",
         "blurb": "The default unnamed tag contains hundreds of interesting sims meant as examples for users to search for a team and have something to work with. There's no requirement to follow any sort of standardization, and the level of optimization or reasonable application to in-game can vary wildly."
-    }
+    },
     "2": {
         "display_name": "Internal Test"
     },
