@@ -164,6 +164,8 @@ func NewSubstatOptimizerDetails(
 	// Used to try to back out artifact main stats for limits
 	// TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
 	// Most people will have 1 5* artifact which messes things up
+	s.mainstatValues[attributes.HP] = 4780
+	s.mainstatValues[attributes.ATK] = 311
 	s.mainstatValues[attributes.ATKP] = 0.466
 	s.mainstatValues[attributes.CR] = 0.311
 	s.mainstatValues[attributes.CD] = 0.622
@@ -253,7 +255,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() {
 
 			found := false
 			// there can be at most 3 main stats of the same stat
-			for main5 := 0; !found && main5 < 3; main5++ {
+			for main5 := 0; !found && main5 <= 3; main5++ {
 				for main4 := 0; !found && main4 < 3-main4; main4++ {
 					if stats.isMainStatInTolerance(i, idxStat, main5, main4) {
 						// Currently the max limit per substat is not adjusted for 4* mains
