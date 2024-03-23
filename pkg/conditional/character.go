@@ -41,6 +41,12 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		return char.Energy, nil
 	case "energymax":
 		return char.EnergyMax, nil
+	case "hp":
+		return char.CurrentHP(), nil
+	case "hpmax":
+		return char.MaxHP(), nil
+	case "hpratio":
+		return char.CurrentHPRatio(), nil
 	case "normal":
 		return char.NextNormalCounter(), nil
 	case "onfield":
