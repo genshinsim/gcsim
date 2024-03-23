@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { GraphAxisBottom, GraphAxisLeft, GraphGridRows, NoData } from "../../Util";
 import { RenderTooltip, TooltipData, useTooltipHandles } from "./Tooltip";
 import { VerticalLine } from "./VerticalLine";
-import { specialLocales } from "@ui/Translation/i18n";
+import { specialLocales } from "@ui/i18n";
 
 type Props = {
   width: number;

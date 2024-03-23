@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useTooltip } from "@visx/tooltip";
 import { HoverLine, RenderTooltip, TooltipData, useTooltipHandles } from "./CumulativeTooltip";
 import { useData } from "./CumulativeData";
-import { specialLocales } from "@ui/Translation/i18n";
+import { specialLocales } from "@ui/i18n";
 
 const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
 

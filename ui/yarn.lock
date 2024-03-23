@@ -4598,6 +4598,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@gcsim/localization@workspace:packages/localization":
+  version: 0.0.0-use.local
+  resolution: "@gcsim/localization@workspace:packages/localization"
+  languageName: unknown
+  linkType: soft
+
 "@gcsim/storybook@workspace:packages/storybook":
   version: 0.0.0-use.local
   resolution: "@gcsim/storybook@workspace:packages/storybook"

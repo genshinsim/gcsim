@@ -21,7 +21,7 @@ import {
   useTooltipHandles,
 } from "./CumulativeDamageTooltip";
 import { LegendGlyph } from ".";
-import { specialLocales } from "@ui/Translation/i18n";
+import { specialLocales } from "@ui/i18n";
 
 const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
 

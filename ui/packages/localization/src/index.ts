@@ -1,7 +1,4 @@
-import i18n from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 import { merge } from "lodash-es";
-import { initReactI18next } from "react-i18next";
 import Chinese from "./locales/Chinese.json";
 import English from "./locales/English.json";
 import German from "./locales/German.json";
@@ -12,7 +9,7 @@ import traveler_names from "./locales/names.traveler.json";
 import Russian from "./locales/Russian.json";
 import Spanish from "./locales/Spanish.json";
 
-const resources = {
+export const resources = {
   en: {
     translation: English,
     game: merge(names.English, traveler_names.English),
@@ -42,19 +39,3 @@ const resources = {
     game: merge(names.German, traveler_names.German),
   },
 };
-
-// used in result tab for graph y axis text direction/offset handling
-export const specialLocales = ["zh", "ja", "ko"];
-
-i18n
-  .use(initReactI18next)
-  .use(LanguageDetector)
-  .init({
-    resources,
-    defaultNS: "translation",
-    fallbackLng: "en",
-    debug: false,
-    interpolation: {
-      escapeValue: false,
-    },
-  });
