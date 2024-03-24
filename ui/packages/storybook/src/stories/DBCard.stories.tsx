@@ -66,6 +66,18 @@ export const PrimaryMobile: Story = {
   },
 };
 
+export const BGOverride: Story = {
+  args: {
+    className: "bg-orange-600",
+    entry: dbEntries.data[0],
+    footer: (
+      <a href="#">
+        <Button className="bg-blue-700 opacity-90">Show Results Page</Button>
+      </a>
+    ),
+  },
+};
+
 const longDesc = _.merge(_.cloneDeep(dbEntries.data[0]), {
   description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ullamcorper eu felis vitae suscipit. Sed suscipit commodo lectus at rutrum. Integer dictum laoreet augue a tincidunt. Praesent rutrum nunc non sodales vulputate. Nunc eget purus tincidunt, euismod ligula nec, feugiat diam. Sed lobortis scelerisque nulla, at ultrices diam viverra quis. Pellentesque leo justo, venenatis id dapibus sit amet, mollis quis sem. Proin leo nunc, commodo a tempus non, vehicula id felis. Donec accumsan non odio at laoreet.
 
