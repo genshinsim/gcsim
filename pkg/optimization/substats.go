@@ -225,6 +225,8 @@ func (stats *SubstatOptimizerDetails) isMainStatInTolerance(idxChar, idxStat, fi
 	return lower < val && val < upper
 }
 
+var possible_mainstat_count = [][]int{{1, 0}, {0, 1}, {2, 0}, {1, 2}, {0, 2}, {3, 0}, {2, 1}, {1, 2}, {0, 3}}
+
 // Obtain substat count limits based on main stats and also determine 4* set status
 // TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
 // Most people will have 1 5* artifact which messes things up
@@ -254,15 +256,14 @@ func (stats *SubstatOptimizerDetails) setStatLimits() {
 			}
 
 			found := false
-			// there can be at most 3 main stats of the same stat
-			for main5 := 0; !found && main5 <= 3; main5++ {
-				for main4 := 0; !found && main4 < 3-main4; main4++ {
-					if stats.isMainStatInTolerance(i, idxStat, main5, main4) {
-						// Currently the max limit per substat is not adjusted for 4* mains
-						stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * (main5 + main4))
-						fourStarMainsCount += main4
-						found = true
-					}
+			for _, count := range possible_mainstat_count {
+				main4 := count[0]
+				main5 := count[1]
+				if stats.isMainStatInTolerance(i, idxStat, main5, main4) {
+					// Currently the max limit per substat is not adjusted for 4* mains
+					stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * (main5 + main4))
+					fourStarMainsCount += main4
+					found = true
 				}
 			}
 			if !found {
