@@ -26,7 +26,7 @@ export const Home = () => {
   return (
     <div className="ml-2 mr-2 mt-2">
       <div className="text-center text-lg font-semibold text-indigo-600">
-        {t<string>("db.home_welcome")}{" "}
+        {t<string>("db.home.welcome")}{" "}
       </div>
       <div className="mb-4">
         <p className="m-2">{t<string>("db.home.simpact_desc")}</p>

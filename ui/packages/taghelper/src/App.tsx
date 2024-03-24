@@ -79,28 +79,6 @@ function App({ id }: { id: string }) {
     return <div className="text-gray-200">Loading, please wait...</div>;
   }
 
-  const rows = data
-    .filter((e) => e["_id"] !== id)
-    .map((e, i) => {
-      return (
-        <DBCard
-          key={e.id ?? "entry-" + i}
-          entry={e}
-          skipTags={-1}
-          footer={
-            <a
-              href={"https://gcsim.app/db/" + e["_id"]}
-              className=" ml-auto mr-auto"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button className="bg-blue-600">Result Viewer</Button>
-            </a>
-          }
-        />
-      );
-    });
-
   const copy = (cmd: string) => {
     const s = `/${cmd} id:${id}`;
     navigator.clipboard.writeText(s).then(() => {
@@ -111,6 +89,50 @@ function App({ id }: { id: string }) {
       });
     });
   };
+
+  const copyReplace = (from: string) => {
+    const s = `/replace id:${from} link:${main.share_key}`;
+    console.log("copying command: ", s);
+    navigator.clipboard.writeText(s).then(() => {
+      console.log("copy ok");
+      toast({
+        title: "Copied to clipboard",
+        description: `Copied replace command ${s} to clipboard`,
+      });
+    });
+  };
+
+  const rows = data
+    .filter((e) => e["_id"] !== id)
+    .map((e, i) => {
+      return (
+        <DBCard
+          key={"entry-" + i}
+          entry={e}
+          skipTags={-1}
+          footer={
+            <>
+              <Button
+                className="bg-yellow-600 ml-auto mr-2"
+                onClick={() => {
+                  copyReplace(e["_id"]);
+                }}
+              >
+                Replace This
+              </Button>
+              <a
+                href={"https://gcsim.app/db/" + e["_id"]}
+                className="mr-2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button className="bg-blue-600">Result Viewer</Button>
+              </a>
+            </>
+          }
+        />
+      );
+    });
 
   return (
     <div className="flex flex-col place-items-center m-4">
