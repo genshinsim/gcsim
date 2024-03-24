@@ -111,9 +111,9 @@ function App({ id }: { id: string }) {
           entry={e}
           skipTags={-1}
           footer={
-            <>
+            <div className="flex flex-row flex-wrap place-content-end mr-2 gap-4">
               <Button
-                className="bg-yellow-600 ml-auto mr-2"
+                className="bg-yellow-600"
                 onClick={() => {
                   copyReplace(e["_id"]);
                 }}
@@ -122,13 +122,12 @@ function App({ id }: { id: string }) {
               </Button>
               <a
                 href={"https://gcsim.app/db/" + e["_id"]}
-                className="mr-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Button className="bg-blue-600">Result Viewer</Button>
               </a>
-            </>
+            </div>
           }
         />
       );
@@ -150,7 +149,10 @@ function App({ id }: { id: string }) {
                 <Button className=" bg-red-600" onClick={() => copy("reject")}>
                   Copy Reject
                 </Button>
-                <Button className="bg-blue-600" onClick={() => copy("approve")}>
+                <Button
+                  className="bg-green-600"
+                  onClick={() => copy("approve")}
+                >
                   Copy Approve
                 </Button>
                 <a
