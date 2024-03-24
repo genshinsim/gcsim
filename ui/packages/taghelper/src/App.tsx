@@ -107,6 +107,7 @@ function App({ id }: { id: string }) {
     .map((e, i) => {
       return (
         <DBCard
+          className="border-0"
           key={"entry-" + i}
           entry={e}
           skipTags={-1}
@@ -141,7 +142,7 @@ function App({ id }: { id: string }) {
         </span>
         {main !== null ? (
           <DBCard
-            className="bg-stone-800"
+            className="bg-stone-800 border-0"
             entry={main}
             skipTags={-1}
             footer={
