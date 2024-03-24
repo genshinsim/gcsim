@@ -1,5 +1,10 @@
-import { Button, DBCard, Toaster, useToast } from "@gcsim/components";
-import { Card } from "@gcsim/components/src/common/ui/card";
+import {
+  Button,
+  DBCard,
+  Separator,
+  Toaster,
+  useToast,
+} from "@gcsim/components";
 import "@gcsim/components/src/index.css";
 import { db } from "@gcsim/types";
 import axios from "axios";
@@ -109,37 +114,43 @@ function App({ id }: { id: string }) {
 
   return (
     <div className="flex flex-col place-items-center m-4">
-      <Card className="m-2 bg-green-900 text-white p-2 w-full flex flex-col place-items-center">
-        Showing entries with the same team for id: {id}
+      <div className="m-2 text-white p-2 w-full flex flex-col place-items-center">
+        <span className="text-lg font-semibold">
+          Showing entries with the same team for id: {id}
+        </span>
         {main !== null ? (
           <DBCard
+            className="bg-stone-800"
             entry={main}
             skipTags={-1}
             footer={
-              <a
-                href={"https://gcsim.app/db/" + id}
-                className=" ml-auto mr-auto"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="bg-blue-600">Result Viewer</Button>
-              </a>
+              <div className="flex flex-row flex-wrap place-content-end mr-2 gap-4">
+                <Button className=" bg-red-600" onClick={() => copy("reject")}>
+                  Copy Reject
+                </Button>
+                <Button className="bg-blue-600" onClick={() => copy("approve")}>
+                  Copy Approve
+                </Button>
+                <a
+                  href={"https://gcsim.app/db/" + id}
+                  className=""
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button className="bg-blue-600">Result Viewer</Button>
+                </a>
+              </div>
             }
           />
         ) : null}
-        <div className="w-full flex flex-row place-content-center">
-          <Button className=" bg-red-600" onClick={() => copy("reject")}>
-            Copy Reject
-          </Button>
-          <Button className="ml-4 bg-blue-600" onClick={() => copy("approve")}>
-            Copy Approve
-          </Button>
-        </div>
-      </Card>
-      <Card className="m-2 p-2 bg-blue-900 text-white w-full flex flex-col place-items-center">
-        <span>Existing sims with same characters</span>
+      </div>
+      <Separator />
+      <div className="m-2 p-2  text-white w-full flex flex-col place-items-center">
+        <span className="text-lg font-semibold">
+          Existing sims with same characters
+        </span>
         {rows.length > 0 ? rows : <div>Nothing found</div>}
-      </Card>
+      </div>
       <Toaster />
     </div>
   );
