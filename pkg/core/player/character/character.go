@@ -224,6 +224,9 @@ func (c *CharWrapper) setHPDebtByAmount(amt float64) {
 }
 
 func (c *CharWrapper) ModifyHPDebtByAmount(amt float64) {
+	if amt == 0 {
+		return
+	}
 	newHPDebt := c.currentHPDebt + amt
 	c.setHPDebtByAmount(newHPDebt)
 	c.events.Emit(event.OnHPDebt, c.Index, amt)
