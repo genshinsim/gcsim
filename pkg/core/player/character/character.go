@@ -230,8 +230,8 @@ func (c *CharWrapper) ModifyHPDebtByAmount(amt float64) {
 }
 
 func (c *CharWrapper) ModifyHPDebtByRatio(r float64) {
-	newHPDebt := c.currentHPDebt + r*c.MaxHP()
-	c.setHPDebtByAmount(newHPDebt)
+	amt := r * c.MaxHP()
+	c.ModifyHPDebtByAmount(amt)
 }
 
 func (c *CharWrapper) consCheck() {
