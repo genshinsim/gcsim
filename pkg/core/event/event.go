@@ -54,6 +54,7 @@ const (
 	OnTargetMoved      // target
 	OnCharacterHit     // nil <- this is for when the character is going to get hit but might be shielded from dmg
 	OnCharacterHurt    // amount
+	OnHPDebt           // target character, amount
 	OnHeal             // src char, target character, amount, overheal
 	OnPlayerPreHPDrain // Draininfo to modify
 	OnPlayerHPDrain    // DrainInfo
