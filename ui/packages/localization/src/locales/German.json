@@ -117,7 +117,20 @@
         "not_find": "Haben Sie nicht gefunden, wonach Sie gesucht haben? Erstellen und senden Sie Ihre eigenen Simulationen in unserem Discord.",
         "readme_header": "Bitte lesen!",
         "readme_body": "<0>Sofern nicht anders gekennzeichnet, dienen die Sims in dieser Datenbank als Beispiele für interessante, von den Benutzern eingereichte Konfigurationen.</0> <1>Seien Sie sich bewusst, dass diese Konfigurationen je nach Standard, Optimierungsgrad und angemessener Anwendbarkeit auf die Leistung im Spiel variieren werden. Sie sind eingeladen, Ihre eigenen Konfigurationen zu erstellen oder diese zu bearbeiten und auf \"{{rerun}}\" zu klicken.</1> <2>gcsim ist nicht nur dazu da, standardisierte theoretische Durchschnitts-DPS auszugeben. Es ist allein Sache der Nutzer, das einzugeben, was sie für nützlich halten. Also hören Sie auf, einfach die DPS der Konfigurationen hier blind zu vergleichen. Sie machen es falsch.</2>",
-        "readme_show": "README anzeigen"
+        "readme_show": "README anzeigen",
+        "home": {
+            "get_started": "Loslegen",
+            "welcome": "Willkommen bei Simpact",
+            "simpact_desc": "Simpact ist eine Teamdatenbank an gcsim-Simulationen („Sims“), die von gcsim-Benutzern eingereicht und gepflegt werden.",
+            "simpact_tag_desc": "Die Datenbank besteht aus diversen Tags, die aus einer Sammlung von Sims bestehen. Diese Sammlungen werden von Freiwilligen verwaltet und aktualisiert. Jede Sammlung folgt ihren eigenen Regeln.",
+            "simpact_tag_list_header": "Hier sind die aktuell verfügbaren Tags:",
+            "tag_desc_1": "Der Standard-Tag hat keinen Namen und dient als Referenzmaterial. Die hunderten interessanten Sims sind Beispiele, auf die sich Benutzer stützen können. Dieser Tag folgt keinen vorgegebenen Standardisierungen, da das Niveau an Optimierung oder vernünftigen Anwendungen im Spiel stark variiert.",
+            "tag_desc_5": "Sims von Itto, der Itto Dinge macht (wird von Tris verwaltet).",
+            "tag_desc_6": "Sims, die Verzögerungen vor Aktionen oder in den swap_delay einführen. Sie versuchen zu modellieren, was passiert, wenn Sims nicht auf die Frames genau ausgeführt werden. Das ist zum Beispiel für Reaktions-intensive Teams relevant, die zu Timing-Veränderungen besonders sensibel sind.",
+            "tag_desc_7": "Arfoire's Sammlung an Sims, die an neue Spieler angezielt ist.",
+            "tag_desc_8": "Sims, die auf Basis einer Prioritätenliste ihre Aktionen ausführen, anstatt dieselben Aktionen in einer Schleife zu wiederholen.",
+            "tag_desc_9": "Sims, die von diversen Guide-Autoren wie KQM, etc. benutzt werden."
+        }
     },
     "elements": {
         "none": "Elementlos",
