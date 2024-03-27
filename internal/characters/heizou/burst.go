@@ -123,6 +123,7 @@ func (c *char) irisDmg(t combat.Target) {
 			glog.LogCharacterEvent,
 			c.Index,
 		).Write("target", t.Key())
+		return
 	}
 
 	c.Core.QueueAttack(aiAbs, combat.NewCircleHitOnTarget(t, nil, 2.5), 0, 40) // if any of this is wrong blame Koli
