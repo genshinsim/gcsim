@@ -117,7 +117,20 @@
         "not_find": "¿No ha encontrado lo que buscaba? Cree y envíe sus propias simulaciones en nuestro Discord.",
         "readme_header": "¡Por favor lee!",
         "readme_body": "<0>A menos que se indique lo contrario, las simulaciones de esta base de datos están aquí para proporcionar ejemplos de configuraciones interesantes enviadas por los usuarios.</0> <1>Ten en cuenta que estas configuraciones variarán según los distintos estándares, niveles de optimización y aplicación razonable al rendimiento en el juego. Le animamos a que escriba sus propias configuraciones, o edite éstas y haga clic en \"{{rerun}}\".</1> <2>gcsim no existe únicamente para producir DPS teóricos medios estandarizados. Corresponde exclusivamente a los usuarios aportar lo que consideren útil. Así que deja de comparar ciegamente el DPS de las configuraciones aquí. Lo estás haciendo mal.</2>",
-        "readme_show": "Mostrar README"
+        "readme_show": "Mostrar README",
+        "home": {
+            "get_started": "Comenzar",
+            "welcome": "Bienvenido a Simpact",
+            "simpact_desc": "Simpact es una base de datos de simulaciones enviadas y mantenidas por usuarios de gcsim.",
+            "simpact_tag_desc": "La base de datos consta de varias etiquetas, cada una de las cuales representa una colección de simulaciones. Estas colecciones son mantenidas por voluntarios y cada colección sigue sus propias reglas.",
+            "simpact_tag_list_header": "A continuación figuran las etiquetas disponibles actualmente:",
+            "tag_desc_1": "La etiqueta sin nombre por defecto contiene cientas de simulaciones interesantes pensadas como ejemplos para que los usuarios busquen un equipo y tengan algo con lo que trabajar. No es necesario seguir ningún tipo de estandarización, y el nivel de optimización o aplicación razonable dentro del juego puede variar enormemente.",
+            "tag_desc_5": "Simulaciones de Itto haciendo cosas de Itto (mantenido por Tris).",
+            "tag_desc_6": "Simulaciones que utilizan muchos delays antes de ejecutar acciones, o que tienen variación en su swap_delay en lugar de ser fijo. Normalmente se trata de distribuciones aleatorias. Tratan de modelar lo que ocurre cuando las simulaciones no se ejecutan a la perfección, especialmente en el caso de equipos en los que se causan muchas reacciones y que son sensibles al timing.",
+            "tag_desc_7": "Colección de simulaciones de Arfoire dirigida a los nuevos jugadores.",
+            "tag_desc_8": "Simulaciones con todas sus acciones escritas como una lista de prioridades en lugar de repetir en bucle el mismo conjunto de acciones",
+            "tag_desc_9": "Simulaciones utilizadas por varios escritores de guías para KQM, etc."
+        }
     },
     "elements": {
         "none": "Ningún elemento",
