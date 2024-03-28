@@ -283,11 +283,74 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 			}
 			c.StatsByLabel[key] = m
 			return parseRows, nil
+		case itemIdentifier:
+			if n.Val == "random" {
+				return parseCharAddRandomStats(p)
+			}
+			fallthrough
 		default:
 			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats: %v", n.line, n)
 		}
 	}
 	return nil, errors.New("unexpected end of line while parsing character add stats")
+}
+
+func parseCharAddRandomStats(p *Parser) (parseFn, error) {
+	// xiangling add stats random rarity=5 sand=hp% goblet=pyro% circlet=cr
+
+	// note that plume/flower not specified and will be ignored
+	rs := &info.RandomSubstats{
+		Rarity: 5, // default to 5 star
+	}
+
+	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+		switch n.Typ {
+		case itemTerminateLine:
+			// check to make sure all values are valid
+			err := rs.Validate()
+			if err != nil {
+				return nil, fmt.Errorf("ln%v: %w", n.line, err)
+			}
+			c := p.chars[p.currentCharKey]
+			c.RandomSubstats = rs
+			return parseRows, nil
+		case itemIdentifier:
+			switch n.Val {
+			case "rarity":
+				x, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+				if err != nil {
+					return nil, err
+				}
+				rs.Rarity, err = itemNumberToInt(x)
+				if err != nil {
+					return nil, err
+				}
+			case "sand":
+				x, err := p.acceptSeqReturnLast(itemAssign, itemStatKey)
+				if err != nil {
+					return nil, err
+				}
+				rs.Sand = statKeys[x.Val]
+			case "goblet":
+				x, err := p.acceptSeqReturnLast(itemAssign, itemStatKey)
+				if err != nil {
+					return nil, err
+				}
+				rs.Goblet = statKeys[x.Val]
+			case "circlet":
+				x, err := p.acceptSeqReturnLast(itemAssign, itemStatKey)
+				if err != nil {
+					return nil, err
+				}
+				rs.Circlet = statKeys[x.Val]
+			default:
+				return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats random: %v", n.line, n)
+			}
+		default:
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats random: %v", n.line, n)
+		}
+	}
+	return nil, errors.New("unexpected end of line while parsing character add stats (with random subs)")
 }
 
 func (p *Parser) acceptLevelReturnBaseMax() (int, int, error) {
