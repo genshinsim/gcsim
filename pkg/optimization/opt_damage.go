@@ -5,19 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
-
-// TODO: Seems like this should be configurable
-func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char info.CharacterProfile) []attributes.Stat {
-	// Get relevant substats, and add additional ones for special characters if needed
-	relevantSubstats := []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD, attributes.EM}
-	// RIP crystallize...
-	if keys.CharKeyToEle[char.Base.Key] == attributes.Geo {
-		relevantSubstats = []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD}
-	}
-	return relevantSubstats
-}
 
 // Calculate per-character per-substat "gradients" at initial state using finite differences
 // We use ignore_burst_energy mode to remove noise from energy, and the custom damage collector
@@ -67,34 +55,62 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 		stats.charProfilesCopy[idxChar].Stats[attributes.CR] -= FavCritRateBias * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
 	}
 
-	relevantSubstats := stats.getNonErSubstatsToOptimizeForChar(char)
-
-	addlSubstats := stats.charRelevantSubstats[char.Base.Key]
-	if len(addlSubstats) > 0 {
-		relevantSubstats = append(relevantSubstats, addlSubstats...)
-	}
+	var relevantSubstats []attributes.Stat
+	relevantSubstats = append(relevantSubstats, stats.charRelevantSubstats[idxChar]...)
 
 	// start from max liquid in all relevant substats
 	for _, substat := range relevantSubstats {
 		stats.charProfilesCopy[idxChar].Stats[substat] += float64(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat]) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 		stats.charSubstatFinal[idxChar][substat] = stats.charSubstatLimits[idxChar][substat]
 	}
+
 	totalSubs := stats.getCharSubstatTotal(idxChar)
 	stats.optimizer.logger.Debug(char.Base.Key.Pretty())
+	stats.optimizer.logger.Debug(PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	for totalSubs > stats.totalLiquidSubstats {
 		amount := -1
-		if totalSubs-stats.totalLiquidSubstats >= 8 {
-			// reduce 5 at a time to quickly go from 10 liquid in an useless sub to 0 liquid
+		switch {
+		case totalSubs-stats.totalLiquidSubstats >= 15:
+			amount = -20 // will get clamped to either 10/8 depending on the substat limit
+		case totalSubs-stats.totalLiquidSubstats >= 8:
 			amount = -5
-		} else if totalSubs-stats.totalLiquidSubstats >= 4 {
+		case totalSubs-stats.totalLiquidSubstats >= 4:
 			amount = -2
 		}
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, amount)
-		allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
-		opDebug = append(opDebug, allocDebug...)
-		totalSubs = stats.getCharSubstatTotal(idxChar)
-		stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+
+		// loops multiple gradients while totalSubs-stats.totalLiquidSubstats >= 25
+		// this should be most correct because the first 5 to 6 substats have 0 effect on dps
+		for ok := true; ok; ok = totalSubs-stats.totalLiquidSubstats >= 25 {
+			allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
+			totalSubs = stats.getCharSubstatTotal(idxChar)
+			opDebug = append(opDebug, allocDebug...)
+
+			// filter out substats that are at minimum
+			newRelevantSubstats := []attributes.Stat{}
+			newSubstatGrad := []float64{}
+			removedGrad := -100000000.0
+			for idxSub, substat := range relevantSubstats {
+				if stats.charSubstatFinal[idxChar][substat] > 0 {
+					newRelevantSubstats = append(newRelevantSubstats, substat)
+					newSubstatGrad = append(newSubstatGrad, substatGradients[idxSub])
+				} else {
+					removedGrad = max(removedGrad, substatGradients[idxSub])
+				}
+			}
+			// only update the charRelevantSubstats when the gradient of the removed substats is very small
+			// this is used later in the opt_allstats
+			if stats.getCharSubstatTotal(idxChar)-stats.totalLiquidSubstats >= 15 ||
+				removedGrad >= -100 {
+				stats.charRelevantSubstats[idxChar] = nil
+				stats.charRelevantSubstats[idxChar] = append(stats.charRelevantSubstats[idxChar], newRelevantSubstats...)
+			}
+			relevantSubstats = newRelevantSubstats
+			substatGradients = newSubstatGrad
+		}
+		stats.optimizer.logger.Debug(PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	}
-	opDebug = append(opDebug, "Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+	opDebug = append(opDebug, PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+	stats.optimizer.logger.Debug(char.Base.Key, " has relevant substats:", stats.charRelevantSubstats[idxChar])
 	return opDebug
 }

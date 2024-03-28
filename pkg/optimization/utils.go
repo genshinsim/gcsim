@@ -27,9 +27,12 @@ func (s Slice) Swap(i, j int) {
 }
 
 func newSlice(n ...float64) *Slice {
+	var nDup []float64
+	nDup = append(nDup, n...)
+
 	s := &Slice{
-		slice: sort.Float64Slice(n),
-		idx:   make([]int, len(n)),
+		slice: sort.Float64Slice(nDup),
+		idx:   make([]int, len(nDup)),
 	}
 	for i := range s.idx {
 		s.idx[i] = i

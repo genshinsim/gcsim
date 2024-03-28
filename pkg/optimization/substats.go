@@ -175,26 +175,6 @@ func NewSubstatOptimizerDetails(
 	s.mainstatValues[attributes.HPP] = 0.466
 	s.mainstatValues[attributes.DEFP] = 0.583
 
-	// Only includes damage related substats scaling. Ignores things like HP for Barbara
-	s.charRelevantSubstats = map[keys.Char][]attributes.Stat{
-		keys.Albedo:      {attributes.DEFP},
-		keys.Hutao:       {attributes.HPP},
-		keys.Kokomi:      {attributes.HPP},
-		keys.Zhongli:     {attributes.HPP},
-		keys.Itto:        {attributes.DEFP},
-		keys.Yunjin:      {attributes.DEFP},
-		keys.Noelle:      {attributes.DEFP},
-		keys.Gorou:       {attributes.DEFP},
-		keys.Yelan:       {attributes.HPP},
-		keys.Candace:     {attributes.HPP},
-		keys.Nilou:       {attributes.HPP},
-		keys.Layla:       {attributes.HPP},
-		keys.Neuvillette: {attributes.HPP},
-		keys.Furina:      {attributes.HPP},
-		keys.Chevreuse:   {attributes.HPP},
-		keys.Chiori:      {attributes.DEFP},
-	}
-
 	// Final output array that holds [character][substat_count]
 	s.charSubstatFinal = make([][]int, len(simcfg.Characters))
 	for i := range simcfg.Characters {
@@ -212,6 +192,22 @@ func NewSubstatOptimizerDetails(
 	s.charProfilesCopy = make([]info.CharacterProfile, len(simcfg.Characters))
 	s.gcsl = gcsl
 
+	s.charRelevantSubstats = make([][]attributes.Stat, len(simcfg.Characters))
+	for i := range simcfg.Characters {
+		// ER is omitted because there is a dedicated ER step.
+		s.charRelevantSubstats[i] = []attributes.Stat{
+			attributes.HPP,
+			attributes.HP,
+			attributes.DEFP,
+			attributes.DEF,
+			attributes.ATKP,
+			attributes.ATK,
+			attributes.CR,
+			attributes.CD,
+			attributes.EM,
+		}
+	}
+
 	return &s
 }
 
@@ -224,7 +220,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() bool {
 
 	for i := range stats.simcfg.Characters {
 		stats.charSubstatLimits[i] = make([]int, attributes.EndStatType)
-		for idxStat, stat := range stats.mainstatValues {
+		for idxStat, stat := range stats.substatValues {
 			if stat == 0 {
 				continue
 			}
@@ -253,6 +249,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() bool {
 // Helper function to pretty print substat counts. Stolen from similar function that takes in the float array
 func PrettyPrintStatsCounts(statsCounts []int) string {
 	var sb strings.Builder
+	sb.WriteString("Liquid Substat Counts: ")
 	for i, v := range statsCounts {
 		if v > 0 {
 			sb.WriteString(attributes.StatTypeString[i])
