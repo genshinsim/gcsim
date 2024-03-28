@@ -173,6 +173,14 @@ func NewSubstatOptimizerDetails(
 	s.mainstatValues[attributes.ER] = 0.518
 	s.mainstatValues[attributes.HPP] = 0.466
 	s.mainstatValues[attributes.DEFP] = 0.583
+	s.mainstatValues[attributes.PyroP] = 0.466
+	s.mainstatValues[attributes.HydroP] = 0.466
+	s.mainstatValues[attributes.CryoP] = 0.466
+	s.mainstatValues[attributes.ElectroP] = 0.466
+	s.mainstatValues[attributes.AnemoP] = 0.466
+	s.mainstatValues[attributes.GeoP] = 0.466
+	s.mainstatValues[attributes.DendroP] = 0.466
+	s.mainstatValues[attributes.PhyP] = 0.583
 
 	s.mainstatTol = 0.005
 	s.fourstarMod = 0.746514762 // The average coefficient to convert 5* main stats to 4* main stats
