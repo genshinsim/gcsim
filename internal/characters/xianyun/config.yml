@@ -1,6 +1,15 @@
 package_name: xianyun
 genshin_id: 10000093
 key: xianyun
+action_param_keys:
+  attack:
+    - param: "travel"
+  charge:
+    - param: "travel"
+  low_plunge:
+    - param: "collision"
+  high_plunge:
+    - param: "collision"
 skill_data_mapping:
   attack:
     attack_1:
@@ -39,3 +48,8 @@ skill_data_mapping:
       - 2 # Healing|{param3:F1P} ATK+{param2:I}
     healInstantP:
       - 3 # Healing|{param3:F1P} ATK+{param2:I}
+
+documentation:
+  fields_data:
+    - fields: [.xianyun.adeptal-assistance]
+      desc: Number of Adeptal Assistance stacks.

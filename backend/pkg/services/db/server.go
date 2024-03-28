@@ -3,11 +3,14 @@ package db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/genshinsim/gcsim/pkg/model"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 )
 
 type Store interface {
@@ -93,12 +96,24 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	}
 	s.Log.Info("db server started")
 
+	go func() {
+		for {
+			err := s.cleanup()
+			if err != nil {
+				s.Log.Warnw("clean up failed", "err", err)
+			}
+			timer := time.NewTimer(24 * time.Hour)
+			<-timer.C
+		}
+	}()
+
 	return s, nil
 }
 
 const (
 	TopicReplace                 string = "db/entry/replace"
 	TopicReplaceDesc             string = "db/entry/replace"
+	TopicSubmissionTooOld        string = "db/submission/purge"
 	TopicSubmissionDelete        string = "db/submission/delete"
 	TopicComputeCompleted        string = "db/compute/complete"
 	TopicSubmissionComputeFailed string = "db/compute/submission/failed"
@@ -119,4 +134,37 @@ func (s *Server) notify(topic string, msg protoreflect.ProtoMessage) {
 	if err != nil {
 		s.Log.Warnw("notify failed with err", "err", err)
 	}
+}
+
+func (s *Server) cleanup() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+	var err error
+	opt := &QueryOpt{}
+	sort := bson.M{
+		"create_date": -1,
+	}
+	opt.Sort, err = structpb.NewStruct(sort)
+	if err != nil {
+		s.Log.Infow("error generating sort options", "err", err)
+		return err
+	}
+	entries, err := s.GetAll(ctx, &GetAllRequest{
+		Query: opt,
+	})
+	if err != nil {
+		return err
+	}
+	now := time.Now()
+	for _, v := range entries.GetData().Data {
+		if v.IsDbValid {
+			continue
+		}
+		created := time.Unix(int64(v.CreateDate), 0)
+		if now.Sub(created) > 60*24*time.Hour {
+			// should delete this!
+			s.notify(TopicSubmissionTooOld, v)
+		}
+	}
+	return nil
 }

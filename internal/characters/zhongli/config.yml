@@ -1,6 +1,10 @@
 package_name: zhongli
 genshin_id: 10000030
 key: zhongli
+action_param_keys:
+    skill:
+        - param: "hold"
+        - param: "hold_nostele"
 shortcuts:
     - zl
     - geoarchon
@@ -35,3 +39,7 @@ skill_data_mapping:
     burst:
         burst:
             - 0 # Skill DMG|{param0:P}
+documentation:
+    fields_data:
+        - fields: [.zhongli.shielded]
+          desc: Evaluates to 1 if player is currently shielded

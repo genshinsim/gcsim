@@ -1,6 +1,9 @@
 package_name: chevreuse
 genshin_id: 10000090
 key: chevreuse
+action_param_keys:
+  skill: 
+    - param: "hold"
 icd_groups:
   - group_name: ICDGroupChevreuseBurstMines
     reset_timer: 300
@@ -37,3 +40,8 @@ skill_data_mapping:
       - 0 # Explosive Grenade DMG|{param0:F1P}
     burstSecondary:
       - 1 # Secondary Explosive Shell DMG|{param1:F1P}
+
+documentation:
+  fields_data:
+    - fields: [.chevreuse.overcharged-ball]
+      desc: Whether Chevreuse has an Overcharged Ball or not.

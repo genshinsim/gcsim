@@ -1,10 +1,10 @@
 import { Router } from "itty-router";
 import { handleAssets } from "./assets";
+import { handleEnka } from "./enka";
 import { handleInjectHead, handleInjectHeadDB, handlePreview } from "./preview";
 import { proxyRequest } from "./proxy";
 import { handleLegacy, handleShare, handleView } from "./share";
 import { handleWasm } from "./wasm";
-import { handleEnka } from "./enka";
 
 const router = Router();
 
@@ -16,6 +16,7 @@ router.get("/api/db/compute/work", proxyRequest);
 router.post("/api/db/compute/work", proxyRequest);
 router.post("/api/db/submit", proxyRequest);
 router.get("/api/db", proxyRequest);
+router.get("/api/db/*", proxyRequest);
 // viewer files
 router.post("/api/share", handleShare);
 router.get("/api/share/:key", handleView);
@@ -25,7 +26,7 @@ router.get("/api/preview/:key", handlePreview);
 router.get("/api/preview/db/:key", handlePreview);
 
 //enka
-router.get('/api/enka/:key', handleEnka);
+router.get("/api/enka/:key", handleEnka);
 
 // rewrite doc head
 router.get("/sh/:key", handleInjectHead);

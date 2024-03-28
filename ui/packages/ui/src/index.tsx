@@ -1,32 +1,49 @@
+import {
+  Classes,
+  Dialog,
+  HotkeysProvider,
+  Switch as SwitchInput,
+} from "@blueprintjs/core";
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { ReactNode, useEffect, useRef } from "react";
-import { BrowserRouter, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { Classes, Dialog, HotkeysProvider, Switch as SwitchInput } from "@blueprintjs/core";
-import { Provider } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { RootState, store, useAppDispatch, useAppSelector } from "./Stores/store";
-import { appActions } from "./Stores/appSlice";
-import { Footer, Nav } from "./Sectioning";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
+import { Provider } from "react-redux";
 import {
-  Simulator,
-  PageUserAccount,
-  DiscordCallback,
-  WebViewer,
-  LocalViewer,
-  ShareViewer,
-  LocalSample,
-  UploadSample,
-  DBViewer,
+  BrowserRouter,
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
+import "./i18n";
+import {
   Dash,
+  DBViewer,
+  DiscordCallback,
+  LocalSample,
+  LocalViewer,
+  PageUserAccount,
+  ShareViewer,
+  Simulator,
+  UploadSample,
+  WebViewer,
 } from "./Pages";
-import "./Translation/i18n";
+import { Footer, Nav } from "./Sectioning";
+import { appActions } from "./Stores/appSlice";
+import {
+  RootState,
+  store,
+  useAppDispatch,
+  useAppSelector,
+} from "./Stores/store";
 
 // all the css styling we need (except tailwind)
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
-import "@blueprintjs/select/lib/css/blueprint-select.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
+import "@blueprintjs/select/lib/css/blueprint-select.css";
 import "./index.css";
 
 // Two things must always be supplied to the UI for it to work
@@ -78,44 +95,42 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
   const { isOpen, sampleOnLoad } = useAppSelector((state: RootState) => {
     return {
       isOpen: state.app.isSettingsOpen,
-      sampleOnLoad: state.app.sampleOnLoad
+      sampleOnLoad: state.app.sampleOnLoad,
     };
   });
 
   return (
     <Dialog
-        isOpen={isOpen}
-        onClose={() => dispatch(appActions.setSettingsOpen(false))}
-        title={t<string>("simple.settings")}
-        icon="settings"
-        className="!pb-0">
+      isOpen={isOpen}
+      onClose={() => dispatch(appActions.setSettingsOpen(false))}
+      title={t<string>("simple.settings")}
+      icon="settings"
+      className="!pb-0"
+    >
       <div className={Classes.DIALOG_BODY}>
         <>
           {children}
           <SwitchInput
-              checked={sampleOnLoad}
-              onChange={() => dispatch(appActions.setSampleOnLoad(!sampleOnLoad))}
-              className="pt-5"
-              labelElement={t<string>("simple.generate_sample")} />
+            checked={sampleOnLoad}
+            onChange={() => dispatch(appActions.setSampleOnLoad(!sampleOnLoad))}
+            className="pt-5"
+            labelElement={t<string>("simple.generate_sample")}
+          />
         </>
       </div>
     </Dialog>
   );
 };
 
-const viewerPaths = [
-  "/web",
-  "/local",
-  "/sh/",
-  "/db/"
-];
+const viewerPaths = ["/web", "/local", "/sh/", "/db/"];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function movedOffViewer(location: any, prevLocation: any): boolean {
   let prevWasViewer = false;
   let destIsViewer = false;
   for (let i = 0; i < viewerPaths.length; i++) {
-    prevWasViewer = prevWasViewer || prevLocation.current.pathname.startsWith(viewerPaths[i]);
+    prevWasViewer =
+      prevWasViewer || prevLocation.current.pathname.startsWith(viewerPaths[i]);
     destIsViewer = destIsViewer || location.pathname.startsWith(viewerPaths[i]);
   }
   return prevWasViewer && !destIsViewer;
@@ -141,9 +156,10 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
   const prevLocation = useRef(location);
   useEffect(() => {
     if (
-        prevLocation.current != location
-        && movedOffViewer(location, prevLocation)
-        && exec().running()) {
+      prevLocation.current != location &&
+      movedOffViewer(location, prevLocation) &&
+      exec().running()
+    ) {
       exec().cancel();
     }
     prevLocation.current = location;
@@ -152,27 +168,37 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
   return (
     <div className="bp4-dark h-screen flex flex-col">
       <Nav />
-      <div ref={content} className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
+      <div
+        ref={content}
+        className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip"
+      >
         <Switch>
           <Route exact path="/">
-            <Helmet><title>gcsim - simulation impact</title></Helmet>
+            <Helmet>
+              <title>gcsim - simulation impact</title>
+            </Helmet>
             <Dash />
           </Route>
 
           {/* Simulator */}
           <Route exact path="/simulator">
-            <Helmet><title>gcsim - simulator</title></Helmet>
+            <Helmet>
+              <title>gcsim - simulator</title>
+            </Helmet>
             <Simulator exec={exec} />
           </Route>
 
-          
           {/* Viewer Routes */}
           <Route path="/web">
-            <Helmet><title>gcsim - viewer</title></Helmet>
+            <Helmet>
+              <title>gcsim - viewer</title>
+            </Helmet>
             <WebViewer exec={exec} gitCommit={gitCommit} mode={mode} />
           </Route>
           <Route path="/local">
-            <Helmet><title>gcsim - local viewer</title></Helmet>
+            <Helmet>
+              <title>gcsim - local viewer</title>
+            </Helmet>
             <LocalViewer exec={exec} gitCommit={gitCommit} mode={mode} />
           </Route>
           <Route path="/sh/:id">
@@ -180,10 +206,11 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
               document.title = "gcsim sh - " + match?.params.id;
               return (
                 <ShareViewer
-                    exec={exec}
-                    id={match?.params.id}
-                    gitCommit={gitCommit}
-                    mode={mode} />
+                  exec={exec}
+                  id={match?.params.id}
+                  gitCommit={gitCommit}
+                  mode={mode}
+                />
               );
             }}
           </Route>
@@ -192,21 +219,26 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
               document.title = "gcsim db - " + match?.params.id;
               return (
                 <DBViewer
-                    exec={exec}
-                    id={match?.params.id}
-                    gitCommit={gitCommit}
-                    mode={mode} />
+                  exec={exec}
+                  id={match?.params.id}
+                  gitCommit={gitCommit}
+                  mode={mode}
+                />
               );
             }}
           </Route>
 
           {/* Sample Routes */}
           <Route path="/sample/upload">
-            <Helmet><title>gcsim - sample</title></Helmet>
+            <Helmet>
+              <title>gcsim - sample</title>
+            </Helmet>
             <UploadSample />
           </Route>
           <Route path="/sample/local">
-            <Helmet><title>gcsim - local sample</title></Helmet>
+            <Helmet>
+              <title>gcsim - local sample</title>
+            </Helmet>
             <LocalSample />
           </Route>
 
@@ -229,7 +261,9 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
             <RedirectDB />
           </Route>
           <Route path="/account">
-            <Helmet><title>gcsim - account</title></Helmet>
+            <Helmet>
+              <title>gcsim - account</title>
+            </Helmet>
             <PageUserAccount />
           </Route>
           <Route path="/auth/discord">
@@ -238,16 +272,16 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 
           {/* Default (404 case) */}
           <Route>
-            <Helmet><title>gcsim - simulation impact</title></Helmet>
+            <Helmet>
+              <title>gcsim - simulation impact</title>
+            </Helmet>
             <div className="m-2 text-center">
               {t<string>("src.this_page_is")}
             </div>
           </Route>
         </Switch>
         <Footer />
-        <ExecutorSettings>
-          {children}
-        </ExecutorSettings>
+        <ExecutorSettings>{children}</ExecutorSettings>
       </div>
     </div>
   );

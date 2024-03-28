@@ -1,6 +1,10 @@
 package_name: sayu
 genshin_id: 10000053
 key: sayu
+action_param_keys:
+    skill:
+        - param: "short_hold"
+        - param: "hold"
 skill_data_mapping:
     attack:
         attack_1:

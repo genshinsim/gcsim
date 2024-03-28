@@ -1,6 +1,17 @@
 package_name: ningguang
 genshin_id: 10000027
 key: ningguang
+action_param_keys:
+    attack:
+        - param: "travel"
+    charge:
+        - param: "travel"
+    skill:
+        - param: "noscreen"
+    burst:
+        - param: "travel"
+        - param: "jade"
+        - param: "screen"
 skill_data_mapping:
     attack:
         attack:
@@ -15,3 +26,10 @@ skill_data_mapping:
     burst:
         burst:
             - 0 # DMG Per Gem|{param0:F1P}
+
+documentation:
+    fields_data:
+        - fields: [.ningguang.prevAttack]
+          desc: "Returns a number representing the previous N1 version. Possible values are: 0 = Left, 1 = Right, 2 = Twirl."
+        - fields: [.ningguang.jadeCount]
+          desc: Number of Star Jades.

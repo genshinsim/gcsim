@@ -26,7 +26,7 @@ export default function Nav() {
                 src={logo}
                 className="object-scale-down max-h-[75%] m-auto mr-2"
               />
-              <span className="font-medium font-mono">gcdatabase</span>
+              <span className="font-medium font-mono">simpact</span>
             </Link>
           </Navbar.Heading>
         </Navbar.Group>

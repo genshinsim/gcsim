@@ -1,6 +1,13 @@
 package_name: navia
 genshin_id: 10000091
 key: navia
+action_param_keys:
+    skill:
+        - param: "hold"
+    low_plunge:
+        - param: "collision"
+    high_plunge:
+        - param: "collision"
 icd_groups:
   - group_name: ICDGroupNaviaBurst
     reset_timer: 720
@@ -35,3 +42,8 @@ skill_data_mapping:
     burst:
       - 0 # Skill DMG|{param0:F1P}
       - 1 # Cannon Fire Support DMG|{param1:F1P}
+
+documentation:
+  fields_data:
+    - fields: [.navia.shrapnel]
+      desc: Number of Crystal Shrapnel stacks.

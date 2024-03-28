@@ -1,6 +1,13 @@
 package_name: kirara
 genshin_id: 10000061
 key: kirara
+action_param_keys:
+    skill:
+        - param: "short_hold"
+        - param: "hold"
+    burst:
+        - param: "hits"
+        - param: "mine_delay"
 skill_data_mapping:
     attack:
         attack_1:

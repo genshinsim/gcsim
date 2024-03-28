@@ -1,6 +1,15 @@
 package_name: fischl
 genshin_id: 10000031
 key: fischl
+action_param_keys:
+    attack:
+      - param: "travel"
+    aim:
+      - param: "hold"
+      - param: "travel"
+      - param: "weakspot"
+    skill:
+      - param: "recast"
 skill_data_mapping:
   attack:
     aim:
@@ -64,3 +73,12 @@ icd_groups:
         0,
       ]
     damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+documentation:
+  fields_data:
+    - fields: [.fischl.oz]
+      desc: Whether Oz is active or not.
+    - fields: [.fischl.oz-source]
+      desc: The source frame Oz is spawned on.
+    - fields: [.fischl.oz-duration]
+      desc: Number of frames until Oz disappears if he is active, 0 otherwise.

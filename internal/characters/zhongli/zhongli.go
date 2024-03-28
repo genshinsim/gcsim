@@ -52,3 +52,12 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	}
 	return c.Character.AnimationStartDelay(k)
 }
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "shielded":
+		return c.Tags["shielded"], nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}

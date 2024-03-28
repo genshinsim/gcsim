@@ -1,6 +1,14 @@
 package_name: alhaitham
 genshin_id: 10000078
 key: alhaitham
+action_param_keys:
+  skill: 
+      - param: "hold"
+  high_plunge:
+      - param: "collision"
+  low_plunge:
+      - param: "collision"
+      - param: "short"
 icd_groups:
   - group_name: ICDGroupAlhaithamProjectionAttack
     reset_timer: 720
@@ -47,3 +55,10 @@ skill_data_mapping:
       - 0 # Single-Instance DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
     burstEm:
       - 1 # Single-Instance DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+
+documentation:
+  fields_data:
+    - fields: [.alhaitham.mirrors]
+      desc: Current number of Mirrors that Alhaitham has.
+    - fields: [.alhaitham.c2-stacks]
+      desc: Number of C2 stacks that are currently active.

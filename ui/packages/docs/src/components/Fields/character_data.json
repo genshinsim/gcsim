@@ -33,6 +33,22 @@
       "desc": "Number of C2 stacks that are currently active."
     }
   ],
+  "aloy": [
+    {
+      "fields": [
+        ".aloy.coil"
+      ],
+      "desc": "Current number of coil stacks."
+    }
+  ],
+  "chevreuse": [
+    {
+      "fields": [
+        ".chevreuse.overcharged-ball"
+      ],
+      "desc": "Whether Chevreuse has an Overcharged Ball or not."
+    }
+  ],
   "faruzan": [
     {
       "fields": [
@@ -41,12 +57,24 @@
       "desc": "Current number of Hurricane Arrows that Faruzan can fire off."
     }
   ],
-  "aloy": [
+  "fischl": [
     {
       "fields": [
-        ".aloy.coil"
+        ".fischl.oz"
       ],
-      "desc": "Current number of coil stacks."
+      "desc": "Whether Oz is active or not."
+    },
+    {
+      "fields": [
+        ".fischl.oz-source"
+      ],
+      "desc": "The source frame Oz is spawned on."
+    },
+    {
+      "fields": [
+        ".fischl.oz-duration"
+      ],
+      "desc": "Number of frames until Oz disappears if he is active, 0 otherwise."
     }
   ],
   "furina": [
@@ -69,24 +97,12 @@
       "desc": "Number of c6 effects triggered."
     }
   ],
-  "fischl": [
+  "heizou": [
     {
       "fields": [
-        ".fischl.oz"
+        ".heizou.declension"
       ],
-      "desc": "Whether Oz is active or not."
-    },
-    {
-      "fields": [
-        ".fischl.oz-source"
-      ],
-      "desc": "The source frame Oz is spawned on."
-    },
-    {
-      "fields": [
-        ".fischl.oz-duration"
-      ],
-      "desc": "Number of frames until Oz disappears if he is active, 0 otherwise."
+      "desc": "Number of Declension stacks."
     }
   ],
   "itto": [
@@ -147,60 +163,6 @@
       "desc": "Number of Prop Surplus stacks."
     }
   ],
-  "ningguang": [
-    {
-      "fields": [
-        ".ningguang.prevAttack"
-      ],
-      "desc": "Returns a number representing the previous N1 version. Possible values are: 0 = Left, 1 = Right, 2 = Twirl."
-    },
-    {
-      "fields": [
-        ".ningguang.jadeCount"
-      ],
-      "desc": "Number of Star Jades."
-    }
-  ],
-  "yanfei": [
-    {
-      "fields": [
-        ".yanfei.seal-count"
-      ],
-      "desc": "Number of Scarlet Seals."
-    }
-  ],
-  "yelan": [
-    {
-      "fields": [
-        ".yelan.breakthrough"
-      ],
-      "desc": "Whether Yelan is in the Breakthrough state or not."
-    }
-  ],
-  "wanderer": [
-    {
-      "fields": [
-        ".wanderer.skydweller-points"
-      ],
-      "desc": "Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state."
-    }
-  ],
-  "wriothesley": [
-    {
-      "fields": [
-        ".wriothesley.gracious-rebuke"
-      ],
-      "desc": "Whether Wriothesley currently has a Gracious Rebuke or not."
-    }
-  ],
-  "heizou": [
-    {
-      "fields": [
-        ".heizou.declension"
-      ],
-      "desc": "Number of Declension stacks."
-    }
-  ],
   "navia": [
     {
       "fields": [
@@ -223,12 +185,34 @@
       "desc": "Number of Sourcewater droplets in range for C6."
     }
   ],
-  "chevreuse": [
+  "ningguang": [
     {
       "fields": [
-        ".chevreuse.overcharged-ball"
+        ".ningguang.prevAttack"
       ],
-      "desc": "Whether Chevreuse has an Overcharged Ball or not."
+      "desc": "Returns a number representing the previous N1 version. Possible values are: 0 = Left, 1 = Right, 2 = Twirl."
+    },
+    {
+      "fields": [
+        ".ningguang.jadeCount"
+      ],
+      "desc": "Number of Star Jades."
+    }
+  ],
+  "wanderer": [
+    {
+      "fields": [
+        ".wanderer.skydweller-points"
+      ],
+      "desc": "Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state."
+    }
+  ],
+  "wriothesley": [
+    {
+      "fields": [
+        ".wriothesley.gracious-rebuke"
+      ],
+      "desc": "Whether Wriothesley currently has a Gracious Rebuke or not."
     }
   ],
   "xianyun": [
@@ -237,6 +221,30 @@
         ".xianyun.adeptal-assistance"
       ],
       "desc": "Number of Adeptal Assistance stacks."
+    }
+  ],
+  "yanfei": [
+    {
+      "fields": [
+        ".yanfei.seal-count"
+      ],
+      "desc": "Number of Scarlet Seals."
+    }
+  ],
+  "yelan": [
+    {
+      "fields": [
+        ".yelan.breakthrough"
+      ],
+      "desc": "Whether Yelan is in the Breakthrough state or not."
+    }
+  ],
+  "zhongli": [
+    {
+      "fields": [
+        ".zhongli.shielded"
+      ],
+      "desc": "Evaluates to 1 if player is currently shielded"
     }
   ]
 }

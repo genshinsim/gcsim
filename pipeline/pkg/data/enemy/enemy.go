@@ -57,6 +57,11 @@ func (a *DataSource) GetMonsters() []*model.MonsterData {
 			continue
 		}
 
+		// skip blank key
+		if monster.Key == "" {
+			continue
+		}
+
 		// is already added
 		if _, ok := visited[monster.Key]; ok {
 			continue

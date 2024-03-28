@@ -1,6 +1,10 @@
 package_name: yunjin
 genshin_id: 10000064
 key: yunjin
+action_param_keys:
+    skill:
+        - param: "hold"
+        - param: "perfect"
 skill_data_mapping:
     attack:
         attack_1:

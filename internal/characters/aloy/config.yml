@@ -1,6 +1,17 @@
 package_name: aloy
 genshin_id: 10000062
 key: aloy
+action_param_keys:
+    attack: 
+        - param: "travel"
+    aim:
+        - param: "hold"
+        - param: "travel"
+        - param: "weakspot"
+    skill:
+        - param: "travel"
+        - param: "bomblets"
+        - param: "bomb_delay"
 skill_data_mapping:
     attack:
         aim:
@@ -32,3 +43,8 @@ skill_data_mapping:
     burst:
         burst:
             - 0 # Skill DMG|{param0:P}
+
+documentation:
+    fields_data:
+        - fields: [.aloy.coil]
+          desc: Current number of coil stacks.
