@@ -1,6 +1,18 @@
 package_name: tighnari
 genshin_id: 10000069
 key: tighnari
+action_param_keys:
+  attack:
+    - param: "travel"
+  aim:
+    - param: "hold"
+    - param: "travel"
+    - param: "weakspot"
+    - param: "wreath"
+  skill:
+    - param: "travel"
+  burst:
+    - param: "travel"
 icd_groups:
   - group_name: ICDGroupTighnari
     reset_timer: 150

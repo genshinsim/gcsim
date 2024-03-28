@@ -1,6 +1,15 @@
 package_name: gaming
 genshin_id: 10000092
 key: gaming
+action_param_keys:
+    low_plunge:
+        - param: "collision"
+        - param: "man_chai_delay"
+    high_plunge:
+        - param: "collision"
+        - param: "man_chai_delay"
+    burst:
+        - param: "man_chai_delay"
 skill_data_mapping:
     attack:
         attack_1:

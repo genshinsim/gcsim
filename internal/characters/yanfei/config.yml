@@ -1,6 +1,13 @@
 package_name: yanfei
 genshin_id: 10000048
 key: yanfei
+action_param_keys:
+  attack:
+    - param: "travel"
+  low_plunge:
+    - param: "collision"
+  high_plunge:
+    - param: "collision"
 icd_tags:
   - ICDTagYanfeiFire
 skill_data_mapping:

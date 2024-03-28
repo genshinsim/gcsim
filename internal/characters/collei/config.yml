@@ -1,6 +1,13 @@
 package_name: collei
 genshin_id: 10000067
 key: collei
+action_param_keys:
+  attack: 
+    - param: "travel"
+  aim:
+    - param: "hold"
+    - param: "travel"
+    - param: "weakspot"
 icd_tags:
   - ICDTagColleiSprout
 icd_groups:

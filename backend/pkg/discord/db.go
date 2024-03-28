@@ -176,7 +176,7 @@ func listEmbed(entries []*db.Entry, page int) []discord.Embed {
 		if len(name) > 254 {
 			name = name[:254]
 		}
-		desc := fmt.Sprintf("<@%v>: https://gcsim.app/sh/%v", v.Submitter, v.ShareKey)
+		desc := fmt.Sprintf("<@%v>: https://taghelper.simpact.app/id/%v", v.Submitter, v.Id)
 		row.Fields = append(row.Fields, discord.EmbedField{
 			Name:  name,
 			Value: desc,

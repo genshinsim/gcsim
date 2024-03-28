@@ -1,6 +1,10 @@
 package_name: zhongli
 genshin_id: 10000030
 key: zhongli
+action_param_keys:
+    skill:
+        - param: "hold"
+        - param: "hold_nostele"
 shortcuts:
     - zl
     - geoarchon

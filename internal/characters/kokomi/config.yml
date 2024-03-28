@@ -1,6 +1,9 @@
 package_name: kokomi
 genshin_id: 10000054
 key: kokomi
+action_param_keys:
+    attack:
+        - param: "travel"
 skill_data_mapping:
     attack:
         attack_1:

@@ -1,6 +1,15 @@
 package_name: yelan
 genshin_id: 10000060
 key: yelan
+action_param_keys:
+  attack:
+    - param: "travel"
+  aim:
+    - param: "hold"
+    - param: "travel"
+    - param: "weakspot"
+  skill:
+    - param: "marked"
 icd_tags:
   - ICDTagYelanBreakthrough
   - ICDTagYelanBurst

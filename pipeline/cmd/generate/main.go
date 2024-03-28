@@ -38,7 +38,7 @@ func main() {
 	flag.StringVar(&cfg.pkgOut, "outpkg", "./pkg", "for to output generated go files to pkg")
 	flag.StringVar(&cfg.uiOut, "outui", "./ui/packages/ui/src/Data", "folder to output generated json for UI")
 	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
-	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/ui/src/Translation/locales", "folder to output generated json for DB")
+	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/localization/src/locales", "folder to output generated json for DB")
 	flag.StringVar(&cfg.icdPath, "icd", "./pkg/core/attacks", "file to store generated icd data")
 	flag.StringVar(&cfg.docRoot, "outdocs", "./ui/packages/docs/src/components", "file to store generated icd data")
 	flag.Parse()

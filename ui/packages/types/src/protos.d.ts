@@ -2313,6 +2313,204 @@ export namespace model {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a MonsterData. */
+    interface IMonsterData {
+
+        /** MonsterData id */
+        id?: (number|null);
+
+        /** MonsterData key */
+        key?: (string|null);
+
+        /** MonsterData base_stats */
+        base_stats?: (model.IMonsterStatsData|null);
+
+        /** MonsterData name_text_hash_map */
+        name_text_hash_map?: (number|Long|null);
+    }
+
+    /** Represents a MonsterData. */
+    class MonsterData implements IMonsterData {
+
+        /**
+         * Constructs a new MonsterData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IMonsterData);
+
+        /** MonsterData id. */
+        public id: number;
+
+        /** MonsterData key. */
+        public key: string;
+
+        /** MonsterData base_stats. */
+        public base_stats?: (model.IMonsterStatsData|null);
+
+        /** MonsterData name_text_hash_map. */
+        public name_text_hash_map: (number|Long);
+
+        /**
+         * Gets the default type url for MonsterData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a MonsterStatsData. */
+    interface IMonsterStatsData {
+
+        /** MonsterStatsData base_hp */
+        base_hp?: (number|null);
+
+        /** MonsterStatsData hp_curve */
+        hp_curve?: (model.MonsterCurveType|null);
+
+        /** MonsterStatsData resist */
+        resist?: (model.IMonsterResistData|null);
+
+        /** MonsterStatsData freeze_resist */
+        freeze_resist?: (number|null);
+
+        /** MonsterStatsData hp_drop */
+        hp_drop?: (model.IMonsterHPDrop[]|null);
+    }
+
+    /** Represents a MonsterStatsData. */
+    class MonsterStatsData implements IMonsterStatsData {
+
+        /**
+         * Constructs a new MonsterStatsData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IMonsterStatsData);
+
+        /** MonsterStatsData base_hp. */
+        public base_hp: number;
+
+        /** MonsterStatsData hp_curve. */
+        public hp_curve: model.MonsterCurveType;
+
+        /** MonsterStatsData resist. */
+        public resist?: (model.IMonsterResistData|null);
+
+        /** MonsterStatsData freeze_resist. */
+        public freeze_resist: number;
+
+        /** MonsterStatsData hp_drop. */
+        public hp_drop: model.IMonsterHPDrop[];
+
+        /**
+         * Gets the default type url for MonsterStatsData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a MonsterResistData. */
+    interface IMonsterResistData {
+
+        /** MonsterResistData fire_resist */
+        fire_resist?: (number|null);
+
+        /** MonsterResistData grass_resist */
+        grass_resist?: (number|null);
+
+        /** MonsterResistData water_resist */
+        water_resist?: (number|null);
+
+        /** MonsterResistData electric_resist */
+        electric_resist?: (number|null);
+
+        /** MonsterResistData wind_resist */
+        wind_resist?: (number|null);
+
+        /** MonsterResistData ice_resist */
+        ice_resist?: (number|null);
+
+        /** MonsterResistData rock_resist */
+        rock_resist?: (number|null);
+
+        /** MonsterResistData physical_resist */
+        physical_resist?: (number|null);
+    }
+
+    /** Represents a MonsterResistData. */
+    class MonsterResistData implements IMonsterResistData {
+
+        /**
+         * Constructs a new MonsterResistData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IMonsterResistData);
+
+        /** MonsterResistData fire_resist. */
+        public fire_resist: number;
+
+        /** MonsterResistData grass_resist. */
+        public grass_resist: number;
+
+        /** MonsterResistData water_resist. */
+        public water_resist: number;
+
+        /** MonsterResistData electric_resist. */
+        public electric_resist: number;
+
+        /** MonsterResistData wind_resist. */
+        public wind_resist: number;
+
+        /** MonsterResistData ice_resist. */
+        public ice_resist: number;
+
+        /** MonsterResistData rock_resist. */
+        public rock_resist: number;
+
+        /** MonsterResistData physical_resist. */
+        public physical_resist: number;
+
+        /**
+         * Gets the default type url for MonsterResistData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a MonsterHPDrop. */
+    interface IMonsterHPDrop {
+
+        /** MonsterHPDrop drop_id */
+        drop_id?: (number|null);
+
+        /** MonsterHPDrop hp_percent */
+        hp_percent?: (number|null);
+    }
+
+    /** Represents a MonsterHPDrop. */
+    class MonsterHPDrop implements IMonsterHPDrop {
+
+        /**
+         * Constructs a new MonsterHPDrop.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IMonsterHPDrop);
+
+        /** MonsterHPDrop drop_id. */
+        public drop_id: number;
+
+        /** MonsterHPDrop hp_percent. */
+        public hp_percent: number;
+
+        /**
+         * Gets the default type url for MonsterHPDrop
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a DBStatus. */
     interface IDBStatus {
 
@@ -2394,6 +2592,14 @@ export namespace model {
         WEAPON_POLE = 3,
         WEAPON_BOW = 4,
         WEAPON_CATALYST = 5
+    }
+
+    /** MonsterCurveType enum. */
+    enum MonsterCurveType {
+        INVALID_MONSTER_CURVE = 0,
+        GROW_CURVE_HP = 1,
+        GROW_CURVE_HP_2 = 2,
+        GROW_CURVE_HP_ENVIRONMENT = 3
     }
 
     /** BodyType enum. */
@@ -2487,11 +2693,11 @@ export namespace model {
         DB_TAG_INVALID = 0,
         DB_TAG_GCSIM = 1,
         DB_TAG_TESTING = 2,
-        DB_TAG_KQM_GUIDE = 3,
-        DB_TAG_GEO_SIMPS = 4,
         DB_TAG_ITTO_SIMPS = 5,
         DB_TAG_RANDOM_DELAYS = 6,
         DB_TAG_ARFOIRE_NEWBIES = 7,
+        DB_TAG_APL = 8,
+        DB_TAG_GUIDES = 9,
         DB_TAG_ADMIN_DO_NOT_USE = 99999999
     }
 
@@ -3973,6 +4179,12 @@ export namespace model {
 
         /** Enemy particle_element */
         particle_element?: (string|null);
+
+        /** Enemy name */
+        name?: (string|null);
+
+        /** Enemy modified */
+        modified?: (boolean|null);
     }
 
     /** Represents an Enemy. */
@@ -4004,6 +4216,12 @@ export namespace model {
 
         /** Enemy particle_element. */
         public particle_element: string;
+
+        /** Enemy name. */
+        public name: string;
+
+        /** Enemy modified. */
+        public modified: boolean;
 
         /**
          * Gets the default type url for Enemy

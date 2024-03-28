@@ -1,6 +1,10 @@
 package_name: neuvillette
 genshin_id: 10000087
 key: neuvillette
+action_param_keys:
+  charge:
+    - param: "short"
+    - param: "ticks"
 icd_tags:
   - ICDTagNeuvilletteC6
 skill_data_mapping:

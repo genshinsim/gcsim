@@ -1,6 +1,11 @@
 package_name: wanderer
 genshin_id: 10000075
 key: wanderer
+action_param_keys:
+  attack:
+    - param: "travel"
+  low_plunge:
+    - param: "collision"
 icd_tags:
   - ICDTagWandererC6
   - ICDTagWandererA4

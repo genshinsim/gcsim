@@ -20,6 +20,7 @@
     "start:embed": "yarn workspace @gcsim/embed dev",
     "start:db": "yarn gen && yarn workspace @gcsim/db dev",
     "start:docs": "yarn workspace @gcsim/docs start",
+    "start:taghelper": "yarn workspace @gcsim/taghelper dev",
     "preview": "yarn run preview:web",
     "preview:web": "yarn workspace @gcsim/web preview",
     "preview:embed": "yarn workspace @gcsim/embed preview",
@@ -29,9 +30,11 @@
     "build:embed": "yarn workspace @gcsim/embed build",
     "build:db": "yarn workspace @gcsim/db build",
     "build:docs": "yarn workspace @gcsim/docs build",
+    "build:taghelper": "yarn workspace @gcsim/taghelper build",
     "deploy:workers": "yarn workspace @gcsim/workers deploy",
     "start:workers": "yarn workspace @gcsim/workers start",
-    "gen": "yarn workspace @gcsim/types gen:ts"
+    "gen": "yarn workspace @gcsim/types gen:ts",
+    "storybook": "yarn workspace @gcsim/storybook storybook"
   },
   "devDependencies": {
     "@types/eslint": "^8",

@@ -1,6 +1,9 @@
 package_name: shenhe
 genshin_id: 10000063
 key: shenhe
+action_param_keys:
+    skill:
+        - param: "hold"
 skill_data_mapping:
     attack:
         attack_1:

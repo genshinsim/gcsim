@@ -38,6 +38,9 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 | character name | `cons` | - | - | Evaluates to the character's constellation count. |
 | character name | `energy` | - | - | Evaluates to the character's current energy. |
 | character name | `energymax` | - | - | Evaluates to the character's maximum energy. |
+| character name | `hp` | - | - | Evaluates to the character's current hp. |
+| character name | `hpratio` | - | - | Evaluates to the character's hp ratio. |
+| character name | `hpmax` | - | - | Evaluates to the character's maximum hp. |
 | character name | `normal` | - | - | Evaluates to the character's next normal counter. Example: If the character is in idle or just performed their last normal attack, then the next normal counter is `1` (N1). |
 | character name | `onfield` | - | - | `1` if the character is on the field, `0` otherwise. |
 | character name | `weapon` | - | - | Evaluates to the character's weapon. Use `.keys.weapon.<weapon name>` for comparison purposes.

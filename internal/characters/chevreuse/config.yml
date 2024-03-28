@@ -1,6 +1,9 @@
 package_name: chevreuse
 genshin_id: 10000090
 key: chevreuse
+action_param_keys:
+  skill: 
+    - param: "hold"
 icd_groups:
   - group_name: ICDGroupChevreuseBurstMines
     reset_timer: 300

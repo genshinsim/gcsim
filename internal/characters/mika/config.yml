@@ -1,6 +1,9 @@
 package_name: mika
 genshin_id: 10000080
 key: mika
+action_param_keys:
+    skill:
+        - param: "hold"
 skill_data_mapping:
     attack:
         attack_1:

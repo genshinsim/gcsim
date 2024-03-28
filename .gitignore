@@ -25,6 +25,7 @@ cmd/gcsim/gcsim
 !release-notes.txt
 **/node_modules
 .env
+.envrc
 **/protos_gen
 keys.json
 tagger_mapping.json

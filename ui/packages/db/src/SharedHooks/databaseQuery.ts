@@ -27,7 +27,7 @@ export function craftQuery(
   if (filter.customFilter) {
     let parsedFilter;
     try {
-      parsedFilter = JSON.parse(`{${filter.customFilter}}`);
+      parsedFilter = JSON.parse(`${filter.customFilter}`);
     } catch (e) {
       console.log("invalid custom filter", e, filter.customFilter);
     }
@@ -98,9 +98,12 @@ export function craftQuery(
 
   // sort out tags
   const includedTags: string[] = [];
+  const excludedTags: string[] = [];
   for (const [tag, tagState] of Object.entries(filter.tagFilter)) {
     if (tagState.state === ItemFilterState.include) {
       includedTags.push(tag);
+    } else if (tagState.state === ItemFilterState.exclude) {
+      excludedTags.push(tag);
     }
   }
 
@@ -110,9 +113,33 @@ export function craftQuery(
       tags.push(parseInt(tag));
     });
     if (tags.length > 0) {
-      query["accepted_tags"] = {
-        $in: tags,
+      if (query["$and"] === undefined) {
+        query["$and"] = [];
+      }
+      const acc: accepted_tags = {
+        accepted_tags: {
+          $in: tags,
+        }
       };
+      query["$and"]?.push(acc);
+    }
+  }
+
+  if (excludedTags.length > 0) {
+    const tags: number[] = [];
+    excludedTags.forEach((tag) => {
+      tags.push(parseInt(tag));
+    });
+    if (tags.length > 0) {
+      if (query["$and"] === undefined) {
+        query["$and"] = [];
+      }
+      const rej: rejected_tags = {
+        accepted_tags: {
+          $nin: tags,
+        }
+      };
+      query["$and"]?.push(rej);
     }
   }
 
@@ -135,12 +162,21 @@ export function craftQuery(
   };
 }
 
+export interface accepted_tags {
+  accepted_tags?: {
+    $in?: number[];
+  };
+}
+
+export interface rejected_tags {
+  accepted_tags?: {
+    $nin?: number[];
+  };
+}
+
 export interface DbQuery {
   query: {
     $and?: unknown[];
-    accepted_tags?: {
-      $in?: number[];
-    };
   };
   limit: number;
   sort?: {
