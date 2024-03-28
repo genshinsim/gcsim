@@ -82,19 +82,19 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 
 	totalSubs := stats.getCharSubstatTotal(idxChar)
 	stats.optimizer.logger.Debug(char.Base.Key.Pretty())
-	for totalSubs > stats.charTotalSubstats[idxChar] {
+	for totalSubs > stats.charTotalLiquidSubstats[idxChar] {
 		amount := -1
-		if totalSubs-stats.charTotalSubstats[idxChar] >= 8 {
+		if totalSubs-stats.charTotalLiquidSubstats[idxChar] >= 8 {
 			// reduce 5 at a time to quickly go from 10 liquid in an useless sub to 0 liquid
 			amount = -5
-		} else if totalSubs-stats.charTotalSubstats[idxChar] >= 4 {
+		} else if totalSubs-stats.charTotalLiquidSubstats[idxChar] >= 4 {
 			amount = -2
 		}
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, amount)
 		allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
 		opDebug = append(opDebug, allocDebug...)
 		totalSubs = stats.getCharSubstatTotal(idxChar)
-		stats.optimizer.logger.Debug("Liquid Substat Counts: " + PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+		stats.optimizer.logger.Debug(totalSubs, " Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	}
 	opDebug = append(opDebug, "Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 

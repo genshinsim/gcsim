@@ -214,7 +214,7 @@ func NewSubstatOptimizerDetails(
 	s.charSubstatLimits = make([][]int, len(simcfg.Characters))
 	s.charSubstatRarityMod = make([]float64, len(simcfg.Characters))
 	s.charProfilesInitial = make([]info.CharacterProfile, len(simcfg.Characters))
-	s.charTotalSubstats = make([]int, len(simcfg.Characters))
+	s.charTotalLiquidSubstats = make([]int, len(simcfg.Characters))
 
 	// Need to make an exception in energy calcs for these characters for optimization purposes
 	s.charWithFavonius = make([]bool, len(simcfg.Characters))
@@ -288,7 +288,7 @@ func (stats *SubstatOptimizerDetails) setStatLimits() {
 		}
 
 		// TODO: replace 2 with a user configurable reduction per 4*
-		stats.charTotalSubstats[i] = max(stats.totalLiquidSubstats-2*fourStarCount, 0) + stats.fixedSubstatCount
+		stats.charTotalLiquidSubstats[i] = max(stats.totalLiquidSubstats-2*fourStarCount, 0)
 		stats.charSubstatRarityMod[i] = 1.0 - 0.04*float64(fourStarCount)
 	}
 }

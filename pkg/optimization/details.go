@@ -17,29 +17,29 @@ type Ordered interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr | ~float32 | ~float64 | ~string
 }
 type SubstatOptimizerDetails struct {
-	charRelevantSubstats   map[keys.Char][]attributes.Stat
-	artifactSets4Star      []keys.Set
-	substatValues          []float64
-	mainstatValues         []float64
-	mainstatTol            float64
-	fourstarMod            float64
-	charSubstatFinal       [][]int
-	charSubstatLimits      [][]int
-	charTotalSubstats      []int
-	charSubstatRarityMod   []float64
-	charProfilesInitial    []info.CharacterProfile
-	charWithFavonius       []bool
-	charProfilesERBaseline []info.CharacterProfile
-	charProfilesCopy       []info.CharacterProfile
-	charMaxExtraERSubs     []float64
-	simcfg                 *info.ActionList
-	gcsl                   ast.Node
-	simopt                 simulator.Options
-	cfg                    string
-	fixedSubstatCount      int
-	indivSubstatLiquidCap  int
-	totalLiquidSubstats    int
-	optimizer              *SubstatOptimizer
+	charRelevantSubstats    map[keys.Char][]attributes.Stat
+	artifactSets4Star       []keys.Set
+	substatValues           []float64
+	mainstatValues          []float64
+	mainstatTol             float64
+	fourstarMod             float64
+	charSubstatFinal        [][]int
+	charSubstatLimits       [][]int
+	charTotalLiquidSubstats []int
+	charSubstatRarityMod    []float64
+	charProfilesInitial     []info.CharacterProfile
+	charWithFavonius        []bool
+	charProfilesERBaseline  []info.CharacterProfile
+	charProfilesCopy        []info.CharacterProfile
+	charMaxExtraERSubs      []float64
+	simcfg                  *info.ActionList
+	gcsl                    ast.Node
+	simopt                  simulator.Options
+	cfg                     string
+	fixedSubstatCount       int
+	indivSubstatLiquidCap   int
+	totalLiquidSubstats     int
+	optimizer               *SubstatOptimizer
 }
 
 func (stats *SubstatOptimizerDetails) allocateSomeSubstatGradientsForChar(
