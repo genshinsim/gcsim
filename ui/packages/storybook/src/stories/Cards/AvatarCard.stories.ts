@@ -1,12 +1,12 @@
-import { AvatarPortrait } from "@gcsim/components";
+import { AvatarCard } from "@gcsim/components";
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
-import { sampleTeam } from "./samples";
+import { sampleTeam } from "../samples";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
-const meta: Meta<typeof AvatarPortrait> = {
-  title: "AvatarPortrait",
-  component: AvatarPortrait,
+const meta: Meta<typeof AvatarCard> = {
+  title: "Cards/AvatarCard",
+  component: AvatarCard,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: "fullscreen",
@@ -27,13 +27,13 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
   args: {
-    char: sampleTeam[0],
-    invalid: false,
+    chars: sampleTeam,
+    invalid: ["yaemiko"],
   },
 };
 
-export const NullChar: Story = {
+export const WithNull: Story = {
   args: {
-    char: null,
+    chars: [sampleTeam[0], sampleTeam[1], sampleTeam[2], null],
   },
 };

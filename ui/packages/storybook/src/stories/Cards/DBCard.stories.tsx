@@ -1,11 +1,11 @@
 import { Button, DBCard } from "@gcsim/components";
 import type { Meta, StoryObj } from "@storybook/react";
 import _ from "lodash";
-import { dbEntries } from "./samples";
+import { dbEntries } from "../samples";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof DBCard> = {
-  title: "DBCard",
+  title: "Cards/DBCard",
   component: DBCard,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
