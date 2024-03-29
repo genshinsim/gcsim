@@ -3,7 +3,7 @@ import kuki from "images/kuki.png";
 import nahida from "images/nahida.png";
 import { Long } from "protobufjs";
 
-export function DBEntryPortrait(char: model.ICharacter) {
+export function DBEntryPortrait(char: model.Character) {
   return (
     <>
       <div className="hidden lg:flex">
@@ -16,12 +16,7 @@ export function DBEntryPortrait(char: model.ICharacter) {
   );
 }
 
-function DBEntryDesktopPortrait({
-  name,
-  sets,
-  weapon,
-  cons,
-}: model.ICharacter) {
+function DBEntryDesktopPortrait({ name, sets, weapon, cons }: model.Character) {
   if (!name) {
     return (
       <div className="bg-slate-700 p-2 w-20 flex flex-row  h-fit justify-center">
@@ -53,7 +48,7 @@ function DBEntryDesktopPortrait({
   );
 }
 
-function DBEntryMobilePortrait({ name, sets, weapon, cons }: model.ICharacter) {
+function DBEntryMobilePortrait({ name, sets, weapon, cons }: model.Character) {
   if (!name) {
     return (
       <div className="bg-slate-700 p-2  max-h-20 flex flex-row justify-center">
@@ -88,7 +83,7 @@ function DBEntryMobilePortrait({ name, sets, weapon, cons }: model.ICharacter) {
 function PortraitWeaponComponent({
   weapon,
 }: {
-  weapon: model.IWeapon | undefined | null;
+  weapon: model.Weapon | undefined | null;
 }) {
   if (!weapon || !weapon.name) {
     return <div className="h-16 w-16">?</div>;

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Item } from "./Item";
 
 type Props = {
-  warnings?: model.IWarnings;
+  warnings?: model.Warnings;
 };
 
 export const WarningItem = memo(({ warnings }: Props) => {

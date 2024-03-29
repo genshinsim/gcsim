@@ -1,4 +1,5 @@
 import { model } from "@gcsim/types";
+import { DataColorsConst } from "../../common/gcsim";
 import { Badge } from "../../common/ui/badge";
 import nahida from "../../images/nahida.png";
 import { charBG } from "../../lib/helper";
@@ -6,7 +7,7 @@ import ArtifactsIcon from "./ArtifactsIcon";
 import placeholder from "./default.png";
 import overlay from "./overlay.jpg";
 
-const WeaponImage = ({ weapon }: { weapon: model.IWeapon }) => {
+const WeaponImage = ({ weapon }: { weapon: model.Weapon }) => {
   return (
     <div className="absolute bottom-[-4px] w-[62] right-[-12px] opacity-85">
       <svg key={weapon.name} width="62" height="65">
@@ -47,7 +48,8 @@ const WeaponImage = ({ weapon }: { weapon: model.IWeapon }) => {
 };
 
 type AvatarPortraitProps = {
-  char: model.ICharacter | null;
+  char: model.Character | null;
+  i: number;
   invalid: boolean;
   onImageLoaded: () => void;
 
@@ -57,6 +59,7 @@ type AvatarPortraitProps = {
 
 export const AvatarPortrait = ({
   char,
+  i,
   invalid,
   onImageLoaded,
   className = "",
@@ -150,7 +153,12 @@ export const AvatarPortrait = ({
         >
           <div className="flex flex-row gap-1 min-h-fit items-center">
             <span className="text-xs text-gray-400">lvl</span>
-            <span className={`font-bold`}>{char.level}</span>
+            <span
+              className={`font-bold`}
+              style={{ color: DataColorsConst.qualitative5(i) }}
+            >
+              {char.level}
+            </span>
           </div>
         </div>
 

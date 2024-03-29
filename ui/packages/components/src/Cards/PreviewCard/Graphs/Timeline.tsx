@@ -5,10 +5,10 @@ import { ParentSize } from "@visx/responsive";
 import { scaleLinear } from "@visx/scale";
 import { AreaClosed } from "@visx/shape";
 import { DataColorsConst, NoDataIcon } from "../../../common/gcsim";
-import { useData } from "../../DamageTimelineCard/DamageOverTimeData";
+import { useData } from "../../ResultCards/Damage/DamageTimelineCard/DamageOverTimeData";
 
 type Props = {
-  data?: model.IBucketStats | null;
+  data?: model.BucketStats | null;
 };
 
 export const Timeline = ({ data }: Props) => {
@@ -28,7 +28,7 @@ export const Timeline = ({ data }: Props) => {
 type GraphProps = {
   width: number;
   height: number;
-  input: model.IBucketStats;
+  input: model.BucketStats;
   margin?: { left: number; right: number; top: number; bottom: number };
 };
 

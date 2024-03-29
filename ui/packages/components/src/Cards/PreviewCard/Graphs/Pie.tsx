@@ -1,14 +1,17 @@
-import { ElementDPS, FloatStat } from "@gcsim/types";
-import { useData } from "@gcsim/ui/src/Pages/Viewer/Components/Damage/CharacterDPSCard";
-import { useData as useEleData } from "@gcsim/ui/src/Pages/Viewer/Components/Damage/ElementDPSCard";
+import { model } from "@gcsim/types";
+import { useData } from "../../ResultCards/Damage/CharacterDPSCard";
+import { useData as useEleData } from "../../ResultCards/Damage/ElementDPSCard";
 
-import { useDataColors, OuterLabelPie } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
-import { NoDataIcon } from "@gcsim/ui/src/Pages/Viewer/Components/Util/NoData";
 import { ParentSize } from "@visx/responsive";
+import {
+  NoDataIcon,
+  OuterLabelPie,
+  useDataColors,
+} from "../../../common/gcsim";
 
 type Props = {
-  dps?: FloatStat[];
-}
+  dps?: model.DescriptiveStats[] | null;
+};
 
 export const CharacterDPSPie = ({ dps }: Props) => {
   const { DataColors } = useDataColors();
@@ -22,14 +25,14 @@ export const CharacterDPSPie = ({ dps }: Props) => {
     <ParentSize>
       {({ width, height }) => (
         <OuterLabelPie
-            width={width}
-            height={height}
-            data={data}
-            pieValue={d => d.pct}
-            color={d => DataColors.character(d.index)}
-            margin={0}
-            pieRadius={0.8}
-            outlineWidth={0.5}
+          width={width}
+          height={height}
+          data={data}
+          pieValue={(d) => d.pct}
+          color={(d) => DataColors.character(d.index)}
+          margin={0}
+          pieRadius={0.8}
+          outlineWidth={0.5}
         />
       )}
     </ParentSize>
@@ -37,8 +40,8 @@ export const CharacterDPSPie = ({ dps }: Props) => {
 };
 
 type ElementProps = {
-  dps?: ElementDPS;
-}
+  dps?: { [k: string]: model.DescriptiveStats } | null;
+};
 
 export const ElementDPSPie = ({ dps }: ElementProps) => {
   const { DataColors } = useDataColors();
@@ -52,14 +55,14 @@ export const ElementDPSPie = ({ dps }: ElementProps) => {
     <ParentSize>
       {({ width, height }) => (
         <OuterLabelPie
-            width={width}
-            height={height}
-            data={data}
-            pieValue={d => d.pct}
-            color={d =>  DataColors.element(d.label)}
-            margin={0}
-            pieRadius={0.8}
-            outlineWidth={0.5}
+          width={width}
+          height={height}
+          data={data}
+          pieValue={(d) => d.pct}
+          color={(d) => DataColors.element(d.label)}
+          margin={0}
+          pieRadius={0.8}
+          outlineWidth={0.5}
         />
       )}
     </ParentSize>

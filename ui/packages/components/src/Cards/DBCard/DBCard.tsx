@@ -6,7 +6,7 @@ import { AvatarCard } from "../AvatarCard/AvatarCard";
 import { CardBadge } from "../CardBadge/CardBadge";
 
 type DBCardProps = {
-  entry: db.IEntry;
+  entry: db.Entry;
   skipTags?: number | number[];
   className?: string;
 
@@ -20,7 +20,7 @@ export const DBCard = ({
   className = "",
   skipTags = 1,
 }: DBCardProps) => {
-  const team: (model.ICharacter | null)[] = entry.summary?.team ?? [];
+  const team: (model.Character | null)[] = entry.summary?.team ?? [];
   if (team.length < 4) {
     const diff = 4 - team.length;
     for (let i = 0; i < diff; i++) {

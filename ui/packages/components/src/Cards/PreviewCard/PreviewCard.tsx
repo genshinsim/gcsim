@@ -15,7 +15,7 @@ function fallbackRender({ error }) {
 }
 
 type PreviewCardProps = {
-  data?: model.ISimulationResult;
+  data?: model.SimulationResult;
 };
 
 export const PreviewCard = ({ data }: PreviewCardProps) => {
@@ -65,6 +65,7 @@ export const PreviewCard = ({ data }: PreviewCardProps) => {
               return (
                 <AvatarPortrait
                   key={"char-" + i}
+                  i={i}
                   char={c}
                   invalid={
                     data.incomplete_characters?.includes(c.name ?? "") ?? false

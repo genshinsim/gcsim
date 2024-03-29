@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 export interface Point {
   x: number;
-  y: model.IDescriptiveStats;
+  y: model.DescriptiveStats;
 }
 
 type OverTimeData = {
@@ -12,7 +12,7 @@ type OverTimeData = {
   maxValue: number;
 };
 
-export function useData(input?: model.IBucketStats): OverTimeData {
+export function useData(input?: model.BucketStats): OverTimeData {
   return useMemo(() => {
     if (input?.bucket_size == null || input.buckets == null) {
       return { data: [], duration: 1, maxValue: 1 };

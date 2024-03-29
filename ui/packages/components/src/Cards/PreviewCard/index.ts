@@ -1,1 +1,1 @@
-export { PreviewCard } from "./PreviewCard";
+export * from "./PreviewCard";

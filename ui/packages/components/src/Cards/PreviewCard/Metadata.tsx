@@ -11,7 +11,7 @@ import {
 } from "../../Metadata";
 
 type Props = {
-  data: model.ISimulationResult;
+  data: model.SimulationResult;
 };
 
 export const Metadata = ({ data }: Props) => {

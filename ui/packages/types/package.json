@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "protobufjs-cli": "^1.1.1"
+  },
+  "dependencies": {
+    "long": "^5.2.3"
   }
 }

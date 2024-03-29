@@ -6621,5 +6621,5 @@ interface HasErr {
   err: string;
 }
 
-//TODO(kyle): parsed should be typed model.ISimulationResult | HasErr
+//TODO(kyle): parsed should be typed model.SimulationResult | HasErr
 export const parsed: any | HasErr = JSON.parse(data);
