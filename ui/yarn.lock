@@ -4497,7 +4497,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gcsim/components@workspace:packages/components":
+"@gcsim/components@workspace:^, @gcsim/components@workspace:packages/components":
   version: 0.0.0-use.local
   resolution: "@gcsim/components@workspace:packages/components"
   dependencies:
@@ -4594,8 +4594,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gcsim/embed@workspace:packages/embed"
   dependencies:
+    "@gcsim/components": "workspace:^"
     "@gcsim/types": "workspace:^"
-    "@gcsim/ui": "workspace:^"
     "@types/react": ^18.2.66
     "@types/react-dom": ^18.2.22
     "@typescript-eslint/eslint-plugin": ^7.2.0

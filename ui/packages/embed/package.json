@@ -9,8 +9,8 @@
     "preview": "yarn run build && vite preview --host"
   },
   "dependencies": {
+    "@gcsim/components": "workspace:^",
     "@gcsim/types": "workspace:^",
-    "@gcsim/ui": "workspace:^",
     "axios": "^1.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

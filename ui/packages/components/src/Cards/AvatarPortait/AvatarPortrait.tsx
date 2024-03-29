@@ -1,7 +1,6 @@
 import { model } from "@gcsim/types";
 import { DataColorsConst } from "../../common/gcsim";
 import { Badge } from "../../common/ui/badge";
-import nahida from "../../images/nahida.png";
 import { charBG } from "../../lib/helper";
 import ArtifactsIcon from "./ArtifactsIcon";
 import placeholder from "./default.png";
@@ -75,7 +74,7 @@ export const AvatarPortrait = ({
       >
         <div className="flex justify-center">
           <img
-            src={nahida}
+            src={"/api/assets/misc/nahida.png"}
             className=" object-contain opacity-50 h-24"
             onLoad={onImageLoaded}
           />
