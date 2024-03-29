@@ -1,16 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
-  /* width: 540px; */
-  /* height: 250px; */
-  background-color: #1c2127;
-}
-
-.equip {
-  position: absolute;
-  bottom: -2px;
-  right: -0px;
-  width: 62px;
-}

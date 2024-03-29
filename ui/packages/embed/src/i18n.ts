@@ -4,9 +4,6 @@ import { initReactI18next } from "react-i18next";
 
 import { resources } from "@gcsim/localization";
 
-// used in result tab for graph y axis text direction/offset handling
-export const specialLocales = ["zh", "ja", "ko"];
-
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)
