@@ -27,7 +27,7 @@ export function Dash() {
     text: "",
     tag: "",
   });
-  const [data, setData] = useState<db.IEntry[]>([]);
+  const [data, setData] = useState<db.Entry[]>([]);
   const [dataIsLoaded, setDataIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -35,15 +35,19 @@ export function Dash() {
       .then((resp: { data }) => {
         setState({ isLoaded: true, text: resp.data.body, tag: resp.data.name });
       })
-      .catch((err) => console.log(t<string>("viewer.error_encountered") + err.message));
+      .catch((err) =>
+        console.log(t<string>("viewer.error_encountered") + err.message)
+      );
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(randQuery))}`)
-      .then((resp: { data: db.IEntries }) => {
+      .then((resp: { data: db.Entries }) => {
         if (resp.data && resp.data.data) {
           setData(resp.data.data);
           setDataIsLoaded(true);
         }
       })
-      .catch((err) => console.log(t<string>("viewer.error_encountered") + err.message));
+      .catch((err) =>
+        console.log(t<string>("viewer.error_encountered") + err.message)
+      );
   }, [t]);
 
   return (
@@ -67,10 +71,7 @@ export function Dash() {
           <div>
             {dataIsLoaded
               ? data.map((entry, index) => (
-                  <DBEntryView
-                    dbEntry={entry}
-                    key={index}
-                  />
+                  <DBEntryView dbEntry={entry} key={index} />
                 ))
               : t<string>("sim.loading")}
           </div>
@@ -81,7 +82,7 @@ export function Dash() {
             className="!p-3 !rounded-md"
           >
             <span className="text-xl md:text-2xl font-semibold">
-            {t<string>("dash.visit_teams_db")}
+              {t<string>("dash.visit_teams_db")}
             </span>
           </AnchorButton>
         </Card>
