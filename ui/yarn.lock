@@ -4472,6 +4472,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^7.2.0
     "@typescript-eslint/parser": ^7.2.0
     "@vitejs/plugin-react-swc": ^3.5.0
+    ace-builds: ^1.32.8
     class-variance-authority: ^0.7.0
     clsx: ^2.1.0
     eslint: ^8.57.0
@@ -4481,6 +4482,7 @@ __metadata:
     http-proxy-middleware: ^2.0.6
     lucide-react: ^0.360.0
     react: ^18.2.0
+    react-ace: ^10.1.0
     react-dom: ^18.2.0
     react-error-boundary: ^4.0.13
     storybook: ^8.0.2
@@ -10358,6 +10360,13 @@ __metadata:
   version: 1.32.7
   resolution: "ace-builds@npm:1.32.7"
   checksum: 6a7f73d738bf10e23c33a32ec2164102a507cf539c4a24690d91749dde23d11be34757d4c481ac9f0cf9762dda7ec003908857b4a56f69ad7b9f370dc8344332
+  languageName: node
+  linkType: hard
+
+"ace-builds@npm:^1.32.8":
+  version: 1.32.8
+  resolution: "ace-builds@npm:1.32.8"
+  checksum: 816cd75982e35bc57710fabf19964c334ccc068a477c09f196b3bf5a61076eec90ad3b05fc2b7d567e740db192428768774effdd6b3d6a8b76c7513889d9ab28
   languageName: node
   linkType: hard
 
