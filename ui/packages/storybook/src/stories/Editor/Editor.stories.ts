@@ -4,7 +4,7 @@ import { sampleConfig } from "./sampleConfig";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof Editor> = {
-  title: "Editor",
+  title: "Editor/Editor",
   component: Editor,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
@@ -31,7 +31,6 @@ export const Primary: Story = {
 export const PrimaryMobile: Story = {
   args: {
     cfg: sampleConfig,
-    maxLines: Infinity,
   },
   parameters: {
     viewport: {

@@ -59,7 +59,7 @@ export const PreviewCard = ({ data }: PreviewCardProps) => {
         {error !== "" ? `error: ${error}` : ready ? "ok" : "loading"}
       </span>
       <ErrorBoundary fallbackRender={fallbackRender} onError={handleError}>
-        <div>
+        <div className="flex flex-col h-full">
           <div className="grid grid-cols-4">
             {data.character_details?.map((c, i) => {
               return (
@@ -76,7 +76,7 @@ export const PreviewCard = ({ data }: PreviewCardProps) => {
             })}
           </div>
           <Metadata data={data} />
-          <Graphs data={data} />
+          <Graphs data={data} className="grow" />
         </div>
       </ErrorBoundary>
     </div>

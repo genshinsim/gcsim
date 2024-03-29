@@ -1,4 +1,4 @@
-import { BucketStats } from "@gcsim/types";
+import { model } from "@gcsim/types";
 import { curveBasis } from "@visx/curve";
 import { Group } from "@visx/group";
 import { ParentSize } from "@visx/responsive";
@@ -8,7 +8,7 @@ import { DataColorsConst, NoDataIcon } from "../../../common/gcsim";
 import { useData } from "../../DamageTimelineCard/DamageOverTimeData";
 
 type Props = {
-  data?: BucketStats;
+  data?: model.IBucketStats | null;
 };
 
 export const Timeline = ({ data }: Props) => {
@@ -28,7 +28,7 @@ export const Timeline = ({ data }: Props) => {
 type GraphProps = {
   width: number;
   height: number;
-  input: BucketStats;
+  input: model.IBucketStats;
   margin?: { left: number; right: number; top: number; bottom: number };
 };
 

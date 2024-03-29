@@ -1,18 +1,18 @@
-import { BucketStats, FloatStat } from "@gcsim/types";
+import { model } from "@gcsim/types";
 import { useMemo } from "react";
 
 export interface Point {
   x: number;
-  y: FloatStat;
+  y: model.IDescriptiveStats;
 }
 
 type OverTimeData = {
   data: Point[];
   duration: number;
   maxValue: number;
-}
+};
 
-export function useData(input?: BucketStats): OverTimeData {
+export function useData(input?: model.IBucketStats): OverTimeData {
   return useMemo(() => {
     if (input?.bucket_size == null || input.buckets == null) {
       return { data: [], duration: 1, maxValue: 1 };
