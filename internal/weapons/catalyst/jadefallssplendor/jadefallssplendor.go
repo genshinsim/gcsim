@@ -66,6 +66,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		addBuff()
 		return false
 	}, fmt.Sprintf("jadefall-onburst-%v", char.Base.Key.String()))
