@@ -64,10 +64,11 @@ function AbilAoE({ data }) {
   );
 }
 
-const abils = ["normal", "charge", "aim", "skill", "burst", "asc", "cons"];
+const abils = ["normal", "charge", "plunge", "aim", "skill", "burst", "asc", "cons"];
 const abilLabels = [
   "Normal",
   "Charge Attack",
+  "Plunge",
   "Aimed Shot",
   "Skill",
   "Burst",
