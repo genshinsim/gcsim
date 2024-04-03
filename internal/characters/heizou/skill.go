@@ -97,9 +97,11 @@ func (c *char) skillRelease(delay int) action.Info {
 		}
 
 		snap := c.Snapshot(&ai)
-		c6CR, c6CD := c.c6()
-		snap.Stats[attributes.CR] += c6CR
-		snap.Stats[attributes.CD] += c6CD
+		if c.Base.Cons >= 6 {
+			c6CR, c6CD := c.c6()
+			snap.Stats[attributes.CR] += c6CR
+			snap.Stats[attributes.CD] += c6CD
+		}
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
