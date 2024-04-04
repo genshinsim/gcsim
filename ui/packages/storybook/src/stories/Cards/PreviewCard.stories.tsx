@@ -13,6 +13,11 @@ const meta: Meta<typeof PreviewCard> = {
   argTypes: {},
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
   args: {},
+  parameters: {
+    viewport: {
+      defaultViewport: "discord",
+    },
+  },
 };
 
 export default meta;
@@ -22,12 +27,14 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     data: sampleResult,
+    className: "!w-[540px] !h-[250px]",
   },
 };
 
 let incomplete = cloneDeep(sampleResult);
 export const WithIncomplete: Story = {
   args: {
+    className: "!w-[540px] !h-[250px]",
     data: merge(incomplete, {
       incomplete_characters: ["xingqiu"],
     }),

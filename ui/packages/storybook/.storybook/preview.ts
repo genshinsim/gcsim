@@ -35,6 +35,13 @@ const customViewports = {
       height: "1080",
     },
   },
+  discord: {
+    name: "discord",
+    styles: {
+      width: "520",
+      height: "250",
+    },
+  },
 };
 
 const preview: Preview = {
