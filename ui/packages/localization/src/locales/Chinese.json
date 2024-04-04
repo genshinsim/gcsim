@@ -379,5 +379,8 @@
     "states": {
         "true": "真",
         "false": "错误"
+    },
+    "common": {
+        "data_not_found": "没有数据"
     }
 }

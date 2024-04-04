@@ -5,11 +5,7 @@ import { DBEntryPortrait } from "./DBEntryViewComponents/DBEntryPortrait";
 import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 
 //displays one database entry
-export default function DBEntryView({
-  dbEntry,
-}: {
-  dbEntry: db.IEntry;
-}) {
+export default function DBEntryView({ dbEntry }: { dbEntry: db.Entry }) {
   const { t: translate } = useTranslation();
   const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
 
@@ -17,7 +13,7 @@ export default function DBEntryView({
   if (team.length < 4) {
     const diff = 4 - team.length;
     for (let i = 0; i < diff; i++) {
-      team.push({} as model.ICharacter);
+      team.push({} as model.Character);
     }
   }
   let link = `https://gcsim.app/sh/${dbEntry.share_key}`;
@@ -75,7 +71,7 @@ function DBEntryDetails({
   mode,
   sim_duration,
   create_date,
-}: NonNullable<db.IEntry["summary"]> & {
+}: NonNullable<db.Entry["summary"]> & {
   create_date?: number | Long | null;
   description?: string | null;
 }) {
