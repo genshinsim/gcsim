@@ -17,7 +17,6 @@ type Ordered interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr | ~float32 | ~float64 | ~string
 }
 type SubstatOptimizerDetails struct {
-	charRelevantSubstats   map[keys.Char][]attributes.Stat
 	artifactSets4Star      []keys.Set
 	substatValues          []float64
 	mainstatValues         []float64
@@ -29,6 +28,7 @@ type SubstatOptimizerDetails struct {
 	charProfilesERBaseline []info.CharacterProfile
 	charProfilesCopy       []info.CharacterProfile
 	charMaxExtraERSubs     []float64
+	charRelevantSubstats   [][]attributes.Stat
 	simcfg                 *info.ActionList
 	gcsl                   ast.Node
 	simopt                 simulator.Options
@@ -57,8 +57,6 @@ func (stats *SubstatOptimizerDetails) allocateSomeSubstatGradientsForChar(
 			if stats.charSubstatFinal[idxChar][substat] < stats.charSubstatLimits[idxChar][substat] {
 				stats.charSubstatFinal[idxChar][substat] += amount
 				stats.charProfilesCopy[idxChar].Stats[substat] += float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
-				// fmt.Println("Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
-				// opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 				return opDebug
 			}
 		}
@@ -67,8 +65,6 @@ func (stats *SubstatOptimizerDetails) allocateSomeSubstatGradientsForChar(
 			amount = clamp[int](-stats.charSubstatFinal[idxChar][substat], amount, amount)
 			stats.charSubstatFinal[idxChar][substat] += amount
 			stats.charProfilesCopy[idxChar].Stats[substat] += float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
-			// fmt.Println("Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
-			// opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 			return opDebug
 		}
 	}
