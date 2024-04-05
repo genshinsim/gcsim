@@ -36,7 +36,7 @@ export function ListView({ data }: { data: db.Entry[] }) {
             <DBCard
               entry={entry}
               key={index}
-              className="min-[1300px]:w-[1100px] border-0"
+              className="min-[1300px]:w-[970px] border-0 w-full max-w-[970px]"
               footer={
                 <div className="flex flex-row flex-wrap place-content-end mr-2 gap-4">
                   <Button

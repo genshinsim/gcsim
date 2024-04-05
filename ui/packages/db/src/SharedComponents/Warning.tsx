@@ -14,7 +14,7 @@ export function Warning() {
 
   if (hide) {
     return (
-      <div className="flex flex-col py-0 min-[1300px]:w-[1100px]">
+      <div className="flex flex-col py-0 min-[1300px]:w-[970px]">
         <div className="ml-auto">
           <Button
             small
@@ -31,7 +31,7 @@ export function Warning() {
   }
 
   return (
-    <div className="relative flex flex-col gap-2 items-center bg-slate-900 px-5 py-0 border border-blue-800 min-[1300px]:w-[1100px]">
+    <div className="relative flex flex-col gap-2 items-center bg-slate-900 px-5 py-0 border border-blue-800 min-[1300px]:w-[970px] max-w-[970px]">
       <div className="absolute top-1 right-1">
         <Button
           icon="cross"

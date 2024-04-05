@@ -48,7 +48,9 @@ export function ConfigEditor(props: Props) {
     return localStorage.getItem(LOCALSTORAGE_THEME_KEY) ?? "tomorrow_night";
   });
   const [fontSize, setFontSize] = React.useState(() => {
-    return localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY) ? Number(localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY)) : 14;
+    return localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY)
+      ? Number(localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY))
+      : 14;
   });
   React.useEffect(() => {
     localStorage.setItem(LOCALSTORAGE_THEME_KEY, theme);
@@ -60,11 +62,12 @@ export function ConfigEditor(props: Props) {
       {hideThemeSelector ? null : (
         <div className="my-1 w-full flex flex-col gap-0.5 items-center md:flex-row-reverse md:gap-4 md:items-start">
           <FormGroup label={t<string>("simple.editor_theme")} inline>
-            <HTMLSelect onChange={(e) => setTheme(e.currentTarget.value)}>
+            <HTMLSelect
+              onChange={(e) => setTheme(e.currentTarget.value)}
+              value={theme}
+            >
               {themes.map((t) => (
-                <option key={t} selected={t == theme}>
-                  {t}
-                </option>
+                <option key={t}>{t}</option>
               ))}
             </HTMLSelect>
           </FormGroup>
