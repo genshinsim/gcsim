@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import charData from "../../Data/char_data.generated.json";
-import tagData from "../../tags.json";
+import tagData from '@gcsim/data/src/tags.json';
+import {createContext} from 'react';
+import charData from '../../Data/char_data.generated.json';
 
 export interface FilterState {
   charFilter: CharFilter;
@@ -11,9 +11,9 @@ export interface FilterState {
 }
 
 export enum ItemFilterState {
-  "none",
-  "include",
-  "exclude",
+  'none',
+  'include',
+  'exclude',
 }
 
 export const charNames = Object.keys(charData.data).map((k) => {
@@ -21,35 +21,37 @@ export const charNames = Object.keys(charData.data).map((k) => {
 });
 
 export const initialCharFilter = charNames.reduce((acc, charName) => {
-  acc[charName] = { state: ItemFilterState.none, charName };
+  acc[charName] = {state: ItemFilterState.none, charName};
   return acc;
 }, {} as CharFilter);
 
 export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
-  acc[tag] = tagData[tag].default_exclude ? { state: ItemFilterState.exclude, tag } : { state: ItemFilterState.none, tag };
+  acc[tag] = tagData[tag].default_exclude
+    ? {state: ItemFilterState.exclude, tag}
+    : {state: ItemFilterState.none, tag};
   return acc;
 }, {} as TagFilter);
 
 export const sortByParams = [
   {
-    translationKey: "db.dpsPerTarget",
-    sortKey: "summary.mean_dps_per_target",
+    translationKey: 'db.dpsPerTarget',
+    sortKey: 'summary.mean_dps_per_target',
   },
   {
-    translationKey: "db.createDate",
-    sortKey: "create_date",
+    translationKey: 'db.createDate',
+    sortKey: 'create_date',
   },
 ];
 export enum SortByDirection {
-  "asc",
-  "dsc",
+  'asc',
+  'dsc',
 }
 export interface ISortBy {
   sortKey: string;
   sortByDirection: SortByDirection;
 }
 export const initialSortBy: ISortBy = {
-  sortKey: "create_date",
+  sortKey: 'create_date',
   sortByDirection: SortByDirection.dsc,
 };
 
@@ -57,7 +59,7 @@ export const initialFilter: FilterState = {
   charFilter: initialCharFilter,
   tagFilter: initialTagFilter,
   charIncludeCount: 0,
-  customFilter: "",
+  customFilter: '',
   sortBy: initialSortBy,
 };
 
@@ -74,19 +76,19 @@ export interface CharFilter {
 
 export type CharFilterState =
   | {
-    charName: string;
-    state: ItemFilterState.include;
-    weapon?: string;
-    sets?: ArtifactSetFilter;
-  }
+      charName: string;
+      state: ItemFilterState.include;
+      weapon?: string;
+      sets?: ArtifactSetFilter;
+    }
   | {
-    state: ItemFilterState.none;
-    charName: string;
-  }
+      state: ItemFilterState.none;
+      charName: string;
+    }
   | {
-    state: ItemFilterState.exclude;
-    charName: string;
-  };
+      state: ItemFilterState.exclude;
+      charName: string;
+    };
 
 export interface TagFilter {
   //tag key (int)
@@ -95,17 +97,17 @@ export interface TagFilter {
 
 export type TagFilterState =
   | {
-    tag: string;
-    state: ItemFilterState.include;
-  }
+      tag: string;
+      state: ItemFilterState.include;
+    }
   | {
-    state: ItemFilterState.none;
-    tag: string;
-  }
+      state: ItemFilterState.none;
+      tag: string;
+    }
   | {
-    state: ItemFilterState.exclude;
-    tag: string;
-  };
+      state: ItemFilterState.exclude;
+      tag: string;
+    };
 
 export const FilterDispatchContext = createContext<
   React.Dispatch<FilterActions>
@@ -119,44 +121,44 @@ export type FilterActions =
   | SortByAction;
 
 interface GeneralFilterAction {
-  type: "clearFilter";
+  type: 'clearFilter';
 }
 
 interface CustomFilterAction {
-  type: "setCustomFilter";
+  type: 'setCustomFilter';
   customFilter: string;
 }
 
 interface CharFilterReducerAction {
   type:
-  | "handleChar"
-  | "removeChar"
-  | "includeChar"
-  | "includeWeapon"
-  | "nullWeapon"
-  | "includeSet"
-  | "nullSet";
+    | 'handleChar'
+    | 'removeChar'
+    | 'includeChar'
+    | 'includeWeapon'
+    | 'nullWeapon'
+    | 'includeSet'
+    | 'nullSet';
   char: string;
   weapon?: string;
   set?: string;
 }
 
 interface TagFilterReducerAction {
-  type: "handleTag";
+  type: 'handleTag';
   tag: string;
 }
 
 interface SortByAction {
-  type: "handleSortBy";
+  type: 'handleSortBy';
   sortByKey: string;
 }
 
 export function filterReducer(
   filter: FilterState,
-  action: FilterActions
+  action: FilterActions,
 ): FilterState {
   switch (action.type) {
-    case "handleChar": {
+    case 'handleChar': {
       let newFilterState: ItemFilterState;
       let newCharIncludeCount = filter.charIncludeCount ?? 0;
       switch (filter.charFilter[action.char].state) {
@@ -192,7 +194,7 @@ export function filterReducer(
       };
     }
 
-    case "removeChar": {
+    case 'removeChar': {
       let newCharIncludeCount = filter.charIncludeCount ?? 0;
       if (filter.charFilter[action.char].state === ItemFilterState.include)
         newCharIncludeCount--;
@@ -209,7 +211,7 @@ export function filterReducer(
       };
     }
 
-    case "includeChar": {
+    case 'includeChar': {
       let newCharIncludeCount = filter.charIncludeCount ?? 0;
       if (filter.charFilter[action.char].state !== ItemFilterState.include)
         newCharIncludeCount++;
@@ -225,7 +227,7 @@ export function filterReducer(
         charIncludeCount: newCharIncludeCount,
       };
     }
-    case "includeWeapon": {
+    case 'includeWeapon': {
       return {
         ...filter,
         [action.char]: {
@@ -235,16 +237,16 @@ export function filterReducer(
       };
     }
 
-    case "nullWeapon": {
+    case 'nullWeapon': {
       return {
         ...filter,
         [action.char]: {
           ...filter[action.char],
-          weapon: "",
+          weapon: '',
         },
       };
     }
-    case "includeSet": {
+    case 'includeSet': {
       if (!filter[action.char].set) filter[action.char].set = {};
       if (filter[action.char].set[action.set as string] === 2) {
         return {
@@ -269,8 +271,8 @@ export function filterReducer(
         },
       };
     }
-    case "nullSet": {
-      const { [action.set as string]: _, ...newSet } = filter[action.char].set;
+    case 'nullSet': {
+      const {[action.set as string]: _, ...newSet} = filter[action.char].set;
       return {
         ...filter,
         [action.char]: {
@@ -279,18 +281,18 @@ export function filterReducer(
         },
       };
     }
-    case "clearFilter": {
+    case 'clearFilter': {
       return {
         ...initialFilter,
       };
     }
-    case "setCustomFilter": {
+    case 'setCustomFilter': {
       return {
         ...filter,
         customFilter: action.customFilter,
       };
     }
-    case "handleTag": {
+    case 'handleTag': {
       let newFilterState: ItemFilterState;
       switch (filter.tagFilter[action.tag].state) {
         case ItemFilterState.none:
@@ -316,7 +318,7 @@ export function filterReducer(
       };
     }
 
-    case "handleSortBy": {
+    case 'handleSortBy': {
       let newSortByState: ISortBy;
 
       switch (filter.sortBy.sortByDirection) {
@@ -343,14 +345,14 @@ export function filterReducer(
     }
 
     default: {
-      throw Error("Unknown action: " + action);
+      throw Error('Unknown action: ' + action);
     }
   }
 }
 
 export const filterCharNames = (
   query: string,
-  translatedCharNames: string[]
+  translatedCharNames: string[],
 ) => {
   return translatedCharNames.filter((charName) => {
     return charName.toLocaleLowerCase().includes(query.toLocaleLowerCase());

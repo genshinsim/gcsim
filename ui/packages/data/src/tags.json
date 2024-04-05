@@ -1,32 +1,33 @@
 {
-    "0": {
-        "display_name": "Invalid"
-    },
-    "1": {
-        "display_name": "gcsim",
-        "blurb": "These untagged simulations are simulations that are meant to serve as examples for users looking for similar simulations to write their own. There are no rules or criteria for these simulations and any simultation that are different from what exists already will qualify."
-    },
-    "2": {
-        "display_name": "Internal Test"
-    },
-    "5": {
-        "display_name": "Itto Simps",
-        "blurb": "Itto doing Itto things (maintained by Tris)"
-    },
-    "6": {
-        "display_name": "Random Frame Delays",
-        "blurb": "Collection of simulationsi that utilize random delays in their rotation"
-    },
-    "7": {
-        "display_name": "Arfoire for Newbies",
-        "blurb": "Arfoire's collection of simulations targetted towards new players"
-    },
-    "8": {
-        "display_name": "APL",
-        "blurb": "Collection of simulations with rotation written as a priority list (also frequently know as action priority list, or APL)"
-    },
-    "9": {
-        "display_name": "Guides",
-        "blurb": "Collection of simulations used by various guide writers for KQM, etc..."
-    }
+  "0": {
+    "display_name": "Invalid"
+  },
+  "1": {
+    "display_name": "gcsim",
+    "blurb": "The default unnamed tag contains hundreds of interesting sims meant as examples for users to search for a team and have something to work with. There's no requirement to follow any sort of standardization, and the level of optimization or reasonable application to in-game can vary wildly."
+  },
+  "2": {
+    "display_name": "Internal Test"
+  },
+  "5": {
+    "display_name": "Itto Simps",
+    "blurb": "Sims of Itto doing Itto things (maintained by Tris)."
+  },
+  "6": {
+    "display_name": "Action Execution Delays",
+    "blurb": "Sims that utilize a lot of delays before executing actions, or have variance in their swap_delay instead of fixed. Usually involving randomized distributions. They are trying to model what happens when sims are not frame-perfectly executed, especially for reaction heavy teams that are sensitive to timing."
+  },
+  "7": {
+    "display_name": "Arfoire for Newbies",
+    "blurb": "Arfoire's collection of sims targetted towards new players."
+  },
+  "8": {
+    "display_name": "APL",
+    "blurb": "Sims with all their actions written as a priority list instead of looping the same set of actions repeatedly."
+  },
+  "9": {
+    "display_name": "Guides",
+    "blurb": "Sims used by various guide writers for KQM, etc.",
+    "default_exclude": true
+  }
 }
