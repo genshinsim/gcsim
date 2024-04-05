@@ -6,14 +6,14 @@ import {
   useToast,
 } from "@gcsim/components";
 import "@gcsim/components/src/index.css";
-import { db } from "@gcsim/types";
+import { Entry } from "@gcsim/types/src/generated/index.db";
 import axios from "axios";
 import React from "react";
 import { Route, Switch } from "wouter";
 
 function App({ id }: { id: string }) {
-  const [main, setMain] = React.useState<db.Entry | null>(null);
-  const [data, setData] = React.useState<db.Entry[]>([]);
+  const [main, setMain] = React.useState<Entry | null>(null);
+  const [data, setData] = React.useState<Entry[]>([]);
   const { toast } = useToast();
 
   React.useEffect(() => {
