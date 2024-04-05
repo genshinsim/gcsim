@@ -22,10 +22,11 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 		profile.Modified = true
 		profile.ParticleDropThreshold = 0
 		profile.ParticleDropCount = 0
-		profile.ParticleElement = 0
+		profile.ParticleElement = attributes.NoElement
 		profile.ParticleDrops = nil
 		profile.HP = 562949953421311
-		for elem := attributes.Electro; elem <= attributes.Physical; elem++ {
+		res := []attributes.Element{attributes.Electro, attributes.Cryo, attributes.Hydro, attributes.Physical, attributes.Pyro, attributes.Geo, attributes.Dendro, attributes.Anemo}
+		for _, elem := range res {
 			profile.Resist[elem] = 0.1
 		}
 		return nil
