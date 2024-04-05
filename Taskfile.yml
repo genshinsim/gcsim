@@ -29,10 +29,6 @@ tasks:
     dir: ./pkg/stats
     cmds:
       - go generate
-  protos-to-ts:
-    dir: ./ui
-    cmds:
-      - yarn gen:ts
   embed:
     cmds:
       - sh -c "scripts/build_preview.sh"
