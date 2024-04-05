@@ -87,11 +87,15 @@ func mul(l, r *number) *number {
 }
 
 func div(l, r *number) *number {
-	return &number{
-		ival:    l.ival / r.ival,
-		fval:    l.fval / r.fval,
+	n := &number{
 		isFloat: l.isFloat || r.isFloat,
 	}
+	if n.isFloat {
+		n.fval = ntof(l) / ntof(r)
+	} else {
+		n.ival = l.ival / r.ival
+	}
+	return n
 }
 
 func sub(l, r *number) *number {
