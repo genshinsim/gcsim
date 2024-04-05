@@ -130,7 +130,11 @@ func (c *Traveler) burstProc() {
 		//  dealt by the next Falling Thunder, which will deal 200% of its original DMG and will restore
 		//  an additional 1 Energy to the current character.
 		c.c6Damage(&atk)
-		atk.Callbacks = append(atk.Callbacks, c.fallingThunderEnergy(), c.c2(), c.c6Energy())
+		for _, cb := range []combat.AttackCBFunc{c.fallingThunderEnergy(), c.c2(), c.c6Energy()} {
+			if cb != nil {
+				atk.Callbacks = append(atk.Callbacks, cb)
+			}
+		}
 
 		c.Core.QueueAttackEvent(&atk, 1)
 
