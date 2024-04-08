@@ -173,6 +173,9 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 	case ast.ItemAsterisk:
 		return mul(l, r), nil
 	case ast.ItemForwardSlash:
+		if !r.isFloat && r.ival == 0 {
+			return nil, fmt.Errorf("division by zero")
+		}
 		return div(l, r), nil
 	case ast.OpGreaterThan:
 		return gt(l, r), nil
