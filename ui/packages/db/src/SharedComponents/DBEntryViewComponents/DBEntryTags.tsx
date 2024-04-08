@@ -1,4 +1,4 @@
-import tagData from '@gcsim/db/src/tags.json';
+import tagData from '@gcsim/data/src/tags.json';
 import {model} from '@gcsim/types';
 import {useLocation} from 'wouter';
 
