@@ -64,6 +64,15 @@ func SetupCharactersInCore(core *core.Core, chars []info.CharacterProfile, initi
 
 	active := -1
 	for i := range chars {
+		// if using random stats, ignore all stats except main
+		if chars[i].RandomSubstats != nil {
+			stats, err := generateRandSubs(chars[i].RandomSubstats, core.Rand)
+			if err != nil {
+				return err
+			}
+			chars[i].Stats = stats
+			clear(chars[i].StatsByLabel)
+		}
 		i, err := core.AddChar(chars[i])
 		if err != nil {
 			return err
