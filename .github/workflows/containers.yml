@@ -1,0 +1,42 @@
+  name: deployment build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      # this should be changed to on main pr + specific tags
+      - containers
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get branch names
+        id: branch-name
+        uses: tj-actions/branch-names@v7
+
+      # grab latest sha
+      - name: Setup Environment (PR)  
+        if: ${{ github.event_name == 'pull_request' }}  
+        shell: bash  
+        run: |  
+          echo "LAST_COMMIT_SHA=${{ github.event.pull_request.head.sha }}" >> ${GITHUB_ENV}  
+      - name: Setup Environment (Push)  
+        if: ${{ github.event_name == 'push' }}  
+        shell: bash  
+        run: |  
+          echo "LAST_COMMIT_SHA=${GITHUB_SHA}" >> ${GITHUB_ENV}
+
+      # setup + test go and yarn
+      - uses: actions/checkout@v3
+      - name: go-setup-and-test
+        uses: ./.github/actions/go-setup-and-test
+      - name: yarn-setup-and-test
+        uses: ./.github/actions/yarn-setup-and-test
+
+      # embed container
+      - name: build embedgenerator container
+        uses: ./.github/actions/containers/embedgenerator
+        with:
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          githubActor: $${{ github.actor}}
+          githubRepo: $${{ github.repository }}

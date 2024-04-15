@@ -7,6 +7,7 @@ import (
 	"io"
 	"mime"
 	"net/http"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
@@ -27,7 +28,7 @@ func (s *Server) handleProxy(prefix string) http.HandlerFunc {
 var ErrDir = errors.New("path is dir")
 
 func (s *Server) tryRead(requestedPath string, w http.ResponseWriter) error {
-	f, err := s.staticFS.Open(path.Join("dist", requestedPath))
+	f, err := os.Open(path.Join(s.staticDir, requestedPath))
 	if err != nil {
 		return err
 	}

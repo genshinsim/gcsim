@@ -3,7 +3,6 @@ package embedgenerator
 import (
 	"context"
 	"crypto/tls"
-	"embed"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -33,7 +32,7 @@ type Server struct {
 	authKey    string
 
 	// static asset; mandatory to serve from
-	staticFS embed.FS
+	staticDir string
 
 	// additional local assets
 	useLocalAssets bool
@@ -57,9 +56,9 @@ type Server struct {
 	browser *rod.Browser
 }
 
-func New(fs embed.FS, connOpt redis.UniversalOptions, launcherURL, previewURL, authKey string) (*Server, error) {
+func New(staticDir string, connOpt redis.UniversalOptions, launcherURL, previewURL, authKey string) (*Server, error) {
 	s := &Server{
-		staticFS:        fs,
+		staticDir:       staticDir,
 		work:            make(chan string),
 		l:               launcher.MustNewManaged(launcherURL),
 		Mux:             chi.NewRouter(),
