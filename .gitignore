@@ -5,7 +5,6 @@
 *.pprof
 .DS_Store
 /*.txt
-/build/*
 *.out
 !.keep
 out.json

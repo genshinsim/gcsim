@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"embed"
 	"errors"
 	"fmt"
 	"log"
@@ -17,15 +16,13 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-//go:embed dist/*
-var content embed.FS
-
 type config struct {
-	Host        string `env:"HOST"`
-	Port        string `env:"PORT"         envDefault:"3000"`
-	LauncherURL string `env:"LAUNCHER_URL" envDefault:"ws://launcher:7317"`
-	AuthKey     string `env:"AUTH_KEY"`
-	PreviewURL  string `env:"PREVIEW_URL"  envDefault:"http://preview:3000"`
+	Host         string `env:"HOST"`
+	Port         string `env:"PORT"          envDefault:"3000"`
+	LauncherURL  string `env:"LAUNCHER_URL"  envDefault:"ws://launcher:7317"`
+	AuthKey      string `env:"AUTH_KEY"`
+	PreviewURL   string `env:"PREVIEW_URL"   envDefault:"http://preview:3000"`
+	StaticAssets string `env:"STATIC_ASSETS" envDefault:"/dist"`
 	// proxy is always used
 	ProxyTO     string `env:"PROXY_TO"     envDefault:"https://gcsim.app"`
 	ProxyPrefix string `env:"PROXY_PREFIX" envDefault:"/api"`
@@ -56,11 +53,17 @@ func main() {
 	}
 	log.Println("running with config ", cfg)
 
-	server, err := embedgenerator.New(content, redis.UniversalOptions{
-		Addrs:      cfg.RedisURL,
-		DB:         cfg.RedisDB,
-		MasterName: cfg.RedisMasterName,
-	}, cfg.LauncherURL, cfg.PreviewURL, cfg.AuthKey)
+	server, err := embedgenerator.New(
+		cfg.StaticAssets,
+		redis.UniversalOptions{
+			Addrs:      cfg.RedisURL,
+			DB:         cfg.RedisDB,
+			MasterName: cfg.RedisMasterName,
+		},
+		cfg.LauncherURL,
+		cfg.PreviewURL,
+		cfg.AuthKey,
+	)
 
 	panicErr(err)
 
