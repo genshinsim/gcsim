@@ -1274,7 +1274,7 @@
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "notes": "Not available in skill state. Need to use attack right before charge."
     },
     {
       "ability": "skill",
