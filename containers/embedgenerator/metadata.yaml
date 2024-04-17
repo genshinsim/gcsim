@@ -1,0 +1,9 @@
+---
+app: embedgenerator
+build: ./ci/build.sh
+channels:
+  - name: develop
+    platforms: ["linux/amd64"]
+    tests:
+      enabled: true
+      type: web

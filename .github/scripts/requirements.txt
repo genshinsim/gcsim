@@ -1,0 +1,4 @@
+requests
+pyyaml
+packaging
+jinja2
