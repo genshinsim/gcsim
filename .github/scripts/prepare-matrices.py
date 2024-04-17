@@ -132,7 +132,7 @@ def get_image_metadata(subdir, meta, hash, forRelease=False, force=False, channe
             # build scripts
             if "build_scripts" in channel:
                 if platform in channel["build_scripts"]:
-                    platformToBuild["build_script"] = channel["build_scripts"][platform]
+                    platformToBuild["build_script"] = os.path.join(subdir, channel["build_scripts"][platform])
 
             if isfile(os.path.join(subdir, channel["name"], "Dockerfile")):
                 platformToBuild["dockerfile"] = os.path.join(subdir, channel["name"], "Dockerfile")

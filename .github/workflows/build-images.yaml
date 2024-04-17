@@ -141,7 +141,7 @@ jobs:
       - name: run build script if exist
         shell: bash
         run: |
-          if [[ -z "${{ matrix.image.build_script }}"]]; then
+          if [[ -z "${{ matrix.image.build_script }}" ]]; then
             exit 0
           file
           source ${{ matrix.image.build_script }}
