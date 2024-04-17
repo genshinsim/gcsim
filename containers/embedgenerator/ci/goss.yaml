@@ -1,0 +1,4 @@
+---
+port:
+  tcp:3000:
+    listening: true
