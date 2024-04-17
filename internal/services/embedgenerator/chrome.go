@@ -29,6 +29,10 @@ func (s *Server) listen() {
 
 	for {
 		select {
+		case _, ok := <-s.serverClosed:
+			if !ok {
+				return
+			}
 		case w := <-s.work:
 			queue = append(queue, w)
 			s.logger.Info("got work", "id", w)
@@ -109,7 +113,7 @@ func (s *Server) generateSnapshot(url string) ([]byte, error) {
 		// can't do much aobut this err here other than log it
 		if err != nil {
 			s.logger.Info("error encountered looking for value attribute", "err", err)
-			return fmt.Errorf("unexpected server error: %v", err)
+			return fmt.Errorf("unexpected server error: %w", err)
 		}
 		return fmt.Errorf("generate preview failed: %v", *str)
 	}).Do()

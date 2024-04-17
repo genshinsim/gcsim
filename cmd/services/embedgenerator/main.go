@@ -17,18 +17,20 @@ import (
 )
 
 type config struct {
-	Host         string `env:"HOST"`
-	Port         string `env:"PORT"          envDefault:"3000"`
-	LauncherURL  string `env:"LAUNCHER_URL"  envDefault:"ws://launcher:7317"`
+	Host string `env:"HOST"`
+	Port string `env:"PORT" envDefault:"3000"`
+	// go-rod launcher url
+	LauncherURL string `env:"LAUNCHER_URL" envDefault:"ws://launcher:7317"`
+	PreviewURL  string `env:"PREVIEW_URL"  envDefault:"http://preview:3000"`
+	// auth key for checking incoming requests
 	AuthKey      string `env:"AUTH_KEY"`
-	PreviewURL   string `env:"PREVIEW_URL"   envDefault:"http://preview:3000"`
 	StaticAssets string `env:"STATIC_ASSETS" envDefault:"/dist"`
 	// proxy is always used
-	ProxyTO     string `env:"PROXY_TO"     envDefault:"https://gcsim.app"`
+	ProxyTo     string `env:"PROXY_TO"     envDefault:"https://gcsim.app"`
 	ProxyPrefix string `env:"PROXY_PREFIX" envDefault:"/api"`
-	// this is for local image assets
-	LocalAssets string `env:"ASSETS_PATH"`
-	AssetPrefix string `env:"ASSETS_PREFIX" envDefault:"/api/assets"`
+	// assets proxy
+	AssetProxyTo     string `env:"ASSET_PROXY_TO"`
+	AssetProxyPrefix string `env:"ASSET_PROXY_PREFIX"`
 	// redis options
 	RedisURL        []string `env:"REDIS_URL"         envDefault:"redis:6379" envSeparator:""`
 	RedisDB         int      `env:"REDIS_DB"          envDefault:"0"`
@@ -68,13 +70,13 @@ func main() {
 	panicErr(err)
 
 	err = server.SetOpts(
-		embedgenerator.WithProxy(cfg.ProxyPrefix, cfg.ProxyTO),
+		embedgenerator.WithProxy(cfg.ProxyPrefix, cfg.ProxyTo),
 		embedgenerator.WithSkipTLSVerify(),
 	)
 	panicErr(err)
 
-	if cfg.LocalAssets != "" {
-		panicErr(server.SetOpts(embedgenerator.WithLocalAssets(cfg.AssetPrefix, cfg.LocalAssets)))
+	if cfg.AssetProxyPrefix != "" && cfg.AssetProxyTo != "" {
+		panicErr(server.SetOpts(embedgenerator.WithAssetsProxy(cfg.AssetProxyPrefix, cfg.AssetProxyTo)))
 	}
 
 	if cfg.GenerateTimeoutInSec > 0 {
