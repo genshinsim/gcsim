@@ -14,38 +14,39 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Build UI
-    working-directory: ./ui
-    shell: bash
-    run: yarn workspace @gcsim/embed build
+    - name: Build UI
+      working-directory: ./ui
+      shell: bash
+      run: yarn workspace @gcsim/embed build
 
-  - name: List UI dist
-    working-directory: ./ui/packages/embed/dist
-    shell: bash
-    run: ls -lh
+    - name: List UI dist
+      working-directory: ./ui/packages/embed/dist
+      shell: bash
+      run: ls -lh
 
-  - name: Log in to the Container registry
-    uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-    with:
-      registry: ghcr.io
-      username: ${{ inputs.githubActor }}
-      password: ${{ inputs.githubToken }}
-      
-  - name: Extract metadata (tags, labels) for Docker
-    id: meta
-    uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-    with:
-      images: ghcr.io/${{ inputs.githubRepo }}
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ghcr.io
+        username: ${{ inputs.githubActor }}
+        password: ${{ inputs.githubToken }}
 
-  - name: Build go executable
-    working-directory: ./cmd/services/embedgenerator
-    run: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build .
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      with:
+        images: ghcr.io/${{ inputs.githubRepo }}
 
-  - name: Build and push Docker image
-    uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-    with:
-      context: .
-      file: ./build/docker/embedgenerator/Dockerfile
-      push: true
-      tags: ${{ steps.meta.outputs.tags }}
-      labels: ${{ steps.meta.outputs.labels }}
+    - name: Build go executable
+      working-directory: ./cmd/services/embedgenerator
+      shell: bash
+      run: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build .
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      with:
+        context: .
+        file: ./build/docker/embedgenerator/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
