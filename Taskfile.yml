@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 tasks:
   build:
@@ -8,20 +8,27 @@ tasks:
       - task: pipeline
   protos:
     cmds:
-      - protoc --experimental_allow_proto3_optional --go_out=module=github.com/genshinsim/gcsim:. --go-grpc_out=module=github.com/genshinsim/gcsim:. protos/**/*.proto
+      - |
+        protoc --experimental_allow_proto3_optional \
+               --go_out=module=github.com/genshinsim/gcsim:. \
+              --go-grpc_out=module=github.com/genshinsim/gcsim:. \
+              --plugin=./ui/node_modules/.bin/protoc-gen-ts_proto \
+              --ts_proto_opt=useOptionals=all \
+              --ts_proto_opt=snakeToCamel=json \
+              --ts_proto_out=./ui/packages/types/src/generated \
+              --ts_proto_opt=esModuleInterop=true \
+              --ts_proto_opt=useJsonName=true \
+              --ts_proto_opt=outputIndex=true \
+              protos/**/*.proto
       - go run scripts/bsontags/main.go -dir ./pkg/model -verbose
       - go run scripts/bsontags/main.go -dir ./backend/pkg/services/db -verbose
       - go run scripts/bsontags/main.go -dir ./backend/pkg/services/share -verbose
       - task: msgp
-      - task: protos-to-ts
+      # - task: protos-to-ts
   msgp:
     dir: ./pkg/stats
     cmds:
       - go generate
-  protos-to-ts:
-    dir: ./ui
-    cmds:
-      - yarn gen:ts
   embed:
     cmds:
       - sh -c "scripts/build_preview.sh"
@@ -34,13 +41,13 @@ tasks:
       - go build -o '{{.OUT | default "main.wasm"}}' -ldflags="-X 'main.shareKey=${{if eq OS "windows"}}env:{{end}}GCSIM_SHARE_KEY'"
       - echo "compiled wasm successfully!"
     env:
-      GOOS: js 
+      GOOS: js
       GOARCH: wasm
   dev-server-mode:
     desc: watches for change and launches server mode
     watch: true
     sources:
-      - '**/*.go'
+      - "**/*.go"
     vars:
       WIN_CMD: Get-CimInstance -ClassName Win32_PRocess -Filter "CommandLine LIKE '%GCSIM_SERVER%'" | ForEach-Object -Process {taskkill /F /PID $_.ProcessId}
     cmds:
@@ -51,4 +58,3 @@ tasks:
         platforms: [linux, darwin]
         ignore_error: true
       - go run cmd/server/main.go GCSIM_SERVER=1
-

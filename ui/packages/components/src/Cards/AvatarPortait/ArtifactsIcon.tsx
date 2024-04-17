@@ -11,13 +11,13 @@ const ArtifactsIcon = ({
       filter="url(#outlinew)"
       href={`/api/assets/artifacts/${sets[0]}_flower.png`}
       height="35"
-      width={sets.length > 1 || half ? "17.5" : "35"}
+      width={sets.length > 1 || half ? '17.5' : '35'}
       x="0"
       y="0"
       preserveAspectRatio={
-        sets.length > 1 || half ? "xMinYMid slice" : undefined
+        sets.length > 1 || half ? 'xMinYMid slice' : undefined
       }
-    ></image>,
+    />,
   ];
   if (sets.length > 1) {
     artifacts.push(
@@ -30,7 +30,7 @@ const ArtifactsIcon = ({
         x="17.5"
         y="0"
         preserveAspectRatio="xMaxYMid slice"
-      ></image>
+      />,
     );
   }
 

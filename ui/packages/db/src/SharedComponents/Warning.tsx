@@ -14,7 +14,7 @@ export function Warning() {
 
   if (hide) {
     return (
-      <div className="flex flex-col py-0 max-w-xs sm:min-w-wsm md:min-w-wmd lg:min-w-wlg xl:min-w-wxl sm:max-w-sm md:max-w-2xl lg:max-w-4xl">
+      <div className="flex flex-col py-0 min-[1300px]:w-[970px]">
         <div className="ml-auto">
           <Button
             small
@@ -31,7 +31,7 @@ export function Warning() {
   }
 
   return (
-    <div className="relative flex flex-col gap-2 items-center bg-slate-900 px-5 py-0 border border-blue-800 max-w-xs sm:min-w-wsm md:min-w-wmd lg:min-w-wlg xl:min-w-wxl sm:max-w-sm md:max-w-2xl lg:max-w-4xl">
+    <div className="relative flex flex-col gap-2 items-center bg-slate-900 px-5 py-0 border border-blue-800 min-[1300px]:w-[970px] max-w-[970px]">
       <div className="absolute top-1 right-1">
         <Button
           icon="cross"
@@ -51,11 +51,9 @@ export function Warning() {
       </div>
       <div className="space-y-3 pb-3 text-s leading-5 text-gray-400">
         <Trans i18nKey="db.readme_body">
-          <p/>
-          <p>
-            {{ rerun: t<string>("viewer.rerun") }}
-          </p>
-          <p className="font-semibold leading-6 text-gray-200"/>
+          <p />
+          <p>{{ rerun: t<string>("viewer.rerun") }}</p>
+          <p className="font-semibold leading-6 text-gray-200" />
         </Trans>
       </div>
     </div>

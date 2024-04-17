@@ -104,7 +104,7 @@ func (c *char) a1TapestrySetup() {
 		snap := c.Snapshot(&ai)
 		ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 		ai.FlatDmg *= thrustDefScaling[c.TalentLvlSkill()]
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(t, nil, 2.5), 0)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(t, nil, 2.5), 1)
 
 		// increment attack count and delete seize the moment if reached limit
 		c.a1AttackCount++

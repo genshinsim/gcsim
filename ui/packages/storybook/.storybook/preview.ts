@@ -4,6 +4,7 @@ import {
 } from "@storybook/addon-viewport";
 import type { Preview } from "@storybook/react";
 import "../src/index.css";
+import i18n from "./i18n";
 
 const customViewports = {
   desktop1024: {
@@ -34,6 +35,13 @@ const customViewports = {
       height: "1080",
     },
   },
+  discord: {
+    name: "discord",
+    styles: {
+      width: "520",
+      height: "250",
+    },
+  },
 };
 
 const preview: Preview = {
@@ -51,6 +59,19 @@ const preview: Preview = {
         ...customViewports,
       },
       defaultViewport: "desktop",
+    },
+    i18n,
+  },
+  globals: {
+    locale: "en",
+    locales: {
+      en: "English",
+      zh: "中文",
+      ja: "日本語",
+      ko: "한국어",
+      es: "Español",
+      ru: "Русский",
+      de: "Deutsch",
     },
   },
 };

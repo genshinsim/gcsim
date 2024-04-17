@@ -3,12 +3,10 @@
   "main": "src/index.ts",
   "packageManager": "yarn@3.2.4",
   "private": true,
-  "scripts": {
-    "gen:ts": "pbjs --keep-case -t static-module -w es6 --no-create --no-encode --no-decode --no-verify --no-convert --no-service ../../../protos/**/**/*.proto | pbts -o src/protos.d.ts - && echo \"generated ts protos successfully!\"",
-    "gen:go": "cd ../../../ && go generate && echo \"generated go protos successfully!\"",
-    "watch": "watch \"yarn run gen:ts && yarn run gen:go\" ../../../protos/model"
-  },
   "devDependencies": {
     "protobufjs-cli": "^1.1.1"
+  },
+  "dependencies": {
+    "long": "^5.2.3"
   }
 }

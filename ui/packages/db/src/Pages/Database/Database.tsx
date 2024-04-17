@@ -18,12 +18,12 @@ type Props = {
 
 export const Database = ({ initialFilter = defaultFilter }: Props) => {
   const [filter, dispatch] = useReducer(filterReducer, initialFilter);
-  const [data, setData] = useState<db.IEntry[]>([]);
+  const [data, setData] = useState<db.Entry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
 
-  const appendData = (next: db.IEntry[]) => {
+  const appendData = (next: db.Entry[]) => {
     // let d = [ ...data,...next.filter(e => {
     //   return false
     // })]
@@ -32,7 +32,7 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
 
   const querydb = (query: DbQuery, nextPage: number, append: boolean) => {
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
-      .then((resp: { data: db.IEntries }) => {
+      .then((resp: { data: db.Entries }) => {
         if (resp.data && resp.data.data) {
           setPage(nextPage);
           setHasMore(true);

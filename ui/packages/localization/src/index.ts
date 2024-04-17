@@ -39,3 +39,5 @@ export const resources = {
     game: merge(names.German, traveler_names.German),
   },
 };
+
+export const specialLocales = ["zh", "ja", "ko"];

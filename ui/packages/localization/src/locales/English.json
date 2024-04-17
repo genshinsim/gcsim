@@ -95,13 +95,13 @@
     "type_to_search": "Type to search...",
     "weapon": "Weapon",
     "showing_simulations": "Showing {{i}} simulations",
-    "simMode": "Sim Mode",
+    "simMode": "Mode",
     "targetCount": "Target Count",
     "dpsPerTarget": "DPS per Target",
     "avgTotalDmg": "Avg Total Dmg",
     "avgSimTime": "Avg Sim Time",
     "createDate": "Date Added",
-    "ttk": "Time to Kill",
+    "ttk": "TTK",
     "duration": "Duration",
     "unknown": "Unknown",
     "openInViewer": "Open in Viewer",
@@ -392,5 +392,8 @@
   "states": {
     "true": "true",
     "false": "false"
+  },
+  "common": {
+    "data_not_found": "Data not found"
   }
 }

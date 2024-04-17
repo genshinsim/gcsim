@@ -15,16 +15,15 @@
     "fix-mismatches": "syncpack fix-mismatches",
     "start": "concurrently \"yarn:start:watch-wasm\" \"yarn:start:web\"",
     "start:watch-wasm": "yarn workspace @gcsim/executors watch:web",
-    "start:watch-gen": "yarn workspace @gcsim/types watch",
     "start:web": "yarn workspace @gcsim/web dev",
     "start:embed": "yarn workspace @gcsim/embed dev",
-    "start:db": "yarn gen && yarn workspace @gcsim/db dev",
+    "start:db": "yarn workspace @gcsim/db dev",
     "start:docs": "yarn workspace @gcsim/docs start",
     "start:taghelper": "yarn workspace @gcsim/taghelper dev",
     "preview": "yarn run preview:web",
     "preview:web": "yarn workspace @gcsim/web preview",
     "preview:embed": "yarn workspace @gcsim/embed preview",
-    "build": "yarn run gen:ts && yarn run build:wasm && yarn run build:web",
+    "build": "yarn run build:wasm && yarn run build:web",
     "build:wasm": "yarn workspace @gcsim/executors build:wasm:web",
     "build:web": "yarn workspace @gcsim/web build",
     "build:embed": "yarn workspace @gcsim/embed build",
@@ -33,7 +32,6 @@
     "build:taghelper": "yarn workspace @gcsim/taghelper build",
     "deploy:workers": "yarn workspace @gcsim/workers deploy",
     "start:workers": "yarn workspace @gcsim/workers start",
-    "gen": "yarn workspace @gcsim/types gen:ts",
     "storybook": "yarn workspace @gcsim/storybook storybook"
   },
   "devDependencies": {
@@ -61,6 +59,7 @@
     "rimraf": "^3.0.2",
     "syncpack": "^8.2.4",
     "tailwindcss": "^3.2.1",
+    "ts-proto": "^1.170.0",
     "typescript": "^4.8.4",
     "watch": "^1.0.2"
   }

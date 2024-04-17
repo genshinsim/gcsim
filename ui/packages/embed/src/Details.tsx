@@ -1,4 +1,4 @@
-//TODO(kyle): data should be typed model.ISimulationResult
+//TODO(kyle): data should be typed model.SimulationResult
 const Details = ({ data }: { data: any }) => {
   let valid = "key_type" in data && data.key_type !== "";
   if ("modified" in data) {
@@ -19,8 +19,7 @@ const Details = ({ data }: { data: any }) => {
           </div>
         )}
       </div>
-      {!("schema_version" in data) 
-      ? (
+      {!("schema_version" in data) ? (
         <div className="flex flex-col ml-2 mr-2 mb-2 mt-2 p-2 rounded bg-[#252A31] ">
           Simulation out dated; Please rerun
         </div>

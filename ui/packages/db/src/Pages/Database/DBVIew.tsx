@@ -1,21 +1,21 @@
-import { db } from "@gcsim/types";
-import eula from "images/eula.png";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { ActionBar } from "SharedComponents/ActionBar";
-import { Warning } from "SharedComponents/Warning";
-import { ListView } from "../../SharedComponents/ListView";
-import { useTranslation } from "react-i18next";
+import {db} from '@gcsim/types';
+import eula from 'images/eula.png';
+import {useTranslation} from 'react-i18next';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import {ActionBar} from 'SharedComponents/ActionBar';
+import {Warning} from 'SharedComponents/Warning';
+import {ListView} from '../../SharedComponents/ListView';
 
 type Props = {
-  data: db.IEntry[];
+  data: db.Entry[];
   fetchData: () => void;
   hasMore: boolean;
 };
 
 export const DBView = (props: Props) => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   return (
-    <div className="flex flex-col gap-4 m-8 my-4 items-center">
+    <div className="flex flex-col gap-4 m-8 my-4 items-center min-[1300px]:mx-[160px]">
       <ActionBar simCount={props.data.length} />
       <Warning />
       {props.data.length === 0 ? (
@@ -27,15 +27,13 @@ export const DBView = (props: Props) => {
           dataLength={props.data.length} //This is important field to render the next data
           next={props.fetchData}
           hasMore={props.hasMore}
-          loader={<h4>{t<string>("sim.loading")}</h4>}
+          loader={<h4>{t('sim.loading')}</h4>}
           endMessage={
             <>
               <p className="text-center mt-4">
-                <b>{t<string>("db.seen_it_all")}</b>
+                <b>{t('db.seen_it_all')}</b>
               </p>
-              <p className="text-center">
-                {t<string>("db.not_find")}
-              </p>
+              <p className="text-center">{t('db.not_find')}</p>
             </>
           }
           //TODO: enable pull down functionality for refreshing maybe??

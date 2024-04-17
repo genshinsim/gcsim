@@ -1,6 +1,6 @@
-import tagData from "@gcsim/db/src/tags.json";
-import { model } from "@gcsim/types";
-import { useLocation } from "wouter";
+import tagData from '@gcsim/data/src/tags.json';
+import {model} from '@gcsim/types';
+import {useLocation} from 'wouter';
 
 export default function DBEntryTags({
   tags,
@@ -14,7 +14,7 @@ export default function DBEntryTags({
   const [_, setLocation] = useLocation();
 
   return (
-    <div className={"flex flex-row overflow-hidden"}>
+    <div className={'flex flex-row overflow-hidden'}>
       {tags
         ?.filter((tag) => tag !== 1)
         .map((tag) => (
@@ -23,8 +23,7 @@ export default function DBEntryTags({
             key={tag}
             onClick={() => {
               setLocation(`/tag/${tag}`);
-            }}
-          >
+            }}>
             {tagData[tag].display_name}
           </div>
         ))}
