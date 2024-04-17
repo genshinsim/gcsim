@@ -187,6 +187,7 @@ jobs:
             CHANNEL=${{ matrix.image.channel }}
           context: ${{ matrix.image.context }}
           platforms: ${{ matrix.image.platform }}
+          provenance: false
           file: ${{ matrix.image.dockerfile }}
           outputs: ${{ steps.prepare-build-outputs.outputs.outputs }}
           cache-from: type=gha
