@@ -131,11 +131,7 @@ func (stats *SubstatOptimizerDetails) cloneStatsWithFixedAllocations(fixedSubsta
 			if stat == 0 {
 				continue
 			}
-			if attributes.Stat(idxStat) == attributes.ER {
-				stats.charProfilesInitial[i].Stats[idxStat] += float64(fixedSubstatCount) * stat
-			} else {
-				stats.charProfilesInitial[i].Stats[idxStat] += float64(fixedSubstatCount) * stat * stats.charSubstatRarityMod[i]
-			}
+			stats.charProfilesInitial[i].Stats[idxStat] += float64(fixedSubstatCount) * stat * stats.charSubstatRarityMod[i]
 		}
 	}
 }

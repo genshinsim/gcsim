@@ -32,7 +32,7 @@ func (stats *SubstatOptimizerDetails) calculateERBaseline() {
 		}
 		stats.charSubstatFinal[i][attributes.ER] = erSubs
 
-		stats.charProfilesERBaseline[i].Stats[attributes.ER] += float64(erSubs) * stats.substatValues[attributes.ER]
+		stats.charProfilesERBaseline[i].Stats[attributes.ER] += float64(erSubs) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[i]
 
 		if strings.Contains(stats.charProfilesInitial[i].Weapon.Name, "favonius") {
 			stats.calculateERBaselineHandleFav(i)
@@ -97,16 +97,18 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 		}
 		erDiff := percentile(a.AdditionalErNeeded[idxChar], 0.8)
 
+		erSubVal := stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
+
 		// find the closest whole count of ER subs
 		// TODO: is ceil better than round? Maybe round with some kind of bias?
-		erSubs := int(math.Round(erDiff / stats.substatValues[attributes.ER]))
+		erSubs := int(math.Round(erDiff / erSubVal))
 
 		// Raiden doesn't start at 0 ER subs so need to subtract that out
 		erSubs = clamp[int](0, erSubs, stats.charSubstatLimits[idxChar][attributes.ER]-stats.charSubstatFinal[idxChar][attributes.ER])
-		stats.charMaxExtraERSubs[idxChar] = math.Ceil(a.AdditionalErNeeded[idxChar][erLen-1]/stats.substatValues[attributes.ER]) - float64(stats.charSubstatFinal[idxChar][attributes.ER])
+		stats.charMaxExtraERSubs[idxChar] = math.Ceil(a.AdditionalErNeeded[idxChar][erLen-1]/erSubVal) - float64(stats.charSubstatFinal[idxChar][attributes.ER])
 		stats.charProfilesCopy[idxChar] = stats.charProfilesERBaseline[idxChar].Clone()
 		stats.charSubstatFinal[idxChar][attributes.ER] += erSubs
-		stats.charProfilesCopy[idxChar].Stats[attributes.ER] += float64(erSubs) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
+		stats.charProfilesCopy[idxChar].Stats[attributes.ER] += float64(erSubs) * erSubVal
 	}
 	stats.simcfg.Settings.IgnoreBurstEnergy = false
 }
