@@ -161,9 +161,6 @@ func NewSubstatOptimizerDetails(
 	s.substatValues[attributes.DEF] = 19.68
 	s.substatValues[attributes.HP] = 253.94
 
-	// Used to try to back out artifact main stats for limits
-	// TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
-	// Most people will have 1 5* artifact which messes things up
 	s.mainstatValues[attributes.HP] = 4780
 	s.mainstatValues[attributes.ATK] = 311
 	s.mainstatValues[attributes.ATKP] = 0.466
@@ -182,7 +179,7 @@ func NewSubstatOptimizerDetails(
 	s.mainstatValues[attributes.DendroP] = 0.466
 	s.mainstatValues[attributes.PhyP] = 0.583
 
-	s.mainstatTol = 0.005
+	s.mainstatTol = 0.005       // current main stat tolerance is 0.5%
 	s.fourstarMod = 0.746514762 // The average coefficient to convert 5* main stats to 4* main stats
 
 	// Only includes damage related substats scaling. Ignores things like HP for Barbara
@@ -226,71 +223,115 @@ func NewSubstatOptimizerDetails(
 	return &s
 }
 
-func (stats *SubstatOptimizerDetails) isMainStatInTolerance(idxChar, idxStat, fiveStarCount, fourStarCount int) bool {
+// returns -1 if the stat is too low, 0 if in tolerance, 1 if the stat is too high
+func (stats *SubstatOptimizerDetails) isMainStatInTolerance(idxChar, idxStat, fourStarCount, fiveStarCount int) int {
 	lower := stats.mainstatValues[idxStat] * (1 - stats.mainstatTol) * (float64(fiveStarCount) + stats.fourstarMod*float64(fourStarCount))
 	upper := stats.mainstatValues[idxStat] * (1 + stats.mainstatTol) * (float64(fiveStarCount) + stats.fourstarMod*float64(fourStarCount))
 	val := stats.simcfg.Characters[idxChar].Stats[idxStat]
-	return lower < val && val < upper
+	switch {
+	case val < lower:
+		return -1
+	case val > upper:
+		return 1
+	default:
+		return 0
+	}
 }
 
-var possible_mainstat_count = [][]int{{1, 0}, {0, 1}, {2, 0}, {1, 2}, {0, 2}, {3, 0}, {2, 1}, {1, 2}, {0, 3}}
+// when used with possibleMainstatCount[i][0] * 4value + possibleMainstatCount[i][0] * 5value, this array will be in increasing order
+var possibleMainstatCount = [][]int{{1, 0}, {0, 1}, {2, 0}, {1, 1}, {0, 2}, {3, 0}, {2, 1}, {1, 2}, {0, 3}}
 
 // Obtain substat count limits based on main stats and also determine 4* set status
-// TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
-// Most people will have 1 5* artifact which messes things up
-// TODO: Check whether taking like an average of the two stat values is good enough?
+// TODO: Make the sets fit the requirements of sands/circlet/goblet stats to prevent 2x DMG% or 2x Crit or 2x ER
 func (stats *SubstatOptimizerDetails) setStatLimits() {
 	for i := range stats.simcfg.Characters {
-		char := &stats.simcfg.Characters[i]
-		fourStarCount := 0
-		for set, cnt := range char.Sets {
-			for _, fourStar := range stats.artifactSets4Star {
-				if set == fourStar {
-					fourStarCount += cnt
-				}
-			}
-		}
-
-		stats.charSubstatLimits[i] = make([]int, attributes.EndStatType)
-
-		fourStarMainsCount := 0
-		for idxStat, stat := range stats.mainstatValues {
-			if stat == 0 {
-				continue
-			}
-			if char.Stats[idxStat] == 0 {
-				stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap
-				continue
-			}
-
-			found := false
-			for _, count := range possible_mainstat_count {
-				main4 := count[0]
-				main5 := count[1]
-				if stats.isMainStatInTolerance(i, idxStat, main5, main4) {
-					// Currently the max limit per substat is not adjusted for 4* mains
-					stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * (main5 + main4))
-					fourStarMainsCount += main4
-					found = true
-				}
-			}
-			if !found {
-				val := char.Stats[idxStat]
-				msgEnd := " is not a valid multiple of 5* mainstats"
-				if fourStarMainsCount != 0 {
-					msgEnd = " is not a valid sum of 4* or 5* mainstats"
-				}
-				stats.optimizer.logger.Warn(char.Base.Key, " mainstat ", attributes.Stat(idxStat), "=", val, msgEnd)
-			}
-		}
-		if fourStarMainsCount != fourStarCount {
-			stats.optimizer.logger.Warn("User gave ", char.Base.Key, fourStarCount, "x 4* set artifacts, but found ", fourStarMainsCount, "x 4* mainstats")
-		}
-
-		// TODO: replace 2 with a user configurable reduction per 4*
-		stats.charTotalLiquidSubstats[i] = max(stats.totalLiquidSubstats-2*fourStarCount, 0)
-		stats.charSubstatRarityMod[i] = 1.0 - 0.04*float64(fourStarCount)
+		stats.setStatLimitsPerChar(i)
 	}
+}
+
+func (stats *SubstatOptimizerDetails) setStatLimitsPerChar(i int) {
+	char := &stats.simcfg.Characters[i]
+	fourStarCount := 0
+	for set, cnt := range char.Sets {
+		for _, fourStar := range stats.artifactSets4Star {
+			if set == fourStar {
+				fourStarCount += cnt
+			}
+		}
+	}
+
+	stats.charSubstatLimits[i] = make([]int, attributes.EndStatType)
+
+	fourStarMainsCount := 0
+	fiveStarMainsCount := 0
+	for idxStat := range stats.mainstatValues {
+		main4, main5 := stats.setStatLimitsPerCharMainStat(i, idxStat, fourStarCount > 0)
+		fourStarMainsCount += main4
+		fiveStarMainsCount += main5
+	}
+	if fourStarMainsCount != fourStarCount {
+		stats.optimizer.logger.Warn(char.Base.Key, " has ", fourStarMainsCount, "x 4* mainstats but expected ", fourStarCount)
+	}
+	if fourStarMainsCount+fiveStarMainsCount != 5 {
+		stats.optimizer.logger.Warn(char.Base.Key, " has ", fourStarMainsCount+fiveStarMainsCount, "x mainstats but expected 5")
+	}
+
+	// TODO: replace 2 with a user configurable reduction per 4*
+	stats.charTotalLiquidSubstats[i] = max(stats.totalLiquidSubstats-2*fourStarCount, 0)
+
+	// the overall rarity multiplier goes down by 0.04 per four star
+	stats.charSubstatRarityMod[i] = 1.0 - 0.04*float64(fourStarCount)
+}
+
+// Returns (# of 4* mains, # of 5* mains) for the given stat. If the amount does not fit,
+// this function will return a (x,y) such that x and y give a maximum stat value that
+// is less than the value of the stat of the character
+func (stats *SubstatOptimizerDetails) setStatLimitsPerCharMainStat(i, idxStat int, checkFourStars bool) (int, int) {
+	stat := stats.mainstatValues[idxStat]
+	char := &stats.simcfg.Characters[i]
+	if stat == 0 {
+		return 0, 0
+	}
+	if char.Stats[idxStat] == 0 {
+		stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap
+		return 0, 0
+	}
+
+	var main4, main5 int
+
+	// count[0] is # of 4* mains
+	// count[1] is # of 5* mains
+	for _, count := range possibleMainstatCount {
+		if !checkFourStars && count[0] > 0 {
+			continue
+		}
+		inTol := stats.isMainStatInTolerance(i, idxStat, count[0], count[1])
+		if inTol == 0 {
+			// Currently the max limit per substat is not adjusted for 4* mains
+			stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * (count[0] + count[1]))
+			return count[0], count[1]
+		}
+
+		// The possibleMainstatCount array is in increasing order.
+		// Since the stat on the character is too low, we can exit the loop early
+		if inTol < 0 {
+			break
+		}
+		// update such that main4 and main5 give a maximum stat value that
+		// is less than the value of the stat of the character
+		main4 = count[0]
+		main5 = count[1]
+	}
+
+	val := char.Stats[idxStat]
+	msgEnd := " is not a valid multiple of 5* mainstats"
+	if checkFourStars {
+		msgEnd = " is not a valid sum of 4* or 5* mainstats"
+	}
+	stats.optimizer.logger.Warn(char.Base.Key, " mainstat ", attributes.Stat(idxStat), "=", val, msgEnd)
+
+	stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * (main5 + main4))
+	return main4, main5
 }
 
 // Helper function to pretty print substat counts. Stolen from similar function that takes in the float array
