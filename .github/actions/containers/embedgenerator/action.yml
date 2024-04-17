@@ -35,7 +35,7 @@ runs:
       id: meta
       uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
       with:
-        images: ghcr.io/${{ inputs.githubRepo }}
+        images: ghcr.io/{{ inputs.githubRepo }}
 
     - name: Build go executable
       working-directory: ./cmd/services/embedgenerator
