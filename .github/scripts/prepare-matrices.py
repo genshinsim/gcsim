@@ -102,10 +102,6 @@ def get_image_metadata(subdir, meta, hash, forRelease=False, force=False, channe
 
         toBuild["version"] = hash
 
-        # build scripts
-        if "build" in meta:
-            toBuild["build_script"] = meta["build"]
-
         # Image Tags
         toBuild["tags"] = ["rolling", hash]
 
@@ -132,6 +128,11 @@ def get_image_metadata(subdir, meta, hash, forRelease=False, force=False, channe
             # elif platform == "linux/arm64":
             #   #platformToBuild["builder"] = "arc-runner-set-containers-arm64"
             platformToBuild["label_type"]="org.opencontainers.image"
+
+            # build scripts
+            if "build_scripts" in channel:
+                if platform in channel["build_scripts"]:
+                    platformToBuild["build_script"] = channel["build_scripts"][platform]
 
             if isfile(os.path.join(subdir, channel["name"], "Dockerfile")):
                 platformToBuild["dockerfile"] = os.path.join(subdir, channel["name"], "Dockerfile")
