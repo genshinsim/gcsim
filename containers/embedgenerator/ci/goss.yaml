@@ -1,7 +1,4 @@
 ---
-port:
-  tcp:3000:
-    listening: true
 http:
   http://localhost:3000/online:
     status: 200
