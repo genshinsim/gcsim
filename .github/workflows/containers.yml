@@ -1,4 +1,4 @@
-name: deployment build
+name: build containers
 on:
   workflow_dispatch:
   push:
@@ -38,5 +38,5 @@ jobs:
         uses: ./.github/actions/containers/embedgenerator
         with:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          githubActor: $${{ github.actor}}
-          githubRepo: $${{ github.repository }}
+          githubActor: ${{ github.actor }}
+          githubRepo: ${{ github.repository }}
