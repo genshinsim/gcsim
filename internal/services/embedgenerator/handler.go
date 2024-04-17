@@ -78,6 +78,23 @@ func (s *Server) authKeyCheck(next http.Handler) http.Handler {
 	})
 }
 
+func (s *Server) readyCheck(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if s.redisReady && s.rodReady {
+			next.ServeHTTP(w, r)
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Not Ready"))
+	})
+}
+
+func (s *Server) handleOnlineCheck() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
 func (s *Server) handleImageRequest(src string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
@@ -96,15 +113,15 @@ func (s *Server) handleImageRequest(src string) http.HandlerFunc {
 
 		res := s.rdb.Get(ctx, id)
 		s.logger.Info("got get from redis", "res_length", len(res.Val()))
-		switch res.Err() {
-		case nil:
+		switch {
+		case res.Err() == nil:
 			if val := res.Val(); !strings.HasPrefix(val, "wip") {
 				s.logger.Info("id already in wip")
 				s.handleResult(val, w)
 				return
 			}
 			// wait for existing result
-		case redis.Nil:
+		case errors.Is(res.Err(), redis.Nil):
 			s.logger.Info("id no result; starting new")
 			s.rdb.Set(ctx, id, "wip", s.generateTimeout)
 			go s.do(id)
