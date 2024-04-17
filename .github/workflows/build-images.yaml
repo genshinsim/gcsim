@@ -142,8 +142,9 @@ jobs:
         shell: bash
         run: |
           if [[ -z "${{ matrix.image.build_script }}" ]]; then
+            echo "no build script"
             exit 0
-          file
+          fi
           source ${{ matrix.image.build_script }}
 
       - name: Setup Docker Buildx
