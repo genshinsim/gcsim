@@ -184,7 +184,6 @@ if __name__ == "__main__":
                 imagesToBuild["images"].extend(imageToBuild["images"])
                 imagesToBuild["imagePlatforms"].extend(imageToBuild["imagePlatforms"])
     else:
-        print("building all containers")
         for subdir, dirs, files in os.walk(CONTAINER_DIR):
             for file in files:
                 meta = None
@@ -194,7 +193,6 @@ if __name__ == "__main__":
                     meta = load_metadata_file_json(os.path.join(subdir, file))
                 else:
                     continue
-                print("adding meta:", meta["app"])
                 if meta is not None:
                     imageToBuild = get_image_metadata(subdir, meta, hash, forRelease, force=force)
                     if imageToBuild is not None:
