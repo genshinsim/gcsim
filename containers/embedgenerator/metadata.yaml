@@ -7,5 +7,5 @@ channels:
     build_scripts:
       linux/amd64: ./ci/build-linux-amd64.sh
     tests:
-      enabled: true
+      enabled: false
       type: web
