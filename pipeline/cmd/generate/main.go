@@ -21,12 +21,13 @@ type config struct {
 	excelPath    string
 
 	// output paths
-	pkgOut   string
-	uiOut    string
-	dbOut    string
-	transOut string
-	icdPath  string
-	docRoot  string
+	pkgOut     string
+	uiOut      string
+	dbOut      string
+	transOut   string
+	icdPath    string
+	docRoot    string
+	assetsRoot string
 }
 
 func main() {
@@ -41,6 +42,7 @@ func main() {
 	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/localization/src/locales", "folder to output generated json for DB")
 	flag.StringVar(&cfg.icdPath, "icd", "./pkg/core/attacks", "file to store generated icd data")
 	flag.StringVar(&cfg.docRoot, "outdocs", "./ui/packages/docs/src/components", "file to store generated icd data")
+	flag.StringVar(&cfg.assetsRoot, "assets", "./internal/services/assets", "path to store generate asset data")
 	flag.Parse()
 
 	// try env first
@@ -84,6 +86,12 @@ func main() {
 
 	log.Println("generate character icd data...")
 	err = g.GenerateICDData(cfg.icdPath)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("generate character assets mapping...")
+	err = g.GenerateCharAssetsKey(cfg.assetsRoot)
 	if err != nil {
 		panic(err)
 	}
