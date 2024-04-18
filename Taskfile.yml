@@ -34,7 +34,19 @@ tasks:
       - sh -c "scripts/build_preview.sh"
   pipeline:
     cmds:
-      - go run pipeline/cmd/generate/main.go
+      - go run pipeline/cmd/generate/main.go --gen-char --gen-weap --gen-art --gen-enemies
+  pipeline-avatars:
+    cmds:
+      - go run pipeline/cmd/generate/main.go --gen-char
+  pipeline-weapons:
+    cmds:
+      - go run pipeline/cmd/generate/main.go --gen-weap
+  pipeline-artifacts:
+    cmds:
+      - go run pipeline/cmd/generate/main.go --gen-art
+  pipeline-enemies:
+    cmds:
+      - go run pipeline/cmd/generate/main.go --gen-enemies
   wasm:
     dir: cmd/wasm
     cmds:
