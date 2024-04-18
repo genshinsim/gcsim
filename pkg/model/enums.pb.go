@@ -830,6 +830,64 @@ func (DBTag) EnumDescriptor() ([]byte, []int) {
 	return file_protos_model_enums_proto_rawDescGZIP(), []int{11}
 }
 
+type EquipType int32
+
+const (
+	EquipType_INVALID_EQUIP_TYPE EquipType = 0
+	EquipType_EQUIP_BRACER       EquipType = 1 // flower
+	EquipType_EQUIP_NECKLACE     EquipType = 2 // plume
+	EquipType_EQUIP_SHOES        EquipType = 3 // sands
+	EquipType_EQUIP_RING         EquipType = 4 // goblet
+	EquipType_EQUIP_DRESS        EquipType = 5 // circlet
+)
+
+// Enum value maps for EquipType.
+var (
+	EquipType_name = map[int32]string{
+		0: "INVALID_EQUIP_TYPE",
+		1: "EQUIP_BRACER",
+		2: "EQUIP_NECKLACE",
+		3: "EQUIP_SHOES",
+		4: "EQUIP_RING",
+		5: "EQUIP_DRESS",
+	}
+	EquipType_value = map[string]int32{
+		"INVALID_EQUIP_TYPE": 0,
+		"EQUIP_BRACER":       1,
+		"EQUIP_NECKLACE":     2,
+		"EQUIP_SHOES":        3,
+		"EQUIP_RING":         4,
+		"EQUIP_DRESS":        5,
+	}
+)
+
+func (x EquipType) Enum() *EquipType {
+	p := new(EquipType)
+	*p = x
+	return p
+}
+
+func (x EquipType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (EquipType) Descriptor() protoreflect.EnumDescriptor {
+	return file_protos_model_enums_proto_enumTypes[12].Descriptor()
+}
+
+func (EquipType) Type() protoreflect.EnumType {
+	return &file_protos_model_enums_proto_enumTypes[12]
+}
+
+func (x EquipType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use EquipType.Descriptor instead.
+func (EquipType) EnumDescriptor() ([]byte, []int) {
+	return file_protos_model_enums_proto_rawDescGZIP(), []int{12}
+}
+
 var File_protos_model_enums_proto protoreflect.FileDescriptor
 
 var file_protos_model_enums_proto_rawDesc = []byte{
@@ -1040,6 +1098,7 @@ var file_protos_model_enums_proto_goTypes = []any{
 	(SimMode)(0),           // 9: model.SimMode
 	(ComputeWorkSource)(0), // 10: model.ComputeWorkSource
 	(DBTag)(0),             // 11: model.DBTag
+	(EquipType)(0),         // 12: model.EquipType
 }
 var file_protos_model_enums_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -1059,7 +1118,7 @@ func file_protos_model_enums_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_protos_model_enums_proto_rawDesc,
-			NumEnums:      12,
+			NumEnums:      13,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   0,

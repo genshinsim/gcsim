@@ -151,3 +151,12 @@ enum DBTag {
   reserved 3; // DB_TAG_KQM_GUIDE
   reserved 4; // DB_TAG_GEO_SIMPS
 }
+
+enum EquipType {
+  INVALID_EQUIP_TYPE = 0;
+  EQUIP_BRACER = 1; // flower
+	EQUIP_NECKLACE = 2; // plume
+	EQUIP_SHOES = 3; // sands
+	EQUIP_RING = 4; // goblet
+	EQUIP_DRESS = 5; // circlet
+}
