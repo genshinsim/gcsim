@@ -6,15 +6,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (c *Character) Heal(hi *info.HealInfo) {
-	bonus := 1 + c.HealBonus() + hi.Bonus
-	hp := .0
+func (c *Character) CalcHealAmount(hi *info.HealInfo) (float64, float64) {
+	var hp, bonus float64
 	switch hi.Type {
 	case info.HealTypeAbsolute:
 		hp = hi.Src
 	case info.HealTypePercent:
 		hp = c.MaxHP() * hi.Src
 	}
+	bonus = 1 + c.HealBonus() + hi.Bonus
+	return hp, bonus
+}
+
+func (c *Character) Heal(hi *info.HealInfo) {
+	hp, bonus := c.CalcHealAmount(hi)
 
 	// save previous hp related values for logging
 	prevHPRatio := c.CurrentHPRatio()
