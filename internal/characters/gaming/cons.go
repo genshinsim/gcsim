@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -21,11 +21,11 @@ func (c *char) c1() {
 		return
 	}
 
-	c.Core.Player.Heal(player.HealInfo{
+	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Index,
 		Message: "Bringer of Blessing (C1)",
-		Type:    player.HealTypePercent,
+		Type:    info.HealTypePercent,
 		Src:     0.15,
 		Bonus:   c.Stat(attributes.Heal),
 	})
@@ -41,7 +41,7 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		hi := args[0].(*player.HealInfo)
+		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 
 		if overheal <= 0 {

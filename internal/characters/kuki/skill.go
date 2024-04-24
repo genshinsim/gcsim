@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		if (currentHP-hpdrain)/maxHP <= hpDrainThreshold {
 			hpdrain = currentHP - hpDrainThreshold*maxHP
 		}
-		c.Core.Player.Drain(player.DrainInfo{
+		c.Core.Player.Drain(info.DrainInfo{
 			ActorIndex: c.Index,
 			Abil:       "Sanctifying Ring",
 			Amount:     hpdrain,
@@ -125,7 +125,7 @@ func (c *char) bellTick(src int) func() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 2, 2, c.particleCB)
 
 		// A4 is considered here
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
 			Message: "Grass Ring of Sanctification Healing",

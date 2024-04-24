@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -47,7 +47,7 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 
 	dmgLeft := p.Core.Player.Shields.OnDamage(activeChar, activeChar, dmg, atk.Info.Element)
 	if dmgLeft > 0 {
-		dmgLeft = p.Core.Player.Drain(player.DrainInfo{
+		dmgLeft = p.Core.Player.Drain(info.DrainInfo{
 			ActorIndex: activeChar,
 			Abil:       atk.Info.Abil,
 			Amount:     dmgLeft,

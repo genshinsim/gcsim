@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -50,7 +50,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		snap := c.Snapshot(&ai)
 
 		// One healing proc happens immediately on cast
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
 			Message: "Herald of Frost (Tick)",
@@ -152,7 +152,7 @@ func (c *char) skillHealTickTask(src int) func() {
 			return
 		}
 
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
 			Message: "Herald of Frost (Tick)",

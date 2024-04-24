@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -289,7 +290,7 @@ func (c *char) consumeHp(src int) func() {
 		if c.CurrentHPRatio() > 0.5 {
 			hpDrain := 0.08 * c.MaxHP()
 
-			c.Core.Player.Drain(player.DrainInfo{
+			c.Core.Player.Drain(info.DrainInfo{
 				ActorIndex: c.Index,
 				Abil:       "Charged Attack: Equitable Judgment",
 				Amount:     hpDrain,
@@ -304,7 +305,7 @@ func (c *char) consumeDroplet(g *common.SourcewaterDroplet) {
 	// TODO: adjust healing delay by ping amount
 	// the healing is slightly delayed by 5f
 	c.QueueCharTask(func() {
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Index,
 			Message: "Sourcewater Droplets Healing",

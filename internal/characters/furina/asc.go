@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -23,7 +23,7 @@ func (c *char) a1() {
 	}
 
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		hi := args[0].(*player.HealInfo)
+		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 
 		if hi.Caller == c.Index {
@@ -52,10 +52,10 @@ func (c *char) a1HealingOverTime() {
 	if !c.StatusIsActive(a1HealKey) {
 		return
 	}
-	c.Core.Player.Heal(player.HealInfo{
+	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
 		Target:  -1,
-		Type:    player.HealTypePercent,
+		Type:    info.HealTypePercent,
 		Message: "Endless Waltz",
 		Src:     0.02,
 		Bonus:   c.Stat(attributes.Heal),
