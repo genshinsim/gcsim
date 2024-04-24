@@ -2,6 +2,7 @@ package lyney
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -29,8 +30,9 @@ const (
 	grinMalkinHatAimedDuration = 238
 	grinMalkinHatBurstDuration = 245
 
-	propSurplusHPDrainThreshold = 0.6
-	propSurplusHPDrainRatio     = 0.2
+	propSurplusHPDrainThreshold  = 0.6
+	propSurplusHPDrainRatio      = 0.2
+	propSurplusRoundingTolerance = 0.0000001
 )
 
 func init() {
@@ -178,7 +180,11 @@ func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 func (c *char) propSurplus() bool {
 	// When firing the Prop Arrow, and when Lyney has more than 60% HP,
 	// he will consume a portion of his HP to obtain 1 Prop Surplus stack.
-	if c.CurrentHPRatio() <= propSurplusHPDrainThreshold {
+	if c.CurrentHPRatio() < propSurplusHPDrainThreshold {
+		return false
+	}
+	// check for == 60%, with tolerance
+	if math.Abs(c.CurrentHPRatio()-propSurplusHPDrainThreshold) < propSurplusRoundingTolerance {
 		return false
 	}
 
