@@ -37,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val[attributes.DmgP] = 0.09 + float64(r)*0.03
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(info.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 		if !di.External {
 			return false
 		}

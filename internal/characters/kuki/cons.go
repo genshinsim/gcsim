@@ -67,7 +67,7 @@ func (c *char) c6() {
 	m[attributes.EM] = 150
 	const c6IcdKey = "kuki-c6-icd"
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(info.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false
 		}

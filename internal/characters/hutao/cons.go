@@ -18,7 +18,7 @@ func (c *char) c6() {
 	c.c6buff[attributes.CR] = 1
 	// check for C6 proc on hurt
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(info.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false
 		}

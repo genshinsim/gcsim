@@ -90,7 +90,7 @@ func (c *char) burstInit() {
 			return false
 		}
 
-		di := args[0].(info.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 
 		if di.Amount <= 0 {
 			return false

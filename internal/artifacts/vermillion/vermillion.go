@@ -89,7 +89,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}, fmt.Sprintf("verm-4pc-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(info.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false
 		}
