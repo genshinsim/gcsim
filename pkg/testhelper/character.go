@@ -44,6 +44,17 @@ func (c *Character) Charges(a action.Action) int                          { retu
 func (c *Character) SetCD(a action.Action, dur int)                       {}
 func (c *Character) Init() error                                          { return nil }
 func (c *Character) Data() *model.AvatarData                              { return base }
+func (c *Character) CurrentHPRatio() float64                              { return 0 }
+func (c *Character) CurrentHP() float64                                   { return 0 }
+func (c *Character) CurrentHPDebt() float64                               { return 0 }
+func (c *Character) SetHPByAmount(float64)                                {}
+func (c *Character) SetHPByRatio(float64)                                 {}
+func (c *Character) ModifyHPByAmount(float64)                             {}
+func (c *Character) ModifyHPByRatio(float64)                              {}
+func (c *Character) ModifyHPDebtByAmount(float64)                         {}
+func (c *Character) ModifyHPDebtByRatio(float64)                          {}
+func (c *Character) Heal(*info.HealInfo) (float64, float64)               { return 0, 0 }
+func (c *Character) Drain(*info.DrainInfo) float64                        { return 0 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := Character{}
