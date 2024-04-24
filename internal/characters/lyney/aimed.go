@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -189,7 +189,7 @@ func (c *char) propSurplus() bool {
 	if (currentHP-hpdrain)/maxHP <= propSurplusHPDrainThreshold {
 		hpdrain = currentHP - propSurplusHPDrainThreshold*maxHP
 	}
-	c.Core.Player.Drain(player.DrainInfo{
+	c.Core.Player.Drain(info.DrainInfo{
 		ActorIndex: c.Index,
 		Abil:       "Prop Surplus",
 		Amount:     hpdrain,

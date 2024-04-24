@@ -74,6 +74,9 @@ type HP interface {
 
 	ModifyHPDebtByAmount(float64)
 	ModifyHPDebtByRatio(float64)
+
+	Heal(*info.HealInfo)
+	Drain(*info.DrainInfo) float64
 }
 
 type CharWrapper struct {

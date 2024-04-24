@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -73,7 +74,7 @@ func (c *char) burstCast() {
 		c.Core.QueueAttack(ai, burstArea, 0, 0)
 
 		atk := c.getTotalAtk()
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Stars Gather at Dusk Heal (Initial)",
@@ -173,7 +174,7 @@ func (c *char) burstPlungeDoTTrigger() {
 
 func (c *char) burstHealDoT() {
 	atk := c.getTotalAtk()
-	c.Core.Player.Heal(player.HealInfo{
+	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
 		Target:  -1,
 		Message: "Starwicker Heal",

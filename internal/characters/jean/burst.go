@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	healDot := burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]
 
 	c.Core.Tasks.Add(func() {
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Dandelion Breeze",
@@ -105,7 +105,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(func() {
 			if c.Core.Combat.Player().IsWithinArea(c.burstArea) {
 				// heal
-				c.Core.Player.Heal(player.HealInfo{
+				c.Core.Player.Heal(info.HealInfo{
 					Caller:  c.Index,
 					Target:  c.Core.Player.Active(),
 					Message: "Dandelion Field",

@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -15,7 +15,7 @@ const c4Key = "beidou-c4"
 // Upon being attacked, Beidou's Normal Attacks gain an additional instance of 20% Electro DMG for 10s.
 func (c *char) c4Init() {
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(player.DrainInfo)
+		di := args[0].(info.DrainInfo)
 		if !di.External {
 			return false
 		}

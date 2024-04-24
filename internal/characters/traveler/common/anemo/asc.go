@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -67,11 +67,11 @@ func (c *Traveler) a4() {
 
 		for i := 0; i < 5; i++ {
 			c.QueueCharTask(func() {
-				c.Core.Player.Heal(player.HealInfo{
+				c.Core.Player.Heal(info.HealInfo{
 					Caller:  c.Index,
 					Target:  c.Index,
 					Message: "Second Wind",
-					Type:    player.HealTypePercent,
+					Type:    info.HealTypePercent,
 					Src:     0.02,
 				})
 			}, (i+1)*60) // healing starts 1s after death

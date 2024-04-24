@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -88,7 +88,7 @@ func (c *char) talismanHealHook() {
 		}
 
 		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  atk.Info.ActorIndex,
 			Message: "Fortune-Preserving Talisman",
@@ -145,7 +145,7 @@ func (c *char) onNACAHitHook() {
 
 		// Qiqi NA/CA healing proc in skill duration
 		if c.StatusIsActive(skillBuffKey) {
-			c.Core.Player.Heal(player.HealInfo{
+			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,
 				Message: "Herald of Frost (Attack)",

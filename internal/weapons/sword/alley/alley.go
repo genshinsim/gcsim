@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -36,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(player.DrainInfo)
+		di := args[0].(info.DrainInfo)
 		if di.ActorIndex != char.Index {
 			return false
 		}

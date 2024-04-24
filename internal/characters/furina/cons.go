@@ -3,7 +3,7 @@ package furina
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -89,7 +89,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 	case pneuma:
 		for _, char := range c.Core.Player.Chars() {
 			hpDrain := char.CurrentHP() * 0.01
-			c.Core.Player.Drain(player.DrainInfo{
+			c.Core.Player.Drain(info.DrainInfo{
 				ActorIndex: char.Index,
 				Abil:       "Furina C6 Pneuma Drain",
 				Amount:     hpDrain,
@@ -110,7 +110,7 @@ func (c *char) c6heal(char *character.CharWrapper, src int) func() {
 		if !c.StatusIsActive(c6OusiaHealKey) {
 			return
 		}
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  char.Index,
 			Message: "Furina C6 Ousia Heal",

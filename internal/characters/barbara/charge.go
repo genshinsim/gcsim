@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -49,7 +49,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		// check for healing
 		if c.Core.Status.Duration(barbSkillKey) > 0 {
 			// heal target
-			c.Core.Player.Heal(player.HealInfo{
+			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,
 				Message: "Melody Loop (Charged Attack)",

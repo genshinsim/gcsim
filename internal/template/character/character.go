@@ -23,7 +23,7 @@ type Character struct {
 	AvailableCDCharge      []int
 	additionalCDCharge     []int
 
-	//hp
+	// hp
 	currentHPRatio float64
 	currentHPDebt  float64
 }

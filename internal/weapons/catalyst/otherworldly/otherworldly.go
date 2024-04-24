@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -32,8 +31,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		c.Player.Heal(player.HealInfo{
-			Type:    player.HealTypePercent,
+		c.Player.Heal(info.HealInfo{
+			Type:    info.HealTypePercent,
 			Message: "Otherworldly Story (Proc)",
 			Src:     0.0075 + float64(r)*0.0025,
 		})

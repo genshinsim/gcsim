@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -120,7 +120,7 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 			}
 		}
 
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
 			Message: "Bake-Kurage",

@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -31,7 +31,7 @@ func (c *char) c1Heal(char *character.CharWrapper) func() {
 
 		stats, _ := c.Stats()
 		atk := (c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  char.Index,
 			Message: c1HealMsg,
@@ -44,7 +44,7 @@ func (c *char) c1Heal(char *character.CharWrapper) func() {
 
 func (c *char) c1() {
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		src := args[0].(*player.HealInfo)
+		src := args[0].(*info.HealInfo)
 		if src.Message != healInitialMsg && src.Message != healDotMsg && src.Message != c6HealMsg {
 			return false
 		}
@@ -157,7 +157,7 @@ func (c *char) c6() {
 			if c.Core.Combat.Player().IsWithinArea(combat.NewCircleHitOnTarget(pos, nil, c6HealRadius)) {
 				stats, _ := c.Stats()
 				atk := (c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
-				c.Core.Player.Heal(player.HealInfo{
+				c.Core.Player.Heal(info.HealInfo{
 					Caller:  c.Index,
 					Target:  c.Core.Player.Active(),
 					Message: c6HealMsg,

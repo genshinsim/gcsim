@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -38,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val[attributes.DmgP] = 0.09 + float64(r)*0.03
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(player.DrainInfo)
+		di := args[0].(info.DrainInfo)
 		if !di.External {
 			return false
 		}

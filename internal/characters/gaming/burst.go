@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -41,11 +41,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(burstKey, burstDuration, true)
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Index,
 			Message: "Suanni's Gilded Dance (Q)",
-			Type:    player.HealTypePercent,
+			Type:    info.HealTypePercent,
 			Src:     0.3,
 			Bonus:   c.Stat(attributes.Heal),
 		})
