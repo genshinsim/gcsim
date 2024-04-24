@@ -75,7 +75,7 @@ type HP interface {
 	ModifyHPDebtByAmount(float64)
 	ModifyHPDebtByRatio(float64)
 
-	Heal(*info.HealInfo)
+	Heal(*info.HealInfo) (float64, float64) // return actual hp healed and amount of hp debt cleared
 	Drain(*info.DrainInfo) float64
 }
 

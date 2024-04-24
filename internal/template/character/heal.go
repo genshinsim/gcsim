@@ -18,7 +18,7 @@ func (c *Character) CalcHealAmount(hi *info.HealInfo) (float64, float64) {
 	return hp, bonus
 }
 
-func (c *Character) Heal(hi *info.HealInfo) {
+func (c *Character) Heal(hi *info.HealInfo) (float64, float64) {
 	hp, bonus := c.CalcHealAmount(hi)
 
 	// save previous hp related values for logging
@@ -63,7 +63,9 @@ func (c *Character) Heal(hi *info.HealInfo) {
 		Write("current_hp_debt", c.CurrentHPDebt()).
 		Write("max_hp", c.MaxHP())
 
-	c.Core.Events.Emit(event.OnHeal, hi, c.Index, heal, overheal)
+	c.Core.Events.Emit(event.OnHeal, hi, c.Index, heal, overheal, healAmt)
+
+	return heal, healAmt
 }
 
 func (c *Character) Drain(di *info.DrainInfo) float64 {
