@@ -18,6 +18,7 @@ import (
 
 type Character interface {
 	Base
+	HP
 
 	Init() error // init function built into every char to setup any variables etc.
 
@@ -60,6 +61,21 @@ type Base interface {
 	Data() *model.AvatarData
 }
 
+// HP contains info and helper for dealing with character hp
+type HP interface {
+	CurrentHPRatio() float64
+	CurrentHP() float64
+	CurrentHPDebt() float64
+
+	SetHPByAmount(float64)
+	SetHPByRatio(float64)
+	ModifyHPByAmount(float64)
+	ModifyHPByRatio(float64)
+
+	ModifyHPDebtByAmount(float64)
+	ModifyHPDebtByRatio(float64)
+}
+
 type CharWrapper struct {
 	Index int
 	f     *int // current frame
@@ -86,11 +102,9 @@ type CharWrapper struct {
 	}
 
 	// current status
-	ParticleDelay  int // character custom particle delay
-	Energy         float64
-	EnergyMax      float64
-	currentHPRatio float64
-	currentHPDebt  float64
+	ParticleDelay int // character custom particle delay
+	Energy        float64
+	EnergyMax     float64
 	// needed so that start hp is not influenced by hp mods added during team initialization
 	StartHP      int
 	StartHPRatio int
@@ -182,59 +196,6 @@ func (c *CharWrapper) SetTag(key string, val int) {
 
 func (c *CharWrapper) RemoveTag(key string) {
 	delete(c.Tags, key)
-}
-
-func (c *CharWrapper) clampHPRatio() {
-	if c.currentHPRatio > 1 {
-		c.currentHPRatio = 1
-	} else if c.currentHPRatio < 0 {
-		c.currentHPRatio = 0
-	}
-}
-
-func (c *CharWrapper) SetHPByAmount(amt float64) {
-	c.currentHPRatio = amt / c.MaxHP()
-	c.clampHPRatio()
-}
-
-func (c *CharWrapper) SetHPByRatio(r float64) {
-	c.currentHPRatio = r
-	c.clampHPRatio()
-}
-
-func (c *CharWrapper) ModifyHPByAmount(amt float64) {
-	newHP := c.CurrentHP() + amt
-	c.SetHPByAmount(newHP)
-}
-
-func (c *CharWrapper) ModifyHPByRatio(r float64) {
-	newHPRatio := c.currentHPRatio + r
-	c.SetHPByRatio(newHPRatio)
-}
-
-func (c *CharWrapper) clampHPDebt() {
-	if c.currentHPDebt < 0 {
-		c.currentHPDebt = 0
-	}
-}
-
-func (c *CharWrapper) setHPDebtByAmount(amt float64) {
-	c.currentHPDebt = amt
-	c.clampHPDebt()
-}
-
-func (c *CharWrapper) ModifyHPDebtByAmount(amt float64) {
-	if amt == 0 {
-		return
-	}
-	newHPDebt := c.currentHPDebt + amt
-	c.setHPDebtByAmount(newHPDebt)
-	c.events.Emit(event.OnHPDebt, c.Index, amt)
-}
-
-func (c *CharWrapper) ModifyHPDebtByRatio(r float64) {
-	amt := r * c.MaxHP()
-	c.ModifyHPDebtByAmount(amt)
 }
 
 func (c *CharWrapper) consCheck() {
