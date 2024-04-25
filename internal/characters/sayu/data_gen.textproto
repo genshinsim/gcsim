@@ -7,9 +7,9 @@ element: Wind
 weapon_class: WEAPON_CLAYMORE
 icon_name: "UI_AvatarIcon_Sayu"
 stats: {
-   base_hp: 993.8521728515625
-   base_atk: 20.47920036315918
-   base_def: 62.43247604370117
+   base_hp: 993.8522
+   base_atk: 20.4792
+   base_def: 62.432476
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 742.45849609375
+         value: 742.4585
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 46.64025115966797
+         value: 46.64025
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 15.299369812011719
+         value: 15.29937
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
@@ -50,15 +50,15 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1269.9947509765625
+         value: 1269.9948
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 79.77937316894531
+         value: 79.77937
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 26.16997528076172
+         value: 26.169975
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
@@ -69,15 +69,15 @@ stats: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1973.37646484375
+         value: 1973.3765
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 123.96487426757812
+         value: 123.964874
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 40.66411590576172
+         value: 40.664116
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
@@ -88,15 +88,15 @@ stats: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2500.912841796875
+         value: 2500.9128
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 157.10400390625
+         value: 157.104
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 51.53472137451172
+         value: 51.53472
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
@@ -107,15 +107,15 @@ stats: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3028.448974609375
+         value: 3028.449
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 190.2431182861328
+         value: 190.24312
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 62.40532684326172
+         value: 62.405327
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
@@ -126,15 +126,15 @@ stats: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3555.9853515625
+         value: 3555.9854
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 223.3822479248047
+         value: 223.38225
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 73.27593231201172
+         value: 73.27593
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY

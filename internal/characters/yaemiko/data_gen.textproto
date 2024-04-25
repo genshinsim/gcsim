@@ -7,9 +7,9 @@ element: Electric
 weapon_class: WEAPON_CATALYST
 icon_name: "UI_AvatarIcon_Yae"
 stats: {
-   base_hp: 807.4620361328125
-   base_atk: 26.440399169921875
-   base_def: 44.274200439453125
+   base_hp: 807.46204
+   base_atk: 26.4404
+   base_def: 44.2742
    hp_curve: GROW_CURVE_HP_S5
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 692.32568359375
+         value: 692.3257
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 37.96200180053711
+         value: 37.962
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 22.668596267700195
+         value: 22.668596
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1184.2413330078125
+         value: 1184.2413
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 64.93499755859375
+         value: 64.935
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 38.775230407714844
+         value: 38.77523
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL
-         value: 0.04800000041723251
+         value: 0.048
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1840.1287841796875
+         value: 1840.1288
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 100.89900207519531
+         value: 100.899
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 60.2507438659668
+         value: 60.250744
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL
-         value: 0.09600000083446503
+         value: 0.096
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2332.04443359375
+         value: 2332.0444
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 127.87200164794922
+         value: 127.872
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 76.35737609863281
+         value: 76.357376
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL
-         value: 0.09600000083446503
+         value: 0.096
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2823.9599609375
+         value: 2823.96
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 154.84500122070312
+         value: 154.845
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 92.4640121459961
+         value: 92.46401
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3315.875732421875
+         value: 3315.8757
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 181.8179931640625
+         value: 181.818
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 108.57064056396484
+         value: 108.57064
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL
-         value: 0.19200000166893005
+         value: 0.192
       }
    }
 }

@@ -7,9 +7,9 @@ element: Grass
 weapon_class: WEAPON_BOW
 icon_name: "UI_AvatarIcon_Tighnari"
 stats: {
-   base_hp: 844.6415405273438
-   base_atk: 20.854400634765625
-   base_def: 49.06060028076172
+   base_hp: 844.64154
+   base_atk: 20.8544
+   base_def: 49.0606
    hp_curve: GROW_CURVE_HP_S5
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 724.2037353515625
+         value: 724.20374
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 42.066001892089844
+         value: 42.066
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 17.87945556640625
+         value: 17.879456
       }
       add_props: {
          prop_type: FIGHT_PROP_GRASS_ADD_HURT
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1238.76953125
+         value: 1238.7695
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 71.95500183105469
+         value: 71.955
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 30.583280563354492
+         value: 30.58328
       }
       add_props: {
          prop_type: FIGHT_PROP_GRASS_ADD_HURT
-         value: 0.07199999690055847
+         value: 0.072
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1924.8572998046875
+         value: 1924.8573
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 111.80699920654297
+         value: 111.807
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 47.52171325683594
+         value: 47.521713
       }
       add_props: {
          prop_type: FIGHT_PROP_GRASS_ADD_HURT
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2439.423095703125
+         value: 2439.423
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 141.6959991455078
+         value: 141.696
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 60.22553634643555
+         value: 60.225536
       }
       add_props: {
          prop_type: FIGHT_PROP_GRASS_ADD_HURT
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2953.989013671875
+         value: 2953.989
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 171.5850067138672
+         value: 171.585
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 72.92935943603516
+         value: 72.92936
       }
       add_props: {
          prop_type: FIGHT_PROP_GRASS_ADD_HURT
-         value: 0.2160000056028366
+         value: 0.216
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3468.5546875
+         value: 3468.5547
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 201.4739990234375
+         value: 201.474
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 85.63318634033203
+         value: 85.63319
       }
       add_props: {
          prop_type: FIGHT_PROP_GRASS_ADD_HURT
-         value: 0.2879999876022339
+         value: 0.288
       }
    }
 }

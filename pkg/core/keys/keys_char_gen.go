@@ -379,7 +379,7 @@ func init() {
 	CharKeyToEle[Xinyan] = attributes.Pyro
 
 	charNames[YaeMiko] = "yaemiko"
-	charPrettyName[YaeMiko] = "Yaemiko"
+	charPrettyName[YaeMiko] = "Yae Miko"
 	CharKeyToEle[YaeMiko] = attributes.Electro
 
 	charNames[Yanfei] = "yanfei"
