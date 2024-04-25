@@ -7,9 +7,9 @@ element: Ice
 weapon_class: WEAPON_BOW
 icon_name: "UI_AvatarIcon_Aloy"
 stats: {
-   base_hp: 848.4547729492188
-   base_atk: 18.210359573364258
-   base_def: 52.65039825439453
+   base_hp: 848.4548
+   base_atk: 18.21036
+   base_def: 52.6504
    hp_curve: GROW_CURVE_HP_S5
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 727.4732666015625
+         value: 727.47327
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 45.14400100708008
+         value: 45.144
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 15.612595558166504
+         value: 15.612596
       }
       add_props: {
          prop_type: FIGHT_PROP_ICE_ADD_HURT
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1244.3621826171875
+         value: 1244.3622
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 77.22000122070312
+         value: 77.22
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 26.70575714111328
+         value: 26.705757
       }
       add_props: {
          prop_type: FIGHT_PROP_ICE_ADD_HURT
-         value: 0.07199999690055847
+         value: 0.072
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1933.54736328125
+         value: 1933.5474
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 119.98799896240234
+         value: 119.988
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 41.496639251708984
+         value: 41.49664
       }
       add_props: {
          prop_type: FIGHT_PROP_ICE_ADD_HURT
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2450.436279296875
+         value: 2450.4363
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 152.06399536132812
+         value: 152.064
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 52.58979797363281
+         value: 52.589798
       }
       add_props: {
          prop_type: FIGHT_PROP_ICE_ADD_HURT
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2967.3251953125
+         value: 2967.3252
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 184.13999938964844
+         value: 184.14
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 63.682960510253906
+         value: 63.68296
       }
       add_props: {
          prop_type: FIGHT_PROP_ICE_ADD_HURT
-         value: 0.2160000056028366
+         value: 0.216
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3484.214111328125
+         value: 3484.214
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 216.21600341796875
+         value: 216.216
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 74.776123046875
+         value: 74.77612
       }
       add_props: {
          prop_type: FIGHT_PROP_ICE_ADD_HURT
-         value: 0.2879999876022339
+         value: 0.288
       }
    }
 }

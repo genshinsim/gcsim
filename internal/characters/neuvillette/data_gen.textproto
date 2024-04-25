@@ -7,9 +7,9 @@ element: Water
 weapon_class: WEAPON_CATALYST
 icon_name: "UI_AvatarIcon_Neuvillette"
 stats: {
-   base_hp: 1143.9840087890625
-   base_atk: 16.218019485473633
-   base_def: 44.872501373291016
+   base_hp: 1143.984
+   base_atk: 16.21802
+   base_def: 44.8725
    hp_curve: GROW_CURVE_HP_S5
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 980.8628540039062
+         value: 980.86285
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 38.474998474121094
+         value: 38.475
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 13.904470443725586
+         value: 13.90447
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL_HURT
@@ -50,7 +50,7 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1677.791748046875
+         value: 1677.7917
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
@@ -58,56 +58,56 @@ stats: {
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 23.78396224975586
+         value: 23.783962
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.09600000083446503
+         value: 0.096
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2607.0302734375
+         value: 2607.0303
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 102.26249694824219
+         value: 102.2625
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 36.95661544799805
+         value: 36.956615
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.19200000166893005
+         value: 0.192
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3303.958984375
+         value: 3303.959
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 129.60000610351562
+         value: 129.6
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 46.83610916137695
+         value: 46.83611
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.19200000166893005
+         value: 0.192
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 4000.887939453125
+         value: 4000.888
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
@@ -115,30 +115,30 @@ stats: {
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 56.71560287475586
+         value: 56.715603
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.2879999876022339
+         value: 0.288
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 4697.81689453125
+         value: 4697.817
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 184.27499389648438
+         value: 184.275
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 66.5950927734375
+         value: 66.59509
       }
       add_props: {
          prop_type: FIGHT_PROP_CRITICAL_HURT
-         value: 0.3840000033378601
+         value: 0.384
       }
    }
 }
