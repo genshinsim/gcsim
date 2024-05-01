@@ -7,9 +7,9 @@ element: Ice
 weapon_class: WEAPON_CATALYST
 icon_name: "UI_AvatarIcon_Charlotte"
 stats: {
-   base_hp: 902.673095703125
-   base_atk: 14.513520240783691
-   base_def: 45.779998779296875
+   base_hp: 902.6731
+   base_atk: 14.51352
+   base_def: 45.78
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 674.343017578125
+         value: 674.343
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 34.20000076293945
+         value: 34.2
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 10.842597007751465
+         value: 10.842597
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -50,7 +50,7 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1153.4814453125
+         value: 1153.4814
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
@@ -58,56 +58,56 @@ stats: {
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 18.546546936035156
+         value: 18.546547
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.05999999865889549
+         value: 0.06
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1792.332763671875
+         value: 1792.3328
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 90.9000015258789
+         value: 90.9
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 28.8184814453125
+         value: 28.818481
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2271.47119140625
+         value: 2271.4712
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 115.19999694824219
+         value: 115.2
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 36.522430419921875
+         value: 36.52243
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2750.609619140625
+         value: 2750.6096
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
@@ -115,30 +115,30 @@ stats: {
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 44.226383209228516
+         value: 44.226383
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.18000000715255737
+         value: 0.18
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3229.748046875
+         value: 3229.748
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 163.8000030517578
+         value: 163.8
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 51.93033218383789
+         value: 51.930332
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.23999999463558197
+         value: 0.24
       }
    }
 }

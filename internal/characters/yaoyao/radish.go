@@ -1,8 +1,8 @@
 package yaoyao
 
-import "github.com/genshinsim/gcsim/pkg/core/player"
+import "github.com/genshinsim/gcsim/pkg/core/info"
 
-func (c *char) radishHeal(hi player.HealInfo) {
+func (c *char) radishHeal(hi info.HealInfo) {
 	c.Core.Player.Heal(hi)
 	// c1 and a4 should not proc on c6 radish
 	if hi.Message == c6HealMsg {

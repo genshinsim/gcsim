@@ -28,13 +28,15 @@ type config struct {
 	runEnemies   bool
 
 	// output paths
-	pkgOut     string
-	uiOut      string
-	dbOut      string
-	transOut   string
-	icdPath    string
-	docRoot    string
-	assetsRoot string
+	pkgOut      string
+	uiOut       string
+	dbOut       string
+	transOut    string
+	icdPath     string
+	keyPath     string
+	importsPath string
+	docRoot     string
+	assetsRoot  string
 }
 
 func main() {
@@ -52,6 +54,8 @@ func main() {
 	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
 	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/localization/src/locales", "folder to output generated json for DB")
 	flag.StringVar(&cfg.icdPath, "icd", "./pkg/core/attacks", "file to store generated icd data")
+	flag.StringVar(&cfg.keyPath, "keys", "./pkg/core/keys", "path to store generated keys data")
+	flag.StringVar(&cfg.importsPath, "imports", "./pkg/simulation", "path to store generated imports data")
 	flag.StringVar(&cfg.docRoot, "outdocs", "./ui/packages/docs/src/components", "file to store generated icd data")
 	flag.StringVar(&cfg.assetsRoot, "assets", "./internal/services/assets", "path to store generate asset data")
 	flag.Parse()
@@ -153,6 +157,18 @@ func genChar(cfg config, excels string) []*model.AvatarData {
 
 	log.Println("generate character icd data...")
 	err = g.GenerateICDData(cfg.icdPath)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("generate char keys data...")
+	err = g.GenerateKeys(cfg.keyPath)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("generate char imports data...")
+	err = g.GenerateImports(cfg.importsPath)
 	if err != nil {
 		panic(err)
 	}

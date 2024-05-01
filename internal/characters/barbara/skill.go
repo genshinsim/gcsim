@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 // barbara skill - copied from bennett burst
@@ -111,7 +111,7 @@ func (c *char) barbaraSelfTick(healAmt, hpplus float64, skillInitF int) func() {
 		c.Core.Log.NewEvent("barbara heal and wet ticking", glog.LogCharacterEvent, c.Index)
 
 		// heal
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
 			Message: "Melody Loop (Tick)",

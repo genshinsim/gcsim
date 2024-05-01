@@ -18,6 +18,7 @@ import (
 
 type Character interface {
 	Base
+	HP
 
 	Init() error // init function built into every char to setup any variables etc.
 
@@ -60,6 +61,24 @@ type Base interface {
 	Data() *model.AvatarData
 }
 
+// HP contains info and helper for dealing with character hp
+type HP interface {
+	CurrentHPRatio() float64
+	CurrentHP() float64
+	CurrentHPDebt() float64
+
+	SetHPByAmount(float64)
+	SetHPByRatio(float64)
+	ModifyHPByAmount(float64)
+	ModifyHPByRatio(float64)
+
+	ModifyHPDebtByAmount(float64)
+	ModifyHPDebtByRatio(float64)
+
+	Heal(*info.HealInfo) (float64, float64) // return actual hp healed and amount of hp debt cleared
+	Drain(*info.DrainInfo) float64
+}
+
 type CharWrapper struct {
 	Index int
 	f     *int // current frame
@@ -86,11 +105,9 @@ type CharWrapper struct {
 	}
 
 	// current status
-	ParticleDelay  int // character custom particle delay
-	Energy         float64
-	EnergyMax      float64
-	currentHPRatio float64
-	currentHPDebt  float64
+	ParticleDelay int // character custom particle delay
+	Energy        float64
+	EnergyMax     float64
 	// needed so that start hp is not influenced by hp mods added during team initialization
 	StartHP      int
 	StartHPRatio int
@@ -182,60 +199,6 @@ func (c *CharWrapper) SetTag(key string, val int) {
 
 func (c *CharWrapper) RemoveTag(key string) {
 	delete(c.Tags, key)
-}
-
-func (c *CharWrapper) clampHPRatio() {
-	if c.currentHPRatio > 1 {
-		c.currentHPRatio = 1
-	} else if c.currentHPRatio < 0 {
-		c.currentHPRatio = 0
-	}
-}
-
-func (c *CharWrapper) SetHPByAmount(amt float64) {
-	c.currentHPRatio = amt / c.MaxHP()
-	c.clampHPRatio()
-}
-
-func (c *CharWrapper) SetHPByRatio(r float64) {
-	c.currentHPRatio = r
-	c.clampHPRatio()
-}
-
-func (c *CharWrapper) ModifyHPByAmount(amt float64) {
-	newHP := c.CurrentHP() + amt
-	c.SetHPByAmount(newHP)
-}
-
-func (c *CharWrapper) ModifyHPByRatio(r float64) {
-	newHPRatio := c.currentHPRatio + r
-	c.SetHPByRatio(newHPRatio)
-}
-
-func (c *CharWrapper) clampHPDebt() {
-	if c.currentHPDebt < 0 {
-		c.currentHPDebt = 0
-	}
-}
-
-func (c *CharWrapper) SetHPDebtByAmount(amt float64) {
-	c.currentHPDebt = amt
-	c.clampHPDebt()
-}
-
-func (c *CharWrapper) SetHPDebtByRatio(r float64) {
-	c.currentHPDebt = r * c.MaxHP()
-	c.clampHPDebt()
-}
-
-func (c *CharWrapper) ModifyHPDebtByAmount(amt float64) {
-	newHPDebt := c.currentHPDebt + amt
-	c.SetHPDebtByAmount(newHPDebt)
-}
-
-func (c *CharWrapper) ModifyHPDebtByRatio(r float64) {
-	newHPDebt := c.currentHPDebt + r*c.MaxHP()
-	c.SetHPDebtByAmount(newHPDebt)
 }
 
 func (c *CharWrapper) consCheck() {

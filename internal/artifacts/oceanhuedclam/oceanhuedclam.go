@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -67,7 +66,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		// On Heal subscription to start accumulating the healing
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-			src := args[0].(*player.HealInfo)
+			src := args[0].(*info.HealInfo)
 			healAmt := args[2].(float64)
 
 			if src.Caller != char.Index {

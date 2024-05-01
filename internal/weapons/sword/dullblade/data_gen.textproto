@@ -6,7 +6,7 @@ image_name: "UI_EquipIcon_Sword_Blunt"
 base_stats: {
    base_props: {
       prop_type: FIGHT_PROP_BASE_ATTACK
-      initial_value: 23.2450008392334
+      initial_value: 23.245
       curve: GROW_CURVE_ATTACK_101
    }
    base_props: {
@@ -19,14 +19,14 @@ base_stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 11.699999809265137
+         value: 11.7
       }
    }
    promo_data: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 23.299999237060547
+         value: 23.3
       }
    }
    promo_data: {
@@ -40,7 +40,7 @@ base_stats: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 46.70000076293945
+         value: 46.7
       }
    }
 }

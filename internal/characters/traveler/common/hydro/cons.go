@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -81,10 +81,10 @@ func (c *Traveler) c6() {
 		}
 	}
 
-	c.Core.Player.Heal(player.HealInfo{
+	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
 		Target:  lowest,
-		Type:    player.HealTypePercent,
+		Type:    info.HealTypePercent,
 		Message: "Tides of Justice",
 		Src:     0.06,
 		Bonus:   c.Stat(attributes.Heal),

@@ -7,9 +7,9 @@ element: Wind
 weapon_class: WEAPON_SWORD_ONE_HAND
 icon_name: "UI_AvatarIcon_Kazuha"
 stats: {
-   base_hp: 1039.1187744140625
-   base_atk: 23.08880043029785
-   base_def: 62.82149887084961
+   base_hp: 1039.1188
+   base_atk: 23.0888
+   base_def: 62.8215
    hp_curve: GROW_CURVE_HP_S5
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 890.950439453125
+         value: 890.95044
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 53.8650016784668
+         value: 53.865
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 19.79511260986328
+         value: 19.795113
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1523.994140625
+         value: 1523.9941
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 92.13749694824219
+         value: 92.1375
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 33.86006164550781
+         value: 33.86006
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
-         value: 28.799999237060547
+         value: 28.8
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2368.052490234375
+         value: 2368.0525
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 143.16749572753906
+         value: 143.1675
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 52.61332321166992
+         value: 52.613323
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
-         value: 57.599998474121094
+         value: 57.6
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3001.09619140625
+         value: 3001.0962
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 181.44000244140625
+         value: 181.44
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 66.67826843261719
+         value: 66.67827
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
-         value: 57.599998474121094
+         value: 57.6
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3634.139892578125
+         value: 3634.14
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 219.71249389648438
+         value: 219.7125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 80.74321746826172
+         value: 80.74322
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
-         value: 86.4000015258789
+         value: 86.4
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 4267.18359375
+         value: 4267.1836
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 257.9849853515625
+         value: 257.985
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 94.80816650390625
+         value: 94.80817
       }
       add_props: {
          prop_type: FIGHT_PROP_ELEMENT_MASTERY
-         value: 115.19999694824219
+         value: 115.2
       }
    }
 }

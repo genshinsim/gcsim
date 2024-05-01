@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -243,7 +243,7 @@ func (c *char) skillHurtHook() {
 	// mitigates true dmg
 	// should not mitigate corrosion (probably will never be added to sim...)
 	c.Core.Events.Subscribe(event.OnPlayerPreHPDrain, func(args ...interface{}) bool {
-		di := args[0].(*player.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 		// only mitigate external damage
 		if !di.External {
 			return false
@@ -349,7 +349,7 @@ func (c *char) skillSelfDoT() {
 	c.Core.Combat.Events.Emit(event.OnPlayerHit, c.Index, ae)
 	dmgLeft := c.Core.Player.Shields.OnDamage(c.Index, c.Core.Player.Active(), dmg, ae.Info.Element)
 	if dmgLeft > 0 {
-		c.Core.Player.Drain(player.DrainInfo{
+		c.Core.Player.Drain(info.DrainInfo{
 			ActorIndex: c.Index,
 			Abil:       ae.Info.Abil,
 			Amount:     dmgLeft,

@@ -7,9 +7,9 @@ element: Rock
 weapon_class: WEAPON_SWORD_ONE_HAND
 icon_name: "UI_AvatarIcon_Albedo"
 stats: {
-   base_hp: 1029.5855712890625
-   base_atk: 19.551000595092773
-   base_def: 68.2061996459961
+   base_hp: 1029.5856
+   base_atk: 19.551
+   base_def: 68.2062
    hp_curve: GROW_CURVE_HP_S5
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 882.7765502929688
+         value: 882.77655
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 58.481998443603516
+         value: 58.482
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 16.76198959350586
+         value: 16.76199
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1510.0125732421875
+         value: 1510.0126
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 100.03500366210938
+         value: 100.035
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 28.671825408935547
+         value: 28.671825
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.07199999690055847
+         value: 0.072
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2346.3271484375
+         value: 2346.3271
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 155.43899536132812
+         value: 155.439
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 44.551605224609375
+         value: 44.551605
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2973.563232421875
+         value: 2973.5632
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 196.99200439453125
+         value: 196.992
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 56.46144104003906
+         value: 56.46144
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3600.799072265625
+         value: 3600.799
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 238.5449981689453
+         value: 238.545
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 68.37127685546875
+         value: 68.37128
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.2160000056028366
+         value: 0.216
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 4228.03515625
+         value: 4228.035
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 280.0979919433594
+         value: 280.098
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 80.28111267089844
+         value: 80.28111
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.2879999876022339
+         value: 0.288
       }
    }
 }

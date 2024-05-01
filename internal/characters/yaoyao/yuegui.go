@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
@@ -86,7 +86,7 @@ func (c *char) newYueguiJump() {
 	c.numYueguiJumping += 1
 }
 
-func (c *char) heal(area combat.AttackPattern, hi player.HealInfo) func() {
+func (c *char) heal(area combat.AttackPattern, hi info.HealInfo) func() {
 	return func() {
 		if !c.Core.Combat.Player().IsWithinArea(area) {
 			return
@@ -154,9 +154,9 @@ func (yg *yuegui) throw() {
 	yg.throwCounter += 1
 }
 
-func (yg *yuegui) getInfos() (combat.AttackInfo, player.HealInfo) {
+func (yg *yuegui) getInfos() (combat.AttackInfo, info.HealInfo) {
 	var ai combat.AttackInfo
-	var hi player.HealInfo
+	var hi info.HealInfo
 
 	if yg.c.StatusIsActive(burstKey) {
 		ai = yg.c.burstRadishAI

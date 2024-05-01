@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const burstKey = "yaoyaoburst"
@@ -69,10 +69,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) getBurstHealInfo(snap *combat.Snapshot) player.HealInfo {
+func (c *char) getBurstHealInfo(snap *combat.Snapshot) info.HealInfo {
 	maxhp := snap.BaseHP*(1+snap.Stats[attributes.HPP]) + snap.Stats[attributes.HP]
 	heal := burstRadishHealing[0][c.TalentLvlBurst()]*maxhp + burstRadishHealing[1][c.TalentLvlBurst()]
-	return player.HealInfo{
+	return info.HealInfo{
 		Caller:  c.Index,
 		Target:  -1,
 		Message: "Yuegui Burst Heal",

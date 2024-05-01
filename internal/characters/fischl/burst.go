@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -66,7 +66,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		// heal
 		c4HealFunc = func() {
-			c.Core.Player.Heal(player.HealInfo{
+			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  c.Index,
 				Message: "Her Pilgrimage of Bleak (C4)",

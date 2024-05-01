@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.Durability = 25
 
 	c.Core.Tasks.Add(func() {
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
 			Message: healInitialMsg,
@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				if !c.Core.Combat.Player().IsWithinArea(healAP) {
 					return
 				}
-				c.Core.Player.Heal(player.HealInfo{
+				c.Core.Player.Heal(info.HealInfo{
 					Caller:  c.Index,
 					Target:  c.Core.Player.Active(),
 					Message: healDotMsg,

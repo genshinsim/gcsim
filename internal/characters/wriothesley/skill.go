@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -78,7 +78,7 @@ func (c *char) chillingPenalty(a combat.AttackCB) {
 		return
 	}
 	c.AddStatus(skillLoseHPICDKey, skillLoseHPICD, true)
-	c.Core.Player.Drain(player.DrainInfo{
+	c.Core.Player.Drain(info.DrainInfo{
 		ActorIndex: c.Index,
 		Abil:       "Chilling Penalty",
 		Amount:     0.045 * c.MaxHP(),

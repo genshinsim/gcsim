@@ -3,7 +3,7 @@ package jean
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -25,7 +25,7 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 		snap := a.AttackEvent.Snapshot
 		if c.Core.Rand.Float64() < 0.5 {
 			heal := 0.15 * (snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK])
-			c.Core.Player.Heal(player.HealInfo{
+			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,
 				Message: "Wind Companion",

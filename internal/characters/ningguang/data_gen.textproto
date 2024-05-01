@@ -7,9 +7,9 @@ element: Rock
 weapon_class: WEAPON_CATALYST
 icon_name: "UI_AvatarIcon_Ningguang"
 stats: {
-   base_hp: 820.6118774414062
-   base_atk: 17.808000564575195
-   base_def: 48.069000244140625
+   base_hp: 820.6119
+   base_atk: 17.808
+   base_def: 48.069
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 613.0391235351562
+         value: 613.0391
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 35.90999984741211
+         value: 35.91
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 13.303799629211426
+         value: 13.3038
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1048.6195068359375
+         value: 1048.6195
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 61.42499923706055
+         value: 61.425
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 22.756500244140625
+         value: 22.7565
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.05999999865889549
+         value: 0.06
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1629.3934326171875
+         value: 1629.3934
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 95.44499969482422
+         value: 95.445
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 35.36009979248047
+         value: 35.3601
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2064.973876953125
+         value: 2064.9739
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 120.95999908447266
+         value: 120.96
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 44.812801361083984
+         value: 44.8128
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2500.55419921875
+         value: 2500.5542
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 146.47500610351562
+         value: 146.475
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 54.265499114990234
+         value: 54.2655
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.18000000715255737
+         value: 0.18
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2936.134765625
+         value: 2936.1348
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 171.99000549316406
+         value: 171.99
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 63.71820068359375
+         value: 63.7182
       }
       add_props: {
          prop_type: FIGHT_PROP_ROCK_ADD_HURT
-         value: 0.23999999463558197
+         value: 0.24
       }
    }
 }

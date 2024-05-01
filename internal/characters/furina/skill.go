@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -301,7 +301,7 @@ func (c *char) singerOfManyWaters(src int) func() {
 			return
 		}
 		// heal
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
 			Message: "Singer of Many Waters",
@@ -346,7 +346,7 @@ func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
 		}
 		hpDrain := char.MaxHP() * hpDrainRatio
 
-		c.Core.Player.Drain(player.DrainInfo{
+		c.Core.Player.Drain(info.DrainInfo{
 			ActorIndex: char.Index,
 			Abil:       "Salon Solitaire",
 			Amount:     hpDrain,

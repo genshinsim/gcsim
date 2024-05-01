@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -37,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	energyRestore := 6 + float64(r)*2
 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		src := args[0].(*player.HealInfo)
+		src := args[0].(*info.HealInfo)
 
 		if src.Caller != char.Index {
 			return false

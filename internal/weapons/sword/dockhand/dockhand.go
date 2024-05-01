@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -47,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	// gain symbols
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		source := args[0].(*player.HealInfo)
+		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 		amount := args[2].(float64)
 		if source.Caller != char.Index && index != char.Index { // heal others and get healed including wielder

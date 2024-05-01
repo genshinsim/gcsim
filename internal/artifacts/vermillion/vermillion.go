@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -90,7 +89,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}, fmt.Sprintf("verm-4pc-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(player.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false
 		}

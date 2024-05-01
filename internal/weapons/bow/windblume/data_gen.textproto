@@ -6,7 +6,7 @@ image_name: "UI_EquipIcon_Bow_Fleurfair"
 base_stats: {
    base_props: {
       prop_type: FIGHT_PROP_BASE_ATTACK
-      initial_value: 42.4010009765625
+      initial_value: 42.401
       curve: GROW_CURVE_ATTACK_201
    }
    base_props: {
@@ -21,42 +21,42 @@ base_stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 25.899999618530273
+         value: 25.9
       }
    }
    promo_data: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 51.900001525878906
+         value: 51.9
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 77.80000305175781
+         value: 77.8
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 103.69999694824219
+         value: 103.7
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 129.6999969482422
+         value: 129.7
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 155.60000610351562
+         value: 155.6
       }
    }
 }

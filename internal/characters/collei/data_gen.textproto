@@ -7,9 +7,9 @@ element: Grass
 weapon_class: WEAPON_BOW
 icon_name: "UI_AvatarIcon_Collei"
 stats: {
-   base_hp: 820.6118774414062
-   base_atk: 16.739519119262695
-   base_def: 50.358001708984375
+   base_hp: 820.6119
+   base_atk: 16.73952
+   base_def: 50.358
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 613.0391235351562
+         value: 613.0391
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 37.619998931884766
+         value: 37.62
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 12.505572319030762
+         value: 12.505572
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1048.6195068359375
+         value: 1048.6195
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 64.3499984741211
+         value: 64.35
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 21.391109466552734
+         value: 21.39111
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.05999999865889549
+         value: 0.06
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1629.3934326171875
+         value: 1629.3934
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 99.98999786376953
+         value: 99.99
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 33.238494873046875
+         value: 33.238495
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2064.973876953125
+         value: 2064.9739
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 126.72000122070312
+         value: 126.72
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 42.12403106689453
+         value: 42.12403
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2500.55419921875
+         value: 2500.5542
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 153.4499969482422
+         value: 153.45
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 51.00957107543945
+         value: 51.00957
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.18000000715255737
+         value: 0.18
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2936.134765625
+         value: 2936.1348
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 180.17999267578125
+         value: 180.18
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 59.89510726928711
+         value: 59.895107
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.23999999463558197
+         value: 0.24
       }
    }
 }

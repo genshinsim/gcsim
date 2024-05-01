@@ -3,7 +3,7 @@ package heal
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -24,7 +24,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	}
 
 	core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		info := args[0].(*player.HealInfo)
+		info := args[0].(*info.HealInfo)
 		target := args[1].(int)
 		amount := args[2].(float64)
 

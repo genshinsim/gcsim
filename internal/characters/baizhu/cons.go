@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -60,7 +60,7 @@ func (c *char) c2() {
 
 		// C2 healing
 		c.Core.Tasks.Add(func() {
-			c.Core.Player.Heal(player.HealInfo{
+			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  c.Core.Player.Active(),
 				Message: "Baizhu's C2: Healing",

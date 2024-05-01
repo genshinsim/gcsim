@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -63,7 +63,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()] + skillBonus[c.TalentLvlSkill()]*float64(c.propSurplusStacks),
 	}
-	skillHeal := player.HealInfo{
+	skillHeal := info.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
 		Message: "Bewildering Lights",

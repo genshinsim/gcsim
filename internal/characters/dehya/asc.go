@@ -3,7 +3,7 @@ package dehya
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -50,7 +50,7 @@ func (c *char) a4() {
 	}
 	// TODO: should also check once every 1s but this is good enough...
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-		di := args[0].(player.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false
 		}
@@ -62,7 +62,7 @@ func (c *char) a4() {
 		}
 		c.AddStatus(a4ICDKey, a4ICD, true)
 		// 20% HP Part
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Index,
 			Message: a4HealMsg,
@@ -81,7 +81,7 @@ func (c *char) a4DotHeal(count int) func() {
 		if count == 5 {
 			return
 		}
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Index,
 			Message: a4HealMsg,

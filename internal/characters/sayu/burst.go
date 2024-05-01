@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// heal
 	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
 	heal := initHealFlat[c.TalentLvlBurst()] + atk*initHealPP[c.TalentLvlBurst()]
-	c.Core.Player.Heal(player.HealInfo{
+	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
 		Target:  -1,
 		Message: "Yoohoo Art: Mujina Flurry",
@@ -92,7 +92,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					c.Core.QueueAttackEvent(d, 0)
 				}
 				if needHeal {
-					c.Core.Player.Heal(player.HealInfo{
+					c.Core.Player.Heal(info.HealInfo{
 						Caller:  c.Index,
 						Target:  char.Index,
 						Message: "Muji-Muji Daruma",

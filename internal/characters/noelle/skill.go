@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -108,7 +108,7 @@ func (c *char) skillHealCB() combat.AttackCBFunc {
 				// heal target
 				x := atk.AttackEvent.Snapshot.BaseDef*(1+atk.AttackEvent.Snapshot.Stats[attributes.DEFP]) + atk.AttackEvent.Snapshot.Stats[attributes.DEF]
 				heal := shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]
-				c.Core.Player.Heal(player.HealInfo{
+				c.Core.Player.Heal(info.HealInfo{
 					Caller:  c.Index,
 					Target:  -1,
 					Message: "Breastplate (Attack)",

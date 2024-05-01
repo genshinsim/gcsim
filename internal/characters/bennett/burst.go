@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -110,7 +109,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64, firstTic
 		active := c.Core.Player.ActiveChar()
 		// heal if not first tick and under 70%
 		if !firstTick && active.CurrentHPRatio() < 0.7 {
-			c.Core.Player.Heal(player.HealInfo{
+			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  active.Index,
 				Message: "Inspiration Field",

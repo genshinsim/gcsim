@@ -20,8 +20,8 @@ func (c *Char) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	s = strings.ToLower(s)
-	for i, v := range charNames {
-		if v == s {
+	for i := range charNames {
+		if charNames[i] == s {
 			*c = Char(i)
 			return nil
 		}
@@ -58,90 +58,9 @@ const (
 	Aether
 	Lumine
 	TravelerDelim // delim
-	Albedo
-	Aloy
-	Amber
-	Barbara
-	Beidou
-	Bennett
-	Charlotte
-	Chongyun
-	Cyno
-	Diluc
-	Diona
-	Eula
-	Fischl
-	Ganyu
-	Hutao
-	Jean
-	Kazuha
-	Kaeya
-	Ayaka
-	Ayato
-	Keqing
-	Kirara
-	Klee
-	Sara
-	Lisa
-	Mona
-	Ningguang
-	Noelle
-	Qiqi
-	Raiden
-	Razor
-	Rosaria
-	Kokomi
-	Sayu
-	Sucrose
-	Tartaglia
-	Thoma
-	Venti
-	Xiangling
-	Xianyun
-	Xiao
-	Xingqiu
-	Xinyan
-	Yanfei
-	Yoimiya
-	Zhongli
-	Gorou
-	Itto
-	Shenhe
-	Yunjin
-	YaeMiko
-	Yelan
-	Kuki
-	Heizou
-	Tighnari
-	Collei
-	Dori
-	Candace
-	Nilou
-	Nahida
-	Alhaitham
-	Layla
-	Faruzan
-	Wanderer
-	Baizhu
-	Dehya
-	Yaoyao
-	Mika
-	Kaveh
-	Lyney
-	Lynette
-	Neuvillette
-	Freminet
-	Furina
-	Navia
-	Wriothesley
-	Chevreuse
-	Gaming
-	Chiori
-	TestCharDoNotUse
-	EndCharKeys
 )
 
-var charNames = []string{
+var charNames = [EndCharKeys]string{
 	"",
 	"aetheranemo",
 	"lumineanemo",
@@ -160,89 +79,10 @@ var charNames = []string{
 	"aether",
 	"lumine",
 	"", // delim for traveler
-	"albedo",
-	"aloy",
-	"amber",
-	"barbara",
-	"beidou",
-	"bennett",
-	"charlotte",
-	"chongyun",
-	"cyno",
-	"diluc",
-	"diona",
-	"eula",
-	"fischl",
-	"ganyu",
-	"hutao",
-	"jean",
-	"kazuha",
-	"kaeya",
-	"ayaka",
-	"ayato",
-	"keqing",
-	"kirara",
-	"klee",
-	"sara",
-	"lisa",
-	"mona",
-	"ningguang",
-	"noelle",
-	"qiqi",
-	"raiden",
-	"razor",
-	"rosaria",
-	"kokomi",
-	"sayu",
-	"sucrose",
-	"tartaglia",
-	"thoma",
-	"venti",
-	"xiangling",
-	"xianyun",
-	"xiao",
-	"xingqiu",
-	"xinyan",
-	"yanfei",
-	"yoimiya",
-	"zhongli",
-	"gorou",
-	"itto",
-	"shenhe",
-	"yunjin",
-	"yaemiko",
-	"yelan",
-	"kuki",
-	"heizou",
-	"tighnari",
-	"collei",
-	"dori",
-	"candace",
-	"nilou",
-	"nahida",
-	"alhaitham",
-	"layla",
-	"faruzan",
-	"wanderer",
-	"baizhu",
-	"dehya",
-	"yaoyao",
-	"mika",
-	"kaveh",
-	"lyney",
-	"lynette",
-	"neuvillette",
-	"freminet",
-	"furina",
-	"navia",
-	"wriothesley",
-	"chevreuse",
-	"gaming",
-	"chiori",
 	"test_char_do_not_use",
 }
 
-var charPrettyName = []string{
+var charPrettyName = [EndCharKeys]string{
 	"Invalid",
 	"Aether (Anemo)",
 	"Lumine (Anemo)",
@@ -261,85 +101,6 @@ var charPrettyName = []string{
 	"Aether",
 	"Lumine",
 	"Invalid",
-	"Albedo",
-	"Aloy",
-	"Amber",
-	"Barbara",
-	"Beidou",
-	"Bennett",
-	"Charlotte",
-	"Chongyun",
-	"Cyno",
-	"Diluc",
-	"Diona",
-	"Eula",
-	"Fischl",
-	"Ganyu",
-	"Hutao",
-	"Jean",
-	"Kazuha",
-	"Kaeya",
-	"Ayaka",
-	"Ayato",
-	"Keqing",
-	"Kirara",
-	"Klee",
-	"Sara",
-	"Lisa",
-	"Mona",
-	"Ningguang",
-	"Noelle",
-	"Qiqi",
-	"Raiden",
-	"Razor",
-	"Rosaria",
-	"Kokomi",
-	"Sayu",
-	"Sucrose",
-	"Tartaglia",
-	"Thoma",
-	"Venti",
-	"Xiangling",
-	"Xianyun",
-	"Xiao",
-	"Xingqiu",
-	"Xinyan",
-	"Yanfei",
-	"Yoimiya",
-	"Zhongli",
-	"Gorou",
-	"Itto",
-	"Shenhe",
-	"Yunjin",
-	"Yae Miko",
-	"Yelan",
-	"Kuki",
-	"Heizou",
-	"Tighnari",
-	"Collei",
-	"Dori",
-	"Candace",
-	"Nilou",
-	"Nahida",
-	"Alhaitham",
-	"Layla",
-	"Faruzan",
-	"Wanderer",
-	"Baizhu",
-	"Dehya",
-	"Yaoyao",
-	"Mika",
-	"Kaveh",
-	"Lyney",
-	"Lynette",
-	"Neuvillette",
-	"Freminet",
-	"Furina",
-	"Navia",
-	"Wriothesley",
-	"Chevreuse",
-	"Gaming",
-	"Chiori",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -358,84 +119,5 @@ var CharKeyToEle = map[Char]attributes.Element{
 	LuminePyro:       attributes.Pyro,
 	AetherCryo:       attributes.Cryo,
 	LumineCryo:       attributes.Cryo,
-	Albedo:           attributes.Geo,
-	Aloy:             attributes.Cryo,
-	Amber:            attributes.Pyro,
-	Barbara:          attributes.Hydro,
-	Beidou:           attributes.Electro,
-	Bennett:          attributes.Pyro,
-	Charlotte:        attributes.Cryo,
-	Chongyun:         attributes.Cryo,
-	Cyno:             attributes.Electro,
-	Diluc:            attributes.Pyro,
-	Diona:            attributes.Cryo,
-	Eula:             attributes.Cryo,
-	Fischl:           attributes.Electro,
-	Ganyu:            attributes.Cryo,
-	Hutao:            attributes.Pyro,
-	Jean:             attributes.Anemo,
-	Kazuha:           attributes.Anemo,
-	Kaeya:            attributes.Cryo,
-	Ayaka:            attributes.Cryo,
-	Ayato:            attributes.Hydro,
-	Keqing:           attributes.Electro,
-	Kirara:           attributes.Dendro,
-	Klee:             attributes.Pyro,
-	Sara:             attributes.Electro,
-	Lisa:             attributes.Electro,
-	Mona:             attributes.Hydro,
-	Ningguang:        attributes.Geo,
-	Noelle:           attributes.Geo,
-	Qiqi:             attributes.Cryo,
-	Raiden:           attributes.Electro,
-	Razor:            attributes.Electro,
-	Rosaria:          attributes.Cryo,
-	Kokomi:           attributes.Hydro,
-	Sayu:             attributes.Anemo,
-	Sucrose:          attributes.Anemo,
-	Tartaglia:        attributes.Hydro,
-	Thoma:            attributes.Pyro,
-	Venti:            attributes.Anemo,
-	Xiangling:        attributes.Pyro,
-	Xianyun:          attributes.Anemo,
-	Xiao:             attributes.Anemo,
-	Xingqiu:          attributes.Hydro,
-	Xinyan:           attributes.Pyro,
-	Yanfei:           attributes.Pyro,
-	Yoimiya:          attributes.Pyro,
-	Zhongli:          attributes.Geo,
-	Gorou:            attributes.Geo,
-	Itto:             attributes.Geo,
-	Shenhe:           attributes.Cryo,
-	Yunjin:           attributes.Geo,
-	YaeMiko:          attributes.Electro,
-	Yelan:            attributes.Hydro,
-	Kuki:             attributes.Electro,
-	Heizou:           attributes.Anemo,
-	Tighnari:         attributes.Dendro,
-	Collei:           attributes.Dendro,
-	Dori:             attributes.Electro,
-	Candace:          attributes.Hydro,
-	Nilou:            attributes.Hydro,
-	Nahida:           attributes.Dendro,
-	Alhaitham:        attributes.Dendro,
-	Layla:            attributes.Cryo,
-	Faruzan:          attributes.Anemo,
-	Wanderer:         attributes.Anemo,
-	Baizhu:           attributes.Dendro,
-	Dehya:            attributes.Pyro,
-	Yaoyao:           attributes.Dendro,
-	Mika:             attributes.Cryo,
-	Kaveh:            attributes.Dendro,
-	Lyney:            attributes.Pyro,
-	Lynette:          attributes.Anemo,
-	Neuvillette:      attributes.Hydro,
-	Freminet:         attributes.Cryo,
-	Furina:           attributes.Hydro,
-	Navia:            attributes.Geo,
-	Wriothesley:      attributes.Cryo,
-	Chevreuse:        attributes.Pyro,
-	Gaming:           attributes.Pyro,
-	Chiori:           attributes.Geo,
 	TestCharDoNotUse: attributes.Geo,
 }

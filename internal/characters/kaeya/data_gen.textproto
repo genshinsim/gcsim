@@ -7,9 +7,9 @@ element: Ice
 weapon_class: WEAPON_SWORD_ONE_HAND
 icon_name: "UI_AvatarIcon_Kaeya"
 stats: {
-   base_hp: 975.6163940429688
-   base_atk: 18.698400497436523
-   base_def: 66.38099670410156
+   base_hp: 975.6164
+   base_atk: 18.6984
+   base_def: 66.381
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 728.8353881835938
+         value: 728.8354
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 49.59000015258789
+         value: 49.59
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 13.968990325927734
+         value: 13.96899
       }
       add_props: {
          prop_type: FIGHT_PROP_CHARGE_EFFICIENCY
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1246.692138671875
+         value: 1246.6921
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 84.82499694824219
+         value: 84.825
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 23.894325256347656
+         value: 23.894325
       }
       add_props: {
          prop_type: FIGHT_PROP_CHARGE_EFFICIENCY
-         value: 0.06669999659061432
+         value: 0.0667
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1937.167724609375
+         value: 1937.1677
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 131.80499267578125
+         value: 131.805
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 37.12810516357422
+         value: 37.128105
       }
       add_props: {
          prop_type: FIGHT_PROP_CHARGE_EFFICIENCY
-         value: 0.13330000638961792
+         value: 0.1333
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2455.0244140625
+         value: 2455.0244
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 167.0399932861328
+         value: 167.04
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 47.05344009399414
+         value: 47.05344
       }
       add_props: {
          prop_type: FIGHT_PROP_CHARGE_EFFICIENCY
-         value: 0.13330000638961792
+         value: 0.1333
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2972.881103515625
+         value: 2972.881
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 202.27499389648438
+         value: 202.275
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 56.97877502441406
+         value: 56.978775
       }
       add_props: {
          prop_type: FIGHT_PROP_CHARGE_EFFICIENCY
-         value: 0.20000000298023224
+         value: 0.2
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3490.73779296875
+         value: 3490.7378
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 237.50999450683594
+         value: 237.51
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 66.90411376953125
+         value: 66.90411
       }
       add_props: {
          prop_type: FIGHT_PROP_CHARGE_EFFICIENCY
-         value: 0.26669999957084656
+         value: 0.2667
       }
    }
 }

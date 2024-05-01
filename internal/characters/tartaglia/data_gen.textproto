@@ -7,9 +7,9 @@ element: Water
 weapon_class: WEAPON_BOW
 icon_name: "UI_AvatarIcon_Tartaglia"
 stats: {
-   base_hp: 1020.0524291992188
-   base_atk: 23.461200714111328
-   base_def: 63.4197998046875
+   base_hp: 1020.0524
+   base_atk: 23.4612
+   base_def: 63.4198
    hp_curve: GROW_CURVE_HP_S5
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 874.6027221679688
+         value: 874.6027
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 54.37799835205078
+         value: 54.378
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 20.11438751220703
+         value: 20.114388
       }
       add_props: {
          prop_type: FIGHT_PROP_WATER_ADD_HURT
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1496.0308837890625
+         value: 1496.0309
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 93.01499938964844
+         value: 93.015
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 34.40618896484375
+         value: 34.40619
       }
       add_props: {
          prop_type: FIGHT_PROP_WATER_ADD_HURT
-         value: 0.07199999690055847
+         value: 0.072
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2324.601806640625
+         value: 2324.6018
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 144.531005859375
+         value: 144.531
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 53.4619255065918
+         value: 53.461926
       }
       add_props: {
          prop_type: FIGHT_PROP_WATER_ADD_HURT
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2946.030029296875
+         value: 2946.03
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 183.16799926757812
+         value: 183.168
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 67.75373077392578
+         value: 67.75373
       }
       add_props: {
          prop_type: FIGHT_PROP_WATER_ADD_HURT
-         value: 0.14399999380111694
+         value: 0.144
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3567.45849609375
+         value: 3567.4585
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 221.80499267578125
+         value: 221.805
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 82.0455322265625
+         value: 82.04553
       }
       add_props: {
          prop_type: FIGHT_PROP_WATER_ADD_HURT
-         value: 0.2160000056028366
+         value: 0.216
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 4188.88671875
+         value: 4188.8867
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 260.4419860839844
+         value: 260.442
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 96.33733367919922
+         value: 96.33733
       }
       add_props: {
          prop_type: FIGHT_PROP_WATER_ADD_HURT
-         value: 0.2879999876022339
+         value: 0.288
       }
    }
 }

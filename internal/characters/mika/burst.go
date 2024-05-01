@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -29,7 +29,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// initial heal
 	c.QueueCharTask(func() {
 		heal := burstHealFirstF[c.TalentLvlBurst()] + burstHealFirstP[c.TalentLvlBurst()]*c.MaxHP()
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Skyfeather Song",
@@ -71,7 +71,7 @@ func (c *char) onBurstHeal() {
 		active.AddStatus(healIcdKey, c.healIcd, true)
 
 		heal := burstHealF[c.TalentLvlBurst()] + burstHealP[c.TalentLvlBurst()]*c.MaxHP()
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  active.Index,
 			Message: "Eagleplume",

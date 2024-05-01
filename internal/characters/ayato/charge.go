@@ -1,6 +1,8 @@
 package ayato
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -20,6 +22,9 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(skillBuffKey) {
+		return action.Info{}, errors.New("charged attack called in skill state")
+	}
 	ai := combat.AttackInfo{
 		Abil:       "Charge",
 		ActorIndex: c.Index,

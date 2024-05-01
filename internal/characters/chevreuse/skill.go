@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
@@ -223,7 +223,7 @@ func (c *char) startSkillHealing() {
 		return
 	}
 
-	c.Core.Player.Heal(player.HealInfo{
+	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
 		Message: "Short-Range Rapid Interdiction Fire Healing",

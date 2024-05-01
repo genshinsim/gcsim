@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -90,7 +90,7 @@ func (c *char) burstInit() {
 			return false
 		}
 
-		di := args[0].(player.DrainInfo)
+		di := args[0].(*info.DrainInfo)
 
 		if di.Amount <= 0 {
 			return false

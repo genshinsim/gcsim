@@ -1,20 +1,14 @@
-import {
-  Button,
-  DBCard,
-  Separator,
-  Toaster,
-  useToast,
-} from "@gcsim/components";
-import "@gcsim/components/src/index.css";
-import { Entry } from "@gcsim/types/src/generated/index.db";
-import axios from "axios";
-import React from "react";
-import { Route, Switch } from "wouter";
+import {Button, DBCard, Separator, Toaster, useToast} from '@gcsim/components';
+import '@gcsim/components/src/index.css';
+import {Entry} from '@gcsim/types/src/generated/index.db';
+import axios from 'axios';
+import React from 'react';
+import {Route, Switch} from 'wouter';
 
-function App({ id }: { id: string }) {
+function App({id}: {id: string}) {
   const [main, setMain] = React.useState<Entry | null>(null);
   const [data, setData] = React.useState<Entry[]>([]);
-  const { toast } = useToast();
+  const {toast} = useToast();
 
   React.useEffect(() => {
     axios.get(`/api/db/id/${id}`).then((res) => {
@@ -42,27 +36,27 @@ function App({ id }: { id: string }) {
     };
     if (includedChars.length > 0) {
       const and: unknown[] = [];
-      const trav: { [key in string]: boolean } = {};
+      const trav: {[key in string]: boolean} = {};
       includedChars.forEach((char) => {
-        if (char.includes("aether") || char.includes("lumine")) {
-          const ele = char.replace(/(aether|lumine)(.+)/, "$2");
+        if (char.includes('aether') || char.includes('lumine')) {
+          const ele = char.replace(/(aether|lumine)(.+)/, '$2');
           trav[ele] = true;
           return;
         }
         and.push({
-          "summary.char_names": char,
+          'summary.char_names': char,
         });
       });
       Object.keys(trav).forEach((ele) => {
         and.push({
           $or: [
-            { "summary.char_names": `aether${ele}` },
-            { "summary.char_names": `lumine${ele}` },
+            {'summary.char_names': `aether${ele}`},
+            {'summary.char_names': `lumine${ele}`},
           ],
         });
       });
       if (and.length > 0) {
-        q.query["$and"] = and;
+        q.query['$and'] = and;
       }
     }
     axios
@@ -82,33 +76,33 @@ function App({ id }: { id: string }) {
   const copy = (cmd: string) => {
     const s = `/${cmd} id:${id}`;
     navigator.clipboard.writeText(s).then(() => {
-      console.log("copy ok");
+      console.log('copy ok');
       toast({
-        title: "Copied to clipboard",
+        title: 'Copied to clipboard',
         description: `Copied ${s} to clipboard`,
       });
     });
   };
 
   const copyReplace = (from: string) => {
-    const s = `/replace id:${from} link:${main.share_key}`;
-    console.log("copying command: ", s);
+    const s = `/replace id:${from} link:https://gcsim.app/sh/${main.share_key}`;
+    console.log('copying command: ', s);
     navigator.clipboard.writeText(s).then(() => {
-      console.log("copy ok");
+      console.log('copy ok');
       toast({
-        title: "Copied to clipboard",
+        title: 'Copied to clipboard',
         description: `Copied replace command ${s} to clipboard`,
       });
     });
   };
 
   const rows = data
-    .filter((e) => e["_id"] !== id)
+    .filter((e) => e['_id'] !== id)
     .map((e, i) => {
       return (
         <DBCard
           className="border-0"
-          key={"entry-" + i}
+          key={'entry-' + i}
           entry={e}
           skipTags={-1}
           footer={
@@ -116,16 +110,14 @@ function App({ id }: { id: string }) {
               <Button
                 className="bg-yellow-600"
                 onClick={() => {
-                  copyReplace(e._id ?? "");
-                }}
-              >
+                  copyReplace(e._id ?? '');
+                }}>
                 Replace This
               </Button>
               <a
-                href={"https://gcsim.app/db/" + e._id}
+                href={'https://gcsim.app/db/' + e._id}
                 target="_blank"
-                rel="noopener noreferrer"
-              >
+                rel="noopener noreferrer">
                 <Button className="bg-blue-600">Result Viewer</Button>
               </a>
             </div>
@@ -147,21 +139,19 @@ function App({ id }: { id: string }) {
             skipTags={-1}
             footer={
               <div className="flex flex-row flex-wrap place-content-end mr-2 gap-4">
-                <Button className=" bg-red-600" onClick={() => copy("reject")}>
+                <Button className=" bg-red-600" onClick={() => copy('reject')}>
                   Copy Reject
                 </Button>
                 <Button
                   className="bg-green-600"
-                  onClick={() => copy("approve")}
-                >
+                  onClick={() => copy('approve')}>
                   Copy Approve
                 </Button>
                 <a
-                  href={"https://gcsim.app/db/" + id}
+                  href={'https://gcsim.app/db/' + id}
                   className=""
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   <Button className="bg-blue-600">Result Viewer</Button>
                 </a>
               </div>
@@ -188,7 +178,7 @@ const Routes = (): JSX.Element => {
         <Route path="/">
           <div>nothing here</div>
         </Route>
-        <Route path="/id/:id">{({ id }) => <App id={id} />}</Route>
+        <Route path="/id/:id">{({id}) => <App id={id} />}</Route>
       </Switch>
     </>
   );

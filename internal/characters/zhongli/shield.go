@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -83,7 +83,7 @@ func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (floa
 		if heal > 0.08*maxhp {
 			heal = 0.08 * maxhp
 		}
-		s.c.Core.Player.Heal(player.HealInfo{
+		s.c.Core.Player.Heal(info.HealInfo{
 			Caller:  s.c.Index,
 			Target:  active.Index,
 			Message: "Chrysos, Bounty of Dominator",

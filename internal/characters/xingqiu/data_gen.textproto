@@ -7,9 +7,9 @@ element: Water
 weapon_class: WEAPON_SWORD_ONE_HAND
 icon_name: "UI_AvatarIcon_Xingqiu"
 stats: {
-   base_hp: 857.0835571289062
-   base_atk: 16.917600631713867
-   base_def: 63.51974868774414
+   base_hp: 857.08356
+   base_atk: 16.9176
+   base_def: 63.51975
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 640.2852783203125
+         value: 640.2853
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 47.45249938964844
+         value: 47.4525
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 12.638609886169434
+         value: 12.63861
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1095.224853515625
+         value: 1095.2249
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 81.16874694824219
+         value: 81.16875
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 21.618675231933594
+         value: 21.618675
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.05999999865889549
+         value: 0.06
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1701.8109130859375
+         value: 1701.8109
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 126.12374877929688
+         value: 126.12375
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 33.59209442138672
+         value: 33.592094
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2156.75048828125
+         value: 2156.7505
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 159.83999633789062
+         value: 159.84
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 42.57215881347656
+         value: 42.57216
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2611.68994140625
+         value: 2611.69
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 193.55624389648438
+         value: 193.55624
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 51.552223205566406
+         value: 51.552223
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.18000000715255737
+         value: 0.18
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3066.629638671875
+         value: 3066.6296
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 227.2725067138672
+         value: 227.2725
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 60.532291412353516
+         value: 60.53229
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.23999999463558197
+         value: 0.24
       }
    }
 }

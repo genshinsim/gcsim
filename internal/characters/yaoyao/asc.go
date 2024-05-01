@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const a4Status = "yaoyao-a4"
@@ -34,7 +34,7 @@ func (c *char) a1Throw() {
 	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
 
 	c.QueueCharTask(func() {
-		var hi player.HealInfo
+		var hi info.HealInfo
 		var ai combat.AttackInfo
 		var snap combat.Snapshot
 
@@ -71,7 +71,7 @@ func (c *char) a4(index, src int) func() {
 			return
 		}
 
-		hi := player.HealInfo{
+		hi := info.HealInfo{
 			Caller:  c.Index,
 			Target:  index,
 			Message: "Yaoyao A4",
