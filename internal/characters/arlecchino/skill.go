@@ -14,8 +14,8 @@ import (
 var skillFrames []int
 
 const (
-	spikeHitmark      = 14
-	finalHitmark      = 37
+	spikeHitmark      = 17
+	finalHitmark      = 38
 	particleICDKey    = "arlecchino-particle-icd"
 	directiveLimitKey = "directive-limit"
 	directiveKey      = "directive"
@@ -23,7 +23,13 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(37)
+	skillFrames = frames.InitAbilSlice(77)
+	skillFrames[action.ActionAttack] = 70
+	skillFrames[action.ActionCharge] = 65
+	skillFrames[action.ActionBurst] = 70
+	skillFrames[action.ActionDash] = 72
+	skillFrames[action.ActionJump] = 73
+	skillFrames[action.ActionSwap] = 60
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -58,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, skillArea, finalHitmark, finalHitmark, c.particleCB, c.bloodDebtDirective)
 	c.QueueCharTask(c.debtLimit, finalHitmark+1)
 
-	c.SetCDWithDelay(action.ActionSkill, 30*60, 0)
+	c.SetCDWithDelay(action.ActionSkill, 30*60, 16)
 	c.QueueCharTask(c.c6skill, finalHitmark)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
