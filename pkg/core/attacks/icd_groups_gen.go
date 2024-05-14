@@ -6,6 +6,7 @@ const (
 	ICDGroupAlhaithamProjectionAttack
 	ICDGroupAlhaithamExtraAttack
 	ICDGroupAmber
+	ICDGroupArlecchinoElementalArt
 	ICDGroupAyakaExtraAttack
 	ICDGroupBaizhuC2
 	ICDGroupCharlotteMark
@@ -48,6 +49,10 @@ func init() {
 	ICDGroupResetTimer[ICDGroupAmber] = 60
 	ICDGroupEleApplicationSequence[ICDGroupAmber] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
 	ICDGroupDamageSequence[ICDGroupAmber] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupArlecchinoElementalArt] = 600
+	ICDGroupEleApplicationSequence[ICDGroupArlecchinoElementalArt] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupArlecchinoElementalArt] = []float64{1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupAyakaExtraAttack] = 30
 	ICDGroupEleApplicationSequence[ICDGroupAyakaExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}

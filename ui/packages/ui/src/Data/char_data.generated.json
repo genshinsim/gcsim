@@ -158,6 +158,23 @@
       },
       "name_text_hash_map ": "1966438658"
     },
+    "arlecchino": {
+      "id": 10000096,
+      "key": "arlecchino",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_FATUI",
+      "element": "Fire",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Arlecchino",
+      "skill_details": {
+        "skill": 10962,
+        "burst": 10965,
+        "attack": 10961,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "167199474"
+    },
     "ayaka": {
       "id": 10000002,
       "key": "ayaka",
