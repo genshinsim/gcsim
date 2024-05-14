@@ -10,18 +10,29 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 34
+const chargeHitmark = 37
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(59)
+	chargeFrames = frames.InitAbilSlice(60)
+	chargeFrames[action.ActionAttack] = 42
+	chargeFrames[action.ActionCharge] = 53
+	chargeFrames[action.ActionSkill] = 42
+	chargeFrames[action.ActionBurst] = 42
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = 58
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	windup := 0
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
+		windup = 12
+	}
 	c.QueueCharTask(func() {
-		// occurs before attack lands
 		c.absorbDirectives()
+	}, 12-windup)
+
+	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Charge",
@@ -53,11 +64,11 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			0,
 			0,
 		)
-	}, chargeHitmark)
+	}, chargeHitmark-windup)
 	return action.Info{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
+		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }
