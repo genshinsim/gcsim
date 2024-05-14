@@ -15,8 +15,8 @@ import (
 var highPlungeFrames []int
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 42 + 3
-const highPlungeHitmark = 43 + 3
+const lowPlungeHitmark = 44 + 3
+const highPlungeHitmark = 45 + 3
 const collisionHitmark = lowPlungeHitmark - 6
 
 const lowPlungePoiseDMG = 100.0
@@ -27,21 +27,24 @@ const highPlungeRadius = 5.0
 
 func init() {
 	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(77)
-	lowPlungeFrames[action.ActionAttack] = 59
-	lowPlungeFrames[action.ActionSkill] = 59
-	lowPlungeFrames[action.ActionBurst] = 58
-	lowPlungeFrames[action.ActionDash] = 75
-	lowPlungeFrames[action.ActionWalk] = 74
-	lowPlungeFrames[action.ActionSwap] = 62
+	lowPlungeFrames = frames.InitAbilSlice(79)
+	lowPlungeFrames[action.ActionAttack] = 62
+	lowPlungeFrames[action.ActionCharge] = 69
+	lowPlungeFrames[action.ActionSkill] = 60
+	lowPlungeFrames[action.ActionBurst] = 61
+	lowPlungeFrames[action.ActionJump] = 78
+	lowPlungeFrames[action.ActionWalk] = 75
+	lowPlungeFrames[action.ActionSwap] = 63
 
 	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(77)
-	highPlungeFrames[action.ActionAttack] = 58
-	highPlungeFrames[action.ActionSkill] = 60
-	highPlungeFrames[action.ActionBurst] = 60
-	highPlungeFrames[action.ActionWalk] = 76
-	highPlungeFrames[action.ActionSwap] = 63
+	highPlungeFrames = frames.InitAbilSlice(81)
+	highPlungeFrames[action.ActionAttack] = 62
+	highPlungeFrames[action.ActionCharge] = 73
+	highPlungeFrames[action.ActionSkill] = 64
+	highPlungeFrames[action.ActionBurst] = 63
+	highPlungeFrames[action.ActionJump] = 80
+	highPlungeFrames[action.ActionWalk] = 78
+	highPlungeFrames[action.ActionSwap] = 66
 }
 
 // Low Plunge attack damage queue generator
