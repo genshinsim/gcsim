@@ -16,7 +16,7 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = [][]int{{10}, {13}, {16}, {23, 34}, {13}, {39}}
+	attackHitmarks        = [][]int{{11}, {16}, {17}, {24, 35}, {21}, {44}}
 	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0}, {0.02}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {true, false}, {false}, {true}}
 	attackStrikeTypes     = [][]attacks.StrikeType{
@@ -63,24 +63,29 @@ const normalHitNum = 6
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 23)
-	attackFrames[0][action.ActionAttack] = 23
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 24)
+	attackFrames[0][action.ActionAttack] = 11
+	attackFrames[0][action.ActionCharge] = 17
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 20)
-	attackFrames[1][action.ActionAttack] = 20
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 31)
+	attackFrames[1][action.ActionAttack] = 21
+	attackFrames[1][action.ActionCharge] = 26
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 32)
-	attackFrames[2][action.ActionAttack] = 32
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 39)
+	attackFrames[2][action.ActionAttack] = 31
+	attackFrames[2][action.ActionCharge] = 33
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 47)
-	attackFrames[3][action.ActionAttack] = 47
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 55)
+	attackFrames[3][action.ActionAttack] = 49
+	attackFrames[3][action.ActionCharge] = 49
 
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 30)
-	attackFrames[4][action.ActionAttack] = 24
-	attackFrames[4][action.ActionDash] = 28
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 43)
+	attackFrames[4][action.ActionAttack] = 30
+	attackFrames[4][action.ActionCharge] = 33
 
-	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 79)
-	attackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 59)
+	attackFrames[5][action.ActionAttack] = 58
+	attackFrames[5][action.ActionCharge] = 55
 }
 
 func (c *char) naBuff() {
