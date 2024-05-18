@@ -37,7 +37,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10)
+	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
 	c.QueueCharTask(c.absorbDirectives, 22)
 
 	c.QueueCharTask(func() { c.ResetActionCooldown(action.ActionSkill) }, 107)

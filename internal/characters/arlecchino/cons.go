@@ -47,13 +47,14 @@ func (c *char) c2OnAbsorbDue() {
 		Durability: 25,
 		Mult:       9.00,
 	}
+	// TODO: Get C2 damage delay
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
 			nil,
-			1.2,
+			6.5,
 		),
 		4,
 		4,
