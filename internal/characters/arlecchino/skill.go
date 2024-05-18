@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -60,7 +61,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:               skillFinal[c.TalentLvlSkill()],
 	}
 
-	skillCleaveArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6)
+	skillCleaveArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 4.5}, 6)
 	c.Core.QueueAttack(ai, skillCleaveArea, finalHitmark, finalHitmark, c.particleCB, c.bloodDebtDirective)
 	c.QueueCharTask(c.debtLimit, finalHitmark+1)
 

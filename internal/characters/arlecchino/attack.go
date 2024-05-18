@@ -34,15 +34,15 @@ var (
 			{{1.9, 4}},     // box
 			{{2.8}, {2.8}}, // circle, circle
 			{{2.5}},        // circle
-			{{2.5}},        //TODO: circle?
+			{{3}},          // circle
 		},
 		{
-			{{1.9, 3}},     // box
-			{{2.6}},        // fan
-			{{1.9, 4}},     // box
-			{{2.8}, {2.8}}, // circle, circle
-			{{2.5}},        // circle
-			{{2.5}},        //TODO: circle?
+			{{1.9, 4.2}},   // box
+			{{3.1}},        // fan
+			{{3.4, 5.6}},   // box
+			{{3.3}, {3.3}}, // circle, circle
+			{{2.8}},        // circle
+			{{3.7}},        // circle?
 		},
 	}
 	attackOffsets = [][][]float64{
@@ -53,6 +53,7 @@ var (
 		{{0, 2.4}},
 		{{0, 2.5}},
 	}
+
 	attackFanAngles = [][]float64{{360}, {300}, {360}, {360, 360}, {360}, {360}}
 )
 

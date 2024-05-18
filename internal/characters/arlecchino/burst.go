@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -37,7 +38,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
+	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 6}, 6.5)
 	c.QueueCharTask(c.absorbDirectives, 22)
 
 	c.QueueCharTask(func() { c.ResetActionCooldown(action.ActionSkill) }, 107)
