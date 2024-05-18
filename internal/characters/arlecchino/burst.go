@@ -45,7 +45,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, skillArea, burstHitmarks, burstHitmarks)
 
 	// video seems to have a lot of delay due to ping
-	// Probably should be burst hitmark +1
 	c.QueueCharTask(c.balemoonRisingHeal, 123)
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
