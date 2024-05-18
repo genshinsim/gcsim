@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skillSpike[c.TalentLvlSkill()],
 	}
-	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3)
+	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 0.5)
 	c.Core.QueueAttack(ai, skillArea, spikeHitmark, spikeHitmark)
 
 	ai = combat.AttackInfo{
@@ -60,8 +60,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:               skillFinal[c.TalentLvlSkill()],
 	}
 
-	skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3)
-	c.Core.QueueAttack(ai, skillArea, finalHitmark, finalHitmark, c.particleCB, c.bloodDebtDirective)
+	skillCleaveArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6)
+	c.Core.QueueAttack(ai, skillCleaveArea, finalHitmark, finalHitmark, c.particleCB, c.bloodDebtDirective)
 	c.QueueCharTask(c.debtLimit, finalHitmark+1)
 
 	c.SetCDWithDelay(action.ActionSkill, 30*60, 16)
