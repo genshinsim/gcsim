@@ -101,7 +101,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			s.icd = c.F + 12 // 0.2s
 			s.prob += 0.2
 			c.Log.NewEvent("echoes 4pc failed to proc due to chance", glog.LogArtifactEvent, char.Index).
-				Write("probabability_now", s.prob).
+				Write("probability_now", s.prob).
 				Write("icd_up", s.icd)
 			return false
 		}
