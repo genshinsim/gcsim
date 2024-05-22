@@ -5,7 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -71,6 +73,34 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 func (c *char) getTotalAtk() float64 {
 	stats, _ := c.Stats()
 	return c.Base.Atk*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
+}
+
+func (c *char) absorbDirectives() {
+	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3.0}, 6.5), nil) {
+		if !e.StatusIsActive(directiveKey) {
+			continue
+		}
+
+		level := e.GetTag(directiveKey)
+
+		newDebt := a1Directive[level] * c.MaxHP()
+		if c.StatusIsActive(directiveLimitKey) {
+			newDebt = min(c.skillDebtMax-c.skillDebt, newDebt)
+		}
+
+		if newDebt > 0 {
+			c.skillDebt += newDebt
+			c.ModifyHPDebtByAmount(newDebt)
+		}
+		e.RemoveTag(directiveKey)
+		e.RemoveTag(directiveSrcKey)
+		e.DeleteStatus(directiveKey)
+
+		c.c4OnAbsorb()
+		if level >= 2 {
+			c.c2OnAbsorbDue()
+		}
+	}
 }
 
 func (c *char) Heal(hi *info.HealInfo) (float64, float64) {

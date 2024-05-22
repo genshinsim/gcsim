@@ -73,31 +73,3 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		State:           action.ChargeAttackState,
 	}, nil
 }
-
-func (c *char) absorbDirectives() {
-	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3.0}, 6.5), nil) {
-		if !e.StatusIsActive(directiveKey) {
-			continue
-		}
-
-		level := e.GetTag(directiveKey)
-
-		newDebt := a1Directive[level] * c.MaxHP()
-		if c.StatusIsActive(directiveLimitKey) {
-			newDebt = min(c.skillDebtMax-c.skillDebt, newDebt)
-		}
-
-		if newDebt > 0 {
-			c.skillDebt += newDebt
-			c.ModifyHPDebtByAmount(newDebt)
-		}
-		e.RemoveTag(directiveKey)
-		e.RemoveTag(directiveSrcKey)
-		e.DeleteStatus(directiveKey)
-
-		c.c4OnAbsorb()
-		if level >= 2 {
-			c.c2OnAbsorbDue()
-		}
-	}
-}
