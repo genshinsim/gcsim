@@ -75,7 +75,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) absorbDirectives() {
-	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), nil) {
+	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3.0}, 6.5), nil) {
 		if !e.StatusIsActive(directiveKey) {
 			continue
 		}
