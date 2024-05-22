@@ -42,7 +42,7 @@ var (
 			{{3.4, 5.6}},   // box
 			{{3.3}, {3.3}}, // circle, circle
 			{{2.8}},        // circle
-			{{3.7}},        // circle?
+			{{3.7}},        // circle
 		},
 	}
 	attackOffsets = [][][]float64{
