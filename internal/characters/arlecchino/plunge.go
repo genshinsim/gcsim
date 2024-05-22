@@ -2,6 +2,7 @@ package arlecchino
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -51,6 +52,13 @@ func init() {
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
+	if c.swapError {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Swap", c.CharWrapper.Base.Key)
+	}
+
+	if c.chargeEarlyCancelled {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Plunge Attack", c.CharWrapper.Base.Key)
+	}
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
@@ -107,6 +115,13 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
+	if c.swapError {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Swap", c.CharWrapper.Base.Key)
+	}
+
+	if c.chargeEarlyCancelled {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Plunge Attack", c.CharWrapper.Base.Key)
+	}
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:

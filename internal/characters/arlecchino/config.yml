@@ -1,6 +1,9 @@
 package_name: arlecchino
 genshin_id: 10000096
 key: arlecchino
+action_param_keys:
+  charge:
+    - param: "early_cancel"
 icd_groups:
   - group_name: ICDGroupArlecchinoElementalArt
     reset_timer: 600

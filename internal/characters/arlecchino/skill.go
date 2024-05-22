@@ -1,6 +1,8 @@
 package arlecchino
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -34,6 +36,11 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	if c.swapError {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Swap", c.CharWrapper.Base.Key)
+	}
+
+	c.chargeEarlyCancelled = false
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All is Ash (Spike)",

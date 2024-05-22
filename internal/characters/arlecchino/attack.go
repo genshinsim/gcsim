@@ -110,6 +110,14 @@ func (c *char) naBuff() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
+	if c.swapError {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Swap", c.CharWrapper.Base.Key)
+	}
+
+	if c.chargeEarlyCancelled {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Normal Attack", c.CharWrapper.Base.Key)
+	}
+
 	counter := c.NormalCounter
 	for i, mult := range attack[counter] {
 		// clone the values into another variable so that it won't be changed when the queued task executes

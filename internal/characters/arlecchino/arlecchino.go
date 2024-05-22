@@ -24,6 +24,9 @@ type char struct {
 	skillDebt             float64
 	skillDebtMax          float64
 	initialDirectiveLevel int
+	lastSwap              int
+	swapError             bool
+	chargeEarlyCancelled  bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -37,6 +40,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
+	c.chargeEarlyCancelled = false
+
 	return nil
 }
 
@@ -44,6 +49,8 @@ func (c *char) Init() error {
 	c.naBuff()
 	c.passive()
 	c.a1OnKill()
+	c.onSwap()
+
 	c.a4()
 
 	c.c2()
@@ -141,4 +148,17 @@ func (c *char) Heal(hi *info.HealInfo) (float64, float64) {
 	c.Core.Events.Emit(event.OnHeal, hi, c.Index, heal, overheal, healAmt)
 
 	return heal, healAmt
+}
+
+// used for early CA cancel swap cd calculation
+func (c *char) onSwap() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		// do nothing if next char isn't arlecchino
+		next := args[1].(int)
+		if next != c.Index {
+			return false
+		}
+		c.lastSwap = c.Core.F
+		return false
+	}, "neuvillette-swap")
 }

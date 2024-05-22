@@ -1,12 +1,16 @@
 package arlecchino
 
 import (
+	"fmt"
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var chargeFrames []int
@@ -25,13 +29,46 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	if c.swapError {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Swap", c.CharWrapper.Base.Key)
+	}
+
+	if c.chargeEarlyCancelled {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Charged Attack", c.CharWrapper.Base.Key)
+	}
+
 	windup := 0
 	if c.Core.Player.CurrentState() == action.NormalAttackState {
 		windup = 12
 	}
+
+	early, ok := p["early_cancel"]
+	if !ok {
+		early = 0
+	}
+
 	c.QueueCharTask(func() {
 		c.absorbDirectives()
 	}, 12-windup)
+
+	if early > 0 {
+		c.Core.Player.SwapCD = math.MaxInt16
+		return action.Info{
+			Frames:          func(next action.Action) int { return 13 - windup },
+			AnimationLength: 13 - windup,
+			CanQueueAfter:   13 - windup,
+			State:           action.ChargeAttackState,
+			OnRemoved: func(next action.AnimationState) {
+				// need to calculate correct swap cd in case of early cancel
+				switch next {
+				case action.SkillState, action.BurstState, action.DashState, action.JumpState:
+					c.Core.Player.SwapCD = max(player.SwapCDFrames-(c.Core.F-c.lastSwap), 0)
+				case action.SwapState:
+					c.swapError = true
+				}
+			},
+		}, nil
+	}
 
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{

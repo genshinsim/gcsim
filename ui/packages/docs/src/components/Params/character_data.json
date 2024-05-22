@@ -104,6 +104,11 @@
   ],
   "arlecchino": [
     {
+      "ability": "charge",
+      "param": "early_cancel",
+      "desc": "Cancel the CA immediately after absorbing nearby Blood-Debt Directives. The next action must be Burst, Skill, Dash, or Jump."
+    },
+    {
       "ability": "low_plunge",
       "param": "collision",
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
