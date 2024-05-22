@@ -61,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			OnRemoved: func(next action.AnimationState) {
 				// need to calculate correct swap cd in case of early cancel
 				switch next {
-				case action.SkillState, action.BurstState, action.DashState, action.JumpState:
+				case action.DashState, action.JumpState:
 					c.Core.Player.SwapCD = max(player.SwapCDFrames-(c.Core.F-c.lastSwap), 0)
 				case action.SwapState:
 					c.swapError = true

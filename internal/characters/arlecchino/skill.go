@@ -40,7 +40,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Swap", c.CharWrapper.Base.Key)
 	}
 
-	c.chargeEarlyCancelled = false
+	if c.chargeEarlyCancelled {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Skill", c.CharWrapper.Base.Key)
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All is Ash (Spike)",
