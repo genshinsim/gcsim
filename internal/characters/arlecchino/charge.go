@@ -52,10 +52,11 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, 12-windup)
 
 	if early > 0 {
+		c.chargeEarlyCancelled = true
 		c.Core.Player.SwapCD = math.MaxInt16
 		return action.Info{
 			Frames:          func(next action.Action) int { return 13 - windup },
-			AnimationLength: 13 - windup,
+			AnimationLength: c.Core.Player.SwapCD, // animation length must equal to swap CD so that the OnRemoved will be called on Swap instead of Idle
 			CanQueueAfter:   13 - windup,
 			State:           action.ChargeAttackState,
 			OnRemoved: func(next action.AnimationState) {
