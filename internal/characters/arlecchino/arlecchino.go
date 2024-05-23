@@ -98,7 +98,7 @@ func (c *char) Heal(hi *info.HealInfo) (float64, float64) {
 	}
 
 	// overheal is always 0 when the healing is blocked
-	overheal := 0
+	overheal := 0.0
 
 	// still emit event for clam, sodp, rightful reward, etc
 	c.Core.Log.NewEvent(hi.Message, glog.LogHealEvent, c.Index).
