@@ -31,7 +31,7 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{}
+	var w Weapon
 	refine := p.Refine
 
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
@@ -55,33 +55,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("crimsonmoonssemblance-hit-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
-		index := args[0].(int)
-		maxhp := char.MaxHP()
-		m := make([]float64, attributes.EndStatType)
+	m := make([]float64, attributes.EndStatType)
 
-		if char.Index != index {
-			return false
-		}
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag("crimsonmoonssemblance-bonus", -1),
+		AffectedStat: attributes.DmgP,
+		Amount: func() ([]float64, bool) {
+			maxhp := char.MaxHP()
+			m[attributes.DmgP] = 0.0
+			if char.CurrentHPDebt() > 0 {
+				m[attributes.DmgP] += 0.08 + 0.04*float64(refine)
+			}
+			if char.CurrentHPDebt() >= 0.3*maxhp {
+				m[attributes.DmgP] += 0.16 + 0.08*float64(refine)
+			}
+			return m, true
+		},
+	})
 
-		if char.CurrentHPDebt() > 0 {
-			m[attributes.DmgP] += 0.08 + 0.04*float64(refine)
-		}
-
-		if char.CurrentHPDebt() >= 0.3*maxhp {
-			m[attributes.DmgP] += 0.16 + 0.08*float64(refine)
-		}
-
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("crimsonmoonssemblance-bonus", -1),
-			AffectedStat: attributes.DmgP,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
-
-		return false
-	}, fmt.Sprintf("crimsonmoonssemblance-hp-debt-%v", char.Base.Key.String()))
-
-	return w, nil
+	return &w, nil
 }
