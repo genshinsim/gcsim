@@ -40,6 +40,8 @@ var SetNameToKey = map[string]keys.Set{
 	"flowerofparadiselost":               keys.FlowerOfParadiseLost,
 	"paradiselost":                       keys.FlowerOfParadiseLost,
 	"fopl":                               keys.FlowerOfParadiseLost,
+	"fragmentofharmonicwhimsy":           keys.FragmentOfHarmonicWhimsy,
+	"fohw":                               keys.FragmentOfHarmonicWhimsy,
 	"gambler":                            keys.Gambler,
 	"gladiatorsfinale":                   keys.GladiatorsFinale,
 	"glad":                               keys.GladiatorsFinale,

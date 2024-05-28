@@ -47,6 +47,7 @@ var setNames = []string{
 	"echoesofanoffering",
 	"emblemofseveredfate",
 	"flowerofparadiselost",
+	"fragmentofharmonicwhimsy",
 	"gambler",
 	"gladiatorsfinale",
 	"gildeddreams",
@@ -100,6 +101,7 @@ const (
 	EchoesOfAnOffering
 	EmblemOfSeveredFate
 	FlowerOfParadiseLost
+	FragmentOfHarmonicWhimsy
 	Gambler
 	GladiatorsFinale
 	GildedDreams
