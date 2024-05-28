@@ -53,7 +53,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			if !char.StatusIsActive(fohw4pc) {
+			if !char.StatModIsActive(fohw4pc) {
 				s.stacks = 0
 			}
 
