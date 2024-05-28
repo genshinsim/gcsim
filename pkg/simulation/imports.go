@@ -28,6 +28,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/emblem"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/exile"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/flowerofparadiselost"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/fragmentofharmonicwhimsy"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/gambler"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/gildeddreams"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/gladiator"
