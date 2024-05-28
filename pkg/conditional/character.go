@@ -78,6 +78,10 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 			return 0, err
 		}
 		return evalCharacterStats(char, fields[2])
+	case "bol":
+		return char.CurrentHPDebt(), nil
+	case "bolratio":
+		return char.CurrentHPDebt() / char.MaxHP(), nil
 	default: // .kokomi.*
 		return char.Condition(fields[1:])
 	}
