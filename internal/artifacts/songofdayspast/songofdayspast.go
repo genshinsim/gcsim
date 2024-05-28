@@ -64,7 +64,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 func (s *Set) OnHeal() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		src := args[0].(*info.HealInfo)
-		healAmt := args[2].(float64)
+		healAmt := args[4].(float64)
 		if src.Caller != s.char.Index {
 			return false
 		}
