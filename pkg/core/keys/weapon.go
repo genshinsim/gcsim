@@ -59,6 +59,7 @@ var weaponNames = []string{
 	"coolsteel",
 	"cranesechoingcall",
 	"crescentpike",
+	"crimsonmoonssemblance",
 	"darkironsword",
 	"deathmatch",
 	"debateclub",
@@ -244,6 +245,7 @@ const (
 	CoolSteel
 	CranesEchoingCall
 	CrescentPike
+	CrimsonMoonsSemblance
 	DarkIronSword
 	Deathmatch
 	DebateClub

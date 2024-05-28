@@ -173,6 +173,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/calamity"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/catch"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/crescent"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/crimsonmoonssemblance"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/deathmatch"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dialoguesofthedesertsages"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dragonbane"
