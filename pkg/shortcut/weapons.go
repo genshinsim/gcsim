@@ -52,6 +52,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"crescentpike":                    keys.CrescentPike,
 	"cpike":                           keys.CrescentPike,
 	"pike":                            keys.CrescentPike,
+	"crimsonmoon":                     keys.CrimsonMoonsSemblance,
+	"crimsonmoonssemblance":           keys.CrimsonMoonsSemblance,
 	"darkironsword":                   keys.DarkIronSword,
 	"deathmatch":                      keys.Deathmatch,
 	"debateclub":                      keys.DebateClub,
