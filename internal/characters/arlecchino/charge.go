@@ -2,7 +2,6 @@ package arlecchino
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -10,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var chargeFrames []int
@@ -53,18 +51,14 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	if early > 0 {
 		c.chargeEarlyCancelled = true
-		c.Core.Player.SwapCD = math.MaxInt16
+		// TODO: error if the user waits until after hitmark to do the dash/jump
 		return action.Info{
 			Frames:          func(next action.Action) int { return 13 - windup },
-			AnimationLength: c.Core.Player.SwapCD, // animation length must equal to swap CD so that the OnRemoved will be called on Swap instead of Idle
+			AnimationLength: chargeHitmark - 1,
 			CanQueueAfter:   13 - windup,
 			State:           action.ChargeAttackState,
 			OnRemoved: func(next action.AnimationState) {
-				// need to calculate correct swap cd in case of early cancel
-				switch next {
-				case action.DashState, action.JumpState:
-					c.Core.Player.SwapCD = max(player.SwapCDFrames-(c.Core.F-c.lastSwap), 0)
-				case action.SwapState:
+				if next == action.SwapState {
 					c.swapError = true
 				}
 			},
