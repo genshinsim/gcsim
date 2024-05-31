@@ -7,9 +7,9 @@ element: Fire
 weapon_class: WEAPON_POLE
 icon_name: "UI_AvatarIcon_Tohma"
 stats: {
-   base_hp: 866.2014770507812
-   base_atk: 16.917600631713867
-   base_def: 62.9474983215332
+   base_hp: 866.2015
+   base_atk: 16.9176
+   base_def: 62.9475
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 647.0968017578125
+         value: 647.0968
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 47.025001525878906
+         value: 47.025
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 12.638609886169434
+         value: 12.63861
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
@@ -50,7 +50,7 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1106.876220703125
+         value: 1106.8762
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
@@ -58,56 +58,56 @@ stats: {
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 21.618675231933594
+         value: 21.618675
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.05999999865889549
+         value: 0.06
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1719.915283203125
+         value: 1719.9153
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 124.98750305175781
+         value: 124.9875
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 33.59209442138672
+         value: 33.592094
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2179.694580078125
+         value: 2179.6946
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 158.39999389648438
+         value: 158.4
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 42.57215881347656
+         value: 42.57216
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.11999999731779099
+         value: 0.12
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2639.473876953125
+         value: 2639.4739
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
@@ -115,30 +115,30 @@ stats: {
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 51.552223205566406
+         value: 51.552223
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.18000000715255737
+         value: 0.18
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3099.253173828125
+         value: 3099.2532
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 225.22500610351562
+         value: 225.225
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 60.532291412353516
+         value: 60.53229
       }
       add_props: {
          prop_type: FIGHT_PROP_ATTACK_PERCENT
-         value: 0.23999999463558197
+         value: 0.24
       }
    }
 }

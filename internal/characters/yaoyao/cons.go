@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -86,7 +86,7 @@ func (yg *yuegui) c6(target geometry.Point) {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	hi := player.HealInfo{
+	hi := info.HealInfo{
 		Caller:  yg.c.Index,
 		Message: c6HealMsg,
 		Src:     yg.c.MaxHP() * 0.075,

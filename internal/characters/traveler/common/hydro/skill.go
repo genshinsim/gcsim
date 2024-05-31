@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -314,7 +314,7 @@ func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
 	ai.FlatDmg = dewdropBonus[c.TalentLvlSkill()] * c.MaxHP()
 
 	drainHP := 0.04 * c.CurrentHP()
-	c.Core.Player.Drain(player.DrainInfo{
+	c.Core.Player.Drain(info.DrainInfo{
 		ActorIndex: c.Index,
 		Abil:       "Suffusion",
 		Amount:     drainHP,

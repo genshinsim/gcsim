@@ -7,9 +7,9 @@ element: Rock
 weapon_class: WEAPON_CLAYMORE
 icon_name: "UI_AvatarIcon_Noel"
 stats: {
-   base_hp: 1012.0880126953125
-   base_atk: 16.02720069885254
-   base_def: 66.9532470703125
+   base_hp: 1012.088
+   base_atk: 16.0272
+   base_def: 66.95325
    hp_curve: GROW_CURVE_HP_S4
    atk_curve: GROW_CURVE_ATTACK_S4
    def_cruve: GROW_CURVE_HP_S4
@@ -32,15 +32,15 @@ stats: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 756.08154296875
+         value: 756.08154
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 50.01750183105469
+         value: 50.0175
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 11.973420143127441
+         value: 11.97342
       }
       add_props: {
          prop_type: FIGHT_PROP_DEFENSE_PERCENT
@@ -50,95 +50,95 @@ stats: {
       max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 1293.29736328125
+         value: 1293.2974
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 85.5562515258789
+         value: 85.55625
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 20.480850219726562
+         value: 20.48085
       }
       add_props: {
          prop_type: FIGHT_PROP_DEFENSE_PERCENT
-         value: 0.07500000298023224
+         value: 0.075
       }
    }
    promo_data: {
       max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2009.585205078125
+         value: 2009.5852
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 132.94125366210938
+         value: 132.94125
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 31.82408905029297
+         value: 31.82409
       }
       add_props: {
          prop_type: FIGHT_PROP_DEFENSE_PERCENT
-         value: 0.15000000596046448
+         value: 0.15
       }
    }
    promo_data: {
       max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 2546.801025390625
+         value: 2546.801
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 168.47999572753906
+         value: 168.48
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 40.331520080566406
+         value: 40.33152
       }
       add_props: {
          prop_type: FIGHT_PROP_DEFENSE_PERCENT
-         value: 0.15000000596046448
+         value: 0.15
       }
    }
    promo_data: {
       max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3084.016845703125
+         value: 3084.0168
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 204.0187530517578
+         value: 204.01875
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 48.838951110839844
+         value: 48.83895
       }
       add_props: {
          prop_type: FIGHT_PROP_DEFENSE_PERCENT
-         value: 0.22499999403953552
+         value: 0.225
       }
    }
    promo_data: {
       max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
-         value: 3621.232666015625
+         value: 3621.2327
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_DEFENSE
-         value: 239.5574951171875
+         value: 239.5575
       }
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
-         value: 57.346378326416016
+         value: 57.34638
       }
       add_props: {
          prop_type: FIGHT_PROP_DEFENSE_PERCENT
-         value: 0.30000001192092896
+         value: 0.3
       }
    }
 }

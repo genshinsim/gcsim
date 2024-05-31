@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -39,7 +39,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			if c.StatusIsActive(burstBuffKey) && c.Core.F >= hpICD {
 				// TODO: not sure if this is affected by hitlag
 				hpICD = c.Core.F + 60
-				c.Core.Player.Drain(player.DrainInfo{
+				c.Core.Player.Drain(info.DrainInfo{
 					ActorIndex: c.Index,
 					Abil:       "Bane of All Evil",
 					Amount:     burstDrain[c.TalentLvlBurst()] * c.CurrentHP(),

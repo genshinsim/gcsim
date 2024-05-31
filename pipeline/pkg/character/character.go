@@ -16,6 +16,7 @@ type Config struct {
 	SubID          int32    `yaml:"sub_id,omitempty"`
 	Key            string   `yaml:"key,omitempty"`
 	KeyVarName     string   `yaml:"key_var_name,omitempty"`
+	PrettyName     string   `yaml:"pretty_name,omitempty"`
 	Shortcuts      []string `yaml:"shortcuts,omitempty"`
 
 	// skill data generation

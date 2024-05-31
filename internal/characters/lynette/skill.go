@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -201,7 +201,7 @@ func (c *char) makeSkillHealAndDrainCB() combat.AttackCBFunc {
 		done = true
 
 		// heal
-		c.Core.Player.Heal(player.HealInfo{
+		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Index,
 			Message: "Enigmatic Feint",
@@ -222,7 +222,7 @@ func (c *char) skillDrain(count int) func() {
 		if count == 4 {
 			return
 		}
-		c.Core.Player.Drain(player.DrainInfo{
+		c.Core.Player.Drain(info.DrainInfo{
 			ActorIndex: c.Index,
 			Abil:       "Enigmatic Feint",
 			Amount:     0.06 * c.CurrentHP(),

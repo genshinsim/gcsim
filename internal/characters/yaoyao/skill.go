@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -45,10 +45,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) getSkillHealInfo(snap *combat.Snapshot) player.HealInfo {
+func (c *char) getSkillHealInfo(snap *combat.Snapshot) info.HealInfo {
 	maxhp := snap.BaseHP*(1+snap.Stats[attributes.HPP]) + snap.Stats[attributes.HP]
 	heal := skillRadishHealing[0][c.TalentLvlSkill()]*maxhp + skillRadishHealing[1][c.TalentLvlSkill()]
-	return player.HealInfo{
+	return info.HealInfo{
 		Caller:  c.Index,
 		Message: "Yuegui Skill",
 		Src:     heal,

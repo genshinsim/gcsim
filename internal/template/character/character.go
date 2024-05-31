@@ -22,6 +22,10 @@ type Character struct {
 	cdQueue                [][]int
 	AvailableCDCharge      []int
 	additionalCDCharge     []int
+
+	// hp
+	currentHPRatio float64
+	currentHPDebt  float64
 }
 
 func NewWithWrapper(c *core.Core, w *character.CharWrapper) *Character {

@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(c.a1, 540+skillStart)
 
 	// remove some hp
-	c.Core.Player.Drain(player.DrainInfo{
+	c.Core.Player.Drain(info.DrainInfo{
 		ActorIndex: c.Index,
 		Abil:       "Paramita Papilio",
 		Amount:     0.30 * c.CurrentHP(),

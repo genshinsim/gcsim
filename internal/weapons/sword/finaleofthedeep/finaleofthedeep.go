@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(bondKey, -1, true)
 
-		char.SetHPDebtByRatio(hp)
+		char.ModifyHPDebtByRatio(hp)
 		debt += char.CurrentHPDebt()
 		bondAtk := debt * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
 		if bondAtk > bondAtkCap {

@@ -3,7 +3,7 @@ package gaming
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -34,11 +34,11 @@ func (c *char) a1Heal() {
 	if !c.StatusIsActive(a1Key) {
 		return
 	}
-	c.Core.Player.Heal(player.HealInfo{
+	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Index,
 		Message: "Dance of Amity (A1)",
-		Type:    player.HealTypePercent,
+		Type:    info.HealTypePercent,
 		Src:     0.015,
 		Bonus:   c.Stat(attributes.Heal),
 	})

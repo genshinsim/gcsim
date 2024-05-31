@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 			// dori self application
 			// TODO: change this to a ST attack later when self reactions need to be implemented
-			c.Core.Player.Drain(player.DrainInfo{
+			c.Core.Player.Drain(info.DrainInfo{
 				ActorIndex: ai.ActorIndex,
 				Abil:       ai.Abil,
 				Amount:     0,
@@ -104,7 +104,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				c.c2(c2Travel)
 			}
 			// Heals
-			c.Core.Player.Heal(player.HealInfo{
+			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  c.Core.Player.Active(),
 				Message: "Alcazarzaray's Exactitude: Healing",

@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -45,8 +44,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		// heal
-		c.Player.Heal(player.HealInfo{
-			Type:    player.HealTypePercent,
+		c.Player.Heal(info.HealInfo{
+			Type:    info.HealTypePercent,
 			Message: "White Iron Greatsword (Proc)",
 			Src:     0.06 + float64(r)*0.02,
 		})
