@@ -74,10 +74,14 @@ export interface AvatarSkillsData {
   skill?: number | undefined;
   burst?: number | undefined;
   attack?: number | undefined;
+  a1?: number | undefined;
+  a4?: number | undefined;
   burst_energy_cost?: number | undefined;
   attack_scaling?: AvatarSkillExcelIndexData[] | undefined;
   skill_scaling?: AvatarSkillExcelIndexData[] | undefined;
   burst_scaling?: AvatarSkillExcelIndexData[] | undefined;
+  a1_scaling?: AvatarSkillExcelIndexData[] | undefined;
+  a4_scaling?: AvatarSkillExcelIndexData[] | undefined;
 }
 
 export interface AvatarSkillExcelIndexData {
@@ -738,10 +742,14 @@ function createBaseAvatarSkillsData(): AvatarSkillsData {
     skill: 0,
     burst: 0,
     attack: 0,
+    a1: 0,
+    a4: 0,
     burst_energy_cost: 0,
     attack_scaling: [],
     skill_scaling: [],
     burst_scaling: [],
+    a1_scaling: [],
+    a4_scaling: [],
   };
 }
 
@@ -755,6 +763,12 @@ export const AvatarSkillsData = {
     }
     if (message.attack !== undefined && message.attack !== 0) {
       writer.uint32(24).int32(message.attack);
+    }
+    if (message.a1 !== undefined && message.a1 !== 0) {
+      writer.uint32(80).int32(message.a1);
+    }
+    if (message.a4 !== undefined && message.a4 !== 0) {
+      writer.uint32(88).int32(message.a4);
     }
     if (message.burst_energy_cost !== undefined && message.burst_energy_cost !== 0) {
       writer.uint32(33).double(message.burst_energy_cost);
@@ -772,6 +786,16 @@ export const AvatarSkillsData = {
     if (message.burst_scaling !== undefined && message.burst_scaling.length !== 0) {
       for (const v of message.burst_scaling) {
         AvatarSkillExcelIndexData.encode(v!, writer.uint32(58).fork()).ldelim();
+      }
+    }
+    if (message.a1_scaling !== undefined && message.a1_scaling.length !== 0) {
+      for (const v of message.a1_scaling) {
+        AvatarSkillExcelIndexData.encode(v!, writer.uint32(66).fork()).ldelim();
+      }
+    }
+    if (message.a4_scaling !== undefined && message.a4_scaling.length !== 0) {
+      for (const v of message.a4_scaling) {
+        AvatarSkillExcelIndexData.encode(v!, writer.uint32(74).fork()).ldelim();
       }
     }
     return writer;
@@ -805,6 +829,20 @@ export const AvatarSkillsData = {
 
           message.attack = reader.int32();
           continue;
+        case 10:
+          if (tag !== 80) {
+            break;
+          }
+
+          message.a1 = reader.int32();
+          continue;
+        case 11:
+          if (tag !== 88) {
+            break;
+          }
+
+          message.a4 = reader.int32();
+          continue;
         case 4:
           if (tag !== 33) {
             break;
@@ -833,6 +871,20 @@ export const AvatarSkillsData = {
 
           message.burst_scaling!.push(AvatarSkillExcelIndexData.decode(reader, reader.uint32()));
           continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.a1_scaling!.push(AvatarSkillExcelIndexData.decode(reader, reader.uint32()));
+          continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.a4_scaling!.push(AvatarSkillExcelIndexData.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -847,6 +899,8 @@ export const AvatarSkillsData = {
       skill: isSet(object.skill) ? globalThis.Number(object.skill) : 0,
       burst: isSet(object.burst) ? globalThis.Number(object.burst) : 0,
       attack: isSet(object.attack) ? globalThis.Number(object.attack) : 0,
+      a1: isSet(object.a1) ? globalThis.Number(object.a1) : 0,
+      a4: isSet(object.a4) ? globalThis.Number(object.a4) : 0,
       burst_energy_cost: isSet(object.burst_energy_cost) ? globalThis.Number(object.burst_energy_cost) : 0,
       attack_scaling: globalThis.Array.isArray(object?.attack_scaling)
         ? object.attack_scaling.map((e: any) => AvatarSkillExcelIndexData.fromJSON(e))
@@ -856,6 +910,12 @@ export const AvatarSkillsData = {
         : [],
       burst_scaling: globalThis.Array.isArray(object?.burst_scaling)
         ? object.burst_scaling.map((e: any) => AvatarSkillExcelIndexData.fromJSON(e))
+        : [],
+      a1_scaling: globalThis.Array.isArray(object?.a1_scaling)
+        ? object.a1_scaling.map((e: any) => AvatarSkillExcelIndexData.fromJSON(e))
+        : [],
+      a4_scaling: globalThis.Array.isArray(object?.a4_scaling)
+        ? object.a4_scaling.map((e: any) => AvatarSkillExcelIndexData.fromJSON(e))
         : [],
     };
   },
@@ -871,6 +931,12 @@ export const AvatarSkillsData = {
     if (message.attack !== undefined && message.attack !== 0) {
       obj.attack = Math.round(message.attack);
     }
+    if (message.a1 !== undefined && message.a1 !== 0) {
+      obj.a1 = Math.round(message.a1);
+    }
+    if (message.a4 !== undefined && message.a4 !== 0) {
+      obj.a4 = Math.round(message.a4);
+    }
     if (message.burst_energy_cost !== undefined && message.burst_energy_cost !== 0) {
       obj.burst_energy_cost = message.burst_energy_cost;
     }
@@ -883,6 +949,12 @@ export const AvatarSkillsData = {
     if (message.burst_scaling?.length) {
       obj.burst_scaling = message.burst_scaling.map((e) => AvatarSkillExcelIndexData.toJSON(e));
     }
+    if (message.a1_scaling?.length) {
+      obj.a1_scaling = message.a1_scaling.map((e) => AvatarSkillExcelIndexData.toJSON(e));
+    }
+    if (message.a4_scaling?.length) {
+      obj.a4_scaling = message.a4_scaling.map((e) => AvatarSkillExcelIndexData.toJSON(e));
+    }
     return obj;
   },
 
@@ -894,10 +966,14 @@ export const AvatarSkillsData = {
     message.skill = object.skill ?? 0;
     message.burst = object.burst ?? 0;
     message.attack = object.attack ?? 0;
+    message.a1 = object.a1 ?? 0;
+    message.a4 = object.a4 ?? 0;
     message.burst_energy_cost = object.burst_energy_cost ?? 0;
     message.attack_scaling = object.attack_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
     message.skill_scaling = object.skill_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
     message.burst_scaling = object.burst_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
+    message.a1_scaling = object.a1_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
+    message.a4_scaling = object.a4_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
     return message;
   },
 };
