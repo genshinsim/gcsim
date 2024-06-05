@@ -71,8 +71,10 @@ type AvatarSkillDepot struct {
 	// ExtraAbilities          []string `json:"extraAbilities"`
 	// Talents                 []int32    `json:"talents"`
 	// TalentStarName          string   `json:"talentStarName"`
-	// InherentProudSkillOpens []struct {
-	// } `json:"inherentProudSkillOpens"`
+	InherentProudSkillOpens []struct {
+		ProudSkillGroupId      int32 `json:"proudSkillGroupId"`
+		NeedAvatarPromoteLevel int32 `json:"needAvatarPromoteLevel"`
+	} `json:"inherentProudSkillOpens"`
 	// SkillDepotAbilityGroup string `json:"skillDepotAbilityGroup"`
 	// LeaderTalent           int32    `json:"leaderTalent,omitempty"`
 }
