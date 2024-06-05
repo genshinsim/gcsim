@@ -210,10 +210,10 @@ func (a *DataSource) parseSkillScaling(skillDepotID int32, err error) ([]*model.
 	return a.parseSkillScalingFromProudGroup(se.ProudSkillGroupID, err)
 }
 
-func (a *DataSource) parseSkillScalingFromProudGroup(ProudSkillGroupID int32, err error) ([]*model.AvatarSkillExcelIndexData, error) {
-	pgs, ok := a.proudSkill[ProudSkillGroupID]
+func (a *DataSource) parseSkillScalingFromProudGroup(id int32, err error) ([]*model.AvatarSkillExcelIndexData, error) {
+	pgs, ok := a.proudSkill[id]
 	if !ok {
-		return nil, multierr.Append(err, fmt.Errorf("proud group  id %v not found in proud group excel data", ProudSkillGroupID))
+		return nil, multierr.Append(err, fmt.Errorf("proud group id %v not found in proud group excel data", id))
 	}
 	// this is a sanity check to make sure the result is sized to the max of paramlist
 	// realistically we expect paramlist to be all the same size..
