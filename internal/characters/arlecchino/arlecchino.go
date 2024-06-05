@@ -1,6 +1,8 @@
 package arlecchino
 
 import (
+	"fmt"
+
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -22,8 +24,6 @@ type char struct {
 	skillDebt             float64
 	skillDebtMax          float64
 	initialDirectiveLevel int
-	lastSwap              int
-	swapError             bool
 	chargeEarlyCancelled  bool
 }
 
@@ -47,7 +47,6 @@ func (c *char) Init() error {
 	c.naBuff()
 	c.passive()
 	c.a1OnKill()
-	c.onSwap()
 
 	c.a4()
 
@@ -57,6 +56,16 @@ func (c *char) Init() error {
 }
 
 func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+	if c.chargeEarlyCancelled {
+		// can only early cancel charged attack with Dash or Jump
+		switch a {
+		case action.ActionDash, action.ActionJump:
+			c.chargeEarlyCancelled = false
+		default:
+			return fmt.Errorf("%v: Cannot early cancel Charged Attack with %v", c.CharWrapper.Base.Key, a)
+		}
+	}
+
 	// can use charge without attack beforehand unlike most of the other polearm users
 	if a == action.ActionCharge {
 		return nil
@@ -118,17 +127,4 @@ func (c *char) Heal(hi *info.HealInfo) (float64, float64) {
 	c.Core.Events.Emit(event.OnHeal, hi, c.Index, heal, overheal, healAmt)
 
 	return heal, healAmt
-}
-
-// used for early CA cancel swap cd calculation
-func (c *char) onSwap() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		// do nothing if next char isn't arlecchino
-		next := args[1].(int)
-		if next != c.Index {
-			return false
-		}
-		c.lastSwap = c.Core.F
-		return false
-	}, "arlecchino-swap")
 }

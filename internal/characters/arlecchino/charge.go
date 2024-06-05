@@ -1,8 +1,6 @@
 package arlecchino
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -27,14 +25,6 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	if c.swapError {
-		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Swap", c.CharWrapper.Base.Key)
-	}
-
-	if c.chargeEarlyCancelled {
-		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack with Charged Attack", c.CharWrapper.Base.Key)
-	}
-
 	windup := 0
 	if c.Core.Player.CurrentState() == action.NormalAttackState {
 		windup = 12
@@ -57,11 +47,6 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			AnimationLength: chargeHitmark - 1,
 			CanQueueAfter:   13 - windup,
 			State:           action.ChargeAttackState,
-			OnRemoved: func(next action.AnimationState) {
-				if next == action.SwapState {
-					c.swapError = true
-				}
-			},
 		}, nil
 	}
 
