@@ -130,5 +130,5 @@ func (c *char) onSwap() {
 		}
 		c.lastSwap = c.Core.F
 		return false
-	}, "neuvillette-swap")
+	}, "arlecchino-swap")
 }
