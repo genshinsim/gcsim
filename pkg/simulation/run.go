@@ -171,8 +171,8 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 
 	// check if the next queue item is valid
 	// example: most sword characters can't do charge if the previous action was not attack
-	char, _ := s.C.Player.ByKey(q.Char)
-	if err := char.NextQueueItemIsValid(q.Action, q.Param); err != nil {
+	char := s.C.Player.ActiveChar()
+	if err := char.NextQueueItemIsValid(char.Base.Key, q.Action, q.Param); err != nil {
 		switch {
 		case errors.Is(err, player.ErrInvalidChargeAction):
 			return nil, fmt.Errorf("%v: %w", char.Base.Key, player.ErrInvalidChargeAction)

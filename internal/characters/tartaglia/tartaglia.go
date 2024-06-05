@@ -68,11 +68,11 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
 	if a == action.ActionCharge && c.Core.Player.LastAction.Type != action.ActionAttack {
 		return player.ErrInvalidChargeAction
 	}
-	return c.Character.NextQueueItemIsValid(a, p)
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
