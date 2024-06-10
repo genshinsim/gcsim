@@ -149,14 +149,6 @@ func queuePhase(s *Simulation) (stateFn, error) {
 			Write("total", s.preActionDelay)
 		return queuePhase, nil
 	}
-	// append swap if called for char is not active
-	// check if NoChar incase this is some special action that does not require a character
-	// if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
-	// 	s.queue = append(s.queue, &action.Eval{
-	// 		Char:   next.Char,
-	// 		Action: action.ActionSwap,
-	// 	})
-	// }
 	// IMPORTANT: evaluator should handle adding in implicit swaps if next char is not active
 	// we add a sanity check here just to guard against evaluator error
 	if next.Char != s.C.Player.ActiveChar().Base.Key && next.Action != action.ActionSwap {
