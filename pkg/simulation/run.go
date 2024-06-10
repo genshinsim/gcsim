@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -152,12 +151,18 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	}
 	// append swap if called for char is not active
 	// check if NoChar incase this is some special action that does not require a character
-	if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
-		s.queue = append(s.queue, &action.Eval{
-			Char:   next.Char,
-			Action: action.ActionSwap,
-		})
+	// if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
+	// 	s.queue = append(s.queue, &action.Eval{
+	// 		Char:   next.Char,
+	// 		Action: action.ActionSwap,
+	// 	})
+	// }
+	// IMPORTANT: evaluator should handle adding in implicit swaps if next char is not active
+	// we add a sanity check here just to guard against evaluator error
+	if next.Char != s.C.Player.ActiveChar().Base.Key && next.Action != action.ActionSwap {
+		return nil, fmt.Errorf("internal error: requested next char %v is not active and next action is not swap", next.Char)
 	}
+	// TODO: consider changing queue to single item. no need for slice without swap in here
 	s.queue = append(s.queue, next)
 	return actionReadyCheckPhase, nil
 }
