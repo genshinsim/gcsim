@@ -106,7 +106,7 @@
     {
       "ability": "charge",
       "param": "early_cancel",
-      "desc": "Cancel the CA immediately after absorbing nearby Blood-Debt Directives. The next action must be Dash or Jump."
+      "desc": "Cancel the CA immediately after absorbing nearby Blood-Debt Directives. The next action must be Dash or Jump. Default 0 (false), 1 for true"
     },
     {
       "ability": "low_plunge",
