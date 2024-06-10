@@ -123,7 +123,7 @@ func (s *Server) Login() http.HandlerFunc {
 		s.Log.Infow("discord token received sucessfully", "token", token)
 
 		res, err := conf.Client(r.Context(), token).Get("https://discord.com/api/users/@me")
-		if err != nil || res.StatusCode != 200 {
+		if err != nil || res.StatusCode != http.StatusOK {
 			s.Log.Errorw("unexpected error getting user info", "err", err)
 			w.WriteHeader(res.StatusCode)
 			return

@@ -90,10 +90,7 @@ func New(cfg Config, cust ...func(*Bot) error) (*Bot, error) {
 
 func (b *Bot) Run() error {
 	b.s = state.New("Bot " + b.Token)
-	err := b.routes()
-	if err != nil {
-		return err
-	}
+	b.routes()
 	b.s.AddInteractionHandler(b)
 	b.s.AddIntents(gateway.IntentGuilds)
 	b.s.AddHandler(func(*gateway.ReadyEvent) {

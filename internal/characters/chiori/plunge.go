@@ -33,13 +33,13 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	// last action hold skill
 	if c.Core.Player.LastAction.Type == action.ActionSkill &&
 		c.Core.Player.LastAction.Param["hold"] >= 1 {
-		return c.lowPlungeC()
+		return c.lowPlungeC(), nil
 	}
 
 	return action.Info{}, errors.New("low_plunge can only be used after hold skill")
 }
 
-func (c *char) lowPlungeC() (action.Info, error) {
+func (c *char) lowPlungeC() action.Info {
 	c.tryTriggerA1TailoringNA()
 
 	ai := combat.AttackInfo{
@@ -67,5 +67,5 @@ func (c *char) lowPlungeC() (action.Info, error) {
 		AnimationLength: lowPlungeFramesC[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFramesC[action.ActionDash],
 		State:           action.PlungeAttackState,
-	}, nil
+	}
 }
