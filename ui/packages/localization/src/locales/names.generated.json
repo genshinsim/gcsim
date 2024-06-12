@@ -92,6 +92,7 @@
          "zhongli": "钟离"
       },
       "weapon_names": {
+         "absolution": "赦罪",
          "akuoumaru": "恶王丸",
          "alleyhunter": "暗巷猎手",
          "amenomakageuchi": "天目影打刀",
@@ -694,6 +695,7 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
+         "absolution": "Absolution",
          "akuoumaru": "Akuoumaru",
          "alleyhunter": "Alley Hunter",
          "amenomakageuchi": "Amenoma Kageuchi",
@@ -1296,6 +1298,7 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
+         "absolution": "Absolution",
          "akuoumaru": "Akuoumaru",
          "alleyhunter": "Gassenjäger",
          "amenomakageuchi": "Amenoma Kageuchi",
@@ -1898,6 +1901,7 @@
          "zhongli": "鍾離"
       },
       "weapon_names": {
+         "absolution": "赦罪",
          "akuoumaru": "惡王丸",
          "alleyhunter": "ダークアレイの狩人",
          "amenomakageuchi": "天目影打",
@@ -2499,6 +2503,7 @@
          "zhongli": "종려"
       },
       "weapon_names": {
+         "absolution": "사면",
          "akuoumaru": "아쿠오마루",
          "alleyhunter": "뒷골목 사냥꾼",
          "amenomakageuchi": "아메노마 카게우치가타나",
@@ -3101,6 +3106,7 @@
          "zhongli": "Чжун Ли"
       },
       "weapon_names": {
+         "absolution": "Отпущение грехов",
          "akuoumaru": "Акуомару",
          "alleyhunter": "Охотник во тьме",
          "amenomakageuchi": "Амэнома Кагэути",
@@ -3703,6 +3709,7 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
+         "absolution": "Expiadora",
          "akuoumaru": "Rey del Mal",
          "alleyhunter": "Cazador del Callejón",
          "amenomakageuchi": "Espada Amenoma Gemela",

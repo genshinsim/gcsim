@@ -198,6 +198,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/vortex"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/wavebreaker"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/whitetassel"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/absolution"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/alley"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/amenoma"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/aquila"
