@@ -176,6 +176,14 @@
       "image_name": "UI_EquipIcon_Sword_Opus",
       "name_text_hash_map ": "342097547"
     },
+    "cloudforged": {
+      "id": 15426,
+      "key": "cloudforged",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Ultimatum",
+      "name_text_hash_map ": "4038676067"
+    },
     "compoundbow": {
       "id": 15407,
       "key": "compoundbow",
