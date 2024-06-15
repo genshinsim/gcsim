@@ -17,6 +17,7 @@ const (
 	Hydro
 	Dendro
 	Quicken // or overdose
+	Burning
 	Frozen
 	Anemo
 	Geo
@@ -56,6 +57,7 @@ var ElementString = [...]string{
 	"hydro",
 	"dendro",
 	"quicken",
+	"burning",
 	"frozen",
 	"anemo",
 	"geo",

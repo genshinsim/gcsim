@@ -293,6 +293,9 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 		if v == attributes.Cryo && r.Durability[Frozen] > ZeroDur {
 			return true
 		}
+		if v == attributes.Burning && r.Durability[BurningFuel] > ZeroDur && r.Durability[Burning] > ZeroDur {
+			return true
+		}
 	}
 	return false
 }
