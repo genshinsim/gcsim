@@ -47,3 +47,4 @@ server_windows_amd64.exe
 server_darwin_arm64
 server_darwin_amd64
 server_linux_amd64
+.venv
