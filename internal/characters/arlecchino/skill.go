@@ -143,7 +143,9 @@ func (c *char) debtLimit() {
 }
 
 func (c *char) absorbDirectives() {
-	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3.0}, 6.5), nil) {
+	area := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3.0}, 6.5)
+	enemies := c.Core.Combat.EnemiesWithinArea(area, nil)
+	for _, e := range enemies {
 		if !e.StatusIsActive(directiveKey) {
 			continue
 		}
