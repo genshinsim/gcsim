@@ -87,7 +87,6 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 func (c *char) bloodDebtDirective(a combat.AttackCB) {
-	// TODO: is this a redundant check?
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
