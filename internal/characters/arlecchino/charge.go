@@ -35,9 +35,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		early = 0
 	}
 
-	c.QueueCharTask(func() {
-		c.absorbDirectives()
-	}, 12-windup)
+	c.QueueCharTask(c.absorbDirectives, 12-windup)
 
 	if early > 0 {
 		c.chargeEarlyCancelled = true
