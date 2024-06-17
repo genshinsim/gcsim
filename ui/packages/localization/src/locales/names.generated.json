@@ -93,6 +93,7 @@
          "zhongli": "钟离"
       },
       "weapon_names": {
+         "absolution": "赦罪",
          "akuoumaru": "恶王丸",
          "alleyhunter": "暗巷猎手",
          "amenomakageuchi": "天目影打刀",
@@ -115,6 +116,7 @@
          "calamityqueller": "息灾",
          "cashflowsupervision": "金流监督",
          "cinnabarspindle": "辰砂之纺锤",
+         "cloudforged": "筑云",
          "compoundbow": "钢轮弓",
          "coolsteel": "冷刃",
          "cranesechoingcall": "鹤鸣余音",
@@ -696,6 +698,7 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
+         "absolution": "Absolution",
          "akuoumaru": "Akuoumaru",
          "alleyhunter": "Alley Hunter",
          "amenomakageuchi": "Amenoma Kageuchi",
@@ -718,6 +721,7 @@
          "calamityqueller": "Calamity Queller",
          "cashflowsupervision": "Cashflow Supervision",
          "cinnabarspindle": "Cinnabar Spindle",
+         "cloudforged": "Cloudforged",
          "compoundbow": "Compound Bow",
          "coolsteel": "Cool Steel",
          "cranesechoingcall": "Crane's Echoing Call",
@@ -1299,6 +1303,7 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
+         "absolution": "Absolution",
          "akuoumaru": "Akuoumaru",
          "alleyhunter": "Gassenjäger",
          "amenomakageuchi": "Amenoma Kageuchi",
@@ -1321,6 +1326,7 @@
          "calamityqueller": "Ende des Unheils",
          "cashflowsupervision": "Monetäre Aufsichtseinheit",
          "cinnabarspindle": "Zinnoberspindel",
+         "cloudforged": "Wolkenweber",
          "compoundbow": "Compoundbogen",
          "coolsteel": "Kühle Klinge",
          "cranesechoingcall": "Widerhallender Ruf des Kranichs",
@@ -1902,6 +1908,7 @@
          "zhongli": "鍾離"
       },
       "weapon_names": {
+         "absolution": "赦罪",
          "akuoumaru": "惡王丸",
          "alleyhunter": "ダークアレイの狩人",
          "amenomakageuchi": "天目影打",
@@ -1924,6 +1931,7 @@
          "calamityqueller": "息災",
          "cashflowsupervision": "凛流の監視者",
          "cinnabarspindle": "シナバースピンドル",
+         "cloudforged": "築雲",
          "compoundbow": "リングボウ",
          "coolsteel": "冷刃",
          "cranesechoingcall": "鶴鳴の余韻",
@@ -2504,6 +2512,7 @@
          "zhongli": "종려"
       },
       "weapon_names": {
+         "absolution": "사면",
          "akuoumaru": "아쿠오마루",
          "alleyhunter": "뒷골목 사냥꾼",
          "amenomakageuchi": "아메노마 카게우치가타나",
@@ -2526,6 +2535,7 @@
          "calamityqueller": "식재",
          "cashflowsupervision": "현금 흐름 감독",
          "cinnabarspindle": "진사의 방추",
+         "cloudforged": "축운",
          "compoundbow": "강철궁",
          "coolsteel": "차가운 칼날",
          "cranesechoingcall": "학의 여음",
@@ -3107,6 +3117,7 @@
          "zhongli": "Чжун Ли"
       },
       "weapon_names": {
+         "absolution": "Отпущение грехов",
          "akuoumaru": "Акуомару",
          "alleyhunter": "Охотник во тьме",
          "amenomakageuchi": "Амэнома Кагэути",
@@ -3129,6 +3140,7 @@
          "calamityqueller": "Усмиритель бед",
          "cashflowsupervision": "Казначейский надзор",
          "cinnabarspindle": "Киноварное веретено",
+         "cloudforged": "Выкованный из облаков",
          "compoundbow": "Составной лук",
          "coolsteel": "Холодное лезвие",
          "cranesechoingcall": "Звонкий клич журавля",
@@ -3710,6 +3722,7 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
+         "absolution": "Expiadora",
          "akuoumaru": "Rey del Mal",
          "alleyhunter": "Cazador del Callejón",
          "amenomakageuchi": "Espada Amenoma Gemela",
@@ -3732,6 +3745,7 @@
          "calamityqueller": "Pacificadora del Desastre",
          "cashflowsupervision": "Supervisor Flujoáurico",
          "cinnabarspindle": "Huso de Cinabrio",
+         "cloudforged": "Cimentador de Nubes",
          "compoundbow": "Arco Compuesto",
          "coolsteel": "Hoja Fría",
          "cranesechoingcall": "Reverberación de la Grulla",

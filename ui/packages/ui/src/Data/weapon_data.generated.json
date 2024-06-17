@@ -1,5 +1,13 @@
 {
   "data": {
+    "absolution": {
+      "id": 11515,
+      "key": "absolution",
+      "rarity": 5,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Estoc",
+      "name_text_hash_map ": "1009471939"
+    },
     "akuoumaru": {
       "id": 12416,
       "key": "akuoumaru",
@@ -175,6 +183,14 @@
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Opus",
       "name_text_hash_map ": "342097547"
+    },
+    "cloudforged": {
+      "id": 15426,
+      "key": "cloudforged",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Ultimatum",
+      "name_text_hash_map ": "4038676067"
     },
     "compoundbow": {
       "id": 15407,
