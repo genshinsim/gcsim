@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var a1Directive = []float64{0.0, 0.65, 1.3}
+var directiveScaling = []float64{0.0, 0.65, 1.3}
 
 func (c *char) passive() {
 	m := make([]float64, attributes.EndStatType)
@@ -36,7 +36,7 @@ func (c *char) a1OnKill() {
 			return false
 		}
 		// always max level debt
-		newDebt := a1Directive[len(a1Directive)-1] * c.MaxHP()
+		newDebt := directiveScaling[len(directiveScaling)-1] * c.MaxHP()
 		if c.StatusIsActive(directiveLimitKey) {
 			newDebt = min(c.skillDebtMax-c.skillDebt, newDebt)
 		}
