@@ -50,7 +50,6 @@ func (c *char) Init() error {
 	c.a4()
 
 	c.c2()
-	c.c6()
 	return nil
 }
 

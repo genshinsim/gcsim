@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -76,29 +75,16 @@ func (c *char) c4OnAbsorb() {
 	c.AddEnergy("arlecchino-c4", 15)
 }
 
-func (c *char) c6() {
+func (c *char) c6cb(a combat.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != c.Index {
-			return false
-		}
+	amt := c.TotalAtk() * 7.0 * c.CurrentHPDebt() / c.MaxHP()
+	c.Core.Log.NewEvent("Arlecchino C6 dmg add", glog.LogCharacterEvent, c.Index).
+		Write("amt", amt)
 
-		if ae.Info.AttackTag != attacks.AttackTagElementalBurst {
-			return false
-		}
-
-		amt := c.TotalAtk() * 7.0 * c.CurrentHPDebt() / c.MaxHP()
-		c.Core.Log.NewEvent("Arlecchino C6 dmg add", glog.LogCharacterEvent, c.Index).
-			Write("amt", amt)
-
-		ae.Info.FlatDmg += amt
-
-		return false
-	}, "arlecchino-c6-burst")
+	a.AttackEvent.Info.FlatDmg += amt
 }
 func (c *char) c6skill() {
 	if c.Base.Cons < 6 {
