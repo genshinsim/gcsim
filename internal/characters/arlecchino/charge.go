@@ -38,7 +38,6 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(c.absorbDirectives, 12-windup)
 
 	if early > 0 {
-		c.chargeEarlyCancelled = true
 		// TODO: error if the user waits until after hitmark to do the dash/jump
 		return action.Info{
 			Frames:          func(next action.Action) int { return 13 - windup },

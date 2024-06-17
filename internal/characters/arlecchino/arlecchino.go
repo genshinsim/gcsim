@@ -23,7 +23,6 @@ type char struct {
 	skillDebt             float64
 	skillDebtMax          float64
 	initialDirectiveLevel int
-	chargeEarlyCancelled  bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -37,16 +36,14 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
-	c.chargeEarlyCancelled = false
-
 	return nil
 }
 
 func (c *char) Init() error {
 	c.naBuff()
 	c.passive()
-	c.a1OnKill()
 
+	c.a1OnKill()
 	c.a4()
 
 	c.c2()
@@ -54,13 +51,17 @@ func (c *char) Init() error {
 }
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
-	if c.chargeEarlyCancelled {
+	lastAction := c.Character.Core.Player.LastAction
+	if k != c.Base.Key && a != action.ActionSwap {
+		return fmt.Errorf("%v: Tried to execute %v when not on field", c.Base.Key, a)
+	}
+
+	if lastAction.Type == action.ActionCharge && lastAction.Param["early_cancel"] > 0 {
 		// can only early cancel charged attack with Dash or Jump
 		switch a {
 		case action.ActionDash, action.ActionJump:
-			c.chargeEarlyCancelled = false
 		default:
-			return fmt.Errorf("%v: Cannot early cancel Charged Attack with %v", c.CharWrapper.Base.Key, a)
+			return fmt.Errorf("%v: Cannot early cancel Charged Attack with %v", c.Base.Key, a)
 		}
 	}
 
