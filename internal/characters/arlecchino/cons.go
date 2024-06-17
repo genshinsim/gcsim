@@ -114,7 +114,7 @@ func (c *char) c6skill() {
 	m[attributes.CR] = 0.1
 	m[attributes.CD] = 0.7
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(c6Key, 20*60),
+		Base: modifier.NewBaseWithHitlag(c6Key, 20*60),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalBurst, attacks.AttackTagNormal:
