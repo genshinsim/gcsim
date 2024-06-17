@@ -33,6 +33,7 @@ func (c Weapon) String() string {
 
 var weaponNames = []string{
 	"",
+	"absolution",
 	"akuoumaru",
 	"alleyhunter",
 	"amenomakageuchi",
@@ -219,6 +220,7 @@ var weaponNames = []string{
 
 const (
 	NoWeapon Weapon = iota
+	Absolution
 	Akuoumaru
 	AlleyHunter
 	AmenomaKageuchi
