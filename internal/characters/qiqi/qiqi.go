@@ -57,7 +57,7 @@ func (c *char) Init() error {
 
 // Helper function to calculate healing amount dynamically using current character stats, which has all mods applied
 func (c *char) healDynamic(healScalePer, healScaleFlat []float64, talentLevel int) float64 {
-	atk := c.Base.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
+	atk := c.TotalAtk()
 	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal
 }
