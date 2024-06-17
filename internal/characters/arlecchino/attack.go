@@ -177,7 +177,7 @@ func (c *char) bondBonus() float64 {
 	if c.Base.Cons >= 1 {
 		c1Bonus = 1.0
 	}
-	amt := (masque[c.TalentLvlAttack()] + c1Bonus) * c.CurrentHPDebt() / c.MaxHP() * c.getTotalAtk()
+	amt := (masque[c.TalentLvlAttack()] + c1Bonus) * c.CurrentHPDebt() / c.MaxHP() * c.TotalAtk()
 	return amt
 }
 

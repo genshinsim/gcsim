@@ -91,7 +91,7 @@ func (c *char) c6() {
 			return false
 		}
 
-		amt := c.getTotalAtk() * 7.0 * c.CurrentHPDebt() / c.MaxHP()
+		amt := c.TotalAtk() * 7.0 * c.CurrentHPDebt() / c.MaxHP()
 		c.Core.Log.NewEvent("Arlecchino C6 dmg add", glog.LogCharacterEvent, c.Index).
 			Write("amt", amt)
 

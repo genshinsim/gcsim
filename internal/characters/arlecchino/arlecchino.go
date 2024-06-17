@@ -6,7 +6,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -82,11 +81,6 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
-}
-
-func (c *char) getTotalAtk() float64 {
-	stats, _ := c.Stats()
-	return c.Base.Atk*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
 }
 
 func (c *char) Heal(hi *info.HealInfo) (float64, float64) {
