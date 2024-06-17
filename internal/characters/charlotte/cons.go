@@ -30,7 +30,7 @@ func (c *char) c1Heal(char *character.CharWrapper) func() {
 		}
 
 		stats, _ := c.Stats()
-		atk := (c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
+		atk := c.Base.Atk*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  char.Index,
@@ -156,7 +156,7 @@ func (c *char) c6() {
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(pos, nil, c6AttackRadius), 0, 0)
 			if c.Core.Combat.Player().IsWithinArea(combat.NewCircleHitOnTarget(pos, nil, c6HealRadius)) {
 				stats, _ := c.Stats()
-				atk := (c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
+				atk := c.Base.Atk*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
 				c.Core.Player.Heal(info.HealInfo{
 					Caller:  c.Index,
 					Target:  c.Core.Player.Active(),
