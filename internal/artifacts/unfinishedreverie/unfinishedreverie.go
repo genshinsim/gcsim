@@ -72,7 +72,7 @@ func (s *Set) enemyCheck(char *character.CharWrapper, c *core.Core) func() {
 			if !ok {
 				continue
 			}
-			if e.AuraContains(attributes.Burning) {
+			if e.IsBurning() {
 				s.lastF = c.F
 				break
 			}
