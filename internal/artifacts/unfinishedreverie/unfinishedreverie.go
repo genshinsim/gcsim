@@ -19,6 +19,9 @@ type Set struct {
 	Index  int
 	lastF  int
 	stacks int
+	icdF   int
+	c      *core.Core
+	char   *character.CharWrapper
 }
 
 const (
@@ -33,9 +36,13 @@ func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
-	var s Set
-	s.lastF = -1
-	s.stacks = 5
+	s := Set{
+		lastF:  -1,
+		stacks: 5,
+		icdF:   -1,
+		c:      c,
+		char:   char,
+	}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -50,7 +57,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	if count >= 4 {
-		char.QueueCharTask(s.enemyCheck(char, c), checkInterval)
+		char.QueueCharTask(s.enemyCheck, checkInterval)
 		m := make([]float64, attributes.EndStatType)
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase(unfinishedreverie4pc, -1),
@@ -64,27 +71,26 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	return &s, nil
 }
 
-func (s *Set) enemyCheck(char *character.CharWrapper, c *core.Core) func() {
-	return func() {
-		enemies := c.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
-		for _, v := range enemies {
-			e, ok := v.(*enemy.Enemy)
-			if !ok {
-				continue
-			}
-			if e.IsBurning() {
-				s.lastF = c.F
-				break
-			}
+func (s *Set) enemyCheck() {
+	c := s.c
+	char := s.char
+	enemies := c.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
+	for _, v := range enemies {
+		e, ok := v.(*enemy.Enemy)
+		if !ok {
+			continue
 		}
-		if c.F-s.lastF > 6*60 && !char.StatusIsActive(IcdKey) && s.stacks > 0 {
-			s.stacks--
-			char.AddStatus(IcdKey, icd, false)
+		if e.IsBurning() {
+			s.lastF = c.F
+			break
 		}
-		if c.F == s.lastF && !char.StatModIsActive(IcdKey) && s.stacks < 5 {
-			s.stacks++
-			char.AddStatus(IcdKey, icd, false)
-		}
-		char.QueueCharTask(s.enemyCheck(char, c), checkInterval)
 	}
+	if c.F-s.lastF > 6*60 && c.F > s.icdF && s.stacks > 0 {
+		s.stacks--
+		s.icdF = c.F + icd
+	} else if c.F == s.lastF && c.F > s.icdF && s.stacks < 5 {
+		s.stacks++
+		s.icdF = c.F + icd
+	}
+	char.QueueCharTask(s.enemyCheck, checkInterval)
 }
