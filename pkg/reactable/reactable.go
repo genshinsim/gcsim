@@ -297,6 +297,13 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 	return false
 }
 
+func (r *Reactable) IsBurning() bool {
+	if r.Durability[BurningFuel] > ZeroDur && r.Durability[Burning] > ZeroDur {
+		return true
+	}
+	return false
+}
+
 // reduce the requested element by dur * factor, return the amount of dur consumed
 // if multiple modifier with same element are present, all of them are reduced
 // the max on reduced is used for consumption purpose
