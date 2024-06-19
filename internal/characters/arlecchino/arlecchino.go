@@ -59,7 +59,7 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 	if lastAction.Type == action.ActionCharge && lastAction.Param["early_cancel"] > 0 {
 		// can only early cancel charged attack with Dash or Jump
 		switch a {
-		case action.ActionDash, action.ActionJump:
+		case action.ActionDash, action.ActionJump: // skips the error in default block
 		default:
 			return fmt.Errorf("%v: Cannot early cancel Charged Attack with %v", c.Base.Key, a)
 		}
