@@ -100,8 +100,8 @@ func (c *char) naBuff() {
 			Write("arle_hp_debt", c.CurrentHPDebt()).
 			Write("arle_hp_debt%", c.CurrentHPDebt()/c.MaxHP())
 		if c.CurrentHPDebt() >= c.MaxHP()*0.3 {
-			// can't use negative duration or else `if .arlecchino.status.masque-of-the-red-death` won't work
-			c.AddStatus(naBuffKey, 999999, false)
+			// Due to negative duration, configs need do to `.arle.bolratio >= 0.3` instead of `.arle.status.masque-of-the-red-death`
+			c.AddStatus(naBuffKey, -1, false)
 		} else {
 			c.DeleteStatus(naBuffKey)
 		}
