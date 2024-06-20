@@ -110,6 +110,8 @@ var SetNameToKey = map[string]keys.Set{
 	"ts":                                 keys.Thundersoother,
 	"tinymiracle":                        keys.TinyMiracle,
 	"travelingdoctor":                    keys.TravelingDoctor,
+	"unfinishedreverie":                  keys.UnfinishedReverie,
+	"ur":                                 keys.UnfinishedReverie,
 	"vermillionhereafter":                keys.VermillionHereafter,
 	"vermillion":                         keys.VermillionHereafter,
 	"vh":                                 keys.VermillionHereafter,

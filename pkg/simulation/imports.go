@@ -52,6 +52,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/tenacity"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/thunderingfury"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/thundersoother"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/unfinishedreverie"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/vermillion"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/viridescent"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/vourukashasglow"

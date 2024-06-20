@@ -80,6 +80,7 @@ var setNames = []string{
 	"thundersoother",
 	"tinymiracle",
 	"travelingdoctor",
+	"unfinishedreverie",
 	"vermillionhereafter",
 	"viridescentvenerer",
 	"wandererstroupe",
@@ -134,6 +135,7 @@ const (
 	Thundersoother
 	TinyMiracle
 	TravelingDoctor
+	UnfinishedReverie
 	VermillionHereafter
 	ViridescentVenerer
 	WanderersTroupe
