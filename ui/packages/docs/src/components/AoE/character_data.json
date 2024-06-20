@@ -568,6 +568,211 @@
       }
     ]
   },
+  "arlecchino": {
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 3,
+        "radius": 6.5
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.15,
+        "boxX": 1.9,
+        "boxY": 3
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.6,
+        "fanAngle": 300
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.2,
+        "boxX": 1.9,
+        "boxY": 4
+      },
+      {
+        "ability": "N4-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.5,
+        "offsetY": -0.7,
+        "radius": 2.8
+      },
+      {
+        "ability": "N4-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.5,
+        "offsetY": -0.7,
+        "radius": 2.8
+      },
+      {
+        "ability": "N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.4,
+        "radius": 2.5
+      },
+      {
+        "ability": "N6",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.5,
+        "radius": 3
+      },
+      {
+        "ability": "Masque-N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.15,
+        "boxX": 1.9,
+        "boxY": 4.2
+      },
+      {
+        "ability": "Masque-N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 3.1,
+        "fanAngle": 300
+      },
+      {
+        "ability": "Masque-N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.2,
+        "boxX": 3.4,
+        "boxY": 5.6
+      },
+      {
+        "ability": "Masque-N4-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.5,
+        "offsetY": -0.7,
+        "radius": 3.3
+      },
+      {
+        "ability": "Masque-N4-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.5,
+        "offsetY": -0.7,
+        "radius": 3.3
+      },
+      {
+        "ability": "Masque-N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.4,
+        "radius": 2.8
+      },
+      {
+        "ability": "Masque-N6",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.5,
+        "radius": 3.7
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.9,
+        "radius": 4
+      },
+      {
+        "ability": "Masque-CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.9,
+        "radius": 4
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Masque-Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "Masque-Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      },
+      {
+        "ability": "Masque-High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Spike",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 0.5
+      },
+      {
+        "ability": "E-Cleave",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 4.5,
+        "radius": 6
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-ElementalBurst",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 6,
+        "radius": 6.5
+      }
+    ]
+  },
   "itto": {
     "normal": [
       {
@@ -1469,7 +1674,7 @@
         "offsetY": 0.9,
         "radius": 2.8
       }
-    ], 
+    ],
     "charge": [
       {
         "ability": "CA-1",
@@ -9494,7 +9699,6 @@
         "radius": 4
       }
     ],
-    
     "plunge": [
       {
         "ability": "Plunge",
