@@ -45,9 +45,9 @@ func (c *Character) ModifyHPDebtByAmount(amt float64) {
 	if amt == 0 {
 		return
 	}
-	newHPDebt := c.currentHPDebt + amt
-	c.setHPDebtByAmount(newHPDebt)
-	c.Core.Events.Emit(event.OnHPDebt, c.Index, amt)
+	prevHPDebt := c.currentHPDebt
+	c.setHPDebtByAmount(c.currentHPDebt + amt)
+	c.Core.Events.Emit(event.OnHPDebt, c.Index, prevHPDebt-c.currentHPDebt)
 }
 
 func (c *Character) ModifyHPDebtByRatio(r float64) {
