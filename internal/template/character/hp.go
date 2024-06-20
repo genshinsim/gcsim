@@ -33,6 +33,8 @@ func (c *Character) ModifyHPByRatio(r float64) {
 func (c *Character) clampHPDebt() {
 	if c.currentHPDebt < 0 {
 		c.currentHPDebt = 0
+	} else if c.currentHPDebt > c.MaxHP()*2 {
+		c.currentHPDebt = c.MaxHP() * 2
 	}
 }
 
