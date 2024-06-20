@@ -1,4 +1,5 @@
 {
+  "absolution": [],
   "akuoumaru": [],
   "alleyhunter": [],
   "amenomakageuchi": [
@@ -54,6 +55,7 @@
   "cinnabarspindle": [
     "cinnabar"
   ],
+  "cloudforged": [],
   "compoundbow": [
     "compound"
   ],
@@ -64,6 +66,9 @@
   "crescentpike": [
     "cpike",
     "pike"
+  ],
+  "crimsonmoonssemblance": [
+    "crimsonmoon"
   ],
   "darkironsword": [],
   "deathmatch": [],

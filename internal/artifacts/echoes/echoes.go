@@ -78,7 +78,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 
 		// if buff is already active then buff attack
-		snATK := (char.Base.Atk+char.Weapon.BaseAtk)*(1+char.Stat(attributes.ATKP)) + char.Stat(attributes.ATK)
+		snATK := char.TotalAtk()
 		if c.F < s.procExpireF {
 			dmgAdded = snATK * 0.7
 			atk.Info.FlatDmg += dmgAdded
@@ -98,9 +98,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 
 		if c.Rand.Float64() > s.prob {
+			s.icd = c.F + 12 // 0.2s
 			s.prob += 0.2
 			c.Log.NewEvent("echoes 4pc failed to proc due to chance", glog.LogArtifactEvent, char.Index).
-				Write("probabability_now", s.prob)
+				Write("probability_now", s.prob).
+				Write("icd_up", s.icd)
 			return false
 		}
 

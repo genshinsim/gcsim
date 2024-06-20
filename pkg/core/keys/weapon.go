@@ -33,6 +33,7 @@ func (c Weapon) String() string {
 
 var weaponNames = []string{
 	"",
+	"absolution",
 	"akuoumaru",
 	"alleyhunter",
 	"amenomakageuchi",
@@ -55,10 +56,12 @@ var weaponNames = []string{
 	"calamityqueller",
 	"cashflowsupervision",
 	"cinnabarspindle",
+	"cloudforged",
 	"compoundbow",
 	"coolsteel",
 	"cranesechoingcall",
 	"crescentpike",
+	"crimsonmoonssemblance",
 	"darkironsword",
 	"deathmatch",
 	"debateclub",
@@ -218,6 +221,7 @@ var weaponNames = []string{
 
 const (
 	NoWeapon Weapon = iota
+	Absolution
 	Akuoumaru
 	AlleyHunter
 	AmenomaKageuchi
@@ -240,10 +244,12 @@ const (
 	CalamityQueller
 	CashflowSupervision
 	CinnabarSpindle
+	Cloudforged
 	CompoundBow
 	CoolSteel
 	CranesEchoingCall
 	CrescentPike
+	CrimsonMoonsSemblance
 	DarkIronSword
 	Deathmatch
 	DebateClub

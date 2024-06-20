@@ -58,7 +58,6 @@ type WeaponProfile struct {
 	Refine   int            `json:"refine"`
 	Level    int            `json:"level"`
 	MaxLevel int            `json:"max_level"`
-	BaseAtk  float64        `json:"base_atk"`
 	Params   map[string]int `json:"-"`
 }
 type Weapon interface {

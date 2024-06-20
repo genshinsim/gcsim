@@ -36,7 +36,7 @@ type Character interface {
 	ActionStam(a action.Action, p map[string]int) float64
 
 	ActionReady(a action.Action, p map[string]int) (bool, action.Failure)
-	NextQueueItemIsValid(a action.Action, p map[string]int) error
+	NextQueueItemIsValid(targetChar keys.Char, a action.Action, p map[string]int) error
 	SetCD(a action.Action, dur int)
 	Cooldown(a action.Action) int
 	ResetActionCooldown(a action.Action)

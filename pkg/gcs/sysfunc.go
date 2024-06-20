@@ -663,6 +663,18 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	if _, ok := e.Core.Player.ByKey(charKey); !ok {
 		return nil, fmt.Errorf("can't execute action: %v is not on this team", charKey)
 	}
+
+	// if char is not on field then we need to send an implicit swap
+	if charKey != e.Core.Player.ActiveChar().Base.Key {
+		e.sendWork(&action.Eval{
+			Char:   charKey,
+			Action: action.ActionSwap,
+		})
+		err = e.waitForNext()
+		if err != nil {
+			return nil, err
+		}
+	}
 	e.sendWork(&action.Eval{
 		Char:   charKey,
 		Action: actionKey,

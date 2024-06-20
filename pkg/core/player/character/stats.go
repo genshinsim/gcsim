@@ -148,3 +148,55 @@ func (c *CharWrapper) MaxHP() float64 {
 	}
 	return (c.Base.HP*(1+hpp) + hp)
 }
+
+func (c *CharWrapper) TotalAtk() float64 {
+	atkp := c.BaseStats[attributes.ATKP]
+	atk := c.BaseStats[attributes.ATK]
+
+	for _, v := range c.mods {
+		m, ok := v.(*StatMod)
+		if !ok {
+			continue
+		}
+		// ignore this mod if stat type doesnt match
+		switch m.AffectedStat {
+		case attributes.NoStat, attributes.ATK, attributes.ATKP:
+		default:
+			continue
+		}
+		// check expiry
+		if m.Expiry() > *c.f || m.Expiry() == -1 {
+			if amt, ok := m.Amount(); ok {
+				atkp += amt[attributes.ATKP]
+				atk += amt[attributes.ATK]
+			}
+		}
+	}
+	return (c.Base.Atk*(1+atkp) + atk)
+}
+
+func (c *CharWrapper) TotalDef() float64 {
+	defp := c.BaseStats[attributes.DEFP]
+	def := c.BaseStats[attributes.DEF]
+
+	for _, v := range c.mods {
+		m, ok := v.(*StatMod)
+		if !ok {
+			continue
+		}
+		// ignore this mod if stat type doesnt match
+		switch m.AffectedStat {
+		case attributes.NoStat, attributes.DEF, attributes.DEFP:
+		default:
+			continue
+		}
+		// check expiry
+		if m.Expiry() > *c.f || m.Expiry() == -1 {
+			if amt, ok := m.Amount(); ok {
+				defp += amt[attributes.DEFP]
+				def += amt[attributes.DEF]
+			}
+		}
+	}
+	return (c.Base.Def*(1+defp) + def)
+}

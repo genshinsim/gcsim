@@ -43,6 +43,8 @@ tasks:
     env:
       GOOS: js
       GOARCH: wasm
+  lint:
+    cmd: golangci-lint run --fast --fix --print-issued-lines=false --out-format=colored-line-number --issues-exit-code=0
   dev-server-mode:
     desc: watches for change and launches server mode
     watch: true

@@ -67,7 +67,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		// On Heal subscription to start accumulating the healing
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 			src := args[0].(*info.HealInfo)
-			healAmt := args[2].(float64)
+			healAmt := args[4].(float64)
 
 			if src.Caller != char.Index {
 				return false

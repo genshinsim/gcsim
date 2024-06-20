@@ -47,6 +47,7 @@ var setNames = []string{
 	"echoesofanoffering",
 	"emblemofseveredfate",
 	"flowerofparadiselost",
+	"fragmentofharmonicwhimsy",
 	"gambler",
 	"gladiatorsfinale",
 	"gildeddreams",
@@ -79,6 +80,7 @@ var setNames = []string{
 	"thundersoother",
 	"tinymiracle",
 	"travelingdoctor",
+	"unfinishedreverie",
 	"vermillionhereafter",
 	"viridescentvenerer",
 	"wandererstroupe",
@@ -100,6 +102,7 @@ const (
 	EchoesOfAnOffering
 	EmblemOfSeveredFate
 	FlowerOfParadiseLost
+	FragmentOfHarmonicWhimsy
 	Gambler
 	GladiatorsFinale
 	GildedDreams
@@ -132,6 +135,7 @@ const (
 	Thundersoother
 	TinyMiracle
 	TravelingDoctor
+	UnfinishedReverie
 	VermillionHereafter
 	ViridescentVenerer
 	WanderersTroupe

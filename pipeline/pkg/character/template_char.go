@@ -55,7 +55,13 @@ func (g *Generator) GenerateCharTemplate() error {
 			log.Printf("No data found for %v; skipping", v.Key)
 			continue
 		}
-		err = writePBToFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), dm)
+		// get rid of unnecessary fields
+		dmCopy := proto.Clone(dm).(*model.AvatarData)
+		dmCopy.SkillDetails.A1 = 0
+		dmCopy.SkillDetails.A4 = 0
+		dmCopy.SkillDetails.A1Scaling = nil
+		dmCopy.SkillDetails.A4Scaling = nil
+		err = writePBToFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), dmCopy)
 		if err != nil {
 			return fmt.Errorf("failed to write PB file: %w", err)
 		}
@@ -144,9 +150,19 @@ func (c *charData) buildSkillData(dm *model.AvatarData) error {
 	if err != nil {
 		return err
 	}
+	a1, err := c.skillDataByType("a1", dm.SkillDetails.A1Scaling)
+	if err != nil {
+		return err
+	}
+	a4, err := c.skillDataByType("a4", dm.SkillDetails.A4Scaling)
+	if err != nil {
+		return err
+	}
 	c.SkillLvlData = append(c.SkillLvlData, atk...)
 	c.SkillLvlData = append(c.SkillLvlData, skill...)
 	c.SkillLvlData = append(c.SkillLvlData, burst...)
+	c.SkillLvlData = append(c.SkillLvlData, a1...)
+	c.SkillLvlData = append(c.SkillLvlData, a4...)
 
 	// merge NA data into a single slice
 	for _, v := range c.SkillLvlData {
@@ -292,10 +308,13 @@ var (
 {{- end }}
 {{- if .SkillLvlData }}
 
+{{- $single := false}}
+
 var (
 {{- range $skill := .SkillLvlData }}
 {{- if eq (len $skill.Params) 1 }}
 	{{- $param := index $skill.Params 0 }}
+	{{- if gt (len $param.Values) 1}}
 	// {{ $skill.Comment }}
 	{{ $skill.Name }} = []float64{
 		{{- if ne $param.Comment "" }}
@@ -305,6 +324,8 @@ var (
 		{{ $v }},
 	{{- end }}
 	}
+	{{- else }}{{$single = true}}
+	{{- end  }}
 {{- else }}
 	// {{ $skill.Comment }}
 	{{ $skill.Name }} = [][]float64{
@@ -319,6 +340,20 @@ var (
 {{- end }}
 {{- end }}
 )
+
+{{- if eq $single true}}
+const (
+	{{- range $skill := .SkillLvlData }}
+	{{- if eq (len $skill.Params) 1 }}
+		{{- $param := index $skill.Params 0 }}
+		{{- if eq (len $param.Values) 1}}
+		// {{ $skill.Comment }}
+		{{ $skill.Name }} float64 = {{index $param.Values 0}}
+		{{- end  }}
+	{{- end }}
+	{{- end }}
+)
+{{- end }}
 
 {{- end }}
 `
