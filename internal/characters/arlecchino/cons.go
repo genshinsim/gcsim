@@ -75,17 +75,17 @@ func (c *char) c4OnAbsorb() {
 	c.AddEnergy("arlecchino-c4", 15)
 }
 
-func (c *char) c6cb(a combat.AttackCB) {
+func (c *char) c6Amount() float64 {
 	if c.Base.Cons < 6 {
-		return
+		return 0
 	}
 
 	amt := c.TotalAtk() * 7.0 * c.CurrentHPDebt() / c.MaxHP()
 	c.Core.Log.NewEvent("Arlecchino C6 dmg add", glog.LogCharacterEvent, c.Index).
 		Write("amt", amt)
-
-	a.AttackEvent.Info.FlatDmg += amt
+	return amt
 }
+
 func (c *char) c6skill() {
 	if c.Base.Cons < 6 {
 		return

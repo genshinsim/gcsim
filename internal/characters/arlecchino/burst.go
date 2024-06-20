@@ -42,7 +42,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(c.absorbDirectives, 22)
 
 	c.QueueCharTask(func() { c.ResetActionCooldown(action.ActionSkill) }, 107)
-	c.Core.QueueAttack(ai, skillArea, burstHitmarks, burstHitmarks, c.c6cb)
+
+	c.QueueCharTask(func() {
+		// the BoL can change during the burst
+		ai.FlatDmg += c.c6Amount()
+		c.Core.QueueAttack(ai, skillArea, 0, 0)
+	}, burstHitmarks)
 
 	// video seems to have delay due to ping
 	// Should be 6f delay looking at sources
