@@ -1,0 +1,47 @@
+package_name: arlecchino
+genshin_id: 10000096
+key: arlecchino
+action_param_keys:
+  charge:
+    - param: "early_cancel"
+icd_groups:
+  - group_name: ICDGroupArlecchinoElementalArt
+    reset_timer: 600
+    ele_app_sequence:
+      [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1]
+skill_data_mapping:
+  attack:
+    attack_1:
+      - 0 # 1-Hit DMG
+    attack_2:
+      - 1 # 2-Hit DMG
+    attack_3:
+      - 2 # 3-Hit DMG
+    attack_4:
+      - 3 # 4-Hit DMG
+      - 3 # 4-Hit DMG
+    attack_5:
+      - 4 # 5-Hit DMG
+    attack_6:
+      - 5 # 6-Hit DMG
+    charge:
+      - 6 # Charged Attack DMG
+    collision:
+      - 8 # Plunge DMG
+    lowPlunge:
+      - 9 # Low/High Plunge DMG
+    highPlunge:
+      - 10 # Low/High Plunge DMG
+    masque:
+      - 11 # Masque of the Red Death Increase
+  skill:
+    skillSpike:
+      - 0 # Spike DMG
+    skillFinal:
+      - 1 # Cleave DMG
+    skillSigil:
+      - 2 # Blood-Debt Directive DMG
+  burst:
+    burst:
+      - 0 # Skill DMG

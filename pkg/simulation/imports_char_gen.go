@@ -6,6 +6,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/alhaitham"
 	_ "github.com/genshinsim/gcsim/internal/characters/aloy"
 	_ "github.com/genshinsim/gcsim/internal/characters/amber"
+	_ "github.com/genshinsim/gcsim/internal/characters/arlecchino"
 	_ "github.com/genshinsim/gcsim/internal/characters/ayaka"
 	_ "github.com/genshinsim/gcsim/internal/characters/ayato"
 	_ "github.com/genshinsim/gcsim/internal/characters/baizhu"

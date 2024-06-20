@@ -102,6 +102,23 @@
       "desc": "Frames to hold bunny for (for throwing). Default 0 frames."
     }
   ],
+  "arlecchino": [
+    {
+      "ability": "charge",
+      "param": "early_cancel",
+      "desc": "Cancel the CA immediately after absorbing nearby Blood-Debt Directives. The next action must be Dash or Jump. Default 0 (false), 1 for true"
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "ayaka": [
     {
       "ability": "dash",
