@@ -70,6 +70,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/firstgreatmagic"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/hamayumi"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/heartstrings"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/huntersbow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/hunterspath"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/ibispiercer"
