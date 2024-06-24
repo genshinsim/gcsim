@@ -15,7 +15,7 @@ type Props = {
 export const DBView = (props: Props) => {
   const {t} = useTranslation();
   return (
-    <div className="flex flex-col gap-4 m-8 my-4 items-center min-[1300px]:mx-[160px]">
+    <div className="flex flex-col gap-4 m-8 my-4 items-center">
       <ActionBar simCount={props.data.length} />
       <Warning />
       {props.data.length === 0 ? (
