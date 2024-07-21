@@ -147,6 +147,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"lithicspear":                     keys.LithicSpear,
 	"lostprayertothesacredwinds":      keys.LostPrayerToTheSacredWinds,
 	"lostprayer":                      keys.LostPrayerToTheSacredWinds,
+	"lumidouceelegy":                  keys.LumidouceElegy,
 	"luxurioussealord":                keys.LuxuriousSeaLord,
 	"sealord":                         keys.LuxuriousSeaLord,
 	"magicguide":                      keys.MagicGuide,
