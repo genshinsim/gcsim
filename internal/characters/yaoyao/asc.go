@@ -67,7 +67,7 @@ func (c *char) a4(index, src int) func() {
 		}
 
 		char := c.Core.Player.ByIndex(index)
-		if char.StatusIsActive(a4Status) {
+		if !char.StatusIsActive(a4Status) {
 			return
 		}
 
