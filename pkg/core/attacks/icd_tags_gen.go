@@ -6,6 +6,7 @@ const (
 	ICDTagCharlotteMark
 	ICDTagCharlotteKamera
 	ICDTagChioriSkill
+	ICDTagClorindeCons
 	ICDTagColleiSprout
 	ICDTagCynoBolt
 	ICDTagDoriC2

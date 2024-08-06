@@ -1,6 +1,14 @@
 package_name: clorinde
 genshin_id: 10000098
 key: clorinde
+icd_tags:
+  - ICDTagClorindeCons
+icd_groups:
+  - group_name: ICDGroupClorindeElementalArt
+    reset_timer: 60
+    ele_app_sequence:
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 skill_data_mapping:
   a1:
     a1FlatDmg:

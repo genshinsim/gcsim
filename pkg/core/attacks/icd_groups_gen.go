@@ -13,6 +13,7 @@ const (
 	ICDGroupCharlotteKamera
 	ICDGroupChevreuseBurstMines
 	ICDGroupChioriSkill
+	ICDGroupClorindeElementalArt
 	ICDGroupColleiBurst
 	ICDGroupCynoBolt
 	ICDGroupDiluc
@@ -77,6 +78,10 @@ func init() {
 	ICDGroupResetTimer[ICDGroupChioriSkill] = 114
 	ICDGroupEleApplicationSequence[ICDGroupChioriSkill] = []float64{1, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupChioriSkill] = []float64{1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupClorindeElementalArt] = 60
+	ICDGroupEleApplicationSequence[ICDGroupClorindeElementalArt] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupClorindeElementalArt] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupColleiBurst] = 180
 	ICDGroupEleApplicationSequence[ICDGroupColleiBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
