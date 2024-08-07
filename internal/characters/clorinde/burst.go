@@ -33,15 +33,16 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Burst",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Electro,
-		Durability: 25,
-		Mult:       burstDamage[c.TalentLvlBurst()],
+		ActorIndex:       c.Index,
+		Abil:             "Burst",
+		AttackTag:        attacks.AttackTagElementalBurst,
+		ICDTag:           attacks.ICDTagElementalBurst,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeSlash,
+		Element:          attributes.Electro,
+		Durability:       25,
+		Mult:             burstDamage[c.TalentLvlBurst()],
+		HitlagHaltFrames: 0.1,
 	}
 	for _, v := range burstHitmarks {
 		// TODO: what's the size of this??

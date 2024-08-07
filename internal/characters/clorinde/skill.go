@@ -96,6 +96,7 @@ func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           skillLungeNoBOL[c.TalentLvlSkill()],
+		HitlagFactor:   0.01,
 		IgnoreInfusion: true,
 	}
 	// TODO: what's the size of this??
@@ -122,6 +123,7 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 			Element:        attributes.Electro,
 			Durability:     25,
 			Mult:           skillLungeFullBOL[c.TalentLvlSkill()],
+			HitlagFactor:   0.01,
 			IgnoreInfusion: true,
 		}
 		// TODO: what's the size of this??
@@ -153,6 +155,7 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           skillLungeLowBOL[c.TalentLvlSkill()],
+		HitlagFactor:   0.01,
 		IgnoreInfusion: true,
 	}
 	// TODO: what's the size of this??
