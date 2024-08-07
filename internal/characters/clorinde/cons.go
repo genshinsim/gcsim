@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -65,11 +66,10 @@ func (c *char) c1() {
 			Durability: 25,
 			Mult:       c1AtkP,
 		}
-		target := args[0].(combat.Target)
 		for _, hitmark := range c1Hitmarks {
 			c.Core.QueueAttack(
 				c1AI,
-				combat.NewCircleHitOnTarget(target, nil, 4),
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -3}, 4),
 				hitmark,
 				hitmark,
 				c.particleCB,
@@ -162,7 +162,7 @@ func (c *char) c6() {
 	}
 	c.Core.QueueAttack(
 		c6AI,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 8),
 		1, //TODO: c6 hitmark
 		1,
 	)

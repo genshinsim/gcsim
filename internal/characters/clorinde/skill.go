@@ -100,13 +100,12 @@ func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
 	}
 	// TODO: what's the size of this??
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.6)
-	// TODO: assume no snapshotting on this
 	c.Core.QueueAttack(ai, ap, skillDashHitmark, skillDashHitmark, c.particleCB)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillDashFrames),
 		AnimationLength: skillDashFrames[action.InvalidAction],
-		CanQueueAfter:   skillDashFrames[action.ActionAttack], //TODO: fastest cancel?
+		CanQueueAfter:   skillDashFrames[action.ActionSkill],
 		State:           action.SkillState,
 	}, nil
 }
@@ -127,7 +126,6 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 		}
 		// TODO: what's the size of this??
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.8)
-		// TODO: assume no snapshotting on this
 		c.Core.QueueAttack(ai, ap, skillDashHitmark, skillDashHitmark, c.particleCB)
 	}
 
@@ -139,7 +137,7 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillDashFrames),
 		AnimationLength: skillDashFrames[action.InvalidAction],
-		CanQueueAfter:   skillDashFrames[action.ActionAttack], //TODO: fastest cancel?
+		CanQueueAfter:   skillDashFrames[action.ActionSkill],
 		State:           action.SkillState,
 	}, nil
 }
@@ -159,7 +157,6 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 	}
 	// TODO: what's the size of this??
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.8)
-	// TODO: assume no snapshotting on this
 	c.Core.QueueAttack(ai, ap, skillDashHitmark, skillDashHitmark, c.particleCB)
 
 	// Bond of Life timing is ping dependent
@@ -170,7 +167,7 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillDashFrames),
 		AnimationLength: skillDashFrames[action.InvalidAction],
-		CanQueueAfter:   skillDashFrames[action.ActionAttack], //TODO: fastest cancel?
+		CanQueueAfter:   skillDashFrames[action.ActionSkill],
 		State:           action.SkillState,
 	}, nil
 }

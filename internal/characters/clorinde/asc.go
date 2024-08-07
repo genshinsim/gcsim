@@ -32,14 +32,14 @@ func (c *char) a1() {
 	}
 	c.a1stacks = newStackTracker(3, c.QueueCharTask, &c.Core.F)
 	// on electro reaction, add buff; 3 stacks independent
-	c.Core.Events.Subscribe(event.OnElectroCharged, c.a1CB, "clorinde-a2-ec")
-	c.Core.Events.Subscribe(event.OnSuperconduct, c.a1CB, "clorinde-a2-superconduct")
-	c.Core.Events.Subscribe(event.OnAggravate, c.a1CB, "clorinde-a2-aggravate")
-	c.Core.Events.Subscribe(event.OnQuicken, c.a1CB, "clorinde-a2-quicken")
-	c.Core.Events.Subscribe(event.OnHyperbloom, c.a1CB, "clorinde-a2-hb")
-	c.Core.Events.Subscribe(event.OnOverload, c.a1CB, "clorinde-a2-overload")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, c.a1CB, "clorinde-a2-swirl-electro")
-	c.Core.Events.Subscribe(event.OnCrystallizeElectro, c.a1CB, "clorinde-a2-crystallize-electro")
+	c.Core.Events.Subscribe(event.OnElectroCharged, c.a1CB, "clorinde-a1-ec")
+	c.Core.Events.Subscribe(event.OnSuperconduct, c.a1CB, "clorinde-a1-superconduct")
+	c.Core.Events.Subscribe(event.OnAggravate, c.a1CB, "clorinde-a1-aggravate")
+	c.Core.Events.Subscribe(event.OnQuicken, c.a1CB, "clorinde-a1-quicken")
+	c.Core.Events.Subscribe(event.OnHyperbloom, c.a1CB, "clorinde-a1-hyperbloom")
+	c.Core.Events.Subscribe(event.OnOverload, c.a1CB, "clorinde-a1-overload")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, c.a1CB, "clorinde-a1-swirl-electro")
+	c.Core.Events.Subscribe(event.OnCrystallizeElectro, c.a1CB, "clorinde-a1-crystallize-electro")
 }
 
 func (c *char) a1CB(args ...interface{}) bool {

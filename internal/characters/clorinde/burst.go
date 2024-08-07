@@ -32,18 +32,18 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Burst",
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
+		Element:    attributes.Electro,
+		Durability: 25,
+		Mult:       burstDamage[c.TalentLvlBurst()],
+	}
 	for _, v := range burstHitmarks {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Burst",
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeSlash,
-			Element:    attributes.Electro,
-			Durability: 25,
-			Mult:       burstDamage[c.TalentLvlBurst()],
-		}
 		// TODO: what's the size of this??
 		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 11.2, 9)
 		c.Core.QueueAttack(ai, ap, v, v)

@@ -72,13 +72,23 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 	return c.Character.ActionReady(a, p)
 }
 
-// TODO: pew pew driver
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if c.StatusIsActive(skillStateKey) {
+		switch k {
+		case model.AnimationXingqiuN0StartDelay:
+			return 10
+		case model.AnimationYelanN0StartDelay:
+			return 5
+		default:
+			return c.Character.AnimationStartDelay(k)
+		}
+	}
+
 	switch k {
 	case model.AnimationXingqiuN0StartDelay:
-		return 0
+		return 14
 	case model.AnimationYelanN0StartDelay:
-		return 0
+		return 4
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}

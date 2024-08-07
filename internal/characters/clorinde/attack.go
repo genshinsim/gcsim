@@ -131,6 +131,7 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 	}
 
 	t := c.Core.Combat.PrimaryTarget()
+	gainBOL := true
 	var ap combat.AttackPattern
 	if c.currentHPDebtRatio() < 1 {
 		// TODO: assume this is just a big rectangle center on target
@@ -139,13 +140,16 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 		ai.Abil = fmt.Sprintf("Swift Hunt (Normal shot) %d", c.normalSCounter)
 		ai.Mult = skillNA[c.TalentLvlSkill()]
 		ap = combat.NewCircleHitOnTarget(t, nil, 0.6)
+		gainBOL = false
 	}
 
 	// TODO: assume no snapshotting on this
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
-		c.gainBOLOnAttack() // Bond of Life timing is ping dependent
 		c.arkheAttack()
+		if gainBOL {
+			c.gainBOLOnAttack() // Bond of Life timing is ping dependent
+		}
 	}, skillAttackHitmarks[c.normalSCounter])
 
 	defer c.AdvanceNormalIndex()
@@ -153,7 +157,7 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillAttackFrames[c.normalSCounter]),
 		AnimationLength: skillAttackFrames[c.normalSCounter][action.InvalidAction],
-		CanQueueAfter:   skillAttackFrames[c.normalSCounter][action.ActionSkill], //TODO: fastest cancel?
+		CanQueueAfter:   skillAttackFrames[c.normalSCounter][action.ActionBurst],
 		State:           action.NormalAttackState,
 	}, nil
 }
@@ -164,7 +168,7 @@ func (c *char) arkheAttack() {
 	}
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
-		Abil:               "Arkhe (Piercing Shot)",
+		Abil:               "Surging Blade",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
