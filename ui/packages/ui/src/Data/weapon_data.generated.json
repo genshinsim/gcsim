@@ -648,6 +648,14 @@
       "image_name": "UI_EquipIcon_Catalyst_Fourwinds",
       "name_text_hash_map ": "1455107995"
     },
+    "lumidouceelegy": {
+      "id": 13513,
+      "key": "lumidouceelegy",
+      "rarity": 5,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Muguet",
+      "name_text_hash_map ": "1948935171"
+    },
     "luxurioussealord": {
       "id": 12412,
       "key": "luxurioussealord",
