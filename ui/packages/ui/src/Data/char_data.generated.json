@@ -362,6 +362,23 @@
       },
       "name_text_hash_map ": "2876340530"
     },
+    "clorinde": {
+      "id": 10000098,
+      "key": "clorinde",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Electric",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Clorinde",
+      "skill_details": {
+        "skill": 10982,
+        "burst": 10985,
+        "attack": 10981,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2745369298"
+    },
     "collei": {
       "id": 10000067,
       "key": "collei",
