@@ -102,9 +102,9 @@ func (w *Weapon) bonusCB() {
 		w.char.AddEnergy(energyKey, float64(w.refine)+11.0)
 	}
 
-	w.char.AddStatMod(character.StatMod{
+	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(bonusBuffKey, 8*60),
-		Amount: func() ([]float64, bool) {
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			w.buff[attributes.DmgP] = (0.05*float64(w.refine) + 0.13) * float64(w.stacks)
 			return w.buff, true
 		},
