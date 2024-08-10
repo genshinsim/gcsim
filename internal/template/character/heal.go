@@ -29,28 +29,14 @@ func (c *Character) Heal(hi *info.HealInfo) (float64, float64) {
 	// calc original heal amount
 	healAmt := hp * bonus
 
-	// function to overwrite the heal amount (need for some characters like clorinde)
-	healAmt = c.CharWrapper.ReceiveHeal(hi, healAmt)
-
-	// calc actual heal amount considering hp debt
-	// TODO: assumes that healing can occur in the same heal as debt being cleared, could also be that it can only occur starting from next heal
-	// example: hp debt is 10, heal is 11, so char will get healed by 11 - 10 = 1 instead of receiving no healing at all
-	heal := healAmt - c.CurrentHPDebt()
-	if heal < 0 {
-		heal = 0
-	}
+	// change hp and hp debt
+	heal := c.CharWrapper.ReceiveHeal(hi, healAmt)
 
 	// calc overheal
 	overheal := prevHP + heal - c.MaxHP()
 	if overheal < 0 {
 		overheal = 0
 	}
-
-	// update hp debt based on original heal amount
-	c.ModifyHPDebtByAmount(-healAmt)
-
-	// perform heal based on actual heal amount
-	c.ModifyHPByAmount(heal)
 
 	c.Core.Log.NewEvent(hi.Message, glog.LogHealEvent, c.Index).
 		Write("previous_hp_ratio", prevHPRatio).
@@ -87,6 +73,25 @@ func (c *Character) Drain(di *info.DrainInfo) float64 {
 	return di.Amount
 }
 
-func (c *Character) ReceiveHeal(hi *info.HealInfo, heal float64) float64 {
+func (c *Character) GetReceivedHeal(healAmt float64) float64 {
+	// calc actual heal amount considering hp debt
+	// TODO: assumes that healing can occur in the same heal as debt being cleared, could also be that it can only occur starting from next heal
+	// example: hp debt is 10, heal is 11, so char will get healed by 11 - 10 = 1 instead of receiving no healing at all
+	heal := healAmt - c.CurrentHPDebt()
+	if heal < 0 {
+		heal = 0
+	}
+	return heal
+}
+
+func (c *Character) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
+	heal := c.GetReceivedHeal(healAmt)
+
+	// update hp debt based on original heal amount
+	c.ModifyHPDebtByAmount(-healAmt)
+
+	// perform heal based on actual heal amount
+	c.ModifyHPByAmount(heal)
+
 	return heal
 }

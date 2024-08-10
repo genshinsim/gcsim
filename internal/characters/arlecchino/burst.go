@@ -66,8 +66,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 func (c *char) balemoonRisingHeal() {
 	amt := 1.5*c.CurrentHPDebt() + 1.5*c.TotalAtk()
-	// call the template healing method directly to bypass Heal override
-	c.Character.Heal(&info.HealInfo{
+	c.Heal(&info.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Index,
 		Message: balemoonRisingHealAbil,
