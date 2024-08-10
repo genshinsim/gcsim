@@ -1048,6 +1048,14 @@
       "image_name": "UI_EquipIcon_Bow_Arjuna",
       "name_text_hash_map ": "656120259"
     },
+    "silvershowerheartstrings": {
+      "id": 15513,
+      "key": "silvershowerheartstrings",
+      "rarity": 5,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Arcdange",
+      "name_text_hash_map ": "1257396043"
+    },
     "silversword": {
       "id": 11201,
       "key": "silversword",
