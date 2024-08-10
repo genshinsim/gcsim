@@ -66,6 +66,7 @@ type HP interface {
 	CurrentHPRatio() float64
 	CurrentHP() float64
 	CurrentHPDebt() float64
+	CurrentHPDebtRatio() float64
 
 	SetHPByAmount(float64)
 	SetHPByRatio(float64)
@@ -77,6 +78,8 @@ type HP interface {
 
 	Heal(*info.HealInfo) (float64, float64) // return actual hp healed and amount of hp debt cleared
 	Drain(*info.DrainInfo) float64
+
+	ReceiveHeal(*info.HealInfo, float64) float64
 }
 
 type CharWrapper struct {

@@ -29,6 +29,9 @@ func (c *Character) Heal(hi *info.HealInfo) (float64, float64) {
 	// calc original heal amount
 	healAmt := hp * bonus
 
+	// function to overwrite the heal amount (need for some characters like clorinde)
+	healAmt = c.CharWrapper.ReceiveHeal(hi, healAmt)
+
 	// calc actual heal amount considering hp debt
 	// TODO: assumes that healing can occur in the same heal as debt being cleared, could also be that it can only occur starting from next heal
 	// example: hp debt is 10, heal is 11, so char will get healed by 11 - 10 = 1 instead of receiving no healing at all
@@ -82,4 +85,8 @@ func (c *Character) Drain(di *info.DrainInfo) float64 {
 		Write("max_hp", c.MaxHP())
 	c.Core.Events.Emit(event.OnPlayerHPDrain, di)
 	return di.Amount
+}
+
+func (c *Character) ReceiveHeal(hi *info.HealInfo, heal float64) float64 {
+	return heal
 }

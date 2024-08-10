@@ -97,7 +97,7 @@ func (c *char) c4() {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
-			m[attributes.DmgP] = min(c.currentHPDebtRatio()*100*0.02, 2)
+			m[attributes.DmgP] = min(c.CurrentHPDebtRatio()*100*0.02, 2)
 			return m, true
 		},
 	})

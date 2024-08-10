@@ -133,7 +133,7 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 	t := c.Core.Combat.PrimaryTarget()
 	gainBOL := true
 	var ap combat.AttackPattern
-	if c.currentHPDebtRatio() < 1 {
+	if c.CurrentHPDebtRatio() < 1 {
 		// TODO: assume this is just a big rectangle center on target
 		ap = combat.NewBoxHitOnTarget(t, nil, 2, 14)
 	} else {
