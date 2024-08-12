@@ -25,6 +25,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
 	_ "github.com/genshinsim/gcsim/internal/characters/dori"
+	_ "github.com/genshinsim/gcsim/internal/characters/emilie"
 	_ "github.com/genshinsim/gcsim/internal/characters/eula"
 	_ "github.com/genshinsim/gcsim/internal/characters/faruzan"
 	_ "github.com/genshinsim/gcsim/internal/characters/fischl"
