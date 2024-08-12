@@ -24,6 +24,17 @@ export function craftQuery(
     }
   }
 
+  const sort = {};
+
+  switch (filter.sortBy.sortByDirection) {
+    case SortByDirection.asc:
+      sort[filter.sortBy.sortKey] = 1;
+      break;
+    case SortByDirection.dsc:
+      sort[filter.sortBy.sortKey] = -1;
+      break;
+  }
+
   if (filter.customFilter) {
     let parsedFilter;
     try {
@@ -36,6 +47,7 @@ export function craftQuery(
       query: parsedFilter,
       limit,
       skip,
+      sort
     };
   }
 
@@ -141,17 +153,6 @@ export function craftQuery(
       };
       query["$and"]?.push(rej);
     }
-  }
-
-  const sort = {};
-
-  switch (filter.sortBy.sortByDirection) {
-    case SortByDirection.asc:
-      sort[filter.sortBy.sortKey] = 1;
-      break;
-    case SortByDirection.dsc:
-      sort[filter.sortBy.sortKey] = -1;
-      break;
   }
 
   return {
