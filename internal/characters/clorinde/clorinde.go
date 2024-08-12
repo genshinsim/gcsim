@@ -18,15 +18,13 @@ type char struct {
 	*tmpl.Character
 
 	normalSCounter int
+	prevHpDebt     float64
 	a1stacks       *stackTracker
 	a1BuffPercent  float64
 	a1Cap          float64
 	a4stacks       *stackTracker
 	a4bonus        []float64
 	c6Stacks       int
-
-	// track bol manually skip template
-	hpDebt float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
