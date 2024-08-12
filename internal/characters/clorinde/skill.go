@@ -23,6 +23,7 @@ const (
 
 	skillDashHitmark = 11
 	tolerance        = 0.0000001
+	skillStart       = 6
 	skillCD          = 16 * 60
 )
 
@@ -30,13 +31,13 @@ func init() {
 	skillFrames = frames.InitAbilSlice(33) // E -> Q
 	skillFrames[action.ActionAttack] = 31
 	skillFrames[action.ActionSkill] = 32
-	// skillFrames[action.ActionDash] = 6 // ability doesn't start if dash is done before CD
+	skillFrames[action.ActionDash] = skillStart // ability doesn't start if dash is done before CD
 	skillFrames[action.ActionJump] = 25
 	skillFrames[action.ActionSwap] = 25
 	skillFrames[action.ActionWalk] = 32
 
 	skillDashFrames = frames.InitAbilSlice(43) // E -> Walk
-	skillDashFrames[action.ActionAttack] = 25
+	skillDashFrames[action.ActionAttack] = 24
 	skillDashFrames[action.ActionSkill] = 24
 	skillDashFrames[action.ActionBurst] = 24
 	skillDashFrames[action.ActionDash] = 25
@@ -51,13 +52,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillDash(p)
 	}
 	c.QueueCharTask(c.c6skill, 0)
-	c.AddStatus(skillStateKey, int(60*skillStateDuration[0]), true)
-	c.SetCD(action.ActionSkill, skillCD)
+	c.AddStatus(skillStateKey, skillStart+int(60*skillStateDuration[0]), true)
+	c.SetCDWithDelay(action.ActionSkill, skillCD, skillStart)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSkill],
+		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}, nil
 }
