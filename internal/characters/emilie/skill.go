@@ -31,6 +31,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	player := c.Core.Combat.Player()
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lumidouce Case (Summon)",
@@ -44,12 +46,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 2.6}, 4.5),
+		combat.NewCircleHitOnTarget(player, geometry.Point{Y: 2.6}, 4.5),
 		lumidouceSummonHitmark,
 		lumidouceSummonHitmark,
 	)
 
-	c.spawnLumidouceCase(1)
+	if c.Tag(lumidouceLevel) != 3 { // spawn if no burst
+		c.spawnLumidouceCase(1, geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.6}, player.Direction()))
+	}
 	c.arkheAttack()
 	c.SetCD(action.ActionSkill, int(skillCD[c.TalentLvlSkill()]*60))
 

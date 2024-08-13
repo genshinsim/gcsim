@@ -26,11 +26,9 @@ const (
 	lumidouceScentInterval      = 0.5 * 60
 )
 
-func (c *char) spawnLumidouceCase(level int) {
-	player := c.Core.Combat.Player()
-
+func (c *char) spawnLumidouceCase(level int, pos geometry.Point) {
 	c.lumidouceSrc = c.Core.F
-	c.lumidoucePos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.6}, player.Direction())
+	c.lumidoucePos = pos
 	c.SetTag(lumidouceLevel, level)
 	c.SetTag(lumidouceScent, 0)
 	c.AddStatus(lumidouceStatus, int(skillDuration[c.TalentLvlSkill()]*60), true)
