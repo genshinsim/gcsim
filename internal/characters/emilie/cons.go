@@ -1,8 +1,6 @@
 package emilie
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -37,7 +35,7 @@ func (c *char) c1() {
 		}
 		c.c1Scent()
 		return false
-	}, fmt.Sprintf("emilie-a1-on-burning-%v", c.Base.Key.String()))
+	}, "emilie-a1-on-burning")
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
