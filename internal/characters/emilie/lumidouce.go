@@ -127,14 +127,18 @@ func (c *char) lumidouceScentCollect(src int) func() {
 			return
 		}
 
-		if !c.StatusIsActive(lumidouceScentResetKey) {
+		if !c.StatusIsActive(lumidouceScentResetKey) && (c.Tag(lumidouceScent) > 0 || c.Tag(lumidouceLevel) > 1) {
 			c.SetTag(lumidouceLevel, 1)
 			c.Core.Log.NewEvent("scent reset", glog.LogCharacterEvent, c.Index)
 		}
 
-		if c.Tag(lumidouceScent) == 2 && c.Tag(lumidouceLevel) < 2 {
-			c.SetTag(lumidouceLevel, c.Tag(lumidouceLevel)+1)
-			c.SetTag(lumidouceScent, 0)
+		if c.Tag(lumidouceScent) == 2 {
+			if c.Tag(lumidouceLevel) < 2 {
+				c.SetTag(lumidouceLevel, c.Tag(lumidouceLevel)+1)
+				c.SetTag(lumidouceScent, 0)
+			} else {
+				c.a1()
+			}
 		}
 
 		c.QueueCharTask(c.lumidouceScentCollect(src), lumidouceScentInterval)
