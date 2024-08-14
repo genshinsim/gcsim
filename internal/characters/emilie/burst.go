@@ -31,13 +31,23 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.resetLumidouceCase()
-	c.QueueCharTask(c.spawnBurstLumidouceCase, 123)
+	c.QueueCharTask(func() {
+		c.spawnBurstLumidouceCase()
+		c.c6()
+	}, 123)
 	c.QueueCharTask(func() {
 		c.spawnLumidouceCase(1, c.lumidoucePos)
 	}, 123+int(burstDuration[c.TalentLvlBurst()]*60))
 
+	duration := int(burstCD[c.TalentLvlBurst()] * 60)
+	c.burstMarkDuration = burstMarkDuration
+	if c.Base.Cons >= 4 {
+		duration += 2 * 60
+		c.burstMarkDuration -= 0.3 * 60
+	}
+
 	c.ConsumeEnergy(107)
-	c.SetCDWithDelay(action.ActionBurst, int(burstCD[c.TalentLvlBurst()]*60), 97)
+	c.SetCDWithDelay(action.ActionBurst, duration, 97)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -82,7 +92,7 @@ func (c *char) lumidouceBurstAttack(src int) func() {
 			Mult:       burstDMG[c.TalentLvlSkill()],
 		}
 		ap := combat.NewCircleHitOnTarget(pos, nil, 2.5)
-		c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark, c.particleCB)
+		c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark, c.particleCB, c.c2)
 
 		c.QueueCharTask(c.lumidouceBurstAttack(src), burstTickInterval)
 	}
@@ -98,7 +108,7 @@ func (c *char) getRandomEnemyPosition(area combat.AttackPattern) geometry.Point 
 	var pos geometry.Point
 	if enemy != nil {
 		pos = enemy.Pos()
-		enemy.AddStatus(burstMarkKey, burstMarkDuration, true) // same enemy can't be targeted again for 0.7s
+		enemy.AddStatus(burstMarkKey, c.burstMarkDuration, true) // same enemy can't be targeted again for 0.7s
 	} else {
 		pos = geometry.CalcRandomPointFromCenter(area.Shape.Pos(), 0.5, burstRadius, c.Core.Rand)
 	}

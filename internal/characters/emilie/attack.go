@@ -65,6 +65,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
+	c.applyC6Bonus(&ai)
 
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.PrimaryTarget(),

@@ -104,12 +104,8 @@ func (c *char) lumidouceOnBurning(src int) func() {
 			}
 		}
 		if generate {
-			c.SetTag(lumidouceScent, c.Tag(lumidouceScent)+1)
+			c.generateScent()
 			c.AddStatus(lumidouceScentCDKey, lumidouceScentCD, true)
-
-			c.Core.Log.NewEvent("scent generated", glog.LogCharacterEvent, c.Index).
-				Write("level", c.Tag(lumidouceLevel)).
-				Write("scent", c.Tag(lumidouceScent))
 
 			c.AddStatus(lumidouceScentResetKey, lumidouceScentResetInterval, true)
 		}
@@ -143,4 +139,12 @@ func (c *char) lumidouceScentCollect(src int) func() {
 
 		c.QueueCharTask(c.lumidouceScentCollect(src), lumidouceScentInterval)
 	}
+}
+
+func (c *char) generateScent() {
+	c.SetTag(lumidouceScent, c.Tag(lumidouceScent)+1)
+
+	c.Core.Log.NewEvent("scent generated", glog.LogCharacterEvent, c.Index).
+		Write("level", c.Tag(lumidouceLevel)).
+		Write("scent", c.Tag(lumidouceScent))
 }

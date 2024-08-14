@@ -49,10 +49,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		combat.NewCircleHitOnTarget(player, geometry.Point{Y: 2.6}, 4.5),
 		lumidouceSummonHitmark,
 		lumidouceSummonHitmark,
+		c.c2,
 	)
 
 	if c.Tag(lumidouceLevel) != 3 { // spawn if no burst
-		c.spawnLumidouceCase(1, geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.6}, player.Direction()))
+		c.QueueCharTask(func() {
+			c.spawnLumidouceCase(1, geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.6}, player.Direction()))
+			c.c6()
+		}, lumidouceSummonHitmark)
 	}
 	c.arkheAttack()
 	c.SetCD(action.ActionSkill, int(skillCD[c.TalentLvlSkill()]*60))
@@ -87,6 +91,7 @@ func (c *char) arkheAttack() {
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 2.6}, 4.5),
 		lumidouceArkheHitmark,
 		lumidouceArkheHitmark,
+		c.c2,
 	)
 }
 

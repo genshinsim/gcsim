@@ -37,6 +37,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
+	c.applyC6Bonus(&ai)
 
 	c.Core.QueueAttack(
 		ai,

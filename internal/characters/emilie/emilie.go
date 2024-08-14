@@ -18,6 +18,8 @@ type char struct {
 
 	lumidouceSrc int
 	lumidoucePos geometry.Point
+
+	burstMarkDuration int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

@@ -32,11 +32,13 @@ func (c *char) a1() {
 		Durability: 25,
 		Mult:       6,
 	}
+	c.applyC6Bonus(&ai)
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.lumidoucePos, c.Core.Combat.PrimaryTarget(), nil, 3),
 		a1Hitmark,
 		a1Hitmark,
+		c.c2,
 	)
 }
 
