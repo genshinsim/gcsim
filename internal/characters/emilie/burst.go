@@ -40,11 +40,16 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.QueueCharTask(func() {
+		c.prevLumidouceLvl = 1
+		if c.StatusIsActive(lumidouceStatus) {
+			c.prevLumidouceLvl = c.Tag(lumidouceLevel)
+		}
+
 		c.spawnBurstLumidouceCase()
 		c.c6()
 	}, burstSpawn)
 	c.QueueCharTask(func() {
-		c.spawnLumidouceCase(1, c.lumidoucePos)
+		c.spawnLumidouceCase(c.prevLumidouceLvl, c.lumidoucePos)
 	}, burstResetLumidouce)
 
 	duration := int(burstCD[c.TalentLvlBurst()] * 60)
