@@ -21,13 +21,15 @@ func init() {
 type Set struct {
 	key   string
 	Index int
+	Count int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
-	s := Set{}
+	s := Set{Count: count}
 	s.key = fmt.Sprintf("%v-hod-4pc", char.Base.Key.String())
 	buffDuration := 900 // 15s * 60
 

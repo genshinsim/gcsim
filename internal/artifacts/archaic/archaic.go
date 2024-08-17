@@ -21,13 +21,15 @@ func init() {
 type Set struct {
 	element attributes.Element
 	Index   int
+	Count   int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
-	s := Set{}
+	s := Set{Count: count}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)

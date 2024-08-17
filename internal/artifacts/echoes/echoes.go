@@ -24,9 +24,11 @@ type Set struct {
 	icd         int
 	procExpireF int
 	Index       int
+	Count       int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 // 2pc - ATK +18%.
@@ -38,7 +40,7 @@ func (s *Set) Init() error      { return nil }
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	procDuration := 3 // 0.05s
 
-	s := Set{}
+	s := Set{Count: count}
 	s.prob = 0.36
 	s.icd = 0
 	s.procExpireF = 0

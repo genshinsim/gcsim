@@ -24,9 +24,11 @@ func init() {
 
 type Set struct {
 	Index int
+	Count int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 // 2pc - Electro DMG Bonus +15%
@@ -34,7 +36,7 @@ func (s *Set) Init() error      { return nil }
 // and the DMG Bonus conferred by Aggravate is increased by 20%. When Quicken or the aforementioned
 // Elemental Reactions are triggered, Elemental Skill CD is decreased by 1s. Can only occur once every 0.8s.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
-	s := Set{}
+	s := Set{Count: count}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
