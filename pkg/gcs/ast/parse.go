@@ -650,7 +650,7 @@ func (p *Parser) parseExpr(pre precedence) (Expr, error) {
 	t := p.next()
 	prefix := p.prefixParseFns[t.Typ]
 	if prefix == nil {
-		return nil, nil
+		return nil, fmt.Errorf("ln%v: no prefix parse function for %v", t.line, t.Val)
 	}
 	p.backup()
 	leftExp, err := prefix()

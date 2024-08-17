@@ -13,10 +13,12 @@ const (
 	ICDGroupCharlotteKamera
 	ICDGroupChevreuseBurstMines
 	ICDGroupChioriSkill
+	ICDGroupClorindeElementalArt
 	ICDGroupColleiBurst
 	ICDGroupCynoBolt
 	ICDGroupDiluc
 	ICDGroupDoriBurst
+	ICDGroupEmilieLumidouce
 	ICDGroupFischl
 	ICDGroupFurinaSalonSolitaire
 	ICDGroupLayla
@@ -78,6 +80,10 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupChioriSkill] = []float64{1, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupChioriSkill] = []float64{1, 1, 1, 1, 1}
 
+	ICDGroupResetTimer[ICDGroupClorindeElementalArt] = 60
+	ICDGroupEleApplicationSequence[ICDGroupClorindeElementalArt] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupClorindeElementalArt] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
 	ICDGroupResetTimer[ICDGroupColleiBurst] = 180
 	ICDGroupEleApplicationSequence[ICDGroupColleiBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupColleiBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -93,6 +99,10 @@ func init() {
 	ICDGroupResetTimer[ICDGroupDoriBurst] = 180
 	ICDGroupEleApplicationSequence[ICDGroupDoriBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupDoriBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupEmilieLumidouce] = 120
+	ICDGroupEleApplicationSequence[ICDGroupEmilieLumidouce] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupEmilieLumidouce] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupFischl] = 300
 	ICDGroupEleApplicationSequence[ICDGroupFischl] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}

@@ -19,15 +19,12 @@ func (c *char) c4Init() {
 		if !di.External {
 			return false
 		}
-		if di.Amount <= 0 {
-			return false
-		}
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
-		c.Core.Status.Add(c4Key, 600)
+		c.AddStatus(c4Key, 10*60, true)
 		c.Core.Log.NewEvent("c4 triggered on damage", glog.LogCharacterEvent, c.Index).
-			Write("expiry", c.Core.F+600)
+			Write("expiry", c.StatusExpiry(c4Key))
 		return false
 	}, c4Key)
 }

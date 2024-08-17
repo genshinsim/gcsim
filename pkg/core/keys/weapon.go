@@ -114,6 +114,7 @@ var weaponNames = []string{
 	"lithicblade",
 	"lithicspear",
 	"lostprayertothesacredwinds",
+	"lumidouceelegy",
 	"luxurioussealord",
 	"magicguide",
 	"mailedflower",
@@ -163,6 +164,7 @@ var weaponNames = []string{
 	"seasonedhuntersbow",
 	"serpentspine",
 	"sharpshootersoath",
+	"silvershowerheartstrings",
 	"silversword",
 	"skyridergreatsword",
 	"skyridersword",
@@ -302,6 +304,7 @@ const (
 	LithicBlade
 	LithicSpear
 	LostPrayerToTheSacredWinds
+	LumidouceElegy
 	LuxuriousSeaLord
 	MagicGuide
 	MailedFlower
@@ -351,6 +354,7 @@ const (
 	SeasonedHuntersBow
 	SerpentSpine
 	SharpshootersOath
+	SilvershowerHeartstrings
 	SilverSword
 	SkyriderGreatsword
 	SkyriderSword
