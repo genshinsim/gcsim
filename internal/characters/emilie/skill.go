@@ -92,7 +92,7 @@ func (c *char) arkheAttack() {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       skillArkeCD[c.TalentLvlSkill()],
+		Mult:       skillArke[c.TalentLvlSkill()],
 	}
 	c.Core.QueueAttack(
 		ai,
