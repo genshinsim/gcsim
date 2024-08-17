@@ -62,13 +62,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// delay the spinny for a; should be affected by hitlag
 	c.QueueCharTask(func() {
-		max := 10 * 60
+		maxDuration := 10 * 60
 		if c.Base.Cons >= 4 {
-			max = 14 * 60
+			maxDuration = 14 * 60
 		}
-		c.Core.Status.Add("xianglingburst", max)
+		c.Core.Status.Add("xianglingburst", maxDuration)
 		snap := c.Snapshot(&burstHit)
-		for delay := 0; delay <= max; delay += 73 { // first hit 1f before the 3rd initial hit
+		for delay := 0; delay <= maxDuration; delay += 73 { // first hit 1f before the 3rd initial hit
 			// TODO: proper hitbox
 			c.Core.Tasks.Add(func() {
 				c.Core.QueueAttackWithSnap(
@@ -81,7 +81,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 		// add an effect starting at frame 56 to end of duration to increase pyro dmg by 15% if c6
 		if c.Base.Cons >= 6 {
-			c.c6(max)
+			c.c6(maxDuration)
 		}
 	}, a)
 

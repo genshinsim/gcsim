@@ -9,11 +9,11 @@ type stackTracker struct {
 	frame  *int
 }
 
-func newStackTracker(max int, queue queuer, frame *int) *stackTracker {
+func newStackTracker(maxstacks int, queue queuer, frame *int) *stackTracker {
 	s := &stackTracker{
 		queuer: queue,
-		stacks: make([]*int, max),
-		max:    max,
+		stacks: make([]*int, maxstacks),
+		max:    maxstacks,
 		frame:  frame,
 	}
 	return s

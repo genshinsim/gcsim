@@ -139,20 +139,6 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	}
 }
 
-func max(x, y int) int {
-	if x > y {
-		return x
-	}
-	return y
-}
-
-func min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
-
 func same(i, j map[string]float64) bool {
 	for _, e := range elements {
 		if i[e.String()] != j[e.String()] {
