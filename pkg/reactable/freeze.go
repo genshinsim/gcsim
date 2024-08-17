@@ -43,20 +43,6 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	return true
 }
 
-func max(a, b reactions.Durability) reactions.Durability {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func min(a, b reactions.Durability) reactions.Durability {
-	if a > b {
-		return b
-	}
-	return a
-}
-
 func (r *Reactable) PoiseDMGCheck(a *combat.AttackEvent) bool {
 	if r.Durability[Frozen] < ZeroDur {
 		return false
