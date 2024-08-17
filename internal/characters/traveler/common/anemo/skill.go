@@ -275,9 +275,9 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	return c.SkillHold(holdTicks), nil
 }
 
-func (c *Traveler) absorbCheckE(src, count, max int) func() {
+func (c *Traveler) absorbCheckE(src, count, maxcount int) func() {
 	return func() {
-		if count == max {
+		if count == maxcount {
 			return
 		}
 		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.eAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
@@ -292,7 +292,7 @@ func (c *Traveler) absorbCheckE(src, count, max int) func() {
 			c.eICDTag = attacks.ICDTagElementalArtHydro
 		case attributes.NoElement:
 			// otherwise queue up
-			c.Core.Tasks.Add(c.absorbCheckE(src, count+1, max), 18)
+			c.Core.Tasks.Add(c.absorbCheckE(src, count+1, maxcount), 18)
 		}
 	}
 }

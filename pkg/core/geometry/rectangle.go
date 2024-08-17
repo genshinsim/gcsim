@@ -181,18 +181,18 @@ func (p1 *Projection) overlap(p2 Projection) bool {
 }
 
 func getProjection(corners []Point, axis Point) Projection {
-	min := axis.Dot(corners[0])
-	max := min
+	minval := axis.Dot(corners[0])
+	maxval := minval
 	for i := 1; i < len(corners); i++ {
 		p := axis.Dot(corners[i])
-		if p < min {
-			min = p
-		} else if p > max {
-			max = p
+		if p < minval {
+			minval = p
+		} else if p > maxval {
+			maxval = p
 		}
 	}
 	return Projection{
-		min: min,
-		max: max,
+		min: minval,
+		max: maxval,
 	}
 }

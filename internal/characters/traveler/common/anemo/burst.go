@@ -105,9 +105,9 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *Traveler) absorbCheckQ(src, count, max int) func() {
+func (c *Traveler) absorbCheckQ(src, count, maxcount int) func() {
 	return func() {
-		if count == max {
+		if count == maxcount {
 			return
 		}
 		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.qAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
@@ -122,7 +122,7 @@ func (c *Traveler) absorbCheckQ(src, count, max int) func() {
 			c.qICDTag = attacks.ICDTagElementalBurstHydro
 		case attributes.NoElement:
 			// otherwise queue up
-			c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)
+			c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, maxcount), 18)
 		}
 	}
 }

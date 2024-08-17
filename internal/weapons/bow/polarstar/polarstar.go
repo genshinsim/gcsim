@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	dmg := .09 + float64(r)*.03
 	stack := .075 + float64(r)*.025
-	max := .06 + float64(r)*.02
+	maxBonus := .06 + float64(r)*.02
 
 	const normalKey = "polar-star-normal"
 	const chargedKey = "polar-star-charged"
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 			atkbonus := stack * float64(count)
 			if count >= 4 {
-				atkbonus += max
+				atkbonus += maxBonus
 			}
 			mATK[attributes.ATKP] = atkbonus
 

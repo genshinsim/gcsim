@@ -30,6 +30,7 @@ const (
 	Diluc
 	Diona
 	Dori
+	Emilie
 	Eula
 	Faruzan
 	Fischl
@@ -183,6 +184,10 @@ func init() {
 	charNames[Dori] = "dori"
 	charPrettyName[Dori] = "Dori"
 	CharKeyToEle[Dori] = attributes.Electro
+
+	charNames[Emilie] = "emilie"
+	charPrettyName[Emilie] = "Emilie"
+	CharKeyToEle[Emilie] = attributes.Dendro
 
 	charNames[Eula] = "eula"
 	charPrettyName[Eula] = "Eula"
