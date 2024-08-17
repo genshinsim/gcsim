@@ -14,23 +14,31 @@ const (
 	lumidouceArkheCD = "lumidouce-arkhe-cd"
 	particleICDKey   = "skill-particle-icd"
 
-	lumidouceSummonHitmark = 16
-	lumidouceArkheHitmark  = 16
-	particleICD            = 2.5 * 60
+	lumidouceSummonHitmark = 37
+	lumidouceSpawn         = 16
+	lumidouceArkheHitmark  = 62
+
+	particleICD = 2.5 * 60
 )
 
 var skillFrames []int
 
 func init() {
-	skillFrames = frames.InitAbilSlice(48)
-	skillFrames[action.ActionAttack] = 31
-	skillFrames[action.ActionBurst] = 31
-	skillFrames[action.ActionDash] = 29
-	skillFrames[action.ActionJump] = 30
-	skillFrames[action.ActionSwap] = 29
+	skillFrames = frames.InitAbilSlice(37) // E -> Walk
+	skillFrames[action.ActionAttack] = 28
+	skillFrames[action.ActionBurst] = 24
+	skillFrames[action.ActionDash] = 23
+	skillFrames[action.ActionJump] = 24
+	skillFrames[action.ActionSwap] = 34
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	var ok bool
+	c.caseTravel, ok = p["travel"]
+	if !ok {
+		c.caseTravel = lumidouceAttackTravel
+	}
+
 	player := c.Core.Combat.Player()
 
 	ai := combat.AttackInfo{
@@ -56,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.QueueCharTask(func() {
 			c.spawnLumidouceCase(1, geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.6}, player.Direction()))
 			c.c6()
-		}, lumidouceSummonHitmark)
+		}, lumidouceSpawn)
 	}
 	c.arkheAttack()
 	c.SetCD(action.ActionSkill, int(skillCD[c.TalentLvlSkill()]*60))

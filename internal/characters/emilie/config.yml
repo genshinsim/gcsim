@@ -6,6 +6,10 @@ action_param_keys:
     - param: "collision"
   high_plunge:
     - param: "collision"
+  skill:
+    - param: "travel"
+  burst:
+    - param: "travel"
 icd_tags:
   - ICDTagEmilieLumidouce
 icd_groups:

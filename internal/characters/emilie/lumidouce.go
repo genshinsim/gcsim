@@ -18,8 +18,10 @@ const (
 	lumidouceScentCDKey    = "lumidouce-scent-cd"
 	lumidouceScentResetKey = "lumidouce-scent-reset"
 
-	lumidouceHitmark            = 16
-	lumidouceHitmarkLevel2      = 18
+	lumidouceAttackTravel  = 5
+	lumidouceHitmark       = 5 - lumidouceAttackTravel
+	lumidouceHitmarkLevel2 = 23 - lumidouceAttackTravel
+
 	lumidouceTickInterval       = 1.5 * 60
 	lumidouceScentCD            = 2 * 60
 	lumidouceScentResetInterval = 8 * 60
@@ -36,14 +38,6 @@ func (c *char) spawnLumidouceCase(level int, pos geometry.Point) {
 	c.QueueCharTask(c.lumidouceAttack(c.lumidouceSrc), lumidouceTickInterval)
 	c.QueueCharTask(c.lumidouceOnBurning(c.lumidouceSrc), lumidouceScentInterval)
 	c.QueueCharTask(c.lumidouceScentCollect(c.lumidouceSrc), lumidouceScentInterval)
-}
-
-func (c *char) resetLumidouceCase() {
-	c.lumidouceSrc = -1
-	c.DeleteStatus(lumidouceStatus)
-	c.DeleteStatus(lumidouceScentResetKey)
-	c.SetTag(lumidouceLevel, 0)
-	c.SetTag(lumidouceScent, 0)
 }
 
 func (c *char) lumidouceAttack(src int) func() {
@@ -68,9 +62,9 @@ func (c *char) lumidouceAttack(src int) func() {
 			Mult:       skillLumidouce[level-1][c.TalentLvlSkill()],
 		}
 		ap := combat.NewCircleHit(c.lumidoucePos, c.Core.Combat.PrimaryTarget(), nil, 1)
-		c.Core.QueueAttack(ai, ap, lumidouceHitmark, lumidouceHitmark, c.particleCB)
+		c.Core.QueueAttack(ai, ap, lumidouceHitmark+c.caseTravel, lumidouceHitmark+c.caseTravel, c.particleCB)
 		if level == 2 {
-			c.Core.QueueAttack(ai, ap, lumidouceHitmarkLevel2, lumidouceHitmarkLevel2, c.particleCB)
+			c.Core.QueueAttack(ai, ap, lumidouceHitmarkLevel2+c.caseTravel, lumidouceHitmarkLevel2+c.caseTravel, c.particleCB)
 		}
 
 		c.QueueCharTask(c.lumidouceAttack(src), lumidouceTickInterval)

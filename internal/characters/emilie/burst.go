@@ -12,8 +12,11 @@ import (
 const (
 	burstMarkKey = "emilie-burst-mark"
 
+	burstSpawn          = 96
+	burstResetLumidouce = 306
+
 	burstRadius       = 12
-	burstHitmark      = 16
+	burstHitmark      = 12
 	burstTickInterval = 0.3 * 60
 	burstMarkDuration = 0.7 * 60
 )
@@ -21,23 +24,28 @@ const (
 var burstFrames []int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(123) // Q -> E
-	burstFrames[action.ActionAttack] = 120  // Q -> N1
-	burstFrames[action.ActionDash] = 122    // Q -> D
-	burstFrames[action.ActionJump] = 121    // Q -> J
-	burstFrames[action.ActionWalk] = 117    // Q -> Walk
-	burstFrames[action.ActionSwap] = 120    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(111) // Q -> E
+	burstFrames[action.ActionAttack] = 108
+	burstFrames[action.ActionDash] = 97
+	burstFrames[action.ActionJump] = 98
+	burstFrames[action.ActionWalk] = 96
+	burstFrames[action.ActionSwap] = 105
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	c.resetLumidouceCase()
+	var ok bool
+	c.caseTravel, ok = p["travel"]
+	if !ok {
+		c.caseTravel = lumidouceAttackTravel
+	}
+
 	c.QueueCharTask(func() {
 		c.spawnBurstLumidouceCase()
 		c.c6()
-	}, 123)
+	}, burstSpawn)
 	c.QueueCharTask(func() {
 		c.spawnLumidouceCase(1, c.lumidoucePos)
-	}, 123+int(burstDuration[c.TalentLvlBurst()]*60))
+	}, burstResetLumidouce)
 
 	duration := int(burstCD[c.TalentLvlBurst()] * 60)
 	c.burstMarkDuration = burstMarkDuration

@@ -12,7 +12,7 @@ import (
 const (
 	a4ModKey = "emilie-a4"
 
-	a1Hitmark = 16
+	a1Hitmark = 18
 )
 
 func (c *char) a1() {
