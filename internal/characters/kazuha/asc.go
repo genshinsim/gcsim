@@ -14,9 +14,9 @@ import (
 // Elemental Absorption may only occur once per use of Chihayaburu.
 //
 // - checks for ascension level in skill.go to avoid queuing this up only to fail the ascension level check
-func (c *char) absorbCheckA1(src, count, max int) func() {
+func (c *char) absorbCheckA1(src, count, maxcount int) func() {
 	return func() {
-		if count == max {
+		if count == maxcount {
 			return
 		}
 		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.Index, c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
@@ -28,7 +28,7 @@ func (c *char) absorbCheckA1(src, count, max int) func() {
 			return
 		}
 		// otherwise queue up
-		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, max), 6)
+		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, maxcount), 6)
 	}
 }
 

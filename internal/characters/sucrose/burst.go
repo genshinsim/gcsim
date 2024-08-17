@@ -104,9 +104,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) absorbCheck(src, count, max int) func() {
+func (c *char) absorbCheck(src, count, maxcount int) func() {
 	return func() {
-		if count == max {
+		if count == maxcount {
 			return
 		}
 		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
@@ -118,6 +118,6 @@ func (c *char) absorbCheck(src, count, max int) func() {
 			return
 		}
 		// otherwise queue up
-		c.Core.Tasks.Add(c.absorbCheck(src, count+1, max), 18)
+		c.Core.Tasks.Add(c.absorbCheck(src, count+1, maxcount), 18)
 	}
 }
