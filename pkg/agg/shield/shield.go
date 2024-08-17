@@ -105,9 +105,9 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	}
 }
 
-func clamp(x, max int) int {
-	if x > max {
-		return max
+func clamp(x, maxval int) int {
+	if x > maxval {
+		return maxval
 	}
 	return x
 }

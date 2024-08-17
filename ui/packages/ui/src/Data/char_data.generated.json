@@ -481,6 +481,23 @@
       },
       "name_text_hash_map ": "388272194"
     },
+    "emilie": {
+      "id": 10000099,
+      "key": "emilie",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Grass",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Emilie",
+      "skill_details": {
+        "skill": 10992,
+        "burst": 10995,
+        "attack": 10991,
+        "burst_energy_cost": 50
+      },
+      "name_text_hash_map ": "1705786122"
+    },
     "eula": {
       "id": 10000051,
       "key": "eula",

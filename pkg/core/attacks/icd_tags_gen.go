@@ -11,6 +11,7 @@ const (
 	ICDTagCynoBolt
 	ICDTagDoriC2
 	ICDTagDoriChargingStation
+	ICDTagEmilieLumidouce
 	ICDTagFurinaChevalmarin
 	ICDTagFurinaUsher
 	ICDTagKleeFireDamage
