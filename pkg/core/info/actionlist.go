@@ -84,7 +84,7 @@ func (a *ActionList) Copy() *ActionList {
 func (a *ActionList) PrettyPrint() string {
 	prettyJSON, err := json.MarshalIndent(a, "", "  ")
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 	}
 	return string(prettyJSON)
 }

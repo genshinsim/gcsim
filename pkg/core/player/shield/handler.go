@@ -88,7 +88,7 @@ func (h *Handler) List() []Shield {
 func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element) float64 {
 	// find shield bonuses
 	bonus := h.ShieldBonus()
-	min := dmg // min of damage taken
+	mintaken := dmg // min of damage taken
 	n := 0
 	for _, v := range h.shields {
 		target := v.ShieldTarget()
@@ -108,8 +108,8 @@ func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element
 			Write("dmg_after_shield", taken).
 			Write("current_hp", v.CurrentHP()).
 			Write("expiry", v.Expiry())
-		if taken < min {
-			min = taken
+		if taken < mintaken {
+			mintaken = taken
 		}
 		if ok {
 			h.shields[n] = v
@@ -127,7 +127,7 @@ func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element
 		}
 	}
 	h.shields = h.shields[:n]
-	return min
+	return mintaken
 }
 
 func (h *Handler) Tick() {

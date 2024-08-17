@@ -261,7 +261,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	}
 
 	if opt.memprofile != "" {
-		f, err := os.Create(fmt.Sprintf(opt.memprofile))
+		f, err := os.Create(opt.memprofile)
 		if err != nil {
 			return fmt.Errorf("could not create memory profile: %w", err)
 		}
