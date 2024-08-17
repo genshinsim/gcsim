@@ -21,6 +21,7 @@ type char struct {
 	lumidouceSrc int
 	lumidoucePos geometry.Point
 
+	prevLumidouceLvl  int
 	burstMarkDuration int
 }
 
