@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -16,9 +17,12 @@ const (
 	c1ScentICDKey = "emilie-c1-attack-icd"
 	c2ModKey      = "emilie-c2"
 	c6ModKey      = "emilie-c6"
+	c6ICDKey      = "emilie-c6-icd"
 
 	c1ScentICD = 2.9 * 60
 	c2Duration = 10 * 60
+	c6Duration = 5 * 60
+	c6ICD      = 12 * 60
 )
 
 func (c *char) c1() {
@@ -105,7 +109,12 @@ func (c *char) c6() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	c.AddStatus(c6ModKey, 5*60, true)
+	if c.StatusIsActive(c6ICDKey) {
+		return
+	}
+	c.c6Scents = 0
+	c.AddStatus(c6ModKey, c6Duration, true)
+	c.AddStatus(c6ICDKey, c6ICD, true)
 }
 
 func (c *char) applyC6Bonus(ai *combat.AttackInfo) {
@@ -124,4 +133,30 @@ func (c *char) applyC6Bonus(ai *combat.AttackInfo) {
 	ai.FlatDmg += c.TotalAtk() * 3
 	ai.Element = attributes.Dendro
 	ai.IgnoreInfusion = true
+}
+
+func (c *char) c6ScentCB() func(combat.AttackCB) {
+	if c.Base.Cons < 6 {
+		return nil
+	}
+	if !c.StatusIsActive(c6ModKey) {
+		return nil
+	}
+
+	done := false
+	return func(a combat.AttackCB) {
+		if done {
+			return
+		}
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		done = true
+
+		c.generateScent()
+		c.c6Scents++
+		if c.c6Scents == 4 {
+			c.DeleteStatus(c6ModKey)
+		}
+	}
 }

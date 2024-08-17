@@ -60,12 +60,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.c2,
 	)
 
-	if c.Tag(lumidouceLevel) != 3 { // spawn if no burst
-		c.QueueCharTask(func() {
-			c.spawnLumidouceCase(1, geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.6}, player.Direction()))
-			c.c6()
-		}, lumidouceSpawn)
-	}
+	c.QueueCharTask(func() {
+		c.spawnLumidouceCase(1, geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.6}, player.Direction()), false)
+		c.c6()
+	}, lumidouceSpawn)
 	c.arkheAttack()
 	c.SetCD(action.ActionSkill, int(skillCD[c.TalentLvlSkill()]*60))
 
