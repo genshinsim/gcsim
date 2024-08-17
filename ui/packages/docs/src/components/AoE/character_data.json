@@ -2710,6 +2710,109 @@
       }
     ]
   },
+  "emilie": {
+    "asc": [
+      {
+        "ability": "E-A1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.4,
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 1.6,
+        "boxY": 3
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.4,
+        "radius": 2.5
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.4,
+        "radius": 3
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -1.2,
+        "boxX": 3.3,
+        "boxY": 3.5
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Summon",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.6,
+        "radius": 4.5
+      },
+      {
+        "ability": "E-Level1",
+        "shape": "Hit",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "E-Level2",
+        "shape": "Hit",
+        "center": "PrimaryTarget",
+        "radius": 1
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Level3",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2.5,
+        "notes": "At every tick: If there are enemies within the Q detection area that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 0.7s. Otherwise, it will spawn randomly between 0.5m and 12m from the Q center."
+      }
+    ]
+  },
   "eula": {
     "asc": [
       {
