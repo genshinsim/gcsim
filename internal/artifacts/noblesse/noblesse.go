@@ -27,9 +27,11 @@ type Set struct {
 	nob4buff          []float64
 	charKey           keys.Char
 	charIsSpecialCase bool
+	Count             int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error {
 	s.charIsSpecialCase = hacks.NOCharIsSpecial(s.charKey)
 	return nil
@@ -39,6 +41,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	s := Set{
 		core:    c,
 		charKey: char.Base.Key,
+		Count:   count,
 	}
 
 	if count >= 2 {
