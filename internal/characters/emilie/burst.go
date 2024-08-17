@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.c6()
 	}, burstSpawn)
 	c.QueueCharTask(func() {
-		c.spawnLumidouceCase(c.prevLumidouceLvl, c.lumidoucePos)
+		c.spawnLumidouceCase(c.prevLumidouceLvl, c.lumidoucePos, true)
 	}, burstResetLumidouce)
 
 	duration := int(burstCD[c.TalentLvlBurst()] * 60)
@@ -76,8 +76,8 @@ func (c *char) spawnBurstLumidouceCase() {
 	c.lumidouceSrc = c.Core.F
 	c.lumidoucePos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.1}, player.Direction())
 	c.SetTag(lumidouceLevel, 3)
-	c.SetTag(lumidouceScent, 0)
 	c.AddStatus(lumidouceStatus, int(burstDuration[c.TalentLvlBurst()]*60), true)
+	c.AddStatus(lumidouceScentResetKey, lumidouceScentResetInterval, true)
 	c.QueueCharTask(c.lumidouceBurstAttack(c.lumidouceSrc), burstTickInterval)
 }
 
