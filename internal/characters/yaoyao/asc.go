@@ -62,12 +62,13 @@ func (c *char) a1Throw() {
 
 func (c *char) a4(index, src int) func() {
 	return func() {
-		if c.a4Srcs[index] != c.Core.F {
+		// TODO: Check if reapplying radish will reset heal timer or not?
+		if c.a4Srcs[index] != src {
 			return
 		}
 
 		char := c.Core.Player.ByIndex(index)
-		if char.StatusIsActive(a4Status) {
+		if !char.StatusIsActive(a4Status) {
 			return
 		}
 
