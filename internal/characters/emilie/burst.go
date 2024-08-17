@@ -97,7 +97,7 @@ func (c *char) lumidouceBurstAttack(src int) func() {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
-			Mult:       burstDMG[c.TalentLvlSkill()],
+			Mult:       burstDMG[c.TalentLvlBurst()],
 		}
 		ap := combat.NewCircleHitOnTarget(pos, nil, 2.5)
 		c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark, c.particleCB, c.c2)

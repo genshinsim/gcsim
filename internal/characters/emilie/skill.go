@@ -81,7 +81,7 @@ func (c *char) arkheAttack() {
 	if c.StatusIsActive(lumidouceArkheCD) {
 		return
 	}
-	c.AddStatus(lumidouceArkheCD, int(skillArkeCD[c.TalentLvlBurst()]*60), true)
+	c.AddStatus(lumidouceArkheCD, int(skillArkeCD[c.TalentLvlSkill()]*60), true)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
