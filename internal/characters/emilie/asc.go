@@ -58,7 +58,7 @@ func (c *char) a4() {
 			if !x.IsBurning() {
 				return nil, false
 			}
-			m[attributes.DmgP] = c.TotalAtk() / 1000 * 0.15
+			m[attributes.DmgP] = min(c.TotalAtk()/1000*0.15, 0.36)
 			return m, true
 		},
 	})
