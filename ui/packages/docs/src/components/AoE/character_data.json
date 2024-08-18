@@ -2791,6 +2791,13 @@
         "radius": 4.5
       },
       {
+        "ability": "E-Spiritbreath-Thorn",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 2.6,
+        "radius": 4.5
+      },
+      {
         "ability": "E-Level1",
         "shape": "Hit",
         "center": "PrimaryTarget",
