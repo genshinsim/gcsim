@@ -73,12 +73,11 @@ func (c *char) burstCast() {
 		burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 		c.Core.QueueAttack(ai, burstArea, 0, 0)
 
-		atk := c.getTotalAtk()
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Stars Gather at Dusk Heal (Initial)",
-			Src:     healInstantP[c.TalentLvlBurst()]*atk + healInstantFlat[c.TalentLvlBurst()],
+			Src:     healInstantP[c.TalentLvlBurst()]*c.TotalAtk() + healInstantFlat[c.TalentLvlBurst()],
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
@@ -173,12 +172,11 @@ func (c *char) burstPlungeDoTTrigger() {
 }
 
 func (c *char) burstHealDoT() {
-	atk := c.getTotalAtk()
 	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
 		Target:  -1,
 		Message: "Starwicker Heal",
-		Src:     healDotP[c.TalentLvlBurst()]*atk + healDotFlat[c.TalentLvlBurst()],
+		Src:     healDotP[c.TalentLvlBurst()]*c.TotalAtk() + healDotFlat[c.TalentLvlBurst()],
 		Bonus:   c.Stat(attributes.Heal),
 	})
 }

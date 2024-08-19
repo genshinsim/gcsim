@@ -29,14 +29,12 @@ func (c *char) c1Heal(char *character.CharWrapper) func() {
 			return
 		}
 
-		stats, _ := c.Stats()
-		atk := c.Base.Atk*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  char.Index,
 			Message: c1HealMsg,
-			Src:     atk * 0.8,
-			Bonus:   stats[attributes.Heal],
+			Src:     c.TotalAtk() * 0.8,
+			Bonus:   c.Stat(attributes.Heal),
 		})
 		char.QueueCharTask(c.c1Heal(char), 2*60)
 	}
