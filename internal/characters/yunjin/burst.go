@@ -86,8 +86,7 @@ func (c *char) burstProc() {
 		}
 
 		finalBurstBuff := burstBuff[c.TalentLvlBurst()] + c.a4()
-		stats, _ := c.Stats()
-		dmgAdded := (c.Base.Def*(1+stats[attributes.DEFP]) + stats[attributes.DEF]) * finalBurstBuff
+		dmgAdded := c.TotalDef() * finalBurstBuff
 		ae.Info.FlatDmg += dmgAdded
 
 		char.Tags[burstBuffKey] -= 1

@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if hasC2 {
 		c2Count = c.c2stacks
 		c.c2stacks = 0
-		ai.FlatDmg = (c.Base.Def*(1+c.Stat(attributes.DEFP)) + c.Stat(attributes.DEF)) * float64(c2Count) * 0.3
+		ai.FlatDmg = c.TotalDef() * float64(c2Count) * 0.3
 	}
 
 	// initial damage
@@ -69,7 +69,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		// C2 damage is recalculated once on burstHitmark
 		if hasC2 {
-			ai.FlatDmg = (c.Base.Def*(1+c.Stat(attributes.DEFP)) + c.Stat(attributes.DEF)) * float64(c2Count) * 0.3
+			ai.FlatDmg = c.TotalDef() * float64(c2Count) * 0.3
 		}
 
 		// generate 7 blossoms
