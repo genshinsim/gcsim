@@ -82,7 +82,7 @@ func (c *char) a4AtkUpdate(src int) func() {
 		if c.a4src != src {
 			return
 		}
-		c.a4Atk = c.getTotalAtk()
+		c.a4Atk = c.TotalAtk()
 		c.Core.Tasks.Add(c.a4AtkUpdate(src), 0.5*60)
 	}
 }
