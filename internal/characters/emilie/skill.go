@@ -89,7 +89,7 @@ func (c *char) arkheAttack() {
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
-		Durability: 25,
+		Durability: 0,
 		Mult:       skillArke[c.TalentLvlSkill()],
 	}
 	c.Core.QueueAttack(
