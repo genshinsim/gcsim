@@ -23,6 +23,8 @@ type char struct {
 
 	prevLumidouceLvl  int
 	burstMarkDuration int
+
+	c6Scents int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

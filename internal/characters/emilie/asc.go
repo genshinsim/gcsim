@@ -19,7 +19,7 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.SetTag(lumidouceScent, 0)
+	c.SetTag(lumidouceScent, c.Tag(lumidouceScent)-2)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -58,7 +58,7 @@ func (c *char) a4() {
 			if !x.IsBurning() {
 				return nil, false
 			}
-			m[attributes.DmgP] = c.TotalAtk() / 1000 * 0.15
+			m[attributes.DmgP] = min(c.TotalAtk()/1000*0.15, 0.36)
 			return m, true
 		},
 	})

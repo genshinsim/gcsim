@@ -43,6 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -1.2}, 3.3, 3.5),
 		chargeHitmark,
 		chargeHitmark,
+		c.c6ScentCB(),
 	)
 
 	return action.Info{

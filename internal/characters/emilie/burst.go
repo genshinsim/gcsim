@@ -39,28 +39,27 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.caseTravel = lumidouceAttackTravel
 	}
 
+	extendDuration := 0
+	c.burstMarkDuration = burstMarkDuration
+	if c.Base.Cons >= 4 {
+		extendDuration += 2 * 60
+		c.burstMarkDuration -= 0.3 * 60
+	}
+
 	c.QueueCharTask(func() {
 		c.prevLumidouceLvl = 1
 		if c.StatusIsActive(lumidouceStatus) {
 			c.prevLumidouceLvl = c.Tag(lumidouceLevel)
 		}
-
-		c.spawnBurstLumidouceCase()
+		c.spawnBurstLumidouceCase(int(burstDuration[c.TalentLvlBurst()]*60) + extendDuration)
 		c.c6()
 	}, burstSpawn)
 	c.QueueCharTask(func() {
-		c.spawnLumidouceCase(c.prevLumidouceLvl, c.lumidoucePos)
-	}, burstResetLumidouce)
+		c.spawnLumidouceCase(c.prevLumidouceLvl, c.lumidoucePos, true)
+	}, burstResetLumidouce+extendDuration)
 
-	duration := int(burstCD[c.TalentLvlBurst()] * 60)
-	c.burstMarkDuration = burstMarkDuration
-	if c.Base.Cons >= 4 {
-		duration += 2 * 60
-		c.burstMarkDuration -= 0.3 * 60
-	}
-
-	c.ConsumeEnergy(107)
-	c.SetCDWithDelay(action.ActionBurst, duration, 97)
+	c.ConsumeEnergy(9)
+	c.SetCD(action.ActionBurst, int(burstCD[c.TalentLvlBurst()]*60))
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -70,14 +69,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) spawnBurstLumidouceCase() {
+func (c *char) spawnBurstLumidouceCase(duration int) {
 	player := c.Core.Combat.Player()
 
 	c.lumidouceSrc = c.Core.F
 	c.lumidoucePos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.1}, player.Direction())
 	c.SetTag(lumidouceLevel, 3)
-	c.SetTag(lumidouceScent, 0)
-	c.AddStatus(lumidouceStatus, int(burstDuration[c.TalentLvlBurst()]*60), true)
+	c.AddStatus(lumidouceStatus, duration, true)
+	c.AddStatus(lumidouceScentResetKey, lumidouceScentResetInterval, true)
 	c.QueueCharTask(c.lumidouceBurstAttack(c.lumidouceSrc), burstTickInterval)
 }
 

@@ -85,7 +85,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		)
 	}
 
-	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.c6ScentCB())
 
 	defer c.AdvanceNormalIndex()
 

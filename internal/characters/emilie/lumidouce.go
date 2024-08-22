@@ -28,16 +28,24 @@ const (
 	lumidouceScentInterval      = 0.5 * 60
 )
 
-func (c *char) spawnLumidouceCase(level int, pos geometry.Point) {
+func (c *char) spawnLumidouceCase(level int, pos geometry.Point, afterBurst bool) {
+	if c.StatusIsActive(lumidouceStatus) && c.Tag(lumidouceLevel) == 3 { // only update the reset timer during burst
+		c.AddStatus(lumidouceScentResetKey, lumidouceScentResetInterval, true)
+		return
+	}
+
 	c.lumidouceSrc = c.Core.F
 	c.lumidoucePos = pos
 	c.SetTag(lumidouceLevel, level)
-	c.SetTag(lumidouceScent, 0)
 	c.AddStatus(lumidouceStatus, int(skillDuration[c.TalentLvlSkill()]*60), true)
-	c.AddStatus(lumidouceScentResetKey, lumidouceScentResetInterval, true)
 	c.QueueCharTask(c.lumidouceAttack(c.lumidouceSrc), lumidouceTickInterval)
 	c.QueueCharTask(c.lumidouceOnBurning(c.lumidouceSrc), lumidouceScentInterval)
 	c.QueueCharTask(c.lumidouceScentCollect(c.lumidouceSrc), lumidouceScentInterval)
+
+	if !afterBurst {
+		c.SetTag(lumidouceScent, 0)
+		c.AddStatus(lumidouceScentResetKey, lumidouceScentResetInterval, true)
+	}
 }
 
 func (c *char) lumidouceAttack(src int) func() {
@@ -67,6 +75,7 @@ func (c *char) lumidouceAttack(src int) func() {
 			c.Core.QueueAttack(ai, ap, lumidouceHitmarkLevel2+c.caseTravel, lumidouceHitmarkLevel2+c.caseTravel, c.particleCB)
 		}
 
+		c.lumidouceScentCollect(src)() // TODO: i'm not sure about it, but some tests show that a1/reset is triggered at the moment of attack.
 		c.QueueCharTask(c.lumidouceAttack(src), lumidouceTickInterval)
 	}
 }
@@ -117,15 +126,16 @@ func (c *char) lumidouceScentCollect(src int) func() {
 			return
 		}
 
-		if !c.StatusIsActive(lumidouceScentResetKey) && (c.Tag(lumidouceScent) > 0 || c.Tag(lumidouceLevel) > 1) {
+		if !c.StatusIsActive(lumidouceScentResetKey) && c.Tag(lumidouceLevel) > 1 {
 			c.SetTag(lumidouceLevel, 1)
+			c.SetTag(lumidouceScent, 0)
 			c.Core.Log.NewEvent("scent reset", glog.LogCharacterEvent, c.Index)
 		}
 
-		if c.Tag(lumidouceScent) == 2 {
+		if c.Tag(lumidouceScent) >= 2 {
 			if c.Tag(lumidouceLevel) < 2 {
 				c.SetTag(lumidouceLevel, c.Tag(lumidouceLevel)+1)
-				c.SetTag(lumidouceScent, 0)
+				c.SetTag(lumidouceScent, c.Tag(lumidouceScent)-2)
 			} else {
 				c.a1()
 			}
