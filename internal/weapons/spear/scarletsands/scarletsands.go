@@ -47,9 +47,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	icdKey := "scarletsands-icd"
+	icdCounter := 0
+	incrementIcdCounter := func() {
+		icdCounter++
+		c.Log.NewEvent("scarletsands icd counter increased", glog.LogWeaponEvent, char.Index).
+			Write("new value: ", icdCounter)
+		char.QueueCharTask(func() { decrementIcdCounter() }, 0.3*60)
+	}
+	decrementIcdCounter := func() {
+		icdCounter--
+		c.Log.NewEvent("scarletsands icd counter decreased", glog.LogWeaponEvent, char.Index).
+			Write("new value: ", icdCounter)
+	}
+
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -59,10 +72,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
-		if char.StatusIsActive(icdKey) {
+		if icdCounter >= 3 {
+			c.Log.NewEvent("scarletsands did not gain stacks due to icd", glog.LogWeaponEvent, char.Index)
 			return false
 		}
-		char.AddStatus(icdKey, 0.3*60, true)
+		if icdCounter < 3 {
+			incrementIcdCounter()
+		}
 
 		// reset stacks if expired
 		if !char.StatModIsActive(skillBuff) {
