@@ -376,10 +376,3 @@ func expandBuckets(arr []*calc.StreamStats, size int) []*calc.StreamStats {
 	}
 	return arr
 }
-
-func max(x, y int) int {
-	if x > y {
-		return x
-	}
-	return y
-}

@@ -349,6 +349,18 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "emilie": [
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Level 1/2 Lumidouce Case Attack travel time. Default 5 frames."
+    },
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Level 1/2 Lumidouce Case Attack travel time. Default 5 frames."
+    }
+  ],
   "eula": [
     {
       "ability": "skill",

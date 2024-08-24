@@ -648,6 +648,14 @@
       "image_name": "UI_EquipIcon_Catalyst_Fourwinds",
       "name_text_hash_map ": "1455107995"
     },
+    "lumidouceelegy": {
+      "id": 13513,
+      "key": "lumidouceelegy",
+      "rarity": 5,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Muguet",
+      "name_text_hash_map ": "1948935171"
+    },
     "luxurioussealord": {
       "id": 12412,
       "key": "luxurioussealord",
@@ -1039,6 +1047,14 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Arjuna",
       "name_text_hash_map ": "656120259"
+    },
+    "silvershowerheartstrings": {
+      "id": 15513,
+      "key": "silvershowerheartstrings",
+      "rarity": 5,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Arcdange",
+      "name_text_hash_map ": "1257396043"
     },
     "silversword": {
       "id": 11201,

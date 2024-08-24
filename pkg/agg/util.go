@@ -26,7 +26,7 @@ func ToOverviewStats(input *stats.Sample) *model.OverviewStats {
 	input.Sorted = false
 	input.Sort()
 
-	min, max := input.Bounds()
+	minval, maxval := input.Bounds()
 	std := input.StdDev()
 	if math.IsNaN(std) {
 		std = 0
@@ -34,8 +34,8 @@ func ToOverviewStats(input *stats.Sample) *model.OverviewStats {
 
 	out := model.OverviewStats{
 		SD:   &std,
-		Min:  &min,
-		Max:  &max,
+		Min:  &minval,
+		Max:  &maxval,
 		Mean: Ptr(input.Mean()),
 		Q1:   Ptr(input.Quantile(0.25)),
 		Q2:   Ptr(input.Quantile(0.5)),
@@ -44,13 +44,13 @@ func ToOverviewStats(input *stats.Sample) *model.OverviewStats {
 
 	// Scott's normal reference rule
 	h := (3.49 * std) / (math.Pow(float64(len(input.Xs)), 1.0/3.0))
-	if h == 0.0 || max == min {
+	if h == 0.0 || maxval == minval {
 		hist := make([]uint32, 1)
 		hist[0] = uint32(len(input.Xs))
 		out.Hist = hist
 	} else {
-		nbins := int(math.Ceil((max - min) / h))
-		hist := NewLinearHist(min, max, nbins)
+		nbins := int(math.Ceil((maxval - minval) / h))
+		hist := NewLinearHist(minval, maxval, nbins)
 		for _, x := range input.Xs {
 			hist.Add(x)
 		}
@@ -73,9 +73,9 @@ type LinearHist struct {
 
 // NewLinearHist returns an empty histogram with nbins uniformly-sized
 // bins spanning [min, max].
-func NewLinearHist(min, max float64, nbins int) *LinearHist {
-	delta := float64(nbins) / (max - min)
-	return &LinearHist{min, max, delta, 0, 0, make([]uint32, nbins)}
+func NewLinearHist(minval, maxval float64, nbins int) *LinearHist {
+	delta := float64(nbins) / (maxval - minval)
+	return &LinearHist{minval, maxval, delta, 0, 0, make([]uint32, nbins)}
 }
 
 func (h *LinearHist) bin(x float64) int {

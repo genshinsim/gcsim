@@ -1,0 +1,151 @@
+id: 10000099
+key: "emilie"
+rarity: QUALITY_ORANGE
+body: BODY_GIRL
+region: ASSOC_TYPE_FONTAINE
+element: Grass
+weapon_class: WEAPON_POLE
+icon_name: "UI_AvatarIcon_Emilie"
+stats: {
+   base_hp: 1056.2786
+   base_atk: 26.068
+   base_def: 56.8385
+   hp_curve: GROW_CURVE_HP_S5
+   atk_curve: GROW_CURVE_ATTACK_S5
+   def_cruve: GROW_CURVE_HP_S5
+   promo_data: {
+      max_level: 20
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+      }
+   }
+   promo_data: {
+      max_level: 40
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 905.6633
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 48.735
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 22.34932
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+      }
+   }
+   promo_data: {
+      max_level: 50
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 1549.161
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 83.3625
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 38.2291
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.096
+      }
+   }
+   promo_data: {
+      max_level: 60
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2407.158
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 129.5325
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 59.40214
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.192
+      }
+   }
+   promo_data: {
+      max_level: 70
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 3050.6555
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 164.16
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 75.28192
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.192
+      }
+   }
+   promo_data: {
+      max_level: 80
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 3694.153
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 198.7875
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 91.1617
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.288
+      }
+   }
+   promo_data: {
+      max_level: 90
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 4337.651
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 233.415
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 107.04148
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.384
+      }
+   }
+}
+skill_details: {
+   skill: 10992
+   burst: 10995
+   attack: 10991
+   burst_energy_cost: 50
+}
+name_text_hash_map: 1705786122

@@ -23,12 +23,14 @@ const (
 	Chevreuse
 	Chiori
 	Chongyun
+	Clorinde
 	Collei
 	Cyno
 	Dehya
 	Diluc
 	Diona
 	Dori
+	Emilie
 	Eula
 	Faruzan
 	Fischl
@@ -155,6 +157,10 @@ func init() {
 	charPrettyName[Chongyun] = "Chongyun"
 	CharKeyToEle[Chongyun] = attributes.Cryo
 
+	charNames[Clorinde] = "clorinde"
+	charPrettyName[Clorinde] = "Clorinde"
+	CharKeyToEle[Clorinde] = attributes.Electro
+
 	charNames[Collei] = "collei"
 	charPrettyName[Collei] = "Collei"
 	CharKeyToEle[Collei] = attributes.Dendro
@@ -178,6 +184,10 @@ func init() {
 	charNames[Dori] = "dori"
 	charPrettyName[Dori] = "Dori"
 	CharKeyToEle[Dori] = attributes.Electro
+
+	charNames[Emilie] = "emilie"
+	charPrettyName[Emilie] = "Emilie"
+	CharKeyToEle[Emilie] = attributes.Dendro
 
 	charNames[Eula] = "eula"
 	charPrettyName[Eula] = "Eula"

@@ -25,10 +25,11 @@ type Set struct {
 	char     *character.CharWrapper
 	buff     []float64
 	Index    int
+	Count    int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error {
 	if s.buff == nil { // no 4pc
 		return nil
@@ -44,6 +45,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		core:     c,
 		char:     char,
 		lastSwap: -1,
+		Count:    count,
 	}
 
 	// Increases Elemental Skill DMG by 20%.

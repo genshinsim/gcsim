@@ -23,10 +23,11 @@ type Set struct {
 	c     *core.Core
 	char  *character.CharWrapper
 	Index int
+	Count int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error {
 	emCount := 0
 	atkCount := 0
@@ -64,8 +65,9 @@ func (s *Set) Init() error {
 // effects when not on the field.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		c:    c,
-		char: char,
+		c:     c,
+		char:  char,
+		Count: count,
 	}
 
 	if count >= 2 {

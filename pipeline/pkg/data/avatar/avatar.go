@@ -217,14 +217,14 @@ func (a *DataSource) parseSkillScalingFromProudGroup(id int32, err error) ([]*mo
 	}
 	// this is a sanity check to make sure the result is sized to the max of paramlist
 	// realistically we expect paramlist to be all the same size..
-	max := 0
+	maxparams := 0
 	for _, v := range pgs {
-		if len(v.ParamList) > max {
-			max = len(v.ParamList)
+		if len(v.ParamList) > maxparams {
+			maxparams = len(v.ParamList)
 		}
 	}
 	// make one AvatarSkillExcelData per entry in paramlist
-	res := make([]*model.AvatarSkillExcelIndexData, max)
+	res := make([]*model.AvatarSkillExcelIndexData, maxparams)
 	for i := range res {
 		res[i] = &model.AvatarSkillExcelIndexData{
 			Index: int32(i),

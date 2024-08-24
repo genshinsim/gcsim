@@ -64,6 +64,6 @@ func (c *char) a4(ai *combat.AttackInfo) {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	ai.FlatDmg = (c.Base.Def*(1+c.Stat(attributes.DEFP)) + c.Stat(attributes.DEF)) * 0.35
+	ai.FlatDmg = c.TotalDef() * 0.35
 	c.Core.Log.NewEvent("itto-a4 applied", glog.LogCharacterEvent, c.Index)
 }
