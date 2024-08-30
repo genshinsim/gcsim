@@ -33,6 +33,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	amt := 0.12 + float64(r)*0.04
 
 	buffSkill := func(args ...interface{}) bool {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return false
+		}
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = amt
 		char.AddAttackMod(character.AttackMod{
@@ -47,13 +50,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}
 
-	c.Events.Subscribe(event.OnOverload, buffSkill, "earth-shaker-overload")
-	c.Events.Subscribe(event.OnVaporize, buffSkill, "earth-shaker-vaporize")
-	c.Events.Subscribe(event.OnMelt, buffSkill, "earth-shaker-melt")
-	c.Events.Subscribe(event.OnSwirlPyro, buffSkill, "earth-shaker-pyro-swirl")
-	c.Events.Subscribe(event.OnCrystallizePyro, buffSkill, "earth-shaker-pyro-crystallize")
-	c.Events.Subscribe(event.OnBurning, buffSkill, "earth-shaker-burning")
-	c.Events.Subscribe(event.OnBurgeon, buffSkill, "earth-shaker-burgeon")
+	buffSkillNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+
+		return buffSkill(args...)
+	}
+
+	c.Events.Subscribe(event.OnOverload, buffSkillNoGadget, "earth-shaker-overload")
+	c.Events.Subscribe(event.OnVaporize, buffSkillNoGadget, "earth-shaker-vaporize")
+	c.Events.Subscribe(event.OnMelt, buffSkillNoGadget, "earth-shaker-melt")
+	c.Events.Subscribe(event.OnSwirlPyro, buffSkillNoGadget, "earth-shaker-pyro-swirl")
+	c.Events.Subscribe(event.OnCrystallizePyro, buffSkillNoGadget, "earth-shaker-pyro-crystallize")
+	c.Events.Subscribe(event.OnBurning, buffSkillNoGadget, "earth-shaker-burning")
+	c.Events.Subscribe(event.OnBurgeon, buffSkillNoGadget, "earth-shaker-burgeon")
 
 	return w, nil
 }
