@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -231,9 +232,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				if !ok && react != reactions.Hyperbloom && react != reactions.Burgeon {
 					return false
 				}
+				c.Log.NewEvent("scroll 4pc proc'd", glog.LogArtifactEvent, char.Index).
+					Write("react", react)
 
-				// core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index).
-				// 	Write("ele", s.element)
 				for _, ele := range reactionElements(react) {
 					// Apply mod to all characters
 					for _, c := range c.Player.Chars() {
