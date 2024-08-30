@@ -920,6 +920,14 @@
       "image_name": "UI_EquipIcon_Pole_Vorpal",
       "name_text_hash_map ": "4158971171"
     },
+    "ringofyaxche": {
+      "id": 14431,
+      "key": "ringofyaxche",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Isikhulu",
+      "name_text_hash_map ": "3092853059"
+    },
     "royalbow": {
       "id": 15404,
       "key": "royalbow",
