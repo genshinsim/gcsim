@@ -210,7 +210,11 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"redhornstonethresher":            keys.RedhornStonethresher,
 	"redhorn":                         keys.RedhornStonethresher,
 	"rightfulreward":                  keys.RightfulReward,
+<<<<<<< HEAD
 	"ringofyaxche":                    keys.RingOfYaxche,
+=======
+	"ringofyaxche":			   keys.RingOfYaxche,
+>>>>>>> f5940ea64b3c13211a083ffd55a49a4d0780c4c8
 	"royalbow":                        keys.RoyalBow,
 	"royalgreatsword":                 keys.RoyalGreatsword,
 	"royalgrimoire":                   keys.RoyalGrimoire,
