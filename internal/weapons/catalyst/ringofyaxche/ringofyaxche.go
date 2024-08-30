@@ -19,7 +19,7 @@ func init() {
 }
 
 type Weapon struct {
-	Index  int
+	Index int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
