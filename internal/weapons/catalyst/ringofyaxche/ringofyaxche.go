@@ -43,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		buffAmt := min(maxBuff, char.MaxHP() * 0.001 * buffBy)
+		buffAmt := min(maxBuff, char.MaxHP()*0.001*buffBy)
 		m := make([]float64, attributes.EndStatType)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("ring-of-yaxche", 10*60),
