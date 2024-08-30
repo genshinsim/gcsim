@@ -225,7 +225,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		for _, evt := range eventList {
 			react := reactionEventToReaction(evt)
 			c.Combat.Events.Subscribe(evt, func(args ...interface{}) bool {
-				if _, ok := args[0].(*enemy.Enemy); !ok {
+				_, ok := args[0].(*enemy.Enemy)
+
+				// Hyperbloom and Burgeon do not do enemy check
+				if !ok && react != reactions.Hyperbloom && react != reactions.Burgeon {
 					return false
 				}
 
