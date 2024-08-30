@@ -20,8 +20,6 @@ func init() {
 
 type Weapon struct {
 	Index  int
-	buff   []float64
-	stacks int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
