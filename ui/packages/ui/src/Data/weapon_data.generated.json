@@ -296,6 +296,14 @@
       "image_name": "UI_EquipIcon_Sword_Blunt",
       "name_text_hash_map ": "2410593283"
     },
+    "earthshaker": {
+      "id": 12305,
+      "key": "earthshaker",
+      "rarity": 3,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_Reasoning",
+      "name_text_hash_map ": "3097441915"
+    },
     "elegyfortheend": {
       "id": 15503,
       "key": "elegyfortheend",

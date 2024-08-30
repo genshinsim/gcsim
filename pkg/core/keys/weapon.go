@@ -70,6 +70,7 @@ var weaponNames = []string{
 	"dragonsbane",
 	"dragonspinespear",
 	"dullblade",
+	"earthshaker",
 	"elegyfortheend",
 	"emeraldorb",
 	"endoftheline",
@@ -260,6 +261,7 @@ const (
 	DragonsBane
 	DragonspineSpear
 	DullBlade
+	EarthShaker
 	ElegyForTheEnd
 	EmeraldOrb
 	EndOfTheLine

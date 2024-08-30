@@ -1,0 +1,63 @@
+id: 12305
+key: "earthshaker"
+rarity: 3
+weapon_class: WEAPON_CLAYMORE
+image_name: "UI_EquipIcon_Claymore_Reasoning"
+base_stats: {
+   base_props: {
+      prop_type: FIGHT_PROP_BASE_ATTACK
+      initial_value: 38.7413
+      curve: GROW_CURVE_ATTACK_101
+   }
+   base_props: {
+      prop_type: FIGHT_PROP_ATTACK_PERCENT
+      initial_value: 0.0766
+      curve: GROW_CURVE_CRITICAL_101
+   }
+   promo_data: {
+      max_level: 20
+   }
+   promo_data: {
+      max_level: 40
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 19.5
+      }
+   }
+   promo_data: {
+      max_level: 50
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 38.9
+      }
+   }
+   promo_data: {
+      max_level: 60
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 58.4
+      }
+   }
+   promo_data: {
+      max_level: 70
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 77.8
+      }
+   }
+   promo_data: {
+      max_level: 80
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 97.3
+      }
+   }
+   promo_data: {
+      max_level: 90
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 116.7
+      }
+   }
+}
+name_text_hash_map: 3097441915
