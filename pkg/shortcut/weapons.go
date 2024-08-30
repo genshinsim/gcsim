@@ -100,6 +100,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"fleuve":                          keys.FleuveCendreFerryman,
 	"pipe":                            keys.FleuveCendreFerryman,
 	"flowingpurity":                   keys.FlowingPurity,
+	"footprintoftherainbow":           keys.FootprintOfTheRainbow,
 	"forestregalia":                   keys.ForestRegalia,
 	"regalia":                         keys.ForestRegalia,
 	"freedomsworn":                    keys.FreedomSworn,
