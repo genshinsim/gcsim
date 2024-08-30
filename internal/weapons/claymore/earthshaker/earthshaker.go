@@ -33,9 +33,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	amt := 0.12 + float64(r)*0.04
 
 	buffSkill := func(args ...interface{}) bool {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
-		}
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = amt
 		char.AddAttackMod(character.AttackMod{
