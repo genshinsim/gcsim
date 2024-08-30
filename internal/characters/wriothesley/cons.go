@@ -194,6 +194,9 @@ func (c *char) c4() {
 
 // The CRIT Rate of Rebuke: Vaulting Fist will be increased by 10%, and its CRIT DMG by 80%.
 func (c *char) addC6Buff(snap *combat.Snapshot) {
+	if c.Base.Cons < 6 {
+		return
+	}
 	cr := 0.1
 	cd := 0.8
 	snap.Stats[attributes.CR] += cr
