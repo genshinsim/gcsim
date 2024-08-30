@@ -10,31 +10,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.ScrollOfTheHeroOfCinderCity, NewSet)
-}
-
-type Set struct {
-	Index int
-	Count int
-}
 
 var reactionElementsArr map[reactions.ReactionType][]attributes.Element
 var elementToReactionsArr [][]reactions.ReactionType
 
-func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) GetCount() int    { return s.Count }
-
-func (s *Set) Init() error {
+func init() {
+	reactionElementsArr = make(map[reactions.ReactionType][]attributes.Element)
 	reactionElementsArr[reactions.Overload] = []attributes.Element{attributes.Electro, attributes.Pyro}
 	reactionElementsArr[reactions.Superconduct] = []attributes.Element{attributes.Electro, attributes.Cryo}
 	reactionElementsArr[reactions.Melt] = []attributes.Element{attributes.Pyro, attributes.Cryo}
 	reactionElementsArr[reactions.Vaporize] = []attributes.Element{attributes.Pyro, attributes.Hydro}
 	reactionElementsArr[reactions.Freeze] = []attributes.Element{attributes.Cryo, attributes.Hydro}
-	reactionElementsArr[reactions.FreezeExtend] = []attributes.Element{attributes.Cryo, attributes.Hydro}
 	reactionElementsArr[reactions.ElectroCharged] = []attributes.Element{attributes.Electro, attributes.Hydro}
 	reactionElementsArr[reactions.SwirlHydro] = []attributes.Element{attributes.Anemo, attributes.Hydro}
 	reactionElementsArr[reactions.SwirlCryo] = []attributes.Element{attributes.Anemo, attributes.Cryo}
@@ -53,14 +42,24 @@ func (s *Set) Init() error {
 	reactionElementsArr[reactions.Burning] = []attributes.Element{attributes.Dendro, attributes.Pyro}
 
 	elementToReactionsArr = make([][]reactions.ReactionType, attributes.EndEleType)
+	for i, j := range reactionElementsArr {
+		for _, elem := range j {
+			elementToReactionsArr[elem] = append(elementToReactionsArr[elem], i)
+		}
+	}
 
-	elementToReactionsArr[attributes.Anemo] = []reactions.ReactionType{reactions.SwirlHydro, reactions.SwirlCryo, reactions.SwirlElectro, reactions.SwirlPyro}
-	elementToReactionsArr[attributes.Cryo] = []reactions.ReactionType{reactions.Superconduct, reactions.Freeze, reactions.Melt, reactions.SwirlCryo, reactions.CrystallizeCryo, reactions.FreezeExtend}
-	elementToReactionsArr[attributes.Dendro] = []reactions.ReactionType{reactions.Quicken, reactions.Aggravate, reactions.Spread, reactions.Bloom, reactions.Burgeon, reactions.Hyperbloom, reactions.Burning}
-	elementToReactionsArr[attributes.Electro] = []reactions.ReactionType{reactions.Superconduct, reactions.ElectroCharged, reactions.Overload, reactions.Quicken, reactions.Aggravate, reactions.Hyperbloom, reactions.SwirlElectro, reactions.CrystallizeElectro}
-	elementToReactionsArr[attributes.Geo] = []reactions.ReactionType{reactions.CrystallizeCryo, reactions.CrystallizeElectro, reactions.CrystallizeHydro, reactions.CrystallizePyro}
-	elementToReactionsArr[attributes.Hydro] = []reactions.ReactionType{reactions.Freeze, reactions.Vaporize, reactions.ElectroCharged, reactions.Bloom, reactions.SwirlHydro, reactions.CrystallizeHydro, reactions.FreezeExtend}
-	elementToReactionsArr[attributes.Pyro] = []reactions.ReactionType{reactions.Vaporize, reactions.Melt, reactions.Overload, reactions.Burgeon, reactions.Burning, reactions.SwirlPyro, reactions.CrystallizePyro}
+	core.RegisterSetFunc(keys.ScrollOfTheHeroOfCinderCity, NewSet)
+}
+
+type Set struct {
+	Index int
+	Count int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
+
+func (s *Set) Init() error {
 	return nil
 }
 
@@ -82,7 +81,7 @@ func reactionToEvent(r reactions.ReactionType) event.Event {
 		return event.OnMelt
 	case reactions.Vaporize:
 		return event.OnVaporize
-	case reactions.Freeze, reactions.FreezeExtend:
+	case reactions.Freeze:
 		return event.OnFrozen
 	case reactions.ElectroCharged:
 		return event.OnElectroCharged
@@ -187,8 +186,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// 2 Piece: When a nearby party member triggers a Nightsoul Burst, the equipping
 	// character regenerates 6 Elemental Energy.
 	if count >= 2 {
-		// replace with event.OnNightsoulBurst
-		c.Combat.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		c.Combat.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
 			char.AddEnergy("scroll-2pc", 6)
 			return false
 		}, "scroll-2pc")
@@ -206,14 +204,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		for i := range buffArrs {
 			ele := attributes.Element(i)
 			buffArrs[ele] = make([]float64, attributes.EndStatType)
-			buffArrs[ele][attributes.EleToDmgP(ele)] = 0.12
+			stat := attributes.EleToDmgP(ele)
+			if stat >= 0 {
+				buffArrs[ele][stat] = 0.12
+			}
 		}
 
 		buffArrsNightsoul := make([][]float64, attributes.EndEleType)
 		for i := range buffArrs {
 			ele := attributes.Element(i)
 			buffArrsNightsoul[ele] = make([]float64, attributes.EndStatType)
-			buffArrsNightsoul[ele][attributes.EleToDmgP(ele)] = 0.28
+			stat := attributes.EleToDmgP(ele)
+			if stat >= 0 {
+				buffArrsNightsoul[ele][stat] = 0.28
+			}
 		}
 
 		reactionList := elementToReactions(char.Base.Element)
@@ -221,6 +225,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		for _, evt := range eventList {
 			react := reactionEventToReaction(evt)
 			c.Combat.Events.Subscribe(evt, func(args ...interface{}) bool {
+				if _, ok := args[0].(*enemy.Enemy); !ok {
+					return false
+				}
+
 				// core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index).
 				// 	Write("ele", s.element)
 				for _, ele := range reactionElements(react) {
