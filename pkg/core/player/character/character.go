@@ -131,9 +131,6 @@ type CharWrapper struct {
 	timePassed   int // how many frames have passed since start of sim
 	frozenFrames int // how many frames are we still frozen for
 	queue        []queue.Task
-
-	// nightsoul
-	NightsoulPoints float64
 }
 
 func New(
