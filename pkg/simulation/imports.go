@@ -99,6 +99,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/viridescent"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/windblume"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/apprentice"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/ashgraven"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/athousandfloatingdreams"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/balladoftheboundlessblue"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/blackcliff"
