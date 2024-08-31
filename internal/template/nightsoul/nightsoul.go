@@ -9,56 +9,56 @@ import (
 
 const NightsoulBlessingStatus = "nightsoul-blessing"
 
-type Nightsoul struct {
+type State struct {
 	char            *character.CharWrapper
 	c               *core.Core
 	nightsoulPoints float64
 }
 
-func New(c *core.Core, char *character.CharWrapper) *Nightsoul {
-	t := &Nightsoul{
+func New(c *core.Core, char *character.CharWrapper) *State {
+	t := &State{
 		char: char,
 		c:    c,
 	}
 	return t
 }
 
-func (n *Nightsoul) EnterBlessing(amount float64) {
-	n.nightsoulPoints = amount
-	n.char.AddStatus(NightsoulBlessingStatus, -1, true)
-	n.c.Log.NewEvent("enter nightsoul blessing", glog.LogCharacterEvent, n.char.Index).
-		Write("points", n.nightsoulPoints)
+func (s *State) EnterBlessing(amount float64) {
+	s.nightsoulPoints = amount
+	s.char.AddStatus(NightsoulBlessingStatus, -1, true)
+	s.c.Log.NewEvent("enter nightsoul blessing", glog.LogCharacterEvent, s.char.Index).
+		Write("points", s.nightsoulPoints)
 }
 
-func (n *Nightsoul) ExitBlessing() {
-	n.char.DeleteStatus(NightsoulBlessingStatus)
-	n.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, n.char.Index)
+func (s *State) ExitBlessing() {
+	s.char.DeleteStatus(NightsoulBlessingStatus)
+	s.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, s.char.Index)
 }
 
-func (n *Nightsoul) HasBlessing() bool {
-	return n.char.StatusIsActive(NightsoulBlessingStatus)
+func (s *State) HasBlessing() bool {
+	return s.char.StatusIsActive(NightsoulBlessingStatus)
 }
 
-func (n *Nightsoul) GeneratePoints(amount float64) {
-	prevPoints := n.nightsoulPoints
-	n.nightsoulPoints += amount
-	n.c.Events.Emit(event.OnNightsoulGenerate, n.char.Index, amount)
-	n.c.Log.NewEvent("generate nightsoul points", glog.LogCharacterEvent, n.char.Index).
+func (s *State) GeneratePoints(amount float64) {
+	prevPoints := s.nightsoulPoints
+	s.nightsoulPoints += amount
+	s.c.Events.Emit(event.OnNightsoulGenerate, s.char.Index, amount)
+	s.c.Log.NewEvent("generate nightsoul points", glog.LogCharacterEvent, s.char.Index).
 		Write("previous points", prevPoints).
 		Write("amount", amount).
-		Write("final", n.nightsoulPoints)
+		Write("final", s.nightsoulPoints)
 }
 
-func (n *Nightsoul) ConsumePoints(amount float64) {
-	prevPoints := n.nightsoulPoints
-	n.nightsoulPoints -= amount
-	n.c.Events.Emit(event.OnNightsoulConsume, n.char.Index, amount)
-	n.c.Log.NewEvent("consume nightsoul points", glog.LogCharacterEvent, n.char.Index).
+func (s *State) ConsumePoints(amount float64) {
+	prevPoints := s.nightsoulPoints
+	s.nightsoulPoints -= amount
+	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index, amount)
+	s.c.Log.NewEvent("consume nightsoul points", glog.LogCharacterEvent, s.char.Index).
 		Write("previous points", prevPoints).
 		Write("amount", amount).
-		Write("final", n.nightsoulPoints)
+		Write("final", s.nightsoulPoints)
 }
 
-func (n *Nightsoul) Points() float64 {
-	return n.nightsoulPoints
+func (s *State) Points() float64 {
+	return s.nightsoulPoints
 }

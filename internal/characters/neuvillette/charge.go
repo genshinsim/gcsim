@@ -300,7 +300,7 @@ func (c *char) consumeHp(src int) func() {
 	}
 }
 
-func (c *char) consumeDroplet(g *sourcewaterdroplet.SourcewaterDroplet) {
+func (c *char) consumeDroplet(g *sourcewaterdroplet.Gadget) {
 	g.Kill()
 	// TODO: adjust healing delay by ping amount
 	// the healing is slightly delayed by 5f

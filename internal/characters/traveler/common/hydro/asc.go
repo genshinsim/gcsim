@@ -43,7 +43,7 @@ func (c *Traveler) a1PickUp(count int) {
 			return
 		}
 
-		droplet, ok := g.(*sourcewaterdroplet.SourcewaterDroplet)
+		droplet, ok := g.(*sourcewaterdroplet.Gadget)
 		if !ok {
 			continue
 		}
@@ -70,7 +70,7 @@ func (c *Traveler) a1PickUp(count int) {
 	}
 }
 
-func (c *Traveler) newDroplet() *sourcewaterdroplet.SourcewaterDroplet {
+func (c *Traveler) newDroplet() *sourcewaterdroplet.Gadget {
 	player := c.Core.Combat.Player()
 	pos := geometry.CalcRandomPointFromCenter(
 		geometry.CalcOffsetPoint(

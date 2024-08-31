@@ -45,7 +45,7 @@ func evalSourcewaterDroplet(c *core.Core, key string) (int, error) {
 	case countField:
 		count := 0
 		for _, g := range c.Combat.Gadgets() {
-			if _, ok := g.(*sourcewaterdroplet.SourcewaterDroplet); ok {
+			if _, ok := g.(*sourcewaterdroplet.Gadget); ok {
 				count++
 			}
 		}
