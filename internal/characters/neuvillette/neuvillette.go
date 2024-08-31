@@ -1,8 +1,8 @@
 package neuvillette
 
 import (
-	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
+	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -82,7 +82,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) getSourcewaterDroplets() []*common.SourcewaterDroplet {
+func (c *char) getSourcewaterDroplets() []*sourcewaterdroplet.SourcewaterDroplet {
 	player := c.Core.Combat.Player()
 
 	// TODO: this is an approximation based on an ongoing KQM ticket (faster-neuvi-balls)
@@ -90,9 +90,9 @@ func (c *char) getSourcewaterDroplets() []*common.SourcewaterDroplet {
 	segment := combat.NewCircleHitOnTargetFanAngle(player, nil, 14, 80)
 	rect := combat.NewBoxHitOnTarget(player, geometry.Point{Y: -7}, 8, 18)
 
-	droplets := make([]*common.SourcewaterDroplet, 0)
+	droplets := make([]*sourcewaterdroplet.SourcewaterDroplet, 0)
 	for _, g := range c.Core.Combat.Gadgets() {
-		droplet, ok := g.(*common.SourcewaterDroplet)
+		droplet, ok := g.(*sourcewaterdroplet.SourcewaterDroplet)
 		if !ok {
 			continue
 		}
@@ -105,14 +105,14 @@ func (c *char) getSourcewaterDroplets() []*common.SourcewaterDroplet {
 	return droplets
 }
 
-func (c *char) getSourcewaterDropletsC6() []*common.SourcewaterDroplet {
+func (c *char) getSourcewaterDropletsC6() []*sourcewaterdroplet.SourcewaterDroplet {
 	player := c.Core.Combat.Player()
 
 	circle := combat.NewCircleHitOnTarget(player, nil, 15)
 
-	droplets := make([]*common.SourcewaterDroplet, 0)
+	droplets := make([]*sourcewaterdroplet.SourcewaterDroplet, 0)
 	for _, g := range c.Core.Combat.Gadgets() {
-		droplet, ok := g.(*common.SourcewaterDroplet)
+		droplet, ok := g.(*sourcewaterdroplet.SourcewaterDroplet)
 		if !ok {
 			continue
 		}

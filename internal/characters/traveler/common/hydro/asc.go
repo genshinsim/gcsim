@@ -1,7 +1,7 @@
 package hydro
 
 import (
-	"github.com/genshinsim/gcsim/internal/common"
+	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
@@ -43,7 +43,7 @@ func (c *Traveler) a1PickUp(count int) {
 			return
 		}
 
-		droplet, ok := g.(*common.SourcewaterDroplet)
+		droplet, ok := g.(*sourcewaterdroplet.SourcewaterDroplet)
 		if !ok {
 			continue
 		}
@@ -70,7 +70,7 @@ func (c *Traveler) a1PickUp(count int) {
 	}
 }
 
-func (c *Traveler) newDroplet() *common.SourcewaterDroplet {
+func (c *Traveler) newDroplet() *sourcewaterdroplet.SourcewaterDroplet {
 	player := c.Core.Combat.Player()
 	pos := geometry.CalcRandomPointFromCenter(
 		geometry.CalcOffsetPoint(
@@ -82,6 +82,6 @@ func (c *Traveler) newDroplet() *common.SourcewaterDroplet {
 		3,
 		c.Core.Rand,
 	)
-	droplet := common.NewSourcewaterDroplet(c.Core, pos, combat.GadgetTypSourcewaterDropletHydroTrav)
+	droplet := sourcewaterdroplet.New(c.Core, pos, combat.GadgetTypSourcewaterDropletHydroTrav)
 	return droplet
 }

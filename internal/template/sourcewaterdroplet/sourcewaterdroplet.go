@@ -1,4 +1,4 @@
-package common
+package sourcewaterdroplet
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -13,7 +13,7 @@ type SourcewaterDroplet struct {
 	*gadget.Gadget
 }
 
-func NewSourcewaterDroplet(core *core.Core, pos geometry.Point, typ combat.GadgetTyp) *SourcewaterDroplet {
+func New(core *core.Core, pos geometry.Point, typ combat.GadgetTyp) *SourcewaterDroplet {
 	p := &SourcewaterDroplet{}
 	p.Gadget = gadget.New(core, pos, 1, typ)
 	p.Gadget.Duration = 878

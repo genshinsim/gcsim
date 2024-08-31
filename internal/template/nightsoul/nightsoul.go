@@ -1,4 +1,4 @@
-package character
+package nightsoul
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -15,7 +15,7 @@ type Nightsoul struct {
 	nightsoulPoints float64
 }
 
-func NewNightsoul(c *core.Core, char *character.CharWrapper) *Nightsoul {
+func New(c *core.Core, char *character.CharWrapper) *Nightsoul {
 	t := &Nightsoul{
 		char: char,
 		c:    c,
@@ -40,7 +40,7 @@ func (n *Nightsoul) HasBlessing() bool {
 }
 
 func (n *Nightsoul) GeneratePoints(amount float64) {
-	prevPoints := n.char.NightsoulPoints
+	prevPoints := n.nightsoulPoints
 	n.nightsoulPoints += amount
 	n.c.Events.Emit(event.OnNightsoulGenerate, n.char.Index, amount)
 	n.c.Log.NewEvent("generate nightsoul points", glog.LogCharacterEvent, n.char.Index).
