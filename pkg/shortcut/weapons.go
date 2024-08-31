@@ -19,7 +19,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"aquilafavonia":                   keys.AquilaFavonia,
 	"aquila":                          keys.AquilaFavonia,
 	"ashgravendrinkinghorn":           keys.AshGravenDrinkingHorn,
-	"ashgraven":                       keys.ashgravendrinkinghorn,
+	"ashgraven":                       keys.AshGravenDrinkingHorn,
 	"athousandfloatingdreams":         keys.AThousandFloatingDreams,
 	"thousandfloatingdreams":          keys.AThousandFloatingDreams,
 	"tfd":                             keys.AThousandFloatingDreams,

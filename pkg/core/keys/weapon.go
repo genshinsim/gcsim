@@ -41,7 +41,7 @@ var weaponNames = []string{
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
-	"ashgravendrinkinghorn"
+	"ashgravendrinkinghorn",
 	"athousandfloatingdreams",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
