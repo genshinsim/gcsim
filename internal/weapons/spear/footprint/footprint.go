@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("footprint-def", 15*60),
+			Base:         modifier.NewBaseWithHitlag("footprint-def", 15*60),
 			AffectedStat: attributes.DEFP,
 			Amount: func() ([]float64, bool) {
 				return mDef, true
