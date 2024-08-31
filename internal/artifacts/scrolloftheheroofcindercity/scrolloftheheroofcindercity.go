@@ -3,6 +3,7 @@ package scrolloftheheroofcindercity
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -13,8 +14,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-
-	template_character "github.com/genshinsim/gcsim/internal/template/character"
 )
 
 var reactionElementsArr map[reactions.ReactionType][]attributes.Element
@@ -254,7 +253,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return false
 				}
 
-				if !char.StatusIsActive(template_character.NightsoulBlessingStatus) {
+				if !char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
 					return false
 				}
 
