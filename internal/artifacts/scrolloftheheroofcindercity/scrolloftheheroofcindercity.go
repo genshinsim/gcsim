@@ -18,6 +18,8 @@ import (
 
 var reactionElementsArr map[reactions.ReactionType][]attributes.Element
 var elementToReactionsArr [][]reactions.ReactionType
+var buffArrs [][]float64
+var buffArrsNightsoul [][]float64
 
 func init() {
 	reactionElementsArr = make(map[reactions.ReactionType][]attributes.Element)
@@ -47,6 +49,26 @@ func init() {
 	for i, j := range reactionElementsArr {
 		for _, elem := range j {
 			elementToReactionsArr[elem] = append(elementToReactionsArr[elem], i)
+		}
+	}
+
+	buffArrs = make([][]float64, attributes.EndEleType)
+	for i := range buffArrs {
+		ele := attributes.Element(i)
+		buffArrs[ele] = make([]float64, attributes.EndStatType)
+		stat := attributes.EleToDmgP(ele)
+		if stat >= 0 {
+			buffArrs[ele][stat] = 0.12
+		}
+	}
+
+	buffArrsNightsoul = make([][]float64, attributes.EndEleType)
+	for i := range buffArrs {
+		ele := attributes.Element(i)
+		buffArrsNightsoul[ele] = make([]float64, attributes.EndStatType)
+		stat := attributes.EleToDmgP(ele)
+		if stat >= 0 {
+			buffArrsNightsoul[ele][stat] = 0.28
 		}
 	}
 
@@ -183,6 +205,54 @@ func Map[T, V any](ts []T, fn func(T) V) []V {
 	return result
 }
 
+func makeCB(c *core.Core, char *character.CharWrapper, react reactions.ReactionType) func(args ...interface{}) bool {
+	return func(args ...interface{}) bool {
+		_, ok := args[0].(*enemy.Enemy)
+
+		// Hyperbloom and Burgeon do not do enemy check
+		if !ok && react != reactions.Hyperbloom && react != reactions.Burgeon {
+			return false
+		}
+		c.Log.NewEvent("scroll 4pc proc'd", glog.LogArtifactEvent, char.Index).
+			Write("react", react)
+
+		for _, ele := range reactionElements(react) {
+			// Apply mod to all characters
+			for _, c := range c.Player.Chars() {
+				c.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%s", attributes.ElementString[ele]), 15*60),
+					AffectedStat: attributes.EleToDmgP(ele),
+					Amount: func() ([]float64, bool) {
+						return buffArrs[ele], true
+					},
+				})
+			}
+		}
+
+		if char.CharZone != info.ZoneNatlan {
+			return false
+		}
+
+		if !char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
+			return false
+		}
+
+		for _, ele := range reactionElements(react) {
+			// Apply mod to all characters
+			for _, c := range c.Player.Chars() {
+				c.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%s", attributes.ElementString[ele]), 20*60),
+					AffectedStat: attributes.EleToDmgP(ele),
+					Amount: func() ([]float64, bool) {
+						return buffArrsNightsoul[ele], true
+					},
+				})
+			}
+		}
+		return false
+	}
+}
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{Count: count}
 	// 2 Piece: When a nearby party member triggers a Nightsoul Burst, the equipping
@@ -202,75 +272,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// equipping character can trigger this effect while off-field, and the DMG bonus
 	// from Artifact Sets with the same name do not stack.
 	if count >= 4 {
-		buffArrs := make([][]float64, attributes.EndEleType)
-		for i := range buffArrs {
-			ele := attributes.Element(i)
-			buffArrs[ele] = make([]float64, attributes.EndStatType)
-			stat := attributes.EleToDmgP(ele)
-			if stat >= 0 {
-				buffArrs[ele][stat] = 0.12
-			}
-		}
-
-		buffArrsNightsoul := make([][]float64, attributes.EndEleType)
-		for i := range buffArrs {
-			ele := attributes.Element(i)
-			buffArrsNightsoul[ele] = make([]float64, attributes.EndStatType)
-			stat := attributes.EleToDmgP(ele)
-			if stat >= 0 {
-				buffArrsNightsoul[ele][stat] = 0.28
-			}
-		}
-
 		reactionList := elementToReactions(char.Base.Element)
 		eventList := Map(reactionList, reactionToEvent)
 		for _, evt := range eventList {
 			react := reactionEventToReaction(evt)
-			c.Combat.Events.Subscribe(evt, func(args ...interface{}) bool {
-				_, ok := args[0].(*enemy.Enemy)
-
-				// Hyperbloom and Burgeon do not do enemy check
-				if !ok && react != reactions.Hyperbloom && react != reactions.Burgeon {
-					return false
-				}
-				c.Log.NewEvent("scroll 4pc proc'd", glog.LogArtifactEvent, char.Index).
-					Write("react", react)
-
-				for _, ele := range reactionElements(react) {
-					// Apply mod to all characters
-					for _, c := range c.Player.Chars() {
-						c.AddStatMod(character.StatMod{
-							Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%s", attributes.ElementString[ele]), 15*60),
-							AffectedStat: attributes.EleToDmgP(ele),
-							Amount: func() ([]float64, bool) {
-								return buffArrs[ele], true
-							},
-						})
-					}
-				}
-
-				if char.CharZone != info.ZoneNatlan {
-					return false
-				}
-
-				if !char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
-					return false
-				}
-
-				for _, ele := range reactionElements(react) {
-					// Apply mod to all characters
-					for _, c := range c.Player.Chars() {
-						c.AddStatMod(character.StatMod{
-							Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%s", attributes.ElementString[ele]), 20*60),
-							AffectedStat: attributes.EleToDmgP(ele),
-							Amount: func() ([]float64, bool) {
-								return buffArrsNightsoul[ele], true
-							},
-						})
-					}
-				}
-				return false
-			}, fmt.Sprintf("scroll-4pc-%s", react))
+			c.Combat.Events.Subscribe(evt, makeCB(c, char, react), fmt.Sprintf("scroll-4pc-%s", react))
 		}
 	}
 
