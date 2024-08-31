@@ -206,7 +206,7 @@ func Map[T, V any](ts []T, fn func(T) V) []V {
 	return result
 }
 
-func makeCB(c *core.Core, char *character.CharWrapper, react reactions.ReactionType) func(args ...interface{}) bool {
+func make4pcCB(c *core.Core, char *character.CharWrapper, react reactions.ReactionType) func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		_, ok := args[0].(*enemy.Enemy)
 
@@ -262,7 +262,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		c.Combat.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
 			char.AddEnergy("scroll-2pc", 6)
 			return false
-		}, "scroll-2pc")
+		}, fmt.Sprintf("scroll-2pc-%v", char.Base.Key.String()))
 	}
 	// 4 Piece: After the equipping character triggers a reaction related to their
 	// Elemental Type, all nearby party members gain a 12% Elemental DMG Bonus for
@@ -277,7 +277,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		eventList := Map(reactionList, reactionToEvent)
 		for _, evt := range eventList {
 			react := reactionEventToReaction(evt)
-			c.Combat.Events.Subscribe(evt, makeCB(c, char, react), fmt.Sprintf("scroll-4pc-%s", react))
+			c.Combat.Events.Subscribe(evt, make4pcCB(c, char, react), fmt.Sprintf("scroll-4pc-%v-%v", react, char.Base.Key.String()))
 		}
 	}
 
