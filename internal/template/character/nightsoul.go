@@ -35,6 +35,10 @@ func (n *Nightsoul) ExitBlessing() {
 	n.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, n.char.Index)
 }
 
+func (n *Nightsoul) HasBlessing() bool {
+	return n.char.StatusIsActive(NightsoulBlessingStatus)
+}
+
 func (n *Nightsoul) GeneratePoints(amount float64) {
 	prevPoints := n.char.NightsoulPoints
 	n.nightsoulPoints += amount
