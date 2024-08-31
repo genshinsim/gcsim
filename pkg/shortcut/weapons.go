@@ -101,6 +101,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"finale":                          keys.FinaleOfTheDeep,
 	"fleuvecendreferryman":            keys.FleuveCendreFerryman,
 	"fleuve":                          keys.FleuveCendreFerryman,
+	"fluteofezpitzal":                 keys.FluteOfEzpitzal,
+	"ezpitzal":                        keys.FluteOfEzpitzal,
 	"pipe":                            keys.FleuveCendreFerryman,
 	"flowingpurity":                   keys.FlowingPurity,
 	"footprintoftherainbow":           keys.FootprintOfTheRainbow,

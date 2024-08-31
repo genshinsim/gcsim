@@ -464,6 +464,14 @@
       "image_name": "UI_EquipIcon_Pole_Isikhulu",
       "name_text_hash_map ": "415520051"
     },
+    "fluteofezpitzal": {
+      "id": 11431,
+      "key": "fluteofezpitzal",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Isikhulu",
+      "name_text_hash_map ": "3434743027"
+    },
     "forestregalia": {
       "id": 12417,
       "key": "forestregalia",
