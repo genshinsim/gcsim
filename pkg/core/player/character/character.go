@@ -19,7 +19,6 @@ import (
 type Character interface {
 	Base
 	HP
-	Nightsoul
 
 	Init() error // init function built into every char to setup any variables etc.
 
@@ -78,14 +77,6 @@ type HP interface {
 
 	Heal(*info.HealInfo) (float64, float64) // return actual hp healed and amount of hp debt cleared
 	Drain(*info.DrainInfo) float64
-}
-
-type Nightsoul interface {
-	EnterNightsoulBlessing(float64)
-	ExitNightsoulBlessing()
-
-	GenerateNightsoulPoints(float64)
-	ConsumeNightsoulPoints(float64)
 }
 
 type CharWrapper struct {
