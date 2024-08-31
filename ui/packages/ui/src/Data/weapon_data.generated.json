@@ -297,12 +297,12 @@
       "name_text_hash_map ": "2410593283"
     },
     "earthshaker": {
-      "id": 12305,
+      "id": 12431,
       "key": "earthshaker",
-      "rarity": 3,
+      "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Reasoning",
-      "name_text_hash_map ": "3097441915"
+      "image_name": "UI_EquipIcon_Claymore_Isikhulu",
+      "name_text_hash_map ": "2481464075"
     },
     "elegyfortheend": {
       "id": 15503,

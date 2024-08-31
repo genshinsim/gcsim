@@ -32,12 +32,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	amt := 0.12 + float64(r)*0.04
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = amt
 
-	buffSkill := func(args ...interface{}) bool {
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.DmgP] = amt
+	buffSkill := func() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("earth-shaker", 8*60),
+			Base: modifier.NewBaseWithHitlag("earth-shaker", 8*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 					return nil, false
@@ -45,15 +45,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m, true
 			},
 		})
-		return false
 	}
 
 	buffSkillNoGadget := func(args ...interface{}) bool {
 		if _, ok := args[0].(*gadget.Gadget); ok {
 			return false
 		}
-
-		return buffSkill(args...)
+		buffSkill()
+		return false
 	}
 
 	c.Events.Subscribe(event.OnOverload, buffSkillNoGadget, "earth-shaker-overload")
