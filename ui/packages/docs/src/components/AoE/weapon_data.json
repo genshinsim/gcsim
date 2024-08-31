@@ -16,6 +16,15 @@
       "radius": 6
     }
   ],
+  "ashgravendrinkinghorn": [
+    {
+      "ability": "Ash-Graven Drinking Horn",
+      "shape": "Circle",
+      "center": "GlobalValue",
+      "radius": 3,
+      "notes": "Spawns on the enemy that the weapon proc'd on."
+    }
+  ],
   "crescentpike": [
     {
       "ability": "Crescent Pike",

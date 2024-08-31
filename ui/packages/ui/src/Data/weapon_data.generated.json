@@ -64,6 +64,14 @@
       "image_name": "UI_EquipIcon_Sword_Falcon",
       "name_text_hash_map ": "902264035"
     },
+    "ashgravendrinkinghorn": {
+      "id": 14427,
+      "key": "ashgravendrinkinghorn",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_ConchSprayer",
+      "name_text_hash_map ": "422144187"
+    },
     "athousandfloatingdreams": {
       "id": 14511,
       "key": "athousandfloatingdreams",

@@ -41,6 +41,7 @@ var weaponNames = []string{
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
+	"ashgravendrinkinghorn",
 	"athousandfloatingdreams",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
@@ -234,6 +235,7 @@ const (
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia
+	AshGravenDrinkingHorn
 	AThousandFloatingDreams
 	BalladOfTheBoundlessBlue
 	BalladOfTheFjords
