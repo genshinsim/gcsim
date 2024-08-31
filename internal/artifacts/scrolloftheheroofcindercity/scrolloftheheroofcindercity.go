@@ -22,28 +22,29 @@ var buffArrs [][]float64
 var buffArrsNightsoul [][]float64
 
 func init() {
-	reactionElementsArr = make(map[reactions.ReactionType][]attributes.Element)
-	reactionElementsArr[reactions.Overload] = []attributes.Element{attributes.Electro, attributes.Pyro}
-	reactionElementsArr[reactions.Superconduct] = []attributes.Element{attributes.Electro, attributes.Cryo}
-	reactionElementsArr[reactions.Melt] = []attributes.Element{attributes.Pyro, attributes.Cryo}
-	reactionElementsArr[reactions.Vaporize] = []attributes.Element{attributes.Pyro, attributes.Hydro}
-	reactionElementsArr[reactions.Freeze] = []attributes.Element{attributes.Cryo, attributes.Hydro}
-	reactionElementsArr[reactions.ElectroCharged] = []attributes.Element{attributes.Electro, attributes.Hydro}
-	reactionElementsArr[reactions.SwirlHydro] = []attributes.Element{attributes.Anemo, attributes.Hydro}
-	reactionElementsArr[reactions.SwirlCryo] = []attributes.Element{attributes.Anemo, attributes.Cryo}
-	reactionElementsArr[reactions.SwirlElectro] = []attributes.Element{attributes.Anemo, attributes.Electro}
-	reactionElementsArr[reactions.SwirlPyro] = []attributes.Element{attributes.Anemo, attributes.Pyro}
-	reactionElementsArr[reactions.CrystallizeHydro] = []attributes.Element{attributes.Geo, attributes.Hydro}
-	reactionElementsArr[reactions.CrystallizeCryo] = []attributes.Element{attributes.Geo, attributes.Cryo}
-	reactionElementsArr[reactions.CrystallizeElectro] = []attributes.Element{attributes.Geo, attributes.Electro}
-	reactionElementsArr[reactions.CrystallizePyro] = []attributes.Element{attributes.Geo, attributes.Pyro}
-	reactionElementsArr[reactions.Aggravate] = []attributes.Element{attributes.Dendro, attributes.Electro}
-	reactionElementsArr[reactions.Spread] = []attributes.Element{attributes.Dendro}
-	reactionElementsArr[reactions.Quicken] = []attributes.Element{attributes.Dendro, attributes.Electro}
-	reactionElementsArr[reactions.Bloom] = []attributes.Element{attributes.Dendro, attributes.Hydro}
-	reactionElementsArr[reactions.Hyperbloom] = []attributes.Element{attributes.Dendro, attributes.Electro}
-	reactionElementsArr[reactions.Burgeon] = []attributes.Element{attributes.Dendro, attributes.Pyro}
-	reactionElementsArr[reactions.Burning] = []attributes.Element{attributes.Dendro, attributes.Pyro}
+	reactionElementsArr = map[reactions.ReactionType][]attributes.Element{
+		reactions.Overload:           {attributes.Electro, attributes.Pyro},
+		reactions.Superconduct:       {attributes.Electro, attributes.Cryo},
+		reactions.Melt:               {attributes.Pyro, attributes.Cryo},
+		reactions.Vaporize:           {attributes.Pyro, attributes.Hydro},
+		reactions.Freeze:             {attributes.Cryo, attributes.Hydro},
+		reactions.ElectroCharged:     {attributes.Electro, attributes.Hydro},
+		reactions.SwirlHydro:         {attributes.Anemo, attributes.Hydro},
+		reactions.SwirlCryo:          {attributes.Anemo, attributes.Cryo},
+		reactions.SwirlElectro:       {attributes.Anemo, attributes.Electro},
+		reactions.SwirlPyro:          {attributes.Anemo, attributes.Pyro},
+		reactions.CrystallizeHydro:   {attributes.Geo, attributes.Hydro},
+		reactions.CrystallizeCryo:    {attributes.Geo, attributes.Cryo},
+		reactions.CrystallizeElectro: {attributes.Geo, attributes.Electro},
+		reactions.CrystallizePyro:    {attributes.Geo, attributes.Pyro},
+		reactions.Aggravate:          {attributes.Dendro, attributes.Electro},
+		reactions.Spread:             {attributes.Dendro},
+		reactions.Quicken:            {attributes.Dendro, attributes.Electro},
+		reactions.Bloom:              {attributes.Dendro, attributes.Hydro},
+		reactions.Hyperbloom:         {attributes.Dendro, attributes.Electro},
+		reactions.Burgeon:            {attributes.Dendro, attributes.Pyro},
+		reactions.Burning:            {attributes.Dendro, attributes.Pyro},
+	}
 
 	elementToReactionsArr = make([][]reactions.ReactionType, attributes.EndEleType)
 	for i, j := range reactionElementsArr {
