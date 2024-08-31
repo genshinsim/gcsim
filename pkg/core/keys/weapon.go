@@ -89,6 +89,7 @@ var weaponNames = []string{
 	"finaleofthedeep",
 	"fleuvecendreferryman",
 	"flowingpurity",
+	"footprintoftherainbow",
 	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
@@ -280,6 +281,7 @@ const (
 	FinaleOfTheDeep
 	FleuveCendreFerryman
 	FlowingPurity
+	FootprintOfTheRainbow
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
