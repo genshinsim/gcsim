@@ -43,21 +43,24 @@ const (
 	ReactionEventEndDelim
 	OnDendroCore // Gadget
 	// other stuff
-	OnStamUse          // abil
-	OnShielded         // shield
-	OnShieldBreak      // shield break
-	OnConstructSpawned // nil
-	OnCharacterSwap    // prev, next
-	OnParticleReceived // particle
-	OnEnergyChange     // character_received_index, pre_energy, energy_change, src (post-energy available in character_received), is_particle (boolean)
-	OnTargetDied       // target, AttackEvent
-	OnTargetMoved      // target
-	OnCharacterHit     // nil <- this is for when the character is going to get hit but might be shielded from dmg
-	OnCharacterHurt    // amount
-	OnHPDebt           // target character, amount
-	OnHeal             // src char, target character, amount, overheal, amount_before_debt
-	OnPlayerPreHPDrain // Draininfo to modify
-	OnPlayerHPDrain    // DrainInfo
+	OnStamUse           // abil
+	OnShielded          // shield
+	OnShieldBreak       // shield break
+	OnConstructSpawned  // nil
+	OnCharacterSwap     // prev, next
+	OnParticleReceived  // particle
+	OnEnergyChange      // character_received_index, pre_energy, energy_change, src (post-energy available in character_received), is_particle (boolean)
+	OnTargetDied        // target, AttackEvent
+	OnTargetMoved       // target
+	OnCharacterHit      // nil <- this is for when the character is going to get hit but might be shielded from dmg
+	OnCharacterHurt     // amount
+	OnHPDebt            // target character, amount
+	OnHeal              // src char, target character, amount, overheal, amount_before_debt
+	OnPlayerPreHPDrain  // Draininfo to modify
+	OnPlayerHPDrain     // DrainInfo
+	OnNightsoulBurst    // target, AttackEvent
+	OnNightsoulGenerate // char, amount
+	OnNightsoulConsume  // char, amount
 	// ability use
 	OnActionFailed // ActiveCharIndex, action.Action, param, action.ActionFailure
 	OnActionExec   // ActiveCharIndex, action.Action, param

@@ -19,6 +19,7 @@ import (
 type Character interface {
 	Base
 	HP
+	Nightsoul
 
 	Init() error // init function built into every char to setup any variables etc.
 
@@ -79,6 +80,14 @@ type HP interface {
 	Drain(*info.DrainInfo) float64
 }
 
+type Nightsoul interface {
+	EnterNightsoulBlessing(float64)
+	ExitNightsoulBlessing()
+
+	GenerateNightsoulPoints(float64)
+	ConsumeNightsoulPoints(float64)
+}
+
 type CharWrapper struct {
 	Index int
 	f     *int // current frame
@@ -131,6 +140,9 @@ type CharWrapper struct {
 	timePassed   int // how many frames have passed since start of sim
 	frozenFrames int // how many frames are we still frozen for
 	queue        []queue.Task
+
+	// nightsoul
+	NightsoulPoints float64
 }
 
 func New(
