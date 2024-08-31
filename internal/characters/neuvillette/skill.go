@@ -1,8 +1,8 @@
 package neuvillette
 
 import (
-	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -133,7 +133,7 @@ func (c *char) makeDropletCB() combat.AttackCBFunc {
 		}
 
 		for j := 0; j < 3; j++ {
-			common.NewSourcewaterDroplet(
+			sourcewaterdroplet.New(
 				c.Core,
 				geometry.CalcRandomPointFromCenter(
 					geometry.CalcOffsetPoint(

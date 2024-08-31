@@ -296,6 +296,14 @@
       "image_name": "UI_EquipIcon_Sword_Blunt",
       "name_text_hash_map ": "2410593283"
     },
+    "earthshaker": {
+      "id": 12431,
+      "key": "earthshaker",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_Isikhulu",
+      "name_text_hash_map ": "2481464075"
+    },
     "elegyfortheend": {
       "id": 15503,
       "key": "elegyfortheend",
@@ -439,6 +447,14 @@
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Vorpal",
       "name_text_hash_map ": "2432865507"
+    },
+    "footprintoftherainbow": {
+      "id": 13431,
+      "key": "footprintoftherainbow",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Isikhulu",
+      "name_text_hash_map ": "415520051"
     },
     "forestregalia": {
       "id": 12417,
@@ -919,6 +935,14 @@
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Vorpal",
       "name_text_hash_map ": "4158971171"
+    },
+    "ringofyaxche": {
+      "id": 14431,
+      "key": "ringofyaxche",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Isikhulu",
+      "name_text_hash_map ": "3092853059"
     },
     "royalbow": {
       "id": 15404,
