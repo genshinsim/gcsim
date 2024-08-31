@@ -11,7 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
+
+const icdKey = "ash-graven-drinking-horn-icd"
 
 func init() {
 	core.RegisterWeaponFunc(keys.AshGravenDrinkingHorn, NewWeapon)
@@ -28,10 +31,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	hp := 30 + float64(r)*10
-	const icdKey = "ash-graven-drinking-horn-icd"
+	hp := 0.3 + float64(r)*0.1
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
@@ -54,8 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       hp,
 		}
-		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 0, 1)
 		return false
 	}, fmt.Sprintf("ashgraven-%v", char.Base.Key.String()))
 	return w, nil
