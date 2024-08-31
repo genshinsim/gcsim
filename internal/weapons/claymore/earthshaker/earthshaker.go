@@ -1,6 +1,8 @@
 package earthshaker
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -55,13 +57,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}
 
-	c.Events.Subscribe(event.OnOverload, buffSkillNoGadget, "earth-shaker-overload")
-	c.Events.Subscribe(event.OnVaporize, buffSkillNoGadget, "earth-shaker-vaporize")
-	c.Events.Subscribe(event.OnMelt, buffSkillNoGadget, "earth-shaker-melt")
-	c.Events.Subscribe(event.OnSwirlPyro, buffSkillNoGadget, "earth-shaker-pyro-swirl")
-	c.Events.Subscribe(event.OnCrystallizePyro, buffSkillNoGadget, "earth-shaker-pyro-crystallize")
-	c.Events.Subscribe(event.OnBurning, buffSkillNoGadget, "earth-shaker-burning")
-	c.Events.Subscribe(event.OnBurgeon, buffSkillNoGadget, "earth-shaker-burgeon")
+	charKey := char.Base.Key.String()
+	c.Events.Subscribe(event.OnOverload, buffSkillNoGadget, fmt.Sprintf("earth-shaker-overload-%s", charKey))
+	c.Events.Subscribe(event.OnVaporize, buffSkillNoGadget, fmt.Sprintf("earth-shaker-vaporize-%s", charKey))
+	c.Events.Subscribe(event.OnMelt, buffSkillNoGadget, fmt.Sprintf("earth-shaker-melt-%s", charKey))
+	c.Events.Subscribe(event.OnSwirlPyro, buffSkillNoGadget, fmt.Sprintf("earth-shaker-pyro-swirl-%s", charKey))
+	c.Events.Subscribe(event.OnCrystallizePyro, buffSkillNoGadget, fmt.Sprintf("earth-shaker-pyro-crystallize-%s", charKey))
+	c.Events.Subscribe(event.OnBurning, buffSkillNoGadget, fmt.Sprintf("earth-shaker-burning-%s", charKey))
+	c.Events.Subscribe(event.OnBurgeon, buffSkillNoGadget, fmt.Sprintf("earth-shaker-burgeon-%s", charKey))
 
 	return w, nil
 }
