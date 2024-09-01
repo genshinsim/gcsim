@@ -184,6 +184,14 @@
       "image_name": "UI_EquipIcon_Catalyst_Wheatley",
       "name_text_hash_map ": "724881171"
     },
+    "chainbreaker": {
+      "id": 15431,
+      "key": "chainbreaker",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Isikhulu",
+      "name_text_hash_map ": "565052971"
+    },
     "cinnabarspindle": {
       "id": 11415,
       "key": "cinnabarspindle",
