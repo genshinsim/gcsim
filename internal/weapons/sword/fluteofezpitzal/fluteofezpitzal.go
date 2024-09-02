@@ -29,8 +29,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	// TODO: check for ICD, refresh timing
-	// const icdKey = "flute-of-ezpitzal-icd"
 	def := 0.12 + float64(r)*0.04
 	duration := 15 * 60
 
@@ -38,8 +36,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DEFP] = def
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-
-		// TODO: check if wearer need to be on-field?
 		if c.Player.Active() != char.Index {
 			return false
 		}
