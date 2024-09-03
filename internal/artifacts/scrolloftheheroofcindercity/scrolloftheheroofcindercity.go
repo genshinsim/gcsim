@@ -64,7 +64,7 @@ func init() {
 	}
 
 	buffArrsNightsoul = make([][]float64, attributes.EndEleType)
-	for i := range buffArrs {
+	for i := range buffArrsNightsoul {
 		ele := attributes.Element(i)
 		buffArrsNightsoul[ele] = make([]float64, attributes.EndStatType)
 		stat := attributes.EleToDmgP(ele)
@@ -219,8 +219,9 @@ func make4pcCB(c *core.Core, char *character.CharWrapper, react reactions.Reacti
 
 		for _, ele := range reactionElements(react) {
 			// Apply mod to all characters
-			for _, c := range c.Player.Chars() {
-				c.AddStatMod(character.StatMod{
+			ele := ele // make a copy
+			for _, ch := range c.Player.Chars() {
+				ch.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%s", attributes.ElementString[ele]), 15*60),
 					AffectedStat: attributes.EleToDmgP(ele),
 					Amount: func() ([]float64, bool) {
@@ -240,8 +241,9 @@ func make4pcCB(c *core.Core, char *character.CharWrapper, react reactions.Reacti
 
 		for _, ele := range reactionElements(react) {
 			// Apply mod to all characters
-			for _, c := range c.Player.Chars() {
-				c.AddStatMod(character.StatMod{
+			ele := ele // make a copy
+			for _, ch := range c.Player.Chars() {
+				ch.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%s", attributes.ElementString[ele]), 20*60),
 					AffectedStat: attributes.EleToDmgP(ele),
 					Amount: func() ([]float64, bool) {
