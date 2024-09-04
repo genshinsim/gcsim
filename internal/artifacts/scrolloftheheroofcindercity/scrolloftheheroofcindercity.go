@@ -76,12 +76,8 @@ func (s *Set) buffCB(react reactions.ReactionType, gadgetEmit bool) func(args ..
 		hasNightsoul := s.char.StatusIsActive(nightsoul.NightsoulBlessingStatus)
 		for _, other := range s.c.Player.Chars() {
 			elements := reactToElements[react]
-			if !slices.Contains(elements, other.Base.Element) {
-				continue
-			}
 			for _, ele := range elements {
 				stat := attributes.EleToDmgP(ele)
-
 				other.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%v", ele), 15*60),
 					AffectedStat: stat,
@@ -157,6 +153,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			event.OnBurgeon:            reactions.Burgeon,
 			event.OnBurning:            reactions.Burning,
 		} {
+			elements := reactToElements[react]
+			if !slices.Contains(elements, char.Base.Element) {
+				continue
+			}
 			gadgetEmit := false
 			switch react {
 			case reactions.Burgeon, reactions.Hyperbloom:
