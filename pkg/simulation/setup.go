@@ -322,8 +322,6 @@ func SetupMisc(c *core.Core) {
 		})
 		return false
 	}, "superconduct")
-
-	setupNightsoulBurst(c)
 }
 
 func setupNightsoulBurst(core *core.Core) {
