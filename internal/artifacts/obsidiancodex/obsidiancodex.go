@@ -30,18 +30,19 @@ func (s *Set) Init() error      { return nil }
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{Count: count}
 
-	ns := nightsoul.New(c, char)
-
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.15
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase("obsidiancodex-2pc", -1),
 			Amount: func() ([]float64, bool) {
-				if ns.HasBlessing() && (c.Player.Active() == char.Index) {
-					return m, true
+				if !char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
+					return nil, false
 				}
-				return nil, false
+				if c.Player.Active() != char.Index {
+					return nil, false
+				}
+				return m, true
 			},
 		})
 	}
