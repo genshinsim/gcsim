@@ -365,15 +365,16 @@ func (s *Simulation) handleHurt() {
 
 		s.C.Tasks.Add(func() {
 			ai := combat.AttackInfo{
-				ActorIndex: s.C.Player.Active(),
-				Abil:       "Hurt",
-				AttackTag:  attacks.AttackTagNone,
-				ICDTag:     attacks.ICDTagNone,
-				ICDGroup:   attacks.ICDGroupDefault,
-				StrikeType: attacks.StrikeTypeDefault,
-				Durability: 0,
-				Element:    s.cfg.HurtSettings.Element,
-				FlatDmg:    amt,
+				ActorIndex: 	  s.C.Player.Active(),
+				Abil:        	  "Hurt",
+				AttackTag:  	  attacks.AttackTagNone,
+				ICDTag:    	  attacks.ICDTagNone,
+				ICDGroup:  	  attacks.ICDGroupDefault,
+				StrikeType:	  attacks.StrikeTypeDefault,
+				Durability:	  0,
+				Element:   	  s.cfg.HurtSettings.Element,
+				FlatDmg:   	  amt,
+				IgnoreDefPercent: 1,
 			}
 			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
 			ap.SkipTargets[targets.TargettablePlayer] = false
@@ -396,15 +397,16 @@ func (s *Simulation) handleHurt() {
 
 		s.C.Tasks.Add(func() {
 			ai := combat.AttackInfo{
-				ActorIndex: s.C.Player.Active(),
-				Abil:       "Hurt",
-				AttackTag:  attacks.AttackTagNone,
-				ICDTag:     attacks.ICDTagNone,
-				ICDGroup:   attacks.ICDGroupDefault,
-				StrikeType: attacks.StrikeTypeDefault,
-				Durability: 0,
-				Element:    s.cfg.HurtSettings.Element,
-				FlatDmg:    amt,
+				ActorIndex:	  s.C.Player.Active(),
+				Abil:       	  "Hurt",
+				AttackTag: 	  attacks.AttackTagNone,
+				ICDTag:     	  attacks.ICDTagNone,
+				ICDGroup:   	  attacks.ICDGroupDefault,
+				StrikeType: 	  attacks.StrikeTypeDefault,
+				Durability: 	  0,
+				Element:    	  s.cfg.HurtSettings.Element,
+				FlatDmg:    	  amt,
+				IgnoreDefPercent: 1,
 			}
 			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
 			ap.SkipTargets[targets.TargettablePlayer] = false
