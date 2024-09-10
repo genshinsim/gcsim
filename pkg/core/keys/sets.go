@@ -63,6 +63,7 @@ var setNames = []string{
 	"nighttimewhispersintheechoingwoods",
 	"noblesseoblige",
 	"nymphsdream",
+	"obsidiancodex",
 	"oceanhuedclam",
 	"paleflame",
 	"prayersfordestiny",
@@ -118,6 +119,7 @@ const (
 	NighttimeWhispersInTheEchoingWoods
 	NoblesseOblige
 	NymphsDream
+	ObsidianCodex
 	OceanHuedClam
 	PaleFlame
 	PrayersForDestiny
