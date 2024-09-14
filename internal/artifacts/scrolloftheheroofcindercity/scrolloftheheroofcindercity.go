@@ -49,9 +49,10 @@ type Set struct {
 	Index int
 	Count int
 
-	c    *core.Core
-	char *character.CharWrapper
-	buff []float64
+	c             *core.Core
+	char          *character.CharWrapper
+	buff          []float64
+	nightsoulBuff []float64
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
@@ -95,9 +96,9 @@ func (s *Set) buffCB(react reactions.ReactionType, gadgetEmit bool) func(args ..
 					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%v", ele), 20*60),
 					AffectedStat: stat,
 					Amount: func() ([]float64, bool) {
-						clear(s.buff)
-						s.buff[stat] = 0.28
-						return s.buff, true
+						clear(s.nightsoulBuff)
+						s.nightsoulBuff[stat] = 0.28
+						return s.nightsoulBuff, true
 					},
 				})
 			}
@@ -108,10 +109,11 @@ func (s *Set) buffCB(react reactions.ReactionType, gadgetEmit bool) func(args ..
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		Count: count,
-		c:     c,
-		char:  char,
-		buff:  make([]float64, attributes.EndStatType),
+		Count:         count,
+		c:             c,
+		char:          char,
+		buff:          make([]float64, attributes.EndStatType),
+		nightsoulBuff: make([]float64, attributes.EndStatType),
 	}
 	// 2 Piece: When a nearby party member triggers a Nightsoul Burst, the equipping
 	// character regenerates 6 Elemental Energy.
