@@ -226,6 +226,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/finaleofthedeep"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/fleuvecendreferryman"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/flute"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/fluteofezpitzal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/foliar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/freedom"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/haran"
