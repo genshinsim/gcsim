@@ -15,26 +15,33 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	buffKey = "hakushin-%v-buff"
+	icdKey  = "hakushin-%v-icd"
+)
+
 func init() {
 	core.RegisterWeaponFunc(keys.HakushinRing, NewWeapon)
 }
 
 type Weapon struct {
-	Index int
+	Index      int
+	elementICD map[attributes.Element]struct{}
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{}
+	w := &Weapon{
+		elementICD: make(map[attributes.Element]struct{}),
+	}
 	r := p.Refine
 
 	m := make([]float64, attributes.EndStatType)
 	dmg := .075 + float64(r)*.025
 
-	hrfunc := func(ele attributes.Element, key string, gadgetEmit bool) func(args ...interface{}) bool {
-		icd := -1
+	hrfunc := func(otherEle attributes.Element, key string, gadgetEmit bool) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
 			if _, ok := args[0].(*gadget.Gadget); ok != gadgetEmit {
 				return false
@@ -47,35 +54,40 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			if ae.Info.ActorIndex != char.Index {
 				return false
 			}
-			if c.F < icd {
-				return false
-			}
-			icd = c.F + 1
 
-			for _, char := range c.Player.Chars() {
-				if char.Base.Element != attributes.Electro && char.Base.Element != ele {
+			clear(w.elementICD)
+			for _, other := range c.Player.Chars() {
+				charEle := other.Base.Element
+				if charEle != attributes.Electro && charEle != otherEle {
 					continue
 				}
-				this := char
-				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("hakushin-passive", 6*60),
-					AffectedStat: attributes.NoStat,
+
+				// set icd after loop
+				if char.StatusIsActive(fmt.Sprintf(icdKey, charEle)) {
+					continue
+				}
+				w.elementICD[charEle] = struct{}{}
+
+				stat := attributes.EleToDmgP(charEle)
+				other.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf(buffKey, charEle), 6*60),
+					AffectedStat: stat,
 					Amount: func() ([]float64, bool) {
-						m[attributes.PyroP] = 0
-						m[attributes.HydroP] = 0
-						m[attributes.CryoP] = 0
-						m[attributes.ElectroP] = 0
-						m[attributes.AnemoP] = 0
-						m[attributes.GeoP] = 0
-						m[attributes.DendroP] = 0
-						m[attributes.EleToDmgP(this.Base.Element)] = dmg
+						clear(m)
+						m[stat] = dmg
 						return m, true
 					},
 				})
 			}
-			c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index).
-				Write("trigger", key).
-				Write("expiring (without hitlag)", c.F+6*60)
+
+			for ele := range w.elementICD {
+				char.AddStatus(fmt.Sprintf(icdKey, ele), 60, true)
+			}
+			if len(w.elementICD) > 0 {
+				c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index).
+					Write("trigger", key).
+					Write("expiring (without hitlag)", c.F+6*60)
+			}
 			return false
 		}
 	}
