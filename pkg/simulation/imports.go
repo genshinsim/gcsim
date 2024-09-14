@@ -48,6 +48,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/paleflame"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/reminiscence"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/scholar"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/scrolloftheheroofcindercity"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/sojourner"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/songofdayspast"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/tenacity"

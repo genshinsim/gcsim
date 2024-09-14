@@ -73,6 +73,7 @@ var setNames = []string{
 	"resolutionofsojourner",
 	"retracingbolide",
 	"scholar",
+	"scrolloftheheroofcindercity",
 	"shimenawasreminiscence",
 	"songofdayspast",
 	"tenacityofthemillelith",
@@ -129,6 +130,7 @@ const (
 	ResolutionOfSojourner
 	RetracingBolide
 	Scholar
+	ScrollOfTheHeroOfCinderCity
 	ShimenawasReminiscence
 	SongOfDaysPast
 	TenacityOfTheMillelith
