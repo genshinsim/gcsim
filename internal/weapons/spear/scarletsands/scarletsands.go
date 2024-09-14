@@ -48,16 +48,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	icdCounter := 0
-	incrementIcdCounter := func() {
+	icdCounterAdd := func() {
 		icdCounter++
+
+		char.QueueCharTask(func() {
+			icdCounter--
+			c.Log.NewEvent("scarletsands icd counter decreased", glog.LogWeaponEvent, char.Index).
+				Write("counter", icdCounter)
+		}, 0.3*60)
+
 		c.Log.NewEvent("scarletsands icd counter increased", glog.LogWeaponEvent, char.Index).
-			Write("new value: ", icdCounter)
-		char.QueueCharTask(func() { decrementIcdCounter() }, 0.3*60)
-	}
-	decrementIcdCounter := func() {
-		icdCounter--
-		c.Log.NewEvent("scarletsands icd counter decreased", glog.LogWeaponEvent, char.Index).
-			Write("new value: ", icdCounter)
+			Write("counter", icdCounter)
 	}
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
@@ -76,9 +77,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			c.Log.NewEvent("scarletsands did not gain stacks due to icd", glog.LogWeaponEvent, char.Index)
 			return false
 		}
-		if icdCounter < 3 {
-			incrementIcdCounter()
-		}
+		icdCounterAdd()
 
 		// reset stacks if expired
 		if !char.StatModIsActive(skillBuff) {
