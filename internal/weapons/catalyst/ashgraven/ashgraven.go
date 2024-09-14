@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
-			Mult:       hp,
+			FlatDmg:    char.MaxHP() * hp,
 		}
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 0, 1)
 		return false
