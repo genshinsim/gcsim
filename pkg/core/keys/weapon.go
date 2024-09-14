@@ -56,6 +56,7 @@ var weaponNames = []string{
 	"bloodtaintedgreatsword",
 	"calamityqueller",
 	"cashflowsupervision",
+	"chainbreaker",
 	"cinnabarspindle",
 	"cloudforged",
 	"compoundbow",
@@ -250,6 +251,7 @@ const (
 	BloodtaintedGreatsword
 	CalamityQueller
 	CashflowSupervision
+	ChainBreaker
 	CinnabarSpindle
 	Cloudforged
 	CompoundBow
