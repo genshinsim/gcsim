@@ -22,6 +22,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const nightsoulBurstICDStatus = "nightsoul-burst-icd"
+
+// first is 0 because you can't proc it without the natlan character
+var nightsoulBurstICD = []int{0, 18 * 60, 12 * 60, 9 * 60, 9 * 60}
+
 func SetupTargetsInCore(core *core.Core, p geometry.Point, r float64, targets []info.EnemyProfile) error {
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
@@ -317,6 +322,47 @@ func SetupMisc(c *core.Core) {
 		})
 		return false
 	}, "superconduct")
+}
+
+func setupNightsoulBurst(core *core.Core) {
+	chars := core.Player.Chars()
+	count := 0
+	for _, this := range chars {
+		if this.CharZone == info.ZoneNatlan {
+			count++
+		}
+	}
+	if count == 0 {
+		return
+	}
+
+	triggerCD := nightsoulBurstICD[count]
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		if core.Status.Duration(nightsoulBurstICDStatus) > 0 {
+			return false
+		}
+
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		atk := args[1].(*combat.AttackEvent)
+		switch atk.Info.Element {
+		case attributes.Electro:
+		case attributes.Pyro:
+		case attributes.Cryo:
+		case attributes.Hydro:
+		case attributes.Dendro:
+		case attributes.Anemo:
+		case attributes.Geo:
+		default:
+			return false
+		}
+
+		core.Events.Emit(event.OnNightsoulBurst, t, atk)
+		core.Status.Add(nightsoulBurstICDStatus, triggerCD)
+		return false
+	}, "nigthsoul-burst")
 }
 
 func (s *Simulation) handleEnergy() {

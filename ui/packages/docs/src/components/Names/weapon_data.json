@@ -19,6 +19,9 @@
   "aquilafavonia": [
     "aquila"
   ],
+  "ashgravendrinkinghorn": [
+    "ashgraven"
+  ],
   "athousandfloatingdreams": [
     "thousandfloatingdreams",
     "tfd"
@@ -52,6 +55,7 @@
   "cashflowsupervision": [
     "cashflow"
   ],
+  "chainbreaker": [],
   "cinnabarspindle": [
     "cinnabar"
   ],
@@ -82,6 +86,7 @@
   ],
   "dragonspinespear": [],
   "dullblade": [],
+  "earthshaker": [],
   "elegyfortheend": [
     "elegy"
   ],
@@ -127,8 +132,15 @@
     "fleuve",
     "pipe"
   ],
+  "fluteofezpitzal": [
+    "ezpital"
+  ],
   "forestregalia": [
     "regalia"
+  ],
+  "footprintoftherainbow": [
+    "footprint",
+    "fotr"
   ],
   "freedomsworn": [
     "freedom",
@@ -275,6 +287,7 @@
     "redhorn"
   ],
   "rightfulreward": [],
+  "ringofyaxche": [],
   "royalbow": [],
   "royalgreatsword": [],
   "royalgrimoire": [],

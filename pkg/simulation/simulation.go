@@ -63,6 +63,9 @@ func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation
 		return nil, err
 	}
 
+	// nightsoul require char stats to be initialized
+	setupNightsoulBurst(c)
+
 	for _, collector := range stats.Collectors() {
 		enabled := cfg.Settings.CollectStats
 		if len(enabled) > 0 && !slices.Contains(enabled, collector.Name) {

@@ -41,6 +41,7 @@ var weaponNames = []string{
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
+	"ashgravendrinkinghorn",
 	"athousandfloatingdreams",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
@@ -55,6 +56,7 @@ var weaponNames = []string{
 	"bloodtaintedgreatsword",
 	"calamityqueller",
 	"cashflowsupervision",
+	"chainbreaker",
 	"cinnabarspindle",
 	"cloudforged",
 	"compoundbow",
@@ -70,6 +72,7 @@ var weaponNames = []string{
 	"dragonsbane",
 	"dragonspinespear",
 	"dullblade",
+	"earthshaker",
 	"elegyfortheend",
 	"emeraldorb",
 	"endoftheline",
@@ -87,7 +90,9 @@ var weaponNames = []string{
 	"filletblade",
 	"finaleofthedeep",
 	"fleuvecendreferryman",
+	"fluteofezpitzal",
 	"flowingpurity",
+	"footprintoftherainbow",
 	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
@@ -148,6 +153,7 @@ var weaponNames = []string{
 	"recurvebow",
 	"redhornstonethresher",
 	"rightfulreward",
+	"ringofyaxche",
 	"royalbow",
 	"royalgreatsword",
 	"royalgrimoire",
@@ -231,6 +237,7 @@ const (
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia
+	AshGravenDrinkingHorn
 	AThousandFloatingDreams
 	BalladOfTheBoundlessBlue
 	BalladOfTheFjords
@@ -245,6 +252,7 @@ const (
 	BloodtaintedGreatsword
 	CalamityQueller
 	CashflowSupervision
+	ChainBreaker
 	CinnabarSpindle
 	Cloudforged
 	CompoundBow
@@ -260,6 +268,7 @@ const (
 	DragonsBane
 	DragonspineSpear
 	DullBlade
+	EarthShaker
 	ElegyForTheEnd
 	EmeraldOrb
 	EndOfTheLine
@@ -277,7 +286,9 @@ const (
 	FilletBlade
 	FinaleOfTheDeep
 	FleuveCendreFerryman
+	FluteOfEzpitzal
 	FlowingPurity
+	FootprintOfTheRainbow
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
@@ -338,6 +349,7 @@ const (
 	RecurveBow
 	RedhornStonethresher
 	RightfulReward
+	RingOfYaxche
 	RoyalBow
 	RoyalGreatsword
 	RoyalGrimoire

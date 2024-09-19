@@ -3,7 +3,7 @@ package conditional
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/internal/common"
+	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -45,7 +45,7 @@ func evalSourcewaterDroplet(c *core.Core, key string) (int, error) {
 	case countField:
 		count := 0
 		for _, g := range c.Combat.Gadgets() {
-			if _, ok := g.(*common.SourcewaterDroplet); ok {
+			if _, ok := g.(*sourcewaterdroplet.Gadget); ok {
 				count++
 			}
 		}

@@ -63,6 +63,7 @@ var setNames = []string{
 	"nighttimewhispersintheechoingwoods",
 	"noblesseoblige",
 	"nymphsdream",
+	"obsidiancodex",
 	"oceanhuedclam",
 	"paleflame",
 	"prayersfordestiny",
@@ -72,6 +73,7 @@ var setNames = []string{
 	"resolutionofsojourner",
 	"retracingbolide",
 	"scholar",
+	"scrolloftheheroofcindercity",
 	"shimenawasreminiscence",
 	"songofdayspast",
 	"tenacityofthemillelith",
@@ -118,6 +120,7 @@ const (
 	NighttimeWhispersInTheEchoingWoods
 	NoblesseOblige
 	NymphsDream
+	ObsidianCodex
 	OceanHuedClam
 	PaleFlame
 	PrayersForDestiny
@@ -127,6 +130,7 @@ const (
 	ResolutionOfSojourner
 	RetracingBolide
 	Scholar
+	ScrollOfTheHeroOfCinderCity
 	ShimenawasReminiscence
 	SongOfDaysPast
 	TenacityOfTheMillelith

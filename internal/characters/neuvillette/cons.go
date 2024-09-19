@@ -3,7 +3,7 @@ package neuvillette
 import (
 	"strings"
 
-	"github.com/genshinsim/gcsim/internal/common"
+	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -59,7 +59,7 @@ func (c *char) c4() {
 		// 4s CD
 		c.AddStatus(c4ICDKey, 4*60, true)
 		player := c.Core.Combat.Player()
-		common.NewSourcewaterDroplet(
+		sourcewaterdroplet.New(
 			c.Core,
 			geometry.CalcRandomPointFromCenter(
 				geometry.CalcOffsetPoint(
