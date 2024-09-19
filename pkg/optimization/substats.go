@@ -71,7 +71,7 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 		o.logger.Info(debugLog)
 	}
 
-	if o.optionsMap["fine_tune"] != 0 {
+	for i := 0.0; i < o.optionsMap["fine_tune"]; i++ {
 		o.logger.Info("Fine tuning optimal ER vs DMG substat distribution...")
 		debugLogs = o.details.optimizeERAndDMGSubstats()
 		for _, debugLog := range debugLogs {
