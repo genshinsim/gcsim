@@ -38,6 +38,7 @@ type char struct {
 	maxC2Fanfare              float64
 	fanfareDebounceTaskQueued bool
 	burstBuff                 []float64
+	a1src                     int
 	a4Buff                    []float64
 	a4IntervalReduction       float64
 	lastSummonSrc             int
