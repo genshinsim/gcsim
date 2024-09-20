@@ -1240,6 +1240,14 @@
       "image_name": "UI_EquipIcon_Sword_Kunwu",
       "name_text_hash_map ": "944332883"
     },
+    "surfsup": {
+      "id": 14516,
+      "key": "surfsup",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_MechaPufferfish",
+      "name_text_hash_map ": "1673987515"
+    },
     "swordofdescension": {
       "id": 11412,
       "key": "swordofdescension",
