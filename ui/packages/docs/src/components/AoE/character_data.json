@@ -6671,6 +6671,29 @@
         "radius": 2.8
       }
     ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
     "skill": [
       {
         "ability": "E-Skill",
