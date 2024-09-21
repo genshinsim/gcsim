@@ -968,6 +968,18 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "qiqi": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "tartaglia": [
     {
       "ability": "attack",
