@@ -241,7 +241,9 @@
   "otherworldlystory": [
     "otherworldly"
   ],
-  "peakpatrolsong": [],
+  "peakpatrolsong": [
+    "pps"
+  ],
   "pocketgrimoire": [
     "pocket"
   ],
