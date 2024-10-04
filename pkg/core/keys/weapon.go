@@ -96,6 +96,7 @@ var weaponNames = []string{
 	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
+	"fruitfulhook",
 	"fruitoffulfillment",
 	"hakushinring",
 	"halberd",
@@ -293,6 +294,7 @@ const (
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
+	FruitfulHook
 	FruitOfFulfillment
 	HakushinRing
 	Halberd
