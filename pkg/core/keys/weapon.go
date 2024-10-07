@@ -135,6 +135,7 @@ var weaponNames = []string{
 	"oathsworneye",
 	"oldmercspal",
 	"otherworldlystory",
+	"peakpatrolsong",
 	"pocketgrimoire",
 	"polarstar",
 	"portablepowersaw",
@@ -332,6 +333,7 @@ const (
 	OathswornEye
 	OldMercsPal
 	OtherworldlyStory
+	PeakPatrolSong
 	PocketGrimoire
 	PolarStar
 	PortablePowerSaw

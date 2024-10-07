@@ -237,6 +237,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/keyofkhajnisut"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/lion"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/mistsplitter"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/peakpatrolsong"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/primordial"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/royal"
