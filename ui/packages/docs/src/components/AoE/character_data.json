@@ -5342,7 +5342,7 @@
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 3,
-        "notes": "Every Stormcluster has its own direction (0/90/180/270 degrees at base, 0/60/120/180/240/300 degrees at C4+), starts at Q-Titanbreaker position + 1.35m in that direction and moves at 1.35m per attack. Attack buff detection area has the same hitbox."
+        "notes": "Every Stormcluster has its own direction (0/90/180/270 degrees at base, 0/60/120/180/240/300 degrees at C4+), starts at Q-Titanbreaker position + 3.6m in that direction and moves at 1.35m per attack. Attack buff detection area has the same hitbox."
       }
     ]
   },
