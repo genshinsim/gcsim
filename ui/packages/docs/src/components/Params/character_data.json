@@ -809,6 +809,18 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "mualani": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time for Shark Missiles. Default 10 frames."
+    },
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Projectile travel time for the Super Shark Missile. Default 70 frames."
+    }
+  ],
   "nahida": [
     {
       "ability": "skill",
