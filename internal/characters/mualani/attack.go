@@ -12,7 +12,6 @@ import (
 )
 
 const normalHitNum = 3
-const stackDelayAfterBite = 15
 
 var (
 	attackFrames   [][]int
