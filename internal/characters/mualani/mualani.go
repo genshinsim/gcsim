@@ -5,8 +5,10 @@ import (
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
@@ -59,7 +61,7 @@ func (c *char) Init() error {
 		c.c4()
 	}
 	c.SetNumCharges(action.ActionAttack, 1)
-
+	c.onExitField()
 	return nil
 }
 
@@ -113,4 +115,24 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
+}
+
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
+	if c.nightsoulState.HasBlessing() {
+		// cannot CA in nightsoul blessing
+		if a == action.ActionCharge {
+			return player.ErrInvalidChargeAction
+		}
+	}
+
+	return c.Character.NextQueueItemIsValid(k, a, p)
+}
+
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+		if c.nightsoulState.HasBlessing() {
+			c.cancelNightsoul()
+		}
+		return false
+	}, "hutao-exit")
 }
