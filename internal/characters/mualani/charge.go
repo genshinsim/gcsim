@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var chargeFrames []int
@@ -42,7 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 3, 8)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3.5)
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(
 		ai,
