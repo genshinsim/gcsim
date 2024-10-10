@@ -163,6 +163,14 @@
       "desc": "Number of Prop Surplus stacks."
     }
   ],
+  "mualani": [
+    {
+      "fields": [
+        ".mualani.momentum"
+      ],
+      "desc": "Number of Wave Momentum stacks."
+    }
+  ],
   "navia": [
     {
       "fields": [

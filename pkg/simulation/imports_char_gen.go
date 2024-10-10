@@ -52,6 +52,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/lyney"
 	_ "github.com/genshinsim/gcsim/internal/characters/mika"
 	_ "github.com/genshinsim/gcsim/internal/characters/mona"
+	_ "github.com/genshinsim/gcsim/internal/characters/mualani"
 	_ "github.com/genshinsim/gcsim/internal/characters/nahida"
 	_ "github.com/genshinsim/gcsim/internal/characters/navia"
 	_ "github.com/genshinsim/gcsim/internal/characters/neuvillette"
