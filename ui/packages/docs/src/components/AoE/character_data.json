@@ -5930,6 +5930,57 @@
       }
     ]
   },
+  "mualani": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.7
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.7
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.7
+      },
+      {
+        "ability": "Shark-Bite",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "Spawns on the Primary Target."
+      },
+      {
+        "ability": "Surging-Bite",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "Spawns on the Primary Target."
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }
+    ]
+  },
   "nahida": {
     "cons": [
       {
