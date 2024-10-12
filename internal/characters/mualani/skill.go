@@ -13,7 +13,7 @@ var skillFrames []int
 var skillCancelFrames []int
 
 const (
-	skillDelay = 7
+	momentumDelay = 7
 
 	particleICD     = 9999 * 60
 	particleICDKey  = "mualani-particle-icd"
@@ -84,10 +84,13 @@ func (c *char) momentumStackGain(src int) func() {
 			return
 		}
 
-		if c.Core.Player.Active() != c.Index {
-			c.QueueCharTask(c.momentumStackGain(src), 0.7*60)
+		switch c.Core.Player.CurrentState() {
+		case action.DashState, action.JumpState, action.WalkState:
+		default:
 			return
 		}
+
+		c.QueueCharTask(c.momentumStackGain(src), 0.1*60) // TODO: correct interval?
 
 		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.9}, 0, 1)
 		enemies := c.Core.Combat.Enemies()
@@ -107,7 +110,6 @@ func (c *char) momentumStackGain(src int) func() {
 		}
 
 		c.momentumStacks = min(c.momentumStacks+enemiesCollided, 3)
-		c.QueueCharTask(c.momentumStackGain(src), 0.1*60) // TODO: correct interval?
 	}
 }
 
@@ -122,17 +124,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	c.QueueCharTask(func() {
-		c.nightsoulState.EnterBlessing(60)
-		c.DeleteStatus(particleICDKey)
-		c.a1Count = 0
-		c.c1Done = false
-		c.c2()
-		c.nightsoulSrc = c.Core.F
-		c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
-		c.momentumSrc = c.Core.F
-		c.QueueCharTask(c.momentumStackGain(c.momentumSrc), 0)
-	}, skillDelay)
+	c.nightsoulState.EnterBlessing(60)
+	c.DeleteStatus(particleICDKey)
+	c.a1Count = 0
+	c.c1Done = false
+	c.c2()
+	c.nightsoulSrc = c.Core.F
+	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
