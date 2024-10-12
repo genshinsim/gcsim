@@ -504,6 +504,14 @@
       "image_name": "UI_EquipIcon_Catalyst_Everfrost",
       "name_text_hash_map ": "2587614459"
     },
+    "fruitfulhook": {
+      "id": 12430,
+      "key": "fruitfulhook",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_Umpakati",
+      "name_text_hash_map ": "688237043"
+    },
     "fruitoffulfillment": {
       "id": 14417,
       "key": "fruitoffulfillment",
