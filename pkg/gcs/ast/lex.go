@@ -198,16 +198,6 @@ func lexText(l *lexer) stateFn {
 		l.backup()
 		return lexNumber
 	case r == '-':
-		// if next item is a number then lex number
-		n := l.next()
-		if isNumeric(n) {
-			// backup twice
-			l.backup()
-			l.backup()
-			return lexNumber
-		}
-		// other wise it's a - sign
-		l.backup()
 		l.emit(ItemMinus)
 	case r == '>':
 		if n := l.next(); n == '=' {
