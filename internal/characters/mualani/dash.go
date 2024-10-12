@@ -8,7 +8,7 @@ import (
 var skillDashFrames []int
 
 func init() {
-	skillDashFrames = frames.InitAbilSlice(24)
+	skillDashFrames = frames.InitAbilSlice(24) // dash
 	skillDashFrames[action.ActionAttack] = 3
 	skillDashFrames[action.ActionSkill] = 2
 	skillDashFrames[action.ActionBurst] = 4

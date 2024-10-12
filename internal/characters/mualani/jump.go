@@ -8,11 +8,11 @@ import (
 var skillJumpFrames []int
 
 func init() {
-	skillJumpFrames = frames.InitAbilSlice(54)
+	skillJumpFrames = frames.InitAbilSlice(54) // skill
 	skillJumpFrames[action.ActionAttack] = 4
 	skillJumpFrames[action.ActionBurst] = 50
 	skillJumpFrames[action.ActionDash] = 49
-	skillJumpFrames[action.ActionJump] = 59
+	skillJumpFrames[action.ActionJump] = 50
 	skillJumpFrames[action.ActionWalk] = 47
 	skillJumpFrames[action.ActionSwap] = 48
 }

@@ -8,14 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-const burstHitmarks = 114
+const burstHitmarks = 185 - 70
 
 var (
 	burstFrames []int
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(180)
+	burstFrames = frames.InitAbilSlice(180) // charge
 	burstFrames[action.ActionAttack] = 167
 	burstFrames[action.ActionSkill] = 166
 	burstFrames[action.ActionDash] = 167
@@ -35,16 +35,16 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.QueueCharTask(c.momentumStackGain(c.momentumSrc), burstFrames[action.ActionSwap])
 	}
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Boomsharka-laka",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Hydro,
-		Durability: 25,
-		Mult:       0,
-		FlatDmg:    burst[c.TalentLvlBurst()] * c.MaxHP(),
+		ActorIndex:     c.Index,
+		Abil:           "Boomsharka-laka",
+		AttackTag:      attacks.AttackTagElementalBurst,
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.Hydro,
+		Durability:     25,
+		FlatDmg:        burst[c.TalentLvlBurst()] * c.MaxHP(),
 	}
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5)
 

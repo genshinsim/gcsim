@@ -49,14 +49,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.a4()
 
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
-
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
@@ -90,16 +82,16 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 		if c.momentumStacks >= 3 {
 			switch k {
 			case model.AnimationXingqiuN0StartDelay:
-				return 34
+				return 44
 			default:
-				return 29
+				return 37
 			}
 		}
 		switch k {
 		case model.AnimationXingqiuN0StartDelay:
-			return 1
+			return 11
 		default:
-			return 1
+			return 9
 		}
 	}
 	switch k {
@@ -134,5 +126,5 @@ func (c *char) onExitField() {
 			c.cancelNightsoul()
 		}
 		return false
-	}, "hutao-exit")
+	}, "mualani-exit")
 }

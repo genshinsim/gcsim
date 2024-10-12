@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -16,24 +17,23 @@ const (
 
 	particleICD     = 9999 * 60
 	particleICDKey  = "mualani-particle-icd"
-	momentumIcd     = "mualani-momentum-icd"
+	momentumIcdKey  = "mualani-momentum-icd"
 	markedAsPreyKey = "marked-as-prey"
+	momentumIcd     = 0.7 * 60
 	markedAsPreyDur = 10 * 60
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(69)
+	skillFrames = frames.InitAbilSlice(69) // E -> E
 	skillFrames[action.ActionAttack] = 5
-	skillFrames[action.ActionCharge] = 68
 	skillFrames[action.ActionBurst] = 6
 	skillFrames[action.ActionDash] = 15
 	skillFrames[action.ActionJump] = 18
-	skillFrames[action.ActionWalk] = 20
+	skillFrames[action.ActionWalk] = 19
 	skillFrames[action.ActionSwap] = 65
 
-	skillCancelFrames = frames.InitAbilSlice(17)
+	skillCancelFrames = frames.InitAbilSlice(17) // E -> Charge
 	skillCancelFrames[action.ActionAttack] = 7
-	skillCancelFrames[action.ActionCharge] = 17
 	skillCancelFrames[action.ActionBurst] = 4
 	skillCancelFrames[action.ActionDash] = 13
 	skillCancelFrames[action.ActionJump] = 12
@@ -50,7 +50,7 @@ func (c *char) reduceNightsoulPoints(val float64) {
 
 func (c *char) cancelNightsoul() {
 	c.nightsoulState.ExitBlessing()
-	c.SetCDWithDelay(action.ActionSkill, 6*60, 0)
+	c.SetCD(action.ActionSkill, 6*60)
 	c.ResetActionCooldown(action.ActionAttack)
 	c.momentumStacks = 0
 	c.momentumSrc = -1
@@ -89,8 +89,7 @@ func (c *char) momentumStackGain(src int) func() {
 			return
 		}
 
-		// TODO: how large is the collision hitbox?
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.0)
+		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.9}, 0, 1)
 		enemies := c.Core.Combat.Enemies()
 		enemiesCollided := 0
 		for _, e := range enemies {
@@ -100,15 +99,15 @@ func (c *char) momentumStackGain(src int) func() {
 			}
 
 			willLand, _ := e.AttackWillLand(ap)
-			if willLand {
+			if willLand && !enemy.StatusIsActive(momentumIcdKey) {
 				enemy.AddStatus(markedAsPreyKey, markedAsPreyDur, true)
+				enemy.AddStatus(momentumIcdKey, 0.7*60, true)
 				enemiesCollided++
 			}
 		}
-		c.AddStatus(momentumIcd, 0.7*60, true)
 
 		c.momentumStacks = min(c.momentumStacks+enemiesCollided, 3)
-		c.QueueCharTask(c.momentumStackGain(src), 0.7*60)
+		c.QueueCharTask(c.momentumStackGain(src), 0.1*60) // TODO: correct interval?
 	}
 }
 

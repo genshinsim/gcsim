@@ -14,14 +14,13 @@ var chargeFrames []int
 const shortChargeHitmark = 71
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(100)
+	chargeFrames = frames.InitAbilSlice(100) // walk
 	chargeFrames[action.ActionAttack] = 73
 	chargeFrames[action.ActionCharge] = 85
 	chargeFrames[action.ActionSkill] = 72
 	chargeFrames[action.ActionBurst] = 73
 	chargeFrames[action.ActionDash] = 72
 	chargeFrames[action.ActionJump] = 73
-	chargeFrames[action.ActionWalk] = 100
 	chargeFrames[action.ActionSwap] = 71
 }
 
