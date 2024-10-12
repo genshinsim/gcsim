@@ -27,8 +27,7 @@ func (c *char) a1cb() combat.AttackCBFunc {
 		c.a1Count++
 		c.QueueCharTask(func() {
 			if c.nightsoulState.HasBlessing() {
-				pointsGain := min(c.nightsoulState.Points()+20, 60) - c.nightsoulState.Points()
-				c.nightsoulState.GeneratePoints(pointsGain)
+				c.nightsoulState.GeneratePoints(20)
 				c.c2puffer()
 				c.c4puffer()
 			}

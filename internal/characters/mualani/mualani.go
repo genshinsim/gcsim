@@ -42,6 +42,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	w.Character = &c
 
 	c.nightsoulState = nightsoul.New(s, w)
+	c.nightsoulState.MaxPoints = 60
 
 	return nil
 }
