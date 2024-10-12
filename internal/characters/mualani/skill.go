@@ -104,7 +104,7 @@ func (c *char) momentumStackGain(src int) func() {
 			willLand, _ := e.AttackWillLand(ap)
 			if willLand && !enemy.StatusIsActive(momentumIcdKey) {
 				enemy.AddStatus(markedAsPreyKey, markedAsPreyDur, true)
-				enemy.AddStatus(momentumIcdKey, 0.7*60, true)
+				enemy.AddStatus(momentumIcdKey, 0.7*60, false)
 				enemiesCollided++
 			}
 		}
