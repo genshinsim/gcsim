@@ -70,6 +70,8 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
 	case "momentum":
 		return c.momentumStacks, nil
 	default:
