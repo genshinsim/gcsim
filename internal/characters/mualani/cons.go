@@ -47,6 +47,9 @@ func (c *char) c2puffer() {
 	}
 }
 func (c *char) c4() {
+	if c.Base.Cons < 4 {
+		return
+	}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.75
 	c.AddAttackMod(character.AttackMod{

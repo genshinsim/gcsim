@@ -49,9 +49,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.a4()
 
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
+	c.c4()
+
 	c.SetNumCharges(action.ActionAttack, 1)
 	c.onExitField()
 	return nil
