@@ -27,7 +27,7 @@ func (c *char) a1Consume(energy float64, holdLevel int) {
 	case attacks.AimParamLv2:
 		c.AddEnergy(a1Key, -energy)
 	}
-	c.c2AddStack()
+	c.c2AddStack(c2ConsumingKey)
 }
 
 const a4Key = "sethos-a4"
@@ -39,7 +39,7 @@ func (c *char) a4() {
 		return
 	}
 	// buff stays active until a4 is proc'd
-	c.AddStatus(a4Key, 9999999, true)
+	c.AddStatus(a4Key, -1, true)
 	c.a4Count = 0
 }
 

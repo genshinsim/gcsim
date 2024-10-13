@@ -14,7 +14,7 @@ import (
 
 var aimedFrames [][]int
 
-var aimedHitmarks = []int{12, 83, 372}
+var aimedHitmarks = []int{16, 74, 368}
 var startCharge = aimedHitmarks[0]
 
 const shadowPierceShotAil = "Shadowpiercing Shot"
@@ -24,24 +24,24 @@ func init() {
 	aimedFrames = make([][]int, 3)
 
 	// Aimed Shot
-	aimedFrames[0] = frames.InitAbilSlice(23)
+	aimedFrames[0] = frames.InitAbilSlice(26)
 	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
 	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
 
 	// Fully-Charged Aimed Shot
-	aimedFrames[1] = frames.InitAbilSlice(91)
+	aimedFrames[1] = frames.InitAbilSlice(83)
 	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
 	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
 
 	// Shadowpiercing Shot
-	aimedFrames[2] = frames.InitAbilSlice(380)
+	aimedFrames[2] = frames.InitAbilSlice(379)
 	aimedFrames[2][action.ActionDash] = aimedHitmarks[2]
 	aimedFrames[2][action.ActionJump] = aimedHitmarks[2]
 }
 
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(burstBuffKey) {
-		return action.Info{}, fmt.Errorf("%v: Cannot aim while in burst", c.CharWrapper.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: Cannot aim while in burst", c.Base.Key)
 	}
 
 	hold, ok := p["hold"]
@@ -139,7 +139,7 @@ func (c *char) ShadowPierce(p map[string]int) (action.Info, error) {
 			AttackTag:            attacks.AttackTagExtra,
 			ICDTag:               attacks.ICDTagNone,
 			ICDGroup:             attacks.ICDGroupDefault,
-			StrikeType:           attacks.StrikeTypePierce,
+			StrikeType:           attacks.StrikeTypeDefault,
 			Element:              attributes.Electro,
 			Durability:           50,
 			Mult:                 shadowpierceAtk[c.TalentLvlAttack()],

@@ -13,10 +13,16 @@ import (
 var skillFrames []int
 
 const skillParticleICDKey = "sethos-particle-icd"
-const skillRefundICDKey = "sethos-refund-icd"
 
 func init() {
-	skillFrames = frames.InitAbilSlice(28)
+	skillFrames = frames.InitAbilSlice(38) // E -> Charge
+	skillFrames[action.ActionAttack] = 28
+	skillFrames[action.ActionSkill] = 32
+	skillFrames[action.ActionBurst] = 28
+	skillFrames[action.ActionDash] = 27
+	skillFrames[action.ActionJump] = 27
+	skillFrames[action.ActionWalk] = 25
+	skillFrames[action.ActionSwap] = 30
 }
 
 func (c *char) skillRefundHook() {
@@ -33,12 +39,13 @@ func (c *char) skillRefundHook() {
 		if ae.Info.AttackTag != attacks.AttackTagElementalArt {
 			return false
 		}
-		if c.StatusIsActive(skillRefundICDKey) {
+		// to avoid procing twice in aoe
+		if c.lastSkillFrame == ae.SourceFrame {
 			return false
 		}
-		c.AddStatus(skillRefundICDKey, 0.05*60, true)
+		c.lastSkillFrame = ae.SourceFrame
 		c.AddEnergy("sethos-skill", skillEnergyRegen[c.TalentLvlSkill()])
-		c.c2AddStack()
+		c.c2AddStack(c2RegainingKey)
 
 		return false
 	}
@@ -47,11 +54,11 @@ func (c *char) skillRefundHook() {
 	c.Core.Events.Subscribe(event.OnElectroCharged, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnSuperconduct, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, refundCB, "sethos-e-refund")
-	c.Core.Events.Subscribe(event.OnCrystallizeElectro, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnHyperbloom, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnQuicken, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnAggravate, refundCB, "sethos-e-refund")
 }
+
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -65,10 +72,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	snap := c.Snapshot(&ai)
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.5)
-
-	c.Core.QueueAttackWithSnap(ai, snap, ap, 14, c.particleCB)
+	c.Core.QueueAttack(ai, ap, 0, 13, c.particleCB)
 
 	c.SetCDWithDelay(action.ActionSkill, 8*60, 10)
 
@@ -87,6 +92,6 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if c.StatusIsActive(skillParticleICDKey) {
 		return
 	}
-	c.AddStatus(skillParticleICDKey, 0.05*60, true)
+	c.AddStatus(skillParticleICDKey, 0.5*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Electro, c.ParticleDelay)
 }

@@ -9,8 +9,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2Key = "sethos-c2"
-const c2Dur = 10 * 60
+const (
+	c2Key          = "sethos-c2"
+	c2ConsumingKey = "sethos-c2-consuming"
+	c2RegainingKey = "sethos-c2-regaining"
+	c2BurstKey     = "sethos-c2-burst"
+
+	c2Dur = 10 * 60
+)
 
 const c4Key = "sethos-c4"
 const c4Dur = 10 * 60
@@ -47,7 +53,7 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBase(c2Key, -1),
 		Amount: func() ([]float64, bool) {
-			stackCount := min(c.c2Stacks, 2.0)
+			stackCount := c.c2Stacks()
 			if stackCount == 0 {
 				return nil, false
 			}
@@ -57,28 +63,33 @@ func (c *char) c2() {
 	})
 }
 
-func (c *char) c2AddStack() {
+func (c *char) c2AddStack(name string) {
 	if c.Base.Cons < 2 {
 		return
 	}
-	c.c2Stacks += 1
-	c.SetTag(c2Key, min(c.c2Stacks, 2))
-	c.QueueCharTask(func() {
-		// tags currently aren't visible in the results UI
-		// the user can still access it using .char.tags.sethos-c2
-		c.c2Stacks -= 1
-		c.SetTag(c2Key, min(c.c2Stacks, 2))
-	}, c2Dur)
+	c.AddStatus(name, c2Dur, true)
 }
 
-var c4Buff []float64
+func (c *char) c2Stacks() int {
+	stacks := 0
+	if c.StatusIsActive(c2ConsumingKey) {
+		stacks++
+	}
+	if c.StatusIsActive(c2RegainingKey) {
+		stacks++
+	}
+	if c.StatusIsActive(c2BurstKey) {
+		stacks++
+	}
+	return min(stacks, 2)
+}
 
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c4Buff = make([]float64, attributes.EndStatType)
-	c4Buff[attributes.EM] = 80
+	c.c4Buff = make([]float64, attributes.EndStatType)
+	c.c4Buff[attributes.EM] = 80
 }
 
 func (c *char) makeC4cb() combat.AttackCBFunc {
@@ -100,7 +111,7 @@ func (c *char) makeC4cb() combat.AttackCBFunc {
 					Base:         modifier.NewBaseWithHitlag(c4Key, c4Dur),
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
-						return c4Buff, true
+						return c.c4Buff, true
 					},
 				})
 			}

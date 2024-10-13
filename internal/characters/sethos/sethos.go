@@ -15,8 +15,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a4Count  int
-	c2Stacks int
+	lastSkillFrame int
+	a4Count        int
+	c4Buff         []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -28,6 +29,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.NormalCon = 3
+
+	c.lastSkillFrame = -1
 
 	w.Character = &c
 
@@ -42,9 +45,14 @@ func (c *char) Init() error {
 	c.c4()
 	return nil
 }
+
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
-		return 0
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 5
+	case model.AnimationYelanN0StartDelay:
+		return 4
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
-	return c.Character.AnimationStartDelay(k)
 }

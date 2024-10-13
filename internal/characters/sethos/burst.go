@@ -7,23 +7,18 @@ import (
 
 var burstFrames []int
 
-const (
-	burstStart   = 45
-	burstBuffKey = "sethos-burst"
-)
+const burstBuffKey = "sethos-burst"
 
 func init() {
 	burstFrames = frames.InitAbilSlice(50)
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	c.QueueCharTask(func() {
-		c.AddStatus(burstBuffKey, 8*60, true)
-		c.c2AddStack()
-	}, burstStart)
+	c.AddStatus(burstBuffKey, 8*60, true)
+	c.c2AddStack(c2BurstKey)
 
-	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
-	c.ConsumeEnergy(1)
+	c.SetCD(action.ActionBurst, 15*60)
+	c.ConsumeEnergy(7)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
