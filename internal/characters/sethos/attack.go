@@ -58,6 +58,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		c.QueueCharTask(func() {
 			var c4cb combat.AttackCBFunc
 			if c.StatusIsActive(burstBuffKey) {
+				ai.Abil = fmt.Sprintf("Dusk Bolt %v", c.NormalCounter)
 				ai.AttackTag = attacks.AttackTagExtra
 				ai.ICDTag = attacks.ICDTagElementalBurst
 				ai.Element = attributes.Electro
