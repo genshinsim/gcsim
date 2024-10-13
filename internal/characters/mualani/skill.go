@@ -132,10 +132,23 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.nightsoulSrc = c.Core.F
 	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
 
+	canQueueAfter := skillFrames[action.ActionAttack] // earliest cancel
+	// press skill "while" walking
+	isWalking := c.Core.Player.AnimationHandler.CurrentState() == action.WalkState
+	if isWalking {
+		canQueueAfter = 0
+	}
+
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
+		Frames: func(next action.Action) int {
+			if next == action.ActionWalk && isWalking {
+				// TODO: or 0f?
+				return 1
+			}
+			return skillFrames[next]
+		},
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
+		CanQueueAfter:   canQueueAfter,
 		State:           action.SkillState,
 	}, nil
 }
