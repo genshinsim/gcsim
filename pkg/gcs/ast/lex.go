@@ -399,11 +399,6 @@ func isAlphaNumeric(r rune) bool {
 	return r == '_' || r == '-' || unicode.IsLetter(r) || unicode.IsDigit(r) || r == '%'
 }
 
-// is Numeric reports whether r is a digit
-func isNumeric(r rune) bool {
-	return unicode.IsDigit(r)
-}
-
 // atTerminator reports whether the input is at valid termination character to
 // appear after an identifier. Breaks .X.Y into two pieces. Also catches cases
 // like "$x+2" not being acceptable without a space, in case we decide one
