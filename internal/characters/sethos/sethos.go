@@ -3,6 +3,7 @@ package sethos
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -55,4 +56,13 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
+}
+
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+		if c.StatusIsActive(burstBuffKey) {
+			c.DeleteStatus(burstBuffKey)
+		}
+		return false
+	}, "sethos-exit")
 }
