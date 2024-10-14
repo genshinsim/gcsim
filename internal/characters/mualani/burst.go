@@ -30,10 +30,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		travel = 70
 	}
 
-	if c.nightsoulState.HasBlessing() {
-		c.momentumSrc = c.Core.F
-		c.QueueCharTask(c.momentumStackGain(c.momentumSrc), burstFrames[action.ActionSwap])
-	}
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Boomsharka-laka",

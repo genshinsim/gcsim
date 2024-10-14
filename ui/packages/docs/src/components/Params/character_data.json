@@ -961,6 +961,28 @@
       "desc": "0 for Tap (default), value between 1 and 600 for Hold. The number determines the E duration in frames."
     }
   ],
+  "sethos": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default), 2 for Shadowpiercing Shot."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    }
+  ],
   "shenhe": [
     {
       "ability": "skill",

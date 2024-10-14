@@ -1,6 +1,8 @@
 package nightsoul
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -74,4 +76,15 @@ func (s *State) clampPoints() {
 
 func (s *State) Points() float64 {
 	return s.nightsoulPoints
+}
+
+func (s *State) Condition(fields []string) (any, error) {
+	switch fields[1] {
+	case "state":
+		return s.HasBlessing(), nil
+	case "points":
+		return s.Points(), nil
+	default:
+		return nil, fmt.Errorf("invalid nightsoul condition: %v", fields[1])
+	}
 }

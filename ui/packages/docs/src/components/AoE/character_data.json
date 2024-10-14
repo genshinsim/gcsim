@@ -7389,6 +7389,132 @@
       }
     ]
   },
+  "sethos": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2-1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2-2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Q-N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      },
+      {
+        "ability": "Q-N2-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      },
+      {
+        "ability": "Q-N2-2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      },
+      {
+        "ability": "Q-N3",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "ShadowpiercingShot",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      },
+      {
+        "ability": "ShadowpiercingShot-Head",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4.5
+      }
+    ]
+  },
   "shenhe": {
     "normal": [
       {

@@ -1251,6 +1251,23 @@
       },
       "name_text_hash_map ": "2388785242"
     },
+    "sethos": {
+      "id": 10000097,
+      "key": "sethos",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Electric",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Sethos",
+      "skill_details": {
+        "skill": 10972,
+        "burst": 10975,
+        "attack": 10971,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1431322346"
+    },
     "shenhe": {
       "id": 10000063,
       "key": "shenhe",
