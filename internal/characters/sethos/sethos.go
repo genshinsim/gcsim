@@ -44,6 +44,7 @@ func (c *char) Init() error {
 	c.c1()
 	c.c2()
 	c.c4()
+	c.onExitField()
 	return nil
 }
 
