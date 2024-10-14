@@ -2330,7 +2330,7 @@
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "legal": true
     },
     {
       "ability": "swap",
