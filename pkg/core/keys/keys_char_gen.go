@@ -70,6 +70,7 @@ const (
 	Rosaria
 	Sara
 	Sayu
+	Sethos
 	Shenhe
 	Sucrose
 	Tartaglia
@@ -345,6 +346,10 @@ func init() {
 	charNames[Sayu] = "sayu"
 	charPrettyName[Sayu] = "Sayu"
 	CharKeyToEle[Sayu] = attributes.Anemo
+
+	charNames[Sethos] = "sethos"
+	charPrettyName[Sethos] = "Sethos"
+	CharKeyToEle[Sethos] = attributes.Electro
 
 	charNames[Shenhe] = "shenhe"
 	charPrettyName[Shenhe] = "Shenhe"

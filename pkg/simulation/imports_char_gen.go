@@ -65,6 +65,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/rosaria"
 	_ "github.com/genshinsim/gcsim/internal/characters/sara"
 	_ "github.com/genshinsim/gcsim/internal/characters/sayu"
+	_ "github.com/genshinsim/gcsim/internal/characters/sethos"
 	_ "github.com/genshinsim/gcsim/internal/characters/shenhe"
 	_ "github.com/genshinsim/gcsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gcsim/internal/characters/tartaglia"

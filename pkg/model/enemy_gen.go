@@ -3020,6 +3020,36 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	22120201: {
+		Id:              22120201,
+		Key:             "tenebrousmimiflora",
+		NameTextHashMap: 2988972984,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  46.1856,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	21030101: {
 		Id:              21030101,
 		Key:             "hydrosamachurl",
@@ -4378,6 +4408,44 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010011,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	24090201: {
+		Id:              24090201,
+		Key:             "secretsourceautomatonconfigurationdevice",
+		NameTextHashMap: 2834509656,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  353.184,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
 					HpPercent: 0,
 				},
 			},
