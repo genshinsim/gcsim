@@ -27,7 +27,7 @@ type char struct {
 	nightsoulSrc      int
 	sampleSrc         int
 	samplersConverted int
-	shredElements     []attributes.Element
+	shredElements     map[attributes.Element]bool
 	c6activated       bool
 	samplersActivated bool
 }
@@ -47,9 +47,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	ns := nightsoul.New(c.Core, c.CharWrapper)
-	c.nightsoulState = ns
-	samplers := make([]attributes.Element, 4) // four samplers, one is her own but will be skipped
+	c.nightsoulState = nightsoul.New(c.Core, c.CharWrapper)
+	samplers := make([]attributes.Element, 4) // four samplers, one is herself but will be skipped
 	for i := 0; i < 4; i++ {
 		samplers[i] = attributes.Geo
 	}
@@ -69,17 +68,12 @@ func (c *char) Init() error {
 		}
 	}
 
-	elementDone := make([]bool, attributes.EndEleType)
 	for i, ele := range samplers {
 		if i == c.Index {
 			// skip Xilonen herself
 			continue
 		}
-		if elementDone[ele] {
-			continue
-		}
-		elementDone[ele] = true
-		c.shredElements = append(c.shredElements, ele)
+		c.shredElements[ele] = true
 	}
 
 	c.a1()

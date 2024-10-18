@@ -2,7 +2,6 @@ package xilonen
 
 import (
 	"fmt"
-	"slices"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -62,7 +61,7 @@ func (c *char) enterNightsoul() {
 	c.AddStatus(skillMaxDurKey, duration, true)
 
 	// Don't queue the task if C2 or higher
-	if c.Base.Cons < 2 && slices.Contains(c.shredElements, attributes.Geo) {
+	if c.Base.Cons < 2 && c.shredElements[attributes.Geo] {
 		c.activeGeoSampler(c.nightsoulSrc)()
 	}
 }
@@ -140,7 +139,7 @@ func (c *char) activeSamplers(src int) func() {
 
 		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 
-		for _, ele := range c.shredElements {
+		for ele := range c.shredElements {
 			// skip geo when C2 or above since it's always active
 			if c.Base.Cons >= 2 && ele == attributes.Geo {
 				continue

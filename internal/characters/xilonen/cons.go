@@ -2,7 +2,6 @@ package xilonen
 
 import (
 	"fmt"
-	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -117,7 +116,8 @@ func (c *char) c2() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	if slices.Contains(c.shredElements, attributes.Geo) {
+
+	if c.shredElements[attributes.Geo] {
 		c.c2GeoSampler()()
 	}
 	c.c2buff()
@@ -170,7 +170,7 @@ func (c *char) c4Init() {
 			amt := 0.65 * c.TotalDef()
 			char.Tags[c4key]--
 
-			c.Core.Log.NewEvent("Xilonen c4 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
+			c.Core.Log.NewEvent("xilonen c4 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 				Write("before", atk.Info.FlatDmg).
 				Write("addition", amt).
 				Write("effect_ends_at", c.StatusExpiry(c4key)).

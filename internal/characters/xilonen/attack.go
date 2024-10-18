@@ -49,9 +49,10 @@ func init() {
 	rollerFrames[1][action.ActionAttack] = 27
 
 	rollerFrames[2] = frames.InitNormalCancelSlice(rollerHitmarks[2], 35)
-	attackFrames[2][action.ActionAttack] = 66
+	rollerFrames[2][action.ActionAttack] = 66
 
 	rollerFrames[3] = frames.InitNormalCancelSlice(rollerHitmarks[3], 35)
+	rollerFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
