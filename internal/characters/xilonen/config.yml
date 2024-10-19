@@ -1,6 +1,8 @@
 package_name: xilonen
 genshin_id: 10000103
 key: xilonen
+icd_tags:
+    - ICDTagXilonenSkate
 skill_data_mapping:
     attack:
         attack_1:

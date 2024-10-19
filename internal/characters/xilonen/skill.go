@@ -170,7 +170,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ICDTag:             attacks.ICDTagElementalArt,
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeSlash,
+		StrikeType:         attacks.StrikeTypePierce,
 		Element:            attributes.Geo,
 		Durability:         25,
 		HitlagHaltFrames:   0.02 * 60,

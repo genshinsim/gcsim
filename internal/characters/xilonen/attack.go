@@ -24,6 +24,7 @@ var (
 	rollerHitlagHaltFrames = []float64{0.03, 0.03, 0.03, 0.06}
 	rollerHitboxes         = [][]float64{{2.7, 270}, {5, 3.7}, {3.5, 4.5}, {3.5, 270}}
 	rollerOffsets          = []float64{0.7, -0.5, -0.5, 0.6}
+	rollerPoiseDMG         = []float64{52.8, 51.9, 62.1, 81.1}
 )
 
 const normalHitNum = 3
@@ -119,9 +120,10 @@ func (c *char) nightsoulAttack() action.Info {
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagNormal,
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDTag:             attacks.ICDTagXilonenSkate,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeSlash,
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           rollerPoiseDMG[c.NormalCounter],
 		Element:            attributes.Geo,
 		Durability:         25,
 		HitlagHaltFrames:   rollerHitlagHaltFrames[c.NormalCounter] * 60,
