@@ -42,6 +42,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
+	c.shredElements = map[attributes.Element]bool{}
 
 	w.Character = &c
 
