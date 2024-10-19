@@ -5972,6 +5972,16 @@
         "radius": 3.5
       }
     ],
+    "skill": [
+      {
+        "ability": "Surfing",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.9,
+        "boxX": 0,
+        "boxY": 1
+      }
+    ],
     "burst": [
       {
         "ability": "Q",
