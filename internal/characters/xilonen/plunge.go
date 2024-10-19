@@ -12,12 +12,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames []int
 var lowPlungeFrames []int
+var highPlungeFrames []int
+var skillHighPlungeFrames []int
 
-const lowPlungeHitmark = 46
-const highPlungeHitmark = 48
+const lowPlungeHitmark = 47
+const highPlungeHitmark = 50
 const collisionHitmark = lowPlungeHitmark - 6
+
+const skillHighPlungeHitmark = 39
+const skillCollisionHitmark = skillHighPlungeHitmark - 6
 
 const lowPlungePoiseDMG = 100.0
 const lowPlungeRadius = 3.0
@@ -27,21 +31,30 @@ const highPlungeRadius = 5.0
 
 func init() {
 	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(73)
-	lowPlungeFrames[action.ActionAttack] = 57
-	lowPlungeFrames[action.ActionSkill] = 57
+	lowPlungeFrames = frames.InitAbilSlice(75)
+	lowPlungeFrames[action.ActionAttack] = 59
+	lowPlungeFrames[action.ActionSkill] = 59
 	lowPlungeFrames[action.ActionBurst] = 58
 	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFrames[action.ActionSwap] = 60
+	lowPlungeFrames[action.ActionWalk] = 74
 
 	// high_plunge -> x
 	highPlungeFrames = frames.InitAbilSlice(75)
-	highPlungeFrames[action.ActionAttack] = 59
-	highPlungeFrames[action.ActionSkill] = 59
-	highPlungeFrames[action.ActionBurst] = 59
+	highPlungeFrames[action.ActionAttack] = 62
+	highPlungeFrames[action.ActionSkill] = 60
+	highPlungeFrames[action.ActionBurst] = 61
 	highPlungeFrames[action.ActionDash] = highPlungeHitmark
-	highPlungeFrames[action.ActionWalk] = 73
+	highPlungeFrames[action.ActionJump] = 74
 	highPlungeFrames[action.ActionSwap] = 61
+
+	skillHighPlungeFrames = frames.InitAbilSlice(77)
+	skillHighPlungeFrames[action.ActionAttack] = 55
+	skillHighPlungeFrames[action.ActionSkill] = 56
+	skillHighPlungeFrames[action.ActionBurst] = 55
+	skillHighPlungeFrames[action.ActionDash] = skillHighPlungeHitmark
+	skillHighPlungeFrames[action.ActionSwap] = 57
+	skillHighPlungeFrames[action.ActionWalk] = 66
 }
 
 // Low Plunge attack damage queue generator
@@ -54,6 +67,9 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
+		if c.nightsoulState.HasBlessing() {
+			return action.Info{}, errors.New("xilonen cannot low_plunge while in nightsoul blessing")
+		}
 		return c.lowPlungeXY(p), nil
 	default:
 		return action.Info{}, errors.New("low_plunge can only be used while airborne")
@@ -82,11 +98,6 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],
 		UseDef:     true,
-	}
-	if c.nightsoulState.HasBlessing() {
-		ai.Element = attributes.Geo
-		ai.IgnoreInfusion = true
-		ai.Mult += c.c6DmgMult()
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -126,10 +137,6 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		collision = 0 // Whether or not collision hit
 	}
 
-	if collision > 0 {
-		c.plungeCollision(collisionHitmark)
-	}
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
@@ -143,11 +150,22 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		Mult:       highPlunge[c.TalentLvlAttack()],
 		UseDef:     true,
 	}
+	highPlungeFrames := highPlungeFrames
+	collisionHitmark := collisionHitmark
 	if c.nightsoulState.HasBlessing() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
+		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
 		ai.Mult += c.c6DmgMult()
+
+		highPlungeFrames = skillHighPlungeFrames
+		collisionHitmark = skillCollisionHitmark
 	}
+
+	if collision > 0 {
+		c.plungeCollision(collisionHitmark)
+	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
@@ -182,6 +200,7 @@ func (c *char) plungeCollision(delay int) {
 	if c.nightsoulState.HasBlessing() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
+		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
 		ai.Mult += c.c6DmgMult()
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), delay, delay)
