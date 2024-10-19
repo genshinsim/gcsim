@@ -18,7 +18,6 @@ import (
 )
 
 func init() {
-	c2buffsInit()
 	core.RegisterCharFunc(keys.Xilonen, NewChar)
 }
 
@@ -28,15 +27,18 @@ type char struct {
 	nightsoulState    *nightsoul.State
 	nightsoulSrc      int
 	sampleSrc         int
+	exitStateSrc      int
 	samplersConverted int
 	shredElements     map[attributes.Element]bool
-	c6activated       bool
 	samplersActivated bool
+
+	c2Buffs map[attributes.Element][]float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
+	c.nightsoulState = nightsoul.New(c.Core, c.CharWrapper)
 
 	c.EnergyMax = 60
 	c.BurstCon = 5
@@ -45,12 +47,12 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.shredElements = map[attributes.Element]bool{}
 
 	w.Character = &c
+	c.nightsoulState.MaxPoints = 90
 
 	return nil
 }
 
 func (c *char) Init() error {
-	c.nightsoulState = nightsoul.New(c.Core, c.CharWrapper)
 	samplers := make([]attributes.Element, 4) // four samplers, one is herself but will be skipped
 	for i := 0; i < 4; i++ {
 		samplers[i] = attributes.Geo
@@ -84,7 +86,6 @@ func (c *char) Init() error {
 
 	c.c2()
 	c.c4Init()
-
 	c.c6Stam()
 
 	c.onExitField()
@@ -97,13 +98,12 @@ func (c *char) onExitField() {
 		if prev != c.Index {
 			return false
 		}
-
 		if !c.nightsoulState.HasBlessing() {
 			return false
 		}
-
 		c.exitNightsoul()
 		c.DeleteStatus(c6key)
+
 		return false
 	}, "xilonen-exit")
 }

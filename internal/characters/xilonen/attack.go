@@ -15,7 +15,7 @@ var (
 	attackFrames           [][]int
 	attackHitmarks         = [][]int{{18}, {16, 32}, {22}}
 	attackHitlagHaltFrames = []float64{0.03, 0.03, 0.06}
-	attackHitboxes         = [][]float64{{2.1}, {2.5, 2.5}, {2.8}}
+	attackHitboxes         = [][]float64{{2.1}, {2.5, 2.7}, {3.2}}
 	attackFanAngles        = [][]float64{{0}, {150, 150}, {160}}
 	attackOffsets          = [][]float64{{1.0}, {-0.5, -0.5}, {-0.5}}
 
@@ -57,7 +57,7 @@ func init() {
 	rollerFrames[2][action.ActionAttack] = 30
 
 	rollerFrames[3] = frames.InitNormalCancelSlice(rollerHitmarks[3], 69)
-	rollerFrames[3][action.ActionAttack] = 68 // TODO: this action is illegal; need better way to handle it
+	rollerFrames[3][action.ActionAttack] = 68
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -99,9 +99,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			)
 		}
 
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, ap, 0, 0)
-		}, attackHitmarks[c.NormalCounter][i])
+		c.Core.QueueAttack(ax, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
@@ -118,6 +116,7 @@ func (c *char) nightsoulAttack() action.Info {
 	c.c6()
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Blade Roller %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		ICDTag:             attacks.ICDTagXilonenSkate,
@@ -126,6 +125,7 @@ func (c *char) nightsoulAttack() action.Info {
 		PoiseDMG:           rollerPoiseDMG[c.NormalCounter],
 		Element:            attributes.Geo,
 		Durability:         25,
+		Mult:               attackE[c.NormalCounter][c.TalentLvlAttack()] + c.c6DmgMult(),
 		HitlagHaltFrames:   rollerHitlagHaltFrames[c.NormalCounter] * 60,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: c.NormalCounter == 0, // only N1 can be defhalted
@@ -133,9 +133,6 @@ func (c *char) nightsoulAttack() action.Info {
 		IgnoreInfusion:     true,
 	}
 
-	ax := ai
-	ax.Abil = fmt.Sprintf("Blade Roller %v", c.NormalCounter)
-	ax.Mult = attackE[c.NormalCounter][c.TalentLvlAttack()] + c.c6DmgMult()
 	var ap combat.AttackPattern
 	if c.NormalCounter == 0 || c.NormalCounter == 3 {
 		ap = combat.NewCircleHitOnTargetFanAngle(
@@ -153,9 +150,7 @@ func (c *char) nightsoulAttack() action.Info {
 		)
 	}
 
-	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ax, ap, 0, 0, c.a1cb)
-	}, rollerHitmarks[c.NormalCounter])
+	c.Core.QueueAttack(ai, ap, rollerHitmarks[c.NormalCounter], rollerHitmarks[c.NormalCounter], c.a1cb)
 
 	defer c.AdvanceNormalIndex()
 

@@ -15,12 +15,15 @@ import (
 
 var skillFrames []int
 
-const skillHitmarks = 6
-const skillMaxDurKey = "xilonen-e-limit"
-const particleICDKey = "xilonen-particle-icd"
-const samplerShredKey = "xilonen-e-shred"
-const activeSamplerKey = "xilonen-samplers-activated"
-const maxNightsoulPoints = 90
+const (
+	skillHitmarks   = 6
+	samplerInterval = 0.3 * 60
+
+	skillMaxDurKey   = "xilonen-e-limit"
+	particleICDKey   = "xilonen-particle-icd"
+	samplerShredKey  = "xilonen-e-shred"
+	activeSamplerKey = "xilonen-samplers-activated"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(65)
@@ -33,7 +36,11 @@ func init() {
 }
 
 func (c *char) reduceNightsoulPoints(val float64) {
-	c.nightsoulState.ConsumePoints(val)
+	if c.StatusIsActive(c6key) {
+		return
+	}
+
+	c.nightsoulState.ConsumePoints(val * c.nightsoulConsumptionMul())
 	if c.nightsoulState.Points() <= 0.0001 {
 		c.exitNightsoul()
 	}
@@ -44,21 +51,11 @@ func (c *char) enterNightsoul() {
 	c.nightsoulSrc = c.Core.F
 	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), 12)
 	c.NormalHitNum = rollerHitNum
-
-	c.c6activated = false
+	c.NormalCounter = 0
 	c.samplersActivated = false
-	src := c.nightsoulSrc
-	duration := int(9 * 60 * c.c1DurMod())
-	c.QueueCharTask(func() {
-		if c.nightsoulSrc != src {
-			return
-		}
-		if c.c6activated {
-			return
-		}
-		c.exitNightsoul()
-	}, duration)
-	c.AddStatus(skillMaxDurKey, duration, true)
+
+	duration := int(9 * 60 * c.nightsoulDurationMul())
+	c.setNightsoulExitTimer(duration)
 
 	// Don't queue the task if C2 or higher
 	if c.Base.Cons < 2 && c.shredElements[attributes.Geo] {
@@ -72,8 +69,9 @@ func (c *char) exitNightsoul() {
 	}
 	c.nightsoulState.ExitBlessing()
 	c.nightsoulSrc = -1
-	c.NormalHitNum = normalHitNum
+	c.exitStateSrc = -1
 	c.SetCDWithDelay(action.ActionSkill, 7*60, 0)
+	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
 }
 
@@ -82,23 +80,11 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 		if c.nightsoulSrc != src {
 			return
 		}
-
-		if c.StatusIsActive(c6key) {
-			return
-		}
-
-		if c.nightsoulState.Points() <= 0.0001 {
-			return
-		}
-
-		// TODO: is this check needed? The nightsoulSrc gets reset on on exiting NS state
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
 
-		if !c.StatusIsActive(c6key) {
-			c.reduceNightsoulPoints(c.c1ValMod())
-		}
+		c.reduceNightsoulPoints(1)
 		// reduce 1 point per 12f, which is 5 per second
 		c.QueueCharTask(c.nightsoulPointReduceFunc(src), 12)
 	}
@@ -116,14 +102,14 @@ func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy)
 
 func (c *char) activeGeoSampler(src int) func() {
 	return func() {
-		if c.nightsoulSrc != src {
-			return
+		if c.Base.Cons < 2 {
+			if c.nightsoulSrc != src || !c.nightsoulState.HasBlessing() {
+				return
+			}
 		}
 		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 		c.applySamplerShred(attributes.Geo, enemies)
-
-		// TODO: how often does this apply?
-		c.QueueCharTask(c.activeGeoSampler(src), 18)
+		c.QueueCharTask(c.activeGeoSampler(src), samplerInterval)
 	}
 }
 
@@ -132,23 +118,19 @@ func (c *char) activeSamplers(src int) func() {
 		if c.sampleSrc != src {
 			return
 		}
-
 		if !c.StatusIsActive(activeSamplerKey) {
 			return
 		}
 
 		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
-
 		for ele := range c.shredElements {
 			// skip geo when C2 or above since it's always active
-			if c.Base.Cons >= 2 && ele == attributes.Geo {
+			if ele == attributes.Geo {
 				continue
 			}
 			c.applySamplerShred(ele, enemies)
 		}
-
-		// TODO: how often does this apply?
-		c.QueueCharTask(c.activeSamplers(src), 18)
+		c.QueueCharTask(c.activeSamplers(src), samplerInterval)
 	}
 }
 
@@ -173,23 +155,22 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		StrikeType:         attacks.StrikeTypePierce,
 		Element:            attributes.Geo,
 		Durability:         25,
-		HitlagHaltFrames:   0.02 * 60,
 		HitlagFactor:       0.01,
 		Mult:               skillDMG[c.TalentLvlSkill()],
+		UseDef:             true,
 		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
 		geometry.Point{Y: 0.9},
 		1,
 	)
-	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
-	}, skillHitmarks)
+	c.Core.QueueAttack(ai, ap, skillHitmarks, skillHitmarks, c.particleCB)
 
 	c.enterNightsoul()
-
 	c.c4()
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
@@ -207,4 +188,16 @@ func (c *char) particleCB(a combat.AttackCB) {
 	}
 	c.AddStatus(particleICDKey, 0.5*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Geo, c.ParticleDelay)
+}
+
+func (c *char) setNightsoulExitTimer(duration int) {
+	c.exitStateSrc = c.Core.F
+	src := c.exitStateSrc
+	c.QueueCharTask(func() {
+		if c.exitStateSrc != src {
+			return
+		}
+		c.exitNightsoul()
+	}, duration)
+	c.AddStatus(skillMaxDurKey, duration, true)
 }

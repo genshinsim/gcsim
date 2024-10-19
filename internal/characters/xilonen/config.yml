@@ -37,6 +37,8 @@ skill_data_mapping:
         burstDMG:
             - 0 # Skill DMG|{param0:F1P}
         burstHealPer:
-            - 1
+            - 1 # Continuous Healing|{param1:F1P} DEF+{param2:I}
         burstHealBase:
-            - 2
+            - 2 # Continuous Healing|{param1:F1P} DEF+{param2:I}
+        burstFollowDMG:
+            - 4 # Follow-Up Beat DMG|{param4:F1P} DEF

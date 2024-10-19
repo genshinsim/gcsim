@@ -9,14 +9,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
+var (
+	burstFrames []int
 
-const burstStart = 96
+	burstDamageHitmarks = []int{96, 128, 164}
+	burstHealHitmarks   = []int{185, 274, 362, 450, 539, 627, 716, 805}
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(101) // Q -> W
-	burstFrames[action.ActionAttack] = 94   // Q -> N1
-	burstFrames[action.ActionSkill] = 94    // Q -> E
+	burstFrames[action.ActionAttack] = 95   // Q -> N1
+	burstFrames[action.ActionSkill] = 93    // Q -> E
 	burstFrames[action.ActionDash] = 95     // Q -> D
 	burstFrames[action.ActionJump] = 94     // Q -> J
 	burstFrames[action.ActionSwap] = 92     // Q -> Swap
@@ -25,7 +28,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
-		Abil:           "Ocelotlicue Point",
+		Abil:           "Ocelotlicue Point!",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		ICDTag:         attacks.ICDTagElementalBurst,
@@ -36,34 +39,17 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability:     25,
 		Mult:           burstDMG[c.TalentLvlBurst()],
 		UseDef:         true,
+		HitlagFactor:   0.05,
 	}
-
-	// initial hit at 15f after burst start
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), burstStart, burstStart)
 
 	if c.samplersConverted >= 2 {
-		for i := 1; i <= 8; i++ {
-			hpplus := c.Stat(attributes.Heal)
-			heal := burstHealBase[c.TalentLvlBurst()] + c.TotalDef()*burstHealPer[c.TalentLvlBurst()]
-			c.Core.Tasks.Add(func() {
-				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
-					Target:  c.Core.Player.Active(),
-					Message: "Ocelotlicue Point Ebullient Rhythm",
-					Src:     heal,
-					Bonus:   hpplus,
-				})
-			}, burstStart+int(88.5*float64(i))) // alternate between 88 and 89 frames
-		}
+		c.burstDamage(ai)
 	} else {
-		ai.Abil = "Ocelotlicue Point Ardent Rhythm"
-		for i := 1; i <= 2; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), burstStart+i*33, burstStart+i*33)
-		}
+		c.burstHeal(ai)
 	}
 
-	c.ConsumeEnergy(14)
-	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
+	c.ConsumeEnergy(16)
+	c.SetCD(action.ActionBurst, 15*60)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -71,4 +57,32 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
+}
+
+func (c *char) burstDamage(ai combat.AttackInfo) {
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
+	for i, hitmark := range burstDamageHitmarks {
+		if i > 0 {
+			ai.Abil = "Ardent rhythm"
+			ai.Mult = burstFollowDMG[c.TalentLvlBurst()]
+		}
+		c.Core.QueueAttack(ai, ap, hitmark, hitmark)
+	}
+}
+
+func (c *char) burstHeal(ai combat.AttackInfo) {
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), burstDamageHitmarks[0], burstDamageHitmarks[0])
+
+	hi := info.HealInfo{
+		Caller:  c.Index,
+		Message: "Ebullient rhythm",
+	}
+	for _, hitmark := range burstHealHitmarks {
+		c.Core.Tasks.Add(func() {
+			hi.Target = c.Core.Player.Active()
+			hi.Src = burstHealBase[c.TalentLvlBurst()] + c.TotalDef()*burstHealPer[c.TalentLvlBurst()]
+			hi.Bonus = c.Stat(attributes.Heal)
+			c.Core.Player.Heal(hi)
+		}, hitmark)
+	}
 }

@@ -9,13 +9,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1IcdKey = "xilonen-a1-icd"
-const a1Key = "xilonen-a1"
+const (
+	a1IcdKey = "xilonen-a1-icd"
+	a1Key    = "xilonen-a1"
 
-const a4IcdKey = "xilonen-a4-icd"
-const a4Key = "xilonen-a4"
+	a4IcdKey = "xilonen-a4-icd"
+	a4Key    = "xilonen-a4"
+)
 
 func (c *char) a1() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.30
 	c.AddAttackMod(character.AttackMod{
@@ -34,50 +40,42 @@ func (c *char) a1() {
 		},
 	})
 }
+
 func (c *char) a1cb(cb combat.AttackCB) {
 	if c.Base.Ascension < 1 {
 		return
 	}
-
 	if !c.nightsoulState.HasBlessing() {
 		return
 	}
-
-	if c.samplersConverted < 2 {
+	if c.samplersConverted < 2 || c.samplersActivated {
 		return
 	}
-
-	if c.samplersActivated {
-		return
-	}
-
 	if c.StatusIsActive(a1IcdKey) {
 		return
 	}
 
 	c.AddStatus(a1IcdKey, 0.1*60, true)
 	c.nightsoulState.GeneratePoints(35)
-	if c.nightsoulState.Points() < maxNightsoulPoints {
+	if c.nightsoulState.Points() < c.nightsoulState.MaxPoints {
 		return
 	}
-
 	c.a4MaxPoints(cb.Target, cb.AttackEvent)
-
 	c.a1MaxPoints()
 }
 
 func (c *char) a1MaxPoints() {
 	c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
+	if !c.StatusIsActive(c6key) {
+		c.exitNightsoul()
+	}
 
 	c.AddStatus(activeSamplerKey, 15*60, true)
 	c.sampleSrc = c.Core.F
 	c.activeSamplers(c.sampleSrc)()
-	c.c2electro()
 	c.samplersActivated = true
-	if c.StatusIsActive(c6key) {
-		return
-	}
-	c.exitNightsoul()
+
+	c.c2Electro()
 }
 
 func (c *char) a4() {
