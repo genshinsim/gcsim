@@ -189,6 +189,7 @@ func (c *char) surfingTick() {
 			Durability:         100,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: true,
+			IsDeployable:       true,
 		}
 		c.Core.QueueAttack(ai, ap, 0, 0, c.surfingCB)
 
