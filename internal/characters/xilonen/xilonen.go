@@ -1,11 +1,13 @@
 package xilonen
 
 import (
+	"errors"
 	"fmt"
 
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -105,26 +107,22 @@ func (c *char) onExitField() {
 	}, "xilonen-exit")
 }
 
-func (c *char) Condition(fields []string) (any, error) {
-	switch fields[0] {
-	case "nightsoul-points":
-		if !c.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
-			return 0, nil
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
+	if c.nightsoulState.HasBlessing() {
+		// cannot CA in nightsoul blessing
+		if a == action.ActionCharge {
+			return errors.New("xilonen cannot charge in nightsoul blessing")
 		}
-		return c.nightsoulState.Points(), nil
-	case "nightsoul-blessing":
-		if !c.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
-			return 0, nil
-		}
-		return 1, nil
-	default:
-		return c.Character.Condition(fields)
 	}
+
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
-		return 7
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 12
+	default:
+		return 4
 	}
-	return c.Character.AnimationStartDelay(k)
 }

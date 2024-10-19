@@ -1,8 +1,6 @@
 package xilonen
 
 import (
-	"errors"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -25,10 +23,6 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	if c.nightsoulState.HasBlessing() {
-		return action.Info{}, errors.New("xilonen cannot charge while in nightsoul blessing")
-	}
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
