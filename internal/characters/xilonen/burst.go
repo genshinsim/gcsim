@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	} else {
 		ai.Abil = "Ocelotlicue Point Ardent Rhythm"
 		for i := 1; i <= 2; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), burstStart+i*33, burstStart+i*33)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), burstStart+i*33, burstStart+i*33)
 		}
 	}
 

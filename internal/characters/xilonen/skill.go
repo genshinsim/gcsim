@@ -181,7 +181,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
 		geometry.Point{Y: 0.9},
-		3,
+		1,
 	)
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
