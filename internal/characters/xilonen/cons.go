@@ -31,7 +31,7 @@ func (c *char) c1ValMod() float64 {
 	if c.Base.Cons < 1 {
 		return 1.0
 	}
-	return 1 / 1.45
+	return 1.0 / 1.45
 }
 
 var c2BuffGeo []float64

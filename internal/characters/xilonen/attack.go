@@ -20,10 +20,10 @@ var (
 	attackOffsets          = [][]float64{{1.0}, {-0.5, -0.5}, {-0.5}}
 
 	rollerFrames           [][]int
-	rollerHitmarks         = []int{16, 13, 22, 32}
-	rollerHitlagHaltFrames = []float64{0.03, 0.03, 0.06, 0.06}
-	rollerHitboxes         = []float64{1.5, 1.5, 1.5, 1.5}
-	rollerOffsets          = []float64{0.8, 0.6, 0.8, 0.8}
+	rollerHitmarks         = []int{17, 17, 22, 32}
+	rollerHitlagHaltFrames = []float64{0.03, 0.03, 0.03, 0.06}
+	rollerHitboxes         = [][]float64{{2.7, 270}, {5, 3.7}, {3.5, 4.5}, {3.5, 270}}
+	rollerOffsets          = []float64{0.7, -0.5, -0.5, 0.6}
 )
 
 const normalHitNum = 3
@@ -46,17 +46,17 @@ func init() {
 
 	rollerFrames = make([][]int, rollerHitNum)
 
-	rollerFrames[0] = frames.InitNormalCancelSlice(rollerHitmarks[0], 35)
-	rollerFrames[0][action.ActionAttack] = 22
+	rollerFrames[0] = frames.InitNormalCancelSlice(rollerHitmarks[0], 44)
+	rollerFrames[0][action.ActionAttack] = 20
 
-	rollerFrames[1] = frames.InitNormalCancelSlice(rollerHitmarks[1], 29)
-	rollerFrames[1][action.ActionAttack] = 27
+	rollerFrames[1] = frames.InitNormalCancelSlice(rollerHitmarks[1], 48)
+	rollerFrames[1][action.ActionAttack] = 28
 
-	rollerFrames[2] = frames.InitNormalCancelSlice(rollerHitmarks[2], 35)
-	rollerFrames[2][action.ActionAttack] = 66
+	rollerFrames[2] = frames.InitNormalCancelSlice(rollerHitmarks[2], 50)
+	rollerFrames[2][action.ActionAttack] = 30
 
-	rollerFrames[3] = frames.InitNormalCancelSlice(rollerHitmarks[3], 35)
-	rollerFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	rollerFrames[3] = frames.InitNormalCancelSlice(rollerHitmarks[3], 69)
+	rollerFrames[3][action.ActionAttack] = 68 // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -118,6 +118,7 @@ func (c *char) nightsoulAttack() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagNormal,
+		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSlash,
@@ -125,7 +126,7 @@ func (c *char) nightsoulAttack() action.Info {
 		Durability:         25,
 		HitlagHaltFrames:   rollerHitlagHaltFrames[c.NormalCounter] * 60,
 		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
+		CanBeDefenseHalted: c.NormalCounter == 0, // only N1 can be defhalted
 		UseDef:             true,
 		IgnoreInfusion:     true,
 	}
@@ -133,11 +134,23 @@ func (c *char) nightsoulAttack() action.Info {
 	ax := ai
 	ax.Abil = fmt.Sprintf("Blade Roller %v", c.NormalCounter)
 	ax.Mult = attackE[c.NormalCounter][c.TalentLvlAttack()] + c.c6DmgMult()
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		geometry.Point{Y: rollerOffsets[c.NormalCounter]},
-		rollerHitboxes[c.NormalCounter],
-	)
+	var ap combat.AttackPattern
+	if c.NormalCounter == 0 || c.NormalCounter == 3 {
+		ap = combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: rollerOffsets[c.NormalCounter]},
+			rollerHitboxes[c.NormalCounter][0],
+			rollerHitboxes[c.NormalCounter][1],
+		)
+	} else {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: rollerOffsets[c.NormalCounter]},
+			rollerHitboxes[c.NormalCounter][0],
+			rollerHitboxes[c.NormalCounter][1],
+		)
+	}
+
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(ax, ap, 0, 0, c.a1cb)
 	}, rollerHitmarks[c.NormalCounter])

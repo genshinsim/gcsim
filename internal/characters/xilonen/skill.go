@@ -15,8 +15,7 @@ import (
 
 var skillFrames []int
 
-const skillStart = 2
-const skillHitmarks = 13
+const skillHitmarks = 6
 const skillMaxDurKey = "xilonen-e-limit"
 const particleICDKey = "xilonen-particle-icd"
 const samplerShredKey = "xilonen-e-shred"
@@ -24,11 +23,13 @@ const activeSamplerKey = "xilonen-samplers-activated"
 const maxNightsoulPoints = 90
 
 func init() {
-	skillFrames = frames.InitAbilSlice(22)
-	// skillFrames[action.ActionAttack] = 29
-	// skillFrames[action.ActionBurst] = 28
-	// skillFrames[action.ActionDash] = 37
-	// skillFrames[action.ActionJump] = 37
+	skillFrames = frames.InitAbilSlice(65)
+	skillFrames[action.ActionAttack] = 19
+	skillFrames[action.ActionBurst] = 20
+	skillFrames[action.ActionDash] = 15
+	skillFrames[action.ActionJump] = 15
+	skillFrames[action.ActionSwap] = 19
+	skillFrames[action.ActionWalk] = 20
 }
 
 func (c *char) reduceNightsoulPoints(val float64) {
@@ -41,8 +42,7 @@ func (c *char) reduceNightsoulPoints(val float64) {
 func (c *char) enterNightsoul() {
 	c.nightsoulState.EnterBlessing(45)
 	c.nightsoulSrc = c.Core.F
-	interval := int(12.0 * c.c1ValMod())
-	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), interval)
+	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), 12)
 	c.NormalHitNum = rollerHitNum
 
 	c.c6activated = false
@@ -92,12 +92,12 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 		}
 
 		// TODO: is this check needed? The nightsoulSrc gets reset on on exiting NS state
-		// if !c.nightsoulState.HasBlessing() {
-		// 	return
-		// }
+		if !c.nightsoulState.HasBlessing() {
+			return
+		}
 
 		if !c.StatusIsActive(c6key) {
-			c.reduceNightsoulPoints(1 * c.c1ValMod())
+			c.reduceNightsoulPoints(c.c1ValMod())
 		}
 		// reduce 1 point per 12f, which is 5 per second
 		c.QueueCharTask(c.nightsoulPointReduceFunc(src), 12)
@@ -180,16 +180,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1},
+		geometry.Point{Y: 0.9},
 		3,
 	)
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 	}, skillHitmarks)
 
-	c.QueueCharTask(func() {
-		c.enterNightsoul()
-	}, skillStart)
+	c.enterNightsoul()
 
 	c.c4()
 	return action.Info{
