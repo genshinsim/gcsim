@@ -54,6 +54,7 @@ func (c *char) Init() error {
 
 	c.SetNumCharges(action.ActionAttack, 1)
 	c.onExitField()
+	c.surfingTick()
 	return nil
 }
 
