@@ -3693,6 +3693,74 @@
       }
     ]
   },
+  "xilonen": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-N3",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-N4",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "xingqiu": {
     "normal": [
       {
