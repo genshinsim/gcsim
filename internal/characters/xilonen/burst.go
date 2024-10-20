@@ -13,7 +13,7 @@ var (
 	burstFrames []int
 
 	burstDamageHitmarks = []int{96, 128, 164}
-	burstHealHitmarks   = []int{185, 274, 362, 450, 539, 627, 716, 805}
+	burstHealHitmarks   = []int{185, 274, 362, 450, 539, 627, 716, 805} // every 1.5s
 )
 
 func init() {

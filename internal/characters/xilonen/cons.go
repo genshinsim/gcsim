@@ -166,7 +166,7 @@ func (c *char) c6() {
 	duration := c.StatusDuration(skillMaxDurKey) + 5*60
 	c.setNightsoulExitTimer(duration)
 
-	for i := 0; i < 3; i++ {
+	for i := 1; i <= 4; i++ {
 		c.Core.Tasks.Add(func() {
 			hpplus := c.Stat(attributes.Heal)
 			heal := c.TotalDef() * 1.2
