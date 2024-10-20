@@ -2,7 +2,6 @@ package xilonen
 
 import (
 	"errors"
-	"fmt"
 
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
@@ -10,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -53,32 +51,18 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	samplers := make([]attributes.Element, 4) // four samplers, one is herself but will be skipped
-	for i := 0; i < 4; i++ {
-		samplers[i] = attributes.Geo
-	}
-
-	c.samplersConverted = 0
-	msg := c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, "converting samplers")
-	for _, ch := range c.Core.Player.Chars() {
-		if ch.Index == c.Index {
+	for _, other := range c.Core.Player.Chars() {
+		if other.Index == c.Index {
 			// skip Xilonen herself
 			continue
 		}
-		msg.Write(fmt.Sprintf("%v", ch.Base.Key.String()), ch.Base.Element.String())
-		switch ch.Base.Element {
+		switch ele := other.Base.Element; ele {
 		case attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro:
-			samplers[ch.Index] = ch.Base.Element
 			c.samplersConverted++
+			c.shredElements[ele] = true
+		default:
+			c.shredElements[attributes.Geo] = true
 		}
-	}
-
-	for i, ele := range samplers {
-		if i == c.Index {
-			// skip Xilonen herself
-			continue
-		}
-		c.shredElements[ele] = true
 	}
 
 	c.a1()
