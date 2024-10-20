@@ -9819,7 +9819,7 @@
         "shape": "Circle",
         "center": "Player",
         "offsetY": -0.5,
-        "radius": 2.5,
+        "radius": 2.7,
         "fanAngle": 150
       },
       {
@@ -9827,7 +9827,7 @@
         "shape": "Circle",
         "center": "Player",
         "offsetY": -0.5,
-        "radius": 2.8,
+        "radius": 3.2,
         "fanAngle": 160
       },
       {
@@ -9866,7 +9866,7 @@
     "charge": [
       {
         "ability": "CA",
-        "shape": "Circle",
+        "shape": "Box",
         "center": "Player",
         "offsetY": -1.8,
         "boxX": 2,
@@ -9878,8 +9878,8 @@
         "ability": "E",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": 0.8,
-        "radius": 1
+        "offsetY": 1.0,
+        "radius": 0.8
       }
     ],
     "burst": [

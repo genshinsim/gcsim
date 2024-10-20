@@ -16,7 +16,7 @@ var (
 	attackHitmarks         = [][]int{{18}, {16, 32}, {22}}
 	attackHitlagHaltFrames = []float64{0.03, 0.03, 0.06}
 	attackHitboxes         = [][]float64{{2.1}, {2.5, 2.7}, {3.2}}
-	attackFanAngles        = [][]float64{{0}, {150, 150}, {160}}
+	attackFanAngles        = [][]float64{{360}, {150, 150}, {160}}
 	attackOffsets          = [][]float64{{1.0}, {-0.5, -0.5}, {-0.5}}
 
 	rollerFrames           [][]int
@@ -84,20 +84,12 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ax.Mult = mult[c.TalentLvlAttack()]
 
 		var ap combat.AttackPattern
-		if attackFanAngles[c.NormalCounter][i] > 0 {
-			ap = combat.NewCircleHitOnTargetFanAngle(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
-				attackHitboxes[c.NormalCounter][i],
-				attackFanAngles[c.NormalCounter][i],
-			)
-		} else {
-			ap = combat.NewCircleHitOnTarget(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
-				attackHitboxes[c.NormalCounter][i],
-			)
-		}
+		ap = combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+			attackHitboxes[c.NormalCounter][i],
+			attackFanAngles[c.NormalCounter][i],
+		)
 
 		c.Core.QueueAttack(ax, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
