@@ -83,8 +83,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ax.Abil = fmt.Sprintf("Normal %v", c.NormalCounter)
 		ax.Mult = mult[c.TalentLvlAttack()]
 
-		var ap combat.AttackPattern
-		ap = combat.NewCircleHitOnTargetFanAngle(
+		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackHitboxes[c.NormalCounter][i],
