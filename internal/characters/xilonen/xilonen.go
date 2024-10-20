@@ -121,3 +121,19 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 		return c.Character.AnimationStartDelay(k)
 	}
 }
+
+func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
+	if c.nightsoulState.HasBlessing() {
+		return 0
+	}
+	return c.Character.ActionStam(a, p)
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
+	default:
+		return c.Character.Condition(fields)
+	}
+}
