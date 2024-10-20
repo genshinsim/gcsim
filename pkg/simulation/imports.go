@@ -201,6 +201,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/lumidouceelegy"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/missive"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/moonpiercer"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/mountainbracingbolt"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/primordial"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/prospectorsdrill"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/prototype"

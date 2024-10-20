@@ -792,6 +792,14 @@
       "image_name": "UI_EquipIcon_Pole_Arakalari",
       "name_text_hash_map ": "452357939"
     },
+    "mountainbracingbolt": {
+      "id": 13430,
+      "key": "mountainbracingbolt",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Umpakati",
+      "name_text_hash_map ": "1965515667"
+    },
     "mouunsmoon": {
       "id": 15416,
       "key": "mouunsmoon",
