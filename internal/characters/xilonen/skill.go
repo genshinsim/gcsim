@@ -84,9 +84,9 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 			return
 		}
 
-		c.reduceNightsoulPoints(1)
-		// reduce 1 point per 12f, which is 5 per second
-		c.QueueCharTask(c.nightsoulPointReduceFunc(src), 12)
+		c.reduceNightsoulPoints(0.5)
+		// reduce 0.5 point per 6, which is 5 per second
+		c.QueueCharTask(c.nightsoulPointReduceFunc(src), 6)
 	}
 }
 
