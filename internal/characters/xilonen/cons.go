@@ -39,10 +39,6 @@ func (c *char) c2() {
 		return
 	}
 
-	if c.shredElements[attributes.Geo] {
-		c.activeGeoSampler(-1)()
-	}
-
 	c.c2Buffs = map[attributes.Element][]float64{
 		attributes.Geo:   make([]float64, attributes.EndStatType),
 		attributes.Pyro:  make([]float64, attributes.EndStatType),
@@ -54,37 +50,59 @@ func (c *char) c2() {
 	c.c2Buffs[attributes.Hydro][attributes.HPP] = 0.45
 	c.c2Buffs[attributes.Cryo][attributes.CD] = 0.60
 
-	chars := c.Core.Player.Chars()
-	for _, ch := range chars {
-		ele := ch.Base.Element
-		switch ele {
-		case attributes.Geo, attributes.Pyro, attributes.Hydro, attributes.Cryo:
-		default:
-			continue
-		}
+	if c.shredElements[attributes.Geo] {
+		c.activeGeoSampler(-1)()
+		chars := c.Core.Player.Chars()
+		for _, ch := range chars {
+			if ch.Base.Element != attributes.Geo {
+				continue
+			}
 
-		ch.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(c2key, -1),
-			Amount: func() ([]float64, bool) {
-				if !c.StatusIsActive(activeSamplerKey) {
-					return nil, false
-				}
-				return c.c2Buffs[ele], true
-			},
-		})
+			ch.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase(c2key, -1),
+				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					return c.c2Buffs[attributes.Geo], true
+				},
+			})
+		}
 	}
 }
 
-func (c *char) c2Electro() {
+func (c *char) addC2PHEC(ch *character.CharWrapper) func() {
+	return func() {
+		if !c.StatusIsActive(activeSamplerKey) {
+			return
+		}
+		ch.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag(c2key, 60),
+			Amount: func() ([]float64, bool) {
+				return c.c2Buffs[ch.Base.Element], true
+			},
+		})
+		c.QueueCharTask(c.addC2PHEC(ch), 30)
+	}
+}
+
+func (c *char) c2activate() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	for _, ch := range c.Core.Player.Chars() {
-		if ch.Base.Element == attributes.Electro {
-			ch.AddEnergy(c2key, 25)
-			ch.ReduceActionCooldown(action.ActionBurst, 6*60)
+	c.QueueCharTask(func() {
+		chars := c.Core.Player.Chars()
+		for _, ch := range chars {
+			ele := ch.Base.Element
+			switch ele {
+			case attributes.Geo:
+			case attributes.Pyro, attributes.Hydro, attributes.Cryo:
+				c.addC2PHEC(ch)()
+			case attributes.Electro:
+				ch.AddEnergy(c2key, 25)
+				ch.ReduceActionCooldown(action.ActionBurst, 6*60)
+			default:
+				continue
+			}
 		}
-	}
+	}, 0.3*60)
 }
 
 func (c *char) c4() {
@@ -149,7 +167,7 @@ func (c *char) c6() {
 	duration := c.StatusDuration(skillMaxDurKey) + 5*60
 	c.setNightsoulExitTimer(duration)
 
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 3; i++ {
 		c.Core.Tasks.Add(func() {
 			hpplus := c.Stat(attributes.Heal)
 			heal := c.TotalDef() * 1.2

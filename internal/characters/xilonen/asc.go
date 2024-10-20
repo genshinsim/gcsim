@@ -86,7 +86,7 @@ func (c *char) a1MaxPoints() {
 	c.activeSamplers(c.sampleSrc, c.CharWrapper)()
 	c.samplersActivated = true
 
-	c.c2Electro()
+	c.c2activate()
 }
 
 func (c *char) a4() {
