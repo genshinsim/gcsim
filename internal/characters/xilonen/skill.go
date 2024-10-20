@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -112,12 +113,16 @@ func (c *char) activeGeoSampler(src int) func() {
 	}
 }
 
-func (c *char) activeSamplers(src int) func() {
+func (c *char) activeSamplers(src int, ch *character.CharWrapper) func() {
 	return func() {
 		if c.sampleSrc != src {
 			return
 		}
 		if !c.StatusIsActive(activeSamplerKey) {
+			return
+		}
+
+		if c.Core.Player.Active() != ch.Index {
 			return
 		}
 
@@ -129,7 +134,7 @@ func (c *char) activeSamplers(src int) func() {
 			}
 			c.applySamplerShred(ele, enemies)
 		}
-		c.QueueCharTask(c.activeSamplers(src), samplerInterval)
+		ch.QueueCharTask(c.activeSamplers(src, ch), samplerInterval)
 	}
 }
 

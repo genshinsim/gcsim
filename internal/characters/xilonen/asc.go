@@ -40,6 +40,16 @@ func (c *char) a1() {
 			return m, true
 		},
 	})
+
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		next := args[1].(int)
+		if c.StatusIsActive(activeSamplerKey) {
+			ch := c.Core.Player.Chars()[next]
+			c.activeSamplers(c.sampleSrc, ch)()
+		}
+
+		return false
+	}, "xilonen-a1-swap")
 }
 
 func (c *char) a1cb(cb combat.AttackCB) {
@@ -73,7 +83,7 @@ func (c *char) a1MaxPoints() {
 
 	c.AddStatus(activeSamplerKey, 15*60, true)
 	c.sampleSrc = c.Core.F
-	c.activeSamplers(c.sampleSrc)()
+	c.activeSamplers(c.sampleSrc, c.CharWrapper)()
 	c.samplersActivated = true
 
 	c.c2Electro()
