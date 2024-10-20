@@ -90,40 +90,6 @@
       },
       "name_text_hash_map ": "1533656818"
     },
-    "albedo": {
-      "id": 10000038,
-      "key": "albedo",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_MONDSTADT",
-      "element": "Rock",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Albedo",
-      "skill_details": {
-        "skill": 10387,
-        "burst": 10388,
-        "attack": 10386,
-        "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "4108620722"
-    },
-    "alhaitham": {
-      "id": 10000078,
-      "key": "alhaitham",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_SUMERU",
-      "element": "Grass",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Alhatham",
-      "skill_details": {
-        "skill": 10782,
-        "burst": 10785,
-        "attack": 10781,
-        "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "4002157418"
-    },
     "aloy": {
       "id": 10000062,
       "key": "aloy",
@@ -192,40 +158,6 @@
       },
       "name_text_hash_map ": "1006042610"
     },
-    "ayato": {
-      "id": 10000066,
-      "key": "ayato",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Water",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Ayato",
-      "skill_details": {
-        "skill": 10662,
-        "burst": 10665,
-        "attack": 10661,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1588620330"
-    },
-    "baizhu": {
-      "id": 10000082,
-      "key": "baizhu",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_LIYUE",
-      "element": "Grass",
-      "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Baizhuer",
-      "skill_details": {
-        "skill": 10822,
-        "burst": 10825,
-        "attack": 10821,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "2984815066"
-    },
     "barbara": {
       "id": 10000014,
       "key": "barbara",
@@ -259,23 +191,6 @@
         "burst_energy_cost": 80
       },
       "name_text_hash_map ": "2646367730"
-    },
-    "bennett": {
-      "id": 10000032,
-      "key": "bennett",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_MONDSTADT",
-      "element": "Fire",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Bennett",
-      "skill_details": {
-        "skill": 10322,
-        "burst": 10323,
-        "attack": 10321,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "968893378"
     },
     "candace": {
       "id": 10000072,
@@ -345,23 +260,6 @@
       },
       "name_text_hash_map ": "1944606922"
     },
-    "chongyun": {
-      "id": 10000036,
-      "key": "chongyun",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_LIYUE",
-      "element": "Ice",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Chongyun",
-      "skill_details": {
-        "skill": 10402,
-        "burst": 10403,
-        "attack": 10401,
-        "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "2876340530"
-    },
     "clorinde": {
       "id": 10000098,
       "key": "clorinde",
@@ -396,23 +294,6 @@
       },
       "name_text_hash_map ": "2948362178"
     },
-    "cyno": {
-      "id": 10000071,
-      "key": "cyno",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_SUMERU",
-      "element": "Electric",
-      "weapon_class": "WEAPON_POLE",
-      "icon_name": "UI_AvatarIcon_Cyno",
-      "skill_details": {
-        "skill": 10712,
-        "burst": 10715,
-        "attack": 10711,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1049891906"
-    },
     "dehya": {
       "id": 10000079,
       "key": "dehya",
@@ -429,23 +310,6 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "2360533154"
-    },
-    "diluc": {
-      "id": 10000016,
-      "key": "diluc",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_MONDSTADT",
-      "element": "Fire",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Diluc",
-      "skill_details": {
-        "skill": 10161,
-        "burst": 10165,
-        "attack": 10160,
-        "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "3608180322"
     },
     "diona": {
       "id": 10000039,
@@ -549,23 +413,6 @@
       },
       "name_text_hash_map ": "3277782506"
     },
-    "freminet": {
-      "id": 10000085,
-      "key": "freminet",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_FONTAINE",
-      "element": "Ice",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Freminet",
-      "skill_details": {
-        "skill": 10852,
-        "burst": 10855,
-        "attack": 10851,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "4201964354"
-    },
     "furina": {
       "id": 10000089,
       "key": "furina",
@@ -582,23 +429,6 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "2180900234"
-    },
-    "gaming": {
-      "id": 10000092,
-      "key": "gaming",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_LIYUE",
-      "element": "Fire",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Gaming",
-      "skill_details": {
-        "skill": 10922,
-        "burst": 10925,
-        "attack": 10921,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2822240322"
     },
     "ganyu": {
       "id": 10000037,
@@ -617,40 +447,6 @@
       },
       "name_text_hash_map ": "2679781122"
     },
-    "gorou": {
-      "id": 10000055,
-      "key": "gorou",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Rock",
-      "weapon_class": "WEAPON_BOW",
-      "icon_name": "UI_AvatarIcon_Gorou",
-      "skill_details": {
-        "skill": 10552,
-        "burst": 10555,
-        "attack": 10551,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3400133546"
-    },
-    "heizou": {
-      "id": 10000059,
-      "key": "heizou",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Wind",
-      "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Heizo",
-      "skill_details": {
-        "skill": 10592,
-        "burst": 10595,
-        "attack": 10591,
-        "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "646032090"
-    },
     "hutao": {
       "id": 10000046,
       "key": "hutao",
@@ -668,23 +464,6 @@
       },
       "name_text_hash_map ": "1940919994"
     },
-    "itto": {
-      "id": 10000057,
-      "key": "itto",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Rock",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Itto",
-      "skill_details": {
-        "skill": 10572,
-        "burst": 10575,
-        "attack": 10571,
-        "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "3068316954"
-    },
     "jean": {
       "id": 10000003,
       "key": "jean",
@@ -701,57 +480,6 @@
         "burst_energy_cost": 80
       },
       "name_text_hash_map ": "3221566250"
-    },
-    "kaeya": {
-      "id": 10000015,
-      "key": "kaeya",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_MONDSTADT",
-      "element": "Ice",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Kaeya",
-      "skill_details": {
-        "skill": 10074,
-        "burst": 10075,
-        "attack": 10073,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "4119663210"
-    },
-    "kaveh": {
-      "id": 10000081,
-      "key": "kaveh",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_SUMERU",
-      "element": "Grass",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Kaveh",
-      "skill_details": {
-        "skill": 10812,
-        "burst": 10815,
-        "attack": 10811,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "466355514"
-    },
-    "kazuha": {
-      "id": 10000047,
-      "key": "kazuha",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Wind",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Kazuha",
-      "skill_details": {
-        "skill": 10472,
-        "burst": 10475,
-        "attack": 10471,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "88505754"
     },
     "keqing": {
       "id": 10000042,
@@ -979,40 +707,6 @@
       },
       "name_text_hash_map ": "1225226258"
     },
-    "lyney": {
-      "id": 10000084,
-      "key": "lyney",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_FONTAINE",
-      "element": "Fire",
-      "weapon_class": "WEAPON_BOW",
-      "icon_name": "UI_AvatarIcon_Liney",
-      "skill_details": {
-        "skill": 10842,
-        "burst": 10845,
-        "attack": 10841,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2472444970"
-    },
-    "mika": {
-      "id": 10000080,
-      "key": "mika",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_MONDSTADT",
-      "element": "Ice",
-      "weapon_class": "WEAPON_POLE",
-      "icon_name": "UI_AvatarIcon_Mika",
-      "skill_details": {
-        "skill": 10802,
-        "burst": 10805,
-        "attack": 10801,
-        "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "231911858"
-    },
     "mona": {
       "id": 10000041,
       "key": "mona",
@@ -1080,23 +774,6 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "2877588578"
-    },
-    "neuvillette": {
-      "id": 10000087,
-      "key": "neuvillette",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_FONTAINE",
-      "element": "Water",
-      "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Neuvillette",
-      "skill_details": {
-        "skill": 10872,
-        "burst": 10875,
-        "attack": 10871,
-        "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "1504902330"
     },
     "nilou": {
       "id": 10000070,
@@ -1183,23 +860,6 @@
       },
       "name_text_hash_map ": "3024507506"
     },
-    "razor": {
-      "id": 10000020,
-      "key": "razor",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_MONDSTADT",
-      "element": "Electric",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Razor",
-      "skill_details": {
-        "skill": 10202,
-        "burst": 10203,
-        "attack": 10201,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "4160147242"
-    },
     "rosaria": {
       "id": 10000045,
       "key": "rosaria",
@@ -1251,23 +911,6 @@
       },
       "name_text_hash_map ": "2388785242"
     },
-    "sethos": {
-      "id": 10000097,
-      "key": "sethos",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_SUMERU",
-      "element": "Electric",
-      "weapon_class": "WEAPON_BOW",
-      "icon_name": "UI_AvatarIcon_Sethos",
-      "skill_details": {
-        "skill": 10972,
-        "burst": 10975,
-        "attack": 10971,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1431322346"
-    },
     "shenhe": {
       "id": 10000063,
       "key": "shenhe",
@@ -1302,108 +945,6 @@
       },
       "name_text_hash_map ": "1053433018"
     },
-    "tartaglia": {
-      "id": 10000033,
-      "key": "tartaglia",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_FATUI",
-      "element": "Water",
-      "weapon_class": "WEAPON_BOW",
-      "icon_name": "UI_AvatarIcon_Tartaglia",
-      "skill_details": {
-        "skill": 10332,
-        "burst": 10333,
-        "attack": 10331,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3847143266"
-    },
-    "thoma": {
-      "id": 10000050,
-      "key": "thoma",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Fire",
-      "weapon_class": "WEAPON_POLE",
-      "icon_name": "UI_AvatarIcon_Tohma",
-      "skill_details": {
-        "skill": 10502,
-        "burst": 10505,
-        "attack": 10501,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3555115602"
-    },
-    "tighnari": {
-      "id": 10000069,
-      "key": "tighnari",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_SUMERU",
-      "element": "Grass",
-      "weapon_class": "WEAPON_BOW",
-      "icon_name": "UI_AvatarIcon_Tighnari",
-      "skill_details": {
-        "skill": 10692,
-        "burst": 10695,
-        "attack": 10691,
-        "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "2506955778"
-    },
-    "venti": {
-      "id": 10000022,
-      "key": "venti",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_MONDSTADT",
-      "element": "Wind",
-      "weapon_class": "WEAPON_BOW",
-      "icon_name": "UI_AvatarIcon_Venti",
-      "skill_details": {
-        "skill": 10224,
-        "burst": 10225,
-        "attack": 10221,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2466140362"
-    },
-    "wanderer": {
-      "id": 10000075,
-      "key": "wanderer",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_SUMERU",
-      "element": "Wind",
-      "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Wanderer",
-      "skill_details": {
-        "skill": 10752,
-        "burst": 10755,
-        "attack": 10751,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3230559562"
-    },
-    "wriothesley": {
-      "id": 10000086,
-      "key": "wriothesley",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_FONTAINE",
-      "element": "Ice",
-      "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Wriothesley",
-      "skill_details": {
-        "skill": 10862,
-        "burst": 10865,
-        "attack": 10861,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "370151050"
-    },
     "xiangling": {
       "id": 10000023,
       "key": "xiangling",
@@ -1437,40 +978,6 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "3648220770"
-    },
-    "xiao": {
-      "id": 10000026,
-      "key": "xiao",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_LIYUE",
-      "element": "Wind",
-      "weapon_class": "WEAPON_POLE",
-      "icon_name": "UI_AvatarIcon_Xiao",
-      "skill_details": {
-        "skill": 10262,
-        "burst": 10265,
-        "attack": 10261,
-        "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "1021947690"
-    },
-    "xingqiu": {
-      "id": 10000025,
-      "key": "xingqiu",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_LIYUE",
-      "element": "Water",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Xingqiu",
-      "skill_details": {
-        "skill": 10382,
-        "burst": 10385,
-        "attack": 10381,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "4197635682"
     },
     "xinyan": {
       "id": 10000044,
@@ -1590,23 +1097,6 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "655825874"
-    },
-    "zhongli": {
-      "id": 10000030,
-      "key": "zhongli",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_LIYUE",
-      "element": "Rock",
-      "weapon_class": "WEAPON_POLE",
-      "icon_name": "UI_AvatarIcon_Zhongli",
-      "skill_details": {
-        "skill": 10302,
-        "burst": 10303,
-        "attack": 10301,
-        "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "3862787418"
     }
   }
 }

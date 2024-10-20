@@ -1,38 +1,4 @@
 {
-  "albedo": [
-    {
-      "fields": [
-        ".albedo.elevator"
-      ],
-      "desc": "Evaluates to 1 if skill is currently active"
-    },
-    {
-      "fields": [
-        ".albedo.c2stacks"
-      ],
-      "desc": "Current number of C2 stacks"
-    },
-    {
-      "fields": [
-        ".<character>.mods.albedo-a4"
-      ],
-      "desc": "Whether or not Albedo A4 buff is active on the specified character"
-    }
-  ],
-  "alhaitham": [
-    {
-      "fields": [
-        ".alhaitham.mirrors"
-      ],
-      "desc": "Current number of Mirrors that Alhaitham has."
-    },
-    {
-      "fields": [
-        ".alhaitham.c2-stacks"
-      ],
-      "desc": "Number of C2 stacks that are currently active."
-    }
-  ],
   "aloy": [
     {
       "fields": [
@@ -97,72 +63,6 @@
       "desc": "Number of c6 effects triggered."
     }
   ],
-  "heizou": [
-    {
-      "fields": [
-        ".heizou.declension"
-      ],
-      "desc": "Number of Declension stacks."
-    }
-  ],
-  "itto": [
-    {
-      "fields": [
-        ".itto.slash.current"
-      ],
-      "desc": "Returns the current CA Slash. Perform checks on this by using the values under .itto.slash-type."
-    },
-    {
-      "fields": [
-        ".itto.slash.next"
-      ],
-      "desc": "Returns the next CA Slash that will be performed based on the stack count at the time that this is evaluated. Perform checks on this by using the values under .itto.slash-type."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.idle"
-      ],
-      "desc": "Returns the number that represents the CA Idle state."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.saichi"
-      ],
-      "desc": "Returns the number that represents the CA Saichimonji Slash state."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.left"
-      ],
-      "desc": "Returns the number that represents the CA Left Combo Slash state."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.right"
-      ],
-      "desc": "Returns the number that represents the CA Right Combo Slash state."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.final"
-      ],
-      "desc": "Returns the number that represents the CA Final Slash state."
-    },
-    {
-      "fields": [
-        ".itto.will-c6-proc"
-      ],
-      "desc": "Returns whether C6 will proc for the upcoming CA."
-    }
-  ],
-  "lyney": [
-    {
-      "fields": [
-        ".lyney.propSurplusStacks"
-      ],
-      "desc": "Number of Prop Surplus stacks."
-    }
-  ],
   "mualani": [
     {
       "fields": [
@@ -179,20 +79,6 @@
       "desc": "Number of Crystal Shrapnel stacks."
     }
   ],
-  "neuvillette": [
-    {
-      "fields": [
-        ".neuvillette.droplets"
-      ],
-      "desc": "Number of Sourcewater droplets in range for Charged Attack Empowerment: Legal Evaluation."
-    },
-    {
-      "fields": [
-        ".neuvillette.droplets-c6"
-      ],
-      "desc": "Number of Sourcewater droplets in range for C6."
-    }
-  ],
   "ningguang": [
     {
       "fields": [
@@ -205,22 +91,6 @@
         ".ningguang.jadeCount"
       ],
       "desc": "Number of Star Jades."
-    }
-  ],
-  "wanderer": [
-    {
-      "fields": [
-        ".wanderer.skydweller-points"
-      ],
-      "desc": "Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state."
-    }
-  ],
-  "wriothesley": [
-    {
-      "fields": [
-        ".wriothesley.gracious-rebuke"
-      ],
-      "desc": "Whether Wriothesley currently has a Gracious Rebuke or not."
     }
   ],
   "xianyun": [
@@ -245,14 +115,6 @@
         ".yelan.breakthrough"
       ],
       "desc": "Whether Yelan is in the Breakthrough state or not."
-    }
-  ],
-  "zhongli": [
-    {
-      "fields": [
-        ".zhongli.shielded"
-      ],
-      "desc": "Evaluates to 1 if player is currently shielded"
     }
   ]
 }

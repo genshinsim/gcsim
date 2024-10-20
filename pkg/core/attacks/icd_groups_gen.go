@@ -3,34 +3,23 @@ package attacks
 
 const (
 	ICDGroupGeneratedStart ICDGroup = iota + EndDefaultICDGroups + 1
-	ICDGroupAlhaithamProjectionAttack
-	ICDGroupAlhaithamExtraAttack
 	ICDGroupAmber
 	ICDGroupArlecchinoElementalArt
 	ICDGroupAyakaExtraAttack
-	ICDGroupBaizhuC2
 	ICDGroupCharlotteMark
 	ICDGroupCharlotteKamera
 	ICDGroupChevreuseBurstMines
 	ICDGroupChioriSkill
 	ICDGroupClorindeElementalArt
 	ICDGroupColleiBurst
-	ICDGroupCynoBolt
-	ICDGroupDiluc
 	ICDGroupDoriBurst
 	ICDGroupEmilieLumidouce
 	ICDGroupFischl
 	ICDGroupFurinaSalonSolitaire
 	ICDGroupLayla
-	ICDGroupLyneyExtra
 	ICDGroupNahidaSkill
 	ICDGroupNaviaBurst
 	ICDGroupNilou
-	ICDGroupTighnari
-	ICDGroupVenti
-	ICDGroupWandererC6
-	ICDGroupWandererA4
-	ICDGroupXiaoDash
 	ICDGroupYaeCharged
 	ICDGroupYaoyaoRadishSkill
 	ICDGroupYaoyaoRadishBurst
@@ -40,14 +29,6 @@ const (
 )
 
 func init() {
-	ICDGroupResetTimer[ICDGroupAlhaithamProjectionAttack] = 720
-	ICDGroupEleApplicationSequence[ICDGroupAlhaithamProjectionAttack] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
-	ICDGroupDamageSequence[ICDGroupAlhaithamProjectionAttack] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
-	ICDGroupResetTimer[ICDGroupAlhaithamExtraAttack] = 120
-	ICDGroupEleApplicationSequence[ICDGroupAlhaithamExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupAlhaithamExtraAttack] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
 	ICDGroupResetTimer[ICDGroupAmber] = 60
 	ICDGroupEleApplicationSequence[ICDGroupAmber] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
 	ICDGroupDamageSequence[ICDGroupAmber] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -59,10 +40,6 @@ func init() {
 	ICDGroupResetTimer[ICDGroupAyakaExtraAttack] = 30
 	ICDGroupEleApplicationSequence[ICDGroupAyakaExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupAyakaExtraAttack] = []float64{1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	ICDGroupResetTimer[ICDGroupBaizhuC2] = 240
-	ICDGroupEleApplicationSequence[ICDGroupBaizhuC2] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupBaizhuC2] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupCharlotteMark] = 720
 	ICDGroupEleApplicationSequence[ICDGroupCharlotteMark] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
@@ -88,14 +65,6 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupColleiBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupColleiBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
-	ICDGroupResetTimer[ICDGroupCynoBolt] = 150
-	ICDGroupEleApplicationSequence[ICDGroupCynoBolt] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupCynoBolt] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
-	ICDGroupResetTimer[ICDGroupDiluc] = 300
-	ICDGroupEleApplicationSequence[ICDGroupDiluc] = []float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupDiluc] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
 	ICDGroupResetTimer[ICDGroupDoriBurst] = 180
 	ICDGroupEleApplicationSequence[ICDGroupDoriBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupDoriBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -116,10 +85,6 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupLayla] = []float64{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupLayla] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
-	ICDGroupResetTimer[ICDGroupLyneyExtra] = 60
-	ICDGroupEleApplicationSequence[ICDGroupLyneyExtra] = []float64{1, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupLyneyExtra] = []float64{1, 1, 1, 1, 1, 1}
-
 	ICDGroupResetTimer[ICDGroupNahidaSkill] = 60
 	ICDGroupEleApplicationSequence[ICDGroupNahidaSkill] = []float64{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupNahidaSkill] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -131,26 +96,6 @@ func init() {
 	ICDGroupResetTimer[ICDGroupNilou] = 114
 	ICDGroupEleApplicationSequence[ICDGroupNilou] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupNilou] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
-	ICDGroupResetTimer[ICDGroupTighnari] = 150
-	ICDGroupEleApplicationSequence[ICDGroupTighnari] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupTighnari] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
-	ICDGroupResetTimer[ICDGroupVenti] = 60
-	ICDGroupEleApplicationSequence[ICDGroupVenti] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
-	ICDGroupDamageSequence[ICDGroupVenti] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
-	ICDGroupResetTimer[ICDGroupWandererC6] = 120
-	ICDGroupEleApplicationSequence[ICDGroupWandererC6] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupWandererC6] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
-	ICDGroupResetTimer[ICDGroupWandererA4] = 60
-	ICDGroupEleApplicationSequence[ICDGroupWandererA4] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupWandererA4] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
-	ICDGroupResetTimer[ICDGroupXiaoDash] = 6
-	ICDGroupEleApplicationSequence[ICDGroupXiaoDash] = []float64{1, 0, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupXiaoDash] = []float64{1, 0, 0, 0, 0, 0, 0}
 
 	ICDGroupResetTimer[ICDGroupYaeCharged] = 30
 	ICDGroupEleApplicationSequence[ICDGroupYaeCharged] = []float64{1, 0, 0, 0, 0, 0, 0}

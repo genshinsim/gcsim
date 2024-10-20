@@ -38,11 +38,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			if (atk.Info.AttackTag != attacks.AttackTagNormal) && (atk.Info.AttackTag != attacks.AttackTagExtra) {
 				return nil, false
 			}
-			active := c.Player.ByIndex(atk.Info.ActorIndex)
-			if active.Base.Key == keys.Tartaglia &&
-				atk.Info.StrikeType == attacks.StrikeTypeSlash {
-				return nil, false
-			}
 			travel = c.F - atk.Snapshot.SourceFrame
 			m[attributes.DmgP] = incrDmg
 			if travel > passiveThresholdF {

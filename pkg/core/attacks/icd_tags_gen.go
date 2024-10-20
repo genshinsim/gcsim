@@ -8,7 +8,6 @@ const (
 	ICDTagChioriSkill
 	ICDTagClorindeCons
 	ICDTagColleiSprout
-	ICDTagCynoBolt
 	ICDTagDoriC2
 	ICDTagDoriChargingStation
 	ICDTagEmilieLumidouce
@@ -16,16 +15,10 @@ const (
 	ICDTagFurinaUsher
 	ICDTagKleeFireDamage
 	ICDTagLisaElectro
-	ICDTagLyneyEndBoom
-	ICDTagLyneyEndBoomEnhanced
 	ICDTagMonaWaterDamage
 	ICDTagNahidaSkill
 	ICDTagNahidaC6
-	ICDTagNeuvilletteC6
 	ICDTagNilouTranquilityAura
-	ICDTagTartagliaRiptideFlash
-	ICDTagWandererC6
-	ICDTagWandererA4
 	ICDTagYanfeiFire
 	ICDTagYelanBreakthrough
 	ICDTagYelanBurst
