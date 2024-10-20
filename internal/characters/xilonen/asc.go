@@ -1,6 +1,8 @@
 package xilonen
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -21,7 +23,9 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-
+	if c.samplersConverted >= 2 {
+		return
+	}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.30
 	c.AddAttackMod(character.AttackMod{
@@ -30,10 +34,7 @@ func (c *char) a1() {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge && atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil, false
 			}
-			if !c.nightsoulState.HasBlessing() {
-				return nil, false
-			}
-			if c.samplersConverted >= 2 {
+			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
 				return nil, false
 			}
 			return m, true

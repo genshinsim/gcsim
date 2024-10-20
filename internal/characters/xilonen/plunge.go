@@ -152,6 +152,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 	highPlungeFrames := highPlungeFrames
 	collisionHitmark := collisionHitmark
+	var a1cb combat.AttackCBFunc
 	if c.nightsoulState.HasBlessing() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
@@ -160,6 +161,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 
 		highPlungeFrames = skillHighPlungeFrames
 		collisionHitmark = skillCollisionHitmark
+		a1cb = c.a1cb
 	}
 
 	if collision > 0 {
@@ -171,7 +173,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmark,
 		highPlungeHitmark,
-		c.a1cb,
+		a1cb,
 	)
 
 	return action.Info{
@@ -197,11 +199,13 @@ func (c *char) plungeCollision(delay int) {
 		Mult:       collision[c.TalentLvlAttack()],
 		UseDef:     true,
 	}
+	var a1cb combat.AttackCBFunc
 	if c.nightsoulState.HasBlessing() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
 		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
 		ai.Mult += c.c6DmgMult()
+		a1cb = c.a1cb
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), delay, delay, a1cb)
 }
