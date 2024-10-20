@@ -104,7 +104,6 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmark,
 		lowPlungeHitmark,
-		c.a1cb,
 	)
 
 	return action.Info{

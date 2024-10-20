@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -49,7 +48,7 @@ func (c *char) reduceNightsoulPoints(val float64) {
 func (c *char) enterNightsoul() {
 	c.nightsoulState.EnterBlessing(45)
 	c.nightsoulSrc = c.Core.F
-	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), 12)
+	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 12)
 	c.NormalHitNum = rollerHitNum
 	c.NormalCounter = 0
 	c.samplersActivated = false
@@ -113,16 +112,12 @@ func (c *char) activeGeoSampler(src int) func() {
 	}
 }
 
-func (c *char) activeSamplers(src int, ch *character.CharWrapper) func() {
+func (c *char) activeSamplers(src int) func() {
 	return func() {
 		if c.sampleSrc != src {
 			return
 		}
 		if !c.StatusIsActive(activeSamplerKey) {
-			return
-		}
-
-		if c.Core.Player.Active() != ch.Index {
 			return
 		}
 
@@ -134,7 +129,10 @@ func (c *char) activeSamplers(src int, ch *character.CharWrapper) func() {
 			}
 			c.applySamplerShred(ele, enemies)
 		}
-		ch.QueueCharTask(c.activeSamplers(src, ch), samplerInterval)
+
+		// QueueCharTask needs to be called on the active char
+		ch := c.Core.Player.ActiveChar()
+		ch.QueueCharTask(c.activeSamplers(src), samplerInterval)
 	}
 }
 
@@ -179,7 +177,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionBurst], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

@@ -68,7 +68,7 @@ func (c *char) c2() {
 	}
 }
 
-func (c *char) addC2PHEC(ch *character.CharWrapper) func() {
+func (c *char) applyC2Buff(ch *character.CharWrapper) func() {
 	return func() {
 		if !c.StatusIsActive(activeSamplerKey) {
 			return
@@ -79,7 +79,7 @@ func (c *char) addC2PHEC(ch *character.CharWrapper) func() {
 				return c.c2Buffs[ch.Base.Element], true
 			},
 		})
-		c.QueueCharTask(c.addC2PHEC(ch), 30)
+		c.QueueCharTask(c.applyC2Buff(ch), 0.1*60)
 	}
 }
 
@@ -87,22 +87,21 @@ func (c *char) c2activate() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	c.QueueCharTask(func() {
-		chars := c.Core.Player.Chars()
-		for _, ch := range chars {
-			ele := ch.Base.Element
-			switch ele {
-			case attributes.Geo:
-			case attributes.Pyro, attributes.Hydro, attributes.Cryo:
-				c.addC2PHEC(ch)()
-			case attributes.Electro:
-				ch.AddEnergy(c2key, 25)
-				ch.ReduceActionCooldown(action.ActionBurst, 6*60)
-			default:
-				continue
-			}
+	chars := c.Core.Player.Chars()
+	for _, ch := range chars {
+		ele := ch.Base.Element
+		switch ele {
+		case attributes.Geo:
+			// skip, because it's already applied
+		case attributes.Pyro, attributes.Hydro, attributes.Cryo:
+			c.QueueCharTask(c.applyC2Buff(ch), 0.3*60)
+		case attributes.Electro:
+			ch.AddEnergy(c2key, 25)
+			ch.ReduceActionCooldown(action.ActionBurst, 6*60)
+		default:
+			continue
 		}
-	}, 0.3*60)
+	}
 }
 
 func (c *char) c4() {
