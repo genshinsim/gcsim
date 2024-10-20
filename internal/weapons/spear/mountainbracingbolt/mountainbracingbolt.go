@@ -26,7 +26,7 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 const (
-	permaBuffKey = "mountain-bracing-bolt-perma"
+	baseBuffKey  = "mountain-bracing-bolt-base"
 	otherBuffKey = "mountain-bracing-bolt-other"
 )
 
@@ -37,22 +37,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	base := make([]float64, attributes.EndStatType)
-	skillDmg := 0.09 + float64(r)*0.03
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.09 + float64(r)*0.03
 
-	base[attributes.DmgP] = skillDmg
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(permaBuffKey, -1),
+		Base: modifier.NewBase(baseBuffKey, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 				return nil, false
 			}
-			return base, true
+			return m, true
 		},
 	})
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = skillDmg
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() == char.Index {
 			return false
