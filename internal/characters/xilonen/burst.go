@@ -42,7 +42,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		HitlagFactor:   0.05,
 	}
 
-	if c.samplersConverted >= 2 {
+	if c.samplersConverted < 2 {
 		c.burstDamage(ai)
 	} else {
 		c.burstHeal(ai)
