@@ -63,7 +63,7 @@ func (c *char) burstDamage(ai combat.AttackInfo) {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 	for i, hitmark := range burstDamageHitmarks {
 		if i > 0 {
-			ai.Abil = "Ardent rhythm"
+			ai.Abil = "Follow-Up Beat"
 			ai.Mult = burstFollowDMG[c.TalentLvlBurst()]
 		}
 		c.Core.QueueAttack(ai, ap, hitmark, hitmark)
@@ -75,7 +75,7 @@ func (c *char) burstHeal(ai combat.AttackInfo) {
 
 	hi := info.HealInfo{
 		Caller:  c.Index,
-		Message: "Ebullient rhythm",
+		Message: "Ebullient Rhythm",
 	}
 	for _, hitmark := range burstHealHitmarks {
 		c.Core.Tasks.Add(func() {
