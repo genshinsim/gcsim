@@ -29,6 +29,7 @@ type char struct {
 	samplersConverted int
 	shredElements     map[attributes.Element]bool
 	samplersActivated bool
+	skillLastStamF    int
 
 	c2Buffs map[attributes.Element][]float64
 }

@@ -2,6 +2,7 @@ package xilonen
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -55,7 +56,8 @@ func (c *char) enterNightsoul() {
 
 	duration := int(9 * 60 * c.nightsoulDurationMul())
 	c.setNightsoulExitTimer(duration)
-
+	c.skillLastStamF = c.Core.Player.LastStamUse
+	c.Core.Player.LastStamUse = math.MaxInt
 	// Don't queue the task if C2 or higher
 	if c.Base.Cons < 2 && c.shredElements[attributes.Geo] {
 		c.activeGeoSampler(c.nightsoulSrc)()
@@ -72,6 +74,7 @@ func (c *char) exitNightsoul() {
 	c.SetCDWithDelay(action.ActionSkill, 7*60, 0)
 	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
+	c.Core.Player.LastStamUse = c.skillLastStamF
 }
 
 func (c *char) nightsoulPointReduceFunc(src int) func() {
