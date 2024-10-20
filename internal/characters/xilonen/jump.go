@@ -9,7 +9,7 @@ func (c *char) Jump(p map[string]int) (action.Info, error) {
 		c.c6()
 
 		if c.Core.Player.LastAction.Type == action.ActionDash {
-			c.reduceNightsoulPoints(15.0) // total 20, 5 from dash, 15 from jump
+			c.reduceNightsoulPoints(20)
 		}
 	}
 	return c.Character.Jump(p)

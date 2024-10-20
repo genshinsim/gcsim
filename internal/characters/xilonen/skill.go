@@ -83,8 +83,13 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 			return
 		}
 
-		c.reduceNightsoulPoints(0.5)
-		// reduce 0.5 point per 6, which is 5 per second
+		points := 0.5
+		if c.Core.Player.CurrentState() == action.DashState { // sprint
+			points = 1.75
+		}
+		c.reduceNightsoulPoints(points)
+
+		// reduce 0.5/1.75 point per 6f, which is 5/17.5 per second
 		c.Core.Tasks.Add(c.nightsoulPointReduceFunc(src), 6)
 	}
 }
@@ -170,6 +175,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmarks, skillHitmarks, c.particleCB)
 	c.AddStatus(skilRecastCD, 60, true)
+
+	if c.Core.Player.Stam >= 15 {
+		c.Core.Player.RestoreStam(5)
+	} else {
+		// align to 15
+		c.Core.Player.RestoreStam(15 - c.Core.Player.Stam)
+	}
 
 	c.enterNightsoul()
 	c.c4()
