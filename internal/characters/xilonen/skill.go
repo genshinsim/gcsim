@@ -19,6 +19,7 @@ const (
 	skillHitmarks   = 6
 	samplerInterval = 0.3 * 60
 
+	skilRecastCD     = "xilonen-e-recast-cd"
 	skillMaxDurKey   = "xilonen-e-limit"
 	particleICDKey   = "xilonen-particle-icd"
 	samplerShredKey  = "xilonen-e-shred"
@@ -26,13 +27,11 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(65)
+	skillFrames = frames.InitAbilSlice(20)
 	skillFrames[action.ActionAttack] = 19
-	skillFrames[action.ActionBurst] = 20
 	skillFrames[action.ActionDash] = 15
 	skillFrames[action.ActionJump] = 15
 	skillFrames[action.ActionSwap] = 19
-	skillFrames[action.ActionWalk] = 20
 }
 
 func (c *char) reduceNightsoulPoints(val float64) {
@@ -167,6 +166,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		0.8,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmarks, skillHitmarks, c.particleCB)
+	c.AddStatus(skilRecastCD, 60, true)
 
 	c.enterNightsoul()
 	c.c4()

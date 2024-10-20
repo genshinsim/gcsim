@@ -103,6 +103,14 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	// check if a1 window is active is on-field
+	if a == action.ActionSkill && c.StatusIsActive(skilRecastCD) {
+		return false, action.NoFailure
+	}
+	return c.Character.ActionReady(a, p)
+}
+
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	switch k {
 	case model.AnimationXingqiuN0StartDelay:
