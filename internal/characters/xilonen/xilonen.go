@@ -107,7 +107,9 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	switch k {
 	case model.AnimationXingqiuN0StartDelay:
 		return 12
-	default:
+	case model.AnimationYelanN0StartDelay:
 		return 4
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
 }
