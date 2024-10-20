@@ -110,6 +110,10 @@ func (c *char) activeGeoSampler(src int) func() {
 			if c.nightsoulSrc != src || !c.nightsoulState.HasBlessing() {
 				return
 			}
+			if c.StatusIsActive(activeSamplerKey) {
+				// move to activeSamplers
+				return
+			}
 		}
 		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 		c.applySamplerShred(attributes.Geo, enemies)
@@ -129,7 +133,7 @@ func (c *char) activeSamplers(src int) func() {
 		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 		for ele := range c.shredElements {
 			// skip geo when C2 or above since it's always active
-			if ele == attributes.Geo {
+			if ele == attributes.Geo && c.Base.Cons >= 2 {
 				continue
 			}
 			c.applySamplerShred(ele, enemies)
