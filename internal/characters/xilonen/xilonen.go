@@ -25,13 +25,11 @@ type char struct {
 	nightsoulState    *nightsoul.State
 	nightsoulSrc      int
 	sampleSrc         int
+	c2Src             int
 	exitStateSrc      int
 	samplersConverted int
 	shredElements     map[attributes.Element]bool
-	samplersActivated bool
 	skillLastStamF    int
-
-	c2Buffs map[attributes.Element][]float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -64,6 +62,9 @@ func (c *char) Init() error {
 		default:
 			c.shredElements[attributes.Geo] = true
 		}
+	}
+	if len(c.Core.Player.Chars()) < 4 {
+		c.shredElements[attributes.Geo] = true
 	}
 
 	c.a1()

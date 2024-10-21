@@ -14,11 +14,29 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2key = "xilonen-c2"
-const c4key = "xilonen-c4"
-const c6key = "xilonen-c6"
-const c6IcdKey = "xilonen-c6-icd"
-const c6StamKey = "xilonen-c6-stam"
+const (
+	c2key      = "xilonen-c2"
+	c2BuffKey  = "xilonen-c2-buff"
+	c4key      = "xilonen-c4"
+	c6key      = "xilonen-c6"
+	c6IcdKey   = "xilonen-c6-icd"
+	c6StamKey  = "xilonen-c6-stam"
+	c2Interval = 0.3 * 60
+)
+
+var c2Buffs = map[attributes.Element][]float64{
+	attributes.Geo:   make([]float64, attributes.EndStatType),
+	attributes.Pyro:  make([]float64, attributes.EndStatType),
+	attributes.Hydro: make([]float64, attributes.EndStatType),
+	attributes.Cryo:  make([]float64, attributes.EndStatType),
+}
+
+func init() {
+	c2Buffs[attributes.Geo][attributes.DmgP] = 0.5
+	c2Buffs[attributes.Pyro][attributes.ATKP] = 0.45
+	c2Buffs[attributes.Hydro][attributes.HPP] = 0.45
+	c2Buffs[attributes.Cryo][attributes.CD] = 0.60
+}
 
 func (c *char) nightsoulDurationMul() float64 {
 	if c.Base.Cons < 1 {
@@ -39,47 +57,35 @@ func (c *char) c2() {
 		return
 	}
 
-	c.c2Buffs = map[attributes.Element][]float64{
-		attributes.Geo:   make([]float64, attributes.EndStatType),
-		attributes.Pyro:  make([]float64, attributes.EndStatType),
-		attributes.Hydro: make([]float64, attributes.EndStatType),
-		attributes.Cryo:  make([]float64, attributes.EndStatType),
-	}
-	c.c2Buffs[attributes.Geo][attributes.DmgP] = 0.5
-	c.c2Buffs[attributes.Pyro][attributes.ATKP] = 0.45
-	c.c2Buffs[attributes.Hydro][attributes.HPP] = 0.45
-	c.c2Buffs[attributes.Cryo][attributes.CD] = 0.60
-
-	if c.shredElements[attributes.Geo] {
-		c.activeGeoSampler(-1)()
-		chars := c.Core.Player.Chars()
-		for _, ch := range chars {
-			if ch.Base.Element != attributes.Geo {
-				continue
-			}
-
-			ch.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase(c2key, -1),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					return c.c2Buffs[attributes.Geo], true
-				},
-			})
+	c.activeGeoSampler(-1)()
+	for _, ch := range c.Core.Player.Chars() {
+		if ch.Base.Element != attributes.Geo {
+			continue
 		}
+		ch.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase(c2BuffKey, -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				return c2Buffs[attributes.Geo], true
+			},
+		})
 	}
 }
 
-func (c *char) applyC2Buff(ch *character.CharWrapper) func() {
+func (c *char) applyC2Buff(src int, other *character.CharWrapper) func() {
 	return func() {
-		if !c.StatusIsActive(activeSamplerKey) {
+		if c.c2Src != src {
 			return
 		}
-		ch.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(c2key, 60),
+		if !c.StatusIsActive(c2key) {
+			return
+		}
+		other.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag(c2BuffKey, 60),
 			Amount: func() ([]float64, bool) {
-				return c.c2Buffs[ch.Base.Element], true
+				return c2Buffs[other.Base.Element], true
 			},
 		})
-		c.QueueCharTask(c.applyC2Buff(ch), 0.1*60)
+		c.QueueCharTask(c.applyC2Buff(src, other), c2Interval)
 	}
 }
 
@@ -87,17 +93,16 @@ func (c *char) c2activate() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	chars := c.Core.Player.Chars()
-	for _, ch := range chars {
-		ele := ch.Base.Element
-		switch ele {
+	c.c2Src = c.Core.F
+	for _, other := range c.Core.Player.Chars() {
+		switch other.Base.Element {
 		case attributes.Geo:
 			// skip, because it's already applied
 		case attributes.Pyro, attributes.Hydro, attributes.Cryo:
-			c.QueueCharTask(c.applyC2Buff(ch), 0.3*60)
+			c.QueueCharTask(c.applyC2Buff(c.c2Src, other), c2Interval)
 		case attributes.Electro:
-			ch.AddEnergy(c2key, 25)
-			ch.ReduceActionCooldown(action.ActionBurst, 6*60)
+			other.AddEnergy(c2key, 25)
+			other.ReduceActionCooldown(action.ActionBurst, 6*60)
 		default:
 			continue
 		}

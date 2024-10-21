@@ -52,14 +52,13 @@ func (c *char) enterNightsoul() {
 	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 12)
 	c.NormalHitNum = rollerHitNum
 	c.NormalCounter = 0
-	c.samplersActivated = false
 
 	duration := int(9 * 60 * c.nightsoulDurationMul())
 	c.setNightsoulExitTimer(duration)
 	c.skillLastStamF = c.Core.Player.LastStamUse
 	c.Core.Player.LastStamUse = math.MaxInt
 	// Don't queue the task if C2 or higher
-	if c.Base.Cons < 2 && c.shredElements[attributes.Geo] {
+	if c.Base.Cons < 2 {
 		c.activeGeoSampler(c.nightsoulSrc)()
 	}
 }
@@ -143,8 +142,8 @@ func (c *char) activeSamplers(src int) func() {
 		}
 
 		// QueueCharTask needs to be called on the active char
-		ch := c.Core.Player.ActiveChar()
-		ch.QueueCharTask(c.activeSamplers(src), samplerInterval)
+		active := c.Core.Player.ActiveChar()
+		active.QueueCharTask(c.activeSamplers(src), samplerInterval)
 	}
 }
 
