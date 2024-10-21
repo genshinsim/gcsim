@@ -104,7 +104,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) nightsoulAttack() action.Info {
-	c.c6()
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Blade Roller %v", c.NormalCounter),
@@ -116,7 +115,7 @@ func (c *char) nightsoulAttack() action.Info {
 		PoiseDMG:           rollerPoiseDMG[c.NormalCounter],
 		Element:            attributes.Geo,
 		Durability:         25,
-		Mult:               attackE[c.NormalCounter][c.TalentLvlAttack()] + c.c6DmgMult(),
+		Mult:               attackE[c.NormalCounter][c.TalentLvlAttack()],
 		HitlagHaltFrames:   rollerHitlagHaltFrames[c.NormalCounter] * 60,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: c.NormalCounter == 0, // only N1 can be defhalted

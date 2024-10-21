@@ -72,7 +72,7 @@ func (c *char) Init() error {
 
 	c.c2()
 	c.c4Init()
-	c.c6Stam()
+	c.c6()
 
 	c.onExitField()
 	return nil
@@ -88,7 +88,6 @@ func (c *char) onExitField() {
 			return false
 		}
 		c.exitNightsoul()
-		c.DeleteStatus(c6key)
 
 		return false
 	}, "xilonen-exit")

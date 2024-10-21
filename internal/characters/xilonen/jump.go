@@ -6,8 +6,6 @@ import (
 
 func (c *char) Jump(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
-		c.c6()
-
 		if c.Core.Player.LastAction.Type == action.ActionDash {
 			c.reduceNightsoulPoints(20)
 		}

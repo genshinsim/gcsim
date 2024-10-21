@@ -74,6 +74,7 @@ func (c *char) exitNightsoul() {
 	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
 	c.Core.Player.LastStamUse = c.skillLastStamF
+	c.DeleteStatus(c6key)
 }
 
 func (c *char) nightsoulPointReduceFunc(src int) func() {

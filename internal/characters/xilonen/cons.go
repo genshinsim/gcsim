@@ -2,6 +2,7 @@ package xilonen
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -22,6 +23,7 @@ const (
 	c6IcdKey   = "xilonen-c6-icd"
 	c6StamKey  = "xilonen-c6-stam"
 	c2Interval = 0.3 * 60
+	c6Duration = 5 * 60
 )
 
 var c2Buffs = map[attributes.Element][]float64{
@@ -157,22 +159,35 @@ func (c *char) c6() {
 	if c.Base.Cons < 6 {
 		return
 	}
+
+	onAction := func(...interface{}) bool {
+		if c.Core.Player.Active() == c.Index && c.nightsoulState.HasBlessing() {
+			c.applyC6()
+		}
+		return false
+	}
+
+	c.Core.Events.Subscribe(event.OnAttack, onAction, "xilonen-c6-on-attack")
+	c.Core.Events.Subscribe(event.OnDash, onAction, "xilonen-c6-on-dash")
+	c.Core.Events.Subscribe(event.OnPlunge, onAction, "xilonen-c6-on-plunge")
+}
+
+func (c *char) applyC6() {
 	if c.StatusIsActive(c6IcdKey) {
 		return
 	}
-	if !c.nightsoulState.HasBlessing() {
-		return
-	}
-
-	c.AddStatus(c6key, 5*60, true)
 	c.AddStatus(c6IcdKey, 15*60, true)
+	c.c6FlatDmg() // sets c6 key
 
 	// "pause" Nightsoul's Blessing time limit countdown
-	duration := c.StatusDuration(skillMaxDurKey) + 5*60
+	duration := c.StatusDuration(skillMaxDurKey) + c6Duration
 	c.setNightsoulExitTimer(duration)
 
 	for i := 1; i <= 3; i++ {
 		c.Core.Tasks.Add(func() {
+			if !c.StatusIsActive(c6key) {
+				return
+			}
 			hpplus := c.Stat(attributes.Heal)
 			heal := c.TotalDef() * 1.2
 			c.Core.Player.Heal(info.HealInfo{
@@ -186,24 +201,25 @@ func (c *char) c6() {
 	}
 }
 
-func (c *char) c6Stam() {
-	if c.Base.Cons < 6 {
-		return
-	}
-	c.Core.Player.AddStamPercentMod(c6StamKey, -1, func(a action.Action) (float64, bool) {
-		if c.StatusIsActive(c6key) {
-			return -1, false
-		}
-		return 0, false
-	})
-}
+func (c *char) c6FlatDmg() {
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag(c6key, c6Duration),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			switch atk.Info.AttackTag {
+			case attacks.AttackTagNormal, attacks.AttackTagPlunge:
+			default:
+				return nil, false
+			}
+			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
+				return nil, false
+			}
 
-func (c *char) c6DmgMult() float64 {
-	if c.Base.Cons < 6 {
-		return 0.0
-	}
-	if !c.StatusIsActive(c6key) {
-		return 0.0
-	}
-	return 3.0
+			amt := c.TotalDef() * 3.0
+			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index).
+				Write("amt", amt)
+
+			atk.Info.FlatDmg += amt
+			return nil, true
+		},
+	})
 }
