@@ -61,7 +61,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	if c.nightsoulState.HasBlessing() {
+	if c.canUseNightsoul() {
 		return c.nightsoulAttack(), nil
 	}
 
@@ -149,5 +149,10 @@ func (c *char) nightsoulAttack() action.Info {
 		AnimationLength: rollerFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   rollerHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
+		OnRemoved: func(next action.AnimationState) {
+			if !c.canUseNightsoul() {
+				c.exitNightsoul()
+			}
+		},
 	}
 }

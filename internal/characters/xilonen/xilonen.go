@@ -81,26 +81,17 @@ func (c *char) Init() error {
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
-		if prev != c.Index {
-			return false
+		if prev == c.Index {
+			c.exitNightsoul()
 		}
-		if !c.nightsoulState.HasBlessing() {
-			return false
-		}
-		c.exitNightsoul()
-
 		return false
 	}, "xilonen-exit")
 }
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
-	if c.nightsoulState.HasBlessing() {
-		// cannot CA in nightsoul blessing
-		if a == action.ActionCharge {
-			return errors.New("xilonen cannot charge in nightsoul blessing")
-		}
+	if a == action.ActionCharge && c.canUseNightsoul() {
+		return errors.New("xilonen cannot charge in nightsoul blessing")
 	}
-
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
@@ -124,7 +115,7 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if c.nightsoulState.HasBlessing() {
+	if c.canUseNightsoul() {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)

@@ -56,7 +56,7 @@ func (c *char) a1cb(cb combat.AttackCB) {
 	if c.samplersConverted < 2 {
 		return
 	}
-	if !c.nightsoulState.HasBlessing() {
+	if c.nightsoulState.Points() < 0.001 {
 		return
 	}
 	if c.StatusIsActive(a1IcdKey) {
@@ -72,11 +72,7 @@ func (c *char) a1cb(cb combat.AttackCB) {
 }
 
 func (c *char) a1MaxPoints() {
-	c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
-	if !c.StatusIsActive(c6key) {
-		c.exitNightsoul()
-	}
-
+	c.nightsoulState.ClearPoints()
 	c.AddStatus(activeSamplerKey, 15*60, false)
 	if c.Base.Cons > 2 {
 		c.AddStatus(c2key, 15*60, true)

@@ -41,15 +41,26 @@ func (c *char) reduceNightsoulPoints(val float64) {
 	}
 
 	c.nightsoulState.ConsumePoints(val * c.nightsoulConsumptionMul())
-	if c.nightsoulState.Points() <= 0.0001 {
+
+	// don't exit nightsoul while in NA/Plunge
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState, action.PlungeAttackState:
+		return
+	}
+
+	if c.nightsoulState.Points() < 0.001 {
 		c.exitNightsoul()
 	}
+}
+
+func (c *char) canUseNightsoul() bool {
+	return c.nightsoulState.Points() >= 0.001 || c.StatusIsActive(c6key)
 }
 
 func (c *char) enterNightsoul() {
 	c.nightsoulState.EnterBlessing(45)
 	c.nightsoulSrc = c.Core.F
-	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 12)
+	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
 	c.NormalHitNum = rollerHitNum
 	c.NormalCounter = 0
 
@@ -68,9 +79,10 @@ func (c *char) exitNightsoul() {
 		return
 	}
 	c.nightsoulState.ExitBlessing()
+	c.nightsoulState.ClearPoints()
 	c.nightsoulSrc = -1
 	c.exitStateSrc = -1
-	c.SetCDWithDelay(action.ActionSkill, 7*60, 0)
+	c.SetCD(action.ActionSkill, 7*60)
 	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
 	c.Core.Player.LastStamUse = c.skillLastStamF
@@ -82,17 +94,8 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 		if c.nightsoulSrc != src {
 			return
 		}
-		if !c.nightsoulState.HasBlessing() {
-			return
-		}
-
-		points := 0.5
-		if c.Core.Player.CurrentState() == action.DashState { // sprint
-			points = 1.75
-		}
-		c.reduceNightsoulPoints(points)
-
-		// reduce 0.5/1.75 point per 6f, which is 5/17.5 per second
+		c.reduceNightsoulPoints(0.5)
+		// reduce 0.5 point per 6, which is 5 per second
 		c.Core.Tasks.Add(c.nightsoulPointReduceFunc(src), 6)
 	}
 }
@@ -110,7 +113,10 @@ func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy)
 func (c *char) activeGeoSampler(src int) func() {
 	return func() {
 		if c.Base.Cons < 2 {
-			if c.nightsoulSrc != src || !c.nightsoulState.HasBlessing() {
+			if c.nightsoulSrc != src {
+				return
+			}
+			if !c.nightsoulState.HasBlessing() {
 				return
 			}
 			if c.StatusIsActive(activeSamplerKey) {
@@ -149,7 +155,7 @@ func (c *char) activeSamplers(src int) func() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	if c.nightsoulState.HasBlessing() {
+	if c.nightsoulState.HasBlessing() { // don't use canUseNightsoul
 		c.exitNightsoul()
 		return action.Info{
 			Frames:          func(_ action.Action) int { return 1 },
@@ -219,7 +225,15 @@ func (c *char) setNightsoulExitTimer(duration int) {
 		if c.exitStateSrc != src {
 			return
 		}
-		c.exitNightsoul()
+		c.nightsoulState.ClearPoints()
+		if !c.canUseNightsoul() {
+			// don't exit nightsoul while in NA/Plunge
+			switch c.Core.Player.CurrentState() {
+			case action.NormalAttackState, action.PlungeAttackState:
+				return
+			}
+			c.exitNightsoul()
+		}
 	}, duration)
 	c.AddStatus(skillMaxDurKey, duration, true)
 }

@@ -64,7 +64,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
-		if c.nightsoulState.HasBlessing() {
+		if c.canUseNightsoul() {
 			return action.Info{}, errors.New("xilonen cannot low_plunge while in nightsoul blessing")
 		}
 		return c.lowPlungeXY(p), nil
@@ -102,6 +102,12 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		lowPlungeHitmark,
 		lowPlungeHitmark,
 	)
+
+	c.Core.Tasks.Add(func() {
+		if !c.canUseNightsoul() {
+			c.exitNightsoul()
+		}
+	}, lowPlungeHitmark)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
@@ -146,7 +152,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	highPlungeFrames := highPlungeFrames
 	collisionHitmark := collisionHitmark
 	var a1cb combat.AttackCBFunc
-	if c.nightsoulState.HasBlessing() {
+	if c.canUseNightsoul() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
 		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
@@ -167,6 +173,12 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		highPlungeHitmark,
 		a1cb,
 	)
+
+	c.Core.Tasks.Add(func() {
+		if !c.canUseNightsoul() {
+			c.exitNightsoul()
+		}
+	}, highPlungeHitmark)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
@@ -192,7 +204,7 @@ func (c *char) plungeCollision(delay int) {
 		UseDef:     true,
 	}
 	var a1cb combat.AttackCBFunc
-	if c.nightsoulState.HasBlessing() {
+	if c.canUseNightsoul() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
 		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
