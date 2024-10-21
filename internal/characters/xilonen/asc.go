@@ -24,6 +24,13 @@ func (c *char) a1() {
 		return
 	}
 	if c.samplersConverted >= 2 {
+		c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+			if c.StatusIsActive(activeSamplerKey) {
+				c.sampleSrc = c.Core.F
+				c.activeSamplers(c.sampleSrc)()
+			}
+			return false
+		}, "xilonen-a1-swap")
 		return
 	}
 	m := make([]float64, attributes.EndStatType)
@@ -58,11 +65,10 @@ func (c *char) a1cb(cb combat.AttackCB) {
 
 	c.AddStatus(a1IcdKey, 0.1*60, true)
 	c.nightsoulState.GeneratePoints(35)
-	if c.nightsoulState.Points() < c.nightsoulState.MaxPoints {
-		return
+	if c.nightsoulState.Points() >= c.nightsoulState.MaxPoints {
+		c.a4MaxPoints(cb.Target, cb.AttackEvent)
+		c.a1MaxPoints()
 	}
-	c.a4MaxPoints(cb.Target, cb.AttackEvent)
-	c.a1MaxPoints()
 }
 
 func (c *char) a1MaxPoints() {
