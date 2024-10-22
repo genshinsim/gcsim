@@ -30,8 +30,8 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-// Sprint or Alternate Sprint Stamina Consumption decreased by 15%. Additionally,
-// after using Sprint or Alternate Sprint, Normal Attack DMG is increased by 32% of ATK.
+// Sprint or Alternate Sprint Stamina Consumption decreased by 15%.
+// Additionally, after using Sprint or Alternate Sprint, Normal Attack DMG is increased by 32% of ATK.
 // This effect expires after triggering 18 times or 7s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
@@ -54,8 +54,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("sturdybone-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		if c.Player.Active() != char.Index {
+			return false
+		}
 
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
