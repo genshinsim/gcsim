@@ -1256,6 +1256,14 @@
       "image_name": "UI_EquipIcon_Pole_Deshret",
       "name_text_hash_map ": "4238339131"
     },
+    "sturdybone": {
+      "id": 11430,
+      "key": "sturdybone",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Umpakati",
+      "name_text_hash_map ": "495182275"
+    },
     "summitshaper": {
       "id": 11504,
       "key": "summitshaper",
