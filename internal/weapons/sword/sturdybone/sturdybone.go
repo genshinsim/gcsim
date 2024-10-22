@@ -66,23 +66,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		if char.Tags[buffKey] == 0 {
-			return false
-		}
-		if !char.StatusIsActive(buffKey) {
+		if !char.StatusIsActive(buffKey) || char.Tag(buffKey) == 0 {
 			return false
 		}
 
 		dmgAdded := char.Stat(attributes.ATK) * naDmg
 		atk.Info.FlatDmg += dmgAdded
 
-		char.Tags[buffKey] -= 1
+		char.SetTag(buffKey, char.Tag(buffKey)-1)
 
 		c.Log.NewEvent("sturdy bone buff", glog.LogPreDamageMod, char.Index).
 			Write("damage_added", dmgAdded).
 			Write("remaining_stacks", char.Tags[buffKey])
 
 		return false
-	}, "sturdy-bone")
+	}, fmt.Sprintf("sturdybone-%v", char.Base.Key.String()))
 	return w, nil
 }
