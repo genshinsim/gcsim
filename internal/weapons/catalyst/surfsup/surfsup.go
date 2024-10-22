@@ -84,6 +84,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("surfs-up-skill-%v", char.Base.Key.String()))
 
+	// Gain stack on vape
 	c.Events.Subscribe(event.OnVaporize, func(args ...interface{}) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
@@ -111,6 +112,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("surfs-up-vape-%v", char.Base.Key.String()))
 
+	// Lose stack on NA
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
@@ -120,6 +122,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
+			return false
+		}
+
 		if c.Player.Active() != char.Index {
 			return false
 		}
