@@ -75,6 +75,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		dmgAdded := char.Stat(attributes.ATK) * naDmg
 		atk.Info.FlatDmg += dmgAdded
+
+		char.Tags[buffKey] -= 1
+
 		c.Log.NewEvent("sturdy bone buff", glog.LogPreDamageMod, char.Index).
 			Write("damage_added", dmgAdded).
 			Write("remaining_stacks", char.Tags[buffKey])
