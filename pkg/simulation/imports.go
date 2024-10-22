@@ -249,6 +249,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/skyrider"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/skyward"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/splendoroftranquilwaters"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/sturdybone"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/summit"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofdescension"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofnarzissenkreuz"

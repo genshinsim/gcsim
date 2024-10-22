@@ -190,6 +190,7 @@ var weaponNames = []string{
 	"splendoroftranquilwaters",
 	"staffofhoma",
 	"staffofthescarletsands",
+	"sturdybone",
 	"summitshaper",
 	"surfsup",
 	"swordofdescension",
@@ -390,6 +391,7 @@ const (
 	SplendorOfTranquilWaters
 	StaffOfHoma
 	StaffOfTheScarletSands
+	SturdyBone
 	SummitShaper
 	SurfsUp
 	SwordOfDescension
