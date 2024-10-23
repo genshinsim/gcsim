@@ -198,16 +198,6 @@ func lexText(l *lexer) stateFn {
 		l.backup()
 		return lexNumber
 	case r == '-':
-		// if next item is a number then lex number
-		n := l.next()
-		if isNumeric(n) {
-			// backup twice
-			l.backup()
-			l.backup()
-			return lexNumber
-		}
-		// other wise it's a - sign
-		l.backup()
 		l.emit(ItemMinus)
 	case r == '>':
 		if n := l.next(); n == '=' {
@@ -407,11 +397,6 @@ func isSpace(r rune) bool {
 // isAlphaNumeric reports whether r is an alphabetic, digit, or underscore.
 func isAlphaNumeric(r rune) bool {
 	return r == '_' || r == '-' || unicode.IsLetter(r) || unicode.IsDigit(r) || r == '%'
-}
-
-// is Numeric reports whether r is a digit
-func isNumeric(r rune) bool {
-	return unicode.IsDigit(r)
 }
 
 // atTerminator reports whether the input is at valid termination character to
