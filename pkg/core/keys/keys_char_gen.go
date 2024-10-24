@@ -72,6 +72,7 @@ const (
 	Sayu
 	Sethos
 	Shenhe
+	Sigewinne
 	Sucrose
 	Tartaglia
 	Thoma
@@ -354,6 +355,10 @@ func init() {
 	charNames[Shenhe] = "shenhe"
 	charPrettyName[Shenhe] = "Shenhe"
 	CharKeyToEle[Shenhe] = attributes.Cryo
+
+	charNames[Sigewinne] = "sigewinne"
+	charPrettyName[Sigewinne] = "Sigewinne"
+	CharKeyToEle[Sigewinne] = attributes.Hydro
 
 	charNames[Sucrose] = "sucrose"
 	charPrettyName[Sucrose] = "Sucrose"

@@ -26,6 +26,8 @@ const (
 	ICDGroupNahidaSkill
 	ICDGroupNaviaBurst
 	ICDGroupNilou
+	ICDGroupSigewinne
+	ICDGroupSigewinneBurst
 	ICDGroupTighnari
 	ICDGroupVenti
 	ICDGroupWandererC6
@@ -131,6 +133,14 @@ func init() {
 	ICDGroupResetTimer[ICDGroupNilou] = 114
 	ICDGroupEleApplicationSequence[ICDGroupNilou] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupNilou] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupSigewinne] = 120
+	ICDGroupEleApplicationSequence[ICDGroupSigewinne] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupSigewinne] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupSigewinneBurst] = 114
+	ICDGroupEleApplicationSequence[ICDGroupSigewinneBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupSigewinneBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupTighnari] = 150
 	ICDGroupEleApplicationSequence[ICDGroupTighnari] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0}

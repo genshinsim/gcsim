@@ -7603,6 +7603,97 @@
       }
     ]
   },
+  "sigewinne": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Mini-Stration Bubble",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      }
+    ],
+    "skill": [
+      {
+        "ability": "Rebound Hydrotherapy",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "Surging Blade",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Super Saturated Syringing",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": 0,
+        "boxX": 4,
+        "boxY": 10,
+        "notes": "This is an approximation because we do not actually know the real AoE. The hitbox was taken from Neuvillette's CA and was made slightly wider."
+      }
+    ]
+  },
   "heizou": {
     "normal": [
       {
