@@ -1285,6 +1285,23 @@
       },
       "name_text_hash_map ": "334242634"
     },
+    "sigewinne": {
+      "id": 10000095,
+      "key": "sigewinne",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Water",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Sigewinne",
+      "skill_details": {
+        "skill": 10952,
+        "burst": 10955,
+        "attack": 10951,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "781488962"
+    },
     "sucrose": {
       "id": 10000043,
       "key": "sucrose",
