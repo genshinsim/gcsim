@@ -25,15 +25,6 @@ func (c *char) Jump(p map[string]int) (action.Info, error) {
 			c.reduceNightsoulPoints(2)
 		}
 
-		switch c.Core.Player.AnimationHandler.CurrentState() {
-		case action.DashState, action.JumpState, action.WalkState:
-			// use the previous momentum gain tasks
-		default:
-			// queue a new momentum gain task
-			c.momentumSrc = c.Core.F
-			c.QueueCharTask(c.momentumStackGain(c.momentumSrc), momentumDelay)
-		}
-
 		return action.Info{
 			Frames:          frames.NewAbilFunc(skillJumpFrames),
 			AnimationLength: skillJumpFrames[action.InvalidAction],

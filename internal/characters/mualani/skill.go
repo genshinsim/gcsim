@@ -3,22 +3,26 @@ package mualani
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var skillFrames []int
 var skillCancelFrames []int
 
 const (
-	momentumDelay = 7
-
-	particleICD     = 9999 * 60
 	particleICDKey  = "mualani-particle-icd"
 	momentumIcdKey  = "mualani-momentum-icd"
+	surfingKey      = "mualani-surfing"
 	markedAsPreyKey = "marked-as-prey"
+
+	skillDelay      = 2
+	particleICD     = 9999 * 60
 	momentumIcd     = 0.7 * 60
 	markedAsPreyDur = 10 * 60
 )
@@ -52,6 +56,7 @@ func (c *char) cancelNightsoul() {
 	c.nightsoulState.ExitBlessing()
 	c.SetCD(action.ActionSkill, 6*60)
 	c.ResetActionCooldown(action.ActionAttack)
+	c.DeleteStatus(surfingKey)
 	c.momentumStacks = 0
 	c.momentumSrc = -1
 	c.nightsoulSrc = -1
@@ -74,45 +79,6 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 	}
 }
 
-func (c *char) momentumStackGain(src int) func() {
-	return func() {
-		if c.momentumSrc != src {
-			return
-		}
-
-		if !c.nightsoulState.HasBlessing() {
-			return
-		}
-
-		switch c.Core.Player.CurrentState() {
-		case action.DashState, action.JumpState, action.WalkState:
-		default:
-			return
-		}
-
-		c.QueueCharTask(c.momentumStackGain(src), 0.1*60) // TODO: correct interval?
-
-		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.9}, 0, 1)
-		enemies := c.Core.Combat.Enemies()
-		enemiesCollided := 0
-		for _, e := range enemies {
-			enemy, ok := e.(combat.Enemy)
-			if !ok {
-				continue
-			}
-
-			willLand, _ := e.AttackWillLand(ap)
-			if willLand && !enemy.StatusIsActive(momentumIcdKey) {
-				enemy.AddStatus(markedAsPreyKey, markedAsPreyDur, true)
-				enemy.AddStatus(momentumIcdKey, 0.7*60, false)
-				enemiesCollided++
-			}
-		}
-
-		c.momentumStacks = min(c.momentumStacks+enemiesCollided, 3)
-	}
-}
-
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
 		c.cancelNightsoul()
@@ -124,26 +90,31 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	c.nightsoulState.EnterBlessing(60)
-	c.DeleteStatus(particleICDKey)
-	c.a1Count = 0
-	c.c1Done = false
-	c.c2()
-	c.nightsoulSrc = c.Core.F
-	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
+	c.QueueCharTask(func() {
+		c.nightsoulState.EnterBlessing(60)
+		c.DeleteStatus(particleICDKey)
+		c.a1Count = 0
+		c.c1Done = false
+		c.c2()
+		c.nightsoulSrc = c.Core.F
+		c.QueueCharTask(func() {
+			c.AddStatus(surfingKey, -1, false)
+			c.nightsoulPointReduceFunc(c.nightsoulSrc)()
+		}, 6)
+	}, skillDelay)
 
 	canQueueAfter := skillFrames[action.ActionAttack] // earliest cancel
 	// press skill "while" walking
 	isWalking := c.Core.Player.AnimationHandler.CurrentState() == action.WalkState
 	if isWalking {
-		canQueueAfter = 0
+		canQueueAfter = skillDelay
 	}
 
 	return action.Info{
 		Frames: func(next action.Action) int {
 			if next == action.ActionWalk && isWalking {
 				// TODO: or 0f?
-				return 1
+				return skillDelay
 			}
 			return skillFrames[next]
 		},
@@ -167,4 +138,74 @@ func (c *char) particleCB(a combat.AttackCB) {
 		count = 5
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay)
+}
+
+func (c *char) surfingTick() {
+	// TODO: create a gadget?
+	c.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+		if c.Core.Player.Active() != c.Index {
+			return false
+		}
+		if !c.nightsoulState.HasBlessing() {
+			return false
+		}
+		if !c.StatusIsActive(surfingKey) {
+			return false
+		}
+
+		switch c.Core.Player.CurrentState() {
+		case action.DashState, action.JumpState, action.WalkState:
+		default:
+			return false
+		}
+
+		// to avoid spamming Surfing Hit logs
+		useAttack := false
+		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.9}, 0, 1)
+		for _, e := range c.Core.Combat.Enemies() {
+			enemy, ok := e.(combat.Enemy)
+			if !ok {
+				continue
+			}
+
+			willLand, _ := e.AttackWillLand(ap)
+			if willLand && !enemy.StatusIsActive(momentumIcdKey) {
+				useAttack = true
+				break
+			}
+		}
+		if !useAttack {
+			return false
+		}
+
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               "Surfing Hit",
+			AttackTag:          attacks.AttackTagNone,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSpear,
+			Element:            attributes.Physical,
+			Durability:         100,
+			HitlagFactor:       0.01,
+			CanBeDefenseHalted: true,
+			IsDeployable:       true,
+		}
+		c.Core.QueueAttack(ai, ap, 0, 0, c.surfingCB)
+
+		return false
+	}, "mualani-surfing")
+}
+
+func (c *char) surfingCB(a combat.AttackCB) {
+	enemy, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
+	if enemy.StatusIsActive(momentumIcdKey) {
+		return
+	}
+	enemy.AddStatus(markedAsPreyKey, markedAsPreyDur, true)
+	enemy.AddStatus(momentumIcdKey, momentumIcd, false)
+	c.momentumStacks = min(c.momentumStacks+1, 3)
 }

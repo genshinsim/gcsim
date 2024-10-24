@@ -66,6 +66,14 @@ func (s *State) ConsumePoints(amount float64) {
 		Write("final", s.nightsoulPoints)
 }
 
+func (s *State) ClearPoints() {
+	amt := s.nightsoulPoints
+	s.nightsoulPoints = 0
+	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index, amt)
+	s.c.Log.NewEvent("clear nightsoul points", glog.LogCharacterEvent, s.char.Index).
+		Write("previous points", amt)
+}
+
 func (s *State) clampPoints() {
 	if s.MaxPoints > 0 && s.nightsoulPoints > s.MaxPoints {
 		s.nightsoulPoints = s.MaxPoints
