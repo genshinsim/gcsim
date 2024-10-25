@@ -17,10 +17,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var (
-	skillFrames              [][]int
-	skillDropletRandomRanges = [][]float64{{0.5, 1.}, {0.5, 1.}}
-)
+var skillFrames [][]int
 
 const (
 	skillPressCDStart     = 16
