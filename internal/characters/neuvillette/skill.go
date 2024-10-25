@@ -88,7 +88,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			skillHitmarks[1]-skillHitmarks[0], // TODO: snapshot delay?
 			skillHitmarks[1]-skillHitmarks[0],
 		)
-	}, skillHitmarks[1])
+	}, skillHitmarks[0])
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 20)
 
