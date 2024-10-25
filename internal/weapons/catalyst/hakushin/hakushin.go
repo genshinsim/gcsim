@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -43,7 +43,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	hrfunc := func(otherEle attributes.Element, key string, gadgetEmit bool) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
-			if _, ok := args[0].(*gadget.Gadget); ok != gadgetEmit {
+			trg := args[0].(combat.Target)
+			if gadgetEmit && trg.Type() != targets.TargettableGadget {
+				return false
+			}
+			if !gadgetEmit && trg.Type() != targets.TargettableEnemy {
 				return false
 			}
 			ae := args[1].(*combat.AttackEvent)

@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -57,6 +58,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 
+	//nolint:nestif // linter is stupid
 	if count >= 4 {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("flower-4pc", -1),
@@ -72,6 +74,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 
+		//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 		f := func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
@@ -108,8 +111,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			return false
 		}
+		noGadget := func(args ...interface{}) bool {
+			if _, ok := args[0].(*enemy.Enemy); !ok {
+				return false
+			}
+			return f(args...)
+		}
 
-		c.Events.Subscribe(event.OnBloom, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnBloom, noGadget, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnHyperbloom, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnBurgeon, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 	}

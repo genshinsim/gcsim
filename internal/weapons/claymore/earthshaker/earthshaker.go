@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -37,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = amt
 
-	buffSkill := func() {
+	buffSkill := func(...interface{}) bool {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("earth-shaker", 8*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
@@ -47,14 +47,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m, true
 			},
 		})
+		return false
 	}
 
 	buffSkillNoGadget := func(args ...interface{}) bool {
-		if _, ok := args[0].(*gadget.Gadget); ok {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
-		buffSkill()
-		return false
+		return buffSkill(args...)
 	}
 
 	charKey := char.Base.Key.String()
@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnSwirlPyro, buffSkillNoGadget, fmt.Sprintf("earth-shaker-pyro-swirl-%s", charKey))
 	c.Events.Subscribe(event.OnCrystallizePyro, buffSkillNoGadget, fmt.Sprintf("earth-shaker-pyro-crystallize-%s", charKey))
 	c.Events.Subscribe(event.OnBurning, buffSkillNoGadget, fmt.Sprintf("earth-shaker-burning-%s", charKey))
-	c.Events.Subscribe(event.OnBurgeon, buffSkillNoGadget, fmt.Sprintf("earth-shaker-burgeon-%s", charKey))
+	c.Events.Subscribe(event.OnBurgeon, buffSkill, fmt.Sprintf("earth-shaker-burgeon-%s", charKey))
 
 	return w, nil
 }

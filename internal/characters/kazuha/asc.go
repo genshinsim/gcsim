@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -35,7 +35,6 @@ func (c *char) absorbCheckA1(src, count, maxcount int) func() {
 // Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
 // Elemental DMG Bonus to the element absorbed by Swirl for every point of Elemental Mastery
 // he has for 8s. Bonuses for different elements obtained through this method can co-exist.
-// TODO: - this should ignore any EM he gets from Sucrose A4 (he still benefits from sucrose em but just cannot share it)
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
@@ -46,7 +45,7 @@ func (c *char) a4() {
 	swirlfunc := func(ele attributes.Stat, key string) func(args ...interface{}) bool {
 		icd := -1
 		return func(args ...interface{}) bool {
-			if _, ok := args[0].(*gadget.Gadget); ok {
+			if _, ok := args[0].(*enemy.Enemy); !ok {
 				return false
 			}
 
@@ -66,13 +65,10 @@ func (c *char) a4() {
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("kazuha-a4-"+key, 60*8),
-					AffectedStat: attributes.NoStat,
+					AffectedStat: ele,
 					Extra:        true,
 					Amount: func() ([]float64, bool) {
-						m[attributes.CryoP] = 0
-						m[attributes.ElectroP] = 0
-						m[attributes.HydroP] = 0
-						m[attributes.PyroP] = 0
+						clear(m)
 						m[ele] = dmg
 						return m, true
 					},
