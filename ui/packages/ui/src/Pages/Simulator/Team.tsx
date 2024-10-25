@@ -78,8 +78,8 @@ export function Team() {
     items.push({
       key: imported[k].name,
       text: t("game:character_names." + imported[k].name),
-      label: t(`elements.${imported[k].element}`),
-      notes: `Imported on ${imported[k].date_added}`,
+      label: `Imported on ${imported[k].date_added}`,
+      notes: imported[k].buildName,
     });
   });
 

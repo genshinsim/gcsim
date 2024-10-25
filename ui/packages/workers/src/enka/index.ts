@@ -9,16 +9,14 @@ export async function handleEnka(request: IRequest): Promise<Response> {
     });
   }
 
-  const key = params.key;
-
-  if (!/([1,2,5-9])\d{8}/.test(key)) {
+  const uid = params.key;
+  if (!/([1,2,5-9])\d{8}/.test(uid)) {
     return new Response(null, {
       status: 400,
       statusText: 'Bad Request',
     });
   }
-
-  console.log(key);
+  console.log(uid);
 
   const init = {
     headers: {
@@ -26,36 +24,44 @@ export async function handleEnka(request: IRequest): Promise<Response> {
     },
   };
 
-  const requrl = `https://enka.network/api/uid/${key}/`;
-  const response = await fetch(requrl, init);
-  console.log(response);
-  const results = await gatherResponse(response);
-  const respHeaders = {
-    'Content-Type': 'application/json',
-    'Content-Encoding': 'gzip',
-  };
-  return new Response(results, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: respHeaders,
-  });
-}
-
-/**
- * gatherResponse awaits and returns a response body as a string.
- * Use await gatherResponse(..) in an async function to get the response body
- * @param {Response} response
- */
-async function gatherResponse(response: Response) {
-  const { headers } = response;
-  const contentType = headers.get('content-type') || '';
-  if (contentType.includes('application/json')) {
-    return JSON.stringify(await response.json());
-  } else if (contentType.includes('application/text')) {
-    return response.text();
-  } else if (contentType.includes('text/html')) {
-    return response.text();
-  } else {
-    return response.text();
+  const resp = await fetch(`https://enka.network/api/uid/${uid}`, init);
+  const contentType = resp.headers.get('content-type') || '';
+  if (!resp.ok || !contentType.includes('application/json')) {
+    return new Response(null, {
+      status: 400,
+      statusText: 'Bad Request',
+    });
   }
+
+  let avatars = [];
+  const d = await resp.json();
+  for (let avatar of d.avatarInfoList) {
+    avatars.push(avatar);
+  }
+
+  if (d.owner != undefined) {
+    console.log(uid, "has enka profile");
+
+    const resp = await fetch(`https://enka.network/api/profile/${d.owner.username}/hoyos/${d.owner.hash}/builds/`, init);
+    const contentType = resp.headers.get('content-type') || '';
+    if (resp.ok && contentType.includes('application/json')) {
+      const d = await resp.json();
+      for (let [ _, builds ] of Object.entries(d)) {
+        for (let build of builds) {
+          if (build.live) { continue }
+          build.avatar_data.name = build.name;
+          avatars.push(build.avatar_data);
+        }
+      }
+    }
+  }
+
+  return new Response(JSON.stringify(avatars), {
+    status: resp.status,
+    statusText: resp.statusText,
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Encoding': 'gzip',
+    },
+  });
 }
