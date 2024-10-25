@@ -86,6 +86,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		bondAtk := min(bondAtkCap, w.collectedDebt*bondPercentage)
 		bond[attributes.ATK] = bondAtk
+		w.collectedDebt = 0
 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("finaleofthedeep-bond-flatatk-boost", duration),
