@@ -132,6 +132,7 @@ var weaponNames = []string{
 	"mistsplitterreforged",
 	"mitternachtswaltz",
 	"moonpiercer",
+	"mountainbracingbolt",
 	"mouunsmoon",
 	"oathsworneye",
 	"oldmercspal",
@@ -189,6 +190,7 @@ var weaponNames = []string{
 	"splendoroftranquilwaters",
 	"staffofhoma",
 	"staffofthescarletsands",
+	"sturdybone",
 	"summitshaper",
 	"surfsup",
 	"swordofdescension",
@@ -331,6 +333,7 @@ const (
 	MistsplitterReforged
 	MitternachtsWaltz
 	Moonpiercer
+	MountainBracingBolt
 	MouunsMoon
 	OathswornEye
 	OldMercsPal
@@ -388,6 +391,7 @@ const (
 	SplendorOfTranquilWaters
 	StaffOfHoma
 	StaffOfTheScarletSands
+	SturdyBone
 	SummitShaper
 	SurfsUp
 	SwordOfDescension

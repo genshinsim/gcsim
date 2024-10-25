@@ -2,6 +2,7 @@ package sigewinne
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
@@ -101,6 +102,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.currentBubbleTier = 2
 	}
 
+	c.bubbleTierDamageMod()
+
 	if c.Base.Ascension >= 1 {
 		c.AddStatus(convalescenceKey, skillCD*60, false)
 		c.SetTag(convalescenceKey, 10)
@@ -143,8 +146,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(c.bubbleHealing(src), skillHitmark)
 
 	if c.Base.Cons >= 2 {
-		c.Core.Tasks.Add(c.addC2Shield, 1)
-		c.Core.Tasks.Add(c.removeC2Shield, skillFrames[hold][action.ActionWalk])
+		c.Core.Tasks.Add(c.addC2Shield(skillFrames[hold][action.ActionWalk]), 1)
 	}
 
 	return action.Info{
@@ -184,13 +186,13 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, bubbleRadius), 0, 0, c.particleCB)
 		c.Core.Tasks.Add(c.bolsteringBubblebalm(src, tick+1), bubbleHitInterval)
 		c.Core.Tasks.Add(c.surgingBladeTask(), bubbleHitInterval)
-		c.Core.Tasks.Add(c.bubbleTierLoseTask(tick), bubbleHitInterval+1)
+		c.Core.Tasks.Add(c.bubbleTierLoseTask(tick), 0)
 
 		// Healing
-		if c.bubbleHitLimit == tick-1 {
-			c.Core.Tasks.Add(c.bubbleFinalHealing(src), bubbleHitInterval)
+		if c.bubbleHitLimit-1 == tick {
+			c.Core.Tasks.Add(c.bubbleFinalHealing(src), 0)
 		}
-		c.Core.Tasks.Add(c.bubbleHealing(src), bubbleHitInterval)
+		c.Core.Tasks.Add(c.bubbleHealing(src), 0)
 	}
 }
 
@@ -303,28 +305,32 @@ func (c *char) bubbleFinalHealing(src int) func() {
 }
 
 func (c *char) bubbleTierDamageMod() {
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("sigewinne-bubble-tier-damage-buff", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("sigewinne-bubble-tier-heal", skillCD*60),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			heal := float64(min(2, c.currentBubbleTier)) * bubbleTierBuff
+			m1 := make([]float64, attributes.EndStatType)
+			m1[attributes.Heal] = heal
 			if !c.StatusIsActive(skillKey) {
 				return nil, false
 			}
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-				return nil, false
-			}
-			dmgAmt := make([]float64, attributes.EndStatType)
-			dmgAmt[attributes.DmgP] = min(2., float64(c.currentBubbleTier)) * bubbleTierBuff
-			return dmgAmt, true
+			return m1, true
 		},
 	})
 
-	c.AddHealBonusMod(character.HealBonusMod{
-		Base: modifier.NewBase("sigewinne-bubble-tier-heal-buff", -1),
-		Amount: func() (float64, bool) {
-			if c.StatusIsActive(skillKey) {
-				return min(2, float64(c.currentBubbleTier)) * bubbleTierBuff, true
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("sigewinne-bubble-tier-dmgp", skillCD*60),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			dmgp := float64(min(2, c.currentBubbleTier)) * bubbleTierBuff
+			m2 := make([]float64, attributes.EndStatType)
+			m2[attributes.DmgP] = dmgp
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt &&
+				atk.Info.AttackTag != attacks.AttackTagElementalArtHold &&
+				!strings.Contains(atk.Info.Abil, "Rebound Hydrotherapy") {
+				return nil, false
 			}
-			return 0, false
+			return m2, true
 		},
 	})
 }

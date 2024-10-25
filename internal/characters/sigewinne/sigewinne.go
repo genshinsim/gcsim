@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -71,7 +72,6 @@ func (c *char) Init() error {
 		c.c6()
 	}
 
-	c.bubbleTierDamageMod()
 	c.energyBondClearMod()
 	c.onSwap()
 	return nil
@@ -110,4 +110,14 @@ func (c *char) onSwap() {
 		c.lastSwap = c.Core.F
 		return false
 	}, "sigewinne-swap")
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if k == model.AnimationXingqiuN0StartDelay {
+		return 13
+	}
+	if k == model.AnimationYelanN0StartDelay {
+		return 5
+	}
+	return c.Character.AnimationStartDelay(k)
 }

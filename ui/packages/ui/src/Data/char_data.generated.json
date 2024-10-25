@@ -1472,6 +1472,23 @@
       },
       "name_text_hash_map ": "1021947690"
     },
+    "xilonen": {
+      "id": 10000103,
+      "key": "xilonen",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Rock",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Xilonen",
+      "skill_details": {
+        "skill": 11032,
+        "burst": 11035,
+        "attack": 11031,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2515292882"
+    },
     "xingqiu": {
       "id": 10000025,
       "key": "xingqiu",

@@ -16,12 +16,15 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	c.burstEarlyCancelled = false
 	dropletsToPickup, ok := p["pickup_droplets"]
 	if !ok {
-		dropletsToPickup = 0
+		return c.Character.Dash(p)
+	}
+	if dropletsToPickup == 0 {
+		return c.Character.Dash(p)
 	}
 	droplets := c.getSourcewaterDroplets()
 	dropletsToPickup = min(dropletsToPickup, len(droplets))
 
-	// No additional delay if >2 droplets picked up
+	// TODO: additional delay if >2 droplets picked up
 	indices := c.Core.Combat.Rand.Perm(dropletsToPickup)
 	for _, ind := range indices {
 		g := droplets[ind]

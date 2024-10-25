@@ -49,19 +49,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Elemental Burst", c.CharWrapper.Base.Key)
 	}
 
-	if c.Base.Cons >= 2 {
-		c.Core.Tasks.Add(c.addC2Shield, 1)
-	}
-
 	c.QueueCharTask(c.burstFindDroplets, chargeBurstDur)
 
 	c.tickAnimLength = getBurstHitmark(1)
 	c.chargeAi = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       burstName,
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagExtraAttack,
-		ICDGroup:   attacks.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupSigewinneBurst,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 25,
@@ -83,6 +79,16 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(5)
+
+	if c.Base.Cons >= 2 {
+		var shieldDur int
+		if ticks == -1 {
+			shieldDur = chargeBurstDur + c.burstMaxDuration
+		} else {
+			shieldDur = chargeBurstDur + getBurstHitmark(1) + getBurstHitmark(2)*(ticks-1) - 1
+		}
+		c.Core.Tasks.Add(c.addC2Shield(shieldDur), 1)
+	}
 
 	return action.Info{
 		Frames: func(next action.Action) int {
@@ -108,17 +114,11 @@ func (c *char) burstTick(src, tick, maxTick int, last bool) func() {
 		}
 		// no longer in burst anim -> no tick
 		if c.Core.F > c.burstStartF+c.burstMaxDuration {
-			if c.Base.Cons >= 2 {
-				c.removeC2Shield()
-			}
 			return
 		}
 
 		if last {
 			c.Core.Player.SwapCD = endLag[action.ActionSwap]
-			if c.Base.Cons >= 2 {
-				c.removeC2Shield()
-			}
 			return
 		}
 
@@ -126,6 +126,7 @@ func (c *char) burstTick(src, tick, maxTick int, last bool) func() {
 		if tick == maxTick {
 			c.burstWave()
 			c.burstEarlyCancelled = true
+			c.Core.Player.SwapCD = endLag[action.ActionSwap]
 			return
 		}
 

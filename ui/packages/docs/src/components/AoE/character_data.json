@@ -5972,6 +5972,16 @@
         "radius": 3.5
       }
     ],
+    "skill": [
+      {
+        "ability": "Surfing",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.9,
+        "boxX": 0,
+        "boxY": 1
+      }
+    ],
     "burst": [
       {
         "ability": "Q",
@@ -9885,6 +9895,123 @@
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 0.8
+      }
+    ]
+  },
+  "xilonen": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.0,
+        "radius": 2.1
+      },
+      {
+        "ability": "N2-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.5,
+        "radius": 2.5,
+        "fanAngle": 150
+      },
+      {
+        "ability": "N2-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.5,
+        "radius": 2.7,
+        "fanAngle": 150
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.5,
+        "radius": 3.2,
+        "fanAngle": 160
+      },
+      {
+        "ability": "E-N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.7,
+        "radius": 2.7,
+        "fanAngle": 270
+      },
+      {
+        "ability": "E-N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 5,
+        "boxY": 3.7
+      },
+      {
+        "ability": "E-N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 3.5,
+        "boxY": 4.5
+      },
+      {
+        "ability": "E-N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 3.5,
+        "fanAngle": 270
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.8,
+        "boxX": 2,
+        "boxY": 4.5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.0,
+        "radius": 0.8
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 7
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
       }
     ]
   },

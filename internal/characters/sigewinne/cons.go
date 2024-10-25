@@ -33,9 +33,11 @@ func (c *char) c2() {
 			if atk.Info.ActorIndex != c.Index {
 				return false
 			}
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt ||
-				atk.Info.AttackTag != attacks.AttackTagElementalArtHold ||
-				atk.Info.AttackTag != attacks.AttackTagElementalBurst {
+			switch atk.Info.AttackTag {
+			case attacks.AttackTagElementalArt:
+			case attacks.AttackTagElementalArtHold:
+			case attacks.AttackTagElementalBurst:
+			default:
 				return false
 			}
 
@@ -52,48 +54,20 @@ func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, c2func(), "sigewinne-c2")
 }
 
-func (c *char) addC2Shield() {
-	shieldHP := 2.5 * c.MaxHP()
-
-	c.Core.Player.Shields.Add(c.newShield(shieldHP))
-	c.Tags["shielded"] = 1
-}
-
-func (c *char) removeC2Shield() {
-	c.Tags["shielded"] = 0
-	c.Tags["a1"] = 0
-}
-
-func (c *char) newShield(base float64) *shd {
-	n := &shd{}
-	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.ActorIndex = c.Index
-	n.Tmpl.Target = -1
-	n.Tmpl.Src = c.Core.F
-	n.Tmpl.ShieldType = shield.SigewinneC2
-	n.Tmpl.Ele = attributes.Hydro
-	n.Tmpl.HP = base
-	n.Tmpl.Name = "Sigewinee C2"
-	n.Tmpl.Expires = -1
-	n.c = c
-	return n
-}
-
-type shd struct {
-	*shield.Tmpl
-	c *char
-}
-
-func (s *shd) OnExpire() {
-	s.c.removeC2Shield()
-}
-
-func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) {
-	taken, ok := s.Tmpl.OnDamage(dmg, ele, bonus)
-	if !ok {
-		s.c.removeC2Shield()
+func (c *char) addC2Shield(duration int) func() {
+	return func() {
+		shieldHP := 0.3 * c.MaxHP()
+		c.Core.Player.Shields.Add(&shield.Tmpl{
+			ActorIndex: c.Index,
+			Target:     c.Index,
+			Src:        c.Core.F,
+			Name:       "Sigewinne C2 shield",
+			ShieldType: shield.SigewinneC2,
+			HP:         shieldHP,
+			Ele:        attributes.Hydro,
+			Expires:    duration,
+		})
 	}
-	return taken, ok
 }
 
 func (c *char) c6() {
@@ -110,10 +84,10 @@ func (c *char) c6CritMode() {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
-			crit_amt := make([]float64, attributes.EndStatType)
-			crit_amt[attributes.CD] = min(C6CDmgCap, c.MaxHP()*C6CDmgHpRatio)
-			crit_amt[attributes.CR] = min(C6CRateCap, c.MaxHP()*C6CRateCap)
-			return crit_amt, true
+			critAmt := make([]float64, attributes.EndStatType)
+			critAmt[attributes.CD] = min(C6CDmgCap, c.MaxHP()*C6CDmgHpRatio)
+			critAmt[attributes.CR] = min(C6CRateCap, c.MaxHP()*C6CRateHpRatio)
+			return critAmt, true
 		},
 	})
 }
