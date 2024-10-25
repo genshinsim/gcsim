@@ -63,6 +63,9 @@ func init() {
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.canUseNightsoul() {
 		return c.nightsoulAttack(), nil
+	} else if c.nightsoulState.HasBlessing() {
+		// OnRemoved is sometimes called after the next action is executed. so we need to check/exit nightsoul here too
+		c.exitNightsoul()
 	}
 
 	ai := combat.AttackInfo{
