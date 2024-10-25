@@ -93,7 +93,7 @@ func (c *char) ModifyHPDebtByAmount(amt float64) {
 	c.Core.Log.NewEvent("hp debt changed", glog.LogCharacterEvent, c.Index).
 		Write("amt", amt).
 		Write("current_debt", c.hpDebt)
-	c.Core.Events.Emit(event.OnHPDebt, c.Index, amt)
+	c.Core.Events.Emit(event.OnHPDebt, c.Index, -amt)
 }
 
 func (c *char) ModifyHPDebtByRatio(r float64) {

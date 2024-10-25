@@ -83,6 +83,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if char.CurrentHPDebt() > 0 {
 			return false
 		}
+		if w.collectedDebt < 0.0001 {
+			return false
+		}
 
 		bondAtk := min(bondAtkCap, w.collectedDebt*bondPercentage)
 		bond[attributes.ATK] = bondAtk
