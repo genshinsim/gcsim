@@ -3,7 +3,6 @@ package sigewinne
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
@@ -33,9 +32,4 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", dropletsToPickup, " droplets"), glog.LogCharacterEvent, c.Index)
 
 	return c.Character.Dash(p)
-}
-
-func (c *char) consumeDroplet(g *sourcewaterdroplet.Gadget) {
-	g.Kill()
-	c.ModifyHPDebtByAmount(c.MaxHP() * BoLPctPerDroplet)
 }

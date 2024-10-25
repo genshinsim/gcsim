@@ -64,6 +64,20 @@ func (c *char) a1() {
 	}, "sigewinne-convalescence-hook")
 }
 
+func (c *char) a1Self() {
+	c.AddStatus(convalescenceKey, skillCD*60, false)
+	c.SetTag(convalescenceKey, 10)
+
+	buff := make([]float64, attributes.EndStatType)
+	buff[attributes.HydroP] = a1DmgBuff
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag("sigewinne-a1", skillCD*60),
+		Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			return buff, true
+		},
+	})
+}
+
 func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("sigewinne-a4-healing-bonus", -1),

@@ -37,7 +37,7 @@ func init() {
 
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	if c.burstEarlyCancelled {
-		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Aimed shot", c.CharWrapper.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Aimed shot", c.Base.Key)
 	}
 	hold, ok := p["hold"]
 	if !ok {
@@ -78,13 +78,6 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		ai.Mult = aim[c.TalentLvlAttack()]
 	}
 
-	a := action.Info{
-		Frames:          frames.NewAbilFunc(aimedFrames[hold]),
-		AnimationLength: aimedFrames[hold][action.InvalidAction],
-		CanQueueAfter:   aimedHitmarks[hold],
-		State:           action.AimState,
-	}
-
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHit(
@@ -94,34 +87,41 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 			0.1,
 			1,
 		),
-		a.CanQueueAfter,
-		a.CanQueueAfter+travel,
+		aimedHitmarks[hold],
+		aimedHitmarks[hold]+travel,
 	)
 
-	if hold == 2 {
+	if hold == attacks.AimParamLv2 {
 		aiMini := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Mini-Stration Bubble",
-			AttackTag:  attacks.AttackTagExtra,
-			ICDTag:     attacks.ICDTagExtraAttack,
-			ICDGroup:   attacks.ICDGroupSigewinne,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			Mult:       miniStrationBubbleDMG[c.TalentLvlAttack()],
+			ActorIndex:   c.Index,
+			Abil:         "Mini-Stration Bubble",
+			AttackTag:    attacks.AttackTagExtra,
+			ICDTag:       attacks.ICDTagExtraAttack,
+			ICDGroup:     attacks.ICDGroupSigewinne,
+			StrikeType:   attacks.StrikeTypeDefault,
+			Element:      attributes.Hydro,
+			Durability:   25,
+			Mult:         miniStrationBubbleDMG[c.TalentLvlAttack()],
+			HitlagFactor: 0.01,
 		}
 		c.Core.QueueAttack(
 			aiMini,
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				geometry.Point{Y: -0.5},
-				0.1,
-				1,
+				nil,
+				0.3,
+				0.3,
 			),
-			a.CanQueueAfter+1,
-			a.CanQueueAfter+1+7*travel,
+			aimedHitmarks[hold]+1,
+			aimedHitmarks[hold]+1+7*travel,
 		)
 	}
-	return a, nil
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(aimedFrames[hold]),
+		AnimationLength: aimedFrames[hold][action.InvalidAction],
+		CanQueueAfter:   aimedHitmarks[hold],
+		State:           action.AimState,
+	}, nil
 }

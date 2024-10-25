@@ -2,7 +2,6 @@ package sigewinne
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
@@ -12,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -39,7 +37,7 @@ const (
 	skillKey          = "sigewinne-skill"
 
 	skillDropletOffset          = 0.5
-	SkillDropletSpawnTimeOffset = 4
+	skillDropletSpawnTimeOffset = 4
 
 	skillAlignedICD     = 10 * 60
 	skillAlignedHitmark = 40
@@ -54,37 +52,25 @@ const (
 func init() {
 	skillFrames = make([][]int, 3)
 	// skill (press) -> x
-	skillFrames[0] = frames.InitAbilSlice(40) // walk
-	skillFrames[0][action.ActionAttack] = 40
+	skillFrames[0] = frames.InitAbilSlice(41) // burst
+	skillFrames[0][action.ActionAttack] = 39
 	skillFrames[0][action.ActionCharge] = 40
-	skillFrames[0][action.ActionBurst] = 40
-	skillFrames[0][action.ActionDash] = 40
-	skillFrames[0][action.ActionJump] = 40
-	skillFrames[0][action.ActionSwap] = 40
+	skillFrames[0][action.ActionWalk] = 40
 
 	// skill (short hold) -> x
-	skillFrames[1] = frames.InitAbilSlice(56) // walk
-	skillFrames[1][action.ActionAttack] = 56
-	skillFrames[1][action.ActionCharge] = 56
-	skillFrames[1][action.ActionBurst] = 56
-	skillFrames[1][action.ActionDash] = 56
-	skillFrames[1][action.ActionJump] = 56
-	skillFrames[1][action.ActionSwap] = 56
+	skillFrames[1] = frames.InitAbilSlice(56)
 
 	// skill (hold) -> x
-	skillFrames[2] = frames.InitAbilSlice(86) // walk
-	skillFrames[2][action.ActionAttack] = 86
-	skillFrames[2][action.ActionCharge] = 86
-	skillFrames[2][action.ActionBurst] = 86
-	skillFrames[2][action.ActionDash] = 86
-	skillFrames[2][action.ActionJump] = 86
-	skillFrames[2][action.ActionSwap] = 86
+	skillFrames[2] = frames.InitAbilSlice(89) // na
+	skillFrames[2][action.ActionWalk] = 86
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.burstEarlyCancelled {
-		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Elemental Skill", c.CharWrapper.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Elemental Skill", c.Base.Key)
 	}
+
+	// TODO: rework it like kirara/sayu skill?
 	skillHitmark := skillPressHitmark
 	skillCDStart := skillPressCDStart
 	c.currentBubbleTier = 0
@@ -102,49 +88,18 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.currentBubbleTier = 2
 	}
 
-	c.bubbleTierDamageMod()
-
-	if c.Base.Ascension >= 1 {
-		c.AddStatus(convalescenceKey, skillCD*60, false)
-		c.SetTag(convalescenceKey, 10)
-		buff := make([]float64, attributes.EndStatType)
-		buff[attributes.HydroP] = a1DmgBuff
-		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("sigewinne-a1-hydro-percent", skillCD*60),
-			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				return buff, true
-			},
-		})
-	}
-
+	c.generateSkillSnapshot()
 	c.AddStatus(skillKey, -1, false)
-	src := c.Core.F
-	c.lastSummonSrc = src
-	c.Core.Log.NewEvent("Summoned Bostering Bubblebalm", glog.LogCharacterEvent, c.Index)
-
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Rebound Hydrotherapy",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArtHydro,
-		ICDGroup:   attacks.ICDGroupSigewinne,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Hydro,
-		Durability: 25,
-		FlatDmg:    bolsteringBubblebalmDMG[c.TalentLvlSkill()] * c.MaxHP(),
-	}
+	c.particleGenerated = false
+	c.lastSummonSrc = c.Core.F
 
 	c.SetCDWithDelay(action.ActionSkill, skillCD*60, skillCDStart)
-	c.Core.Tasks.Add(c.spawnDroplets(), skillCDStart+SkillDropletSpawnTimeOffset)
+	c.Core.Tasks.Add(c.spawnDroplets, skillCDStart+skillDropletSpawnTimeOffset)
+	c.Core.Tasks.Add(c.bolsteringBubblebalm(c.lastSummonSrc, 0), skillHitmark)
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, bubbleRadius), skillHitmark, skillHitmark, c.particleCB)
-	c.Core.Tasks.Add(c.bolsteringBubblebalm(src, 1), skillHitmark+bubbleHitInterval)
-	c.Core.Tasks.Add(c.surgingBladeTask(), skillHitmark)
-	c.Core.Tasks.Add(c.bubbleTierLoseTask(0), skillHitmark+1)
-
-	// Healing
-	c.Core.Tasks.Add(c.bubbleHealing(src), skillHitmark)
-
+	if c.Base.Ascension >= 1 {
+		c.a1Self()
+	}
 	if c.Base.Cons >= 2 {
 		c.Core.Tasks.Add(c.addC2Shield(skillFrames[hold][action.ActionWalk]), 1)
 	}
@@ -152,190 +107,150 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[hold]),
 		AnimationLength: skillFrames[hold][action.InvalidAction],
-		CanQueueAfter:   skillFrames[hold][action.ActionDash],
+		CanQueueAfter:   skillFrames[hold][action.ActionAttack],
 		State:           action.SkillState,
 	}, nil
 }
 
 func (c *char) bolsteringBubblebalm(src, tick int) func() {
 	return func() {
-		if tick >= c.bubbleHitLimit {
+		if src != c.lastSummonSrc {
+			return
+		}
+		if !c.StatusIsActive(skillKey) {
+			return
+		}
+
+		// Damage
+		target := c.Core.Combat.PrimaryTarget()
+		c.Core.QueueAttackWithSnap(
+			c.skillAttackInfo,
+			c.skillSnapshot,
+			combat.NewCircleHitOnTarget(target, nil, bubbleRadius),
+			0,
+			c.particleCB,
+		)
+		c.surgingBladeTask(target)
+		c.bubbleTierLoseTask(tick)
+
+		// Healing
+		c.bubbleHealing()
+
+		if tick == c.bubbleHitLimit-1 {
+			c.bubbleFinalHealing()
 			c.DeleteStatus(skillKey)
 			return
 		}
 
-		if !c.StatusIsActive(skillKey) {
-			return
-		}
-
-		if src != c.lastSummonSrc {
-			return
-		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Rebound Hydrotherapy",
-			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagElementalArtHydro,
-			ICDGroup:   attacks.ICDGroupSigewinne,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			FlatDmg:    bolsteringBubblebalmDMG[c.TalentLvlSkill()] * c.MaxHP(),
-		}
-
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, bubbleRadius), 0, 0, c.particleCB)
+		// TODO: hitlag affected?
 		c.Core.Tasks.Add(c.bolsteringBubblebalm(src, tick+1), bubbleHitInterval)
-		c.Core.Tasks.Add(c.surgingBladeTask(), bubbleHitInterval)
-		c.Core.Tasks.Add(c.bubbleTierLoseTask(tick), 0)
-
-		// Healing
-		if c.bubbleHitLimit-1 == tick {
-			c.Core.Tasks.Add(c.bubbleFinalHealing(src), 0)
-		}
-		c.Core.Tasks.Add(c.bubbleHealing(src), 0)
 	}
 }
 
-func (c *char) spawnDroplets() func() {
-	return func() {
-		player := c.Core.Combat.Player()
-		playerX := player.Pos().X
-		playerY := player.Pos().Y
-		targetX := c.Core.Combat.PrimaryTarget().Pos().X
-		targetY := c.Core.Combat.PrimaryTarget().Pos().Y
-		vecX := targetX - playerX
-		vecY := targetY - playerY
-		dropletOffsetX := vecX * skillDropletOffset
-		dropletOffsetY := vecY * skillDropletOffset
-		for j := 0; j < 2; j++ {
-			sourcewaterdroplet.New(
-				c.Core,
-				geometry.CalcRandomPointFromCenter(
-					geometry.CalcOffsetPoint(
-						player.Pos(),
-						geometry.Point{X: dropletOffsetX, Y: dropletOffsetY},
-						player.Direction(),
-					),
-					skillDropletRandomRanges[j][0],
-					skillDropletRandomRanges[j][1],
-					c.Core.Rand,
-				),
-				combat.GadgetTypSourcewaterDropletNeuv,
-			)
-			c.Core.Combat.Log.NewEvent("Skill: Spawned 3 droplets", glog.LogCharacterEvent, c.Index)
-		}
-	}
-}
-
-func (c *char) surgingBladeTask() func() {
-	return func() {
-		aiThorn := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
-			AttackTag:          attacks.AttackTagElementalArt,
-			ICDTag:             attacks.ICDTagNone,
-			ICDGroup:           attacks.ICDGroupDefault,
-			StrikeType:         attacks.StrikeTypeSpear,
-			Element:            attributes.Hydro,
-			Durability:         0,
-			FlatDmg:            surgingBladeDMG[c.TalentLvlSkill()] * c.MaxHP(),
-			HitlagFactor:       0.01,
-			CanBeDefenseHalted: true,
-		}
-
-		if c.StatusIsActive(skillAlignedICDKey) {
-			return
-		}
-		c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
-
-		skillPos := c.Core.Combat.PrimaryTarget().Pos()
-		c.Core.QueueAttack(
-			aiThorn,
-			combat.NewCircleHitOnTarget(skillPos, nil, 3),
-			skillAlignedHitmark,
-			skillAlignedHitmark,
+func (c *char) spawnDroplets() {
+	player := c.Core.Combat.Player()
+	for j := 0; j < 2; j++ {
+		pos := geometry.CalcRandomPointFromCenter(
+			geometry.CalcOffsetPoint(
+				player.Pos(),
+				geometry.Point{Y: 1.5},
+				player.Direction(),
+			),
+			0.3,
+			1,
+			c.Core.Rand,
 		)
+		sourcewaterdroplet.New(c.Core, pos, combat.GadgetTypSourcewaterDropletSigewinne)
 	}
 }
 
-func (c *char) bubbleHealing(src int) func() {
-	return func() {
-		if src != c.lastSummonSrc {
-			return
-		}
-
-		if !c.StatusIsActive(skillKey) {
-			return
-		}
-
-		// heal everyone except Sigewinne
-		for _, other := range c.Core.Player.Chars() {
-			if other.Index == c.Index {
-				continue
-			}
-			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
-				Target:  other.Index,
-				Message: "Bolstering Bubblebalm Healing",
-				Src:     bolsteringBubblebalmHealingPct[c.TalentLvlSkill()]*c.MaxHP() + bolsteringBubblebalmHealingFlat[c.TalentLvlSkill()],
-				Bonus:   c.Stat(attributes.Heal),
-			})
-		}
+func (c *char) surgingBladeTask(target combat.Target) {
+	if c.StatusIsActive(skillAlignedICDKey) {
+		return
 	}
+	c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
+
+	aiThorn := combat.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
+		AttackTag:    attacks.AttackTagElementalArt,
+		ICDTag:       attacks.ICDTagNone,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypePierce,
+		Element:      attributes.Hydro,
+		Durability:   0,
+		FlatDmg:      surgingBladeDMG[c.TalentLvlSkill()] * c.MaxHP(),
+		HitlagFactor: 0.01,
+	}
+	c.Core.QueueAttack(
+		aiThorn,
+		combat.NewCircleHitOnTarget(target, nil, 3),
+		skillAlignedHitmark,
+		skillAlignedHitmark,
+	)
 }
 
-func (c *char) bubbleFinalHealing(src int) func() {
-	return func() {
-		if src != c.lastSummonSrc {
-			return
-		}
+func (c *char) bubbleHealing() {
+	if !c.StatusIsActive(skillKey) {
+		return
+	}
 
-		if !c.StatusIsActive(skillKey) {
-			return
+	// heal everyone except Sigewinne
+	for _, other := range c.Core.Player.Chars() {
+		if other.Index == c.Index {
+			continue
 		}
-		// heal only Sigewinne
+		skillBonus := float64(c.currentBubbleTier) * bubbleTierBuff
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
-			Target:  c.Index,
+			Target:  other.Index,
 			Message: "Bolstering Bubblebalm Healing",
-			Src:     finalBounceHealing[c.TalentLvlSkill()] * c.MaxHP(),
-			Bonus:   c.Stat(attributes.Heal),
+			Src:     bolsteringBubblebalmHealingPct[c.TalentLvlSkill()]*c.MaxHP() + bolsteringBubblebalmHealingFlat[c.TalentLvlSkill()],
+			Bonus:   c.Stat(attributes.Heal) + skillBonus,
 		})
 	}
 }
 
-func (c *char) bubbleTierDamageMod() {
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("sigewinne-bubble-tier-heal", skillCD*60),
-		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			heal := float64(min(2, c.currentBubbleTier)) * bubbleTierBuff
-			m1 := make([]float64, attributes.EndStatType)
-			m1[attributes.Heal] = heal
-			if !c.StatusIsActive(skillKey) {
-				return nil, false
-			}
-			return m1, true
-		},
+func (c *char) bubbleFinalHealing() {
+	if !c.StatusIsActive(skillKey) {
+		return
+	}
+	// heal only Sigewinne
+	skillBonus := float64(c.currentBubbleTier) * bubbleTierBuff
+	c.Core.Player.Heal(info.HealInfo{
+		Caller:  c.Index,
+		Target:  c.Index,
+		Message: "Bolstering Bubblebalm Healing",
+		Src:     finalBounceHealing[c.TalentLvlSkill()] * c.MaxHP(),
+		Bonus:   c.Stat(attributes.Heal) + skillBonus,
 	})
+}
 
+func (c *char) bubbleTierDamageMod() {
+	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("sigewinne-bubble-tier-dmgp", skillCD*60),
+		Base: modifier.NewBase("sigewinne-bubble-tier", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			dmgp := float64(min(2, c.currentBubbleTier)) * bubbleTierBuff
-			m2 := make([]float64, attributes.EndStatType)
-			m2[attributes.DmgP] = dmgp
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt &&
-				atk.Info.AttackTag != attacks.AttackTagElementalArtHold &&
-				!strings.Contains(atk.Info.Abil, "Rebound Hydrotherapy") {
+			switch atk.Info.AttackTag {
+			case attacks.AttackTagElementalArt:
+			case attacks.AttackTagElementalArtHold:
+			default:
 				return nil, false
 			}
-			return m2, true
+			if c.currentBubbleTier == 0 {
+				return nil, false
+			}
+			if atk.Info.Abil != c.skillAttackInfo.Abil {
+				return nil, false
+			}
+			m[attributes.DmgP] = float64(c.currentBubbleTier) * bubbleTierBuff
+			return m, true
 		},
 	})
 }
 
 func (c *char) energyBondClearMod() {
+	// TODO: override healing functions?
 	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
 		index := args[0].(int)
 		if index != c.Index {
@@ -351,17 +266,15 @@ func (c *char) energyBondClearMod() {
 
 		energyAmt := min(5., c.collectedHpDebt/hpDebtEnergyRatio)
 		c.collectedHpDebt = 0
-		c.AddEnergy("sigewinne-hpdebt-clear-energy", float64(energyAmt))
+		c.AddEnergy("sigewinne-skill", float64(energyAmt))
 		return false
 	}, "sigewinne-hpdebt-hook")
 }
 
-func (c *char) bubbleTierLoseTask(tick int) func() {
-	return func() {
-		if c.Base.Cons < 1 || tick > 2 {
-			c.currentBubbleTier--
-			c.currentBubbleTier = max(c.currentBubbleTier, 0)
-		}
+func (c *char) bubbleTierLoseTask(tick int) {
+	if c.Base.Cons < 1 || tick > 2 {
+		c.currentBubbleTier--
+		c.currentBubbleTier = max(c.currentBubbleTier, 0)
 	}
 }
 
@@ -369,11 +282,27 @@ func (c *char) particleCB(ac combat.AttackCB) {
 	if ac.Target.Type() != targets.TargettableEnemy {
 		return
 	}
-
-	if c.StatusIsActive(particleICDKey) {
+	if c.particleGenerated {
 		return
 	}
 
-	c.AddStatus(particleICDKey, skillCD*60, true)
+	// once per skill
+	c.particleGenerated = true
 	c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Hydro, c.ParticleDelay)
+}
+
+func (c *char) generateSkillSnapshot() {
+	c.skillAttackInfo = combat.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Rebound Hydrotherapy",
+		AttackTag:    attacks.AttackTagElementalArt,
+		ICDTag:       attacks.ICDTagElementalArt,
+		ICDGroup:     attacks.ICDGroupSigewinne,
+		StrikeType:   attacks.StrikeTypeDefault,
+		Element:      attributes.Hydro,
+		Durability:   25,
+		FlatDmg:      bolsteringBubblebalmDMG[c.TalentLvlSkill()] * c.MaxHP(),
+		HitlagFactor: 0.02,
+	}
+	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
 }

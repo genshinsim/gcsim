@@ -19,11 +19,11 @@ const normalHitNum = 3
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 34) // N1 -> Walk
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> Walk
 	attackFrames[0][action.ActionAttack] = 20
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 42) // N2 -> Walk
-	attackFrames[1][action.ActionAttack] = 37
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 40) // N2 -> Walk
+	attackFrames[1][action.ActionAttack] = 36
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 67) // N3 -> Walk
 	attackFrames[2][action.ActionAttack] = 82
@@ -31,7 +31,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.burstEarlyCancelled {
-		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Normal Attack", c.CharWrapper.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Normal Attack", c.Base.Key)
 	}
 	travel, ok := p["travel"]
 	if !ok {
@@ -49,12 +49,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	act := action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
-		State:           action.NormalAttackState,
-	}
 	var ap combat.AttackPattern
 	if c.NormalCounter != 0 {
 		ap = combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1)
@@ -70,5 +64,10 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	defer c.AdvanceNormalIndex()
 
-	return act, nil
+	return action.Info{
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		State:           action.NormalAttackState,
+	}, nil
 }

@@ -19,6 +19,11 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+
+	skillAttackInfo combat.AttackInfo
+	skillSnapshot   combat.Snapshot
+
+	particleGenerated   bool
 	lastSummonSrc       int
 	bubbleHitLimit      int
 	currentBubbleTier   int
@@ -72,6 +77,7 @@ func (c *char) Init() error {
 		c.c6()
 	}
 
+	c.bubbleTierDamageMod()
 	c.energyBondClearMod()
 	c.onSwap()
 	return nil
@@ -110,6 +116,11 @@ func (c *char) onSwap() {
 		c.lastSwap = c.Core.F
 		return false
 	}, "sigewinne-swap")
+}
+
+func (c *char) consumeDroplet(g *sourcewaterdroplet.Gadget) {
+	g.Kill()
+	c.ModifyHPDebtByAmount(c.MaxHP() * BoLPctPerDroplet)
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
