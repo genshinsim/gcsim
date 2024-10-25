@@ -128,7 +128,6 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 			c.particleCB,
 		)
 		c.surgingBladeTask(target)
-		c.bubbleTierLoseTask(tick)
 
 		// Healing
 		c.bubbleHealing()
@@ -139,6 +138,7 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 			return
 		}
 
+		c.bubbleTierLoseTask(tick)
 		// TODO: hitlag affected?
 		c.Core.Tasks.Add(c.bolsteringBubblebalm(src, tick+1), bubbleHitInterval)
 	}
@@ -258,6 +258,9 @@ func (c *char) energyBondClearMod() {
 			c.collectedHpDebt += -float32(debtChange)
 		}
 		if c.CurrentHPDebt() > 0 {
+			return false
+		}
+		if c.collectedHpDebt < 0.0001 {
 			return false
 		}
 
