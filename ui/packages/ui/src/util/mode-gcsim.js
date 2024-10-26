@@ -82,9 +82,9 @@ ace.define(
         'traveleranemo|travelergeo|travelerelectro|travelerdendro|travelerhydro|travelerpyro|travelercryo|aether-anemo|lumine-anemo|aether-geo|lumine-geo|aether-electro|lumine-electro|aether-dendro|lumine-dendro|aether-hydro|lumine-hydro|aether-pyro|lumine-pyro|aether-cryo|lumine-cryo|aetheranemo|lumineanemo|aethergeo|luminegeo|aetherelectro|lumineelectro|aetherdendro|luminedendro|aetherhydro|luminehydro|aetherpyro|luminepyro|aethercryo|luminecryo|albedo|aloy|amber|barbara|barb|beidou|bennett|charlotte|chongyun|chong|cyno|diluc|diona|eula|fischl|fish|amy|ganyu|hutao|tao|ht|jean|kaedeharakazuha|kazuha|kaz|kaeya|kamisatoayaka|ayaka|kamisatoayato|ayato|keqing|keq|klee|kujousara|kujosara|sara|lisa|mona|ningguang|ning|noelle|qiqi|raidenshogun|raiden|herexcellencythealmightynarukamiogoshogodofthunder|razor|rosaria|rosa|sangonomiyakokomi|kokomi|koko|sayu|sucrose|tartaglia|childe|thoma|venti|xiangling|xl|xianyun|cloudretainer|liuyun|xiao|xingqiu|xq|xinyan|yanfei|yoimiya|yoi|yunjin|zhongli|zhong|zl|gorou|aratakiitto|itto|aratakitheoneandoniitto|shenhe|yae|yaemiko|yelan|kukishinobu|kuki|shikanoinheizou|heizou|tighnari|collei|dori|candace|nilou|kusanali|lesserlordkusanali|nahida|layla|faruzan|faru|wanderer|scaramouche|scara|kunikuzushi|kuni|kabukimono|alhaitham|haitham|baizhu|dehya|yaoyao|mika|kaveh|kirara|lyney|lynette|neuvillette|neuv|chiefjusticeoffontaine|freminet|furina|furinadefontaine|navia|demoiselle|wriothesley|wrio|chevreuse|chev|gaming|chiori|arlecchino|arle|clorinde|emilie|mualani|sethos|xilonen|xilo';
       var gcsimAbilities =
         'attack|charge|aim|skill|burst|low_plunge|high_plunge|dash|jump|walk|swap';
-      var gcsimStats = 'hp(?:%)?|atk(?:%)?|def(?:%)?|er|em|cr|cd|heal|phys%';
+      var gcsimStats = '\\b(hp%?|atk%?|def%?|er|em|cr|cd|heal|phys%)(?!\\w)';
       var gcsimOthers =
-        'interval|every|once|amount|electro(?:%)?|element|resist|pyro(?:%)?|dendro(?:%)?|hydro(?:%)?|geo(?:%)?|anemo(?:%)?|physical|cryo(?:%)?|start_hp(?:%)?|start_energy|pos|radius|freeze_resist';
+        '(interval|every|once|amount|electro%?|element|resist|pyro%?|dendro%?|hydro%?|geo%?|anemo%?|physical|cryo%?|start_hp%?|start_energy|pos|radius|freeze_resist)';
       var gcsimOptions =
         'iteration|duration|swap_delay|workers|hitlag|defhalt|ignore_burst_energy';
       var keywordMapper = this.createKeywordMapper(
