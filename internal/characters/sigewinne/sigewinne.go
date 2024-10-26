@@ -20,20 +20,25 @@ func init() {
 type char struct {
 	*tmpl.Character
 
+	// skill
 	skillAttackInfo combat.AttackInfo
 	skillSnapshot   combat.Snapshot
 
-	particleGenerated   bool
-	lastSummonSrc       int
-	bubbleHitLimit      int
-	currentBubbleTier   int
-	collectedHpDebt     float32
+	particleGenerated bool
+	lastSummonSrc     int
+	bubbleHitLimit    int
+	currentBubbleTier int
+	collectedHpDebt   float32
+
+	// burst
 	burstEarlyCancelled bool
 	tickAnimLength      int
 	burstMaxDuration    int
 	burstStartF         int
 	lastSwap            int
-	chargeAi            combat.AttackInfo
+
+	// cons
+	c2Shield *shd
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -47,9 +52,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.HasArkhe = true
 
 	c.bubbleHitLimit = 5
-	c.currentBubbleTier = 0
-	c.collectedHpDebt = 0
-	c.burstEarlyCancelled = false
 	c.burstMaxDuration = 241 - chargeBurstDur
 	w.Character = &c
 
@@ -67,14 +69,8 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 1 {
 		c.bubbleHitLimit += 3
 	}
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
 	if c.Base.Cons >= 4 {
 		c.burstMaxDuration = 425 - chargeBurstDur
-	}
-	if c.Base.Cons >= 6 {
-		c.c6()
 	}
 
 	c.bubbleTierDamageMod()
@@ -124,11 +120,12 @@ func (c *char) consumeDroplet(g *sourcewaterdroplet.Gadget) {
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
 		return 13
-	}
-	if k == model.AnimationYelanN0StartDelay {
+	case model.AnimationYelanN0StartDelay:
 		return 5
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
-	return c.Character.AnimationStartDelay(k)
 }

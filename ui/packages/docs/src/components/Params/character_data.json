@@ -1019,7 +1019,7 @@
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "0 for Tap (default), 1 for short Hold, 2 for Hold ."
+      "desc": "0 for Tap (default), 1 for short Hold (tier 1 bubble), 2 for Hold (tier 2 bubble)."
     },
     {
       "ability": "burst",

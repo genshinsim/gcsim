@@ -12,9 +12,8 @@ import (
 
 const (
 	baseConvalescenceHP       = 30000
-	convalescenceHPFraction   = 1000
-	flatconvalescenceIncrease = 80
-	flatconvalescenceCap      = 2800
+	flatConvalescenceIncrease = 80.0 / 1000
+	flatConvalescenceCap      = 2800
 	a1DmgBuff                 = 0.08
 	a4HpDebtHealingBonusRatio = 0.03 / 1000
 	a4HealingBonusCap         = 0.3
@@ -40,32 +39,35 @@ func (c *char) a1() {
 			return false
 		}
 
-		if c.Tags[convalescenceKey] > 0 {
-			c.Tags[convalescenceKey]--
-			var amt float64
-			if c.Base.Cons >= 1 {
-				amt = min(C1flatconvalescenceCap, max(c.MaxHP()-baseConvalescenceHP, 0)/convalescenceHPFraction*C1flatconvalescenceIncrease)
-			} else {
-				amt = min(flatconvalescenceCap, max(c.MaxHP()-baseConvalescenceHP, 0)/convalescenceHPFraction*flatconvalescenceIncrease)
-			}
-
-			if c.Core.Flags.LogDebug {
-				c.Core.Log.NewEvent("Sigewinne A1 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
-					Write("before", atk.Info.FlatDmg).
-					Write("addition", amt).
-					Write("effect_ends_at", c.StatusExpiry(convalescenceKey)).
-					Write("quill_left", c.Tags[convalescenceKey])
-			}
-
-			atk.Info.FlatDmg += amt
+		if !c.StatusIsActive(convalescenceKey) || c.Tag(convalescenceKey) == 0 {
+			return false
 		}
+		c.SetTag(convalescenceKey, c.Tag(convalescenceKey)-1)
+
+		hp := max(c.MaxHP()-baseConvalescenceHP, 0)
+		var amt float64
+		if c.Base.Cons >= 1 {
+			amt = min(c1FlatConvalescenceCap, hp*c1FlatConvalescenceIncrease)
+		} else {
+			amt = min(flatConvalescenceCap, hp*flatConvalescenceIncrease)
+		}
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("Sigewinne A1 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
+				Write("before", atk.Info.FlatDmg).
+				Write("addition", amt).
+				Write("effect_ends_at", c.StatusExpiry(convalescenceKey)).
+				Write("quill_left", c.Tag(convalescenceKey))
+		}
+
+		atk.Info.FlatDmg += amt
 
 		return false
 	}, "sigewinne-convalescence-hook")
 }
 
 func (c *char) a1Self() {
-	c.AddStatus(convalescenceKey, skillCD*60, false)
+	c.AddStatus(convalescenceKey, skillCD*60, true)
 	c.SetTag(convalescenceKey, 10)
 
 	buff := make([]float64, attributes.EndStatType)
@@ -79,8 +81,9 @@ func (c *char) a1Self() {
 }
 
 func (c *char) a4() {
+	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("sigewinne-a4-healing-bonus", -1),
+		Base:         modifier.NewBase("sigewinne-a4", -1),
 		AffectedStat: attributes.Heal,
 		Amount: func() ([]float64, bool) {
 			totalHpDebt := 0.
@@ -88,12 +91,8 @@ func (c *char) a4() {
 				totalHpDebt += other.CurrentHPDebt()
 			}
 			heal := min(a4HealingBonusCap, totalHpDebt*a4HpDebtHealingBonusRatio)
-			m1 := make([]float64, attributes.EndStatType)
-			m1[attributes.Heal] = heal
-			if !c.StatusIsActive(skillKey) {
-				return nil, false
-			}
-			return m1, true
+			m[attributes.Heal] = heal
+			return m, true
 		},
 	})
 }

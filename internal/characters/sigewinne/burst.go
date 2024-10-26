@@ -17,15 +17,14 @@ var endLag []int
 
 const (
 	earliestCancel = 122
-	chargeBurstDur = 99 - 6
-	burstName      = "Super Saturated Syringing"
+	chargeBurstDur = 99
 )
 
 func init() {
-	endLag = frames.InitAbilSlice(17) // Burst end -> walk
-	endLag[action.ActionAttack] = 32
-	endLag[action.ActionSkill] = 30
-	endLag[action.ActionSwap] = 4
+	endLag = frames.InitAbilSlice(271 - 241) // Burst end -> Skill
+	endLag[action.ActionAttack] = 269 - 241
+	endLag[action.ActionSwap] = 245 - 241
+	endLag[action.ActionWalk] = 258 - 241
 	endLag[action.ActionDash] = 0
 	endLag[action.ActionJump] = 0
 }
@@ -46,25 +45,8 @@ func (c *char) burstFindDroplets() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.burstEarlyCancelled {
-		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Elemental Burst", c.CharWrapper.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Super Saturated Syringing with Elemental Burst", c.Base.Key)
 	}
-
-	c.QueueCharTask(c.burstFindDroplets, chargeBurstDur)
-
-	c.tickAnimLength = getBurstHitmark(1)
-	c.chargeAi = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       burstName,
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalArt,
-		ICDGroup:   attacks.ICDGroupSigewinneBurst,
-		StrikeType: attacks.StrikeTypePierce,
-		Element:    attributes.Hydro,
-		Durability: 25,
-		FlatDmg:    burstDMG[c.TalentLvlAttack()] * c.MaxHP(),
-	}
-
-	c.burstStartF = c.Core.F + chargeBurstDur
 
 	ticks, ok := p["ticks"]
 	if !ok {
@@ -74,21 +56,20 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.Core.Player.SwapCD = math.MaxInt16
+	c.tickAnimLength = getBurstHitmark(1)
 
-	c.Core.Tasks.Add(c.burstTick(c.burstStartF, 1, ticks, false), chargeBurstDur+getBurstHitmark(1))
+	c.Core.Tasks.Add(func() {
+		// TODO: correct timing?
+		c.burstFindDroplets()
 
-	c.SetCD(action.ActionBurst, 18*60)
+		c.burstStartF = c.Core.F
+		c.Core.Tasks.Add(c.burstTick(c.burstStartF, 1, ticks, false), getBurstHitmark(1))
+	}, chargeBurstDur)
+
+	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
 	c.ConsumeEnergy(5)
 
-	if c.Base.Cons >= 2 {
-		var shieldDur int
-		if ticks == -1 {
-			shieldDur = chargeBurstDur + c.burstMaxDuration
-		} else {
-			shieldDur = chargeBurstDur + getBurstHitmark(1) + getBurstHitmark(2)*(ticks-1) - 1
-		}
-		c.Core.Tasks.Add(c.addC2Shield(shieldDur), 1)
-	}
+	c.addC2Shield()
 
 	return action.Info{
 		Frames: func(next action.Action) int {
@@ -103,6 +84,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			case action.DashState, action.JumpState:
 				c.Core.Player.SwapCD = max(player.SwapCDFrames-(c.Core.F-c.lastSwap), 0)
 			}
+			c.removeC2Shield()
 		},
 	}, nil
 }
@@ -157,13 +139,27 @@ func (c *char) burstTick(src, tick, maxTick int, last bool) func() {
 func (c *char) burstWave() {
 	// TODO: the ACTUAL hitbox???
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 10)
-	c.Core.QueueAttack(c.chargeAi, ap, 0, 0)
+
+	// TODO: is deployable?
+	ai := combat.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Super Saturated Syringing",
+		AttackTag:    attacks.AttackTagElementalBurst,
+		ICDTag:       attacks.ICDTagElementalBurst,
+		ICDGroup:     attacks.ICDGroupSigewinneBurst,
+		StrikeType:   attacks.StrikeTypeDefault,
+		Element:      attributes.Hydro,
+		Durability:   25,
+		FlatDmg:      burstDMG[c.TalentLvlAttack()] * c.MaxHP(),
+		HitlagFactor: 0.01,
+	}
+	c.Core.QueueAttack(ai, ap, 0, 0, c.c2CB)
 }
 
 func getBurstHitmark(tick int) int {
 	switch tick {
 	case 1:
-		return 6
+		return 0
 	default:
 		return 25
 	}

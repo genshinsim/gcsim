@@ -97,15 +97,16 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.Base.Ascension >= 1 {
 		c.a1Self()
 	}
-	if c.Base.Cons >= 2 {
-		c.Core.Tasks.Add(c.addC2Shield(skillFrames[hold][action.ActionWalk]), 1)
-	}
+	c.addC2Shield()
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[hold]),
 		AnimationLength: skillFrames[hold][action.InvalidAction],
 		CanQueueAfter:   skillFrames[hold][action.ActionAttack],
 		State:           action.SkillState,
+		OnRemoved: func(next action.AnimationState) {
+			c.removeC2Shield()
+		},
 	}, nil
 }
 
@@ -126,6 +127,7 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 			combat.NewCircleHitOnTarget(target, nil, bubbleRadius),
 			0,
 			c.particleCB,
+			c.c2CB,
 		)
 		c.surgingBladeTask(target)
 
@@ -205,6 +207,7 @@ func (c *char) bubbleHealing() {
 			Src:     bolsteringBubblebalmHealingPct[c.TalentLvlSkill()]*c.MaxHP() + bolsteringBubblebalmHealingFlat[c.TalentLvlSkill()],
 			Bonus:   c.Stat(attributes.Heal) + skillBonus,
 		})
+		c.c6CritMode()
 	}
 }
 
@@ -221,6 +224,7 @@ func (c *char) bubbleFinalHealing() {
 		Src:     finalBounceHealing[c.TalentLvlSkill()] * c.MaxHP(),
 		Bonus:   c.Stat(attributes.Heal) + skillBonus,
 	})
+	c.c6CritMode()
 }
 
 func (c *char) bubbleTierDamageMod() {

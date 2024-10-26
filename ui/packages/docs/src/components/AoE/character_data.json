@@ -7670,23 +7670,23 @@
         "boxY": 1
       },
       {
-        "ability": "Mini-Stration Bubble",
+        "ability": "Aim-Bubble",
         "shape": "Box",
         "center": "PrimaryTarget",
         "offsetY": -0.5,
-        "boxX": 0.1,
-        "boxY": 1
+        "boxX": 0.3,
+        "boxY": 0.3
       }
     ],
     "skill": [
       {
-        "ability": "Rebound Hydrotherapy",
+        "ability": "E-Bubblebalm",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 1
       },
       {
-        "ability": "Surging Blade",
+        "ability": "E-Spiritbreath-Thorn",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 3
@@ -7694,9 +7694,9 @@
     ],
     "burst": [
       {
-        "ability": "Super Saturated Syringing",
+        "ability": "Q-Hit",
         "shape": "Box",
-        "center": "PrimaryTarget",
+        "center": "Player",
         "offsetY": 0,
         "boxX": 4,
         "boxY": 10,

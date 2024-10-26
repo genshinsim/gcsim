@@ -12,6 +12,8 @@ action_param_keys:
     - param: "weakspot"
   skill:
     - param: "hold" # 0 - tap; 1 - short hold (tier 1 bubble); 2 - hold (tier 2 bubble)
+  burst:
+    - param: "ticks"
 skill_data_mapping:
   attack: # Normal Attack: Royal Reed Bowmanship
     attack_1:

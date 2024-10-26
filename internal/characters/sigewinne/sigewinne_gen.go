@@ -18,6 +18,7 @@ var pbData []byte
 var base *model.AvatarData
 var paramKeysValidation = map[action.Action][]string{
 	1: {"hold"},
+	2: {"ticks"},
 	3: {"travel"},
 	7: {"hold", "travel", "weakspot"},
 	8: {"pickup_droplets"},
