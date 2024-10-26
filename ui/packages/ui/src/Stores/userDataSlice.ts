@@ -9,27 +9,24 @@ const initialState: UserData = {
   GOODImport: {},
 };
 
+type ImportSource = 'enka' | 'good';
+
 export const userDataSlice = createSlice({
   name: 'user_data',
   initialState: initialState,
   reducers: {
     loadFromGOOD: (
       state,
-      action: PayloadAction<{data: Character[]; source: string}>,
+      action: PayloadAction<{data: Character[]; source: ImportSource}>,
     ) => {
       // if there are characters, do something
       if (action.payload.data.length > 0) {
         //make it
         state.GOODImport = {};
         action.payload.data.forEach((c) => {
-          if (action.payload.source !== '') {
-            c.source = action.payload.source;
-          }
+          c.source = action.payload.source;
           //unique key should be name + source + optional enka build name
-          const key = `${c.name}-${c.source ?? 'none'}-${
-            c.enka_build_name ?? 'none'
-          }`;
-
+          const key = `${c.name}-${c.source}-${c.enka_build_name ?? 'none'}`;
           state.GOODImport[key] = c;
         });
       }

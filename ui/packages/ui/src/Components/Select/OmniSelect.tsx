@@ -4,13 +4,13 @@ import i18n from 'i18next';
 import React from 'react';
 import {CharMap} from '../../Data';
 
+type CharSource = 'user' | 'default';
 export interface Item {
   key: string; // this is UI key
   char_key: string; // this is the unique gcsim character key
-  text: string;
-  label: string;
-  notes?: string;
-  source?: string;
+  char_source: CharSource; // this denotes the source for the char data
+  text: string; // main text showing up on search
+  label: string; // secondary notes
 }
 
 type Props = {
@@ -38,7 +38,7 @@ export function OmniSelect(props: Props) {
     //the key search should maybe return the result even if not typed in
     //the translated language but wont work for element etc
     return (
-      `${item.label} ${item.key} ${item.text} ${item.notes}`
+      `${item.label} ${item.key} ${item.text}`
         .toLowerCase()
         .indexOf(normalizedQuery) >= 0
     );
@@ -64,15 +64,14 @@ const OmniSelectRenderer: ItemRenderer<Item> = (
   if (!modifiers.matchesPredicate) {
     return null;
   }
-  const text = item.notes ? `${item.text} (${item.notes})` : item.text;
   return (
     <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
       label={item.label}
-      key={item.key}
+      key={item.char_source + '-' + item.key} // it's possible for item.key to be duplicated across 2 diff sources
       onClick={handleClick}
-      text={highlightText(text, query)}
+      text={highlightText(item.text, query)}
     />
   );
 };
@@ -118,9 +117,9 @@ export function GenerateDefaultCharacters(): Item[] {
     return {
       key: k,
       char_key: k,
+      char_source: 'default',
       text: i18n.t('game:character_names.' + k),
-      label: i18n.t(`elements.${CharMap[k].element}`),
-      source: 'none',
+      label: '',
     };
   });
 }

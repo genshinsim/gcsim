@@ -58,31 +58,32 @@ export function Team() {
 
   const handleAdd = (item: Item) => {
     setOpen(false);
-    //check if this is from GOOD
-    if (item.source !== 'none') {
+    if (item.char_source === 'user') {
       const character: Character = JSON.parse(
         JSON.stringify(imported[item.key]),
       );
       dispatch(appActions.addCharacter({character}));
-      return;
+    } else {
+      const character = newCharFromKey(item.key);
+      dispatch(appActions.addCharacter({character}));
     }
-    //else it's new
-    const character = newCharFromKey(item.key);
-    dispatch(appActions.addCharacter({character}));
   };
 
+  // filter based on char_key,which is c.name from Character
   const disabled: string[] = team.map((c) => c.name);
 
   const items: Item[] = GenerateDefaultCharacters();
 
   Object.keys(imported).forEach((k) => {
+    const e = imported[k];
+    let label = e.enka_build_name !== undefined ? ` ${e.enka_build_name}` : '';
+    label += e.date_added !== undefined ? ` (${e.date_added})` : '';
     items.push({
       key: k,
-      char_key: imported[k].name,
-      text: t('game:character_names.' + imported[k].name),
-      label: `Imported on ${imported[k].date_added} (${imported[k].source})`,
-      notes: imported[k].enka_build_name,
-      source: imported[k].source ?? 'none',
+      char_key: e.name,
+      char_source: 'user',
+      text: t('game:character_names.' + e.name),
+      label: label,
     });
   });
 

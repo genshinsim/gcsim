@@ -56,7 +56,7 @@ export function ImportFromEnkaDialog(props: Props) {
         dispatch(
           userDataActions.loadFromGOOD({
             data: result.characters,
-            source: 'Enka',
+            source: 'enka',
           }),
         );
         setMessage('success');

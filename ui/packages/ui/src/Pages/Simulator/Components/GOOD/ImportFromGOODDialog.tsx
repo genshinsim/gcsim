@@ -32,7 +32,7 @@ export function ImportFromGOODDialog(props: Props) {
   const handleLoad = () => {
     if (data !== undefined) {
       dispatch(
-        userDataActions.loadFromGOOD({data: data.characters, source: 'GOOD'}),
+        userDataActions.loadFromGOOD({data: data.characters, source: 'good'}),
       );
       props.onClose();
       AppToaster.show({
