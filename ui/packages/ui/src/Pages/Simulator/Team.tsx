@@ -77,7 +77,7 @@ export function Team() {
   Object.keys(imported).forEach((k) => {
     const e = imported[k];
     let label = e.enka_build_name !== undefined ? ` ${e.enka_build_name}` : '';
-    label += e.date_added !== undefined ? ` (${e.date_added})` : '';
+    label += e.date_added !== undefined ? ` (Imported on ${e.date_added})` : '';
     items.push({
       key: k,
       char_key: e.name,
