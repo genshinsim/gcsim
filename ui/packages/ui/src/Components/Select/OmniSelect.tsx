@@ -1,14 +1,16 @@
-import React from "react";
-import { ItemPredicate, ItemRenderer, Omnibar } from "@blueprintjs/select";
-import { MenuItem } from "@blueprintjs/core";
-import { CharMap } from "../../Data";
-import i18n from "i18next";
+import {MenuItem} from '@blueprintjs/core';
+import {ItemPredicate, ItemRenderer, Omnibar} from '@blueprintjs/select';
+import i18n from 'i18next';
+import React from 'react';
+import {CharMap} from '../../Data';
 
 export interface Item {
-  key: string;
+  key: string; // this is UI key
+  char_key: string; // this is the unique gcsim character key
   text: string;
   label: string;
   notes?: string;
+  source?: string;
 }
 
 type Props = {
@@ -29,7 +31,7 @@ export function OmniSelect(props: Props) {
 
   const filter: ItemPredicate<Item> = (query, item, _index) => {
     //ignore filtered items
-    if (disabled.findIndex((v) => v === item.key) > -1) {
+    if (disabled.findIndex((v) => v === item.char_key) > -1) {
       return false;
     }
     const normalizedQuery = query.toLowerCase();
@@ -43,7 +45,7 @@ export function OmniSelect(props: Props) {
   };
   return (
     <CharacterOmnibar
-      overlayProps={{ usePortal: false }}
+      overlayProps={{usePortal: false}}
       resetOnSelect
       items={props.items}
       itemRenderer={OmniSelectRenderer}
@@ -57,7 +59,7 @@ export function OmniSelect(props: Props) {
 
 const OmniSelectRenderer: ItemRenderer<Item> = (
   item: Item,
-  { handleClick, modifiers, query }
+  {handleClick, modifiers, query},
 ) => {
   if (!modifiers.matchesPredicate) {
     return null;
@@ -68,7 +70,7 @@ const OmniSelectRenderer: ItemRenderer<Item> = (
       active={modifiers.active}
       disabled={modifiers.disabled}
       label={item.label}
-      key={text}
+      key={item.key}
       onClick={handleClick}
       text={highlightText(text, query)}
     />
@@ -76,7 +78,7 @@ const OmniSelectRenderer: ItemRenderer<Item> = (
 };
 
 function escapeRegExpChars(text: string) {
-  return text.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+  return text.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
 }
 
 function highlightText(text: string, query: string) {
@@ -88,7 +90,7 @@ function highlightText(text: string, query: string) {
   if (words.length === 0) {
     return [text];
   }
-  const regexp = new RegExp(words.join("|"), "gi");
+  const regexp = new RegExp(words.join('|'), 'gi');
   const tokens: React.ReactNode[] = [];
   while (true) {
     const match = regexp.exec(text);
@@ -115,8 +117,10 @@ export function GenerateDefaultCharacters(): Item[] {
     const ele = i18n.t(`elements.${CharMap[k].element}`);
     return {
       key: k,
-      text: i18n.t("game:character_names." + k),
+      char_key: k,
+      text: i18n.t('game:character_names.' + k),
       label: i18n.t(`elements.${CharMap[k].element}`),
+      source: 'none',
     };
   });
 }

@@ -1,17 +1,18 @@
-import { Character } from "@gcsim/types";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import {Character} from '@gcsim/types';
+import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   GenerateDefaultCharacters,
   Item,
   OmniSelect,
-} from "../../Components/Select";
-import { CharMap } from "../../Data";
-import { appActions } from "../../Stores/appSlice";
-import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
-import { Builder } from "./Components/TeamBuilder/Builder";
+} from '../../Components/Select';
+import {CharMap} from '../../Data';
+import {appActions} from '../../Stores/appSlice';
+import {RootState, useAppDispatch, useAppSelector} from '../../Stores/store';
+import {Builder} from './Components/TeamBuilder/Builder';
 
 function newCharFromKey(k: string): Character {
+  console.log(k);
   return {
     name: k,
     level: 80,
@@ -19,7 +20,7 @@ function newCharFromKey(k: string): Character {
     element: CharMap[k].element,
     cons: 0,
     weapon: {
-      name: "dullblade",
+      name: 'dullblade',
       refine: 1,
       level: 1,
       max_level: 20,
@@ -38,9 +39,9 @@ function newCharFromKey(k: string): Character {
 }
 
 export function Team() {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
-  const { imported, team } = useAppSelector((state: RootState) => {
+  const {imported, team} = useAppSelector((state: RootState) => {
     return {
       imported: state.user_data.GOODImport,
       team: state.app.team,
@@ -51,23 +52,23 @@ export function Team() {
 
   const handleRemove = (index: number) => {
     return () => {
-      dispatch(appActions.deleteCharacter({ index }));
+      dispatch(appActions.deleteCharacter({index}));
     };
   };
 
   const handleAdd = (item: Item) => {
     setOpen(false);
     //check if this is from GOOD
-    if (item.notes) {
+    if (item.source !== 'none') {
       const character: Character = JSON.parse(
-        JSON.stringify(imported[item.key])
+        JSON.stringify(imported[item.key]),
       );
-      dispatch(appActions.addCharacter({ character }));
+      dispatch(appActions.addCharacter({character}));
       return;
     }
     //else it's new
     const character = newCharFromKey(item.key);
-    dispatch(appActions.addCharacter({ character }));
+    dispatch(appActions.addCharacter({character}));
   };
 
   const disabled: string[] = team.map((c) => c.name);
@@ -76,10 +77,12 @@ export function Team() {
 
   Object.keys(imported).forEach((k) => {
     items.push({
-      key: imported[k].name,
-      text: t("game:character_names." + imported[k].name),
-      label: `Imported on ${imported[k].date_added}`,
-      notes: imported[k].buildName,
+      key: k,
+      char_key: imported[k].name,
+      text: t('game:character_names.' + imported[k].name),
+      label: `Imported on ${imported[k].date_added} (${imported[k].source})`,
+      notes: imported[k].enka_build_name,
+      source: imported[k].source ?? 'none',
     });
   });
 
