@@ -2938,6 +2938,49 @@
       }
     ]
   },
+  "sigewinne": {
+    "aim": [
+      {
+        "ability": "Aim-Head",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "FullAim-Head",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "Aim-Bubble",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Bubblebalm",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Hit",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ]
+  },
   "tartaglia": {
     "normal": [
       {

@@ -990,6 +990,43 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "sigewinne": [
+    {
+      "ability": "dash",
+      "param": "pickup_droplets",
+      "desc": "Number of picked up Sourcewater Droplets. Default 0."
+    },
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default), 2 for Fully-Charged Aimed Shot with Mini-Bubble."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for short Hold (tier 1 bubble), 2 for Hold (tier 2 bubble)."
+    },
+    {
+      "ability": "burst",
+      "param": "ticks",
+      "desc": "Number of ticks for Elemental Burst. Default is maximum number of ticks, minimum 2. If the number of ticks is not the maximum, the next action must be Dash, or Jump."
+    }
+  ],
   "sucrose": [
     {
       "ability": "low_plunge",

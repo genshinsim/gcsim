@@ -22,6 +22,7 @@ const (
 	GadgetTypGrinMalkinHat
 	GadgetTypSourcewaterDropletHydroTrav
 	GadgetTypSourcewaterDropletNeuv
+	GadgetTypSourcewaterDropletSigewinne
 	GadgetTypCrystallizeShard
 	GadgetTypTest
 	EndGadgetTyp
@@ -38,6 +39,7 @@ func init() {
 	gadgetLimits[GadgetTypYueguiJumping] = 3
 	gadgetLimits[GadgetTypSourcewaterDropletHydroTrav] = 12
 	gadgetLimits[GadgetTypSourcewaterDropletNeuv] = 12
+	gadgetLimits[GadgetTypSourcewaterDropletSigewinne] = 12
 	gadgetLimits[GadgetTypCrystallizeShard] = 3
 }
 
