@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 // After a character connected to the Jinni triggers an Electro-Charged, Superconduct, Overloaded, Quicken, Aggravate, Hyperbloom,
@@ -39,12 +39,12 @@ func (c *char) a1() {
 	}
 
 	reduceNoGadget := func(args ...interface{}) bool {
-		if _, ok := args[0].(*gadget.Gadget); ok {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
-
 		return reduce(args...)
 	}
+
 	c.Core.Events.Subscribe(event.OnOverload, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, "dori-a1")

@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -22,7 +22,7 @@ func (c *char) a1() {
 	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
 		icd := -1
 		return func(args ...interface{}) bool {
-			if _, ok := args[0].(*gadget.Gadget); ok {
+			if _, ok := args[0].(*enemy.Enemy); !ok {
 				return false
 			}
 
@@ -31,7 +31,6 @@ func (c *char) a1() {
 				return false
 			}
 			// do not overwrite mod if same frame
-			//TODO: this probably isn't needed?
 			if c.Core.F < icd {
 				return false
 			}
