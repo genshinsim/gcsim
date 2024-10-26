@@ -86,14 +86,18 @@ func (c *char) ModifyHPDebtByAmount(amt float64) {
 		return
 	}
 	c.a4(amt)
+
+	prevHPDebt := c.hpDebt
 	c.hpDebt += amt
 	if c.hpDebt < 0 {
 		c.hpDebt = 0
+	} else if c.hpDebt > c.MaxHP()*2 {
+		c.hpDebt = c.MaxHP() * 2
 	}
 	c.Core.Log.NewEvent("hp debt changed", glog.LogCharacterEvent, c.Index).
 		Write("amt", amt).
 		Write("current_debt", c.hpDebt)
-	c.Core.Events.Emit(event.OnHPDebt, c.Index, amt)
+	c.Core.Events.Emit(event.OnHPDebt, c.Index, prevHPDebt-c.hpDebt)
 }
 
 func (c *char) ModifyHPDebtByRatio(r float64) {
