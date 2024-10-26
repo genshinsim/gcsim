@@ -28,7 +28,8 @@ func init() {
 }
 
 type Weapon struct {
-	Index int
+	Index  int
+	stacks int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -58,7 +59,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	scorchingSummerStacks := 0
 	mNA := make([]float64, attributes.EndStatType)
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
@@ -67,14 +67,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
+
 		char.AddStatus(icdKey, 15*60, true)
-		scorchingSummerStacks = 4
+		w.stacks = 4
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 14*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag == attacks.AttackTagNormal {
-					mNA[attributes.DmgP] = dmgPerStack * float64(scorchingSummerStacks)
+					mNA[attributes.DmgP] = dmgPerStack * float64(min(w.stacks, 4))
 					return mNA, true
 				}
 				return nil, false
@@ -105,7 +106,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		scorchingSummerStacks = min(4, scorchingSummerStacks+1)
+		if w.stacks < 5 { // limit to 5 so it can carry over when NA hits
+			w.stacks++
+		}
+		if w.stacks == 5 {
+			char.QueueCharTask(func() {
+				w.stacks = 4
+			}, .5*60)
+		}
+
 		c.Log.NewEvent("Surf's Up gained stack", glog.LogWeaponEvent, char.Index)
 		char.AddStatus(gainStackIcd, 1.5*60, true)
 
@@ -137,7 +146,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		scorchingSummerStacks = max(0, scorchingSummerStacks-1)
+		if w.stacks > 0 {
+			w.stacks--
+		}
+
 		c.Log.NewEvent("Surf's Up lost stack", glog.LogWeaponEvent, char.Index)
 		char.AddStatus(loseStackIcd, 1.5*60, true)
 
