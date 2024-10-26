@@ -192,8 +192,9 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
   let errors: any[] = [];
   const today = new Date();
   try {
-    enkaData.avatarInfoList.forEach(
+    enkaData.forEach(
       ({
+        name,
         avatarId,
         propMap,
         skillDepotId,
@@ -235,6 +236,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
         }
 
         let result: Character = {
+          buildName: name,
           name: characterData.key,
           level: parseInt(propMap["4001"].val) ?? 1,
           element: DMElementToKey[characterData.element],
@@ -253,7 +255,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
 
         characters.push(result);
 
-        console.log(`succesfully imported ${result.name} (id: ${avatarId})`);
+        console.log(`succesfully imported ${result.name} (id: ${avatarId}, name: ${name})`);
       }
     );
   } catch (e: any) {

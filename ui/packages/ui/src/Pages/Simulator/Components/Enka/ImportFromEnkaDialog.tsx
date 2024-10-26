@@ -93,7 +93,7 @@ export function ImportFromEnkaDialog(props: Props) {
                     {characters.map((e, i) => {
                       return (
                         <div key={i} className="ml-2">
-                          {e.name}
+                          {e.name} {e.buildName?.length > 0 ? '('+e.buildName+')': ''}
                         </div>
                       );
                     })}

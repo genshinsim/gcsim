@@ -19,7 +19,7 @@ export const userDataSlice = createSlice({
         //make it
         state.GOODImport = {};
         action.payload.data.forEach((c) => {
-          state.GOODImport[c.name] = c;
+          state.GOODImport[c.name + (c.buildName??"")] = c;
         });
       }
       return state;
