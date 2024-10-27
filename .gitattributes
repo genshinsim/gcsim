@@ -1,4 +1,2 @@
 # https://github.com/golangci/golangci-lint-action#multiple-os-support
 *.go text eol=lf
-*.textproto eol=lf
-*.json eol=lf
