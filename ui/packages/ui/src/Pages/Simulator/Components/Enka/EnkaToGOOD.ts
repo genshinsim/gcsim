@@ -1,39 +1,39 @@
-import ArtifactDataGen from "@ui/Data/artifact_data.generated.json";
-import CharDataGen from "@ui/Data/char_data.generated.json";
-import WeaponDataGen from "@ui/Data/weapon_data.generated.json";
+import ArtifactDataGen from '@ui/Data/artifact_data.generated.json';
+import CharDataGen from '@ui/Data/char_data.generated.json';
+import WeaponDataGen from '@ui/Data/weapon_data.generated.json';
 
-import { Character, Set, Weapon } from "@gcsim/types";
-import { ArtifactMainStatsData } from "@ui/Data";
-import { GOODStatKey } from "../GOOD/GOODTypes";
+import {Character, Set, Weapon} from '@gcsim/types';
+import {ArtifactMainStatsData} from '@ui/Data';
+import {GOODStatKey} from '../GOOD/GOODTypes';
 import {
   ascLvlMax,
   ascToMaxLvl,
   DMElementToKey,
   GOODStatToIndexMap,
-} from "../util";
+} from '../util';
 import {
   EnkaData,
   FightProp,
   GenshinItemReliquary,
   GenshinItemWeapon,
-} from "./EnkaTypes";
+} from './EnkaTypes';
 
 const charIDToKeyLookup = Object.values(CharDataGen.data).reduce((acc, val) => {
   //this concat here is to handle traveler which has the same id but diff sub_id
-  const id_str = `${val.id}${"sub_id" in val ? "-" + val["sub_id"] : ""}`;
+  const id_str = `${val.id}${'sub_id' in val ? '-' + val['sub_id'] : ''}`;
   acc[id_str] = val.key;
   return acc;
-}, {} as { [id_str: string]: string });
+}, {} as {[id_str: string]: string});
 
 const weaponIDToKeyLookup = Object.values(WeaponDataGen.data).reduce(
   (acc, val) => {
     acc[val.id] = val.key;
     return acc;
   },
-  {} as { [id: number]: string }
+  {} as {[id: number]: string},
 );
 
-let artifactMapByTextMapId: { [key in string]: string } = {};
+let artifactMapByTextMapId: {[key in string]: string} = {};
 for (const [k, v] of Object.entries(ArtifactDataGen.data)) {
   artifactMapByTextMapId[v.text_map_id] = k;
 }
@@ -57,13 +57,13 @@ type CharData = {
 //converts it to our internal generated data
 function findCharDataFromEnka(
   avatarId: number,
-  skillDepotId: number
+  skillDepotId: number,
 ): CharData {
   let converted_id = avatarId.toString();
   //if traveler, then we need to find the subid
   if (avatarId === 10000007 || avatarId === 10000005) {
-    converted_id = converted_id + "-" + skillDepotId;
-    console.log("using id + skill depot id for traveler", converted_id);
+    converted_id = converted_id + '-' + skillDepotId;
+    console.log('using id + skill depot id for traveler', converted_id);
   }
   //sanity check that this character is implemented
   if (!(converted_id in charIDToKeyLookup)) {
@@ -75,20 +75,20 @@ function findCharDataFromEnka(
     skill_details: CharDataGen.data[key].skill_details,
     element: CharDataGen.data[key].element,
   };
-  console.log("character data found", data);
+  console.log('character data found', data);
   return data;
 }
 
 //extract character weapon from enka equip list; return null if not found
 function extractWeapon(
-  equipList: (GenshinItemWeapon | GenshinItemReliquary)[]
+  equipList: (GenshinItemWeapon | GenshinItemReliquary)[],
 ): Weapon {
   let result: Weapon | null = null;
   equipList.forEach((e) => {
-    if (e.flat.itemType != "ITEM_WEAPON") {
+    if (e.flat.itemType != 'ITEM_WEAPON') {
       return;
     }
-    const { weapon: enkaWeapon, itemId } = e as GenshinItemWeapon;
+    const {weapon: enkaWeapon, itemId} = e as GenshinItemWeapon;
     if (!(itemId in weaponIDToKeyLookup)) {
       throw `unrecognized weapon (id ${itemId})`;
     }
@@ -107,11 +107,11 @@ function extractWeapon(
 }
 
 function extractArtifactSet(
-  equipList: (GenshinItemWeapon | GenshinItemReliquary)[]
+  equipList: (GenshinItemWeapon | GenshinItemReliquary)[],
 ): Set {
   let result: Set = {};
   equipList.forEach((e) => {
-    if (e.flat.itemType != "ITEM_RELIQUARY") {
+    if (e.flat.itemType != 'ITEM_RELIQUARY') {
       return;
     }
     //find set, throw error if we can an unrecognized set
@@ -128,7 +128,7 @@ function extractArtifactSet(
 }
 
 function extractArtifactStats(
-  equipList: (GenshinItemWeapon | GenshinItemReliquary)[]
+  equipList: (GenshinItemWeapon | GenshinItemReliquary)[],
 ): number[] {
   //TODO: using this here so we can in future return main + sub on sep lines
 
@@ -136,7 +136,7 @@ function extractArtifactStats(
   let total = stats_base.slice();
   //we'll want to use labels for the other stuff (although doesn't do anything atm)
   equipList.forEach((e) => {
-    if (e.flat.itemType != "ITEM_RELIQUARY") {
+    if (e.flat.itemType != 'ITEM_RELIQUARY') {
       return;
     }
     const ms = extractMainStat(e as GenshinItemReliquary);
@@ -166,17 +166,17 @@ function extractSubStats(e: GenshinItemReliquary): number[] {
     const idx = GOODStatToIndexMap[key];
     let val = sub.statValue;
     //this corrects for percentages
-    if (key.includes("_")) {
+    if (key.includes('_')) {
       val = val / 100.0;
     }
     total[idx] += val;
   }
-  console.log("substats extracted", total);
+  console.log('substats extracted', total);
   return total;
 }
 
 function extractMainStat(e: GenshinItemReliquary): number {
-  const { flat, reliquary: data } = e;
+  const {flat, reliquary: data} = e;
   //mainstat is calculated based on lvl + rarity + stat key
   const lvl = data.level - 1; //enka returns lvl as +1, so 20 is actually 21
   const rarity = e.flat.rankLevel.toString(); //keyed as string
@@ -192,8 +192,9 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
   let errors: any[] = [];
   const today = new Date();
   try {
-    enkaData.avatarInfoList.forEach(
+    enkaData.forEach(
       ({
+        name,
         avatarId,
         propMap,
         skillDepotId,
@@ -236,13 +237,13 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
 
         let result: Character = {
           name: characterData.key,
-          level: parseInt(propMap["4001"].val) ?? 1,
+          level: parseInt(propMap['4001'].val) ?? 1,
           element: DMElementToKey[characterData.element],
-          max_level: ascToMaxLvl(parseInt(propMap["1002"].val) ?? 1),
+          max_level: ascToMaxLvl(parseInt(propMap['1002'].val) ?? 1),
           cons: talentIdList?.length ?? 0,
           talents: getCharacterTalentV2(
             characterData.skill_details,
-            skillLevelMap
+            skillLevelMap,
           ),
           weapon: weapon,
           sets: set,
@@ -251,10 +252,16 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
           date_added: today.toLocaleDateString(),
         };
 
+        if (name !== undefined) {
+          result.enka_build_name = name;
+        }
+
         characters.push(result);
 
-        console.log(`succesfully imported ${result.name} (id: ${avatarId})`);
-      }
+        console.log(
+          `succesfully imported ${result.name} (id: ${avatarId}, name: ${name})`,
+        );
+      },
     );
   } catch (e: any) {
     console.log(e);
@@ -267,7 +274,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
   };
 }
 
-function determineWeaponRefinement(affixMap?: { [key: number]: number }) {
+function determineWeaponRefinement(affixMap?: {[key: number]: number}) {
   return affixMap
     ? (Object.entries(affixMap)[0] != null
         ? Object.entries(affixMap)[0][1]
@@ -281,7 +288,7 @@ function getCharacterTalentV2(
     burst: number;
     attack: number;
   },
-  skillLevelMap: { [key: number]: number }
+  skillLevelMap: {[key: number]: number},
 ) {
   return {
     attack: skillLevelMap[skill_details.attack],
@@ -293,44 +300,44 @@ function getCharacterTalentV2(
 function fightPropToGOODKey(fightProp: FightProp): GOODStatKey {
   switch (fightProp) {
     case FightProp.FIGHT_PROP_HP:
-      return "hp";
+      return 'hp';
     case FightProp.FIGHT_PROP_HP_PERCENT:
-      return "hp_";
+      return 'hp_';
     case FightProp.FIGHT_PROP_ATTACK:
-      return "atk";
+      return 'atk';
     case FightProp.FIGHT_PROP_ATTACK_PERCENT:
-      return "atk_";
+      return 'atk_';
     case FightProp.FIGHT_PROP_DEFENSE:
-      return "def";
+      return 'def';
     case FightProp.FIGHT_PROP_DEFENSE_PERCENT:
-      return "def_";
+      return 'def_';
     case FightProp.FIGHT_PROP_CHARGE_EFFICIENCY:
-      return "enerRech_";
+      return 'enerRech_';
     case FightProp.FIGHT_PROP_ELEMENT_MASTERY:
-      return "eleMas";
+      return 'eleMas';
     case FightProp.FIGHT_PROP_CRITICAL:
-      return "critRate_";
+      return 'critRate_';
     case FightProp.FIGHT_PROP_CRITICAL_HURT:
-      return "critDMG_";
+      return 'critDMG_';
     case FightProp.FIGHT_PROP_HEAL_ADD:
-      return "heal_";
+      return 'heal_';
     case FightProp.FIGHT_PROP_FIRE_ADD_HURT:
-      return "pyro_dmg_";
+      return 'pyro_dmg_';
     case FightProp.FIGHT_PROP_ELEC_ADD_HURT:
-      return "electro_dmg_";
+      return 'electro_dmg_';
     case FightProp.FIGHT_PROP_ICE_ADD_HURT:
-      return "cryo_dmg_";
+      return 'cryo_dmg_';
     case FightProp.FIGHT_PROP_WATER_ADD_HURT:
-      return "hydro_dmg_";
+      return 'hydro_dmg_';
     case FightProp.FIGHT_PROP_WIND_ADD_HURT:
-      return "anemo_dmg_";
+      return 'anemo_dmg_';
     case FightProp.FIGHT_PROP_ROCK_ADD_HURT:
-      return "geo_dmg_";
+      return 'geo_dmg_';
     case FightProp.FIGHT_PROP_GRASS_ADD_HURT:
-      return "dendro_dmg_";
+      return 'dendro_dmg_';
     case FightProp.FIGHT_PROP_PHYSICAL_ADD_HURT:
-      return "physical_dmg_";
+      return 'physical_dmg_';
     default:
-      return "";
+      return '';
   }
 }

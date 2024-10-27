@@ -66,6 +66,7 @@ func (c *char) c1() {
 			Durability:       25,
 			Mult:             c1AtkP,
 			HitlagHaltFrames: 0.01,
+			IgnoreInfusion:   true,
 		}
 		for _, hitmark := range c1Hitmarks {
 			c.Core.QueueAttack(
@@ -151,15 +152,16 @@ func (c *char) c6() {
 
 	c.AddStatus(c6GlimbrightIcdKey, 1*60, false)
 	c6AI := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Glimbright Shade (C6)",
-		AttackTag:  attacks.AttackTagNormal,
-		ICDTag:     attacks.ICDTagClorindeCons,
-		ICDGroup:   attacks.ICDGroupClorindeElementalArt,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Electro,
-		Durability: 25,
-		Mult:       c6GlimbrightAtkP,
+		ActorIndex:     c.Index,
+		Abil:           "Glimbright Shade (C6)",
+		AttackTag:      attacks.AttackTagNormal,
+		ICDTag:         attacks.ICDTagClorindeCons,
+		ICDGroup:       attacks.ICDGroupClorindeElementalArt,
+		StrikeType:     attacks.StrikeTypeSlash,
+		Element:        attributes.Electro,
+		Durability:     25,
+		Mult:           c6GlimbrightAtkP,
+		IgnoreInfusion: true,
 	}
 	c.Core.QueueAttack(
 		c6AI,

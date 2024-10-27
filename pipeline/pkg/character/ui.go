@@ -47,6 +47,7 @@ func (g *Generator) writeCharDataJSON(path string) error {
 	if err != nil {
 		return err
 	}
+	dst.WriteString("\n")
 	os.Remove(path)
 	err = os.WriteFile(path, dst.Bytes(), 0o644)
 	if err != nil {

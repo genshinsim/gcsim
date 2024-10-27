@@ -18,6 +18,12 @@ skill_data_mapping:
         charge:
             - 5 # Charged Attack DMG|{param5:F1P}+{param5:F1P}
             - 5 # Charged Attack DMG|{param5:F1P}+{param5:F1P}
+        collision:
+            - 7 # Plunge DMG|{param7:F1P}
+        lowPlunge:
+            - 8 # Low/High Plunge DMG|{param8:P}/{param9:P}
+        highPlunge:
+            - 9 # Low/High Plunge DMG|{param8:P}/{param9:P}
     skill:
         skillDmgCont:
             - 4 # Herald of Frost DMG|{param4:F1P}

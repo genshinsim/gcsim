@@ -67,13 +67,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 			// dori self application
 			// TODO: change this to a ST attack later when self reactions need to be implemented
+			idx := c.Core.Player.ActiveChar().Index
 			c.Core.Player.Drain(info.DrainInfo{
-				ActorIndex: ai.ActorIndex,
+				ActorIndex: idx,
 				Abil:       ai.Abil,
 				Amount:     0,
 				External:   true,
 			})
-			idx := c.Core.Player.ActiveChar().Index
 			if c.Core.F > icdSrc[idx]+attacks.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
 				dur := reactions.Durability(25)
 				if p.AuraCount() == 0 {

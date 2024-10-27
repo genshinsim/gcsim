@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -82,7 +83,6 @@ func (c *char) particleCB(a combat.AttackCB) {
 // Checks for the onfield character at the delay frame, then applies buff to that character
 func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 	c.Core.Tasks.Add(func() {
-		// TODO: this should be a 0 dmg attack
 		if collision, _ := c.Core.Combat.Player().AttackWillLand(a); !collision {
 			return
 		}
@@ -104,6 +104,14 @@ func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
+		})
+
+		// TODO: change this to a ST attack later
+		c.Core.Player.Drain(info.DrainInfo{
+			ActorIndex: active.Index,
+			Abil:       "Tengu Juurai: Ambush",
+			Amount:     0,
+			External:   true,
 		})
 
 		if c.Base.Cons >= 1 {

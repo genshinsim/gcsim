@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -300,7 +300,7 @@ func (c *char) consumeHp(src int) func() {
 	}
 }
 
-func (c *char) consumeDroplet(g *common.SourcewaterDroplet) {
+func (c *char) consumeDroplet(g *sourcewaterdroplet.Gadget) {
 	g.Kill()
 	// TODO: adjust healing delay by ping amount
 	// the healing is slightly delayed by 5f

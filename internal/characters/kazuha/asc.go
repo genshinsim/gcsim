@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -14,9 +14,9 @@ import (
 // Elemental Absorption may only occur once per use of Chihayaburu.
 //
 // - checks for ascension level in skill.go to avoid queuing this up only to fail the ascension level check
-func (c *char) absorbCheckA1(src, count, max int) func() {
+func (c *char) absorbCheckA1(src, count, maxcount int) func() {
 	return func() {
-		if count == max {
+		if count == maxcount {
 			return
 		}
 		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.Index, c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
@@ -28,14 +28,13 @@ func (c *char) absorbCheckA1(src, count, max int) func() {
 			return
 		}
 		// otherwise queue up
-		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, max), 6)
+		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, maxcount), 6)
 	}
 }
 
 // Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
 // Elemental DMG Bonus to the element absorbed by Swirl for every point of Elemental Mastery
 // he has for 8s. Bonuses for different elements obtained through this method can co-exist.
-// TODO: - this should ignore any EM he gets from Sucrose A4 (he still benefits from sucrose em but just cannot share it)
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
@@ -46,7 +45,7 @@ func (c *char) a4() {
 	swirlfunc := func(ele attributes.Stat, key string) func(args ...interface{}) bool {
 		icd := -1
 		return func(args ...interface{}) bool {
-			if _, ok := args[0].(*gadget.Gadget); ok {
+			if _, ok := args[0].(*enemy.Enemy); !ok {
 				return false
 			}
 
@@ -66,13 +65,10 @@ func (c *char) a4() {
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("kazuha-a4-"+key, 60*8),
-					AffectedStat: attributes.NoStat,
+					AffectedStat: ele,
 					Extra:        true,
 					Amount: func() ([]float64, bool) {
-						m[attributes.CryoP] = 0
-						m[attributes.ElectroP] = 0
-						m[attributes.HydroP] = 0
-						m[attributes.PyroP] = 0
+						clear(m)
 						m[ele] = dmg
 						return m, true
 					},

@@ -122,6 +122,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 			}
 			r.ParticleDropThreshold = amt
 			r.ParticleDrops = nil // separate particle system
+			r.ParticleElement = attributes.NoElement
 			r.Modified = true
 		case keywordParticleDropCount:
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)

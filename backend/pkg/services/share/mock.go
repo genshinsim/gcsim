@@ -103,11 +103,11 @@ func (s *mockServer) Delete(ctx context.Context, key string) error {
 }
 
 func (s *mockServer) Random(context.Context) (string, error) {
-	max := len(s.data)
-	if max == 0 {
+	maxdata := len(s.data)
+	if maxdata == 0 {
 		return "", status.Error(codes.NotFound, "not found")
 	}
-	n := s.Rand.Intn(max)
+	n := s.Rand.Intn(maxdata)
 	for k := range s.data {
 		if n == 0 {
 			return k, nil

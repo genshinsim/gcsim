@@ -60,28 +60,30 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 
 	// start from max liquid in all relevant substats
 	for _, substat := range relevantSubstats {
-		stats.charProfilesCopy[idxChar].Stats[substat] += float64(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat]) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+		stats.charProfilesCopy[idxChar].Stats[substat] +=
+			float64(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat]) *
+				stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 		stats.charSubstatFinal[idxChar][substat] = stats.charSubstatLimits[idxChar][substat]
 	}
 
 	totalSubs := stats.getCharSubstatTotal(idxChar)
 	stats.optimizer.logger.Debug(char.Base.Key.Pretty())
 	stats.optimizer.logger.Debug(PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
-	for totalSubs > stats.totalLiquidSubstats {
+	for totalSubs > stats.charTotalLiquidSubstats[idxChar] {
 		amount := -1
 		switch {
-		case totalSubs-stats.totalLiquidSubstats >= 15:
+		case totalSubs-stats.charTotalLiquidSubstats[idxChar] >= 15:
 			amount = -20 // will get clamped to either 10/8 depending on the substat limit
-		case totalSubs-stats.totalLiquidSubstats >= 8:
+		case totalSubs-stats.charTotalLiquidSubstats[idxChar] >= 8:
 			amount = -5
-		case totalSubs-stats.totalLiquidSubstats >= 4:
+		case totalSubs-stats.charTotalLiquidSubstats[idxChar] >= 4:
 			amount = -2
 		}
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, amount)
 
 		// loops multiple gradients while totalSubs-stats.totalLiquidSubstats >= 25
 		// this should be most correct because the first 5 to 6 substats have 0 effect on dps
-		for ok := true; ok; ok = totalSubs-stats.totalLiquidSubstats >= 25 {
+		for ok := true; ok; ok = totalSubs-stats.charTotalLiquidSubstats[idxChar] >= 25 {
 			allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
 			totalSubs = stats.getCharSubstatTotal(idxChar)
 			opDebug = append(opDebug, allocDebug...)
@@ -100,7 +102,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 			}
 			// only update the charRelevantSubstats when the gradient of the removed substats is very small
 			// this is used later in the opt_allstats
-			if stats.getCharSubstatTotal(idxChar)-stats.totalLiquidSubstats >= 15 ||
+			if stats.getCharSubstatTotal(idxChar)-stats.charTotalLiquidSubstats[idxChar] >= 15 ||
 				removedGrad >= -100 {
 				stats.charRelevantSubstats[idxChar] = nil
 				stats.charRelevantSubstats[idxChar] = append(stats.charRelevantSubstats[idxChar], newRelevantSubstats...)

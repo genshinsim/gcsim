@@ -19,16 +19,18 @@ func init() {
 
 type Set struct {
 	Index int
+	Count int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 // Implements Instructor artifact set:
 // 2-Piece Bonus: Increases Elemental Mastery by 80.
 // 4-Piece Bonus: Upon triggering an Elemental Reaction, increases all party members' Elemental Mastery by 120 for 8s.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
-	s := Set{}
+	s := Set{Count: count}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)

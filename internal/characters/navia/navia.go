@@ -29,6 +29,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.SkillCon = 3
 	c.BurstCon = 5
+	c.HasArkhe = true
+
 	c.SetNumCharges(action.ActionSkill, 2)
 	w.Character = &c
 

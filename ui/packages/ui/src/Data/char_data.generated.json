@@ -481,6 +481,23 @@
       },
       "name_text_hash_map ": "388272194"
     },
+    "emilie": {
+      "id": 10000099,
+      "key": "emilie",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Grass",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Emilie",
+      "skill_details": {
+        "skill": 10992,
+        "burst": 10995,
+        "attack": 10991,
+        "burst_energy_cost": 50
+      },
+      "name_text_hash_map ": "1705786122"
+    },
     "eula": {
       "id": 10000051,
       "key": "eula",
@@ -1013,6 +1030,23 @@
       },
       "name_text_hash_map ": "1113306282"
     },
+    "mualani": {
+      "id": 10000102,
+      "key": "mualani",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Water",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Mualani",
+      "skill_details": {
+        "skill": 30002,
+        "burst": 30007,
+        "attack": 30000,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "3949670506"
+    },
     "nahida": {
       "id": 10000073,
       "key": "nahida",
@@ -1217,6 +1251,23 @@
       },
       "name_text_hash_map ": "2388785242"
     },
+    "sethos": {
+      "id": 10000097,
+      "key": "sethos",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Electric",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Sethos",
+      "skill_details": {
+        "skill": 10972,
+        "burst": 10975,
+        "attack": 10971,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1431322346"
+    },
     "shenhe": {
       "id": 10000063,
       "key": "shenhe",
@@ -1233,6 +1284,23 @@
         "burst_energy_cost": 80
       },
       "name_text_hash_map ": "334242634"
+    },
+    "sigewinne": {
+      "id": 10000095,
+      "key": "sigewinne",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Water",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Sigewinne",
+      "skill_details": {
+        "skill": 10952,
+        "burst": 10955,
+        "attack": 10951,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "781488962"
     },
     "sucrose": {
       "id": 10000043,
@@ -1403,6 +1471,23 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "1021947690"
+    },
+    "xilonen": {
+      "id": 10000103,
+      "key": "xilonen",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Rock",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Xilonen",
+      "skill_details": {
+        "skill": 11032,
+        "burst": 11035,
+        "attack": 11031,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2515292882"
     },
     "xingqiu": {
       "id": 10000025,

@@ -1,12 +1,12 @@
 // https://github.com/EnkaNetwork/API-docs/blob/master/api.md
-export interface EnkaData {
-  playerInfo: object;
-  avatarInfoList: AvatarInfo[];
-}
+export type EnkaData = AvatarInfo[];
 
 export interface AvatarInfo {
   //Name
   avatarId: number;
+
+  //build related
+  name?: string;
 
   //Constellation id
   talentIdList?: number[];
@@ -67,7 +67,7 @@ export interface GenshinItemWeapon {
       {
         appendPropId: FightProp;
         statValue: number;
-      }
+      },
     ];
     itemType: 'ITEM_WEAPON';
     icon: string;
@@ -108,7 +108,7 @@ export interface GenshinItemReliquary {
       {
         appendPropId: FightProp;
         statValue: number;
-      }
+      },
     ];
     itemType: 'ITEM_RELIQUARY';
     icon: string;

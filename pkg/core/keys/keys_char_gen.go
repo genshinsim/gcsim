@@ -30,6 +30,7 @@ const (
 	Diluc
 	Diona
 	Dori
+	Emilie
 	Eula
 	Faruzan
 	Fischl
@@ -56,6 +57,7 @@ const (
 	Lyney
 	Mika
 	Mona
+	Mualani
 	Nahida
 	Navia
 	Neuvillette
@@ -68,7 +70,9 @@ const (
 	Rosaria
 	Sara
 	Sayu
+	Sethos
 	Shenhe
+	Sigewinne
 	Sucrose
 	Tartaglia
 	Thoma
@@ -79,6 +83,7 @@ const (
 	Xiangling
 	Xianyun
 	Xiao
+	Xilonen
 	Xingqiu
 	Xinyan
 	YaeMiko
@@ -184,6 +189,10 @@ func init() {
 	charPrettyName[Dori] = "Dori"
 	CharKeyToEle[Dori] = attributes.Electro
 
+	charNames[Emilie] = "emilie"
+	charPrettyName[Emilie] = "Emilie"
+	CharKeyToEle[Emilie] = attributes.Dendro
+
 	charNames[Eula] = "eula"
 	charPrettyName[Eula] = "Eula"
 	CharKeyToEle[Eula] = attributes.Cryo
@@ -288,6 +297,10 @@ func init() {
 	charPrettyName[Mona] = "Mona"
 	CharKeyToEle[Mona] = attributes.Hydro
 
+	charNames[Mualani] = "mualani"
+	charPrettyName[Mualani] = "Mualani"
+	CharKeyToEle[Mualani] = attributes.Hydro
+
 	charNames[Nahida] = "nahida"
 	charPrettyName[Nahida] = "Nahida"
 	CharKeyToEle[Nahida] = attributes.Dendro
@@ -336,9 +349,17 @@ func init() {
 	charPrettyName[Sayu] = "Sayu"
 	CharKeyToEle[Sayu] = attributes.Anemo
 
+	charNames[Sethos] = "sethos"
+	charPrettyName[Sethos] = "Sethos"
+	CharKeyToEle[Sethos] = attributes.Electro
+
 	charNames[Shenhe] = "shenhe"
 	charPrettyName[Shenhe] = "Shenhe"
 	CharKeyToEle[Shenhe] = attributes.Cryo
+
+	charNames[Sigewinne] = "sigewinne"
+	charPrettyName[Sigewinne] = "Sigewinne"
+	CharKeyToEle[Sigewinne] = attributes.Hydro
 
 	charNames[Sucrose] = "sucrose"
 	charPrettyName[Sucrose] = "Sucrose"
@@ -379,6 +400,10 @@ func init() {
 	charNames[Xiao] = "xiao"
 	charPrettyName[Xiao] = "Xiao"
 	CharKeyToEle[Xiao] = attributes.Anemo
+
+	charNames[Xilonen] = "xilonen"
+	charPrettyName[Xilonen] = "Xilonen"
+	CharKeyToEle[Xilonen] = attributes.Geo
 
 	charNames[Xingqiu] = "xingqiu"
 	charPrettyName[Xingqiu] = "Xingqiu"

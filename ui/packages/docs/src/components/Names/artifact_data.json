@@ -21,7 +21,7 @@
     "witch"
   ],
   "deepwoodmemories": [
-    "deepwood"    
+    "deepwood"
   ],
   "defenderswill": [
     "defenders",
@@ -96,6 +96,9 @@
   "nymphsdream": [
     "nymph"
   ],
+  "obsidiancodex": [
+    "oc"
+  ],
   "oceanhuedclam": [
     "ohc",
     "clam"
@@ -110,12 +113,16 @@
     "bolide"
   ],
   "scholar": [],
+  "scrolloftheheroofcindercity": [
+    "scroll",
+    "sothocc"
+  ],
   "shimenawasreminiscence": [
     "shimenawa",
     "shime",
     "shim",
     "sr"
-  ],  
+  ],
   "songofdayspast": [
     "sodp"
   ],

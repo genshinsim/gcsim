@@ -55,7 +55,7 @@ func init() {
 	// Skill attack
 	skillAttackFrames = make([][]int, skillHitNum)
 
-	skillAttackFrames[0] = frames.InitNormalCancelSlice(skillAttackHitmarks[0], 19)
+	skillAttackFrames[0] = frames.InitNormalCancelSlice(skillAttackHitmarks[0], 18)
 	skillAttackFrames[0][action.ActionSkill] = 11
 	skillAttackFrames[0][action.ActionBurst] = 10
 

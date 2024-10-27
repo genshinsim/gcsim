@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 0, 1)
 		}
 		return false
-	}, fmt.Sprintf("forstbearer-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("frostbearer-%v", char.Base.Key.String()))
 
 	return w, nil
 }

@@ -132,5 +132,6 @@ const (
 	ZoneInazuma
 	ZoneSumeru
 	ZoneFontaine
+	ZoneNatlan
 	ZoneSnezhnaya
 )
