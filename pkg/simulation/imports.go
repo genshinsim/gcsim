@@ -149,6 +149,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bloodtainted"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/debateclub"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/earthshaker"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/fangofthemountainking"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/ferrousshadow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/forestregalia"
