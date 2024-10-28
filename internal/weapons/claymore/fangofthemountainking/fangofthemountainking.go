@@ -26,10 +26,10 @@ func init() {
 }
 
 type Weapon struct {
-	Index  int
-	char   *character.CharWrapper
-	stacks int
-	buff   float64
+	Index        int
+	char         *character.CharWrapper
+	buff         float64
+	stackTracker stackTracker
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -41,8 +41,9 @@ func (w *Weapon) Init() error      { return nil }
 // Canopy's Favor: Elemental Skill and Burst DMG is increased by 10% for 6s. Max 6 stacks. Each stack is counted independently.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
-		char: char,
-		buff: 0.10 + float64(p.Refine-1)*0.025,
+		char:         char,
+		stackTracker: *newStackTracker(6, char.QueueCharTask, &c.F),
+		buff:         0.10 + float64(p.Refine-1)*0.025,
 	}
 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
@@ -53,7 +54,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(reactIcdKey, 2*60, true)
 
 		for i := 0; i < 3; i++ {
-			w.addStack()
+			w.stackTracker.Add(6 * 60)
+			w.stackCB()
 		}
 		return false
 	}
@@ -86,7 +88,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(skillIcdKey, .5*60, false)
 
-		w.addStack()
+		w.stackTracker.Add(6 * 60)
+		w.stackCB()
 
 		return false
 	}, fmt.Sprintf("fangofthemountainking-ondmg-%v", char.Base.Key.String()))
@@ -94,9 +97,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	return w, nil
 }
 
-func (w *Weapon) addStack() {
-	w.stacks++
-	w.char.AddStatus(fmt.Sprintf("%v-%v", canopyFavorKey, w.stacks), 6*60, true)
+func (w *Weapon) stackCB() {
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(canopyFavorKey, 6*60),
 		Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
@@ -108,19 +109,8 @@ func (w *Weapon) addStack() {
 				return nil, false
 			}
 			m := make([]float64, attributes.EndStatType)
-			m[attributes.DmgP] = w.buff * float64(w.getStacksNum())
+			m[attributes.DmgP] = w.buff * float64(w.stackTracker.Count())
 			return m, true
 		},
 	})
-	w.stacks %= 6
-}
-
-func (w *Weapon) getStacksNum() int {
-	stacksNum := 0
-	for i := 1; i < 7; i++ {
-		if w.char.StatusIsActive(fmt.Sprintf("%v-%v", canopyFavorKey, i)) {
-			stacksNum++
-		}
-	}
-	return stacksNum
 }
