@@ -83,7 +83,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"fadingtwilight":                  keys.FadingTwilight,
 	"twilight":                        keys.FadingTwilight,
 	"fangofthemountainking":           keys.FangOfTheMountainKing,
-	"fang":                            keys.FangOfTheMountainKing,
+	"fotmk":                           keys.FangOfTheMountainKing,
 	"favcodex":                        keys.FavoniusCodex,
 	"favgs":                           keys.FavoniusGreatsword,
 	"favlance":                        keys.FavoniusLance,
