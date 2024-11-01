@@ -4924,6 +4924,109 @@
       }
     ]
   },
+  "kinich": {
+    "cons": [
+      {
+        "ability": "C6 Bounce",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      },
+      {
+        "ability": "C6 Bounce (Trigger C2)",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 3,
+        "boxY": 3
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 3.9,
+        "boxY": 2
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 4.3,
+        "boxY": 2.2
+      },
+      {
+        "ability": "E-N1-1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.5
+      },
+      {
+        "ability": "E-N1-2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 4.5,
+        "boxY": 3
+      },
+      {
+        "ability": "CA-2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 4.5,
+        "boxY": 3
+      },
+      {
+        "ability": "CA-3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 4.5,
+        "boxY": 3
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Scalespiker",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      },
+      {
+        "ability": "E-Scalespiker C2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.2,
+        "radius": 4
+      },
+      {
+        "ability": "Q-Laser",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "Spawn on enemy hit by a laser."
+      }
+    ]
+  },
   "kirara": {
     "cons": [
       {

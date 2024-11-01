@@ -47,6 +47,7 @@ const (
 	Kaveh
 	Kazuha
 	Keqing
+	Kinich
 	Kirara
 	Klee
 	Kokomi
@@ -256,6 +257,10 @@ func init() {
 	charNames[Keqing] = "keqing"
 	charPrettyName[Keqing] = "Keqing"
 	CharKeyToEle[Keqing] = attributes.Electro
+
+	charNames[Kinich] = "kinich"
+	charPrettyName[Kinich] = "Kinich"
+	CharKeyToEle[Kinich] = attributes.Dendro
 
 	charNames[Kirara] = "kirara"
 	charPrettyName[Kirara] = "Kirara"

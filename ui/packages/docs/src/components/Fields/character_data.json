@@ -155,6 +155,14 @@
       "desc": "Returns whether C6 will proc for the upcoming CA."
     }
   ],
+  "kinich": [
+    {
+      "fields": [
+        ".kinich.blind_spot"
+      ],
+      "desc": "The direction of the Blind Spot relatively to Kinich. -1 - in clock-wise direction; 1 - in counter clock-wise direction; 0 - does not exist at the moment."
+    }
+  ],
   "lyney": [
     {
       "fields": [
