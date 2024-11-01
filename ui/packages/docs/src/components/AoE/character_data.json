@@ -5449,6 +5449,26 @@
         "fanAngle": 40
       }
     ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 1.5
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3.5
+      }
+    ],
     "skill": [
       {
         "ability": "E-Tap",
