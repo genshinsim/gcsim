@@ -655,7 +655,7 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 		if v.Typ() != typNum {
 			return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
 		}
-		params[k] = int(v.(*number).ival)
+		params[k] = int(ntof(v.(*number)))
 	}
 
 	charKey := keys.Char(char.ival)
