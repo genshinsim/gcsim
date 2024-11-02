@@ -157,8 +157,7 @@ func TestBasicToken(t *testing.T) {
 		// end for
 		{Typ: itemRightBrace, Val: "}"},
 		// misc tests
-		{Typ: ItemMinus, Val: "-"},
-		{Typ: itemNumber, Val: "1"},
+		{Typ: itemNumber, Val: "-1"},
 		{Typ: itemNumber, Val: "1"},
 		{Typ: ItemMinus, Val: "-"},
 		{Typ: ItemMinus, Val: "-"},
