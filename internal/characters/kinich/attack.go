@@ -128,19 +128,27 @@ func (c *char) skillAttack(p map[string]int) (action.Info, error) {
 	defer c.AdvanceNormalIndex()
 
 	direction, ok := p["direction"]
+	fmt.Println(c.Core.F, direction, ok)
 	if !ok {
 		direction = -1
+	}
+	switch direction {
+	case 1:
+	case -1:
+	default:
+		return action.Info{}, fmt.Errorf("%v, %v: Wrong value of direction: %v, should be 1 or -1", c.Core.F, c.Base.Key, direction)
 	}
 	cross, boundary := c.NextMoveIsInBlindSpot(direction)
 	if cross {
 		c.QueueCharTask(func() {
 			c.nightsoulState.GeneratePoints(4)
 			c.blindSpotAngularPosition = -1
+			fmt.Println("\n", c.Core.F, "killed blind spot", int(math.Abs(boundary-c.characterAngularPosition)/angularVelocity), "frames after attack start")
 		}, int(math.Abs(boundary-c.characterAngularPosition)/angularVelocity))
 	}
 	c.QueueCharTask(func() {
 		c.characterAngularPosition = NormalizeAngle(c.characterAngularPosition + float64(direction)*skillAttackAngularTravel[c.normalSCounter])
-	}, skillAttackFrames[c.normalSCounter][action.ActionJump]) // CHANGE this when frames are ready
+	}, skillAttackFrames[c.normalSCounter][action.ActionBurst]) // CHANGE this when frames are ready
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillAttackFrames[c.normalSCounter]),
@@ -151,11 +159,19 @@ func (c *char) skillAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) NextMoveIsInBlindSpot(direction int) (bool, float64) {
+	fmt.Println("\n", c.Core.F)
+	if c.blindSpotAngularPosition == -1 {
+		fmt.Println("Kinich attacks, but blind spot is absent")
+		return false, -1
+	}
 	// Calculate the sector boundaries and normalize them
 	lowerBoundary := NormalizeAngle(c.blindSpotAngularPosition - blindSpotBoundary)
 	upperBoundary := NormalizeAngle(c.blindSpotAngularPosition + blindSpotBoundary)
 
 	targetPos := NormalizeAngle(c.characterAngularPosition + float64(direction)*skillAttackAngularTravel[c.normalSCounter])
+	fmt.Println("Kinich attacks and the blind spot is present. His position:", c.characterAngularPosition, ", blind spot position:", c.blindSpotAngularPosition)
+	fmt.Println("And the blind spot bounds are:", lowerBoundary, upperBoundary)
+	fmt.Println("Kinich is going to move by", float64(direction)*skillAttackAngularTravel[c.normalSCounter], "so his position will be:", targetPos)
 
 	// Helper function to check if an angle is within the circular sector
 	isInSector := func(angle float64) bool {
@@ -166,8 +182,9 @@ func (c *char) NextMoveIsInBlindSpot(direction int) (bool, float64) {
 		return angle >= lowerBoundary || angle <= upperBoundary
 	}
 
-	// Determine if the start position or target position is within the sector
+	// Determine if the target position is within the sector
 	targetInSector := isInSector(targetPos)
+	fmt.Println("Target in sector:", targetInSector)
 
 	// Determine which boundary is first crossed based on direction
 	if targetInSector {
@@ -181,10 +198,12 @@ func (c *char) NextMoveIsInBlindSpot(direction int) (bool, float64) {
 	startUpperBoundary := NormalizeAngle(c.characterAngularPosition - upperBoundary)
 	lowerBoundaryTarget := NormalizeAngle(lowerBoundary - targetPos)
 
-	if lowerBoundaryStart > 0 && targetUpperBoundary > 0 {
+	if lowerBoundaryStart > 0 && targetUpperBoundary > 0 && lowerBoundaryStart+targetUpperBoundary+blindSpotBoundary*2-skillAttackAngularTravel[c.normalSCounter] < 0.0001 {
+		fmt.Println("Kinich jumped over the blind spot moving counter clockwise")
 		return true, lowerBoundary
 	}
-	if startUpperBoundary > 0 && lowerBoundaryTarget > 0 {
+	if startUpperBoundary > 0 && lowerBoundaryTarget > 0 && startUpperBoundary+lowerBoundaryTarget+blindSpotBoundary*2-skillAttackAngularTravel[c.normalSCounter] < 0.0001 {
+		fmt.Println("Kinich jumped over the blind spot moving clockwise")
 		return true, upperBoundary
 	}
 

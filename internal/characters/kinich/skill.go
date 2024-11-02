@@ -29,7 +29,7 @@ func init() {
 	skillFrames = frames.InitAbilSlice(33) // E -> Q
 	skillFrames[action.ActionAttack] = 31
 	skillFrames[action.ActionSkill] = 32
-	skillFrames[action.ActionDash] = skillStart // ability doesn't start if dash is done before CD
+	skillFrames[action.ActionDash] = 30
 	skillFrames[action.ActionJump] = 25
 	skillFrames[action.ActionSwap] = 25
 	skillFrames[action.ActionWalk] = 32
@@ -105,6 +105,9 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 						target = enemy
 					}
 				}
+				if target == nil {
+					return
+				}
 				apC6 := combat.NewCircleHitOnTarget(target, nil, float64(radius))
 				c.Core.QueueAttackWithSnap(c6Ai, s, apC6, 0, c.particleCB, c.desolationCB, c.c2ResShredCB)
 			}, scalespikerHitmark+c6Travel)
@@ -150,7 +153,7 @@ func (c *char) timePassGenerateNSPoints() {
 
 func (c *char) createBlindSpot() {
 	newBlindSpotAngularPosition := c.characterAngularPosition + float64(c.Core.Rand.Intn(2)*2-1)*90.
-	fmt.Println("Generated new blind spot", c.characterAngularPosition, newBlindSpotAngularPosition)
+	fmt.Println("\n", c.Core.F, "Generated new blind spot", c.characterAngularPosition, newBlindSpotAngularPosition)
 	newBlindSpotAngularPosition = NormalizeAngle(newBlindSpotAngularPosition)
 	c.blindSpotAngularPosition = newBlindSpotAngularPosition
 }

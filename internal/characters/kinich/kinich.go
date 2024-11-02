@@ -1,6 +1,7 @@
 package kinich
 
 import (
+	"fmt"
 	"math"
 
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
@@ -90,15 +91,12 @@ func (c *char) Condition(fields []string) (any, error) {
 	case "nightsoul":
 		return c.nightsoulState.Condition(fields)
 	case "blind_spot":
-		if c.blindSpotAngularPosition == -1. {
+		if c.blindSpotAngularPosition == -1 {
+			fmt.Println("\n", c.Core.F, "condition returned blind spot does not exist")
 			return 0, nil
 		} else {
-			diff := c.blindSpotAngularPosition - c.characterAngularPosition
-			if diff > 180 {
-				diff -= 360
-			} else if diff < -180 {
-				diff += 360
-			}
+			diff := NormalizeAngle(c.characterAngularPosition - c.blindSpotAngularPosition)
+			fmt.Println("\n", c.Core.F, "condition returned blind direction is", diff/math.Abs(diff))
 			return diff / math.Abs(diff), nil
 		}
 	default:
