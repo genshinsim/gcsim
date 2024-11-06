@@ -7,3 +7,6 @@ port:
   # https://github.com/aelsabbahy/goss/issues/149
   tcp6:3000:
     listening: true
+process:
+  embedgenerator:
+    running: true
