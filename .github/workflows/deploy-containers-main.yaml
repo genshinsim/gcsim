@@ -1,20 +1,20 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: containers branch push release
+name: main branch container build
 
 concurrency:
   group: container-release
   cancel-in-progress: false
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - containers
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   build-images:
     name: Build Images
-    # uses: genshinsim/gcsim/.github/workflows/build-images.yaml@main
     uses: ./.github/workflows/build-images.yaml
     secrets: inherit
     permissions:
