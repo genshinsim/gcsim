@@ -13,11 +13,15 @@ import (
 
 const (
 	skillCD                  = 18 * 60
-	skillStart               = 1
-	scalespikerHitmark       = 10
-	pointsConsumptionsDelay  = 2
-	timePassNSGenDelay       = 1
-	blindSpotAppearanceDelay = 1
+	skillStart               = 9
+	scalespikerHitmark       = 48
+	pointsConsumptionsDelay  = 36
+	timePassNSGenDelay       = 38
+	nightSoulEnterDelay      = 11
+	scalespikerHoldFrameDiff = 18
+
+	scalespikerAbil   = "Scalespiker Cannon"
+	scalespikerC6Abil = "Scalespiker Cannon (C6)"
 )
 
 var (
@@ -25,22 +29,19 @@ var (
 	scalespikerFrames []int
 )
 
-func init() {
-	skillFrames = frames.InitAbilSlice(33) // E -> Q
-	skillFrames[action.ActionAttack] = 31
-	skillFrames[action.ActionSkill] = 32
-	skillFrames[action.ActionDash] = 30
-	skillFrames[action.ActionJump] = 25
-	skillFrames[action.ActionSwap] = 25
-	skillFrames[action.ActionWalk] = 32
+var blindSpotAppearanceDelays = []int{30, 40}
 
-	scalespikerFrames = frames.InitAbilSlice(43) // E -> Walk
-	scalespikerFrames[action.ActionAttack] = 24
-	scalespikerFrames[action.ActionSkill] = 24
-	scalespikerFrames[action.ActionBurst] = 24
-	scalespikerFrames[action.ActionDash] = 25
-	scalespikerFrames[action.ActionJump] = 25
-	scalespikerFrames[action.ActionSwap] = 42
+func init() {
+	skillFrames = frames.InitAbilSlice(42) // E -> D/J
+	skillFrames[action.ActionAttack] = 30
+	skillFrames[action.ActionWalk] = 41
+	skillFrames[action.ActionBurst] = 27
+
+	scalespikerFrames = frames.InitAbilSlice(68) // E -> D/J
+	scalespikerFrames[action.ActionAttack] = 60
+	scalespikerFrames[action.ActionWalk] = 71
+	scalespikerFrames[action.ActionBurst] = 59
+	scalespikerFrames[action.ActionSwap] = 100
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -54,10 +55,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.c2AoeIncreased = false
 	c.nightsoulSrc = c.Core.F
 	c.particlesGenerated = false
-	c.nightsoulState.EnterBlessing(0.)
-	c.SetCDWithDelay(action.ActionSkill, skillCD, skillStart)
+	c.QueueCharTask(func() { c.nightsoulState.EnterBlessing(0.) }, nightSoulEnterDelay)
+	c.SetCDWithDelay(action.ActionSkill, skillCD-10*60, skillStart)
 	c.QueueCharTask(c.timePassGenerateNSPoints, timePassNSGenDelay)
-	c.QueueCharTask(c.createBlindSpot, blindSpotAppearanceDelay)
+	c.QueueCharTask(c.createBlindSpot, blindSpotAppearanceDelays[0]-1) // just in case, since attack can be executed at the same frame(?)
 	c.setNightsoulExitTimer(10 * 60)
 
 	return action.Info{
@@ -69,11 +70,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
-	travel, ok := p["travel"]
+	hold, ok := p["hold"]
 	if !ok {
-		travel = 10
+		hold = 0
+	} else {
+		if hold < 0 {
+			hold = 0
+		} else if hold > 301 {
+			hold = 301
+		}
 	}
-	c.scaleskiperAttackInfo = c.getScalespikerAi()
+	ai := c.getScalespikerAi()
 	radius := 3
 	dmgBonus := 0
 	if c.Base.Cons >= 2 {
@@ -86,9 +93,9 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, float64(radius))
 	c.QueueCharTask(func() {
 		a4FlatDmg := c.a4Amount()
-		c.scaleskiperAttackInfo.FlatDmg += a4FlatDmg
-		s := c.C2Snapshot(dmgBonus)
-		c.Core.QueueAttackWithSnap(c.scaleskiperAttackInfo, s, ap, 0, c.particleCB, c.desolationCB, c.c2ResShredCB)
+		ai.FlatDmg += a4FlatDmg
+		s := c.C2Snapshot(ai, dmgBonus)
+		c.Core.QueueAttackWithSnap(ai, s, ap, 0, c.particleCB, c.desolationCB, c.c2ResShredCB)
 		if c.Base.Cons >= 6 {
 			c6Travel, ok := p["c6_travel"]
 			if !ok {
@@ -97,7 +104,8 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 			c.QueueCharTask(func() {
 				c6Ai := c.getScalespikerAi()
 				c6Ai.FlatDmg += a4FlatDmg
-				s := c.C2Snapshot(dmgBonus)
+				c6Ai.Abil = scalespikerC6Abil
+				s := c.C2Snapshot(c6Ai, dmgBonus)
 				enemies := c.Core.Combat.Enemies()
 				var target combat.Target
 				for _, enemy := range enemies {
@@ -110,13 +118,17 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 				}
 				apC6 := combat.NewCircleHitOnTarget(target, nil, float64(radius))
 				c.Core.QueueAttackWithSnap(c6Ai, s, apC6, 0, c.particleCB, c.desolationCB, c.c2ResShredCB)
-			}, scalespikerHitmark+c6Travel)
+			}, scalespikerHitmark+min(hold, 1)*(hold-scalespikerHoldFrameDiff-1)+c6Travel)
 		}
-	}, scalespikerHitmark+travel)
-	c.QueueCharTask(func() { c.nightsoulState.ConsumePoints(c.nightsoulState.MaxPoints) }, pointsConsumptionsDelay)
-	c.QueueCharTask(c.createBlindSpot, blindSpotAppearanceDelay)
+	}, scalespikerHitmark+min(hold, 1)*(hold-scalespikerHoldFrameDiff-1))
+	c.QueueCharTask(func() {
+		c.nightsoulState.ConsumePoints(c.nightsoulState.MaxPoints)
+	}, pointsConsumptionsDelay+min(hold, 1)*(hold-scalespikerHoldFrameDiff-1))
+	c.QueueCharTask(c.createBlindSpot, blindSpotAppearanceDelays[1]-1) // just in case, since attack can be executed at the same frame(?)
 	return action.Info{
-		Frames:          frames.NewAbilFunc(scalespikerFrames),
+		Frames: func(next action.Action) int {
+			return scalespikerFrames[next] + min(hold, 1)*(hold-scalespikerHoldFrameDiff-1)
+		},
 		AnimationLength: scalespikerFrames[action.InvalidAction],
 		CanQueueAfter:   scalespikerFrames[action.ActionAttack],
 		State:           action.SkillState,
@@ -126,7 +138,7 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 func (c *char) getScalespikerAi() combat.AttackInfo {
 	return combat.AttackInfo{
 		ActorIndex:     c.Index,
-		Abil:           "Scalespiker Cannon",
+		Abil:           scalespikerAbil,
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagKinichScalespikerCannon,
 		ICDGroup:       attacks.ICDGroupKinichScalespikerCannon,
@@ -140,6 +152,9 @@ func (c *char) getScalespikerAi() combat.AttackInfo {
 }
 
 func (c *char) loopShotGenerateNSPoints() {
+	if !c.nightsoulState.HasBlessing() {
+		return
+	}
 	c.nightsoulState.GeneratePoints(3.)
 }
 
@@ -147,14 +162,13 @@ func (c *char) timePassGenerateNSPoints() {
 	if !c.nightsoulState.HasBlessing() {
 		return
 	}
-	c.nightsoulState.GeneratePoints(2.)
-	c.QueueCharTask(c.timePassGenerateNSPoints, 60)
+	c.nightsoulState.GeneratePoints(1.)
+	c.QueueCharTask(c.timePassGenerateNSPoints, 30)
 }
 
 func (c *char) createBlindSpot() {
 	newBlindSpotAngularPosition := c.characterAngularPosition + float64(c.Core.Rand.Intn(2)*2-1)*90.
-	fmt.Println("\n", c.Core.F, "Generated new blind spot", c.characterAngularPosition, newBlindSpotAngularPosition)
-	newBlindSpotAngularPosition = NormalizeAngle(newBlindSpotAngularPosition)
+	newBlindSpotAngularPosition = NormalizeAngle360(newBlindSpotAngularPosition)
 	c.blindSpotAngularPosition = newBlindSpotAngularPosition
 }
 
@@ -163,6 +177,7 @@ func (c *char) cancelNightsoul() {
 	c.nightsoulState.ExitBlessing()
 	c.DeleteStatus(desolationKey)
 	c.nightsoulSrc = -1
+	c.blindSpotAngularPosition = -1
 }
 
 func (c *char) setNightsoulExitTimer(duration int) {
@@ -171,7 +186,7 @@ func (c *char) setNightsoulExitTimer(duration int) {
 		if c.nightsoulSrc != src {
 			return
 		}
-		if c.durationExtended {
+		if c.skillDurationExtended {
 			return
 		}
 		c.cancelNightsoul()

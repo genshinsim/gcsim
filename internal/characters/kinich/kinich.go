@@ -1,14 +1,12 @@
 package kinich
 
 import (
-	"fmt"
 	"math"
 
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -30,9 +28,8 @@ type char struct {
 	characterAngularPosition float64 // [0, 360)
 	blindSpotAngularPosition float64 // [0, 360)
 	particlesGenerated       bool
-	durationExtended         bool
+	skillDurationExtended    bool
 	c2AoeIncreased           bool
-	scaleskiperAttackInfo    combat.AttackInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -67,6 +64,14 @@ func (c *char) Init() error {
 	return nil
 }
 
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	// if in the Nightsoul Blessing, can press E
+	if a == action.ActionSkill && c.nightsoulState.HasBlessing() {
+		return true, action.NoFailure
+	}
+	return c.Character.ActionReady(a, p)
+}
+
 func (c *char) AdvanceNormalIndex() {
 	if c.nightsoulState.HasBlessing() {
 		c.normalSCounter++
@@ -92,11 +97,9 @@ func (c *char) Condition(fields []string) (any, error) {
 		return c.nightsoulState.Condition(fields)
 	case "blind_spot":
 		if c.blindSpotAngularPosition == -1 {
-			fmt.Println("\n", c.Core.F, "condition returned blind spot does not exist")
 			return 0, nil
 		} else {
-			diff := NormalizeAngle(c.characterAngularPosition - c.blindSpotAngularPosition)
-			fmt.Println("\n", c.Core.F, "condition returned blind direction is", diff/math.Abs(diff))
+			diff := NormalizeAngle180(c.blindSpotAngularPosition - c.characterAngularPosition)
 			return diff / math.Abs(diff), nil
 		}
 	default:
@@ -106,18 +109,13 @@ func (c *char) Condition(fields []string) (any, error) {
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	if c.nightsoulState.HasBlessing() {
-		switch k {
-		case model.AnimationXingqiuN0StartDelay:
-			return 11
-		default:
-			return 9
-		}
+		return skillAttackFrames[0][action.ActionDash]
 	}
 	switch k {
 	case model.AnimationXingqiuN0StartDelay:
-		return 11
+		return 17
 	default:
-		return 11
+		return 18
 	}
 }
 
@@ -145,4 +143,26 @@ func (c *char) onExitField() {
 		}
 		return false
 	}, "kinich-exit")
+}
+
+// Normalize an angle to be within [-180, 180)
+func NormalizeAngle180(angle float64) float64 {
+	for angle < -180 {
+		angle += 360
+	}
+	for angle >= 180 {
+		angle -= 360
+	}
+	return angle
+}
+
+// Normalize an angle to be within [0, 360)
+func NormalizeAngle360(angle float64) float64 {
+	for angle < 0 {
+		angle += 360
+	}
+	for angle >= 360 {
+		angle -= 360
+	}
+	return angle
 }

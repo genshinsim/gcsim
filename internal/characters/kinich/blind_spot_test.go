@@ -2,7 +2,7 @@ package kinich
 
 import "testing"
 
-func TestStackTracker(t *testing.T) {
+func TestBlindSpot(t *testing.T) {
 	kinich := char{}
 
 	kinich.characterAngularPosition = 0.
@@ -20,7 +20,7 @@ func TestStackTracker(t *testing.T) {
 	if cross {
 		t.Errorf("not expecting cross")
 	}
-	if boundary != 1 {
+	if boundary != -1 {
 		t.Errorf("not expecting boundary")
 	}
 
@@ -30,8 +30,8 @@ func TestStackTracker(t *testing.T) {
 	if !cross {
 		t.Errorf("expecting cross")
 	}
-	if boundary != kinich.blindSpotAngularPosition-blindSpotBoundary {
-		t.Errorf("%v != %v", boundary, kinich.blindSpotAngularPosition-blindSpotBoundary)
+	if boundary != NormalizeAngle360(kinich.blindSpotAngularPosition-blindSpotBoundary) {
+		t.Errorf("%v != %v", boundary, NormalizeAngle360(kinich.blindSpotAngularPosition-blindSpotBoundary))
 	}
 
 	kinich.characterAngularPosition = 214
@@ -50,7 +50,7 @@ func TestStackTracker(t *testing.T) {
 	if cross {
 		t.Errorf("not expecting cross")
 	}
-	if boundary != 1 {
+	if boundary != -1 {
 		t.Errorf("not expecting boundary")
 	}
 }

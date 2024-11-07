@@ -1,6 +1,8 @@
 package kinich
 
 import (
+	"math/rand"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -10,24 +12,22 @@ import (
 )
 
 var burstFrames []int
-var burstHitMarks = []int{30, 20, 40, 40, 40, 40, 40}
+var burstHitMarks = []int{160, 250}
+var burstPossibleIntervals = []int{145, 150}
 
 const (
 	consumeEnergyDelay = 5
+	ajawDuration       = 1062
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(58) // Q
-	burstFrames[action.ActionAttack] = 57  // Q -> N1
-	burstFrames[action.ActionSkill] = 57   // Q -> E
-	burstFrames[action.ActionJump] = 57    // Q -> J
-	burstFrames[action.ActionSwap] = 56    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(127) // same cancel frames for all
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.ajawSrc = c.Core.F
 	if c.nightsoulState.HasBlessing() {
-		c.durationExtended = true
+		c.skillDurationExtended = true
 		c.resetNightsoulExitTimer((10 + 1.7) * 60)
 	}
 	ai := combat.AttackInfo{
@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 0.2}, 4), burstHitMarks[0], burstHitMarks[0])
-	c.Core.Tasks.Add(func() { c.QueueLaser(2, c.Core.F) }, burstHitMarks[1])
+	c.Core.Tasks.Add(func() { c.QueueLaser(1, c.ajawSrc) }, burstHitMarks[1])
 	c.ConsumeEnergy(consumeEnergyDelay)
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
 
@@ -60,7 +60,7 @@ func (c *char) QueueLaser(step, src int) {
 		return
 	}
 	// duration expired
-	if c.Core.F-c.ajawSrc > 15*60 {
+	if c.Core.F-c.ajawSrc > ajawDuration {
 		return
 	}
 	// condition to track number of hits just in case
@@ -80,7 +80,7 @@ func (c *char) QueueLaser(step, src int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, 0)
-	c.Core.Tasks.Add(func() { c.QueueLaser(step+1, src) }, burstHitMarks[step])
+	c.Core.Tasks.Add(func() { c.QueueLaser(step+1, src) }, burstPossibleIntervals[rand.Intn(2)])
 }
 
 func (c *char) resetNightsoulExitTimer(duration int) {
@@ -88,7 +88,7 @@ func (c *char) resetNightsoulExitTimer(duration int) {
 	timePassed := src - c.nightsoulSrc
 	duration -= timePassed
 	c.QueueCharTask(func() {
-		c.durationExtended = false
+		c.skillDurationExtended = false
 		c.cancelNightsoul()
 	}, duration)
 }

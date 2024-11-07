@@ -653,29 +653,14 @@
       "desc": "Direction in which Kinich move when attached to the opponent: -1 - in clock-wise direction; 1 - in counter clock-wise direction. Default: -1"
     },
     {
-      "ability": "attack",
-      "param": "travel",
-      "desc": "Loop shot travel time. Default 10 frames."
-    },
-    {
-      "ability": "low_plunge",
-      "param": "collision",
-      "desc": "0 for no collision dmg (default), 1 for collision dmg."
-    },
-    {
-      "ability": "high_plunge",
-      "param": "collision",
-      "desc": "0 for no collision dmg (default), 1 for collision dmg."
-    },
-    {
-      "ability": "skill",
-      "param": "travel",
-      "desc": "Scalespiker projectile travel time. Default 10 frames."
-    },
-    {
       "ability": "skill",
       "param": "c6_travel",
       "desc": "C6 Bounce Scalespiker projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 301 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (14), subtracted by 1 to account for requiring a 1 to activate."
     }
   ],
   "kirara": [

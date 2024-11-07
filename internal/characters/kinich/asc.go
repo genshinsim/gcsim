@@ -1,6 +1,10 @@
 package kinich
 
-import "github.com/genshinsim/gcsim/pkg/core/event"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+)
 
 const (
 	desolationKey = "kinich-a1-desolation"
@@ -13,6 +17,13 @@ func (c *char) a1() {
 		return
 	}
 	hook := func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagBurningDamage:
+		case attacks.AttackTagBurgeon:
+		default:
+			return false
+		}
 		if !c.StatusIsActive(desolationKey) {
 			return false
 		}
@@ -23,8 +34,7 @@ func (c *char) a1() {
 		c.AddStatus(a1Icd, 0.8*60, false)
 		return false
 	}
-	c.Core.Events.Subscribe(event.OnBurning, hook, "kinich-a1-burning")
-	c.Core.Events.Subscribe(event.OnBurgeon, hook, "kinich-a1-burgeon")
+	c.Core.Events.Subscribe(event.OnEnemyDamage, hook, "kinich-a1")
 }
 
 func (c *char) a4() {

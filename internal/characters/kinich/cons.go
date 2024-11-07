@@ -27,7 +27,7 @@ func (c *char) c1() {
 			default:
 				return nil, false
 			}
-			if atk.Info.Abil != c.scaleskiperAttackInfo.Abil {
+			if atk.Info.Abil != scalespikerAbil && atk.Info.Abil != scalespikerC6Abil {
 				return nil, false
 			}
 			m[attributes.CD] = 1
@@ -50,13 +50,13 @@ func (c *char) c2ResShredCB(a combat.AttackCB) {
 	}
 	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("kinich-c2", 6*60),
-		Ele:   attributes.Hydro,
+		Ele:   attributes.Dendro,
 		Value: -0.3,
 	})
 }
 
-func (c *char) C2Snapshot(dmgBonus int) combat.Snapshot {
-	s := c.Snapshot(&c.scaleskiperAttackInfo)
+func (c *char) C2Snapshot(ai combat.AttackInfo, dmgBonus int) combat.Snapshot {
+	s := c.Snapshot(&ai)
 	s.Stats[attributes.DmgP] = float64(dmgBonus)
 	if dmgBonus > 0 {
 		c.Core.Log.NewEvent("Kinich C2 Damage Bonus", glog.LogCharacterEvent, c.Index).

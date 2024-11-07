@@ -4,13 +4,8 @@ key: kinich
 action_param_keys:
   attack:
     - param: "direction"
-    - param: "travel"
-  low_plunge:
-    - param: "collision"
-  high_plunge:
-    - param: "collision"
   skill:
-    - param: "travel"
+    - param: "hold"
     - param: "c6-travel"
 icd_tags:
   - ICDTagKinichLoopShot
