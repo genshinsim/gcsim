@@ -24,7 +24,7 @@ func TestBlindSpot(t *testing.T) {
 		t.Errorf("not expecting boundary")
 	}
 
-	kinich.characterAngularPosition = 326
+	kinich.characterAngularPosition = 324
 	kinich.blindSpotAngularPosition = 0
 	cross, boundary = kinich.NextMoveIsInBlindSpot(1)
 	if !cross {
@@ -34,7 +34,7 @@ func TestBlindSpot(t *testing.T) {
 		t.Errorf("%v != %v", boundary, NormalizeAngle360(kinich.blindSpotAngularPosition-blindSpotBoundary))
 	}
 
-	kinich.characterAngularPosition = 214
+	kinich.characterAngularPosition = 216
 	kinich.blindSpotAngularPosition = 180
 	cross, boundary = kinich.NextMoveIsInBlindSpot(-1)
 	if !cross {
