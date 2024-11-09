@@ -1,25 +1,23 @@
-package fangofthemountainking
+package stacks
 
 type queuer func(cb func(), delay int)
 
-type stackTracker struct {
+type MultipleAllRefresh struct {
 	queuer
 	stacks []*int
-	max    int
 	frame  *int
 }
 
-func newStackTracker(maxstacks int, queue queuer, frame *int) *stackTracker {
-	s := &stackTracker{
+func NewMultipleAllRefresh(maxstacks int, queue queuer, frame *int) *MultipleAllRefresh {
+	s := &MultipleAllRefresh{
 		queuer: queue,
 		stacks: make([]*int, maxstacks),
-		max:    maxstacks,
 		frame:  frame,
 	}
 	return s
 }
 
-func (s *stackTracker) Count() int {
+func (s *MultipleAllRefresh) Count() int {
 	count := 0
 	for _, v := range s.stacks {
 		if v != nil {
@@ -29,9 +27,9 @@ func (s *stackTracker) Count() int {
 	return count
 }
 
-func (s *stackTracker) Add(duration int) {
+func (s *MultipleAllRefresh) Add(duration int) {
 	idx := 0
-	for i := 0; i < s.max; i++ {
+	for i := 0; i < len(s.stacks); i++ {
 		if s.stacks[i] == nil {
 			idx = i
 			break

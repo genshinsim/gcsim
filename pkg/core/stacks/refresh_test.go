@@ -1,4 +1,4 @@
-package clorinde
+package stacks
 
 import "testing"
 
@@ -8,7 +8,7 @@ func TestStackTracker(t *testing.T) {
 		frame: &f,
 	}
 
-	st := newStackTracker(3, tq.queue, &f)
+	st := NewMultipleAllRefresh(3, tq.queue, &f)
 
 	// add up to 3
 	st.Add(10) // expires at f = 10
@@ -66,5 +66,9 @@ func (t *testqueue) clear(f int) {
 		}
 		t.queued[n] = v
 		t.delay[n] = t.delay[i]
+		n++
 	}
+
+	t.queued = t.queued[:n]
+	t.delay = t.delay[:n]
 }
