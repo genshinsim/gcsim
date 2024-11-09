@@ -19,6 +19,8 @@ const (
 	canopyFavorKey = "canopy-favor"
 	skillIcdKey    = "fotmk-skill-icd"
 	reactIcdKey    = "fotmk-react-icd"
+
+	stackDuration = 6 * 60
 )
 
 func init() {
@@ -28,8 +30,9 @@ func init() {
 type Weapon struct {
 	Index        int
 	char         *character.CharWrapper
-	buff         float64
-	stackTracker stackTracker
+	stackTracker *stackTracker
+	buffStack    float64
+	mBuff        []float64
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -42,8 +45,9 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		char:         char,
-		stackTracker: *newStackTracker(6, char.QueueCharTask, &c.F),
-		buff:         0.10 + float64(p.Refine-1)*0.025,
+		stackTracker: newStackTracker(6, char.QueueCharTask, &c.F),
+		buffStack:    0.10 + float64(p.Refine-1)*0.025,
+		mBuff:        make([]float64, attributes.EndStatType),
 	}
 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
@@ -53,10 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(reactIcdKey, 2*60, true)
 
-		for i := 0; i < 3; i++ {
-			w.stackTracker.Add(6 * 60)
-			w.stackCB()
-		}
+		w.addStacks(3)
 		return false
 	}
 	c.Events.Subscribe(event.OnBurning, func(args ...interface{}) bool {
@@ -88,18 +89,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(skillIcdKey, .5*60, false)
 
-		w.stackTracker.Add(6 * 60)
-		w.stackCB()
-
+		w.addStacks(1)
 		return false
 	}, fmt.Sprintf("fangofthemountainking-ondmg-%v", char.Base.Key.String()))
 
 	return w, nil
 }
 
-func (w *Weapon) stackCB() {
+func (w *Weapon) addStacks(num int) {
+	for i := 0; i < num; i++ {
+		w.stackTracker.Add(stackDuration)
+	}
+
 	w.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(canopyFavorKey, 6*60),
+		Base: modifier.NewBaseWithHitlag(canopyFavorKey, stackDuration),
 		Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			switch a.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
@@ -108,9 +111,8 @@ func (w *Weapon) stackCB() {
 			default:
 				return nil, false
 			}
-			m := make([]float64, attributes.EndStatType)
-			m[attributes.DmgP] = w.buff * float64(w.stackTracker.Count())
-			return m, true
+			w.mBuff[attributes.DmgP] = w.buffStack * float64(w.stackTracker.Count())
+			return w.mBuff, true
 		},
 	})
 }
