@@ -19,10 +19,10 @@ type char struct {
 	*tmpl.Character
 
 	normalSCounter int
-	a1stacks       *stacks.MultipleAllRefresh
+	a1stacks       *stacks.MultipleRefreshNoRemove
 	a1BuffPercent  float64
 	a1Cap          float64
-	a4stacks       *stacks.MultipleAllRefresh
+	a4stacks       *stacks.MultipleRefreshNoRemove
 	a4bonus        []float64
 	c6Stacks       int
 

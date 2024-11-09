@@ -31,7 +31,7 @@ func init() {
 type Weapon struct {
 	Index        int
 	char         *character.CharWrapper
-	stackTracker *stacks.MultipleAllRefresh
+	stackTracker *stacks.MultipleRefreshNoRemove
 	buffStack    float64
 	mBuff        []float64
 }
@@ -46,7 +46,7 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		char:         char,
-		stackTracker: stacks.NewMultipleAllRefresh(6, char.QueueCharTask, &c.F),
+		stackTracker: stacks.NewMultipleRefreshNoRemove(6, char.QueueCharTask, &c.F),
 		buffStack:    0.10 + float64(p.Refine-1)*0.025,
 		mBuff:        make([]float64, attributes.EndStatType),
 	}

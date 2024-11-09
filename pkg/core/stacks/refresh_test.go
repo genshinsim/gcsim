@@ -8,7 +8,7 @@ func TestStackTracker(t *testing.T) {
 		frame: &f,
 	}
 
-	st := NewMultipleAllRefresh(3, tq.queue, &f)
+	st := NewMultipleRefreshNoRemove(3, tq.queue, &f)
 
 	// add up to 3
 	st.Add(10) // expires at f = 10

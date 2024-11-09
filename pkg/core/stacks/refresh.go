@@ -2,14 +2,14 @@ package stacks
 
 type queuer func(cb func(), delay int)
 
-type MultipleAllRefresh struct {
+type MultipleRefreshNoRemove struct {
 	queuer
 	stacks []*int
 	frame  *int
 }
 
-func NewMultipleAllRefresh(maxstacks int, queue queuer, frame *int) *MultipleAllRefresh {
-	s := &MultipleAllRefresh{
+func NewMultipleRefreshNoRemove(maxstacks int, queue queuer, frame *int) *MultipleRefreshNoRemove {
+	s := &MultipleRefreshNoRemove{
 		queuer: queue,
 		stacks: make([]*int, maxstacks),
 		frame:  frame,
@@ -17,7 +17,7 @@ func NewMultipleAllRefresh(maxstacks int, queue queuer, frame *int) *MultipleAll
 	return s
 }
 
-func (s *MultipleAllRefresh) Count() int {
+func (s *MultipleRefreshNoRemove) Count() int {
 	count := 0
 	for _, v := range s.stacks {
 		if v != nil {
@@ -27,7 +27,7 @@ func (s *MultipleAllRefresh) Count() int {
 	return count
 }
 
-func (s *MultipleAllRefresh) Add(duration int) {
+func (s *MultipleRefreshNoRemove) Add(duration int) {
 	idx := 0
 	for i := 0; i < len(s.stacks); i++ {
 		if s.stacks[i] == nil {
