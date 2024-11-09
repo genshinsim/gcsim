@@ -376,6 +376,14 @@
       "image_name": "UI_EquipIcon_Bow_Fallensun",
       "name_text_hash_map ": "2425414923"
     },
+    "fangofthemountainking": {
+      "id": 12513,
+      "key": "fangofthemountainking",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_EmeraldSword",
+      "name_text_hash_map ": "1183454019"
+    },
     "favoniuscodex": {
       "id": 14401,
       "key": "favoniuscodex",
