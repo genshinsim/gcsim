@@ -13,12 +13,12 @@ icd_tags:
 icd_groups:
   - group_name: ICDGroupKinichLoopShot
     reset_timer: 120
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ele_app_sequence: [1, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1]
   - group_name: ICDGroupKinichScalespikerCannon
     reset_timer: 72
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ele_app_sequence: [1, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1]
 skill_data_mapping:
   attack:
     attack_1:

@@ -16,7 +16,8 @@ const (
 	skillStart               = 9
 	scalespikerHitmark       = 48
 	pointsConsumptionsDelay  = 36
-	timePassNSGenDelay       = 38
+	generateNSPointDelay     = 30
+	timePassNSGenDelay       = 8
 	nightSoulEnterDelay      = 11
 	scalespikerHoldFrameDiff = 18
 
@@ -34,13 +35,15 @@ var blindSpotAppearanceDelays = []int{30, 40}
 func init() {
 	skillFrames = frames.InitAbilSlice(42) // E -> D/J
 	skillFrames[action.ActionAttack] = 30
-	skillFrames[action.ActionWalk] = 41
 	skillFrames[action.ActionBurst] = 27
+	skillFrames[action.ActionWalk] = 41
 
-	scalespikerFrames = frames.InitAbilSlice(68) // E -> D/J
-	scalespikerFrames[action.ActionAttack] = 60
-	scalespikerFrames[action.ActionWalk] = 71
+	scalespikerFrames = frames.InitAbilSlice(100) // E -> Swap
+	scalespikerFrames[action.ActionAttack] = 59
 	scalespikerFrames[action.ActionBurst] = 59
+	scalespikerFrames[action.ActionDash] = 67
+	scalespikerFrames[action.ActionJump] = 67
+	scalespikerFrames[action.ActionWalk] = 71
 	scalespikerFrames[action.ActionSwap] = 100
 }
 
@@ -57,7 +60,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.particlesGenerated = false
 	c.QueueCharTask(func() { c.nightsoulState.EnterBlessing(0.) }, nightSoulEnterDelay)
 	c.SetCDWithDelay(action.ActionSkill, skillCD-10*60, skillStart)
-	c.QueueCharTask(c.timePassGenerateNSPoints, timePassNSGenDelay)
+	c.QueueCharTask(c.timePassGenerateNSPoints, generateNSPointDelay+timePassNSGenDelay)
 	c.QueueCharTask(c.createBlindSpot, blindSpotAppearanceDelays[0]-1) // just in case, since attack can be executed at the same frame(?)
 	c.setNightsoulExitTimer(10 * 60)
 
@@ -73,13 +76,13 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 	hold, ok := p["hold"]
 	if !ok {
 		hold = 0
-	} else {
-		if hold < 0 {
-			hold = 0
-		} else if hold > 301 {
-			hold = 301
-		}
 	}
+	if hold < 0 {
+		hold = 0
+	} else if hold > 301 {
+		hold = 301
+	}
+
 	ai := c.getScalespikerAi()
 	radius := 3
 	dmgBonus := 0
@@ -96,6 +99,7 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 		ai.FlatDmg += a4FlatDmg
 		s := c.C2Snapshot(ai, dmgBonus)
 		c.Core.QueueAttackWithSnap(ai, s, ap, 0, c.particleCB, c.desolationCB, c.c2ResShredCB)
+
 		if c.Base.Cons >= 6 {
 			c6Travel, ok := p["c6_travel"]
 			if !ok {
@@ -163,7 +167,7 @@ func (c *char) timePassGenerateNSPoints() {
 		return
 	}
 	c.nightsoulState.GeneratePoints(1.)
-	c.QueueCharTask(c.timePassGenerateNSPoints, 30)
+	c.QueueCharTask(c.timePassGenerateNSPoints, generateNSPointDelay)
 }
 
 func (c *char) createBlindSpot() {

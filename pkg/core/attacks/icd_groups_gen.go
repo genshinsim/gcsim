@@ -117,12 +117,12 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupFurinaSalonSolitaire] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupKinichLoopShot] = 120
-	ICDGroupEleApplicationSequence[ICDGroupKinichLoopShot] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupKinichLoopShot] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupEleApplicationSequence[ICDGroupKinichLoopShot] = []float64{1, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupKinichLoopShot] = []float64{1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupKinichScalespikerCannon] = 72
-	ICDGroupEleApplicationSequence[ICDGroupKinichScalespikerCannon] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	ICDGroupDamageSequence[ICDGroupKinichScalespikerCannon] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupEleApplicationSequence[ICDGroupKinichScalespikerCannon] = []float64{1, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupKinichScalespikerCannon] = []float64{1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupLayla] = 180
 	ICDGroupEleApplicationSequence[ICDGroupLayla] = []float64{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0}
