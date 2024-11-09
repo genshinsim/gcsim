@@ -219,6 +219,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/aquila"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/blacksword"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/calamityofeshu"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/cinnabar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/coolsteel"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/darkironsword"
