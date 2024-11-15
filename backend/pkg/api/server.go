@@ -93,7 +93,7 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	}
 
 	// connect to db
-	conn, err := grpc.Dial(cfg.DBAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(cfg.DBAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}

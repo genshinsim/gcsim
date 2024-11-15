@@ -179,6 +179,14 @@ type ReliquarySetExcel struct {
 }
 
 //nolint:tagliatelle // need to match datamine
+type ReliquaryExcel struct {
+	SetID         int64  `json:"setId"`
+	EquipType     string `json:"equipType"`
+	Icon          string `json:"icon"`
+	AppendPropNum int32  `json:"appendPropNum"`
+}
+
+//nolint:tagliatelle // need to match datamine
 type EquipAffixExcel struct {
 	AffixID         int64 `json:"affixId"`
 	ID              int64 `json:"id"`

@@ -59,7 +59,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 		return nil, errors.New("share store cannot be nil")
 	}
 
-	conn, err := grpc.Dial(cfg.DBgRPCAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(cfg.DBgRPCAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
