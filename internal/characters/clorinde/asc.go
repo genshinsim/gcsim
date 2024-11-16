@@ -36,7 +36,7 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnSuperconduct, c.a1CB, "clorinde-a1-superconduct")
 	c.Core.Events.Subscribe(event.OnAggravate, c.a1CB, "clorinde-a1-aggravate")
 	c.Core.Events.Subscribe(event.OnQuicken, c.a1CB, "clorinde-a1-quicken")
-	c.Core.Events.Subscribe(event.OnHyperbloom, c.a1CB, "clorinde-a1-hyperbloom")
+	c.Core.Events.Subscribe(event.OnHyperbloom, c.a1CBGadget, "clorinde-a1-hyperbloom")
 	c.Core.Events.Subscribe(event.OnOverload, c.a1CB, "clorinde-a1-overload")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, c.a1CB, "clorinde-a1-swirl-electro")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, c.a1CB, "clorinde-a1-crystallize-electro")
@@ -47,13 +47,16 @@ func (c *char) a1CB(args ...interface{}) bool {
 	if _, ok := args[0].(*enemy.Enemy); !ok {
 		return false
 	}
+	return c.a1CBGadget(args...)
+}
+
+func (c *char) a1CBGadget(...interface{}) bool {
 	// add a stack and refresh the mod for 15s
 	c.a1stacks.Add(clordineA1BuffDuration)
 	c.AddAttackMod(character.AttackMod{
 		Base:   modifier.NewBaseWithHitlag(clorindeA1BuffKey, clordineA1BuffDuration),
 		Amount: c.a1Amount,
 	})
-
 	return false
 }
 
