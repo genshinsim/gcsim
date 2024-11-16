@@ -15,7 +15,7 @@ func (c *char) c6() {
 	// i think this might be more accurate to be OnAttackWillLand? or on animation state change?
 	c.Core.Events.Subscribe(event.OnAttack, func(_ ...interface{}) bool {
 		// do nothing if oz not on field
-		if c.ozActiveUntil < c.Core.F {
+		if !c.StatusIsActive(ozActiveKey) {
 			return false
 		}
 		c.Core.Log.NewEvent("fischl c6 triggered", glog.LogCharacterEvent, c.Index)

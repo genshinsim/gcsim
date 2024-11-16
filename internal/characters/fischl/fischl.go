@@ -23,7 +23,6 @@ type char struct {
 	ozSnapshot      combat.AttackEvent
 	ozSource        int  // keep tracks of source of oz aka resets
 	ozActive        bool // purely used for gscl conditional purposes
-	ozActiveUntil   int  // used for oz ticks, a4, c1 and c6
 	ozTickSrc       int  // used for oz recast attacks
 	ozTravel        int
 	burstOzSpawnSrc int // prevent double oz spawn from burst
@@ -40,7 +39,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 	c.ozSource = -1
 	c.ozActive = false
-	c.ozActiveUntil = -1
 	c.ozTickSrc = -1
 
 	c.ozTravel = 10
@@ -69,11 +67,7 @@ func (c *char) Condition(fields []string) (any, error) {
 	case "oz-source":
 		return c.ozSource, nil
 	case "oz-duration":
-		duration := c.ozActiveUntil - c.Core.F
-		if duration < 0 {
-			duration = 0
-		}
-		return duration, nil
+		return c.StatusDuration(ozActiveKey), nil
 	default:
 		return c.Character.Condition(fields)
 	}
