@@ -2,6 +2,7 @@ package fischl
 
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
+	"github.com/genshinsim/gcsim/internal/template/minazuki"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -26,6 +27,7 @@ type char struct {
 	ozTickSrc       int  // used for oz recast attacks
 	ozTravel        int
 	burstOzSpawnSrc int // prevent double oz spawn from burst
+	c6Watcher       *minazuki.Watcher
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
@@ -54,8 +56,19 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a4()
+
 	if c.Base.Cons >= 6 {
-		c.c6()
+		w, err := minazuki.New(
+			minazuki.WithMandatory(keys.Fischl, "fischl c6", ozActiveKey, "", 60, c.c6Wave, c.Core),
+			minazuki.WithTickOnActive(true),
+			minazuki.WithAnimationDelayCheck(model.AnimationYelanN0StartDelay, func() bool {
+				return c.Core.Player.ActiveChar().NormalCounter == 1
+			}),
+		)
+		if err != nil {
+			return err
+		}
+		c.c6Watcher = w
 	}
 	return nil
 }
