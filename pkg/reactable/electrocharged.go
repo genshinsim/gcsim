@@ -118,10 +118,14 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 }
 
 func (r *Reactable) waneEC() {
-	r.Durability[Electro] -= 10
-	r.Durability[Electro] = max(0, r.Durability[Electro])
-	r.Durability[Hydro] -= 10
-	r.Durability[Hydro] = max(0, r.Durability[Hydro])
+	if r.Mutable[Electro] {
+		r.Durability[Electro] -= 10
+		r.Durability[Electro] = max(0, r.Durability[Electro])
+	}
+	if r.Mutable[Hydro] {
+		r.Durability[Hydro] -= 10
+		r.Durability[Hydro] = max(0, r.Durability[Hydro])
+	}
 	r.core.Log.NewEvent("ec wane",
 		glog.LogElementEvent,
 		-1,

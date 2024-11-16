@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/queue"
@@ -53,6 +54,24 @@ func New(core *core.Core, p info.EnemyProfile) *Enemy {
 		e.hp = p.HP
 		e.maxhp = p.HP
 	}
+	if p.Element != attributes.NoElement {
+		e.ApplySelfInfusion(p.Element, 100, -1)
+
+		var mod reactable.Modifier
+		switch p.Element {
+		case attributes.Electro:
+			mod = reactable.Electro
+		case attributes.Hydro:
+			mod = reactable.Hydro
+		case attributes.Pyro:
+			mod = reactable.Pyro
+		case attributes.Cryo:
+			mod = reactable.Cryo
+		case attributes.Dendro:
+			mod = reactable.Dendro
+		}
+		e.Reactable.Mutable[mod] = false
+	}
 	return e
 }
 
@@ -80,4 +99,43 @@ func (e *Enemy) SetDirection(trg geometry.Point) {}
 func (e *Enemy) SetDirectionToClosestEnemy()     {}
 func (e *Enemy) CalcTempDirection(trg geometry.Point) geometry.Point {
 	return geometry.DefaultDirection()
+}
+
+func (e *Enemy) ApplySelfInfusion(ele attributes.Element, dur reactions.Durability, f int) {
+	e.Core.Log.NewEventBuildMsg(glog.LogEnemyEvent, -1, "self infusion applied to enemy: "+ele.String()).
+		Write("index", e.Key()).
+		Write("durability", dur).
+		Write("duration", f)
+	// we're assuming self infusion isn't subject to 0.8x multiplier
+	// also no real sanity check
+	if ele == attributes.Frozen {
+		return
+	}
+	var mod reactable.Modifier
+	switch ele {
+	case attributes.Electro:
+		mod = reactable.Electro
+	case attributes.Hydro:
+		mod = reactable.Hydro
+	case attributes.Pyro:
+		mod = reactable.Pyro
+	case attributes.Cryo:
+		mod = reactable.Cryo
+	case attributes.Dendro:
+		mod = reactable.Dendro
+	}
+
+	// we're assuming refill maintains the same decay rate?
+	if e.Durability[mod] > reactable.ZeroDur {
+		// make sure we're not adding more than incoming
+		if e.Durability[mod] < dur {
+			e.Durability[mod] = dur
+		}
+		return
+	}
+	// otherwise calculate decay based on specified f (in frames)
+	e.Durability[mod] = dur
+	if f > 0 {
+		e.DecayRate[mod] = dur / reactions.Durability(f)
+	}
 }

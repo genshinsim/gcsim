@@ -14,6 +14,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 	var r info.EnemyProfile
 	r.Resist = make(map[attributes.Element]float64)
 	r.ParticleElement = attributes.NoElement
+	r.Element = attributes.NoElement
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 		switch n.Typ {
 		case itemIdentifier:
@@ -122,7 +123,6 @@ func parseTarget(p *Parser) (parseFn, error) {
 			}
 			r.ParticleDropThreshold = amt
 			r.ParticleDrops = nil // separate particle system
-			r.ParticleElement = attributes.NoElement
 			r.Modified = true
 		case keywordParticleDropCount:
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
@@ -156,6 +156,15 @@ func parseTarget(p *Parser) (parseFn, error) {
 			}
 
 			r.Resist[eleKeys[s]] += amt
+			r.Modified = true
+		case keywordElement:
+			item, err := p.acceptSeqReturnLast(itemAssign, itemElementKey)
+			if err != nil {
+				return nil, err
+			}
+			if ele, ok := eleKeys[item.Val]; ok {
+				r.Element = ele
+			}
 			r.Modified = true
 		case itemTerminateLine:
 			p.res.Targets = append(p.res.Targets, r)
