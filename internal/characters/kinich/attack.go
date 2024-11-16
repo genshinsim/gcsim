@@ -128,8 +128,9 @@ func (c *char) skillAttack(p map[string]int) (action.Info, error) {
 	c.loopShotGenerateNSPoints()
 
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 0.5)
-	c.Core.QueueAttack(ai, ap, skillAttackHitmarks[c.normalSCounter][0], skillAttackHitmarks[c.normalSCounter][0], c.desolationCB, c.c2ResShredCB)
-	c.Core.QueueAttack(ai, ap, skillAttackHitmarks[c.normalSCounter][1], skillAttackHitmarks[c.normalSCounter][1], c.desolationCB, c.c2ResShredCB)
+	c.Core.QueueAttack(ai, ap, skillAttackHitmarks[c.normalSCounter][0], skillAttackHitmarks[c.normalSCounter][0], c.a1CB, c.c2ResShredCB)
+	c.Core.QueueAttack(ai, ap, skillAttackHitmarks[c.normalSCounter][1], skillAttackHitmarks[c.normalSCounter][1], c.a1CB, c.c2ResShredCB)
+	c.Core.Tasks.Add(c.c4, skillAttackHitmarks[c.normalSCounter][0])
 
 	defer c.AdvanceNormalIndex()
 

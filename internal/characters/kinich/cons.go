@@ -4,32 +4,36 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c4IcdKey = "kinich-c4-icd-key"
+const (
+	c4IcdKey = "kinich-c4-icd-key"
+	c6Abil   = "Scalespiker Cannon (C6)"
+)
 
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
 	}
+	// "After Kinich lands from Canopy Hunter: Riding High's mid-air swing,
+	// his Movement SPD will increase by 30% for 6s." is not implemented
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kinich-c1", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
-			case attacks.AttackTagElementalArt:
-			case attacks.AttackTagElementalArtHold:
+			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
 			default:
 				return nil, false
 			}
-			if atk.Info.Abil != scalespikerAbil && atk.Info.Abil != scalespikerC6Abil {
+			if atk.Info.Abil != scalespikerAbil {
 				return nil, false
 			}
+
 			m[attributes.CD] = 1
 			return m, true
 		},
@@ -55,58 +59,55 @@ func (c *char) c2ResShredCB(a combat.AttackCB) {
 	})
 }
 
-func (c *char) C2Snapshot(ai combat.AttackInfo, dmgBonus int) combat.Snapshot {
-	s := c.Snapshot(&ai)
-	s.Stats[attributes.DmgP] = float64(dmgBonus)
-	if dmgBonus > 0 {
-		c.Core.Log.NewEvent("Kinich C2 Damage Bonus", glog.LogCharacterEvent, c.Index).
-			Write("bonus", dmgBonus).
-			Write("final", s.Stats[attributes.DmgP])
+func (c *char) c2Bonus(ai *combat.AttackInfo) (combat.Snapshot, float64) {
+	s := c.Snapshot(ai)
+	if c.Base.Cons < 2 {
+		return s, 3.0
 	}
-	return s
+	if c.c2AoeIncreased {
+		return s, 3.0
+	}
+	c.c2AoeIncreased = true
+	s.Stats[attributes.DmgP] += 1.0
+	c.Core.Log.NewEvent("Kinich C2 Damage Bonus", glog.LogCharacterEvent, c.Index).
+		Write("final", s.Stats[attributes.DmgP])
+	return s, 5.0
 }
 
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		switch atk.Info.AttackTag {
-		case attacks.AttackTagElementalArt:
-		case attacks.AttackTagElementalArtHold:
-		default:
-			return false
-		}
-
-		if atk.Info.ActorIndex == c.Index {
-			return false
-		}
-
-		active := c.Core.Player.ActiveChar()
-		if active.Index == atk.Info.ActorIndex {
-			return false
-		}
-		if c.StatusIsActive(c4IcdKey) {
-			return false
-		}
-		c.AddStatus(c4IcdKey, 2.8*60, true)
-		c.AddEnergy("kinich-c4", 5)
-
-		return false
-	}, "kinich-c4-energy")
+	if c.StatusIsActive(c4IcdKey) {
+		return
+	}
+	c.AddStatus(c4IcdKey, 2.8*60, true)
+	c.AddEnergy("kinich-c4", 5)
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kinich-c4-dmgp", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			switch atk.Info.AttackTag {
-			case attacks.AttackTagElementalBurst:
-			default:
+			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
 			m[attributes.DmgP] = 0.7
 			return m, true
 		},
 	})
+}
+
+func (c *char) c6(ai combat.AttackInfo, s *combat.Snapshot, radius float64, target combat.Target, travel int) {
+	if c.Base.Cons < 6 {
+		return
+	}
+	ai.Abil = c6Abil
+	var next combat.Target = c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, radius), func(t combat.Enemy) bool {
+		return target.Key() != t.Key()
+	})
+	if next == nil {
+		next = target
+	}
+	ap := combat.NewCircleHitOnTarget(next, nil, radius)
+	c.Core.QueueAttackWithSnap(ai, *s, ap, scalespikerHitmark+travel, c.particleCB, c.a1CB, c.c2ResShredCB)
 }
