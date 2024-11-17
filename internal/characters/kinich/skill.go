@@ -93,8 +93,8 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 	}
 	if hold < 0 {
 		hold = 0
-	} else if hold > 301 {
-		hold = 301
+	} else if hold > 241 {
+		hold = 241
 	}
 	c6Travel, ok := p["c6_travel"]
 	if !ok {

@@ -29,7 +29,6 @@ type char struct {
 	characterAngularPosition float64 // [0, 360)
 	blindSpotAngularPosition float64 // [0, 360)
 	particlesGenerated       bool
-	skillDurationExtended    bool
 	c2AoeIncreased           bool
 }
 
