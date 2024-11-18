@@ -168,6 +168,14 @@
       "image_name": "UI_EquipIcon_Claymore_Siegfry",
       "name_text_hash_map ": "4090429643"
     },
+    "calamityofeshu": {
+      "id": 11432,
+      "key": "calamityofeshu",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_SacrificialNgombe",
+      "name_text_hash_map ": "590019915"
+    },
     "calamityqueller": {
       "id": 13507,
       "key": "calamityqueller",
