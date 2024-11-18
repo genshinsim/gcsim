@@ -1520,6 +1520,14 @@
       "image_name": "UI_EquipIcon_Pole_Maria",
       "name_text_hash_map ": "4122509083"
     },
+    "waveridingwhirl": {
+      "id": 14430,
+      "key": "waveridingwhirl",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Umpakati",
+      "name_text_hash_map ": "1445287979"
+    },
     "whiteblind": {
       "id": 12407,
       "key": "whiteblind",

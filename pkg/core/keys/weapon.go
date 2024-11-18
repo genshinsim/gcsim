@@ -223,6 +223,7 @@ var weaponNames = []string{
 	"wanderingevenstar",
 	"wastergreatsword",
 	"wavebreakersfin",
+	"waveridingwhirl",
 	"whiteblind",
 	"whiteirongreatsword",
 	"whitetassel",
@@ -425,6 +426,7 @@ const (
 	WanderingEvenstar
 	WasterGreatsword
 	WavebreakersFin
+	WaveridingWhirl
 	Whiteblind
 	WhiteIronGreatsword
 	WhiteTassel

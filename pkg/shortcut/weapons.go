@@ -352,6 +352,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"wastergreatsword":                keys.WasterGreatsword,
 	"wavebreakersfin":                 keys.WavebreakersFin,
 	"wavebreaker":                     keys.WavebreakersFin,
+	"waveridingwhirl":                 keys.WaveridingWhirl,
 	"whiteblind":                      keys.Whiteblind,
 	"whiteirongreatsword":             keys.WhiteIronGreatsword,
 	"whitetassel":                     keys.WhiteTassel,
