@@ -160,7 +160,7 @@ func (c *char) skillAttack(p map[string]int) (action.Info, error) {
 		Frames:          frames.NewAbilFunc(skillAttackFrames[c.normalSCounter]),
 		AnimationLength: skillAttackFrames[c.normalSCounter][action.InvalidAction],
 		CanQueueAfter:   skillAttackFrames[c.normalSCounter][action.ActionDash],
-		State:           action.SkillState,
+		State:           action.NormalAttackState,
 	}, nil
 }
 

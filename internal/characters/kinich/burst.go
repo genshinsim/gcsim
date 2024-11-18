@@ -9,14 +9,15 @@ import (
 )
 
 var burstFrames []int
-var ajawHitmarks = []int{253, 150}
+var ajawHitmarks = []int{145, 150}
 
 const (
 	cdStart            = 1
 	consumeEnergyDelay = 5
 
-	burstHitMark = 161
-	ajawDuration = 15*60 + burstHitMark
+	burstHitMark     = 161
+	ajawFirstHitmark = 253
+	ajawDuration     = 15*60 + burstHitMark
 
 	burstKey = "ajaw"
 )
@@ -49,7 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:           burst[c.TalentLvlBurst()],
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4), burstHitMark, burstHitMark)
-	c.Core.Tasks.Add(c.QueueLaser(1, c.ajawSrc), ajawHitmarks[0])
+	c.Core.Tasks.Add(c.QueueLaser(1, c.ajawSrc), ajawFirstHitmark)
 	c.ConsumeEnergy(consumeEnergyDelay)
 	c.SetCDWithDelay(action.ActionBurst, 18*60, cdStart)
 
@@ -85,9 +86,13 @@ func (c *char) QueueLaser(step, src int) func() {
 			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        attributes.Dendro,
 			Durability:     25,
-			Mult:           burst[c.TalentLvlBurst()],
+			Mult:           dragonBreath[c.TalentLvlBurst()],
+			HitlagFactor:   0.05,
+			IsDeployable:   true,
 		}
-		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, 0)
-		c.Core.Tasks.Add(c.QueueLaser(step+1, src), ajawHitmarks[1])
+		// TODO: approximate
+		ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1, 10)
+		c.Core.QueueAttack(ai, ap, 0, 0)
+		c.Core.Tasks.Add(c.QueueLaser(step+1, src), ajawHitmarks[c.Core.Rand.Intn(2)])
 	}
 }

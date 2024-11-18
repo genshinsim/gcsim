@@ -20,16 +20,16 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		AttackTag:          attacks.AttackTagExtra,
-		ICDTag:             attacks.ICDTagNormalAttack,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt,
-		Element:            attributes.Physical,
-		Durability:         25,
-		HitlagFactor:       0.03,
-		HitlagHaltFrames:   0,
-		CanBeDefenseHalted: true,
+		ActorIndex:       c.Index,
+		AttackTag:        attacks.AttackTagExtra,
+		PoiseDMG:         40,
+		ICDTag:           attacks.ICDTagNormalAttack,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeBlunt,
+		Element:          attributes.Physical,
+		Durability:       25,
+		HitlagFactor:     0.01,
+		HitlagHaltFrames: 0.01 * 60,
 	}
 
 	for i := 0; i < 3; i++ {
@@ -37,7 +37,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ai.Abil = fmt.Sprintf("Charge %v", i)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, 4.5, 3),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.45}, 3.0, 5.0),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 		)

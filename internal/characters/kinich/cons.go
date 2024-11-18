@@ -1,6 +1,8 @@
 package kinich
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -30,7 +32,7 @@ func (c *char) c1() {
 			default:
 				return nil, false
 			}
-			if atk.Info.Abil != scalespikerAbil {
+			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagKinichCannon) {
 				return nil, false
 			}
 
@@ -102,6 +104,7 @@ func (c *char) c6(ai combat.AttackInfo, s *combat.Snapshot, radius float64, targ
 		return
 	}
 	ai.Abil = c6Abil
+	ai.Mult = 7
 	var next combat.Target = c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, radius), func(t combat.Enemy) bool {
 		return target.Key() != t.Key()
 	})
@@ -109,5 +112,5 @@ func (c *char) c6(ai combat.AttackInfo, s *combat.Snapshot, radius float64, targ
 		next = target
 	}
 	ap := combat.NewCircleHitOnTarget(next, nil, radius)
-	c.Core.QueueAttackWithSnap(ai, *s, ap, scalespikerHitmark+travel, c.particleCB, c.a1CB, c.c2ResShredCB)
+	c.Core.QueueAttackWithSnap(ai, *s, ap, travel, c.particleCB, c.a1CB, c.c2ResShredCB)
 }

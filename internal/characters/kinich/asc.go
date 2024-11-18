@@ -9,7 +9,7 @@ import (
 
 const (
 	desolationKey = "desolation"
-	a1Icd         = "desolation-icd"
+	a1Icd         = "a1-icd"
 	a4StackKey    = "hunters-experience"
 )
 
