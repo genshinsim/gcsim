@@ -6,6 +6,7 @@ action_param_keys:
     - param: "direction"
   skill:
     - param: "hold"
+    - param: "travel"
     - param: "c6-travel"
 icd_tags:
   - ICDTagKinichLoopShot

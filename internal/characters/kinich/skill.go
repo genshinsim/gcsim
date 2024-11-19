@@ -14,12 +14,11 @@ import (
 const (
 	skillCD                  = 18 * 60
 	skillStart               = 9
-	scalespikerHitmark       = 48
-	pointsConsumptionsDelay  = 36
-	generateNSPointDelay     = 30
+	scalespikerDefaultTravel = 13
+	pointsConsumptionsDelay  = 1
 	nightSoulEnterDelay      = 11
 	scalespikerHoldFrameDiff = 18
-	blindSpotHoldFrameDiff   = 9
+	generateNSPointDelay     = 30
 )
 
 var (
@@ -27,7 +26,8 @@ var (
 	scalespikerFrames []int
 )
 
-var blindSpotAppearanceDelays = []int{30, 40}
+var blindSpotAppearanceDelays = []int{5, 31} // tap, hold (both tap and hold for entering nightsoul)
+var scalespikerReleases = []int{35, 17}      // tap, hold
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42) // E -> D/J
@@ -36,12 +36,12 @@ func init() {
 	skillFrames[action.ActionWalk] = 41
 
 	scalespikerFrames = frames.InitAbilSlice(100) // E -> Swap
-	scalespikerFrames[action.ActionAttack] = 59
-	scalespikerFrames[action.ActionBurst] = 59
-	scalespikerFrames[action.ActionDash] = 67
-	scalespikerFrames[action.ActionJump] = 67
-	scalespikerFrames[action.ActionWalk] = 71
-	scalespikerFrames[action.ActionSwap] = 100
+	scalespikerFrames[action.ActionAttack] = 59 - scalespikerReleases[0]
+	scalespikerFrames[action.ActionBurst] = 59 - scalespikerReleases[0]
+	scalespikerFrames[action.ActionDash] = 67 - scalespikerReleases[0]
+	scalespikerFrames[action.ActionJump] = 67 - scalespikerReleases[0]
+	scalespikerFrames[action.ActionWalk] = 71 - scalespikerReleases[0]
+	scalespikerFrames[action.ActionSwap] = 100 - scalespikerReleases[0]
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -57,22 +57,26 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		hold = 0
 	}
-	if hold < 0 {
+	switch {
+	case hold < 0:
 		hold = 0
-	} else if hold > 301 {
+	case hold > 301:
 		hold = 301
+	}
+	if hold > 0 {
+		hold--
 	}
 
 	c.Core.Tasks.Add(func() {
 		src := c.Core.F
 		c.nightsoulSrc = src
 		c.nightsoulState.EnterBlessing(0.)
-		c.setNightsoulExitTimer(10 * 60)
+		c.setNightsoulExitTimer(10*60 + 11)
 		c.c2AoeIncreased = false
 		c.particlesGenerated = false
 		c.SetCD(action.ActionSkill, skillCD)
 		c.Core.Tasks.Add(c.timePassGenerateNSPoints(src), generateNSPointDelay)
-		c.Core.Tasks.Add(c.createBlindSpot, blindSpotAppearanceDelays[0])
+		c.Core.Tasks.Add(c.createBlindSpot, blindSpotAppearanceDelays[1]-skillStart)
 	}, skillStart+hold)
 
 	return action.Info{
@@ -80,7 +84,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			return skillFrames[next] + hold
 		},
 		AnimationLength: skillFrames[action.InvalidAction] + hold,
-		CanQueueAfter:   skillFrames[action.ActionDash] + hold,
+		CanQueueAfter:   skillFrames[action.ActionBurst] + hold,
 		State:           action.SkillState,
 	}, nil
 }
@@ -90,22 +94,28 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 	if !ok {
 		hold = 0
 	}
-	if hold < 0 {
+	switch {
+	case hold < 0:
 		hold = 0
-	} else if hold > 241 {
-		hold = 241
+	case hold > 181:
+		hold = 181
 	}
 
+	travel, ok := p["travel"]
+	if !ok {
+		travel = scalespikerDefaultTravel
+	}
 	c6Travel, ok := p["c6_travel"]
 	if !ok {
 		c6Travel = 50 // TODO: find exact frame
 	}
 
-	diffHitmark := 0
-	diffBlindSpot := 0
+	releaseFrame := scalespikerReleases[0]
+	blindSpotDelay := blindSpotAppearanceDelays[0]
 	if hold > 0 {
-		diffHitmark = hold - (scalespikerHoldFrameDiff + 1)
-		diffBlindSpot = blindSpotHoldFrameDiff
+		hold--
+		releaseFrame = scalespikerReleases[1]
+		blindSpotDelay = blindSpotAppearanceDelays[1]
 	}
 
 	ai := combat.AttackInfo{
@@ -129,17 +139,17 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 		c.Core.QueueAttackWithSnap(ai, s, ap, 0, c.particleCB, c.a1CB, c.c2ResShredCB)
 		c.c4()
 		c.c6(ai, &s, radius, target, c6Travel)
-	}, scalespikerHitmark+diffHitmark)
+	}, releaseFrame+hold+travel)
 
-	c.Core.Tasks.Add(c.nightsoulState.ClearPoints, pointsConsumptionsDelay+diffHitmark)
-	c.Core.Tasks.Add(c.createBlindSpot, blindSpotAppearanceDelays[1]+diffBlindSpot)
+	c.Core.Tasks.Add(c.nightsoulState.ClearPoints, releaseFrame+hold+pointsConsumptionsDelay)
+	c.Core.Tasks.Add(c.createBlindSpot, releaseFrame+hold+blindSpotDelay)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return scalespikerFrames[next] + diffHitmark
+			return releaseFrame + hold + scalespikerFrames[next]
 		},
-		AnimationLength: scalespikerFrames[action.InvalidAction] + diffHitmark,
-		CanQueueAfter:   scalespikerFrames[action.ActionAttack] + diffHitmark,
+		AnimationLength: releaseFrame + hold + scalespikerFrames[action.InvalidAction],
+		CanQueueAfter:   releaseFrame + hold + scalespikerFrames[action.ActionAttack],
 		State:           action.SkillState,
 	}, nil
 }

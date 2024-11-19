@@ -4945,21 +4945,23 @@
         "shape": "Box",
         "center": "Player",
         "boxX": 3,
-        "boxY": 3
+        "boxY": 3,
+        "offsetY": -0.7
       },
       {
         "ability": "N2",
         "shape": "Box",
         "center": "Player",
-        "boxX": 3.9,
-        "boxY": 2
+        "boxX": 2,
+        "boxY": 3.9,
+        "offsetY": -1.0
       },
       {
         "ability": "N3",
         "shape": "Box",
         "center": "Player",
-        "boxX": 4.3,
-        "boxY": 2.2
+        "boxX": 2.2,
+        "boxY": 4.3
       },
       {
         "ability": "E-N1-1",
@@ -4979,22 +4981,25 @@
         "ability": "CA-1",
         "shape": "Box",
         "center": "PrimaryTarget",
-        "boxX": 4.5,
-        "boxY": 3
+        "boxX": 3,
+        "boxY": 5,
+        "offsetY": 0.45
       },
       {
         "ability": "CA-2",
         "shape": "Box",
         "center": "PrimaryTarget",
-        "boxX": 4.5,
-        "boxY": 3
+        "boxX": 3,
+        "boxY": 5,
+        "offsetY": 0.45
       },
       {
         "ability": "CA-3",
         "shape": "Box",
         "center": "PrimaryTarget",
-        "boxX": 4.5,
-        "boxY": 3
+        "boxX": 3,
+        "boxY": 5,
+        "offsetY": 0.45
       }
     ],
     "skill": [
@@ -5016,14 +5021,15 @@
         "ability": "Q-Initial",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": 0.2,
         "radius": 4
       },
       {
         "ability": "Q-Laser",
-        "shape": "Single",
-        "center": "GlobalValue",
-        "notes": "Spawn on enemy hit by a laser."
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 1,
+        "boxY": 10,
+        "notes": "In actual game Ajaw's laser is single target: hit is spawned on the enemy the laser touched. To approximate laser's AoE, we use box."
       }
     ]
   },
