@@ -31,33 +31,28 @@ func (w *Weapon) Init() error {
 			counter++
 		}
 	}
+	if counter == 0 {
+		return nil
+	}
 
-	counter = min(counter, 2)
-	stacks := max(1.4*float64(counter)-0.4, 0.0)
-
-	ca := make([]float64, attributes.EndStatType)
-	burst := make([]float64, attributes.EndStatType)
-
-	ca[attributes.DmgP] = (0.05*w.r + 0.15) * stacks
-	burst[attributes.DmgP] = (0.025*w.r + 0.075) * stacks
-
-	w.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("astralvulturescrimsonplumage-ca", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
-			}
-			return ca, true
-		},
-	})
+	m := make([]float64, attributes.EndStatType)
+	dmg := 0.025*w.r + 0.075
+	if counter >= 2 {
+		dmg *= 2.4
+	}
 
 	w.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("astralvulturescrimsonplumage-burst", -1),
+		Base: modifier.NewBase("astralvulturescrimsonplumage-dmg", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
+			switch atk.Info.AttackTag {
+			case attacks.AttackTagExtra:
+				m[attributes.DmgP] = dmg * 2
+			case attacks.AttackTagElementalBurst:
+				m[attributes.DmgP] = dmg
+			default:
 				return nil, false
 			}
-			return burst, true
+			return m, true
 		},
 	})
 
@@ -78,6 +73,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Events.Subscribe(i, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
+				return false
+			}
+			if c.Player.Active() != char.Index {
 				return false
 			}
 			char.AddStatMod(character.StatMod{
