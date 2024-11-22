@@ -24,6 +24,7 @@ func TestType(t *testing.T) {
 		resultChan <- res
 	}()
 	for {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if a == nil {
 			break
@@ -43,7 +44,10 @@ func TestType(t *testing.T) {
 
 func TestForceTerminate(t *testing.T) {
 	// test terminate eval early should gracefully exit
-	p := ast.New("xingqiu attack:50;")
+	p := ast.New(`
+	for let i = 0; i < 50; i = i + 1 {
+		delay(1);
+	}`)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
@@ -101,6 +105,7 @@ func TestSleepAsWaitAlias(t *testing.T) {
 		res, err := eval.Run()
 		fmt.Printf("done with result: %v, err: %v\n", res, err)
 	}()
+	eval.Continue()
 	a, err := eval.NextAction()
 	if err != nil {
 		t.Errorf("unexpected error getting next action: %v", err)
@@ -124,7 +129,10 @@ func TestSleepAsWaitAlias(t *testing.T) {
 
 func TestDoneCheck(t *testing.T) {
 	// eval should exit once out of action; NextAction() should return nil
-	p := ast.New("xingqiu attack, attack, skill, burst;")
+	p := ast.New(`
+	for let i = 0; i < 4; i = i + 1 {
+		delay(1);
+	}`)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
