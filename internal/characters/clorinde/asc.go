@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -30,7 +31,7 @@ func (c *char) a1() {
 		c.a1BuffPercent = c2A1PercentBuff
 		c.a1Cap = c2A1FlatDmg
 	}
-	c.a1stacks = newStackTracker(3, c.QueueCharTask, &c.Core.F)
+	c.a1stacks = stacks.NewMultipleRefreshNoRemove(3, c.QueueCharTask, &c.Core.F)
 	// on electro reaction, add buff; 3 stacks independent
 	c.Core.Events.Subscribe(event.OnElectroCharged, c.a1CB, "clorinde-a1-ec")
 	c.Core.Events.Subscribe(event.OnSuperconduct, c.a1CB, "clorinde-a1-superconduct")
@@ -86,7 +87,7 @@ func (c *char) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.a4stacks = newStackTracker(2, c.QueueCharTask, &c.Core.F)
+	c.a4stacks = stacks.NewMultipleRefreshNoRemove(2, c.QueueCharTask, &c.Core.F)
 	c.a4bonus = make([]float64, attributes.EndStatType)
 }
 

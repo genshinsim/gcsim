@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -30,7 +31,7 @@ func init() {
 type Weapon struct {
 	Index        int
 	char         *character.CharWrapper
-	stackTracker *stackTracker
+	stackTracker *stacks.MultipleRefreshNoRemove
 	buffStack    float64
 	mBuff        []float64
 }
@@ -45,7 +46,7 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		char:         char,
-		stackTracker: newStackTracker(6, char.QueueCharTask, &c.F),
+		stackTracker: stacks.NewMultipleRefreshNoRemove(6, char.QueueCharTask, &c.F),
 		buffStack:    0.10 + float64(p.Refine-1)*0.025,
 		mBuff:        make([]float64, attributes.EndStatType),
 	}
