@@ -72,6 +72,14 @@
       "image_name": "UI_EquipIcon_Catalyst_ConchSprayer",
       "name_text_hash_map ": "422144187"
     },
+    "astralvulturescrimsonplumage": {
+      "id": 15514,
+      "key": "astralvulturescrimsonplumage",
+      "rarity": 5,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Qoyllorsnova",
+      "name_text_hash_map ": "1363661611"
+    },
     "athousandfloatingdreams": {
       "id": 14511,
       "key": "athousandfloatingdreams",

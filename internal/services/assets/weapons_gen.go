@@ -5,6 +5,7 @@ var weaponMap = map[string]string{
 	"alleyhunter":                     "UI_EquipIcon_Bow_Outlaw",
 	"amosbow":                         "UI_EquipIcon_Bow_Amos",
 	"aquasimulacra":                   "UI_EquipIcon_Bow_Kirin",
+	"astralvulturescrimsonplumage":    "UI_EquipIcon_Bow_Qoyllorsnova",
 	"blackcliffwarbow":                "UI_EquipIcon_Bow_Blackrock",
 	"chainbreaker":                    "UI_EquipIcon_Bow_Isikhulu",
 	"cloudforged":                     "UI_EquipIcon_Bow_Ultimatum",

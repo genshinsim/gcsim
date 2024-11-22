@@ -64,6 +64,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/alley"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/amos"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/aqua"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/astralvulturescrimsonplumage"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/chainbreaker"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/cloudforged"
