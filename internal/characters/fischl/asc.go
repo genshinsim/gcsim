@@ -29,7 +29,7 @@ func (c *char) a4() {
 			return false
 		}
 		// do nothing if oz not on field
-		if c.ozActiveUntil < c.Core.F {
+		if !c.StatusIsActive(ozActiveKey) {
 			return false
 		}
 		active := c.Core.Player.ActiveChar()
