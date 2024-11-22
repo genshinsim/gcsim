@@ -360,6 +360,18 @@ pick_up_crystallize(element);
 `element` must be a string or an expression that evaluates to a string.
 :::
 
+## is_even
+
+```
+is_even(arg);
+```
+
+`is_even` evaluates if a given number is even or not. If a number is a floating point, the number if floored first. 
+
+:::danger
+`arg` must be a number or an expression that evaluates to a number.
+:::
+
 ## sin
 
 ```
