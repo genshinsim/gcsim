@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
+const a4IcdKey = "fischl-a4-icd"
+
 // A1 is not implemented:
 // TODO: When Fischl hits Oz with a fully-charged Aimed Shot, Oz brings down Thundering Retribution, dealing AoE Electro DMG equal to 152.7% of the arrow's DMG.
 
@@ -18,7 +20,6 @@ func (c *char) a4() {
 		return
 	}
 
-	last := 0
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	a4cb := func(args ...interface{}) bool {
@@ -31,10 +32,11 @@ func (c *char) a4() {
 		if c.ozActiveUntil < c.Core.F {
 			return false
 		}
-		if c.Core.F-30 < last && last != 0 {
+		active := c.Core.Player.ActiveChar()
+		if active.StatusIsActive(a4IcdKey) {
 			return false
 		}
-		last = c.Core.F
+		active.AddStatus(a4IcdKey, 0.5*60, true)
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -47,11 +49,8 @@ func (c *char) a4() {
 			Durability: 25,
 			Mult:       0.8,
 		}
-		// TODO: Ugly hack needed to maintain snapshot logs...
-		// Technically should have a separate snapshot for each attack info?
-		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
-		// A4 uses Oz Snapshot
 
+		// A4 uses Oz Snapshot
 		// TODO: this should target closest enemy within 15m of "elemental reaction position"
 		c.Core.QueueAttackWithSnap(
 			ai,
