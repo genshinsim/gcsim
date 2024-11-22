@@ -161,6 +161,7 @@ var weaponMap = map[string]string{
 	"aquilafavonia":                   "UI_EquipIcon_Sword_Falcon",
 	"blackclifflongsword":             "UI_EquipIcon_Sword_Blackrock",
 	"theblacksword":                   "UI_EquipIcon_Sword_Bloodstained",
+	"calamityofeshu":                  "UI_EquipIcon_Sword_SacrificialNgombe",
 	"cinnabarspindle":                 "UI_EquipIcon_Sword_Opus",
 	"coolsteel":                       "UI_EquipIcon_Sword_Steel",
 	"darkironsword":                   "UI_EquipIcon_Sword_Darker",
