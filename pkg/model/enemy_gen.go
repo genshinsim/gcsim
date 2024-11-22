@@ -3020,6 +3020,44 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	22120101: {
+		Id:              22120101,
+		Key:             "tenebrouspapillatypei",
+		NameTextHashMap: 553381864,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  217.344,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010040,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010040,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010040,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010040,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	22120201: {
 		Id:              22120201,
 		Key:             "tenebrousmimiflora",
@@ -7092,6 +7130,36 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	25500201: {
+		Id:              25500201,
+		Key:             "wingedwarriorskysoarer",
+		NameTextHashMap: 1303166368,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  16.3008,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	25501101: {
 		Id:              25501101,
 		Key:             "forgedsandinterrogator",
@@ -7126,6 +7194,66 @@ var EnemyMap = map[int]*MonsterData{
 		Id:              25501201,
 		Key:             "swiftstepseeker",
 		NameTextHashMap: 1939260552,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  21.7344,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25501301: {
+		Id:              25501301,
+		Key:             "wingedwarriorfeathershedder",
+		NameTextHashMap: 2710230568,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  21.7344,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25501401: {
+		Id:              25501401,
+		Key:             "spiritspeakerwarriordeterminator",
+		NameTextHashMap: 3719032928,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7212,6 +7340,36 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	25502301: {
+		Id:              25502301,
+		Key:             "spiritspeakerwarriorpsychokinetic",
+		NameTextHashMap: 1101241200,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  21.7344,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	25503101: {
 		Id:              25503101,
 		Key:             "swiftsteparmedcourier",
@@ -7242,10 +7400,70 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	25503201: {
+		Id:              25503201,
+		Key:             "spiritspeakerwarriorcontemplator",
+		NameTextHashMap: 1757007824,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  27.168,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	25504101: {
 		Id:              25504101,
 		Key:             "forgedsandshieldbreaker",
 		NameTextHashMap: 865186872,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  27.168,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25504201: {
+		Id:              25504201,
+		Key:             "wingedwarriorskymaster",
+		NameTextHashMap: 547972416,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7552,6 +7770,142 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010022,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25510701: {
+		Id:              25510701,
+		Key:             "qucusauruswarriorheartstarhammer",
+		NameTextHashMap: 1408510312,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  54.336,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010021,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25510801: {
+		Id:              25510801,
+		Key:             "qucusauruswarriorblazingsky",
+		NameTextHashMap: 2996608232,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  54.336,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010021,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25510901: {
+		Id:              25510901,
+		Key:             "iktomisauruswarrioricytidebearer",
+		NameTextHashMap: 3161592248,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  54.336,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010026,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25511001: {
+		Id:              25511001,
+		Key:             "iktomisauruswarriorcryocrystalcannon",
+		NameTextHashMap: 1405768080,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  54.336,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010026,
 					HpPercent: 0,
 				},
 			},
@@ -9605,6 +9959,66 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	26230101: {
+		Id:              26230101,
+		Key:             "qucusauruschick",
+		NameTextHashMap: 1687884752,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  14.9424,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.3,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26230201: {
+		Id:              26230201,
+		Key:             "qucusaurus",
+		NameTextHashMap: 3319624584,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  40.752,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.5,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	26230301: {
 		Id:              26230301,
 		Key:             "goldflamequcusaurtyrant",
@@ -9638,6 +10052,104 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010031,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26240101: {
+		Id:              26240101,
+		Key:             "iktomisauruschick",
+		NameTextHashMap: 2166596280,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  13.584,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.3,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26240201: {
+		Id:              26240201,
+		Key:             "iktomisaurus",
+		NameTextHashMap: 982800736,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  36.6768,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26240301: {
+		Id:              26240301,
+		Key:             "battlehardenediktomisaurus",
+		NameTextHashMap: 3080752240,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1227.9937,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010046,
 					HpPercent: 0,
 				},
 			},
@@ -9842,6 +10354,142 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010043,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26260701: {
+		Id:              26260701,
+		Key:             "battlehardenedburningaflamewayobmanifestation",
+		NameTextHashMap: 1908093904,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1184.5248,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.5,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010041,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26260801: {
+		Id:              26260801,
+		Key:             "bitingcoldwayobmanifestation",
+		NameTextHashMap: 3085615992,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  95.088,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010026,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26261001: {
+		Id:              26261001,
+		Key:             "battlehardenedbitingcoldwayobmanifestation",
+		NameTextHashMap: 1371407480,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  2064.768,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010046,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26260901: {
+		Id:              26260901,
+		Key:             "burningaflamewayobmanifestation",
+		NameTextHashMap: 655496832,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  95.088,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.5,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010021,
 					HpPercent: 0,
 				},
 			},
