@@ -72,6 +72,14 @@
       "image_name": "UI_EquipIcon_Catalyst_ConchSprayer",
       "name_text_hash_map ": "422144187"
     },
+    "astralvulturescrimsonplumage": {
+      "id": 15514,
+      "key": "astralvulturescrimsonplumage",
+      "rarity": 5,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Qoyllorsnova",
+      "name_text_hash_map ": "1363661611"
+    },
     "athousandfloatingdreams": {
       "id": 14511,
       "key": "athousandfloatingdreams",
@@ -167,6 +175,14 @@
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Siegfry",
       "name_text_hash_map ": "4090429643"
+    },
+    "calamityofeshu": {
+      "id": 11432,
+      "key": "calamityofeshu",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_SacrificialNgombe",
+      "name_text_hash_map ": "590019915"
     },
     "calamityqueller": {
       "id": 13507,
@@ -1519,6 +1535,14 @@
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Maria",
       "name_text_hash_map ": "4122509083"
+    },
+    "waveridingwhirl": {
+      "id": 14430,
+      "key": "waveridingwhirl",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Umpakati",
+      "name_text_hash_map ": "1445287979"
     },
     "whiteblind": {
       "id": 12407,

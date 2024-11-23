@@ -42,6 +42,7 @@ var weaponNames = []string{
 	"aquasimulacra",
 	"aquilafavonia",
 	"ashgravendrinkinghorn",
+	"astralvulturescrimsonplumage",
 	"athousandfloatingdreams",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
@@ -54,6 +55,7 @@ var weaponNames = []string{
 	"blackcliffwarbow",
 	"blacktassel",
 	"bloodtaintedgreatsword",
+	"calamityofeshu",
 	"calamityqueller",
 	"cashflowsupervision",
 	"chainbreaker",
@@ -223,6 +225,7 @@ var weaponNames = []string{
 	"wanderingevenstar",
 	"wastergreatsword",
 	"wavebreakersfin",
+	"waveridingwhirl",
 	"whiteblind",
 	"whiteirongreatsword",
 	"whitetassel",
@@ -244,6 +247,7 @@ const (
 	AquaSimulacra
 	AquilaFavonia
 	AshGravenDrinkingHorn
+	AstralVulturesCrimsonPlumage
 	AThousandFloatingDreams
 	BalladOfTheBoundlessBlue
 	BalladOfTheFjords
@@ -256,6 +260,7 @@ const (
 	BlackcliffWarbow
 	BlackTassel
 	BloodtaintedGreatsword
+	CalamityOfEshu
 	CalamityQueller
 	CashflowSupervision
 	ChainBreaker
@@ -425,6 +430,7 @@ const (
 	WanderingEvenstar
 	WasterGreatsword
 	WavebreakersFin
+	WaveridingWhirl
 	Whiteblind
 	WhiteIronGreatsword
 	WhiteTassel

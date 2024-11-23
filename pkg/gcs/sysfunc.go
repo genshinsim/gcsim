@@ -43,6 +43,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("cos", e.cos, env)
 	e.addSysFunc("asin", e.asin, env)
 	e.addSysFunc("acos", e.acos, env)
+	e.addSysFunc("is_even", e.isEven, env)
 
 	// events
 	e.addSysFunc("set_on_tick", e.setOnTick, env)
@@ -493,6 +494,36 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{
 		ival: count,
 	}, nil
+}
+
+func (e *Eval) isEven(c *ast.CallExpr, env *Env) (Obj, error) {
+	// is_even(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for is_even, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("is_even argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	// if float, floor it
+	var v int64
+	v = n.ival
+	if n.isFloat {
+		v = int64(n.fval)
+	}
+
+	if v%2 == 0 {
+		return bton(true), nil
+	}
+	return bton(false), nil
 }
 
 func (e *Eval) sin(c *ast.CallExpr, env *Env) (Obj, error) {

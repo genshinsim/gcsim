@@ -144,6 +144,15 @@ export interface ArtifactData {
   id?: number | undefined;
   text_map_id?: number | undefined;
   key?: string | undefined;
+  image_names?: ArtifactImageData | undefined;
+}
+
+export interface ArtifactImageData {
+  flower?: string | undefined;
+  plume?: string | undefined;
+  sands?: string | undefined;
+  goblet?: string | undefined;
+  circlet?: string | undefined;
 }
 
 export interface PromotionData {
@@ -1786,7 +1795,7 @@ export const ArtifactDataMap_DataEntry = {
 };
 
 function createBaseArtifactData(): ArtifactData {
-  return { id: 0, text_map_id: 0, key: "" };
+  return { id: 0, text_map_id: 0, key: "", image_names: undefined };
 }
 
 export const ArtifactData = {
@@ -1799,6 +1808,9 @@ export const ArtifactData = {
     }
     if (message.key !== undefined && message.key !== "") {
       writer.uint32(26).string(message.key);
+    }
+    if (message.image_names !== undefined) {
+      ArtifactImageData.encode(message.image_names, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -1831,6 +1843,13 @@ export const ArtifactData = {
 
           message.key = reader.string();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.image_names = ArtifactImageData.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1845,6 +1864,7 @@ export const ArtifactData = {
       id: isSet(object.id) ? globalThis.Number(object.id) : 0,
       text_map_id: isSet(object.text_map_id) ? globalThis.Number(object.text_map_id) : 0,
       key: isSet(object.key) ? globalThis.String(object.key) : "",
+      image_names: isSet(object.image_names) ? ArtifactImageData.fromJSON(object.image_names) : undefined,
     };
   },
 
@@ -1859,6 +1879,9 @@ export const ArtifactData = {
     if (message.key !== undefined && message.key !== "") {
       obj.key = message.key;
     }
+    if (message.image_names !== undefined) {
+      obj.image_names = ArtifactImageData.toJSON(message.image_names);
+    }
     return obj;
   },
 
@@ -1870,6 +1893,128 @@ export const ArtifactData = {
     message.id = object.id ?? 0;
     message.text_map_id = object.text_map_id ?? 0;
     message.key = object.key ?? "";
+    message.image_names = (object.image_names !== undefined && object.image_names !== null)
+      ? ArtifactImageData.fromPartial(object.image_names)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseArtifactImageData(): ArtifactImageData {
+  return { flower: "", plume: "", sands: "", goblet: "", circlet: "" };
+}
+
+export const ArtifactImageData = {
+  encode(message: ArtifactImageData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.flower !== undefined && message.flower !== "") {
+      writer.uint32(10).string(message.flower);
+    }
+    if (message.plume !== undefined && message.plume !== "") {
+      writer.uint32(18).string(message.plume);
+    }
+    if (message.sands !== undefined && message.sands !== "") {
+      writer.uint32(26).string(message.sands);
+    }
+    if (message.goblet !== undefined && message.goblet !== "") {
+      writer.uint32(34).string(message.goblet);
+    }
+    if (message.circlet !== undefined && message.circlet !== "") {
+      writer.uint32(42).string(message.circlet);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ArtifactImageData {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseArtifactImageData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.flower = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.plume = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.sands = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.goblet = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.circlet = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ArtifactImageData {
+    return {
+      flower: isSet(object.flower) ? globalThis.String(object.flower) : "",
+      plume: isSet(object.plume) ? globalThis.String(object.plume) : "",
+      sands: isSet(object.sands) ? globalThis.String(object.sands) : "",
+      goblet: isSet(object.goblet) ? globalThis.String(object.goblet) : "",
+      circlet: isSet(object.circlet) ? globalThis.String(object.circlet) : "",
+    };
+  },
+
+  toJSON(message: ArtifactImageData): unknown {
+    const obj: any = {};
+    if (message.flower !== undefined && message.flower !== "") {
+      obj.flower = message.flower;
+    }
+    if (message.plume !== undefined && message.plume !== "") {
+      obj.plume = message.plume;
+    }
+    if (message.sands !== undefined && message.sands !== "") {
+      obj.sands = message.sands;
+    }
+    if (message.goblet !== undefined && message.goblet !== "") {
+      obj.goblet = message.goblet;
+    }
+    if (message.circlet !== undefined && message.circlet !== "") {
+      obj.circlet = message.circlet;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ArtifactImageData>, I>>(base?: I): ArtifactImageData {
+    return ArtifactImageData.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ArtifactImageData>, I>>(object: I): ArtifactImageData {
+    const message = createBaseArtifactImageData();
+    message.flower = object.flower ?? "";
+    message.plume = object.plume ?? "";
+    message.sands = object.sands ?? "";
+    message.goblet = object.goblet ?? "";
+    message.circlet = object.circlet ?? "";
     return message;
   },
 };

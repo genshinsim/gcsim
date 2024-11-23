@@ -920,3 +920,65 @@ export function dBTagToJSON(object: DBTag): string {
       return "UNRECOGNIZED";
   }
 }
+
+export enum EquipType {
+  INVALID_EQUIP_TYPE = 0,
+  /** EQUIP_BRACER - flower */
+  EQUIP_BRACER = 1,
+  /** EQUIP_NECKLACE - plume */
+  EQUIP_NECKLACE = 2,
+  /** EQUIP_SHOES - sands */
+  EQUIP_SHOES = 3,
+  /** EQUIP_RING - goblet */
+  EQUIP_RING = 4,
+  /** EQUIP_DRESS - circlet */
+  EQUIP_DRESS = 5,
+  UNRECOGNIZED = -1,
+}
+
+export function equipTypeFromJSON(object: any): EquipType {
+  switch (object) {
+    case 0:
+    case "INVALID_EQUIP_TYPE":
+      return EquipType.INVALID_EQUIP_TYPE;
+    case 1:
+    case "EQUIP_BRACER":
+      return EquipType.EQUIP_BRACER;
+    case 2:
+    case "EQUIP_NECKLACE":
+      return EquipType.EQUIP_NECKLACE;
+    case 3:
+    case "EQUIP_SHOES":
+      return EquipType.EQUIP_SHOES;
+    case 4:
+    case "EQUIP_RING":
+      return EquipType.EQUIP_RING;
+    case 5:
+    case "EQUIP_DRESS":
+      return EquipType.EQUIP_DRESS;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return EquipType.UNRECOGNIZED;
+  }
+}
+
+export function equipTypeToJSON(object: EquipType): string {
+  switch (object) {
+    case EquipType.INVALID_EQUIP_TYPE:
+      return "INVALID_EQUIP_TYPE";
+    case EquipType.EQUIP_BRACER:
+      return "EQUIP_BRACER";
+    case EquipType.EQUIP_NECKLACE:
+      return "EQUIP_NECKLACE";
+    case EquipType.EQUIP_SHOES:
+      return "EQUIP_SHOES";
+    case EquipType.EQUIP_RING:
+      return "EQUIP_RING";
+    case EquipType.EQUIP_DRESS:
+      return "EQUIP_DRESS";
+    case EquipType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}

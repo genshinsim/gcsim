@@ -58,7 +58,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	)
 
 	// check for c1
-	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Core.F {
+	if c.Base.Cons >= 1 && !c.StatusIsActive(ozActiveKey) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl C1",
