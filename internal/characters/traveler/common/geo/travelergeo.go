@@ -25,7 +25,6 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Atk += common.TravelerBaseAtkIncrease(p)
 	c.Base.Element = attributes.Geo
 	c.EnergyMax = 60
 	c.BurstCon = 3
@@ -33,7 +32,7 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	c.NormalHitNum = normalHitNum
 
 	c.skillCD = 6 * 60
-
+	common.TravelerBaseAtkIncrease(c.CharWrapper, p)
 	return &c, nil
 }
 

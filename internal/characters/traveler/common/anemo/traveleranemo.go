@@ -27,19 +27,20 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	c := Traveler{
 		gender: gender,
 	}
-	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Atk += common.TravelerBaseAtkIncrease(p)
+	c.Character = tmpl.NewWithWrapper(s, w)
 	c.Base.Element = attributes.Anemo
 	c.EnergyMax = 60
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
+	common.TravelerBaseAtkIncrease(c.CharWrapper, p)
 	return &c, nil
 }
 
 func (c *Traveler) Init() error {
+
 	c.a4()
 	if c.Base.Cons >= 2 {
 		c.c2()

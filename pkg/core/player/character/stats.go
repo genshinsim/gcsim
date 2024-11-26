@@ -126,7 +126,7 @@ func (c *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
 func (c *CharWrapper) MaxHP() float64 {
 	hpp := c.BaseStats[attributes.HPP]
 	hp := c.BaseStats[attributes.HP]
-
+	baseHp := c.BaseStats[attributes.BaseATK]
 	for _, v := range c.mods {
 		m, ok := v.(*StatMod)
 		if !ok {
@@ -134,7 +134,7 @@ func (c *CharWrapper) MaxHP() float64 {
 		}
 		// ignore this mod if stat type doesnt match
 		switch m.AffectedStat {
-		case attributes.NoStat, attributes.HP, attributes.HPP:
+		case attributes.NoStat, attributes.HP, attributes.HPP, attributes.BaseHP:
 		default:
 			continue
 		}
@@ -143,16 +143,17 @@ func (c *CharWrapper) MaxHP() float64 {
 			if amt, ok := m.Amount(); ok {
 				hpp += amt[attributes.HPP]
 				hp += amt[attributes.HP]
+				baseHp += amt[attributes.BaseHP]
 			}
 		}
 	}
-	return (c.Base.HP*(1+hpp) + hp)
+	return (baseHp*(1+hpp) + hp)
 }
 
 func (c *CharWrapper) TotalAtk() float64 {
 	atkp := c.BaseStats[attributes.ATKP]
 	atk := c.BaseStats[attributes.ATK]
-
+	baseAtk := c.BaseStats[attributes.BaseATK]
 	for _, v := range c.mods {
 		m, ok := v.(*StatMod)
 		if !ok {
@@ -160,7 +161,7 @@ func (c *CharWrapper) TotalAtk() float64 {
 		}
 		// ignore this mod if stat type doesnt match
 		switch m.AffectedStat {
-		case attributes.NoStat, attributes.ATK, attributes.ATKP:
+		case attributes.NoStat, attributes.ATK, attributes.ATKP, attributes.BaseATK:
 		default:
 			continue
 		}
@@ -172,13 +173,13 @@ func (c *CharWrapper) TotalAtk() float64 {
 			}
 		}
 	}
-	return (c.Base.Atk*(1+atkp) + atk)
+	return (baseAtk*(1+atkp) + atk)
 }
 
 func (c *CharWrapper) TotalDef() float64 {
 	defp := c.BaseStats[attributes.DEFP]
 	def := c.BaseStats[attributes.DEF]
-
+	baseDef := c.BaseStats[attributes.BaseDEF]
 	for _, v := range c.mods {
 		m, ok := v.(*StatMod)
 		if !ok {
@@ -186,7 +187,7 @@ func (c *CharWrapper) TotalDef() float64 {
 		}
 		// ignore this mod if stat type doesnt match
 		switch m.AffectedStat {
-		case attributes.NoStat, attributes.DEF, attributes.DEFP:
+		case attributes.NoStat, attributes.DEF, attributes.DEFP, attributes.BaseDEF:
 		default:
 			continue
 		}
@@ -195,8 +196,9 @@ func (c *CharWrapper) TotalDef() float64 {
 			if amt, ok := m.Amount(); ok {
 				defp += amt[attributes.DEFP]
 				def += amt[attributes.DEF]
+				baseDef += amt[attributes.BaseDEF]
 			}
 		}
 	}
-	return (c.Base.Def*(1+defp) + def)
+	return (baseDef*(1+defp) + def)
 }

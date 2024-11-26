@@ -58,9 +58,9 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	s := combat.Snapshot{
 		CharLvl:     c.Base.Level,
 		ActorEle:    c.Base.Element,
-		BaseAtk:     c.Base.Atk,
-		BaseDef:     c.Base.Def,
-		BaseHP:      c.Base.HP,
+		BaseAtk:     c.Stat(attributes.BaseATK),
+		BaseDef:     c.Stat(attributes.BaseDEF),
+		BaseHP:      c.Stat(attributes.BaseHP),
 		SourceFrame: c.Core.F,
 	}
 
