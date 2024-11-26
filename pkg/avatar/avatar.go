@@ -127,7 +127,7 @@ func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
 	// TODO: Players don't have resistances right now
 	res := 0.0
 
-	def := char.Base.Def*(1+char.Stat(attributes.DEFP)) + char.Stat(attributes.DEF)
+	def := char.TotalDef()
 
 	def *= (1 - atk.Info.IgnoreDefPercent)
 	defmod := 1 - def/(def+float64(5*atk.Snapshot.CharLvl)+500)

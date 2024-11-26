@@ -170,7 +170,7 @@ func (c *char) gorouBurstHealField(src int) func() {
 		}
 		// When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
 		// within its AoE by 50% of Gorou's own DEF every 1.5s.
-		amt := c.Base.Def*(1+c.healFieldStats[attributes.DEFP]) + c.healFieldStats[attributes.DEF]
+		amt := c.healFieldStats[attributes.BaseDEF]*(1+c.healFieldStats[attributes.DEFP]) + c.healFieldStats[attributes.DEF]
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
