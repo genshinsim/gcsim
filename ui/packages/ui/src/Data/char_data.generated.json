@@ -362,6 +362,23 @@
       },
       "name_text_hash_map ": "2876340530"
     },
+    "citlali": {
+      "id": 10000107,
+      "key": "citlali",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Layla",
+      "skill_details": {
+        "skill": 10402,
+        "burst": 10403,
+        "attack": 10401,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2876340530"
+    },
     "clorinde": {
       "id": 10000098,
       "key": "clorinde",
@@ -1012,6 +1029,23 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "2472444970"
+    },
+    "mavuika": {
+      "id": 10000106,
+      "key": "mavuika",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Dehya",
+      "skill_details": {
+        "skill": 10802,
+        "burst": 10805,
+        "attack": 10801,
+        "burst_energy_cost": 0
+      },
+      "name_text_hash_map ": "231911858"
     },
     "mika": {
       "id": 10000080,
