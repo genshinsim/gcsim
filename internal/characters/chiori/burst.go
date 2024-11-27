@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		snap := c.Snapshot(&ai)
 
 		// flat dmg for def scaling portion
-		ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
+		ai.FlatDmg = snap.Stats.TotalDEF()
 		ai.FlatDmg *= burstDefScaling[c.TalentLvlBurst()]
 
 		// c2 should be called slightly before the actual dmg happens

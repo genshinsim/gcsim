@@ -66,7 +66,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// heal on burst start
 	hpplus := snap.Stats[attributes.Heal]
-	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
+	atk := snap.Stats.TotalATK()
 	heal := burstInitialHealFlat[c.TalentLvlBurst()] + atk*burstInitialHealPer[c.TalentLvlBurst()]
 	healDot := burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]
 

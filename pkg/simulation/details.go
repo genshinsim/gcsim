@@ -50,9 +50,9 @@ func (s *Simulation) CharacterDetails() []*model.Character {
 			AttackTag: attacks.AttackTagNone,
 		})
 		// convert all atk%, def% and hp% into flat amounts by tacking on base
-		snap.Stats[attributes.HP] = c.MaxHP()
-		snap.Stats[attributes.DEF] = c.TotalDef()
-		snap.Stats[attributes.ATK] = c.TotalAtk()
+		snap.Stats[attributes.HP] = snap.Stats.MaxHP()
+		snap.Stats[attributes.DEF] = snap.Stats.TotalDEF()
+		snap.Stats[attributes.ATK] = snap.Stats.TotalATK()
 		snap.Stats[attributes.HPP] = 0
 		snap.Stats[attributes.DEFP] = 0
 		snap.Stats[attributes.ATKP] = 0

@@ -73,7 +73,7 @@ func (c *char) a1Amount(atk *combat.AttackEvent, t combat.Target) ([]float64, bo
 	default:
 		return nil, false
 	}
-	totalAtk := atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[attributes.ATKP]) + atk.Snapshot.Stats[attributes.ATK]
+	totalAtk := atk.Snapshot.Stats.TotalATK()
 	amt = min(totalAtk*c.a1BuffPercent*float64(c.a1stacks.Count()), c.a1Cap)
 	atk.Info.FlatDmg += amt
 	c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index).

@@ -46,7 +46,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) getSkillHealInfo(snap *combat.Snapshot) info.HealInfo {
-	maxhp := snap.BaseHP*(1+snap.Stats[attributes.HPP]) + snap.Stats[attributes.HP]
+	maxhp := snap.Stats.MaxHP()
 	heal := skillRadishHealing[0][c.TalentLvlSkill()]*maxhp + skillRadishHealing[1][c.TalentLvlSkill()]
 	return info.HealInfo{
 		Caller:  c.Index,

@@ -105,11 +105,13 @@ func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
 
 	// calculate using attack or def
 	var a float64
-	totalhp := atk.Snapshot.BaseHP*(1+atk.Snapshot.Stats[attributes.HPP]) + atk.Snapshot.Stats[attributes.HP]
-	if atk.Info.UseDef {
-		a = atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]
-	} else {
-		a = atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[attributes.ATKP]) + atk.Snapshot.Stats[attributes.ATK]
+	switch {
+	case atk.Info.UseHP:
+		a = atk.Snapshot.Stats.MaxHP()
+	case atk.Info.UseDef:
+		a = atk.Snapshot.Stats.TotalDEF()
+	default:
+		a = atk.Snapshot.Stats.TotalATK()
 	}
 
 	base := atk.Info.Mult*a + atk.Info.FlatDmg
@@ -128,7 +130,6 @@ func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
 	res := 0.0
 
 	def := char.TotalDef()
-
 	def *= (1 - atk.Info.IgnoreDefPercent)
 	defmod := 1 - def/(def+float64(5*atk.Snapshot.CharLvl)+500)
 
@@ -183,17 +184,16 @@ func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
 			Write("damage", damage).
 			Write("abil", atk.Info.Abil).
 			Write("talent", atk.Info.Mult).
-			Write("base_atk", atk.Snapshot.BaseAtk).
+			Write("base_atk", atk.Snapshot.Stats[attributes.BaseATK]).
 			Write("flat_atk", atk.Snapshot.Stats[attributes.ATK]).
 			Write("atk_per", atk.Snapshot.Stats[attributes.ATKP]).
 			Write("use_def", atk.Info.UseDef).
-			Write("base_def", atk.Snapshot.BaseDef).
+			Write("base_def", atk.Snapshot.Stats[attributes.BaseDEF]).
 			Write("flat_def", atk.Snapshot.Stats[attributes.DEF]).
 			Write("def_per", atk.Snapshot.Stats[attributes.DEFP]).
-			Write("base_hp", atk.Snapshot.BaseHP).
+			Write("base_hp", atk.Snapshot.Stats[attributes.BaseHP]).
 			Write("flat_hp", atk.Snapshot.Stats[attributes.HP]).
 			Write("hp_per", atk.Snapshot.Stats[attributes.HPP]).
-			Write("total_hp", totalhp).
 			Write("catalyzed", atk.Info.Catalyzed).
 			Write("flat_dmg", atk.Info.FlatDmg).
 			Write("total_atk_def", a).

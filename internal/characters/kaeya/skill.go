@@ -48,12 +48,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		// A1:
 		// Every hit with Frostgnaw regenerates HP for Kaeya equal to 15% of his ATK.
 		if c.Base.Ascension >= 1 {
-			heal := .15 * (a.AttackEvent.Snapshot.BaseAtk*(1+a.AttackEvent.Snapshot.Stats[attributes.ATKP]) + a.AttackEvent.Snapshot.Stats[attributes.ATK])
 			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  c.Core.Player.Active(),
 				Message: "Cold-Blooded Strike",
-				Src:     heal,
+				Src:     a.AttackEvent.Snapshot.Stats.TotalATK() * .15,
 				Bonus:   c.Stat(attributes.Heal),
 			})
 		}
