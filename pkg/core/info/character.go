@@ -107,9 +107,6 @@ type CharacterBase struct {
 	Level     int                `json:"level"`
 	MaxLevel  int                `json:"max_level"`
 	Ascension int                `json:"ascension"`
-	HP        float64            `json:"hp"`
-	Atk       float64            `json:"atk"`
-	Def       float64            `json:"def"`
 	Cons      int                `json:"cons"`
 }
 

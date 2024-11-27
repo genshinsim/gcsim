@@ -3,7 +3,6 @@ package qiqi
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -64,7 +63,7 @@ func (c *char) healDynamic(healScalePer, healScaleFlat []float64, talentLevel in
 
 // Helper function to calculate healing amount from a snapshot instance
 func (c *char) healSnapshot(d *combat.Snapshot, healScalePer, healScaleFlat []float64, talentLevel int) float64 {
-	atk := d.BaseAtk*(1+d.Stats[attributes.ATKP]) + d.Stats[attributes.ATK]
+	atk := d.Stats.TotalATK()
 	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal
 }
