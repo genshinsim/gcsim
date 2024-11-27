@@ -126,7 +126,7 @@ func (c *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
 func (c *CharWrapper) MaxHP() float64 {
 	hpp := c.BaseStats[attributes.HPP]
 	hp := c.BaseStats[attributes.HP]
-	baseHp := c.BaseStats[attributes.BaseATK]
+	baseHp := c.BaseStats[attributes.BaseHP]
 	for _, v := range c.mods {
 		m, ok := v.(*StatMod)
 		if !ok {
