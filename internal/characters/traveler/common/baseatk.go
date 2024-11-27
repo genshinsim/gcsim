@@ -25,5 +25,4 @@ func TravelerBaseAtkIncrease(c *character.CharWrapper, p info.CharacterProfile) 
 			return m, true
 		},
 	})
-
 }
