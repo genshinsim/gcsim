@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Abil:       "Royal Descent: Behold, Itto the Evil! (Stat Snapshot)",
 	}
 	c.Snapshot(&aiSnapshot)
-	burstDefSnapshot := c.NonExtraStat(attributes.BaseDEF)*(1+c.NonExtraStat(attributes.DEFP)) + c.NonExtraStat(attributes.DEF)
+	burstDefSnapshot := c.TotalDef(true)
 	mult := defconv[c.TalentLvlBurst()]
 
 	// TODO: Confirm exact timing of buff
