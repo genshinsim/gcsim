@@ -63,10 +63,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if char.StatusIsActive(icdKey) {
 				return false
 			}
-			char.AddStatus(icdKey, 60, true)
 			s.consumeCount += amount
 			if s.consumeCount >= 1 {
 				s.consumeCount = 0
+				char.AddStatus(icdKey, 60, true)
 				char.AddStatMod(character.StatMod{
 					Base: modifier.NewBaseWithHitlag("obsidiancodex-4pc", 6*60),
 					Amount: func() ([]float64, bool) {
