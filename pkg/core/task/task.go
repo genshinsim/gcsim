@@ -1,5 +1,13 @@
 package task
 
+// TODO: the behavior of delay<=0 is inconsistent
+// TODO: consider merging all tasks into a single handler
+// Currently tasks are executed in the following order: (enemy1, enemy2, ...), (char1, char2, ...), (core tasks)
+// In order to replace, the core task queue must support the ability to update the position of a task in the queue.
+// Also will need to consider order. Currently everything that is queued via QueueCharTask/QueueEnemyTask will
+// always happen before all entries in the core task queue. If any implementations depend on this order,
+// this will cause additional problems.
+
 import "container/heap"
 
 type minHeap []task
