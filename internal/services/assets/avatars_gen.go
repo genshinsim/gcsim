@@ -15,6 +15,7 @@ var avatarMap = map[string]string{
 	"bennett":       "UI_AvatarIcon_Bennett",
 	"candace":       "UI_AvatarIcon_Candace",
 	"charlotte":     "UI_AvatarIcon_Charlotte",
+	"chasca":        "UI_AvatarIcon_Chasca",
 	"chevreuse":     "UI_AvatarIcon_Chevreuse",
 	"chiori":        "UI_AvatarIcon_Chiori",
 	"chongyun":      "UI_AvatarIcon_Chongyun",

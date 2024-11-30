@@ -1,0 +1,56 @@
+package_name: chasca
+genshin_id: 10000104
+key: chasca
+action_param_keys:
+    attack:
+        - param: "travel"
+    aim:
+        - param: "hold"
+        - param: "travel"
+        - param: "weakspot"
+icd_tags:
+    - ICDTagChascaShining
+icd_groups:
+    - group_name: ICDGroupChascaSkillShining
+      reset_timer: 90
+      ele_app_sequence: [1, 0, 1, 0, 1, 0]
+      damage_sequence: [1, 1, 1, 1, 1, 1]
+    - group_name: ICDGroupChascaSkillTap
+      reset_timer: 90
+      ele_app_sequence: [1, 0]
+      damage_sequence: [1, 1]
+    - group_name: ICDGroupChascaBurst
+      reset_timer: 90
+      ele_app_sequence: [1, 0, 1, 0, 1, 0]
+      damage_sequence: [1, 1, 1, 1, 1, 1]
+skill_data_mapping:
+    attack: # Normal Attack: Phantom Feather Flurry
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}×2
+        attack_4:
+            - 3 # 4-Hit DMG|{param3:F1P}×3
+        aim:
+            - 4 # Aimed Shot|{param4:F1P}
+        fullAim:
+            - 5 # Fully-Charged Aimed Shot|{param5:P}
+    skill: # Spirit Reins, Shadow Hunt
+        skillResonance:
+            - 0 # Resonance DMG|{param0:F1P}
+        skillNA:
+            - 1 # Multitarget Fire Tap DMG|{param1:F1P}
+        skillShadowhunt:
+            - 2 # Shadowhunt Shell DMG|{param2:F1P}
+        skillShining:
+            - 3 # Shining Shadowhunt Shell DMG|{param3:F1P}
+    burst: # Soul Reaper's Fatal Round
+        burstGalesplitting:
+            - 0 # Galesplitting Soulseeker Shell DMG|{param0:F1P}
+        burstSoulseeker:
+            - 1 # Soulseeker Shell DMG|{param1:F1P}
+        burstRadiant:
+            - 2 # Radiant Soulseeker Shell DMG|{param2:F1P}
+
