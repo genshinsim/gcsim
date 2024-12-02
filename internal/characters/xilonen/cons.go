@@ -141,7 +141,7 @@ func (c *char) c4Init() {
 			return false
 		}
 
-		amt := 0.65 * c.TotalDef()
+		amt := 0.65 * c.TotalDef(false)
 		char.SetTag(c4key, char.Tag(c4key)-1)
 
 		c.Core.Log.NewEvent("xilonen c4 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
@@ -189,7 +189,7 @@ func (c *char) applyC6() {
 				return
 			}
 			hpplus := c.Stat(attributes.Heal)
-			heal := c.TotalDef() * 1.2
+			heal := c.TotalDef(false) * 1.2
 			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,
@@ -214,7 +214,7 @@ func (c *char) c6FlatDmg() {
 				return nil, false
 			}
 
-			amt := c.TotalDef() * 3.0
+			amt := c.TotalDef(false) * 3.0
 			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index).
 				Write("amt", amt)
 

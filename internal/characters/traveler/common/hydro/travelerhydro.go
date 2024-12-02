@@ -22,15 +22,14 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Atk += common.TravelerBaseAtkIncrease(p)
 	c.Base.Element = attributes.Hydro
 	c.EnergyMax = 80
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.HasArkhe = true
-
 	c.NormalHitNum = normalHitNum
 
+	common.TravelerBaseAtkIncrease(w, p)
 	return &c, nil
 }
 

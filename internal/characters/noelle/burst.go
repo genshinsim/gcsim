@@ -36,7 +36,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Abil:       "Sweeping Time (Stat Snapshot)",
 	}
 	c.Snapshot(&aiSnapshot)
-	burstDefSnapshot := c.Base.Def*(1+c.NonExtraStat(attributes.DEFP)) + c.NonExtraStat(attributes.DEF)
+	burstDefSnapshot := c.TotalDef(true)
 	mult := defconv[c.TalentLvlBurst()]
 	if c.Base.Cons >= 6 {
 		mult += 0.5

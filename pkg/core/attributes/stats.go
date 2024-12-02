@@ -5,7 +5,10 @@ import (
 	"strings"
 )
 
-type Stat int
+type (
+	Stat  int
+	Stats [EndStatType]float64
+)
 
 // stat types
 const (
@@ -42,6 +45,10 @@ const (
 func (s Stat) String() string {
 	return StatTypeString[s]
 }
+
+func (s Stats) MaxHP() float64    { return s[BaseHP]*(1+s[HPP]) + s[HP] }
+func (s Stats) TotalATK() float64 { return s[BaseATK]*(1+s[ATKP]) + s[ATK] }
+func (s Stats) TotalDEF() float64 { return s[BaseDEF]*(1+s[DEFP]) + s[DEF] }
 
 func PrettyPrintStats(stats []float64) string {
 	var sb strings.Builder

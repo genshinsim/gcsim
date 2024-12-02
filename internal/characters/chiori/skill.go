@@ -133,7 +133,7 @@ func (c *char) handleSkill(hold int) {
 		}
 
 		snap := c.Snapshot(&ai)
-		ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
+		ai.FlatDmg = snap.Stats.TotalDEF()
 		ai.FlatDmg *= thrustDefScaling[c.TalentLvlSkill()]
 
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 5.5, 3.5), 0)
@@ -212,7 +212,7 @@ func (c *char) skillDollAttack(src int, abil string, pos geometry.Point) func() 
 			}
 
 			snap := c.Snapshot(&ai)
-			ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
+			ai.FlatDmg = snap.Stats.TotalDEF()
 			ai.FlatDmg *= turretDefScaling[c.TalentLvlSkill()]
 
 			// if the player has an attack target it will always choose this enemy

@@ -88,7 +88,7 @@ func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 		}
 
 		active := c.Core.Player.ActiveChar()
-		buff := atkBuff[c.TalentLvlSkill()] * c.Base.Atk
+		buff := atkBuff[c.TalentLvlSkill()] * c.Stat(attributes.BaseATK)
 
 		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index).
 			Write("char", active.Index).
