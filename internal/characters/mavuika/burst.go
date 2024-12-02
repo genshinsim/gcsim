@@ -14,7 +14,7 @@ import (
 
 const (
 	burstHitmark         = 99
-	minFightingSpiritReq = 50
+	minFightingSpiritReq = 100
 
 	crucibleOfDeathAndLifeStatus = "crucible-of-death-and-life"
 	fightingSpiritGainIcd        = "fighting-spirit-gain-icd"
