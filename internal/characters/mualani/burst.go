@@ -47,8 +47,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		// the A4 stacks can change during the burst
 		ai.FlatDmg += c.a4amount()
-		c.Core.QueueAttack(ai, burstArea, 0, 0)
-	}, burstHitmarks+travel)
+		c.Core.QueueAttack(ai, burstArea, 0, travel)
+	}, burstHitmarks)
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
 	c.ConsumeEnergy(11)
