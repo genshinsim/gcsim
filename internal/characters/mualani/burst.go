@@ -40,12 +40,25 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Hydro,
 		Durability:     25,
-		FlatDmg:        burst[c.TalentLvlBurst()] * c.MaxHP(),
 	}
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5)
 
+	// snapshot at bullet creation
+	var snap combat.Snapshot
+	stacks := c.a4Stacks
+	c.a4Stacks = 0
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, burstArea, 0, travel)
+		snap = c.Snapshot(&ai)
+		c.Core.Tasks.Add(func() {
+			// TODO: verify if snapshot is used or if maxhp is recalced here
+			hp := c.MaxHP()
+			ai.FlatDmg = burst[c.TalentLvlBurst()] * hp
+			if c.Base.Ascension >= 4 {
+				ai.FlatDmg += 0.15 * float64(stacks) * hp
+			}
+
+			c.Core.QueueAttackWithSnap(ai, snap, burstArea, 0)
+		}, travel)
 	}, burstHitmarks)
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
