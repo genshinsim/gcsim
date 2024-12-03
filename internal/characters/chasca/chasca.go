@@ -2,6 +2,7 @@ package chasca
 
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
+	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -16,14 +17,16 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	partyTypes []attributes.Element
-	phecCount  int
+	nightsoulState *nightsoul.State
+	nightsoulSrc   int
+	partyTypes     []attributes.Element
+	phecCount      int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
-
+	c.nightsoulState = nightsoul.New(c.Core, c.CharWrapper)
 	c.EnergyMax = 80
 	c.NormalHitNum = normalHitNum
 	c.SkillCon = 3
