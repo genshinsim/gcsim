@@ -9,6 +9,7 @@ action_param_keys:
         - param: "travel"
         - param: "weakspot"
 icd_tags:
+    - ICDTagChascaSkillTap
     - ICDTagChascaShining
     - ICDTagChascaBurst
 icd_groups:

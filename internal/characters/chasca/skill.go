@@ -34,13 +34,6 @@ func init() {
 
 func (c *char) reduceNightsoulPoints(val float64) {
 	c.nightsoulState.ConsumePoints(val)
-
-	// don't exit nightsoul while in NA/CA/Plunge
-	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState, action.PlungeAttackState, action.AimState:
-		return
-	}
-
 	if c.nightsoulState.Points() < 0.001 {
 		c.exitNightsoul()
 	}
