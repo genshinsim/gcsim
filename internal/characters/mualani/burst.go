@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-const burstHitmarks = 185 - 70
+const burstHitmarks = 108 // adjusted to swap frame
 
 var (
 	burstFrames []int
@@ -45,8 +45,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5)
 
 	c.QueueCharTask(func() {
-		// the A4 stacks can change during the burst
-		ai.FlatDmg += c.a4amount()
 		c.Core.QueueAttack(ai, burstArea, 0, travel)
 	}, burstHitmarks)
 
