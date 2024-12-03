@@ -6,6 +6,7 @@ const (
 	ICDTagCharlotteMark
 	ICDTagCharlotteKamera
 	ICDTagChascaShining
+	ICDTagChascaBurst
 	ICDTagChioriSkill
 	ICDTagClorindeCons
 	ICDTagColleiSprout

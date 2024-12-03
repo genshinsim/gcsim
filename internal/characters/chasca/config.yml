@@ -10,6 +10,7 @@ action_param_keys:
         - param: "weakspot"
 icd_tags:
     - ICDTagChascaShining
+    - ICDTagChascaBurst
 icd_groups:
     - group_name: ICDGroupChascaSkillShining
       reset_timer: 90
