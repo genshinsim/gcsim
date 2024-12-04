@@ -8,10 +8,12 @@ action_param_keys:
     - param: "hold"
     - param: "travel"
     - param: "weakspot"
+  skill:
+    - param: "travel"
 skill_data_mapping:
   attack:
     aim:
-      - 5 # Aimed Shot|{param5:F1P}
+      - 3 # Aimed Shot|{param5:F1P}
     attack_1:
       - 0 # 1-Hit DMG|{param0:F1P}
     attack_2:
@@ -19,7 +21,7 @@ skill_data_mapping:
     attack_3:
       - 2 # 3-Hit DMG|{param2:F1P}
     fullaim:
-      - 6 # Fully-Charged Aimed Shot|{param6:P}
+      - 4 # Fully-Charged Aimed Shot|{param6:P}
   skill:
     spiritOrb:
       - 0 # Spirit Orb DMG|{param0:F1P}

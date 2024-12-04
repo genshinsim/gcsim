@@ -2590,6 +2590,24 @@
       }
     ]
   },
+  "ororon": {
+    "aim": [
+      {
+        "ability": "Aim-Head",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "FullAim-Head",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ]
+  },
   "qiqi": {
     "normal": [
       {
