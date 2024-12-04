@@ -1149,6 +1149,23 @@
       },
       "name_text_hash_map ": "1921418842"
     },
+    "ororon": {
+      "id": 10000105,
+      "key": "ororon",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Electric",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Olorun",
+      "skill_details": {
+        "skill": 30502,
+        "burst": 30505,
+        "attack": 30501,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1198350762"
+    },
     "qiqi": {
       "id": 10000035,
       "key": "qiqi",

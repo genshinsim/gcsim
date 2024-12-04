@@ -6683,6 +6683,104 @@
       }
     ]
   },
+  "ororon": {
+    "asc": [
+      {
+        "ability": "E-A1",
+        "shape": "Box",
+        "center": "GlobalValue",
+        "boxX": 0.2,
+        "boxY": 0.2,
+        "notes": "Spawns on 4 closest targets."
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      }
+    ],
+    "skill": [
+      {
+        "ability": "Spirit Orb Hit",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "Spawns on target Spirit Orb bounced to."
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Burst Cast",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 2.3,
+        "boxX": 4.0,
+        "boxY": 4.0
+      },
+      {
+        "ability": "Soundwave Collision",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 1,
+        "radius": 10,
+        "note": "The sector of the given circle of angle 20 degrees."
+      }
+    ]
+  },
   "qiqi": {
     "normal": [
       {
