@@ -29,6 +29,7 @@ type char struct {
 	itzpapaSrc       int
 	skillShield      *shd
 	numStellarBlades int
+	numC6Stacks      int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -47,6 +48,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.nightsoulState.MaxPoints = 80 // TODO: the REAL one
 
 	c.itzpapaSrc = -1
+	c.numC6Stacks = 0
 
 	return nil
 }
@@ -56,6 +58,7 @@ func (c *char) Init() error {
 	c.a4()
 
 	c.c1()
+	c.c6()
 	return nil
 }
 

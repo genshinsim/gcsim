@@ -30,8 +30,8 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
-		c.allFireArmamnetsActive = !c.allFireArmamnetsActive
-		if c.allFireArmamnetsActive {
+		c.flamestriderModeActive = !c.flamestriderModeActive
+		if c.flamestriderModeActive {
 			c.c2DeleteDefMod()
 		} else {
 			c.c2AddDefMod()
@@ -46,7 +46,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	c.nightsoulState.EnterBlessing(c.nightsoulState.MaxPoints)
-	c.c2BaseIncrease(true)
 	c.nightsoulSrc = c.Core.F
 	c.QueueCharTask(c.nightsoulPointReduceFunc(c.Core.F), 12)
 	hold, ok := p["hold"]
@@ -69,16 +68,18 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Pyro,
 		Durability:     25,
-		Mult:           1.339,
+		Mult:           1.2648,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), geometry.Point{Y: 1}, 3.5), skillHitmark, skillHitmark, c.particleCB)
 	c.SetCD(action.ActionSkill, 15*60)
 
 	c.QueueCharTask(c.ringsOfSearchingRadianceHit(c.Core.F), ringsOfSearchingRadianceInterval)
+	c.QueueCharTask(c.c6FlamestriderModeHit(c.Core.F), 3*60)
+
 	if hold == 1 {
-		c.allFireArmamnetsActive = true
+		c.flamestriderModeActive = true
 	} else {
-		c.allFireArmamnetsActive = false
+		c.flamestriderModeActive = false
 		c.c2AddDefMod()
 	}
 
@@ -110,10 +111,9 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 func (c *char) reduceNightsoulPoints(val float64) {
 	c.nightsoulState.ConsumePoints(val)
 	if c.nightsoulState.Points() <= 0.00001 {
-		if !c.allFireArmamnetsActive {
+		if !c.flamestriderModeActive {
 			c.c2DeleteDefMod()
 		}
-		c.c2BaseIncrease(false)
 		c.nightsoulState.ExitBlessing()
 	}
 }
@@ -126,7 +126,7 @@ func (c *char) ringsOfSearchingRadianceHit(src int) func() {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
-		if !c.allFireArmamnetsActive {
+		if !c.flamestriderModeActive {
 			ai := combat.AttackInfo{
 				ActorIndex:     c.Index,
 				Abil:           "Rings of Searing Radiance DMG",
@@ -137,11 +137,13 @@ func (c *char) ringsOfSearchingRadianceHit(src int) func() {
 				StrikeType:     attacks.StrikeTypeDefault,
 				Element:        attributes.Pyro,
 				Durability:     25,
-				Mult:           2.304,
+				Mult:           2.176,
 			}
+			// TODO: change hurtbox
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5), 0, 0)
 			// a hit of E comsumes 3 NS points
 			c.nightsoulState.ConsumePoints(3)
+			c.c6RSRModeHit()
 		}
 		c.QueueCharTask(c.ringsOfSearchingRadianceHit(src), ringsOfSearchingRadianceInterval)
 	}

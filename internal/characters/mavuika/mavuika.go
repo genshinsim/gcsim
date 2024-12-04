@@ -27,7 +27,7 @@ type char struct {
 	// skill
 	nightsoulState         *nightsoul.State
 	nightsoulSrc           int
-	allFireArmamnetsActive bool
+	flamestriderModeActive bool
 
 	// burst
 	fightingSpirit         float64
@@ -57,7 +57,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.nightsoulState = nightsoul.New(s, w)
 	c.nightsoulState.MaxPoints = 80
 
-	c.allFireArmamnetsActive = false
+	c.flamestriderModeActive = false
 	c.fightingSpirit = 200
 	c.fightingSpiritMult = 1
 	c.a4Buff = make([]float64, attributes.EndStatType)
@@ -72,6 +72,7 @@ func (c *char) Init() error {
 	c.a1()
 
 	c.c1()
+	c.c2BaseIncrease()
 	return nil
 }
 
@@ -114,7 +115,7 @@ func (c *char) Condition(fields []string) (any, error) {
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if c.nightsoulState.HasBlessing() && c.allFireArmamnetsActive {
+	if c.nightsoulState.HasBlessing() && c.flamestriderModeActive {
 		switch k {
 		case model.AnimationXingqiuN0StartDelay:
 			return 11
@@ -140,7 +141,7 @@ func (c *char) onExitField() {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if c.nightsoulState.HasBlessing() && c.allFireArmamnetsActive {
+	if c.nightsoulState.HasBlessing() && c.flamestriderModeActive {
 		return 0
 	}
 	return 50

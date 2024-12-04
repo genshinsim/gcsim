@@ -27,8 +27,8 @@ var (
 	bikeAttackHitmarks = []int{31, 32, 29, 35, 41}
 
 	// remove later
-	attack     = [][]float64{{1.582}, {0.721, 0.721}, {0.657, 0.657, 0.657}, {2.297}}
-	bikeAttack = []float64{1.132, 1.169, 1.383, 1.378, 1.799}
+	attack     = [][]float64{{1.47041}, {0.67021, 0.67021}, {0.61038, 0.61038, 0.61038}, {2.13471}}
+	bikeAttack = []float64{1.05208, 1.08639, 1.2858, 1.378, 1.799}
 )
 
 const (
@@ -63,7 +63,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	if c.nightsoulState.HasBlessing() && c.allFireArmamnetsActive {
+	if c.nightsoulState.HasBlessing() && c.flamestriderModeActive {
 		return c.bikeAttack(p)
 	}
 	ai := combat.AttackInfo{
@@ -120,7 +120,7 @@ func (c *char) bikeAttack(_ map[string]int) (action.Info, error) {
 
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2)
 	if c.StatusIsActive(crucibleOfDeathAndLifeStatus) {
-		ai.FlatDmg += 0.0072 * c.TotalAtk() * float64(c.consumedFightingSpirit)
+		ai.FlatDmg += 0.00474 * c.TotalAtk() * float64(c.consumedFightingSpirit)
 	}
 	ai.FlatDmg += c.c2FlatIncrease(attacks.AttackTagNormal)
 	c.Core.QueueAttack(ai, ap, bikeAttackHitmarks[c.normalBCounter], bikeAttackHitmarks[c.normalBCounter])

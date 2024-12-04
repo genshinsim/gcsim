@@ -32,7 +32,7 @@ func (c *char) a1Hook(args ...interface{}) bool {
 	if !c.StatusIsActive(nightSoulGenerationIcd) {
 		c.AddStatus(nightSoulGenerationIcd, 8*60, false)
 		c.nightsoulState.GeneratePoints(16)
-		c.ActivateItzpapa(c.itzpapaSrc)
+		c.tryEnterOpalFireState(c.itzpapaSrc)
 		if c.Base.Cons >= 1 {
 			c.numStellarBlades += 3
 		}
@@ -63,7 +63,7 @@ func (c *char) a4() {
 	}
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
 		c.nightsoulState.GeneratePoints(4)
-		c.ActivateItzpapa(c.itzpapaSrc)
+		c.tryEnterOpalFireState(c.itzpapaSrc)
 		return false
 	}, "citlali-a4-ns-gain")
 }
@@ -74,7 +74,7 @@ func (c *char) a4Dmg(abil string) float64 {
 	}
 	em := c.NonExtraStat(attributes.EM)
 	if abil == iceStormAbil {
-		return 24 * em
+		return 12 * em
 	}
 	if abil == frostFallAbil {
 		return 0.9 * em

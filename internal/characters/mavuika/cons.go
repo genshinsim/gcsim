@@ -30,16 +30,22 @@ func (c *char) c1Atk() {
 	})
 }
 
-func (c *char) c2BaseIncrease(activate bool) {
+func (c *char) c2BaseIncrease() {
 	if c.Base.Cons < 2 {
 		return
 	}
 
-	if activate {
-		c.Base.Atk += 300
-	} else {
-		c.Base.Atk -= 300
-	}
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.BaseATK] = 200
+	c.AddStatMod(character.StatMod{
+		Base: modifier.NewBaseWithHitlag("mavuika-c2-base-atk", -1),
+		Amount: func() ([]float64, bool) {
+			if c.nightsoulState.HasBlessing() {
+				return m, true
+			}
+			return nil, false
+		},
+	})
 }
 
 func (c *char) c2FlatIncrease(tag attacks.AttackTag) float64 {
@@ -48,11 +54,11 @@ func (c *char) c2FlatIncrease(tag attacks.AttackTag) float64 {
 	}
 	switch tag {
 	case attacks.AttackTagNormal:
-		return 0.8 * c.TotalAtk()
+		return 0.6 * c.TotalAtk()
 	case attacks.AttackTagExtra:
-		return 1.3 * c.TotalAtk()
+		return 0.9 * c.TotalAtk()
 	case attacks.AttackTagElementalBurst:
-		return 1.8 * c.TotalAtk()
+		return 1.2 * c.TotalAtk()
 	default:
 		return 0
 	}
@@ -83,5 +89,60 @@ func (c *char) c2DeleteDefMod() {
 		if t.DefModIsActive("mavuika-c2-def-shred") {
 			t.DeleteDefMod("mavuika-c2-def-shred")
 		}
+	}
+}
+
+func (c *char) c6RSRModeHit() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	if c.flamestriderModeActive {
+		return
+	}
+	ai := combat.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "Flamestrider Hit (C6)",
+		AttackTag:      attacks.AttackTagElementalArt,
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.Pyro,
+		Durability:     0,
+		Mult:           2.,
+	}
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6)
+	// TODO: the actual frames
+	c.Core.QueueAttack(ai, ap, 40, 40)
+}
+
+func (c *char) c6FlamestriderModeHit(src int) func() {
+	return func() {
+		if c.Base.Cons < 6 {
+			return
+		}
+		if src != c.nightsoulSrc {
+			return
+		}
+		if !c.nightsoulState.HasBlessing() {
+			return
+		}
+		if c.flamestriderModeActive {
+			ai := combat.AttackInfo{
+				ActorIndex:     c.Index,
+				Abil:           "Rings of Searing Radiance DMG (C6)",
+				AttackTag:      attacks.AttackTagElementalArt,
+				AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+				ICDTag:         attacks.ICDTagNone,
+				ICDGroup:       attacks.ICDGroupDefault,
+				StrikeType:     attacks.StrikeTypeDefault,
+				Element:        attributes.Pyro,
+				Durability:     0,
+				Mult:           4.,
+			}
+			// TODO: change hurt box
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5), 0, 0)
+		}
+		c.QueueCharTask(c.ringsOfSearchingRadianceHit(src), 3*60)
 	}
 }

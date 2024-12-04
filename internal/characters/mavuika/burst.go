@@ -34,13 +34,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			c.Base.Key, c.fightingSpirit, minFightingSpiritReq)
 	}
 
-	// I assume her burst does NOT change her stance (bike/no bike) whatsoever.
-	// upon entering Nightsoul, she appears in the stance she was, when she exited Nightsoul.
+	// I assume her burst change her Nightsoul mode to Flamestrider without pressing E
+	c.flamestriderModeActive = true
 	if c.nightsoulState.HasBlessing() {
 		c.nightsoulState.GeneratePoints(10)
 	} else {
 		c.nightsoulState.EnterBlessing(10)
-		c.c2BaseIncrease(true)
+		c.QueueCharTask(c.ringsOfSearchingRadianceHit(c.Core.F), ringsOfSearchingRadianceInterval)
+		c.QueueCharTask(c.c6FlamestriderModeHit(c.Core.F), 3*60)
 	}
 	c.nightsoulPointReduceFunc(c.Core.F)
 
@@ -54,7 +55,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Pyro,
 		Durability:     25,
-		FlatDmg:        c.TotalAtk() * 8.006,
+		FlatDmg:        c.TotalAtk() * 7.5616,
 	}
 	c.SetCD(action.ActionBurst, 18*60)
 
@@ -62,7 +63,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.consumedFightingSpirit = c.fightingSpirit
 	c.fightingSpirit = 0
 
-	ai.FlatDmg += (0.029*c.TotalAtk()*float64(c.consumedFightingSpirit) + c.c2FlatIncrease(attacks.AttackTagElementalBurst))
+	ai.FlatDmg += (0.0272*c.TotalAtk()*float64(c.consumedFightingSpirit) + c.c2FlatIncrease(attacks.AttackTagElementalBurst))
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 7), burstHitmark, burstHitmark)
 
 	// Start countdown after initial hit

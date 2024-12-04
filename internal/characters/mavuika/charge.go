@@ -29,7 +29,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	if c.nightsoulState.HasBlessing() && c.allFireArmamnetsActive {
+	if c.nightsoulState.HasBlessing() && c.flamestriderModeActive {
 		return c.bikeChargeAttack(p)
 	}
 	ai := combat.AttackInfo{
@@ -100,13 +100,13 @@ func (c *char) bikeChargeAttack(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeBlunt,
 		Element:        attributes.Pyro,
 		Durability:     25,
-		FlatDmg:        c.TotalAtk() * 3.162,
+		FlatDmg:        c.TotalAtk() * 2.528,
 		IgnoreInfusion: true,
 	}
 	apFinal := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4.5)
 	c.QueueCharTask(func() {
 		if c.StatusIsActive(crucibleOfDeathAndLifeStatus) {
-			aiFinal.FlatDmg += 0.0144 * c.TotalAtk() * float64(c.consumedFightingSpirit)
+			aiFinal.FlatDmg += 0.00948 * c.TotalAtk() * float64(c.consumedFightingSpirit)
 		}
 		aiFinal.FlatDmg += c.c2FlatIncrease(attacks.AttackTagExtra)
 		c.Core.QueueAttack(aiFinal, apFinal, 0, 0)
@@ -133,7 +133,7 @@ func (c *char) getCyclicAi() combat.AttackInfo {
 		StrikeType:     attacks.StrikeTypeBlunt,
 		Element:        attributes.Pyro,
 		Durability:     25,
-		FlatDmg:        c.TotalAtk() * 2.17,
+		FlatDmg:        c.TotalAtk() * 1.817,
 		IgnoreInfusion: true,
 	}
 }

@@ -14,7 +14,7 @@ func (c *char) a1() {
 	}
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
 		buff := make([]float64, attributes.EndStatType)
-		buff[attributes.ATKP] = 0.35
+		buff[attributes.ATKP] = 0.3
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("mavuika-a1", 10*60),
 			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
@@ -30,7 +30,7 @@ func (c *char) a4() {
 		return
 	}
 	started := c.Core.F
-	c.baseA4Buff = min(0.5, 0.0025*c.consumedFightingSpirit)
+	c.baseA4Buff = min(0.4, 0.002*c.consumedFightingSpirit)
 	for _, char := range c.Core.Player.Chars() {
 		this := char
 		this.AddAttackMod(character.AttackMod{

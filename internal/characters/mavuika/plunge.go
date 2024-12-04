@@ -20,7 +20,7 @@ func init() {
 
 // Special bike Plunge will be here
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
-	if c.nightsoulState.HasBlessing() && c.allFireArmamnetsActive {
+	if c.nightsoulState.HasBlessing() && c.flamestriderModeActive {
 		return c.bikePlunge(p), nil
 	}
 
@@ -55,7 +55,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
-	if c.nightsoulState.HasBlessing() && c.allFireArmamnetsActive {
+	if c.nightsoulState.HasBlessing() && c.flamestriderModeActive {
 		return c.bikePlunge(p), nil
 	}
 

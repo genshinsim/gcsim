@@ -10,7 +10,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c4SkullIcd = "c4-skull-icd"
+const (
+	maxC6Stacks = 40
+	c4SkullIcd  = "c4-skull-icd"
+)
 
 // Additionally, when Citlali is using her leap, or is Aiming or using her
 // Charged Attack in mid-air, her Phlogiston consumption is decreased by 45%.
@@ -37,21 +40,30 @@ func (c *char) c1() {
 	}, "citlali-c1-on-dmg")
 }
 
-// For now, assuming her shield won't be destroyed ahead of time
 func (c *char) c2() {
 	if c.Base.Cons < 2 {
 		return
 	}
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag("citlali-c2-em", 20*60),
+		AffectedStat: attributes.EM,
+		Amount: func() ([]float64, bool) {
+			buffSelf := make([]float64, attributes.EndStatType)
+			buffSelf[attributes.EM] = 125
+			return buffSelf, true
+		},
+	})
 	chars := c.Core.Player.Chars()
 	for _, char := range chars {
+		if c.Index == char.Index {
+			continue
+		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("citlali-c2-em", 20*60),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
-				if c.Index == char.Index {
-					buffSelf := make([]float64, attributes.EndStatType)
-					buffSelf[attributes.EM] = 125
-					return buffSelf, true
+				if c.Core.Player.Shields.CharacterIsShielded(char.Index, c.Core.Player.Active()) {
+					return nil, false
 				}
 				buffOther := make([]float64, attributes.EndStatType)
 				buffOther[attributes.EM] = 250
@@ -70,6 +82,7 @@ func (c *char) c4Skull() {
 	}
 	c.AddStatus(c4SkullIcd, 8*60, false)
 	c.nightsoulState.GeneratePoints(16)
+	c.AddEnergy("citlali-c4-energy", 8)
 	aiSpiritVesselSkull := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Spiritvessel Skull DMG (C4)",
@@ -80,9 +93,38 @@ func (c *char) c4Skull() {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Cryo,
 		Durability:     25,
-		FlatDmg:        12 * c.NonExtraStat(attributes.EM),
+		FlatDmg:        18 * c.NonExtraStat(attributes.EM),
 	}
 	// TODO: the actual hitmark
 	c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()),
 		spiritVesselSkullHitmark-iceStormHitmark, spiritVesselSkullHitmark-iceStormHitmark)
+}
+
+func (c *char) c6() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	chars := c.Core.Player.Chars()
+	for _, char := range chars {
+		if c.Index == char.Index {
+			continue
+		}
+		char.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag("citlali-c6", -1),
+			Amount: func() ([]float64, bool) {
+				buffC6 := make([]float64, attributes.EndStatType)
+				buffC6[attributes.PyroP] = 0.015 * float64(c.numC6Stacks)
+				buffC6[attributes.HydroP] = 0.015 * float64(c.numC6Stacks)
+				return buffC6, true
+			},
+		})
+	}
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag("citlali-c6", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			buffC6 := make([]float64, attributes.EndStatType)
+			buffC6[attributes.DmgP] = 0.025 * float64(c.numC6Stacks)
+			return buffC6, true
+		},
+	})
 }
