@@ -36,6 +36,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// I assume her burst change her Nightsoul mode to Flamestrider without pressing E
 	c.flamestriderModeActive = true
+	c.c2DeleteDefMod()
 	if c.nightsoulState.HasBlessing() {
 		c.nightsoulState.GeneratePoints(10)
 	} else {

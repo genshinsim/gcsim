@@ -113,7 +113,7 @@ func (c *char) c6RSRModeHit() {
 	}
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6)
 	// TODO: the actual frames
-	c.Core.QueueAttack(ai, ap, 40, 40)
+	c.Core.QueueAttack(ai, ap, 16, 16)
 }
 
 func (c *char) c6FlamestriderModeHit(src int) func() {
@@ -143,6 +143,6 @@ func (c *char) c6FlamestriderModeHit(src int) func() {
 			// TODO: change hurt box
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5), 0, 0)
 		}
-		c.QueueCharTask(c.ringsOfSearchingRadianceHit(src), 3*60)
+		c.QueueCharTask(c.c6FlamestriderModeHit(src), 3*60)
 	}
 }

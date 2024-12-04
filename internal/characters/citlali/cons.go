@@ -82,6 +82,7 @@ func (c *char) c4Skull() {
 	}
 	c.AddStatus(c4SkullIcd, 8*60, false)
 	c.nightsoulState.GeneratePoints(16)
+	c.tryEnterOpalFireState(c.itzpapaSrc)
 	c.AddEnergy("citlali-c4-energy", 8)
 	aiSpiritVesselSkull := combat.AttackInfo{
 		ActorIndex:     c.Index,

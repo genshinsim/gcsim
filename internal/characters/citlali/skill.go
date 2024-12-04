@@ -97,7 +97,7 @@ func (c *char) itzpapaExit(src int) func() {
 
 // try to activate Opal Fire each time Citlali gains NS points to avoid event subscribtion
 func (c *char) tryEnterOpalFireState(src int) {
-	if c.nightsoulState.Points() >= 50 || c.Base.Cons >= 6 {
+	if (c.nightsoulState.Points() >= 50 || c.Base.Cons >= 6) && c.nightsoulState.HasBlessing() {
 		// if it's activation or REactivation
 		if !c.StatusIsActive(opalFireStateKey) || src != c.itzpapaSrc {
 			// this status is active only when Itzpapa is in "attack mode"
