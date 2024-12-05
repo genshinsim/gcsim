@@ -37,6 +37,7 @@ func (s *Server) handleGetData(t AssetType) http.HandlerFunc {
 		switch {
 		case data != nil && err == nil:
 			// load successful
+			s.logger.Info("loaded from cache ok", "t", t.String(), "key", key)
 			w.WriteHeader(http.StatusOK)
 			w.Write(data)
 			return
@@ -57,10 +58,12 @@ func (s *Server) handleGetData(t AssetType) http.HandlerFunc {
 					s.logger.Info("error getting", "err", err, "host", v.String(), "try", i, "key", key, "full_path", joinedURL.String())
 					continue
 				}
+				s.logger.Info("received image from source ok", "host", v.String())
 				s.saveToCache(t, key, data)
 				// found ok, save to cache and end request
 				w.WriteHeader(http.StatusOK)
 				w.Write(data)
+				return
 			}
 		}
 		// if we reached here then all external failed so we should serve default question mark image
