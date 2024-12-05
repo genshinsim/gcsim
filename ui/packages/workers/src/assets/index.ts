@@ -15,16 +15,12 @@ export async function handleAssets(
       `Response for request url: ${request.url} not present in cache. Fetching and caching request.`,
     );
 
-    const x = new URL(request.url);
-    const resp = await fetch(
-      new Request(ASSETS_ENDPOINT + x.pathname + x.search),
-      {
-        cf: {
-          cacheTtl: 60 * 24 * 60 * 60,
-          cacheEverything: true,
-        },
+    const resp = await fetch(new Request(ASSETS_ENDPOINT + cacheUrl.pathname), {
+      cf: {
+        cacheTtl: 60 * 24 * 60 * 60,
+        cacheEverything: true,
       },
-    );
+    });
 
     response = new Response(resp.body, resp);
     response.headers.set('Cache-Control', 'max-age=5184000');
