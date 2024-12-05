@@ -646,6 +646,28 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "kinich": [
+    {
+      "ability": "attack",
+      "param": "direction",
+      "desc": "Direction in which Kinich move when attached to the opponent: -1 - in clock-wise direction; 1 - in counter clock-wise direction. Default: -1"
+    },
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Scalespiker projectile travel time. Default: 13 frames."
+    },
+    {
+      "ability": "skill",
+      "param": "c6_travel",
+      "desc": "C6 Bounce Scalespiker projectile travel time. Default: 50 frames."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 301 for Hold to enter Nightsoul and between 1 and 181 to shot Scalespiker. Subtracted by 1 to account for requiring a 1 to activate."
+    }
+  ],
   "kirara": [
     {
       "ability": "skill",

@@ -770,6 +770,23 @@
       },
       "name_text_hash_map ": "1864015138"
     },
+    "kinich": {
+      "id": 10000101,
+      "key": "kinich",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Grass",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Kinich",
+      "skill_details": {
+        "skill": 11012,
+        "burst": 11015,
+        "attack": 11011,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "4172712634"
+    },
     "kirara": {
       "id": 10000061,
       "key": "kirara",
