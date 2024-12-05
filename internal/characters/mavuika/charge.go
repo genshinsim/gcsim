@@ -39,6 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           120,
 		Mult:               3.83,
 		Element:            attributes.Physical,
 		Durability:         25,
@@ -91,17 +92,20 @@ func (c *char) bikeChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	aiFinal := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           "Flamestrider Charged Attack Final DMG",
-		AttackTag:      attacks.AttackTagExtra,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagNormalAttack,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeBlunt,
-		Element:        attributes.Pyro,
-		Durability:     25,
-		FlatDmg:        c.TotalAtk() * 2.528,
-		IgnoreInfusion: true,
+		ActorIndex:       c.Index,
+		Abil:             "Flamestrider Charged Attack Final DMG",
+		AttackTag:        attacks.AttackTagExtra,
+		AdditionalTags:   []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		ICDTag:           attacks.ICDTagNormalAttack,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeBlunt,
+		PoiseDMG:         60,
+		HitlagFactor:     0.01,
+		HitlagHaltFrames: 0.03 * 60,
+		Element:          attributes.Pyro,
+		Durability:       25,
+		FlatDmg:          c.TotalAtk() * 2.528,
+		IgnoreInfusion:   true,
 	}
 	apFinal := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4.5)
 	c.QueueCharTask(func() {

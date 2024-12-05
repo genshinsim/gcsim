@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -92,28 +93,33 @@ func (c *char) c2DeleteDefMod() {
 	}
 }
 
-func (c *char) c6RSRModeHit() {
+func (c *char) c6RSRModeHitCB() func(a combat.AttackCB) {
 	if c.Base.Cons < 6 {
-		return
+		return nil
 	}
 	if c.flamestriderModeActive {
-		return
+		return nil
 	}
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           "Flamestrider Hit (C6)",
-		AttackTag:      attacks.AttackTagElementalArt,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Pyro,
-		Durability:     0,
-		Mult:           2.,
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		ai := combat.AttackInfo{
+			ActorIndex:     c.Index,
+			Abil:           "Flamestrider Hit (C6)",
+			AttackTag:      attacks.AttackTagElementalArt,
+			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			ICDTag:         attacks.ICDTagNone,
+			ICDGroup:       attacks.ICDGroupDefault,
+			StrikeType:     attacks.StrikeTypeDefault,
+			Element:        attributes.Pyro,
+			Durability:     0,
+			Mult:           2.,
+		}
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6)
+		// TODO: the actual frames
+		c.Core.QueueAttack(ai, ap, 16, 16)
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6)
-	// TODO: the actual frames
-	c.Core.QueueAttack(ai, ap, 16, 16)
 }
 
 func (c *char) c6FlamestriderModeHit(src int) func() {

@@ -14,7 +14,7 @@ const normalHitNum = 3
 
 var (
 	attackFrames         [][]int
-	attackHitmarks       = []int{13, 25, 27}
+	attackHitmarks       = []int{21, 25, 27}
 	attackEarliestCancel = []int{5, 15, 4}
 	attackRadius         = []float64{1, 1, 2}
 )
@@ -30,7 +30,7 @@ func init() {
 	attackFrames[0][action.ActionBurst] = 5
 	attackFrames[0][action.ActionDash] = 5
 	attackFrames[0][action.ActionJump] = 6
-	attackFrames[0][action.ActionSwap] = 12
+	attackFrames[0][action.ActionSwap] = 23
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 45) // N2 -> Walk
 	attackFrames[1][action.ActionAttack] = 35

@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
@@ -25,16 +27,15 @@ func init() {
 	// on one footage the E icon is switched 1 frame before the Q animation
 	// on others the icon is not switched, still she's on a bike. no idea how that works
 	// for now I assume E should be pressed to perform instant switch
-	skillSwitchFrames[action.ActionBurst] = 1
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
 		c.flamestriderModeActive = !c.flamestriderModeActive
 		if c.flamestriderModeActive {
-			c.c2DeleteDefMod()
+			c.enterFlamestrider()
 		} else {
-			c.c2AddDefMod()
+			c.exitFlamestrider()
 		}
 
 		return action.Info{
@@ -77,7 +78,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(c.c6FlamestriderModeHit(c.Core.F), 3*60)
 
 	if hold == 1 {
-		c.flamestriderModeActive = true
+		c.enterFlamestrider()
 	} else {
 		c.flamestriderModeActive = false
 		c.c2AddDefMod()
@@ -100,9 +101,15 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
-
+		val := 1.
+		if c.flamestriderModeActive {
+			val += 0.8
+			if c.Core.Player.CurrentState() == action.ChargeAttackState {
+				val += 0.4
+			}
+		}
 		if !c.StatusIsActive(crucibleOfDeathAndLifeStatus) {
-			c.reduceNightsoulPoints(1)
+			c.reduceNightsoulPoints(val)
 		}
 		c.QueueCharTask(c.nightsoulPointReduceFunc(src), 12)
 	}
@@ -110,11 +117,26 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 
 func (c *char) reduceNightsoulPoints(val float64) {
 	c.nightsoulState.ConsumePoints(val)
+	// don't exit nightsoul while in NA/Plunge/Charge of Flamestride
+	if c.flamestriderModeActive {
+		switch c.Core.Player.CurrentState() {
+		case action.NormalAttackState, action.PlungeAttackState, action.ChargeAttackState:
+			return
+		}
+	}
 	if c.nightsoulState.Points() <= 0.00001 {
 		if !c.flamestriderModeActive {
 			c.c2DeleteDefMod()
 		}
 		c.nightsoulState.ExitBlessing()
+		if !c.nightsoulState.HasBlessing() {
+			return
+		}
+		c.nightsoulState.ExitBlessing()
+		c.nightsoulState.ClearPoints()
+		c.nightsoulSrc = -1
+		c.NormalHitNum = normalHitNum
+		c.NormalCounter = 0
 	}
 }
 
@@ -140,15 +162,31 @@ func (c *char) ringsOfSearchingRadianceHit(src int) func() {
 				Mult:           2.176,
 			}
 			// TODO: change hurtbox
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5), 0, 0, c.c6RSRModeHitCB())
 			// a hit of E comsumes 3 NS points
 			c.nightsoulState.ConsumePoints(3)
-			c.c6RSRModeHit()
 		}
 		c.QueueCharTask(c.ringsOfSearchingRadianceHit(src), ringsOfSearchingRadianceInterval)
 	}
 }
 
+func (c *char) enterFlamestrider() {
+	c.Core.Log.NewEvent("switching to Flamestrider state", glog.LogCharacterEvent, c.Index)
+	c.flamestriderModeActive = true
+	c.NormalHitNum = bikeHitNum
+	c.c2DeleteDefMod()
+}
+
+func (c *char) exitFlamestrider() {
+	c.Core.Log.NewEvent("switching to Rings of Searing Flames state", glog.LogCharacterEvent, c.Index)
+	c.flamestriderModeActive = false
+	c.NormalHitNum = normalHitNum
+	c.c2AddDefMod()
+}
+
 func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
 	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Pyro, c.ParticleDelay)
 }

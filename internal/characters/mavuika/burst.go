@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	burstHitmark         = 99
+	burstHitmark         = 106
 	minFightingSpiritReq = 100
 
 	crucibleOfDeathAndLifeStatus = "crucible-of-death-and-life"
@@ -25,7 +25,9 @@ var (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(135)
+	burstFrames = frames.InitAbilSlice(123) // Q -> N1
+	burstFrames[action.ActionCharge] = 135
+	burstFrames[action.ActionSwap] = burstHitmark
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -35,8 +37,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// I assume her burst change her Nightsoul mode to Flamestrider without pressing E
-	c.flamestriderModeActive = true
-	c.c2DeleteDefMod()
+	c.enterFlamestrider()
 	if c.nightsoulState.HasBlessing() {
 		c.nightsoulState.GeneratePoints(10)
 	} else {
@@ -89,6 +90,9 @@ func (c *char) burstInit() {
 	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...interface{}) bool {
 		amount := args[1].(float64)
 		c.fightingSpirit = c.fightingSpiritMult * min(c.maxFightingSpirit, c.fightingSpirit+amount)
+		if amount < 0.000001 {
+			return false
+		}
 		c.c1Atk()
 		return false
 	}, "mavuika-fighting-spirit-on-ns-consumption")
