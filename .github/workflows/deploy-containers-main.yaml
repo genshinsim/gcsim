@@ -25,4 +25,4 @@ jobs:
       force: true
       pushImages: true
       sendNotifications: true
-      version: nightly
+      version: ${{ github.ref_name }}

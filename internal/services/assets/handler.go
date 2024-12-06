@@ -32,11 +32,20 @@ func (s *Server) handleGetData(t AssetType) http.HandlerFunc {
 			return
 		}
 
+		// check if it's a recognized item; if not then we can skip the rest
+		assetName, ok := s.assetNameMapping[t][key]
+		if !ok {
+			s.logger.Info("unrecognized key, serving default", "t", t.String(), "key", key)
+			s.handleNotFound(w)
+			return
+		}
+
 		// try cache first
 		data, err := s.loadFromCache(t, key)
 		switch {
 		case data != nil && err == nil:
 			// load successful
+			s.logger.Info("loaded from cache ok", "t", t.String(), "key", key)
 			w.WriteHeader(http.StatusOK)
 			w.Write(data)
 			return
@@ -46,23 +55,23 @@ func (s *Server) handleGetData(t AssetType) http.HandlerFunc {
 			s.logger.Info("cache data not found", "t", t.String(), "key", key)
 		}
 
-		if assetName, ok := s.assetNameMapping[t][key]; ok {
-			hosts := s.hosts[t]
-			// else try external 1 at a time
-			for i, v := range hosts {
-				joinedURL := v.JoinPath(fmt.Sprintf("/%v.png", assetName))
-				s.logger.Info("trying external image source", "host", v.String(), "try", i, "key", key, "full_path", joinedURL.String())
-				data, err := s.proxyImageRequest(joinedURL)
-				if err != nil {
-					s.logger.Info("error getting", "err", err, "host", v.String(), "try", i, "key", key, "full_path", joinedURL.String())
-					continue
-				}
-				s.saveToCache(t, key, data)
-				// found ok, save to cache and end request
-				w.WriteHeader(http.StatusOK)
-				w.Write(data)
+		// else try external 1 at a time
+		for i, v := range s.hosts[t] {
+			joinedURL := v.JoinPath(fmt.Sprintf("/%v.png", assetName))
+			s.logger.Info("trying external image source", "host", v.String(), "try", i, "key", key, "full_path", joinedURL.String())
+			data, err := s.proxyImageRequest(joinedURL)
+			if err != nil {
+				s.logger.Info("error getting", "err", err, "host", v.String(), "try", i, "key", key, "full_path", joinedURL.String())
+				continue
 			}
+			s.logger.Info("received image from source ok", "host", v.String())
+			s.saveToCache(t, key, data)
+			// found ok, save to cache and end request
+			w.WriteHeader(http.StatusOK)
+			w.Write(data)
+			return
 		}
+		s.logger.Info("no external source found, serving default", "t", t.String(), "key", key)
 		// if we reached here then all external failed so we should serve default question mark image
 		s.handleNotFound(w)
 	}
