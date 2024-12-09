@@ -51,8 +51,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillStateKey) {
 		return c.skillDash(p)
 	}
-	c.QueueCharTask(c.c6skill, 0)
 	c.AddStatus(skillStateKey, skillStart+int(60*skillStateDuration[0]), true)
+	c.QueueCharTask(c.c6skill, 0)
 	c.SetCDWithDelay(action.ActionSkill, skillCD, skillStart)
 
 	return action.Info{
