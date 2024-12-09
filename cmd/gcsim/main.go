@@ -131,7 +131,15 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		shareKey = os.Getenv("GCSIM_SHARE_KEY")
 	}
 
+	var secondaryOutput string
+	var secondaryOutputGZ bool = false
+
 	if opt.serve {
+		if opt.out != "" {
+			secondaryOutput = opt.out;
+			secondaryOutputGZ = opt.gz;
+		}
+
 		opt.out = resultServeFile
 		opt.sample = sampleServeFile
 		opt.gz = true
@@ -173,6 +181,13 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 
 		if simopt.ResultSaveToPath != "" {
 			err = res.Save(simopt.ResultSaveToPath, simopt.GZIPResult)
+			if err != nil {
+				return err
+			}
+		}
+
+		if secondaryOutput != "" {
+			err = res.Save(secondaryOutput, secondaryOutputGZ)
 			if err != nil {
 				return err
 			}
