@@ -165,6 +165,12 @@
         "aetherhydro",
         "luminehydro"
     ],
+    "travelerpyro": [
+        "aether-pyro",
+        "lumine-pyro",
+        "aetherpyro",
+        "luminepyro"
+    ],
     "venti": [],
     "wanderer": [
         "scaramouche",

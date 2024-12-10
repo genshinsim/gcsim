@@ -9,6 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const c2DefShredKey = "mavuika-c2-def-shred"
+
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
@@ -73,10 +75,12 @@ func (c *char) c2AddDefMod() {
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), nil)
 	for _, t := range enemies {
 		// if you set duration=-1, it won't work
-		t.AddDefMod(combat.DefMod{
-			Base:  modifier.NewBaseWithHitlag("mavuika-c2-def-shred", 6000),
-			Value: -0.2,
-		})
+		if !t.DefModIsActive("mavuika-c2-def-shred") {
+			t.AddDefMod(combat.DefMod{
+				Base:  modifier.NewBaseWithHitlag(c2DefShredKey, 6000),
+				Value: -0.2,
+			})
+		}
 	}
 }
 
@@ -84,11 +88,15 @@ func (c *char) c2DeleteDefMod() {
 	if c.Base.Cons < 2 {
 		return
 	}
+	// C6 spawns Rings of Searing Radiance while on flame strider, which has the same def shred mod
+	if c.Base.Cons >= 6 {
+		return
+	}
 	// all enemies
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 100), nil)
 	for _, t := range enemies {
-		if t.DefModIsActive("mavuika-c2-def-shred") {
-			t.DeleteDefMod("mavuika-c2-def-shred")
+		if t.DefModIsActive(c2DefShredKey) {
+			t.DeleteDefMod(c2DefShredKey)
 		}
 	}
 }
@@ -144,7 +152,7 @@ func (c *char) c6FlamestriderModeHit(src int) func() {
 				StrikeType:     attacks.StrikeTypeDefault,
 				Element:        attributes.Pyro,
 				Durability:     0,
-				Mult:           4.,
+				Mult:           5.,
 			}
 			// TODO: change hurt box
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5), 0, 0)

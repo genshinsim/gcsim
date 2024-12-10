@@ -24,9 +24,6 @@ var (
 func init() {
 	skillFrames = frames.InitAbilSlice(20)       // E -> Swap
 	skillSwitchFrames = frames.InitAbilSlice(18) // E -> N1
-	// on one footage the E icon is switched 1 frame before the Q animation
-	// on others the icon is not switched, still she's on a bike. no idea how that works
-	// for now I assume E should be pressed to perform instant switch
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -128,7 +125,6 @@ func (c *char) reduceNightsoulPoints(val float64) {
 		if !c.flamestriderModeActive {
 			c.c2DeleteDefMod()
 		}
-		c.nightsoulState.ExitBlessing()
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}

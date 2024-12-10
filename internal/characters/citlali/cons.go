@@ -58,11 +58,13 @@ func (c *char) c2() {
 		if c.Index == char.Index {
 			continue
 		}
-		char.AddStatMod(character.StatMod{
+		this := char
+		this.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("citlali-c2-em", 20*60),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
-				if c.Core.Player.Shields.CharacterIsShielded(char.Index, c.Core.Player.Active()) {
+				// character should be followed by Itzpapa, i.e. the character is active
+				if c.Core.Player.Active() != this.Index && c.StatusIsActive(itzpapaKey) {
 					return nil, false
 				}
 				buffOther := make([]float64, attributes.EndStatType)

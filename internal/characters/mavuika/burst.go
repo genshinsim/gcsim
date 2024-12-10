@@ -42,10 +42,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.nightsoulState.GeneratePoints(10)
 	} else {
 		c.nightsoulState.EnterBlessing(10)
+		c.nightsoulSrc = c.Core.F
+		c.QueueCharTask(c.nightsoulPointReduceFunc(c.Core.F), 12)
 		c.QueueCharTask(c.ringsOfSearchingRadianceHit(c.Core.F), ringsOfSearchingRadianceInterval)
 		c.QueueCharTask(c.c6FlamestriderModeHit(c.Core.F), 3*60)
 	}
-	c.nightsoulPointReduceFunc(c.Core.F)
 
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
