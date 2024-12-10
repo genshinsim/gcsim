@@ -44,4 +44,5 @@ type AdditionalTag int
 const (
 	AdditionalTagNone AdditionalTag = iota
 	AdditionalTagNightsoul
+	AdditionalTagKinichCannon
 )
