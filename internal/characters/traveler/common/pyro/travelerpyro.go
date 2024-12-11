@@ -59,3 +59,12 @@ func (c *Traveler) AnimationStartDelay(k model.AnimationDelayKey) int {
 		return c.Character.AnimationStartDelay(k)
 	}
 }
+
+func (c *Traveler) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
+	default:
+		return c.Character.Condition(fields)
+	}
+}
