@@ -131,13 +131,14 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		shareKey = os.Getenv("GCSIM_SHARE_KEY")
 	}
 
-	var secondaryOutput string
-	var secondaryOutputGZ bool = false
+	var secondOutput string
+	var secondOutputGZ = false
 
 	if opt.serve {
+		// save output information in case -s and -out were both used in the same command
 		if opt.out != "" {
-			secondaryOutput = opt.out;
-			secondaryOutputGZ = opt.gz;
+			secondOutput = opt.out;
+			secondOutputGZ = opt.gz;
 		}
 
 		opt.out = resultServeFile
@@ -179,18 +180,14 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		hash, _ = res.Sign(shareKey)
 		fmt.Println(res.PrettyPrint())
 
-		if simopt.ResultSaveToPath != "" {
-			err = res.Save(simopt.ResultSaveToPath, simopt.GZIPResult)
-			if err != nil {
-				return err
-			}
+		err = saveResult(res, simopt.ResultSaveToPath, simopt.GZIPResult);
+		if err != nil {
+			return err
 		}
 
-		if secondaryOutput != "" {
-			err = res.Save(secondaryOutput, secondaryOutputGZ)
-			if err != nil {
-				return err
-			}
+		err = saveResult(res, secondOutput, secondOutputGZ);
+		if err != nil {
+			return err
 		}
 	}
 
@@ -337,6 +334,14 @@ func writeSample(seed uint64, outputPath, config string, gz bool, simopt simulat
 	fmt.Printf("Generated sample with seed %v to %s\n", seed, outputPath)
 
 	return nil
+}
+
+func saveResult(res *model.SimulationResult, path string, gz bool) error {
+	if path == "" {
+		return nil
+	}
+
+	return res.Save(path, gz)
 }
 
 func update(version string) error {
