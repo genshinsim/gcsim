@@ -31,7 +31,7 @@ var scalespikerReleases = []int{35, 17}      // tap, hold
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42) // E -> D/J
-	skillFrames[action.ActionAttack] = 30
+	skillFrames[action.ActionAttack] = 29
 	skillFrames[action.ActionBurst] = 27
 	skillFrames[action.ActionWalk] = 41
 
@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		src := c.Core.F
 		c.nightsoulSrc = src
 		c.nightsoulState.EnterBlessing(0.)
-		c.setNightsoulExitTimer(10*60 + 11)
+		c.setNightsoulExitTimer(10*60 + 10)
 		c.c2AoeIncreased = false
 		c.particlesGenerated = false
 		c.SetCD(action.ActionSkill, skillCD)
