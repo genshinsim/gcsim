@@ -13,8 +13,8 @@ type (
 // stat types
 const (
 	NoStat Stat = iota
-	DEFP
 	DEF
+	DEFP
 	HP
 	HPP
 	ATK
@@ -82,8 +82,8 @@ func PrettyPrintStatsSlice(stats []float64) []string {
 
 var StatTypeString = [...]string{
 	"n/a",
-	"def%",
 	"def",
+	"def%",
 	"hp",
 	"hp%",
 	"atk",
