@@ -88,7 +88,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddStatus(cdKey, cd, true)
 			for _, char := range c.Player.Chars() {
 				char.AddAttackMod(character.AttackMod{
-					Base:         modifier.NewBaseWithHitlag("pines-proc", buffDuration),
+					Base: modifier.NewBaseWithHitlag("pines-proc", buffDuration),
 					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 						if atk.Info.AttackTag != attacks.AttackTagNormal {
 							return nil, false
