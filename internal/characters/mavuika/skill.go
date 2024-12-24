@@ -115,12 +115,6 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 func (c *char) reduceNightsoulPoints(val float64) {
 	c.nightsoulState.ConsumePoints(val)
 	// don't exit nightsoul while in NA/Plunge/Charge of Flamestride
-	if c.flamestriderModeActive {
-		switch c.Core.Player.CurrentState() {
-		case action.NormalAttackState, action.PlungeAttackState, action.ChargeAttackState:
-			return
-		}
-	}
 	if c.nightsoulState.Points() <= 0.00001 {
 		if !c.flamestriderModeActive {
 			c.c2DeleteDefMod()
@@ -130,6 +124,7 @@ func (c *char) reduceNightsoulPoints(val float64) {
 		}
 		c.nightsoulState.ExitBlessing()
 		c.nightsoulState.ClearPoints()
+		c.flamestriderModeActive = false
 		c.nightsoulSrc = -1
 		c.NormalHitNum = normalHitNum
 		c.NormalCounter = 0

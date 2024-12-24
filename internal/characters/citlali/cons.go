@@ -19,9 +19,21 @@ const (
 // Charged Attack in mid-air, her Phlogiston consumption is decreased by 45%.
 // NOT IMPLEMENTED
 func (c *char) c1() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	if c.Base.Cons < 1 {
+		return
+	}
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if c.Index == atk.Info.ActorIndex {
+			return false
+		}
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
+		case attacks.AttackTagElementalArt:
+		case attacks.AttackTagElementalArtHold:
+		case attacks.AttackTagElementalBurst:
+		default:
 			return false
 		}
 		if c.numStellarBlades > 0 {
@@ -91,7 +103,7 @@ func (c *char) c4Skull() {
 		Abil:           "Spiritvessel Skull DMG (C4)",
 		AttackTag:      attacks.AttackTagNone,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagElementalBurst, // TODO: check this
+		ICDTag:         attacks.ICDTagNone, // TODO: check this
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Cryo,

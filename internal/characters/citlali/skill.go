@@ -51,8 +51,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// instantly
 	if c.nightsoulState.HasBlessing() {
 		c.nightsoulState.GeneratePoints(24)
+		c.skillReactivated = true
 	} else {
-		c.nightsoulState.EnterBlessing(24)
+		c.nightsoulState.EnterBlessing(c.nightsoulState.Points() + 24)
+		c.skillReactivated = false
 	}
 
 	c.itzpapaSrc = c.Core.F
@@ -90,8 +92,8 @@ func (c *char) itzpapaExit(src int) func() {
 			return
 		}
 		c.numC6Stacks = 0
+		c.numStellarBlades = 0
 		c.DeleteStatus(itzpapaKey)
-		c.nightsoulState.ClearPoints()
 		c.nightsoulState.ExitBlessing()
 	}
 }
@@ -100,8 +102,9 @@ func (c *char) itzpapaExit(src int) func() {
 func (c *char) tryEnterOpalFireState(src int) {
 	if (c.nightsoulState.Points() >= 50 || c.Base.Cons >= 6) && c.nightsoulState.HasBlessing() {
 		// if it's activation or REactivation
-		if !c.StatusIsActive(opalFireStateKey) || src != c.itzpapaSrc {
+		if !c.StatusIsActive(opalFireStateKey) || c.skillReactivated {
 			// this status is active only when Itzpapa is in "attack mode"
+			c.skillReactivated = false
 			c.AddStatus(opalFireStateKey, -1, false)
 			c.QueueCharTask(c.ItzpapaHit(src), itzpapaInterval)
 		}

@@ -59,7 +59,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
 		c.nightsoulState.GeneratePoints(42)
 	} else {
-		c.nightsoulState.EnterBlessing(42)
+		c.nightsoulState.EnterBlessing(c.nightsoulState.Points() + 42)
 	}
 	c.nightsoulSrc = c.Core.F
 	c.QueueCharTask(c.nightsoulPointReduceFunc(c.Core.F), 10)
@@ -134,7 +134,7 @@ func (c *Traveler) nightsoulPointReduceFunc(src int) func() {
 
 func (c *Traveler) reduceNightsoulPoints(src int, val float64) {
 	c.nightsoulState.ConsumePoints(val)
-	if c.nightsoulState.Points() <= 0.00001 && c.Core.F >= src+12*60 {
+	if c.nightsoulState.Points() <= 0.00001 || c.Core.F >= src+12*60 {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}

@@ -27,6 +27,7 @@ type char struct {
 	*tmpl.Character
 	nightsoulState   *nightsoul.State
 	itzpapaSrc       int
+	skillReactivated bool
 	skillShield      *shd
 	numStellarBlades int
 	numC6Stacks      int

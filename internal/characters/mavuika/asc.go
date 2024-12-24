@@ -42,10 +42,12 @@ func (c *char) a4() {
 				}
 				// buff time decay
 				decay := 0.
+				bonus := 10.
 				if c.Base.Cons < 4 {
 					decay = float64((c.Core.F-started)/60) * (c.baseA4Buff) / 20
+					bonus = 0
 				}
-				dmg := max(0., c.baseA4Buff-float64(decay))
+				dmg := max(0., c.baseA4Buff-float64(decay)) + bonus
 				c.a4Buff[attributes.DmgP] = dmg
 				return c.a4Buff, true
 			},

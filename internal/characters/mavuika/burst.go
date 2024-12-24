@@ -72,10 +72,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Start countdown after initial hit
 	c.QueueCharTask(func() {
 		c.AddStatus(crucibleOfDeathAndLifeStatus, 7*60, true)
-	}, burstHitmark+1)
-
-	// Activate A4 without delay. TODO: confirm
-	c.a4()
+		c.a4()
+	}, burstHitmark-1)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
