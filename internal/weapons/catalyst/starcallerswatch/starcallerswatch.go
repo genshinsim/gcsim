@@ -71,7 +71,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					if c.Player.Active() != this.Index {
 						return nil, false
 					}
-					if t.Pos().Distance(c.Combat.Player().Pos()) >= 6 { // TODO: nearby opponents?
+					// TODO: nearby opponents?
+					if t.Pos().Distance(c.Combat.Player().Pos()) >= 6 {
 						return nil, false
 					}
 					return bonus, true
