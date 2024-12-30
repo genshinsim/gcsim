@@ -1280,6 +1280,14 @@
       "image_name": "UI_EquipIcon_Pole_Deshret",
       "name_text_hash_map ": "4238339131"
     },
+    "starcallerswatch": {
+      "id": 14517,
+      "key": "starcallerswatch",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Figurines",
+      "name_text_hash_map ": "2466897131"
+    },
     "sturdybone": {
       "id": 11430,
       "key": "sturdybone",

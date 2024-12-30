@@ -291,6 +291,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"scarletsands":                    keys.StaffOfTheScarletSands,
 	"scarlet":                         keys.StaffOfTheScarletSands,
 	"sss":                             keys.StaffOfTheScarletSands,
+	"starcallerswatch":                keys.StarcallersWatch,
+	"scw":                             keys.StarcallersWatch,
 	"sturdybone":                      keys.SturdyBone,
 	"summitshaper":                    keys.SummitShaper,
 	"summit":                          keys.SummitShaper,
