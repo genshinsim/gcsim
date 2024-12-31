@@ -162,7 +162,7 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 			Abil:           "Blazing Threshold DMG",
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-			ICDTag:         attacks.ICDTagNone,
+			ICDTag:         attacks.ICDTagElementalArt,
 			ICDGroup:       attacks.ICDGroupDefault,
 			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        attributes.Pyro,
