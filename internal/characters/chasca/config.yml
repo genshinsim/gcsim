@@ -8,6 +8,8 @@ action_param_keys:
         - param: "hold"
         - param: "travel"
         - param: "weakspot"
+        - param: "bullets"
+        - param: "fire"
 icd_tags:
     - ICDTagChascaSkillTap
     - ICDTagChascaShining

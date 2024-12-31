@@ -21,6 +21,8 @@ type char struct {
 	nightsoulSrc   int
 	partyTypes     []attributes.Element
 	phecCount      int
+	bullets        []attributes.Element
+	bulletPool     []attributes.Element
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -52,10 +54,6 @@ func (c *char) Init() error {
 	}
 
 	c.a4()
-	if c.Base.Cons >= 6 {
-		c.c6Collapse()
-	}
-
 	return nil
 }
 

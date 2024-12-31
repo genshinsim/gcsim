@@ -51,9 +51,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.ICDTag = attacks.ICDTagChascaBurst
 	ai.ICDGroup = attacks.ICDGroupChascaBurst
 
-	// TODO: Is it the anemo ones first/last or is it random
-
-	// the anemo ones
 	for i := 0; i < 6; i++ {
 		switch {
 		case i < c.phecCount*2:
@@ -61,20 +58,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			ai.Abil = fmt.Sprintf("Shining Soulseeker Shell (%s)", ele.String())
 			ai.Mult = burstSoulseeker[c.TalentLvlBurst()]
 			ai.Element = ele
-			c.Core.QueueAttack(ai,
-				combat.NewSingleTargetHit(c.Core.Combat.DefaultTarget),
-				burstSecondaryHitmark[i],
-				burstSecondaryHitmark[i])
 		default:
 			ai.Abil = "Soulseeker Shell"
 			ai.Mult = burstSoulseeker[c.TalentLvlBurst()]
 			ai.Element = attributes.Anemo
-			c.Core.QueueAttack(ai,
-				combat.NewSingleTargetHit(c.Core.Combat.DefaultTarget),
-				burstSecondaryHitmark[i],
-				burstSecondaryHitmark[i])
 		}
-
+		c.Core.QueueAttack(ai,
+			combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()),
+			burstSecondaryHitmark[i],
+			burstSecondaryHitmark[i])
 	}
 
 	c.SetCD(action.ActionBurst, 15*60)

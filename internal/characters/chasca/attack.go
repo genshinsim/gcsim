@@ -29,7 +29,6 @@ func init() {
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 86) // N4 -> N1
 
 	attackSkillTapFrames = frames.InitAbilSlice(10)
-
 }
 
 // Normal attack damage queue generator

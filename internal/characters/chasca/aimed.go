@@ -1,6 +1,7 @@
 package chasca
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -12,8 +13,10 @@ import (
 )
 
 var aimedFrames [][]int
-
 var aimedHitmarks = []int{15, 86}
+
+var skillAimFrames []int
+var skillAimChargeTime = []int{29, 21, 15, 19, 19, 14}
 
 func init() {
 	aimedFrames = make([][]int, 2)
@@ -27,9 +30,20 @@ func init() {
 	aimedFrames[1] = frames.InitAbilSlice(96)
 	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
 	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
+
+	skillAimFrames = frames.InitAbilSlice(31)
+	skillAimFrames[action.ActionAttack] = 18
+	skillAimFrames[action.ActionCharge] = 18
+	skillAimFrames[action.ActionBurst] = 12
+	skillAimFrames[action.ActionDash] = 3
+	skillAimFrames[action.ActionJump] = 19
 }
 
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
+	if c.nightsoulState.HasBlessing() {
+		return c.aimSkillHold(p)
+	}
+
 	hold, ok := p["hold"]
 	if !ok {
 		hold = attacks.AimParamLv1
@@ -84,6 +98,77 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		Frames:          frames.NewAbilFunc(aimedFrames[hold]),
 		AnimationLength: aimedFrames[hold][action.InvalidAction],
 		CanQueueAfter:   aimedHitmarks[hold],
+		State:           action.AimState,
+	}, nil
+}
+
+func (c *char) loadSkillHoldBulletCount(count int) {
+	for i := len(c.bullets); i < count; i++ {
+		c.loadSkillHoldBulletSingle()
+	}
+}
+
+func (c *char) loadSkillHoldBulletSingle() {
+	switch len(c.bullets) {
+	case 0:
+		c.bullets = append(c.bullets, attributes.Anemo)
+	case 1:
+		c.bullets = append(c.bullets, attributes.Anemo)
+	case 2:
+		// TODO: add a1
+		c.bullets = append(c.bullets, attributes.Anemo)
+	case 3:
+		if c.phecCount < 3 {
+			c.bullets = append(c.bullets, attributes.Anemo)
+		} else {
+			c.bullets = append(c.bullets, c.randomElemFromBulletPool())
+		}
+	case 4:
+		if c.phecCount < 2 {
+			c.bullets = append(c.bullets, attributes.Anemo)
+		} else {
+			c.bullets = append(c.bullets, c.randomElemFromBulletPool())
+		}
+	case 5:
+		if c.phecCount < 2 {
+			c.bullets = append(c.bullets, attributes.Anemo)
+		} else {
+			c.bullets = append(c.bullets, c.randomElemFromBulletPool())
+		}
+	default:
+		// do nothing
+	}
+}
+
+func (c *char) resetBulletPool() {
+	c.bulletPool = make([]attributes.Element, len(c.partyTypes))
+	copy(c.bulletPool, c.partyTypes)
+}
+
+func (c *char) randomElemFromBulletPool() attributes.Element {
+	if len(c.bulletPool) == 0 {
+		c.resetBulletPool()
+	}
+	ind := c.Core.Rand.Intn(len(c.bulletPool))
+	ele := c.bulletPool[ind]
+	c.bulletPool[ind] = c.bulletPool[len(c.bulletPool)-1]
+	c.bulletPool = c.bulletPool[:len(c.bulletPool)-1]
+	return ele
+}
+
+func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
+	count, ok := p["count"]
+	if !ok {
+		count = 6
+	}
+	if count > 6 {
+		return action.Info{}, errors.New("count must be <= 6")
+	}
+	c.loadSkillHoldBulletCount(count)
+	return action.Info{
+		Frames:          frames.NewAbilFunc(skillAimFrames),
+		AnimationLength: skillAimFrames[action.InvalidAction],
+		CanQueueAfter:   skillAimFrames[action.ActionDash],
 		State:           action.AimState,
 	}, nil
 }
