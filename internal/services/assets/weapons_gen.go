@@ -87,6 +87,7 @@ var weaponMap = map[string]string{
 	"wineandsong":                     "UI_EquipIcon_Catalyst_Outlaw",
 	"akuoumaru":                       "UI_EquipIcon_Claymore_Maria",
 	"makhairaaquamarine":              "UI_EquipIcon_Claymore_Pleroma",
+	"athousandblazingsuns":            "UI_EquipIcon_Claymore_RadianceSword",
 	"beaconofthereedsea":              "UI_EquipIcon_Claymore_Deshret",
 	"thebell":                         "UI_EquipIcon_Claymore_Troupe",
 	"blackcliffslasher":               "UI_EquipIcon_Claymore_Blackrock",

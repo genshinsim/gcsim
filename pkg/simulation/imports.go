@@ -146,6 +146,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/akuoumaru"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/aquamarine"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/athousandblazingsuns"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/beacon"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bell"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/blackcliff"
