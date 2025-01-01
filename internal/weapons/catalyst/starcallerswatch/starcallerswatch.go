@@ -14,22 +14,24 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	buffKey = "starcallerswatch-buff"
+	ICDKey  = "starcallerswatch-icd"
+	buffDur = 15 * 60
+	ICDDur  = 14 * 60
+)
+
 func init() {
 	core.RegisterWeaponFunc(keys.StarcallersWatch, NewWeapon)
 }
 
 type Weapon struct {
-	Index int
+	Index   int
+	tickSrc int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
-
-const (
-	ICDKey  = "starcallerswatch-icd"
-	buffDur = 15 * 60
-	ICDDur  = 14 * 60
-)
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
@@ -62,17 +64,25 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatus(ICDKey, ICDDur, true)
+		char.AddStatus("starcallerswatch", buffDur, true)
+
+		src := c.F
+		w.tickSrc = src
+		char.QueueCharTask(func() {
+			if src != w.tickSrc {
+				return
+			}
+			for _, other := range c.Player.Chars() {
+				other.DeleteAttackMod(buffKey)
+			}
+		}, buffDur)
 
 		for _, x := range c.Player.Chars() {
 			this := x
 			this.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("starcallerswatch-bonus", buffDur),
+				Base: modifier.NewBase(buffKey, -1),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					if c.Player.Active() != this.Index {
-						return nil, false
-					}
-					// TODO: nearby opponents?
-					if t.Pos().Distance(c.Combat.Player().Pos()) >= 6 {
 						return nil, false
 					}
 					return bonus, true
