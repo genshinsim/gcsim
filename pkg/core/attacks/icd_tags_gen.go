@@ -18,6 +18,7 @@ const (
 	ICDTagLisaElectro
 	ICDTagLyneyEndBoom
 	ICDTagLyneyEndBoomEnhanced
+	ICDTagMavuikaFlamestrider
 	ICDTagMonaWaterDamage
 	ICDTagNahidaSkill
 	ICDTagNahidaC6
