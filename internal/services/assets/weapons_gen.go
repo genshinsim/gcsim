@@ -76,6 +76,7 @@ var weaponMap = map[string]string{
 	"sacrificialjade":                 "UI_EquipIcon_Catalyst_Yue",
 	"skywardatlas":                    "UI_EquipIcon_Catalyst_Dvalin",
 	"solarpearl":                      "UI_EquipIcon_Catalyst_Resurrection",
+	"starcallerswatch":                "UI_EquipIcon_Catalyst_Figurines",
 	"surfsup":                         "UI_EquipIcon_Catalyst_MechaPufferfish",
 	"thrillingtalesofdragonslayers":   "UI_EquipIcon_Catalyst_Pulpfic",
 	"tulaytullahsremembrance":         "UI_EquipIcon_Catalyst_Alaya",
