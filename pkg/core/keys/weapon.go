@@ -82,7 +82,7 @@ var weaponNames = []string{
 	"everlastingmoonglow",
 	"eyeofperception",
 	"fadingtwilight",
-	"fangofthemontainking",
+	"fangofthemountainking",
 	"favoniuscodex",
 	"favoniusgreatsword",
 	"favoniuslance",
