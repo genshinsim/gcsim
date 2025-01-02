@@ -17,13 +17,15 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	nightsoulState   *nightsoul.State
-	nightsoulSrc     int
-	partyPHECTypes   []attributes.Element
-	partyPHECCount   int
-	bullets          []attributes.Element
-	bulletPool       []attributes.Element
-	skillParticleICD bool
+	nightsoulState       *nightsoul.State
+	nightsoulSrc         int
+	partyPHECTypes       []attributes.Element
+	partyPHECTypesUnique []attributes.Element
+	bullets              []attributes.Element
+	bulletPool           []attributes.Element
+	skillParticleICD     bool
+	c2Src                int
+	c4Src                int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -37,7 +39,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
-	c.partyPHECTypes = nil
+	c.partyPHECTypesUnique = nil
 
 	return nil
 }
@@ -47,12 +49,12 @@ func (c *char) Init() error {
 	for _, other := range c.Core.Player.Chars() {
 		switch ele := other.Base.Element; ele {
 		case attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro:
-			c.partyPHECCount++
 			types[ele] = true
+			c.partyPHECTypes = append(c.partyPHECTypes, ele)
 		}
 	}
 	for ele := range types {
-		c.partyPHECTypes = append(c.partyPHECTypes, ele)
+		c.partyPHECTypesUnique = append(c.partyPHECTypesUnique, ele)
 	}
 	c.bullets = make([]attributes.Element, 6)
 	c.loadSkillHoldBullets()

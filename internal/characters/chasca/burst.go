@@ -51,13 +51,22 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.ICDTag = attacks.ICDTagChascaBurst
 	ai.ICDGroup = attacks.ICDGroupChascaBurst
 
+	var c4cb combat.AttackCBFunc = nil
+
+	burstBullets := make([]attributes.Element, 0, 6)
+	burstBullets = append(burstBullets, c.partyPHECTypes...)
+	burstBullets = append(burstBullets, c.partyPHECTypes...)
+	c.Core.Rand.Shuffle(len(burstBullets), func(i, j int) {
+		burstBullets[i], burstBullets[j] = burstBullets[j], burstBullets[i]
+	})
 	for i := 0; i < 6; i++ {
 		switch {
-		case i < c.partyPHECCount*2:
-			ele := c.partyPHECTypes[c.Core.Rand.Intn(len(c.partyPHECTypes))]
-			ai.Abil = fmt.Sprintf("Shining Soulseeker Shell (%s)", ele.String())
-			ai.Mult = burstSoulseeker[c.TalentLvlBurst()]
+		case i < len(burstBullets):
+			ele := burstBullets[i]
+			ai.Abil = fmt.Sprintf("Radiant Soulseeker Shell (%s)", ele.String())
+			ai.Mult = burstRadiant[c.TalentLvlBurst()]
 			ai.Element = ele
+			c4cb = c.c4cb(c.Core.F)
 		default:
 			ai.Abil = "Soulseeker Shell"
 			ai.Mult = burstSoulseeker[c.TalentLvlBurst()]
@@ -66,7 +75,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.Core.QueueAttack(ai,
 			combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()),
 			burstSecondaryHitmark[i],
-			burstSecondaryHitmark[i])
+			burstSecondaryHitmark[i], c4cb)
 	}
 
 	c.SetCD(action.ActionBurst, 15*60)

@@ -114,23 +114,24 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) loadSkillHoldBullets() {
+	c.resetBulletPool()
 	c.bullets[0] = attributes.Anemo
-	c.bullets[1] = attributes.Anemo
+	c.bullets[1] = c.c1Conversion()
 	c.bullets[2] = c.a1Conversion()
 
-	if c.partyPHECCount < 3 {
+	if len(c.partyPHECTypes) < 3 {
 		c.bullets[3] = attributes.Anemo
 	} else {
 		c.bullets[3] = c.randomElemFromBulletPool()
 	}
 
-	if c.partyPHECCount < 2 {
+	if len(c.partyPHECTypes) < 2 {
 		c.bullets[4] = attributes.Anemo
 	} else {
 		c.bullets[4] = c.randomElemFromBulletPool()
 	}
 
-	if c.partyPHECCount < 1 {
+	if len(c.partyPHECTypes) < 1 {
 		c.bullets[5] = attributes.Anemo
 	} else {
 		c.bullets[5] = c.randomElemFromBulletPool()
@@ -175,6 +176,8 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		Mult:           skillShadowhunt[c.TalentLvlSkill()],
 	}
 
+	var c2cb combat.AttackCBFunc = nil
+
 	chargeDelay := cumuSkillAimChargeFrames[count]
 	for i := 0; i < count; i++ {
 		bulletElem := c.bullets[count-1-i] // get bullets starting from the back
@@ -187,9 +190,10 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 			ai.Abil = fmt.Sprintf("Shining Shadowhunt Shell (%s)", bulletElem)
 			ai.Element = bulletElem
 			ai.Mult = skillShining[c.TalentLvlSkill()]
+			c2cb = c.c2cb(c.Core.F)
 		}
 		hitDelay := chargeDelay + skillAimHitmarks[i]
-		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), hitDelay, hitDelay, c.particleCB)
+		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), hitDelay, hitDelay, c.particleCB, c2cb)
 	}
 	c.loadSkillHoldBullets()
 

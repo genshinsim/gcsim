@@ -11,8 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var a1DMGBuff = []float64{0.0, 0.15, 0.35, 0.65}
-var a1ConversionChance = []float64{0.0, 0.33, 0.66, 1.0}
+var a1DMGBuff = []float64{0.0, 0.15, 0.35, 0.65, 0.65} // has an extra 0.65 for c2 stack
+var a1ConversionChance = []float64{0.0, 0.333, 0.667, 1.0}
 
 func (c *char) a1DMGBuff() {
 	if c.Base.Ascension < 1 {
@@ -27,7 +27,7 @@ func (c *char) a1DMGBuff() {
 			if atk.Info.ICDTag != attacks.ICDTagChascaShining {
 				return nil, false
 			}
-			m[attributes.DmgP] = a1DMGBuff[len(c.partyPHECTypes)]
+			m[attributes.DmgP] = a1DMGBuff[len(c.partyPHECTypesUnique)+c.c2A1Stack()]
 			return m, true
 		},
 	})
@@ -37,11 +37,15 @@ func (c *char) a1Conversion() attributes.Element {
 	if c.Base.Ascension < 1 {
 		return attributes.Anemo
 	}
-	chance := a1ConversionChance[len(c.partyPHECTypes)]
+	if len(c.partyPHECTypesUnique) == 0 {
+		return attributes.Anemo
+	}
+	chance := a1ConversionChance[len(c.partyPHECTypesUnique)]
+	chance += c.c1()
 	if c.Core.Rand.Float64() > chance {
 		return attributes.Anemo
 	}
-	return c.partyPHECTypes[c.Core.Rand.Intn(len(c.partyPHECTypes))]
+	return c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
 }
 
 func (c *char) a4() {
@@ -62,8 +66,8 @@ func (c *char) a4() {
 	}
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...interface{}) bool {
 		bulletElem := attributes.Anemo
-		if c.partyPHECTypes != nil {
-			bulletElem = c.partyPHECTypes[c.Core.Rand.Intn(len(c.partyPHECTypes))]
+		if len(c.partyPHECTypesUnique) == 0 {
+			bulletElem = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
 		}
 		switch bulletElem {
 		case attributes.Anemo:
