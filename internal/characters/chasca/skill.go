@@ -45,6 +45,7 @@ func (c *char) enterNightsoul() {
 	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
 	c.NormalHitNum = 1
 	c.NormalCounter = 0
+	c.skillParticleICD = false
 }
 
 func (c *char) exitNightsoul() {
@@ -108,9 +109,9 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
-	if c.StatusIsActive(particleICDKey) {
+	if c.skillParticleICD {
 		return
 	}
-	c.AddStatus(particleICDKey, 9999*60, true)
+	c.skillParticleICD = true
 	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Anemo, c.ParticleDelay)
 }

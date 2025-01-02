@@ -17,12 +17,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	nightsoulState *nightsoul.State
-	nightsoulSrc   int
-	partyTypes     []attributes.Element
-	phecCount      int
-	bullets        []attributes.Element
-	bulletPool     []attributes.Element
+	nightsoulState   *nightsoul.State
+	nightsoulSrc     int
+	partyPHECTypes   []attributes.Element
+	partyPHECCount   int
+	bullets          []attributes.Element
+	bulletPool       []attributes.Element
+	skillParticleICD bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -33,9 +34,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.SkillCon = 3
 	c.BurstCon = 5
+
 	w.Character = &c
 
-	c.partyTypes = nil
+	c.partyPHECTypes = nil
 
 	return nil
 }
@@ -45,20 +47,34 @@ func (c *char) Init() error {
 	for _, other := range c.Core.Player.Chars() {
 		switch ele := other.Base.Element; ele {
 		case attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro:
-			c.phecCount++
+			c.partyPHECCount++
 			types[ele] = true
 		}
 	}
 	for ele := range types {
-		c.partyTypes = append(c.partyTypes, ele)
+		c.partyPHECTypes = append(c.partyPHECTypes, ele)
 	}
-
+	c.bullets = make([]attributes.Element, 6)
+	c.loadSkillHoldBullets()
+	c.a1DMGBuff()
 	c.a4()
 	return nil
 }
 
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
+	case "bullet0":
+		return c.bullets[0], nil
+	case "bullet1":
+		return c.bullets[1], nil
+	case "bullet2":
+		return c.bullets[2], nil
+	case "bullet3":
+		return c.bullets[3], nil
+	case "bullet4":
+		return c.bullets[4], nil
+	case "bullet5":
+		return c.bullets[5], nil
 	default:
 		return c.Character.Condition(fields)
 	}

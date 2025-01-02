@@ -79,7 +79,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) attackSkillTap(p map[string]int) action.Info {
+func (c *char) attackSkillTap(_ map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           fmt.Sprintf("Normal %v", c.NormalCounter),

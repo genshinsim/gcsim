@@ -53,8 +53,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	for i := 0; i < 6; i++ {
 		switch {
-		case i < c.phecCount*2:
-			ele := c.partyTypes[c.Core.Rand.Intn(len(c.partyTypes))]
+		case i < c.partyPHECCount*2:
+			ele := c.partyPHECTypes[c.Core.Rand.Intn(len(c.partyPHECTypes))]
 			ai.Abil = fmt.Sprintf("Shining Soulseeker Shell (%s)", ele.String())
 			ai.Mult = burstSoulseeker[c.TalentLvlBurst()]
 			ai.Element = ele

@@ -15,8 +15,19 @@ import (
 var aimedFrames [][]int
 var aimedHitmarks = []int{15, 86}
 
+// TODO: confirm these hitmarks
+var skillAimHitmarks = []int{2, 4, 6, 8, 10, 12}
 var skillAimFrames []int
-var skillAimChargeTime = []int{29, 21, 15, 19, 19, 14}
+
+// per bullet E CA Charge Time = []int{29, 21, 15, 19, 19, 14}
+var cumuSkillAimChargeFrames = []int{
+	29,
+	29 + 21,
+	29 + 21 + 15,
+	29 + 21 + 15 + 19,
+	29 + 21 + 15 + 19 + 19,
+	29 + 21 + 15 + 19 + 19 + 14,
+}
 
 func init() {
 	aimedFrames = make([][]int, 2)
@@ -102,47 +113,33 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) loadSkillHoldBulletCount(count int) {
-	for i := len(c.bullets); i < count; i++ {
-		c.loadSkillHoldBulletSingle()
-	}
-}
+func (c *char) loadSkillHoldBullets() {
+	c.bullets[0] = attributes.Anemo
+	c.bullets[1] = attributes.Anemo
+	c.bullets[2] = c.a1Conversion()
 
-func (c *char) loadSkillHoldBulletSingle() {
-	switch len(c.bullets) {
-	case 0:
-		c.bullets = append(c.bullets, attributes.Anemo)
-	case 1:
-		c.bullets = append(c.bullets, attributes.Anemo)
-	case 2:
-		// TODO: add a1
-		c.bullets = append(c.bullets, attributes.Anemo)
-	case 3:
-		if c.phecCount < 3 {
-			c.bullets = append(c.bullets, attributes.Anemo)
-		} else {
-			c.bullets = append(c.bullets, c.randomElemFromBulletPool())
-		}
-	case 4:
-		if c.phecCount < 2 {
-			c.bullets = append(c.bullets, attributes.Anemo)
-		} else {
-			c.bullets = append(c.bullets, c.randomElemFromBulletPool())
-		}
-	case 5:
-		if c.phecCount < 2 {
-			c.bullets = append(c.bullets, attributes.Anemo)
-		} else {
-			c.bullets = append(c.bullets, c.randomElemFromBulletPool())
-		}
-	default:
-		// do nothing
+	if c.partyPHECCount < 3 {
+		c.bullets[3] = attributes.Anemo
+	} else {
+		c.bullets[3] = c.randomElemFromBulletPool()
+	}
+
+	if c.partyPHECCount < 2 {
+		c.bullets[4] = attributes.Anemo
+	} else {
+		c.bullets[4] = c.randomElemFromBulletPool()
+	}
+
+	if c.partyPHECCount < 1 {
+		c.bullets[5] = attributes.Anemo
+	} else {
+		c.bullets[5] = c.randomElemFromBulletPool()
 	}
 }
 
 func (c *char) resetBulletPool() {
-	c.bulletPool = make([]attributes.Element, len(c.partyTypes))
-	copy(c.bulletPool, c.partyTypes)
+	c.bulletPool = make([]attributes.Element, len(c.partyPHECTypes))
+	copy(c.bulletPool, c.partyPHECTypes)
 }
 
 func (c *char) randomElemFromBulletPool() attributes.Element {
@@ -164,11 +161,44 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	if count > 6 {
 		return action.Info{}, errors.New("count must be <= 6")
 	}
-	c.loadSkillHoldBulletCount(count)
+
+	ai := combat.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "Shadowhunt Shell",
+		AttackTag:      attacks.AttackTagExtra,
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		ICDTag:         attacks.ICDTagChascaShining,
+		ICDGroup:       attacks.ICDGroupChascaSkillShining,
+		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.Anemo,
+		Durability:     25,
+		Mult:           skillShadowhunt[c.TalentLvlSkill()],
+	}
+
+	chargeDelay := cumuSkillAimChargeFrames[count]
+	for i := 0; i < count; i++ {
+		bulletElem := c.bullets[count-1-i] // get bullets starting from the back
+		switch bulletElem {
+		case attributes.Anemo:
+			ai.Abil = "Shadowhunt Shell"
+			ai.Element = attributes.Anemo
+			ai.Mult = skillShadowhunt[c.TalentLvlSkill()]
+		default:
+			ai.Abil = fmt.Sprintf("Shining Shadowhunt Shell (%s)", bulletElem)
+			ai.Element = bulletElem
+			ai.Mult = skillShining[c.TalentLvlSkill()]
+		}
+		hitDelay := chargeDelay + skillAimHitmarks[i]
+		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), hitDelay, hitDelay, c.particleCB)
+	}
+	c.loadSkillHoldBullets()
+
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillAimFrames),
-		AnimationLength: skillAimFrames[action.InvalidAction],
-		CanQueueAfter:   skillAimFrames[action.ActionDash],
+		Frames: func(next action.Action) int {
+			return skillAimFrames[next] + chargeDelay
+		},
+		AnimationLength: skillAimFrames[action.InvalidAction] + chargeDelay,
+		CanQueueAfter:   skillAimFrames[action.ActionDash] + chargeDelay,
 		State:           action.AimState,
 	}, nil
 }
