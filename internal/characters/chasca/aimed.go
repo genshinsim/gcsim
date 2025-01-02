@@ -20,14 +20,10 @@ var skillAimHitmarks = []int{2, 4, 6, 8, 10, 12}
 var skillAimFrames []int
 
 // per bullet E CA Charge Time = []int{29, 21, 15, 19, 19, 14}
-var cumuSkillAimChargeFrames = []int{
-	29,
-	29 + 21,
-	29 + 21 + 15,
-	29 + 21 + 15 + 19,
-	29 + 21 + 15 + 19 + 19,
-	29 + 21 + 15 + 19 + 19 + 14,
-}
+var cumuSkillAimChargeFrames = []int{29, 50, 65, 84, 103, 117}
+
+// TODO: Get C6 charge timing
+var cumuSkillAimChargeFramesC6 = []int{29, 50, 65, 84, 103, 117}
 
 func init() {
 	aimedFrames = make([][]int, 2)
@@ -116,8 +112,9 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 func (c *char) loadSkillHoldBullets() {
 	c.resetBulletPool()
 	c.bullets[0] = attributes.Anemo
-	c.bullets[1] = c.c1Conversion()
+	c.bullets[1] = attributes.Anemo
 	c.bullets[2] = c.a1Conversion()
+	c.c1Conversion() // check if we need to additionally convert bullet[1]
 
 	if len(c.partyPHECTypes) < 3 {
 		c.bullets[3] = attributes.Anemo
@@ -163,6 +160,10 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		return action.Info{}, errors.New("count must be <= 6")
 	}
 
+	if c.StatusIsActive(c6key) && count < 6 {
+		return action.Info{}, errors.New("count must be 6 when c6 instant charge is active")
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Shadowhunt Shell",
@@ -176,9 +177,10 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		Mult:           skillShadowhunt[c.TalentLvlSkill()],
 	}
 
-	var c2cb combat.AttackCBFunc = nil
+	var c2cb combat.AttackCBFunc
 
-	chargeDelay := cumuSkillAimChargeFrames[count]
+	chargeDelay := c.c6ChargeTime(count)
+
 	for i := 0; i < count; i++ {
 		bulletElem := c.bullets[count-1-i] // get bullets starting from the back
 		switch bulletElem {
@@ -195,6 +197,7 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		hitDelay := chargeDelay + skillAimHitmarks[i]
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), hitDelay, hitDelay, c.particleCB, c2cb)
 	}
+
 	c.loadSkillHoldBullets()
 
 	return action.Info{

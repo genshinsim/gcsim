@@ -4,8 +4,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
+
+const c6key = "chasca-c6"
+const c6IcdKey = "chasca-c6-icd"
 
 func (c *char) c1() float64 {
 	if c.Base.Cons < 1 {
@@ -13,11 +15,14 @@ func (c *char) c1() float64 {
 	}
 	return 0.333
 }
-func (c *char) c1Conversion() attributes.Element {
+func (c *char) c1Conversion() {
 	if c.Base.Cons < 1 {
-		return attributes.Anemo
+		return
 	}
-	return c.a1Conversion()
+	if c.bullets[2] == attributes.Anemo {
+		return
+	}
+	c.bullets[1] = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
 }
 func (c *char) c2A1Stack() int {
 	if c.Base.Cons < 2 {
@@ -48,8 +53,7 @@ func (c *char) c2cb(src int) combat.AttackCBFunc {
 			Durability:     25,
 			Mult:           4,
 		}
-		// TODO: I can't find C2 AoE info
-		ap := combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -3}, 8, 120)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5)
 		c.Core.QueueAttack(ai, ap, 0, 1)
 	}
 }
@@ -77,8 +81,28 @@ func (c *char) c4cb(src int) combat.AttackCBFunc {
 			Durability:     25,
 			Mult:           4,
 		}
-		// TODO: I can't find C4 AoE info
-		ap := combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -3}, 8, 120)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5)
 		c.Core.QueueAttack(ai, ap, 0, 1)
 	}
+}
+
+func (c *char) c6() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	if c.StatusIsActive(c6IcdKey) {
+		return
+	}
+	c.AddStatus(c6IcdKey, 3*60, true)
+	c.AddStatus(c6key, 3*60, true)
+}
+
+func (c *char) c6ChargeTime(count int) int {
+	if c.Base.Cons < 6 {
+		return cumuSkillAimChargeFrames[count]
+	}
+	if c.StatusIsActive(c6key) {
+		return 1
+	}
+	return cumuSkillAimChargeFramesC6[count]
 }
