@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Faruzan, NewChar)
+	core.RegisterCharFunc(keys.Chasca, NewChar)
 }
 
 type char struct {
