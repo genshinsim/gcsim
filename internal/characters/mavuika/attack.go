@@ -109,7 +109,7 @@ func (c *char) bikeAttack(_ map[string]int) (action.Info, error) {
 		Abil:           fmt.Sprintf("Flamestrider Normal Attack %d", c.normalBCounter),
 		AttackTag:      attacks.AttackTagNormal,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagNormalAttack,
+		ICDTag:         attacks.ICDTagExtraAttack,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
 		Element:        attributes.Pyro,
