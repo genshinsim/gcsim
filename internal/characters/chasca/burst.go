@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.ICDTag = attacks.ICDTagChascaBurst
 	ai.ICDGroup = attacks.ICDGroupChascaBurst
 
-	var c4cb combat.AttackCBFunc = nil
+	var c4cb combat.AttackCBFunc
 
 	burstBullets := make([]attributes.Element, 0, 6)
 	burstBullets = append(burstBullets, c.partyPHECTypes...)
