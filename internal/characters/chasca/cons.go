@@ -4,10 +4,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 const c6key = "chasca-c6"
 const c6IcdKey = "chasca-c6-icd"
+const c6buff = "chasca-c6-buff"
 
 func (c *char) c1() float64 {
 	if c.Base.Cons < 1 {
@@ -97,12 +99,34 @@ func (c *char) c6() {
 	c.AddStatus(c6key, 3*60, true)
 }
 
+func (c *char) c6buff(snap *combat.Snapshot) {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	if !c.StatusIsActive(c6key) {
+		return
+	}
+	old := snap.Stats[attributes.CD]
+	snap.Stats[attributes.CD] += 1.20
+	c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index).
+		Write("old", old).
+		Write("new", snap.Stats[attributes.CD])
+}
+
+func (c *char) removeC6() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	c.DeleteStatus(c6key)
+}
+
 func (c *char) c6ChargeTime(count int) int {
 	if c.Base.Cons < 6 {
 		return cumuSkillAimChargeFrames[count]
 	}
 	if c.StatusIsActive(c6key) {
-		return 1
+		return cumuSkillAimChargeFramesC6Instant[count]
 	}
 	return cumuSkillAimChargeFramesC6[count]
 }

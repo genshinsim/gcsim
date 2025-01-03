@@ -22,8 +22,10 @@ var skillAimFrames []int
 // per bullet E CA Charge Time = []int{29, 21, 15, 19, 19, 14}
 var cumuSkillAimChargeFrames = []int{29, 50, 65, 84, 103, 117}
 
-// TODO: Get C6 charge timing
-var cumuSkillAimChargeFramesC6 = []int{29, 50, 65, 84, 103, 117}
+// TODO: Get C6 charge frames. Using 12f windup and 0.23s per bullet
+var cumuSkillAimChargeFramesC6 = []int{26, 40, 54, 67, 81, 95}
+
+var cumuSkillAimChargeFramesC6Instant = []int{13, 14, 14, 15, 15, 16}
 
 func init() {
 	aimedFrames = make([][]int, 2)
@@ -183,19 +185,29 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 
 	for i := 0; i < count; i++ {
 		bulletElem := c.bullets[count-1-i] // get bullets starting from the back
-		switch bulletElem {
-		case attributes.Anemo:
-			ai.Abil = "Shadowhunt Shell"
-			ai.Element = attributes.Anemo
-			ai.Mult = skillShadowhunt[c.TalentLvlSkill()]
-		default:
-			ai.Abil = fmt.Sprintf("Shining Shadowhunt Shell (%s)", bulletElem)
-			ai.Element = bulletElem
-			ai.Mult = skillShining[c.TalentLvlSkill()]
-			c2cb = c.c2cb(c.Core.F)
-		}
 		hitDelay := chargeDelay + skillAimHitmarks[i]
-		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), hitDelay, hitDelay, c.particleCB, c2cb)
+		last := i == count-1
+		c.QueueCharTask(func() {
+			switch bulletElem {
+			case attributes.Anemo:
+				ai.Abil = "Shadowhunt Shell"
+				ai.Element = attributes.Anemo
+				ai.Mult = skillShadowhunt[c.TalentLvlSkill()]
+			default:
+				ai.Abil = fmt.Sprintf("Shining Shadowhunt Shell (%s)", bulletElem)
+				ai.Element = bulletElem
+				ai.Mult = skillShining[c.TalentLvlSkill()]
+				c2cb = c.c2cb(c.Core.F)
+			}
+			snapshot := c.Snapshot(&ai)
+			c.c6buff(&snapshot)
+			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, c.particleCB, c2cb)
+
+			// remove possible c6buff after last bullet
+			if last {
+				c.removeC6()
+			}
+		}, hitDelay)
 	}
 
 	c.loadSkillHoldBullets()
