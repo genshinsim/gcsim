@@ -34,6 +34,12 @@ func init() {
 
 func (c *char) reduceNightsoulPoints(val float64) {
 	c.nightsoulState.ConsumePoints(val)
+
+	// don't exit nightsoul while bursting
+	if c.Core.Player.CurrentState() == action.BurstState {
+		return
+	}
+
 	if c.nightsoulState.Points() < 0.001 {
 		c.exitNightsoul()
 	}
@@ -66,8 +72,8 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 		if c.nightsoulSrc != src {
 			return
 		}
-		c.reduceNightsoulPoints(0.5)
-		// reduce 0.5 point per 6, which is 5 per second
+		c.reduceNightsoulPoints(0.8)
+		// reduce 0.8 point per 6, which is 8 per second
 		c.Core.Tasks.Add(c.nightsoulPointReduceFunc(src), 6)
 	}
 }

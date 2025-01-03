@@ -123,10 +123,10 @@ func (c *char) removeC6() {
 
 func (c *char) c6ChargeTime(count int) int {
 	if c.Base.Cons < 6 {
-		return cumuSkillAimChargeFrames[count]
+		return cumuSkillAimChargeFrames[count-1]
 	}
 	if c.StatusIsActive(c6key) {
-		return cumuSkillAimChargeFramesC6Instant[count]
+		return cumuSkillAimChargeFramesC6Instant[count-1]
 	}
-	return cumuSkillAimChargeFramesC6[count]
+	return cumuSkillAimChargeFramesC6[count-1]
 }

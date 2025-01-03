@@ -11,8 +11,9 @@ const (
 	ICDGroupBaizhuC2
 	ICDGroupCharlotteMark
 	ICDGroupCharlotteKamera
-	ICDGroupChascaSkillShining
-	ICDGroupChascaSkillTap
+	ICDGroupChascaShining
+	ICDGroupChascaShadowhunt
+	ICDGroupChascaTap
 	ICDGroupChascaBurst
 	ICDGroupChevreuseBurstMines
 	ICDGroupChioriSkill
@@ -79,13 +80,17 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupCharlotteKamera] = []float64{1, 0, 0, 0, 1, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupCharlotteKamera] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
-	ICDGroupResetTimer[ICDGroupChascaSkillShining] = 90
-	ICDGroupEleApplicationSequence[ICDGroupChascaSkillShining] = []float64{1, 0, 1, 0, 1, 0}
-	ICDGroupDamageSequence[ICDGroupChascaSkillShining] = []float64{1, 1, 1, 1, 1, 1}
+	ICDGroupResetTimer[ICDGroupChascaShining] = 90
+	ICDGroupEleApplicationSequence[ICDGroupChascaShining] = []float64{1, 0, 1, 0, 1, 0}
+	ICDGroupDamageSequence[ICDGroupChascaShining] = []float64{1, 1, 1, 1, 1, 1}
 
-	ICDGroupResetTimer[ICDGroupChascaSkillTap] = 90
-	ICDGroupEleApplicationSequence[ICDGroupChascaSkillTap] = []float64{1, 0}
-	ICDGroupDamageSequence[ICDGroupChascaSkillTap] = []float64{1, 1}
+	ICDGroupResetTimer[ICDGroupChascaShadowhunt] = 90
+	ICDGroupEleApplicationSequence[ICDGroupChascaShadowhunt] = []float64{1, 0}
+	ICDGroupDamageSequence[ICDGroupChascaShadowhunt] = []float64{1, 1}
+
+	ICDGroupResetTimer[ICDGroupChascaTap] = 90
+	ICDGroupEleApplicationSequence[ICDGroupChascaTap] = []float64{1, 0}
+	ICDGroupDamageSequence[ICDGroupChascaTap] = []float64{1, 1}
 
 	ICDGroupResetTimer[ICDGroupChascaBurst] = 90
 	ICDGroupEleApplicationSequence[ICDGroupChascaBurst] = []float64{1, 0, 1, 0, 1, 0}

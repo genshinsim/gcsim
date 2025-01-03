@@ -85,7 +85,7 @@ func (c *char) attackSkillTap(_ map[string]int) action.Info {
 		Abil:           fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:      attacks.AttackTagNormal,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagChascaSkillTap,
+		ICDTag:         attacks.ICDTagChascaTap,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,

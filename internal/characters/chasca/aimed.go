@@ -171,8 +171,8 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		Abil:           "Shadowhunt Shell",
 		AttackTag:      attacks.AttackTagExtra,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagChascaShining,
-		ICDGroup:       attacks.ICDGroupChascaSkillShining,
+		ICDTag:         attacks.ICDTagChascaShadowhunt,
+		ICDGroup:       attacks.ICDGroupChascaShadowhunt,
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,
 		Durability:     25,
@@ -187,14 +187,19 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		bulletElem := c.bullets[count-1-i] // get bullets starting from the back
 		hitDelay := chargeDelay + skillAimHitmarks[i]
 		last := i == count-1
+
 		c.QueueCharTask(func() {
 			switch bulletElem {
 			case attributes.Anemo:
 				ai.Abil = "Shadowhunt Shell"
+				ai.ICDTag = attacks.ICDTagChascaShadowhunt
+				ai.ICDGroup = attacks.ICDGroupChascaShadowhunt
 				ai.Element = attributes.Anemo
 				ai.Mult = skillShadowhunt[c.TalentLvlSkill()]
 			default:
 				ai.Abil = fmt.Sprintf("Shining Shadowhunt Shell (%s)", bulletElem)
+				ai.ICDTag = attacks.ICDTagChascaShining
+				ai.ICDGroup = attacks.ICDGroupChascaShining
 				ai.Element = bulletElem
 				ai.Mult = skillShining[c.TalentLvlSkill()]
 				c2cb = c.c2cb(c.Core.F)

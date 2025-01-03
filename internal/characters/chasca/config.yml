@@ -8,18 +8,22 @@ action_param_keys:
         - param: "hold"
         - param: "travel"
         - param: "weakspot"
-        - param: "bullets"
-        - param: "fire"
+        - param: "count"
 icd_tags:
-    - ICDTagChascaSkillTap
+    - ICDTagChascaTap
+    - ICDTagChascaShadowhunt
     - ICDTagChascaShining
     - ICDTagChascaBurst
 icd_groups:
-    - group_name: ICDGroupChascaSkillShining
+    - group_name: ICDGroupChascaShining
       reset_timer: 90
       ele_app_sequence: [1, 0, 1, 0, 1, 0]
       damage_sequence: [1, 1, 1, 1, 1, 1]
-    - group_name: ICDGroupChascaSkillTap
+    - group_name: ICDGroupChascaShadowhunt
+      reset_timer: 90
+      ele_app_sequence: [1, 0]
+      damage_sequence: [1, 1]
+    - group_name: ICDGroupChascaTap
       reset_timer: 90
       ele_app_sequence: [1, 0]
       damage_sequence: [1, 1]
