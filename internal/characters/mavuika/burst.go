@@ -48,26 +48,28 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.QueueCharTask(c.c6FlamestriderModeHit(c.Core.F), 3*60)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           "Burst DMG",
-		AttackTag:      attacks.AttackTagElementalBurst,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Pyro,
-		Durability:     25,
-		FlatDmg:        c.TotalAtk() * 7.5616,
-	}
+	c.QueueCharTask(func() {
+		ai := combat.AttackInfo{
+			ActorIndex:     c.Index,
+			Abil:           "Burst DMG",
+			AttackTag:      attacks.AttackTagElementalBurst,
+			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			ICDTag:         attacks.ICDTagNone,
+			ICDGroup:       attacks.ICDGroupDefault,
+			StrikeType:     attacks.StrikeTypeDefault,
+			Element:        attributes.Pyro,
+			Durability:     25,
+			FlatDmg:        c.TotalAtk() * 7.5616,
+		}
+		ai.FlatDmg += (0.0272*c.TotalAtk()*float64(c.consumedFightingSpirit) + c.c2FlatIncrease(attacks.AttackTagElementalBurst))
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 7), 0, 0)
+	}, burstHitmark)
+
 	c.SetCD(action.ActionBurst, 18*60)
 
 	// consume fighting spirit
 	c.consumedFightingSpirit = c.fightingSpirit
 	c.fightingSpirit = 0
-
-	ai.FlatDmg += (0.0272*c.TotalAtk()*float64(c.consumedFightingSpirit) + c.c2FlatIncrease(attacks.AttackTagElementalBurst))
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 7), burstHitmark, burstHitmark)
 
 	// Start countdown after initial hit
 	c.QueueCharTask(func() {
