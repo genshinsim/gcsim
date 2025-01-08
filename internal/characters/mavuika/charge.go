@@ -96,7 +96,7 @@ func (c *char) bikeChargeAttack(p map[string]int) (action.Info, error) {
 		Abil:             "Flamestrider Charged Attack Final DMG",
 		AttackTag:        attacks.AttackTagExtra,
 		AdditionalTags:   []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:           attacks.ICDTagNormalAttack,
+		ICDTag:           attacks.ICDTagExtraAttack,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		PoiseDMG:         60,
