@@ -6699,30 +6699,26 @@
         "shape": "Circle",
         "center": "Player",
         "offsetY": 0.3,
-        "radius": 3,
-        "notes": "not implemented yet"
+        "radius": 3
       },
       {
         "ability": "CA-Final",
         "shape": "Circle",
         "center": "Player",
-        "radius": 3.5,
-        "notes": "not implemented yet"
+        "radius": 3.5
       },
       {
         "ability": "Q-CA-Spinning",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 0.3,
-        "radius": 5,
-        "notes": "not implemented yet"
+        "radius": 5
       },
       {
         "ability": "Q-CA-Final",
         "shape": "Circle",
         "center": "Player",
-        "radius": 5.5,
-        "notes": "not implemented yet"
+        "radius": 5.5
       }
     ],
     "plunge": [

@@ -2095,8 +2095,7 @@
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
+      "legal": true
     },
     {
       "ability": "skill",
@@ -2124,7 +2123,7 @@
     },
     {
       "ability": "walk",
-      "notes": "Everything except normal followed by walk has proper frames."
+      "legal": true
     },
     {
       "ability": "swap",
