@@ -65,8 +65,12 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
-		return 23
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 24
+	case model.AnimationYelanN0StartDelay:
+		return 18
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
-	return c.Character.AnimationStartDelay(k)
 }
