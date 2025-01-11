@@ -46,31 +46,35 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	burstIndex := 0
-	if c.StatModIsActive(burstBuffKey) {
-		burstIndex = 1
-		if c.NormalCounter == 2 {
-			// q-n3 has different hit lag
-			ai.HitlagHaltFrames = 0.1 * 60
-		}
-	}
-	ai.PoiseDMG = attackPoiseDMG[burstIndex][c.NormalCounter]
-	// TODO: don't forget the callbacks when implementing her CA
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		geometry.Point{Y: attackOffsets[c.NormalCounter]},
-		attackHitboxes[burstIndex][c.NormalCounter][0],
-	)
-	if c.NormalCounter == 3 {
-		ap = combat.NewBoxHitOnTarget(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[burstIndex][c.NormalCounter][0],
-			attackHitboxes[burstIndex][c.NormalCounter][1],
-		)
-	}
+
+	counter := c.NormalCounter
 	// need char queue because of potential hitlag from C4
 	c.QueueCharTask(func() {
+		burstIndex := 0
+		if c.StatModIsActive(burstBuffKey) {
+			burstIndex = 1
+			if counter == 2 {
+				// q-n3 has different hit lag
+				ai.HitlagHaltFrames = 0.1 * 60
+			}
+			ai.ICDTag = attacks.ICDTagNone
+		}
+		ai.PoiseDMG = attackPoiseDMG[burstIndex][counter]
+
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[counter]},
+			attackHitboxes[burstIndex][counter][0],
+		)
+		if counter == 3 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsets[counter]},
+				attackHitboxes[burstIndex][counter][0],
+				attackHitboxes[burstIndex][counter][1],
+			)
+		}
+
 		c.Core.QueueAttack(ai, ap, 0, 0, c.skillHealCB(), c.makeA4CB())
 	}, attackHitmarks[c.NormalCounter])
 
