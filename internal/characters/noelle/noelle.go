@@ -21,6 +21,7 @@ type char struct {
 	shieldTimer int
 	a4Counter   int
 	burstBuff   []float64
+	caState     ChargeState
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
