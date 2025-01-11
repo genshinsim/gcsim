@@ -41,6 +41,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.burstBuff = make([]float64, attributes.EndStatType)
 	c.a1()
+	c.c2()
 	return nil
 }
 
