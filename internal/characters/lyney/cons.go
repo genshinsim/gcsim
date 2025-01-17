@@ -32,7 +32,7 @@ func (c *char) addC1PropStack() func() {
 		if c.Base.Cons < 1 || c.StatusIsActive(c1ICDKey) {
 			return
 		}
-		c.increasePropSurplusStacks(1)
+		c.increasePropSurplusStacks()
 	}
 }
 

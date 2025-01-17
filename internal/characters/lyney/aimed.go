@@ -202,12 +202,12 @@ func (c *char) propSurplus() bool {
 		Amount:     hpdrain,
 	})
 
-	c.increasePropSurplusStacks(1)
+	c.increasePropSurplusStacks()
 	return true
 }
 
-func (c *char) increasePropSurplusStacks(increase int) {
-	c.propSurplusStacks += increase
+func (c *char) increasePropSurplusStacks() {
+	c.propSurplusStacks++
 	if c.propSurplusStacks > 5 {
 		c.propSurplusStacks = 5
 	}
