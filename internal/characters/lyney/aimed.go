@@ -164,6 +164,7 @@ func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 		// https://youtu.be/QblKD2-9WNE?si=xcd4NAl2Wq-46fQI
 		hpDrained := c.propSurplus()
 
+		c.QueueCharTask(c.addC1PropStack(), travel)
 		c.QueueCharTask(c.makeGrinMalkinHat(target.Pos(), hpDrained), travel)
 		c.QueueCharTask(c.skillAligned(target.Pos()), travel)
 	}, aimedPropRelease)
@@ -201,7 +202,7 @@ func (c *char) propSurplus() bool {
 		Amount:     hpdrain,
 	})
 
-	c.increasePropSurplusStacks(1 + c.c1StackIncrease())
+	c.increasePropSurplusStacks(1)
 	return true
 }
 
