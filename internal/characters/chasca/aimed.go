@@ -13,7 +13,7 @@ import (
 )
 
 var aimedFrames [][]int
-var aimedHitmarks = []int{15, 86}
+var aimedHitmarks = []int{16, 85}
 
 // TODO: confirm these hitmarks
 var skillAimHitmarks = []int{2, 4, 6, 8, 10, 12}
@@ -24,19 +24,18 @@ var cumuSkillAimChargeFrames = []int{29, 50, 65, 84, 103, 117}
 
 // TODO: Get C6 charge frames. Using 12f windup and 0.23s per bullet
 var cumuSkillAimChargeFramesC6 = []int{26, 40, 54, 67, 81, 95}
-
 var cumuSkillAimChargeFramesC6Instant = []int{13, 14, 14, 15, 15, 16}
 
 func init() {
 	aimedFrames = make([][]int, 2)
 
 	// Aimed Shot
-	aimedFrames[0] = frames.InitAbilSlice(26)
+	aimedFrames[0] = frames.InitAbilSlice(27)
 	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
 	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
 
 	// Fully-Charged Aimed Shot
-	aimedFrames[1] = frames.InitAbilSlice(96)
+	aimedFrames[1] = frames.InitAbilSlice(97)
 	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
 	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
 

@@ -13,22 +13,27 @@ import (
 
 var (
 	attackFrames   [][]int
-	attackHitmarks = []int{14, 10, 24, 29}
+	attackHitmarks = [][]int{{12}, {8}, {14, 20}, {40}}
 
 	attackSkillTapFrames []int
 )
 
 const normalHitNum = 4
-const attackSkillTapHitmark = 5
+const attackSkillTapHitmark = 18
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 26) // N1 -> N2
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 21) // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 39) // N3 -> N4
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 86) // N4 -> N1
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 21) // N1 -> N2
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 19) // N2 -> N3
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 36) // N3 -> N4
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 73) // N4 -> N1
 
-	attackSkillTapFrames = frames.InitAbilSlice(10)
+	attackSkillTapFrames = frames.InitAbilSlice(40)
+	attackSkillTapFrames[action.ActionAim] = 38
+	attackSkillTapFrames[action.ActionSkill] = 38
+	attackSkillTapFrames[action.ActionBurst] = 20
+	attackSkillTapFrames[action.ActionDash] = 20
+	attackSkillTapFrames[action.ActionJump] = 33
 }
 
 // Normal attack damage queue generator
@@ -56,25 +61,27 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewBoxHit(
-			c.Core.Combat.Player(),
-			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
-			0.1,
-			1,
-		),
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter]+travel,
-	)
+	for hitmark := range attackHitmarks[c.NormalCounter] {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				geometry.Point{Y: -0.5},
+				0.1,
+				1,
+			),
+			hitmark,
+			hitmark+travel,
+		)
+	}
 
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}, nil
 }

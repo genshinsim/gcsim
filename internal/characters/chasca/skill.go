@@ -1,7 +1,7 @@
 package chasca
 
 import (
-	"errors"
+	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -12,24 +12,32 @@ import (
 )
 
 var skillFrames []int
+var skillCancelFrames []int
 
 const (
-	skillHitmarks   = 6
-	samplerInterval = 0.3 * 60
-
-	skilRecastCD     = "xilonen-e-recast-cd"
-	skillMaxDurKey   = "xilonen-e-limit"
-	particleICDKey   = "xilonen-particle-icd"
-	samplerShredKey  = "xilonen-e-shred"
-	activeSamplerKey = "xilonen-samplers-activated"
+	skillHitmarks      = 5
+	plungeAvailableKey = "chasca-plunge-available"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(20)
-	skillFrames[action.ActionAttack] = 19
-	skillFrames[action.ActionDash] = 15
-	skillFrames[action.ActionJump] = 15
-	skillFrames[action.ActionSwap] = 19
+	skillFrames = frames.InitAbilSlice(26)
+	skillFrames[action.ActionAttack] = 5
+	skillFrames[action.ActionAim] = 16
+	skillFrames[action.ActionSkill] = 26
+	skillFrames[action.ActionBurst] = 5 // TODO: not in frames sheet
+	skillFrames[action.ActionDash] = 5
+	skillFrames[action.ActionJump] = 22
+	skillFrames[action.ActionSwap] = 587 // TODO: must plunge first?
+
+	skillCancelFrames = frames.InitAbilSlice(65)
+	skillCancelFrames[action.ActionAttack] = 49
+	skillCancelFrames[action.ActionAim] = 50
+	skillCancelFrames[action.ActionLowPlunge] = 2 // TODO: Can you low plunge?
+	skillCancelFrames[action.ActionHighPlunge] = 2
+	skillCancelFrames[action.ActionBurst] = 47
+	skillCancelFrames[action.ActionDash] = 50
+	skillCancelFrames[action.ActionJump] = 999 // TODO: Why can't this be done?
+	skillCancelFrames[action.ActionWalk] = 999 // TODO: Why can't this be done?
 }
 
 func (c *char) reduceNightsoulPoints(val float64) {
@@ -46,6 +54,7 @@ func (c *char) reduceNightsoulPoints(val float64) {
 }
 
 func (c *char) enterNightsoul() {
+	c.Core.Player.SwapCD = math.MaxInt16 // block swapping while in the air
 	c.nightsoulState.EnterBlessing(80)
 	c.nightsoulSrc = c.Core.F
 	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
@@ -64,7 +73,16 @@ func (c *char) exitNightsoul() {
 	c.SetCD(action.ActionSkill, 6.5*60)
 	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
-	c.DeleteStatus(particleICDKey)
+	c.Core.Player.SwapCD = 65 // this should depend on height from E. E -> CA immediately is less high
+	c.AddStatus(plungeAvailableKey, 26, true)
+}
+
+func (c *char) checkForSkillEnd() int {
+	if c.nightsoulState.HasBlessing() && c.nightsoulState.Points() <= 0 {
+		c.exitNightsoul()
+		return 0
+	}
+	return 0
 }
 
 func (c *char) nightsoulPointReduceFunc(src int) func() {
@@ -80,9 +98,17 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
-		return action.Info{}, errors.New("plunging attack from chasca skill is not implemented")
+		c.exitNightsoul()
+		return action.Info{
+			Frames:          frames.NewAbilFunc(skillCancelFrames),
+			AnimationLength: skillFrames[action.InvalidAction],
+			CanQueueAfter:   skillFrames[action.ActionLowPlunge], // earliest cancel
+			State:           action.SkillState,
+		}, nil
+		// return action.Info{}, errors.New("plunging attack from chasca skill is not implemented")
 	}
 
+	// TODO: make swap unavailable in E
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Spirit Reins, Shadow Hunt",
