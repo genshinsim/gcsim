@@ -2523,6 +2523,14 @@
     ]
   },
   "ororon": {
+    "asc": [
+      {
+        "ability": "A1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true
+      }
+    ],
     "aim": [
       {
         "ability": "Aim-Head",

@@ -20,7 +20,7 @@ type char struct {
 	nightsoulState     *nightsoul.State
 	particlesGenerated bool
 	c2Bonus            []float64
-	c6stacks           []*stacks.MultipleRefreshNoRemove
+	c6stacks           *stacks.MultipleRefreshNoRemove
 	c6bonus            []float64
 }
 

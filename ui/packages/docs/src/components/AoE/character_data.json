@@ -6765,19 +6765,16 @@
     "burst": [
       {
         "ability": "Burst Cast",
-        "shape": "Box",
+        "shape": "Circle",
         "center": "Player",
         "offsetY": 2.3,
-        "boxX": 4.0,
-        "boxY": 4.0
+        "radius": 6.5
       },
       {
         "ability": "Soundwave Collision",
         "shape": "Circle",
-        "center": "PrimaryTarget",
-        "offsetY": 1,
-        "radius": 10,
-        "note": "The sector of the given circle of angle 20 degrees."
+        "center": "GlobalValue",
+        "note": "This is an approximation because we do not actually know the real AoE. Based on Burst Cast position."
       }
     ]
   },

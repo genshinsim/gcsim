@@ -14,8 +14,12 @@ var skillFrames []int
 const skillHitmark = 31
 
 func init() {
-	skillFrames = frames.InitAbilSlice(30)
-	skillFrames[action.ActionDash] = 31
+	skillFrames = frames.InitAbilSlice(31) // E -> Dash
+	skillFrames[action.ActionAttack] = 30
+	skillFrames[action.ActionCharge] = 30
+	skillFrames[action.ActionBurst] = 30
+	skillFrames[action.ActionJump] = 30
+	skillFrames[action.ActionWalk] = 30
 	skillFrames[action.ActionSwap] = 29
 }
 
@@ -37,21 +41,22 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           spiritOrb[c.TalentLvlSkill()],
+		HitlagFactor:   0.05,
 	}
 
-	enemies := []targets.TargetKey{c.Core.Combat.PrimaryTarget().Key()}
+	enemies := []combat.Target{c.Core.Combat.PrimaryTarget()}
 	maxHits := 3 + c.c1ExtraBounce()
 	for i := 0; len(enemies) < maxHits && i < c.Core.Combat.EnemyCount(); i++ {
-		newKey := c.Core.Combat.Enemies()[i].Key()
-		if newKey == c.Core.Combat.PrimaryTarget().Key() {
+		newEnemy := c.Core.Combat.Enemy(i)
+		if newEnemy.Key() == enemies[0].Key() {
 			continue
 		}
-		enemies = append(enemies, newKey)
+		enemies = append(enemies, newEnemy)
 	}
 	for i, e := range enemies {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewSingleTargetHit(e), // TODO: find out if this single target
+			combat.NewCircleHitOnTarget(e, nil, 0.6),
 			skillHitmark,
 			skillHitmark+travel*(i+1),
 			c.particleCB,
@@ -60,7 +65,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		)
 	}
 
-	c.SetCDWithDelay(action.ActionSkill, 15*60, 7)
+	c.SetCDWithDelay(action.ActionSkill, 15*60, 14)
 	c.a1OnSkill()
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
