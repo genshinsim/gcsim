@@ -13,5 +13,6 @@ GOOS=darwin GOARCH=arm64 go build -ldflags "-X 'main.shareKey=${SHARE_KEY}' -X m
 GOOS=darwin GOARCH=amd64 go build -ldflags "-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o server_darwin_amd64 ./cmd/server 
 GOOS=linux GOARCH=amd64 go build -ldflags "-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o server_linux_amd64 ./cmd/server 
 
-cd cmd/server_andriod && GOFLAGS="'-ldflags=-X=main.version=`git tag --sort=-version:refname | head -n 1` \"-X=main.shareKey=${SHARE_KEY}\"'" fyne package -os android -appID com.gcsim.server -icon ../../ui/packages/ui/src/Images/logo.png --release --name "gcsim server" && cp gcsim_server.apk ../../gcsim_server.apk
+go install fyne.io/fyne/v2/cmd/fyne@v2.5.2
+cd cmd/server_andriod && go mod download && GOFLAGS="'-ldflags=-X=main.version=`git tag --sort=-version:refname | head -n 1` \"-X=main.shareKey=${SHARE_KEY}\"'" fyne package -os android -appID com.gcsim.server -icon ../../ui/packages/ui/src/Images/logo.png --release --name "gcsim server" && cp gcsim_server.apk ../../gcsim_server.apk
 
