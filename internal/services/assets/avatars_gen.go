@@ -42,6 +42,7 @@ var avatarMap = map[string]string{
 	"kaveh":         "UI_AvatarIcon_Kaveh",
 	"kazuha":        "UI_AvatarIcon_Kazuha",
 	"keqing":        "UI_AvatarIcon_Keqing",
+	"kinich":        "UI_AvatarIcon_Kinich",
 	"kirara":        "UI_AvatarIcon_Momoka",
 	"klee":          "UI_AvatarIcon_Klee",
 	"kokomi":        "UI_AvatarIcon_Kokomi",
