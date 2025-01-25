@@ -66,7 +66,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
-		Mult:       attack[c.NormalHitNum][c.TalentLvlAttack()],
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
 	ap := combat.NewCircleHitOnTarget(
