@@ -52,6 +52,11 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 1
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -61,7 +66,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
-		Mult:       0.738, // just N1 scale for now
+		Mult:       attack[c.NormalHitNum][c.TalentLvlAttack()],
 	}
 
 	ap := combat.NewCircleHitOnTarget(
@@ -73,8 +78,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		ap,
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter]+travel,
+		attackHitmarks[c.NormalCounter]+travel,
 	)
 
 	defer c.AdvanceNormalIndex()
@@ -82,7 +87,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackEarliestCancel[c.NormalCounter],
+		CanQueueAfter:   attackEarliestCancel[c.NormalCounter] + travel,
 		State:           action.NormalAttackState,
 	}, nil
 }

@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Cryo,
 		Durability:     50,
-		Mult:           9.677,
+		Mult:           iceStorm[c.TalentLvlBurst()],
 		FlatDmg:        c.a4Dmg(iceStormAbil),
 	}
 	aiSpiritVesselSkull := combat.AttackInfo{
@@ -42,12 +42,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Abil:           "Spiritvessel Skull DMG",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagElementalBurst, // TODO: check this
+		ICDTag:         attacks.ICDTagCitlaliSpiritVessel,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Cryo,
 		Durability:     25,
-		Mult:           2.419,
+		Mult:           spiritVessel[c.TalentLvlBurst()],
 	}
 	c.ConsumeEnergy(5)
 	c.SetCD(action.ActionBurst, 15*60)

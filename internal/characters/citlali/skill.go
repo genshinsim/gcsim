@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Cryo,
 		Durability:     25,
-		Mult:           1.313,
+		Mult:           skill[c.TalentLvlSkill()],
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), obsidianTzitzimitlHitmark, obsidianTzitzimitlHitmark, c.particleCB)
 
@@ -138,7 +138,7 @@ func (c *char) ItzpapaHit(src int) func() {
 			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        attributes.Cryo,
 			Durability:     25,
-			Mult:           0.306,
+			Mult:           frostfall[c.TalentLvlSkill()],
 			FlatDmg:        c.a4Dmg(frostFallAbil),
 		}
 		if c.Base.Cons >= 6 {

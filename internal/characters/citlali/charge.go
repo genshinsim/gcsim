@@ -37,7 +37,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
-		Mult:       1.686,
+		Mult:       charge[c.TalentLvlAttack()],
 	}
 
 	windup := 0

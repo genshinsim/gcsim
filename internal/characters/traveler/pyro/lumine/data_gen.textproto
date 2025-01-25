@@ -4,7 +4,7 @@ key: "luminepyro"
 rarity: QUALITY_ORANGE
 body: BODY_GIRL
 region: ASSOC_TYPE_MAINACTOR
-element: Fire
+element: Grass
 weapon_class: WEAPON_SWORD_ONE_HAND
 icon_name: "UI_AvatarIcon_PlayerGirl"
 stats: {
@@ -147,6 +147,6 @@ skill_details: {
    skill: 10117
    burst: 10118
    attack: 100557
-   burst_energy_cost: 70
+   burst_energy_cost: 80
 }
 name_text_hash_map: 3816664530

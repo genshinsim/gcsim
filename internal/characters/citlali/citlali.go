@@ -1,15 +1,5 @@
 package citlali
 
-// Citlali's Frostfall Storm applies once every 1.5s
-// Initial E hit has no ICD.
-// Initial burst has no ICD.
-// Spiritvessel Skull ICD is default.
-// C4 has no ICD.
-// NA is default.
-// CA has no ICD.
-
-// 5 particles on initial E hit
-
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
@@ -46,7 +36,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	w.Character = &c
 
 	c.nightsoulState = nightsoul.New(s, w)
-	c.nightsoulState.MaxPoints = 100 // TODO: the REAL one
+	c.nightsoulState.MaxPoints = 100
 
 	c.itzpapaSrc = -1
 	c.numC6Stacks = 0

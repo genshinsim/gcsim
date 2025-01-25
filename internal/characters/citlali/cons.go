@@ -103,7 +103,7 @@ func (c *char) c4Skull() {
 		Abil:           "Spiritvessel Skull DMG (C4)",
 		AttackTag:      attacks.AttackTagNone,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagNone, // TODO: check this
+		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Cryo,

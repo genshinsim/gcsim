@@ -92,19 +92,19 @@
     },
     "aetherpyro": {
       "id": 10000005,
-      "sub_id": 503,
+      "sub_id": 508,
       "key": "aetherpyro",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
       "region": "ASSOC_TYPE_MAINACTOR",
-      "element": "Fire",
+      "element": "Grass",
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "icon_name": "UI_AvatarIcon_PlayerBoy",
       "skill_details": {
-        "skill": 10087,
-        "burst": 10088,
-        "attack": 100542,
-        "burst_energy_cost": 70
+        "skill": 10117,
+        "burst": 10118,
+        "attack": 100547,
+        "burst_energy_cost": 80
       },
       "name_text_hash_map ": "1533656818"
     },
@@ -388,14 +388,14 @@
       "region": "ASSOC_TYPE_NATLAN",
       "element": "Ice",
       "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Layla",
+      "icon_name": "UI_AvatarIcon_Citlali",
       "skill_details": {
-        "skill": 10402,
-        "burst": 10403,
-        "attack": 10401,
+        "skill": 11072,
+        "burst": 11075,
+        "attack": 11071,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "2876340530"
+      "name_text_hash_map ": "1197975042"
     },
     "clorinde": {
       "id": 10000098,
@@ -1016,19 +1016,19 @@
     },
     "luminepyro": {
       "id": 10000007,
-      "sub_id": 703,
+      "sub_id": 708,
       "key": "luminepyro",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
       "region": "ASSOC_TYPE_MAINACTOR",
-      "element": "Fire",
+      "element": "Grass",
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "icon_name": "UI_AvatarIcon_PlayerGirl",
       "skill_details": {
-        "skill": 10087,
-        "burst": 10088,
-        "attack": 100552,
-        "burst_energy_cost": 70
+        "skill": 10117,
+        "burst": 10118,
+        "attack": 100557,
+        "burst_energy_cost": 80
       },
       "name_text_hash_map ": "3816664530"
     },
@@ -1065,23 +1065,6 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "2472444970"
-    },
-    "mavuika": {
-      "id": 10000106,
-      "key": "mavuika",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_LADY",
-      "region": "ASSOC_TYPE_NATLAN",
-      "element": "Fire",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Dehya",
-      "skill_details": {
-        "skill": 10802,
-        "burst": 10805,
-        "attack": 10801,
-        "burst_energy_cost": 0
-      },
-      "name_text_hash_map ": "231911858"
     },
     "mika": {
       "id": 10000080,
