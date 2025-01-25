@@ -67,6 +67,10 @@ func (c *char) exitNightsoul() {
 	if !c.nightsoulState.HasBlessing() {
 		return
 	}
+	if c.Core.Player.CurrentState() == action.AimState {
+		c.fireBullets(c.bulletsCharged)
+	}
+
 	c.nightsoulState.ExitBlessing()
 	c.nightsoulState.ClearPoints()
 	c.nightsoulSrc = -1
@@ -75,14 +79,6 @@ func (c *char) exitNightsoul() {
 	c.NormalCounter = 0
 	c.Core.Player.SwapCD = 65 // this should depend on height from E. E -> CA immediately is less high
 	c.AddStatus(plungeAvailableKey, 26, true)
-}
-
-func (c *char) checkForSkillEnd() int {
-	if c.nightsoulState.HasBlessing() && c.nightsoulState.Points() <= 0 {
-		c.exitNightsoul()
-		return 0
-	}
-	return 0
 }
 
 func (c *char) nightsoulPointReduceFunc(src int) func() {
@@ -105,10 +101,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			CanQueueAfter:   skillFrames[action.ActionLowPlunge], // earliest cancel
 			State:           action.SkillState,
 		}, nil
-		// return action.Info{}, errors.New("plunging attack from chasca skill is not implemented")
 	}
 
-	// TODO: make swap unavailable in E
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Spirit Reins, Shadow Hunt",

@@ -9,7 +9,6 @@ import (
 
 const c6key = "chasca-c6"
 const c6IcdKey = "chasca-c6-icd"
-const c6buff = "chasca-c6-buff"
 
 func (c *char) c1() float64 {
 	if c.Base.Cons < 1 {
@@ -123,10 +122,10 @@ func (c *char) removeC6() {
 
 func (c *char) c6ChargeTime(count int) int {
 	if c.Base.Cons < 6 {
-		return cumuSkillAimChargeFrames[count-1]
+		return cumuSkillAimLoadFrames[count-1]
 	}
 	if c.StatusIsActive(c6key) {
-		return cumuSkillAimChargeFramesC6Instant[count-1]
+		return cumuSkillAimLoadFramesC6Instant[count-1]
 	}
-	return cumuSkillAimChargeFramesC6[count-1]
+	return cumuSkillAimLoadFramesC6[count-1]
 }

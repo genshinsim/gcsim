@@ -13,18 +13,22 @@ import (
 )
 
 var aimedFrames [][]int
+var skillAimFrames []int
+
 var aimedHitmarks = []int{16, 85}
 
 // TODO: confirm these hitmarks
 var skillAimHitmarks = []int{2, 4, 6, 8, 10, 12}
-var skillAimFrames []int
 
-// per bullet E CA Charge Time = []int{29, 21, 15, 19, 19, 14}
-var cumuSkillAimChargeFrames = []int{29, 50, 65, 84, 103, 117}
+// per bullet E CA Load Time = []int{17, 21, 15, 19, 19, 14}, (add 12f windup when action is E/Q/etc)
+var cumuSkillAimLoadFrames = []int{17, 38, 53, 72, 91, 105}
 
-// TODO: Get C6 charge frames. Using 12f windup and 0.23s per bullet
-var cumuSkillAimChargeFramesC6 = []int{26, 40, 54, 67, 81, 95}
-var cumuSkillAimChargeFramesC6Instant = []int{13, 14, 14, 15, 15, 16}
+// TODO: Get C6 load frames. Using 12f windup and 0.23s per bullet
+var cumuSkillAimLoadFramesC6 = []int{14, 28, 42, 55, 69, 83}
+var cumuSkillAimLoadFramesC6Instant = []int{1, 2, 2, 3, 3, 4}
+
+const CAKey = "chasca-e-ca"
+const CAKeyDur = 200
 
 func init() {
 	aimedFrames = make([][]int, 2)
@@ -41,7 +45,7 @@ func init() {
 
 	skillAimFrames = frames.InitAbilSlice(31)
 	skillAimFrames[action.ActionAttack] = 18
-	skillAimFrames[action.ActionCharge] = 18
+	skillAimFrames[action.ActionAim] = 18
 	skillAimFrames[action.ActionBurst] = 12
 	skillAimFrames[action.ActionDash] = 3
 	skillAimFrames[action.ActionJump] = 19
@@ -110,6 +114,110 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
+	count, ok := p["count"]
+	if !ok {
+		count = 6
+	}
+	if count > 6 {
+		return action.Info{}, errors.New("count must be <= 6")
+	}
+
+	if c.StatusIsActive(c6key) && count < 6 {
+		return action.Info{}, errors.New("count must be 6 when c6 instant charge is active")
+	}
+
+	windup := 12
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState, action.AimState:
+		windup = 0
+	}
+
+	c.bulletsCharged = 0
+	for i := 1; i <= count; i++ {
+		delay := c.c6ChargeTime(i) + windup
+		c.QueueCharTask(func() {
+			if c.nightsoulState.HasBlessing() {
+				c.bulletsCharged++
+			}
+		}, delay)
+	}
+
+	chargeDelay := c.c6ChargeTime(count) + windup
+	c.CAAnimLength = chargeDelay
+	c.QueueCharTask(func() {
+		if c.nightsoulState.HasBlessing() {
+			c.fireBullets(c.bulletsCharged)
+		}
+	}, chargeDelay)
+
+	c.AddStatus(CAKey, CAKeyDur, true)
+	return action.Info{
+		Frames: func(next action.Action) int {
+			if c.nightsoulState.HasBlessing() {
+				return c.CAAnimLength + skillAimFrames[next]
+			}
+			// TODO: How to account for hitlag nicely?
+			// I want the CAKeyDur - c.StatusDuration(CAKey) to exactly equal the hitlag
+			// effected time elapsed until "now" but without needing to add a status
+			return CAKeyDur - c.StatusDuration(CAKey) + skillCancelFrames[next]
+		},
+		AnimationLength: windup + chargeDelay + skillAimFrames[action.InvalidAction],
+		CanQueueAfter:   windup + skillAimFrames[action.ActionDash], // Early CanQueueAfter in case nightsoul runs out
+		State:           action.AimState,
+	}, nil
+}
+
+func (c *char) fireBullets(count int) {
+	ai := combat.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "Shadowhunt Shell",
+		AttackTag:      attacks.AttackTagExtra,
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		ICDTag:         attacks.ICDTagChascaShadowhunt,
+		ICDGroup:       attacks.ICDGroupChascaShadowhunt,
+		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.Anemo,
+		Durability:     25,
+		Mult:           skillShadowhunt[c.TalentLvlSkill()],
+	}
+
+	var c2cb combat.AttackCBFunc
+
+	for i := 0; i < count; i++ {
+		bulletElem := c.bullets[count-1-i] // get bullets starting from the back
+		hitDelay := skillAimHitmarks[i]
+		last := i == count-1
+		c.QueueCharTask(func() {
+			switch bulletElem {
+			case attributes.Anemo:
+				ai.Abil = "Shadowhunt Shell"
+				ai.ICDTag = attacks.ICDTagChascaShadowhunt
+				ai.ICDGroup = attacks.ICDGroupChascaShadowhunt
+				ai.Element = attributes.Anemo
+				ai.Mult = skillShadowhunt[c.TalentLvlSkill()]
+			default:
+				ai.Abil = fmt.Sprintf("Shining Shadowhunt Shell (%s)", bulletElem)
+				ai.ICDTag = attacks.ICDTagChascaShining
+				ai.ICDGroup = attacks.ICDGroupChascaShining
+				ai.Element = bulletElem
+				ai.Mult = skillShining[c.TalentLvlSkill()]
+				c2cb = c.c2cb(c.Core.F)
+			}
+			snapshot := c.Snapshot(&ai)
+			c.c6buff(&snapshot)
+			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, c.particleCB, c2cb)
+
+			// remove possible c6buff after last bullet
+			if last {
+				c.removeC6()
+			}
+		}, hitDelay)
+	}
+	c.bulletsCharged = 0
+	c.loadSkillHoldBullets()
+}
+
 func (c *char) loadSkillHoldBullets() {
 	c.resetBulletPool()
 	c.bullets[0] = attributes.Anemo
@@ -150,78 +258,4 @@ func (c *char) randomElemFromBulletPool() attributes.Element {
 	c.bulletPool[ind] = c.bulletPool[len(c.bulletPool)-1]
 	c.bulletPool = c.bulletPool[:len(c.bulletPool)-1]
 	return ele
-}
-
-func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
-	count, ok := p["count"]
-	if !ok {
-		count = 6
-	}
-	if count > 6 {
-		return action.Info{}, errors.New("count must be <= 6")
-	}
-
-	if c.StatusIsActive(c6key) && count < 6 {
-		return action.Info{}, errors.New("count must be 6 when c6 instant charge is active")
-	}
-
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           "Shadowhunt Shell",
-		AttackTag:      attacks.AttackTagExtra,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagChascaShadowhunt,
-		ICDGroup:       attacks.ICDGroupChascaShadowhunt,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Anemo,
-		Durability:     25,
-		Mult:           skillShadowhunt[c.TalentLvlSkill()],
-	}
-
-	var c2cb combat.AttackCBFunc
-
-	chargeDelay := c.c6ChargeTime(count)
-
-	for i := 0; i < count; i++ {
-		bulletElem := c.bullets[count-1-i] // get bullets starting from the back
-		hitDelay := chargeDelay + skillAimHitmarks[i]
-		last := i == count-1
-
-		c.QueueCharTask(func() {
-			switch bulletElem {
-			case attributes.Anemo:
-				ai.Abil = "Shadowhunt Shell"
-				ai.ICDTag = attacks.ICDTagChascaShadowhunt
-				ai.ICDGroup = attacks.ICDGroupChascaShadowhunt
-				ai.Element = attributes.Anemo
-				ai.Mult = skillShadowhunt[c.TalentLvlSkill()]
-			default:
-				ai.Abil = fmt.Sprintf("Shining Shadowhunt Shell (%s)", bulletElem)
-				ai.ICDTag = attacks.ICDTagChascaShining
-				ai.ICDGroup = attacks.ICDGroupChascaShining
-				ai.Element = bulletElem
-				ai.Mult = skillShining[c.TalentLvlSkill()]
-				c2cb = c.c2cb(c.Core.F)
-			}
-			snapshot := c.Snapshot(&ai)
-			c.c6buff(&snapshot)
-			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, c.particleCB, c2cb)
-
-			// remove possible c6buff after last bullet
-			if last {
-				c.removeC6()
-			}
-		}, hitDelay)
-	}
-
-	c.loadSkillHoldBullets()
-
-	return action.Info{
-		Frames: func(next action.Action) int {
-			return skillAimFrames[next] + chargeDelay
-		},
-		AnimationLength: skillAimFrames[action.InvalidAction] + chargeDelay,
-		CanQueueAfter:   skillAimFrames[action.ActionDash] + chargeDelay,
-		State:           action.AimState,
-	}, nil
 }

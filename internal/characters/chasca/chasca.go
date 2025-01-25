@@ -23,9 +23,11 @@ type char struct {
 	partyPHECTypesUnique []attributes.Element
 	bullets              []attributes.Element
 	bulletPool           []attributes.Element
+	bulletsCharged       int
 	skillParticleICD     bool
 	c2Src                int
 	c4Src                int
+	CAAnimLength         int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
