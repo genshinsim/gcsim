@@ -20,15 +20,12 @@ var aimedHitmarks = []int{16, 85}
 // TODO: confirm these hitmarks
 var skillAimHitmarks = []int{2, 4, 6, 8, 10, 12}
 
-// per bullet E CA Load Time = []int{17, 21, 15, 19, 19, 14}, (add 12f windup when action is E/Q/etc)
+// per bullet E CA Load Time = []int{17, 21, 15, 19, 19, 14}, (add 12f windup when previous action is E/Q/etc)
 var cumuSkillAimLoadFrames = []int{17, 38, 53, 72, 91, 105}
 
 // TODO: Get C6 load frames. Using 12f windup and 0.23s per bullet
 var cumuSkillAimLoadFramesC6 = []int{14, 28, 42, 55, 69, 83}
 var cumuSkillAimLoadFramesC6Instant = []int{1, 2, 2, 3, 3, 4}
-
-const CAKey = "chasca-e-ca"
-const CAKeyDur = 200
 
 func init() {
 	aimedFrames = make([][]int, 2)
@@ -147,28 +144,22 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	c.CAAnimLength = chargeDelay
 	c.QueueCharTask(func() {
 		if c.nightsoulState.HasBlessing() {
-			c.fireBullets(c.bulletsCharged)
+			c.fireBullets()
 		}
 	}, chargeDelay)
 
-	c.AddStatus(CAKey, CAKeyDur, true)
+	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
 	return action.Info{
-		Frames: func(next action.Action) int {
-			if c.nightsoulState.HasBlessing() {
-				return c.CAAnimLength + skillAimFrames[next]
-			}
-			// TODO: How to account for hitlag nicely?
-			// I want the CAKeyDur - c.StatusDuration(CAKey) to exactly equal the hitlag
-			// effected time elapsed until "now" but without needing to add a status
-			return CAKeyDur - c.StatusDuration(CAKey) + skillCancelFrames[next]
-		},
+		Frames: c.skillNextFrames(func(next action.Action) int {
+			return c.CAAnimLength + skillAimFrames[next]
+		}),
 		AnimationLength: windup + chargeDelay + skillAimFrames[action.InvalidAction],
 		CanQueueAfter:   windup + skillAimFrames[action.ActionDash], // Early CanQueueAfter in case nightsoul runs out
 		State:           action.AimState,
 	}, nil
 }
 
-func (c *char) fireBullets(count int) {
+func (c *char) fireBullets() {
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Shadowhunt Shell",
@@ -184,10 +175,10 @@ func (c *char) fireBullets(count int) {
 
 	var c2cb combat.AttackCBFunc
 
-	for i := 0; i < count; i++ {
-		bulletElem := c.bullets[count-1-i] // get bullets starting from the back
+	for i := 0; i < c.bulletsCharged; i++ {
+		bulletElem := c.bullets[c.bulletsCharged-1-i] // get bullets starting from the back
 		hitDelay := skillAimHitmarks[i]
-		last := i == count-1
+		last := i == c.bulletsCharged-1
 		c.QueueCharTask(func() {
 			switch bulletElem {
 			case attributes.Anemo:

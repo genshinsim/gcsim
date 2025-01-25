@@ -18,13 +18,13 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(71)
-	burstFrames[action.ActionAttack] = 61 // Q -> N1
-	burstFrames[action.ActionAim] = 61    // Q -> Aim
-	burstFrames[action.ActionSkill] = 61  // Q -> E
-	burstFrames[action.ActionDash] = 61   // Q -> D
-	burstFrames[action.ActionJump] = 63   // Q -> J
-	burstFrames[action.ActionSwap] = 60   // Q -> Swap
+	burstFrames = frames.InitAbilSlice(123)
+	burstFrames[action.ActionAttack] = 102 // Q -> N1
+	burstFrames[action.ActionAim] = 103    // Q -> Aim
+	burstFrames[action.ActionSkill] = 101  // Q -> E
+	burstFrames[action.ActionDash] = 104   // Q -> D
+	burstFrames[action.ActionJump] = 103   // Q -> J
+	burstFrames[action.ActionWalk] = 118   // Q -> Walk
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -81,10 +81,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(22)
 
+	// update the nightsoul status at the end of her burst
+	c.QueueCharTask(c.checkNS, burstFrames[action.ActionSkill])
+	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
 	return action.Info{
-		Frames:          frames.NewAbilFunc(burstFrames),
+		Frames:          c.skillNextFrames(frames.NewAbilFunc(burstFrames)),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSkill], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }

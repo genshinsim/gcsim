@@ -109,10 +109,10 @@ func (c *char) attackSkillTap(_ map[string]int) action.Info {
 		attackSkillTapHitmark,
 	)
 
+	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
 	defer c.AdvanceNormalIndex()
-
 	return action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		Frames:          c.skillNextFrames(frames.NewAttackFunc(c.Character, attackFrames)),
 		AnimationLength: attackSkillTapFrames[action.InvalidAction],
 		CanQueueAfter:   attackSkillTapHitmark,
 		State:           action.NormalAttackState,

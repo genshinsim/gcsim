@@ -14,6 +14,9 @@ import (
 var skillFrames []int
 var skillCancelFrames []int
 
+const SkillActionKey = "chasca-e-action"
+const SkillActionKeyDur = 200
+
 const (
 	skillHitmarks      = 5
 	plungeAvailableKey = "chasca-plunge-available"
@@ -47,9 +50,28 @@ func (c *char) reduceNightsoulPoints(val float64) {
 	if c.Core.Player.CurrentState() == action.BurstState {
 		return
 	}
+	c.checkNS()
+}
 
+// Checks the current number of nightsoul points and exits nightsoul if there aren't enough. Returns the status of NS after the check
+func (c *char) checkNS() {
 	if c.nightsoulState.Points() < 0.001 {
 		c.exitNightsoul()
+	}
+}
+
+// If NS expired gives the skillCancelFrames, otherwise gives the next frames as input
+// Must set c.AddStatus(SkillActionKey, SkillActionKeyDur, true) so this function can calculate
+// the right "time elapsed" since action start
+func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.Action) int {
+	return func(next action.Action) int {
+		if c.nightsoulState.HasBlessing() {
+			return f(next)
+		}
+		// TODO: How to account for hitlag nicely?
+		// I want the CAKeyDur - c.StatusDuration(CAKey) to exactly equal the hitlag
+		// effected time elapsed until "now" but without needing to add a status
+		return SkillActionKeyDur - c.StatusDuration(SkillActionKey) + skillCancelFrames[next]
 	}
 }
 
@@ -68,7 +90,7 @@ func (c *char) exitNightsoul() {
 		return
 	}
 	if c.Core.Player.CurrentState() == action.AimState {
-		c.fireBullets(c.bulletsCharged)
+		c.fireBullets()
 	}
 
 	c.nightsoulState.ExitBlessing()
