@@ -11,7 +11,7 @@ import (
 )
 
 var burstFrames []int
-var burstDiceHitmarks = []int{25, 30, 36, 41} // c2 hitmark not framecounted
+var burstDiceHitmarks = []int{25 - 8, 30 - 8, 36 - 8, 41 - 8} // c2 hitmark not framecounted
 
 // initial hit
 const burstHitmark = 76
