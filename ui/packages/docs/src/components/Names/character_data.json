@@ -27,6 +27,7 @@
     "chongyun": [
         "chong"
     ],
+    "citlali": [],
     "clorinde": [],
     "collei": [],
     "cyno": [],
@@ -162,6 +163,12 @@
         "lumine-hydro",
         "aetherhydro",
         "luminehydro"
+    ],
+    "travelerpyro": [
+        "aether-pyro",
+        "lumine-pyro",
+        "aetherpyro",
+        "luminepyro"
     ],
     "venti": [],
     "wanderer": [
