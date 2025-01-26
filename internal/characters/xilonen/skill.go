@@ -60,7 +60,7 @@ func (c *char) canUseNightsoul() bool {
 func (c *char) enterNightsoul() {
 	c.nightsoulState.EnterBlessing(45)
 	c.nightsoulSrc = c.Core.F
-	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
+	c.nightsoulPointReduceTask(c.nightsoulSrc)
 	c.NormalHitNum = rollerHitNum
 	c.NormalCounter = 0
 
@@ -89,15 +89,15 @@ func (c *char) exitNightsoul() {
 	c.DeleteStatus(c6key)
 }
 
-func (c *char) nightsoulPointReduceFunc(src int) func() {
-	return func() {
+func (c *char) nightsoulPointReduceTask(src int) {
+	const tickInterval = .1
+	c.QueueCharTask(func() {
 		if c.nightsoulSrc != src {
 			return
 		}
+		// reduce 0.5 point every 6f, which is 5 per second
 		c.reduceNightsoulPoints(0.5)
-		// reduce 0.5 point per 6, which is 5 per second
-		c.Core.Tasks.Add(c.nightsoulPointReduceFunc(src), 6)
-	}
+	}, 60*tickInterval)
 }
 
 func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy) {
