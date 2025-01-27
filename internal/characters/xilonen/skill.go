@@ -97,6 +97,7 @@ func (c *char) nightsoulPointReduceTask(src int) {
 		}
 		// reduce 0.5 point every 6f, which is 5 per second
 		c.reduceNightsoulPoints(0.5)
+		c.nightsoulPointReduceTask(src)
 	}, 60*tickInterval)
 }
 
