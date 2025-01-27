@@ -141,7 +141,8 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	}
 
 	chargeDelay := c.c6ChargeTime(count) + windup
-	c.CAAnimLength = chargeDelay
+
+	// fire bullets at the end of the charge
 	c.QueueCharTask(func() {
 		if c.nightsoulState.HasBlessing() {
 			c.fireBullets()
@@ -151,9 +152,9 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
 	return action.Info{
 		Frames: c.skillNextFrames(func(next action.Action) int {
-			return c.CAAnimLength + skillAimFrames[next]
+			return chargeDelay + skillAimFrames[next]
 		}),
-		AnimationLength: windup + chargeDelay + skillAimFrames[action.InvalidAction],
+		AnimationLength: chargeDelay + skillAimFrames[action.InvalidAction],
 		CanQueueAfter:   windup + skillAimFrames[action.ActionDash], // Early CanQueueAfter in case nightsoul runs out
 		State:           action.AimState,
 	}, nil

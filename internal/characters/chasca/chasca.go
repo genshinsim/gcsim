@@ -27,7 +27,6 @@ type char struct {
 	skillParticleICD     bool
 	c2Src                int
 	c4Src                int
-	CAAnimLength         int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

@@ -63,6 +63,7 @@ func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.
 		if c.nightsoulState.HasBlessing() {
 			return f(next)
 		}
+		// TODO: set fall down animation to be "falling/idle" when this occurs?
 		// TODO: How to account for hitlag nicely?
 		// I want the CAKeyDur - c.StatusDuration(CAKey) to exactly equal the hitlag
 		// effected time elapsed until "now" but without needing to add a status
