@@ -45,6 +45,10 @@ skill_data_mapping:
             - 4 # Aimed Shot|{param4:F1P}
         fullAim:
             - 5 # Fully-Charged Aimed Shot|{param5:P}
+        plunge:
+            - 6 # Plunge DMG|{param6:F1P}
+        lowPlunge:
+            - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
     skill: # Spirit Reins, Shadow Hunt
         skillResonance:
             - 0 # Resonance DMG|{param0:F1P}
