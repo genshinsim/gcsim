@@ -215,7 +215,7 @@ func (c *char) loadSkillHoldBullets() {
 	c.bullets[0] = attributes.Anemo
 	c.bullets[1] = attributes.Anemo
 	c.bullets[2] = c.a1Conversion()
-	c.c1Conversion() // check if we need to additionally convert bullet[1]
+	c.c1Conversion() // check if we need to additionally convert bullet[1] due to C1
 
 	if len(c.partyPHECTypes) < 3 {
 		c.bullets[3] = attributes.Anemo

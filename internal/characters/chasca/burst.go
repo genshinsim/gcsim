@@ -81,10 +81,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(22)
 
-	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
-
 	frames := frames.NewAbilFunc(burstFrames)
 	if c.nightsoulState.HasBlessing() {
+		// if we Q while in the air, we need to add the frames of fall down
+		// TODO: set fall down animation to be "idle/skill" instead of burst?
 		frames = c.skillNextFrames(frames)
 	}
 	return action.Info{

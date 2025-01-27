@@ -18,7 +18,6 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
 		c.reduceNightsoulPoints(13.3)
 		d, e := c.Character.Dash(p)
-		c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
 		d.Frames = c.skillNextFrames(d.Frames)
 		return d, e
 	}

@@ -35,8 +35,8 @@ func init() {
 	skillCancelFrames = frames.InitAbilSlice(65)
 	skillCancelFrames[action.ActionAttack] = 49
 	skillCancelFrames[action.ActionAim] = 50
-	skillCancelFrames[action.ActionLowPlunge] = 2 // TODO: Can you low plunge?
-	skillCancelFrames[action.ActionHighPlunge] = 2
+	skillCancelFrames[action.ActionLowPlunge] = 2
+	skillCancelFrames[action.ActionHighPlunge] = 2 // TODO: Can you low plunge?
 	skillCancelFrames[action.ActionBurst] = 47
 	skillCancelFrames[action.ActionDash] = 50
 	skillCancelFrames[action.ActionJump] = 999 // TODO: Why can't this be done?
@@ -59,6 +59,7 @@ func (c *char) checkNS() {
 // Must set c.AddStatus(SkillActionKey, SkillActionKeyDur, true) so this function can calculate
 // the right "time elapsed" since action start
 func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.Action) int {
+	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
 	return func(next action.Action) int {
 		if c.nightsoulState.HasBlessing() {
 			return f(next)
