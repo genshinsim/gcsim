@@ -127,7 +127,7 @@ type CharWrapper struct {
 	DashLockout     bool
 
 	// hitlag stuff
-	timePassed   int // how many frames have passed since start of sim
+	TimePassed   int // how many frames have passed since start of sim
 	frozenFrames int // how many frames are we still frozen for
 	queue        *task.Handler
 }
@@ -153,7 +153,7 @@ func New(
 		f:             f,
 		debug:         debug,
 	}
-	c.queue = task.New(&c.timePassed)
+	c.queue = task.New(&c.TimePassed)
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]info.Set)

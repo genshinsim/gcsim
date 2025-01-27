@@ -14,9 +14,6 @@ import (
 var skillFrames []int
 var skillCancelFrames []int
 
-const SkillActionKey = "chasca-e-action"
-const SkillActionKeyDur = 200
-
 const (
 	skillHitmarks      = 5
 	plungeAvailableKey = "chasca-plunge-available"
@@ -56,19 +53,15 @@ func (c *char) checkNS() {
 }
 
 // If NS expired gives the skillCancelFrames, otherwise gives the next frames as input
-// Must set c.AddStatus(SkillActionKey, SkillActionKeyDur, true) so this function can calculate
-// the right "time elapsed" since action start
 func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.Action) int {
-	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
+	// this is used to calculate the hitlag effect time elapsed since action start
+	actionStart := c.TimePassed
 	return func(next action.Action) int {
 		if c.nightsoulState.HasBlessing() {
 			return f(next)
 		}
 		// TODO: set fall down animation to be "falling/idle" when this occurs?
-		// TODO: How to account for hitlag nicely?
-		// I want the CAKeyDur - c.StatusDuration(CAKey) to exactly equal the hitlag
-		// effected time elapsed until "now" but without needing to add a status
-		return SkillActionKeyDur - c.StatusDuration(SkillActionKey) + skillCancelFrames[next]
+		return c.TimePassed - actionStart + skillCancelFrames[next]
 	}
 }
 

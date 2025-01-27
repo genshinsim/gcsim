@@ -8,7 +8,9 @@ action_param_keys:
         - param: "hold"
         - param: "travel"
         - param: "weakspot"
-        - param: "count"
+        - param: "bullets"
+    low_plunge:
+        - param: "collision"
 icd_tags:
     - ICDTagChascaTap
     - ICDTagChascaShadowhunt

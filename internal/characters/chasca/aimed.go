@@ -112,16 +112,19 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
-	count, ok := p["count"]
+	count, ok := p["bullets"]
 	if !ok {
 		count = 6
 	}
 	if count > 6 {
-		return action.Info{}, errors.New("count must be <= 6")
+		return action.Info{}, errors.New("bullets must be <= 6")
+	}
+	if count <= 0 {
+		return action.Info{}, errors.New("bullets must be > 0")
 	}
 
 	if c.StatusIsActive(c6key) && count < 6 {
-		return action.Info{}, errors.New("count must be 6 when c6 instant charge is active")
+		return action.Info{}, errors.New("bullets must be 6 when c6 instant charge is active")
 	}
 
 	windup := 12
@@ -149,7 +152,6 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		}
 	}, chargeDelay)
 
-	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
 	return action.Info{
 		Frames: c.skillNextFrames(func(next action.Action) int {
 			return chargeDelay + skillAimFrames[next]
