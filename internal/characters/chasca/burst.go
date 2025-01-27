@@ -81,11 +81,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(22)
 
-	// update the nightsoul status at the end of her burst
-	c.QueueCharTask(c.checkNS, burstFrames[action.ActionSkill])
 	c.AddStatus(SkillActionKey, SkillActionKeyDur, true)
+
+	frames := frames.NewAbilFunc(burstFrames)
+	if c.nightsoulState.HasBlessing() {
+		frames = c.skillNextFrames(frames)
+	}
 	return action.Info{
-		Frames:          c.skillNextFrames(frames.NewAbilFunc(burstFrames)),
+		Frames:          frames,
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSkill], // earliest cancel
 		State:           action.BurstState,

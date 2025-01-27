@@ -45,11 +45,6 @@ func init() {
 
 func (c *char) reduceNightsoulPoints(val float64) {
 	c.nightsoulState.ConsumePoints(val)
-
-	// don't exit nightsoul while bursting
-	if c.Core.Player.CurrentState() == action.BurstState {
-		return
-	}
 	c.checkNS()
 }
 
