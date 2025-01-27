@@ -153,9 +153,13 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 	}, skillAttackHitmarks[c.normalSCounter])
 
 	defer c.AdvanceNormalIndex()
+	n := c.normalSCounter
+	atkspd := c.Stat(attributes.AtkSpd)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillAttackFrames[c.normalSCounter]),
+		Frames: func(next action.Action) int {
+			return frames.AtkSpdAdjust(skillAttackFrames[n][next], atkspd)
+		},
 		AnimationLength: skillAttackFrames[c.normalSCounter][action.InvalidAction],
 		CanQueueAfter:   skillAttackFrames[c.normalSCounter][action.ActionBurst],
 		State:           action.NormalAttackState,
