@@ -5,6 +5,10 @@ const (
 	ICDTagGeneratedStart ICDTag = iota + EndDefaultICDTags + 1
 	ICDTagCharlotteMark
 	ICDTagCharlotteKamera
+	ICDTagChascaTap
+	ICDTagChascaShadowhunt
+	ICDTagChascaShining
+	ICDTagChascaBurst
 	ICDTagChioriSkill
 	ICDTagClorindeCons
 	ICDTagColleiSprout

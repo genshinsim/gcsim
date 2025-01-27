@@ -206,6 +206,38 @@
       "desc": "0 for no A1 (default), non-zero value for A1. This sets hold to 1."
     }
   ],
+  "chasca": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default)."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    },
+    {
+      "ability": "aim",
+      "param": "bullets",
+      "desc": "Number of bullets to fire. Default is maximum number of bullets. Must be between 1 and 6."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "charlotte": [
     {
       "ability": "skill",

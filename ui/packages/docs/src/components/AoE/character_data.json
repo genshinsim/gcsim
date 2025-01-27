@@ -1514,6 +1514,129 @@
       }
     ]
   },
+  "chasca": {
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      },
+      {
+        "ability": "C4",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "E-N1",
+        "shape": "Single",
+        "center": "PrimaryTarget"
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "E-Aimed",
+        "shape": "Single",
+        "center": "PrimaryTarget"
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      },
+      {
+        "ability": "Q-SoulseekerShell",
+        "shape": "Single",
+        "center": "PrimaryTarget"
+      }
+    ]
+  },
   "chevreuse": {
     "cons": [
       {
