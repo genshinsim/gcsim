@@ -84,8 +84,22 @@ func (c *char) Condition(fields []string) (any, error) {
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
-		return 9
+	if c.nightsoulState.HasBlessing() {
+		switch k {
+		case model.AnimationXingqiuN0StartDelay:
+			return 17
+		case model.AnimationYelanN0StartDelay:
+			return 17
+		default:
+			return c.Character.AnimationStartDelay(k)
+		}
 	}
-	return c.Character.AnimationStartDelay(k)
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 15
+	case model.AnimationYelanN0StartDelay:
+		return 7
+	default:
+		return c.Character.AnimationStartDelay(k)
+	}
 }
