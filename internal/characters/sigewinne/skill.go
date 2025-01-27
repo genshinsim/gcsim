@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -133,6 +134,12 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 
 		// Healing
 		c.bubbleHealing()
+
+		if c.Base.Cons >= 1 {
+			c.SetTag(convalescenceKey, c.Tag(convalescenceKey)+1)
+			c.Core.Log.NewEvent("bounce: adding a1 stack from c1", glog.LogCharacterEvent, c.Index).
+				Write("current count", c.Tag(convalescenceKey))
+		}
 
 		if tick == c.bubbleHitLimit-1 {
 			c.bubbleFinalHealing()

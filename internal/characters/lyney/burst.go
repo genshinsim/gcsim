@@ -117,5 +117,5 @@ func (c *char) explosiveFirework() {
 	c.hats = append(c.hats, g)
 	c.Core.Combat.AddGadget(g)
 
-	c.increasePropSurplusStacks(1)
+	c.increasePropSurplusStacks()
 }
