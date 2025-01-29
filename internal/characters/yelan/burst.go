@@ -79,6 +79,7 @@ func (c *char) burstWaveWrapper() {
 }
 
 func (c *char) summonExquisiteThrow() {
+	hp := c.MaxHP()
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Exquisite Throw",
@@ -89,12 +90,13 @@ func (c *char) summonExquisiteThrow() {
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       0,
-		FlatDmg:    burstDice[c.TalentLvlBurst()] * c.MaxHP(),
+		FlatDmg:    burstDice[c.TalentLvlBurst()] * hp,
 	}
+	snap := c.Snapshot(&ai)
 	for i := 0; i < 3; i++ {
-		//TODO: probably snapshots before hitmark
-		c.Core.QueueAttack(
+		c.Core.QueueAttackWithSnap(
 			ai,
+			snap,
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
@@ -102,14 +104,13 @@ func (c *char) summonExquisiteThrow() {
 				0.5,
 			),
 			burstDiceHitmarks[i],
-			burstDiceHitmarks[i],
 		)
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
 		ai.Abil = "Yelan C2 Proc"
 		ai.ICDTag = attacks.ICDTagNone
 		ai.ICDGroup = attacks.ICDGroupDefault
-		ai.FlatDmg = 14.0 / 100 * c.MaxHP()
+		ai.FlatDmg = 14.0 / 100 * hp
 		c.c2icd = c.Core.F + 1.8*60
 		//TODO: frames timing on this?
 		c.Core.QueueAttack(
@@ -120,7 +121,7 @@ func (c *char) summonExquisiteThrow() {
 				nil,
 				0.5,
 			),
-			burstDiceHitmarks[3],
+			0,
 			burstDiceHitmarks[3],
 		)
 	}
