@@ -1071,6 +1071,33 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "ororon": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default)."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    },
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Travel time of bounce between targets in frames. Default: 10."
+    }
+  ],
   "qiqi": [
     {
       "ability": "low_plunge",
