@@ -54,7 +54,8 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		burstHitmark,
 	)
 
-	c.nightsoulGainFunc(0)
+	// check this
+	c.QueueCharTask(c.nightsoulGainFunc(0), 0)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),

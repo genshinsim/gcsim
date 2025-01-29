@@ -1147,6 +1147,13 @@
       "desc": "Projectile travel time. Default 0 frames."
     }
   ],
+  "travelerpyro": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Blazing Threshold; 1 for Scorching Threshold. Default 0."
+    }
+  ],
   "venti": [
     {
       "ability": "attack",

@@ -92,7 +92,7 @@ func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
 		Abil:           "Flowfire Blade (Hold DMG)",
 		AttackTag:      attacks.AttackTagElementalArt,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagNone,
+		ICDTag:         attacks.ICDTagTravelerHoldDMG,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Pyro,
@@ -105,7 +105,6 @@ func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5),
 		skillHoldHitmark,
 		skillHoldHitmark,
-		c.particleCB,
 	)
 
 	c.AddStatus(scoringThresholdKey, -1, false)
@@ -162,7 +161,7 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 			Abil:           "Blazing Threshold DMG",
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-			ICDTag:         attacks.ICDTagElementalArt,
+			ICDTag:         attacks.ICDTagTravelerBlazingThreshold,
 			ICDGroup:       attacks.ICDGroupDefault,
 			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        attributes.Pyro,
@@ -174,7 +173,7 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 		if c.Base.Ascension >= 1 && c.nightsoulState.Points() >= 20 {
 			radius = 6.
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius), 0, 0, c.particleCB)
 		c.QueueCharTask(c.blazingThresholdHit(src), blazingThresholdInterval)
 	}
 }
@@ -211,7 +210,7 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 			Abil:           "Scorching Threshold DMG",
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-			ICDTag:         attacks.ICDTagElementalArt,
+			ICDTag:         attacks.ICDTagTravelerScorchingThreshold,
 			ICDGroup:       attacks.ICDGroupDefault,
 			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        attributes.Pyro,
@@ -223,14 +222,14 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 		if c.Base.Ascension >= 1 && c.nightsoulState.Points() >= 20 {
 			radius = 6.
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius), scorchingThresholdHitmarkDelay, scorchingThresholdHitmarkDelay)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius),
+			scorchingThresholdHitmarkDelay, scorchingThresholdHitmarkDelay, c.particleCB)
 
 		c.scorchingThresholdICD = c.Core.F + 180 // 3 sec icd
 		return false
 	}, "travelerpyro-scorching-threshold")
 }
 
-// TODO: change their particle gen. for now it's unknown, so taking DMCs
 func (c *Traveler) particleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
@@ -238,11 +237,8 @@ func (c *Traveler) particleCB(a combat.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 16*60, true)
+	c.AddStatus(particleICDKey, int(2.9*60), true)
 
-	count := 2.0
-	if c.Core.Rand.Float64() < 0.5 {
-		count = 3
-	}
+	count := 1.0
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }

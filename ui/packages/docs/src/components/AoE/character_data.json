@@ -9134,6 +9134,119 @@
       }
     ]
   },
+  "travelerpyro": {
+    "normal": [
+      {
+        "ability": "Aether-N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.4,
+        "boxY": 2.2
+      },
+      {
+        "ability": "Aether-N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 1.7,
+        "fanAngle": 180
+      },
+      {
+        "ability": "Aether-N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.4,
+        "boxX": 1.5,
+        "boxY": 2.2
+      },
+      {
+        "ability": "Aether-N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 1.7
+      },
+      {
+        "ability": "Aether-N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 1.75,
+        "fanAngle": 240
+      },
+      {
+        "ability": "Lumine-N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1.6
+      },
+      {
+        "ability": "Lumine-N2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.4,
+        "boxY": 2.2
+      },
+      {
+        "ability": "Lumine-N3",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.7,
+        "radius": 1.5
+      },
+      {
+        "ability": "Lumine-N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.7,
+        "radius": 1.5
+      },
+      {
+        "ability": "Lumine-N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1.6
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-1",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 2.2
+      },
+      {
+        "ability": "CA-2",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 2.2
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E Hold DMG"
+      },
+      {
+        "ability": "E Scorcing Threshold"
+      },
+      {
+        "ability": "E Blazing Threshold"
+      },
+      {
+        "ability": "E Scorcing Threshold (A1)"
+      },
+      {
+        "ability": "E Blazing Threshold (A1)"
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q"
+      }
+    ]
+  },
   "venti": {
     "cons": [
       {

@@ -90,6 +90,24 @@
       },
       "name_text_hash_map ": "1533656818"
     },
+    "aetherpyro": {
+      "id": 10000005,
+      "sub_id": 508,
+      "key": "aetherpyro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Grass",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
+      "skill_details": {
+        "skill": 10117,
+        "burst": 10118,
+        "attack": 100547,
+        "burst_energy_cost": 80
+      },
+      "name_text_hash_map ": "1533656818"
+    },
     "albedo": {
       "id": 10000038,
       "key": "albedo",
@@ -975,6 +993,24 @@
         "skill": 10087,
         "burst": 10088,
         "attack": 100552,
+        "burst_energy_cost": 80
+      },
+      "name_text_hash_map ": "3816664530"
+    },
+    "luminepyro": {
+      "id": 10000007,
+      "sub_id": 708,
+      "key": "luminepyro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Grass",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10117,
+        "burst": 10118,
+        "attack": 100557,
         "burst_energy_cost": 80
       },
       "name_text_hash_map ": "3816664530"
