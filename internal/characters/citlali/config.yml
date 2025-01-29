@@ -1,0 +1,44 @@
+package_name: citlali
+genshin_id: 10000107
+key: citlali
+icd_tags:
+  - ICDTagCitlaliSpiritVessel
+  - ICDTagCitlaliFrostfallStorm
+icd_groups:
+  - group_name: ICDGroupCitlaliFrostfallStorm
+    reset_timer: 120
+    ele_app_sequence: [1, 0]
+    damage_sequence: [1, 1]
+action_param_keys:
+  attack:
+    - param: "travel"
+skill_data_mapping:
+  attack: # Normal Attack: Shadow-Stealing Spirit Vessel
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}
+    charge:
+      - 3 # Charged Attack DMG|{param3:F1P}
+    collision:
+      - 5 # Plunge DMG|{param5:F1P}
+    lowPlunge:
+      - 6 # Low/High Plunge DMG|{param6:P}/{param7:P}
+    highPlunge:
+      - 7 # Low/High Plunge DMG|{param6:P}/{param7:P}
+  skill: # Dawnfrost Darkstar
+    skill:
+      - 0 # Obsidian Tzitzimitl DMG|{param0:F1P}
+    shieldEM:
+      - 1 # Shield DMG Absorption|{param1:F1P} Elemental Mastery+{param2:I}
+    shieldFlat:
+      - 2 # Shield DMG Absorption|{param1:F1P} Elemental Mastery+{param2:I}
+    frostfall:
+      - 4 # Frostfall Storm DMG|{param4:F1P}
+  burst: # Edict of Entwined Splendor
+    iceStorm:
+      - 0 # Ice Storm DMG|{param0:F1P}
+    spiritVessel:
+      - 1 # Spiritvessel Skull DMG|{param1:F1P}
