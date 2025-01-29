@@ -23,6 +23,7 @@ const (
 	Chevreuse
 	Chiori
 	Chongyun
+	Citlali
 	Clorinde
 	Collei
 	Cyno
@@ -161,6 +162,10 @@ func init() {
 	charNames[Chongyun] = "chongyun"
 	charPrettyName[Chongyun] = "Chongyun"
 	CharKeyToEle[Chongyun] = attributes.Cryo
+
+	charNames[Citlali] = "citlali"
+	charPrettyName[Citlali] = "Citlali"
+	CharKeyToEle[Citlali] = attributes.Cryo
 
 	charNames[Clorinde] = "clorinde"
 	charPrettyName[Clorinde] = "Clorinde"

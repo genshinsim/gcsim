@@ -18,6 +18,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/chevreuse"
 	_ "github.com/genshinsim/gcsim/internal/characters/chiori"
 	_ "github.com/genshinsim/gcsim/internal/characters/chongyun"
+	_ "github.com/genshinsim/gcsim/internal/characters/citlali"
 	_ "github.com/genshinsim/gcsim/internal/characters/clorinde"
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
 	_ "github.com/genshinsim/gcsim/internal/characters/cyno"
