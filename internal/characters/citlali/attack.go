@@ -16,7 +16,7 @@ var (
 	attackFrames         [][]int
 	attackHitmarks       = []int{21, 25, 27}
 	attackEarliestCancel = []int{5, 15, 4}
-	attackRadius         = []float64{1, 1, 2}
+	attackRadius         = []float64{0.75, 0.75, 0.75}
 )
 
 // charlotte frames. CHANGE
@@ -54,7 +54,7 @@ func init() {
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 1
+		travel = attackHitmarks[c.NormalCounter]
 	}
 
 	ai := combat.AttackInfo{
@@ -78,8 +78,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		ap,
-		attackHitmarks[c.NormalCounter]+travel,
-		attackHitmarks[c.NormalCounter]+travel,
+		travel,
+		travel,
 	)
 
 	defer c.AdvanceNormalIndex()

@@ -111,7 +111,7 @@ func (c *char) c4Skull() {
 		FlatDmg:        18 * c.NonExtraStat(attributes.EM),
 	}
 	// TODO: the actual hitmark
-	c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()),
+	c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
 		spiritVesselSkullHitmark-iceStormHitmark, spiritVesselSkullHitmark-iceStormHitmark)
 }
 

@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability:     25,
 		Mult:           skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), obsidianTzitzimitlHitmark, obsidianTzitzimitlHitmark, c.particleCB)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), obsidianTzitzimitlHitmark, obsidianTzitzimitlHitmark, c.particleCB)
 
 	// TODO: Confirm Delays
 	// with delay
@@ -145,7 +145,7 @@ func (c *char) ItzpapaHit(src int) func() {
 			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+int(min(8, c.nightsoulState.Points())))
 		}
 		c.nightsoulState.ConsumePoints(8)
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), 0, 0)
 		c.QueueCharTask(c.ItzpapaHit(src), itzpapaInterval)
 		c.c4Skull()
 	}

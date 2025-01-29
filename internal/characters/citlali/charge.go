@@ -12,7 +12,7 @@ var chargeFrames []int
 
 const (
 	chargeHitmark = 67
-	chargeRadius  = 2.5
+	chargeRadius  = 1
 )
 
 // charlotte frames. CHANGE

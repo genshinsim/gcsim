@@ -56,11 +56,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(aiIceStorm, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5), iceStormHitmark, iceStormHitmark)
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), nil)
 	c.QueueCharTask(func() {
-		c.nightsoulState.GeneratePoints(float64(3 * len(enemies)))
+		c.nightsoulState.GeneratePoints(float64(3 * min(3, len(enemies))))
 		c.tryEnterOpalFireState(c.itzpapaSrc)
 	}, spiritVesselSkullHitmark)
-	for _, enemy := range enemies {
-		c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewSingleTargetHit(enemy.Key()), spiritVesselSkullHitmark, spiritVesselSkullHitmark)
+	for i, enemy := range enemies {
+		if i > 2 {
+			break
+		}
+		c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewCircleHitOnTarget(enemy.Pos(), nil, 3.5), spiritVesselSkullHitmark, spiritVesselSkullHitmark)
 	}
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
