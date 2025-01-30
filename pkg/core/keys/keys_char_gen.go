@@ -47,6 +47,7 @@ const (
 	Kaveh
 	Kazuha
 	Keqing
+	Kinich
 	Kirara
 	Klee
 	Kokomi
@@ -65,6 +66,7 @@ const (
 	Nilou
 	Ningguang
 	Noelle
+	Ororon
 	Qiqi
 	Raiden
 	Razor
@@ -258,6 +260,10 @@ func init() {
 	charPrettyName[Keqing] = "Keqing"
 	CharKeyToEle[Keqing] = attributes.Electro
 
+	charNames[Kinich] = "kinich"
+	charPrettyName[Kinich] = "Kinich"
+	CharKeyToEle[Kinich] = attributes.Dendro
+
 	charNames[Kirara] = "kirara"
 	charPrettyName[Kirara] = "Kirara"
 	CharKeyToEle[Kirara] = attributes.Dendro
@@ -329,6 +335,10 @@ func init() {
 	charNames[Noelle] = "noelle"
 	charPrettyName[Noelle] = "Noelle"
 	CharKeyToEle[Noelle] = attributes.Geo
+
+	charNames[Ororon] = "ororon"
+	charPrettyName[Ororon] = "Ororon"
+	CharKeyToEle[Ororon] = attributes.Electro
 
 	charNames[Qiqi] = "qiqi"
 	charPrettyName[Qiqi] = "Qiqi"

@@ -14,6 +14,8 @@ const (
 	ICDTagEmilieLumidouce
 	ICDTagFurinaChevalmarin
 	ICDTagFurinaUsher
+	ICDTagKinichLoopShot
+	ICDTagKinichScalespikerCannon
 	ICDTagKleeFireDamage
 	ICDTagLisaElectro
 	ICDTagLyneyEndBoom
@@ -24,6 +26,7 @@ const (
 	ICDTagNahidaC6
 	ICDTagNeuvilletteC6
 	ICDTagNilouTranquilityAura
+	ICDTagOroronElmentalBurst
 	ICDTagTartagliaRiptideFlash
 	ICDTagWandererC6
 	ICDTagWandererA4
