@@ -21,11 +21,14 @@ const (
 	ICDGroupEmilieLumidouce
 	ICDGroupFischl
 	ICDGroupFurinaSalonSolitaire
+	ICDGroupKinichLoopShot
+	ICDGroupKinichScalespikerCannon
 	ICDGroupLayla
 	ICDGroupLyneyExtra
 	ICDGroupNahidaSkill
 	ICDGroupNaviaBurst
 	ICDGroupNilou
+	ICDGroupOroronElementalBurst
 	ICDGroupSigewinne
 	ICDGroupSigewinneBurst
 	ICDGroupTighnari
@@ -114,6 +117,14 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupFurinaSalonSolitaire] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
 	ICDGroupDamageSequence[ICDGroupFurinaSalonSolitaire] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
+	ICDGroupResetTimer[ICDGroupKinichLoopShot] = 120
+	ICDGroupEleApplicationSequence[ICDGroupKinichLoopShot] = []float64{1, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupKinichLoopShot] = []float64{1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupKinichScalespikerCannon] = 72
+	ICDGroupEleApplicationSequence[ICDGroupKinichScalespikerCannon] = []float64{1, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupKinichScalespikerCannon] = []float64{1, 1, 1, 1}
+
 	ICDGroupResetTimer[ICDGroupLayla] = 180
 	ICDGroupEleApplicationSequence[ICDGroupLayla] = []float64{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupLayla] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -133,6 +144,10 @@ func init() {
 	ICDGroupResetTimer[ICDGroupNilou] = 114
 	ICDGroupEleApplicationSequence[ICDGroupNilou] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupNilou] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupOroronElementalBurst] = 180
+	ICDGroupEleApplicationSequence[ICDGroupOroronElementalBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupOroronElementalBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupSigewinne] = 120
 	ICDGroupEleApplicationSequence[ICDGroupSigewinne] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
