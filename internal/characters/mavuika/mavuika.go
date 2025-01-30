@@ -17,6 +17,7 @@ type SkillState int
 const (
 	ring SkillState = iota
 	bike
+	bikeCDKey = "flamestrider-charge"
 )
 
 type char struct {
@@ -30,6 +31,7 @@ type char struct {
 	a4buff         []float64
 	c1buff         []float64
 	c6Src          int
+	caState        ChargeState
 }
 
 func init() {
