@@ -58,6 +58,8 @@ func (c *char) windupFrames() int {
 		}
 	case action.PlungeAttackState:
 		windup -= 9
+	case action.DashState:
+		windup -= 12
 	}
 	return windup
 }
