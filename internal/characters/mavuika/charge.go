@@ -28,13 +28,13 @@ var bikeChargeAttackStartupHitmark = 35
 // Maximum CA time before CAF anim is 375f
 var bikeChargeAttackMaximumDuration = 375
 var bikeChargeFinalHitmark = 45
-var isUseBikeChargeFinalHit = false
 
-var bikeSpinInitialFrames = 11
-var bikeSpinQuadrantFrames = []int{9, 7, 15, 14} // Quadrant 4, 3, 2, 1
+// TODO: Replicate frames 35-46 of the CA more accurately
+// var bikeSpinInitialFrames = 11
+// var bikeSpinInitialAngularVelocity = float64(-90 / 11)
 // spin velocity varies by current angle
-var bikeSpinInitialAngularVelocity = float64(-90 / 11)
-var bikeSpinQuadrantAngularVelocity = []float64{-90 / 9, -90 / 7, -90 / 15, -90 / 14} // Quadrant 4, 3, 2, 1var bikeChargeHitmarks = []int{36, 78, 119, 165, 208, 252, 297, 341}
+var bikeSpinQuadrantAngularVelocity = []float64{-90 / 9, -90 / 7, -90 / 15, -90 / 14} // Quadrant 4, 3, 2, 1
+var bikeSpinQuadrantFrames = []int{9, 7, 15, 14}                                      // Quadrant 4, 3, 2, 1
 
 const chargeHitmark = 40
 const bikeChargeAttackICD = 42         // Minimum time between CA hits
@@ -121,7 +121,6 @@ func (c *char) bikeCharge(p map[string]int) (action.Info, error) {
 	// Check if a continuing CA or new
 	if c.Core.Player.CurrentState() != action.ChargeAttackState {
 		c.caState = ChargeState{}
-		isUseBikeChargeFinalHit = false
 		c.caState.startFrame = c.Core.F
 		c.caState.lastHitF = c.Core.F
 	}
@@ -133,11 +132,11 @@ func (c *char) bikeCharge(p map[string]int) (action.Info, error) {
 
 	// TODO: Allow more ways to get into the final attack?
 	if final == 1 {
-		isUseBikeChargeFinalHit = true
 		return c.bikeChargeFinalAttack(), nil
 	}
 
-	if durationCA > 0 {
+	switch {
+	case durationCA > 0:
 		c.caState.framesCAtk = durationCA
 		// Add any existing CA frames
 		c.caState.framesCAtk += (c.Core.F - c.caState.startFrame)
@@ -145,14 +144,13 @@ func (c *char) bikeCharge(p map[string]int) (action.Info, error) {
 		if durationCA > bikeChargeAttackMaximumDuration {
 			c.caState.framesCAtk = durationCA - bikeChargeAttackMaximumDuration // Cap additional hold time to maximum
 			durationCA = bikeChargeAttackMaximumDuration
-			isUseBikeChargeFinalHit = true
 		} else if durationCA < bikeChargeAttackStartupHitmark {
 			durationCA = bikeChargeAttackStartupHitmark
 			c.caState.framesCAtk = durationCA
 		}
 		// Hold CA logic
 		c.HoldBikeChargeAttack(durationCA)
-	} else if chargeCount > 0 {
+	case chargeCount > 0:
 		// CA count logic
 		// No idea why this error check always returns true as if the target list is empty
 		// isTargetForCountsHittable := false
@@ -169,18 +167,23 @@ func (c *char) bikeCharge(p map[string]int) (action.Info, error) {
 		// 	return action.Info{}, errors.New("primary target is not within flamestrider area")
 		// }
 		durationCA = c.CountBikeChargeAttack(chargeCount)
-	} else if durationCA == 0 && final == 0 && chargeCount == 0 {
+	case durationCA == 0 && final == 0 && chargeCount == 0:
 		// Default to single CA if nothing specified
 		durationCA = c.CountBikeChargeAttack(1)
 	}
+
 	c.Core.Tasks.Add(func() {
 		c.bikeChargeAttackHook()
-	}, bikeChargeAttackStartupHitmark)
+	}, bikeChargeAttackStartupHitmark-1)
+
+	c.Core.Tasks.Add(func() {
+		c.bikeChargeAttackUnhook()
+	}, durationCA)
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return durationCA }, //frames.NewAbilFunc(bikeChargeFrames),
-		AnimationLength: durationCA,                                         //bikeChargeAttackStartupHitmark,
-		CanQueueAfter:   durationCA,                                         //bikeChargeAttackStartupHitmark,
+		Frames:          func(next action.Action) int { return durationCA },
+		AnimationLength: durationCA,
+		CanQueueAfter:   durationCA,
 		State:           action.ChargeAttackState,
 	}, nil
 }
@@ -260,8 +263,7 @@ func (c *char) bikeChargeFinalAttack() action.Info {
 		adjustedBikeChargeFinalHitmark += (50 - bikeChargeAttackElapsedTime)
 	}
 
-	c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index,
-		fmt.Sprintf("Help I am starting a final charge attack"))
+	c.HoldBikeChargeAttack(50 - bikeChargeAttackElapsedTime)
 
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
@@ -326,18 +328,13 @@ func (c *char) GetBikeChargeAttackAttackInfo() combat.AttackInfo {
 }
 
 // Not sure on the scope of this yet, should definitely trigger on nightsoul stuff
-func (c *char) exitBikeChargeAttack() {
+// func (c *char) exitBikeChargeAttack() {
 
-	c.bikeChargeAttackUnhook()
-	// Use switch eventually to determine if CAF should trigger
-	if c.Core.Player.CurrentState() == action.Idle {
-		isUseBikeChargeFinalHit = true
-	}
-
-	if isUseBikeChargeFinalHit {
-		c.bikeChargeFinalAttack()
-	}
-}
+// 	c.bikeChargeAttackUnhook()
+// 	// Use switch eventually to determine if CAF should trigger
+// 	if c.Core.Player.CurrentState() == action.Idle {
+// 	}
+// }
 
 func (c *char) BuildBikeChargeAttackHittableTargetList() {
 	bikeChargeAttackHittableList = bikeChargeAttackHittableList[:0]
