@@ -66,9 +66,9 @@ func init() {
 
 // Charge state struct
 type ChargeState struct {
-	startFrame int
-	framesCAtk int
-	lastHitF   int
+	StartFrame int
+	CAtkFrames int
+	LastHitF   int
 }
 
 type HittableEntity struct {
@@ -121,9 +121,11 @@ func (c *char) bikeCharge(p map[string]int) (action.Info, error) {
 	// Check if a continuing CA or new
 	if c.Core.Player.CurrentState() != action.ChargeAttackState {
 		c.caState = ChargeState{}
-		c.caState.startFrame = c.Core.F
-		c.caState.lastHitF = c.Core.F
+		c.caState.StartFrame = c.Core.F
+		c.caState.LastHitF = 0
 	}
+	// Add any existing CA frames
+	c.caState.CAtkFrames = (c.Core.F - c.caState.StartFrame)
 
 	// Parameters for tuning CA
 	durationCA := p["hold"]
@@ -137,18 +139,19 @@ func (c *char) bikeCharge(p map[string]int) (action.Info, error) {
 
 	switch {
 	case durationCA > 0:
-		c.caState.framesCAtk = durationCA
-		// Add any existing CA frames
-		c.caState.framesCAtk += (c.Core.F - c.caState.startFrame)
+		// c.caState.CAtkFrames += durationCA
 		// Default max hold time is 6.25s/375f
 		if durationCA > bikeChargeAttackMaximumDuration {
-			c.caState.framesCAtk = durationCA - bikeChargeAttackMaximumDuration // Cap additional hold time to maximum
+			c.caState.CAtkFrames = durationCA - bikeChargeAttackMaximumDuration // Cap additional hold time to maximum
 			durationCA = bikeChargeAttackMaximumDuration
-		} else if durationCA < bikeChargeAttackStartupHitmark {
-			durationCA = bikeChargeAttackStartupHitmark
-			c.caState.framesCAtk = durationCA
+		} else if (durationCA + c.caState.StartFrame) < bikeChargeAttackStartupHitmark {
+			durationCA = bikeChargeAttackStartupHitmark - c.caState.StartFrame
+			c.caState.CAtkFrames = durationCA
 		}
 		// Hold CA logic
+		c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index,
+			fmt.Sprintf("Last hit is %d | Start frame is %d | Duration is %d | State frames is %d",
+				c.caState.LastHitF, c.caState.StartFrame, durationCA, c.caState.CAtkFrames))
 		c.HoldBikeChargeAttack(durationCA)
 	case chargeCount > 0:
 		// CA count logic
@@ -189,11 +192,12 @@ func (c *char) bikeCharge(p map[string]int) (action.Info, error) {
 }
 
 // For given CA length, calculate hits on each target in hittable list
-func (c *char) HoldBikeChargeAttack(framesCAtk int) {
+func (c *char) HoldBikeChargeAttack(CAtkFrames int) {
+	lastPrimaryHitF := 0
 	for i := 0; i < len(bikeChargeAttackHittableList); i++ {
 		t := bikeChargeAttackHittableList[i]
 		// First 11f of CA are a bit inaccurate, should maxHitCount further left
-		hitFrames := c.CalculateValidCollisionFrames(framesCAtk, t.CollFrames)
+		hitFrames := c.CalculateValidCollisionFrames(CAtkFrames, t.CollFrames)
 
 		if len(hitFrames) > 0 {
 			for _, f := range hitFrames {
@@ -201,11 +205,15 @@ func (c *char) HoldBikeChargeAttack(framesCAtk int) {
 					ai := c.GetBikeChargeAttackAttackInfo()
 					c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Entity.Key()), 0, 0)
 				}, f)
+				c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Valid hit frame: %d", f))
+				if t.Entity == c.Core.Combat.PrimaryTarget() {
+					lastPrimaryHitF = f + (c.caState.CAtkFrames - c.caState.LastHitF)
+				}
 			}
 		}
 		// c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Target %d Spin Collision Frames: %d - %d", i, t.CollFrames[0], t.CollFrames[1]))
 	}
-	c.caState.lastHitF += framesCAtk
+	c.caState.LastHitF += lastPrimaryHitF
 }
 
 // For given maxHitCount count, calculate maxHitCount timings on targets and return CA duration
@@ -248,17 +256,20 @@ func (c *char) CountBikeChargeAttack(maxHitCount int) int {
 					ai := c.GetBikeChargeAttackAttackInfo()
 					c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Entity.Key()), 0, 0)
 				}, f)
+				c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Valid hit frame: %d", f))
 			}
 		}
-		// c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Target %d Spin Collision Frames: %d - %d", i, t.CollFrames[0], t.CollFrames[1]))
+		c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Target %d Spin Collision Frames: %d - %d", i, t.CollFrames[0], t.CollFrames[1]))
 	}
-	c.caState.lastHitF += dur
+	// Used when the CA started between hits (hold/hit method mix)
+	spinFramesOffset := c.caState.CAtkFrames - c.caState.LastHitF
+	c.caState.LastHitF += dur + spinFramesOffset
 	return dur
 }
 
 func (c *char) bikeChargeFinalAttack() action.Info {
 	var adjustedBikeChargeFinalHitmark = bikeChargeFinalHitmark
-	bikeChargeAttackElapsedTime := c.caState.startFrame - c.Core.F
+	bikeChargeAttackElapsedTime := c.caState.StartFrame - c.Core.F
 	if bikeChargeAttackElapsedTime < bikeChargeAttackMinimumDuration {
 		adjustedBikeChargeFinalHitmark += (50 - bikeChargeAttackElapsedTime)
 	}
@@ -361,7 +372,8 @@ func (c *char) buildValidTargetList() {
 			})
 		}
 	}
-	c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("There are %v valid targets", len(bikeChargeAttackHittableList)))
+	// c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index,
+	// 	fmt.Sprintf("There are %v valid targets", len(bikeChargeAttackHittableList)))
 }
 
 // Gadgets are gonna be problematic
@@ -416,22 +428,31 @@ func (c *char) bikeChargeAttackUnhook() {
 func (c *char) CalculateValidCollisionFrames(durationCA int, collisionFrames [2]int) []int {
 	validFrames := []int{}
 	currentFrame := 35 // First hitmark occurs on frame 35
-	durationCA += c.caState.framesCAtk
+	// Check for and set 375f limit with prev CA time + new duration
+	if durationCA+c.caState.CAtkFrames > bikeChargeAttackMaximumDuration {
+		durationCA -= c.caState.CAtkFrames - bikeChargeAttackMaximumDuration
+	}
 
 	// Start at the hitmark
-	// TODO: Rework frame returns for consecutive charge actions, such as charge:2
-	timeSinceLastHit := c.Core.F - c.caState.lastHitF
-	if timeSinceLastHit > currentFrame {
-		currentFrame = timeSinceLastHit
-		if currentFrame < bikeChargeAttackICD {
+	timeSinceStart := c.Core.F - c.caState.StartFrame
+	timeSinceLastHit := timeSinceStart - c.caState.LastHitF
+	if timeSinceStart >= currentFrame {
+		currentFrame = timeSinceStart
+		if timeSinceLastHit < bikeChargeAttackICD {
 			currentFrame += bikeChargeAttackICD - timeSinceLastHit
 		}
 	}
-	totalFrames := currentFrame // Track the total frames elapsed
+	totalFrames := currentFrame                              // Track the total frames elapsed
+	currentFrame = currentFrame % bikeChargeAttackSpinFrames // Start current frame within spin cycle
 	collisionStart := collisionFrames[0]
 	collisionEnd := collisionFrames[1]
 
-	for totalFrames <= durationCA {
+	c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index,
+		fmt.Sprintf("Duration: %d | Total frames: %d | Current frame: %d | Time since start: %d | CA frames: %d",
+			durationCA, totalFrames, currentFrame, timeSinceStart, c.caState.CAtkFrames))
+
+	for totalFrames <= (durationCA + c.caState.CAtkFrames) {
+		checkValidFrame := -1
 		// If the frame is outside the collision range, shift forward
 		if collisionStart <= collisionEnd {
 			if currentFrame > collisionEnd {
@@ -442,20 +463,25 @@ func (c *char) CalculateValidCollisionFrames(durationCA int, collisionFrames [2]
 				totalFrames += collisionStart - currentFrame
 				currentFrame = collisionStart
 			}
-		} else if currentFrame > collisionEnd && currentFrame < collisionStart {
-			totalFrames += collisionStart - currentFrame
-			currentFrame = collisionStart
+		} else {
+			if currentFrame < collisionStart && currentFrame > collisionEnd {
+				totalFrames += collisionStart - currentFrame
+				currentFrame = collisionStart
+			}
 		}
 
 		if collisionStart <= collisionEnd {
 			if currentFrame >= collisionStart && currentFrame <= collisionEnd {
-				validFrames = append(validFrames, totalFrames)
+				checkValidFrame = totalFrames - timeSinceStart
 			}
 		} else {
 			// Handle wrapping cases where collisionEnd is before collisionStart
 			if currentFrame >= collisionStart || currentFrame <= collisionEnd {
-				validFrames = append(validFrames, totalFrames)
+				checkValidFrame = totalFrames - timeSinceStart
 			}
+		}
+		if checkValidFrame >= 0 && checkValidFrame <= durationCA {
+			validFrames = append(validFrames, checkValidFrame)
 		}
 
 		// Move forward by cooldownFrames, wrapping within spin animation length
