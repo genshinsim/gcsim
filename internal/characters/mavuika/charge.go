@@ -208,11 +208,12 @@ func (c *char) ValidTargetCheck(bikeHittableEntities []HittableEntity) (bool, ac
 
 // For given CA length, calculate hits on each target in hittable list
 func (c *char) HoldBikeChargeAttack(CAtkFrames int, HittableEntities []HittableEntity) {
-	lastPrimaryHitF := 0
 	for i := 0; i < len(HittableEntities); i++ {
 		t := HittableEntities[i]
 		enemyID := int(t.Entity.Key())
 		lastHitFrame := c.caState.LastHit[enemyID]
+		newLastHitFrame := 0
+
 		// First 11f of CA are a bit inaccurate, should maxHitCount further left
 		hitFrames := c.CalculateValidCollisionFrames(CAtkFrames, t.CollFrames, lastHitFrame)
 
@@ -222,13 +223,11 @@ func (c *char) HoldBikeChargeAttack(CAtkFrames int, HittableEntities []HittableE
 					ai := c.GetBikeChargeAttackAttackInfo()
 					c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Entity.Key()), 0, 0)
 				}, f)
-				c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Valid hit frame: %d", f))
-				if t.Entity == c.Core.Combat.PrimaryTarget() {
-					lastPrimaryHitF = f + (c.caState.CAtkFrames - lastHitFrame)
-				}
+				// c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Valid hit frame: %d", f))
+				newLastHitFrame = f
 			}
 		}
-		c.caState.LastHit[enemyID] += lastPrimaryHitF
+		c.caState.LastHit[enemyID] += newLastHitFrame + (c.caState.CAtkFrames - lastHitFrame)
 		// c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Target %d Spin Collision Frames: %d - %d", i, t.CollFrames[0], t.CollFrames[1]))
 	}
 }
@@ -267,6 +266,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount int, HittableEntities []Hittabl
 		t := HittableEntities[i]
 		enemyID := int(t.Entity.Key())
 		lastHitFrame := c.caState.LastHit[enemyID]
+		newLastHitFrame := 0
 
 		// First 11f of CA are a bit inaccurate, should maxHitCount further left
 		hitFrames := c.CalculateValidCollisionFrames(dur, t.CollFrames, lastHitFrame)
@@ -277,12 +277,12 @@ func (c *char) CountBikeChargeAttack(maxHitCount int, HittableEntities []Hittabl
 					ai := c.GetBikeChargeAttackAttackInfo()
 					c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Entity.Key()), 0, 0)
 				}, f)
-				c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Valid hit frame: %d", f))
+				// c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Valid hit frame: %d", f))
+				newLastHitFrame = f
 			}
 		}
 		// Used when the CA started between hits (Usually for secondary+ targets)
-		spinFramesOffset := c.caState.CAtkFrames - lastHitFrame
-		c.caState.LastHit[enemyID] += dur + spinFramesOffset
+		c.caState.LastHit[enemyID] += newLastHitFrame + (c.caState.CAtkFrames - lastHitFrame)
 		// c.Core.Log.NewEventBuildMsg(glog.LogSimEvent, c.Index, fmt.Sprintf("Target %d Spin Collision Frames: %d - %d", i, t.CollFrames[0], t.CollFrames[1]))
 	}
 	return dur
