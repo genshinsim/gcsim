@@ -86,6 +86,9 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) bikeAttack() action.Info {
+	if c.Core.Player.CurrentState() == action.ChargeAttackState {
+		return c.StartBikeCAFromAttack()
+	}
 	delay := bikeAttackHitmarks[c.NormalCounter]
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
