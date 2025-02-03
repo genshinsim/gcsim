@@ -156,7 +156,7 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 			return chargeDelay + skillAimFrames[next]
 		}),
 		AnimationLength: chargeDelay + skillAimFrames[action.InvalidAction],
-		CanQueueAfter:   windup + skillAimFrames[action.ActionDash], // Early CanQueueAfter in case nightsoul runs out
+		CanQueueAfter:   1, // Early CanQueueAfter in case nightsoul runs out
 		State:           action.AimState,
 	}, nil
 }

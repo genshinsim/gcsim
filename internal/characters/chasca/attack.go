@@ -132,7 +132,7 @@ func (c *char) attackSkillTap(_ map[string]int) action.Info {
 	return action.Info{
 		Frames:          c.skillNextFrames(frames.NewAttackFunc(c.Character, attackFrames)),
 		AnimationLength: attackSkillTapFrames[action.InvalidAction],
-		CanQueueAfter:   attackSkillTapHitmark,
+		CanQueueAfter:   1, // can run out of nightsoul and start falling earlier
 		State:           action.NormalAttackState,
 	}
 }

@@ -61,6 +61,7 @@ func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.
 			return f(next)
 		}
 		// TODO: set fall down animation to be "falling/idle" when this occurs?
+		c.AddStatus(plungeAvailableKey, 26, true)
 		return c.TimePassed - actionStart + skillCancelFrames[next]
 	}
 }
@@ -89,7 +90,6 @@ func (c *char) exitNightsoul() {
 	c.SetCD(action.ActionSkill, 6.5*60)
 	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
-	c.Core.Player.SwapCD = 65 // this should depend on height from E. E -> CA immediately is less high
 	c.AddStatus(plungeAvailableKey, 26, true)
 }
 
