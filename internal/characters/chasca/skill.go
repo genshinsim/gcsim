@@ -27,17 +27,15 @@ func init() {
 	skillFrames[action.ActionBurst] = 5 // TODO: not in frames sheet
 	skillFrames[action.ActionDash] = 5
 	skillFrames[action.ActionJump] = 22
-	skillFrames[action.ActionSwap] = 587 // TODO: must plunge first?
+	skillFrames[action.ActionSwap] = 586 + 37 // wait for nightsoul to run out and fall onto the ground
 
-	skillCancelFrames = frames.InitAbilSlice(65)
-	skillCancelFrames[action.ActionAttack] = 49
-	skillCancelFrames[action.ActionAim] = 50
+	skillCancelFrames = frames.InitAbilSlice(40)
+	skillCancelFrames[action.ActionAttack] = 38
+	skillCancelFrames[action.ActionAim] = 38
 	skillCancelFrames[action.ActionLowPlunge] = 2
-	skillCancelFrames[action.ActionHighPlunge] = 2 // TODO: Can you low plunge?
-	skillCancelFrames[action.ActionBurst] = 47
-	skillCancelFrames[action.ActionDash] = 50
-	skillCancelFrames[action.ActionJump] = 999 // TODO: Why can't this be done?
-	skillCancelFrames[action.ActionWalk] = 999 // TODO: Why can't this be done?
+	skillCancelFrames[action.ActionBurst] = 39
+	skillCancelFrames[action.ActionWalk] = 37
+	skillCancelFrames[action.ActionSwap] = 37
 }
 
 func (c *char) reduceNightsoulPoints(val float64) {
@@ -60,6 +58,7 @@ func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.
 		if c.nightsoulState.HasBlessing() {
 			return f(next)
 		}
+
 		// TODO: set fall down animation to be "falling/idle" when this occurs?
 		c.AddStatus(plungeAvailableKey, 26, true)
 		return c.TimePassed - actionStart + skillCancelFrames[next]
@@ -90,6 +89,7 @@ func (c *char) exitNightsoul() {
 	c.SetCD(action.ActionSkill, 6.5*60)
 	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
+	c.Core.Player.SwapCD = 37
 	c.AddStatus(plungeAvailableKey, 26, true)
 }
 
@@ -136,7 +136,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.enterNightsoul()
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
+		Frames:          c.skillNextFrames(frames.NewAbilFunc(skillFrames)),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
