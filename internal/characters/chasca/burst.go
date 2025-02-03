@@ -16,6 +16,7 @@ var burstSecondaryHitmark = []int{103, 139, 147, 153, 157, 160}
 
 const (
 	burstHitmark = 96
+	burstNSFall  = 102
 )
 
 func init() {
@@ -87,6 +88,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(3)
 
+	c.QueueCharTask(func() {
+		if c.nightsoulState.HasBlessing() {
+			return
+		}
+		c.AddStatus(plungeAvailableKey, 26, true)
+	}, burstNSFall)
+
 	frames := frames.NewAbilFunc(burstFramesGrounded)
 	if c.nightsoulState.HasBlessing() {
 		// if we Q while in the air, we need to add the frames of fall down
@@ -94,7 +102,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		return action.Info{
 			Frames:          c.skillNextFrames(frames),
 			AnimationLength: burstFramesNS[action.InvalidAction],
-			CanQueueAfter:   102, // can't start falling until frame 102
+			CanQueueAfter:   burstNSFall, // can't start falling until frame 102
 			State:           action.BurstState,
 		}, nil
 	}

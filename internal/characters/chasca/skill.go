@@ -54,14 +54,16 @@ func (c *char) checkNS() {
 func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.Action) int {
 	// this is used to calculate the hitlag effect time elapsed since action start
 	actionStart := c.TimePassed
+	actionEnd := -1
 	return func(next action.Action) int {
 		if c.nightsoulState.HasBlessing() {
 			return f(next)
 		}
-
+		if actionEnd < 0 {
+			actionEnd = c.TimePassed
+		}
 		// TODO: set fall down animation to be "falling/idle" when this occurs?
-		c.AddStatus(plungeAvailableKey, 26, true)
-		return c.TimePassed - actionStart + skillCancelFrames[next]
+		return actionEnd - actionStart + skillCancelFrames[next]
 	}
 }
 
