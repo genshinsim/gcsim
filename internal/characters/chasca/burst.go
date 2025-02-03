@@ -10,21 +10,27 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var burstFrames []int
-var burstSecondaryHitmark = []int{104, 130, 150, 155, 160, 165} // 2nd, 4th, and 6th hitmarks are unknown
+var burstFramesGrounded []int
+var burstFramesNS []int
+var burstSecondaryHitmark = []int{103, 139, 147, 153, 157, 160}
 
 const (
-	burstHitmark = 99
+	burstHitmark = 96
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(123)
-	burstFrames[action.ActionAttack] = 102 // Q -> N1
-	burstFrames[action.ActionAim] = 103    // Q -> Aim
-	burstFrames[action.ActionSkill] = 101  // Q -> E
-	burstFrames[action.ActionDash] = 104   // Q -> D
-	burstFrames[action.ActionJump] = 103   // Q -> J
-	burstFrames[action.ActionWalk] = 118   // Q -> Walk
+	burstFramesGrounded = frames.InitAbilSlice(114)
+	burstFramesGrounded[action.ActionAttack] = 99 // Q -> N1
+	burstFramesGrounded[action.ActionAim] = 100   // Q -> Aim
+	burstFramesGrounded[action.ActionSkill] = 102 // Q -> E
+	burstFramesGrounded[action.ActionDash] = 101  // Q -> D
+	burstFramesGrounded[action.ActionJump] = 100  // Q -> J
+	burstFramesGrounded[action.ActionSwap] = 98   // Q -> Swap
+
+	burstFramesNS = frames.InitAbilSlice(111)
+	burstFramesNS[action.ActionAttack] = 106 // Q -> N1
+	burstFramesNS[action.ActionSkill] = 104  // Q -> E
+	burstFramesNS[action.ActionDash] = 103   // Q -> D
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -79,18 +85,24 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.SetCD(action.ActionBurst, 15*60)
-	c.ConsumeEnergy(22)
+	c.ConsumeEnergy(3)
 
-	frames := frames.NewAbilFunc(burstFrames)
+	frames := frames.NewAbilFunc(burstFramesGrounded)
 	if c.nightsoulState.HasBlessing() {
 		// if we Q while in the air, we need to add the frames of fall down
 		// TODO: set fall down animation to be "idle/skill" instead of burst?
-		frames = c.skillNextFrames(frames)
+		return action.Info{
+			Frames:          c.skillNextFrames(frames),
+			AnimationLength: burstFramesNS[action.InvalidAction],
+			CanQueueAfter:   burstFramesNS[action.ActionDash], // earliest cancel
+			State:           action.BurstState,
+		}, nil
 	}
+
 	return action.Info{
 		Frames:          frames,
-		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSkill], // earliest cancel
+		AnimationLength: burstFramesGrounded[action.InvalidAction],
+		CanQueueAfter:   burstFramesGrounded[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }

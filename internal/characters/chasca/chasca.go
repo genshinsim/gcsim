@@ -87,18 +87,18 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	if c.nightsoulState.HasBlessing() {
 		switch k {
 		case model.AnimationXingqiuN0StartDelay:
-			return 17
+			return 5
 		case model.AnimationYelanN0StartDelay:
-			return 17
+			return 0
 		default:
 			return c.Character.AnimationStartDelay(k)
 		}
 	}
 	switch k {
 	case model.AnimationXingqiuN0StartDelay:
-		return 15
+		return 12
 	case model.AnimationYelanN0StartDelay:
-		return 7
+		return 5
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}

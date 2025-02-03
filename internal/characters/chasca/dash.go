@@ -8,11 +8,9 @@ import (
 var skillDashFrames []int
 
 func init() {
-	skillDashFrames = frames.InitAbilSlice(30)
-	skillDashFrames[action.ActionAttack] = 29
+	skillDashFrames = frames.InitAbilSlice(29)
 	skillDashFrames[action.ActionSkill] = 6
-	skillDashFrames[action.ActionBurst] = 24
-	skillDashFrames[action.ActionJump] = 1
+	skillDashFrames[action.ActionBurst] = 25
 }
 func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {

@@ -13,27 +13,31 @@ import (
 
 var (
 	attackFrames   [][]int
-	attackHitmarks = [][]int{{12}, {8}, {14, 20}, {40}}
+	attackHitmarks = [][]int{{10}, {8}, {14, 20}, {39}}
 
 	attackSkillTapFrames []int
 )
 
 const normalHitNum = 4
-const attackSkillTapHitmark = 18
+const attackSkillTapHitmark = 11
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 21) // N1 -> N2
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 17) // N1 -> N2
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 19) // N2 -> N3
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 36) // N3 -> N4
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 73) // N4 -> N1
 
-	attackSkillTapFrames = frames.InitAbilSlice(40)
-	attackSkillTapFrames[action.ActionAim] = 38
-	attackSkillTapFrames[action.ActionSkill] = 38
-	attackSkillTapFrames[action.ActionBurst] = 20
-	attackSkillTapFrames[action.ActionDash] = 20
-	attackSkillTapFrames[action.ActionJump] = 33
+	attackFrames[0][action.ActionWalk] = 27
+	attackFrames[1][action.ActionWalk] = 29
+	attackFrames[2][action.ActionWalk] = 53
+	attackFrames[3][action.ActionWalk] = 62
+
+	attackSkillTapFrames = frames.InitAbilSlice(39)
+	attackSkillTapFrames[action.ActionAttack] = 34
+	attackSkillTapFrames[action.ActionSkill] = 31
+	attackSkillTapFrames[action.ActionBurst] = attackSkillTapHitmark
+	attackSkillTapFrames[action.ActionDash] = attackSkillTapHitmark
 }
 
 // Normal attack damage queue generator
@@ -42,6 +46,12 @@ func init() {
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
 		return c.attackSkillTap(p), nil
+	}
+
+	windup := 5
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState, action.AimState:
+		windup = 0
 	}
 
 	travel, ok := p["travel"]
@@ -71,15 +81,15 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				0.1,
 				1,
 			),
-			hitmark,
-			hitmark+travel,
+			windup+hitmark,
+			windup+hitmark+travel,
 		)
 	}
 
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		Frames:          func(next action.Action) int { return frames.NewAttackFunc(c.Character, attackFrames)(next) + windup },
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
@@ -100,14 +110,23 @@ func (c *char) attackSkillTap(_ map[string]int) action.Info {
 		Mult:           attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	ap := combat.NewCircleHitFanAngle(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -3.0}, 8.0, 120)
+	windup := 7
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
+		windup = 0
+	}
 
-	c.Core.QueueAttack(
-		ai,
-		ap,
-		attackSkillTapHitmark,
-		attackSkillTapHitmark,
-	)
+	ap := combat.NewCircleHitFanAngle(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -3.0}, 8.0, 120)
+	c.QueueCharTask(func() {
+		if !c.nightsoulState.HasBlessing() {
+			return
+		}
+		c.Core.QueueAttack(
+			ai,
+			ap,
+			0,
+			0,
+		)
+	}, windup+attackSkillTapHitmark)
 
 	defer c.AdvanceNormalIndex()
 	return action.Info{

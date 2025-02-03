@@ -15,15 +15,15 @@ import (
 var aimedFrames [][]int
 var skillAimFrames []int
 
-var aimedHitmarks = []int{16, 85}
+var aimedHitmarks = []int{14, 86}
 
 // TODO: confirm these hitmarks
 var skillAimHitmarks = []int{2, 4, 6, 8, 10, 12}
 
-// per bullet E CA Load Time = []int{17, 21, 15, 19, 19, 14}, (add 12f windup when previous action is E/Q/etc)
-var cumuSkillAimLoadFrames = []int{17, 38, 53, 72, 91, 105}
+// per bullet E CA Load Time (add 11f windup when previous action is E/Q/etc)
+var cumuSkillAimLoadFrames = []int{21, 38, 56, 70, 91, 108}
 
-// TODO: Get C6 load frames. Using 12f windup and 0.23s per bullet
+// TODO: Get C6 load frames. Using 11f windup and 0.23s per bullet
 var cumuSkillAimLoadFramesC6 = []int{14, 28, 42, 55, 69, 83}
 var cumuSkillAimLoadFramesC6Instant = []int{1, 2, 2, 3, 3, 4}
 
@@ -31,21 +31,19 @@ func init() {
 	aimedFrames = make([][]int, 2)
 
 	// Aimed Shot
-	aimedFrames[0] = frames.InitAbilSlice(27)
+	aimedFrames[0] = frames.InitAbilSlice(26)
 	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
 	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
 
 	// Fully-Charged Aimed Shot
-	aimedFrames[1] = frames.InitAbilSlice(97)
+	aimedFrames[1] = frames.InitAbilSlice(96)
 	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
 	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
 
-	skillAimFrames = frames.InitAbilSlice(31)
-	skillAimFrames[action.ActionAttack] = 18
+	skillAimFrames = frames.InitAbilSlice(19)
 	skillAimFrames[action.ActionAim] = 18
-	skillAimFrames[action.ActionBurst] = 12
-	skillAimFrames[action.ActionDash] = 3
-	skillAimFrames[action.ActionJump] = 19
+	skillAimFrames[action.ActionBurst] = 14
+	skillAimFrames[action.ActionDash] = 0
 }
 
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
@@ -127,9 +125,10 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		return action.Info{}, errors.New("bullets must be 6 when c6 instant charge is active")
 	}
 
-	windup := 12
+	windup := 11
 	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState, action.AimState:
+	// these actions have the windup included in the X -> Aim frames
+	case action.NormalAttackState, action.AimState, action.SkillState, action.BurstState:
 		windup = 0
 	}
 

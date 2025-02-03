@@ -12,17 +12,17 @@ import (
 
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 57
+const lowPlungeHitmark = 50
 const collisionHitmark = lowPlungeHitmark - 6
 
 func init() {
-	lowPlungeFrames = frames.InitAbilSlice(94)
-	lowPlungeFrames[action.ActionAttack] = 71
-	lowPlungeFrames[action.ActionCharge] = 70
-	lowPlungeFrames[action.ActionBurst] = 69
-	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
-	lowPlungeFrames[action.ActionJump] = 84
-	lowPlungeFrames[action.ActionWalk] = 85
+	lowPlungeFrames = frames.InitAbilSlice(80)
+	lowPlungeFrames[action.ActionAttack] = 69
+	lowPlungeFrames[action.ActionCharge] = 65
+	lowPlungeFrames[action.ActionSkill] = 66 // assuming it's the same as burst
+	lowPlungeFrames[action.ActionBurst] = 66
+	lowPlungeFrames[action.ActionDash] = 52
+	lowPlungeFrames[action.ActionSwap] = 67
 }
 
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
