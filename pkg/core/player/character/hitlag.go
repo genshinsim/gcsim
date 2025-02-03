@@ -28,7 +28,7 @@ func (c *CharWrapper) Tick() {
 		// do nothing this tick
 		return
 	}
-	c.timePassed += left
+	c.TimePassed += left
 
 	// check char queue for any executable actions
 	c.queue.Run()

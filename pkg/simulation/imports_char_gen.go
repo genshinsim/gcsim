@@ -15,6 +15,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/bennett"
 	_ "github.com/genshinsim/gcsim/internal/characters/candace"
 	_ "github.com/genshinsim/gcsim/internal/characters/charlotte"
+	_ "github.com/genshinsim/gcsim/internal/characters/chasca"
 	_ "github.com/genshinsim/gcsim/internal/characters/chevreuse"
 	_ "github.com/genshinsim/gcsim/internal/characters/chiori"
 	_ "github.com/genshinsim/gcsim/internal/characters/chongyun"
