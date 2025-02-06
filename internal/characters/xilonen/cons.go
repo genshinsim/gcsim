@@ -59,6 +59,10 @@ func (c *char) c2() {
 		return
 	}
 
+	if c.samplersConverted >= 3 {
+		return
+	}
+
 	c.activeGeoSampler(-1)()
 	for _, ch := range c.Core.Player.Chars() {
 		if ch.Base.Element != attributes.Geo {

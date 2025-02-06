@@ -69,7 +69,7 @@ func (c *char) enterNightsoul() {
 	c.skillLastStamF = c.Core.Player.LastStamUse
 	c.Core.Player.LastStamUse = math.MaxInt
 	// Don't queue the task if C2 or higher
-	if c.Base.Cons < 2 {
+	if c.Base.Cons < 2 && c.samplersConverted < 3 {
 		c.activeGeoSampler(c.nightsoulSrc)()
 	}
 }
@@ -113,6 +113,11 @@ func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy)
 
 func (c *char) activeGeoSampler(src int) func() {
 	return func() {
+		// Xilonen only has 3 samplers; if all 3 are converted then no geo samplers can remain.
+		if c.samplersConverted >= 3 {
+			return
+		}
+
 		if c.Base.Cons < 2 {
 			if c.nightsoulSrc != src {
 				return
