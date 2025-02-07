@@ -6,6 +6,8 @@ const (
 	ICDTagCharlotteMark
 	ICDTagCharlotteKamera
 	ICDTagChioriSkill
+	ICDTagCitlaliSpiritVessel
+	ICDTagCitlaliFrostfallStorm
 	ICDTagClorindeCons
 	ICDTagColleiSprout
 	ICDTagCynoBolt

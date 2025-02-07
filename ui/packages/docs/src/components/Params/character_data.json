@@ -237,6 +237,13 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "citlali": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default ??? frames, which corresponds to standing closest to the enemy."
+    }
+  ],
   "collei": [
     {
       "ability": "attack",

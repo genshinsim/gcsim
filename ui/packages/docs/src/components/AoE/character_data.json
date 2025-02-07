@@ -1831,6 +1831,72 @@
       }
     ]
   },
+  "citlali": {
+    "cons": [
+      {
+        "ability": "C4 Spiritvessel Skull",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5
+      }
+    ],
+    "normals": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.75
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.75
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.75
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.0
+      }
+    ],
+    "skill": [
+      {
+        "ability": "Obsidian Tzitzimitl",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "Frostfall Storm",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Ice Storm",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6.5
+      },
+      {
+        "ability": "Spiritvessel Skull",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5
+      }
+    ]
+  },
   "clorinde": {
     "normal": [
       {
