@@ -2545,14 +2545,14 @@
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
-        "deployable": true
+        "deployable": false
       },
       {
         "ability": "CA-Final",
         "hitHaltTime": 0.15,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
-        "deployable": true
+        "deployable": false
       }
     ],
     "skill": [

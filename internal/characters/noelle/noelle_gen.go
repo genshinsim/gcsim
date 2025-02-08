@@ -18,6 +18,7 @@ var pbData []byte
 var base *model.AvatarData
 var paramKeysValidation = map[action.Action][]string{
 	2: {"extend"},
+	4: {"final", "no_limit"},
 	5: {"collision"},
 	6: {"collision"},
 }
@@ -129,6 +130,42 @@ var (
 		2.71714,
 		2.87542,
 		3.0337,
+	}
+	// attack: charge = [4]
+	charge = []float64{
+		0.5074,
+		0.5487,
+		0.59,
+		0.649,
+		0.6903,
+		0.7375,
+		0.8024,
+		0.8673,
+		0.9322,
+		1.003,
+		1.0738,
+		1.1446,
+		1.2154,
+		1.2862,
+		1.357,
+	}
+	// attack: chargeFinal = [5]
+	chargeFinal = []float64{
+		0.90472,
+		0.97836,
+		1.052,
+		1.1572,
+		1.23084,
+		1.315,
+		1.43072,
+		1.54644,
+		1.66216,
+		1.7884,
+		1.91464,
+		2.04088,
+		2.16712,
+		2.29336,
+		2.4196,
 	}
 	// attack: collision = [8]
 	collision = []float64{
