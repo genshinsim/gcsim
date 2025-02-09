@@ -24,6 +24,7 @@ type char struct {
 	bullets              []attributes.Element
 	bulletPool           []attributes.Element
 	bulletsCharged       int
+	aimSrc               int
 	skillParticleICD     bool
 	c2Src                int
 	c4Src                int

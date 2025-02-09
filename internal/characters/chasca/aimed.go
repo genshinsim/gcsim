@@ -18,9 +18,9 @@ var skillAimFrames []int
 var aimedHitmarks = []int{14, 86}
 
 // TODO: confirm these hitmarks
-var skillAimHitmarks = []int{2, 4, 6, 8, 10, 12}
+var skillAimHitmarks = []int{4, 7, 10, 13, 16, 19}
 
-// per bullet E CA Load Time (add 11f windup when previous action is E/Q/etc)
+// per bullet E CA Load Time
 var cumuSkillAimLoadFrames = []int{21, 38, 56, 70, 91, 108}
 
 // TODO: Get C6 load frames. Using 11f windup and 0.23s per bullet
@@ -125,28 +125,31 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		return action.Info{}, errors.New("bullets must be 6 when c6 instant charge is active")
 	}
 
+	aimSrc := c.Core.F
+	c.aimSrc = aimSrc
+
 	windup := 11
 	switch c.Core.Player.CurrentState() {
 	// these actions have the windup included in the X -> Aim frames
 	case action.NormalAttackState, action.AimState, action.SkillState, action.BurstState:
 		windup = 0
 	}
-
 	c.bulletsCharged = 0
 	for i := 1; i <= count; i++ {
 		delay := c.c6ChargeTime(i) + windup
 		c.QueueCharTask(func() {
-			if c.nightsoulState.HasBlessing() {
+			// the bullets can still charge up to 10f from the end of nightsoul blessing,
+			// so we can't simply check for nightsoul blessing here
+			if c.aimSrc == aimSrc {
 				c.bulletsCharged++
 			}
 		}, delay)
 	}
 
 	chargeDelay := c.c6ChargeTime(count) + windup
-
 	// fire bullets at the end of the charge
 	c.QueueCharTask(func() {
-		if c.nightsoulState.HasBlessing() {
+		if c.aimSrc == aimSrc {
 			c.fireBullets()
 		}
 	}, chargeDelay)
@@ -154,14 +157,19 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames: c.skillNextFrames(func(next action.Action) int {
 			return chargeDelay + skillAimFrames[next]
-		}),
-		AnimationLength: chargeDelay + skillAimFrames[action.InvalidAction],
+		}, 29),
+		// This needs to be as long as the maximum possible duration of the actions. Which is aim[bullets=6],
+		// then nightsoul exipres and chasca falls down
+		AnimationLength: chargeDelay + skillAimFrames[action.InvalidAction] + skillCancelFrames[action.InvalidAction],
 		CanQueueAfter:   1, // Early CanQueueAfter in case nightsoul runs out
 		State:           action.AimState,
 	}, nil
 }
 
 func (c *char) fireBullets() {
+	if c.aimSrc < 0 {
+		return
+	}
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Shadowhunt Shell",
@@ -208,6 +216,7 @@ func (c *char) fireBullets() {
 		}, hitDelay)
 	}
 	c.bulletsCharged = 0
+	c.aimSrc = -1
 	c.loadSkillHoldBullets()
 }
 

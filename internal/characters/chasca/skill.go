@@ -51,7 +51,7 @@ func (c *char) checkNS() {
 }
 
 // If NS expired gives the skillCancelFrames, otherwise gives the next frames as input
-func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.Action) int {
+func (c *char) skillNextFrames(f func(next action.Action) int, extraDelay int) func(next action.Action) int {
 	// this is used to calculate the hitlag effect time elapsed since action start
 	actionStart := c.TimePassed
 	actionEnd := -1
@@ -63,7 +63,7 @@ func (c *char) skillNextFrames(f func(next action.Action) int) func(next action.
 			actionEnd = c.TimePassed
 		}
 		// TODO: set fall down animation to be "falling/idle" when this occurs?
-		return actionEnd - actionStart + skillCancelFrames[next]
+		return actionEnd - actionStart + skillCancelFrames[next] + extraDelay
 	}
 }
 
@@ -82,7 +82,8 @@ func (c *char) exitNightsoul() {
 		return
 	}
 	if c.Core.Player.CurrentState() == action.AimState {
-		c.fireBullets()
+		// keep charging bullets for up to 10f after NS ends
+		c.QueueCharTask(c.fireBullets, 10)
 	}
 
 	c.nightsoulState.ExitBlessing()
@@ -138,7 +139,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.enterNightsoul()
 
 	return action.Info{
-		Frames:          c.skillNextFrames(frames.NewAbilFunc(skillFrames)),
+		Frames:          c.skillNextFrames(frames.NewAbilFunc(skillFrames), 0),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,

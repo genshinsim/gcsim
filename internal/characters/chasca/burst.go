@@ -100,7 +100,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// if we Q while in the air, we need to add the frames of fall down
 		// TODO: set fall down animation to be "idle/skill" instead of burst?
 		return action.Info{
-			Frames:          c.skillNextFrames(frames),
+			Frames:          c.skillNextFrames(frames, 0),
 			AnimationLength: burstFramesNS[action.InvalidAction],
 			CanQueueAfter:   burstNSFall, // can't start falling until frame 102
 			State:           action.BurstState,

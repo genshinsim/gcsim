@@ -16,7 +16,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
 		c.reduceNightsoulPoints(13.3)
 		d, e := c.Character.Dash(p)
-		d.Frames = c.skillNextFrames(d.Frames)
+		d.Frames = c.skillNextFrames(d.Frames, 0)
 		d.CanQueueAfter = 1 // can run out of nightsoul and immediately start falling
 		return d, e
 	}
