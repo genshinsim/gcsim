@@ -23,7 +23,6 @@ type char struct {
 	*tmpl.Character
 	nightsoulState           *nightsoul.State
 	nightsoulSrc             int
-	exitStateF               int
 	ajawSrc                  int
 	normalSCounter           int
 	characterAngularPosition float64 // [0, 360)
