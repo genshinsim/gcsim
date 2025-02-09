@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-const jumpNsStatusTag = "Ororon-Status-NS-Jump"
+const jumpNsStatusTag = nightsoul.NightsoulTransmissionStatus
 
 // Add NS status.
 // Set a CB to cancel high jump if max duration exceeded.
@@ -40,6 +41,8 @@ func (c *char) highJump(hold int) (action.Info, error) {
 	src := c.jmpSrc
 	c.Core.Player.SetAirborne(player.AirborneOroron)
 
+	// Jump cannot be cancelled before NS status is added, so no need to check src here.
+	jumpNsDuration := jumpDur - jumpNsDelay
 	c.QueueCharTask(func() { c.AddStatus(jumpNsStatusTag, jumpNsDuration, true) }, jumpNsDelay)
 
 	jumpStamDrainCb := func() {

@@ -18,12 +18,11 @@ var jumpHoldFrames [][]int
 // TODO: find real Frame delays
 const (
 	jumpNsDelay        = 10
-	jumpNsDuration     = 18
 	jumpStamDrainDelay = 5
 	jumpStamDrainAmt   = 75
 	jumpStamReqAmt     = 1 // TODO: Find real value
 
-	maxJumpFrames   = 60
+	maxJumpFrames   = 60 * 5
 	minCancelFrames = 15 // assume is the same as minPlungeFrames.
 	// minPlungeFrames = 17
 	jumpNoStamFallDelayFrames = maxJumpFrames // If ororon has 0 stam, fall cancel takes longer.

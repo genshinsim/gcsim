@@ -36,7 +36,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase("obsidiancodex-2pc", -1),
 			Amount: func() ([]float64, bool) {
-				if !char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
+				if !(char.StatusIsActive(nightsoul.NightsoulBlessingStatus) ||
+					char.StatusIsActive(nightsoul.NightsoulTransmissionStatus)) {
 					return nil, false
 				}
 				if c.Player.Active() != char.Index {

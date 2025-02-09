@@ -11,6 +11,10 @@ import (
 
 const NightsoulBlessingStatus = "nightsoul-blessing"
 
+// Nightsoul transmission status is handled by the character, not the NS package.
+// If in Nightsoul Transmission state or have the regular Nightsoul Blessing Status, return true for having Nightsoul Blessing.
+const NightsoulTransmissionStatus = "nightsoul-transmission"
+
 type State struct {
 	char            *character.CharWrapper
 	c               *core.Core
@@ -41,7 +45,8 @@ func (s *State) ExitBlessing() {
 }
 
 func (s *State) HasBlessing() bool {
-	return s.char.StatusIsActive(NightsoulBlessingStatus)
+	return s.char.StatusIsActive(NightsoulBlessingStatus) ||
+		s.char.StatusIsActive(NightsoulTransmissionStatus)
 }
 
 func (s *State) GeneratePoints(amount float64) {
