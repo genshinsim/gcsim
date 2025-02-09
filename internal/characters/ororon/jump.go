@@ -45,6 +45,9 @@ func (c *char) highJump(hold int) (action.Info, error) {
 	jumpStamDrainCb := func() {
 		h := c.Core.Player
 		h.Stam -= jumpStamDrainAmt
+		if h.Stam < 0 {
+			h.Stam = 0
+		}
 		// While in high jump, ororon cannot start resuming stamina regen until after landing.
 		h.LastStamUse = *h.F + jumpDur + fallFrames - player.StamCDFrames
 		h.Events.Emit(event.OnStamUse, action.ActionJump)
