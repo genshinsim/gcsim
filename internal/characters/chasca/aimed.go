@@ -12,12 +12,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
+// Aim keeps charging
+const skillAimChargeDelay = 10
+const skillAimFallDelay = 29
+
 var aimedFrames [][]int
 var skillAimFrames []int
 
 var aimedHitmarks = []int{14, 86}
 
-// TODO: confirm these hitmarks
 var skillAimHitmarks = []int{4, 7, 10, 13, 16, 19}
 
 // per bullet E CA Load Time
@@ -157,7 +160,7 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames: c.skillNextFrames(func(next action.Action) int {
 			return chargeDelay + skillAimFrames[next]
-		}, 29),
+		}, skillAimFallDelay),
 		// This needs to be as long as the maximum possible duration of the actions. Which is aim[bullets=6],
 		// then nightsoul exipres and chasca falls down
 		AnimationLength: chargeDelay + skillAimFrames[action.InvalidAction] + skillCancelFrames[action.InvalidAction],

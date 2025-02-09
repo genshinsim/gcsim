@@ -1,13 +1,12 @@
 package chasca
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -68,7 +67,6 @@ func (c *char) skillNextFrames(f func(next action.Action) int, extraDelay int) f
 }
 
 func (c *char) enterNightsoul() {
-	c.Core.Player.SwapCD = math.MaxInt16 // block swapping while in the air
 	c.nightsoulState.EnterBlessing(80)
 	c.nightsoulSrc = c.Core.F
 	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
@@ -77,13 +75,26 @@ func (c *char) enterNightsoul() {
 	c.skillParticleICD = false
 }
 
+func (c *char) nigthsoulFallingMsg() {
+	c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index)
+}
 func (c *char) exitNightsoul() {
 	if !c.nightsoulState.HasBlessing() {
 		return
 	}
 	if c.Core.Player.CurrentState() == action.AimState {
+
+	}
+	switch c.Core.Player.CurrentState() {
+	case action.AimState:
 		// keep charging bullets for up to 10f after NS ends
-		c.QueueCharTask(c.fireBullets, 10)
+		c.QueueCharTask(c.fireBullets, skillAimChargeDelay)
+		c.QueueCharTask(c.nigthsoulFallingMsg, skillAimFallDelay)
+	case action.Idle:
+		c.Core.Player.SwapCD = 37
+		c.nigthsoulFallingMsg()
+	case action.DashState, action.NormalAttackState:
+		c.nigthsoulFallingMsg()
 	}
 
 	c.nightsoulState.ExitBlessing()
@@ -92,7 +103,6 @@ func (c *char) exitNightsoul() {
 	c.SetCD(action.ActionSkill, 6.5*60)
 	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
-	c.Core.Player.SwapCD = 37
 	c.AddStatus(plungeAvailableKey, 26, true)
 }
 

@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var burstFramesGrounded []int
@@ -92,6 +93,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		if c.nightsoulState.HasBlessing() {
 			return
 		}
+		c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index)
 		c.AddStatus(plungeAvailableKey, 26, true)
 	}, burstNSFall)
 
