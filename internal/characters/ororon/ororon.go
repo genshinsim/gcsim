@@ -21,12 +21,17 @@ const (
 	jumpNsDuration     = 18
 	jumpStamDrainDelay = 5
 	jumpStamDrainAmt   = 75
+	jumpStamReqAmt     = 1 // TODO: Find real value
 
 	maxJumpFrames   = 60
-	minCancelFrames = 15 // assume is the same as minPlungeFrames
+	minCancelFrames = 15 // assume is the same as minPlungeFrames.
 	// minPlungeFrames = 17
+	jumpNoStamFallDelayFrames = maxJumpFrames // If ororon has 0 stam, fall cancel takes longer.
 
-	fallFrames = 60 // Time it takes from cancelling high jump to hitting the ground
+	fallFrames = 60 // Time it takes from cancelling high jump to hitting the ground.
+
+	// TODO: How to prevent stamina from regenerating until allowed?
+	fallStamResumeDelay = 60 // Time it takes stamina to start regenerating again after landing from fall.
 )
 
 func init() {
@@ -52,6 +57,7 @@ type char struct {
 	c6stacks           *stacks.MultipleRefreshNoRemove
 	c6bonus            []float64
 	jmpSrc             int
+	allowFallFrame     int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -86,6 +92,7 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	return c.Character.AnimationStartDelay(k)
 }
 
+// TODO: Should this return stam used or just stam required to start?
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a == action.ActionJump && p["hold"] != 0 {
 		return 75
@@ -101,4 +108,14 @@ func (c *char) StatusIsActive(key string) bool {
 			c.Character.StatusIsActive(jumpNsStatusTag))
 	}
 	return c.Character.StatusIsActive(key)
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	// check if a1 window is active is on-field
+	if a == action.ActionJump && p["hold"] != 0 {
+		if c.Core.Player.Stam < jumpStamReqAmt {
+			return false, action.InsufficientStamina
+		}
+	}
+	return c.Character.ActionReady(a, p)
 }

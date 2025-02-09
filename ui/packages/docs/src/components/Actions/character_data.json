@@ -2138,7 +2138,7 @@
     },
     {
       "ability": "aim",
-      "legal": true
+      "notes": "Mid-air aim not implemented."
     },
     {
       "ability": "skill",
@@ -2163,6 +2163,10 @@
     {
       "ability": "swap",
       "legal": true
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be an Ororon High Jump. Plunge from Xianyun's burst is not implemented."
     }
   ],
   "qiqi": [
