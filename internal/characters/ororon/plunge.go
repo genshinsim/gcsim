@@ -26,7 +26,8 @@ func (c *char) fall() (action.Info, error) {
 		Frames: func(next action.Action) int {
 			return frames.NewAbilFunc(jumpHoldFrames[1])(next)
 		},
-		AnimationLength: jumpHoldFrames[1][action.InvalidAction],
+		// Is this supposed to be whatever the max over Frames is?
+		AnimationLength: jumpHoldFrames[1][action.ActionAttack],
 		CanQueueAfter:   jumpHoldFrames[1][action.ActionSwap],
 		State:           action.JumpState,
 	}, nil
@@ -38,7 +39,12 @@ func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
 
 	c.Core.Player.LastStamUse = c.Core.F + plungeStamResumeDelay - player.StamCDFrames
 
-	return action.Info{}, nil
+	return action.Info{
+		Frames:          frames.NewAbilFunc(plungeFrames),
+		AnimationLength: plungeFrames[action.ActionSwap],
+		CanQueueAfter:   plungeFrames[action.ActionSwap],
+		State:           action.PlungeAttackState,
+	}, nil
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {

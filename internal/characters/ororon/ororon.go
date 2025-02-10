@@ -25,7 +25,6 @@ const (
 	maxJumpFrames   = 60 * 5
 	minCancelFrames = 15 // assume is the same as minPlungeFrames.
 	// minPlungeFrames = 17
-	jumpNoStamFallDelayFrames = maxJumpFrames // If ororon has 0 stam, fall cancel takes longer.
 
 	fallFrames = 60 // Time it takes from cancelling high jump to hitting the ground.
 
@@ -43,9 +42,9 @@ func init() {
 	jumpHoldFrames[0][action.ActionHighPlunge] = minCancelFrames
 	// Fall -> X
 	jumpHoldFrames[1] = frames.InitAbilSlice(fallFrames)
-	jumpHoldFrames[1][action.ActionAttack] = 158
-	jumpHoldFrames[1][action.ActionBurst] = 159
-	jumpHoldFrames[1][action.ActionSwap] = 155
+	jumpHoldFrames[1][action.ActionAttack] = fallFrames + 10
+	jumpHoldFrames[1][action.ActionBurst] = fallFrames + 7
+	jumpHoldFrames[1][action.ActionSwap] = fallFrames
 }
 
 type char struct {

@@ -55,6 +55,7 @@ func (c *char) highJump(hold int) (action.Info, error) {
 		}
 
 		fallParam := map[string]int{"fall": 1}
+		// Ideally this would inject the action into the queue of actions to take from the config file, rather than calling exec directly
 		c.Core.Player.Exec(action.ActionHighPlunge, c.Base.Key, fallParam)
 	}
 	// TODO: Is this hitlag extended? Does this skip if the action is canceled?
