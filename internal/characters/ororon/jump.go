@@ -69,7 +69,6 @@ func (c *char) Jump(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
 	if hold == 0 {
 		return c.Character.Jump(p)
-	} else {
-		return c.highJump(hold - 1)
 	}
+	return c.highJump(hold - 1)
 }
