@@ -56,7 +56,6 @@ type char struct {
 	c6stacks           *stacks.MultipleRefreshNoRemove
 	c6bonus            []float64
 	jmpSrc             int
-	allowFallFrame     int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

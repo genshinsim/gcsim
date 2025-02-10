@@ -1,11 +1,8 @@
 package ororon
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -21,24 +18,16 @@ func init() {
 }
 
 func (c *char) fall() (action.Info, error) {
-	// If character cannot begin falling yet because they had no stamina, delay start of fall.
-	delay := c.allowFallFrame - c.Core.F
-	if delay < 0 {
-		delay = 0
-	}
-	if delay > 0 {
-		c.Core.Log.NewEvent(fmt.Sprintf("Cannot execute fall immediately, delaying by %d frames", delay), glog.LogCooldownEvent, c.Index)
-	}
 	c.Core.Player.SetAirborne(player.Grounded)
-	c.QueueCharTask(func() { c.DeleteStatus(jumpNsStatusTag) }, delay)
+	c.DeleteStatus(jumpNsStatusTag)
 	c.Core.Player.LastStamUse = c.Core.F + fallStamResumeDelay - player.StamCDFrames
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.NewAbilFunc(jumpHoldFrames[1])(next) + delay
+			return frames.NewAbilFunc(jumpHoldFrames[1])(next)
 		},
-		AnimationLength: jumpHoldFrames[1][action.InvalidAction] + delay,
-		CanQueueAfter:   jumpHoldFrames[1][action.ActionSwap] + delay,
+		AnimationLength: jumpHoldFrames[1][action.InvalidAction],
+		CanQueueAfter:   jumpHoldFrames[1][action.ActionSwap],
 		State:           action.JumpState,
 	}, nil
 }
@@ -46,7 +35,6 @@ func (c *char) fall() (action.Info, error) {
 func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
 	c.Core.Player.SetAirborne(player.Grounded)
 	c.DeleteStatus(jumpNsStatusTag)
-	c.allowFallFrame = 0
 
 	c.Core.Player.LastStamUse = c.Core.F + plungeStamResumeDelay - player.StamCDFrames
 

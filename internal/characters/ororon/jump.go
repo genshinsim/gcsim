@@ -1,13 +1,10 @@
 package ororon
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -21,19 +18,6 @@ const jumpNsStatusTag = nightsoul.NightsoulTransmissionStatus
 func (c *char) highJump(hold int) (action.Info, error) {
 	if (hold > maxJumpFrames-minCancelFrames) || (hold < 0) {
 		hold = maxJumpFrames - minCancelFrames
-	}
-
-	// If player runs out of stamina, delay fall. Still allow high_plunge.
-	minFallFramesAdjust := 0
-	if c.Core.Player.Stam <= jumpStamDrainAmt {
-		minFallFramesAdjust = jumpNoStamFallDelayFrames
-		c.Core.Log.NewEvent(fmt.Sprintf("High jump has consumed all stamina. Earliest fall will be delayed by %d frames.", minFallFramesAdjust), glog.LogCooldownEvent, c.Index)
-	}
-	// Earliest user can trigger fall from GCSL
-	c.allowFallFrame = c.Core.F + minCancelFrames + minFallFramesAdjust
-
-	if hold < minFallFramesAdjust {
-		hold = minFallFramesAdjust
 	}
 
 	jumpDur := minCancelFrames + hold
