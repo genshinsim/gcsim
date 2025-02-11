@@ -29,9 +29,6 @@ const (
 	fallCancelFrames = superJumpBeginFrames + 46 // From From start of jump animation to UI changes from gliding to standard UI
 
 	fallFrames = superJumpBeginFrames + 43 // From fall animation start to swap icon un-gray.
-
-	// TODO: How to prevent stamina from regenerating until allowed?
-	fallStamResumeDelay = 60 // Time it takes stamina to start regenerating again after landing from fall.
 )
 
 func init() {
