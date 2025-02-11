@@ -17,16 +17,18 @@ var jumpHoldFrames [][]int
 
 // TODO: find real Frame delays
 const (
-	jumpNsDelay        = 10
+	superJumpBeginFrames = 28 + 15 // Jump Frames + Jump->SuperJump Frames
+
+	jumpNsDelay        = 49 // From swap ui gray to nightsoul state emblem
 	jumpStamDrainDelay = 5
 	jumpStamDrainAmt   = 75
 	jumpStamReqAmt     = 1 // TODO: Find real value
 
-	maxJumpFrames   = 60 * 5
-	minCancelFrames = 15 // assume is the same as minPlungeFrames.
-	// minPlungeFrames = 17
+	maxJumpFrames    = 162                       // From swap ui gray to glider wings appear
+	minCancelFrames  = superJumpBeginFrames + 18 // From start of jump animation to plunge animation start
+	fallCancelFrames = superJumpBeginFrames + 46 // From From start of jump animation to UI changes from gliding to standard UI
 
-	fallFrames = 60 // Time it takes from cancelling high jump to hitting the ground.
+	fallFrames = superJumpBeginFrames + 43 // From fall animation start to swap icon un-gray.
 
 	// TODO: How to prevent stamina from regenerating until allowed?
 	fallStamResumeDelay = 60 // Time it takes stamina to start regenerating again after landing from fall.

@@ -31,12 +31,14 @@ func (c *char) highJump(hold int) (action.Info, error) {
 
 	jumpStamDrainCb := func() {
 		h := c.Core.Player
-		h.Stam -= jumpStamDrainAmt
+		// Apply stamina reduction mods.
+		stamDrain := h.AbilStamCost(c.Index, action.ActionJump, map[string]int{"hold": 1})
+		h.Stam -= stamDrain
 		if h.Stam < 0 {
 			h.Stam = 0
 		}
 		// While in high jump, ororon cannot start resuming stamina regen until after landing.
-		h.LastStamUse = *h.F + jumpDur + fallFrames - player.StamCDFrames
+		h.LastStamUse = *h.F + jumpDur + fallFrames
 		h.Events.Emit(event.OnStamUse, action.ActionJump)
 	}
 	c.QueueCharTask(jumpStamDrainCb, jumpStamDrainDelay)

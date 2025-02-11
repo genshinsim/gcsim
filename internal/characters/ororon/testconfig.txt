@@ -19,13 +19,14 @@ target lvl=100 resist=0.1 radius=2 pos=0,2.4 hp=100000000;
 active ororon;
 
 #Passed Checks
-
-#Passed Checks
 print("Debug: Wait for NS scroll blessing.");
+// Very dependent on actual frames ororon has
 delay(60*15);
 nahida skill;
-ororon burst, jump[hold=-1];
-while !.ororon.status.scroll-4pc-nightsoul-dendro {
+ororon burst;
+delay(60 * 2);
+ororon jump[hold=-1];
+while !.ororon.status.scroll-4pc-nightsoul-dendro && .ororon.status.nightsoul-transmission {
   wait(1);
 }
 if .airborne {
@@ -122,6 +123,19 @@ wait(10);
 ororon high_plunge[fall=1];
 nahida swap;
 
+print("Debug: Try to fall on same frame Exec() is called.");
+delay(60*15);
+ororon jump[hold=2];
+#wait(15);
+if (.airborne) {
+  ororon high_plunge[fall=1];
+}
 
+delay(60*15);
+ororon jump[hold=1];
+wait(15);
+if (.airborne) {
+  ororon high_plunge[fall=0];
+}
 
 wait(60*10);

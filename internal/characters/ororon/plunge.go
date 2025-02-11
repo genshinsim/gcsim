@@ -1,34 +1,46 @@
 package ororon
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-)
-
-const (
-	plungeStamResumeDelay = 5 // When stam can start resuming after a plunge.
 )
 
 var plungeFrames []int
 
 func init() {
 	// Plunge -> X
-	plungeFrames = frames.InitAbilSlice(75) // set to very high number for most abilities
+	plungeFrames = frames.InitAbilSlice(66) // Default is From plunge animation start to swap icon un-gray
 }
 
 func (c *char) fall() (action.Info, error) {
 	c.Core.Player.SetAirborne(player.Grounded)
-	c.DeleteStatus(jumpNsStatusTag)
-	c.Core.Player.LastStamUse = c.Core.F + fallStamResumeDelay - player.StamCDFrames
+
+	// Fall cancel can't happen until after high_plunge can happen. Delay all side effects if try to fall cancel too early.
+	delay := fallCancelFrames - (c.Core.F - c.jmpSrc)
+	if delay <= 0 {
+		delay = 0
+	} else {
+		c.Core.Log.NewEvent(
+			fmt.Sprintf("Fall cancel cannot begin until %d frames after jump start; delaying fall by %d frames", fallCancelFrames, delay),
+			glog.LogCooldownEvent,
+			c.Index)
+	}
+
+	c.QueueCharTask(func() { c.DeleteStatus(jumpNsStatusTag) }, delay)
+	// Allow stam to start regen when landing
+	c.Core.Player.LastStamUse = c.Core.F + jumpHoldFrames[1][action.ActionSwap] + delay
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.NewAbilFunc(jumpHoldFrames[1])(next)
+			return frames.NewAbilFunc(jumpHoldFrames[1])(next) + delay
 		},
 		// Is this supposed to be whatever the max over Frames is?
-		AnimationLength: jumpHoldFrames[1][action.ActionAttack],
-		CanQueueAfter:   jumpHoldFrames[1][action.ActionSwap],
+		AnimationLength: jumpHoldFrames[1][action.ActionAttack] + delay,
+		CanQueueAfter:   jumpHoldFrames[1][action.ActionSwap] + delay,
 		State:           action.JumpState,
 	}, nil
 }
@@ -37,11 +49,12 @@ func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
 	c.Core.Player.SetAirborne(player.Grounded)
 	c.DeleteStatus(jumpNsStatusTag)
 
-	c.Core.Player.LastStamUse = c.Core.F + plungeStamResumeDelay - player.StamCDFrames
+	// Allow player to resume stam as soon as plunge is initiated
+	c.Core.Player.LastStamUse = c.Core.F
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(plungeFrames),
-		AnimationLength: plungeFrames[action.ActionSwap],
+		AnimationLength: plungeFrames[action.ActionAttack],
 		CanQueueAfter:   plungeFrames[action.ActionSwap],
 		State:           action.PlungeAttackState,
 	}, nil
