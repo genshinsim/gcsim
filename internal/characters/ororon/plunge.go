@@ -17,8 +17,6 @@ func init() {
 }
 
 func (c *char) fall() (action.Info, error) {
-	c.Core.Player.SetAirborne(player.Grounded)
-
 	// Fall cancel can't happen until after high_plunge can happen. Delay all side effects if try to fall cancel too early.
 	delay := fallCancelFrames - (c.Core.F - c.jmpSrc)
 	if delay <= 0 {
@@ -30,6 +28,9 @@ func (c *char) fall() (action.Info, error) {
 			c.Index)
 	}
 
+	// Cleanup high jump.
+	c.Core.Player.SetAirborne(player.Grounded)
+	c.jmpSrc = 0
 	c.QueueCharTask(func() { c.DeleteStatus(jumpNsStatusTag) }, delay)
 	// Allow stam to start regen when landing
 	c.Core.Player.LastStamUse = c.Core.F + jumpHoldFrames[1][action.ActionSwap] + delay
@@ -46,8 +47,10 @@ func (c *char) fall() (action.Info, error) {
 }
 
 func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
+	// Cleanup high jump.
 	c.Core.Player.SetAirborne(player.Grounded)
 	c.DeleteStatus(jumpNsStatusTag)
+	c.jmpSrc = 0
 
 	// Allow player to resume stam as soon as plunge is initiated
 	c.Core.Player.LastStamUse = c.Core.F

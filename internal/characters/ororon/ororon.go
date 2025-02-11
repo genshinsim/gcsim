@@ -24,11 +24,11 @@ const (
 	jumpStamDrainAmt   = 75
 	jumpStamReqAmt     = 1 // TODO: Find real value
 
-	maxJumpFrames    = 162                       // From swap ui gray to glider wings appear
-	minCancelFrames  = superJumpBeginFrames + 18 // From start of jump animation to plunge animation start
-	fallCancelFrames = superJumpBeginFrames + 46 // From From start of jump animation to UI changes from gliding to standard UI
+	maxJumpFrames      = 162                       // From swap ui gray to glider wings appear
+	plungeCancelFrames = superJumpBeginFrames + 18 // From start of jump animation to plunge animation start
+	fallCancelFrames   = superJumpBeginFrames + 46 // From From start of jump animation to UI changes from gliding to standard UI
 
-	fallFrames = superJumpBeginFrames + 43 // From fall animation start to swap icon un-gray.
+	fallFrames = 43 // From fall animation start to swap icon un-gray.
 )
 
 func init() {
@@ -38,7 +38,7 @@ func init() {
 	jumpHoldFrames = make([][]int, 2)
 	// Hold Jump -> X
 	jumpHoldFrames[0] = frames.InitAbilSlice(60 * 10) // set to very high number for most abilities
-	jumpHoldFrames[0][action.ActionHighPlunge] = minCancelFrames
+	jumpHoldFrames[0][action.ActionHighPlunge] = plungeCancelFrames
 	// Fall -> X
 	jumpHoldFrames[1] = frames.InitAbilSlice(fallFrames)
 	jumpHoldFrames[1][action.ActionAttack] = fallFrames + 10

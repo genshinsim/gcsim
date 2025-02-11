@@ -16,20 +16,26 @@ const jumpNsStatusTag = nightsoul.NightsoulTransmissionStatus
 // Consume stamina.
 // Hold defines when fall action will automatically be called.
 func (c *char) highJump(hold int) (action.Info, error) {
-	if (hold > maxJumpFrames-minCancelFrames) || (hold < 0) {
-		hold = maxJumpFrames - minCancelFrames
+	if (hold > maxJumpFrames-fallCancelFrames) || (hold < 0) {
+		hold = maxJumpFrames - fallCancelFrames
 	}
 
-	jumpDur := minCancelFrames + hold
+	jumpDur := fallCancelFrames + hold
 	c.jmpSrc = c.Core.F
 	src := c.jmpSrc
 	c.Core.Player.SetAirborne(player.AirborneOroron)
 
-	// Jump cannot be cancelled before NS status is added, so no need to check src here.
+	// Don't add NS if jump is cancelled before NS would be added.
 	jumpNsDuration := jumpDur - jumpNsDelay
-	c.QueueCharTask(func() { c.AddStatus(jumpNsStatusTag, jumpNsDuration, true) }, jumpNsDelay)
+	c.QueueCharTask(func() {
+		if src != c.jmpSrc {
+			return
+		}
+		c.AddStatus(jumpNsStatusTag, jumpNsDuration, true)
+	}, jumpNsDelay)
 
-	jumpStamDrainCb := func() {
+	// Consume stamina.
+	c.QueueCharTask(func() {
 		h := c.Core.Player
 		// Apply stamina reduction mods.
 		stamDrain := h.AbilStamCost(c.Index, action.ActionJump, map[string]int{"hold": 1})
@@ -40,18 +46,18 @@ func (c *char) highJump(hold int) (action.Info, error) {
 		// While in high jump, ororon cannot start resuming stamina regen until after landing.
 		h.LastStamUse = *h.F + jumpDur + fallFrames
 		h.Events.Emit(event.OnStamUse, action.ActionJump)
-	}
-	c.QueueCharTask(jumpStamDrainCb, jumpStamDrainDelay)
+	}, jumpStamDrainDelay)
 
 	act := action.Info{
 		Frames:          frames.NewAbilFunc(jumpHoldFrames[0]),
 		AnimationLength: jumpDur + fallFrames,
-		CanQueueAfter:   minCancelFrames, // earliest cancel
+		CanQueueAfter:   plungeCancelFrames, // earliest cancel
 		State:           action.JumpState,
 	}
 
 	// Trigger a fall after max jump duration
-	fallCb := func() {
+	// TODO: Is this hitlag extended? Does this skip if the action is canceled?
+	act.QueueAction(func() {
 		if src != c.jmpSrc {
 			return
 		}
@@ -59,9 +65,7 @@ func (c *char) highJump(hold int) (action.Info, error) {
 		fallParam := map[string]int{"fall": 1}
 		// Ideally this would inject the action into the queue of actions to take from the config file, rather than calling exec directly
 		c.Core.Player.Exec(action.ActionHighPlunge, c.Base.Key, fallParam)
-	}
-	// TODO: Is this hitlag extended? Does this skip if the action is canceled?
-	act.QueueAction(fallCb, jumpDur)
+	}, jumpDur)
 	// c.QueueCharTask(fallCb, jumpDur)
 	return act, nil
 }
