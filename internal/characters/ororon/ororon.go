@@ -15,20 +15,19 @@ import (
 
 var jumpHoldFrames [][]int
 
-// TODO: find real Frame delays
 const (
 	superJumpBeginFrames = 28 + 15 // Jump Frames + Jump->SuperJump Frames
 
 	jumpNsDelay        = 49 // From swap ui gray to nightsoul state emblem
 	jumpStamDrainDelay = 5
 	jumpStamDrainAmt   = 75
-	jumpStamReqAmt     = 1 // TODO: Find real value
+	jumpStamReqAmt     = 1
 
 	maxJumpFrames      = 162                       // From swap ui gray to glider wings appear
 	plungeCancelFrames = superJumpBeginFrames + 18 // From start of jump animation to plunge animation start
 	fallCancelFrames   = superJumpBeginFrames + 46 // From From start of jump animation to UI changes from gliding to standard UI
 
-	fallFrames = 43 // From fall animation start to swap icon un-gray.
+	fallFrames = 44 // From fall animation start to swap icon un-gray.
 )
 
 func init() {
@@ -41,9 +40,14 @@ func init() {
 	jumpHoldFrames[0][action.ActionHighPlunge] = plungeCancelFrames
 	// Fall -> X
 	jumpHoldFrames[1] = frames.InitAbilSlice(fallFrames)
-	jumpHoldFrames[1][action.ActionAttack] = fallFrames + 10
-	jumpHoldFrames[1][action.ActionBurst] = fallFrames + 7
-	jumpHoldFrames[1][action.ActionSwap] = fallFrames
+	jumpHoldFrames[1][action.ActionAttack] = 45
+	jumpHoldFrames[1][action.ActionAim] = 46
+	jumpHoldFrames[1][action.ActionSkill] = 45
+	jumpHoldFrames[1][action.ActionBurst] = 46
+	jumpHoldFrames[1][action.ActionDash] = 46
+	jumpHoldFrames[1][action.ActionJump] = 47
+	jumpHoldFrames[1][action.ActionWalk] = 47
+	jumpHoldFrames[1][action.ActionSwap] = 44
 }
 
 type char struct {
@@ -88,7 +92,6 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	return c.Character.AnimationStartDelay(k)
 }
 
-// TODO: Should this return stam used or just stam required to start?
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a == action.ActionJump && p["hold"] != 0 {
 		return 75

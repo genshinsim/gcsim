@@ -50,7 +50,7 @@ func (c *char) highJump(hold int) (action.Info, error) {
 
 	act := action.Info{
 		Frames:          frames.NewAbilFunc(jumpHoldFrames[0]),
-		AnimationLength: jumpDur + fallFrames,
+		AnimationLength: jumpDur + jumpHoldFrames[1][action.ActionWalk],
 		CanQueueAfter:   plungeCancelFrames, // earliest cancel
 		State:           action.JumpState,
 	}
