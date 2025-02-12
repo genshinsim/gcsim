@@ -5,9 +5,22 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
+
+const highPlungeHitmark = 52
+const collisionHitmark = highPlungeHitmark - 6
+
+// const highPlungePoiseDMG = 100.0 // Not needed since dmg type is pierce?
+// const collisionPoiseDMG = 10.0
+
+const highPlungeRadius = 3.5
+const collisionRadius = 1.0
 
 var plungeFrames []int
 
@@ -40,8 +53,6 @@ func (c *char) fall() (action.Info, error) {
 
 		c.QueueCharTask(func() { c.DeleteStatus(jumpNsStatusTag) }, delay)
 	}
-	c.Core.Player.SetAirborne(player.Grounded)
-	c.jmpSrc = 0
 	// Allow stam to start regen when landing
 	c.Core.Player.LastStamUse = c.Core.F + jumpHoldFrames[1][action.ActionSwap] + delay
 
@@ -56,15 +67,67 @@ func (c *char) fall() (action.Info, error) {
 	}, nil
 }
 
-// TODO: Damage + hitmarks
+// Plunge normal falling attack damage queue generator
+// Standard - Always part of high/low plunge attacks
+func (c *char) plungeCollision(delay int) {
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Plunge Collision",
+		AttackTag:  attacks.AttackTagPlunge,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
+		Element:    attributes.Physical,
+		Durability: 0,
+		Mult:       collision[c.TalentLvlAttack()],
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{},
+			collisionRadius),
+		delay,
+		delay)
+}
+
+// High Plunge attack damage queue generator
+// Use the "collision" optional argument if you want to do a falling hit on the way down
+// Default = 0
 func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
 	// Cleanup high jump.
-	c.Core.Player.SetAirborne(player.Grounded)
 	c.DeleteStatus(jumpNsStatusTag)
-	c.jmpSrc = 0
-
 	// Allow player to resume stam as soon as plunge is initiated
 	c.Core.Player.LastStamUse = c.Core.F
+
+	collision := p["collision"]
+
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "High Plunge",
+		AttackTag:  attacks.AttackTagPlunge,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
+		Element:    attributes.Physical,
+		Durability: 25,
+		Mult:       highPlunge[c.TalentLvlAttack()],
+		UseDef:     true,
+	}
+
+	if collision > 0 {
+		c.plungeCollision(collisionHitmark)
+	}
+
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{},
+			highPlungeRadius),
+		highPlungeHitmark,
+		highPlungeHitmark,
+	)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(plungeFrames),
@@ -75,6 +138,11 @@ func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
+	defer func() {
+		c.Core.Player.SetAirborne(player.Grounded)
+		c.jmpSrc = 0
+	}()
+
 	if c.Core.Player.Airborne() != player.AirborneOroron {
 		return c.Character.HighPlungeAttack(p)
 	}
