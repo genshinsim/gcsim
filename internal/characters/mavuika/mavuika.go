@@ -112,6 +112,17 @@ func (c *char) onExitField() {
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
+		switch k {
+		case model.AnimationXingqiuN0StartDelay:
+			return 0
+		case model.AnimationYelanN0StartDelay:
+			return 0
+		default:
+			return c.Character.AnimationStartDelay(k)
+		}
+	}
+
 	switch k {
 	case model.AnimationXingqiuN0StartDelay:
 		return 22

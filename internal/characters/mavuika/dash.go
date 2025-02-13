@@ -28,7 +28,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 			geometry.Point{Y: 1.0},
 			1.2,
 		)
-		c.Core.QueueAttack(ai, ap, 10, 10)
+		c.Core.QueueAttack(ai, ap, 6, 6)
 		c.reduceNightsoulPoints(10)
 	}
 

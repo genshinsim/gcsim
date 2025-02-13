@@ -11,6 +11,9 @@ action_param_keys:
         - param: "collision"
     high_plunge:
         - param: "collision"
+    charge:
+        - param: "hold"
+        - param: "final"
 skill_data_mapping:
     attack: # Normal Attack: Flames Weave Life
         attack_1:
