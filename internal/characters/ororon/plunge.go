@@ -14,7 +14,7 @@ import (
 )
 
 const highPlungeHitmark = 52
-const collisionHitmark = highPlungeHitmark - 6
+const collisionHitmark = 51
 
 // const highPlungePoiseDMG = 100.0 // Not needed since dmg type is pierce?
 // const collisionPoiseDMG = 10.0
@@ -32,7 +32,7 @@ func init() {
 	plungeFrames[action.ActionSkill] = 65
 	plungeFrames[action.ActionBurst] = 65
 	plungeFrames[action.ActionDash] = 53
-	plungeFrames[action.ActionJump] = 80
+	plungeFrames[action.ActionJump] = 82
 	plungeFrames[action.ActionWalk] = 80
 	plungeFrames[action.ActionSwap] = 66
 }
@@ -131,7 +131,7 @@ func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(plungeFrames),
-		AnimationLength: plungeFrames[action.ActionWalk],
+		AnimationLength: plungeFrames[action.ActionJump],
 		CanQueueAfter:   plungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 	}, nil

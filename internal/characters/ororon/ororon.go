@@ -16,16 +16,16 @@ import (
 var jumpHoldFrames [][]int
 
 const (
-	superJumpBeginFrames = 28 + 15 // Jump Frames + Jump->SuperJump Frames
+	superJumpBeginFrames = 15 // Jump->SuperJump Frames
 
-	jumpNsDelay        = 49 // From swap ui gray to nightsoul state emblem
+	jumpNsDelay        = 15 // From swap ui gray to nightsoul state outline appears
 	jumpStamDrainDelay = 5
 	jumpStamDrainAmt   = 75
 	jumpStamReqAmt     = 1
 
 	maxJumpFrames      = 162                       // From swap ui gray to glider wings appear
-	plungeCancelFrames = superJumpBeginFrames + 18 // From start of jump animation to plunge animation start
-	fallCancelFrames   = superJumpBeginFrames + 46 // From From start of jump animation to UI changes from gliding to standard UI
+	plungeCancelFrames = superJumpBeginFrames + 18 // From start of jump animation to plunge animation start. Earliest possible plunge cancel.
+	fallCancelFrames   = superJumpBeginFrames + 46 // From From start of jump animation to UI changes from gliding to standard UI. Earliest possible cancel.
 
 	fallFrames = 44 // From fall animation start to swap icon un-gray.
 )
@@ -45,7 +45,7 @@ func init() {
 	jumpHoldFrames[1][action.ActionSkill] = 45
 	jumpHoldFrames[1][action.ActionBurst] = 46
 	jumpHoldFrames[1][action.ActionDash] = 46
-	jumpHoldFrames[1][action.ActionJump] = 47
+	jumpHoldFrames[1][action.ActionJump] = 45
 	jumpHoldFrames[1][action.ActionWalk] = 47
 	jumpHoldFrames[1][action.ActionSwap] = 44
 }
