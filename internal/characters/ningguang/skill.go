@@ -67,7 +67,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.lastScreen = c.Core.F
 
 	noscreen, ok := p["noscreen"]
-	if !ok && noscreen != 0 {
+	if ok && noscreen != 0 {
 		c.Core.Tasks.Add(func() {
 			c.Core.Constructs.Destroy(c.lastScreen)
 		}, 1)
