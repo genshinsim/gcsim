@@ -104,6 +104,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if h > 0 {
 		return c.skillHold(), nil
 	}
+	if c.armamentState == bike {
+		return c.skillBikeRefresh(), nil
+	}
 	return c.skillPress(), nil
 }
 
@@ -193,6 +196,37 @@ func (c *char) skillPress() action.Info {
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.exitBike()
+	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(skillFrames),
+		AnimationLength: skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillFrames[action.ActionSwap],
+		State:           action.SkillState,
+	}
+}
+
+// Tried redirecting skillPress to skillHold, but it ran into errors
+func (c *char) skillBikeRefresh() action.Info {
+	ai := combat.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "The Named Moment (Flamestrider)",
+		AttackTag:      attacks.AttackTagElementalArt,
+		ICDTag:         attacks.ICDTagNone,
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeBlunt,
+		PoiseDMG:       75,
+		Element:        attributes.Pyro,
+		Durability:     25,
+		Mult:           skill[c.TalentLvlSkill()],
+	}
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		geometry.Point{Y: 1.0},
+		6,
+	)
+	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
 	return action.Info{

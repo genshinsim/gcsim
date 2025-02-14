@@ -49,12 +49,13 @@ func init() {
 	chargeFrames[action.ActionSwap] = 50
 	chargeFrames[action.ActionWalk] = 60
 
-	bikeChargeFrames = frames.InitAbilSlice(bikeChargeAttackStartupHitmark)
+	bikeChargeFrames = frames.InitAbilSlice(bikeChargeAttackMinimumDuration + bikeChargeFinalHitmark)
 	bikeChargeFrames[action.ActionCharge] = 0
-	bikeChargeFrames[action.ActionBurst] = bikeChargeAttackStartupHitmark
-	bikeChargeFrames[action.ActionDash] = bikeChargeAttackStartupHitmark
-	bikeChargeFrames[action.ActionJump] = bikeChargeAttackStartupHitmark
-	bikeChargeFrames[action.ActionSwap] = bikeChargeAttackStartupHitmark
+	bikeChargeFrames[action.ActionBurst] = 0
+	bikeChargeFrames[action.ActionSkill] = 0
+	bikeChargeFrames[action.ActionDash] = 0
+	bikeChargeFrames[action.ActionJump] = 0
+	bikeChargeFrames[action.ActionSwap] = 0
 
 	bikeChargeFinalFrames = frames.InitAbilSlice(bikeChargeFinalHitmark)
 	bikeChargeFinalFrames[action.ActionBurst] = bikeChargeFinalHitmark
@@ -69,6 +70,7 @@ type ChargeState struct {
 	CAtkFrames      int
 	LastHit         map[int]int
 	FacingDirection float64
+	srcFrame        int
 }
 
 var entityLastHit map[int]int
@@ -202,9 +204,57 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		return c.BikeChargeAttackFinal(durationCA, skippedWindupFrames, isNightSoulExitQueued), nil
 	}
 
+	c.caState.srcFrame = c.Core.F
+	src := c.caState.srcFrame
+
+	// Queue CAF for invalid actions
+	c.QueueCharTask(func() {
+		if c.caState.srcFrame != src {
+			return
+		}
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               "Flamestrider Charged Attack (Final)",
+			AttackTag:          attacks.AttackTagExtra,
+			AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			ICDTag:             attacks.ICDTagMavuikaFlamestrider,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeBlunt,
+			PoiseDMG:           12.0,
+			Element:            attributes.Pyro,
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   0.04 * 60,
+			CanBeDefenseHalted: true,
+			Durability:         25,
+			Mult:               skillChargeFinal[c.TalentLvlSkill()],
+			IgnoreInfusion:     true,
+			FlatDmg:            c.burstBuffCA() + c.c2BikeCA(),
+		}
+
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: 1},
+				4,
+			),
+			0,
+			0,
+		)
+	}, durationCA+bikeChargeFinalHitmark)
+
 	return action.Info{
-		Frames:          func(next action.Action) int { return durationCA },
-		AnimationLength: durationCA,
+		Frames: func(next action.Action) int {
+			f := bikeChargeFrames[next]
+
+			if f == 0 {
+				f = durationCA
+			} else {
+				f = durationCA + bikeChargeFinalHitmark
+			}
+			return f
+		},
+		AnimationLength: durationCA + bikeChargeFinalHitmark,
 		CanQueueAfter:   durationCA,
 		State:           action.ChargeAttackState,
 		OnRemoved: func(next action.AnimationState) {
@@ -324,7 +374,7 @@ func (c *char) BikeChargeAttackFinal(caFrames int, skippedWindupFrames int, hasQ
 
 	if currentBikeSpinFrame < 5 {
 		newMinSpinDuration = 5 - currentBikeSpinFrame
-	} else if currentBikeSpinFrame >= 35 {
+	} else if currentBikeSpinFrame > 35 {
 		newMinSpinDuration = 50 - currentBikeSpinFrame
 	}
 
@@ -383,15 +433,6 @@ func (c *char) BikeChargeAttackFinal(caFrames int, skippedWindupFrames int, hasQ
 		CanQueueAfter:   adjustedBikeChargeFinalHitmark,
 		State:           action.ChargeAttackState,
 	}
-}
-
-func (c *char) StartBikeCAFromAttack() action.Info {
-	chargeFinal := make(map[string]int)
-	chargeFinal["final"] = 1
-
-	ai, _ := c.BikeCharge(chargeFinal)
-
-	return ai
 }
 
 func (c *char) GetBikeChargeAttackAttackInfo() combat.AttackInfo {
