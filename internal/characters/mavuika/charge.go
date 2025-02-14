@@ -126,6 +126,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 
 	// Check if a continuing CA or new
 	x := c.Core.Player.CurrentState()
+	skippedWindupFrames := 0
 	if x != action.ChargeAttackState || c.caState.StartFrame == 0 {
 		c.caState = ChargeState{}
 		c.caState.StartFrame = c.Core.F
@@ -137,15 +138,22 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(func() {
 			c.bikeChargeAttackHook()
 		}, bikeChargeAttackStartupHitmark-1)
-		c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
-	}
-
-	// TODO: Find better way of handling this
-	// Currently the angle/hitbox tracking uses raw CA frames to determine position
-	// Subtracting this at the wrong time can cause hits to get out of sync
-	windup := 0
-	if x == action.DashState || x == action.NormalAttackState || x == action.BurstState {
-		windup = 15
+		// TODO: Find better way of handling this
+		// Currently the angle/hitbox tracking uses raw CA frames to determine position
+		// Subtracting this at the wrong time can cause hits to get out of sync
+		switch {
+		case x == action.DashState:
+			skippedWindupFrames = 15
+			c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
+		case x == action.NormalAttackState:
+			skippedWindupFrames = 15
+		case x == action.BurstState:
+			burstFrames := c.Core.F - c.Core.Player.CurrentStateStart()
+			if burstFrames >= 131 {
+				c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
+			}
+			skippedWindupFrames = 15
+		}
 	}
 
 	nightSoulDuration := c.GetRemainingNightSoulDuration()
@@ -153,7 +161,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	isNightSoulExitQueued := false
 
 	if final == 1 {
-		return c.BikeChargeAttackFinal(0, windup, false), nil
+		return c.BikeChargeAttackFinal(0, skippedWindupFrames, false), nil
 	}
 
 	if durationCA > 0 && c.caState.CAtkFrames > 0 {
@@ -168,19 +176,19 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 			durationCA = nightSoulDuration
 		}
 		// Hold CA logic
-		c.HoldBikeChargeAttack(durationCA, windup, bikeHittableEntities)
+		c.HoldBikeChargeAttack(durationCA, skippedWindupFrames, bikeHittableEntities)
 	} else {
 		// Default to single CA if nothing specified
 		hasNoValidTarget, ai, err := c.HasValidTargetCheck(bikeHittableEntities)
 		if hasNoValidTarget {
 			return ai, err
 		}
-		durationCA = c.CountBikeChargeAttack(1, windup, bikeHittableEntities, nightSoulDuration)
+		durationCA = c.CountBikeChargeAttack(1, skippedWindupFrames, bikeHittableEntities, nightSoulDuration)
 	}
 
 	// Add any existing CA frames
 	c.caState.CAtkFrames += durationCA
-	durationCA -= windup
+	durationCA -= skippedWindupFrames
 
 	if durationCA >= nightSoulDuration {
 		isUseFinalHit = true
@@ -191,7 +199,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	}
 
 	if isUseFinalHit {
-		return c.BikeChargeAttackFinal(durationCA, windup, isNightSoulExitQueued), nil
+		return c.BikeChargeAttackFinal(durationCA, skippedWindupFrames, isNightSoulExitQueued), nil
 	}
 
 	return action.Info{
@@ -209,7 +217,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 }
 
 // For given CA length, calculate hits on each target in hittable list
-func (c *char) HoldBikeChargeAttack(CAtkFrames int, windup int, HittableEntities []HittableEntity) {
+func (c *char) HoldBikeChargeAttack(CAtkFrames int, skippedWindupFrames int, HittableEntities []HittableEntity) {
 	for i := 0; i < len(HittableEntities); i++ {
 		t := HittableEntities[i]
 		enemyID := int(t.Entity.Key())
@@ -230,7 +238,7 @@ func (c *char) HoldBikeChargeAttack(CAtkFrames int, windup int, HittableEntities
 				c.Core.Tasks.Add(func() {
 					ai := c.GetBikeChargeAttackAttackInfo()
 					c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Entity.Key()), 0, 0)
-				}, f-windup)
+				}, f-skippedWindupFrames)
 				newLastHitFrame = f
 			}
 		}
@@ -241,7 +249,7 @@ func (c *char) HoldBikeChargeAttack(CAtkFrames int, windup int, HittableEntities
 }
 
 // For given maxHitCount count, calculate maxHitCount timings on targets and return CA duration
-func (c *char) CountBikeChargeAttack(maxHitCount int, windup int, HittableEntities []HittableEntity, nsDur int) int {
+func (c *char) CountBikeChargeAttack(maxHitCount int, skippedWindupFrames int, HittableEntities []HittableEntity, nsDur int) int {
 	// Return remaining CA time between nightsoul duration and max CA duration for attempting hit
 	dur := func(a, b int) int {
 		if a < b {
@@ -295,7 +303,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount int, windup int, HittableEntiti
 				c.Core.Tasks.Add(func() {
 					ai := c.GetBikeChargeAttackAttackInfo()
 					c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Entity.Key()), 0, 0)
-				}, f-windup)
+				}, f-skippedWindupFrames)
 				newLastHitFrame = f
 			}
 		}
@@ -307,16 +315,23 @@ func (c *char) CountBikeChargeAttack(maxHitCount int, windup int, HittableEntiti
 	return dur
 }
 
-func (c *char) BikeChargeAttackFinal(caFrames int, windup int, hasQueuedExitNightSoul bool) action.Info {
+func (c *char) BikeChargeAttackFinal(caFrames int, skippedWindupFrames int, hasQueuedExitNightSoul bool) action.Info {
 	var adjustedBikeChargeFinalHitmark = bikeChargeFinalHitmark + caFrames
 	bikeChargeAttackElapsedTime := c.caState.CAtkFrames + caFrames
-	if bikeChargeAttackElapsedTime < bikeChargeAttackMinimumDuration {
-		newMinSpinDuration := 50 - bikeChargeAttackElapsedTime
-		caFrames += newMinSpinDuration - windup
-		adjustedBikeChargeFinalHitmark += caFrames
-		bikeHittableEntities := c.BuildBikeChargeAttackHittableTargetList()
-		c.HoldBikeChargeAttack(newMinSpinDuration, windup, bikeHittableEntities)
+	// Check if bike angle is in spot where CAF has delay
+	currentBikeSpinFrame := bikeChargeAttackElapsedTime % bikeChargeAttackSpinFrames
+	newMinSpinDuration := 0
+
+	if currentBikeSpinFrame < 5 {
+		newMinSpinDuration = 5 - currentBikeSpinFrame
+	} else if currentBikeSpinFrame >= 35 {
+		newMinSpinDuration = 50 - currentBikeSpinFrame
 	}
+
+	caFrames += newMinSpinDuration
+	adjustedBikeChargeFinalHitmark += caFrames
+	bikeHittableEntities := c.BuildBikeChargeAttackHittableTargetList()
+	c.HoldBikeChargeAttack(newMinSpinDuration, skippedWindupFrames, bikeHittableEntities)
 
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
@@ -528,9 +543,9 @@ func (c *char) bikeChargeAttackHook() {
 				hittableGadgets = append(hittableGadgets, hittableGadget)
 				remainingCADuration := c.caState.CAtkFrames - (c.Core.F - c.caState.StartFrame)
 				x := c.Core.Player.CurrentState()
-				windup := 0
+				skippedWindupFrames := 0
 				if x == action.DashState || x == action.NormalAttackState {
-					windup = 15
+					skippedWindupFrames = 15
 				}
 				hitFrames := c.CalculateValidCollisionFrames(remainingCADuration, hittableGadget.CollFrames, 0)
 				if len(hitFrames) > 0 {
@@ -538,7 +553,7 @@ func (c *char) bikeChargeAttackHook() {
 						c.Core.Tasks.Add(func() {
 							ai := c.GetBikeChargeAttackAttackInfo()
 							c.Core.QueueAttack(ai, combat.NewSingleTargetHit(hittableGadget.Entity.Key()), 0, 0)
-						}, f-windup)
+						}, f-skippedWindupFrames)
 					}
 				}
 				// Frame doesn't really matter as long as > 0

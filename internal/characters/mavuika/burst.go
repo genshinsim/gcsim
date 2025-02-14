@@ -30,8 +30,13 @@ func (c *char) nightsoulConsumptionMul() float64 {
 }
 
 func init() {
-	burstFrames = frames.InitAbilSlice(116) // Q -> Swap
-	burstFrames[action.ActionWalk] = 141
+	burstFrames = frames.InitAbilSlice(141) // Q -> Walk
+	burstFrames[action.ActionSwap] = 116
+	burstFrames[action.ActionAttack] = 116
+	burstFrames[action.ActionCharge] = 116
+	burstFrames[action.ActionSkill] = 116
+	burstFrames[action.ActionDash] = 116
+	burstFrames[action.ActionJump] = 116
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
