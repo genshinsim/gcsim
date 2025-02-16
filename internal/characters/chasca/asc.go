@@ -67,7 +67,7 @@ func (c *char) a4() {
 	}
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...interface{}) bool {
 		bulletElem := attributes.Anemo
-		if len(c.partyPHECTypesUnique) == 0 {
+		if len(c.partyPHECTypesUnique) > 0 {
 			bulletElem = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
 		}
 		switch bulletElem {
