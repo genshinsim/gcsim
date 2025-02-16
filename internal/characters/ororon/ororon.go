@@ -103,8 +103,8 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 // Each has independent duration, so must be checked for in parallel.
 func (c *char) StatusIsActive(key string) bool {
 	if key == nightsoul.NightsoulBlessingStatus {
-		return (c.Character.StatusIsActive(nightsoul.NightsoulBlessingStatus) ||
-			c.Character.StatusIsActive(jumpNsStatusTag))
+		// Not a circular reference as long as c.nightsoulState only has a reference to the CharWrapper and not to the Char.
+		return c.nightsoulState.HasBlessing()
 	}
 	return c.Character.StatusIsActive(key)
 }

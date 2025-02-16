@@ -32,6 +32,18 @@ func New(c *core.Core, char *character.CharWrapper) *State {
 	return t
 }
 
+// Pass -1 for infinite duration
+func (s *State) EnterTransmissionBlessing(duration int, hitlag bool) {
+	s.char.AddStatus(NightsoulTransmissionStatus, duration, hitlag)
+	s.c.Log.NewEvent("enter nightsoul transmission blessing", glog.LogCharacterEvent, s.char.Index).
+		Write("duration", duration)
+}
+
+func (s *State) ExitTransmissionBlessing() {
+	s.char.DeleteStatus(NightsoulTransmissionStatus)
+	s.c.Log.NewEvent("exit nightsoul transmission blessing", glog.LogCharacterEvent, s.char.Index)
+}
+
 func (s *State) EnterBlessing(amount float64) {
 	s.nightsoulPoints = amount
 	s.char.AddStatus(NightsoulBlessingStatus, -1, true)
@@ -39,11 +51,13 @@ func (s *State) EnterBlessing(amount float64) {
 		Write("points", s.nightsoulPoints)
 }
 
+// Only exits regular NS blessing, not special transmission blessing.
 func (s *State) ExitBlessing() {
 	s.char.DeleteStatus(NightsoulBlessingStatus)
 	s.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, s.char.Index)
 }
 
+// Returns true if either normal or transmission blessing is active.
 func (s *State) HasBlessing() bool {
 	return s.char.StatusIsActive(NightsoulBlessingStatus) ||
 		s.char.StatusIsActive(NightsoulTransmissionStatus)

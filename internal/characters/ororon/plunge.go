@@ -44,14 +44,14 @@ func (c *char) fall() (action.Info, error) {
 	// Cleanup high jump.
 	if delay <= 0 {
 		delay = 0
-		c.DeleteStatus(jumpNsStatusTag)
+		c.nightsoulState.ExitTransmissionBlessing()
 	} else {
 		c.Core.Log.NewEvent(
 			fmt.Sprintf("Fall cancel cannot begin until %d frames after jump start; delaying fall by %d frames", fallCancelFrames, delay),
 			glog.LogCooldownEvent,
 			c.Index)
 
-		c.QueueCharTask(func() { c.DeleteStatus(jumpNsStatusTag) }, delay)
+		c.QueueCharTask(func() { c.nightsoulState.ExitTransmissionBlessing() }, delay)
 	}
 	// Allow stam to start regen when landing
 	c.Core.Player.LastStamUse = c.Core.F + jumpHoldFrames[1][action.ActionSwap] + delay
@@ -96,7 +96,7 @@ func (c *char) plungeCollision(delay int) {
 // Default = 0
 func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
 	// Cleanup high jump.
-	c.DeleteStatus(jumpNsStatusTag)
+	c.nightsoulState.ExitTransmissionBlessing()
 	// Allow player to resume stam as soon as plunge is initiated
 	c.Core.Player.LastStamUse = c.Core.F
 

@@ -2,13 +2,10 @@ package ororon
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
-
-const jumpNsStatusTag = nightsoul.NightsoulTransmissionStatus
 
 // Add NS status.
 // Set a CB to cancel high jump if max duration exceeded.
@@ -31,7 +28,7 @@ func (c *char) highJump(hold int) (action.Info, error) {
 		if src != c.jmpSrc {
 			return
 		}
-		c.AddStatus(jumpNsStatusTag, jumpNsDuration, true)
+		c.nightsoulState.EnterTransmissionBlessing(jumpNsDuration, true)
 	}, jumpNsDelay)
 
 	// Consume stamina.
