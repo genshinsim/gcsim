@@ -79,6 +79,8 @@ func (c *char) Condition(fields []string) (any, error) {
 		return c.bullets[4], nil
 	case "bullet6":
 		return c.bullets[5], nil
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
 	default:
 		return c.Character.Condition(fields)
 	}
