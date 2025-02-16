@@ -68,17 +68,17 @@ func (c *char) Init() error {
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "bullet1":
-		return c.bullets[0], nil
+		return int(c.bullets[0]), nil
 	case "bullet2":
-		return c.bullets[1], nil
+		return int(c.bullets[1]), nil
 	case "bullet3":
-		return c.bullets[2], nil
+		return int(c.bullets[2]), nil
 	case "bullet4":
-		return c.bullets[3], nil
+		return int(c.bullets[3]), nil
 	case "bullet5":
-		return c.bullets[4], nil
+		return int(c.bullets[4]), nil
 	case "bullet6":
-		return c.bullets[5], nil
+		return int(c.bullets[5]), nil
 	case "nightsoul":
 		return c.nightsoulState.Condition(fields)
 	default:
