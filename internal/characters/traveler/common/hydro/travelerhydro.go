@@ -42,9 +42,8 @@ func (c *Traveler) AnimationStartDelay(k model.AnimationDelayKey) int {
 	case model.AnimationXingqiuN0StartDelay:
 		if c.gender == 0 {
 			return 8
-		} else {
-			return 7
 		}
+		return 7
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
