@@ -11,10 +11,6 @@ import (
 
 const NightsoulBlessingStatus = "nightsoul-blessing"
 
-// Nightsoul transmission status is handled by the character, not the NS package.
-// If in Nightsoul Transmission state or have the regular Nightsoul Blessing Status, return true for having Nightsoul Blessing.
-const NightsoulTransmissionStatus = "nightsoul-transmission"
-
 type State struct {
 	char            *character.CharWrapper
 	c               *core.Core
@@ -32,18 +28,6 @@ func New(c *core.Core, char *character.CharWrapper) *State {
 	return t
 }
 
-// Pass -1 for infinite duration
-func (s *State) EnterTransmissionBlessing(duration int, hitlag bool) {
-	s.char.AddStatus(NightsoulTransmissionStatus, duration, hitlag)
-	s.c.Log.NewEvent("enter nightsoul transmission blessing", glog.LogCharacterEvent, s.char.Index).
-		Write("duration", duration)
-}
-
-func (s *State) ExitTransmissionBlessing() {
-	s.char.DeleteStatus(NightsoulTransmissionStatus)
-	s.c.Log.NewEvent("exit nightsoul transmission blessing", glog.LogCharacterEvent, s.char.Index)
-}
-
 func (s *State) EnterBlessing(amount float64) {
 	s.nightsoulPoints = amount
 	s.char.AddStatus(NightsoulBlessingStatus, -1, true)
@@ -59,8 +43,7 @@ func (s *State) ExitBlessing() {
 
 // Returns true if either normal or transmission blessing is active.
 func (s *State) HasBlessing() bool {
-	return s.char.StatusIsActive(NightsoulBlessingStatus) ||
-		s.char.StatusIsActive(NightsoulTransmissionStatus)
+	return s.char.StatusIsActive(NightsoulBlessingStatus)
 }
 
 func (s *State) GeneratePoints(amount float64) {

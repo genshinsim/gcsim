@@ -52,12 +52,15 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	nightsoulState     *nightsoul.State
-	particlesGenerated bool
-	c2Bonus            []float64
-	c6stacks           *stacks.MultipleRefreshNoRemove
-	c6bonus            []float64
-	jmpSrc             int
+	nightsoulState         *nightsoul.State
+	particlesGenerated     bool
+	c2Bonus                []float64
+	c6stacks               *stacks.MultipleRefreshNoRemove
+	c6bonus                []float64
+	a1Src                  int
+	jmpSrc                 int
+	inA1Blessing           bool
+	inTransmissionBlessing bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -97,16 +100,6 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 		return 75
 	}
 	return c.Character.ActionStam(a, p)
-}
-
-// Ororon is in NS if either he has it through high jump or if he has it through his ascention.
-// Each has independent duration, so must be checked for in parallel.
-func (c *char) StatusIsActive(key string) bool {
-	if key == nightsoul.NightsoulBlessingStatus {
-		// Not a circular reference as long as c.nightsoulState only has a reference to the CharWrapper and not to the Char.
-		return c.nightsoulState.HasBlessing()
-	}
-	return c.Character.StatusIsActive(key)
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {

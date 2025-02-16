@@ -74,8 +74,7 @@ func (s *Set) buffCB(react reactions.ReactionType, gadgetEmit bool) func(args ..
 			return false
 		}
 
-		hasNightsoul := s.char.StatusIsActive(nightsoul.NightsoulBlessingStatus) ||
-			s.char.StatusIsActive(nightsoul.NightsoulTransmissionStatus)
+		hasNightsoul := s.char.StatusIsActive(nightsoul.NightsoulBlessingStatus)
 		for _, other := range s.c.Player.Chars() {
 			elements := reactToElements[react]
 			for _, ele := range elements {

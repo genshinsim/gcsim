@@ -7,6 +7,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
+func (c *char) exitJumpBlessing() {
+	c.inTransmissionBlessing = false
+	if !c.inA1Blessing {
+		c.nightsoulState.ExitBlessing()
+	}
+}
+
 // Add NS status.
 // Set a CB to cancel high jump if max duration exceeded.
 // Grant airborne status.
@@ -23,12 +30,12 @@ func (c *char) highJump(hold int) (action.Info, error) {
 	c.Core.Player.SetAirborne(player.AirborneOroron)
 
 	// Don't add NS if jump is cancelled before NS would be added.
-	jumpNsDuration := jumpDur - jumpNsDelay
 	c.QueueCharTask(func() {
 		if src != c.jmpSrc {
 			return
 		}
-		c.nightsoulState.EnterTransmissionBlessing(jumpNsDuration, true)
+		c.nightsoulState.EnterBlessing(c.nightsoulState.Points())
+		c.inTransmissionBlessing = true
 	}, jumpNsDelay)
 
 	// Consume stamina.

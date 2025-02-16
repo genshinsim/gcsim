@@ -37,21 +37,21 @@ func init() {
 	plungeFrames[action.ActionSwap] = 66
 }
 
-func (c *char) fall() (action.Info, error) {
+func (c *char) fall() action.Info {
 	// Fall cancel can't happen until after high_plunge can happen. Delay all side effects if try to fall cancel too early.
 	delay := fallCancelFrames - (c.Core.F - c.jmpSrc)
 
 	// Cleanup high jump.
 	if delay <= 0 {
 		delay = 0
-		c.nightsoulState.ExitTransmissionBlessing()
+		c.exitJumpBlessing()
 	} else {
 		c.Core.Log.NewEvent(
 			fmt.Sprintf("Fall cancel cannot begin until %d frames after jump start; delaying fall by %d frames", fallCancelFrames, delay),
 			glog.LogCooldownEvent,
 			c.Index)
 
-		c.QueueCharTask(func() { c.nightsoulState.ExitTransmissionBlessing() }, delay)
+		c.QueueCharTask(c.exitJumpBlessing, delay)
 	}
 	// Allow stam to start regen when landing
 	c.Core.Player.LastStamUse = c.Core.F + jumpHoldFrames[1][action.ActionSwap] + delay
@@ -64,7 +64,7 @@ func (c *char) fall() (action.Info, error) {
 		AnimationLength: jumpHoldFrames[1][action.ActionWalk] + delay,
 		CanQueueAfter:   jumpHoldFrames[1][action.ActionSwap] + delay,
 		State:           action.JumpState,
-	}, nil
+	}
 }
 
 // Plunge normal falling attack damage queue generator
@@ -96,7 +96,7 @@ func (c *char) plungeCollision(delay int) {
 // Default = 0
 func (c *char) HighPlungeAirborneOroron(p map[string]int) (action.Info, error) {
 	// Cleanup high jump.
-	c.nightsoulState.ExitTransmissionBlessing()
+	c.exitJumpBlessing()
 	// Allow player to resume stam as soon as plunge is initiated
 	c.Core.Player.LastStamUse = c.Core.F
 
@@ -148,7 +148,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	if p["fall"] != 0 {
-		return c.fall()
+		return c.fall(), nil
 	}
 
 	return c.HighPlungeAirborneOroron(p)
