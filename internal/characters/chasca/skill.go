@@ -82,9 +82,7 @@ func (c *char) exitNightsoul() {
 	if !c.nightsoulState.HasBlessing() {
 		return
 	}
-	if c.Core.Player.CurrentState() == action.AimState {
 
-	}
 	switch c.Core.Player.CurrentState() {
 	case action.AimState:
 		// keep charging bullets for up to 10f after NS ends
