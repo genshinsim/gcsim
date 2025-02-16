@@ -1096,6 +1096,21 @@
       "ability": "skill",
       "param": "travel",
       "desc": "Travel time of bounce between targets in frames. Default: 10."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for a normal jump (default), nonzero for an extended leap as buffed from his Night Realm's Gift. Airborne Frames = hold-1. -1 for a max-duration jump. Grants status AirborneOroron. A high_plunge action with fall=true will be called automatically if another action is not taken within Ororon's jump duration."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "fall",
+      "desc": "0 for a normal high_plunge, 1 to simulate a damageless release from high jump. After fall has begun, high_plunge cannot be used until Ororon is airborne again."
     }
   ],
   "qiqi": [
