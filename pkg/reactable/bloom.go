@@ -116,24 +116,25 @@ func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *Den
 
 	explode := func(reason string) func() {
 		return func() {
-			ai, snap := NewBloomAttack(char, s)
-			ap := combat.NewCircleHitOnTarget(s, nil, 5)
-			c.QueueAttackWithSnap(ai, snap, ap, 1)
+			s.Core.Tasks.Add(func() {
+				ai, snap := NewBloomAttack(char, s)
+				ap := combat.NewCircleHitOnTarget(s, nil, 5)
+				c.QueueAttackWithSnap(ai, snap, ap, 0)
 
-			// self damage
-			ai.Abil += reactions.SelfDamageSuffix
-			ai.FlatDmg = 0.05 * ai.FlatDmg
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
-			c.QueueAttackWithSnap(ai, snap, ap, 1)
+				// self damage
+				ai.Abil += reactions.SelfDamageSuffix
+				ai.FlatDmg = 0.05 * ai.FlatDmg
+				ap.SkipTargets[targets.TargettablePlayer] = false
+				ap.SkipTargets[targets.TargettableEnemy] = true
+				ap.SkipTargets[targets.TargettableGadget] = true
+				c.QueueAttackWithSnap(ai, snap, ap, 0)
 
-			c.Log.NewEvent(
-				"dendro core "+reason,
-				glog.LogElementEvent,
-				char.Index,
-			).
-				Write("src", s.Src())
+				c.Log.NewEvent(
+					"dendro core "+reason,
+					glog.LogElementEvent,
+					char.Index,
+				).Write("src", s.Src())
+			}, 1)
 		}
 	}
 	s.Gadget.OnExpiry = explode("expired")
@@ -164,21 +165,23 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	case attributes.Electro:
 		// trigger hyperbloom targets the nearest enemy
 		// it can also do damage to player in small aoe
-		ai, snap := NewHyperbloomAttack(char, s)
-		// queue dmg nearest enemy within radius 15
-		enemy := s.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(s.Gadget, nil, 15), nil)
-		if enemy != nil {
-			ap := combat.NewCircleHitOnTarget(enemy, nil, 1)
-			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
+		s.Core.Tasks.Add(func() {
+			ai, snap := NewHyperbloomAttack(char, s)
+			// queue dmg nearest enemy within radius 15
+			enemy := s.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(s.Gadget, nil, 15), nil)
+			if enemy != nil {
+				ap := combat.NewCircleHitOnTarget(enemy, nil, 1)
+				s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 
-			// also queue self damage
-			ai.Abil += reactions.SelfDamageSuffix
-			ai.FlatDmg = 0.05 * ai.FlatDmg
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
-			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
-		}
+				// also queue self damage
+				ai.Abil += reactions.SelfDamageSuffix
+				ai.FlatDmg = 0.05 * ai.FlatDmg
+				ap.SkipTargets[targets.TargettablePlayer] = false
+				ap.SkipTargets[targets.TargettableEnemy] = true
+				ap.SkipTargets[targets.TargettableGadget] = true
+				s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
+			}
+		}, 60)
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
@@ -193,18 +196,19 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
-		ai, snap := NewBurgeonAttack(char, s)
-		ap := combat.NewCircleHitOnTarget(s, nil, 5)
+		s.Core.Tasks.Add(func() {
+			ai, snap := NewBurgeonAttack(char, s)
+			ap := combat.NewCircleHitOnTarget(s, nil, 5)
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 
-		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
-
-		// queue self damage
-		ai.Abil += reactions.SelfDamageSuffix
-		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[targets.TargettablePlayer] = false
-		ap.SkipTargets[targets.TargettableEnemy] = true
-		ap.SkipTargets[targets.TargettableGadget] = true
-		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
+			// queue self damage
+			ai.Abil += reactions.SelfDamageSuffix
+			ai.FlatDmg = 0.05 * ai.FlatDmg
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
+		}, 1)
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
