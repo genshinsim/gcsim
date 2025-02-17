@@ -14,8 +14,10 @@ import (
 )
 
 var (
-	skillFrames       []int
-	skillRecastFrames []int
+	skillFrames             []int
+	skillFramesHold         []int
+	skillRecastFramesToBike []int
+	skillRecastFramesToRing []int
 )
 
 const (
@@ -26,9 +28,24 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(16) // E -> N1
+	skillFrames = frames.InitAbilSlice(29) // E -> Dash/Jump
+	skillFrames[action.ActionAttack] = 18  // E -> N1
+	skillFrames[action.ActionCharge] = 18  // E -> CA
+	skillFrames[action.ActionSkill] = 18   // E -> Skill Recast
+	skillFrames[action.ActionBurst] = 18   // E -> Burst
+	skillFrames[action.ActionWalk] = 28    // E -> Walk
+	skillFrames[action.ActionSwap] = 24    // E -> Swap
 
-	skillRecastFrames = frames.InitAbilSlice(19) // E -> N1
+	skillFramesHold = frames.InitAbilSlice(44) // E -> N1
+	skillFramesHold[action.ActionSwap] = 34    // E -> Swap
+
+	skillRecastFramesToBike = frames.InitAbilSlice(24) // E -> Swap
+	skillRecastFramesToBike[action.ActionAttack] = 12  // E -> N1
+	skillRecastFramesToBike[action.ActionCharge] = 12  // E -> CA
+
+	skillRecastFramesToRing = frames.InitAbilSlice(27) // E -> N1
+	skillRecastFramesToBike[action.ActionSwap] = 24    // E -> N1
+
 }
 
 func (c *char) nightsoulPointReduceFunc(src int) func() {
@@ -97,15 +114,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		if !c.nightsoulState.HasBlessing() {
 			return action.Info{}, errors.New("cannot recast E while not in nightsoul blessing")
 		}
-		c.skillRecast()
+		return c.skillRecast(), nil
 	}
 
 	c.enterNightsoulOrRegenerate(c.nightsoulState.MaxPoints)
-	if h > 0 {
-		return c.skillHold(), nil
-	}
 	if c.armamentState == bike {
 		return c.skillBikeRefresh(), nil
+	}
+	if h > 0 {
+		return c.skillHold(), nil
 	}
 	return c.skillPress(), nil
 }
@@ -131,19 +148,25 @@ func (c *char) exitBike() {
 }
 
 func (c *char) skillRecast() action.Info {
+	c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	switch c.armamentState {
 	case ring:
 		c.enterBike()
+		return action.Info{
+			Frames:          frames.NewAbilFunc(skillRecastFramesToBike),
+			AnimationLength: skillRecastFramesToBike[action.InvalidAction],
+			CanQueueAfter:   skillRecastFramesToBike[action.ActionAttack],
+			State:           action.SkillState,
+		}
 
 	default:
 		c.exitBike()
-	}
-	c.AddStatus(skillRecastCDKey, skillRecastCD, false)
-	return action.Info{
-		Frames:          frames.NewAbilFunc(skillRecastFrames),
-		AnimationLength: skillRecastFrames[action.InvalidAction],
-		CanQueueAfter:   skillRecastFrames[action.ActionSwap],
-		State:           action.SkillState,
+		return action.Info{
+			Frames:          frames.NewAbilFunc(skillRecastFramesToRing),
+			AnimationLength: skillRecastFramesToRing[action.InvalidAction],
+			CanQueueAfter:   skillRecastFramesToRing[action.ActionAttack],
+			State:           action.SkillState,
+		}
 	}
 }
 
@@ -169,11 +192,14 @@ func (c *char) skillHold() action.Info {
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.enterBike()
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
+	c.Core.Tasks.Add(func() {
+		c.AddStatus(skillRecastCDKey, skillRecastCD, false)
+	}, 24)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap],
+		Frames:          frames.NewAbilFunc(skillFramesHold),
+		AnimationLength: skillFramesHold[action.InvalidAction],
+		CanQueueAfter:   skillFramesHold[action.ActionSwap],
 		State:           action.SkillState,
 	}
 }
