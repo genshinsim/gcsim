@@ -22,16 +22,17 @@ const (
 
 type char struct {
 	*tmpl.Character
-	fightingSpirit float64
-	nightsoulState *nightsoul.State
-	nightsoulSrc   int
-	armamentState  SkillState
-	ringSrc        int
-	burstStacks    float64
-	a4buff         []float64
-	c1buff         []float64
-	c6Src          int
-	caState        ChargeState
+	fightingSpirit     float64
+	nightsoulState     *nightsoul.State
+	nightsoulSrc       int
+	armamentState      SkillState
+	ringSrc            int
+	burstStacks        float64
+	a4buff             []float64
+	c1buff             []float64
+	c6Src              int
+	savedNormalCounter int
+	caState            ChargeState
 }
 
 func init() {

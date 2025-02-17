@@ -47,6 +47,7 @@ func init() {
 	chargeFrames[action.ActionSwap] = 50
 	chargeFrames[action.ActionWalk] = 60
 
+	// These static counts are rarely used. Zero values will cancel on the dynamic hitmark. Actions not listed will queue into CAF
 	bikeChargeFrames = frames.InitAbilSlice(bikeChargeAttackMinimumDuration + bikeChargeFinalHitmark)
 	bikeChargeFrames[action.ActionCharge] = 0
 	bikeChargeFrames[action.ActionBurst] = 0

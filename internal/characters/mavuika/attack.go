@@ -85,7 +85,12 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+// Mavuika's bike normals do not immediately reset after sprinting and will carry the counter upon losing NS Blessing
 func (c *char) bikeAttack() action.Info {
+	switch c.Core.Player.CurrentState() {
+	case action.DashState:
+		c.NormalCounter = c.savedNormalCounter
+	}
 	delay := bikeAttackHitmarks[c.NormalCounter]
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
@@ -124,7 +129,10 @@ func (c *char) bikeAttack() action.Info {
 		c.reduceNightsoulPoints(1)
 	}, delay)
 
-	defer c.AdvanceNormalIndex()
+	defer func() {
+		c.AdvanceNormalIndex()
+		c.savedNormalCounter = c.NormalCounter
+	}()
 
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, bikeAttackFrames),

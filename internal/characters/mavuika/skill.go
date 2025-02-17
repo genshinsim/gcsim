@@ -72,14 +72,6 @@ func (c *char) reduceNightsoulPoints(val float64) {
 	}
 	c.nightsoulState.ConsumePoints(val)
 
-	// don't exit nightsoul while in NA/Plunge/Charge of Flamestride
-	if c.armamentState == bike {
-		switch c.Core.Player.CurrentState() {
-		case action.NormalAttackState, action.PlungeAttackState, action.ChargeAttackState:
-			return
-		}
-	}
-
 	if c.nightsoulState.Points() < 0.001 {
 		c.exitNightsoul()
 	}
@@ -92,8 +84,12 @@ func (c *char) exitNightsoul() {
 	c.nightsoulState.ExitBlessing()
 	c.nightsoulState.ClearPoints()
 	c.nightsoulSrc = -1
+	if c.armamentState == bike && c.Core.Player.CurrentState() == action.NormalAttackState {
+		c.NormalCounter = min(3, c.savedNormalCounter)
+	} else {
+		c.NormalCounter = 0
+	}
 	c.NormalHitNum = normalHitNum
-	c.NormalCounter = 0
 }
 func (c *char) enterNightsoulOrRegenerate(points float64) {
 	if !c.nightsoulState.HasBlessing() {
@@ -117,14 +113,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillRecast(), nil
 	}
 
+	var ai action.Info
+	switch {
+	case c.armamentState == bike && c.nightsoulState.HasBlessing():
+		ai = c.skillBikeRefresh()
+	case h > 0:
+		ai = c.skillHold()
+	default:
+		ai = c.skillPress()
+	}
 	c.enterNightsoulOrRegenerate(c.nightsoulState.MaxPoints)
-	if c.armamentState == bike {
-		return c.skillBikeRefresh(), nil
-	}
-	if h > 0 {
-		return c.skillHold(), nil
-	}
-	return c.skillPress(), nil
+	return ai, nil
 }
 
 func (c *char) enterBike() {
