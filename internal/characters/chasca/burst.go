@@ -67,6 +67,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Rand.Shuffle(len(burstBullets), func(i, j int) {
 		burstBullets[i], burstBullets[j] = burstBullets[j], burstBullets[i]
 	})
+	burstFrame := c.Core.F
 	for i := 0; i < 6; i++ {
 		switch {
 		case i < len(burstBullets):
@@ -74,7 +75,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			ai.Abil = fmt.Sprintf("Radiant Soulseeker Shell (%s)", ele.String())
 			ai.Mult = burstRadiant[c.TalentLvlBurst()]
 			ai.Element = ele
-			c4cb = c.c4cb(c.Core.F)
+			c4cb = c.c4cb(burstFrame)
 		default:
 			ai.Abil = "Soulseeker Shell"
 			ai.Mult = burstSoulseeker[c.TalentLvlBurst()]
