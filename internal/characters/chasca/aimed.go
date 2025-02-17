@@ -210,7 +210,10 @@ func (c *char) fireBullets() {
 			}
 			snapshot := c.Snapshot(&ai)
 			c.c6buff(&snapshot)
-			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, c.particleCB, c2cb)
+
+			// TODO: get the actual target aquire range
+			target := c.Core.Combat.RandomEnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil, 1)[0]
+			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(target.Key()), 0, c.particleCB, c2cb)
 
 			// remove possible c6buff after last bullet
 			if last {
