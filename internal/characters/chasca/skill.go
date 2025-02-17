@@ -145,7 +145,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmarks, skillHitmarks)
 	c.enterNightsoul()
-
+	c.skillSrc = c.Core.F
 	return action.Info{
 		Frames:          c.skillNextFrames(frames.NewAbilFunc(skillFrames), 0),
 		AnimationLength: skillFrames[action.InvalidAction],

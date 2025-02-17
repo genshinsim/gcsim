@@ -206,7 +206,7 @@ func (c *char) fireBullets() {
 				ai.ICDGroup = attacks.ICDGroupChascaShining
 				ai.Element = bulletElem
 				ai.Mult = skillShining[c.TalentLvlSkill()]
-				c2cb = c.c2cb(c.Core.F)
+				c2cb = c.c2cb(c.skillSrc)
 			}
 			snapshot := c.Snapshot(&ai)
 			c.c6buff(&snapshot)
