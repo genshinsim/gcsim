@@ -127,6 +127,7 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(c6key) && count < 6 {
 		return action.Info{}, errors.New("bullets must be 6 when c6 instant charge is active")
 	}
+	c.loadSkillHoldBullets()
 
 	aimSrc := c.Core.F
 	c.aimSrc = aimSrc
@@ -189,7 +190,7 @@ func (c *char) fireBullets() {
 	var c2cb combat.AttackCBFunc
 
 	for i := 0; i < c.bulletsCharged; i++ {
-		bulletElem := c.bullets[c.bulletsCharged-1-i] // get bullets starting from the back
+		bulletElem := c.bulletsToFire[c.bulletsCharged-1-i] // get bullets starting from the back
 		hitDelay := skillAimHitmarks[i]
 		last := i == c.bulletsCharged-1
 		c.QueueCharTask(func() {
@@ -223,32 +224,36 @@ func (c *char) fireBullets() {
 	}
 	c.bulletsCharged = 0
 	c.aimSrc = -1
-	c.loadSkillHoldBullets()
 }
 
 func (c *char) loadSkillHoldBullets() {
+	// set c.bulletsToFire = c.bulletsNext
+	// to save allocs we also give c.bulletsNext the old memory
+	// basically a ring buffer with a size of 2
+	c.bulletsToFire, c.bulletsNext = c.bulletsNext, c.bulletsToFire
+
 	c.resetBulletPool()
-	c.bullets[0] = attributes.Anemo
-	c.bullets[1] = attributes.Anemo
-	c.bullets[2] = c.a1Conversion()
+	c.bulletsNext[0] = attributes.Anemo
+	c.bulletsNext[1] = attributes.Anemo
+	c.bulletsNext[2] = c.a1Conversion()
 	c.c1Conversion() // check if we need to additionally convert bullet[1] due to C1
 
 	if len(c.partyPHECTypes) < 3 {
-		c.bullets[3] = attributes.Anemo
+		c.bulletsNext[3] = attributes.Anemo
 	} else {
-		c.bullets[3] = c.randomElemFromBulletPool()
+		c.bulletsNext[3] = c.randomElemFromBulletPool()
 	}
 
 	if len(c.partyPHECTypes) < 2 {
-		c.bullets[4] = attributes.Anemo
+		c.bulletsNext[4] = attributes.Anemo
 	} else {
-		c.bullets[4] = c.randomElemFromBulletPool()
+		c.bulletsNext[4] = c.randomElemFromBulletPool()
 	}
 
 	if len(c.partyPHECTypes) < 1 {
-		c.bullets[5] = attributes.Anemo
+		c.bulletsNext[5] = attributes.Anemo
 	} else {
-		c.bullets[5] = c.randomElemFromBulletPool()
+		c.bulletsNext[5] = c.randomElemFromBulletPool()
 	}
 }
 

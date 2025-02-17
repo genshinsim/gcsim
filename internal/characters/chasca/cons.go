@@ -20,10 +20,10 @@ func (c *char) c1Conversion() {
 	if c.Base.Cons < 1 {
 		return
 	}
-	if c.bullets[2] == attributes.Anemo {
+	if c.bulletsNext[2] == attributes.Anemo {
 		return
 	}
-	c.bullets[1] = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
+	c.bulletsNext[1] = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
 }
 func (c *char) c2A1Stack() int {
 	if c.Base.Cons < 2 {

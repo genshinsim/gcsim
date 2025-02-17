@@ -21,7 +21,8 @@ type char struct {
 	nightsoulSrc         int
 	partyPHECTypes       []attributes.Element
 	partyPHECTypesUnique []attributes.Element
-	bullets              []attributes.Element
+	bulletsToFire        []attributes.Element
+	bulletsNext          []attributes.Element
 	bulletPool           []attributes.Element
 	bulletsCharged       int
 	aimSrc               int
@@ -59,7 +60,8 @@ func (c *char) Init() error {
 	for ele := range types {
 		c.partyPHECTypesUnique = append(c.partyPHECTypesUnique, ele)
 	}
-	c.bullets = make([]attributes.Element, 6)
+	c.bulletsNext = make([]attributes.Element, 6)
+	c.bulletsToFire = make([]attributes.Element, 6)
 	c.loadSkillHoldBullets()
 	c.a1DMGBuff()
 	c.a4()
@@ -69,17 +71,17 @@ func (c *char) Init() error {
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "bullet1":
-		return int(c.bullets[0]), nil
+		return int(c.bulletsNext[0]), nil
 	case "bullet2":
-		return int(c.bullets[1]), nil
+		return int(c.bulletsNext[1]), nil
 	case "bullet3":
-		return int(c.bullets[2]), nil
+		return int(c.bulletsNext[2]), nil
 	case "bullet4":
-		return int(c.bullets[3]), nil
+		return int(c.bulletsNext[3]), nil
 	case "bullet5":
-		return int(c.bullets[4]), nil
+		return int(c.bulletsNext[4]), nil
 	case "bullet6":
-		return int(c.bullets[5]), nil
+		return int(c.bulletsNext[5]), nil
 	case "nightsoul":
 		return c.nightsoulState.Condition(fields)
 	default:
