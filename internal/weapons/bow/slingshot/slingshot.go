@@ -1,6 +1,8 @@
 package slingshot
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -43,6 +45,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				atk.Info.StrikeType == attacks.StrikeTypeSlash {
 				return nil, false
 			}
+
+			// chasca E/A4 bullets and C2/C4 Aoe don't count
+			if char.Base.Key == keys.Chasca && slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
+				return nil, false
+			}
+
 			travel = c.F - atk.Snapshot.SourceFrame
 			m[attributes.DmgP] = incrDmg
 			if travel > passiveThresholdF {
