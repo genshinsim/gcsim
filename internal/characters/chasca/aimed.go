@@ -190,10 +190,13 @@ func (c *char) fireBullets() {
 
 	var c2cb combat.AttackCBFunc
 
+	// TODO: get the actual target aquire range
+	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 	for i := 0; i < c.bulletsCharged; i++ {
 		bulletElem := c.bulletsToFire[c.bulletsCharged-1-i] // get bullets starting from the back
 		hitDelay := skillAimHitmarks[i]
 		last := i == c.bulletsCharged-1
+		target := enemies[i%len(enemies)]
 		c.QueueCharTask(func() {
 			switch bulletElem {
 			case attributes.Anemo:
@@ -212,9 +215,6 @@ func (c *char) fireBullets() {
 			}
 			snapshot := c.Snapshot(&ai)
 			c.c6buff(&snapshot)
-
-			// TODO: get the actual target aquire range
-			target := c.Core.Combat.RandomEnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil, 1)[0]
 			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(target.Key()), 0, c.particleCB, c2cb)
 
 			// remove possible c6buff after last bullet
