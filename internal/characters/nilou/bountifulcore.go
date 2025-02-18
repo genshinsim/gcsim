@@ -27,17 +27,19 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *Bo
 
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
-		ai, snap := reactable.NewBloomAttack(char, b)
-		ap := combat.NewCircleHitOnTarget(b.Gadget, nil, 6.5)
-		c.QueueAttackWithSnap(ai, snap, ap, 1)
+		c.Tasks.Add(func() {
+			ai, snap := reactable.NewBloomAttack(char, b)
+			ap := combat.NewCircleHitOnTarget(b.Gadget, nil, 6.5)
+			c.QueueAttackWithSnap(ai, snap, ap, 0)
 
-		// self damage
-		ai.Abil += reactions.SelfDamageSuffix
-		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[targets.TargettablePlayer] = false
-		ap.SkipTargets[targets.TargettableEnemy] = true
-		ap.SkipTargets[targets.TargettableGadget] = true
-		c.QueueAttackWithSnap(ai, snap, ap, 1)
+			// self damage
+			ai.Abil += reactions.SelfDamageSuffix
+			ai.FlatDmg = 0.05 * ai.FlatDmg
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			c.QueueAttackWithSnap(ai, snap, ap, 0)
+		}, 1)
 	}
 	b.Gadget.OnExpiry = explode
 	b.Gadget.OnKill = explode
