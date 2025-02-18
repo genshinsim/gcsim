@@ -282,6 +282,7 @@ type Progress struct {
 
 func (s *Server) Progress() map[string]Progress {
 	progress := make(map[string]Progress)
+	s.Lock()
 	for id, wk := range s.pool {
 		prog := Progress{}
 		if wk.err != nil {
@@ -301,5 +302,6 @@ func (s *Server) Progress() map[string]Progress {
 
 		progress[id] = prog
 	}
+	s.Unlock()
 	return progress
 }
