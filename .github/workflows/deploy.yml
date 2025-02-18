@@ -120,7 +120,7 @@ jobs:
           ls -la
       # upload artifacts
       - name: upload db artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-artifacts
           path: ./backend/docker
@@ -132,7 +132,7 @@ jobs:
           cp ./backend/docker/hash.txt ./computebin/hash.txt
           cp ./backend/cmd/compute/compute ./computebin/compute
       - name: upload compute artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: compute-artifacts
           path: ./computebin 
