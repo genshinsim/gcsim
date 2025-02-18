@@ -75,6 +75,13 @@ func WithTimeout(dur time.Duration) ConfigOpt {
 	}
 }
 
+func WithWorkers(workers int) ConfigOpt {
+	return func(cfg *Config) error {
+		cfg.WorkerCount = workers
+		return nil
+	}
+}
+
 func (s *Server) routes() {
 	s.Log.Debug("setting up server routes for preview generation server")
 	s.Router.Use(middleware.Logger)
