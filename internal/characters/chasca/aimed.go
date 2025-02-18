@@ -189,7 +189,7 @@ func (c *char) fireBullets() {
 	}
 
 	var c2cb combat.AttackCBFunc
-
+	bulletFireFrame := c.Core.F
 	// TODO: get the actual target aquire range
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 	for i := 0; i < c.bulletsCharged; i++ {
@@ -211,7 +211,7 @@ func (c *char) fireBullets() {
 				ai.ICDGroup = attacks.ICDGroupChascaShining
 				ai.Element = bulletElem
 				ai.Mult = skillShining[c.TalentLvlSkill()]
-				c2cb = c.c2cb(c.skillSrc)
+				c2cb = c.c2cb(bulletFireFrame)
 			}
 			snapshot := c.Snapshot(&ai)
 			c.c6buff(&snapshot)
