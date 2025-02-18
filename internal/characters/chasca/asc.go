@@ -64,6 +64,7 @@ func (c *char) a4() {
 		Element:        attributes.Anemo,
 		Durability:     25,
 		Mult:           1.5 * skillShadowhunt[c.TalentLvlSkill()],
+		IsDeployable:   true,
 	}
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...interface{}) bool {
 		bulletElem := attributes.Anemo

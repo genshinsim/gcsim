@@ -1526,7 +1526,8 @@
         "ability": "C4",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 5
+        "radius": 5,
+        "notes": "This is an approximation because we do not actually know the real AoE. Based on C2 position."
       }
     ],
     "normal": [
@@ -1604,7 +1605,8 @@
       {
         "ability": "E-Aimed",
         "shape": "Single",
-        "center": "PrimaryTarget"
+        "center": "PrimaryTarget",
+        "notes": "Target aquisition range is not implemented."
       }
     ],
     "plunge": [

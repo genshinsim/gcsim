@@ -16,6 +16,7 @@ func (c *char) c1() float64 {
 	}
 	return 0.333
 }
+
 func (c *char) c1Conversion() {
 	if c.Base.Cons < 1 {
 		return
@@ -25,6 +26,7 @@ func (c *char) c1Conversion() {
 	}
 	c.bulletsNext[1] = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
 }
+
 func (c *char) c2A1Stack() int {
 	if c.Base.Cons < 2 {
 		return 0
@@ -72,7 +74,7 @@ func (c *char) c4cb(src int) combat.AttackCBFunc {
 
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
-			Abil:           "Radiant Shadowhunt Shell (C2)",
+			Abil:           "Radiant Shadowhunt Shell (C4)",
 			AttackTag:      attacks.AttackTagExtra,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 			ICDTag:         attacks.ICDTagNone,
@@ -82,6 +84,7 @@ func (c *char) c4cb(src int) combat.AttackCBFunc {
 			Durability:     25,
 			Mult:           4,
 		}
+		// TODO: get the actual target range
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5)
 		c.Core.QueueAttack(ai, ap, 0, 1)
 	}

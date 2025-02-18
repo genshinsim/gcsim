@@ -23,15 +23,15 @@ const attackSkillTapHitmark = 11
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 17) // N1 -> N2
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 19) // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 36) // N3 -> N4
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 73) // N4 -> N1
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 27) // N1 -> Walk
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 29) // N2 -> Walk
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 53) // N3 -> Walk
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 62) // N4 -> Walk
 
-	attackFrames[0][action.ActionWalk] = 27
-	attackFrames[1][action.ActionWalk] = 29
-	attackFrames[2][action.ActionWalk] = 53
-	attackFrames[3][action.ActionWalk] = 62
+	attackFrames[0][action.ActionAttack] = 17
+	attackFrames[1][action.ActionAttack] = 19
+	attackFrames[2][action.ActionAttack] = 36
+	attackFrames[3][action.ActionAttack] = 73
 
 	attackSkillTapFrames = frames.InitAbilSlice(39)
 	attackSkillTapFrames[action.ActionAttack] = 34

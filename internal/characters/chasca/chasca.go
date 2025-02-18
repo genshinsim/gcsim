@@ -43,7 +43,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
-	c.partyPHECTypesUnique = nil
+	c.partyPHECTypesUnique = make([]attributes.Element, 0)
 
 	return nil
 }
@@ -53,12 +53,12 @@ func (c *char) Init() error {
 	for _, other := range c.Core.Player.Chars() {
 		switch ele := other.Base.Element; ele {
 		case attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro:
+			if !types[ele] {
+				c.partyPHECTypesUnique = append(c.partyPHECTypesUnique, ele)
+			}
 			types[ele] = true
 			c.partyPHECTypes = append(c.partyPHECTypes, ele)
 		}
-	}
-	for ele := range types {
-		c.partyPHECTypesUnique = append(c.partyPHECTypesUnique, ele)
 	}
 	c.bulletsNext = make([]attributes.Element, 6)
 	c.bulletsToFire = make([]attributes.Element, 6)

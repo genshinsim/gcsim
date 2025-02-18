@@ -49,9 +49,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:           burstGalesplitting[c.TalentLvlBurst()],
 	}
 
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.0)
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.0),
+		ap,
 		burstHitmark,
 		burstHitmark,
 	)
@@ -61,6 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	var c4cb combat.AttackCBFunc
 
+	enemies := c.Core.Combat.EnemiesWithinArea(ap, nil)
 	burstBullets := make([]attributes.Element, 0, 6)
 	burstBullets = append(burstBullets, c.partyPHECTypes...)
 	burstBullets = append(burstBullets, c.partyPHECTypes...)
@@ -81,8 +83,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			ai.Mult = burstSoulseeker[c.TalentLvlBurst()]
 			ai.Element = attributes.Anemo
 		}
+		target := enemies[i%len(enemies)]
 		c.Core.QueueAttack(ai,
-			combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()),
+			combat.NewSingleTargetHit(target.Key()),
 			burstSecondaryHitmark[i],
 			burstSecondaryHitmark[i], c4cb)
 	}

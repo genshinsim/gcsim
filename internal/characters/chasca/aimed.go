@@ -43,7 +43,7 @@ func init() {
 	aimedFrames[1][action.ActionDash] = aimedHitmarks[1]
 	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
 
-	skillAimFrames = frames.InitAbilSlice(19)
+	skillAimFrames = frames.InitAbilSlice(19) // Aim -> N1/E
 	skillAimFrames[action.ActionAim] = 18
 	skillAimFrames[action.ActionBurst] = 14
 	skillAimFrames[action.ActionDash] = 0
@@ -185,6 +185,7 @@ func (c *char) fireBullets() {
 		Element:        attributes.Anemo,
 		Durability:     25,
 		Mult:           skillShadowhunt[c.TalentLvlSkill()],
+		HitlagFactor:   0.01,
 	}
 
 	var c2cb combat.AttackCBFunc

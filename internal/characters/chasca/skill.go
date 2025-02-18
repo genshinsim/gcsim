@@ -14,26 +14,24 @@ var skillFrames []int
 var skillCancelFrames []int
 
 const (
-	skillHitmarks      = 5
+	skillHitmarks      = 3
 	plungeAvailableKey = "chasca-plunge-available"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(26)
+	skillFrames = frames.InitAbilSlice(27) // E -> E
 	skillFrames[action.ActionAttack] = 5
-	skillFrames[action.ActionAim] = 16
-	skillFrames[action.ActionSkill] = 26
-	skillFrames[action.ActionBurst] = 5 // TODO: not in frames sheet
-	skillFrames[action.ActionDash] = 5
-	skillFrames[action.ActionJump] = 22
+	skillFrames[action.ActionAim] = 17
+	skillFrames[action.ActionBurst] = 6
+	skillFrames[action.ActionDash] = 6
 	skillFrames[action.ActionSwap] = 586 + 37 // wait for nightsoul to run out and fall onto the ground
 
-	skillCancelFrames = frames.InitAbilSlice(40)
+	skillCancelFrames = frames.InitAbilSlice(40) // E -> Dash/Jump
 	skillCancelFrames[action.ActionAttack] = 38
 	skillCancelFrames[action.ActionAim] = 38
 	skillCancelFrames[action.ActionLowPlunge] = 2
 	skillCancelFrames[action.ActionBurst] = 39
-	skillCancelFrames[action.ActionWalk] = 37
+	skillCancelFrames[action.ActionWalk] = 38
 	skillCancelFrames[action.ActionSwap] = 37
 }
 
@@ -133,7 +131,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypePierce,
+		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,
 		Durability:     25,
 		Mult:           skillResonance[c.TalentLvlSkill()],
