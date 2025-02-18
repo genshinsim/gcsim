@@ -27,7 +27,6 @@ type char struct {
 	bulletsCharged       int
 	aimSrc               int
 	skillParticleICD     bool
-	skillSrc             int
 	c2Src                int
 	c4Src                int
 }
