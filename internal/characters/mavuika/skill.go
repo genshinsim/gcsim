@@ -18,6 +18,7 @@ var (
 	skillFramesHold         []int
 	skillRecastFramesToBike []int
 	skillRecastFramesToRing []int
+	skillBikeRefreshFrames  []int
 )
 
 const (
@@ -28,24 +29,39 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(29) // E -> Dash/Jump
+	skillFrames = frames.InitAbilSlice(28) // E -> Dash/Jump/Walk
 	skillFrames[action.ActionAttack] = 18  // E -> N1
-	skillFrames[action.ActionCharge] = 18  // E -> CA
-	skillFrames[action.ActionSkill] = 18   // E -> Skill Recast
+	skillFrames[action.ActionCharge] = 19  // E -> CA
+	skillFrames[action.ActionSkill] = 19   // E -> Skill Recast
 	skillFrames[action.ActionBurst] = 18   // E -> Burst
-	skillFrames[action.ActionWalk] = 28    // E -> Walk
 	skillFrames[action.ActionSwap] = 24    // E -> Swap
 
-	skillFramesHold = frames.InitAbilSlice(44) // E -> N1
+	skillFramesHold = frames.InitAbilSlice(43) // E -> N1
+	skillFramesHold[action.ActionDash] = 42    // E -> Dash
+	skillFramesHold[action.ActionJump] = 42    // E -> Jump
 	skillFramesHold[action.ActionSwap] = 34    // E -> Swap
 
 	skillRecastFramesToBike = frames.InitAbilSlice(24) // E -> Swap
-	skillRecastFramesToBike[action.ActionAttack] = 12  // E -> N1
-	skillRecastFramesToBike[action.ActionCharge] = 12  // E -> CA
+	skillRecastFramesToBike[action.ActionAttack] = 13  // E -> N1
+	skillRecastFramesToBike[action.ActionCharge] = 13  // E -> CA
+	skillRecastFramesToBike[action.ActionBurst] = 13   // E -> Burst
+	skillRecastFramesToBike[action.ActionDash] = 12    // E -> Dash
+	skillRecastFramesToBike[action.ActionJump] = 13    // E -> Jump
 
-	skillRecastFramesToRing = frames.InitAbilSlice(27) // E -> N1
-	skillRecastFramesToBike[action.ActionSwap] = 24    // E -> N1
+	skillRecastFramesToRing = frames.InitAbilSlice(38) // E -> Jump
+	skillRecastFramesToRing[action.ActionAttack] = 27  // E -> N1
+	skillRecastFramesToRing[action.ActionCharge] = 28  // E -> CA
+	skillRecastFramesToRing[action.ActionBurst] = 28   // E -> Burst
+	skillRecastFramesToRing[action.ActionDash] = 37    // E -> Dash
+	skillRecastFramesToRing[action.ActionSwap] = 24    // E -> Swap
 
+	skillBikeRefreshFrames = frames.InitAbilSlice(39) // E -> E
+	skillBikeRefreshFrames[action.ActionAttack] = 27  // E -> N1
+	skillBikeRefreshFrames[action.ActionCharge] = 27  // E -> CA
+	skillBikeRefreshFrames[action.ActionBurst] = 27   // E -> Burst
+	skillBikeRefreshFrames[action.ActionDash] = 25    // E -> Dash
+	skillBikeRefreshFrames[action.ActionJump] = 27    // E -> Jump
+	skillBikeRefreshFrames[action.ActionSwap] = 24    // E -> Swap
 }
 
 func (c *char) nightsoulPointReduceFunc(src int) func() {
@@ -233,7 +249,7 @@ func (c *char) skillPress() action.Info {
 	}
 }
 
-// Tried redirecting skillPress to skillHold, but it ran into errors
+// Recasting E while on bike, occurs with Sac or Burst allowing E to come off of cd
 func (c *char) skillBikeRefresh() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
@@ -257,9 +273,9 @@ func (c *char) skillBikeRefresh() action.Info {
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap],
+		Frames:          frames.NewAbilFunc(skillBikeRefreshFrames),
+		AnimationLength: skillBikeRefreshFrames[action.InvalidAction],
+		CanQueueAfter:   skillBikeRefreshFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}
 }

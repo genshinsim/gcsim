@@ -13,14 +13,14 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = [][]int{{21}, {11, 23}, {10, 18, 26}, {28}}
+	attackHitmarks        = [][]int{{21}, {14, 26}, {28, 33, 39}, {30}}
 	attackPoiseDMG        = []float64{93.33, 92.72, 115.14, 143.17}
 	attackHitlagHaltFrame = []float64{0.09, 0.10, 0.08, .12}
 	attackHitboxes        = []float64{2.2, 2.3, 1.8, 3}
 	attackOffsets         = []float64{0.5, -1.3, 0.5, -0.8}
 
 	bikeAttackFrames          [][]int
-	bikeAttackHitmarks        = []int{21, 22, 27, 14, 41}
+	bikeAttackHitmarks        = []int{19, 24, 31, 13, 37}
 	bikeAttackPoiseDMG        = []float64{76.6, 79.1, 93.6, 93.2, 121.7}
 	bikeAttackHitlagHaltFrame = []float64{0.09, 0.08, 0.04, 0.03, 0.0}
 	bikeAttackHitboxes        = [][]float64{{3.7}, {4}, {3.7}, {5.5, 4.5}, {4.7}}
@@ -33,18 +33,43 @@ const bikeHitNum = 5
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 35) // N1 -> N2
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][1], 44) // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][2], 54) // N3 -> N4
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 42) // N4 -> N1
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 40) // N1 -> Walk
+	attackFrames[0][action.ActionAttack] = 31                                // N1 -> N2
+	attackFrames[0][action.ActionCharge] = 31                                // N1 -> CA
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][1], 50) // N2 -> Walk
+	attackFrames[1][action.ActionAttack] = 42                                // N2 -> N3
+	attackFrames[1][action.ActionCharge] = 42                                // N2 -> CA
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][2], 59) // N3 -> Walk
+	attackFrames[2][action.ActionAttack] = 46                                // N3 -> N4
+	attackFrames[2][action.ActionCharge] = 47                                // N3 -> CA
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 61) // N4 -> Walk
+	attackFrames[3][action.ActionAttack] = 60                                // N4 -> N1
+	attackFrames[3][action.ActionCharge] = 61                                // N4 -> CA
 
 	bikeAttackFrames = make([][]int, bikeHitNum)
 
-	bikeAttackFrames[0] = frames.InitNormalCancelSlice(bikeAttackHitmarks[0], 26) // N1 -> N2
-	bikeAttackFrames[1] = frames.InitNormalCancelSlice(bikeAttackHitmarks[1], 35) // N2 -> N3
-	bikeAttackFrames[2] = frames.InitNormalCancelSlice(bikeAttackHitmarks[2], 34) // N3 -> N4
-	bikeAttackFrames[3] = frames.InitNormalCancelSlice(bikeAttackHitmarks[3], 22) // N4 -> N5
-	bikeAttackFrames[4] = frames.InitNormalCancelSlice(bikeAttackHitmarks[4], 63) // N5 -> N1
+	bikeAttackFrames[0] = frames.InitNormalCancelSlice(bikeAttackHitmarks[0], 39) // N1 -> Walk
+	bikeAttackFrames[0][action.ActionAttack] = 23                                 // N1 -> N2
+	bikeAttackFrames[0][action.ActionCharge] = 33                                 // N1 -> CA
+
+	bikeAttackFrames[1] = frames.InitNormalCancelSlice(bikeAttackHitmarks[1], 46) // N2 -> Walk
+	bikeAttackFrames[1][action.ActionAttack] = 32                                 // N2 -> N3
+	bikeAttackFrames[1][action.ActionCharge] = 35                                 // N2 -> CA
+
+	bikeAttackFrames[2] = frames.InitNormalCancelSlice(bikeAttackHitmarks[2], 50) // N3 -> Walk
+	bikeAttackFrames[2][action.ActionAttack] = 35                                 // N3 -> N4
+	bikeAttackFrames[2][action.ActionCharge] = 40                                 // N3 -> CA
+
+	bikeAttackFrames[3] = frames.InitNormalCancelSlice(bikeAttackHitmarks[3], 44) // N4 -> Walk
+	bikeAttackFrames[3][action.ActionAttack] = 27                                 // N4 -> N5
+	bikeAttackFrames[3][action.ActionCharge] = 29                                 // N4 -> CA
+
+	bikeAttackFrames[4] = frames.InitNormalCancelSlice(bikeAttackHitmarks[4], 70) // N5 -> Walk
+	bikeAttackFrames[4][action.ActionAttack] = 68                                 // N5 -> N1
+	bikeAttackFrames[4][action.ActionCharge] = 64                                 // N5 -> CA
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -141,5 +166,3 @@ func (c *char) bikeAttack() action.Info {
 		State:           action.NormalAttackState,
 	}
 }
-
-// TODO: charged attack
