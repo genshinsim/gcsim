@@ -30,6 +30,10 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 		)
 		c.Core.QueueAttack(ai, ap, 6, 6)
 		c.reduceNightsoulPoints(10)
+		// If dashing from NA while in bike, do not reset NA string
+		if c.Core.Player.CurrentState() == action.NormalAttackState {
+			c.savedNormalCounter = c.NormalCounter
+		}
 	}
 
 	return c.Character.Dash(p)
