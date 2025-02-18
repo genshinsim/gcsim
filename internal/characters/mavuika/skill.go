@@ -156,10 +156,8 @@ func (c *char) exitBike() {
 	c.NormalHitNum = normalHitNum
 	c.ringSrc = c.Core.F
 
-	if c.nightsoulState.HasBlessing() {
-		c.QueueCharTask(c.skillRing(c.ringSrc), 120)
-		c.c2Ring()
-	}
+	c.QueueCharTask(c.skillRing(c.ringSrc), 120)
+	c.c2Ring()
 }
 
 func (c *char) skillRecast() action.Info {
