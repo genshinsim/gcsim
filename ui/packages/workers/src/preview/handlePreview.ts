@@ -45,9 +45,10 @@ export async function handlePreview(
     );
 
     response = new Response(resp.body, resp);
-    response.headers.set("Cache-Control", "max-age=5184000");
-
-    event.waitUntil(cache.put(cacheKey, response.clone()));
+    if (resp.headers.get('Cache-Control') !== 'no-cache') {
+      response.headers.set('Cache-Control', 'max-age=5184000');
+      event.waitUntil(cache.put(cacheKey, response.clone()));
+    }
   }
 
   return response;
