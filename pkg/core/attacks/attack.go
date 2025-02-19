@@ -45,4 +45,5 @@ const (
 	AdditionalTagNone AdditionalTag = iota
 	AdditionalTagNightsoul
 	AdditionalTagKinichCannon
+	AdditionalTagBountifulBloom
 )

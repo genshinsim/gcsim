@@ -1,6 +1,8 @@
 package nilou
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -101,13 +103,7 @@ func (c *char) a4() {
 				}
 
 				// check is bountiful core?
-				var t combat.Gadget
-				for _, v := range c.Core.Combat.Gadgets() {
-					if v != nil && v.Key() == ai.DamageSrc {
-						t = v
-					}
-				}
-				if _, ok := t.(*BountifulCore); !ok {
+				if !slices.Contains(ai.AdditionalTags, attacks.AdditionalTagBountifulBloom) {
 					return 0, false
 				}
 

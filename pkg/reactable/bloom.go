@@ -233,13 +233,14 @@ const (
 	HyperbloomMultiplier = 3
 )
 
-func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
+func NewBloomAttackWithTags(char *character.CharWrapper, src combat.Target, tags []attacks.AdditionalTag) (combat.AttackInfo, combat.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
 		AttackTag:        attacks.AttackTagBloom,
+		AdditionalTags:   tags,
 		ICDTag:           attacks.ICDTagBloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
@@ -249,6 +250,15 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.Atta
 	flatdmg, snap := calcReactionDmg(char, ai, em)
 	ai.FlatDmg = BloomMultiplier * flatdmg
 	return ai, snap
+}
+
+func NewBountifulBloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
+	tags := []attacks.AdditionalTag{attacks.AdditionalTagBountifulBloom}
+	return NewBloomAttackWithTags(char, src, tags)
+}
+
+func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
+	return NewBloomAttackWithTags(char, src, nil)
 }
 
 func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {

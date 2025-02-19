@@ -28,7 +28,7 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *Bo
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
 		c.Tasks.Add(func() {
-			ai, snap := reactable.NewBloomAttack(char, b)
+			ai, snap := reactable.NewBountifulBloomAttack(char, b)
 			ap := combat.NewCircleHitOnTarget(b.Gadget, nil, 6.5)
 			c.QueueAttackWithSnap(ai, snap, ap, 0)
 
