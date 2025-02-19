@@ -117,7 +117,7 @@ func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *Den
 	explode := func(reason string) func() {
 		return func() {
 			s.Core.Tasks.Add(func() {
-				ai, snap := NewBloomAttack(char, s)
+				ai, snap := NewBloomAttack(char, s, nil)
 				ap := combat.NewCircleHitOnTarget(s, nil, 5)
 				c.QueueAttackWithSnap(ai, snap, ap, 0)
 
@@ -233,7 +233,7 @@ const (
 	HyperbloomMultiplier = 3
 )
 
-func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
+func NewBloomAttack(char *character.CharWrapper, src combat.Target, modify func(*combat.AttackInfo)) (combat.AttackInfo, combat.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
 		ActorIndex:       char.Index,
@@ -245,6 +245,9 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.Atta
 		StrikeType:       attacks.StrikeTypeDefault,
 		Abil:             string(reactions.Bloom),
 		IgnoreDefPercent: 1,
+	}
+	if modify != nil {
+		modify(&ai)
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)
 	ai.FlatDmg = BloomMultiplier * flatdmg
