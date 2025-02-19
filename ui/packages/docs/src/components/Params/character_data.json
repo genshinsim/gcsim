@@ -950,6 +950,16 @@
   ],
   "noelle": [
     {
+      "ability": "charge",
+      "param": "final",
+      "desc": "0 for inserting a finisher based on next action, 1 for executing a finisher immediately. Default 0."
+    },
+    {
+      "ability": "charge",
+      "param": "no_limit",
+      "desc": "Whether to ignore charge attack duration limit. Default 0."
+    },
+    {
       "ability": "burst",
       "param": "extend",
       "desc": "Number of seconds to extend Burst by. Value must be between 0 and 10. Default 10."
