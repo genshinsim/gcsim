@@ -119,12 +119,29 @@ func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Act
 		if act == action.ActionSwap {
 			return c.Player.SwapCD, nil
 		}
+		if act == action.ActionDash {
+			if c.Player.Active() == char.Index && c.Player.DashLockout {
+				return c.Player.DashCDExpirationFrame - c.F, nil
+			}
+			if c.Player.Active() != char.Index && char.DashLockout {
+				return char.RemainingDashCD, nil
+			}
+			return 0, nil
+		}
 		return char.Cooldown(act), nil
 	case "charge":
 		return char.Charges(act), nil
 	case "ready":
 		if act == action.ActionSwap {
 			return c.Player.SwapCD == 0 || c.Player.Active() == char.Index, nil
+		}
+		if act == action.ActionDash {
+			if c.Player.Active() == char.Index && c.Player.DashLockout {
+				return c.Player.DashCDExpirationFrame == 0, nil
+			}
+			if c.Player.Active() != char.Index && char.DashLockout {
+				return char.RemainingDashCD == 0, nil
+			}
 		}
 		// TODO: nil map may cause problems here??
 		ok, _ := char.ActionReady(act, nil)
