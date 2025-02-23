@@ -152,18 +152,8 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 
 	// Do not allow starting with a partial CA hold
 	if durationCA > 0 && c.caState.cAtkFrames > 0 {
-		// Limit hold duration to 1 full spin
-		if durationCA > bikeChargeAttackSpinFrames || durationCA > nightSoulDuration {
-			if durationCA > nightSoulDuration {
-				durationCA = nightSoulDuration
-			}
-			// Default max hold time is 6.25s/375f
-			if (c.caState.cAtkFrames + durationCA) >= bikeChargeAttackMaximumDuration {
-				durationCA = bikeChargeAttackMaximumDuration - c.caState.cAtkFrames
-			} else {
-				durationCA = bikeChargeAttackSpinFrames
-			}
-		}
+		// Cap duration to lowest of 1 spin, remaining NS, or max CA time
+		durationCA = min(durationCA, bikeChargeAttackSpinFrames, nightSoulDuration, bikeChargeAttackMaximumDuration-c.caState.cAtkFrames)
 		// Hold CA logic
 		c.HoldBikeChargeAttack(durationCA, skippedWindupFrames, bikeHittableEntities)
 	} else {
@@ -178,7 +168,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	c.caState.cAtkFrames += durationCA
 	durationCA -= skippedWindupFrames
 
-	if durationCA >= nightSoulDuration {
+	if durationCA >= nightSoulDuration || c.caState.cAtkFrames >= bikeChargeAttackMaximumDuration {
 		isUseFinalHit = true
 	}
 
@@ -195,7 +185,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		if c.caState.srcFrame != src {
 			return
 		}
-		c.BikeChargeAttackFinal(durationCA, skippedWindupFrames)
+		c.BikeChargeAttackFinal(0, 0)
 	}, durationCA+1)
 
 	return action.Info{
@@ -319,14 +309,13 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 
 // CAF occurs after reaching maximum CA duration, exiting NS, or letting go of CA
 func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) action.Info {
-	var adjustedBikeChargeFinalHitmark = bikeChargeFinalHitmark + caFrames
 	bikeChargeAttackElapsedTime := c.caState.cAtkFrames + caFrames
-	// Check if bike angle is in spot where CAF has delay, 15f window
+	// Check if bike angle is in spot where CAF has delay, 20f window
 	currentBikeSpinFrame := bikeChargeAttackElapsedTime % bikeChargeAttackSpinFrames
 	newMinSpinDuration := GetCAFDelay(currentBikeSpinFrame)
 
 	caFrames += newMinSpinDuration
-	adjustedBikeChargeFinalHitmark += caFrames
+	adjustedBikeChargeFinalHitmark := bikeChargeFinalHitmark + caFrames
 	bikeHittableEntities := c.BuildBikeChargeAttackHittableTargetList()
 	c.HoldBikeChargeAttack(newMinSpinDuration, skippedWindupFrames, bikeHittableEntities)
 
@@ -436,6 +425,9 @@ func (c *char) GetSkippedWindupFrames() int {
 		} else {
 			skippedWindupFrames = 15
 		}
+	case x == action.PlungeAttackState:
+		skippedWindupFrames = 13
+		c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
 	}
 	return skippedWindupFrames
 }
@@ -455,7 +447,7 @@ func (c *char) GetRemainingNightSoulDuration() int {
 	return nsDur
 }
 
-// No idea why this is asymmetrical across the 0 degree mark, but testing showed a big jump across that line
+// 20f window during spin where CAF cannot start
 func GetCAFDelay(currentBikeSpinFrame int) int {
 	newMinSpinDuration := 0
 
@@ -510,12 +502,12 @@ func (c *char) buildValidGadgetList() []HittableEntity {
 		switch g.GadgetTyp() {
 		case combat.GadgetTypDendroCore:
 			// Calculate start and ending frames for collision
-			hittableGadget, isHittable := c.AddNewGadgetToHittableList(g)
+			hittableGadget, isHittable := c.IsGadgetHittable(g)
 			if isHittable {
 				hittableGadgets = append(hittableGadgets, hittableGadget)
 			}
 		case combat.GadgetTypLeaLotus:
-			hittableGadget, isHittable := c.AddNewGadgetToHittableList(g)
+			hittableGadget, isHittable := c.IsGadgetHittable(g)
 			if isHittable {
 				hittableGadget.isOneTick = false
 				hittableGadgets = append(hittableGadgets, hittableGadget)
@@ -525,9 +517,9 @@ func (c *char) buildValidGadgetList() []HittableEntity {
 	return hittableGadgets
 }
 
-func (c *char) AddNewGadgetToHittableList(v combat.Gadget) (HittableEntity, bool) {
+func (c *char) IsGadgetHittable(v combat.Gadget) (HittableEntity, bool) {
 	collisionFrames := [2]int{-1, -1}
-	facingDirection := 0.0
+	var facingDirection float64
 	if c.caState.cAtkFrames == 0 {
 		facingDirection = c.DirectionOffsetToPrimaryTarget()
 		c.caState.FacingDirection = facingDirection
@@ -578,11 +570,9 @@ func (c *char) bikeChargeAttackHook() {
 			return false
 		}
 		if g.GadgetTyp() == combat.GadgetTypDendroCore {
-			hittableGadgets := c.GetHittableEntityList()
 			// Might not be necessary to add to list?
-			hittableGadget, isHittable := c.AddNewGadgetToHittableList(g)
+			hittableGadget, isHittable := c.IsGadgetHittable(g)
 			if isHittable {
-				hittableGadgets = append(hittableGadgets, hittableGadget)
 				remainingCADuration := c.caState.cAtkFrames - (c.Core.F - c.caState.StartFrame)
 				hitFrames := c.CalculateValidCollisionFrames(remainingCADuration, hittableGadget.CollFrames, 0)
 				if len(hitFrames) > 0 {
@@ -626,7 +616,6 @@ func (c *char) CalculateValidCollisionFrames(durationCA int, collisionFrames [2]
 		currentFrame = timeSinceStart
 		if timeSinceLastHit < bikeChargeAttackICD {
 			currentFrame += bikeChargeAttackICD - timeSinceLastHit
-
 		}
 	}
 	totalFrames := currentFrame                // Track the total frames elapsed

@@ -14,9 +14,11 @@ import (
 
 var highPlungeFrames []int
 var lowPlungeFrames []int
+var bikePlungeFrames []int
 
-const lowPlungeHitmark = 38
+const lowPlungeHitmark = 37
 const highPlungeHitmark = 41
+const bikePlungeHitmark = 41
 const collisionHitmark = lowPlungeHitmark - 6
 
 const lowPlungePoiseDMG = 150.0
@@ -25,12 +27,16 @@ const lowPlungeRadius = 3.0
 const highPlungePoiseDMG = 200.0
 const highPlungeRadius = 5.0
 
+const bikePlungePoiseDMG = 150.0
+const bikePlungeRadius = 5.0
+
 func init() {
 	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(80)
+	lowPlungeFrames = frames.InitAbilSlice(80) // low_plunge -> Jump
 	lowPlungeFrames[action.ActionAttack] = 51
-	lowPlungeFrames[action.ActionSkill] = 51
-	lowPlungeFrames[action.ActionBurst] = 50
+	lowPlungeFrames[action.ActionCharge] = 52
+	lowPlungeFrames[action.ActionSkill] = 37 // low_plunge -> skill[recast=1]
+	lowPlungeFrames[action.ActionBurst] = 51
 	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
 	lowPlungeFrames[action.ActionWalk] = 79
 	lowPlungeFrames[action.ActionSwap] = 62
@@ -38,11 +44,22 @@ func init() {
 	// high_plunge -> x
 	highPlungeFrames = frames.InitAbilSlice(83)
 	highPlungeFrames[action.ActionAttack] = 54
-	highPlungeFrames[action.ActionSkill] = 55
+	highPlungeFrames[action.ActionCharge] = 55
+	highPlungeFrames[action.ActionSkill] = 40 // low_plunge -> skill[recast=1]
 	highPlungeFrames[action.ActionBurst] = 53
 	highPlungeFrames[action.ActionDash] = highPlungeHitmark
 	highPlungeFrames[action.ActionWalk] = 82
-	highPlungeFrames[action.ActionSwap] = 64
+	highPlungeFrames[action.ActionSwap] = 65
+
+	// Flamestrider low_plunge -> X
+	bikePlungeFrames = frames.InitAbilSlice(77) // low_plunge -> Walk
+	bikePlungeFrames[action.ActionAttack] = 60
+	bikePlungeFrames[action.ActionCharge] = 60
+	bikePlungeFrames[action.ActionSkill] = 41 // low_plunge -> skill[recast=1]
+	bikePlungeFrames[action.ActionBurst] = 61
+	bikePlungeFrames[action.ActionDash] = bikePlungeHitmark
+	bikePlungeFrames[action.ActionJump] = 76
+	bikePlungeFrames[action.ActionSwap] = 75
 }
 
 // Low Plunge attack damage queue generator
@@ -54,6 +71,9 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	case player.AirborneXianyun:
 		return c.lowPlungeXY(p), nil
 	default:
+		if c.canBikePlunge {
+			return c.bikePlungeAttack(), nil
+		}
 		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}
 }
@@ -141,6 +161,36 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeFrames[action.ActionDash],
+		State:           action.PlungeAttackState,
+	}
+}
+
+// Flamestrider falling attack damage queue generator
+func (c *char) bikePlungeAttack() action.Info {
+	ai := combat.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "Flamestrider Plunge",
+		AttackTag:      attacks.AttackTagPlunge,
+		ICDTag:         attacks.ICDTagMavuikaFlamestrider,
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeBlunt,
+		PoiseDMG:       bikePlungePoiseDMG,
+		Element:        attributes.Pyro,
+		Durability:     25,
+		Mult:           skillPlunge[c.TalentLvlSkill()],
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, bikePlungeRadius),
+		bikePlungeHitmark,
+		bikePlungeHitmark,
+	)
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(bikePlungeFrames),
+		AnimationLength: bikePlungeFrames[action.InvalidAction],
+		CanQueueAfter:   bikePlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 	}
 }
