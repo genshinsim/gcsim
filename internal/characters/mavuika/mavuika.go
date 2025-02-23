@@ -33,6 +33,7 @@ type char struct {
 	c6Src              int
 	savedNormalCounter int
 	caState            ChargeState
+	canBikePlunge      bool
 }
 
 func init() {

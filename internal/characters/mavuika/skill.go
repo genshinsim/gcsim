@@ -138,6 +138,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	default:
 		ai = c.skillPress()
 	}
+
+	// If using skill out of plunge, extend animation for non-recast skill
+	if c.Core.Player.CurrentState() == action.PlungeAttackState {
+		switch c.armamentState {
+		case bike:
+			ai.AnimationLength += 19
+		default:
+			ai.AnimationLength += 14
+		}
+	}
+
 	c.enterNightsoulOrRegenerate(c.nightsoulState.MaxPoints)
 	return ai, nil
 }

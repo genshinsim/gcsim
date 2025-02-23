@@ -436,6 +436,9 @@ func (c *char) GetSkippedWindupFrames() int {
 		} else {
 			skippedWindupFrames = 15
 		}
+	case x == action.PlungeAttackState:
+		skippedWindupFrames = 13
+		c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
 	}
 	return skippedWindupFrames
 }
