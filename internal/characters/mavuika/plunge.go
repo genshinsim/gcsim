@@ -57,10 +57,9 @@ func init() {
 	bikePlungeFrames[action.ActionCharge] = 60
 	bikePlungeFrames[action.ActionSkill] = 41 // low_plunge -> skill[recast=1]
 	bikePlungeFrames[action.ActionBurst] = 61
-	bikePlungeFrames[action.ActionDash] = highPlungeHitmark
+	bikePlungeFrames[action.ActionDash] = bikePlungeHitmark
 	bikePlungeFrames[action.ActionJump] = 76
 	bikePlungeFrames[action.ActionSwap] = 75
-
 }
 
 // Low Plunge attack damage queue generator
@@ -168,7 +167,6 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 
 // Flamestrider falling attack damage queue generator
 func (c *char) bikePlungeAttack() action.Info {
-
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Flamestrider Plunge",
@@ -185,8 +183,8 @@ func (c *char) bikePlungeAttack() action.Info {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, bikePlungeRadius),
-		highPlungeHitmark,
-		highPlungeHitmark,
+		bikePlungeHitmark,
+		bikePlungeHitmark,
 	)
 
 	return action.Info{

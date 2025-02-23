@@ -513,12 +513,12 @@ func (c *char) buildValidGadgetList() []HittableEntity {
 		switch g.GadgetTyp() {
 		case combat.GadgetTypDendroCore:
 			// Calculate start and ending frames for collision
-			hittableGadget, isHittable := c.AddNewGadgetToHittableList(g)
+			hittableGadget, isHittable := c.IsGadgetHittable(g)
 			if isHittable {
 				hittableGadgets = append(hittableGadgets, hittableGadget)
 			}
 		case combat.GadgetTypLeaLotus:
-			hittableGadget, isHittable := c.AddNewGadgetToHittableList(g)
+			hittableGadget, isHittable := c.IsGadgetHittable(g)
 			if isHittable {
 				hittableGadget.isOneTick = false
 				hittableGadgets = append(hittableGadgets, hittableGadget)
@@ -528,9 +528,9 @@ func (c *char) buildValidGadgetList() []HittableEntity {
 	return hittableGadgets
 }
 
-func (c *char) AddNewGadgetToHittableList(v combat.Gadget) (HittableEntity, bool) {
+func (c *char) IsGadgetHittable(v combat.Gadget) (HittableEntity, bool) {
 	collisionFrames := [2]int{-1, -1}
-	facingDirection := 0.0
+	var facingDirection float64
 	if c.caState.cAtkFrames == 0 {
 		facingDirection = c.DirectionOffsetToPrimaryTarget()
 		c.caState.FacingDirection = facingDirection
@@ -581,11 +581,9 @@ func (c *char) bikeChargeAttackHook() {
 			return false
 		}
 		if g.GadgetTyp() == combat.GadgetTypDendroCore {
-			hittableGadgets := c.GetHittableEntityList()
 			// Might not be necessary to add to list?
-			hittableGadget, isHittable := c.AddNewGadgetToHittableList(g)
+			hittableGadget, isHittable := c.IsGadgetHittable(g)
 			if isHittable {
-				hittableGadgets = append(hittableGadgets, hittableGadget)
 				remainingCADuration := c.caState.cAtkFrames - (c.Core.F - c.caState.StartFrame)
 				hitFrames := c.CalculateValidCollisionFrames(remainingCADuration, hittableGadget.CollFrames, 0)
 				if len(hitFrames) > 0 {
@@ -629,7 +627,6 @@ func (c *char) CalculateValidCollisionFrames(durationCA int, collisionFrames [2]
 		currentFrame = timeSinceStart
 		if timeSinceLastHit < bikeChargeAttackICD {
 			currentFrame += bikeChargeAttackICD - timeSinceLastHit
-
 		}
 	}
 	totalFrames := currentFrame                // Track the total frames elapsed
