@@ -458,7 +458,7 @@ func (c *char) GetRemainingNightSoulDuration() int {
 	return nsDur
 }
 
-// No idea why this is asymmetrical across the 0 degree mark, but testing showed a big jump across that line
+// 20f window during spin where CAF cannot start
 func GetCAFDelay(currentBikeSpinFrame int) int {
 	newMinSpinDuration := 0
 
