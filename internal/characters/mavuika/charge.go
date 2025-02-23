@@ -152,18 +152,8 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 
 	// Do not allow starting with a partial CA hold
 	if durationCA > 0 && c.caState.cAtkFrames > 0 {
-		// Limit hold duration to 1 full spin
-		if durationCA > bikeChargeAttackSpinFrames || durationCA > nightSoulDuration {
-			if durationCA > nightSoulDuration {
-				durationCA = nightSoulDuration
-			}
-			// Default max hold time is 6.25s/375f
-			if (c.caState.cAtkFrames + durationCA) >= bikeChargeAttackMaximumDuration {
-				durationCA = bikeChargeAttackMaximumDuration - c.caState.cAtkFrames
-			} else {
-				durationCA = bikeChargeAttackSpinFrames
-			}
-		}
+		// Cap duration to lowest of 1 spin, remaining NS, or max CA time
+		durationCA = min(durationCA, bikeChargeAttackSpinFrames, nightSoulDuration, bikeChargeAttackMaximumDuration-c.caState.cAtkFrames)
 		// Hold CA logic
 		c.HoldBikeChargeAttack(durationCA, skippedWindupFrames, bikeHittableEntities)
 	} else {
