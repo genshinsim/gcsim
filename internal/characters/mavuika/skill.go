@@ -139,16 +139,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ai = c.skillPress()
 	}
 
-	// If using skill out of plunge, extend animation for non-recast skill
-	if c.Core.Player.CurrentState() == action.PlungeAttackState {
-		switch c.armamentState {
-		case bike:
-			ai.AnimationLength += 19
-		default:
-			ai.AnimationLength += 14
-		}
-	}
-
 	c.enterNightsoulOrRegenerate(c.nightsoulState.MaxPoints)
 	return ai, nil
 }
@@ -220,12 +210,7 @@ func (c *char) skillHold() action.Info {
 		c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	}, 24)
 
-	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFramesHold),
-		AnimationLength: skillFramesHold[action.InvalidAction],
-		CanQueueAfter:   skillFramesHold[action.ActionSwap],
-		State:           action.SkillState,
-	}
+	return c.getSkillCastActionInfo(skillBikeRefreshFrames)
 }
 
 func (c *char) skillPress() action.Info {
@@ -250,12 +235,7 @@ func (c *char) skillPress() action.Info {
 	c.exitBike()
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
-	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap],
-		State:           action.SkillState,
-	}
+	return c.getSkillCastActionInfo(skillBikeRefreshFrames)
 }
 
 // Recasting E while on bike, occurs with Sac or Burst allowing E to come off of cd
@@ -281,10 +261,27 @@ func (c *char) skillBikeRefresh() action.Info {
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
+	return c.getSkillCastActionInfo(skillBikeRefreshFrames)
+}
+
+// Recast can occur earlier out of Plunge, this extends a normal skill use to match total frames
+func (c *char) getSkillCastActionInfo(f []int) action.Info {
+	plungeFrames := 0
+
+	// If using skill out of plunge, extend animation for non-recast skill
+	if c.Core.Player.CurrentState() == action.PlungeAttackState {
+		switch c.armamentState {
+		case bike:
+			plungeFrames = 19
+		default:
+			plungeFrames = 14
+		}
+	}
+
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillBikeRefreshFrames),
-		AnimationLength: skillBikeRefreshFrames[action.InvalidAction],
-		CanQueueAfter:   skillBikeRefreshFrames[action.ActionSwap],
+		Frames:          func(next action.Action) int { return f[next] + plungeFrames },
+		AnimationLength: skillBikeRefreshFrames[action.InvalidAction] + plungeFrames,
+		CanQueueAfter:   skillBikeRefreshFrames[action.ActionSwap] + plungeFrames,
 		State:           action.SkillState,
 	}
 }

@@ -72,7 +72,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		return c.lowPlungeXY(p), nil
 	default:
 		if c.canBikePlunge {
-			c.bikePlungeAttack()
+			return c.bikePlungeAttack(), nil
 		}
 		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}

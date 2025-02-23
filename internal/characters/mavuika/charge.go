@@ -185,7 +185,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		if c.caState.srcFrame != src {
 			return
 		}
-		c.BikeChargeAttackFinal(durationCA, skippedWindupFrames)
+		c.BikeChargeAttackFinal(0, 0)
 	}, durationCA+1)
 
 	return action.Info{
