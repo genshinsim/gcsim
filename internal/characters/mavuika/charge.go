@@ -168,7 +168,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	c.caState.cAtkFrames += durationCA
 	durationCA -= skippedWindupFrames
 
-	if durationCA >= nightSoulDuration {
+	if durationCA >= nightSoulDuration || c.caState.cAtkFrames >= bikeChargeAttackMaximumDuration {
 		isUseFinalHit = true
 	}
 
@@ -309,14 +309,13 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 
 // CAF occurs after reaching maximum CA duration, exiting NS, or letting go of CA
 func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) action.Info {
-	var adjustedBikeChargeFinalHitmark = bikeChargeFinalHitmark + caFrames
 	bikeChargeAttackElapsedTime := c.caState.cAtkFrames + caFrames
-	// Check if bike angle is in spot where CAF has delay, 15f window
+	// Check if bike angle is in spot where CAF has delay, 20f window
 	currentBikeSpinFrame := bikeChargeAttackElapsedTime % bikeChargeAttackSpinFrames
 	newMinSpinDuration := GetCAFDelay(currentBikeSpinFrame)
 
 	caFrames += newMinSpinDuration
-	adjustedBikeChargeFinalHitmark += caFrames
+	adjustedBikeChargeFinalHitmark := bikeChargeFinalHitmark + caFrames
 	bikeHittableEntities := c.BuildBikeChargeAttackHittableTargetList()
 	c.HoldBikeChargeAttack(newMinSpinDuration, skippedWindupFrames, bikeHittableEntities)
 
