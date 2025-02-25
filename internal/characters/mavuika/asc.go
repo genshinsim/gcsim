@@ -9,8 +9,10 @@ import (
 )
 
 const (
-	a1Key = "mavuika-a1"
-	a4Key = "mavuika-a4"
+	a1Key    = "mavuika-a1"
+	a4Key    = "mavuika-a4"
+	a4BufKey = "mavuika-a4-buff"
+	a4Dur    = 20 * 60
 )
 
 func (c *char) a1() {
@@ -35,29 +37,50 @@ func (c *char) a4Init() {
 		return
 	}
 	c.a4buff = make([]float64, attributes.EndStatType)
+	for _, char := range c.Core.Player.Chars() {
+		// make sure variable isn't mutated by later loops
+		char := char
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase(a4BufKey, -1),
+			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+				// char must be active
+				if c.Core.Player.Active() != char.Index {
+					return nil, false
+				}
+				if !c.StatusIsActive(a4Key) {
+					return nil, false
+				}
+				dmg := c.burstStacks*0.002 + c.c4BonusVal()
+				dmg *= float64(c.a4stacks) / 20.0
+				c.a4buff[attributes.DmgP] = dmg
+				return c.a4buff, true
+			},
+		})
+	}
 }
 
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	started := c.Core.F
-	for _, char := range c.Core.Player.Chars() {
-		this := char
-		this.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(a4Key, 20*60),
-			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				// char must be active
-				if c.Core.Player.Active() != this.Index {
-					return nil, false
-				}
-				// Check hitlag extension to scale decay
-				extension := c.StatusExpiry(a4Key) - (started + 20*60)
-				dmg := c.burstStacks*0.002 + c.c4BonusVal()
-				dmg *= 1.0 - float64(c.Core.F-started-extension)*c.c4DecayRate()
-				c.a4buff[attributes.DmgP] = dmg
-				return c.a4buff, true
-			},
-		})
+	c.AddStatus(a4Key, a4Dur, true)
+	c.a4stacks = 20
+	c.a4src = c.Core.F
+	c.QueueCharTask(c.a4Decay(c.a4src), 60)
+}
+
+func (c *char) a4Decay(src int) func() {
+	return func() {
+		if c.a4src != src {
+			return
+		}
+		if !c.StatusIsActive(a4Key) {
+			return
+		}
+		if c.a4stacks <= 0 {
+			return
+		}
+		c.a4stacks -= c.c4DecayRate()
+		c.QueueCharTask(c.a4Decay(src), 60)
 	}
 }

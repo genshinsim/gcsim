@@ -28,6 +28,8 @@ type char struct {
 	armamentState      SkillState
 	ringSrc            int
 	burstStacks        float64
+	a4src              int
+	a4stacks           int
 	a4buff             []float64
 	c1buff             []float64
 	c6Src              int

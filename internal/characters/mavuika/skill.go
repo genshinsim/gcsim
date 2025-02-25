@@ -77,7 +77,7 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 			}
 		}
 		c.reduceNightsoulPoints(val)
-		c.Core.Tasks.Add(c.nightsoulPointReduceFunc(src), 6)
+		c.QueueCharTask(c.nightsoulPointReduceFunc(src), 6)
 	}
 }
 

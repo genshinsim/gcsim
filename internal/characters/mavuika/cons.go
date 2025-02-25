@@ -114,11 +114,11 @@ func (c *char) c4BonusVal() float64 {
 	return 0.1
 }
 
-func (c *char) c4DecayRate() float64 {
+func (c *char) c4DecayRate() int {
 	if c.Base.Cons < 4 {
-		return 1.0 / (20 * 60)
+		return 1 // 1 stack per 1s, total 20
 	}
-	return 0.0
+	return 0
 }
 
 // this is just used for c2
