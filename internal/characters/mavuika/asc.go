@@ -10,6 +10,7 @@ import (
 
 const (
 	a1Key = "mavuika-a1"
+	a4Key = "mavuika-a4"
 )
 
 func (c *char) a1() {
@@ -44,14 +45,16 @@ func (c *char) a4() {
 	for _, char := range c.Core.Player.Chars() {
 		this := char
 		this.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("mavuika-a4", 20*60),
+			Base: modifier.NewBaseWithHitlag(a4Key, 20*60),
 			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				// char must be active
 				if c.Core.Player.Active() != this.Index {
 					return nil, false
 				}
+				// Check hitlag extension to scale decay
+				extension := c.StatusExpiry(a4Key) - (started + 20*60)
 				dmg := c.burstStacks*0.002 + c.c4BonusVal()
-				dmg *= 1.0 - float64(c.Core.F-started)*c.c4DecayRate()
+				dmg *= 1.0 - float64(c.Core.F-started-extension)*c.c4DecayRate()
 				c.a4buff[attributes.DmgP] = dmg
 				return c.a4buff, true
 			},
