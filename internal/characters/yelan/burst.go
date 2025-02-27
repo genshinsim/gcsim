@@ -11,10 +11,11 @@ import (
 )
 
 var burstFrames []int
-var burstDiceHitmarks = []int{25, 30, 36, 41} // c2 hitmark not framecounted
+var burstTravel = 20
 
 // initial hit
 const burstHitmark = 76
+const c2Hitmark = 17
 
 func init() {
 	burstFrames = frames.InitAbilSlice(93) // Q -> N1/CA/D
@@ -39,6 +40,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		HitlagFactor:     0.05,
 		IsDeployable:     true,
 	}
+
+	travel, ok := p["travel"]
+	if ok {
+		burstTravel = travel
+	}
+
 	// apply hydro every 3rd hit
 	// triggered on normal attack or yelan's skill
 
@@ -103,7 +110,7 @@ func (c *char) summonExquisiteThrow() {
 				nil,
 				0.5,
 			),
-			burstDiceHitmarks[i],
+			burstTravel+i*6,
 		)
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
@@ -122,7 +129,7 @@ func (c *char) summonExquisiteThrow() {
 				0.5,
 			),
 			0,
-			burstDiceHitmarks[3],
+			c2Hitmark,
 		)
 	}
 }
