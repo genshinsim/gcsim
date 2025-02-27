@@ -57,6 +57,7 @@ const (
 	Lisa
 	Lynette
 	Lyney
+	Mavuika
 	Mika
 	Mona
 	Mualani
@@ -299,6 +300,10 @@ func init() {
 	charNames[Lyney] = "lyney"
 	charPrettyName[Lyney] = "Lyney"
 	CharKeyToEle[Lyney] = attributes.Pyro
+
+	charNames[Mavuika] = "mavuika"
+	charPrettyName[Mavuika] = "Mavuika"
+	CharKeyToEle[Mavuika] = attributes.Pyro
 
 	charNames[Mika] = "mika"
 	charPrettyName[Mika] = "Mika"
