@@ -8,6 +8,7 @@ import (
 )
 
 const c6key = "chasca-c6"
+const c6BuffKey = "chasca-c6-cdmg-buff"
 const c6IcdKey = "chasca-c6-icd"
 
 func (c *char) c1() float64 {
@@ -94,6 +95,9 @@ func (c *char) c6() {
 	if c.Base.Cons < 6 {
 		return
 	}
+	if c.Base.Ascension < 1 {
+		return
+	}
 	if c.StatusIsActive(c6IcdKey) {
 		return
 	}
@@ -101,26 +105,42 @@ func (c *char) c6() {
 	c.AddStatus(c6key, 3*60, true)
 }
 
-func (c *char) c6buff(snap *combat.Snapshot) {
+// if the c6 instant bullet load status is active, this adds c6 cdmg status and removes the instant load status
+func (c *char) c6AddBuff() {
+	// Need a seperate key for the 120% CDMG buff and the instant bullet load
+	// since the instant bullet load status is active while the shots from the first aim are hitting
 	if c.Base.Cons < 6 {
 		return
 	}
-
+	if c.Base.Ascension < 1 {
+		return
+	}
 	if !c.StatusIsActive(c6key) {
 		return
 	}
-	old := snap.Stats[attributes.CD]
-	snap.Stats[attributes.CD] += 1.20
-	c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index).
-		Write("old", old).
-		Write("new", snap.Stats[attributes.CD])
+	c.AddStatus(c6BuffKey, 30, false)
+	c.DeleteStatus(c6key)
 }
 
-func (c *char) removeC6() {
-	if c.Base.Cons < 6 {
-		return
+func (c *char) c6buff() func(*combat.Snapshot) {
+	buffActive := c.StatusIsActive(c6BuffKey)
+	c.DeleteStatus(c6BuffKey)
+	return func(snap *combat.Snapshot) {
+		if c.Base.Cons < 6 {
+			return
+		}
+		if c.Base.Ascension < 1 {
+			return
+		}
+		if !buffActive {
+			return
+		}
+		old := snap.Stats[attributes.CD]
+		snap.Stats[attributes.CD] += 1.20
+		c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index).
+			Write("old", old).
+			Write("new", snap.Stats[attributes.CD])
 	}
-	c.DeleteStatus(c6key)
 }
 
 func (c *char) c6ChargeTime(count int) int {

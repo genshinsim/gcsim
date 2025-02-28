@@ -45,7 +45,6 @@ func (c *char) a1Conversion() attributes.Element {
 	if c.Core.Rand.Float64() > chance {
 		return attributes.Anemo
 	}
-	c.c6()
 	return c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
 }
 
