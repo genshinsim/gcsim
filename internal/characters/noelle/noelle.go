@@ -21,6 +21,7 @@ type char struct {
 	shieldTimer int
 	a4Counter   int
 	burstBuff   []float64
+	caState     ChargeState
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -40,6 +41,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.burstBuff = make([]float64, attributes.EndStatType)
 	c.a1()
+	c.c2()
 	return nil
 }
 
@@ -63,8 +65,12 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
-		return 23
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 24
+	case model.AnimationYelanN0StartDelay:
+		return 18
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
-	return c.Character.AnimationStartDelay(k)
 }
