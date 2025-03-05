@@ -28,6 +28,10 @@ func New(c *core.Core, char *character.CharWrapper) *State {
 	return t
 }
 
+func (s *State) Duration() int {
+	return s.char.StatusDuration(NightsoulBlessingStatus)
+}
+
 // Change the current duration of the NS status if applicable, and apply cb on expiry.
 // If NS is not currently active, do nothing.
 func (s *State) SetNightsoulExitTimer(duration int, cb func()) {

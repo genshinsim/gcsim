@@ -2,7 +2,6 @@ package kinich
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -34,7 +33,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatus(burstKey, ajawDuration, false)
 	if c.nightsoulState.HasBlessing() {
 		// extend Nightsoul's Blessing time limit countdown
-		duration := c.StatusDuration(nightsoul.NightsoulBlessingStatus)
+		duration := c.nightsoulState.Duration()
 		if duration > 0 {
 			c.nightsoulState.SetNightsoulExitTimer(duration+1.7*60, c.cancelNightsoul)
 		}
