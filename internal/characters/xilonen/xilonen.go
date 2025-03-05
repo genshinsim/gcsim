@@ -45,6 +45,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 	c.nightsoulState.MaxPoints = 90
+	extendNsOnStates := []action.AnimationState{action.NormalAttackState, action.PlungeAttackState}
+	c.nightsoulState.SetExtendNsStates(extendNsOnStates)
 
 	return nil
 }
