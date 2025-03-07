@@ -71,6 +71,7 @@ func (c *char) enterNightsoul() {
 	c.NormalHitNum = 1
 	c.NormalCounter = 0
 	c.skillParticleICD = false
+	c.c6Used = false
 }
 
 func (c *char) nigthsoulFallingMsg() {

@@ -118,23 +118,23 @@ func (c *char) c6AddBuff() {
 	if !c.StatusIsActive(c6key) {
 		return
 	}
-	c.AddStatus(c6BuffKey, 30, false)
+	c.c6Used = true
 	c.DeleteStatus(c6key)
 }
 
 func (c *char) c6buff() func(*combat.Snapshot) {
-	buffActive := c.StatusIsActive(c6BuffKey)
-	c.DeleteStatus(c6BuffKey)
+	if c.Base.Cons < 6 {
+		return nil
+	}
+	if c.Base.Ascension < 1 {
+		return nil
+	}
+	if !c.c6Used {
+		return nil
+	}
+	c.c6Used = false
+
 	return func(snap *combat.Snapshot) {
-		if c.Base.Cons < 6 {
-			return
-		}
-		if c.Base.Ascension < 1 {
-			return
-		}
-		if !buffActive {
-			return
-		}
 		old := snap.Stats[attributes.CD]
 		snap.Stats[attributes.CD] += 1.20
 		c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index).
@@ -147,7 +147,7 @@ func (c *char) c6ChargeTime(count int) int {
 	if c.Base.Cons < 6 {
 		return cumuSkillAimLoadFrames[count-1]
 	}
-	if c.StatusIsActive(c6key) {
+	if c.c6Used {
 		return cumuSkillAimLoadFramesC6Instant[count-1]
 	}
 	return cumuSkillAimLoadFramesC6[count-1]

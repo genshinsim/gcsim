@@ -132,6 +132,12 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	aimSrc := c.Core.F
 	c.aimSrc = aimSrc
 
+	c.c6AddBuff()
+	// activate c6 for next shot when a1 conversion happens (happens on bullet 1 due to c1)
+	if count >= 1 && c.bulletsToFire[1] != attributes.Anemo {
+		c.c6()
+	}
+
 	windup := 11
 	switch c.Core.Player.CurrentState() {
 	// these actions have the windup included in the X -> Aim frames
@@ -148,11 +154,6 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 				return
 			}
 			c.bulletsCharged++
-
-			// activate c6 for next shot when a1 conversion happens (happens on bullet 1 due to c1)
-			if c.bulletsCharged == 1 {
-				c.c6()
-			}
 		}, delay)
 	}
 
@@ -163,7 +164,6 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 			c.fireBullets()
 		}
 	}, chargeDelay)
-	c.c6AddBuff()
 
 	return action.Info{
 		Frames: c.skillNextFrames(func(next action.Action) int {
@@ -224,7 +224,9 @@ func (c *char) fireBullets() {
 				c2cb = c.c2cb(bulletFireFrame)
 			}
 			snapshot := c.Snapshot(&ai)
-			applyC6buff(&snapshot)
+			if applyC6buff != nil {
+				applyC6buff(&snapshot)
+			}
 			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(target.Key()), 0, c.particleCB, c2cb)
 		}, hitDelay)
 	}
