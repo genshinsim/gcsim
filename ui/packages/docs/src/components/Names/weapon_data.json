@@ -1,4 +1,5 @@
 {
+  "absolution": [],
   "akuoumaru": [],
   "alleyhunter": [],
   "amenomakageuchi": [
@@ -18,11 +19,20 @@
   "aquilafavonia": [
     "aquila"
   ],
+  "ashgravendrinkinghorn": [
+    "ashgraven"
+  ],
+  "astralvulturescrimsonplumage": [
+    "avcp"
+  ],
+  "athousandblazingsuns": [
+    "tbs"
+  ],
   "athousandfloatingdreams": [
     "thousandfloatingdreams",
     "tfd"
   ],
-  "balladoftheboundlessblue":[
+  "balladoftheboundlessblue": [
     "boundlessblue"
   ],
   "balladofthefjords": [
@@ -45,15 +55,18 @@
   "bloodtaintedgreatsword": [
     "bloodtainted"
   ],
+  "calamityofeshu": [],
   "calamityqueller": [
     "calamity"
   ],
   "cashflowsupervision": [
     "cashflow"
   ],
+  "chainbreaker": [],
   "cinnabarspindle": [
     "cinnabar"
   ],
+  "cloudforged": [],
   "compoundbow": [
     "compound"
   ],
@@ -64,6 +77,9 @@
   "crescentpike": [
     "cpike",
     "pike"
+  ],
+  "crimsonmoonssemblance": [
+    "crimsonmoon"
   ],
   "darkironsword": [],
   "deathmatch": [],
@@ -77,6 +93,7 @@
   ],
   "dragonspinespear": [],
   "dullblade": [],
+  "earthshaker": [],
   "elegyfortheend": [
     "elegy"
   ],
@@ -92,6 +109,9 @@
   "eyeofperception": [],
   "fadingtwilight": [
     "twilight"
+  ],
+  "fangofthemountainking": [
+    "fotmk"
   ],
   "favoniuscodex": [
     "favcodex"
@@ -122,14 +142,22 @@
     "fleuve",
     "pipe"
   ],
+  "fluteofezpitzal": [
+    "ezpital"
+  ],
   "forestregalia": [
     "regalia"
+  ],
+  "footprintoftherainbow": [
+    "footprint",
+    "fotr"
   ],
   "freedomsworn": [
     "freedom",
     "fs"
   ],
   "frostbearer": [],
+  "fruitfulhook": [],
   "fruitoffulfillment": [
     "fruit",
     "fof"
@@ -184,6 +212,7 @@
   "lostprayertothesacredwinds": [
     "lostprayer"
   ],
+  "lumidouceelegy": [],
   "luxurioussealord": [
     "sealord"
   ],
@@ -212,6 +241,7 @@
     "waltz"
   ],
   "moonpiercer": [],
+  "mountainbracingbolt": [],
   "mouunsmoon": [
     "mouun",
     "mouuns"
@@ -222,6 +252,9 @@
   "oldmercspal": [],
   "otherworldlystory": [
     "otherworldly"
+  ],
+  "peakpatrolsong": [
+    "pps"
   ],
   "pocketgrimoire": [
     "pocket"
@@ -269,6 +302,7 @@
     "redhorn"
   ],
   "rightfulreward": [],
+  "ringofyaxche": [],
   "royalbow": [],
   "royalgreatsword": [],
   "royalgrimoire": [],
@@ -308,6 +342,10 @@
     "sharpshooters",
     "sharpshooter"
   ],
+  "silvershowerheartstrings": [
+    "silvershower",
+    "heartstrings"
+  ],
   "silversword": [],
   "skyridergreatsword": [],
   "skyridersword": [],
@@ -346,9 +384,14 @@
     "scarlet",
     "sss"
   ],
+  "starcallerswatch": [
+    "scw"
+  ],
+  "sturdybone": [],
   "summitshaper": [
     "summit"
   ],
+  "surfsup": [],
   "swordofdescension": [
     "descension"
   ],
@@ -432,6 +475,7 @@
   "wavebreakersfin": [
     "wavebreaker"
   ],
+  "waveridingwhirl": [],
   "whiteblind": [],
   "whiteirongreatsword": [],
   "whitetassel": [],

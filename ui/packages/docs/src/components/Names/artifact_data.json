@@ -21,7 +21,7 @@
     "witch"
   ],
   "deepwoodmemories": [
-    "deepwood"    
+    "deepwood"
   ],
   "defenderswill": [
     "defenders",
@@ -46,6 +46,10 @@
   "flowerofparadiselost": [
     "paradiselost",
     "fopl"
+  ],
+  "fragmentofharmonicwhimsy": [
+    "harmonicwhimsy",
+    "fohw"
   ],
   "gambler": [],
   "gladiatorsfinale": [
@@ -92,6 +96,9 @@
   "nymphsdream": [
     "nymph"
   ],
+  "obsidiancodex": [
+    "oc"
+  ],
   "oceanhuedclam": [
     "ohc",
     "clam"
@@ -106,12 +113,16 @@
     "bolide"
   ],
   "scholar": [],
+  "scrolloftheheroofcindercity": [
+    "scroll",
+    "sothocc"
+  ],
   "shimenawasreminiscence": [
     "shimenawa",
     "shime",
     "shim",
     "sr"
-  ],  
+  ],
   "songofdayspast": [
     "sodp"
   ],
@@ -129,6 +140,9 @@
   ],
   "thundersoother": [
     "ts"
+  ],
+  "unfinishedreverie": [
+    "ur"
   ],
   "vermillionhereafter": [
     "vermillion",

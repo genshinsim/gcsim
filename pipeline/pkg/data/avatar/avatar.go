@@ -181,9 +181,21 @@ func (a *DataSource) parseSkillIDs(c *model.AvatarData, err error) error {
 	c.SkillDetails.Attack = sd.Skills[0]
 	c.SkillDetails.Skill = sd.Skills[1]
 
+	// passive is a bit different
+	for _, v := range sd.InherentProudSkillOpens {
+		switch v.NeedAvatarPromoteLevel {
+		case 1:
+			c.SkillDetails.A1 = v.ProudSkillGroupId
+		case 4:
+			c.SkillDetails.A4 = v.ProudSkillGroupId
+		}
+	}
+
 	c.SkillDetails.AttackScaling, err = a.parseSkillScaling(c.SkillDetails.Attack, err)
 	c.SkillDetails.SkillScaling, err = a.parseSkillScaling(c.SkillDetails.Skill, err)
 	c.SkillDetails.BurstScaling, err = a.parseSkillScaling(c.SkillDetails.Burst, err)
+	c.SkillDetails.A1Scaling, err = a.parseSkillScalingFromProudGroup(c.SkillDetails.A1, err)
+	c.SkillDetails.A4Scaling, err = a.parseSkillScalingFromProudGroup(c.SkillDetails.A4, err)
 
 	return err
 }
@@ -195,20 +207,24 @@ func (a *DataSource) parseSkillScaling(skillDepotID int32, err error) ([]*model.
 	if !ok {
 		return nil, multierr.Append(err, fmt.Errorf("skill depot id %v not found in skill excel data", skillDepotID))
 	}
-	pgs, ok := a.proudSkill[se.ProudSkillGroupID]
+	return a.parseSkillScalingFromProudGroup(se.ProudSkillGroupID, err)
+}
+
+func (a *DataSource) parseSkillScalingFromProudGroup(id int32, err error) ([]*model.AvatarSkillExcelIndexData, error) {
+	pgs, ok := a.proudSkill[id]
 	if !ok {
-		return nil, multierr.Append(err, fmt.Errorf("proud group  id %v not found in proud group excel data", se.ProudSkillGroupID))
+		return nil, multierr.Append(err, fmt.Errorf("proud group id %v not found in proud group excel data", id))
 	}
 	// this is a sanity check to make sure the result is sized to the max of paramlist
 	// realistically we expect paramlist to be all the same size..
-	max := 0
+	maxparams := 0
 	for _, v := range pgs {
-		if len(v.ParamList) > max {
-			max = len(v.ParamList)
+		if len(v.ParamList) > maxparams {
+			maxparams = len(v.ParamList)
 		}
 	}
 	// make one AvatarSkillExcelData per entry in paramlist
-	res := make([]*model.AvatarSkillExcelIndexData, max)
+	res := make([]*model.AvatarSkillExcelIndexData, maxparams)
 	for i := range res {
 		res[i] = &model.AvatarSkillExcelIndexData{
 			Index: int32(i),

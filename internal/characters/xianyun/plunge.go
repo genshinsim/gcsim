@@ -82,18 +82,18 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 
 	// dont need to check airborne for this because she can plunge if she's on the ground anyways
 	if c.StatusIsActive(skillStateKey) {
-		return c.driftcloudWave()
+		return c.driftcloudWave(), nil
 	}
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
-		return c.highPlungeXY(p)
+		return c.highPlungeXY(p), nil
 	default:
 		return action.Info{}, fmt.Errorf("%s high_plunge can only be used while airborne", c.Base.Key.String())
 	}
 }
 
-func (c *char) driftcloudWave() (action.Info, error) {
+func (c *char) driftcloudWave() action.Info {
 	skillInd := c.skillCounter - 1
 	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, plungeRadius[skillInd])
 	skillHitmark := plungeHitmarks[skillInd]
@@ -126,7 +126,7 @@ func (c *char) driftcloudWave() (action.Info, error) {
 		State:           action.PlungeAttackState,
 		AnimationLength: driftcloudFrames[skillInd][action.InvalidAction],
 		CanQueueAfter:   driftcloudFrames[skillInd][action.ActionCharge],
-	}, nil
+	}
 }
 
 // Low Plunge attack damage queue generator
@@ -137,18 +137,18 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 
 	// dont need to check airborne for this because she can plunge if she's on the ground anyways
 	if c.StatusIsActive(skillStateKey) {
-		return c.driftcloudWave()
+		return c.driftcloudWave(), nil
 	}
 
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
-		return c.lowPlungeXY(p)
+		return c.lowPlungeXY(p), nil
 	default:
 		return action.Info{}, fmt.Errorf("%s low_plunge can only be used while airborne", c.Base.Key.String())
 	}
 }
 
-func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
+func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not Xianyun does a collision hit
@@ -181,10 +181,10 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		AnimationLength: lowPlungeFramesXY[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFramesXY[action.ActionDash],
 		State:           action.PlungeAttackState,
-	}, nil
+	}
 }
 
-func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
+func (c *char) highPlungeXY(p map[string]int) action.Info {
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not Xianyun does a collision hit
@@ -217,7 +217,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		AnimationLength: highPlungeFramesXY[action.InvalidAction],
 		CanQueueAfter:   highPlungeFramesXY[action.ActionDash],
 		State:           action.PlungeAttackState,
-	}, nil
+	}
 }
 
 // Plunge normal falling attack damage queue generator

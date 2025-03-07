@@ -102,7 +102,7 @@ func (c *char) a1TapestrySetup() {
 			Mult:       thrustAtkScaling[c.TalentLvlSkill()],
 		}
 		snap := c.Snapshot(&ai)
-		ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
+		ai.FlatDmg = snap.Stats.TotalDEF()
 		ai.FlatDmg *= thrustDefScaling[c.TalentLvlSkill()]
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(t, nil, 2.5), 1)
 

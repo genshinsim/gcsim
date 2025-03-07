@@ -76,6 +76,7 @@ enum ZoneType {
   ASSOC_TYPE_RANGER = 7;    // aloy pls
   ASSOC_TYPE_MAINACTOR = 8; // traveler is cool
   ASSOC_TYPE_FONTAINE = 9;
+  ASSOC_TYPE_NATLAN = 10;
 }
 
 enum Element {
@@ -146,6 +147,15 @@ enum DBTag {
   DB_TAG_GUIDES = 9;
   DB_TAG_ADMIN_DO_NOT_USE = 99999999;
 
-  reserved 3; //DB_TAG_KQM_GUIDE
-  reserved 4; //DB_TAG_GEO_SIMPS
+  reserved 3; // DB_TAG_KQM_GUIDE
+  reserved 4; // DB_TAG_GEO_SIMPS
+}
+
+enum EquipType {
+  INVALID_EQUIP_TYPE = 0;
+  EQUIP_BRACER = 1; // flower
+	EQUIP_NECKLACE = 2; // plume
+	EQUIP_SHOES = 3; // sands
+	EQUIP_RING = 4; // goblet
+	EQUIP_DRESS = 5; // circlet
 }

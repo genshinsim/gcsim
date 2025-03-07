@@ -422,6 +422,44 @@
       "legal": true
     }
   ],
+  "chasca": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Must have just exited Nightsoul Blessing"
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "chevreuse": [
     {
       "ability": "attack",
@@ -523,6 +561,40 @@
     {
       "ability": "walk",
       "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "clorinde": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "notes": "Need to use attack right before charge."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
     },
     {
       "ability": "swap",
@@ -762,6 +834,48 @@
     {
       "ability": "walk",
       "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "emilie": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
     },
     {
       "ability": "swap",
@@ -1394,6 +1508,48 @@
       "legal": true
     }
   ],
+  "kinich": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "notes": "Need to use attack right before charge. Cannot charge in nightsoul blessing"
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot low plunge in nightsoul blessing."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    }
+  ],
   "kirara": [
     {
       "ability": "attack",
@@ -1590,6 +1746,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1599,7 +1763,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -1744,6 +1908,40 @@
     {
       "ability": "walk",
       "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "mualani": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
     },
     {
       "ability": "swap",
@@ -1971,14 +2169,14 @@
       "legal": true
     }
   ],
-  "qiqi": [
+  "ororon": [
     {
       "ability": "attack",
       "legal": true
     },
     {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "ability": "aim",
+      "legal": true
     },
     {
       "ability": "skill",
@@ -1998,7 +2196,49 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "qiqi": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "notes": "Need to use attack right before charge."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -2185,6 +2425,40 @@
       "legal": true
     }
   ],
+  "sethos": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "shenhe": [
     {
       "ability": "attack",
@@ -2213,6 +2487,40 @@
     {
       "ability": "walk",
       "notes": "Everything except normal followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "sigewinne": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
     },
     {
       "ability": "swap",
@@ -2821,6 +3129,48 @@
     {
       "ability": "swap",
       "legal": true
+    }
+  ],
+  "xilonen": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "notes": "Need to use attack right before charge. Cannot charge in nightsoul blessing"
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot low plunge in nightsoul blessing."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     }
   ],
   "xingqiu": [

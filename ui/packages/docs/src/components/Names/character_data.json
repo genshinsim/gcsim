@@ -5,6 +5,9 @@
     ],
     "aloy": [],
     "amber": [],
+    "arlecchino": [
+        "arle"
+    ],
     "itto": [
         "aratakiitto",
         "aratakitheoneandoniitto"
@@ -16,6 +19,7 @@
     "beidou": [],
     "bennett": [],
     "candace": [],
+    "chasca": [],
     "charlotte": [],
     "chevreuse": [
         "chev"
@@ -24,12 +28,14 @@
     "chongyun": [
         "chong"
     ],
+    "clorinde": [],
     "collei": [],
     "cyno": [],
     "dehya": [],
     "diluc": [],
     "diona": [],
     "dori": [],
+    "emilie": [],
     "eula": [],
     "faruzan": [
         "faru"
@@ -65,6 +71,7 @@
     "keqing": [
         "keq"
     ],
+    "kinich": [],
     "kirara": [],
     "klee": [],
     "kuki": [
@@ -80,6 +87,7 @@
     "lyney": [],
     "mika": [],
     "mona": [],
+    "mualani": [],
     "nahida": [
         "kusanali",
         "lesserlordkusanali"
@@ -97,6 +105,9 @@
         "ning"
     ],
     "noelle": [],
+    "ororon": [
+        "olorun"
+    ],
     "qiqi": [],
     "raiden": [
         "raidenshogun",
@@ -111,7 +122,9 @@
         "koko"
     ],
     "sayu": [],
+    "sethos": [],
     "shenhe": [],
+    "sigewinne": [],
     "heizou": [
         "shikanoinheizou"
     ],
@@ -170,6 +183,9 @@
         "cloudretainer"
     ],
     "xiao": [],
+    "xilonen": [
+        "xilo"
+    ],
     "xingqiu": [
         "xq"
     ],

@@ -46,7 +46,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	snap := c.Snapshot(&ai)
 
-	defFactor := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
+	defFactor := snap.Stats.TotalDEF()
 
 	hitOpponents := 0
 	cb := func(_ combat.AttackCB) {

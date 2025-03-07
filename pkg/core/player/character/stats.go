@@ -1,6 +1,7 @@
 package character
 
 import (
+	"slices"
 	"strconv"
 	"strings"
 
@@ -123,9 +124,11 @@ func (c *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
 	return val
 }
 
-func (c *CharWrapper) MaxHP() float64 {
-	hpp := c.BaseStats[attributes.HPP]
-	hp := c.BaseStats[attributes.HP]
+func (c *CharWrapper) SelectStat(nonExtra bool, stat ...attributes.Stat) attributes.Stats {
+	var stats attributes.Stats
+	for _, k := range stat {
+		stats[k] += c.BaseStats[k]
+	}
 
 	for _, v := range c.mods {
 		m, ok := v.(*StatMod)
@@ -133,18 +136,37 @@ func (c *CharWrapper) MaxHP() float64 {
 			continue
 		}
 		// ignore this mod if stat type doesnt match
-		switch m.AffectedStat {
-		case attributes.NoStat, attributes.HP, attributes.HPP:
-		default:
+		if m.AffectedStat != attributes.NoStat && !slices.Contains(stat, m.AffectedStat) {
+			continue
+		}
+		// skip if extra stat
+		if nonExtra && m.Extra {
 			continue
 		}
 		// check expiry
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
 			if amt, ok := m.Amount(); ok {
-				hpp += amt[attributes.HPP]
-				hp += amt[attributes.HP]
+				for _, k := range stat {
+					stats[k] += amt[k]
+				}
 			}
 		}
 	}
-	return (c.Base.HP*(1+hpp) + hp)
+
+	return stats
+}
+
+func (c *CharWrapper) MaxHP() float64 {
+	stats := c.SelectStat(false, attributes.BaseHP, attributes.HPP, attributes.HP)
+	return stats.MaxHP()
+}
+
+func (c *CharWrapper) TotalAtk() float64 {
+	stats := c.SelectStat(false, attributes.BaseATK, attributes.ATKP, attributes.ATK)
+	return stats.TotalATK()
+}
+
+func (c *CharWrapper) TotalDef(nonExtra bool) float64 {
+	stats := c.SelectStat(nonExtra, attributes.BaseDEF, attributes.DEFP, attributes.DEF)
+	return stats.TotalDEF()
 }

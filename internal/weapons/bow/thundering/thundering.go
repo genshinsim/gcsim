@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.15 + float64(r)*0.05
 	stack := 0.09 + float64(r)*0.03
-	max := 0.3 + float64(r)*0.1
+	maxBonus := 0.3 + float64(r)*0.1
 
 	const normalKey = "thundering-pulse-normal"
 	normalDuration := 300 // 5s * 60
@@ -84,7 +84,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			dmg := float64(count) * stack
 			if count >= 3 {
-				dmg = max
+				dmg = maxBonus
 			}
 			m[attributes.DmgP] = dmg
 			return m, true

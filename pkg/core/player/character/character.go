@@ -13,7 +13,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/task"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"github.com/genshinsim/gcsim/pkg/queue"
 )
 
 type Character interface {
@@ -36,7 +35,7 @@ type Character interface {
 	ActionStam(a action.Action, p map[string]int) float64
 
 	ActionReady(a action.Action, p map[string]int) (bool, action.Failure)
-	NextQueueItemIsValid(a action.Action, p map[string]int) error
+	NextQueueItemIsValid(targetChar keys.Char, a action.Action, p map[string]int) error
 	SetCD(a action.Action, dur int)
 	Cooldown(a action.Action) int
 	ResetActionCooldown(a action.Action)
@@ -128,9 +127,9 @@ type CharWrapper struct {
 	DashLockout     bool
 
 	// hitlag stuff
-	timePassed   int // how many frames have passed since start of sim
+	TimePassed   int // how many frames have passed since start of sim
 	frozenFrames int // how many frames are we still frozen for
-	queue        []queue.Task
+	queue        *task.Handler
 }
 
 func New(
@@ -139,7 +138,7 @@ func New(
 	debug bool, // are we running in debug mode
 	log glog.Logger, // logging, can be nil
 	events event.Eventter, // event emitter
-	task task.Tasker,
+	tasker task.Tasker,
 ) (*CharWrapper, error) {
 	c := &CharWrapper{
 		Base:          p.Base,
@@ -148,12 +147,13 @@ func New(
 		ParticleDelay: 100, // default particle delay
 		log:           log,
 		events:        events,
-		tasks:         task,
+		tasks:         tasker,
 		Tags:          make(map[string]int),
 		mods:          make([]modifier.Mod, 0, 20),
 		f:             f,
 		debug:         debug,
 	}
+	c.queue = task.New(&c.TimePassed)
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]info.Set)

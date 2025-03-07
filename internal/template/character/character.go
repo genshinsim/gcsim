@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
@@ -56,10 +57,6 @@ func New(c *core.Core) *Character {
 func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	s := combat.Snapshot{
 		CharLvl:     c.Base.Level,
-		ActorEle:    c.Base.Element,
-		BaseAtk:     c.Base.Atk + c.Weapon.BaseAtk,
-		BaseDef:     c.Base.Def,
-		BaseHP:      c.Base.HP,
 		SourceFrame: c.Core.F,
 	}
 
@@ -137,7 +134,7 @@ func (c *Character) Burst(map[string]int) (action.Info, error) {
 	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.CharWrapper.Base.Key)
 }
 
-func (c *Character) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+func (c *Character) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]int) error {
 	if a == action.ActionCharge {
 		switch c.Weapon.Class {
 		case info.WeaponClassSword, info.WeaponClassSpear:

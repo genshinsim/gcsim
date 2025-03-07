@@ -26,12 +26,14 @@ func (c *char) c1() {
 	c.maxHatCount = 2
 }
 
-func (c *char) c1StackIncrease() int {
-	addCount := 0
-	if c.Base.Cons >= 1 && !c.StatusIsActive(c1ICDKey) {
-		addCount = 1
+// C1 Prop stack is granted regardless of HP drain
+func (c *char) addC1PropStack() func() {
+	return func() {
+		if c.Base.Cons < 1 || c.StatusIsActive(c1ICDKey) {
+			return
+		}
+		c.increasePropSurplusStacks()
 	}
-	return addCount
 }
 
 func (c *char) c1HatIncrease() int {

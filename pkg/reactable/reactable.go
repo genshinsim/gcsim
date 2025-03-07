@@ -297,6 +297,13 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 	return false
 }
 
+func (r *Reactable) IsBurning() bool {
+	if r.Durability[BurningFuel] > ZeroDur && r.Durability[Burning] > ZeroDur {
+		return true
+	}
+	return false
+}
+
 // reduce the requested element by dur * factor, return the amount of dur consumed
 // if multiple modifier with same element are present, all of them are reduced
 // the max on reduced is used for consumption purpose
@@ -425,8 +432,7 @@ func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em floa
 		lvl = 0
 	}
 	snap := combat.Snapshot{
-		CharLvl:  char.Base.Level,
-		ActorEle: char.Base.Element,
+		CharLvl: char.Base.Level,
 	}
 	snap.Stats[attributes.EM] = em
 	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl], snap

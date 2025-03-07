@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: main branch container build
+
+concurrency:
+  group: container-release
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  build-images:
+    name: Build Images
+    uses: ./.github/workflows/build-images.yaml
+    secrets: inherit
+    permissions:
+      contents: read
+      packages: write
+    with:
+      appsToBuild: all
+      force: true
+      pushImages: true
+      sendNotifications: true
+      version: ${{ github.ref_name }}

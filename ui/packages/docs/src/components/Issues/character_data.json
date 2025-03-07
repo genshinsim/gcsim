@@ -2,6 +2,12 @@
   "albedo": [
     "Burst ticks missing precise frame count"
   ],
+  "chasca": [
+    "Cannot jump while in Nightsoul Blessing"
+  ],
+  "kinich": [
+    "The actual Kinich's circular movement is not simulated, so Loop Shots/Scalespiker Cannon will damage the Primary target, which does not depend on attack angle."
+  ],
   "xianyun": [
     "Not all characters can plunge after a Adeptal Assistance boosted jump"
   ]

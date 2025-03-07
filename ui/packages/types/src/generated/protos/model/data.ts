@@ -74,10 +74,14 @@ export interface AvatarSkillsData {
   skill?: number | undefined;
   burst?: number | undefined;
   attack?: number | undefined;
+  a1?: number | undefined;
+  a4?: number | undefined;
   burst_energy_cost?: number | undefined;
   attack_scaling?: AvatarSkillExcelIndexData[] | undefined;
   skill_scaling?: AvatarSkillExcelIndexData[] | undefined;
   burst_scaling?: AvatarSkillExcelIndexData[] | undefined;
+  a1_scaling?: AvatarSkillExcelIndexData[] | undefined;
+  a4_scaling?: AvatarSkillExcelIndexData[] | undefined;
 }
 
 export interface AvatarSkillExcelIndexData {
@@ -140,6 +144,15 @@ export interface ArtifactData {
   id?: number | undefined;
   text_map_id?: number | undefined;
   key?: string | undefined;
+  image_names?: ArtifactImageData | undefined;
+}
+
+export interface ArtifactImageData {
+  flower?: string | undefined;
+  plume?: string | undefined;
+  sands?: string | undefined;
+  goblet?: string | undefined;
+  circlet?: string | undefined;
 }
 
 export interface PromotionData {
@@ -738,10 +751,14 @@ function createBaseAvatarSkillsData(): AvatarSkillsData {
     skill: 0,
     burst: 0,
     attack: 0,
+    a1: 0,
+    a4: 0,
     burst_energy_cost: 0,
     attack_scaling: [],
     skill_scaling: [],
     burst_scaling: [],
+    a1_scaling: [],
+    a4_scaling: [],
   };
 }
 
@@ -755,6 +772,12 @@ export const AvatarSkillsData = {
     }
     if (message.attack !== undefined && message.attack !== 0) {
       writer.uint32(24).int32(message.attack);
+    }
+    if (message.a1 !== undefined && message.a1 !== 0) {
+      writer.uint32(80).int32(message.a1);
+    }
+    if (message.a4 !== undefined && message.a4 !== 0) {
+      writer.uint32(88).int32(message.a4);
     }
     if (message.burst_energy_cost !== undefined && message.burst_energy_cost !== 0) {
       writer.uint32(33).double(message.burst_energy_cost);
@@ -772,6 +795,16 @@ export const AvatarSkillsData = {
     if (message.burst_scaling !== undefined && message.burst_scaling.length !== 0) {
       for (const v of message.burst_scaling) {
         AvatarSkillExcelIndexData.encode(v!, writer.uint32(58).fork()).ldelim();
+      }
+    }
+    if (message.a1_scaling !== undefined && message.a1_scaling.length !== 0) {
+      for (const v of message.a1_scaling) {
+        AvatarSkillExcelIndexData.encode(v!, writer.uint32(66).fork()).ldelim();
+      }
+    }
+    if (message.a4_scaling !== undefined && message.a4_scaling.length !== 0) {
+      for (const v of message.a4_scaling) {
+        AvatarSkillExcelIndexData.encode(v!, writer.uint32(74).fork()).ldelim();
       }
     }
     return writer;
@@ -805,6 +838,20 @@ export const AvatarSkillsData = {
 
           message.attack = reader.int32();
           continue;
+        case 10:
+          if (tag !== 80) {
+            break;
+          }
+
+          message.a1 = reader.int32();
+          continue;
+        case 11:
+          if (tag !== 88) {
+            break;
+          }
+
+          message.a4 = reader.int32();
+          continue;
         case 4:
           if (tag !== 33) {
             break;
@@ -833,6 +880,20 @@ export const AvatarSkillsData = {
 
           message.burst_scaling!.push(AvatarSkillExcelIndexData.decode(reader, reader.uint32()));
           continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.a1_scaling!.push(AvatarSkillExcelIndexData.decode(reader, reader.uint32()));
+          continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.a4_scaling!.push(AvatarSkillExcelIndexData.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -847,6 +908,8 @@ export const AvatarSkillsData = {
       skill: isSet(object.skill) ? globalThis.Number(object.skill) : 0,
       burst: isSet(object.burst) ? globalThis.Number(object.burst) : 0,
       attack: isSet(object.attack) ? globalThis.Number(object.attack) : 0,
+      a1: isSet(object.a1) ? globalThis.Number(object.a1) : 0,
+      a4: isSet(object.a4) ? globalThis.Number(object.a4) : 0,
       burst_energy_cost: isSet(object.burst_energy_cost) ? globalThis.Number(object.burst_energy_cost) : 0,
       attack_scaling: globalThis.Array.isArray(object?.attack_scaling)
         ? object.attack_scaling.map((e: any) => AvatarSkillExcelIndexData.fromJSON(e))
@@ -856,6 +919,12 @@ export const AvatarSkillsData = {
         : [],
       burst_scaling: globalThis.Array.isArray(object?.burst_scaling)
         ? object.burst_scaling.map((e: any) => AvatarSkillExcelIndexData.fromJSON(e))
+        : [],
+      a1_scaling: globalThis.Array.isArray(object?.a1_scaling)
+        ? object.a1_scaling.map((e: any) => AvatarSkillExcelIndexData.fromJSON(e))
+        : [],
+      a4_scaling: globalThis.Array.isArray(object?.a4_scaling)
+        ? object.a4_scaling.map((e: any) => AvatarSkillExcelIndexData.fromJSON(e))
         : [],
     };
   },
@@ -871,6 +940,12 @@ export const AvatarSkillsData = {
     if (message.attack !== undefined && message.attack !== 0) {
       obj.attack = Math.round(message.attack);
     }
+    if (message.a1 !== undefined && message.a1 !== 0) {
+      obj.a1 = Math.round(message.a1);
+    }
+    if (message.a4 !== undefined && message.a4 !== 0) {
+      obj.a4 = Math.round(message.a4);
+    }
     if (message.burst_energy_cost !== undefined && message.burst_energy_cost !== 0) {
       obj.burst_energy_cost = message.burst_energy_cost;
     }
@@ -883,6 +958,12 @@ export const AvatarSkillsData = {
     if (message.burst_scaling?.length) {
       obj.burst_scaling = message.burst_scaling.map((e) => AvatarSkillExcelIndexData.toJSON(e));
     }
+    if (message.a1_scaling?.length) {
+      obj.a1_scaling = message.a1_scaling.map((e) => AvatarSkillExcelIndexData.toJSON(e));
+    }
+    if (message.a4_scaling?.length) {
+      obj.a4_scaling = message.a4_scaling.map((e) => AvatarSkillExcelIndexData.toJSON(e));
+    }
     return obj;
   },
 
@@ -894,10 +975,14 @@ export const AvatarSkillsData = {
     message.skill = object.skill ?? 0;
     message.burst = object.burst ?? 0;
     message.attack = object.attack ?? 0;
+    message.a1 = object.a1 ?? 0;
+    message.a4 = object.a4 ?? 0;
     message.burst_energy_cost = object.burst_energy_cost ?? 0;
     message.attack_scaling = object.attack_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
     message.skill_scaling = object.skill_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
     message.burst_scaling = object.burst_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
+    message.a1_scaling = object.a1_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
+    message.a4_scaling = object.a4_scaling?.map((e) => AvatarSkillExcelIndexData.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1710,7 +1795,7 @@ export const ArtifactDataMap_DataEntry = {
 };
 
 function createBaseArtifactData(): ArtifactData {
-  return { id: 0, text_map_id: 0, key: "" };
+  return { id: 0, text_map_id: 0, key: "", image_names: undefined };
 }
 
 export const ArtifactData = {
@@ -1723,6 +1808,9 @@ export const ArtifactData = {
     }
     if (message.key !== undefined && message.key !== "") {
       writer.uint32(26).string(message.key);
+    }
+    if (message.image_names !== undefined) {
+      ArtifactImageData.encode(message.image_names, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -1755,6 +1843,13 @@ export const ArtifactData = {
 
           message.key = reader.string();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.image_names = ArtifactImageData.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1769,6 +1864,7 @@ export const ArtifactData = {
       id: isSet(object.id) ? globalThis.Number(object.id) : 0,
       text_map_id: isSet(object.text_map_id) ? globalThis.Number(object.text_map_id) : 0,
       key: isSet(object.key) ? globalThis.String(object.key) : "",
+      image_names: isSet(object.image_names) ? ArtifactImageData.fromJSON(object.image_names) : undefined,
     };
   },
 
@@ -1783,6 +1879,9 @@ export const ArtifactData = {
     if (message.key !== undefined && message.key !== "") {
       obj.key = message.key;
     }
+    if (message.image_names !== undefined) {
+      obj.image_names = ArtifactImageData.toJSON(message.image_names);
+    }
     return obj;
   },
 
@@ -1794,6 +1893,128 @@ export const ArtifactData = {
     message.id = object.id ?? 0;
     message.text_map_id = object.text_map_id ?? 0;
     message.key = object.key ?? "";
+    message.image_names = (object.image_names !== undefined && object.image_names !== null)
+      ? ArtifactImageData.fromPartial(object.image_names)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseArtifactImageData(): ArtifactImageData {
+  return { flower: "", plume: "", sands: "", goblet: "", circlet: "" };
+}
+
+export const ArtifactImageData = {
+  encode(message: ArtifactImageData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.flower !== undefined && message.flower !== "") {
+      writer.uint32(10).string(message.flower);
+    }
+    if (message.plume !== undefined && message.plume !== "") {
+      writer.uint32(18).string(message.plume);
+    }
+    if (message.sands !== undefined && message.sands !== "") {
+      writer.uint32(26).string(message.sands);
+    }
+    if (message.goblet !== undefined && message.goblet !== "") {
+      writer.uint32(34).string(message.goblet);
+    }
+    if (message.circlet !== undefined && message.circlet !== "") {
+      writer.uint32(42).string(message.circlet);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ArtifactImageData {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseArtifactImageData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.flower = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.plume = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.sands = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.goblet = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.circlet = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ArtifactImageData {
+    return {
+      flower: isSet(object.flower) ? globalThis.String(object.flower) : "",
+      plume: isSet(object.plume) ? globalThis.String(object.plume) : "",
+      sands: isSet(object.sands) ? globalThis.String(object.sands) : "",
+      goblet: isSet(object.goblet) ? globalThis.String(object.goblet) : "",
+      circlet: isSet(object.circlet) ? globalThis.String(object.circlet) : "",
+    };
+  },
+
+  toJSON(message: ArtifactImageData): unknown {
+    const obj: any = {};
+    if (message.flower !== undefined && message.flower !== "") {
+      obj.flower = message.flower;
+    }
+    if (message.plume !== undefined && message.plume !== "") {
+      obj.plume = message.plume;
+    }
+    if (message.sands !== undefined && message.sands !== "") {
+      obj.sands = message.sands;
+    }
+    if (message.goblet !== undefined && message.goblet !== "") {
+      obj.goblet = message.goblet;
+    }
+    if (message.circlet !== undefined && message.circlet !== "") {
+      obj.circlet = message.circlet;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ArtifactImageData>, I>>(base?: I): ArtifactImageData {
+    return ArtifactImageData.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ArtifactImageData>, I>>(object: I): ArtifactImageData {
+    const message = createBaseArtifactImageData();
+    message.flower = object.flower ?? "";
+    message.plume = object.plume ?? "";
+    message.sands = object.sands ?? "";
+    message.goblet = object.goblet ?? "";
+    message.circlet = object.circlet ?? "";
     return message;
   },
 };

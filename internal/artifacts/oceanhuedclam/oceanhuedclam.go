@@ -24,9 +24,11 @@ type Set struct {
 	bubbleDurationExpiry int
 	core                 *core.Core
 	Index                int
+	Count                int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error {
 	// Shows which character currently has an active OHC proc. -1 = Non-active
 	s.core.Flags.Custom["OHCActiveChar"] = -1
@@ -47,7 +49,8 @@ func (s *Set) Init() error {
 //		This effect can still be triggered even when the character who is using this artifact set is not on the field.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		core: c,
+		core:  c,
+		Count: count,
 	}
 
 	if count >= 2 {
@@ -67,7 +70,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		// On Heal subscription to start accumulating the healing
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 			src := args[0].(*info.HealInfo)
-			healAmt := args[2].(float64)
+			healAmt := args[4].(float64)
 
 			if src.Caller != char.Index {
 				return false

@@ -7,7 +7,7 @@ export interface SimResults {
   modified?: boolean;
   key_type?: string;
   standard?: string;
-  
+
   initial_character?: string;
   character_details?: Character[];
   target_details?: Enemy[];
@@ -106,6 +106,7 @@ export interface Warnings {
   swap_cd?: boolean;
   skill_cd?: boolean;
   dash_cd?: boolean;
+  burst_cd?: boolean;
 }
 
 export interface FailedActions {
@@ -114,6 +115,7 @@ export interface FailedActions {
   swap_cd?: FloatStat;
   skill_cd?: FloatStat;
   dash_cd?: FloatStat;
+  burst_cd?: FloatStat;
 }
 
 export interface Shields {
@@ -223,12 +225,14 @@ export interface Character {
   snapshot: number[];
   sets: Set;
   date_added?: string;
+  enka_build_name?: string;
+  source?: string; // allow for both GOOD and enka import
 }
 
 export interface Enemy {
   level?: number;
   hp?: number;
-  resist?: { [key: string]: number };
+  resist?: {[key: string]: number};
   position?: Coord;
   particle_drop_threshold?: number;
   particle_drop_count?: number;
@@ -267,16 +271,16 @@ export type LogDetails = {
   frame: number;
   msg: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  logs: { [key in string]: any };
-  ordering?: { [key: string]: number };
+  logs: {[key in string]: any};
+  ordering?: {[key: string]: number};
 };
 
-export type StatusType = "idle" | "loading" | "done" | "error";
+export type StatusType = 'idle' | 'loading' | 'done' | 'error';
 
 export interface ParsedResult {
   characters: ParsedCharacterProfile[];
   errors: string[];
-  player_initial_pos: { x: number; y: number; r: number };
+  player_initial_pos: {x: number; y: number; r: number};
 }
 
 export interface ParsedCharacterProfile {

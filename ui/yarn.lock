@@ -3123,7 +3123,6 @@ __metadata:
     prettier-plugin-organize-imports: ^3.2.2
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-helmet-async: ^2.0.4
     react-i18next: ^12.0.0
     react-icons: ^4.6.0
     react-infinite-scroll-component: ^6.1.0
@@ -21308,14 +21307,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-fast-compare@npm:^3.0.1, react-fast-compare@npm:^3.1.1, react-fast-compare@npm:^3.2.0, react-fast-compare@npm:^3.2.2":
+"react-fast-compare@npm:^3.0.1, react-fast-compare@npm:^3.1.1":
+  version: 3.2.0
+  resolution: "react-fast-compare@npm:3.2.0"
+  checksum: 8ef272c825ae329f61633ce4ce7f15aa5b84e5214d88bc0823880236e03e985a13195befa2c7a4eda7db3b017dc7985729152d88445823f652403cf36c2b86aa
+  languageName: node
+  linkType: hard
+
+"react-fast-compare@npm:^3.2.0, react-fast-compare@npm:^3.2.2":
   version: 3.2.2
   resolution: "react-fast-compare@npm:3.2.2"
   checksum: 2071415b4f76a3e6b55c84611c4d24dcb12ffc85811a2840b5a3f1ff2d1a99be1020d9437ee7c6e024c9f4cbb84ceb35e48cf84f28fcb00265ad2dfdd3947704
   languageName: node
   linkType: hard
 
-"react-helmet-async@npm:*, react-helmet-async@npm:^2.0.4":
+"react-helmet-async@npm:*":
   version: 2.0.4
   resolution: "react-helmet-async@npm:2.0.4"
   dependencies:

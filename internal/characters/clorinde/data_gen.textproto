@@ -1,0 +1,151 @@
+id: 10000098
+key: "clorinde"
+rarity: QUALITY_ORANGE
+body: BODY_LADY
+region: ASSOC_TYPE_FONTAINE
+element: Electric
+weapon_class: WEAPON_SWORD_ONE_HAND
+icon_name: "UI_AvatarIcon_Clorinde"
+stats: {
+   base_hp: 1008.61255
+   base_atk: 26.2542
+   base_def: 61.0266
+   hp_curve: GROW_CURVE_HP_S5
+   atk_curve: GROW_CURVE_ATTACK_S5
+   def_cruve: GROW_CURVE_HP_S5
+   promo_data: {
+      max_level: 20
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
+      }
+   }
+   promo_data: {
+      max_level: 40
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 864.79407
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 52.326
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 22.508959
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
+      }
+   }
+   promo_data: {
+      max_level: 50
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 1479.253
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 89.505
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 38.502167
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
+         value: 0.048
+      }
+   }
+   promo_data: {
+      max_level: 60
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2298.5315
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 139.077
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 59.826443
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
+         value: 0.096
+      }
+   }
+   promo_data: {
+      max_level: 70
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2912.9905
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 176.256
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 75.81965
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
+         value: 0.096
+      }
+   }
+   promo_data: {
+      max_level: 80
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 3527.4495
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 213.435
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 91.81286
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
+         value: 0.144
+      }
+   }
+   promo_data: {
+      max_level: 90
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 4141.908
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 250.614
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 107.80606
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
+         value: 0.192
+      }
+   }
+}
+skill_details: {
+   skill: 10982
+   burst: 10985
+   attack: 10981
+   burst_energy_cost: 60
+}
+name_text_hash_map: 2745369298

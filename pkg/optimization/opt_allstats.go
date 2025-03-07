@@ -41,8 +41,8 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 	relevantSubstats := stats.charRelevantSubstats[idxChar]
 
 	totalSubs := stats.getCharSubstatTotal(idxChar)
-	if totalSubs != stats.totalLiquidSubstats {
-		opDebug = append(opDebug, fmt.Sprint("Character has", totalSubs, "total liquid subs allocated but expected", stats.totalLiquidSubstats))
+	if totalSubs != stats.charTotalLiquidSubstats[idxChar] {
+		opDebug = append(opDebug, fmt.Sprint("Character has", totalSubs, "total liquid subs allocated but expected", stats.charTotalLiquidSubstats[idxChar]))
 	}
 
 	addedEr := false

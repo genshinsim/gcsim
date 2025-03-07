@@ -82,8 +82,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 2 {
 		// TODO: snapshot timing?
-		stats, _ := c.Stats()
-		defFactor := c.Base.Def*(1+stats[attributes.DEFP]) + stats[attributes.DEF]
+		defFactor := c.TotalDef(false)
 		c.QueueCharTask(func() {
 			c.updateShield(3, defFactor)
 		}, burstShieldStart)

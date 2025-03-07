@@ -38,6 +38,7 @@ type char struct {
 	maxC2Fanfare              float64
 	fanfareDebounceTaskQueued bool
 	burstBuff                 []float64
+	a1src                     int
 	a4Buff                    []float64
 	a4IntervalReduction       float64
 	lastSummonSrc             int
@@ -94,12 +95,12 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
 	// can use charge without attack beforehand unlike most of the other sword users
 	if a == action.ActionCharge {
 		return nil
 	}
-	return c.Character.NextQueueItemIsValid(a, p)
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {

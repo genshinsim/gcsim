@@ -568,6 +568,211 @@
       }
     ]
   },
+  "arlecchino": {
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 3,
+        "radius": 6.5
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.15,
+        "boxX": 1.9,
+        "boxY": 3
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.6,
+        "fanAngle": 300
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.2,
+        "boxX": 1.9,
+        "boxY": 4
+      },
+      {
+        "ability": "N4-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.5,
+        "offsetY": -0.7,
+        "radius": 2.8
+      },
+      {
+        "ability": "N4-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.5,
+        "offsetY": -0.7,
+        "radius": 2.8
+      },
+      {
+        "ability": "N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.4,
+        "radius": 2.5
+      },
+      {
+        "ability": "N6",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.5,
+        "radius": 3
+      },
+      {
+        "ability": "Masque-N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.15,
+        "boxX": 1.9,
+        "boxY": 4.2
+      },
+      {
+        "ability": "Masque-N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 3.1,
+        "fanAngle": 300
+      },
+      {
+        "ability": "Masque-N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.2,
+        "boxX": 3.4,
+        "boxY": 5.6
+      },
+      {
+        "ability": "Masque-N4-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.5,
+        "offsetY": -0.7,
+        "radius": 3.3
+      },
+      {
+        "ability": "Masque-N4-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.5,
+        "offsetY": -0.7,
+        "radius": 3.3
+      },
+      {
+        "ability": "Masque-N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.4,
+        "radius": 2.8
+      },
+      {
+        "ability": "Masque-N6",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.5,
+        "radius": 3.7
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.9,
+        "radius": 4
+      },
+      {
+        "ability": "Masque-CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.9,
+        "radius": 4
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Masque-Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "Masque-Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      },
+      {
+        "ability": "Masque-High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Spike",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 0.5
+      },
+      {
+        "ability": "E-Cleave",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 4.5,
+        "radius": 6
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-ElementalBurst",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 6,
+        "radius": 6.5
+      }
+    ]
+  },
   "itto": {
     "normal": [
       {
@@ -1309,6 +1514,131 @@
       }
     ]
   },
+  "chasca": {
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      },
+      {
+        "ability": "C4",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5,
+        "notes": "This is an approximation because we do not actually know the real AoE. Based on C2 position."
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "E-N1",
+        "shape": "Single",
+        "center": "PrimaryTarget"
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "E-Aimed",
+        "shape": "Single",
+        "center": "PrimaryTarget",
+        "notes": "Target aquisition range is not implemented."
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      },
+      {
+        "ability": "Q-SoulseekerShell",
+        "shape": "Single",
+        "center": "PrimaryTarget"
+      }
+    ]
+  },
   "chevreuse": {
     "cons": [
       {
@@ -1469,7 +1799,7 @@
         "offsetY": 0.9,
         "radius": 2.8
       }
-    ], 
+    ],
     "charge": [
       {
         "ability": "CA-1",
@@ -1623,6 +1953,120 @@
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 3.5
+      }
+    ]
+  },
+  "clorinde": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.1,
+        "radius": 1.7
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.3,
+        "radius": 1.9
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.2,
+        "radius": 2.1
+      },
+      {
+        "ability": "N4-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.3,
+        "boxX": 2,
+        "boxY": 3.5
+      },
+      {
+        "ability": "N4-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.3,
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N4-3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.3,
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.4,
+        "radius": 2.5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "SkillAttack-100BoL",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 2,
+        "boxY": 14
+      },
+      {
+        "ability": "SkillAttack",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.6
+      },
+      {
+        "ability": "SkillDash-NoBoL",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.6
+      },
+      {
+        "ability": "SkillDash-FullBoL",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      },
+      {
+        "ability": "SkillDash-RegularBoL",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Burst",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1,
+        "boxX": 11.2,
+        "boxY": 9
+      }
+    ],
+    "cons": [
+      {
+        "ability": "C1-Hit",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -3,
+        "radius": 4
+      },
+      {
+        "ability": "C6-Hit",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 8
       }
     ]
   },
@@ -2388,6 +2832,116 @@
         "center": "Player",
         "boxX": 1,
         "notes": "Q spawns at offsetY 5 and has a detection area of 10m. This attack is a line going from the Player to the Q position if the Player is within the Q detection area."
+      }
+    ]
+  },
+  "emilie": {
+    "asc": [
+      {
+        "ability": "E-A1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.4,
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 1.6,
+        "boxY": 3
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.4,
+        "radius": 2.5
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.4,
+        "radius": 3
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -1.2,
+        "boxX": 3.3,
+        "boxY": 3.5
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Summon",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.6,
+        "radius": 4.5
+      },
+      {
+        "ability": "E-Spiritbreath-Thorn",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 2.6,
+        "radius": 4.5
+      },
+      {
+        "ability": "E-Level1",
+        "shape": "Hit",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "E-Level2",
+        "shape": "Hit",
+        "center": "PrimaryTarget",
+        "radius": 1
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Level3",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2.5,
+        "notes": "At every tick: If there are enemies within the Q detection area that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 0.7s. Otherwise, it will spawn randomly between 0.5m and 12m from the Q center."
       }
     ]
   },
@@ -4495,6 +5049,115 @@
       }
     ]
   },
+  "kinich": {
+    "cons": [
+      {
+        "ability": "C6 Bounce",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      },
+      {
+        "ability": "C6 Bounce (Trigger C2)",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 3,
+        "boxY": 3,
+        "offsetY": -0.7
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3.9,
+        "offsetY": -1.0
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.2,
+        "boxY": 4.3
+      },
+      {
+        "ability": "E-N1-1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.5
+      },
+      {
+        "ability": "E-N1-2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 3,
+        "boxY": 5,
+        "offsetY": 0.45
+      },
+      {
+        "ability": "CA-2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 3,
+        "boxY": 5,
+        "offsetY": 0.45
+      },
+      {
+        "ability": "CA-3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 3,
+        "boxY": 5,
+        "offsetY": 0.45
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Scalespiker",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      },
+      {
+        "ability": "E-Scalespiker C2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4
+      },
+      {
+        "ability": "Q-Laser",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 1,
+        "boxY": 10,
+        "notes": "In actual game Ajaw's laser is single target: hit is spawned on the enemy the laser touched. To approximate laser's AoE, we use box."
+      }
+    ]
+  },
   "kirara": {
     "cons": [
       {
@@ -4913,7 +5576,7 @@
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 3,
-        "notes": "Every Stormcluster has its own direction (0/90/180/270 degrees at base, 0/60/120/180/240/300 degrees at C4+), starts at Q-Titanbreaker position + 1.35m in that direction and moves at 1.35m per attack. Attack buff detection area has the same hitbox."
+        "notes": "Every Stormcluster has its own direction (0/90/180/270 degrees at base, 0/60/120/180/240/300 degrees at C4+), starts at Q-Titanbreaker position + 3.6m in that direction and moves at 1.35m per attack. Attack buff detection area has the same hitbox."
       }
     ]
   },
@@ -5018,6 +5681,26 @@
         "offsetY": 1,
         "radius": 10,
         "fanAngle": 40
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 1.5
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3.5
       }
     ],
     "skill": [
@@ -5498,6 +6181,67 @@
         "center": "GlobalValue",
         "radius": 1,
         "notes": "Spawns on the target that the Bubble burst on."
+      }
+    ]
+  },
+  "mualani": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.7
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.7
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.7
+      },
+      {
+        "ability": "Shark-Bite",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "Spawns on the Primary Target."
+      },
+      {
+        "ability": "Surging-Bite",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "Spawns on the Primary Target."
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3.5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "Surfing",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.9,
+        "boxX": 0,
+        "boxY": 1
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
       }
     ]
   },
@@ -6173,6 +6917,101 @@
       }
     ]
   },
+  "ororon": {
+    "asc": [
+      {
+        "ability": "E-A1",
+        "shape": "Box",
+        "center": "GlobalValue",
+        "boxX": 0.2,
+        "boxY": 0.2,
+        "notes": "Spawns on 4 closest targets."
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      }
+    ],
+    "skill": [
+      {
+        "ability": "Spirit Orb Hit",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "Spawns on target Spirit Orb bounced to."
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Burst Cast",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.3,
+        "radius": 6.5
+      },
+      {
+        "ability": "Soundwave Collision",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "note": "This is an approximation because we do not actually know the real AoE. Based on Burst Cast position."
+      }
+    ]
+  },
   "qiqi": {
     "normal": [
       {
@@ -6240,6 +7079,29 @@
         "center": "Player",
         "offsetY": 1,
         "radius": 2.8
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
       }
     ],
     "skill": [
@@ -6886,6 +7748,132 @@
       }
     ]
   },
+  "sethos": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2-1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2-2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Q-N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      },
+      {
+        "ability": "Q-N2-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      },
+      {
+        "ability": "Q-N2-2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      },
+      {
+        "ability": "Q-N3",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "ShadowpiercingShot",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      },
+      {
+        "ability": "ShadowpiercingShot-Head",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 15,
+        "notes": "This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target."
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4.5
+      }
+    ]
+  },
   "shenhe": {
     "normal": [
       {
@@ -6971,6 +7959,97 @@
         "shape": "Circle",
         "center": "Player",
         "radius": 7
+      }
+    ]
+  },
+  "sigewinne": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "Aim-Bubble",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.3,
+        "boxY": 0.3
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Bubblebalm",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "E-Spiritbreath-Thorn",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Hit",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0,
+        "boxX": 4,
+        "boxY": 10,
+        "notes": "This is an approximation because we do not actually know the real AoE. The hitbox was taken from Neuvillette's CA and was made slightly wider."
       }
     ]
   },
@@ -9168,6 +10247,123 @@
       }
     ]
   },
+  "xilonen": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.0,
+        "radius": 2.1
+      },
+      {
+        "ability": "N2-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.5,
+        "radius": 2.5,
+        "fanAngle": 150
+      },
+      {
+        "ability": "N2-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.5,
+        "radius": 2.7,
+        "fanAngle": 150
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.5,
+        "radius": 3.2,
+        "fanAngle": 160
+      },
+      {
+        "ability": "E-N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.7,
+        "radius": 2.7,
+        "fanAngle": 270
+      },
+      {
+        "ability": "E-N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 5,
+        "boxY": 3.7
+      },
+      {
+        "ability": "E-N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 3.5,
+        "boxY": 4.5
+      },
+      {
+        "ability": "E-N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 3.5,
+        "fanAngle": 270
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.8,
+        "boxX": 2,
+        "boxY": 4.5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.0,
+        "radius": 0.8
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 7
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ]
+  },
   "xingqiu": {
     "normal": [
       {
@@ -9494,7 +10690,6 @@
         "radius": 4
       }
     ],
-    
     "plunge": [
       {
         "ability": "Plunge",

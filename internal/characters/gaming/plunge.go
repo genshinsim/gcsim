@@ -67,19 +67,19 @@ func init() {
 // Default = 0
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.LastAction.Type == action.ActionSkill {
-		return c.specialPlunge(p)
+		return c.specialPlunge(p), nil
 	}
 
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
-		return c.lowPlungeXY(p)
+		return c.lowPlungeXY(p), nil
 	default:
 		return action.Info{}, errors.New("low_plunge can only be used while airborne")
 	}
 }
 
-func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
+func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not collision hit
@@ -113,7 +113,7 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
-	}, nil
+	}
 }
 
 // High Plunge attack damage queue generator
@@ -121,19 +121,19 @@ func (c *char) lowPlungeXY(p map[string]int) (action.Info, error) {
 // Default = 0
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.LastAction.Type == action.ActionSkill {
-		return c.specialPlunge(p)
+		return c.specialPlunge(p), nil
 	}
 
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
-		return c.highPlungeXY(p)
+		return c.highPlungeXY(p), nil
 	default:
 		return action.Info{}, errors.New("high_plunge can only be used while airborne")
 	}
 }
 
-func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
+func (c *char) highPlungeXY(p map[string]int) action.Info {
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not collision hit
@@ -167,7 +167,7 @@ func (c *char) highPlungeXY(p map[string]int) (action.Info, error) {
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
-	}, nil
+	}
 }
 
 // Plunge normal falling attack damage queue generator
@@ -187,7 +187,7 @@ func (c *char) plungeCollision(delay int) {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), delay, delay)
 }
 
-func (c *char) specialPlunge(p map[string]int) (action.Info, error) {
+func (c *char) specialPlunge(p map[string]int) action.Info {
 	if p[manChaiParam] > 0 {
 		c.manChaiWalkBack = p[manChaiParam]
 	} else {
@@ -245,7 +245,7 @@ func (c *char) specialPlunge(p map[string]int) (action.Info, error) {
 		AnimationLength: specialPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   specialPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
-	}, nil
+	}
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

@@ -294,9 +294,9 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	return &ae
 }
 
-func (c *char) absorbCheck(src, count, max int) func() {
+func (c *char) absorbCheck(src, count, maxcount int) func() {
 	return func() {
-		if count == max {
+		if count == maxcount {
 			return
 		}
 
@@ -317,7 +317,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 			)
 			return
 		}
-		c.Core.Tasks.Add(c.absorbCheck(src, count+1, max), 12)
+		c.Core.Tasks.Add(c.absorbCheck(src, count+1, maxcount), 12)
 	}
 }
 

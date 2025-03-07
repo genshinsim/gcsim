@@ -2,7 +2,6 @@ package status
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -62,7 +61,7 @@ func avgUpdate(arr []float64, index int, value float64) []float64 {
 }
 
 func damageMod(c *character.CharWrapper, elvl int) float64 {
-	def := c.Base.Def*(1+c.Stat(attributes.DEFP)) + c.Stat(attributes.DEF)
+	def := c.TotalDef(false)
 	defmod := 1 - (def / (def + 5*float64(elvl) + 500))
 	// TODO: implement resmod
 	resmod := 1.0

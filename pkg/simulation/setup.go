@@ -18,9 +18,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+const nightsoulBurstICDStatus = "nightsoul-burst-icd"
+
+// first is 0 because you can't proc it without the natlan character
+var nightsoulBurstICD = []int{0, 18 * 60, 12 * 60, 9 * 60, 9 * 60}
 
 func SetupTargetsInCore(core *core.Core, p geometry.Point, r float64, targets []info.EnemyProfile) error {
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
@@ -174,7 +178,7 @@ func SetupResonance(s *core.Core) {
 			}
 
 			recoverNoGadget := func(args ...interface{}) bool {
-				if _, ok := args[0].(*gadget.Gadget); ok {
+				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
 				return recoverParticle(args...)
@@ -252,7 +256,7 @@ func SetupResonance(s *core.Core) {
 			twoBuff := make([]float64, attributes.EndStatType)
 			twoBuff[attributes.EM] = 30
 			twoEl := func(args ...interface{}) bool {
-				if _, ok := args[0].(*gadget.Gadget); ok {
+				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
 				for _, c := range chars {
@@ -285,7 +289,7 @@ func SetupResonance(s *core.Core) {
 				return false
 			}
 			threeElNoGadget := func(args ...interface{}) bool {
-				if _, ok := args[0].(*gadget.Gadget); ok {
+				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
 				return threeEl(nil)
@@ -317,6 +321,47 @@ func SetupMisc(c *core.Core) {
 		})
 		return false
 	}, "superconduct")
+}
+
+func setupNightsoulBurst(core *core.Core) {
+	chars := core.Player.Chars()
+	count := 0
+	for _, this := range chars {
+		if this.CharZone == info.ZoneNatlan {
+			count++
+		}
+	}
+	if count == 0 {
+		return
+	}
+
+	triggerCD := nightsoulBurstICD[count]
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		if core.Status.Duration(nightsoulBurstICDStatus) > 0 {
+			return false
+		}
+
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		atk := args[1].(*combat.AttackEvent)
+		switch atk.Info.Element {
+		case attributes.Electro:
+		case attributes.Pyro:
+		case attributes.Cryo:
+		case attributes.Hydro:
+		case attributes.Dendro:
+		case attributes.Anemo:
+		case attributes.Geo:
+		default:
+			return false
+		}
+
+		core.Events.Emit(event.OnNightsoulBurst, t, atk)
+		core.Status.Add(nightsoulBurstICDStatus, triggerCD)
+		return false
+	}, "nigthsoul-burst")
 }
 
 func (s *Simulation) handleEnergy() {
@@ -365,15 +410,16 @@ func (s *Simulation) handleHurt() {
 
 		s.C.Tasks.Add(func() {
 			ai := combat.AttackInfo{
-				ActorIndex: s.C.Player.Active(),
-				Abil:       "Hurt",
-				AttackTag:  attacks.AttackTagNone,
-				ICDTag:     attacks.ICDTagNone,
-				ICDGroup:   attacks.ICDGroupDefault,
-				StrikeType: attacks.StrikeTypeDefault,
-				Durability: 0,
-				Element:    s.cfg.HurtSettings.Element,
-				FlatDmg:    amt,
+				ActorIndex:       s.C.Player.Active(),
+				Abil:             "Hurt",
+				AttackTag:        attacks.AttackTagNone,
+				ICDTag:           attacks.ICDTagNone,
+				ICDGroup:         attacks.ICDGroupDefault,
+				StrikeType:       attacks.StrikeTypeDefault,
+				Durability:       0,
+				Element:          s.cfg.HurtSettings.Element,
+				FlatDmg:          amt,
+				IgnoreDefPercent: 1,
 			}
 			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
 			ap.SkipTargets[targets.TargettablePlayer] = false
@@ -396,15 +442,16 @@ func (s *Simulation) handleHurt() {
 
 		s.C.Tasks.Add(func() {
 			ai := combat.AttackInfo{
-				ActorIndex: s.C.Player.Active(),
-				Abil:       "Hurt",
-				AttackTag:  attacks.AttackTagNone,
-				ICDTag:     attacks.ICDTagNone,
-				ICDGroup:   attacks.ICDGroupDefault,
-				StrikeType: attacks.StrikeTypeDefault,
-				Durability: 0,
-				Element:    s.cfg.HurtSettings.Element,
-				FlatDmg:    amt,
+				ActorIndex:       s.C.Player.Active(),
+				Abil:             "Hurt",
+				AttackTag:        attacks.AttackTagNone,
+				ICDTag:           attacks.ICDTagNone,
+				ICDGroup:         attacks.ICDGroupDefault,
+				StrikeType:       attacks.StrikeTypeDefault,
+				Durability:       0,
+				Element:          s.cfg.HurtSettings.Element,
+				FlatDmg:          amt,
+				IgnoreDefPercent: 1,
 			}
 			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
 			ap.SkipTargets[targets.TargettablePlayer] = false
