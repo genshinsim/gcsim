@@ -8,7 +8,6 @@ import (
 )
 
 const c6key = "chasca-c6"
-const c6BuffKey = "chasca-c6-cdmg-buff"
 const c6IcdKey = "chasca-c6-icd"
 
 func (c *char) c1() float64 {
