@@ -95,7 +95,7 @@ func (g *Generator) writeTranslationJSON(path string) error {
 		for _, v := range g.Enemies {
 			s, err := src.Get(v.NameTextHashMap)
 			if err != nil {
-				fmt.Printf("error getting string for set %v id %v\n", v.Key, v.NameTextHashMap)
+				fmt.Printf("error getting string for enemy %v id %v\n", v.Key, v.NameTextHashMap)
 				continue
 			}
 			data.EnemyNames[v.Key] = s

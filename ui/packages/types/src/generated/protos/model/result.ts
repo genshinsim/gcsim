@@ -212,6 +212,7 @@ export interface Warnings {
   swap_cd?: boolean | undefined;
   skill_cd?: boolean | undefined;
   dash_cd?: boolean | undefined;
+  burst_cd?: boolean | undefined;
 }
 
 export interface FailedActions {
@@ -220,6 +221,7 @@ export interface FailedActions {
   swap_cd?: DescriptiveStats | undefined;
   skill_cd?: DescriptiveStats | undefined;
   dash_cd?: DescriptiveStats | undefined;
+  burst_cd?: DescriptiveStats | undefined;
 }
 
 export interface ShieldInfo {
@@ -3084,6 +3086,7 @@ function createBaseWarnings(): Warnings {
     swap_cd: false,
     skill_cd: false,
     dash_cd: false,
+    burst_cd: false,
   };
 }
 
@@ -3106,6 +3109,9 @@ export const Warnings = {
     }
     if (message.dash_cd !== undefined && message.dash_cd !== false) {
       writer.uint32(48).bool(message.dash_cd);
+    }
+    if (message.burst_cd !== undefined && message.burst_cd !== false) {
+      writer.uint32(56).bool(message.burst_cd);
     }
     return writer;
   },
@@ -3159,6 +3165,13 @@ export const Warnings = {
 
           message.dash_cd = reader.bool();
           continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.burst_cd = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3178,6 +3191,7 @@ export const Warnings = {
       swap_cd: isSet(object.swap_cd) ? globalThis.Boolean(object.swap_cd) : false,
       skill_cd: isSet(object.skill_cd) ? globalThis.Boolean(object.skill_cd) : false,
       dash_cd: isSet(object.dash_cd) ? globalThis.Boolean(object.dash_cd) : false,
+      burst_cd: isSet(object.burst_cd) ? globalThis.Boolean(object.burst_cd) : false,
     };
   },
 
@@ -3201,6 +3215,9 @@ export const Warnings = {
     if (message.dash_cd !== undefined && message.dash_cd !== false) {
       obj.dash_cd = message.dash_cd;
     }
+    if (message.burst_cd !== undefined && message.burst_cd !== false) {
+      obj.burst_cd = message.burst_cd;
+    }
     return obj;
   },
 
@@ -3215,6 +3232,7 @@ export const Warnings = {
     message.swap_cd = object.swap_cd ?? false;
     message.skill_cd = object.skill_cd ?? false;
     message.dash_cd = object.dash_cd ?? false;
+    message.burst_cd = object.burst_cd ?? false;
     return message;
   },
 };
@@ -3226,6 +3244,7 @@ function createBaseFailedActions(): FailedActions {
     swap_cd: undefined,
     skill_cd: undefined,
     dash_cd: undefined,
+    burst_cd: undefined,
   };
 }
 
@@ -3245,6 +3264,9 @@ export const FailedActions = {
     }
     if (message.dash_cd !== undefined) {
       DescriptiveStats.encode(message.dash_cd, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.burst_cd !== undefined) {
+      DescriptiveStats.encode(message.burst_cd, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -3291,6 +3313,13 @@ export const FailedActions = {
 
           message.dash_cd = DescriptiveStats.decode(reader, reader.uint32());
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.burst_cd = DescriptiveStats.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3311,6 +3340,7 @@ export const FailedActions = {
       swap_cd: isSet(object.swap_cd) ? DescriptiveStats.fromJSON(object.swap_cd) : undefined,
       skill_cd: isSet(object.skill_cd) ? DescriptiveStats.fromJSON(object.skill_cd) : undefined,
       dash_cd: isSet(object.dash_cd) ? DescriptiveStats.fromJSON(object.dash_cd) : undefined,
+      burst_cd: isSet(object.burst_cd) ? DescriptiveStats.fromJSON(object.burst_cd) : undefined,
     };
   },
 
@@ -3330,6 +3360,9 @@ export const FailedActions = {
     }
     if (message.dash_cd !== undefined) {
       obj.dash_cd = DescriptiveStats.toJSON(message.dash_cd);
+    }
+    if (message.burst_cd !== undefined) {
+      obj.burst_cd = DescriptiveStats.toJSON(message.burst_cd);
     }
     return obj;
   },
@@ -3353,6 +3386,9 @@ export const FailedActions = {
       : undefined;
     message.dash_cd = (object.dash_cd !== undefined && object.dash_cd !== null)
       ? DescriptiveStats.fromPartial(object.dash_cd)
+      : undefined;
+    message.burst_cd = (object.burst_cd !== undefined && object.burst_cd !== null)
+      ? DescriptiveStats.fromPartial(object.burst_cd)
       : undefined;
     return message;
   },

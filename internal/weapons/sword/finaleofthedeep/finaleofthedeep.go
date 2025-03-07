@@ -17,11 +17,15 @@ func init() {
 }
 
 type Weapon struct {
-	Index int
+	Index         int
+	collectedDebt float64
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
-func (w *Weapon) Init() error      { return nil }
+func (w *Weapon) Init() error {
+	w.collectedDebt = 0.
+	return nil
+}
 
 // When using an Elemental Skill, ATK will be increased by 12/15/18/21/24% for 15s,
 // and a Bond of Life worth 25% of Max HP will be granted. This effect can be triggered once every 10s.
@@ -33,7 +37,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	const icdKey = "finaleofthedeep-icd"
-	const bondKey = "finaleofthedeep-bond"
 	atk := 0.09 + float64(r)*0.03
 	duration := 15 * 60
 	icd := 10 * 60
@@ -44,7 +47,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	hp := 0.25
 	bondPercentage := 0.018 + float64(r)*0.006
 	bondAtkCap := 112.5 + float64(r)*37.5
-	debt := 0.0
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
@@ -63,34 +65,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
-		if !char.StatusIsActive(bondKey) {
-			debt = 0
-		}
-		char.AddStatus(bondKey, -1, true)
-
 		char.ModifyHPDebtByRatio(hp)
-		debt += char.CurrentHPDebt()
-		bondAtk := debt * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
-		if bondAtk > bondAtkCap {
-			bondAtk = bondAtkCap
-		}
-		bond[attributes.ATK] = bondAtk
 
 		return false
 	}, fmt.Sprintf("finaleofthedeep-atk%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		index := args[1].(int)
+	c.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+		index := args[0].(int)
+		debtChange := args[1].(float64)
 		if index != char.Index {
 			return false
+		}
+
+		if debtChange < 0 {
+			w.collectedDebt += -float64(debtChange)
 		}
 		if char.CurrentHPDebt() > 0 {
 			return false
 		}
-		if !char.StatusIsActive(bondKey) {
+		if w.collectedDebt < 0.0001 {
 			return false
 		}
-		char.DeleteStatus(bondKey)
+
+		bondAtk := min(bondAtkCap, w.collectedDebt*bondPercentage)
+		bond[attributes.ATK] = bondAtk
+		w.collectedDebt = 0
 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("finaleofthedeep-bond-flatatk-boost", duration),

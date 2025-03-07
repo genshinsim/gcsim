@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 const (
@@ -248,7 +248,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 func (c *char) overchargedBallEventSub() {
 	c.Core.Events.Subscribe(event.OnOverload, func(args ...interface{}) bool {
 		// don't proc on gadgets
-		if _, ok := args[0].(*gadget.Gadget); ok {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
 		c.overChargedBall = true

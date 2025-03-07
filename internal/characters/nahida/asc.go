@@ -20,21 +20,21 @@ func (c *char) calcA1Buff() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	var max float64
+	var maxEM float64
 	team := c.Core.Player.Chars()
 	for _, char := range team {
 		em := char.NonExtraStat(attributes.EM)
-		if em > max {
-			max = em
+		if em > maxEM {
+			maxEM = em
 		}
 	}
-	max = 0.25 * max
+	maxEM = 0.25 * maxEM
 
-	if max > 250 {
-		max = 250
+	if maxEM > 250 {
+		maxEM = 250
 	}
 
-	c.a1Buff[attributes.EM] = max
+	c.a1Buff[attributes.EM] = maxEM
 }
 
 func (c *char) applyA1(dur int) {

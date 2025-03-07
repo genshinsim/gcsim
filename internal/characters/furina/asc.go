@@ -39,7 +39,8 @@ func (c *char) a1() {
 		}
 
 		if !c.StatusIsActive(a1HealKey) {
-			c.QueueCharTask(c.a1HealingOverTime, 2*60)
+			c.a1src = c.Core.F
+			c.QueueCharTask(c.a1HealingOverTime(c.a1src), 2*60)
 		}
 
 		c.AddStatus(a1HealKey, 4*60, true)
@@ -48,20 +49,25 @@ func (c *char) a1() {
 	}, "furina-a1")
 }
 
-func (c *char) a1HealingOverTime() {
-	if !c.StatusIsActive(a1HealKey) {
-		return
-	}
-	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
-		Target:  -1,
-		Type:    info.HealTypePercent,
-		Message: "Endless Waltz",
-		Src:     0.02,
-		Bonus:   c.Stat(attributes.Heal),
-	})
+func (c *char) a1HealingOverTime(src int) func() {
+	return func() {
+		if !c.StatusIsActive(a1HealKey) {
+			return
+		}
+		if c.a1src != src {
+			return
+		}
+		c.Core.Player.Heal(info.HealInfo{
+			Caller:  c.Index,
+			Target:  -1,
+			Type:    info.HealTypePercent,
+			Message: "Endless Waltz",
+			Src:     0.02,
+			Bonus:   c.Stat(attributes.Heal),
+		})
 
-	c.QueueCharTask(c.a1HealingOverTime, 2*60)
+		c.QueueCharTask(c.a1HealingOverTime(src), 2*60)
+	}
 }
 
 func (c *char) a4() {

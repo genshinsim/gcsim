@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	)
 
 	// heal
-	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
+	atk := snap.Stats.TotalATK()
 	heal := initHealFlat[c.TalentLvlBurst()] + atk*initHealPP[c.TalentLvlBurst()]
 	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index,
@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// ticks
 	d := c.createBurstSnapshot()
-	atk = d.Snapshot.BaseAtk*(1+d.Snapshot.Stats[attributes.ATKP]) + d.Snapshot.Stats[attributes.ATK]
+	atk = d.Snapshot.Stats.TotalATK()
 	heal = burstHealFlat[c.TalentLvlBurst()] + atk*burstHealPP[c.TalentLvlBurst()]
 
 	if c.Base.Cons >= 6 {

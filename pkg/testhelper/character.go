@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
@@ -32,7 +33,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot { return comb
 func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }
-func (c *Character) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+func (c *Character) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]int) error {
 	return nil
 }
 func (c *Character) ActionStam(a action.Action, p map[string]int) float64 { return 0 }

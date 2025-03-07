@@ -74,7 +74,7 @@ func (c *char) c4cb() func(a combat.AttackCB) {
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Mystery Millet Gourmet (C4)",
-			Src:     c4Ratio[c.skillCounter] * c.getTotalAtk(),
+			Src:     c4Ratio[c.skillCounter] * c.TotalAtk(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 

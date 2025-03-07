@@ -32,7 +32,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 	r := p.Refine
 
 	per := 0.09 + 0.03*float64(r)
-	max := 0.3 + 0.1*float64(r)
+	maxBonus := 0.3 + 0.1*float64(r)
 
 	var amt float64
 
@@ -44,13 +44,13 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		}
 
 		amt = energy * per / 100
-		if amt > max {
-			amt = max
+		if amt > maxBonus {
+			amt = maxBonus
 		}
 		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index).
 			Write("total", energy).
 			Write("per", per).
-			Write("max", max).
+			Write("max", maxBonus).
 			Write("amt", amt)
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = amt

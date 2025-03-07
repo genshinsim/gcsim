@@ -47,6 +47,7 @@ var setNames = []string{
 	"echoesofanoffering",
 	"emblemofseveredfate",
 	"flowerofparadiselost",
+	"fragmentofharmonicwhimsy",
 	"gambler",
 	"gladiatorsfinale",
 	"gildeddreams",
@@ -62,6 +63,7 @@ var setNames = []string{
 	"nighttimewhispersintheechoingwoods",
 	"noblesseoblige",
 	"nymphsdream",
+	"obsidiancodex",
 	"oceanhuedclam",
 	"paleflame",
 	"prayersfordestiny",
@@ -71,6 +73,7 @@ var setNames = []string{
 	"resolutionofsojourner",
 	"retracingbolide",
 	"scholar",
+	"scrolloftheheroofcindercity",
 	"shimenawasreminiscence",
 	"songofdayspast",
 	"tenacityofthemillelith",
@@ -79,6 +82,7 @@ var setNames = []string{
 	"thundersoother",
 	"tinymiracle",
 	"travelingdoctor",
+	"unfinishedreverie",
 	"vermillionhereafter",
 	"viridescentvenerer",
 	"wandererstroupe",
@@ -100,6 +104,7 @@ const (
 	EchoesOfAnOffering
 	EmblemOfSeveredFate
 	FlowerOfParadiseLost
+	FragmentOfHarmonicWhimsy
 	Gambler
 	GladiatorsFinale
 	GildedDreams
@@ -115,6 +120,7 @@ const (
 	NighttimeWhispersInTheEchoingWoods
 	NoblesseOblige
 	NymphsDream
+	ObsidianCodex
 	OceanHuedClam
 	PaleFlame
 	PrayersForDestiny
@@ -124,6 +130,7 @@ const (
 	ResolutionOfSojourner
 	RetracingBolide
 	Scholar
+	ScrollOfTheHeroOfCinderCity
 	ShimenawasReminiscence
 	SongOfDaysPast
 	TenacityOfTheMillelith
@@ -132,6 +139,7 @@ const (
 	Thundersoother
 	TinyMiracle
 	TravelingDoctor
+	UnfinishedReverie
 	VermillionHereafter
 	ViridescentVenerer
 	WanderersTroupe

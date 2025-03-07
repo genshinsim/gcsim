@@ -11,7 +11,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-var dendroEvents = []event.Event{event.OnBurning, event.OnQuicken, event.OnAggravate, event.OnSpread, event.OnBloom, event.OnHyperbloom, event.OnBurgeon}
+var dendroEvents = []event.Event{
+	event.OnBurning,
+	event.OnQuicken,
+	event.OnAggravate,
+	event.OnSpread,
+	event.OnBloom,
+	event.OnHyperbloom,
+	event.OnBurgeon,
+}
 
 func init() {
 	core.RegisterCharFunc(keys.Collei, NewChar)

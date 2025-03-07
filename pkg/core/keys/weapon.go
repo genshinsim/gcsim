@@ -33,6 +33,7 @@ func (c Weapon) String() string {
 
 var weaponNames = []string{
 	"",
+	"absolution",
 	"akuoumaru",
 	"alleyhunter",
 	"amenomakageuchi",
@@ -40,6 +41,9 @@ var weaponNames = []string{
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
+	"ashgravendrinkinghorn",
+	"astralvulturescrimsonplumage",
+	"athousandblazingsuns",
 	"athousandfloatingdreams",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
@@ -52,13 +56,17 @@ var weaponNames = []string{
 	"blackcliffwarbow",
 	"blacktassel",
 	"bloodtaintedgreatsword",
+	"calamityofeshu",
 	"calamityqueller",
 	"cashflowsupervision",
+	"chainbreaker",
 	"cinnabarspindle",
+	"cloudforged",
 	"compoundbow",
 	"coolsteel",
 	"cranesechoingcall",
 	"crescentpike",
+	"crimsonmoonssemblance",
 	"darkironsword",
 	"deathmatch",
 	"debateclub",
@@ -67,6 +75,7 @@ var weaponNames = []string{
 	"dragonsbane",
 	"dragonspinespear",
 	"dullblade",
+	"earthshaker",
 	"elegyfortheend",
 	"emeraldorb",
 	"endoftheline",
@@ -74,6 +83,7 @@ var weaponNames = []string{
 	"everlastingmoonglow",
 	"eyeofperception",
 	"fadingtwilight",
+	"fangofthemountainking",
 	"favoniuscodex",
 	"favoniusgreatsword",
 	"favoniuslance",
@@ -84,10 +94,13 @@ var weaponNames = []string{
 	"filletblade",
 	"finaleofthedeep",
 	"fleuvecendreferryman",
+	"fluteofezpitzal",
 	"flowingpurity",
+	"footprintoftherainbow",
 	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
+	"fruitfulhook",
 	"fruitoffulfillment",
 	"hakushinring",
 	"halberd",
@@ -111,6 +124,7 @@ var weaponNames = []string{
 	"lithicblade",
 	"lithicspear",
 	"lostprayertothesacredwinds",
+	"lumidouceelegy",
 	"luxurioussealord",
 	"magicguide",
 	"mailedflower",
@@ -122,10 +136,12 @@ var weaponNames = []string{
 	"mistsplitterreforged",
 	"mitternachtswaltz",
 	"moonpiercer",
+	"mountainbracingbolt",
 	"mouunsmoon",
 	"oathsworneye",
 	"oldmercspal",
 	"otherworldlystory",
+	"peakpatrolsong",
 	"pocketgrimoire",
 	"polarstar",
 	"portablepowersaw",
@@ -144,6 +160,7 @@ var weaponNames = []string{
 	"recurvebow",
 	"redhornstonethresher",
 	"rightfulreward",
+	"ringofyaxche",
 	"royalbow",
 	"royalgreatsword",
 	"royalgrimoire",
@@ -160,6 +177,7 @@ var weaponNames = []string{
 	"seasonedhuntersbow",
 	"serpentspine",
 	"sharpshootersoath",
+	"silvershowerheartstrings",
 	"silversword",
 	"skyridergreatsword",
 	"skyridersword",
@@ -176,7 +194,10 @@ var weaponNames = []string{
 	"splendoroftranquilwaters",
 	"staffofhoma",
 	"staffofthescarletsands",
+	"starcallerswatch",
+	"sturdybone",
 	"summitshaper",
+	"surfsup",
 	"swordofdescension",
 	"swordofnarzissenkreuz",
 	"talkingstick",
@@ -206,6 +227,7 @@ var weaponNames = []string{
 	"wanderingevenstar",
 	"wastergreatsword",
 	"wavebreakersfin",
+	"waveridingwhirl",
 	"whiteblind",
 	"whiteirongreatsword",
 	"whitetassel",
@@ -218,6 +240,7 @@ var weaponNames = []string{
 
 const (
 	NoWeapon Weapon = iota
+	Absolution
 	Akuoumaru
 	AlleyHunter
 	AmenomaKageuchi
@@ -225,6 +248,9 @@ const (
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia
+	AshGravenDrinkingHorn
+	AstralVulturesCrimsonPlumage
+	AThousandBlazingSuns
 	AThousandFloatingDreams
 	BalladOfTheBoundlessBlue
 	BalladOfTheFjords
@@ -237,13 +263,17 @@ const (
 	BlackcliffWarbow
 	BlackTassel
 	BloodtaintedGreatsword
+	CalamityOfEshu
 	CalamityQueller
 	CashflowSupervision
+	ChainBreaker
 	CinnabarSpindle
+	Cloudforged
 	CompoundBow
 	CoolSteel
 	CranesEchoingCall
 	CrescentPike
+	CrimsonMoonsSemblance
 	DarkIronSword
 	Deathmatch
 	DebateClub
@@ -252,6 +282,7 @@ const (
 	DragonsBane
 	DragonspineSpear
 	DullBlade
+	EarthShaker
 	ElegyForTheEnd
 	EmeraldOrb
 	EndOfTheLine
@@ -259,6 +290,7 @@ const (
 	EverlastingMoonglow
 	EyeOfPerception
 	FadingTwilight
+	FangOfTheMountainKing
 	FavoniusCodex
 	FavoniusGreatsword
 	FavoniusLance
@@ -269,10 +301,13 @@ const (
 	FilletBlade
 	FinaleOfTheDeep
 	FleuveCendreFerryman
+	FluteOfEzpitzal
 	FlowingPurity
+	FootprintOfTheRainbow
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
+	FruitfulHook
 	FruitOfFulfillment
 	HakushinRing
 	Halberd
@@ -296,6 +331,7 @@ const (
 	LithicBlade
 	LithicSpear
 	LostPrayerToTheSacredWinds
+	LumidouceElegy
 	LuxuriousSeaLord
 	MagicGuide
 	MailedFlower
@@ -307,10 +343,12 @@ const (
 	MistsplitterReforged
 	MitternachtsWaltz
 	Moonpiercer
+	MountainBracingBolt
 	MouunsMoon
 	OathswornEye
 	OldMercsPal
 	OtherworldlyStory
+	PeakPatrolSong
 	PocketGrimoire
 	PolarStar
 	PortablePowerSaw
@@ -329,6 +367,7 @@ const (
 	RecurveBow
 	RedhornStonethresher
 	RightfulReward
+	RingOfYaxche
 	RoyalBow
 	RoyalGreatsword
 	RoyalGrimoire
@@ -345,6 +384,7 @@ const (
 	SeasonedHuntersBow
 	SerpentSpine
 	SharpshootersOath
+	SilvershowerHeartstrings
 	SilverSword
 	SkyriderGreatsword
 	SkyriderSword
@@ -361,7 +401,10 @@ const (
 	SplendorOfTranquilWaters
 	StaffOfHoma
 	StaffOfTheScarletSands
+	StarcallersWatch
+	SturdyBone
 	SummitShaper
+	SurfsUp
 	SwordOfDescension
 	SwordOfNarzissenkreuz
 	TalkingStick
@@ -391,6 +434,7 @@ const (
 	WanderingEvenstar
 	WasterGreatsword
 	WavebreakersFin
+	WaveridingWhirl
 	Whiteblind
 	WhiteIronGreatsword
 	WhiteTassel

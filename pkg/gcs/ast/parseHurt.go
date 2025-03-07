@@ -124,7 +124,7 @@ func parseHurtAmount(p *Parser) error {
 	if err != nil {
 		return err
 	}
-	min, err := itemNumberToFloat64(item)
+	minhurt, err := itemNumberToFloat64(item)
 	if err != nil {
 		return err
 	}
@@ -133,13 +133,13 @@ func parseHurtAmount(p *Parser) error {
 	if err != nil {
 		return err
 	}
-	max, err := itemNumberToFloat64(item)
+	maxhurt, err := itemNumberToFloat64(item)
 	if err != nil {
 		return err
 	}
 
-	p.res.HurtSettings.Min = min
-	p.res.HurtSettings.Max = max
+	p.res.HurtSettings.Min = minhurt
+	p.res.HurtSettings.Max = maxhurt
 
 	return nil
 }

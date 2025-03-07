@@ -25,9 +25,11 @@ type Set struct {
 	char   *character.CharWrapper
 	buff   []float64
 	Index  int
+	Count  int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 func (s *Set) onChangeHP() {
@@ -52,8 +54,9 @@ func (s *Set) onChangeHP() {
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		core: c,
-		char: char,
+		core:  c,
+		char:  char,
+		Count: count,
 	}
 
 	// Normal and Charged Attack DMG +15%

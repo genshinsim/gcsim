@@ -24,9 +24,11 @@ type Set struct {
 	icd         int
 	procExpireF int
 	Index       int
+	Count       int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 // 2pc - ATK +18%.
@@ -38,7 +40,7 @@ func (s *Set) Init() error      { return nil }
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	procDuration := 3 // 0.05s
 
-	s := Set{}
+	s := Set{Count: count}
 	s.prob = 0.36
 	s.icd = 0
 	s.procExpireF = 0
@@ -78,7 +80,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 
 		// if buff is already active then buff attack
-		snATK := (char.Base.Atk+char.Weapon.BaseAtk)*(1+char.Stat(attributes.ATKP)) + char.Stat(attributes.ATK)
+		snATK := char.TotalAtk()
 		if c.F < s.procExpireF {
 			dmgAdded = snATK * 0.7
 			atk.Info.FlatDmg += dmgAdded

@@ -31,9 +31,11 @@ type Set struct {
 	core     *core.Core
 	char     *character.CharWrapper
 	Index    int
+	Count    int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 
 // Initiate off-field stacking if off-field at start of the sim
 func (s *Set) Init() error {
@@ -55,8 +57,9 @@ without gaining a Curiosity stack, 1 stack is lost.
 */
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		core: c,
-		char: char,
+		core:  c,
+		char:  char,
+		Count: count,
 	}
 	s.lastSwap = -1
 	s.stacks = param["stacks"]

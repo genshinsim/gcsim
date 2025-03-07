@@ -22,9 +22,11 @@ type Set struct {
 	core  *core.Core
 	char  *character.CharWrapper
 	lastF int
+	Count int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
@@ -32,6 +34,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		core:  c,
 		char:  char,
 		lastF: 0,
+		Count: count,
 	}
 
 	if count >= 2 {

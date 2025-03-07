@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -55,6 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.12 + float64(r)*0.04
 
+	//nolint:unparam // why events have a return value...
 	handleProc := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -86,8 +88,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}, pickupDelay)
 		return false
 	}
+
+	key := fmt.Sprintf("moonpiercer-%v", char.Base.Key.String())
 	for _, e := range procEvents {
-		c.Events.Subscribe(e, handleProc, fmt.Sprintf("moonpiercer-%v", char.Base.Key.String()))
+		switch e {
+		case event.OnHyperbloom, event.OnBurgeon:
+			c.Events.Subscribe(e, handleProc, key)
+		default:
+			c.Events.Subscribe(e, func(args ...interface{}) bool {
+				if _, ok := args[0].(*enemy.Enemy); !ok {
+					return false
+				}
+				return handleProc(args...)
+			}, key)
+		}
 	}
+
 	return w, nil
 }

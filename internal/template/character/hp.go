@@ -33,6 +33,8 @@ func (c *Character) ModifyHPByRatio(r float64) {
 func (c *Character) clampHPDebt() {
 	if c.currentHPDebt < 0 {
 		c.currentHPDebt = 0
+	} else if c.currentHPDebt > c.MaxHP()*2 {
+		c.currentHPDebt = c.MaxHP() * 2
 	}
 }
 
@@ -45,9 +47,9 @@ func (c *Character) ModifyHPDebtByAmount(amt float64) {
 	if amt == 0 {
 		return
 	}
-	newHPDebt := c.currentHPDebt + amt
-	c.setHPDebtByAmount(newHPDebt)
-	c.Core.Events.Emit(event.OnHPDebt, c.Index, amt)
+	prevHPDebt := c.currentHPDebt
+	c.setHPDebtByAmount(c.currentHPDebt + amt)
+	c.Core.Events.Emit(event.OnHPDebt, c.Index, prevHPDebt-c.currentHPDebt)
 }
 
 func (c *Character) ModifyHPDebtByRatio(r float64) {

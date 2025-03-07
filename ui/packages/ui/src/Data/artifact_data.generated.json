@@ -60,6 +60,11 @@
       "text_map_id": "3094139291",
       "key": "flowerofparadiselost"
     },
+    "fragmentofharmonicwhimsy": {
+      "id": "15035",
+      "text_map_id": "1492570003",
+      "key": "fragmentofharmonicwhimsy"
+    },
     "gambler": {
       "id": "10008",
       "text_map_id": "1186209435",
@@ -130,6 +135,11 @@
       "text_map_id": "1925210475",
       "key": "nymphsdream"
     },
+    "obsidiancodex": {
+      "id": "15038",
+      "text_map_id": "1774579403",
+      "key": "obsidiancodex"
+    },
     "oceanhuedclam": {
       "id": "15022",
       "text_map_id": "1756609915",
@@ -154,6 +164,11 @@
       "id": "10012",
       "text_map_id": "3618167299",
       "key": "scholar"
+    },
+    "scrolloftheheroofcindercity": {
+      "id": "15037",
+      "text_map_id": "2949388203",
+      "key": "scrolloftheheroofcindercity"
     },
     "shimenawasreminiscence": {
       "id": "15019",
@@ -184,6 +199,11 @@
       "id": "14002",
       "text_map_id": "1873342283",
       "key": "thundersoother"
+    },
+    "unfinishedreverie": {
+      "id": "15036",
+      "text_map_id": "352459163",
+      "key": "unfinishedreverie"
     },
     "vermillionhereafter": {
       "id": "15023",

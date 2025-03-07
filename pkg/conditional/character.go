@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
@@ -78,6 +79,15 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 			return 0, err
 		}
 		return evalCharacterStats(char, fields[2])
+	case "bol":
+		return char.CurrentHPDebt(), nil
+	case "bolratio":
+		return char.CurrentHPDebt() / char.MaxHP(), nil
+	case "sets":
+		if err := fieldsCheck(fields, 3, charCat); err != nil {
+			return 0, err
+		}
+		return evalCharacterSets(char, fields[2])
 	default: // .kokomi.*
 		return char.Condition(fields[1:])
 	}
@@ -89,6 +99,18 @@ func evalCharacterStats(char *character.CharWrapper, stat string) (float64, erro
 		return 0, fmt.Errorf("invalid stat key %v in character stat condition", stat)
 	}
 	return char.Stat(key), nil
+}
+
+func evalCharacterSets(char *character.CharWrapper, set string) (float64, error) {
+	setKey, ok := shortcut.SetNameToKey[set]
+	if !ok {
+		return 0, fmt.Errorf("invalid set key %v in character set condition", set)
+	}
+	setInfo, ok := char.Equip.Sets[setKey]
+	if !ok {
+		return 0, nil
+	}
+	return float64(setInfo.GetCount()), nil
 }
 
 func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Action, typ string) (any, error) {

@@ -242,8 +242,7 @@ func (c *char) quillDamageMod() {
 		}
 
 		if char.Tags[quillKey] > 0 {
-			stats, _ := c.Stats()
-			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK])
+			amt := skillpp[c.TalentLvlSkill()] * c.TotalAtk()
 			if consumeStack { // c6
 				char.Tags[quillKey]--
 			}

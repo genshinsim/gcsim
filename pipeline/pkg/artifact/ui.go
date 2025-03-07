@@ -24,6 +24,7 @@ func (g *Generator) writeCharDataJSON(path string) error {
 	for k, v := range g.data {
 		x := proto.Clone(v).(*model.ArtifactData)
 		data[k] = x
+		data[k].ImageNames = nil
 	}
 	m := &model.ArtifactDataMap{
 		Data: data,

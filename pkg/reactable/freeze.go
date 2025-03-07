@@ -43,20 +43,6 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	return true
 }
 
-func max(a, b reactions.Durability) reactions.Durability {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func min(a, b reactions.Durability) reactions.Durability {
-	if a > b {
-		return b
-	}
-	return a
-}
-
 func (r *Reactable) PoiseDMGCheck(a *combat.AttackEvent) bool {
 	if r.Durability[Frozen] < ZeroDur {
 		return false
@@ -101,7 +87,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 		char := r.core.Player.ByIndex(a.Info.ActorIndex)
 		em := char.Stat(attributes.EM)
 		flatdmg, snap := calcReactionDmg(char, ai, em)
-		ai.FlatDmg = 1.5 * flatdmg
+		ai.FlatDmg = 3.0 * flatdmg
 		// shatter is a self attack
 		r.core.QueueAttackWithSnap(
 			ai,

@@ -14,6 +14,7 @@ export default (props: WarningProps) => {
     <IncompleteCharWarning key="incomplete" {...props} />,
     <PositionOverlapWarning key="target" {...props} />,
     <EnergyWarning key="energy" {...props} />,
+    <BurstWarningCD key="burst_cd" {...props} />,
     <SkillWarning key="cd" {...props} />,
     <StaminaWarning key="stamina" {...props} />,
     <SwapWarning key="swap" {...props} />,
@@ -93,6 +94,27 @@ const EnergyWarning = ({ data }: WarningProps) => {
           title={t<string>("warnings.energy_data_header")}
           data={data}
           stat={(fa) => fa.insufficient_energy} />
+    </DismissibleCallout>
+  );
+};
+
+const BurstWarningCD = ({data}: WarningProps) => {
+  const {t} = useTranslation();
+  const [show, setShow] = useState(true);
+  const visible = show && (data?.statistics?.warnings?.burst_cd ?? false);
+
+  return (
+    <DismissibleCallout
+      title={t<string>("warnings.burst_cd_title")}
+      intent={Intent.WARNING}
+      show={visible}
+      onDismiss={() => setShow(false)}>
+      <p>{t<string>("warnings.burst_cd_body")}</p>
+      <FailedActionDetails
+        title={t<string>("warnings.burst_cd_data_header")}
+        data={data}
+        stat={(fa) => fa.burst_cd}
+      />
     </DismissibleCallout>
   );
 };

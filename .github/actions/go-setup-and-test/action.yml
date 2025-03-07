@@ -3,12 +3,12 @@ description: "runs setup-go and runs all unit tests in the repo"
 runs:
   using: composite
   steps:
-  - uses: actions/setup-go@v3
-    with:
-      go-version: "^1.19.3"
-  - name: Run Tests
-    working-directory: ./
-    shell: bash
-    run: "go test ./internal/..."
-    # should run below, need to fix existing tests
-    # run: "go test ./backend/... ./internal/... ./pkg/..."
+    - uses: actions/setup-go@v3
+      with:
+        go-version: "^1.21"
+    - name: Run Tests
+      working-directory: ./
+      shell: bash
+      run: "go test ./internal/... ./pkg/gcs/..."
+      # should run below, need to fix existing tests
+      # run: "go test ./backend/... ./internal/... ./pkg/..."

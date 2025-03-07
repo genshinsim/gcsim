@@ -355,36 +355,36 @@ func parseCharAddRandomStats(p *Parser) (parseFn, error) {
 
 func (p *Parser) acceptLevelReturnBaseMax() (int, int, error) {
 	base := 0
-	max := 0
+	maxlvl := 0
 	var err error
 	// expect =xx/yy
 	var x Token
 	x, err = p.consume(itemAssign)
 	if err != nil {
-		return base, max, fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.line, x)
 	}
 	x, err = p.consume(itemNumber)
 	if err != nil {
-		return base, max, fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.line, x)
 	}
 	base, err = itemNumberToInt(x)
 	if err != nil {
-		return base, max, fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
 	}
 	x, err = p.consume(ItemForwardSlash)
 	if err != nil {
-		return base, max, fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
 	}
 	x, err = p.consume(itemNumber)
 	if err != nil {
-		return base, max, fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.line, x)
 	}
-	max, err = itemNumberToInt(x)
+	maxlvl, err = itemNumberToInt(x)
 	if err != nil {
-		return base, max, fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.line, x)
 	}
-	if max < base {
-		return base, max, fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.line, max, base)
+	if maxlvl < base {
+		return base, maxlvl, fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.line, maxlvl, base)
 	}
-	return base, max, nil
+	return base, maxlvl, nil
 }

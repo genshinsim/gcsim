@@ -34,6 +34,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.NormalCon = 3
 	c.BurstCon = 5
+	c.HasArkhe = true
 
 	w.Character = &c
 
@@ -86,12 +87,12 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) NextQueueItemIsValid(a action.Action, p map[string]int) error {
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
 	// cannot use charge without attack beforehand unlike most of the other catalyst users
 	if a == action.ActionCharge && c.Core.Player.LastAction.Type != action.ActionAttack {
 		return player.ErrInvalidChargeAction
 	}
-	return c.Character.NextQueueItemIsValid(a, p)
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {

@@ -4,7 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 const (
@@ -23,18 +25,32 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	for _, event := range dendroEvents {
-		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
-			if c.sproutShouldProc {
-				return false
-			}
-			if !c.StatusIsActive(skillKey) {
-				return false
-			}
-			c.sproutShouldProc = true
-			c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index)
+
+	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
+	f := func(...interface{}) bool {
+		if c.sproutShouldProc {
 			return false
-		}, "collei-a1")
+		}
+		if !c.StatusIsActive(skillKey) {
+			return false
+		}
+		c.sproutShouldProc = true
+		c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index)
+		return false
+	}
+
+	for _, evt := range dendroEvents {
+		switch evt {
+		case event.OnHyperbloom, event.OnBurgeon:
+			c.Core.Events.Subscribe(evt, f, "collei-a1")
+		default:
+			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
+				if _, ok := args[0].(*enemy.Enemy); !ok {
+					return false
+				}
+				return f(args...)
+			}, "collei-a1")
+		}
 	}
 }
 
@@ -59,25 +75,39 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	for _, event := range dendroEvents {
-		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
-			if !c.StatusIsActive(burstKey) {
-				return false
-			}
-			atk := args[1].(*combat.AttackEvent)
-			char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
-			if !char.StatusIsActive(a4Key) {
-				return false
-			}
-			if c.burstExtendCount >= 3 {
-				return false
-			}
-			c.ExtendStatus(burstKey, 60)
-			c.burstExtendCount++
-			c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index).
-				Write("extend_count", c.burstExtendCount)
+
+	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
+	f := func(args ...interface{}) bool {
+		if !c.StatusIsActive(burstKey) {
 			return false
-		}, "collei-a4")
+		}
+		atk := args[1].(*combat.AttackEvent)
+		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
+		if !char.StatusIsActive(a4Key) {
+			return false
+		}
+		if c.burstExtendCount >= 3 {
+			return false
+		}
+		c.ExtendStatus(burstKey, 60)
+		c.burstExtendCount++
+		c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index).
+			Write("extend_count", c.burstExtendCount)
+		return false
+	}
+
+	for _, evt := range dendroEvents {
+		switch evt {
+		case event.OnHyperbloom, event.OnBurgeon:
+			c.Core.Events.Subscribe(evt, f, "collei-a4")
+		default:
+			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
+				if _, ok := args[0].(*enemy.Enemy); !ok {
+					return false
+				}
+				return f(args...)
+			}, "collei-a4")
+		}
 	}
 }
 

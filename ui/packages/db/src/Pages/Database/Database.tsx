@@ -1,7 +1,7 @@
 import { Spinner } from "@blueprintjs/core";
 import { db } from "@gcsim/types";
-import axios from "axios";
-import { useEffect, useReducer, useState } from "react";
+import axios from 'axios';
+import {useEffect, useReducer, useRef, useState} from 'react';
 import { craftQuery, DbQuery } from "SharedHooks/databaseQuery";
 import {
   FilterContext,
@@ -22,6 +22,7 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
+  const abortController = useRef(new AbortController());
 
   const appendData = (next: db.Entry[]) => {
     // let d = [ ...data,...next.filter(e => {
@@ -30,8 +31,11 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
     setData([...data, ...next]);
   };
 
+
   const querydb = (query: DbQuery, nextPage: number, append: boolean) => {
-    axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
+    axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`, {
+      signal: abortController.current.signal,
+    })
       .then((resp: { data: db.Entries }) => {
         if (resp.data && resp.data.data) {
           setPage(nextPage);
@@ -61,6 +65,8 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
   };
 
   useEffect(() => {
+    abortController.current.abort();
+    abortController.current = new AbortController();
     const query = craftQuery(filter, 1, 25);
     querydb(query, 1, false);
   }, [filter]);

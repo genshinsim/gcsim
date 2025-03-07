@@ -40,6 +40,8 @@ message AvatarSkillsData {
   int32 skill = 1 [ json_name = "skill" ];
   int32 burst = 2 [ json_name = "burst" ];
   int32 attack = 3 [ json_name = "attack" ];
+  int32 a1 = 10 [ json_name = "a1" ];
+  int32 a4 = 11 [ json_name = "a4" ];
   double burst_energy_cost = 4 [ json_name = "burst_energy_cost" ];
   repeated AvatarSkillExcelIndexData attack_scaling = 5
       [ json_name = "attack_scaling" ];
@@ -47,6 +49,8 @@ message AvatarSkillsData {
       [ json_name = "skill_scaling" ];
   repeated AvatarSkillExcelIndexData burst_scaling = 7
       [ json_name = "burst_scaling" ];
+  repeated AvatarSkillExcelIndexData a1_scaling = 8 [ json_name = "a1_scaling" ];
+  repeated AvatarSkillExcelIndexData a4_scaling = 9 [ json_name = "a4_scaling" ];
 }
 
 message AvatarSkillExcelIndexData {
@@ -95,6 +99,15 @@ message ArtifactData {
   int64 set_id = 1 [ json_name = "id" ];
   int64 text_map_id = 2 [ json_name = "text_map_id" ];
   string key = 3 [ json_name = "key" ];
+  ArtifactImageData image_names = 4 [ json_name = "image_names" ];
+}
+
+message ArtifactImageData {
+  string flower = 1 [ json_name = "flower" ];
+  string plume = 2 [ json_name = "plume" ];
+  string sands = 3 [ json_name = "sands" ];
+  string goblet = 4 [ json_name = "goblet" ];
+  string circlet = 5 [ json_name = "circlet" ];
 }
 
 message PromotionData {

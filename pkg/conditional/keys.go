@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -21,6 +22,8 @@ func evalKeys(fields []string) (int, error) {
 		return evalSetKey(name)
 	case "char": // is this necessary? :pepela:
 		return evalCharacterKey(name)
+	case "element":
+		return evalElementKey(name)
 	default:
 		return 0, fmt.Errorf("bad key condition: invalid type %v", typ)
 	}
@@ -46,6 +49,15 @@ func evalCharacterKey(name string) (int, error) {
 	key, ok := shortcut.CharNameToKey[name]
 	if !ok {
 		return 0, fmt.Errorf("bad key condition: invalid character %v", name)
+	}
+	return int(key), nil
+}
+
+func evalElementKey(name string) (int, error) {
+	key := attributes.StringToEle(name)
+	switch key {
+	case attributes.UnknownElement, attributes.EndEleType, attributes.NoElement:
+		return 0, fmt.Errorf("bad key condition: invalid element %v", name)
 	}
 	return int(key), nil
 }

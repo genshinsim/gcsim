@@ -1,0 +1,63 @@
+id: 13431
+key: "footprintoftherainbow"
+rarity: 4
+weapon_class: WEAPON_POLE
+image_name: "UI_EquipIcon_Pole_Isikhulu"
+base_stats: {
+   base_props: {
+      prop_type: FIGHT_PROP_BASE_ATTACK
+      initial_value: 42.401
+      curve: GROW_CURVE_ATTACK_201
+   }
+   base_props: {
+      prop_type: FIGHT_PROP_DEFENSE_PERCENT
+      initial_value: 0.1126
+      curve: GROW_CURVE_CRITICAL_201
+   }
+   promo_data: {
+      max_level: 20
+   }
+   promo_data: {
+      max_level: 40
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 25.9
+      }
+   }
+   promo_data: {
+      max_level: 50
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 51.9
+      }
+   }
+   promo_data: {
+      max_level: 60
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 77.8
+      }
+   }
+   promo_data: {
+      max_level: 70
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 103.7
+      }
+   }
+   promo_data: {
+      max_level: 80
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 129.7
+      }
+   }
+   promo_data: {
+      max_level: 90
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 155.6
+      }
+   }
+}
+name_text_hash_map: 415520051

@@ -71,8 +71,10 @@ type AvatarSkillDepot struct {
 	// ExtraAbilities          []string `json:"extraAbilities"`
 	// Talents                 []int32    `json:"talents"`
 	// TalentStarName          string   `json:"talentStarName"`
-	// InherentProudSkillOpens []struct {
-	// } `json:"inherentProudSkillOpens"`
+	InherentProudSkillOpens []struct {
+		ProudSkillGroupId      int32 `json:"proudSkillGroupId"`
+		NeedAvatarPromoteLevel int32 `json:"needAvatarPromoteLevel"`
+	} `json:"inherentProudSkillOpens"`
 	// SkillDepotAbilityGroup string `json:"skillDepotAbilityGroup"`
 	// LeaderTalent           int32    `json:"leaderTalent,omitempty"`
 }
@@ -174,6 +176,14 @@ type WeaponPromote struct {
 type ReliquarySetExcel struct {
 	SetID        int64 `json:"setId"`
 	EquipAffixID int64 `json:"EquipAffixId"`
+}
+
+//nolint:tagliatelle // need to match datamine
+type ReliquaryExcel struct {
+	SetID         int64  `json:"setId"`
+	EquipType     string `json:"equipType"`
+	Icon          string `json:"icon"`
+	AppendPropNum int32  `json:"appendPropNum"`
 }
 
 //nolint:tagliatelle // need to match datamine

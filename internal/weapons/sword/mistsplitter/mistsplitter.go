@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	// stacking buff
 	stack := 0.06 + float64(r)*0.02
-	max := 0.03 + float64(r)*0.01
+	maxBonus := 0.03 + float64(r)*0.01
 	bonus := attributes.EleToDmgP(char.Base.Element)
 
 	// normal dealing dmg
@@ -94,7 +94,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			dmg := float64(count) * stack
 			if count >= 3 {
-				dmg += max
+				dmg += maxBonus
 			}
 			m[bonus] = base + dmg
 			return m, true

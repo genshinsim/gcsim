@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -61,7 +60,7 @@ func (c *char) c4() {
 	}
 
 	cbNoGadget := func(args ...interface{}) bool {
-		if _, ok := args[0].(*gadget.Gadget); ok {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
 		return cb(args...)

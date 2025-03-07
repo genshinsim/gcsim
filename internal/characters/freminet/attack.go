@@ -42,6 +42,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.skillStacks >= 4 {
+		c.NormalCounter = 0
 		return c.detonateSkill()
 	}
 

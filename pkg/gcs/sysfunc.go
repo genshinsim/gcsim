@@ -43,6 +43,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("cos", e.cos, env)
 	e.addSysFunc("asin", e.asin, env)
 	e.addSysFunc("acos", e.acos, env)
+	e.addSysFunc("is_even", e.isEven, env)
 
 	// events
 	e.addSysFunc("set_on_tick", e.setOnTick, env)
@@ -495,6 +496,36 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 	}, nil
 }
 
+func (e *Eval) isEven(c *ast.CallExpr, env *Env) (Obj, error) {
+	// is_even(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for is_even, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("is_even argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	// if float, floor it
+	var v int64
+	v = n.ival
+	if n.isFloat {
+		v = int64(n.fval)
+	}
+
+	if v%2 == 0 {
+		return bton(true), nil
+	}
+	return bton(false), nil
+}
+
 func (e *Eval) sin(c *ast.CallExpr, env *Env) (Obj, error) {
 	// sin(number goes in here)
 	if len(c.Args) != 1 {
@@ -655,13 +686,25 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 		if v.Typ() != typNum {
 			return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
 		}
-		params[k] = int(v.(*number).ival)
+		params[k] = int(ntof(v.(*number)))
 	}
 
 	charKey := keys.Char(char.ival)
 	actionKey := action.Action(ac.ival)
 	if _, ok := e.Core.Player.ByKey(charKey); !ok {
 		return nil, fmt.Errorf("can't execute action: %v is not on this team", charKey)
+	}
+
+	// if char is not on field then we need to send an implicit swap
+	if charKey != e.Core.Player.ActiveChar().Base.Key {
+		e.sendWork(&action.Eval{
+			Char:   charKey,
+			Action: action.ActionSwap,
+		})
+		err = e.waitForNext()
+		if err != nil {
+			return nil, err
+		}
 	}
 	e.sendWork(&action.Eval{
 		Char:   charKey,

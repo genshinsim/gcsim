@@ -23,11 +23,13 @@ type Set struct {
 	char   *character.CharWrapper
 	buff   []float64
 	Index  int
+	Count  int
 }
 
 const verm4pckey = "verm-4pc"
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 func (s *Set) updateBuff() {
 	// 8% base + 10% per stack
@@ -36,8 +38,9 @@ func (s *Set) updateBuff() {
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		core: c,
-		char: char,
+		core:  c,
+		char:  char,
+		Count: count,
 	}
 
 	if count >= 2 {

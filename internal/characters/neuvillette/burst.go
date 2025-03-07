@@ -3,8 +3,8 @@ package neuvillette
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -70,7 +70,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.QueueCharTask(func() {
 			// spawn droplets for current tick using random point from player pos with offset
 			for j := 0; j < dropletCount; j++ {
-				common.NewSourcewaterDroplet(
+				sourcewaterdroplet.New(
 					c.Core,
 					geometry.CalcRandomPointFromCenter(
 						geometry.CalcOffsetPoint(

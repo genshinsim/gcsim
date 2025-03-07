@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/task"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"github.com/genshinsim/gcsim/pkg/queue"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
@@ -34,11 +34,12 @@ type Enemy struct {
 	// hitlag stuff
 	timePassed   int
 	frozenFrames int
-	queue        []queue.Task
+	queue        *task.Handler
 }
 
 func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	e := &Enemy{}
+	e.queue = task.New(&e.timePassed)
 	e.Level = p.Level
 	//TODO: do we need to clone this map isntead?
 	e.resists = p.Resist

@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -29,9 +30,11 @@ func init() {
 type Set struct {
 	stacks int
 	Index  int
+	Count  int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
 // 2pc - Increases Elemental Mastery by 80.
@@ -41,7 +44,7 @@ func (s *Set) Init() error      { return nil }
 //	of this lasts 10s. Max 4 stacks simultaneously. This effect can only be triggered once per second. The character who equips
 //	this can still trigger its effects when not on the field.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
-	s := Set{}
+	s := Set{Count: count}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -55,6 +58,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 
+	//nolint:nestif // linter is stupid
 	if count >= 4 {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("flower-4pc", -1),
@@ -70,6 +74,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 
+		//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 		f := func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
@@ -106,8 +111,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			return false
 		}
+		noGadget := func(args ...interface{}) bool {
+			if _, ok := args[0].(*enemy.Enemy); !ok {
+				return false
+			}
+			return f(args...)
+		}
 
-		c.Events.Subscribe(event.OnBloom, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnBloom, noGadget, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnHyperbloom, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnBurgeon, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 	}

@@ -23,7 +23,7 @@ var commands = []api.CreateCommandData{
 	},
 }
 
-func (b *Bot) routes() error {
+func (b *Bot) routes() {
 	b.Router = cmdroute.NewRouter()
 	// Automatically defer handles if they're slow.
 	b.Use(cmdroute.Deferrable(b.s, cmdroute.DeferOpts{}))
@@ -40,8 +40,6 @@ func (b *Bot) routes() error {
 	b.AddFunc("reword", b.cmdReplaceDesc)
 	b.AddFunc("dbstatus", b.cmdDBStatus)
 	b.AddFunc("status", b.cmdEntryStatus)
-
-	return nil
 }
 
 func (b *Bot) cmdEcho(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {

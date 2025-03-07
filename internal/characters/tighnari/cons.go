@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -71,7 +71,7 @@ func (c *char) c4() {
 	}, "tighnari-c4")
 
 	f := func(args ...interface{}) bool {
-		if _, ok := args[0].(*gadget.Gadget); ok {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
 
