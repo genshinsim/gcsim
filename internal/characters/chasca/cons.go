@@ -104,10 +104,8 @@ func (c *char) c6() {
 	c.AddStatus(c6key, 3*60, true)
 }
 
-// if the c6 instant bullet load status is active, this adds c6 cdmg status and removes the instant load status
+// if c6 is active, mark the aim attack as buffed (instant bullet load + cdmg) and remove the status
 func (c *char) c6AddBuff() {
-	// Need a seperate key for the 120% CDMG buff and the instant bullet load
-	// since the instant bullet load status is active while the shots from the first aim are hitting
 	if c.Base.Cons < 6 {
 		return
 	}
