@@ -10,6 +10,8 @@ action_param_keys:
     - param: "weakspot"
   skill:
     - param: "marked"
+  burst:
+    - param: "travel"
 icd_tags:
   - ICDTagYelanBreakthrough
   - ICDTagYelanBurst

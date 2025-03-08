@@ -1372,6 +1372,11 @@
       "ability": "skill",
       "param": "marked",
       "desc": "Number of enemies to mark with the Lifeline. Default 1."
+    },
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Exquisite Throw projectile travel time. Default 20 frames."
     }
   ],
   "yoimiya": [
