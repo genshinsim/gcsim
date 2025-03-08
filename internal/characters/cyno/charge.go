@@ -92,6 +92,7 @@ func (c *char) chargeB() (action.Info, error) {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
+		IgnoreInfusion:     true,
 	}
 
 	c.Core.QueueAttack(
