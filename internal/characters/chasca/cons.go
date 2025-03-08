@@ -94,6 +94,9 @@ func (c *char) c6() {
 	if c.Base.Cons < 6 {
 		return
 	}
+	if c.Base.Ascension < 1 {
+		return
+	}
 	if c.StatusIsActive(c6IcdKey) {
 		return
 	}
@@ -101,33 +104,47 @@ func (c *char) c6() {
 	c.AddStatus(c6key, 3*60, true)
 }
 
-func (c *char) c6buff(snap *combat.Snapshot) {
+// if c6 is active, mark the aim attack as buffed (instant bullet load + cdmg) and remove the status
+func (c *char) c6AddBuff() {
 	if c.Base.Cons < 6 {
 		return
 	}
-
+	if c.Base.Ascension < 1 {
+		return
+	}
 	if !c.StatusIsActive(c6key) {
 		return
 	}
-	old := snap.Stats[attributes.CD]
-	snap.Stats[attributes.CD] += 1.20
-	c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index).
-		Write("old", old).
-		Write("new", snap.Stats[attributes.CD])
+	c.c6Used = true
+	c.DeleteStatus(c6key)
 }
 
-func (c *char) removeC6() {
+func (c *char) c6buff() func(*combat.Snapshot) {
 	if c.Base.Cons < 6 {
-		return
+		return nil
 	}
-	c.DeleteStatus(c6key)
+	if c.Base.Ascension < 1 {
+		return nil
+	}
+	if !c.c6Used {
+		return nil
+	}
+	c.c6Used = false
+
+	return func(snap *combat.Snapshot) {
+		old := snap.Stats[attributes.CD]
+		snap.Stats[attributes.CD] += 1.20
+		c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index).
+			Write("old", old).
+			Write("new", snap.Stats[attributes.CD])
+	}
 }
 
 func (c *char) c6ChargeTime(count int) int {
 	if c.Base.Cons < 6 {
 		return cumuSkillAimLoadFrames[count-1]
 	}
-	if c.StatusIsActive(c6key) {
+	if c.c6Used {
 		return cumuSkillAimLoadFramesC6Instant[count-1]
 	}
 	return cumuSkillAimLoadFramesC6[count-1]

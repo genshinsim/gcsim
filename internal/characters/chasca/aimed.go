@@ -132,6 +132,12 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	aimSrc := c.Core.F
 	c.aimSrc = aimSrc
 
+	c.c6AddBuff()
+	// activate c6 for next shot when a1 conversion happens (happens on bullet 1 due to c1)
+	if count >= 1 && c.bulletsToFire[1] != attributes.Anemo {
+		c.c6()
+	}
+
 	windup := 11
 	switch c.Core.Player.CurrentState() {
 	// these actions have the windup included in the X -> Aim frames
@@ -144,9 +150,10 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 		c.QueueCharTask(func() {
 			// the bullets can still charge up to 10f from the end of nightsoul blessing,
 			// so we can't simply check for nightsoul blessing here
-			if c.aimSrc == aimSrc {
-				c.bulletsCharged++
+			if c.aimSrc != aimSrc {
+				return
 			}
+			c.bulletsCharged++
 		}, delay)
 	}
 
@@ -174,6 +181,7 @@ func (c *char) fireBullets() {
 	if c.aimSrc < 0 {
 		return
 	}
+
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Shadowhunt Shell",
@@ -189,13 +197,15 @@ func (c *char) fireBullets() {
 	}
 
 	var c2cb combat.AttackCBFunc
+	applyC6buff := c.c6buff()
+
 	bulletFireFrame := c.Core.F
+
 	// TODO: get the actual target aquire range
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 	for i := 0; i < c.bulletsCharged; i++ {
 		bulletElem := c.bulletsToFire[c.bulletsCharged-1-i] // get bullets starting from the back
 		hitDelay := skillAimHitmarks[i]
-		last := i == c.bulletsCharged-1
 		target := enemies[i%len(enemies)]
 		c.QueueCharTask(func() {
 			switch bulletElem {
@@ -214,13 +224,10 @@ func (c *char) fireBullets() {
 				c2cb = c.c2cb(bulletFireFrame)
 			}
 			snapshot := c.Snapshot(&ai)
-			c.c6buff(&snapshot)
-			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(target.Key()), 0, c.particleCB, c2cb)
-
-			// remove possible c6buff after last bullet
-			if last {
-				c.removeC6()
+			if applyC6buff != nil {
+				applyC6buff(&snapshot)
 			}
+			c.Core.QueueAttackWithSnap(ai, snapshot, combat.NewSingleTargetHit(target.Key()), 0, c.particleCB, c2cb)
 		}, hitDelay)
 	}
 	c.bulletsCharged = 0
