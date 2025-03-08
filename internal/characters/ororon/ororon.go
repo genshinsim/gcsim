@@ -1,7 +1,6 @@
 package ororon
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -12,8 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
-
-var jumpHoldFrames [][]int
 
 const (
 	superJumpBeginFrames = 15 // Jump->SuperJump Frames
@@ -32,22 +29,6 @@ const (
 
 func init() {
 	core.RegisterCharFunc(keys.Ororon, NewChar)
-
-	// Hold Jump
-	jumpHoldFrames = make([][]int, 2)
-	// Hold Jump -> X
-	jumpHoldFrames[0] = frames.InitAbilSlice(60 * 10) // set to very high number for most abilities
-	jumpHoldFrames[0][action.ActionHighPlunge] = plungeCancelFrames
-	// Fall -> X
-	jumpHoldFrames[1] = frames.InitAbilSlice(fallFrames)
-	jumpHoldFrames[1][action.ActionAttack] = 45
-	jumpHoldFrames[1][action.ActionAim] = 46
-	jumpHoldFrames[1][action.ActionSkill] = 45
-	jumpHoldFrames[1][action.ActionBurst] = 46
-	jumpHoldFrames[1][action.ActionDash] = 46
-	jumpHoldFrames[1][action.ActionJump] = 45
-	jumpHoldFrames[1][action.ActionWalk] = 47
-	jumpHoldFrames[1][action.ActionSwap] = 44
 }
 
 type char struct {

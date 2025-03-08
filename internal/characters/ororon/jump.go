@@ -7,6 +7,27 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
+var jumpHoldFrames [][]int
+
+func init() {
+	// Hold Jump
+	jumpHoldFrames = make([][]int, 2)
+	// Hold Jump -> X
+	jumpHoldFrames[0] = frames.InitAbilSlice(60 * 10) // set to very high number for most abilities
+	jumpHoldFrames[0][action.ActionHighPlunge] = plungeCancelFrames
+
+	// Fall -> X
+	jumpHoldFrames[1] = frames.InitAbilSlice(47)
+	jumpHoldFrames[1][action.ActionAttack] = 45
+	jumpHoldFrames[1][action.ActionAim] = 46
+	jumpHoldFrames[1][action.ActionSkill] = 45
+	jumpHoldFrames[1][action.ActionBurst] = 46
+	jumpHoldFrames[1][action.ActionDash] = 46
+	jumpHoldFrames[1][action.ActionJump] = 45
+	jumpHoldFrames[1][action.ActionWalk] = 47
+	jumpHoldFrames[1][action.ActionSwap] = 44
+}
+
 func (c *char) exitJumpBlessing() {
 	c.inTransmissionBlessing = false
 	if !c.inA1Blessing {
@@ -19,7 +40,7 @@ func (c *char) exitJumpBlessing() {
 // Grant airborne status.
 // Consume stamina.
 // Hold defines when fall action will automatically be called.
-func (c *char) highJump(hold int) (action.Info, error) {
+func (c *char) highJump(hold int, p map[string]int) (action.Info, error) {
 	if (hold > maxJumpFrames-fallCancelFrames) || (hold < 0) {
 		hold = maxJumpFrames - fallCancelFrames
 	}
@@ -42,7 +63,7 @@ func (c *char) highJump(hold int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		h := c.Core.Player
 		// Apply stamina reduction mods.
-		stamDrain := h.AbilStamCost(c.Index, action.ActionJump, map[string]int{"hold": 1})
+		stamDrain := h.AbilStamCost(c.Index, action.ActionJump, p)
 		h.Stam -= stamDrain
 		if h.Stam < 0 {
 			h.Stam = 0
@@ -80,5 +101,5 @@ func (c *char) Jump(p map[string]int) (action.Info, error) {
 	if hold == 0 {
 		return c.Character.Jump(p)
 	}
-	return c.highJump(hold - 1)
+	return c.highJump(hold-1, p)
 }
