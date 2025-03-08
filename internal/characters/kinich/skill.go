@@ -70,8 +70,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(func() {
 		src := c.Core.F
 		c.nightsoulSrc = src
-		c.nightsoulState.EnterBlessing(0.)
-		c.setNightsoulExitTimer(10*60 + 10)
+		c.nightsoulState.EnterTimedBlessing(0., 10*60+10, c.cancelNightsoul)
 		c.c2AoeIncreased = false
 		c.particlesGenerated = false
 		c.SetCD(action.ActionSkill, skillCD)
@@ -182,18 +181,6 @@ func (c *char) cancelNightsoul() {
 	c.nightsoulState.ExitBlessing()
 	c.nightsoulSrc = -1
 	c.blindSpotAngularPosition = -1
-	c.exitStateF = -1
-}
-
-func (c *char) setNightsoulExitTimer(duration int) {
-	src := c.Core.F + duration
-	c.exitStateF = src
-	c.QueueCharTask(func() {
-		if c.exitStateF != src {
-			return
-		}
-		c.cancelNightsoul()
-	}, duration)
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
