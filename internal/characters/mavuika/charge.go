@@ -144,7 +144,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	c.caState.srcFrame = c.Core.F
 	src := c.caState.srcFrame
 	nightSoulDuration := c.GetRemainingNightSoulDuration()
-	isUseFinalHit := false // Used when exceeding CA duration, forces CAF
+	isForceFinalHit := false // Used when exceeding CA duration, forces CAF
 
 	if final == 1 {
 		return c.BikeChargeAttackFinal(0, skippedWindupFrames), nil
@@ -157,8 +157,8 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		// Hold CA logic
 		c.HoldBikeChargeAttack(durationCA, skippedWindupFrames, bikeHittableEntities)
 	} else {
-		hasNoValidTarget, ai, err := c.HasValidTargetCheck(bikeHittableEntities)
-		if hasNoValidTarget {
+		hasValidTarget, ai, err := c.HasValidTargetCheck(bikeHittableEntities)
+		if !hasValidTarget {
 			return ai, err
 		}
 		durationCA = c.CountBikeChargeAttack(1, skippedWindupFrames, bikeHittableEntities, nightSoulDuration)
@@ -169,10 +169,10 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	durationCA -= skippedWindupFrames
 
 	if durationCA >= nightSoulDuration || c.caState.cAtkFrames >= bikeChargeAttackMaximumDuration {
-		isUseFinalHit = true
+		isForceFinalHit = true
 	}
 
-	if isUseFinalHit {
+	if isForceFinalHit {
 		return c.BikeChargeAttackFinal(durationCA, skippedWindupFrames), nil
 	}
 
@@ -543,7 +543,7 @@ func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) (bool,
 	isTargetForCountsHittable := false
 	if len(bikeHittableEntities) == 0 {
 		c.SetHittableEntityList(bikeHittableEntities)
-		return true, action.Info{}, errors.New("no valid targets within flamestrider area")
+		return false, action.Info{}, errors.New("no valid targets within flamestrider area")
 	}
 	for _, t := range bikeHittableEntities {
 		if t.Entity == c.Core.Combat.PrimaryTarget() {
@@ -552,9 +552,9 @@ func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) (bool,
 		}
 	}
 	if !isTargetForCountsHittable {
-		return true, action.Info{}, errors.New("primary target is not within flamestrider area")
+		return false, action.Info{}, errors.New("primary target is not within flamestrider area")
 	}
-	return false, action.Info{}, nil
+	return true, action.Info{}, nil
 }
 
 // Important Events: OnTargetDied, OnTargetMoved (also emits on player move?), OnDendroCore
