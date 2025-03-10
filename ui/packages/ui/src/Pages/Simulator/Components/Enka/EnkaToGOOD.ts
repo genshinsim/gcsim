@@ -129,35 +129,33 @@ function extractArtifactSet(
 
 function extractArtifactStats(
   equipList: (GenshinItemWeapon | GenshinItemReliquary)[],
-): number[] {
-  //TODO: using this here so we can in future return main + sub on sep lines
+): [number, number][] {
+  // Define stats as a list of tuples
+  let stats: [number, number][] = [];
 
-  //track total
-  let total = stats_base.slice();
-  //we'll want to use labels for the other stuff (although doesn't do anything atm)
   equipList.forEach((e) => {
     if (e.flat.itemType != 'ITEM_RELIQUARY') {
       return;
     }
+
+    // Add Main Stat as a tuple (ms_idx, ms)
     const ms = extractMainStat(e as GenshinItemReliquary);
-    //TODO: we really shouldn't be doing this so roundabout...
     const ms_idx =
       GOODStatToIndexMap[
         fightPropToGOODKey(e.flat.reliquaryMainstat.mainPropId)
       ];
-    total[ms_idx] += ms;
-    //TODO: in future this should go into a diff slice
-    //add sub stats
+    stats.push([ms_idx, ms]);
+
+    // Add Sub Stats returned as tuples
     const subs = extractSubStats(e as GenshinItemReliquary);
-    subs.forEach((v, i) => {
-      total[i] += v;
-    });
+    stats.push(...subs);
   });
-  return total;
+  return stats;
 }
 
-function extractSubStats(e: GenshinItemReliquary): number[] {
-  let total = stats_base.slice();
+function extractSubStats(e: GenshinItemReliquary): [number, number][] {
+  let subStats: [number, number][] = [];
+
   for (const sub of e.flat.reliquarySubstats) {
     const key = fightPropToGOODKey(sub.appendPropId);
     if (!(key in GOODStatToIndexMap)) {
@@ -165,14 +163,14 @@ function extractSubStats(e: GenshinItemReliquary): number[] {
     }
     const idx = GOODStatToIndexMap[key];
     let val = sub.statValue;
-    //this corrects for percentages
+    // Correct for percentages
     if (key.includes('_')) {
       val = val / 100.0;
     }
-    total[idx] += val;
+    subStats.push([idx, val]);
   }
-  console.log('substats extracted', total);
-  return total;
+  console.log('substats extracted', subStats);
+  return subStats;
 }
 
 function extractMainStat(e: GenshinItemReliquary): number {
@@ -227,7 +225,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
           return;
         }
 
-        let stats: number[];
+        let stats: [number, number][];
         try {
           stats = extractArtifactStats(equipList);
         } catch (e) {
@@ -259,7 +257,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
         characters.push(result);
 
         console.log(
-          `succesfully imported ${result.name} (id: ${avatarId}, name: ${name})`,
+          `successfully imported ${result.name} (id: ${avatarId}, name: ${name})`,
         );
       },
     );
