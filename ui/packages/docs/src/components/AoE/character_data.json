@@ -5461,6 +5461,14 @@
         "center": "PrimaryTarget"
       }
     ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6.0
+      }
+    ],
     "normal": [
       {
         "ability": "N1",

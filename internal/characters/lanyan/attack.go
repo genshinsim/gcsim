@@ -120,7 +120,6 @@ func (c *char) reathermoonRings() action.Info {
 		AttackTag:          attacks.AttackTagElementalArt,
 		StrikeType:         attacks.StrikeTypeDefault,
 		Durability:         25,
-		Mult:               ring[c.TalentLvlSkill()],
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
@@ -131,6 +130,7 @@ func (c *char) reathermoonRings() action.Info {
 		ai.ICDTag = attacks.ICDTagLanyanRingAttack
 		ai.ICDGroup = attacks.ICDGroupLanyanRingAttack
 		ai.Element = attributes.Anemo
+		ai.Mult = ring[c.TalentLvlSkill()]
 
 		ap := combat.NewSingleTargetHit(target.Key())
 		c.Core.QueueAttack(ai, ap, hitmark, hitmark)
@@ -140,6 +140,7 @@ func (c *char) reathermoonRings() action.Info {
 			ai.ICDTag = attacks.ICDTagLanyanRingAttackMix
 			ai.ICDGroup = attacks.ICDGroupLanyanRingAttackMix
 			ai.Element = c.absorbedElement
+			ai.Mult *= 0.5
 			c.Core.QueueAttack(ai, ap, hitmark, hitmark)
 		}
 
