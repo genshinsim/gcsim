@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
@@ -215,12 +214,7 @@ func (c *char) caStaminaTask(src int, startF *int, ended *bool) {
 		if r < 0 {
 			r = 0
 		}
-		c.Core.Player.Stam -= (40 * r) * tickInterval
-		c.Core.Player.LastStamUse = c.Core.F
-		if c.Core.Player.Stam < 0 {
-			c.Core.Player.Stam = 0
-		}
-		c.Core.Player.Events.Emit(event.OnStamUse, action.ActionCharge)
+		c.Core.Player.UseStam((40*r)*tickInterval, action.ActionCharge)
 
 		c.caStaminaTask(src, startF, ended)
 	}, 60*tickInterval)
