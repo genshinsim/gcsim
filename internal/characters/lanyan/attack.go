@@ -115,6 +115,20 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 func (c *char) reathermoonRings() action.Info {
 	c.DeleteStatus(leapBackStatus)
 
+	c.reathermoonRingsDetail("Feathermoon Ring", ringHitmarks)
+	if c.Base.Cons >= 1 {
+		c.reathermoonRingsDetail("Feathermoon Ring (C1)", c1Hitmarks)
+	}
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(ringsFrames),
+		AnimationLength: ringsFrames[action.InvalidAction],
+		CanQueueAfter:   ringsFrames[action.ActionDash],
+		State:           action.SkillState,
+	}
+}
+
+func (c *char) reathermoonRingsDetail(abilName string, hitmarks []int) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -128,8 +142,8 @@ func (c *char) reathermoonRings() action.Info {
 	}
 
 	target := c.Core.Combat.PrimaryTarget()
-	for _, hitmark := range ringHitmarks {
-		ai.Abil = "Feathermoon Ring"
+	for _, hitmark := range hitmarks {
+		ai.Abil = abilName
 		ai.ICDTag = attacks.ICDTagLanyanRingAttack
 		ai.ICDGroup = attacks.ICDGroupLanyanRingAttack
 		ai.Element = attributes.Anemo
@@ -154,12 +168,5 @@ func (c *char) reathermoonRings() action.Info {
 		if next != nil {
 			target = next
 		}
-	}
-
-	return action.Info{
-		Frames:          frames.NewAbilFunc(ringsFrames),
-		AnimationLength: ringsFrames[action.InvalidAction],
-		CanQueueAfter:   ringsFrames[action.ActionDash],
-		State:           action.SkillState,
 	}
 }
