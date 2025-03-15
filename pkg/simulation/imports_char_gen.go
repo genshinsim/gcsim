@@ -48,6 +48,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/klee"
 	_ "github.com/genshinsim/gcsim/internal/characters/kokomi"
 	_ "github.com/genshinsim/gcsim/internal/characters/kuki"
+	_ "github.com/genshinsim/gcsim/internal/characters/lanyan"
 	_ "github.com/genshinsim/gcsim/internal/characters/layla"
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
 	_ "github.com/genshinsim/gcsim/internal/characters/lynette"

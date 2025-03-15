@@ -1,0 +1,27 @@
+package_name: lanyan
+genshin_id: 10000108
+key: lanyan
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param1:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param2:F1P}+{param3:F1P}
+            - 2 # 2-Hit DMG|{param2:F1P}+{param3:F1P}
+        attack_3:
+            - 3 # 3-Hit DMG|{param4:F1P}+{param5:F1P}
+            - 4 # 3-Hit DMG|{param4:F1P}+{param5:F1P}
+        attack_4:
+            - 5 # 4-Hit DMG|{param6:F1P}
+        charge:
+            - 6 # Charged Attack DMG|{param7:F1P}×3
+    skill:
+        ring:
+            - 0 # Feathermoon Ring DMG|{param1:F1P}
+        shield:
+            - 1 # Shield DMG Absorption|{param2:F1P} ATK+{param3:I}
+        shieldFlat:
+            - 2 # Shield DMG Absorption|{param2:F1P} ATK+{param3:I}
+    burst:
+        burst:
+            - 0 # Skill DMG|{param1:F1P}×3

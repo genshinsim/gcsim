@@ -872,6 +872,23 @@
       },
       "name_text_hash_map ": "1940821986"
     },
+    "lanyan": {
+      "id": 10000108,
+      "key": "lanyan",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Lanyan",
+      "skill_details": {
+        "skill": 11082,
+        "burst": 11085,
+        "attack": 11081,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1888132250"
+    },
     "layla": {
       "id": 10000074,
       "key": "layla",
