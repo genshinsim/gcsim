@@ -180,8 +180,8 @@ var (
 		2.16576,
 		2.28608,
 	}
-	// skill: shield = [1]
-	shield = []float64{
+	// skill: shieldAmt = [1]
+	shieldAmt = []float64{
 		2.7648,
 		2.97216,
 		3.17952,

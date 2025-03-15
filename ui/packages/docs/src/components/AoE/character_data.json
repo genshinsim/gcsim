@@ -5454,6 +5454,13 @@
     ]
   },
   "lanyan": {
+    "asc": [
+      {
+        "ability": "A1",
+        "shape": "Single",
+        "center": "PrimaryTarget"
+      }
+    ],
     "normal": [
       {
         "ability": "N1",
@@ -5485,6 +5492,21 @@
         "offsetY": 0.5,
         "radius": 2.4,
         "fanAngle": 240
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Detect",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 0.1,
+        "boxY": 5.0,
+        "note": "This is an approximation because we do not actually know the real AoE"
+      },
+      {
+        "ability": "E-Ring",
+        "shape": "Single",
+        "center": "PrimaryTarget"
       }
     ]
   },

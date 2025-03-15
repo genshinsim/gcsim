@@ -2261,6 +2261,15 @@
         "canBeDefenseHalt": false,
         "deployable": true
       }
+    ],
+    "skill": [
+      {
+        "ability": "E-Ring",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
     ]
   },
   "sara": {

@@ -21,6 +21,8 @@ const (
 	ICDTagKinichLoopShot
 	ICDTagKinichScalespikerCannon
 	ICDTagKleeFireDamage
+	ICDTagLanyanRingAttack
+	ICDTagLanyanRingAttackMix
 	ICDTagLisaElectro
 	ICDTagLyneyEndBoom
 	ICDTagLyneyEndBoomEnhanced
