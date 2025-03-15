@@ -104,9 +104,8 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	var err error
 	switch t {
 	case action.ActionCharge: // require special calc for stam
-		h.Stam -= h.AbilStamCost(char.Index, t, param)
-		h.LastStamUse = *h.F
-		h.Events.Emit(event.OnStamUse, t)
+		req := h.AbilStamCost(char.Index, t, param)
+		h.UseStam(req, t)
 		err = h.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash:
 		err = h.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes

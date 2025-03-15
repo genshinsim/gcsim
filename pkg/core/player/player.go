@@ -198,6 +198,17 @@ func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64
 	}
 	return r * h.chars[i].ActionStam(a, p)
 }
+
+func (h *Handler) UseStam(amount float64, a action.Action) {
+	h.Stam -= amount
+	// this really shouldn't happen??
+	if h.Stam < 0 {
+		h.Stam = 0
+	}
+	h.LastStamUse = *h.F
+	h.Events.Emit(event.OnStamUse, a)
+}
+
 func (h *Handler) RestoreStam(v float64) {
 	h.Stam += v
 	if h.Stam > MaxStam {
