@@ -25,10 +25,8 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 		case info.WeaponClassCatalyst:
 			return 50
 		case info.WeaponClassClaymore:
-			c.Core.Log.NewEvent("CLAYMORE CHARGE NOT IMPLEMENTED", glog.LogWarnings, c.Index)
 			return 0
 		case info.WeaponClassBow:
-			c.Core.Log.NewEvent("BOWS DONT HAVE CHARGE ATTACK; USE AIM", glog.LogWarnings, c.Index)
 			return 0
 		default:
 			return 0
