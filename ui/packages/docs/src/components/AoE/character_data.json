@@ -5453,6 +5453,41 @@
       }
     ]
   },
+  "lanyan": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.2,
+        "boxX": 2.2,
+        "boxY": 3.0
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.2,
+        "boxX": 2.3,
+        "boxY": 3.0
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.3,
+        "radius": 2.2
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.4,
+        "fanAngle": 240
+      }
+    ]
+  },
   "sara": {
     "cons": [
       {
