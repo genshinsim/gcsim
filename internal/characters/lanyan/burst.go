@@ -50,6 +50,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(4)
 
+	c.c4()
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
