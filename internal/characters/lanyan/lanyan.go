@@ -37,6 +37,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.c2()
 
+	if c.Base.Cons >= 6 {
+		c.SetNumCharges(action.ActionSkill, 2)
+	}
+
 	return nil
 }
 
