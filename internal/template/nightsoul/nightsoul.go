@@ -12,7 +12,7 @@ import (
 )
 
 const NightsoulBlessingStatus = "nightsoul-blessing"
-const delayEventKey = "delayNsExpiryUntilStateChange"
+const delayEventKey = "ns-extend-state"
 
 type State struct {
 	char            *character.CharWrapper
@@ -25,9 +25,10 @@ type State struct {
 
 func New(c *core.Core, char *character.CharWrapper) *State {
 	t := &State{
-		char:      char,
-		c:         c,
-		MaxPoints: -1.0, // no limits
+		char:       char,
+		c:          c,
+		ExitStateF: -1,
+		MaxPoints:  -1.0, // no limits
 	}
 	return t
 }
@@ -50,7 +51,10 @@ func (s *State) SetNightsoulExitTimer(duration int, cb func()) {
 		return
 	}
 
-	s.char.AddStatus(NightsoulBlessingStatus, duration, true)
+	if s.Duration() != duration {
+		s.char.AddStatus(NightsoulBlessingStatus, duration, true)
+	}
+
 	src := s.c.F + duration
 	s.ExitStateF = src
 	s.char.QueueCharTask(func() {
@@ -58,30 +62,26 @@ func (s *State) SetNightsoulExitTimer(duration int, cb func()) {
 			return
 		}
 
-		// If NS shouldn't expire because the player is in the state; delay expiry until state ends
-		if slices.Contains(s.extendNsStates, s.c.Player.CurrentState()) {
-			evtKey := fmt.Sprintf("%s-%d", delayEventKey, src)
-			f := func(...interface{}) bool {
-				s.c.Events.Unsubscribe(event.OnStateChange, evtKey)
-				if s.ExitStateF != src {
-					return false
-				}
-
-				cb()
-				s.ExitBlessing()
-				return false
-			}
-
-			s.c.Events.Subscribe(event.OnStateChange, f, evtKey)
-			// Extend NS until removed on state end
-			s.char.AddStatus(NightsoulBlessingStatus, -1, false)
-			s.c.Log.NewEvent("Action extending timed Nightsoul Blessing",
-				glog.LogActionEvent,
-				s.char.Index)
+		if !slices.Contains(s.extendNsStates, s.c.Player.CurrentState()) {
+			cb()
 			return
 		}
 
-		cb()
+		// If NS shouldn't expire because the player is in the state; delay expiry until state ends
+		evtKey := fmt.Sprintf("%v-%v", delayEventKey, s.char.Base.Key.String())
+		f := func(...interface{}) bool {
+			if s.ExitStateF == src {
+				cb()
+			}
+			return true
+		}
+		s.c.Events.Subscribe(event.OnStateChange, f, evtKey)
+
+		// Extend NS until removed on state end
+		s.char.AddStatus(NightsoulBlessingStatus, -1, false)
+		s.c.Log.NewEvent("Action extending timed Nightsoul Blessing",
+			glog.LogActionEvent,
+			s.char.Index)
 	}, duration)
 }
 
@@ -92,7 +92,10 @@ func (s *State) EnterTimedBlessing(amount float64, duration int, cb func()) {
 	s.nightsoulPoints = amount
 	s.char.AddStatus(NightsoulBlessingStatus, duration, true)
 
-	if duration > 0 && cb != nil {
+	if cb == nil {
+		cb = s.ExitBlessing
+	}
+	if duration > 0 {
 		s.SetNightsoulExitTimer(duration, cb)
 	}
 	s.c.Log.NewEvent("enter nightsoul blessing", glog.LogCharacterEvent, s.char.Index).
@@ -105,7 +108,7 @@ func (s *State) EnterBlessing(amount float64) {
 }
 
 func (s *State) ExitBlessing() {
-	s.ExitStateF = 0
+	s.ExitStateF = -1
 	s.char.DeleteStatus(NightsoulBlessingStatus)
 	s.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, s.char.Index)
 }
