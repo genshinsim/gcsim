@@ -17,7 +17,8 @@ func init() {
 type char struct {
 	*tmpl.Character
 
-	absorbedElement attributes.Element
+	particleGenerated bool
+	absorbedElement   attributes.Element
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

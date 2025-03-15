@@ -150,7 +150,7 @@ func (c *char) reathermoonRingsDetail(abilName string, hitmarks []int) {
 		ai.Mult = ring[c.TalentLvlSkill()]
 
 		ap := combat.NewSingleTargetHit(target.Key())
-		c.Core.QueueAttack(ai, ap, hitmark, hitmark)
+		c.Core.QueueAttack(ai, ap, hitmark, hitmark, c.particleCB)
 
 		if c.Base.Ascension >= 1 && c.absorbedElement != attributes.Anemo {
 			ai.Abil = fmt.Sprintf("%v (%v)", ai.Abil, c.absorbedElement.String())
@@ -158,7 +158,7 @@ func (c *char) reathermoonRingsDetail(abilName string, hitmarks []int) {
 			ai.ICDGroup = attacks.ICDGroupLanyanRingAttackMix
 			ai.Element = c.absorbedElement
 			ai.Mult *= 0.5
-			c.Core.QueueAttack(ai, ap, hitmark, hitmark)
+			c.Core.QueueAttack(ai, ap, hitmark, hitmark, c.particleCB)
 		}
 
 		// TODO: approximated

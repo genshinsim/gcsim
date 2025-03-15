@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -52,6 +53,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		hold = 610
 	}
 
+	c.particleGenerated = false
 	c.absorbedElement = attributes.Anemo
 	c.DeleteStatus(leapBackStatus)
 
@@ -111,4 +113,15 @@ func (c *char) leapBack() func(combat.AttackCB) {
 		c.absorbedElement = c.absorbA1(e)
 		c.Core.Player.Tasks.Add(func() { c.genShield(c.absorbedElement) }, hitGenerateShield)
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.particleGenerated {
+		return
+	}
+	c.particleGenerated = true
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Anemo, c.ParticleDelay)
 }
