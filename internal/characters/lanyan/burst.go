@@ -34,6 +34,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	if c.Base.Ascension >= 4 {
+		ai.FlatDmg = c.Stat(attributes.EM) * 7.74
+	}
 
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.PrimaryTarget(),

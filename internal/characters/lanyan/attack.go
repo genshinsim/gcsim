@@ -123,6 +123,9 @@ func (c *char) reathermoonRings() action.Info {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
+	if c.Base.Ascension >= 4 {
+		ai.FlatDmg = c.Stat(attributes.EM) * 3.09
+	}
 
 	target := c.Core.Combat.PrimaryTarget()
 	for _, hitmark := range ringHitmarks {
