@@ -18,6 +18,26 @@ func (c *char) genShield(ele attributes.Element) {
 	})
 }
 
+func (c *char) restoreShield(percent float64) {
+	amt := c.shieldHP() * percent
+	existingShield := c.Core.Player.Shields.Get(shield.LanyanShield)
+	if existingShield == nil {
+		return
+	}
+	amt = min(amt+existingShield.CurrentHP(), c.shieldHP())
+
+	c.Core.Player.Shields.Add(&shield.Tmpl{
+		ActorIndex: c.Index,
+		Target:     -1,
+		Src:        c.Core.F,
+		ShieldType: shield.LanyanShield,
+		Name:       existingShield.Desc(),
+		HP:         amt,
+		Ele:        c.absorbedElement,
+		Expires:    existingShield.Expiry(),
+	})
+}
+
 func (c *char) hasShield() bool {
 	return c.Core.Player.Shields.Get(shield.LanyanShield) != nil
 }
