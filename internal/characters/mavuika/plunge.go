@@ -193,6 +193,7 @@ func (c *char) bikePlungeAttack(bikePlungeFrames []int, delay int) action.Info {
 		Element:        attributes.Pyro,
 		Durability:     25,
 		Mult:           skillPlunge[c.TalentLvlSkill()],
+		HitlagFactor:   0.1,
 	}
 	c.Core.QueueAttack(
 		ai,

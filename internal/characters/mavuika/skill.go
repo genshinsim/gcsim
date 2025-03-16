@@ -64,8 +64,8 @@ func init() {
 	skillBikeRefreshFrames[action.ActionSwap] = 24    // E -> Swap
 }
 
-func (c *char) nightsoulPointReduceFunc(src int) func() {
-	return func() {
+func (c *char) nightsoulPointReduceTask(src int) {
+	c.QueueCharTask(func() {
 		if c.nightsoulSrc != src {
 			return
 		}
@@ -77,8 +77,8 @@ func (c *char) nightsoulPointReduceFunc(src int) func() {
 			}
 		}
 		c.reduceNightsoulPoints(val)
-		c.QueueCharTask(c.nightsoulPointReduceFunc(src), 6)
-	}
+		c.nightsoulPointReduceTask(src)
+	}, 0.1*60)
 }
 
 func (c *char) reduceNightsoulPoints(val float64) {
@@ -107,15 +107,17 @@ func (c *char) exitNightsoul() {
 	}
 	c.NormalHitNum = normalHitNum
 }
+
 func (c *char) enterNightsoulOrRegenerate(points float64) {
 	if !c.nightsoulState.HasBlessing() {
 		c.nightsoulState.EnterBlessing(points)
 		c.nightsoulSrc = c.Core.F
-		c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
+		c.nightsoulPointReduceTask(c.nightsoulSrc)
 		return
 	}
 	c.nightsoulState.GeneratePoints(points)
 }
+
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	h := p["hold"]
 	recast := p["recast"]
@@ -157,7 +159,7 @@ func (c *char) exitBike() {
 	c.NormalHitNum = normalHitNum
 	c.ringSrc = c.Core.F
 
-	c.QueueCharTask(c.skillRing(c.ringSrc), 120)
+	c.skillRingTask(c.ringSrc)
 	c.c2Ring()
 }
 
@@ -197,6 +199,7 @@ func (c *char) skillHold() action.Info {
 		Element:        attributes.Pyro,
 		Durability:     25,
 		Mult:           skill[c.TalentLvlSkill()],
+		HitlagFactor:   0.05,
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
@@ -221,15 +224,15 @@ func (c *char) skillPress() action.Info {
 		ICDTag:         attacks.ICDTagNone,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypePierce,
+		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Pyro,
 		Durability:     25,
 		Mult:           skill[c.TalentLvlSkill()],
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
-		6,
+		geometry.Point{Y: 0.5},
+		5,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.exitBike()
@@ -252,6 +255,7 @@ func (c *char) skillBikeRefresh() action.Info {
 		Element:        attributes.Pyro,
 		Durability:     25,
 		Mult:           skill[c.TalentLvlSkill()],
+		HitlagFactor:   0.05,
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
@@ -286,8 +290,8 @@ func (c *char) getSkillCastActionInfo(f []int) action.Info {
 	}
 }
 
-func (c *char) skillRing(src int) func() {
-	return func() {
+func (c *char) skillRingTask(src int) {
+	c.QueueCharTask(func() {
 		if c.ringSrc != src {
 			return
 		}
@@ -304,7 +308,7 @@ func (c *char) skillRing(src int) func() {
 			ICDTag:         attacks.ICDTagNone,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 			ICDGroup:       attacks.ICDGroupDefault,
-			StrikeType:     attacks.StrikeTypePierce,
+			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        attributes.Pyro,
 			Durability:     25,
 			Mult:           skillRing[c.TalentLvlSkill()],
@@ -316,8 +320,8 @@ func (c *char) skillRing(src int) func() {
 		)
 		c.Core.QueueAttack(ai, ap, 0, 0, c.c6RingCB())
 		c.reduceNightsoulPoints(3)
-		c.QueueCharTask(c.skillRing(src), 120)
-	}
+		c.skillRingTask(src)
+	}, 2*60)
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

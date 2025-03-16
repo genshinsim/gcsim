@@ -14,17 +14,18 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{21}, {14, 26}, {28, 33, 39}, {30}}
-	attackPoiseDMG        = []float64{93.33, 92.72, 115.14, 143.17}
-	attackHitlagHaltFrame = []float64{0.09, 0.10, 0.08, .12}
-	attackHitboxes        = []float64{2.2, 2.3, 1.8, 3}
+	attackPoiseDMG        = []float64{107.0, 48.8, 44.43, 155.4}
+	attackHitlagHaltFrame = []float64{0.09, 0.05, 0.0, 0.1}
+	attackHitboxes        = [][]float64{{2.2}, {3.3, 4.3}, {2.8, 5.0}, {3.2}}
 	attackOffsets         = []float64{0.5, -1.3, 0.5, -0.8}
 
 	bikeAttackFrames          [][]int
 	bikeAttackHitmarks        = []int{19, 24, 31, 13, 37}
 	bikeAttackPoiseDMG        = []float64{76.6, 79.1, 93.6, 93.2, 121.7}
 	bikeAttackHitlagHaltFrame = []float64{0.09, 0.08, 0.04, 0.03, 0.0}
-	bikeAttackHitboxes        = [][]float64{{3.7}, {4}, {3.7}, {5.5, 4.5}, {4.7}}
-	bikeAttackOffsets         = []float64{0.5, -1.3, 0.5, -0.8, 1}
+	bikeAttackHitboxes        = [][]float64{{3.2}, {3.5}, {3.0}, {3.5, 4.5}, {4.0}}
+	bikeAttackBurstHitboxes   = [][]float64{{3.7}, {4.0}, {3.7}, {4.5, 5.5}, {4.7}}
+	bikeAttackOffsets         = []float64{1.5, 1.85, 0.5, -0.8, 1}
 )
 
 const normalHitNum = 4
@@ -77,24 +78,37 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		return c.bikeAttack(), nil
 	}
 	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
-		Abil:             fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:        attacks.AttackTagNormal,
-		ICDTag:           attacks.ICDTagNormalAttack,
-		ICDGroup:         attacks.ICDGroupDefault,
-		StrikeType:       attacks.StrikeTypeBlunt,
-		PoiseDMG:         attackPoiseDMG[c.NormalCounter],
-		Element:          attributes.Physical,
-		Durability:       25,
-		Mult:             attack[c.NormalCounter][c.TalentLvlAttack()],
-		HitlagFactor:     0.01,
-		HitlagHaltFrames: attackHitlagHaltFrame[c.NormalCounter] * 60,
+		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:          attacks.AttackTagNormal,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           attackPoiseDMG[c.NormalCounter],
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
+		CanBeDefenseHalted: true,
 	}
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		geometry.Point{Y: attackOffsets[c.NormalCounter]},
-		attackHitboxes[c.NormalCounter],
-	)
+
+	var ap combat.AttackPattern
+	switch {
+	case len(attackHitboxes[c.NormalCounter]) == 2: // box
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackHitboxes[c.NormalCounter][1],
+		)
+	default: // circle
+		ap = combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+		)
+	}
 
 	for _, delay := range attackHitmarks[c.NormalCounter] {
 		c.Core.QueueAttack(ai, ap, delay, delay)
@@ -130,20 +144,28 @@ func (c *char) bikeAttack() action.Info {
 		IgnoreInfusion:   true,
 	}
 
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		geometry.Point{Y: bikeAttackOffsets[c.NormalCounter]},
-		bikeAttackHitboxes[c.NormalCounter][0],
-	)
+	hitboxes := bikeAttackHitboxes
+	if c.StatusIsActive(burstKey) {
+		hitboxes = bikeAttackBurstHitboxes
+	}
 
-	if c.NormalCounter == 3 {
+	var ap combat.AttackPattern
+	switch {
+	case len(hitboxes[c.NormalCounter]) == 2: // box
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: bikeAttackOffsets[c.NormalCounter]},
-			bikeAttackHitboxes[c.NormalCounter][0],
-			bikeAttackHitboxes[c.NormalCounter][1],
+			hitboxes[c.NormalCounter][0],
+			hitboxes[c.NormalCounter][1],
+		)
+	default: // circle
+		ap = combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: bikeAttackOffsets[c.NormalCounter]},
+			hitboxes[c.NormalCounter][0],
 		)
 	}
+
 	c.QueueCharTask(func() {
 		ai.FlatDmg = c.burstBuffNA() + c.c2BikeNA()
 		c.Core.QueueAttack(ai, ap, 0, 0)

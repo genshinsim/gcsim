@@ -66,11 +66,11 @@ func (c *char) a4() {
 	c.AddStatus(a4Key, a4Dur, true)
 	c.a4stacks = 20
 	c.a4src = c.Core.F
-	c.QueueCharTask(c.a4Decay(c.a4src), 60)
+	c.a4DecayTask(c.a4src)
 }
 
-func (c *char) a4Decay(src int) func() {
-	return func() {
+func (c *char) a4DecayTask(src int) {
+	c.QueueCharTask(func() {
 		if c.a4src != src {
 			return
 		}
@@ -81,6 +81,6 @@ func (c *char) a4Decay(src int) func() {
 			return
 		}
 		c.a4stacks -= c.c4DecayRate()
-		c.QueueCharTask(c.a4Decay(src), 60)
-	}
+		c.a4DecayTask(src)
+	}, 60)
 }

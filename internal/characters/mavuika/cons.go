@@ -22,12 +22,14 @@ func (c *char) c1Init() {
 	c.c1buff = make([]float64, attributes.EndStatType)
 	c.c1buff[attributes.ATKP] = 0.4
 }
+
 func (c *char) c1FightingSpiritEff() float64 {
 	if c.Base.Cons < 1 {
 		return 1.0
 	}
 	return 1.25
 }
+
 func (c *char) c1OnFightingSpirit() {
 	if c.Base.Cons < 1 {
 		return
@@ -87,6 +89,7 @@ func (c *char) c2BikeNA() float64 {
 	}
 	return 0.6 * c.TotalAtk()
 }
+
 func (c *char) c2BikeCA() float64 {
 	if c.Base.Cons < 2 {
 		return 0.0

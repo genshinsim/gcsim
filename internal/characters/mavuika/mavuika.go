@@ -97,8 +97,8 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 		}
 		return true, action.NoFailure
 	case action.ActionSkill:
-		if p["recast"] != 0 {
-			return !c.StatusIsActive(skillRecastCDKey), action.SkillCD
+		if p["recast"] != 0 && c.StatusIsActive(skillRecastCDKey) {
+			return false, action.SkillCD
 		}
 		return c.Character.ActionReady(a, p)
 	}

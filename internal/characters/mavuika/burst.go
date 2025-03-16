@@ -65,16 +65,17 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			Durability:     25,
 			Mult:           burst[c.TalentLvlBurst()],
 			FlatDmg:        c.burstBuffSunfell() + c.c2BikeQ(),
+			HitlagFactor:   0.01,
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1.0},
-			6,
+			geometry.Point{Y: 2.5},
+			7,
 		)
 		c.Core.QueueAttack(ai, ap, 0, 0)
 	}, burstHitmark)
 
-	c.SetCDWithDelay(action.ActionBurst, 18*60, 0)
+	c.SetCD(action.ActionBurst, 18*60)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),

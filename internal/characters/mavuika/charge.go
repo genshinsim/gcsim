@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var chargeFrames []int
@@ -69,7 +70,7 @@ func init() {
 type ChargeState struct {
 	StartFrame      int
 	cAtkFrames      int
-	LastHit         map[int]int
+	LastHit         map[targets.TargetKey]int
 	FacingDirection float64
 	srcFrame        int
 }
@@ -85,25 +86,27 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.BikeCharge(p)
 	}
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charge",
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNormalAttack,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   120.0,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
+		ActorIndex:         c.Index,
+		Abil:               "Charge",
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           120.0,
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               charge[c.TalentLvlAttack()],
+		HitlagHaltFrames:   0.15 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(
+		combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: -1.8},
-			2,
-			4.5,
+			geometry.Point{Y: 0.3},
+			3.3,
 		),
 		chargeHitmark,
 		chargeHitmark,
@@ -130,9 +133,9 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.ChargeAttackState || c.caState.StartFrame == 0 {
 		c.caState = ChargeState{}
 		c.caState.StartFrame = c.Core.F
-		c.caState.LastHit = make(map[int]int)
+		c.caState.LastHit = make(map[targets.TargetKey]int)
 		for _, t := range bikeHittableEntities {
-			targetIndex := int(t.Entity.Key())
+			targetIndex := t.Entity.Key()
 			c.caState.LastHit[targetIndex] = 0
 		}
 		c.Core.Tasks.Add(func() {
@@ -215,7 +218,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 func (c *char) HoldBikeChargeAttack(cAtkFrames, skippedWindupFrames int, hittableEntities []HittableEntity) {
 	for i := 0; i < len(hittableEntities); i++ {
 		t := hittableEntities[i]
-		enemyID := int(t.Entity.Key())
+		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
 		newLastHitFrame := -1
 
@@ -258,7 +261,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 			continue
 		}
 
-		enemyID := int(t.Entity.Key())
+		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
 
 		if t.isOneTick && lastHitFrame > 0 {
@@ -284,7 +287,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 
 	for i := 0; i < len(hittableEntities); i++ {
 		t := hittableEntities[i]
-		enemyID := int(t.Entity.Key())
+		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
 		newLastHitFrame := -1
 
@@ -321,30 +324,34 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) action.I
 
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               "Flamestrider Charged Attack (Final)",
-			AttackTag:          attacks.AttackTagExtra,
-			AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-			ICDTag:             attacks.ICDTagMavuikaFlamestrider,
-			ICDGroup:           attacks.ICDGroupDefault,
-			StrikeType:         attacks.StrikeTypeBlunt,
-			PoiseDMG:           12.0,
-			Element:            attributes.Pyro,
-			HitlagFactor:       0.01,
-			HitlagHaltFrames:   0.04 * 60,
-			CanBeDefenseHalted: true,
-			Durability:         25,
-			Mult:               skillChargeFinal[c.TalentLvlSkill()],
-			IgnoreInfusion:     true,
-			FlatDmg:            c.burstBuffCA() + c.c2BikeCA(),
+			ActorIndex:       c.Index,
+			Abil:             "Flamestrider Charged Attack (Final)",
+			AttackTag:        attacks.AttackTagExtra,
+			AdditionalTags:   []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			ICDTag:           attacks.ICDTagMavuikaFlamestrider,
+			ICDGroup:         attacks.ICDGroupDefault,
+			StrikeType:       attacks.StrikeTypeBlunt,
+			PoiseDMG:         120.0,
+			Element:          attributes.Pyro,
+			Durability:       25,
+			Mult:             skillChargeFinal[c.TalentLvlSkill()],
+			HitlagFactor:     0.01,
+			HitlagHaltFrames: 0.04 * 60,
+			IgnoreInfusion:   true,
+			FlatDmg:          c.burstBuffCA() + c.c2BikeCA(),
+		}
+
+		radius := 4.0
+		if c.StatusIsActive(burstKey) {
+			radius = 4.5
 		}
 
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: 1},
-				4,
+				geometry.Point{Y: 2},
+				radius,
 			),
 			0,
 			0,
@@ -387,13 +394,12 @@ func (c *char) GetBikeChargeAttackAttackInfo() combat.AttackInfo {
 		StrikeType:     attacks.StrikeTypeBlunt,
 		PoiseDMG:       60.0,
 		Element:        attributes.Pyro,
-		// HitlagFactor:     0.01,
+		Durability:     25,
+		Mult:           skillCharge[c.TalentLvlSkill()],
+		HitlagFactor:   0.01,
 		// HitlagHaltFrames: 0.03 * 60,
-		CanBeDefenseHalted: false,
-		Durability:         25,
-		Mult:               skillCharge[c.TalentLvlSkill()],
-		IgnoreInfusion:     true,
-		FlatDmg:            c.burstBuffCA() + c.c2BikeCA(),
+		IgnoreInfusion: true,
+		FlatDmg:        c.burstBuffCA() + c.c2BikeCA(),
 	}
 	return ai
 }
@@ -584,7 +590,7 @@ func (c *char) bikeChargeAttackHook() {
 					}
 				}
 				// Frame doesn't really matter as long as > 0
-				c.caState.LastHit[int(g.Key())] += c.Core.F
+				c.caState.LastHit[g.Key()] += c.Core.F
 			}
 		}
 

@@ -22,6 +22,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 			Element:        attributes.Pyro,
 			Durability:     25,
 			Mult:           skillDash[c.TalentLvlSkill()],
+			HitlagFactor:   0.05,
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
