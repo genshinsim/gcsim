@@ -643,11 +643,10 @@ func (*char) GetHittableEntityList() []HittableEntity {
 // Iterate through CA frames, starting at hitmark
 func (c *char) CalculateValidCollisionFrames(durationCA int, collisionFrames [2]int, lastHitFrame int) []int {
 	validFrames := []int{}
-	currentFrame := bikeChargeAttackStartupHitmark // Spin hitbox starts on frame 35 of CA anim (full windup)
-	var timeSinceStart int
+	currentFrame := bikeChargeAttackStartupHitmark // Spin hitbox starts on frame 35 of CA anim (full windup)	var timeSinceStart int
 
 	// Check if CA is continuing from previous action, adjust current cycle
-	timeSinceStart = c.Core.F - (c.caState.StartFrame - c.caState.skippedWindupF)
+	timeSinceStart := c.Core.F - (c.caState.StartFrame - c.caState.skippedWindupF)
 	timeSinceLastHit := timeSinceStart - lastHitFrame
 	if timeSinceStart >= currentFrame {
 		currentFrame = timeSinceStart
@@ -716,7 +715,7 @@ func (c *char) BikeHitboxIntersectionAngles(v combat.Target, f []int, offsetAngl
 	case *geometry.Circle:
 		enemyRadius = v.Radius() // Rt
 	default:
-		return false, errors.New("target has non-circular hitbox, Mavuika CA requires circle hitboxes for calculations.")
+		return false, errors.New("target has non-circular hitbox, Mavuika CA requires circle hitboxes for calculations")
 	}
 
 	bikeInnerRadius := bikeChargeAttackSpinOffset - bikeChargeAttackHitboxRadius // Ri
