@@ -1815,7 +1815,8 @@
     },
     {
       "ability": "charge",
-      "legal": true
+      "legal": true,
+      "notes": "Flamestrider Charge Attack Hitbox and Spin radius are approximated."
     },
     {
       "ability": "skill",
