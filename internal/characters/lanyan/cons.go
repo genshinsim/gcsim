@@ -11,7 +11,7 @@ import (
 
 const c2Icd = "lanyan-c2-icd"
 
-var c1Hitmarks = []int{37, 64, 90}
+var c1Hitmarks = []int{38, 64, 90}
 
 func (c *char) c2() {
 	if c.Base.Cons < 2 {

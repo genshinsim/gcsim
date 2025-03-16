@@ -33,7 +33,7 @@ func (c *char) restoreShield(percent float64) {
 		ShieldType: shield.LanyanShield,
 		Name:       existingShield.Desc(),
 		HP:         amt,
-		Ele:        c.absorbedElement,
+		Ele:        existingShield.Element(),
 		Expires:    existingShield.Expiry(),
 	})
 }

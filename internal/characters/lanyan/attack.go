@@ -116,7 +116,7 @@ func (c *char) reathermoonRings() action.Info {
 	c.DeleteStatus(leapBackStatus)
 
 	c.reathermoonRingsDetail("Feathermoon Ring", ringHitmarks)
-	if c.Base.Cons >= 1 {
+	if c.Base.Cons >= 1 && c.Base.Ascension >= 1 && c.absorbedElement != attributes.Anemo {
 		c.reathermoonRingsDetail("Feathermoon Ring (C1)", c1Hitmarks)
 	}
 

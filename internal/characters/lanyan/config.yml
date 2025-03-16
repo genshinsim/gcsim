@@ -1,6 +1,9 @@
 package_name: lanyan
 genshin_id: 10000108
 key: lanyan
+action_param_keys:
+  skill:
+    - param: "hold"
 icd_tags:
   - ICDTagLanyanRingAttack
   - ICDTagLanyanRingAttackMix
