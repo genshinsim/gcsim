@@ -822,6 +822,43 @@
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     }
   ],
+  "mavuika": [
+    {
+      "ability": "charge",
+      "param": "hold",
+      "desc": "Number of frames to extend Charge Attack by. Min 1, max 45, can only be used after a Charge attack has started."
+    },
+    {
+      "ability": "charge",
+      "param": "final",
+      "desc": "Used to explicitly initiate the Flamestrider's final hit of the charge attack."
+    },
+    {
+      "ability": "charge",
+      "param": "buffered",
+      "desc": "Number of frames to buffer CA. Range 0-15, lower values can be used to trigger certain N0 abilities."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold."
+    },
+    {
+      "ability": "skill",
+      "param": "recast",
+      "desc": "0 to use E (default), 1 to use Recast E. Recast E is only possible if Nightsoul Blessing is active and Recast E is not on cooldown."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision."
+    }
+  ],
   "mika": [
     {
       "ability": "skill",
