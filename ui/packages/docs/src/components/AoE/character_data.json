@@ -6075,6 +6075,242 @@
       }
     ]
   },
+  "mavuika": {
+    "cons": [
+      {
+        "ability": "C6-Flamestrider",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 6,
+        "notes": "Spawns on target that C6 proc'd on."
+      },
+      {
+        "ability": "C6-Ring",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.0,
+        "radius": 6
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.2
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.3,
+        "boxX": 3.3,
+        "boxY": 4.3
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.5,
+        "boxX": 2.8,
+        "boxY": 5.0
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.8,
+        "radius": 3.2
+      },
+      {
+        "ability": "N1-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.5,
+        "radius": 3.2
+      },
+      {
+        "ability": "N2-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.85,
+        "radius": 3.5
+      },
+      {
+        "ability": "N3-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 3.0
+      },
+      {
+        "ability": "N4-Flamestrider",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.8,
+        "boxX": 3.5,
+        "boxY": 4.5
+      },
+      {
+        "ability": "N5-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 4.0
+      },
+      {
+        "ability": "Q-N1-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.5,
+        "radius": 3.7
+      },
+      {
+        "ability": "Q-N2-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.85,
+        "radius": 4.0
+      },
+      {
+        "ability": "Q-N3-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 3.7
+      },
+      {
+        "ability": "Q-N4-Flamestrider",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.8,
+        "boxX": 4.5,
+        "boxY": 5.5
+      },
+      {
+        "ability": "Q-N5-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 4.7
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.3,
+        "radius": 3.3
+      },
+      {
+        "ability": "CA-Flamestrider-Cyclic",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "This is an approximation because we do not actually know the real AoE. This is a moving hitbox. It moves at varying speeds in a circle of radius 4.0m around the player with a hitbox radius of 3.0m."
+      },
+      {
+        "ability": "CA-Flamestrider-Final",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 4.0
+      },
+      {
+        "ability": "Q-CA-Flamestrider-Final",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 4.5
+      }
+    ],
+    "dash": [
+      {
+        "ability": "Dash",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.0,
+        "radius": 1.2
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      },
+      {
+        "ability": "Low_Plunge-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge-Flamestrider",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 5.0
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 6.0
+      },
+      {
+        "ability": "E-Flamestrider-Refresh",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 6.0
+      },
+      {
+        "ability": "E-Ring",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 6.0
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2.5,
+        "radius": 7
+      }
+    ]
+  },
   "mika": {
     "normal": [
       {

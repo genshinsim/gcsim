@@ -53,6 +53,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
 	_ "github.com/genshinsim/gcsim/internal/characters/lynette"
 	_ "github.com/genshinsim/gcsim/internal/characters/lyney"
+	_ "github.com/genshinsim/gcsim/internal/characters/mavuika"
 	_ "github.com/genshinsim/gcsim/internal/characters/mika"
 	_ "github.com/genshinsim/gcsim/internal/characters/mona"
 	_ "github.com/genshinsim/gcsim/internal/characters/mualani"
