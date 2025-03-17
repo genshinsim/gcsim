@@ -53,6 +53,7 @@ const (
 	Klee
 	Kokomi
 	Kuki
+	Lanyan
 	Layla
 	Lisa
 	Lynette
@@ -283,6 +284,10 @@ func init() {
 	charNames[Kuki] = "kuki"
 	charPrettyName[Kuki] = "Kuki"
 	CharKeyToEle[Kuki] = attributes.Electro
+
+	charNames[Lanyan] = "lanyan"
+	charPrettyName[Lanyan] = "Lanyan"
+	CharKeyToEle[Lanyan] = attributes.Anemo
 
 	charNames[Layla] = "layla"
 	charPrettyName[Layla] = "Layla"

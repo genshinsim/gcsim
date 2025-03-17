@@ -771,6 +771,13 @@
       "desc": "Projectile travel time. Default 10 frames."
     }
   ],
+  "lanyan": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 610 for Hold."
+    }
+  ],
   "layla": [
     {
       "ability": "burst",
