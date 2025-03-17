@@ -5934,28 +5934,28 @@
         "radius": 3.2
       },
       {
-        "ability": "N1 (Flamestrider)",
+        "ability": "N1-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 1.5,
         "radius": 3.2
       },
       {
-        "ability": "N2 (Flamestrider)",
+        "ability": "N2-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 1.85,
         "radius": 3.5
       },
       {
-        "ability": "N3 (Flamestrider)",
+        "ability": "N3-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 0.5,
         "radius": 3.0
       },
       {
-        "ability": "N4 (Flamestrider)",
+        "ability": "N4-Flamestrider",
         "shape": "Box",
         "center": "Player",
         "offsetY": -0.8,
@@ -5963,35 +5963,35 @@
         "boxY": 4.5
       },
       {
-        "ability": "N5 (Flamestrider)",
+        "ability": "N5-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 1,
         "radius": 4.0
       },
       {
-        "ability": "Q-N1 (Flamestrider)",
+        "ability": "Q-N1-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 1.5,
         "radius": 3.7
       },
       {
-        "ability": "Q-N2 (Flamestrider)",
+        "ability": "Q-N2-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 1.85,
         "radius": 4.0
       },
       {
-        "ability": "Q-N3 (Flamestrider)",
+        "ability": "Q-N3-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 0.5,
         "radius": 3.7
       },
       {
-        "ability": "Q-N4 (Flamestrider)",
+        "ability": "Q-N4-Flamestrider",
         "shape": "Box",
         "center": "Player",
         "offsetY": -0.8,
@@ -5999,7 +5999,7 @@
         "boxY": 5.5
       },
       {
-        "ability": "Q-N5 (Flamestrider)",
+        "ability": "Q-N5-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 1,
@@ -6015,20 +6015,20 @@
         "radius": 3.3
       },
       {
-        "ability": "Flamestrider CA (Cyclic)",
+        "ability": "CA-Flamestrider-Cyclic",
         "shape": "Single",
         "center": "GlobalValue",
-        "notes": "This is a moving hitbox. It moves at varying speeds in a circle of radius 4.0m around the player with a hitbox radius of 3.0m."
+        "notes": "This is an approximation because we do not actually know the real AoE. This is a moving hitbox. It moves at varying speeds in a circle of radius 4.0m around the player with a hitbox radius of 3.0m."
       },
       {
-        "ability": "Flamestrider CA (Final)",
+        "ability": "CA-Flamestrider-Final",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 2,
         "radius": 4.0
       },
       {
-        "ability": "Q-Flamestrider CA (Final)",
+        "ability": "Q-CA-Flamestrider-Final",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 2,
@@ -6067,14 +6067,14 @@
         "radius": 5
       },
       {
-        "ability": "Low_Plunge (Flamestrider)",
+        "ability": "Low_Plunge-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 1,
         "radius": 3
       },
       {
-        "ability": "High_Plunge (Flamestrider)",
+        "ability": "High_Plunge-Flamestrider",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 1,
