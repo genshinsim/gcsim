@@ -12,7 +12,7 @@ runs:
   using: composite
   steps:
   - name: Publish to Cloudflare Pages
-    uses: cloudflare/wrangler-action@2.0.0
+    uses: cloudflare/wrangler-action@v3
     with:
       apiToken: ${{ inputs.apiToken }}
       accountId: ${{ inputs.accountId }}
