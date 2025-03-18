@@ -67,6 +67,12 @@ func (s *State) SetNightsoulExitTimer(duration int, cb func()) {
 			return
 		}
 
+		// When the char is off-field, state cannot be extended by animation
+		if !s.c.Player.CharIsActive(s.char.Base.Key) {
+			cb()
+			return
+		}
+
 		// If NS shouldn't expire because the player is in the state; delay expiry until state ends
 		evtKey := fmt.Sprintf("%v-%v", delayEventKey, s.char.Base.Key.String())
 		f := func(...interface{}) bool {
