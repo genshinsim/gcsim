@@ -213,7 +213,7 @@ func (c *char) skillHold() action.Info {
 		c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	}, 24)
 
-	return c.getSkillCastActionInfo(skillBikeRefreshFrames)
+	return c.getSkillCastActionInfo(skillFramesHold)
 }
 
 func (c *char) skillPress() action.Info {
@@ -238,7 +238,7 @@ func (c *char) skillPress() action.Info {
 	c.exitBike()
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
-	return c.getSkillCastActionInfo(skillBikeRefreshFrames)
+	return c.getSkillCastActionInfo(skillFrames)
 }
 
 // Recasting E while on bike, occurs with Sac or Burst allowing E to come off of cd
@@ -284,8 +284,8 @@ func (c *char) getSkillCastActionInfo(f []int) action.Info {
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return f[next] + plungeFrames },
-		AnimationLength: skillBikeRefreshFrames[action.InvalidAction] + plungeFrames,
-		CanQueueAfter:   skillBikeRefreshFrames[action.ActionSwap] + plungeFrames,
+		AnimationLength: f[action.InvalidAction] + plungeFrames,
+		CanQueueAfter:   f[action.ActionSwap] + plungeFrames,
 		State:           action.SkillState,
 	}
 }
