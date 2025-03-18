@@ -45,6 +45,7 @@ func init() {
 	skillRecastFramesToBike[action.ActionAttack] = 13  // E -> N1
 	skillRecastFramesToBike[action.ActionCharge] = 13  // E -> CA
 	skillRecastFramesToBike[action.ActionBurst] = 13   // E -> Burst
+	skillRecastFramesToBike[action.ActionSkill] = 13   // E -> E
 	skillRecastFramesToBike[action.ActionDash] = 12    // E -> Dash
 	skillRecastFramesToBike[action.ActionJump] = 13    // E -> Jump
 
@@ -52,6 +53,7 @@ func init() {
 	skillRecastFramesToRing[action.ActionAttack] = 27  // E -> N1
 	skillRecastFramesToRing[action.ActionCharge] = 28  // E -> CA
 	skillRecastFramesToRing[action.ActionBurst] = 28   // E -> Burst
+	skillRecastFramesToRing[action.ActionSkill] = 28   // E -> E
 	skillRecastFramesToRing[action.ActionDash] = 37    // E -> Dash
 	skillRecastFramesToRing[action.ActionSwap] = 24    // E -> Swap
 
@@ -127,6 +129,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 		if !c.nightsoulState.HasBlessing() {
 			return action.Info{}, errors.New("cannot recast E while not in nightsoul blessing")
+		}
+		if c.AvailableCDCharge[action.ActionSkill] >= 1 {
+			return action.Info{}, errors.New("cannot recast E while skill is available")
 		}
 		return c.skillRecast(), nil
 	}
