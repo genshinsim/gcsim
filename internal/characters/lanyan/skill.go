@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 const (
@@ -102,15 +101,14 @@ func (c *char) leapBack() func(combat.AttackCB) {
 		if done {
 			return
 		}
-		e, ok := a.Target.(*enemy.Enemy)
-		if !ok {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		done = true
 		c.AddStatus(leapBackStatus, leapBackDuration, true)
 
 		// generate the shield with element absorb
-		c.absorbedElement = c.absorbA1(e)
+		c.absorbedElement = c.absorbA1()
 		c.Core.Player.Tasks.Add(func() { c.genShield(c.absorbedElement) }, hitGenerateShield)
 	}
 }
