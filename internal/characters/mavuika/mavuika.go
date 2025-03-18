@@ -115,6 +115,15 @@ func (c *char) onExitField() {
 	}, "mavuika-exit")
 }
 
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
+	default:
+		return c.Character.Condition(fields)
+	}
+}
+
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		switch k {
