@@ -341,7 +341,23 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 
 	c.HoldBikeChargeAttack(newMinSpinDuration, skippedWindupFrames, bikeHittableEntities)
 
+	src := c.caState.srcFrame
 	c.QueueCharTask(func() {
+		// char must be active
+		if c.Core.Player.Active() != c.Index {
+			return
+		}
+
+		// Check that CAF matches original CA
+		if c.caState.srcFrame != src {
+			return
+		}
+
+		// Mavuika must be on the bike
+		if c.armamentState != bike {
+			return
+		}
+
 		ai := combat.AttackInfo{
 			ActorIndex:       c.Index,
 			Abil:             "Flamestrider Charged Attack (Final)",
@@ -375,6 +391,9 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 			0,
 			0,
 		)
+
+		// Reset c.caState upon finisher landing
+		c.caState = ChargeState{}
 	}, adjustedBikeChargeFinalHitmark)
 
 	nightSoulDuration := c.GetRemainingNightSoulDuration()
@@ -389,8 +408,8 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 		}, nightSoulDuration)
 	}
 
+	// Unsubscribe to CA hook at start of CAF motion
 	c.Core.Tasks.Add(func() {
-		c.caState = ChargeState{}
 		c.bikeChargeAttackUnhook()
 	}, caFrames)
 
