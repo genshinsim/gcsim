@@ -2,19 +2,18 @@ package lanyan
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var elementAbsorbPriority = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
-
-func (c *char) absorbA1(e *enemy.Enemy) attributes.Element {
+func (c *char) absorbA1() attributes.Element {
 	if c.Base.Ascension < 1 {
 		return attributes.Anemo
 	}
-	for _, eleCheck := range elementAbsorbPriority {
-		if e.AuraContains(eleCheck) {
-			return eleCheck
-		}
+
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.0)
+	ele := c.Core.Combat.AbsorbCheck(c.Index, ap, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+	if ele == attributes.NoElement {
+		return attributes.Anemo
 	}
-	return attributes.Anemo
+	return ele
 }
