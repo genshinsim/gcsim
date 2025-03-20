@@ -304,6 +304,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"swordofnarzissenkreuz":           keys.SwordOfNarzissenkreuz,
 	"narzissenkreuz":                  keys.SwordOfNarzissenkreuz,
 	"talkingstick":                    keys.TalkingStick,
+	"tamayurateinoohanashi":           keys.TamayurateiNoOhanashi,
+	"tamayuratei":                     keys.TamayurateiNoOhanashi,
 	"thealleyflash":                   keys.TheAlleyFlash,
 	"alleyflash":                      keys.TheAlleyFlash,
 	"thebell":                         keys.TheBell,
