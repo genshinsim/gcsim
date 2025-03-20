@@ -323,6 +323,7 @@ const (
 	AirborneVenti
 	AirborneKazuha
 	AirborneXianyun
+	AirborneOroron
 	TerminateAirborne
 )
 
