@@ -488,6 +488,14 @@
       "image_name": "UI_EquipIcon_Sword_Machination",
       "name_text_hash_map ": "1921306659"
     },
+    "flowerwreathedfeathers": {
+      "id": 15430,
+      "key": "flowerwreathedfeathers",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Umpakati",
+      "name_text_hash_map ": "4019353779"
+    },
     "flowingpurity": {
       "id": 14425,
       "key": "flowingpurity",
