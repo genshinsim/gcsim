@@ -43,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 
 		return false
-	}, fmt.Sprintf("tamayuratei-%s", char.Base.Key))
+	}, fmt.Sprintf("tamayuratei-%v", char.Base.Key.String()))
 
 	return w, nil
 }
