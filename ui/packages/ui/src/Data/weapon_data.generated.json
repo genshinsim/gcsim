@@ -1344,6 +1344,14 @@
       "image_name": "UI_EquipIcon_Claymore_BeastTamer",
       "name_text_hash_map ": "3459616011"
     },
+    "tamayurateinoohanashi": {
+      "id": 13432,
+      "key": "tamayurateinoohanashi",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Aoandon",
+      "name_text_hash_map ": "486513155"
+    },
     "thealleyflash": {
       "id": 11410,
       "key": "thealleyflash",

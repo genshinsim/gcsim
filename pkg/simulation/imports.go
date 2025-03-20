@@ -214,6 +214,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/royal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/scarletsands"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/skyward"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/tamayuratei"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/vortex"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/wavebreaker"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/whitetassel"
