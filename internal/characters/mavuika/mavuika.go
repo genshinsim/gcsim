@@ -92,13 +92,10 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 		if c.fightingSpirit < 100 {
 			return false, action.InsufficientEnergy
 		}
-		if c.AvailableCDCharge[a] <= 0 {
-			return false, action.BurstCD
-		}
-		return true, action.NoFailure
+		return c.Character.ActionReady(a, p)
 	case action.ActionSkill:
-		if p["recast"] != 0 && c.StatusIsActive(skillRecastCDKey) {
-			return false, action.SkillCD
+		if p["recast"] != 0 && !c.StatusIsActive(skillRecastCDKey) {
+			return true, action.NoFailure
 		}
 		return c.Character.ActionReady(a, p)
 	}
@@ -113,6 +110,15 @@ func (c *char) onExitField() {
 		}
 		return false
 	}, "mavuika-exit")
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
+	default:
+		return c.Character.Condition(fields)
+	}
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
