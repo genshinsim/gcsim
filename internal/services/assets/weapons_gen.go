@@ -14,6 +14,7 @@ var weaponMap = map[string]string{
 	"endoftheline":                    "UI_EquipIcon_Bow_Fin",
 	"favoniuswarbow":                  "UI_EquipIcon_Bow_Zephyrus",
 	"thefirstgreatmagic":              "UI_EquipIcon_Bow_Pledge",
+	"flowerwreathedfeathers":          "UI_EquipIcon_Bow_Umpakati",
 	"hamayumi":                        "UI_EquipIcon_Bow_Bakufu",
 	"silvershowerheartstrings":        "UI_EquipIcon_Bow_Arcdange",
 	"huntersbow":                      "UI_EquipIcon_Bow_Hunters",
