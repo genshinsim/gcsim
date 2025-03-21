@@ -98,14 +98,20 @@ func New(opt Opt) *Handler {
 // "overbooking" will have no adverse effects; the CD will be capped at 1.
 // Swap ICD cannot be 0 to prevent a swap from occuring on the same frame the booking occurs.
 func (h *Handler) SetSwapICD(delay int) {
+	prevICD := h.SwapICD
+
 	h.SwapICD = delay
 	if h.SwapICD < 1 {
 		h.SwapICD = 1
 	}
 
+	postICD := h.SwapICD
+	log := h.Log.NewEventBuildMsg(glog.LogCooldownEvent, h.active, "New time manipulation event: Default Swap ICD Changed")
+	log.Write("Old", prevICD).Write("New", postICD)
+
 	// It's possible to increase swap ICD if desired, so take abs.
 	// In practice this won't be used.
-	f := 60 - delay // This is innacurate since it only emits once instead of every swap.
+	f := 60 - delay // This is innacurate since it only emits once instead of every swap. Wontfix, too performance-intensive
 	if f < 0 {
 		f = -1 * f
 	}
@@ -118,18 +124,19 @@ func (h *Handler) SetSwapICD(delay int) {
 // Booking will only have an effect if a swap has already occurred, and will reduce the timer for the next swap instance only.
 // Future instances of swapping will still have the default cd- 60f if unchanged by SetSwapICD.
 // "overbooking" will have no adverse effects; SwapCD will not be reduced below 0.
-// If timer is not already 0, set the swap timer to 1 to prevent a swap from occurring on the same frame booking occurs.
 func (h *Handler) ReduceSwapCD(f int) {
 	h.Events.Emit(event.OnTimeManip, f)
 
-	if h.SwapCD == 0 {
-		return
-	}
+	prevCD := h.SwapCD
 
 	h.SwapCD -= f
-	if h.SwapCD < 1 {
-		h.SwapCD = 1
+	if h.SwapCD < 0 {
+		h.SwapCD = 0
 	}
+
+	postCD := h.SwapCD
+	log := h.Log.NewEventBuildMsg(glog.LogCooldownEvent, h.active, "New time manipulation event: Swap CD Reduced")
+	log.Write("Old", prevCD).Write("New", postCD)
 }
 
 func (h *Handler) swap(to keys.Char) func() {

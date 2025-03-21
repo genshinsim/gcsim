@@ -332,11 +332,7 @@ func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("invald value for swap icd, expected non-negative integer, got %v", x)
 	}
 
-	prevICD := e.Core.Player.SwapICD
 	e.Core.Player.SetSwapICD(x)
-	postICD := e.Core.Player.SwapICD
-	log := e.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, e.Core.Player.Active(), "New time manipulation event: Default Swap ICD Changed")
-	log.Write("Old", prevICD).Write("New", postICD)
 	return &null{}, nil
 }
 
@@ -414,20 +410,16 @@ func (e *Eval) reduceSwapCD(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	fn := func() {
-		prevCD := e.Core.Player.SwapCD
 		e.Core.Player.ReduceSwapCD(f)
-		postCD := e.Core.Player.SwapCD
-		log := e.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, e.Core.Player.Active(), "New time manipulation event: Swap CD Reduced")
-		log.Write("Old", prevCD).Write("New", postCD)
 	}
 	// I could check for delay == 0 and not go through the Queue Task, but this simplifies code and performance shouldn't be too badly affected,
 	// Since QueuCharTask checks for delay == 0 itself.
-	queueTask := e.Core.Player.ActiveChar().QueueCharTask
+	queueTask := e.Core.Tasks.Add
 	if hitlag != 0 {
 		// Use active character queue.
 		// If a character would swap, then the user would only have to delay the booking until after the current character swaps,
 		// So we don't care about hitlag on the next char anyway
-		queueTask = e.Core.Tasks.Add
+		queueTask = e.Core.Player.ActiveChar().QueueCharTask
 	}
 
 	queueTask(fn, delay)
@@ -511,23 +503,18 @@ func (e *Eval) reduceCrystallizeGCD(c *ast.CallExpr, env *Env) (Obj, error) {
 	fn := func() {
 		enemies := e.Core.Combat.Enemies()
 
-		for i, v := range enemies {
-			en := v.(*enemy.Enemy)
-			prevGCD := en.CrystallizeGCD()
+		for _, v := range enemies {
 			v.(*enemy.Enemy).Reactable.ReduceCrystallizeGCD(f)
-			postGCD := en.CrystallizeGCD()
-			log := e.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, e.Core.Player.Active(), "New time manipulation event: Crystallize GCD Reduced")
-			log.Write("Target", i+1).Write("Old", prevGCD).Write("New", postGCD)
 		}
 	}
 	// I could check for delay == 0 and not go through the Queue Task, but this simplifies code and performance shouldn't be too badly affected,
 	// Since QueuCharTask checks for delay == 0 itself.
-	queueTask := e.Core.Player.ActiveChar().QueueCharTask
+	queueTask := e.Core.Tasks.Add
 	if hitlag != 0 {
 		// Use active character queue.
 		// If a character would swap, then the action in progress would be over anyway.
 		// We only care about enabling booking within one action at a time, not delayed for multiple actions.
-		queueTask = e.Core.Tasks.Add
+		queueTask = e.Core.Player.ActiveChar().QueueCharTask
 	}
 
 	queueTask(fn, delay)

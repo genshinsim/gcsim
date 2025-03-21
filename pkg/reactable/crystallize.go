@@ -64,11 +64,18 @@ func (r *Reactable) TryCrystallizeFrozen(a *combat.AttackEvent) bool {
 // Future instances of crystallize will still have the standard cd.
 // "overbooking" will have no adverse effects. r.crystallizeGCD will simply go negative and will be capped at -1.
 func (r *Reactable) ReduceCrystallizeGCD(f int) {
+	prevGCD := r.crystallizeGCD
+
 	r.crystallizeGCD -= f
 	if r.crystallizeGCD < 0 {
 		r.crystallizeGCD = -1
 	}
 	r.core.Events.Emit(event.OnTimeManip, f)
+	postGCD := r.crystallizeGCD
+	i := r.self.Key()
+	// TODO: Maybe should be enemy event type? For now, keeping all booking events as cd event type on active char.
+	log := r.core.Log.NewEventBuildMsg(glog.LogCooldownEvent, r.core.Player.Active(), "New time manipulation event: Crystallize GCD Reduced")
+	log.Write("Target", i).Write("Old", prevGCD).Write("New", postGCD)
 }
 
 func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt reactions.ReactionType, evt event.Event) bool {
