@@ -397,7 +397,7 @@ func (e *Eval) reduceSwapCD(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	hitlag := 0
 	// Optional Argument 3: Whether to extend delay when hitlag occurs. Any non-0 number, including negative, will count as true.
-	if len(c.Args) > 1 {
+	if len(c.Args) > 2 {
 		t, err = e.evalExpr(c.Args[2], env)
 		if err != nil {
 			return nil, err
@@ -492,7 +492,7 @@ func (e *Eval) reduceCrystallizeGCD(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	hitlag := 0
 	// Optional Argument 3: Whether to extend delay when hitlag occurs. Any non-0 number, including negative, will count as true.
-	if len(c.Args) > 1 {
+	if len(c.Args) > 2 {
 		t, err = e.evalExpr(c.Args[2], env)
 		if err != nil {
 			return nil, err
