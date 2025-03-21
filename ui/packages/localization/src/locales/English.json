@@ -390,7 +390,10 @@
     "dash_body": "Some iterations delayed executing one or more Sprints due to its cooldown. This causes the active character to idle until Sprint is off cooldown. Consider updating the config if the downtime below is undesired.",
     "dash_data_header": "Total Sprint Delay Due To Cooldown Per Iteration",
     "ignore_burst_energy_title": "\"Ignore Elemental Burst Energy Costs\" Mode Is Enabled",
-    "ignore_burst_energy_body": "The simulation is ignoring Elemental Burst energy requirements. This may result in inaccurate simulations."
+    "ignore_burst_energy_body": "The simulation is ignoring Elemental Burst energy requirements. This may result in inaccurate simulations.",
+    "time_manip_title": "Time Manipulation Function Used",
+    "time_manip_body": "This simulation contains actions used to manipulate the in-game timer. This includes manipulation of swap, crystallize, or other cooldowns, and may be patched in future versions of the game.",
+    "time_manip_data_header": "Total Time Spent Manipulating the Battle Timer"
   },
   "states": {
     "true": "true",

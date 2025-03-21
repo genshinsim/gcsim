@@ -77,6 +77,7 @@ const (
 	OnEnemyAdded  // t
 	OnTick
 	OnSimEndedSuccessfully // nil
+	OnTimeManip            // Booking event occurred. Param: FramesBooked int
 	EndEventTypes          // elim
 )
 
