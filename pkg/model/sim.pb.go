@@ -23,16 +23,16 @@ const (
 
 type Character struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Element       string                 `protobuf:"bytes,2,opt,name=element,proto3" json:"element,omitempty"`
-	Level         int32                  `protobuf:"varint,3,opt,name=level,proto3" json:"level,omitempty"`
-	MaxLevel      int32                  `protobuf:"varint,4,opt,name=max_level,proto3" json:"max_level,omitempty"`
-	Cons          int32                  `protobuf:"varint,5,opt,name=cons,proto3" json:"cons,omitempty"`
-	Weapon        *Weapon                `protobuf:"bytes,6,opt,name=weapon,proto3" json:"weapon,omitempty"`
-	Talents       *CharacterTalents      `protobuf:"bytes,7,opt,name=talents,proto3" json:"talents,omitempty"`
-	Sets          map[string]int32       `protobuf:"bytes,8,rep,name=sets,proto3" json:"sets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
-	Stats         []float64              `protobuf:"fixed64,9,rep,packed,name=stats,proto3" json:"stats,omitempty"`
-	SnapshotStats []float64              `protobuf:"fixed64,10,rep,packed,name=snapshot_stats,json=snapshot,proto3" json:"snapshot_stats,omitempty"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" bson:"name,omitempty"`
+	Element       string                 `protobuf:"bytes,2,opt,name=element,proto3" json:"element,omitempty" bson:"element,omitempty"`
+	Level         int32                  `protobuf:"varint,3,opt,name=level,proto3" json:"level,omitempty" bson:"level,omitempty"`
+	MaxLevel      int32                  `protobuf:"varint,4,opt,name=max_level,proto3" json:"max_level,omitempty" bson:"max_level,omitempty"`
+	Cons          int32                  `protobuf:"varint,5,opt,name=cons,proto3" json:"cons,omitempty" bson:"cons,omitempty"`
+	Weapon        *Weapon                `protobuf:"bytes,6,opt,name=weapon,proto3" json:"weapon,omitempty" bson:"weapon,omitempty"`
+	Talents       *CharacterTalents      `protobuf:"bytes,7,opt,name=talents,proto3" json:"talents,omitempty" bson:"talents,omitempty"`
+	Sets          map[string]int32       `protobuf:"bytes,8,rep,name=sets,proto3" json:"sets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value" bson:"sets,omitempty"`
+	Stats         []float64              `protobuf:"fixed64,9,rep,packed,name=stats,proto3" json:"stats,omitempty" bson:"stats,omitempty"`
+	SnapshotStats []float64              `protobuf:"fixed64,10,rep,packed,name=snapshot_stats,json=snapshot,proto3" json:"snapshot_stats,omitempty" bson:"snapshot,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -139,9 +139,9 @@ func (x *Character) GetSnapshotStats() []float64 {
 
 type CharacterTalents struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Attack        int32                  `protobuf:"varint,1,opt,name=attack,proto3" json:"attack,omitempty"`
-	Skill         int32                  `protobuf:"varint,2,opt,name=skill,proto3" json:"skill,omitempty"`
-	Burst         int32                  `protobuf:"varint,3,opt,name=burst,proto3" json:"burst,omitempty"`
+	Attack        int32                  `protobuf:"varint,1,opt,name=attack,proto3" json:"attack,omitempty" bson:"attack,omitempty"`
+	Skill         int32                  `protobuf:"varint,2,opt,name=skill,proto3" json:"skill,omitempty" bson:"skill,omitempty"`
+	Burst         int32                  `protobuf:"varint,3,opt,name=burst,proto3" json:"burst,omitempty" bson:"burst,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -199,10 +199,10 @@ func (x *CharacterTalents) GetBurst() int32 {
 
 type Weapon struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Refine        int32                  `protobuf:"varint,2,opt,name=refine,proto3" json:"refine,omitempty"`
-	Level         int32                  `protobuf:"varint,3,opt,name=level,proto3" json:"level,omitempty"`
-	MaxLevel      int32                  `protobuf:"varint,4,opt,name=max_level,proto3" json:"max_level,omitempty"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" bson:"name,omitempty"`
+	Refine        int32                  `protobuf:"varint,2,opt,name=refine,proto3" json:"refine,omitempty" bson:"refine,omitempty"`
+	Level         int32                  `protobuf:"varint,3,opt,name=level,proto3" json:"level,omitempty" bson:"level,omitempty"`
+	MaxLevel      int32                  `protobuf:"varint,4,opt,name=max_level,proto3" json:"max_level,omitempty" bson:"max_level,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -267,15 +267,15 @@ func (x *Weapon) GetMaxLevel() int32 {
 
 type Enemy struct {
 	state                 protoimpl.MessageState `protogen:"open.v1"`
-	Level                 int32                  `protobuf:"varint,1,opt,name=level,proto3" json:"level,omitempty"`
-	HP                    float64                `protobuf:"fixed64,2,opt,name=HP,json=hp,proto3" json:"HP,omitempty"`
-	Resist                map[string]float64     `protobuf:"bytes,3,rep,name=resist,proto3" json:"resist,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value"`
-	Pos                   *Coord                 `protobuf:"bytes,4,opt,name=pos,json=position,proto3" json:"pos,omitempty"`
-	ParticleDropThreshold float64                `protobuf:"fixed64,5,opt,name=particle_drop_threshold,proto3" json:"particle_drop_threshold,omitempty"`
-	ParticleDropCount     float64                `protobuf:"fixed64,6,opt,name=particle_drop_count,proto3" json:"particle_drop_count,omitempty"`
-	ParticleElement       string                 `protobuf:"bytes,7,opt,name=particle_element,proto3" json:"particle_element,omitempty"`
-	Name                  string                 `protobuf:"bytes,8,opt,name=name,proto3" json:"name,omitempty"`
-	Modified              bool                   `protobuf:"varint,9,opt,name=modified,proto3" json:"modified,omitempty"`
+	Level                 int32                  `protobuf:"varint,1,opt,name=level,proto3" json:"level,omitempty" bson:"level,omitempty"`
+	HP                    float64                `protobuf:"fixed64,2,opt,name=HP,json=hp,proto3" json:"HP,omitempty" bson:"hp,omitempty"`
+	Resist                map[string]float64     `protobuf:"bytes,3,rep,name=resist,proto3" json:"resist,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value" bson:"resist,omitempty"`
+	Pos                   *Coord                 `protobuf:"bytes,4,opt,name=pos,json=position,proto3" json:"pos,omitempty" bson:"position,omitempty"`
+	ParticleDropThreshold float64                `protobuf:"fixed64,5,opt,name=particle_drop_threshold,proto3" json:"particle_drop_threshold,omitempty" bson:"particle_drop_threshold,omitempty"`
+	ParticleDropCount     float64                `protobuf:"fixed64,6,opt,name=particle_drop_count,proto3" json:"particle_drop_count,omitempty" bson:"particle_drop_count,omitempty"`
+	ParticleElement       string                 `protobuf:"bytes,7,opt,name=particle_element,proto3" json:"particle_element,omitempty" bson:"particle_element,omitempty"`
+	Name                  string                 `protobuf:"bytes,8,opt,name=name,proto3" json:"name,omitempty" bson:"name,omitempty"`
+	Modified              bool                   `protobuf:"varint,9,opt,name=modified,proto3" json:"modified,omitempty" bson:"modified,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
@@ -375,9 +375,9 @@ func (x *Enemy) GetModified() bool {
 
 type Coord struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	X             float64                `protobuf:"fixed64,1,opt,name=x,proto3" json:"x,omitempty"`
-	Y             float64                `protobuf:"fixed64,2,opt,name=y,proto3" json:"y,omitempty"`
-	R             float64                `protobuf:"fixed64,3,opt,name=r,proto3" json:"r,omitempty"`
+	X             float64                `protobuf:"fixed64,1,opt,name=x,proto3" json:"x,omitempty" bson:"x,omitempty"`
+	Y             float64                `protobuf:"fixed64,2,opt,name=y,proto3" json:"y,omitempty" bson:"y,omitempty"`
+	R             float64                `protobuf:"fixed64,3,opt,name=r,proto3" json:"r,omitempty" bson:"r,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -435,14 +435,14 @@ func (x *Coord) GetR() float64 {
 
 type SimulatorSettings struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
-	Duration          float64                `protobuf:"fixed64,1,opt,name=duration,proto3" json:"duration,omitempty"`
-	DamageMode        bool                   `protobuf:"varint,2,opt,name=damage_mode,proto3" json:"damage_mode,omitempty"`
-	EnableHitlag      bool                   `protobuf:"varint,3,opt,name=enable_hitlag,proto3" json:"enable_hitlag,omitempty"`
-	DefHalt           bool                   `protobuf:"varint,4,opt,name=def_halt,proto3" json:"def_halt,omitempty"`
-	NumberOfWorkers   uint32                 `protobuf:"varint,5,opt,name=number_of_workers,proto3" json:"number_of_workers,omitempty"`
-	Iterations        uint32                 `protobuf:"varint,6,opt,name=iterations,proto3" json:"iterations,omitempty"`
-	Delays            *Delays                `protobuf:"bytes,7,opt,name=delays,proto3" json:"delays,omitempty"`
-	IgnoreBurstEnergy bool                   `protobuf:"varint,8,opt,name=ignore_burst_energy,proto3" json:"ignore_burst_energy,omitempty"`
+	Duration          float64                `protobuf:"fixed64,1,opt,name=duration,proto3" json:"duration,omitempty" bson:"duration,omitempty"`
+	DamageMode        bool                   `protobuf:"varint,2,opt,name=damage_mode,proto3" json:"damage_mode,omitempty" bson:"damage_mode,omitempty"`
+	EnableHitlag      bool                   `protobuf:"varint,3,opt,name=enable_hitlag,proto3" json:"enable_hitlag,omitempty" bson:"enable_hitlag,omitempty"`
+	DefHalt           bool                   `protobuf:"varint,4,opt,name=def_halt,proto3" json:"def_halt,omitempty" bson:"def_halt,omitempty"`
+	NumberOfWorkers   uint32                 `protobuf:"varint,5,opt,name=number_of_workers,proto3" json:"number_of_workers,omitempty" bson:"number_of_workers,omitempty"`
+	Iterations        uint32                 `protobuf:"varint,6,opt,name=iterations,proto3" json:"iterations,omitempty" bson:"iterations,omitempty"`
+	Delays            *Delays                `protobuf:"bytes,7,opt,name=delays,proto3" json:"delays,omitempty" bson:"delays,omitempty"`
+	IgnoreBurstEnergy bool                   `protobuf:"varint,8,opt,name=ignore_burst_energy,proto3" json:"ignore_burst_energy,omitempty" bson:"ignore_burst_energy,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -535,14 +535,14 @@ func (x *SimulatorSettings) GetIgnoreBurstEnergy() bool {
 
 type Delays struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Skill         int32                  `protobuf:"varint,1,opt,name=skill,proto3" json:"skill,omitempty"`
-	Burst         int32                  `protobuf:"varint,2,opt,name=burst,proto3" json:"burst,omitempty"`
-	Attack        int32                  `protobuf:"varint,3,opt,name=attack,proto3" json:"attack,omitempty"`
-	Charge        int32                  `protobuf:"varint,4,opt,name=charge,proto3" json:"charge,omitempty"`
-	Aim           int32                  `protobuf:"varint,5,opt,name=aim,proto3" json:"aim,omitempty"`
-	Dash          int32                  `protobuf:"varint,6,opt,name=dash,proto3" json:"dash,omitempty"`
-	Jump          int32                  `protobuf:"varint,7,opt,name=jump,proto3" json:"jump,omitempty"`
-	Swap          int32                  `protobuf:"varint,8,opt,name=swap,proto3" json:"swap,omitempty"`
+	Skill         int32                  `protobuf:"varint,1,opt,name=skill,proto3" json:"skill,omitempty" bson:"skill,omitempty"`
+	Burst         int32                  `protobuf:"varint,2,opt,name=burst,proto3" json:"burst,omitempty" bson:"burst,omitempty"`
+	Attack        int32                  `protobuf:"varint,3,opt,name=attack,proto3" json:"attack,omitempty" bson:"attack,omitempty"`
+	Charge        int32                  `protobuf:"varint,4,opt,name=charge,proto3" json:"charge,omitempty" bson:"charge,omitempty"`
+	Aim           int32                  `protobuf:"varint,5,opt,name=aim,proto3" json:"aim,omitempty" bson:"aim,omitempty"`
+	Dash          int32                  `protobuf:"varint,6,opt,name=dash,proto3" json:"dash,omitempty" bson:"dash,omitempty"`
+	Jump          int32                  `protobuf:"varint,7,opt,name=jump,proto3" json:"jump,omitempty" bson:"jump,omitempty"`
+	Swap          int32                  `protobuf:"varint,8,opt,name=swap,proto3" json:"swap,omitempty" bson:"swap,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -635,12 +635,12 @@ func (x *Delays) GetSwap() int32 {
 
 type EnergySettings struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	Active         bool                   `protobuf:"varint,1,opt,name=active,proto3" json:"active,omitempty"`
-	Once           bool                   `protobuf:"varint,2,opt,name=once,proto3" json:"once,omitempty"`
-	Start          int32                  `protobuf:"varint,3,opt,name=start,proto3" json:"start,omitempty"`
-	End            int32                  `protobuf:"varint,4,opt,name=end,proto3" json:"end,omitempty"`
-	Amount         int32                  `protobuf:"varint,5,opt,name=amount,proto3" json:"amount,omitempty"`
-	LastEnergyDrop int32                  `protobuf:"varint,6,opt,name=last_energy_drop,proto3" json:"last_energy_drop,omitempty"`
+	Active         bool                   `protobuf:"varint,1,opt,name=active,proto3" json:"active,omitempty" bson:"active,omitempty"`
+	Once           bool                   `protobuf:"varint,2,opt,name=once,proto3" json:"once,omitempty" bson:"once,omitempty"`
+	Start          int32                  `protobuf:"varint,3,opt,name=start,proto3" json:"start,omitempty" bson:"start,omitempty"`
+	End            int32                  `protobuf:"varint,4,opt,name=end,proto3" json:"end,omitempty" bson:"end,omitempty"`
+	Amount         int32                  `protobuf:"varint,5,opt,name=amount,proto3" json:"amount,omitempty" bson:"amount,omitempty"`
+	LastEnergyDrop int32                  `protobuf:"varint,6,opt,name=last_energy_drop,proto3" json:"last_energy_drop,omitempty" bson:"last_energy_drop,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }

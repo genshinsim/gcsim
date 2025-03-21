@@ -26,21 +26,21 @@ const (
 type Entry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	//basic info
-	Id         string `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
-	CreateDate uint64 `protobuf:"varint,2,opt,name=create_date,proto3" json:"create_date,omitempty"`
+	Id         string `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
+	CreateDate uint64 `protobuf:"varint,2,opt,name=create_date,proto3" json:"create_date,omitempty" bson:"create_date,omitempty"`
 	//key fields
-	Config      string `protobuf:"bytes,3,opt,name=config,proto3" json:"config,omitempty"`
-	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	Submitter   string `protobuf:"bytes,5,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	Config      string `protobuf:"bytes,3,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty" bson:"description,omitempty"`
+	Submitter   string `protobuf:"bytes,5,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
 	//db tagging data
-	AcceptedTags []model.DBTag `protobuf:"varint,6,rep,packed,name=accepted_tags,proto3,enum=model.DBTag" json:"accepted_tags,omitempty"`
-	RejectedTags []model.DBTag `protobuf:"varint,7,rep,packed,name=rejected_tags,proto3,enum=model.DBTag" json:"rejected_tags,omitempty"`
-	IsDbValid    bool          `protobuf:"varint,8,opt,name=is_db_valid,proto3" json:"is_db_valid,omitempty"` // string upgrade_failed = 20
+	AcceptedTags []model.DBTag `protobuf:"varint,6,rep,packed,name=accepted_tags,proto3,enum=model.DBTag" json:"accepted_tags,omitempty" bson:"accepted_tags,omitempty"`
+	RejectedTags []model.DBTag `protobuf:"varint,7,rep,packed,name=rejected_tags,proto3,enum=model.DBTag" json:"rejected_tags,omitempty" bson:"rejected_tags,omitempty"`
+	IsDbValid    bool          `protobuf:"varint,8,opt,name=is_db_valid,proto3" json:"is_db_valid,omitempty" bson:"is_db_valid,omitempty"` // string upgrade_failed = 20
 	//these fields are updated on every rerun
-	ShareKey      string        `protobuf:"bytes,9,opt,name=share_key,proto3" json:"share_key,omitempty"`
-	LastUpdate    uint64        `protobuf:"varint,10,opt,name=last_update,proto3" json:"last_update,omitempty"`
-	Hash          string        `protobuf:"bytes,11,opt,name=hash,proto3" json:"hash,omitempty"`
-	Summary       *EntrySummary `protobuf:"bytes,12,opt,name=summary,proto3" json:"summary,omitempty"`
+	ShareKey      string        `protobuf:"bytes,9,opt,name=share_key,proto3" json:"share_key,omitempty" bson:"share_key,omitempty"`
+	LastUpdate    uint64        `protobuf:"varint,10,opt,name=last_update,proto3" json:"last_update,omitempty" bson:"last_update,omitempty"`
+	Hash          string        `protobuf:"bytes,11,opt,name=hash,proto3" json:"hash,omitempty" bson:"hash,omitempty"`
+	Summary       *EntrySummary `protobuf:"bytes,12,opt,name=summary,proto3" json:"summary,omitempty" bson:"summary,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -161,16 +161,16 @@ func (x *Entry) GetSummary() *EntrySummary {
 
 type EntrySummary struct {
 	state       protoimpl.MessageState  `protogen:"open.v1"`
-	SimDuration *model.DescriptiveStats `protobuf:"bytes,1,opt,name=sim_duration,proto3" json:"sim_duration,omitempty"`
-	Mode        model.SimMode           `protobuf:"varint,2,opt,name=mode,proto3,enum=model.SimMode" json:"mode,omitempty"`
+	SimDuration *model.DescriptiveStats `protobuf:"bytes,1,opt,name=sim_duration,proto3" json:"sim_duration,omitempty" bson:"sim_duration,omitempty"`
+	Mode        model.SimMode           `protobuf:"varint,2,opt,name=mode,proto3,enum=model.SimMode" json:"mode,omitempty" bson:"mode,omitempty"`
 	//indexing data
-	TotalDamage      *model.DescriptiveStats `protobuf:"bytes,3,opt,name=total_damage,proto3" json:"total_damage,omitempty"`
-	CharNames        []string                `protobuf:"bytes,4,rep,name=char_names,proto3" json:"char_names,omitempty"`
-	TargetCount      int32                   `protobuf:"varint,5,opt,name=target_count,proto3" json:"target_count,omitempty"`
-	MeanDpsPerTarget float64                 `protobuf:"fixed64,6,opt,name=mean_dps_per_target,proto3" json:"mean_dps_per_target,omitempty"`
+	TotalDamage      *model.DescriptiveStats `protobuf:"bytes,3,opt,name=total_damage,proto3" json:"total_damage,omitempty" bson:"total_damage,omitempty"`
+	CharNames        []string                `protobuf:"bytes,4,rep,name=char_names,proto3" json:"char_names,omitempty" bson:"char_names,omitempty"`
+	TargetCount      int32                   `protobuf:"varint,5,opt,name=target_count,proto3" json:"target_count,omitempty" bson:"target_count,omitempty"`
+	MeanDpsPerTarget float64                 `protobuf:"fixed64,6,opt,name=mean_dps_per_target,proto3" json:"mean_dps_per_target,omitempty" bson:"mean_dps_per_target,omitempty"`
 	//detailed results
-	Team          []*model.Character                 `protobuf:"bytes,7,rep,name=team,proto3" json:"team,omitempty"`
-	DpsByTarget   map[string]*model.DescriptiveStats `protobuf:"bytes,8,rep,name=dps_by_target,proto3" json:"dps_by_target,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Team          []*model.Character                 `protobuf:"bytes,7,rep,name=team,proto3" json:"team,omitempty" bson:"team,omitempty"`
+	DpsByTarget   map[string]*model.DescriptiveStats `protobuf:"bytes,8,rep,name=dps_by_target,proto3" json:"dps_by_target,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"dps_by_target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -263,7 +263,7 @@ func (x *EntrySummary) GetDpsByTarget() map[string]*model.DescriptiveStats {
 
 type Entries struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          []*Entry               `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	Data          []*Entry               `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -307,11 +307,11 @@ func (x *Entries) GetData() []*Entry {
 
 type QueryOpt struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Query         *structpb.Struct       `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
-	Sort          *structpb.Struct       `protobuf:"bytes,2,opt,name=sort,proto3" json:"sort,omitempty"`
-	Project       *structpb.Struct       `protobuf:"bytes,3,opt,name=project,proto3" json:"project,omitempty"`
-	Skip          int64                  `protobuf:"varint,4,opt,name=skip,proto3" json:"skip,omitempty"`
-	Limit         int64                  `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty"`
+	Query         *structpb.Struct       `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty" bson:"query,omitempty"`
+	Sort          *structpb.Struct       `protobuf:"bytes,2,opt,name=sort,proto3" json:"sort,omitempty" bson:"sort,omitempty"`
+	Project       *structpb.Struct       `protobuf:"bytes,3,opt,name=project,proto3" json:"project,omitempty" bson:"project,omitempty"`
+	Skip          int64                  `protobuf:"varint,4,opt,name=skip,proto3" json:"skip,omitempty" bson:"skip,omitempty"`
+	Limit         int64                  `protobuf:"varint,5,opt,name=limit,proto3" json:"limit,omitempty" bson:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -383,9 +383,9 @@ func (x *QueryOpt) GetLimit() int64 {
 
 type ComputeWork struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
-	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
-	Iterations    int32                  `protobuf:"varint,3,opt,name=iterations,proto3" json:"iterations,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
+	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	Iterations    int32                  `protobuf:"varint,3,opt,name=iterations,proto3" json:"iterations,omitempty" bson:"iterations,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -443,7 +443,7 @@ func (x *ComputeWork) GetIterations() int32 {
 
 type GetRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Query         *QueryOpt              `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	Query         *QueryOpt              `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty" bson:"query,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -487,7 +487,7 @@ func (x *GetRequest) GetQuery() *QueryOpt {
 
 type GetResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          *Entries               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Data          *Entries               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -531,7 +531,7 @@ func (x *GetResponse) GetData() *Entries {
 
 type GetOneRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -575,7 +575,7 @@ func (x *GetOneRequest) GetId() string {
 
 type GetOneResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          *Entry                 `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Data          *Entry                 `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -619,8 +619,8 @@ func (x *GetOneResponse) GetData() *Entry {
 
 type GetPendingRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Tag           model.DBTag            `protobuf:"varint,1,opt,name=tag,proto3,enum=model.DBTag" json:"tag,omitempty"`
-	Query         *QueryOpt              `protobuf:"bytes,2,opt,name=query,proto3" json:"query,omitempty"`
+	Tag           model.DBTag            `protobuf:"varint,1,opt,name=tag,proto3,enum=model.DBTag" json:"tag,omitempty" bson:"tag,omitempty"`
+	Query         *QueryOpt              `protobuf:"bytes,2,opt,name=query,proto3" json:"query,omitempty" bson:"query,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -671,7 +671,7 @@ func (x *GetPendingRequest) GetQuery() *QueryOpt {
 
 type GetPendingResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          *Entries               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Data          *Entries               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -715,8 +715,8 @@ func (x *GetPendingResponse) GetData() *Entries {
 
 type GetBySubmitterRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Submitter     string                 `protobuf:"bytes,1,opt,name=submitter,proto3" json:"submitter,omitempty"`
-	Query         *QueryOpt              `protobuf:"bytes,2,opt,name=query,proto3" json:"query,omitempty"`
+	Submitter     string                 `protobuf:"bytes,1,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
+	Query         *QueryOpt              `protobuf:"bytes,2,opt,name=query,proto3" json:"query,omitempty" bson:"query,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -767,7 +767,7 @@ func (x *GetBySubmitterRequest) GetQuery() *QueryOpt {
 
 type GetBySubmitterResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          *Entries               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Data          *Entries               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -811,7 +811,7 @@ func (x *GetBySubmitterResponse) GetData() *Entries {
 
 type GetAllRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Query         *QueryOpt              `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	Query         *QueryOpt              `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty" bson:"query,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -855,7 +855,7 @@ func (x *GetAllRequest) GetQuery() *QueryOpt {
 
 type GetAllResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          *Entries               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Data          *Entries               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -899,8 +899,8 @@ func (x *GetAllResponse) GetData() *Entries {
 
 type ApproveTagRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Tag           model.DBTag            `protobuf:"varint,2,opt,name=tag,proto3,enum=model.DBTag" json:"tag,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Tag           model.DBTag            `protobuf:"varint,2,opt,name=tag,proto3,enum=model.DBTag" json:"tag,omitempty" bson:"tag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -951,7 +951,7 @@ func (x *ApproveTagRequest) GetTag() model.DBTag {
 
 type ApproveTagResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -995,8 +995,8 @@ func (x *ApproveTagResponse) GetId() string {
 
 type RejectTagRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Tag           model.DBTag            `protobuf:"varint,2,opt,name=tag,proto3,enum=model.DBTag" json:"tag,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Tag           model.DBTag            `protobuf:"varint,2,opt,name=tag,proto3,enum=model.DBTag" json:"tag,omitempty" bson:"tag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1047,7 +1047,7 @@ func (x *RejectTagRequest) GetTag() model.DBTag {
 
 type RejectTagResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1091,7 +1091,7 @@ func (x *RejectTagResponse) GetId() string {
 
 type RejectTagAllUnapprovedRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Tag           model.DBTag            `protobuf:"varint,1,opt,name=tag,proto3,enum=model.DBTag" json:"tag,omitempty"`
+	Tag           model.DBTag            `protobuf:"varint,1,opt,name=tag,proto3,enum=model.DBTag" json:"tag,omitempty" bson:"tag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1135,7 +1135,7 @@ func (x *RejectTagAllUnapprovedRequest) GetTag() model.DBTag {
 
 type RejectTagAllUnapprovedResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Count         int64                  `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	Count         int64                  `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty" bson:"count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1179,9 +1179,9 @@ func (x *RejectTagAllUnapprovedResponse) GetCount() int64 {
 
 type SubmitRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Config        string                 `protobuf:"bytes,1,opt,name=config,proto3" json:"config,omitempty"`
-	Submitter     string                 `protobuf:"bytes,2,opt,name=submitter,proto3" json:"submitter,omitempty"` //submitter discord id
-	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Config        string                 `protobuf:"bytes,1,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	Submitter     string                 `protobuf:"bytes,2,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"` //submitter discord id
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty" bson:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1239,7 +1239,7 @@ func (x *SubmitRequest) GetDescription() string {
 
 type SubmitResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1283,8 +1283,8 @@ func (x *SubmitResponse) GetId() string {
 
 type DeletePendingRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
-	Sender        string                 `protobuf:"bytes,2,opt,name=sender,proto3" json:"sender,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
+	Sender        string                 `protobuf:"bytes,2,opt,name=sender,proto3" json:"sender,omitempty" bson:"sender,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1335,7 +1335,7 @@ func (x *DeletePendingRequest) GetSender() string {
 
 type DeletePendingResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1415,7 +1415,7 @@ func (*GetWorkRequest) Descriptor() ([]byte, []int) {
 
 type GetWorkResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          []*ComputeWork         `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	Data          []*ComputeWork         `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1459,9 +1459,9 @@ func (x *GetWorkResponse) GetData() []*ComputeWork {
 
 type RejectWorkRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Reason        string                 `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
-	Hash          string                 `protobuf:"bytes,3,opt,name=hash,proto3" json:"hash,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Reason        string                 `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty" bson:"reason,omitempty"`
+	Hash          string                 `protobuf:"bytes,3,opt,name=hash,proto3" json:"hash,omitempty" bson:"hash,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1555,8 +1555,8 @@ func (*RejectWorkResponse) Descriptor() ([]byte, []int) {
 
 type CompleteWorkRequest struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Id            string                  `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
-	Result        *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
+	Id            string                  `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
+	Result        *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1607,7 +1607,7 @@ func (x *CompleteWorkRequest) GetResult() *model.SimulationResult {
 
 type CompleteWorkResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1687,8 +1687,8 @@ func (*WorkStatusRequest) Descriptor() ([]byte, []int) {
 
 type WorkStatusResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	TodoCount     int32                  `protobuf:"varint,1,opt,name=todo_count,proto3" json:"todo_count,omitempty"`
-	TotalCount    int32                  `protobuf:"varint,2,opt,name=total_count,proto3" json:"total_count,omitempty"`
+	TodoCount     int32                  `protobuf:"varint,1,opt,name=todo_count,proto3" json:"todo_count,omitempty" bson:"todo_count,omitempty"`
+	TotalCount    int32                  `protobuf:"varint,2,opt,name=total_count,proto3" json:"total_count,omitempty" bson:"total_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1739,9 +1739,9 @@ func (x *WorkStatusResponse) GetTotalCount() int32 {
 
 type ReplaceConfigRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
-	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
-	SourceTag     model.DBTag            `protobuf:"varint,3,opt,name=source_tag,proto3,enum=model.DBTag" json:"source_tag,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
+	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	SourceTag     model.DBTag            `protobuf:"varint,3,opt,name=source_tag,proto3,enum=model.DBTag" json:"source_tag,omitempty" bson:"source_tag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1799,7 +1799,7 @@ func (x *ReplaceConfigRequest) GetSourceTag() model.DBTag {
 
 type ReplaceConfigResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1843,9 +1843,9 @@ func (x *ReplaceConfigResponse) GetId() string {
 
 type ReplaceDescRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
-	Desc          string                 `protobuf:"bytes,2,opt,name=desc,proto3" json:"desc,omitempty"`
-	SourceTag     model.DBTag            `protobuf:"varint,3,opt,name=source_tag,proto3,enum=model.DBTag" json:"source_tag,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
+	Desc          string                 `protobuf:"bytes,2,opt,name=desc,proto3" json:"desc,omitempty" bson:"desc,omitempty"`
+	SourceTag     model.DBTag            `protobuf:"varint,3,opt,name=source_tag,proto3,enum=model.DBTag" json:"source_tag,omitempty" bson:"source_tag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1903,7 +1903,7 @@ func (x *ReplaceDescRequest) GetSourceTag() model.DBTag {
 
 type ReplaceDescResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

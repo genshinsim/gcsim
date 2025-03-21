@@ -23,7 +23,7 @@ const (
 
 type AvatarDataMap struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          map[string]*AvatarData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Data          map[string]*AvatarData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -67,18 +67,18 @@ func (x *AvatarDataMap) GetData() map[string]*AvatarData {
 
 type AvatarData struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
-	Id              int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	SubId           int32                  `protobuf:"varint,2,opt,name=sub_id,proto3" json:"sub_id,omitempty"`
-	Key             string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
-	Rarity          QualityType            `protobuf:"varint,4,opt,name=rarity,proto3,enum=model.QualityType" json:"rarity,omitempty"`
-	Body            BodyType               `protobuf:"varint,5,opt,name=body,proto3,enum=model.BodyType" json:"body,omitempty"`
-	Region          ZoneType               `protobuf:"varint,6,opt,name=region,proto3,enum=model.ZoneType" json:"region,omitempty"`
-	Element         Element                `protobuf:"varint,7,opt,name=element,proto3,enum=model.Element" json:"element,omitempty"`
-	WeaponClass     WeaponClass            `protobuf:"varint,8,opt,name=weapon_class,proto3,enum=model.WeaponClass" json:"weapon_class,omitempty"`
-	IconName        string                 `protobuf:"bytes,9,opt,name=icon_name,proto3" json:"icon_name,omitempty"`
-	Stats           *AvatarStatsData       `protobuf:"bytes,10,opt,name=stats,proto3" json:"stats,omitempty"`
-	SkillDetails    *AvatarSkillsData      `protobuf:"bytes,11,opt,name=skill_details,proto3" json:"skill_details,omitempty"`
-	NameTextHashMap int64                  `protobuf:"varint,12,opt,name=name_text_hash_map,json=name_text_hash_map ,proto3" json:"name_text_hash_map,omitempty"`
+	Id              int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	SubId           int32                  `protobuf:"varint,2,opt,name=sub_id,proto3" json:"sub_id,omitempty" bson:"sub_id,omitempty"`
+	Key             string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	Rarity          QualityType            `protobuf:"varint,4,opt,name=rarity,proto3,enum=model.QualityType" json:"rarity,omitempty" bson:"rarity,omitempty"`
+	Body            BodyType               `protobuf:"varint,5,opt,name=body,proto3,enum=model.BodyType" json:"body,omitempty" bson:"body,omitempty"`
+	Region          ZoneType               `protobuf:"varint,6,opt,name=region,proto3,enum=model.ZoneType" json:"region,omitempty" bson:"region,omitempty"`
+	Element         Element                `protobuf:"varint,7,opt,name=element,proto3,enum=model.Element" json:"element,omitempty" bson:"element,omitempty"`
+	WeaponClass     WeaponClass            `protobuf:"varint,8,opt,name=weapon_class,proto3,enum=model.WeaponClass" json:"weapon_class,omitempty" bson:"weapon_class,omitempty"`
+	IconName        string                 `protobuf:"bytes,9,opt,name=icon_name,proto3" json:"icon_name,omitempty" bson:"icon_name,omitempty"`
+	Stats           *AvatarStatsData       `protobuf:"bytes,10,opt,name=stats,proto3" json:"stats,omitempty" bson:"stats,omitempty"`
+	SkillDetails    *AvatarSkillsData      `protobuf:"bytes,11,opt,name=skill_details,proto3" json:"skill_details,omitempty" bson:"skill_details,omitempty"`
+	NameTextHashMap int64                  `protobuf:"varint,12,opt,name=name_text_hash_map,json=name_text_hash_map ,proto3" json:"name_text_hash_map,omitempty" bson:"name_text_hash_map,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -202,13 +202,13 @@ type AvatarStatsData struct {
 	// TODO: base stat should be refactor to just an array of stats
 	// there is no requirement that base stat can only be 3 stats; in fact
 	// ER/cr/cd can be considered as base
-	BaseHp        float64          `protobuf:"fixed64,1,opt,name=base_hp,proto3" json:"base_hp,omitempty"`
-	BaseAtk       float64          `protobuf:"fixed64,2,opt,name=base_atk,proto3" json:"base_atk,omitempty"`
-	BaseDef       float64          `protobuf:"fixed64,3,opt,name=base_def,proto3" json:"base_def,omitempty"`
-	HpCurve       AvatarCurveType  `protobuf:"varint,4,opt,name=hp_curve,proto3,enum=model.AvatarCurveType" json:"hp_curve,omitempty"`
-	AtkCurve      AvatarCurveType  `protobuf:"varint,5,opt,name=atk_curve,proto3,enum=model.AvatarCurveType" json:"atk_curve,omitempty"`
-	DefCruve      AvatarCurveType  `protobuf:"varint,6,opt,name=def_cruve,proto3,enum=model.AvatarCurveType" json:"def_cruve,omitempty"`
-	PromoData     []*PromotionData `protobuf:"bytes,7,rep,name=promo_data,proto3" json:"promo_data,omitempty"`
+	BaseHp        float64          `protobuf:"fixed64,1,opt,name=base_hp,proto3" json:"base_hp,omitempty" bson:"base_hp,omitempty"`
+	BaseAtk       float64          `protobuf:"fixed64,2,opt,name=base_atk,proto3" json:"base_atk,omitempty" bson:"base_atk,omitempty"`
+	BaseDef       float64          `protobuf:"fixed64,3,opt,name=base_def,proto3" json:"base_def,omitempty" bson:"base_def,omitempty"`
+	HpCurve       AvatarCurveType  `protobuf:"varint,4,opt,name=hp_curve,proto3,enum=model.AvatarCurveType" json:"hp_curve,omitempty" bson:"hp_curve,omitempty"`
+	AtkCurve      AvatarCurveType  `protobuf:"varint,5,opt,name=atk_curve,proto3,enum=model.AvatarCurveType" json:"atk_curve,omitempty" bson:"atk_curve,omitempty"`
+	DefCruve      AvatarCurveType  `protobuf:"varint,6,opt,name=def_cruve,proto3,enum=model.AvatarCurveType" json:"def_cruve,omitempty" bson:"def_cruve,omitempty"`
+	PromoData     []*PromotionData `protobuf:"bytes,7,rep,name=promo_data,proto3" json:"promo_data,omitempty" bson:"promo_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -294,17 +294,17 @@ func (x *AvatarStatsData) GetPromoData() []*PromotionData {
 
 type AvatarSkillsData struct {
 	state           protoimpl.MessageState       `protogen:"open.v1"`
-	Skill           int32                        `protobuf:"varint,1,opt,name=skill,proto3" json:"skill,omitempty"`
-	Burst           int32                        `protobuf:"varint,2,opt,name=burst,proto3" json:"burst,omitempty"`
-	Attack          int32                        `protobuf:"varint,3,opt,name=attack,proto3" json:"attack,omitempty"`
-	A1              int32                        `protobuf:"varint,10,opt,name=a1,proto3" json:"a1,omitempty"`
-	A4              int32                        `protobuf:"varint,11,opt,name=a4,proto3" json:"a4,omitempty"`
-	BurstEnergyCost float64                      `protobuf:"fixed64,4,opt,name=burst_energy_cost,proto3" json:"burst_energy_cost,omitempty"`
-	AttackScaling   []*AvatarSkillExcelIndexData `protobuf:"bytes,5,rep,name=attack_scaling,proto3" json:"attack_scaling,omitempty"`
-	SkillScaling    []*AvatarSkillExcelIndexData `protobuf:"bytes,6,rep,name=skill_scaling,proto3" json:"skill_scaling,omitempty"`
-	BurstScaling    []*AvatarSkillExcelIndexData `protobuf:"bytes,7,rep,name=burst_scaling,proto3" json:"burst_scaling,omitempty"`
-	A1Scaling       []*AvatarSkillExcelIndexData `protobuf:"bytes,8,rep,name=a1_scaling,proto3" json:"a1_scaling,omitempty"`
-	A4Scaling       []*AvatarSkillExcelIndexData `protobuf:"bytes,9,rep,name=a4_scaling,proto3" json:"a4_scaling,omitempty"`
+	Skill           int32                        `protobuf:"varint,1,opt,name=skill,proto3" json:"skill,omitempty" bson:"skill,omitempty"`
+	Burst           int32                        `protobuf:"varint,2,opt,name=burst,proto3" json:"burst,omitempty" bson:"burst,omitempty"`
+	Attack          int32                        `protobuf:"varint,3,opt,name=attack,proto3" json:"attack,omitempty" bson:"attack,omitempty"`
+	A1              int32                        `protobuf:"varint,10,opt,name=a1,proto3" json:"a1,omitempty" bson:"a1,omitempty"`
+	A4              int32                        `protobuf:"varint,11,opt,name=a4,proto3" json:"a4,omitempty" bson:"a4,omitempty"`
+	BurstEnergyCost float64                      `protobuf:"fixed64,4,opt,name=burst_energy_cost,proto3" json:"burst_energy_cost,omitempty" bson:"burst_energy_cost,omitempty"`
+	AttackScaling   []*AvatarSkillExcelIndexData `protobuf:"bytes,5,rep,name=attack_scaling,proto3" json:"attack_scaling,omitempty" bson:"attack_scaling,omitempty"`
+	SkillScaling    []*AvatarSkillExcelIndexData `protobuf:"bytes,6,rep,name=skill_scaling,proto3" json:"skill_scaling,omitempty" bson:"skill_scaling,omitempty"`
+	BurstScaling    []*AvatarSkillExcelIndexData `protobuf:"bytes,7,rep,name=burst_scaling,proto3" json:"burst_scaling,omitempty" bson:"burst_scaling,omitempty"`
+	A1Scaling       []*AvatarSkillExcelIndexData `protobuf:"bytes,8,rep,name=a1_scaling,proto3" json:"a1_scaling,omitempty" bson:"a1_scaling,omitempty"`
+	A4Scaling       []*AvatarSkillExcelIndexData `protobuf:"bytes,9,rep,name=a4_scaling,proto3" json:"a4_scaling,omitempty" bson:"a4_scaling,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -418,9 +418,9 @@ func (x *AvatarSkillsData) GetA4Scaling() []*AvatarSkillExcelIndexData {
 
 type AvatarSkillExcelIndexData struct {
 	state         protoimpl.MessageState       `protogen:"open.v1"`
-	GroupId       int32                        `protobuf:"varint,1,opt,name=group_id,proto3" json:"group_id,omitempty"`
-	Index         int32                        `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty"` // position in the param list
-	LevelData     []*AvatarSkillExcelLevelData `protobuf:"bytes,3,rep,name=level_data,proto3" json:"level_data,omitempty"`
+	GroupId       int32                        `protobuf:"varint,1,opt,name=group_id,proto3" json:"group_id,omitempty" bson:"group_id,omitempty"`
+	Index         int32                        `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty" bson:"index,omitempty"` // position in the param list
+	LevelData     []*AvatarSkillExcelLevelData `protobuf:"bytes,3,rep,name=level_data,proto3" json:"level_data,omitempty" bson:"level_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -478,8 +478,8 @@ func (x *AvatarSkillExcelIndexData) GetLevelData() []*AvatarSkillExcelLevelData 
 
 type AvatarSkillExcelLevelData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Level         int32                  `protobuf:"varint,1,opt,name=level,proto3" json:"level,omitempty"`
-	Value         float64                `protobuf:"fixed64,2,opt,name=value,proto3" json:"value,omitempty"`
+	Level         int32                  `protobuf:"varint,1,opt,name=level,proto3" json:"level,omitempty" bson:"level,omitempty"`
+	Value         float64                `protobuf:"fixed64,2,opt,name=value,proto3" json:"value,omitempty" bson:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -530,7 +530,7 @@ func (x *AvatarSkillExcelLevelData) GetValue() float64 {
 
 type WeaponDataMap struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          map[string]*WeaponData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Data          map[string]*WeaponData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -574,13 +574,13 @@ func (x *WeaponDataMap) GetData() map[string]*WeaponData {
 
 type WeaponData struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
-	Id              int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Key             string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
-	Rarity          int32                  `protobuf:"varint,3,opt,name=rarity,proto3" json:"rarity,omitempty"` // for whatever reason weapon rarity is a number
-	WeaponClass     WeaponClass            `protobuf:"varint,4,opt,name=weapon_class,proto3,enum=model.WeaponClass" json:"weapon_class,omitempty"`
-	ImageName       string                 `protobuf:"bytes,5,opt,name=image_name,proto3" json:"image_name,omitempty"`
-	BaseStats       *WeaponStatsData       `protobuf:"bytes,6,opt,name=base_stats,proto3" json:"base_stats,omitempty"`
-	NameTextHashMap int64                  `protobuf:"varint,7,opt,name=name_text_hash_map,json=name_text_hash_map ,proto3" json:"name_text_hash_map,omitempty"`
+	Id              int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Key             string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	Rarity          int32                  `protobuf:"varint,3,opt,name=rarity,proto3" json:"rarity,omitempty" bson:"rarity,omitempty"` // for whatever reason weapon rarity is a number
+	WeaponClass     WeaponClass            `protobuf:"varint,4,opt,name=weapon_class,proto3,enum=model.WeaponClass" json:"weapon_class,omitempty" bson:"weapon_class,omitempty"`
+	ImageName       string                 `protobuf:"bytes,5,opt,name=image_name,proto3" json:"image_name,omitempty" bson:"image_name,omitempty"`
+	BaseStats       *WeaponStatsData       `protobuf:"bytes,6,opt,name=base_stats,proto3" json:"base_stats,omitempty" bson:"base_stats,omitempty"`
+	NameTextHashMap int64                  `protobuf:"varint,7,opt,name=name_text_hash_map,json=name_text_hash_map ,proto3" json:"name_text_hash_map,omitempty" bson:"name_text_hash_map,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -666,8 +666,8 @@ func (x *WeaponData) GetNameTextHashMap() int64 {
 
 type WeaponStatsData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	BaseProps     []*WeaponProp          `protobuf:"bytes,1,rep,name=base_props,proto3" json:"base_props,omitempty"`
-	PromoData     []*PromotionData       `protobuf:"bytes,2,rep,name=promo_data,proto3" json:"promo_data,omitempty"`
+	BaseProps     []*WeaponProp          `protobuf:"bytes,1,rep,name=base_props,proto3" json:"base_props,omitempty" bson:"base_props,omitempty"`
+	PromoData     []*PromotionData       `protobuf:"bytes,2,rep,name=promo_data,proto3" json:"promo_data,omitempty" bson:"promo_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -718,9 +718,9 @@ func (x *WeaponStatsData) GetPromoData() []*PromotionData {
 
 type WeaponProp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PropType      StatType               `protobuf:"varint,1,opt,name=prop_type,proto3,enum=model.StatType" json:"prop_type,omitempty"`
-	InitialValue  float64                `protobuf:"fixed64,2,opt,name=initial_value,proto3" json:"initial_value,omitempty"`
-	Curve         WeaponCurveType        `protobuf:"varint,3,opt,name=curve,proto3,enum=model.WeaponCurveType" json:"curve,omitempty"`
+	PropType      StatType               `protobuf:"varint,1,opt,name=prop_type,proto3,enum=model.StatType" json:"prop_type,omitempty" bson:"prop_type,omitempty"`
+	InitialValue  float64                `protobuf:"fixed64,2,opt,name=initial_value,proto3" json:"initial_value,omitempty" bson:"initial_value,omitempty"`
+	Curve         WeaponCurveType        `protobuf:"varint,3,opt,name=curve,proto3,enum=model.WeaponCurveType" json:"curve,omitempty" bson:"curve,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -778,7 +778,7 @@ func (x *WeaponProp) GetCurve() WeaponCurveType {
 
 type ArtifactDataMap struct {
 	state         protoimpl.MessageState   `protogen:"open.v1"`
-	Data          map[string]*ArtifactData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Data          map[string]*ArtifactData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -822,10 +822,10 @@ func (x *ArtifactDataMap) GetData() map[string]*ArtifactData {
 
 type ArtifactData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	SetId         int64                  `protobuf:"varint,1,opt,name=set_id,json=id,proto3" json:"set_id,omitempty"`
-	TextMapId     int64                  `protobuf:"varint,2,opt,name=text_map_id,proto3" json:"text_map_id,omitempty"`
-	Key           string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
-	ImageNames    *ArtifactImageData     `protobuf:"bytes,4,opt,name=image_names,proto3" json:"image_names,omitempty"`
+	SetId         int64                  `protobuf:"varint,1,opt,name=set_id,json=id,proto3" json:"set_id,omitempty" bson:"id,omitempty"`
+	TextMapId     int64                  `protobuf:"varint,2,opt,name=text_map_id,proto3" json:"text_map_id,omitempty" bson:"text_map_id,omitempty"`
+	Key           string                 `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	ImageNames    *ArtifactImageData     `protobuf:"bytes,4,opt,name=image_names,proto3" json:"image_names,omitempty" bson:"image_names,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -890,11 +890,11 @@ func (x *ArtifactData) GetImageNames() *ArtifactImageData {
 
 type ArtifactImageData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Flower        string                 `protobuf:"bytes,1,opt,name=flower,proto3" json:"flower,omitempty"`
-	Plume         string                 `protobuf:"bytes,2,opt,name=plume,proto3" json:"plume,omitempty"`
-	Sands         string                 `protobuf:"bytes,3,opt,name=sands,proto3" json:"sands,omitempty"`
-	Goblet        string                 `protobuf:"bytes,4,opt,name=goblet,proto3" json:"goblet,omitempty"`
-	Circlet       string                 `protobuf:"bytes,5,opt,name=circlet,proto3" json:"circlet,omitempty"`
+	Flower        string                 `protobuf:"bytes,1,opt,name=flower,proto3" json:"flower,omitempty" bson:"flower,omitempty"`
+	Plume         string                 `protobuf:"bytes,2,opt,name=plume,proto3" json:"plume,omitempty" bson:"plume,omitempty"`
+	Sands         string                 `protobuf:"bytes,3,opt,name=sands,proto3" json:"sands,omitempty" bson:"sands,omitempty"`
+	Goblet        string                 `protobuf:"bytes,4,opt,name=goblet,proto3" json:"goblet,omitempty" bson:"goblet,omitempty"`
+	Circlet       string                 `protobuf:"bytes,5,opt,name=circlet,proto3" json:"circlet,omitempty" bson:"circlet,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -966,8 +966,8 @@ func (x *ArtifactImageData) GetCirclet() string {
 
 type PromotionData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	MaxLevel      int32                  `protobuf:"varint,1,opt,name=max_level,proto3" json:"max_level,omitempty"`
-	AddProps      []*PromotionAddProp    `protobuf:"bytes,2,rep,name=add_props,proto3" json:"add_props,omitempty"`
+	MaxLevel      int32                  `protobuf:"varint,1,opt,name=max_level,proto3" json:"max_level,omitempty" bson:"max_level,omitempty"`
+	AddProps      []*PromotionAddProp    `protobuf:"bytes,2,rep,name=add_props,proto3" json:"add_props,omitempty" bson:"add_props,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1018,8 +1018,8 @@ func (x *PromotionData) GetAddProps() []*PromotionAddProp {
 
 type PromotionAddProp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PropType      StatType               `protobuf:"varint,1,opt,name=prop_type,proto3,enum=model.StatType" json:"prop_type,omitempty"`
-	Value         float64                `protobuf:"fixed64,2,opt,name=value,proto3" json:"value,omitempty"`
+	PropType      StatType               `protobuf:"varint,1,opt,name=prop_type,proto3,enum=model.StatType" json:"prop_type,omitempty" bson:"prop_type,omitempty"`
+	Value         float64                `protobuf:"fixed64,2,opt,name=value,proto3" json:"value,omitempty" bson:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1070,10 +1070,10 @@ func (x *PromotionAddProp) GetValue() float64 {
 
 type MonsterData struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
-	Id              int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Key             string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
-	BaseStats       *MonsterStatsData      `protobuf:"bytes,3,opt,name=base_stats,proto3" json:"base_stats,omitempty"`
-	NameTextHashMap int64                  `protobuf:"varint,4,opt,name=name_text_hash_map,proto3" json:"name_text_hash_map,omitempty"`
+	Id              int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Key             string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	BaseStats       *MonsterStatsData      `protobuf:"bytes,3,opt,name=base_stats,proto3" json:"base_stats,omitempty" bson:"base_stats,omitempty"`
+	NameTextHashMap int64                  `protobuf:"varint,4,opt,name=name_text_hash_map,proto3" json:"name_text_hash_map,omitempty" bson:"name_text_hash_map,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -1138,11 +1138,11 @@ func (x *MonsterData) GetNameTextHashMap() int64 {
 
 type MonsterStatsData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	BaseHp        float64                `protobuf:"fixed64,1,opt,name=base_hp,proto3" json:"base_hp,omitempty"`
-	HpCurve       MonsterCurveType       `protobuf:"varint,2,opt,name=hp_curve,proto3,enum=model.MonsterCurveType" json:"hp_curve,omitempty"`
-	Resist        *MonsterResistData     `protobuf:"bytes,3,opt,name=resist,proto3" json:"resist,omitempty"`
-	FreezeResist  float64                `protobuf:"fixed64,4,opt,name=freeze_resist,proto3" json:"freeze_resist,omitempty"`
-	HpDrop        []*MonsterHPDrop       `protobuf:"bytes,5,rep,name=hp_drop,proto3" json:"hp_drop,omitempty"`
+	BaseHp        float64                `protobuf:"fixed64,1,opt,name=base_hp,proto3" json:"base_hp,omitempty" bson:"base_hp,omitempty"`
+	HpCurve       MonsterCurveType       `protobuf:"varint,2,opt,name=hp_curve,proto3,enum=model.MonsterCurveType" json:"hp_curve,omitempty" bson:"hp_curve,omitempty"`
+	Resist        *MonsterResistData     `protobuf:"bytes,3,opt,name=resist,proto3" json:"resist,omitempty" bson:"resist,omitempty"`
+	FreezeResist  float64                `protobuf:"fixed64,4,opt,name=freeze_resist,proto3" json:"freeze_resist,omitempty" bson:"freeze_resist,omitempty"`
+	HpDrop        []*MonsterHPDrop       `protobuf:"bytes,5,rep,name=hp_drop,proto3" json:"hp_drop,omitempty" bson:"hp_drop,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1214,14 +1214,14 @@ func (x *MonsterStatsData) GetHpDrop() []*MonsterHPDrop {
 
 type MonsterResistData struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	FireResist     float64                `protobuf:"fixed64,1,opt,name=fire_resist,proto3" json:"fire_resist,omitempty"`
-	GrassResist    float64                `protobuf:"fixed64,2,opt,name=grass_resist,proto3" json:"grass_resist,omitempty"`
-	WaterResist    float64                `protobuf:"fixed64,3,opt,name=water_resist,proto3" json:"water_resist,omitempty"`
-	ElectricResist float64                `protobuf:"fixed64,4,opt,name=electric_resist,proto3" json:"electric_resist,omitempty"`
-	WindResist     float64                `protobuf:"fixed64,5,opt,name=wind_resist,proto3" json:"wind_resist,omitempty"`
-	IceResist      float64                `protobuf:"fixed64,6,opt,name=ice_resist,proto3" json:"ice_resist,omitempty"`
-	RockResist     float64                `protobuf:"fixed64,7,opt,name=rock_resist,proto3" json:"rock_resist,omitempty"`
-	PhysicalResist float64                `protobuf:"fixed64,8,opt,name=physical_resist,proto3" json:"physical_resist,omitempty"`
+	FireResist     float64                `protobuf:"fixed64,1,opt,name=fire_resist,proto3" json:"fire_resist,omitempty" bson:"fire_resist,omitempty"`
+	GrassResist    float64                `protobuf:"fixed64,2,opt,name=grass_resist,proto3" json:"grass_resist,omitempty" bson:"grass_resist,omitempty"`
+	WaterResist    float64                `protobuf:"fixed64,3,opt,name=water_resist,proto3" json:"water_resist,omitempty" bson:"water_resist,omitempty"`
+	ElectricResist float64                `protobuf:"fixed64,4,opt,name=electric_resist,proto3" json:"electric_resist,omitempty" bson:"electric_resist,omitempty"`
+	WindResist     float64                `protobuf:"fixed64,5,opt,name=wind_resist,proto3" json:"wind_resist,omitempty" bson:"wind_resist,omitempty"`
+	IceResist      float64                `protobuf:"fixed64,6,opt,name=ice_resist,proto3" json:"ice_resist,omitempty" bson:"ice_resist,omitempty"`
+	RockResist     float64                `protobuf:"fixed64,7,opt,name=rock_resist,proto3" json:"rock_resist,omitempty" bson:"rock_resist,omitempty"`
+	PhysicalResist float64                `protobuf:"fixed64,8,opt,name=physical_resist,proto3" json:"physical_resist,omitempty" bson:"physical_resist,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -1314,8 +1314,8 @@ func (x *MonsterResistData) GetPhysicalResist() float64 {
 
 type MonsterHPDrop struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DropId        int32                  `protobuf:"varint,1,opt,name=drop_id,proto3" json:"drop_id,omitempty"`
-	HpPercent     float64                `protobuf:"fixed64,2,opt,name=hp_percent,proto3" json:"hp_percent,omitempty"`
+	DropId        int32                  `protobuf:"varint,1,opt,name=drop_id,proto3" json:"drop_id,omitempty" bson:"drop_id,omitempty"`
+	HpPercent     float64                `protobuf:"fixed64,2,opt,name=hp_percent,proto3" json:"hp_percent,omitempty" bson:"hp_percent,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

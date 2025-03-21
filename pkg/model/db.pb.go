@@ -23,8 +23,8 @@ const (
 
 type DBStatus struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DbTotalCount  int32                  `protobuf:"varint,1,opt,name=db_total_count,proto3" json:"db_total_count,omitempty"`
-	ComputeCount  int32                  `protobuf:"varint,2,opt,name=compute_count,proto3" json:"compute_count,omitempty"`
+	DbTotalCount  int32                  `protobuf:"varint,1,opt,name=db_total_count,proto3" json:"db_total_count,omitempty" bson:"db_total_count,omitempty"`
+	ComputeCount  int32                  `protobuf:"varint,2,opt,name=compute_count,proto3" json:"compute_count,omitempty" bson:"compute_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

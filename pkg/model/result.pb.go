@@ -23,8 +23,8 @@ const (
 
 type Version struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Major         string                 `protobuf:"bytes,1,opt,name=major,proto3" json:"major,omitempty"`
-	Minor         string                 `protobuf:"bytes,2,opt,name=minor,proto3" json:"minor,omitempty"`
+	Major         string                 `protobuf:"bytes,1,opt,name=major,proto3" json:"major,omitempty" bson:"major,omitempty"`
+	Minor         string                 `protobuf:"bytes,2,opt,name=minor,proto3" json:"minor,omitempty" bson:"minor,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -76,25 +76,25 @@ func (x *Version) GetMinor() string {
 type SimulationResult struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// required fields (should always be here regardless of schema version)
-	SchemaVersion        *Version           `protobuf:"bytes,1,opt,name=schema_version,proto3" json:"schema_version,omitempty"`
-	SimVersion           *string            `protobuf:"bytes,2,opt,name=sim_version,proto3,oneof" json:"sim_version,omitempty"`
-	Modified             *bool              `protobuf:"varint,3,opt,name=modified,proto3,oneof" json:"modified,omitempty"`
-	BuildDate            string             `protobuf:"bytes,4,opt,name=build_date,proto3" json:"build_date,omitempty"`
-	SampleSeed           string             `protobuf:"bytes,5,opt,name=sample_seed,proto3" json:"sample_seed,omitempty"`
-	Config               string             `protobuf:"bytes,6,opt,name=config,json=config_file,proto3" json:"config,omitempty"`
-	SimulatorSettings    *SimulatorSettings `protobuf:"bytes,7,opt,name=simulator_settings,proto3" json:"simulator_settings,omitempty"`
-	EnergySettings       *EnergySettings    `protobuf:"bytes,8,opt,name=energy_settings,proto3" json:"energy_settings,omitempty"`
-	InitialCharacter     string             `protobuf:"bytes,9,opt,name=initial_character,proto3" json:"initial_character,omitempty"`
-	CharacterDetails     []*Character       `protobuf:"bytes,10,rep,name=character_details,proto3" json:"character_details,omitempty"`
-	TargetDetails        []*Enemy           `protobuf:"bytes,11,rep,name=target_details,proto3" json:"target_details,omitempty"`
-	PlayerPosition       *Coord             `protobuf:"bytes,16,opt,name=player_position,proto3" json:"player_position,omitempty"`
-	IncompleteCharacters []string           `protobuf:"bytes,17,rep,name=incomplete_characters,proto3" json:"incomplete_characters,omitempty"`
+	SchemaVersion        *Version           `protobuf:"bytes,1,opt,name=schema_version,proto3" json:"schema_version,omitempty" bson:"schema_version,omitempty"`
+	SimVersion           *string            `protobuf:"bytes,2,opt,name=sim_version,proto3,oneof" json:"sim_version,omitempty" bson:"sim_version,omitempty"`
+	Modified             *bool              `protobuf:"varint,3,opt,name=modified,proto3,oneof" json:"modified,omitempty" bson:"modified,omitempty"`
+	BuildDate            string             `protobuf:"bytes,4,opt,name=build_date,proto3" json:"build_date,omitempty" bson:"build_date,omitempty"`
+	SampleSeed           string             `protobuf:"bytes,5,opt,name=sample_seed,proto3" json:"sample_seed,omitempty" bson:"sample_seed,omitempty"`
+	Config               string             `protobuf:"bytes,6,opt,name=config,json=config_file,proto3" json:"config,omitempty" bson:"config_file,omitempty"`
+	SimulatorSettings    *SimulatorSettings `protobuf:"bytes,7,opt,name=simulator_settings,proto3" json:"simulator_settings,omitempty" bson:"simulator_settings,omitempty"`
+	EnergySettings       *EnergySettings    `protobuf:"bytes,8,opt,name=energy_settings,proto3" json:"energy_settings,omitempty" bson:"energy_settings,omitempty"`
+	InitialCharacter     string             `protobuf:"bytes,9,opt,name=initial_character,proto3" json:"initial_character,omitempty" bson:"initial_character,omitempty"`
+	CharacterDetails     []*Character       `protobuf:"bytes,10,rep,name=character_details,proto3" json:"character_details,omitempty" bson:"character_details,omitempty"`
+	TargetDetails        []*Enemy           `protobuf:"bytes,11,rep,name=target_details,proto3" json:"target_details,omitempty" bson:"target_details,omitempty"`
+	PlayerPosition       *Coord             `protobuf:"bytes,16,opt,name=player_position,proto3" json:"player_position,omitempty" bson:"player_position,omitempty"`
+	IncompleteCharacters []string           `protobuf:"bytes,17,rep,name=incomplete_characters,proto3" json:"incomplete_characters,omitempty" bson:"incomplete_characters,omitempty"`
 	// All data that changes per iteration goes here
-	Statistics *SimulationStatistics `protobuf:"bytes,12,opt,name=statistics,proto3" json:"statistics,omitempty"`
+	Statistics *SimulationStatistics `protobuf:"bytes,12,opt,name=statistics,proto3" json:"statistics,omitempty" bson:"statistics,omitempty"`
 	// --- optional metadata fields below ---
-	Mode          SimMode `protobuf:"varint,13,opt,name=mode,proto3,enum=model.SimMode" json:"mode,omitempty"`
-	KeyType       string  `protobuf:"bytes,14,opt,name=key_type,proto3" json:"key_type,omitempty"`
-	CreatedDate   int64   `protobuf:"varint,15,opt,name=created_date,proto3" json:"created_date,omitempty"` //if set to -1 then should result in perm
+	Mode          SimMode `protobuf:"varint,13,opt,name=mode,proto3,enum=model.SimMode" json:"mode,omitempty" bson:"mode,omitempty"`
+	KeyType       string  `protobuf:"bytes,14,opt,name=key_type,proto3" json:"key_type,omitempty" bson:"key_type,omitempty"`
+	CreatedDate   int64   `protobuf:"varint,15,opt,name=created_date,proto3" json:"created_date,omitempty" bson:"created_date,omitempty"` //if set to -1 then should result in perm
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -251,47 +251,47 @@ func (x *SimulationResult) GetCreatedDate() int64 {
 type SimulationStatistics struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// metadata
-	MinSeed    string `protobuf:"bytes,1,opt,name=min_seed,proto3" json:"min_seed,omitempty"`
-	MaxSeed    string `protobuf:"bytes,2,opt,name=max_seed,proto3" json:"max_seed,omitempty"`
-	P25Seed    string `protobuf:"bytes,3,opt,name=p25_seed,proto3" json:"p25_seed,omitempty"`
-	P50Seed    string `protobuf:"bytes,4,opt,name=p50_seed,proto3" json:"p50_seed,omitempty"`
-	P75Seed    string `protobuf:"bytes,5,opt,name=p75_seed,proto3" json:"p75_seed,omitempty"`
-	Iterations uint32 `protobuf:"varint,6,opt,name=iterations,proto3" json:"iterations,omitempty"`
+	MinSeed    string `protobuf:"bytes,1,opt,name=min_seed,proto3" json:"min_seed,omitempty" bson:"min_seed,omitempty"`
+	MaxSeed    string `protobuf:"bytes,2,opt,name=max_seed,proto3" json:"max_seed,omitempty" bson:"max_seed,omitempty"`
+	P25Seed    string `protobuf:"bytes,3,opt,name=p25_seed,proto3" json:"p25_seed,omitempty" bson:"p25_seed,omitempty"`
+	P50Seed    string `protobuf:"bytes,4,opt,name=p50_seed,proto3" json:"p50_seed,omitempty" bson:"p50_seed,omitempty"`
+	P75Seed    string `protobuf:"bytes,5,opt,name=p75_seed,proto3" json:"p75_seed,omitempty" bson:"p75_seed,omitempty"`
+	Iterations uint32 `protobuf:"varint,6,opt,name=iterations,proto3" json:"iterations,omitempty" bson:"iterations,omitempty"`
 	// global overview (global/no group by)
-	Duration      *OverviewStats    `protobuf:"bytes,7,opt,name=duration,proto3" json:"duration,omitempty"`
-	DPS           *OverviewStats    `protobuf:"bytes,8,opt,name=DPS,json=dps,proto3" json:"DPS,omitempty"`
-	RPS           *OverviewStats    `protobuf:"bytes,9,opt,name=RPS,json=rps,proto3" json:"RPS,omitempty"`
-	EPS           *OverviewStats    `protobuf:"bytes,10,opt,name=EPS,json=eps,proto3" json:"EPS,omitempty"`
-	HPS           *OverviewStats    `protobuf:"bytes,11,opt,name=HPS,json=hps,proto3" json:"HPS,omitempty"`
-	SHP           *OverviewStats    `protobuf:"bytes,12,opt,name=SHP,json=shp,proto3" json:"SHP,omitempty"`
-	TotalDamage   *DescriptiveStats `protobuf:"bytes,13,opt,name=total_damage,proto3" json:"total_damage,omitempty"`
-	Warnings      *Warnings         `protobuf:"bytes,14,opt,name=warnings,proto3" json:"warnings,omitempty"`
-	FailedActions []*FailedActions  `protobuf:"bytes,15,rep,name=failed_actions,proto3" json:"failed_actions,omitempty"`
+	Duration      *OverviewStats    `protobuf:"bytes,7,opt,name=duration,proto3" json:"duration,omitempty" bson:"duration,omitempty"`
+	DPS           *OverviewStats    `protobuf:"bytes,8,opt,name=DPS,json=dps,proto3" json:"DPS,omitempty" bson:"dps,omitempty"`
+	RPS           *OverviewStats    `protobuf:"bytes,9,opt,name=RPS,json=rps,proto3" json:"RPS,omitempty" bson:"rps,omitempty"`
+	EPS           *OverviewStats    `protobuf:"bytes,10,opt,name=EPS,json=eps,proto3" json:"EPS,omitempty" bson:"eps,omitempty"`
+	HPS           *OverviewStats    `protobuf:"bytes,11,opt,name=HPS,json=hps,proto3" json:"HPS,omitempty" bson:"hps,omitempty"`
+	SHP           *OverviewStats    `protobuf:"bytes,12,opt,name=SHP,json=shp,proto3" json:"SHP,omitempty" bson:"shp,omitempty"`
+	TotalDamage   *DescriptiveStats `protobuf:"bytes,13,opt,name=total_damage,proto3" json:"total_damage,omitempty" bson:"total_damage,omitempty"`
+	Warnings      *Warnings         `protobuf:"bytes,14,opt,name=warnings,proto3" json:"warnings,omitempty" bson:"warnings,omitempty"`
+	FailedActions []*FailedActions  `protobuf:"bytes,15,rep,name=failed_actions,proto3" json:"failed_actions,omitempty" bson:"failed_actions,omitempty"`
 	// damage
-	ElementDps                   map[string]*DescriptiveStats `protobuf:"bytes,16,rep,name=element_dps,proto3" json:"element_dps,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	TargetDps                    map[int32]*DescriptiveStats  `protobuf:"bytes,17,rep,name=target_dps,proto3" json:"target_dps,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	CharacterDps                 []*DescriptiveStats          `protobuf:"bytes,18,rep,name=character_dps,proto3" json:"character_dps,omitempty"`
-	BreakdownByElementDps        []*ElementStats              `protobuf:"bytes,19,rep,name=breakdown_by_element_dps,json=dps_by_element,proto3" json:"breakdown_by_element_dps,omitempty"`
-	BreakdownByTargetDps         []*TargetStats               `protobuf:"bytes,20,rep,name=breakdown_by_target_dps,json=dps_by_target,proto3" json:"breakdown_by_target_dps,omitempty"`
-	SourceDps                    []*SourceStats               `protobuf:"bytes,24,rep,name=source_dps,proto3" json:"source_dps,omitempty"`
-	SourceDamageInstances        []*SourceStats               `protobuf:"bytes,30,rep,name=source_damage_instances,proto3" json:"source_damage_instances,omitempty"`
-	DamageBuckets                *BucketStats                 `protobuf:"bytes,21,opt,name=damage_buckets,proto3" json:"damage_buckets,omitempty"`
-	CumulativeDamageContribution *CharacterBucketStats        `protobuf:"bytes,22,opt,name=cumulative_damage_contribution,json=cumu_damage_contrib,proto3" json:"cumulative_damage_contribution,omitempty"`
-	CumulativeDamage             *TargetBucketStats           `protobuf:"bytes,31,opt,name=cumulative_damage,json=cumu_damage,proto3" json:"cumulative_damage,omitempty"`
+	ElementDps                   map[string]*DescriptiveStats `protobuf:"bytes,16,rep,name=element_dps,proto3" json:"element_dps,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"element_dps,omitempty"`
+	TargetDps                    map[int32]*DescriptiveStats  `protobuf:"bytes,17,rep,name=target_dps,proto3" json:"target_dps,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"target_dps,omitempty"`
+	CharacterDps                 []*DescriptiveStats          `protobuf:"bytes,18,rep,name=character_dps,proto3" json:"character_dps,omitempty" bson:"character_dps,omitempty"`
+	BreakdownByElementDps        []*ElementStats              `protobuf:"bytes,19,rep,name=breakdown_by_element_dps,json=dps_by_element,proto3" json:"breakdown_by_element_dps,omitempty" bson:"dps_by_element,omitempty"`
+	BreakdownByTargetDps         []*TargetStats               `protobuf:"bytes,20,rep,name=breakdown_by_target_dps,json=dps_by_target,proto3" json:"breakdown_by_target_dps,omitempty" bson:"dps_by_target,omitempty"`
+	SourceDps                    []*SourceStats               `protobuf:"bytes,24,rep,name=source_dps,proto3" json:"source_dps,omitempty" bson:"source_dps,omitempty"`
+	SourceDamageInstances        []*SourceStats               `protobuf:"bytes,30,rep,name=source_damage_instances,proto3" json:"source_damage_instances,omitempty" bson:"source_damage_instances,omitempty"`
+	DamageBuckets                *BucketStats                 `protobuf:"bytes,21,opt,name=damage_buckets,proto3" json:"damage_buckets,omitempty" bson:"damage_buckets,omitempty"`
+	CumulativeDamageContribution *CharacterBucketStats        `protobuf:"bytes,22,opt,name=cumulative_damage_contribution,json=cumu_damage_contrib,proto3" json:"cumulative_damage_contribution,omitempty" bson:"cumu_damage_contrib,omitempty"`
+	CumulativeDamage             *TargetBucketStats           `protobuf:"bytes,31,opt,name=cumulative_damage,json=cumu_damage,proto3" json:"cumulative_damage,omitempty" bson:"cumu_damage,omitempty"`
 	// shield
-	Shields map[string]*ShieldInfo `protobuf:"bytes,23,rep,name=shields,proto3" json:"shields,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Shields map[string]*ShieldInfo `protobuf:"bytes,23,rep,name=shields,proto3" json:"shields,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"shields,omitempty"`
 	// field time
-	FieldTime []*DescriptiveStats `protobuf:"bytes,25,rep,name=field_time,proto3" json:"field_time,omitempty"`
+	FieldTime []*DescriptiveStats `protobuf:"bytes,25,rep,name=field_time,proto3" json:"field_time,omitempty" bson:"field_time,omitempty"`
 	// total source energy
-	TotalSourceEnergy []*SourceStats `protobuf:"bytes,26,rep,name=total_source_energy,proto3" json:"total_source_energy,omitempty"`
+	TotalSourceEnergy []*SourceStats `protobuf:"bytes,26,rep,name=total_source_energy,proto3" json:"total_source_energy,omitempty" bson:"total_source_energy,omitempty"`
 	// source reactions
-	SourceReactions []*SourceStats `protobuf:"bytes,27,rep,name=source_reactions,proto3" json:"source_reactions,omitempty"`
+	SourceReactions []*SourceStats `protobuf:"bytes,27,rep,name=source_reactions,proto3" json:"source_reactions,omitempty" bson:"source_reactions,omitempty"`
 	// character actions
-	CharacterActions []*SourceStats `protobuf:"bytes,28,rep,name=character_actions,proto3" json:"character_actions,omitempty"`
+	CharacterActions []*SourceStats `protobuf:"bytes,28,rep,name=character_actions,proto3" json:"character_actions,omitempty" bson:"character_actions,omitempty"`
 	// target aura uptime
-	TargetAuraUptime []*SourceStats `protobuf:"bytes,29,rep,name=target_aura_uptime,proto3" json:"target_aura_uptime,omitempty"`
+	TargetAuraUptime []*SourceStats `protobuf:"bytes,29,rep,name=target_aura_uptime,proto3" json:"target_aura_uptime,omitempty" bson:"target_aura_uptime,omitempty"`
 	//misc statistics at the end of each sim
-	EndStats      []*EndStats `protobuf:"bytes,32,rep,name=end_stats,proto3" json:"end_stats,omitempty"`
+	EndStats      []*EndStats `protobuf:"bytes,32,rep,name=end_stats,proto3" json:"end_stats,omitempty" bson:"end_stats,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -552,8 +552,8 @@ func (x *SimulationStatistics) GetEndStats() []*EndStats {
 
 type SignedSimulationStatistics struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Stats         *SimulationStatistics  `protobuf:"bytes,1,opt,name=stats,proto3" json:"stats,omitempty"`
-	Hash          string                 `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash,omitempty"`
+	Stats         *SimulationStatistics  `protobuf:"bytes,1,opt,name=stats,proto3" json:"stats,omitempty" bson:"stats,omitempty"`
+	Hash          string                 `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash,omitempty" bson:"hash,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -604,14 +604,14 @@ func (x *SignedSimulationStatistics) GetHash() string {
 
 type OverviewStats struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Min           *float64               `protobuf:"fixed64,1,opt,name=min,proto3,oneof" json:"min,omitempty"`
-	Max           *float64               `protobuf:"fixed64,2,opt,name=max,proto3,oneof" json:"max,omitempty"`
-	Mean          *float64               `protobuf:"fixed64,3,opt,name=mean,proto3,oneof" json:"mean,omitempty"`
-	SD            *float64               `protobuf:"fixed64,4,opt,name=SD,json=sd,proto3,oneof" json:"SD,omitempty"`
-	Q1            *float64               `protobuf:"fixed64,5,opt,name=Q1,json=q1,proto3,oneof" json:"Q1,omitempty"`
-	Q2            *float64               `protobuf:"fixed64,6,opt,name=Q2,json=q2,proto3,oneof" json:"Q2,omitempty"`
-	Q3            *float64               `protobuf:"fixed64,7,opt,name=Q3,json=q3,proto3,oneof" json:"Q3,omitempty"`
-	Hist          []uint32               `protobuf:"varint,8,rep,packed,name=hist,json=histogram,proto3" json:"hist,omitempty"`
+	Min           *float64               `protobuf:"fixed64,1,opt,name=min,proto3,oneof" json:"min,omitempty" bson:"min,omitempty"`
+	Max           *float64               `protobuf:"fixed64,2,opt,name=max,proto3,oneof" json:"max,omitempty" bson:"max,omitempty"`
+	Mean          *float64               `protobuf:"fixed64,3,opt,name=mean,proto3,oneof" json:"mean,omitempty" bson:"mean,omitempty"`
+	SD            *float64               `protobuf:"fixed64,4,opt,name=SD,json=sd,proto3,oneof" json:"SD,omitempty" bson:"sd,omitempty"`
+	Q1            *float64               `protobuf:"fixed64,5,opt,name=Q1,json=q1,proto3,oneof" json:"Q1,omitempty" bson:"q1,omitempty"`
+	Q2            *float64               `protobuf:"fixed64,6,opt,name=Q2,json=q2,proto3,oneof" json:"Q2,omitempty" bson:"q2,omitempty"`
+	Q3            *float64               `protobuf:"fixed64,7,opt,name=Q3,json=q3,proto3,oneof" json:"Q3,omitempty" bson:"q3,omitempty"`
+	Hist          []uint32               `protobuf:"varint,8,rep,packed,name=hist,json=histogram,proto3" json:"hist,omitempty" bson:"histogram,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -704,10 +704,10 @@ func (x *OverviewStats) GetHist() []uint32 {
 
 type DescriptiveStats struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Min           *float64               `protobuf:"fixed64,1,opt,name=min,proto3,oneof" json:"min,omitempty"`
-	Max           *float64               `protobuf:"fixed64,2,opt,name=max,proto3,oneof" json:"max,omitempty"`
-	Mean          *float64               `protobuf:"fixed64,3,opt,name=mean,proto3,oneof" json:"mean,omitempty"`
-	SD            *float64               `protobuf:"fixed64,4,opt,name=SD,json=sd,proto3,oneof" json:"SD,omitempty"`
+	Min           *float64               `protobuf:"fixed64,1,opt,name=min,proto3,oneof" json:"min,omitempty" bson:"min,omitempty"`
+	Max           *float64               `protobuf:"fixed64,2,opt,name=max,proto3,oneof" json:"max,omitempty" bson:"max,omitempty"`
+	Mean          *float64               `protobuf:"fixed64,3,opt,name=mean,proto3,oneof" json:"mean,omitempty" bson:"mean,omitempty"`
+	SD            *float64               `protobuf:"fixed64,4,opt,name=SD,json=sd,proto3,oneof" json:"SD,omitempty" bson:"sd,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -772,7 +772,7 @@ func (x *DescriptiveStats) GetSD() float64 {
 
 type ElementStats struct {
 	state         protoimpl.MessageState       `protogen:"open.v1"`
-	Elements      map[string]*DescriptiveStats `protobuf:"bytes,1,rep,name=elements,proto3" json:"elements,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Elements      map[string]*DescriptiveStats `protobuf:"bytes,1,rep,name=elements,proto3" json:"elements,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"elements,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -816,7 +816,7 @@ func (x *ElementStats) GetElements() map[string]*DescriptiveStats {
 
 type TargetStats struct {
 	state         protoimpl.MessageState      `protogen:"open.v1"`
-	Targets       map[int32]*DescriptiveStats `protobuf:"bytes,1,rep,name=targets,proto3" json:"targets,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Targets       map[int32]*DescriptiveStats `protobuf:"bytes,1,rep,name=targets,proto3" json:"targets,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"targets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -860,7 +860,7 @@ func (x *TargetStats) GetTargets() map[int32]*DescriptiveStats {
 
 type SourceStats struct {
 	state         protoimpl.MessageState       `protogen:"open.v1"`
-	Sources       map[string]*DescriptiveStats `protobuf:"bytes,1,rep,name=sources,proto3" json:"sources,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Sources       map[string]*DescriptiveStats `protobuf:"bytes,1,rep,name=sources,proto3" json:"sources,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"sources,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -904,8 +904,8 @@ func (x *SourceStats) GetSources() map[string]*DescriptiveStats {
 
 type BucketStats struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	BucketSize    uint32                 `protobuf:"varint,1,opt,name=bucket_size,proto3" json:"bucket_size,omitempty"`
-	Buckets       []*DescriptiveStats    `protobuf:"bytes,2,rep,name=buckets,proto3" json:"buckets,omitempty"`
+	BucketSize    uint32                 `protobuf:"varint,1,opt,name=bucket_size,proto3" json:"bucket_size,omitempty" bson:"bucket_size,omitempty"`
+	Buckets       []*DescriptiveStats    `protobuf:"bytes,2,rep,name=buckets,proto3" json:"buckets,omitempty" bson:"buckets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -956,8 +956,8 @@ func (x *BucketStats) GetBuckets() []*DescriptiveStats {
 
 type CharacterBucketStats struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	BucketSize    uint32                 `protobuf:"varint,1,opt,name=bucket_size,proto3" json:"bucket_size,omitempty"`
-	Characters    []*CharacterBuckets    `protobuf:"bytes,2,rep,name=characters,proto3" json:"characters,omitempty"`
+	BucketSize    uint32                 `protobuf:"varint,1,opt,name=bucket_size,proto3" json:"bucket_size,omitempty" bson:"bucket_size,omitempty"`
+	Characters    []*CharacterBuckets    `protobuf:"bytes,2,rep,name=characters,proto3" json:"characters,omitempty" bson:"characters,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1008,7 +1008,7 @@ func (x *CharacterBucketStats) GetCharacters() []*CharacterBuckets {
 
 type CharacterBuckets struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Buckets       []*DescriptiveStats    `protobuf:"bytes,1,rep,name=buckets,proto3" json:"buckets,omitempty"`
+	Buckets       []*DescriptiveStats    `protobuf:"bytes,1,rep,name=buckets,proto3" json:"buckets,omitempty" bson:"buckets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1052,8 +1052,8 @@ func (x *CharacterBuckets) GetBuckets() []*DescriptiveStats {
 
 type TargetBucketStats struct {
 	state         protoimpl.MessageState   `protogen:"open.v1"`
-	BucketSize    uint32                   `protobuf:"varint,1,opt,name=bucket_size,proto3" json:"bucket_size,omitempty"`
-	Targets       map[int32]*TargetBuckets `protobuf:"bytes,2,rep,name=targets,proto3" json:"targets,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	BucketSize    uint32                   `protobuf:"varint,1,opt,name=bucket_size,proto3" json:"bucket_size,omitempty" bson:"bucket_size,omitempty"`
+	Targets       map[int32]*TargetBuckets `protobuf:"bytes,2,rep,name=targets,proto3" json:"targets,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"targets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1104,8 +1104,8 @@ func (x *TargetBucketStats) GetTargets() map[int32]*TargetBuckets {
 
 type TargetBuckets struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Overall       *TargetBucket          `protobuf:"bytes,1,opt,name=overall,proto3" json:"overall,omitempty"`
-	Target        *TargetBucket          `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
+	Overall       *TargetBucket          `protobuf:"bytes,1,opt,name=overall,proto3" json:"overall,omitempty" bson:"overall,omitempty"`
+	Target        *TargetBucket          `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty" bson:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1156,11 +1156,11 @@ func (x *TargetBuckets) GetTarget() *TargetBucket {
 
 type TargetBucket struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Min           []float64              `protobuf:"fixed64,1,rep,packed,name=min,proto3" json:"min,omitempty"`
-	Max           []float64              `protobuf:"fixed64,2,rep,packed,name=max,proto3" json:"max,omitempty"`
-	Q1            []float64              `protobuf:"fixed64,3,rep,packed,name=Q1,json=q1,proto3" json:"Q1,omitempty"`
-	Q2            []float64              `protobuf:"fixed64,4,rep,packed,name=Q2,json=q2,proto3" json:"Q2,omitempty"`
-	Q3            []float64              `protobuf:"fixed64,5,rep,packed,name=Q3,json=q3,proto3" json:"Q3,omitempty"`
+	Min           []float64              `protobuf:"fixed64,1,rep,packed,name=min,proto3" json:"min,omitempty" bson:"min,omitempty"`
+	Max           []float64              `protobuf:"fixed64,2,rep,packed,name=max,proto3" json:"max,omitempty" bson:"max,omitempty"`
+	Q1            []float64              `protobuf:"fixed64,3,rep,packed,name=Q1,json=q1,proto3" json:"Q1,omitempty" bson:"q1,omitempty"`
+	Q2            []float64              `protobuf:"fixed64,4,rep,packed,name=Q2,json=q2,proto3" json:"Q2,omitempty" bson:"q2,omitempty"`
+	Q3            []float64              `protobuf:"fixed64,5,rep,packed,name=Q3,json=q3,proto3" json:"Q3,omitempty" bson:"q3,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1233,14 +1233,14 @@ func (x *TargetBucket) GetQ3() []float64 {
 type Warnings struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// optional unnecessary, missing == false in ui
-	TargetOverlap       bool `protobuf:"varint,1,opt,name=target_overlap,proto3" json:"target_overlap,omitempty"`
-	InsufficientEnergy  bool `protobuf:"varint,2,opt,name=insufficient_energy,proto3" json:"insufficient_energy,omitempty"`
-	InsufficientStamina bool `protobuf:"varint,3,opt,name=insufficient_stamina,proto3" json:"insufficient_stamina,omitempty"`
-	SwapCd              bool `protobuf:"varint,4,opt,name=swap_cd,proto3" json:"swap_cd,omitempty"`
-	SkillCd             bool `protobuf:"varint,5,opt,name=skill_cd,proto3" json:"skill_cd,omitempty"`
-	DashCd              bool `protobuf:"varint,6,opt,name=dash_cd,proto3" json:"dash_cd,omitempty"`
-	BurstCd             bool `protobuf:"varint,7,opt,name=burst_cd,proto3" json:"burst_cd,omitempty"`
-	TimeManip           bool `protobuf:"varint,8,opt,name=time_manip,proto3" json:"time_manip,omitempty"`
+	TargetOverlap       bool `protobuf:"varint,1,opt,name=target_overlap,proto3" json:"target_overlap,omitempty" bson:"target_overlap,omitempty"`
+	InsufficientEnergy  bool `protobuf:"varint,2,opt,name=insufficient_energy,proto3" json:"insufficient_energy,omitempty" bson:"insufficient_energy,omitempty"`
+	InsufficientStamina bool `protobuf:"varint,3,opt,name=insufficient_stamina,proto3" json:"insufficient_stamina,omitempty" bson:"insufficient_stamina,omitempty"`
+	SwapCd              bool `protobuf:"varint,4,opt,name=swap_cd,proto3" json:"swap_cd,omitempty" bson:"swap_cd,omitempty"`
+	SkillCd             bool `protobuf:"varint,5,opt,name=skill_cd,proto3" json:"skill_cd,omitempty" bson:"skill_cd,omitempty"`
+	DashCd              bool `protobuf:"varint,6,opt,name=dash_cd,proto3" json:"dash_cd,omitempty" bson:"dash_cd,omitempty"`
+	BurstCd             bool `protobuf:"varint,7,opt,name=burst_cd,proto3" json:"burst_cd,omitempty" bson:"burst_cd,omitempty"`
+	TimeManip           bool `protobuf:"varint,8,opt,name=time_manip,proto3" json:"time_manip,omitempty" bson:"time_manip,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -1333,13 +1333,13 @@ func (x *Warnings) GetTimeManip() bool {
 
 type FailedActions struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
-	InsufficientEnergy  *DescriptiveStats      `protobuf:"bytes,1,opt,name=insufficient_energy,proto3" json:"insufficient_energy,omitempty"`
-	InsufficientStamina *DescriptiveStats      `protobuf:"bytes,2,opt,name=insufficient_stamina,proto3" json:"insufficient_stamina,omitempty"`
-	SwapCd              *DescriptiveStats      `protobuf:"bytes,3,opt,name=swap_cd,proto3" json:"swap_cd,omitempty"`
-	SkillCd             *DescriptiveStats      `protobuf:"bytes,4,opt,name=skill_cd,proto3" json:"skill_cd,omitempty"`
-	DashCd              *DescriptiveStats      `protobuf:"bytes,5,opt,name=dash_cd,proto3" json:"dash_cd,omitempty"`
-	BurstCd             *DescriptiveStats      `protobuf:"bytes,6,opt,name=burst_cd,proto3" json:"burst_cd,omitempty"`
-	TimeManip           *DescriptiveStats      `protobuf:"bytes,7,opt,name=time_manip,proto3" json:"time_manip,omitempty"`
+	InsufficientEnergy  *DescriptiveStats      `protobuf:"bytes,1,opt,name=insufficient_energy,proto3" json:"insufficient_energy,omitempty" bson:"insufficient_energy,omitempty"`
+	InsufficientStamina *DescriptiveStats      `protobuf:"bytes,2,opt,name=insufficient_stamina,proto3" json:"insufficient_stamina,omitempty" bson:"insufficient_stamina,omitempty"`
+	SwapCd              *DescriptiveStats      `protobuf:"bytes,3,opt,name=swap_cd,proto3" json:"swap_cd,omitempty" bson:"swap_cd,omitempty"`
+	SkillCd             *DescriptiveStats      `protobuf:"bytes,4,opt,name=skill_cd,proto3" json:"skill_cd,omitempty" bson:"skill_cd,omitempty"`
+	DashCd              *DescriptiveStats      `protobuf:"bytes,5,opt,name=dash_cd,proto3" json:"dash_cd,omitempty" bson:"dash_cd,omitempty"`
+	BurstCd             *DescriptiveStats      `protobuf:"bytes,6,opt,name=burst_cd,proto3" json:"burst_cd,omitempty" bson:"burst_cd,omitempty"`
+	TimeManip           *DescriptiveStats      `protobuf:"bytes,7,opt,name=time_manip,proto3" json:"time_manip,omitempty" bson:"time_manip,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -1425,8 +1425,8 @@ func (x *FailedActions) GetTimeManip() *DescriptiveStats {
 
 type ShieldInfo struct {
 	state         protoimpl.MessageState       `protogen:"open.v1"`
-	Hp            map[string]*DescriptiveStats `protobuf:"bytes,1,rep,name=hp,proto3" json:"hp,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	Uptime        *DescriptiveStats            `protobuf:"bytes,2,opt,name=uptime,proto3" json:"uptime,omitempty"`
+	Hp            map[string]*DescriptiveStats `protobuf:"bytes,1,rep,name=hp,proto3" json:"hp,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"hp,omitempty"`
+	Uptime        *DescriptiveStats            `protobuf:"bytes,2,opt,name=uptime,proto3" json:"uptime,omitempty" bson:"uptime,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1477,7 +1477,7 @@ func (x *ShieldInfo) GetUptime() *DescriptiveStats {
 
 type EndStats struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	EndingEnergy  *DescriptiveStats      `protobuf:"bytes,1,opt,name=ending_energy,proto3" json:"ending_energy,omitempty"`
+	EndingEnergy  *DescriptiveStats      `protobuf:"bytes,1,opt,name=ending_energy,proto3" json:"ending_energy,omitempty" bson:"ending_energy,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

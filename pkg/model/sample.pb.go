@@ -24,15 +24,15 @@ const (
 
 type Sample struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
-	BuildDate        string                 `protobuf:"bytes,2,opt,name=build_date,proto3" json:"build_date,omitempty"`
-	SimVersion       *string                `protobuf:"bytes,1,opt,name=sim_version,proto3,oneof" json:"sim_version,omitempty"`
-	Modified         *bool                  `protobuf:"varint,3,opt,name=modified,proto3,oneof" json:"modified,omitempty"`
-	Config           string                 `protobuf:"bytes,4,opt,name=config,proto3" json:"config,omitempty"`
-	InitialCharacter string                 `protobuf:"bytes,5,opt,name=initial_character,proto3" json:"initial_character,omitempty"`
-	CharacterDetails []*Character           `protobuf:"bytes,6,rep,name=character_details,proto3" json:"character_details,omitempty"`
-	TargetDetails    []*Enemy               `protobuf:"bytes,7,rep,name=target_details,proto3" json:"target_details,omitempty"`
-	Seed             string                 `protobuf:"bytes,8,opt,name=seed,proto3" json:"seed,omitempty"`
-	Logs             []*structpb.Struct     `protobuf:"bytes,9,rep,name=logs,proto3" json:"logs,omitempty"`
+	BuildDate        string                 `protobuf:"bytes,2,opt,name=build_date,proto3" json:"build_date,omitempty" bson:"build_date,omitempty"`
+	SimVersion       *string                `protobuf:"bytes,1,opt,name=sim_version,proto3,oneof" json:"sim_version,omitempty" bson:"sim_version,omitempty"`
+	Modified         *bool                  `protobuf:"varint,3,opt,name=modified,proto3,oneof" json:"modified,omitempty" bson:"modified,omitempty"`
+	Config           string                 `protobuf:"bytes,4,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	InitialCharacter string                 `protobuf:"bytes,5,opt,name=initial_character,proto3" json:"initial_character,omitempty" bson:"initial_character,omitempty"`
+	CharacterDetails []*Character           `protobuf:"bytes,6,rep,name=character_details,proto3" json:"character_details,omitempty" bson:"character_details,omitempty"`
+	TargetDetails    []*Enemy               `protobuf:"bytes,7,rep,name=target_details,proto3" json:"target_details,omitempty" bson:"target_details,omitempty"`
+	Seed             string                 `protobuf:"bytes,8,opt,name=seed,proto3" json:"seed,omitempty" bson:"seed,omitempty"`
+	Logs             []*structpb.Struct     `protobuf:"bytes,9,rep,name=logs,proto3" json:"logs,omitempty" bson:"logs,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }

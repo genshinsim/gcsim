@@ -24,10 +24,10 @@ const (
 
 type ShareEntry struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Id            string                  `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
-	Result        *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
-	ExpiresAt     uint64                  `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty"`
-	Submitter     string                  `protobuf:"bytes,4,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	Id            string                  `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
+	Result        *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
+	ExpiresAt     uint64                  `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty" bson:"expires_at,omitempty"`
+	Submitter     string                  `protobuf:"bytes,4,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -92,9 +92,9 @@ func (x *ShareEntry) GetSubmitter() string {
 
 type CreateRequest struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Result        *model.SimulationResult `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
-	ExpiresAt     uint64                  `protobuf:"varint,2,opt,name=expires_at,proto3" json:"expires_at,omitempty"`
-	Submitter     string                  `protobuf:"bytes,3,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	Result        *model.SimulationResult `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
+	ExpiresAt     uint64                  `protobuf:"varint,2,opt,name=expires_at,proto3" json:"expires_at,omitempty" bson:"expires_at,omitempty"`
+	Submitter     string                  `protobuf:"bytes,3,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -152,7 +152,7 @@ func (x *CreateRequest) GetSubmitter() string {
 
 type CreateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -196,7 +196,7 @@ func (x *CreateResponse) GetId() string {
 
 type ReadRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -240,9 +240,9 @@ func (x *ReadRequest) GetId() string {
 
 type ReadResponse struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Id            string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Result        *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
-	ExpiresAt     uint64                  `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty"`
+	Id            string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Result        *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
+	ExpiresAt     uint64                  `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty" bson:"expires_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -300,10 +300,10 @@ func (x *ReadResponse) GetExpiresAt() uint64 {
 
 type UpdateRequest struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Id            string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Result        *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
-	ExpiresAt     uint64                  `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty"`
-	Submitter     string                  `protobuf:"bytes,4,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	Id            string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Result        *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
+	ExpiresAt     uint64                  `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty" bson:"expires_at,omitempty"`
+	Submitter     string                  `protobuf:"bytes,4,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -368,7 +368,7 @@ func (x *UpdateRequest) GetSubmitter() string {
 
 type UpdateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -412,8 +412,8 @@ func (x *UpdateResponse) GetId() string {
 
 type SetTTLRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ExpiresAt     uint64                 `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	ExpiresAt     uint64                 `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty" bson:"expires_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -464,7 +464,7 @@ func (x *SetTTLRequest) GetExpiresAt() uint64 {
 
 type SetTTLResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -508,7 +508,7 @@ func (x *SetTTLResponse) GetId() string {
 
 type DeleteRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -552,7 +552,7 @@ func (x *DeleteRequest) GetId() string {
 
 type DeleteResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` //TODO: add deleted data to response in future
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"` //TODO: add deleted data to response in future
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -632,7 +632,7 @@ func (*RandomRequest) Descriptor() ([]byte, []int) {
 
 type RandomResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

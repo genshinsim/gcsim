@@ -23,10 +23,10 @@ const (
 
 type ComputeFailedEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty"`
-	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
-	Submitter     string                 `protobuf:"bytes,3,opt,name=submitter,proto3" json:"submitter,omitempty"`
-	Reason        string                 `protobuf:"bytes,4,opt,name=reason,proto3" json:"reason,omitempty"`
+	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty" bson:"dbId,omitempty"`
+	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	Submitter     string                 `protobuf:"bytes,3,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
+	Reason        string                 `protobuf:"bytes,4,opt,name=reason,proto3" json:"reason,omitempty" bson:"reason,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -91,8 +91,8 @@ func (x *ComputeFailedEvent) GetReason() string {
 
 type ComputeCompletedEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty"`
-	ShareId       string                 `protobuf:"bytes,2,opt,name=share_id,json=shareId,proto3" json:"share_id,omitempty"`
+	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty" bson:"dbId,omitempty"`
+	ShareId       string                 `protobuf:"bytes,2,opt,name=share_id,json=shareId,proto3" json:"share_id,omitempty" bson:"shareId,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -143,9 +143,9 @@ func (x *ComputeCompletedEvent) GetShareId() string {
 
 type SubmissionDeleteEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty"`
-	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
-	Submitter     string                 `protobuf:"bytes,3,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty" bson:"dbId,omitempty"`
+	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	Submitter     string                 `protobuf:"bytes,3,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -203,9 +203,9 @@ func (x *SubmissionDeleteEvent) GetSubmitter() string {
 
 type EntryReplaceEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty"`
-	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
-	OldConfig     string                 `protobuf:"bytes,3,opt,name=old_config,json=oldConfig,proto3" json:"old_config,omitempty"`
+	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty" bson:"dbId,omitempty"`
+	Config        string                 `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	OldConfig     string                 `protobuf:"bytes,3,opt,name=old_config,json=oldConfig,proto3" json:"old_config,omitempty" bson:"oldConfig,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -263,9 +263,9 @@ func (x *EntryReplaceEvent) GetOldConfig() string {
 
 type DescReplaceEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty"`
-	Desc          string                 `protobuf:"bytes,2,opt,name=desc,proto3" json:"desc,omitempty"`
-	OldDesc       string                 `protobuf:"bytes,3,opt,name=old_desc,json=oldDesc,proto3" json:"old_desc,omitempty"`
+	DbId          string                 `protobuf:"bytes,1,opt,name=db_id,json=dbId,proto3" json:"db_id,omitempty" bson:"dbId,omitempty"`
+	Desc          string                 `protobuf:"bytes,2,opt,name=desc,proto3" json:"desc,omitempty" bson:"desc,omitempty"`
+	OldDesc       string                 `protobuf:"bytes,3,opt,name=old_desc,json=oldDesc,proto3" json:"old_desc,omitempty" bson:"oldDesc,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
