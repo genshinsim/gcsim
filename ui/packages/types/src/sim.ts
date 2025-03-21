@@ -107,7 +107,7 @@ export interface Warnings {
   skill_cd?: boolean;
   dash_cd?: boolean;
   burst_cd?: boolean;
-  timer_manip?: boolean;
+  time_manip?: boolean;
 }
 
 export interface FailedActions {
@@ -117,7 +117,7 @@ export interface FailedActions {
   skill_cd?: FloatStat;
   dash_cd?: FloatStat;
   burst_cd?: FloatStat;
-  timer_manip?: FloatStat;
+  time_manip?: FloatStat;
 }
 
 export interface Shields {

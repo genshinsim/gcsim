@@ -1,14 +1,8 @@
 /* eslint-disable */
-import Long from 'long';
-import _m0 from 'protobufjs/minimal';
-import {SimMode, simModeFromJSON, simModeToJSON} from './enums';
-import {
-  Character,
-  Coord,
-  Enemy,
-  EnergySettings,
-  SimulatorSettings,
-} from './sim';
+import Long from "long";
+import _m0 from "protobufjs/minimal";
+import { SimMode, simModeFromJSON, simModeToJSON } from "./enums";
+import { Character, Coord, Enemy, EnergySettings, SimulatorSettings } from "./sim";
 
 export interface Version {
   major?: string | undefined;
@@ -29,12 +23,18 @@ export interface SimulationResult {
   character_details?: Character[] | undefined;
   target_details?: Enemy[] | undefined;
   player_position?: Coord | undefined;
-  incomplete_characters?: string[] | undefined;
+  incomplete_characters?:
+    | string[]
+    | undefined;
   /** All data that changes per iteration goes here */
-  statistics?: SimulationStatistics | undefined;
+  statistics?:
+    | SimulationStatistics
+    | undefined;
   /** --- optional metadata fields below --- */
   mode?: SimMode | undefined;
-  key_type?: string | undefined;
+  key_type?:
+    | string
+    | undefined;
   /** if set to -1 then should result in perm */
   created_date?: number | undefined;
 }
@@ -46,7 +46,9 @@ export interface SimulationStatistics {
   p25_seed?: string | undefined;
   p50_seed?: string | undefined;
   p75_seed?: string | undefined;
-  iterations?: number | undefined;
+  iterations?:
+    | number
+    | undefined;
   /** global overview (global/no group by) */
   duration?: OverviewStats | undefined;
   dps?: OverviewStats | undefined;
@@ -56,10 +58,12 @@ export interface SimulationStatistics {
   shp?: OverviewStats | undefined;
   total_damage?: DescriptiveStats | undefined;
   warnings?: Warnings | undefined;
-  failed_actions?: FailedActions[] | undefined;
+  failed_actions?:
+    | FailedActions[]
+    | undefined;
   /** damage */
-  element_dps?: {[key: string]: DescriptiveStats} | undefined;
-  target_dps?: {[key: number]: DescriptiveStats} | undefined;
+  element_dps?: { [key: string]: DescriptiveStats } | undefined;
+  target_dps?: { [key: number]: DescriptiveStats } | undefined;
   character_dps?: DescriptiveStats[] | undefined;
   dps_by_element?: ElementStats[] | undefined;
   dps_by_target?: TargetStats[] | undefined;
@@ -67,19 +71,33 @@ export interface SimulationStatistics {
   source_damage_instances?: SourceStats[] | undefined;
   damage_buckets?: BucketStats | undefined;
   cumu_damage_contrib?: CharacterBucketStats | undefined;
-  cumu_damage?: TargetBucketStats | undefined;
+  cumu_damage?:
+    | TargetBucketStats
+    | undefined;
   /** shield */
-  shields?: {[key: string]: ShieldInfo} | undefined;
+  shields?:
+    | { [key: string]: ShieldInfo }
+    | undefined;
   /** field time */
-  field_time?: DescriptiveStats[] | undefined;
+  field_time?:
+    | DescriptiveStats[]
+    | undefined;
   /** total source energy */
-  total_source_energy?: SourceStats[] | undefined;
+  total_source_energy?:
+    | SourceStats[]
+    | undefined;
   /** source reactions */
-  source_reactions?: SourceStats[] | undefined;
+  source_reactions?:
+    | SourceStats[]
+    | undefined;
   /** character actions */
-  character_actions?: SourceStats[] | undefined;
+  character_actions?:
+    | SourceStats[]
+    | undefined;
   /** target aura uptime */
-  target_aura_uptime?: SourceStats[] | undefined;
+  target_aura_uptime?:
+    | SourceStats[]
+    | undefined;
   /** misc statistics at the end of each sim */
   end_stats?: EndStats[] | undefined;
 }
@@ -123,7 +141,7 @@ export interface DescriptiveStats {
 }
 
 export interface ElementStats {
-  elements?: {[key: string]: DescriptiveStats} | undefined;
+  elements?: { [key: string]: DescriptiveStats } | undefined;
 }
 
 export interface ElementStats_ElementsEntry {
@@ -132,7 +150,7 @@ export interface ElementStats_ElementsEntry {
 }
 
 export interface TargetStats {
-  targets?: {[key: number]: DescriptiveStats} | undefined;
+  targets?: { [key: number]: DescriptiveStats } | undefined;
 }
 
 export interface TargetStats_TargetsEntry {
@@ -141,7 +159,7 @@ export interface TargetStats_TargetsEntry {
 }
 
 export interface SourceStats {
-  sources?: {[key: string]: DescriptiveStats} | undefined;
+  sources?: { [key: string]: DescriptiveStats } | undefined;
 }
 
 export interface SourceStats_SourcesEntry {
@@ -165,7 +183,7 @@ export interface CharacterBuckets {
 
 export interface TargetBucketStats {
   bucket_size?: number | undefined;
-  targets?: {[key: number]: TargetBuckets} | undefined;
+  targets?: { [key: number]: TargetBuckets } | undefined;
 }
 
 export interface TargetBucketStats_TargetsEntry {
@@ -195,6 +213,7 @@ export interface Warnings {
   skill_cd?: boolean | undefined;
   dash_cd?: boolean | undefined;
   burst_cd?: boolean | undefined;
+  time_manip?: boolean | undefined;
 }
 
 export interface FailedActions {
@@ -204,10 +223,11 @@ export interface FailedActions {
   skill_cd?: DescriptiveStats | undefined;
   dash_cd?: DescriptiveStats | undefined;
   burst_cd?: DescriptiveStats | undefined;
+  time_manip?: DescriptiveStats | undefined;
 }
 
 export interface ShieldInfo {
-  hp?: {[key: string]: DescriptiveStats} | undefined;
+  hp?: { [key: string]: DescriptiveStats } | undefined;
   uptime?: DescriptiveStats | undefined;
 }
 
@@ -221,26 +241,22 @@ export interface EndStats {
 }
 
 function createBaseVersion(): Version {
-  return {major: '', minor: ''};
+  return { major: "", minor: "" };
 }
 
 export const Version = {
-  encode(
-    message: Version,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.major !== undefined && message.major !== '') {
+  encode(message: Version, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.major !== undefined && message.major !== "") {
       writer.uint32(10).string(message.major);
     }
-    if (message.minor !== undefined && message.minor !== '') {
+    if (message.minor !== undefined && message.minor !== "") {
       writer.uint32(18).string(message.minor);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Version {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseVersion();
     while (reader.pos < end) {
@@ -271,17 +287,17 @@ export const Version = {
 
   fromJSON(object: any): Version {
     return {
-      major: isSet(object.major) ? globalThis.String(object.major) : '',
-      minor: isSet(object.minor) ? globalThis.String(object.minor) : '',
+      major: isSet(object.major) ? globalThis.String(object.major) : "",
+      minor: isSet(object.minor) ? globalThis.String(object.minor) : "",
     };
   },
 
   toJSON(message: Version): unknown {
     const obj: any = {};
-    if (message.major !== undefined && message.major !== '') {
+    if (message.major !== undefined && message.major !== "") {
       obj.major = message.major;
     }
-    if (message.minor !== undefined && message.minor !== '') {
+    if (message.minor !== undefined && message.minor !== "") {
       obj.minor = message.minor;
     }
     return obj;
@@ -292,8 +308,8 @@ export const Version = {
   },
   fromPartial<I extends Exact<DeepPartial<Version>, I>>(object: I): Version {
     const message = createBaseVersion();
-    message.major = object.major ?? '';
-    message.minor = object.minor ?? '';
+    message.major = object.major ?? "";
+    message.minor = object.minor ?? "";
     return message;
   },
 };
@@ -303,28 +319,25 @@ function createBaseSimulationResult(): SimulationResult {
     schema_version: undefined,
     sim_version: undefined,
     modified: undefined,
-    build_date: '',
-    sample_seed: '',
-    config_file: '',
+    build_date: "",
+    sample_seed: "",
+    config_file: "",
     simulator_settings: undefined,
     energy_settings: undefined,
-    initial_character: '',
+    initial_character: "",
     character_details: [],
     target_details: [],
     player_position: undefined,
     incomplete_characters: [],
     statistics: undefined,
     mode: 0,
-    key_type: '',
+    key_type: "",
     created_date: 0,
   };
 }
 
 export const SimulationResult = {
-  encode(
-    message: SimulationResult,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: SimulationResult, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.schema_version !== undefined) {
       Version.encode(message.schema_version, writer.uint32(10).fork()).ldelim();
     }
@@ -334,45 +347,30 @@ export const SimulationResult = {
     if (message.modified !== undefined) {
       writer.uint32(24).bool(message.modified);
     }
-    if (message.build_date !== undefined && message.build_date !== '') {
+    if (message.build_date !== undefined && message.build_date !== "") {
       writer.uint32(34).string(message.build_date);
     }
-    if (message.sample_seed !== undefined && message.sample_seed !== '') {
+    if (message.sample_seed !== undefined && message.sample_seed !== "") {
       writer.uint32(42).string(message.sample_seed);
     }
-    if (message.config_file !== undefined && message.config_file !== '') {
+    if (message.config_file !== undefined && message.config_file !== "") {
       writer.uint32(50).string(message.config_file);
     }
     if (message.simulator_settings !== undefined) {
-      SimulatorSettings.encode(
-        message.simulator_settings,
-        writer.uint32(58).fork(),
-      ).ldelim();
+      SimulatorSettings.encode(message.simulator_settings, writer.uint32(58).fork()).ldelim();
     }
     if (message.energy_settings !== undefined) {
-      EnergySettings.encode(
-        message.energy_settings,
-        writer.uint32(66).fork(),
-      ).ldelim();
+      EnergySettings.encode(message.energy_settings, writer.uint32(66).fork()).ldelim();
     }
-    if (
-      message.initial_character !== undefined &&
-      message.initial_character !== ''
-    ) {
+    if (message.initial_character !== undefined && message.initial_character !== "") {
       writer.uint32(74).string(message.initial_character);
     }
-    if (
-      message.character_details !== undefined &&
-      message.character_details.length !== 0
-    ) {
+    if (message.character_details !== undefined && message.character_details.length !== 0) {
       for (const v of message.character_details) {
         Character.encode(v!, writer.uint32(82).fork()).ldelim();
       }
     }
-    if (
-      message.target_details !== undefined &&
-      message.target_details.length !== 0
-    ) {
+    if (message.target_details !== undefined && message.target_details.length !== 0) {
       for (const v of message.target_details) {
         Enemy.encode(v!, writer.uint32(90).fork()).ldelim();
       }
@@ -380,24 +378,18 @@ export const SimulationResult = {
     if (message.player_position !== undefined) {
       Coord.encode(message.player_position, writer.uint32(130).fork()).ldelim();
     }
-    if (
-      message.incomplete_characters !== undefined &&
-      message.incomplete_characters.length !== 0
-    ) {
+    if (message.incomplete_characters !== undefined && message.incomplete_characters.length !== 0) {
       for (const v of message.incomplete_characters) {
         writer.uint32(138).string(v!);
       }
     }
     if (message.statistics !== undefined) {
-      SimulationStatistics.encode(
-        message.statistics,
-        writer.uint32(98).fork(),
-      ).ldelim();
+      SimulationStatistics.encode(message.statistics, writer.uint32(98).fork()).ldelim();
     }
     if (message.mode !== undefined && message.mode !== 0) {
       writer.uint32(104).int32(message.mode);
     }
-    if (message.key_type !== undefined && message.key_type !== '') {
+    if (message.key_type !== undefined && message.key_type !== "") {
       writer.uint32(114).string(message.key_type);
     }
     if (message.created_date !== undefined && message.created_date !== 0) {
@@ -407,8 +399,7 @@ export const SimulationResult = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SimulationResult {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSimulationResult();
     while (reader.pos < end) {
@@ -461,20 +452,14 @@ export const SimulationResult = {
             break;
           }
 
-          message.simulator_settings = SimulatorSettings.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.simulator_settings = SimulatorSettings.decode(reader, reader.uint32());
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.energy_settings = EnergySettings.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.energy_settings = EnergySettings.decode(reader, reader.uint32());
           continue;
         case 9:
           if (tag !== 74) {
@@ -488,9 +473,7 @@ export const SimulationResult = {
             break;
           }
 
-          message.character_details!.push(
-            Character.decode(reader, reader.uint32()),
-          );
+          message.character_details!.push(Character.decode(reader, reader.uint32()));
           continue;
         case 11:
           if (tag !== 90) {
@@ -518,10 +501,7 @@ export const SimulationResult = {
             break;
           }
 
-          message.statistics = SimulationStatistics.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.statistics = SimulationStatistics.decode(reader, reader.uint32());
           continue;
         case 13:
           if (tag !== 104) {
@@ -555,57 +535,31 @@ export const SimulationResult = {
 
   fromJSON(object: any): SimulationResult {
     return {
-      schema_version: isSet(object.schema_version)
-        ? Version.fromJSON(object.schema_version)
-        : undefined,
-      sim_version: isSet(object.sim_version)
-        ? globalThis.String(object.sim_version)
-        : undefined,
-      modified: isSet(object.modified)
-        ? globalThis.Boolean(object.modified)
-        : undefined,
-      build_date: isSet(object.build_date)
-        ? globalThis.String(object.build_date)
-        : '',
-      sample_seed: isSet(object.sample_seed)
-        ? globalThis.String(object.sample_seed)
-        : '',
-      config_file: isSet(object.config_file)
-        ? globalThis.String(object.config_file)
-        : '',
+      schema_version: isSet(object.schema_version) ? Version.fromJSON(object.schema_version) : undefined,
+      sim_version: isSet(object.sim_version) ? globalThis.String(object.sim_version) : undefined,
+      modified: isSet(object.modified) ? globalThis.Boolean(object.modified) : undefined,
+      build_date: isSet(object.build_date) ? globalThis.String(object.build_date) : "",
+      sample_seed: isSet(object.sample_seed) ? globalThis.String(object.sample_seed) : "",
+      config_file: isSet(object.config_file) ? globalThis.String(object.config_file) : "",
       simulator_settings: isSet(object.simulator_settings)
         ? SimulatorSettings.fromJSON(object.simulator_settings)
         : undefined,
-      energy_settings: isSet(object.energy_settings)
-        ? EnergySettings.fromJSON(object.energy_settings)
-        : undefined,
-      initial_character: isSet(object.initial_character)
-        ? globalThis.String(object.initial_character)
-        : '',
+      energy_settings: isSet(object.energy_settings) ? EnergySettings.fromJSON(object.energy_settings) : undefined,
+      initial_character: isSet(object.initial_character) ? globalThis.String(object.initial_character) : "",
       character_details: globalThis.Array.isArray(object?.character_details)
         ? object.character_details.map((e: any) => Character.fromJSON(e))
         : [],
       target_details: globalThis.Array.isArray(object?.target_details)
         ? object.target_details.map((e: any) => Enemy.fromJSON(e))
         : [],
-      player_position: isSet(object.player_position)
-        ? Coord.fromJSON(object.player_position)
-        : undefined,
-      incomplete_characters: globalThis.Array.isArray(
-        object?.incomplete_characters,
-      )
+      player_position: isSet(object.player_position) ? Coord.fromJSON(object.player_position) : undefined,
+      incomplete_characters: globalThis.Array.isArray(object?.incomplete_characters)
         ? object.incomplete_characters.map((e: any) => globalThis.String(e))
         : [],
-      statistics: isSet(object.statistics)
-        ? SimulationStatistics.fromJSON(object.statistics)
-        : undefined,
+      statistics: isSet(object.statistics) ? SimulationStatistics.fromJSON(object.statistics) : undefined,
       mode: isSet(object.mode) ? simModeFromJSON(object.mode) : 0,
-      key_type: isSet(object.key_type)
-        ? globalThis.String(object.key_type)
-        : '',
-      created_date: isSet(object.created_date)
-        ? globalThis.Number(object.created_date)
-        : 0,
+      key_type: isSet(object.key_type) ? globalThis.String(object.key_type) : "",
+      created_date: isSet(object.created_date) ? globalThis.Number(object.created_date) : 0,
     };
   },
 
@@ -620,33 +574,26 @@ export const SimulationResult = {
     if (message.modified !== undefined) {
       obj.modified = message.modified;
     }
-    if (message.build_date !== undefined && message.build_date !== '') {
+    if (message.build_date !== undefined && message.build_date !== "") {
       obj.build_date = message.build_date;
     }
-    if (message.sample_seed !== undefined && message.sample_seed !== '') {
+    if (message.sample_seed !== undefined && message.sample_seed !== "") {
       obj.sample_seed = message.sample_seed;
     }
-    if (message.config_file !== undefined && message.config_file !== '') {
+    if (message.config_file !== undefined && message.config_file !== "") {
       obj.config_file = message.config_file;
     }
     if (message.simulator_settings !== undefined) {
-      obj.simulator_settings = SimulatorSettings.toJSON(
-        message.simulator_settings,
-      );
+      obj.simulator_settings = SimulatorSettings.toJSON(message.simulator_settings);
     }
     if (message.energy_settings !== undefined) {
       obj.energy_settings = EnergySettings.toJSON(message.energy_settings);
     }
-    if (
-      message.initial_character !== undefined &&
-      message.initial_character !== ''
-    ) {
+    if (message.initial_character !== undefined && message.initial_character !== "") {
       obj.initial_character = message.initial_character;
     }
     if (message.character_details?.length) {
-      obj.character_details = message.character_details.map((e) =>
-        Character.toJSON(e),
-      );
+      obj.character_details = message.character_details.map((e) => Character.toJSON(e));
     }
     if (message.target_details?.length) {
       obj.target_details = message.target_details.map((e) => Enemy.toJSON(e));
@@ -663,7 +610,7 @@ export const SimulationResult = {
     if (message.mode !== undefined && message.mode !== 0) {
       obj.mode = simModeToJSON(message.mode);
     }
-    if (message.key_type !== undefined && message.key_type !== '') {
+    if (message.key_type !== undefined && message.key_type !== "") {
       obj.key_type = message.key_type;
     }
     if (message.created_date !== undefined && message.created_date !== 0) {
@@ -672,50 +619,37 @@ export const SimulationResult = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<SimulationResult>, I>>(
-    base?: I,
-  ): SimulationResult {
+  create<I extends Exact<DeepPartial<SimulationResult>, I>>(base?: I): SimulationResult {
     return SimulationResult.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<SimulationResult>, I>>(
-    object: I,
-  ): SimulationResult {
+  fromPartial<I extends Exact<DeepPartial<SimulationResult>, I>>(object: I): SimulationResult {
     const message = createBaseSimulationResult();
-    message.schema_version =
-      object.schema_version !== undefined && object.schema_version !== null
-        ? Version.fromPartial(object.schema_version)
-        : undefined;
+    message.schema_version = (object.schema_version !== undefined && object.schema_version !== null)
+      ? Version.fromPartial(object.schema_version)
+      : undefined;
     message.sim_version = object.sim_version ?? undefined;
     message.modified = object.modified ?? undefined;
-    message.build_date = object.build_date ?? '';
-    message.sample_seed = object.sample_seed ?? '';
-    message.config_file = object.config_file ?? '';
-    message.simulator_settings =
-      object.simulator_settings !== undefined &&
-      object.simulator_settings !== null
-        ? SimulatorSettings.fromPartial(object.simulator_settings)
-        : undefined;
-    message.energy_settings =
-      object.energy_settings !== undefined && object.energy_settings !== null
-        ? EnergySettings.fromPartial(object.energy_settings)
-        : undefined;
-    message.initial_character = object.initial_character ?? '';
-    message.character_details =
-      object.character_details?.map((e) => Character.fromPartial(e)) || [];
-    message.target_details =
-      object.target_details?.map((e) => Enemy.fromPartial(e)) || [];
-    message.player_position =
-      object.player_position !== undefined && object.player_position !== null
-        ? Coord.fromPartial(object.player_position)
-        : undefined;
-    message.incomplete_characters =
-      object.incomplete_characters?.map((e) => e) || [];
-    message.statistics =
-      object.statistics !== undefined && object.statistics !== null
-        ? SimulationStatistics.fromPartial(object.statistics)
-        : undefined;
+    message.build_date = object.build_date ?? "";
+    message.sample_seed = object.sample_seed ?? "";
+    message.config_file = object.config_file ?? "";
+    message.simulator_settings = (object.simulator_settings !== undefined && object.simulator_settings !== null)
+      ? SimulatorSettings.fromPartial(object.simulator_settings)
+      : undefined;
+    message.energy_settings = (object.energy_settings !== undefined && object.energy_settings !== null)
+      ? EnergySettings.fromPartial(object.energy_settings)
+      : undefined;
+    message.initial_character = object.initial_character ?? "";
+    message.character_details = object.character_details?.map((e) => Character.fromPartial(e)) || [];
+    message.target_details = object.target_details?.map((e) => Enemy.fromPartial(e)) || [];
+    message.player_position = (object.player_position !== undefined && object.player_position !== null)
+      ? Coord.fromPartial(object.player_position)
+      : undefined;
+    message.incomplete_characters = object.incomplete_characters?.map((e) => e) || [];
+    message.statistics = (object.statistics !== undefined && object.statistics !== null)
+      ? SimulationStatistics.fromPartial(object.statistics)
+      : undefined;
     message.mode = object.mode ?? 0;
-    message.key_type = object.key_type ?? '';
+    message.key_type = object.key_type ?? "";
     message.created_date = object.created_date ?? 0;
     return message;
   },
@@ -723,11 +657,11 @@ export const SimulationResult = {
 
 function createBaseSimulationStatistics(): SimulationStatistics {
   return {
-    min_seed: '',
-    max_seed: '',
-    p25_seed: '',
-    p50_seed: '',
-    p75_seed: '',
+    min_seed: "",
+    max_seed: "",
+    p25_seed: "",
+    p50_seed: "",
+    p75_seed: "",
     iterations: 0,
     duration: undefined,
     dps: undefined,
@@ -759,23 +693,20 @@ function createBaseSimulationStatistics(): SimulationStatistics {
 }
 
 export const SimulationStatistics = {
-  encode(
-    message: SimulationStatistics,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.min_seed !== undefined && message.min_seed !== '') {
+  encode(message: SimulationStatistics, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.min_seed !== undefined && message.min_seed !== "") {
       writer.uint32(10).string(message.min_seed);
     }
-    if (message.max_seed !== undefined && message.max_seed !== '') {
+    if (message.max_seed !== undefined && message.max_seed !== "") {
       writer.uint32(18).string(message.max_seed);
     }
-    if (message.p25_seed !== undefined && message.p25_seed !== '') {
+    if (message.p25_seed !== undefined && message.p25_seed !== "") {
       writer.uint32(26).string(message.p25_seed);
     }
-    if (message.p50_seed !== undefined && message.p50_seed !== '') {
+    if (message.p50_seed !== undefined && message.p50_seed !== "") {
       writer.uint32(34).string(message.p50_seed);
     }
-    if (message.p75_seed !== undefined && message.p75_seed !== '') {
+    if (message.p75_seed !== undefined && message.p75_seed !== "") {
       writer.uint32(42).string(message.p75_seed);
     }
     if (message.iterations !== undefined && message.iterations !== 0) {
@@ -800,54 +731,33 @@ export const SimulationStatistics = {
       OverviewStats.encode(message.shp, writer.uint32(98).fork()).ldelim();
     }
     if (message.total_damage !== undefined) {
-      DescriptiveStats.encode(
-        message.total_damage,
-        writer.uint32(106).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.total_damage, writer.uint32(106).fork()).ldelim();
     }
     if (message.warnings !== undefined) {
       Warnings.encode(message.warnings, writer.uint32(114).fork()).ldelim();
     }
-    if (
-      message.failed_actions !== undefined &&
-      message.failed_actions.length !== 0
-    ) {
+    if (message.failed_actions !== undefined && message.failed_actions.length !== 0) {
       for (const v of message.failed_actions) {
         FailedActions.encode(v!, writer.uint32(122).fork()).ldelim();
       }
     }
     Object.entries(message.element_dps || {}).forEach(([key, value]) => {
-      SimulationStatistics_ElementDpsEntry.encode(
-        {key: key as any, value},
-        writer.uint32(130).fork(),
-      ).ldelim();
+      SimulationStatistics_ElementDpsEntry.encode({ key: key as any, value }, writer.uint32(130).fork()).ldelim();
     });
     Object.entries(message.target_dps || {}).forEach(([key, value]) => {
-      SimulationStatistics_TargetDpsEntry.encode(
-        {key: key as any, value},
-        writer.uint32(138).fork(),
-      ).ldelim();
+      SimulationStatistics_TargetDpsEntry.encode({ key: key as any, value }, writer.uint32(138).fork()).ldelim();
     });
-    if (
-      message.character_dps !== undefined &&
-      message.character_dps.length !== 0
-    ) {
+    if (message.character_dps !== undefined && message.character_dps.length !== 0) {
       for (const v of message.character_dps) {
         DescriptiveStats.encode(v!, writer.uint32(146).fork()).ldelim();
       }
     }
-    if (
-      message.dps_by_element !== undefined &&
-      message.dps_by_element.length !== 0
-    ) {
+    if (message.dps_by_element !== undefined && message.dps_by_element.length !== 0) {
       for (const v of message.dps_by_element) {
         ElementStats.encode(v!, writer.uint32(154).fork()).ldelim();
       }
     }
-    if (
-      message.dps_by_target !== undefined &&
-      message.dps_by_target.length !== 0
-    ) {
+    if (message.dps_by_target !== undefined && message.dps_by_target.length !== 0) {
       for (const v of message.dps_by_target) {
         TargetStats.encode(v!, writer.uint32(162).fork()).ldelim();
       }
@@ -857,71 +767,44 @@ export const SimulationStatistics = {
         SourceStats.encode(v!, writer.uint32(194).fork()).ldelim();
       }
     }
-    if (
-      message.source_damage_instances !== undefined &&
-      message.source_damage_instances.length !== 0
-    ) {
+    if (message.source_damage_instances !== undefined && message.source_damage_instances.length !== 0) {
       for (const v of message.source_damage_instances) {
         SourceStats.encode(v!, writer.uint32(242).fork()).ldelim();
       }
     }
     if (message.damage_buckets !== undefined) {
-      BucketStats.encode(
-        message.damage_buckets,
-        writer.uint32(170).fork(),
-      ).ldelim();
+      BucketStats.encode(message.damage_buckets, writer.uint32(170).fork()).ldelim();
     }
     if (message.cumu_damage_contrib !== undefined) {
-      CharacterBucketStats.encode(
-        message.cumu_damage_contrib,
-        writer.uint32(178).fork(),
-      ).ldelim();
+      CharacterBucketStats.encode(message.cumu_damage_contrib, writer.uint32(178).fork()).ldelim();
     }
     if (message.cumu_damage !== undefined) {
-      TargetBucketStats.encode(
-        message.cumu_damage,
-        writer.uint32(250).fork(),
-      ).ldelim();
+      TargetBucketStats.encode(message.cumu_damage, writer.uint32(250).fork()).ldelim();
     }
     Object.entries(message.shields || {}).forEach(([key, value]) => {
-      SimulationStatistics_ShieldsEntry.encode(
-        {key: key as any, value},
-        writer.uint32(186).fork(),
-      ).ldelim();
+      SimulationStatistics_ShieldsEntry.encode({ key: key as any, value }, writer.uint32(186).fork()).ldelim();
     });
     if (message.field_time !== undefined && message.field_time.length !== 0) {
       for (const v of message.field_time) {
         DescriptiveStats.encode(v!, writer.uint32(202).fork()).ldelim();
       }
     }
-    if (
-      message.total_source_energy !== undefined &&
-      message.total_source_energy.length !== 0
-    ) {
+    if (message.total_source_energy !== undefined && message.total_source_energy.length !== 0) {
       for (const v of message.total_source_energy) {
         SourceStats.encode(v!, writer.uint32(210).fork()).ldelim();
       }
     }
-    if (
-      message.source_reactions !== undefined &&
-      message.source_reactions.length !== 0
-    ) {
+    if (message.source_reactions !== undefined && message.source_reactions.length !== 0) {
       for (const v of message.source_reactions) {
         SourceStats.encode(v!, writer.uint32(218).fork()).ldelim();
       }
     }
-    if (
-      message.character_actions !== undefined &&
-      message.character_actions.length !== 0
-    ) {
+    if (message.character_actions !== undefined && message.character_actions.length !== 0) {
       for (const v of message.character_actions) {
         SourceStats.encode(v!, writer.uint32(226).fork()).ldelim();
       }
     }
-    if (
-      message.target_aura_uptime !== undefined &&
-      message.target_aura_uptime.length !== 0
-    ) {
+    if (message.target_aura_uptime !== undefined && message.target_aura_uptime.length !== 0) {
       for (const v of message.target_aura_uptime) {
         SourceStats.encode(v!, writer.uint32(234).fork()).ldelim();
       }
@@ -934,12 +817,8 @@ export const SimulationStatistics = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): SimulationStatistics {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SimulationStatistics {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSimulationStatistics();
     while (reader.pos < end) {
@@ -1034,10 +913,7 @@ export const SimulationStatistics = {
             break;
           }
 
-          message.total_damage = DescriptiveStats.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.total_damage = DescriptiveStats.decode(reader, reader.uint32());
           continue;
         case 14:
           if (tag !== 114) {
@@ -1051,19 +927,14 @@ export const SimulationStatistics = {
             break;
           }
 
-          message.failed_actions!.push(
-            FailedActions.decode(reader, reader.uint32()),
-          );
+          message.failed_actions!.push(FailedActions.decode(reader, reader.uint32()));
           continue;
         case 16:
           if (tag !== 130) {
             break;
           }
 
-          const entry16 = SimulationStatistics_ElementDpsEntry.decode(
-            reader,
-            reader.uint32(),
-          );
+          const entry16 = SimulationStatistics_ElementDpsEntry.decode(reader, reader.uint32());
           if (entry16.value !== undefined) {
             message.element_dps![entry16.key] = entry16.value;
           }
@@ -1073,10 +944,7 @@ export const SimulationStatistics = {
             break;
           }
 
-          const entry17 = SimulationStatistics_TargetDpsEntry.decode(
-            reader,
-            reader.uint32(),
-          );
+          const entry17 = SimulationStatistics_TargetDpsEntry.decode(reader, reader.uint32());
           if (entry17.value !== undefined) {
             message.target_dps![entry17.key] = entry17.value;
           }
@@ -1086,27 +954,21 @@ export const SimulationStatistics = {
             break;
           }
 
-          message.character_dps!.push(
-            DescriptiveStats.decode(reader, reader.uint32()),
-          );
+          message.character_dps!.push(DescriptiveStats.decode(reader, reader.uint32()));
           continue;
         case 19:
           if (tag !== 154) {
             break;
           }
 
-          message.dps_by_element!.push(
-            ElementStats.decode(reader, reader.uint32()),
-          );
+          message.dps_by_element!.push(ElementStats.decode(reader, reader.uint32()));
           continue;
         case 20:
           if (tag !== 162) {
             break;
           }
 
-          message.dps_by_target!.push(
-            TargetStats.decode(reader, reader.uint32()),
-          );
+          message.dps_by_target!.push(TargetStats.decode(reader, reader.uint32()));
           continue;
         case 24:
           if (tag !== 194) {
@@ -1120,9 +982,7 @@ export const SimulationStatistics = {
             break;
           }
 
-          message.source_damage_instances!.push(
-            SourceStats.decode(reader, reader.uint32()),
-          );
+          message.source_damage_instances!.push(SourceStats.decode(reader, reader.uint32()));
           continue;
         case 21:
           if (tag !== 170) {
@@ -1136,30 +996,21 @@ export const SimulationStatistics = {
             break;
           }
 
-          message.cumu_damage_contrib = CharacterBucketStats.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.cumu_damage_contrib = CharacterBucketStats.decode(reader, reader.uint32());
           continue;
         case 31:
           if (tag !== 250) {
             break;
           }
 
-          message.cumu_damage = TargetBucketStats.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.cumu_damage = TargetBucketStats.decode(reader, reader.uint32());
           continue;
         case 23:
           if (tag !== 186) {
             break;
           }
 
-          const entry23 = SimulationStatistics_ShieldsEntry.decode(
-            reader,
-            reader.uint32(),
-          );
+          const entry23 = SimulationStatistics_ShieldsEntry.decode(reader, reader.uint32());
           if (entry23.value !== undefined) {
             message.shields![entry23.key] = entry23.value;
           }
@@ -1169,45 +1020,35 @@ export const SimulationStatistics = {
             break;
           }
 
-          message.field_time!.push(
-            DescriptiveStats.decode(reader, reader.uint32()),
-          );
+          message.field_time!.push(DescriptiveStats.decode(reader, reader.uint32()));
           continue;
         case 26:
           if (tag !== 210) {
             break;
           }
 
-          message.total_source_energy!.push(
-            SourceStats.decode(reader, reader.uint32()),
-          );
+          message.total_source_energy!.push(SourceStats.decode(reader, reader.uint32()));
           continue;
         case 27:
           if (tag !== 218) {
             break;
           }
 
-          message.source_reactions!.push(
-            SourceStats.decode(reader, reader.uint32()),
-          );
+          message.source_reactions!.push(SourceStats.decode(reader, reader.uint32()));
           continue;
         case 28:
           if (tag !== 226) {
             break;
           }
 
-          message.character_actions!.push(
-            SourceStats.decode(reader, reader.uint32()),
-          );
+          message.character_actions!.push(SourceStats.decode(reader, reader.uint32()));
           continue;
         case 29:
           if (tag !== 234) {
             break;
           }
 
-          message.target_aura_uptime!.push(
-            SourceStats.decode(reader, reader.uint32()),
-          );
+          message.target_aura_uptime!.push(SourceStats.decode(reader, reader.uint32()));
           continue;
         case 32:
           if (tag !== 258) {
@@ -1227,56 +1068,34 @@ export const SimulationStatistics = {
 
   fromJSON(object: any): SimulationStatistics {
     return {
-      min_seed: isSet(object.min_seed)
-        ? globalThis.String(object.min_seed)
-        : '',
-      max_seed: isSet(object.max_seed)
-        ? globalThis.String(object.max_seed)
-        : '',
-      p25_seed: isSet(object.p25_seed)
-        ? globalThis.String(object.p25_seed)
-        : '',
-      p50_seed: isSet(object.p50_seed)
-        ? globalThis.String(object.p50_seed)
-        : '',
-      p75_seed: isSet(object.p75_seed)
-        ? globalThis.String(object.p75_seed)
-        : '',
-      iterations: isSet(object.iterations)
-        ? globalThis.Number(object.iterations)
-        : 0,
-      duration: isSet(object.duration)
-        ? OverviewStats.fromJSON(object.duration)
-        : undefined,
+      min_seed: isSet(object.min_seed) ? globalThis.String(object.min_seed) : "",
+      max_seed: isSet(object.max_seed) ? globalThis.String(object.max_seed) : "",
+      p25_seed: isSet(object.p25_seed) ? globalThis.String(object.p25_seed) : "",
+      p50_seed: isSet(object.p50_seed) ? globalThis.String(object.p50_seed) : "",
+      p75_seed: isSet(object.p75_seed) ? globalThis.String(object.p75_seed) : "",
+      iterations: isSet(object.iterations) ? globalThis.Number(object.iterations) : 0,
+      duration: isSet(object.duration) ? OverviewStats.fromJSON(object.duration) : undefined,
       dps: isSet(object.dps) ? OverviewStats.fromJSON(object.dps) : undefined,
       rps: isSet(object.rps) ? OverviewStats.fromJSON(object.rps) : undefined,
       eps: isSet(object.eps) ? OverviewStats.fromJSON(object.eps) : undefined,
       hps: isSet(object.hps) ? OverviewStats.fromJSON(object.hps) : undefined,
       shp: isSet(object.shp) ? OverviewStats.fromJSON(object.shp) : undefined,
-      total_damage: isSet(object.total_damage)
-        ? DescriptiveStats.fromJSON(object.total_damage)
-        : undefined,
-      warnings: isSet(object.warnings)
-        ? Warnings.fromJSON(object.warnings)
-        : undefined,
+      total_damage: isSet(object.total_damage) ? DescriptiveStats.fromJSON(object.total_damage) : undefined,
+      warnings: isSet(object.warnings) ? Warnings.fromJSON(object.warnings) : undefined,
       failed_actions: globalThis.Array.isArray(object?.failed_actions)
         ? object.failed_actions.map((e: any) => FailedActions.fromJSON(e))
         : [],
       element_dps: isObject(object.element_dps)
-        ? Object.entries(object.element_dps).reduce<{
-            [key: string]: DescriptiveStats;
-          }>((acc, [key, value]) => {
-            acc[key] = DescriptiveStats.fromJSON(value);
-            return acc;
-          }, {})
+        ? Object.entries(object.element_dps).reduce<{ [key: string]: DescriptiveStats }>((acc, [key, value]) => {
+          acc[key] = DescriptiveStats.fromJSON(value);
+          return acc;
+        }, {})
         : {},
       target_dps: isObject(object.target_dps)
-        ? Object.entries(object.target_dps).reduce<{
-            [key: number]: DescriptiveStats;
-          }>((acc, [key, value]) => {
-            acc[globalThis.Number(key)] = DescriptiveStats.fromJSON(value);
-            return acc;
-          }, {})
+        ? Object.entries(object.target_dps).reduce<{ [key: number]: DescriptiveStats }>((acc, [key, value]) => {
+          acc[globalThis.Number(key)] = DescriptiveStats.fromJSON(value);
+          return acc;
+        }, {})
         : {},
       character_dps: globalThis.Array.isArray(object?.character_dps)
         ? object.character_dps.map((e: any) => DescriptiveStats.fromJSON(e))
@@ -1290,30 +1109,19 @@ export const SimulationStatistics = {
       source_dps: globalThis.Array.isArray(object?.source_dps)
         ? object.source_dps.map((e: any) => SourceStats.fromJSON(e))
         : [],
-      source_damage_instances: globalThis.Array.isArray(
-        object?.source_damage_instances,
-      )
-        ? object.source_damage_instances.map((e: any) =>
-            SourceStats.fromJSON(e),
-          )
+      source_damage_instances: globalThis.Array.isArray(object?.source_damage_instances)
+        ? object.source_damage_instances.map((e: any) => SourceStats.fromJSON(e))
         : [],
-      damage_buckets: isSet(object.damage_buckets)
-        ? BucketStats.fromJSON(object.damage_buckets)
-        : undefined,
+      damage_buckets: isSet(object.damage_buckets) ? BucketStats.fromJSON(object.damage_buckets) : undefined,
       cumu_damage_contrib: isSet(object.cumu_damage_contrib)
         ? CharacterBucketStats.fromJSON(object.cumu_damage_contrib)
         : undefined,
-      cumu_damage: isSet(object.cumu_damage)
-        ? TargetBucketStats.fromJSON(object.cumu_damage)
-        : undefined,
+      cumu_damage: isSet(object.cumu_damage) ? TargetBucketStats.fromJSON(object.cumu_damage) : undefined,
       shields: isObject(object.shields)
-        ? Object.entries(object.shields).reduce<{[key: string]: ShieldInfo}>(
-            (acc, [key, value]) => {
-              acc[key] = ShieldInfo.fromJSON(value);
-              return acc;
-            },
-            {},
-          )
+        ? Object.entries(object.shields).reduce<{ [key: string]: ShieldInfo }>((acc, [key, value]) => {
+          acc[key] = ShieldInfo.fromJSON(value);
+          return acc;
+        }, {})
         : {},
       field_time: globalThis.Array.isArray(object?.field_time)
         ? object.field_time.map((e: any) => DescriptiveStats.fromJSON(e))
@@ -1338,19 +1146,19 @@ export const SimulationStatistics = {
 
   toJSON(message: SimulationStatistics): unknown {
     const obj: any = {};
-    if (message.min_seed !== undefined && message.min_seed !== '') {
+    if (message.min_seed !== undefined && message.min_seed !== "") {
       obj.min_seed = message.min_seed;
     }
-    if (message.max_seed !== undefined && message.max_seed !== '') {
+    if (message.max_seed !== undefined && message.max_seed !== "") {
       obj.max_seed = message.max_seed;
     }
-    if (message.p25_seed !== undefined && message.p25_seed !== '') {
+    if (message.p25_seed !== undefined && message.p25_seed !== "") {
       obj.p25_seed = message.p25_seed;
     }
-    if (message.p50_seed !== undefined && message.p50_seed !== '') {
+    if (message.p50_seed !== undefined && message.p50_seed !== "") {
       obj.p50_seed = message.p50_seed;
     }
-    if (message.p75_seed !== undefined && message.p75_seed !== '') {
+    if (message.p75_seed !== undefined && message.p75_seed !== "") {
       obj.p75_seed = message.p75_seed;
     }
     if (message.iterations !== undefined && message.iterations !== 0) {
@@ -1381,9 +1189,7 @@ export const SimulationStatistics = {
       obj.warnings = Warnings.toJSON(message.warnings);
     }
     if (message.failed_actions?.length) {
-      obj.failed_actions = message.failed_actions.map((e) =>
-        FailedActions.toJSON(e),
-      );
+      obj.failed_actions = message.failed_actions.map((e) => FailedActions.toJSON(e));
     }
     if (message.element_dps) {
       const entries = Object.entries(message.element_dps);
@@ -1404,35 +1210,25 @@ export const SimulationStatistics = {
       }
     }
     if (message.character_dps?.length) {
-      obj.character_dps = message.character_dps.map((e) =>
-        DescriptiveStats.toJSON(e),
-      );
+      obj.character_dps = message.character_dps.map((e) => DescriptiveStats.toJSON(e));
     }
     if (message.dps_by_element?.length) {
-      obj.dps_by_element = message.dps_by_element.map((e) =>
-        ElementStats.toJSON(e),
-      );
+      obj.dps_by_element = message.dps_by_element.map((e) => ElementStats.toJSON(e));
     }
     if (message.dps_by_target?.length) {
-      obj.dps_by_target = message.dps_by_target.map((e) =>
-        TargetStats.toJSON(e),
-      );
+      obj.dps_by_target = message.dps_by_target.map((e) => TargetStats.toJSON(e));
     }
     if (message.source_dps?.length) {
       obj.source_dps = message.source_dps.map((e) => SourceStats.toJSON(e));
     }
     if (message.source_damage_instances?.length) {
-      obj.source_damage_instances = message.source_damage_instances.map((e) =>
-        SourceStats.toJSON(e),
-      );
+      obj.source_damage_instances = message.source_damage_instances.map((e) => SourceStats.toJSON(e));
     }
     if (message.damage_buckets !== undefined) {
       obj.damage_buckets = BucketStats.toJSON(message.damage_buckets);
     }
     if (message.cumu_damage_contrib !== undefined) {
-      obj.cumu_damage_contrib = CharacterBucketStats.toJSON(
-        message.cumu_damage_contrib,
-      );
+      obj.cumu_damage_contrib = CharacterBucketStats.toJSON(message.cumu_damage_contrib);
     }
     if (message.cumu_damage !== undefined) {
       obj.cumu_damage = TargetBucketStats.toJSON(message.cumu_damage);
@@ -1447,29 +1243,19 @@ export const SimulationStatistics = {
       }
     }
     if (message.field_time?.length) {
-      obj.field_time = message.field_time.map((e) =>
-        DescriptiveStats.toJSON(e),
-      );
+      obj.field_time = message.field_time.map((e) => DescriptiveStats.toJSON(e));
     }
     if (message.total_source_energy?.length) {
-      obj.total_source_energy = message.total_source_energy.map((e) =>
-        SourceStats.toJSON(e),
-      );
+      obj.total_source_energy = message.total_source_energy.map((e) => SourceStats.toJSON(e));
     }
     if (message.source_reactions?.length) {
-      obj.source_reactions = message.source_reactions.map((e) =>
-        SourceStats.toJSON(e),
-      );
+      obj.source_reactions = message.source_reactions.map((e) => SourceStats.toJSON(e));
     }
     if (message.character_actions?.length) {
-      obj.character_actions = message.character_actions.map((e) =>
-        SourceStats.toJSON(e),
-      );
+      obj.character_actions = message.character_actions.map((e) => SourceStats.toJSON(e));
     }
     if (message.target_aura_uptime?.length) {
-      obj.target_aura_uptime = message.target_aura_uptime.map((e) =>
-        SourceStats.toJSON(e),
-      );
+      obj.target_aura_uptime = message.target_aura_uptime.map((e) => SourceStats.toJSON(e));
     }
     if (message.end_stats?.length) {
       obj.end_stats = message.end_stats.map((e) => EndStats.toJSON(e));
@@ -1477,129 +1263,90 @@ export const SimulationStatistics = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<SimulationStatistics>, I>>(
-    base?: I,
-  ): SimulationStatistics {
+  create<I extends Exact<DeepPartial<SimulationStatistics>, I>>(base?: I): SimulationStatistics {
     return SimulationStatistics.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<SimulationStatistics>, I>>(
-    object: I,
-  ): SimulationStatistics {
+  fromPartial<I extends Exact<DeepPartial<SimulationStatistics>, I>>(object: I): SimulationStatistics {
     const message = createBaseSimulationStatistics();
-    message.min_seed = object.min_seed ?? '';
-    message.max_seed = object.max_seed ?? '';
-    message.p25_seed = object.p25_seed ?? '';
-    message.p50_seed = object.p50_seed ?? '';
-    message.p75_seed = object.p75_seed ?? '';
+    message.min_seed = object.min_seed ?? "";
+    message.max_seed = object.max_seed ?? "";
+    message.p25_seed = object.p25_seed ?? "";
+    message.p50_seed = object.p50_seed ?? "";
+    message.p75_seed = object.p75_seed ?? "";
     message.iterations = object.iterations ?? 0;
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? OverviewStats.fromPartial(object.duration)
-        : undefined;
-    message.dps =
-      object.dps !== undefined && object.dps !== null
-        ? OverviewStats.fromPartial(object.dps)
-        : undefined;
-    message.rps =
-      object.rps !== undefined && object.rps !== null
-        ? OverviewStats.fromPartial(object.rps)
-        : undefined;
-    message.eps =
-      object.eps !== undefined && object.eps !== null
-        ? OverviewStats.fromPartial(object.eps)
-        : undefined;
-    message.hps =
-      object.hps !== undefined && object.hps !== null
-        ? OverviewStats.fromPartial(object.hps)
-        : undefined;
-    message.shp =
-      object.shp !== undefined && object.shp !== null
-        ? OverviewStats.fromPartial(object.shp)
-        : undefined;
-    message.total_damage =
-      object.total_damage !== undefined && object.total_damage !== null
-        ? DescriptiveStats.fromPartial(object.total_damage)
-        : undefined;
-    message.warnings =
-      object.warnings !== undefined && object.warnings !== null
-        ? Warnings.fromPartial(object.warnings)
-        : undefined;
-    message.failed_actions =
-      object.failed_actions?.map((e) => FailedActions.fromPartial(e)) || [];
-    message.element_dps = Object.entries(object.element_dps ?? {}).reduce<{
-      [key: string]: DescriptiveStats;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = DescriptiveStats.fromPartial(value);
-      }
-      return acc;
-    }, {});
-    message.target_dps = Object.entries(object.target_dps ?? {}).reduce<{
-      [key: number]: DescriptiveStats;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[globalThis.Number(key)] = DescriptiveStats.fromPartial(value);
-      }
-      return acc;
-    }, {});
-    message.character_dps =
-      object.character_dps?.map((e) => DescriptiveStats.fromPartial(e)) || [];
-    message.dps_by_element =
-      object.dps_by_element?.map((e) => ElementStats.fromPartial(e)) || [];
-    message.dps_by_target =
-      object.dps_by_target?.map((e) => TargetStats.fromPartial(e)) || [];
-    message.source_dps =
-      object.source_dps?.map((e) => SourceStats.fromPartial(e)) || [];
-    message.source_damage_instances =
-      object.source_damage_instances?.map((e) => SourceStats.fromPartial(e)) ||
-      [];
-    message.damage_buckets =
-      object.damage_buckets !== undefined && object.damage_buckets !== null
-        ? BucketStats.fromPartial(object.damage_buckets)
-        : undefined;
-    message.cumu_damage_contrib =
-      object.cumu_damage_contrib !== undefined &&
-      object.cumu_damage_contrib !== null
-        ? CharacterBucketStats.fromPartial(object.cumu_damage_contrib)
-        : undefined;
-    message.cumu_damage =
-      object.cumu_damage !== undefined && object.cumu_damage !== null
-        ? TargetBucketStats.fromPartial(object.cumu_damage)
-        : undefined;
-    message.shields = Object.entries(object.shields ?? {}).reduce<{
-      [key: string]: ShieldInfo;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = ShieldInfo.fromPartial(value);
-      }
-      return acc;
-    }, {});
-    message.field_time =
-      object.field_time?.map((e) => DescriptiveStats.fromPartial(e)) || [];
-    message.total_source_energy =
-      object.total_source_energy?.map((e) => SourceStats.fromPartial(e)) || [];
-    message.source_reactions =
-      object.source_reactions?.map((e) => SourceStats.fromPartial(e)) || [];
-    message.character_actions =
-      object.character_actions?.map((e) => SourceStats.fromPartial(e)) || [];
-    message.target_aura_uptime =
-      object.target_aura_uptime?.map((e) => SourceStats.fromPartial(e)) || [];
-    message.end_stats =
-      object.end_stats?.map((e) => EndStats.fromPartial(e)) || [];
+    message.duration = (object.duration !== undefined && object.duration !== null)
+      ? OverviewStats.fromPartial(object.duration)
+      : undefined;
+    message.dps = (object.dps !== undefined && object.dps !== null) ? OverviewStats.fromPartial(object.dps) : undefined;
+    message.rps = (object.rps !== undefined && object.rps !== null) ? OverviewStats.fromPartial(object.rps) : undefined;
+    message.eps = (object.eps !== undefined && object.eps !== null) ? OverviewStats.fromPartial(object.eps) : undefined;
+    message.hps = (object.hps !== undefined && object.hps !== null) ? OverviewStats.fromPartial(object.hps) : undefined;
+    message.shp = (object.shp !== undefined && object.shp !== null) ? OverviewStats.fromPartial(object.shp) : undefined;
+    message.total_damage = (object.total_damage !== undefined && object.total_damage !== null)
+      ? DescriptiveStats.fromPartial(object.total_damage)
+      : undefined;
+    message.warnings = (object.warnings !== undefined && object.warnings !== null)
+      ? Warnings.fromPartial(object.warnings)
+      : undefined;
+    message.failed_actions = object.failed_actions?.map((e) => FailedActions.fromPartial(e)) || [];
+    message.element_dps = Object.entries(object.element_dps ?? {}).reduce<{ [key: string]: DescriptiveStats }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = DescriptiveStats.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.target_dps = Object.entries(object.target_dps ?? {}).reduce<{ [key: number]: DescriptiveStats }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[globalThis.Number(key)] = DescriptiveStats.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.character_dps = object.character_dps?.map((e) => DescriptiveStats.fromPartial(e)) || [];
+    message.dps_by_element = object.dps_by_element?.map((e) => ElementStats.fromPartial(e)) || [];
+    message.dps_by_target = object.dps_by_target?.map((e) => TargetStats.fromPartial(e)) || [];
+    message.source_dps = object.source_dps?.map((e) => SourceStats.fromPartial(e)) || [];
+    message.source_damage_instances = object.source_damage_instances?.map((e) => SourceStats.fromPartial(e)) || [];
+    message.damage_buckets = (object.damage_buckets !== undefined && object.damage_buckets !== null)
+      ? BucketStats.fromPartial(object.damage_buckets)
+      : undefined;
+    message.cumu_damage_contrib = (object.cumu_damage_contrib !== undefined && object.cumu_damage_contrib !== null)
+      ? CharacterBucketStats.fromPartial(object.cumu_damage_contrib)
+      : undefined;
+    message.cumu_damage = (object.cumu_damage !== undefined && object.cumu_damage !== null)
+      ? TargetBucketStats.fromPartial(object.cumu_damage)
+      : undefined;
+    message.shields = Object.entries(object.shields ?? {}).reduce<{ [key: string]: ShieldInfo }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = ShieldInfo.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.field_time = object.field_time?.map((e) => DescriptiveStats.fromPartial(e)) || [];
+    message.total_source_energy = object.total_source_energy?.map((e) => SourceStats.fromPartial(e)) || [];
+    message.source_reactions = object.source_reactions?.map((e) => SourceStats.fromPartial(e)) || [];
+    message.character_actions = object.character_actions?.map((e) => SourceStats.fromPartial(e)) || [];
+    message.target_aura_uptime = object.target_aura_uptime?.map((e) => SourceStats.fromPartial(e)) || [];
+    message.end_stats = object.end_stats?.map((e) => EndStats.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseSimulationStatistics_ElementDpsEntry(): SimulationStatistics_ElementDpsEntry {
-  return {key: '', value: undefined};
+  return { key: "", value: undefined };
 }
 
 export const SimulationStatistics_ElementDpsEntry = {
-  encode(
-    message: SimulationStatistics_ElementDpsEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.key !== '') {
+  encode(message: SimulationStatistics_ElementDpsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
@@ -1608,12 +1355,8 @@ export const SimulationStatistics_ElementDpsEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): SimulationStatistics_ElementDpsEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SimulationStatistics_ElementDpsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSimulationStatistics_ElementDpsEntry();
     while (reader.pos < end) {
@@ -1644,16 +1387,14 @@ export const SimulationStatistics_ElementDpsEntry = {
 
   fromJSON(object: any): SimulationStatistics_ElementDpsEntry {
     return {
-      key: isSet(object.key) ? globalThis.String(object.key) : '',
-      value: isSet(object.value)
-        ? DescriptiveStats.fromJSON(object.value)
-        : undefined,
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? DescriptiveStats.fromJSON(object.value) : undefined,
     };
   },
 
   toJSON(message: SimulationStatistics_ElementDpsEntry): unknown {
     const obj: any = {};
-    if (message.key !== '') {
+    if (message.key !== "") {
       obj.key = message.key;
     }
     if (message.value !== undefined) {
@@ -1665,32 +1406,26 @@ export const SimulationStatistics_ElementDpsEntry = {
   create<I extends Exact<DeepPartial<SimulationStatistics_ElementDpsEntry>, I>>(
     base?: I,
   ): SimulationStatistics_ElementDpsEntry {
-    return SimulationStatistics_ElementDpsEntry.fromPartial(
-      base ?? ({} as any),
-    );
+    return SimulationStatistics_ElementDpsEntry.fromPartial(base ?? ({} as any));
   },
-  fromPartial<
-    I extends Exact<DeepPartial<SimulationStatistics_ElementDpsEntry>, I>,
-  >(object: I): SimulationStatistics_ElementDpsEntry {
+  fromPartial<I extends Exact<DeepPartial<SimulationStatistics_ElementDpsEntry>, I>>(
+    object: I,
+  ): SimulationStatistics_ElementDpsEntry {
     const message = createBaseSimulationStatistics_ElementDpsEntry();
-    message.key = object.key ?? '';
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? DescriptiveStats.fromPartial(object.value)
-        : undefined;
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? DescriptiveStats.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
 function createBaseSimulationStatistics_TargetDpsEntry(): SimulationStatistics_TargetDpsEntry {
-  return {key: 0, value: undefined};
+  return { key: 0, value: undefined };
 }
 
 export const SimulationStatistics_TargetDpsEntry = {
-  encode(
-    message: SimulationStatistics_TargetDpsEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: SimulationStatistics_TargetDpsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== 0) {
       writer.uint32(8).int32(message.key);
     }
@@ -1700,12 +1435,8 @@ export const SimulationStatistics_TargetDpsEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): SimulationStatistics_TargetDpsEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SimulationStatistics_TargetDpsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSimulationStatistics_TargetDpsEntry();
     while (reader.pos < end) {
@@ -1737,9 +1468,7 @@ export const SimulationStatistics_TargetDpsEntry = {
   fromJSON(object: any): SimulationStatistics_TargetDpsEntry {
     return {
       key: isSet(object.key) ? globalThis.Number(object.key) : 0,
-      value: isSet(object.value)
-        ? DescriptiveStats.fromJSON(object.value)
-        : undefined,
+      value: isSet(object.value) ? DescriptiveStats.fromJSON(object.value) : undefined,
     };
   },
 
@@ -1759,29 +1488,25 @@ export const SimulationStatistics_TargetDpsEntry = {
   ): SimulationStatistics_TargetDpsEntry {
     return SimulationStatistics_TargetDpsEntry.fromPartial(base ?? ({} as any));
   },
-  fromPartial<
-    I extends Exact<DeepPartial<SimulationStatistics_TargetDpsEntry>, I>,
-  >(object: I): SimulationStatistics_TargetDpsEntry {
+  fromPartial<I extends Exact<DeepPartial<SimulationStatistics_TargetDpsEntry>, I>>(
+    object: I,
+  ): SimulationStatistics_TargetDpsEntry {
     const message = createBaseSimulationStatistics_TargetDpsEntry();
     message.key = object.key ?? 0;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? DescriptiveStats.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? DescriptiveStats.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
 function createBaseSimulationStatistics_ShieldsEntry(): SimulationStatistics_ShieldsEntry {
-  return {key: '', value: undefined};
+  return { key: "", value: undefined };
 }
 
 export const SimulationStatistics_ShieldsEntry = {
-  encode(
-    message: SimulationStatistics_ShieldsEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.key !== '') {
+  encode(message: SimulationStatistics_ShieldsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
@@ -1790,12 +1515,8 @@ export const SimulationStatistics_ShieldsEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): SimulationStatistics_ShieldsEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SimulationStatistics_ShieldsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSimulationStatistics_ShieldsEntry();
     while (reader.pos < end) {
@@ -1826,16 +1547,14 @@ export const SimulationStatistics_ShieldsEntry = {
 
   fromJSON(object: any): SimulationStatistics_ShieldsEntry {
     return {
-      key: isSet(object.key) ? globalThis.String(object.key) : '',
-      value: isSet(object.value)
-        ? ShieldInfo.fromJSON(object.value)
-        : undefined,
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? ShieldInfo.fromJSON(object.value) : undefined,
     };
   },
 
   toJSON(message: SimulationStatistics_ShieldsEntry): unknown {
     const obj: any = {};
-    if (message.key !== '') {
+    if (message.key !== "") {
       obj.key = message.key;
     }
     if (message.value !== undefined) {
@@ -1849,46 +1568,35 @@ export const SimulationStatistics_ShieldsEntry = {
   ): SimulationStatistics_ShieldsEntry {
     return SimulationStatistics_ShieldsEntry.fromPartial(base ?? ({} as any));
   },
-  fromPartial<
-    I extends Exact<DeepPartial<SimulationStatistics_ShieldsEntry>, I>,
-  >(object: I): SimulationStatistics_ShieldsEntry {
+  fromPartial<I extends Exact<DeepPartial<SimulationStatistics_ShieldsEntry>, I>>(
+    object: I,
+  ): SimulationStatistics_ShieldsEntry {
     const message = createBaseSimulationStatistics_ShieldsEntry();
-    message.key = object.key ?? '';
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? ShieldInfo.fromPartial(object.value)
-        : undefined;
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? ShieldInfo.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
 function createBaseSignedSimulationStatistics(): SignedSimulationStatistics {
-  return {stats: undefined, hash: ''};
+  return { stats: undefined, hash: "" };
 }
 
 export const SignedSimulationStatistics = {
-  encode(
-    message: SignedSimulationStatistics,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: SignedSimulationStatistics, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.stats !== undefined) {
-      SimulationStatistics.encode(
-        message.stats,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      SimulationStatistics.encode(message.stats, writer.uint32(10).fork()).ldelim();
     }
-    if (message.hash !== undefined && message.hash !== '') {
+    if (message.hash !== undefined && message.hash !== "") {
       writer.uint32(18).string(message.hash);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): SignedSimulationStatistics {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SignedSimulationStatistics {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSignedSimulationStatistics();
     while (reader.pos < end) {
@@ -1919,10 +1627,8 @@ export const SignedSimulationStatistics = {
 
   fromJSON(object: any): SignedSimulationStatistics {
     return {
-      stats: isSet(object.stats)
-        ? SimulationStatistics.fromJSON(object.stats)
-        : undefined,
-      hash: isSet(object.hash) ? globalThis.String(object.hash) : '',
+      stats: isSet(object.stats) ? SimulationStatistics.fromJSON(object.stats) : undefined,
+      hash: isSet(object.hash) ? globalThis.String(object.hash) : "",
     };
   },
 
@@ -1931,26 +1637,21 @@ export const SignedSimulationStatistics = {
     if (message.stats !== undefined) {
       obj.stats = SimulationStatistics.toJSON(message.stats);
     }
-    if (message.hash !== undefined && message.hash !== '') {
+    if (message.hash !== undefined && message.hash !== "") {
       obj.hash = message.hash;
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<SignedSimulationStatistics>, I>>(
-    base?: I,
-  ): SignedSimulationStatistics {
+  create<I extends Exact<DeepPartial<SignedSimulationStatistics>, I>>(base?: I): SignedSimulationStatistics {
     return SignedSimulationStatistics.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<SignedSimulationStatistics>, I>>(
-    object: I,
-  ): SignedSimulationStatistics {
+  fromPartial<I extends Exact<DeepPartial<SignedSimulationStatistics>, I>>(object: I): SignedSimulationStatistics {
     const message = createBaseSignedSimulationStatistics();
-    message.stats =
-      object.stats !== undefined && object.stats !== null
-        ? SimulationStatistics.fromPartial(object.stats)
-        : undefined;
-    message.hash = object.hash ?? '';
+    message.stats = (object.stats !== undefined && object.stats !== null)
+      ? SimulationStatistics.fromPartial(object.stats)
+      : undefined;
+    message.hash = object.hash ?? "";
     return message;
   },
 };
@@ -1969,10 +1670,7 @@ function createBaseOverviewStats(): OverviewStats {
 }
 
 export const OverviewStats = {
-  encode(
-    message: OverviewStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: OverviewStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.min !== undefined) {
       writer.uint32(9).double(message.min);
     }
@@ -2005,8 +1703,7 @@ export const OverviewStats = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OverviewStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOverviewStats();
     while (reader.pos < end) {
@@ -2131,14 +1828,10 @@ export const OverviewStats = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<OverviewStats>, I>>(
-    base?: I,
-  ): OverviewStats {
+  create<I extends Exact<DeepPartial<OverviewStats>, I>>(base?: I): OverviewStats {
     return OverviewStats.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<OverviewStats>, I>>(
-    object: I,
-  ): OverviewStats {
+  fromPartial<I extends Exact<DeepPartial<OverviewStats>, I>>(object: I): OverviewStats {
     const message = createBaseOverviewStats();
     message.min = object.min ?? undefined;
     message.max = object.max ?? undefined;
@@ -2153,14 +1846,11 @@ export const OverviewStats = {
 };
 
 function createBaseDescriptiveStats(): DescriptiveStats {
-  return {min: undefined, max: undefined, mean: undefined, sd: undefined};
+  return { min: undefined, max: undefined, mean: undefined, sd: undefined };
 }
 
 export const DescriptiveStats = {
-  encode(
-    message: DescriptiveStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: DescriptiveStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.min !== undefined) {
       writer.uint32(9).double(message.min);
     }
@@ -2177,8 +1867,7 @@ export const DescriptiveStats = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DescriptiveStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDescriptiveStats();
     while (reader.pos < end) {
@@ -2247,14 +1936,10 @@ export const DescriptiveStats = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<DescriptiveStats>, I>>(
-    base?: I,
-  ): DescriptiveStats {
+  create<I extends Exact<DeepPartial<DescriptiveStats>, I>>(base?: I): DescriptiveStats {
     return DescriptiveStats.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<DescriptiveStats>, I>>(
-    object: I,
-  ): DescriptiveStats {
+  fromPartial<I extends Exact<DeepPartial<DescriptiveStats>, I>>(object: I): DescriptiveStats {
     const message = createBaseDescriptiveStats();
     message.min = object.min ?? undefined;
     message.max = object.max ?? undefined;
@@ -2265,26 +1950,19 @@ export const DescriptiveStats = {
 };
 
 function createBaseElementStats(): ElementStats {
-  return {elements: {}};
+  return { elements: {} };
 }
 
 export const ElementStats = {
-  encode(
-    message: ElementStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: ElementStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     Object.entries(message.elements || {}).forEach(([key, value]) => {
-      ElementStats_ElementsEntry.encode(
-        {key: key as any, value},
-        writer.uint32(10).fork(),
-      ).ldelim();
+      ElementStats_ElementsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
     });
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ElementStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseElementStats();
     while (reader.pos < end) {
@@ -2295,10 +1973,7 @@ export const ElementStats = {
             break;
           }
 
-          const entry1 = ElementStats_ElementsEntry.decode(
-            reader,
-            reader.uint32(),
-          );
+          const entry1 = ElementStats_ElementsEntry.decode(reader, reader.uint32());
           if (entry1.value !== undefined) {
             message.elements![entry1.key] = entry1.value;
           }
@@ -2315,12 +1990,10 @@ export const ElementStats = {
   fromJSON(object: any): ElementStats {
     return {
       elements: isObject(object.elements)
-        ? Object.entries(object.elements).reduce<{
-            [key: string]: DescriptiveStats;
-          }>((acc, [key, value]) => {
-            acc[key] = DescriptiveStats.fromJSON(value);
-            return acc;
-          }, {})
+        ? Object.entries(object.elements).reduce<{ [key: string]: DescriptiveStats }>((acc, [key, value]) => {
+          acc[key] = DescriptiveStats.fromJSON(value);
+          return acc;
+        }, {})
         : {},
     };
   },
@@ -2339,37 +2012,31 @@ export const ElementStats = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<ElementStats>, I>>(
-    base?: I,
-  ): ElementStats {
+  create<I extends Exact<DeepPartial<ElementStats>, I>>(base?: I): ElementStats {
     return ElementStats.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ElementStats>, I>>(
-    object: I,
-  ): ElementStats {
+  fromPartial<I extends Exact<DeepPartial<ElementStats>, I>>(object: I): ElementStats {
     const message = createBaseElementStats();
-    message.elements = Object.entries(object.elements ?? {}).reduce<{
-      [key: string]: DescriptiveStats;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = DescriptiveStats.fromPartial(value);
-      }
-      return acc;
-    }, {});
+    message.elements = Object.entries(object.elements ?? {}).reduce<{ [key: string]: DescriptiveStats }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = DescriptiveStats.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 };
 
 function createBaseElementStats_ElementsEntry(): ElementStats_ElementsEntry {
-  return {key: '', value: undefined};
+  return { key: "", value: undefined };
 }
 
 export const ElementStats_ElementsEntry = {
-  encode(
-    message: ElementStats_ElementsEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.key !== '') {
+  encode(message: ElementStats_ElementsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
@@ -2378,12 +2045,8 @@ export const ElementStats_ElementsEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): ElementStats_ElementsEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ElementStats_ElementsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseElementStats_ElementsEntry();
     while (reader.pos < end) {
@@ -2414,16 +2077,14 @@ export const ElementStats_ElementsEntry = {
 
   fromJSON(object: any): ElementStats_ElementsEntry {
     return {
-      key: isSet(object.key) ? globalThis.String(object.key) : '',
-      value: isSet(object.value)
-        ? DescriptiveStats.fromJSON(object.value)
-        : undefined,
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? DescriptiveStats.fromJSON(object.value) : undefined,
     };
   },
 
   toJSON(message: ElementStats_ElementsEntry): unknown {
     const obj: any = {};
-    if (message.key !== '') {
+    if (message.key !== "") {
       obj.key = message.key;
     }
     if (message.value !== undefined) {
@@ -2432,45 +2093,33 @@ export const ElementStats_ElementsEntry = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<ElementStats_ElementsEntry>, I>>(
-    base?: I,
-  ): ElementStats_ElementsEntry {
+  create<I extends Exact<DeepPartial<ElementStats_ElementsEntry>, I>>(base?: I): ElementStats_ElementsEntry {
     return ElementStats_ElementsEntry.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ElementStats_ElementsEntry>, I>>(
-    object: I,
-  ): ElementStats_ElementsEntry {
+  fromPartial<I extends Exact<DeepPartial<ElementStats_ElementsEntry>, I>>(object: I): ElementStats_ElementsEntry {
     const message = createBaseElementStats_ElementsEntry();
-    message.key = object.key ?? '';
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? DescriptiveStats.fromPartial(object.value)
-        : undefined;
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? DescriptiveStats.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
 function createBaseTargetStats(): TargetStats {
-  return {targets: {}};
+  return { targets: {} };
 }
 
 export const TargetStats = {
-  encode(
-    message: TargetStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: TargetStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     Object.entries(message.targets || {}).forEach(([key, value]) => {
-      TargetStats_TargetsEntry.encode(
-        {key: key as any, value},
-        writer.uint32(10).fork(),
-      ).ldelim();
+      TargetStats_TargetsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
     });
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TargetStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTargetStats();
     while (reader.pos < end) {
@@ -2481,10 +2130,7 @@ export const TargetStats = {
             break;
           }
 
-          const entry1 = TargetStats_TargetsEntry.decode(
-            reader,
-            reader.uint32(),
-          );
+          const entry1 = TargetStats_TargetsEntry.decode(reader, reader.uint32());
           if (entry1.value !== undefined) {
             message.targets![entry1.key] = entry1.value;
           }
@@ -2501,12 +2147,10 @@ export const TargetStats = {
   fromJSON(object: any): TargetStats {
     return {
       targets: isObject(object.targets)
-        ? Object.entries(object.targets).reduce<{
-            [key: number]: DescriptiveStats;
-          }>((acc, [key, value]) => {
-            acc[globalThis.Number(key)] = DescriptiveStats.fromJSON(value);
-            return acc;
-          }, {})
+        ? Object.entries(object.targets).reduce<{ [key: number]: DescriptiveStats }>((acc, [key, value]) => {
+          acc[globalThis.Number(key)] = DescriptiveStats.fromJSON(value);
+          return acc;
+        }, {})
         : {},
     };
   },
@@ -2528,31 +2172,27 @@ export const TargetStats = {
   create<I extends Exact<DeepPartial<TargetStats>, I>>(base?: I): TargetStats {
     return TargetStats.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<TargetStats>, I>>(
-    object: I,
-  ): TargetStats {
+  fromPartial<I extends Exact<DeepPartial<TargetStats>, I>>(object: I): TargetStats {
     const message = createBaseTargetStats();
-    message.targets = Object.entries(object.targets ?? {}).reduce<{
-      [key: number]: DescriptiveStats;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[globalThis.Number(key)] = DescriptiveStats.fromPartial(value);
-      }
-      return acc;
-    }, {});
+    message.targets = Object.entries(object.targets ?? {}).reduce<{ [key: number]: DescriptiveStats }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[globalThis.Number(key)] = DescriptiveStats.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 };
 
 function createBaseTargetStats_TargetsEntry(): TargetStats_TargetsEntry {
-  return {key: 0, value: undefined};
+  return { key: 0, value: undefined };
 }
 
 export const TargetStats_TargetsEntry = {
-  encode(
-    message: TargetStats_TargetsEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: TargetStats_TargetsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== 0) {
       writer.uint32(8).int32(message.key);
     }
@@ -2562,12 +2202,8 @@ export const TargetStats_TargetsEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): TargetStats_TargetsEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): TargetStats_TargetsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTargetStats_TargetsEntry();
     while (reader.pos < end) {
@@ -2599,9 +2235,7 @@ export const TargetStats_TargetsEntry = {
   fromJSON(object: any): TargetStats_TargetsEntry {
     return {
       key: isSet(object.key) ? globalThis.Number(object.key) : 0,
-      value: isSet(object.value)
-        ? DescriptiveStats.fromJSON(object.value)
-        : undefined,
+      value: isSet(object.value) ? DescriptiveStats.fromJSON(object.value) : undefined,
     };
   },
 
@@ -2616,45 +2250,33 @@ export const TargetStats_TargetsEntry = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<TargetStats_TargetsEntry>, I>>(
-    base?: I,
-  ): TargetStats_TargetsEntry {
+  create<I extends Exact<DeepPartial<TargetStats_TargetsEntry>, I>>(base?: I): TargetStats_TargetsEntry {
     return TargetStats_TargetsEntry.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<TargetStats_TargetsEntry>, I>>(
-    object: I,
-  ): TargetStats_TargetsEntry {
+  fromPartial<I extends Exact<DeepPartial<TargetStats_TargetsEntry>, I>>(object: I): TargetStats_TargetsEntry {
     const message = createBaseTargetStats_TargetsEntry();
     message.key = object.key ?? 0;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? DescriptiveStats.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? DescriptiveStats.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
 function createBaseSourceStats(): SourceStats {
-  return {sources: {}};
+  return { sources: {} };
 }
 
 export const SourceStats = {
-  encode(
-    message: SourceStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: SourceStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     Object.entries(message.sources || {}).forEach(([key, value]) => {
-      SourceStats_SourcesEntry.encode(
-        {key: key as any, value},
-        writer.uint32(10).fork(),
-      ).ldelim();
+      SourceStats_SourcesEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
     });
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SourceStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSourceStats();
     while (reader.pos < end) {
@@ -2665,10 +2287,7 @@ export const SourceStats = {
             break;
           }
 
-          const entry1 = SourceStats_SourcesEntry.decode(
-            reader,
-            reader.uint32(),
-          );
+          const entry1 = SourceStats_SourcesEntry.decode(reader, reader.uint32());
           if (entry1.value !== undefined) {
             message.sources![entry1.key] = entry1.value;
           }
@@ -2685,12 +2304,10 @@ export const SourceStats = {
   fromJSON(object: any): SourceStats {
     return {
       sources: isObject(object.sources)
-        ? Object.entries(object.sources).reduce<{
-            [key: string]: DescriptiveStats;
-          }>((acc, [key, value]) => {
-            acc[key] = DescriptiveStats.fromJSON(value);
-            return acc;
-          }, {})
+        ? Object.entries(object.sources).reduce<{ [key: string]: DescriptiveStats }>((acc, [key, value]) => {
+          acc[key] = DescriptiveStats.fromJSON(value);
+          return acc;
+        }, {})
         : {},
     };
   },
@@ -2712,32 +2329,28 @@ export const SourceStats = {
   create<I extends Exact<DeepPartial<SourceStats>, I>>(base?: I): SourceStats {
     return SourceStats.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<SourceStats>, I>>(
-    object: I,
-  ): SourceStats {
+  fromPartial<I extends Exact<DeepPartial<SourceStats>, I>>(object: I): SourceStats {
     const message = createBaseSourceStats();
-    message.sources = Object.entries(object.sources ?? {}).reduce<{
-      [key: string]: DescriptiveStats;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = DescriptiveStats.fromPartial(value);
-      }
-      return acc;
-    }, {});
+    message.sources = Object.entries(object.sources ?? {}).reduce<{ [key: string]: DescriptiveStats }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = DescriptiveStats.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 };
 
 function createBaseSourceStats_SourcesEntry(): SourceStats_SourcesEntry {
-  return {key: '', value: undefined};
+  return { key: "", value: undefined };
 }
 
 export const SourceStats_SourcesEntry = {
-  encode(
-    message: SourceStats_SourcesEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.key !== '') {
+  encode(message: SourceStats_SourcesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
@@ -2746,12 +2359,8 @@ export const SourceStats_SourcesEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): SourceStats_SourcesEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SourceStats_SourcesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSourceStats_SourcesEntry();
     while (reader.pos < end) {
@@ -2782,16 +2391,14 @@ export const SourceStats_SourcesEntry = {
 
   fromJSON(object: any): SourceStats_SourcesEntry {
     return {
-      key: isSet(object.key) ? globalThis.String(object.key) : '',
-      value: isSet(object.value)
-        ? DescriptiveStats.fromJSON(object.value)
-        : undefined,
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? DescriptiveStats.fromJSON(object.value) : undefined,
     };
   },
 
   toJSON(message: SourceStats_SourcesEntry): unknown {
     const obj: any = {};
-    if (message.key !== '') {
+    if (message.key !== "") {
       obj.key = message.key;
     }
     if (message.value !== undefined) {
@@ -2800,33 +2407,25 @@ export const SourceStats_SourcesEntry = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<SourceStats_SourcesEntry>, I>>(
-    base?: I,
-  ): SourceStats_SourcesEntry {
+  create<I extends Exact<DeepPartial<SourceStats_SourcesEntry>, I>>(base?: I): SourceStats_SourcesEntry {
     return SourceStats_SourcesEntry.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<SourceStats_SourcesEntry>, I>>(
-    object: I,
-  ): SourceStats_SourcesEntry {
+  fromPartial<I extends Exact<DeepPartial<SourceStats_SourcesEntry>, I>>(object: I): SourceStats_SourcesEntry {
     const message = createBaseSourceStats_SourcesEntry();
-    message.key = object.key ?? '';
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? DescriptiveStats.fromPartial(object.value)
-        : undefined;
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? DescriptiveStats.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
 function createBaseBucketStats(): BucketStats {
-  return {bucket_size: 0, buckets: []};
+  return { bucket_size: 0, buckets: [] };
 }
 
 export const BucketStats = {
-  encode(
-    message: BucketStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: BucketStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.bucket_size !== undefined && message.bucket_size !== 0) {
       writer.uint32(8).uint32(message.bucket_size);
     }
@@ -2839,8 +2438,7 @@ export const BucketStats = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BucketStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBucketStats();
     while (reader.pos < end) {
@@ -2858,9 +2456,7 @@ export const BucketStats = {
             break;
           }
 
-          message.buckets!.push(
-            DescriptiveStats.decode(reader, reader.uint32()),
-          );
+          message.buckets!.push(DescriptiveStats.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2873,9 +2469,7 @@ export const BucketStats = {
 
   fromJSON(object: any): BucketStats {
     return {
-      bucket_size: isSet(object.bucket_size)
-        ? globalThis.Number(object.bucket_size)
-        : 0,
+      bucket_size: isSet(object.bucket_size) ? globalThis.Number(object.bucket_size) : 0,
       buckets: globalThis.Array.isArray(object?.buckets)
         ? object.buckets.map((e: any) => DescriptiveStats.fromJSON(e))
         : [],
@@ -2896,26 +2490,20 @@ export const BucketStats = {
   create<I extends Exact<DeepPartial<BucketStats>, I>>(base?: I): BucketStats {
     return BucketStats.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<BucketStats>, I>>(
-    object: I,
-  ): BucketStats {
+  fromPartial<I extends Exact<DeepPartial<BucketStats>, I>>(object: I): BucketStats {
     const message = createBaseBucketStats();
     message.bucket_size = object.bucket_size ?? 0;
-    message.buckets =
-      object.buckets?.map((e) => DescriptiveStats.fromPartial(e)) || [];
+    message.buckets = object.buckets?.map((e) => DescriptiveStats.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseCharacterBucketStats(): CharacterBucketStats {
-  return {bucket_size: 0, characters: []};
+  return { bucket_size: 0, characters: [] };
 }
 
 export const CharacterBucketStats = {
-  encode(
-    message: CharacterBucketStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: CharacterBucketStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.bucket_size !== undefined && message.bucket_size !== 0) {
       writer.uint32(8).uint32(message.bucket_size);
     }
@@ -2927,12 +2515,8 @@ export const CharacterBucketStats = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): CharacterBucketStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): CharacterBucketStats {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCharacterBucketStats();
     while (reader.pos < end) {
@@ -2950,9 +2534,7 @@ export const CharacterBucketStats = {
             break;
           }
 
-          message.characters!.push(
-            CharacterBuckets.decode(reader, reader.uint32()),
-          );
+          message.characters!.push(CharacterBuckets.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2965,9 +2547,7 @@ export const CharacterBucketStats = {
 
   fromJSON(object: any): CharacterBucketStats {
     return {
-      bucket_size: isSet(object.bucket_size)
-        ? globalThis.Number(object.bucket_size)
-        : 0,
+      bucket_size: isSet(object.bucket_size) ? globalThis.Number(object.bucket_size) : 0,
       characters: globalThis.Array.isArray(object?.characters)
         ? object.characters.map((e: any) => CharacterBuckets.fromJSON(e))
         : [],
@@ -2980,38 +2560,28 @@ export const CharacterBucketStats = {
       obj.bucket_size = Math.round(message.bucket_size);
     }
     if (message.characters?.length) {
-      obj.characters = message.characters.map((e) =>
-        CharacterBuckets.toJSON(e),
-      );
+      obj.characters = message.characters.map((e) => CharacterBuckets.toJSON(e));
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<CharacterBucketStats>, I>>(
-    base?: I,
-  ): CharacterBucketStats {
+  create<I extends Exact<DeepPartial<CharacterBucketStats>, I>>(base?: I): CharacterBucketStats {
     return CharacterBucketStats.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<CharacterBucketStats>, I>>(
-    object: I,
-  ): CharacterBucketStats {
+  fromPartial<I extends Exact<DeepPartial<CharacterBucketStats>, I>>(object: I): CharacterBucketStats {
     const message = createBaseCharacterBucketStats();
     message.bucket_size = object.bucket_size ?? 0;
-    message.characters =
-      object.characters?.map((e) => CharacterBuckets.fromPartial(e)) || [];
+    message.characters = object.characters?.map((e) => CharacterBuckets.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseCharacterBuckets(): CharacterBuckets {
-  return {buckets: []};
+  return { buckets: [] };
 }
 
 export const CharacterBuckets = {
-  encode(
-    message: CharacterBuckets,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: CharacterBuckets, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.buckets !== undefined && message.buckets.length !== 0) {
       for (const v of message.buckets) {
         DescriptiveStats.encode(v!, writer.uint32(10).fork()).ldelim();
@@ -3021,8 +2591,7 @@ export const CharacterBuckets = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CharacterBuckets {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCharacterBuckets();
     while (reader.pos < end) {
@@ -3033,9 +2602,7 @@ export const CharacterBuckets = {
             break;
           }
 
-          message.buckets!.push(
-            DescriptiveStats.decode(reader, reader.uint32()),
-          );
+          message.buckets!.push(DescriptiveStats.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -3062,45 +2629,33 @@ export const CharacterBuckets = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<CharacterBuckets>, I>>(
-    base?: I,
-  ): CharacterBuckets {
+  create<I extends Exact<DeepPartial<CharacterBuckets>, I>>(base?: I): CharacterBuckets {
     return CharacterBuckets.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<CharacterBuckets>, I>>(
-    object: I,
-  ): CharacterBuckets {
+  fromPartial<I extends Exact<DeepPartial<CharacterBuckets>, I>>(object: I): CharacterBuckets {
     const message = createBaseCharacterBuckets();
-    message.buckets =
-      object.buckets?.map((e) => DescriptiveStats.fromPartial(e)) || [];
+    message.buckets = object.buckets?.map((e) => DescriptiveStats.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseTargetBucketStats(): TargetBucketStats {
-  return {bucket_size: 0, targets: {}};
+  return { bucket_size: 0, targets: {} };
 }
 
 export const TargetBucketStats = {
-  encode(
-    message: TargetBucketStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: TargetBucketStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.bucket_size !== undefined && message.bucket_size !== 0) {
       writer.uint32(8).uint32(message.bucket_size);
     }
     Object.entries(message.targets || {}).forEach(([key, value]) => {
-      TargetBucketStats_TargetsEntry.encode(
-        {key: key as any, value},
-        writer.uint32(18).fork(),
-      ).ldelim();
+      TargetBucketStats_TargetsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TargetBucketStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTargetBucketStats();
     while (reader.pos < end) {
@@ -3118,10 +2673,7 @@ export const TargetBucketStats = {
             break;
           }
 
-          const entry2 = TargetBucketStats_TargetsEntry.decode(
-            reader,
-            reader.uint32(),
-          );
+          const entry2 = TargetBucketStats_TargetsEntry.decode(reader, reader.uint32());
           if (entry2.value !== undefined) {
             message.targets![entry2.key] = entry2.value;
           }
@@ -3137,17 +2689,12 @@ export const TargetBucketStats = {
 
   fromJSON(object: any): TargetBucketStats {
     return {
-      bucket_size: isSet(object.bucket_size)
-        ? globalThis.Number(object.bucket_size)
-        : 0,
+      bucket_size: isSet(object.bucket_size) ? globalThis.Number(object.bucket_size) : 0,
       targets: isObject(object.targets)
-        ? Object.entries(object.targets).reduce<{[key: number]: TargetBuckets}>(
-            (acc, [key, value]) => {
-              acc[globalThis.Number(key)] = TargetBuckets.fromJSON(value);
-              return acc;
-            },
-            {},
-          )
+        ? Object.entries(object.targets).reduce<{ [key: number]: TargetBuckets }>((acc, [key, value]) => {
+          acc[globalThis.Number(key)] = TargetBuckets.fromJSON(value);
+          return acc;
+        }, {})
         : {},
     };
   },
@@ -3169,37 +2716,31 @@ export const TargetBucketStats = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<TargetBucketStats>, I>>(
-    base?: I,
-  ): TargetBucketStats {
+  create<I extends Exact<DeepPartial<TargetBucketStats>, I>>(base?: I): TargetBucketStats {
     return TargetBucketStats.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<TargetBucketStats>, I>>(
-    object: I,
-  ): TargetBucketStats {
+  fromPartial<I extends Exact<DeepPartial<TargetBucketStats>, I>>(object: I): TargetBucketStats {
     const message = createBaseTargetBucketStats();
     message.bucket_size = object.bucket_size ?? 0;
-    message.targets = Object.entries(object.targets ?? {}).reduce<{
-      [key: number]: TargetBuckets;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[globalThis.Number(key)] = TargetBuckets.fromPartial(value);
-      }
-      return acc;
-    }, {});
+    message.targets = Object.entries(object.targets ?? {}).reduce<{ [key: number]: TargetBuckets }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[globalThis.Number(key)] = TargetBuckets.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 };
 
 function createBaseTargetBucketStats_TargetsEntry(): TargetBucketStats_TargetsEntry {
-  return {key: 0, value: undefined};
+  return { key: 0, value: undefined };
 }
 
 export const TargetBucketStats_TargetsEntry = {
-  encode(
-    message: TargetBucketStats_TargetsEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: TargetBucketStats_TargetsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== 0) {
       writer.uint32(8).int32(message.key);
     }
@@ -3209,12 +2750,8 @@ export const TargetBucketStats_TargetsEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): TargetBucketStats_TargetsEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): TargetBucketStats_TargetsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTargetBucketStats_TargetsEntry();
     while (reader.pos < end) {
@@ -3246,9 +2783,7 @@ export const TargetBucketStats_TargetsEntry = {
   fromJSON(object: any): TargetBucketStats_TargetsEntry {
     return {
       key: isSet(object.key) ? globalThis.Number(object.key) : 0,
-      value: isSet(object.value)
-        ? TargetBuckets.fromJSON(object.value)
-        : undefined,
+      value: isSet(object.value) ? TargetBuckets.fromJSON(object.value) : undefined,
     };
   },
 
@@ -3263,9 +2798,7 @@ export const TargetBucketStats_TargetsEntry = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<TargetBucketStats_TargetsEntry>, I>>(
-    base?: I,
-  ): TargetBucketStats_TargetsEntry {
+  create<I extends Exact<DeepPartial<TargetBucketStats_TargetsEntry>, I>>(base?: I): TargetBucketStats_TargetsEntry {
     return TargetBucketStats_TargetsEntry.fromPartial(base ?? ({} as any));
   },
   fromPartial<I extends Exact<DeepPartial<TargetBucketStats_TargetsEntry>, I>>(
@@ -3273,23 +2806,19 @@ export const TargetBucketStats_TargetsEntry = {
   ): TargetBucketStats_TargetsEntry {
     const message = createBaseTargetBucketStats_TargetsEntry();
     message.key = object.key ?? 0;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? TargetBuckets.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? TargetBuckets.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
 function createBaseTargetBuckets(): TargetBuckets {
-  return {overall: undefined, target: undefined};
+  return { overall: undefined, target: undefined };
 }
 
 export const TargetBuckets = {
-  encode(
-    message: TargetBuckets,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: TargetBuckets, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.overall !== undefined) {
       TargetBucket.encode(message.overall, writer.uint32(10).fork()).ldelim();
     }
@@ -3300,8 +2829,7 @@ export const TargetBuckets = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TargetBuckets {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTargetBuckets();
     while (reader.pos < end) {
@@ -3332,12 +2860,8 @@ export const TargetBuckets = {
 
   fromJSON(object: any): TargetBuckets {
     return {
-      overall: isSet(object.overall)
-        ? TargetBucket.fromJSON(object.overall)
-        : undefined,
-      target: isSet(object.target)
-        ? TargetBucket.fromJSON(object.target)
-        : undefined,
+      overall: isSet(object.overall) ? TargetBucket.fromJSON(object.overall) : undefined,
+      target: isSet(object.target) ? TargetBucket.fromJSON(object.target) : undefined,
     };
   },
 
@@ -3352,36 +2876,27 @@ export const TargetBuckets = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<TargetBuckets>, I>>(
-    base?: I,
-  ): TargetBuckets {
+  create<I extends Exact<DeepPartial<TargetBuckets>, I>>(base?: I): TargetBuckets {
     return TargetBuckets.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<TargetBuckets>, I>>(
-    object: I,
-  ): TargetBuckets {
+  fromPartial<I extends Exact<DeepPartial<TargetBuckets>, I>>(object: I): TargetBuckets {
     const message = createBaseTargetBuckets();
-    message.overall =
-      object.overall !== undefined && object.overall !== null
-        ? TargetBucket.fromPartial(object.overall)
-        : undefined;
-    message.target =
-      object.target !== undefined && object.target !== null
-        ? TargetBucket.fromPartial(object.target)
-        : undefined;
+    message.overall = (object.overall !== undefined && object.overall !== null)
+      ? TargetBucket.fromPartial(object.overall)
+      : undefined;
+    message.target = (object.target !== undefined && object.target !== null)
+      ? TargetBucket.fromPartial(object.target)
+      : undefined;
     return message;
   },
 };
 
 function createBaseTargetBucket(): TargetBucket {
-  return {min: [], max: [], q1: [], q2: [], q3: []};
+  return { min: [], max: [], q1: [], q2: [], q3: [] };
 }
 
 export const TargetBucket = {
-  encode(
-    message: TargetBucket,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: TargetBucket, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.min !== undefined && message.min.length !== 0) {
       writer.uint32(10).fork();
       for (const v of message.min) {
@@ -3421,8 +2936,7 @@ export const TargetBucket = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TargetBucket {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTargetBucket();
     while (reader.pos < end) {
@@ -3524,21 +3038,11 @@ export const TargetBucket = {
 
   fromJSON(object: any): TargetBucket {
     return {
-      min: globalThis.Array.isArray(object?.min)
-        ? object.min.map((e: any) => globalThis.Number(e))
-        : [],
-      max: globalThis.Array.isArray(object?.max)
-        ? object.max.map((e: any) => globalThis.Number(e))
-        : [],
-      q1: globalThis.Array.isArray(object?.q1)
-        ? object.q1.map((e: any) => globalThis.Number(e))
-        : [],
-      q2: globalThis.Array.isArray(object?.q2)
-        ? object.q2.map((e: any) => globalThis.Number(e))
-        : [],
-      q3: globalThis.Array.isArray(object?.q3)
-        ? object.q3.map((e: any) => globalThis.Number(e))
-        : [],
+      min: globalThis.Array.isArray(object?.min) ? object.min.map((e: any) => globalThis.Number(e)) : [],
+      max: globalThis.Array.isArray(object?.max) ? object.max.map((e: any) => globalThis.Number(e)) : [],
+      q1: globalThis.Array.isArray(object?.q1) ? object.q1.map((e: any) => globalThis.Number(e)) : [],
+      q2: globalThis.Array.isArray(object?.q2) ? object.q2.map((e: any) => globalThis.Number(e)) : [],
+      q3: globalThis.Array.isArray(object?.q3) ? object.q3.map((e: any) => globalThis.Number(e)) : [],
     };
   },
 
@@ -3562,14 +3066,10 @@ export const TargetBucket = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<TargetBucket>, I>>(
-    base?: I,
-  ): TargetBucket {
+  create<I extends Exact<DeepPartial<TargetBucket>, I>>(base?: I): TargetBucket {
     return TargetBucket.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<TargetBucket>, I>>(
-    object: I,
-  ): TargetBucket {
+  fromPartial<I extends Exact<DeepPartial<TargetBucket>, I>>(object: I): TargetBucket {
     const message = createBaseTargetBucket();
     message.min = object.min?.map((e) => e) || [];
     message.max = object.max?.map((e) => e) || [];
@@ -3589,30 +3089,19 @@ function createBaseWarnings(): Warnings {
     skill_cd: false,
     dash_cd: false,
     burst_cd: false,
+    time_manip: false,
   };
 }
 
 export const Warnings = {
-  encode(
-    message: Warnings,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (
-      message.target_overlap !== undefined &&
-      message.target_overlap !== false
-    ) {
+  encode(message: Warnings, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.target_overlap !== undefined && message.target_overlap !== false) {
       writer.uint32(8).bool(message.target_overlap);
     }
-    if (
-      message.insufficient_energy !== undefined &&
-      message.insufficient_energy !== false
-    ) {
+    if (message.insufficient_energy !== undefined && message.insufficient_energy !== false) {
       writer.uint32(16).bool(message.insufficient_energy);
     }
-    if (
-      message.insufficient_stamina !== undefined &&
-      message.insufficient_stamina !== false
-    ) {
+    if (message.insufficient_stamina !== undefined && message.insufficient_stamina !== false) {
       writer.uint32(24).bool(message.insufficient_stamina);
     }
     if (message.swap_cd !== undefined && message.swap_cd !== false) {
@@ -3627,12 +3116,14 @@ export const Warnings = {
     if (message.burst_cd !== undefined && message.burst_cd !== false) {
       writer.uint32(56).bool(message.burst_cd);
     }
+    if (message.time_manip !== undefined && message.time_manip !== false) {
+      writer.uint32(64).bool(message.time_manip);
+    }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Warnings {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseWarnings();
     while (reader.pos < end) {
@@ -3687,6 +3178,13 @@ export const Warnings = {
 
           message.burst_cd = reader.bool();
           continue;
+        case 8:
+          if (tag !== 64) {
+            break;
+          }
+
+          message.time_manip = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3698,48 +3196,28 @@ export const Warnings = {
 
   fromJSON(object: any): Warnings {
     return {
-      target_overlap: isSet(object.target_overlap)
-        ? globalThis.Boolean(object.target_overlap)
-        : false,
-      insufficient_energy: isSet(object.insufficient_energy)
-        ? globalThis.Boolean(object.insufficient_energy)
-        : false,
+      target_overlap: isSet(object.target_overlap) ? globalThis.Boolean(object.target_overlap) : false,
+      insufficient_energy: isSet(object.insufficient_energy) ? globalThis.Boolean(object.insufficient_energy) : false,
       insufficient_stamina: isSet(object.insufficient_stamina)
         ? globalThis.Boolean(object.insufficient_stamina)
         : false,
-      swap_cd: isSet(object.swap_cd)
-        ? globalThis.Boolean(object.swap_cd)
-        : false,
-      skill_cd: isSet(object.skill_cd)
-        ? globalThis.Boolean(object.skill_cd)
-        : false,
-      dash_cd: isSet(object.dash_cd)
-        ? globalThis.Boolean(object.dash_cd)
-        : false,
-      burst_cd: isSet(object.burst_cd)
-        ? globalThis.Boolean(object.burst_cd)
-        : false,
+      swap_cd: isSet(object.swap_cd) ? globalThis.Boolean(object.swap_cd) : false,
+      skill_cd: isSet(object.skill_cd) ? globalThis.Boolean(object.skill_cd) : false,
+      dash_cd: isSet(object.dash_cd) ? globalThis.Boolean(object.dash_cd) : false,
+      burst_cd: isSet(object.burst_cd) ? globalThis.Boolean(object.burst_cd) : false,
+      time_manip: isSet(object.time_manip) ? globalThis.Boolean(object.time_manip) : false,
     };
   },
 
   toJSON(message: Warnings): unknown {
     const obj: any = {};
-    if (
-      message.target_overlap !== undefined &&
-      message.target_overlap !== false
-    ) {
+    if (message.target_overlap !== undefined && message.target_overlap !== false) {
       obj.target_overlap = message.target_overlap;
     }
-    if (
-      message.insufficient_energy !== undefined &&
-      message.insufficient_energy !== false
-    ) {
+    if (message.insufficient_energy !== undefined && message.insufficient_energy !== false) {
       obj.insufficient_energy = message.insufficient_energy;
     }
-    if (
-      message.insufficient_stamina !== undefined &&
-      message.insufficient_stamina !== false
-    ) {
+    if (message.insufficient_stamina !== undefined && message.insufficient_stamina !== false) {
       obj.insufficient_stamina = message.insufficient_stamina;
     }
     if (message.swap_cd !== undefined && message.swap_cd !== false) {
@@ -3753,6 +3231,9 @@ export const Warnings = {
     }
     if (message.burst_cd !== undefined && message.burst_cd !== false) {
       obj.burst_cd = message.burst_cd;
+    }
+    if (message.time_manip !== undefined && message.time_manip !== false) {
+      obj.time_manip = message.time_manip;
     }
     return obj;
   },
@@ -3769,6 +3250,7 @@ export const Warnings = {
     message.skill_cd = object.skill_cd ?? false;
     message.dash_cd = object.dash_cd ?? false;
     message.burst_cd = object.burst_cd ?? false;
+    message.time_manip = object.time_manip ?? false;
     return message;
   },
 };
@@ -3781,56 +3263,38 @@ function createBaseFailedActions(): FailedActions {
     skill_cd: undefined,
     dash_cd: undefined,
     burst_cd: undefined,
+    time_manip: undefined,
   };
 }
 
 export const FailedActions = {
-  encode(
-    message: FailedActions,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: FailedActions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.insufficient_energy !== undefined) {
-      DescriptiveStats.encode(
-        message.insufficient_energy,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.insufficient_energy, writer.uint32(10).fork()).ldelim();
     }
     if (message.insufficient_stamina !== undefined) {
-      DescriptiveStats.encode(
-        message.insufficient_stamina,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.insufficient_stamina, writer.uint32(18).fork()).ldelim();
     }
     if (message.swap_cd !== undefined) {
-      DescriptiveStats.encode(
-        message.swap_cd,
-        writer.uint32(26).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.swap_cd, writer.uint32(26).fork()).ldelim();
     }
     if (message.skill_cd !== undefined) {
-      DescriptiveStats.encode(
-        message.skill_cd,
-        writer.uint32(34).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.skill_cd, writer.uint32(34).fork()).ldelim();
     }
     if (message.dash_cd !== undefined) {
-      DescriptiveStats.encode(
-        message.dash_cd,
-        writer.uint32(42).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.dash_cd, writer.uint32(42).fork()).ldelim();
     }
     if (message.burst_cd !== undefined) {
-      DescriptiveStats.encode(
-        message.burst_cd,
-        writer.uint32(50).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.burst_cd, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.time_manip !== undefined) {
+      DescriptiveStats.encode(message.time_manip, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FailedActions {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFailedActions();
     while (reader.pos < end) {
@@ -3841,20 +3305,14 @@ export const FailedActions = {
             break;
           }
 
-          message.insufficient_energy = DescriptiveStats.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.insufficient_energy = DescriptiveStats.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.insufficient_stamina = DescriptiveStats.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.insufficient_stamina = DescriptiveStats.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
@@ -3884,6 +3342,13 @@ export const FailedActions = {
 
           message.burst_cd = DescriptiveStats.decode(reader, reader.uint32());
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.time_manip = DescriptiveStats.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3901,32 +3366,21 @@ export const FailedActions = {
       insufficient_stamina: isSet(object.insufficient_stamina)
         ? DescriptiveStats.fromJSON(object.insufficient_stamina)
         : undefined,
-      swap_cd: isSet(object.swap_cd)
-        ? DescriptiveStats.fromJSON(object.swap_cd)
-        : undefined,
-      skill_cd: isSet(object.skill_cd)
-        ? DescriptiveStats.fromJSON(object.skill_cd)
-        : undefined,
-      dash_cd: isSet(object.dash_cd)
-        ? DescriptiveStats.fromJSON(object.dash_cd)
-        : undefined,
-      burst_cd: isSet(object.burst_cd)
-        ? DescriptiveStats.fromJSON(object.burst_cd)
-        : undefined,
+      swap_cd: isSet(object.swap_cd) ? DescriptiveStats.fromJSON(object.swap_cd) : undefined,
+      skill_cd: isSet(object.skill_cd) ? DescriptiveStats.fromJSON(object.skill_cd) : undefined,
+      dash_cd: isSet(object.dash_cd) ? DescriptiveStats.fromJSON(object.dash_cd) : undefined,
+      burst_cd: isSet(object.burst_cd) ? DescriptiveStats.fromJSON(object.burst_cd) : undefined,
+      time_manip: isSet(object.time_manip) ? DescriptiveStats.fromJSON(object.time_manip) : undefined,
     };
   },
 
   toJSON(message: FailedActions): unknown {
     const obj: any = {};
     if (message.insufficient_energy !== undefined) {
-      obj.insufficient_energy = DescriptiveStats.toJSON(
-        message.insufficient_energy,
-      );
+      obj.insufficient_energy = DescriptiveStats.toJSON(message.insufficient_energy);
     }
     if (message.insufficient_stamina !== undefined) {
-      obj.insufficient_stamina = DescriptiveStats.toJSON(
-        message.insufficient_stamina,
-      );
+      obj.insufficient_stamina = DescriptiveStats.toJSON(message.insufficient_stamina);
     }
     if (message.swap_cd !== undefined) {
       obj.swap_cd = DescriptiveStats.toJSON(message.swap_cd);
@@ -3940,75 +3394,59 @@ export const FailedActions = {
     if (message.burst_cd !== undefined) {
       obj.burst_cd = DescriptiveStats.toJSON(message.burst_cd);
     }
+    if (message.time_manip !== undefined) {
+      obj.time_manip = DescriptiveStats.toJSON(message.time_manip);
+    }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<FailedActions>, I>>(
-    base?: I,
-  ): FailedActions {
+  create<I extends Exact<DeepPartial<FailedActions>, I>>(base?: I): FailedActions {
     return FailedActions.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<FailedActions>, I>>(
-    object: I,
-  ): FailedActions {
+  fromPartial<I extends Exact<DeepPartial<FailedActions>, I>>(object: I): FailedActions {
     const message = createBaseFailedActions();
-    message.insufficient_energy =
-      object.insufficient_energy !== undefined &&
-      object.insufficient_energy !== null
-        ? DescriptiveStats.fromPartial(object.insufficient_energy)
-        : undefined;
-    message.insufficient_stamina =
-      object.insufficient_stamina !== undefined &&
-      object.insufficient_stamina !== null
-        ? DescriptiveStats.fromPartial(object.insufficient_stamina)
-        : undefined;
-    message.swap_cd =
-      object.swap_cd !== undefined && object.swap_cd !== null
-        ? DescriptiveStats.fromPartial(object.swap_cd)
-        : undefined;
-    message.skill_cd =
-      object.skill_cd !== undefined && object.skill_cd !== null
-        ? DescriptiveStats.fromPartial(object.skill_cd)
-        : undefined;
-    message.dash_cd =
-      object.dash_cd !== undefined && object.dash_cd !== null
-        ? DescriptiveStats.fromPartial(object.dash_cd)
-        : undefined;
-    message.burst_cd =
-      object.burst_cd !== undefined && object.burst_cd !== null
-        ? DescriptiveStats.fromPartial(object.burst_cd)
-        : undefined;
+    message.insufficient_energy = (object.insufficient_energy !== undefined && object.insufficient_energy !== null)
+      ? DescriptiveStats.fromPartial(object.insufficient_energy)
+      : undefined;
+    message.insufficient_stamina = (object.insufficient_stamina !== undefined && object.insufficient_stamina !== null)
+      ? DescriptiveStats.fromPartial(object.insufficient_stamina)
+      : undefined;
+    message.swap_cd = (object.swap_cd !== undefined && object.swap_cd !== null)
+      ? DescriptiveStats.fromPartial(object.swap_cd)
+      : undefined;
+    message.skill_cd = (object.skill_cd !== undefined && object.skill_cd !== null)
+      ? DescriptiveStats.fromPartial(object.skill_cd)
+      : undefined;
+    message.dash_cd = (object.dash_cd !== undefined && object.dash_cd !== null)
+      ? DescriptiveStats.fromPartial(object.dash_cd)
+      : undefined;
+    message.burst_cd = (object.burst_cd !== undefined && object.burst_cd !== null)
+      ? DescriptiveStats.fromPartial(object.burst_cd)
+      : undefined;
+    message.time_manip = (object.time_manip !== undefined && object.time_manip !== null)
+      ? DescriptiveStats.fromPartial(object.time_manip)
+      : undefined;
     return message;
   },
 };
 
 function createBaseShieldInfo(): ShieldInfo {
-  return {hp: {}, uptime: undefined};
+  return { hp: {}, uptime: undefined };
 }
 
 export const ShieldInfo = {
-  encode(
-    message: ShieldInfo,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: ShieldInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     Object.entries(message.hp || {}).forEach(([key, value]) => {
-      ShieldInfo_HpEntry.encode(
-        {key: key as any, value},
-        writer.uint32(10).fork(),
-      ).ldelim();
+      ShieldInfo_HpEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
     });
     if (message.uptime !== undefined) {
-      DescriptiveStats.encode(
-        message.uptime,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.uptime, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ShieldInfo {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseShieldInfo();
     while (reader.pos < end) {
@@ -4043,17 +3481,12 @@ export const ShieldInfo = {
   fromJSON(object: any): ShieldInfo {
     return {
       hp: isObject(object.hp)
-        ? Object.entries(object.hp).reduce<{[key: string]: DescriptiveStats}>(
-            (acc, [key, value]) => {
-              acc[key] = DescriptiveStats.fromJSON(value);
-              return acc;
-            },
-            {},
-          )
+        ? Object.entries(object.hp).reduce<{ [key: string]: DescriptiveStats }>((acc, [key, value]) => {
+          acc[key] = DescriptiveStats.fromJSON(value);
+          return acc;
+        }, {})
         : {},
-      uptime: isSet(object.uptime)
-        ? DescriptiveStats.fromJSON(object.uptime)
-        : undefined,
+      uptime: isSet(object.uptime) ? DescriptiveStats.fromJSON(object.uptime) : undefined,
     };
   },
 
@@ -4077,36 +3510,28 @@ export const ShieldInfo = {
   create<I extends Exact<DeepPartial<ShieldInfo>, I>>(base?: I): ShieldInfo {
     return ShieldInfo.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ShieldInfo>, I>>(
-    object: I,
-  ): ShieldInfo {
+  fromPartial<I extends Exact<DeepPartial<ShieldInfo>, I>>(object: I): ShieldInfo {
     const message = createBaseShieldInfo();
-    message.hp = Object.entries(object.hp ?? {}).reduce<{
-      [key: string]: DescriptiveStats;
-    }>((acc, [key, value]) => {
+    message.hp = Object.entries(object.hp ?? {}).reduce<{ [key: string]: DescriptiveStats }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = DescriptiveStats.fromPartial(value);
       }
       return acc;
     }, {});
-    message.uptime =
-      object.uptime !== undefined && object.uptime !== null
-        ? DescriptiveStats.fromPartial(object.uptime)
-        : undefined;
+    message.uptime = (object.uptime !== undefined && object.uptime !== null)
+      ? DescriptiveStats.fromPartial(object.uptime)
+      : undefined;
     return message;
   },
 };
 
 function createBaseShieldInfo_HpEntry(): ShieldInfo_HpEntry {
-  return {key: '', value: undefined};
+  return { key: "", value: undefined };
 }
 
 export const ShieldInfo_HpEntry = {
-  encode(
-    message: ShieldInfo_HpEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
-    if (message.key !== '') {
+  encode(message: ShieldInfo_HpEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
@@ -4116,8 +3541,7 @@ export const ShieldInfo_HpEntry = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ShieldInfo_HpEntry {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseShieldInfo_HpEntry();
     while (reader.pos < end) {
@@ -4148,16 +3572,14 @@ export const ShieldInfo_HpEntry = {
 
   fromJSON(object: any): ShieldInfo_HpEntry {
     return {
-      key: isSet(object.key) ? globalThis.String(object.key) : '',
-      value: isSet(object.value)
-        ? DescriptiveStats.fromJSON(object.value)
-        : undefined,
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? DescriptiveStats.fromJSON(object.value) : undefined,
     };
   },
 
   toJSON(message: ShieldInfo_HpEntry): unknown {
     const obj: any = {};
-    if (message.key !== '') {
+    if (message.key !== "") {
       obj.key = message.key;
     }
     if (message.value !== undefined) {
@@ -4166,45 +3588,33 @@ export const ShieldInfo_HpEntry = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<ShieldInfo_HpEntry>, I>>(
-    base?: I,
-  ): ShieldInfo_HpEntry {
+  create<I extends Exact<DeepPartial<ShieldInfo_HpEntry>, I>>(base?: I): ShieldInfo_HpEntry {
     return ShieldInfo_HpEntry.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ShieldInfo_HpEntry>, I>>(
-    object: I,
-  ): ShieldInfo_HpEntry {
+  fromPartial<I extends Exact<DeepPartial<ShieldInfo_HpEntry>, I>>(object: I): ShieldInfo_HpEntry {
     const message = createBaseShieldInfo_HpEntry();
-    message.key = object.key ?? '';
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? DescriptiveStats.fromPartial(object.value)
-        : undefined;
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? DescriptiveStats.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
 function createBaseEndStats(): EndStats {
-  return {ending_energy: undefined};
+  return { ending_energy: undefined };
 }
 
 export const EndStats = {
-  encode(
-    message: EndStats,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: EndStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.ending_energy !== undefined) {
-      DescriptiveStats.encode(
-        message.ending_energy,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      DescriptiveStats.encode(message.ending_energy, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EndStats {
-    const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEndStats();
     while (reader.pos < end) {
@@ -4215,10 +3625,7 @@ export const EndStats = {
             break;
           }
 
-          message.ending_energy = DescriptiveStats.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.ending_energy = DescriptiveStats.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4230,11 +3637,7 @@ export const EndStats = {
   },
 
   fromJSON(object: any): EndStats {
-    return {
-      ending_energy: isSet(object.ending_energy)
-        ? DescriptiveStats.fromJSON(object.ending_energy)
-        : undefined,
-    };
+    return { ending_energy: isSet(object.ending_energy) ? DescriptiveStats.fromJSON(object.ending_energy) : undefined };
   },
 
   toJSON(message: EndStats): unknown {
@@ -4250,43 +3653,28 @@ export const EndStats = {
   },
   fromPartial<I extends Exact<DeepPartial<EndStats>, I>>(object: I): EndStats {
     const message = createBaseEndStats();
-    message.ending_energy =
-      object.ending_energy !== undefined && object.ending_energy !== null
-        ? DescriptiveStats.fromPartial(object.ending_energy)
-        : undefined;
+    message.ending_energy = (object.ending_energy !== undefined && object.ending_energy !== null)
+      ? DescriptiveStats.fromPartial(object.ending_energy)
+      : undefined;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends globalThis.Array<infer U>
-  ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? {[K in keyof T]?: DeepPartial<T[K]>}
+type DeepPartial<T> = T extends Builtin ? T
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & {[K in keyof P]: Exact<P[K], I[K]>} & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function longToNumber(long: Long): number {
   if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error('Value is larger than Number.MAX_SAFE_INTEGER');
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }
@@ -4297,7 +3685,7 @@ if (_m0.util.Long !== Long) {
 }
 
 function isObject(value: any): boolean {
-  return typeof value === 'object' && value !== null;
+  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

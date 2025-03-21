@@ -20,7 +20,7 @@ export default (props: WarningProps) => {
     <SwapWarning key="swap" {...props} />,
     <DashWarning key="dash" {...props} />,
     <IgnoreBurstEnergyMode key="ignore_burst_energy" {...props} />,
-    <TimerManipWarning key="timer_manip" {...props} />
+    <TimeManipWarning key="time_manip" {...props} />
   ];
 
   return (
@@ -226,22 +226,22 @@ const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {
   );
 };
 
-const TimerManipWarning = ({data}: WarningProps) => {
+const TimeManipWarning = ({data}: WarningProps) => {
   const {t} = useTranslation();
   const [show, setShow] = useState(true);
-  const visible = show && (data?.statistics?.warnings?.timer_manip ?? false);
+  const visible = show && (data?.statistics?.warnings?.time_manip ?? false);
 
   return (
     <DismissibleCallout
-      title={t<string>("warnings.timer_manip_title")}
+      title={t<string>("warnings.time_manip_title")}
       intent={Intent.WARNING}
       show={visible}
       onDismiss={() => setShow(false)}>
-      <p>{t<string>("warnings.timer_manip_body")}</p>
+      <p>{t<string>("warnings.time_manip_body")}</p>
       <FailedActionDetails
-        title={t<string>("warnings.timer_manip_data_header")}
+        title={t<string>("warnings.time_manip_data_header")}
         data={data}
-        stat={(fa) => fa.timer_manip}
+        stat={(fa) => fa.time_manip}
       />
     </DismissibleCallout>
   );
