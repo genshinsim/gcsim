@@ -21,12 +21,13 @@ type buffer struct {
 }
 
 type charFailures struct {
-	energy  *calc.StreamStats
-	stamina *calc.StreamStats
-	swap    *calc.StreamStats
-	skill   *calc.StreamStats
-	dash    *calc.StreamStats
-	burstcd *calc.StreamStats
+	energy    *calc.StreamStats
+	stamina   *calc.StreamStats
+	swap      *calc.StreamStats
+	skill     *calc.StreamStats
+	dash      *calc.StreamStats
+	burstcd   *calc.StreamStats
+	timeManip *calc.StreamStats // Not an actual failure. Will probably only be a warning.
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
@@ -36,12 +37,13 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 
 	for i := 0; i < len(cfg.Characters); i++ {
 		out.failures[i] = charFailures{
-			energy:  &calc.StreamStats{},
-			stamina: &calc.StreamStats{},
-			swap:    &calc.StreamStats{},
-			skill:   &calc.StreamStats{},
-			dash:    &calc.StreamStats{},
-			burstcd: &calc.StreamStats{},
+			energy:    &calc.StreamStats{},
+			stamina:   &calc.StreamStats{},
+			swap:      &calc.StreamStats{},
+			skill:     &calc.StreamStats{},
+			dash:      &calc.StreamStats{},
+			burstcd:   &calc.StreamStats{},
+			timeManip: &calc.StreamStats{},
 		}
 	}
 
@@ -50,7 +52,7 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 
 func (b *buffer) Add(result stats.Result) {
 	for i := range result.Characters {
-		var energy, stamina, swap, skill, dash, burstcd float64
+		var energy, stamina, swap, skill, dash, burstcd, timeManip float64
 
 		for _, fail := range result.Characters[i].FailedActions {
 			switch fail.Reason {
@@ -66,6 +68,8 @@ func (b *buffer) Add(result stats.Result) {
 				dash += float64(fail.End-fail.Start) / 60
 			case action.BurstCD.String():
 				burstcd += float64(fail.End-fail.Start) / 60
+			case action.TimeManip.String():
+				timeManip += float64(fail.End-fail.Start) / 60
 			}
 		}
 
@@ -75,6 +79,7 @@ func (b *buffer) Add(result stats.Result) {
 		b.failures[i].skill.Add(skill)
 		b.failures[i].dash.Add(dash)
 		b.failures[i].burstcd.Add(burstcd)
+		b.failures[i].timeManip.Add(timeManip)
 	}
 }
 
@@ -88,6 +93,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 			SkillCd:             agg.ToDescriptiveStats(c.skill),
 			DashCd:              agg.ToDescriptiveStats(c.dash),
 			BurstCd:             agg.ToDescriptiveStats(c.burstcd),
+			TimeManip:           agg.ToDescriptiveStats(c.timeManip),
 		}
 	}
 }

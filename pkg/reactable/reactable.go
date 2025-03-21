@@ -150,6 +150,15 @@ func (r *Reactable) Init(self combat.Target, c *core.Core) *Reactable {
 	return r
 }
 
+// Returns frames remaining before Crystallize can occur again.
+func (r *Reactable) CrystallizeGCD() int {
+	gcd := r.crystallizeGCD - r.core.F
+	if gcd < 0 {
+		gcd = 0
+	}
+	return gcd
+}
+
 func (r *Reactable) ActiveAuraString() []string {
 	var result []string
 	for i, v := range r.Durability {

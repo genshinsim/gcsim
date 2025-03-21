@@ -1240,6 +1240,7 @@ type Warnings struct {
 	SkillCd             bool `protobuf:"varint,5,opt,name=skill_cd,proto3" json:"skill_cd,omitempty" bson:"skill_cd,omitempty"`
 	DashCd              bool `protobuf:"varint,6,opt,name=dash_cd,proto3" json:"dash_cd,omitempty" bson:"dash_cd,omitempty"`
 	BurstCd             bool `protobuf:"varint,7,opt,name=burst_cd,proto3" json:"burst_cd,omitempty" bson:"burst_cd,omitempty"`
+	TimeManip           bool `protobuf:"varint,8,opt,name=time_manip,proto3" json:"time_manip,omitempty" bson:"time_manip,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -1331,6 +1332,7 @@ type FailedActions struct {
 	SkillCd             *DescriptiveStats      `protobuf:"bytes,4,opt,name=skill_cd,proto3" json:"skill_cd,omitempty" bson:"skill_cd,omitempty"`
 	DashCd              *DescriptiveStats      `protobuf:"bytes,5,opt,name=dash_cd,proto3" json:"dash_cd,omitempty" bson:"dash_cd,omitempty"`
 	BurstCd             *DescriptiveStats      `protobuf:"bytes,6,opt,name=burst_cd,proto3" json:"burst_cd,omitempty" bson:"burst_cd,omitempty"`
+	TimeManip          *DescriptiveStats      `protobuf:"bytes,7,opt,name=timer_manip,proto3" json:"timer_manip,omitempty" bson:"timer_manip,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }

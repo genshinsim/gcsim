@@ -89,6 +89,19 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		return false
 	}, "stats-action-failed-log")
 
+	core.Events.Subscribe(event.OnTimeManip, func(args ...interface{}) bool {
+		char := core.Player.Active()
+		f := args[0].(int) // time spent in book
+		reason := action.TimeManip
+		fail := activeFailure{
+			start:  core.F - f,
+			reason: reason,
+		}
+		out.addFailure(core, char, fail)
+
+		return false
+	}, "stats-timer-manip-log")
+
 	return &out, nil
 }
 

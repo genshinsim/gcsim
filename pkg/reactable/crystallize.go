@@ -57,6 +57,20 @@ func (r *Reactable) TryCrystallizeFrozen(a *combat.AttackEvent) bool {
 	return false
 }
 
+// Used to simulate booking to reduce the CD between allowable crystallize occurences without increasing the battle timer
+// Because gcsim only has global frames, reduce crystallizeGCD rather than increase the cursed timer
+// Param f: Number of frames to reduce the gcd
+// Booking will only have an effect if crystallize has already occurred, and will reduce the timer for the next instance of crystallize only.
+// Future instances of crystallize will still have the standard cd.
+// "overbooking" will have no adverse effects. r.crystallizeGCD will simply go negative and will be capped at -1.
+func (r *Reactable) ReduceCrystallizeGCD(f int) {
+	r.crystallizeGCD -= f
+	if r.crystallizeGCD < 0 {
+		r.crystallizeGCD = -1
+	}
+	r.core.Events.Emit(event.OnTimeManip, f)
+}
+
 func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt reactions.ReactionType, evt event.Event) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
