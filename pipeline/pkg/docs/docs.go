@@ -99,6 +99,9 @@ func (g *Generator) GenerateDocsPages(path string) {
 
 func (g *Generator) generateDocPage(path string, data docsData, tmpl string) error {
 	t, err := template.New("docs_page").Parse(tmpl)
+	if err != nil {
+		return fmt.Errorf("error compiling data template: %w", err)
+	}
 	buff := new(bytes.Buffer)
 	err = t.Execute(buff, data)
 	if err != nil {
