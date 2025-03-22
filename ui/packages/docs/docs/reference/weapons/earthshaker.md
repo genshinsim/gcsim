@@ -1,5 +1,5 @@
 ---
-title: Earth SHaker
+title: Earth Shaker
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

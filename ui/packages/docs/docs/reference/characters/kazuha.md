@@ -1,5 +1,5 @@
 ---
-title: Kazuha
+title: Kaedehara Kazuha
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

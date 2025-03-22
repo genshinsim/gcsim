@@ -1,5 +1,5 @@
 ---
-title: "The Dockhand's Assistant"
+title: The Dockhand's Assistant
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
