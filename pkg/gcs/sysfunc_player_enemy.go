@@ -38,7 +38,6 @@ func (e *Eval) heal(c *ast.CallExpr, env *Env) (Obj, error) {
 	targetCharIdx := -1
 	srcCharIdx := -1
 	healType := info.HealTypePercent
-	useAbsHeal := 0
 
 	argLen := len(c.Args)
 	if argLen < reqArgs {
@@ -67,7 +66,7 @@ func (e *Eval) heal(c *ast.CallExpr, env *Env) (Obj, error) {
 	// Optional useAbsHeal: Consider amount to be an absolute heal value, rather than percent of target's max hp. Default 0
 	argNum += 1
 	if argNum < argLen {
-		useAbsHeal, err = e.getInt(funcName, argNum, c, env)
+		useAbsHeal, err := e.getInt(funcName, argNum, c, env)
 		if err != nil {
 			return nil, err
 		}
