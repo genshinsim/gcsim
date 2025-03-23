@@ -1,20 +1,15 @@
 package gcs
 
 import (
-	"errors"
 	"fmt"
 	"math"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
-	"github.com/genshinsim/gcsim/pkg/reactable"
-	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 func (e *Eval) initSysFuncs(env *Env) {
@@ -38,6 +33,8 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("kill_target", e.killTarget, env)
 	e.addSysFunc("is_target_dead", e.isTargetDead, env)
 	e.addSysFunc("pick_up_crystallize", e.pickUpCrystallize, env)
+	e.addSysFunc("add_mod", e.addMod, env)
+	e.addSysFunc("heal", e.heal, env)
 
 	// math
 	e.addSysFunc("sin", e.sin, env)
@@ -56,6 +53,48 @@ func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, e
 		Env:  NewEnv(env),
 	}
 	env.varMap[name] = &obj
+}
+
+// Get int if possible, raise error if not
+func (e *Eval) getInt(callFunc string, argNum int, c *ast.CallExpr, env *Env) (int, error) {
+	// should eval to a number
+	val, err := e.evalExpr(c.Args[argNum], env)
+	if err != nil {
+		return 0, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return 0, fmt.Errorf("%v argument %v should evaluate to a number, got %v", callFunc, argNum+1, val.Inspect())
+	}
+
+	f := int(n.ival)
+	if n.isFloat {
+		f = int(n.fval)
+	}
+
+	return f, nil
+}
+
+// Get float if possible, raise error if not
+func (e *Eval) getFloat(callFunc string, argNum int, c *ast.CallExpr, env *Env) (float64, error) {
+	// should eval to a number
+	val, err := e.evalExpr(c.Args[argNum], env)
+	if err != nil {
+		return 0.0, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return 0.0, fmt.Errorf("%v argument %v should evaluate to a number, got %v", callFunc, argNum+1, val.Inspect())
+	}
+
+	f := n.fval
+	if !n.isFloat {
+		f = float64(n.ival)
+	}
+
+	return f, nil
 }
 
 func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -210,322 +249,6 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	return &strval{str}, nil
-}
-
-func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
-	// set_player_pos(x, y)
-	if len(c.Args) != 2 {
-		return nil, fmt.Errorf("invalid number of params for set_player_pos, expected 2 got %v", len(c.Args))
-	}
-
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_player_pos argument x coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be float
-	x := n.fval
-	if !n.isFloat {
-		x = float64(n.ival)
-	}
-
-	t, err = e.evalExpr(c.Args[1], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok = t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_player_pos argument y coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be float
-	y := n.fval
-	if !n.isFloat {
-		y = float64(n.ival)
-	}
-
-	e.Core.Combat.SetPlayerPos(geometry.Point{X: x, Y: y})
-	e.Core.Combat.Player().SetDirectionToClosestEnemy()
-
-	return bton(true), nil
-}
-
-func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
-	// set_particle_delay("character", x);
-	if len(c.Args) != 2 {
-		return nil, fmt.Errorf("invalid number of params for set_particle_delay, expected 2 got %v", len(c.Args))
-	}
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	name, ok := t.(*strval)
-	if !ok {
-		return nil, fmt.Errorf("set_particle_delay first argument should evaluate to a string, got %v", t.Inspect())
-	}
-
-	// check name exists on team
-	ck, ok := shortcut.CharNameToKey[name.str]
-	if !ok {
-		return nil, fmt.Errorf("set_particle_delay first argument %v is not a valid character", name.str)
-	}
-
-	char, ok := e.Core.Player.ByKey(ck)
-	if !ok {
-		return nil, fmt.Errorf("set_particle_delay: %v is not on this team", name.str)
-	}
-
-	t, err = e.evalExpr(c.Args[1], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_particle_delay second argument should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	delay := int(n.ival)
-	if n.isFloat {
-		delay = int(n.fval)
-	}
-	if delay < 0 {
-		delay = 0
-	}
-
-	char.ParticleDelay = delay
-
-	return &number{}, nil
-}
-
-// Set SwapICD to any integer, to simulate booking. May be any non-negative integer.
-func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
-	// setSwapCD
-
-	// set_player_pos(x, y)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for set_swap_icd, expected 1 got %v", len(c.Args))
-	}
-
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_swap_icd argument x coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	x := int(n.ival)
-	if n.isFloat {
-		x = int(n.fval)
-	}
-
-	if x < 0 {
-		return nil, fmt.Errorf("invald value for swap icd, expected non-negative integer, got %v", x)
-	}
-
-	e.Core.Player.SetSwapICD(x)
-	return &null{}, nil
-}
-
-func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for set_default_target, expected 1 got %v", len(c.Args))
-	}
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_default_target argument should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	idx := int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
-
-	// check if index is in range
-	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
-		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
-	}
-
-	e.Core.Combat.DefaultTarget = e.Core.Combat.Enemy(idx - 1).Key()
-	e.Core.Combat.Player().SetDirectionToClosestEnemy()
-
-	return &null{}, nil
-}
-
-func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
-	// set_target_pos(1,x,y)
-	if len(c.Args) != 3 {
-		return nil, fmt.Errorf("invalid number of params for set_target_pos, expected 3 got %v", len(c.Args))
-	}
-
-	// all 3 param should eval to numbers
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_target_pos argument target index should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	idx := int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
-
-	t, err = e.evalExpr(c.Args[1], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok = t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_target_pos argument x coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be float
-	x := n.fval
-	if !n.isFloat {
-		x = float64(n.ival)
-	}
-
-	t, err = e.evalExpr(c.Args[2], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok = t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_target_pos argument y coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be float
-	y := n.fval
-	if !n.isFloat {
-		y = float64(n.ival)
-	}
-
-	// check if index is in range
-	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
-		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
-	}
-
-	e.Core.Combat.SetEnemyPos(idx-1, geometry.Point{X: x, Y: y})
-	e.Core.Combat.Player().SetDirectionToClosestEnemy()
-
-	return &null{}, nil
-}
-
-func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
-	// kill_target(1)
-	if !e.Core.Combat.DamageMode {
-		return nil, errors.New("damage mode is not activated")
-	}
-
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for kill_target, expected 1 got %v", len(c.Args))
-	}
-
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("kill_target argument target index should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	idx := int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
-
-	// check if index is in range
-	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
-		return nil, fmt.Errorf("index for kill_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
-	}
-
-	e.Core.Combat.KillEnemy(idx - 1)
-
-	return &null{}, nil
-}
-
-func (e *Eval) isTargetDead(c *ast.CallExpr, env *Env) (Obj, error) {
-	// is_target_dead(1)
-	if !e.Core.Combat.DamageMode {
-		return nil, errors.New("damage mode is not activated")
-	}
-
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for is_target_dead, expected 1 got %v", len(c.Args))
-	}
-
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("is_target_dead argument target index should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	idx := int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
-
-	// check if index is in range
-	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
-		return nil, fmt.Errorf("index for is_target_dead is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
-	}
-
-	return bton(!e.Core.Combat.Enemies()[idx-1].IsAlive()), nil
-}
-
-func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
-	// pick_up_crystallize("element");
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for pick_up_crystallize, expected 1 got %v", len(c.Args))
-	}
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	name, ok := t.(*strval)
-	if !ok {
-		return nil, fmt.Errorf("pick_up_crystallize argument element should evaluate to a string, got %v", t.Inspect())
-	}
-
-	// check if element is vaild
-	pickupEle := attributes.StringToEle(name.str)
-	if pickupEle == attributes.UnknownElement && name.str != "any" {
-		return nil, fmt.Errorf("pick_up_crystallize argument element %v is not a valid element", name.str)
-	}
-
-	var count int64
-	for _, g := range e.Core.Combat.Gadgets() {
-		shard, ok := g.(*reactable.CrystallizeShard)
-		// skip if no shard
-		if !ok {
-			continue
-		}
-		// skip if shard not specified element
-		if pickupEle != attributes.UnknownElement && shard.Shield.Ele != pickupEle {
-			continue
-		}
-		// try to pick up shard and stop if succeeded
-		if shard.AddShieldKillShard() {
-			count = 1
-			break
-		}
-	}
-
-	return &number{
-		ival: count,
-	}, nil
 }
 
 func (e *Eval) isEven(c *ast.CallExpr, env *Env) (Obj, error) {
