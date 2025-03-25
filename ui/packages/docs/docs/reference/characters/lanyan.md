@@ -1,5 +1,5 @@
 ---
-title: Xilonen
+title: Lan Yan
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
@@ -13,32 +13,32 @@ import ActionsTable from "@site/src/components/Actions/ActionsTable";
 
 ## Frames
 
-<FramesTable item_key="xilonen" />
+<FramesTable item_key="lanyan" />
 
 ## Hitlag Data
 
-<HitlagTable item_key="xilonen" />
+<HitlagTable item_key="lanyan" />
 
 ## AoE Data
 
-<AoETable item_key="xilonen" />
+<AoETable item_key="lanyan" />
 
 ## Known issues
 
-<IssuesTable item_key="xilonen" />
+<IssuesTable item_key="lanyan" />
 
 ## Names
 
-<NamesList item_key="xilonen" />
+<NamesList item_key="lanyan" />
 
 ## Legal Actions
 
-<ActionsTable item_key="xilonen" />
+<ActionsTable item_key="lanyan" />
 
 ## Params
 
-<ParamsTable item_key="xilonen" />
+<ParamsTable item_key="lanyan" />
 
 ## Fields
 
-<FieldsTable item_key="xilonen" />
+<FieldsTable item_key="lanyan" />

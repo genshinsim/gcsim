@@ -1,8 +1,12 @@
 ---
-title: Fang Of The Mountain King
+title: Fang of the Mountain King
 ---
 
-import AoETable from "@site/src/components/AoE/AoETable"; import IssuesTable from "@site/src/components/Issues/IssuesTable"; import NamesList from "@site/src/components/Names/NamesList"; import ParamsTable from "@site/src/components/Params/ParamsTable"; import FieldsTable from "@site/src/components/Fields/FieldsTable";
+import AoETable from "@site/src/components/AoE/AoETable";
+import IssuesTable from "@site/src/components/Issues/IssuesTable";
+import NamesList from "@site/src/components/Names/NamesList";
+import ParamsTable from "@site/src/components/Params/ParamsTable";
+import FieldsTable from "@site/src/components/Fields/FieldsTable";
 
 ## AoE Data
 

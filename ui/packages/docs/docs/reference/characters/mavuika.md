@@ -1,5 +1,5 @@
 ---
-title: Xilonen
+title: Mavuika
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
@@ -13,32 +13,32 @@ import ActionsTable from "@site/src/components/Actions/ActionsTable";
 
 ## Frames
 
-<FramesTable item_key="xilonen" />
+<FramesTable item_key="mavuika" />
 
 ## Hitlag Data
 
-<HitlagTable item_key="xilonen" />
+<HitlagTable item_key="mavuika" />
 
 ## AoE Data
 
-<AoETable item_key="xilonen" />
+<AoETable item_key="mavuika" />
 
 ## Known issues
 
-<IssuesTable item_key="xilonen" />
+<IssuesTable item_key="mavuika" />
 
 ## Names
 
-<NamesList item_key="xilonen" />
+<NamesList item_key="mavuika" />
 
 ## Legal Actions
 
-<ActionsTable item_key="xilonen" />
+<ActionsTable item_key="mavuika" />
 
 ## Params
 
-<ParamsTable item_key="xilonen" />
+<ParamsTable item_key="mavuika" />
 
 ## Fields
 
-<FieldsTable item_key="xilonen" />
+<FieldsTable item_key="mavuika" />
