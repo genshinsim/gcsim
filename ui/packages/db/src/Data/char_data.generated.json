@@ -1454,6 +1454,23 @@
       },
       "name_text_hash_map ": "2506955778"
     },
+    "varesa": {
+      "id": 10000111,
+      "key": "varesa",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Electric",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Varesa",
+      "skill_details": {
+        "skill": 11112,
+        "burst": 11115,
+        "attack": 11111,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "283438874"
+    },
     "venti": {
       "id": 10000022,
       "key": "venti",

@@ -1,0 +1,52 @@
+package_name: varesa
+genshin_id: 10000111
+key: varesa
+action_param_keys:
+    low_plunge:
+        - param: "collision"
+    high_plunge:
+        - param: "collision"
+icd_tags:
+    - ICDTagVaresaCombatCycle
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        charged:
+            - 3 # Charged Attack DMG|{param3:F1P}
+        collision:
+            - 5 # Plunge DMG|{param5:F1P}
+        lowPlunge:
+            - 6 # Low Plunge DMG|{param6:P}
+        highPlunge:
+            - 7 # High Plunge DMG|{param7:P}
+        fieryAttack_1:
+            - 8 # Fiery Passion 1-Hit DMG|{param8:F1P}
+        fieryAttack_2:
+            - 9 # Fiery Passion 2-Hit DMG|{param9:F1P}
+        fieryAttack_3:
+            - 10 # Fiery Passion 3-Hit DMG|{param10:F1P}
+        fieryCharged:
+            - 11 # Fiery Passion Charged Attack DMG|{param11:F1P}
+        fieryCollision:
+            - 13 # Fiery Passion Plunge DMG|{param13:F1P}
+        fieryLowPlunge:
+            - 14 # Fiery Passion Low Plunge DMG|{param14:P}
+        fieryHighPlunge:
+            - 15 # Fiery Passion High Plunge DMG|{param15:P}
+    skill:
+        rush:
+            - 0 # Rush DMG|{param0:P}
+        fieryRush:
+            - 1 # Fiery Passion Rush DMG|{param1:F1P}
+    burst:
+        kick:
+            - 0 # Flying Kick DMG|{param0:F1P}
+        fieryKick:
+            - 1 # Fiery Passion Flying Kick DMG|{param1:F1P}
+        kablam:
+            - 4 # Volcano Kablam DMG|{param4:F1P}
