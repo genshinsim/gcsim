@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -45,7 +46,7 @@ func (s *Set) Init() error      { return nil }
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
 		Count:  count,
-		stacks: stacks.NewMultipleRefreshNoRemove(6, char.QueueCharTask, &c.F),
+		stacks: stacks.NewMultipleRefreshNoRemove(5, char.QueueCharTask, &c.F),
 	}
 
 	if count >= 2 {
@@ -62,7 +63,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
-		c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
 				return false
@@ -85,6 +86,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			for i := 0; i < info.stacks; i++ {
 				s.stacks.Add(6 * 60)
 			}
+			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "adding long night's oath stacks").
+				Write("count", info.stacks).
+				Write("total", s.stacks.Count())
 
 			return false
 		}, fmt.Sprintf("longnightsoath-4pc-%v", char.Base.Key.String()))
