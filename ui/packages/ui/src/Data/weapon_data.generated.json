@@ -1536,6 +1536,14 @@
       "image_name": "UI_EquipIcon_Claymore_GoldenVerdict",
       "name_text_hash_map ": "3812523339"
     },
+    "vividnotions": {
+      "id": 14519,
+      "key": "vividnotions",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_VaresaTransformer",
+      "name_text_hash_map ": "2559426851"
+    },
     "vortexvanquisher": {
       "id": 13504,
       "key": "vortexvanquisher",
