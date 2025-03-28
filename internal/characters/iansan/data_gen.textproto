@@ -1,0 +1,151 @@
+id: 10000110
+key: "iansan"
+rarity: QUALITY_PURPLE
+body: BODY_LOLI
+region: ASSOC_TYPE_NATLAN
+element: Electric
+weapon_class: WEAPON_POLE
+icon_name: "UI_AvatarIcon_Iansan"
+stats: {
+   base_hp: 893.5552
+   base_atk: 21.54768
+   base_def: 53.505375
+   hp_curve: GROW_CURVE_HP_S4
+   atk_curve: GROW_CURVE_ATTACK_S4
+   def_cruve: GROW_CURVE_HP_S4
+   promo_data: {
+      max_level: 20
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+      }
+   }
+   promo_data: {
+      max_level: 40
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 667.5315
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 39.97125
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 16.097597
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+      }
+   }
+   promo_data: {
+      max_level: 50
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 1141.8302
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 68.37187
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 27.535364
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.06
+      }
+   }
+   promo_data: {
+      max_level: 60
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 1774.2284
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 106.23937
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 42.78572
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.12
+      }
+   }
+   promo_data: {
+      max_level: 70
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2248.527
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 134.64
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 54.223488
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.12
+      }
+   }
+   promo_data: {
+      max_level: 80
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2722.8257
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 163.04062
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 65.661255
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.18
+      }
+   }
+   promo_data: {
+      max_level: 90
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 3197.1245
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 191.44125
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 77.09902
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ATTACK_PERCENT
+         value: 0.24
+      }
+   }
+}
+skill_details: {
+   skill: 11102
+   burst: 11105
+   attack: 11101
+   burst_energy_cost: 70
+}
+name_text_hash_map: 3120492514
