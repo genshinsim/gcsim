@@ -86,5 +86,4 @@ func (c *char) c6() {
 			return m, true
 		},
 	})
-
 }
