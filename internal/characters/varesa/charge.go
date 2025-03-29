@@ -106,7 +106,7 @@ func (c *char) fieryChargeAttack() action.Info {
 	framesCB := frames.NewAbilFunc
 	if c.StatusIsActive(skillStatus) {
 		ai.Abil += " (Follow-Up Strike)"
-		hitmark = int(float64(hitmark) * boostChargeAnim)
+		hitmark = int(math.Round(fieryChargeHitmark * boostChargeAnim))
 		framesCB = quickAbilFunc
 		c.DeleteStatus(skillStatus)
 	}
@@ -114,13 +114,13 @@ func (c *char) fieryChargeAttack() action.Info {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.2}, 2.8, 3.6),
-		fieryChargeHitmark,
-		fieryChargeHitmark,
+		hitmark,
+		hitmark,
 	)
 	return action.Info{
 		Frames:          framesCB(fieryChargeFrames),
 		AnimationLength: fieryChargeFrames[action.InvalidAction],
-		CanQueueAfter:   fieryChargeHitmark,
+		CanQueueAfter:   hitmark,
 		State:           action.ChargeAttackState,
 	}
 }
