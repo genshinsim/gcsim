@@ -49,7 +49,9 @@ func (s *Sacrificial) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != attacks.AttackTagElementalArt {
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
+		default:
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
