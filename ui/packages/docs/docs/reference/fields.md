@@ -30,6 +30,7 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 | `gadgets` | `sourcewaterdroplet` | `count` | - | Evaluates to the current number of Sourcewater Droplets. Use character specific fields to get number of Sourcewater Droplets in range. |
 | `gadgets` | `crystallizeshard` | `all`/`pyro`/`hydro`/`electro`/`cryo` | - | Evaluates to the current number of Crystallize Shards that can be picked up. `all` will return the total number of Crystallize Shards while the others will only count the ones of the given element. |
 | `keys` | `char`/`weapon`/`artifact` | char/weapon/artifact name | - | Evaluates to the key for the specified char/weapon/artifact name. See the relevant character/weapon/artifact page for acceptable names. |
+| `keys` | `element` | element name | - | Evaluates to the key for the specified element name. Element names are `electro`, `pyro`, `cryo`, `hydro`, `dendro`, `quicken`, `frozen`, `anemo`, `geo`, `physical`. |
 | `action` |  `skill`/`burst`/`attack`/`charge`/`high_plunge`/`low_plunge`/`aim`/`dash`/`jump`/`swap`/`walk`/`wait` | - | Evaluates to the key for the specified action name. |
 | `state` | - | - | - | Evaluates to the current state of the player. | 
 | `previous-char` | - | - | - | Evaluates to the char that executed the previous action. Use `.keys.char.<char name>` for comparison. | 

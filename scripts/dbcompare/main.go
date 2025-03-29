@@ -53,11 +53,11 @@ func main() {
 		panic(err)
 	}
 	filters := strings.Split(opt.mustHaveChar, ",")
-	fmt.Println("id,original,next,diff,abs_diff,err")
+	fmt.Println("id,original,next,diff,abs_diff,per_diff,err")
 	for _, v := range res {
 		simcfg, gcsl, err := simulator.Parse(v.Config)
 		if err != nil {
-			fmt.Printf(",,,,,,%v\n", err)
+			fmt.Printf(",,,,,,,%v\n", err)
 			continue
 		}
 		simcfg.Settings.Iterations = opt.iters
@@ -85,7 +85,8 @@ func main() {
 		dps, err := runSim(simcfg, gcsl, v.Config)
 		diff := dps - v.Summary.MeanDpsPerTarget
 		absDiff := math.Abs(diff)
-		fmt.Printf("%v,%v,%v,%v,%v,%v,%v\n", team, v.Id, v.Summary.MeanDpsPerTarget, dps, diff, absDiff, err)
+		percentDiff := absDiff / v.Summary.MeanDpsPerTarget
+		fmt.Printf("%v,%v,%v,%v,%v,%v,%v,%v\n", team, v.Id, v.Summary.MeanDpsPerTarget, dps, diff, absDiff, percentDiff, err)
 	}
 }
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/artifact"
 	"github.com/genshinsim/gcsim/pipeline/pkg/character"
+	"github.com/genshinsim/gcsim/pipeline/pkg/docs"
 	"github.com/genshinsim/gcsim/pipeline/pkg/enemy"
 	"github.com/genshinsim/gcsim/pipeline/pkg/translation"
 	"github.com/genshinsim/gcsim/pipeline/pkg/weapon"
@@ -36,6 +37,7 @@ type config struct {
 	keyPath     string
 	importsPath string
 	docRoot     string
+	docRef      string
 	assetsRoot  string
 }
 
@@ -56,7 +58,8 @@ func main() {
 	flag.StringVar(&cfg.icdPath, "icd", "./pkg/core/attacks", "file to store generated icd data")
 	flag.StringVar(&cfg.keyPath, "keys", "./pkg/core/keys", "path to store generated keys data")
 	flag.StringVar(&cfg.importsPath, "imports", "./pkg/simulation", "path to store generated imports data")
-	flag.StringVar(&cfg.docRoot, "outdocs", "./ui/packages/docs/src/components", "file to store generated icd data")
+	flag.StringVar(&cfg.docRoot, "outdocs", "./ui/packages/docs/src/components", "path to output generated docs components")
+	flag.StringVar(&cfg.docRef, "outdocsref", "./ui/packages/docs/docs/reference", "path to output generated docs pages")
 	flag.StringVar(&cfg.assetsRoot, "assets", "./internal/services/assets", "path to store generate asset data")
 	flag.Parse()
 
@@ -97,6 +100,19 @@ func main() {
 	if cfg.runEnemies {
 		monsterData = genEnemies(cfg, excels)
 	}
+
+	// generate documentation pages
+	docsGen, err := docs.NewGenerator(docs.GeneratorConfig{
+		Excels:     excels,
+		Characters: charData,
+		Weapons:    weapData,
+		Artifacts:  artifactsData,
+		Enemies:    monsterData,
+	})
+	if err != nil {
+		panic(err)
+	}
+	docsGen.GenerateDocsPages(cfg.docRef)
 
 	// generate translation data
 
@@ -241,6 +257,7 @@ func genArtifacts(cfg config, excels string) []*model.ArtifactData {
 	if err != nil {
 		panic(err)
 	}
+
 	return g.Data()
 }
 

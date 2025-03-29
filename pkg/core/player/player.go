@@ -50,7 +50,8 @@ type Handler struct {
 	airborne AirborneSource
 
 	// swap
-	SwapCD int
+	SwapCD  int
+	SwapICD int
 
 	// dash: dash fails iff lockout && on CD
 	DashCDExpirationFrame int
@@ -82,11 +83,16 @@ func New(opt Opt) *Handler {
 		stamPercentMods: make([]stamPercentMod, 0, 5),
 		Opt:             opt,
 		Stam:            MaxStam,
+		SwapICD:         SwapCDFrames,
 	}
 	h.Shields = shield.New(opt.F, opt.Log, opt.Events)
 	h.Handler = infusion.New(opt.F, opt.Log, opt.Debug)
 	h.AnimationHandler = animation.New(opt.F, opt.Debug, opt.Log, opt.Events, opt.Tasks)
 	return h
+}
+
+func (h *Handler) SetSwapICD(delay int) {
+	h.SwapICD = delay
 }
 
 func (h *Handler) swap(to keys.Char) func() {
@@ -105,7 +111,7 @@ func (h *Handler) swap(to keys.Char) func() {
 		h.DashLockout = h.chars[h.active].DashLockout
 		h.chars[h.active].RemainingDashCD = 0
 
-		h.SwapCD = SwapCDFrames
+		h.SwapCD = h.SwapICD
 		h.ResetAllNormalCounter()
 
 		evt := h.Log.NewEvent("executed swap", glog.LogActionEvent, h.active).
@@ -198,6 +204,17 @@ func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64
 	}
 	return r * h.chars[i].ActionStam(a, p)
 }
+
+func (h *Handler) UseStam(amount float64, a action.Action) {
+	h.Stam -= amount
+	// this really shouldn't happen??
+	if h.Stam < 0 {
+		h.Stam = 0
+	}
+	h.LastStamUse = *h.F
+	h.Events.Emit(event.OnStamUse, a)
+}
+
 func (h *Handler) RestoreStam(v float64) {
 	h.Stam += v
 	if h.Stam > MaxStam {

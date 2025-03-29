@@ -94,6 +94,7 @@ var weaponNames = []string{
 	"filletblade",
 	"finaleofthedeep",
 	"fleuvecendreferryman",
+	"flowerwreathedfeathers",
 	"fluteofezpitzal",
 	"flowingpurity",
 	"footprintoftherainbow",
@@ -201,6 +202,7 @@ var weaponNames = []string{
 	"swordofdescension",
 	"swordofnarzissenkreuz",
 	"talkingstick",
+	"tamayurateinoohanashi",
 	"thealleyflash",
 	"thebell",
 	"theblacksword",
@@ -301,6 +303,7 @@ const (
 	FilletBlade
 	FinaleOfTheDeep
 	FleuveCendreFerryman
+	FlowerWreathedFeathers
 	FluteOfEzpitzal
 	FlowingPurity
 	FootprintOfTheRainbow
@@ -408,6 +411,7 @@ const (
 	SwordOfDescension
 	SwordOfNarzissenkreuz
 	TalkingStick
+	TamayurateiNoOhanashi
 	TheAlleyFlash
 	TheBell
 	TheBlackSword

@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -160,10 +159,7 @@ func (c *char) chargeAttackShort(windup int) (action.Info, error) {
 			r = 0
 		}
 		if c.Core.Player.Stam > 50*r {
-			// use stam
-			c.Core.Player.Stam -= 50 * r
-			c.Core.Player.LastStamUse = c.Core.F
-			c.Core.Player.Events.Emit(event.OnStamUse, action.ActionCharge)
+			c.Core.Player.UseStam(50*r, action.ActionCharge)
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Charge Attack",

@@ -85,6 +85,7 @@ func (s *Server) handleNotFound(w http.ResponseWriter) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	w.Header().Set("Cache-Control", "no-cache")
 	w.WriteHeader(http.StatusOK)
 	w.Write(data)
 }

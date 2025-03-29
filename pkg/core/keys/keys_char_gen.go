@@ -20,6 +20,7 @@ const (
 	Bennett
 	Candace
 	Charlotte
+	Chasca
 	Chevreuse
 	Chiori
 	Chongyun
@@ -53,10 +54,12 @@ const (
 	Klee
 	Kokomi
 	Kuki
+	Lanyan
 	Layla
 	Lisa
 	Lynette
 	Lyney
+	Mavuika
 	Mika
 	Mona
 	Mualani
@@ -151,6 +154,10 @@ func init() {
 	charNames[Charlotte] = "charlotte"
 	charPrettyName[Charlotte] = "Charlotte"
 	CharKeyToEle[Charlotte] = attributes.Cryo
+
+	charNames[Chasca] = "chasca"
+	charPrettyName[Chasca] = "Chasca"
+	CharKeyToEle[Chasca] = attributes.Anemo
 
 	charNames[Chevreuse] = "chevreuse"
 	charPrettyName[Chevreuse] = "Chevreuse"
@@ -284,6 +291,10 @@ func init() {
 	charPrettyName[Kuki] = "Kuki"
 	CharKeyToEle[Kuki] = attributes.Electro
 
+	charNames[Lanyan] = "lanyan"
+	charPrettyName[Lanyan] = "Lanyan"
+	CharKeyToEle[Lanyan] = attributes.Anemo
+
 	charNames[Layla] = "layla"
 	charPrettyName[Layla] = "Layla"
 	CharKeyToEle[Layla] = attributes.Cryo
@@ -299,6 +310,10 @@ func init() {
 	charNames[Lyney] = "lyney"
 	charPrettyName[Lyney] = "Lyney"
 	CharKeyToEle[Lyney] = attributes.Pyro
+
+	charNames[Mavuika] = "mavuika"
+	charPrettyName[Mavuika] = "Mavuika"
+	CharKeyToEle[Mavuika] = attributes.Pyro
 
 	charNames[Mika] = "mika"
 	charPrettyName[Mika] = "Mika"

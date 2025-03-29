@@ -2,6 +2,9 @@ package_name: noelle
 genshin_id: 10000034
 key: noelle
 action_param_keys:
+    charge:
+        - param: "final"
+        - param: "no_limit"
     burst:
         - param: "extend"
     low_plunge:
@@ -18,6 +21,10 @@ skill_data_mapping:
             - 2 # 3-Hit DMG|{param2:F1P}
         attack_4:
             - 3 # 4-Hit DMG|{param3:P}
+        charge:
+            - 4 # Charged Attack Cyclic DMG|{param4:F1P}
+        chargeFinal:
+            - 5 # Charged Attack Final DMG|{param5:F1P}
         collision:
             - 8 # Plunge DMG|{param6:F1P}
         lowPlunge:

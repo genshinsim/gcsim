@@ -558,6 +558,31 @@
       }
     ]
   },
+  "chasca": {
+    "aim": [
+      {
+        "ability": "Aim-Head",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "FullAim-Head",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "E-Aimed",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ]
+  },
   "charlotte": {
     "cons": [
       {
@@ -2183,6 +2208,70 @@
       }
     ]
   },
+  "lanyan": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3-1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N3-2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Ring",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "sara": {
     "aim": [
       {
@@ -2312,6 +2401,82 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": true
+      }
+    ]
+  },
+  "mavuika": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-1",
+        "hitHaltTime": 0.05,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-2",
+        "hitHaltTime": 0.05,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.1,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N1 (Flamestrider)",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2 (Flamestrider)",
+        "hitHaltTime": 0.08,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3 (Flamestrider)",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4 (Flamestrider)",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Flamestrider CA (Final)",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
       }
     ]
   },
@@ -2545,14 +2710,14 @@
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
-        "deployable": true
+        "deployable": false
       },
       {
         "ability": "CA-Final",
         "hitHaltTime": 0.15,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
-        "deployable": true
+        "deployable": false
       }
     ],
     "skill": [

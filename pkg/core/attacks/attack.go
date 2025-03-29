@@ -24,6 +24,7 @@ const (
 	AttackTagSwirlElectro
 	AttackTagBurningDamage
 	AttackTagBloom
+	AttackTagBountifulCore // special tag for nilou
 	AttackTagBurgeon
 	AttackTagHyperbloom
 	AttackTagLength

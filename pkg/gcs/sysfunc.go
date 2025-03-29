@@ -33,6 +33,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("set_target_pos", e.setTargetPos, env)
 	e.addSysFunc("set_player_pos", e.setPlayerPos, env)
 	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
+	e.addSysFunc("set_swap_icd", e.setSwapICD, env)
 	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 	e.addSysFunc("kill_target", e.killTarget, env)
 	e.addSysFunc("is_target_dead", e.isTargetDead, env)
@@ -296,6 +297,37 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 	char.ParticleDelay = delay
 
 	return &number{}, nil
+}
+
+// Set SwapICD to any integer, to simulate booking. May be any non-negative integer.
+func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
+	// setSwapCD
+
+	// set_player_pos(x, y)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for set_swap_icd, expected 1 got %v", len(c.Args))
+	}
+
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	n, ok := t.(*number)
+	if !ok {
+		return nil, fmt.Errorf("set_swap_icd argument x coord should evaluate to a number, got %v", t.Inspect())
+	}
+	// n should be int
+	x := int(n.ival)
+	if n.isFloat {
+		x = int(n.fval)
+	}
+
+	if x < 0 {
+		return nil, fmt.Errorf("invald value for swap icd, expected non-negative integer, got %v", x)
+	}
+
+	e.Core.Player.SetSwapICD(x)
+	return &null{}, nil
 }
 
 func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
