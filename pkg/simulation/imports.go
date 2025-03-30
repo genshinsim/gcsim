@@ -37,6 +37,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/huskofopulentdreams"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/instructor"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/lavawalker"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/longnightsoath"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/marechausseehunter"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/martialartist"
