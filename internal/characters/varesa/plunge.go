@@ -12,8 +12,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
+var (
+	highPlungeFrames      []int
+	fieryHighPlungeFrames []int
+	lowPlungeFrames       []int
+)
 
 // based on gaming frames
 // TODO: update frames
@@ -37,13 +40,22 @@ func init() {
 	lowPlungeFrames[action.ActionSwap] = 67
 
 	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(87)
-	highPlungeFrames[action.ActionAttack] = 58
-	highPlungeFrames[action.ActionSkill] = 57
-	highPlungeFrames[action.ActionBurst] = 57
-	highPlungeFrames[action.ActionDash] = highPlungeHitmark
-	highPlungeFrames[action.ActionWalk] = 86
-	highPlungeFrames[action.ActionSwap] = 69
+	highPlungeFrames = frames.InitAbilSlice(72) // Plunge -> Walk
+	highPlungeFrames[action.ActionAttack] = 40
+	highPlungeFrames[action.ActionSkill] = 40
+	highPlungeFrames[action.ActionBurst] = 40
+	highPlungeFrames[action.ActionDash] = 40
+	highPlungeFrames[action.ActionJump] = 51
+	highPlungeFrames[action.ActionSwap] = 37
+
+	// fiery high_plunge -> x
+	fieryHighPlungeFrames = frames.InitAbilSlice(90) // Plunge -> Walk
+	fieryHighPlungeFrames[action.ActionAttack] = 47
+	fieryHighPlungeFrames[action.ActionSkill] = 47
+	fieryHighPlungeFrames[action.ActionBurst] = 47
+	fieryHighPlungeFrames[action.ActionDash] = 40
+	fieryHighPlungeFrames[action.ActionJump] = 79
+	fieryHighPlungeFrames[action.ActionSwap] = 45
 }
 
 // Low Plunge attack damage queue generator
@@ -87,10 +99,12 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	}
 
 	cb := c.generatePlungeNightsoul
+	c.exitNS = false
 	if c.nightsoulState.HasBlessing() {
 		ai.Abil = "Fiery Passion Low Plunge"
 		ai.Mult = fieryLowPlunge[c.TalentLvlAttack()]
-		cb = c.clearNightsoul
+		cb = c.nightsoulState.ClearPoints
+		c.exitNS = true
 	}
 	ai.Mult += c.a1PlungeBuff()
 	c.getApexDrive()
@@ -110,6 +124,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
+		OnRemoved:       c.clearNightsoul,
 	}
 }
 
@@ -154,10 +169,14 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 
 	cb := c.generatePlungeNightsoul
+	c.exitNS = false
+	plungeFrames := highPlungeFrames
 	if c.nightsoulState.HasBlessing() {
 		ai.Abil = "Fiery Passion High Plunge"
 		ai.Mult = fieryHighPlunge[c.TalentLvlAttack()]
-		cb = c.clearNightsoul
+		cb = c.nightsoulState.ClearPoints
+		c.exitNS = true
+		plungeFrames = fieryHighPlungeFrames
 	}
 	ai.Mult += c.a1PlungeBuff()
 	c.getApexDrive()
@@ -173,10 +192,11 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	c.Core.Tasks.Add(cb, highPlungeHitmark)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(highPlungeFrames),
-		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionDash],
+		Frames:          frames.NewAbilFunc(plungeFrames),
+		AnimationLength: plungeFrames[action.InvalidAction],
+		CanQueueAfter:   plungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
+		OnRemoved:       c.clearNightsoul,
 	}
 }
 

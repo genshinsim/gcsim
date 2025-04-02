@@ -23,9 +23,18 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(86)
+	burstFrames = frames.InitAbilSlice(122) // Q -> Jump
+	burstFrames[action.ActionAttack] = 93
+	burstFrames[action.ActionSkill] = 90
+	burstFrames[action.ActionDash] = 93
+	burstFrames[action.ActionWalk] = 101
+	burstFrames[action.ActionSwap] = 90
 
-	volcanicFrames = frames.InitAbilSlice(40)
+	volcanicFrames = frames.InitAbilSlice(47) // Q -> Walk
+	volcanicFrames[action.ActionAttack] = 46
+	volcanicFrames[action.ActionSkill] = 45
+	volcanicFrames[action.ActionDash] = 43
+	volcanicFrames[action.ActionSwap] = 42
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -84,6 +93,10 @@ func (c *char) volcanicKablam() action.Info {
 		Mult:           kablam[c.TalentLvlBurst()],
 	}
 
+	if c.Base.Cons >= 1 {
+		c.a1()
+	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
@@ -98,6 +111,7 @@ func (c *char) volcanicKablam() action.Info {
 		Frames:          frames.NewAbilFunc(volcanicFrames),
 		AnimationLength: volcanicFrames[action.InvalidAction],
 		CanQueueAfter:   volcanicFrames[action.ActionSwap],
-		State:           action.BurstState,
+		State:           action.BurstState, // TODO: or plunge state?
+		OnRemoved:       c.clearNightsoul,
 	}
 }

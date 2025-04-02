@@ -16,11 +16,11 @@ var (
 )
 
 const (
-	skillHitmark = 28
-	cdStart      = 25
+	skillHitmark = 21
+	cdStart      = 0
 
 	fierySkillHitmark = 25
-	fieryCdStart      = 22
+	fieryCdStart      = 0
 
 	skillStatus = "follow-up"
 )
@@ -29,15 +29,19 @@ const (
 // TODO: update frames
 
 func init() {
-	skillFrames = frames.InitAbilSlice(37) // E -> N1
-	skillFrames[action.ActionDash] = 29    // E -> D
-	skillFrames[action.ActionJump] = 29    // E -> J
-	skillFrames[action.ActionSwap] = 36    // E -> Swap
+	skillFrames = frames.InitAbilSlice(43) // E -> N1
+	skillFrames[action.ActionAttack] = 22
+	skillFrames[action.ActionCharge] = 22
+	skillFrames[action.ActionBurst] = 22
+	skillFrames[action.ActionDash] = 37
+	skillFrames[action.ActionJump] = 37
+	skillFrames[action.ActionSwap] = 21
 
-	fierySkillFrames = frames.InitAbilSlice(34) // E -> N1
-	fierySkillFrames[action.ActionDash] = 26    // E -> D
-	fierySkillFrames[action.ActionJump] = 26    // E -> J
-	fierySkillFrames[action.ActionSwap] = 33    // E -> Swap
+	fierySkillFrames = frames.InitAbilSlice(39) // E -> Jump
+	fierySkillFrames[action.ActionAttack] = 23
+	fierySkillFrames[action.ActionSkill] = 22
+	fierySkillFrames[action.ActionDash] = 38
+	fierySkillFrames[action.ActionSwap] = 21
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -87,7 +91,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(sFrames),
 		AnimationLength: sFrames[action.InvalidAction],
-		CanQueueAfter:   sFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   sFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

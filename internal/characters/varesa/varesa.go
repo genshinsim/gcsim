@@ -21,6 +21,7 @@ type char struct {
 
 	particleGenerated bool
 	freeSkill         bool
+	exitNS            bool
 	a4Stacks          *stacks.MultipleRefreshNoRemove
 }
 
@@ -92,12 +93,15 @@ func (c *char) generatePlungeNightsoul() {
 	if !c.nightsoulState.HasBlessing() && c.nightsoulState.Points() == c.nightsoulState.MaxPoints {
 		c.nightsoulState.EnterBlessing(c.nightsoulState.MaxPoints)
 		c.freeSkill = true // TODO: duration?
-		c.c1()
 	}
 }
 
-func (c *char) clearNightsoul() {
-	c.nightsoulState.ClearPoints()
-	c.nightsoulState.ExitBlessing()
-	c.c1()
+func (c *char) clearNightsoul(next action.AnimationState) {
+	// ignore volcanic kablam
+	if next == action.BurstState {
+		return
+	}
+	if c.exitNS {
+		c.nightsoulState.ExitBlessing()
+	}
 }

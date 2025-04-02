@@ -1,8 +1,6 @@
 package varesa
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -17,29 +15,33 @@ var (
 )
 
 const (
-	chargeHitmark      = 24
-	fieryChargeHitmark = 19
+	chargeHitmark      = 143
+	fieryChargeHitmark = 143
 
-	boostChargeAnim = 1.0 - 0.9
+	fastChargeHitmark      = 9
+	fastFieryChargeHitmark = 10
+
+	fastChargedFrame      = 57
+	fastFieryChargedFrame = 58
 )
 
 // TODO: update frames
 
 func init() {
-	// based on heizou frames
-	chargeFrames = frames.InitAbilSlice(46)
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionAttack] = 38
-	chargeFrames[action.ActionSkill] = 38
-	chargeFrames[action.ActionBurst] = 38
+	chargeFrames = frames.InitAbilSlice(143) // CA -> Q/Dash/Jump
+	chargeFrames[action.ActionAttack] = 142
+	chargeFrames[action.ActionSkill] = 142
+	chargeFrames[action.ActionWalk] = 142
+	chargeFrames[action.ActionSwap] = 139
+	chargeFrames[action.ActionHighPlunge] = 77
 
-	// based on wriothesley frames
-	fieryChargeFrames = frames.InitAbilSlice(52) // CA -> N1/E/Q
-	fieryChargeFrames[action.ActionDash] = fieryChargeHitmark
-	fieryChargeFrames[action.ActionJump] = fieryChargeHitmark
-	fieryChargeFrames[action.ActionWalk] = 51
-	fieryChargeFrames[action.ActionSwap] = 49
+	fieryChargeFrames = frames.InitAbilSlice(143) // CA -> Jump
+	fieryChargeFrames[action.ActionAttack] = 142
+	fieryChargeFrames[action.ActionSkill] = 141
+	fieryChargeFrames[action.ActionDash] = 142
+	fieryChargeFrames[action.ActionWalk] = 141
+	fieryChargeFrames[action.ActionSwap] = 138
+	fieryChargeFrames[action.ActionHighPlunge] = 81
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -64,11 +66,11 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	hitmark := chargeHitmark
-	framesCB := frames.NewAbilFunc
+	framesCB := frames.NewAbilFunc(chargeFrames)
 	if c.StatusIsActive(skillStatus) {
 		ai.Abil += " (Follow-Up Strike)"
-		hitmark = int(math.Round(chargeHitmark * boostChargeAnim))
-		framesCB = quickAbilFunc
+		hitmark = fastChargeHitmark
+		framesCB = quickAbilFunc(chargeFrames, fastChargedFrame)
 		c.DeleteStatus(skillStatus)
 	}
 
@@ -79,7 +81,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		hitmark,
 	)
 	return action.Info{
-		Frames:          framesCB(chargeFrames),
+		Frames:          framesCB,
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   hitmark,
 		State:           action.ChargeAttackState,
@@ -103,11 +105,11 @@ func (c *char) fieryChargeAttack() action.Info {
 	}
 
 	hitmark := fieryChargeHitmark
-	framesCB := frames.NewAbilFunc
+	framesCB := frames.NewAbilFunc(fieryChargeFrames)
 	if c.StatusIsActive(skillStatus) {
 		ai.Abil += " (Follow-Up Strike)"
-		hitmark = int(math.Round(fieryChargeHitmark * boostChargeAnim))
-		framesCB = quickAbilFunc
+		hitmark = fastFieryChargeHitmark
+		framesCB = quickAbilFunc(fieryChargeFrames, fastFieryChargedFrame)
 		c.DeleteStatus(skillStatus)
 	}
 
@@ -118,16 +120,18 @@ func (c *char) fieryChargeAttack() action.Info {
 		hitmark,
 	)
 	return action.Info{
-		Frames:          framesCB(fieryChargeFrames),
+		Frames:          framesCB,
 		AnimationLength: fieryChargeFrames[action.InvalidAction],
 		CanQueueAfter:   hitmark,
 		State:           action.ChargeAttackState,
 	}
 }
 
-// TODO: custom frames or this function?
-func quickAbilFunc(slice []int) func(action.Action) int {
+func quickAbilFunc(slice []int, skip int) func(action.Action) int {
 	return func(next action.Action) int {
-		return int(float64(slice[next]) * boostChargeAnim)
+		if next == action.ActionHighPlunge {
+			return slice[next] - skip
+		}
+		return slice[next]
 	}
 }

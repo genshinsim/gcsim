@@ -33,31 +33,30 @@ const normalHitNum = 3
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 35)
-	attackFrames[0][action.ActionAttack] = 20
-	attackFrames[0][action.ActionCharge] = 21
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 49) // N1 -> Walk
+	attackFrames[0][action.ActionAttack] = 33
+	attackFrames[0][action.ActionCharge] = 23
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 30)
-	attackFrames[1][action.ActionAttack] = 17
-	attackFrames[1][action.ActionCharge] = 21
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 30) // N2 -> N3
+	attackFrames[1][action.ActionCharge] = 17
+	attackFrames[1][action.ActionWalk] = 28
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 56)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 59) // N3 -> Walk
 	attackFrames[2][action.ActionAttack] = 45
-	attackFrames[2][action.ActionCharge] = 46
+	attackFrames[2][action.ActionCharge] = 32
 
 	fieryAttackFrames = make([][]int, normalHitNum)
 
-	fieryAttackFrames[0] = frames.InitNormalCancelSlice(fieryAttackHitmarks[0], 27)
-	fieryAttackFrames[0][action.ActionAttack] = 14
-	fieryAttackFrames[0][action.ActionCharge] = 23
+	fieryAttackFrames[0] = frames.InitNormalCancelSlice(fieryAttackHitmarks[0], 39) // N1 -> Walk
+	fieryAttackFrames[0][action.ActionAttack] = 29
+	fieryAttackFrames[0][action.ActionCharge] = 31
 
-	fieryAttackFrames[1] = frames.InitNormalCancelSlice(fieryAttackHitmarks[0], 25)
-	fieryAttackFrames[1][action.ActionAttack] = 13
-	fieryAttackFrames[1][action.ActionCharge] = 20
+	fieryAttackFrames[1] = frames.InitNormalCancelSlice(fieryAttackHitmarks[0], 47) // N2 -> Walk
+	fieryAttackFrames[1][action.ActionAttack] = 39
+	fieryAttackFrames[1][action.ActionCharge] = 25
 
-	fieryAttackFrames[2] = frames.InitNormalCancelSlice(fieryAttackHitmarks[0], 41)
-	fieryAttackFrames[2][action.ActionAttack] = 24
-	fieryAttackFrames[2][action.ActionCharge] = 19
+	fieryAttackFrames[2] = frames.InitNormalCancelSlice(fieryAttackHitmarks[0], 63) // N3 -> N4/Walk
+	fieryAttackFrames[2][action.ActionCharge] = 37
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {

@@ -9,21 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func (c *char) c1() {
-	if c.Base.Cons < 1 {
-		return
-	}
-
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATKP] = 0.35
-	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag("varesa-c1", 5*60),
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-	})
-}
-
 func (c *char) c2CB() func(combat.AttackCB) {
 	if c.Base.Cons < 2 {
 		return nil
