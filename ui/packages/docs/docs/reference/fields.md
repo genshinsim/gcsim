@@ -54,3 +54,4 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 | character name | `skill`/`burst`/`attack`/`charge`/`high_plunge`/`low_plunge`/`aim`/`dash`/`jump`/`swap`/`walk`/`wait` | `cd`/`charge`/`ready` | - | Evaluates to the following things for the specified action of the character: remaining cooldown / remaining charges (example: Sucrose Skill) / `1` if the action is ready, `0` otherwise. |
 | character name | `nightsoul` | `state` | - | `1` if the character is in Nightsoul's Blessing state, `0` otherwise. |
 | character name | `nightsoul` | `point` | - | Evaluates to the character's Nightsoul points. |
+| character name | `nightsoul` | `duration` | - | Evaluates to the duration of the character's Nightsoul Blessing state. |

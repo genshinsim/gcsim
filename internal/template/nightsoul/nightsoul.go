@@ -47,7 +47,7 @@ func (s *State) Duration() int {
 // If NS is not currently active, do nothing.
 // The callback will not be called if ExitNightsoul() is used
 func (s *State) SetNightsoulExitTimer(duration int, cb func()) {
-	if !s.char.StatusIsActive(NightsoulBlessingStatus) {
+	if !s.HasBlessing() {
 		return
 	}
 
@@ -171,6 +171,8 @@ func (s *State) Condition(fields []string) (any, error) {
 		return s.HasBlessing(), nil
 	case "points":
 		return s.Points(), nil
+	case "duration":
+		return s.Duration(), nil
 	default:
 		return nil, fmt.Errorf("invalid nightsoul condition: %v", fields[1])
 	}
