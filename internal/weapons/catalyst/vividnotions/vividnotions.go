@@ -68,17 +68,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnPlunge, func(args ...interface{}) bool {
 		char.AddStatus(plungeBuff, 15*60, true)
 		return false
-	}, fmt.Sprintf("vividnotions-plunge-%s", char.Base.Key))
+	}, fmt.Sprintf("vividnotions-plunge-%s", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnPlunge, func(args ...interface{}) bool {
 		char.AddStatus(skillBurstBuff, 15*60, true)
 		return false
-	}, fmt.Sprintf("vividnotions-skill-%s", char.Base.Key))
+	}, fmt.Sprintf("vividnotions-skill-%s", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnPlunge, func(args ...interface{}) bool {
 		char.AddStatus(skillBurstBuff, 15*60, true)
 		return false
-	}, fmt.Sprintf("vividnotions-burst-%s", char.Base.Key))
+	}, fmt.Sprintf("vividnotions-burst-%s", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
@@ -99,7 +99,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}, 0.05*60)
 
 		return false
-	}, fmt.Sprintf("vividnotions-%s", char.Base.Key))
+	}, fmt.Sprintf("vividnotions-%s", char.Base.Key.String()))
 
 	return w, nil
 }
