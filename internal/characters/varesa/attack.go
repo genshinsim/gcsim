@@ -11,18 +11,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: update frames
+// TODO: update hitlags/hitboxes
 var (
-	// based on heizou frames
 	attackFrames          [][]int
-	attackHitmarks        = []int{21, 8, 32}
+	attackHitmarks        = []int{28, 7, 33}
 	attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
 	attackHitboxes        = [][]float64{{2, 3}, {2, 3}, {2.2}}
 	attackOffsets         = []float64{-0.2, -0.2, 1.1}
 
-	// based on wriothesley frames
 	fieryAttackFrames          [][]int
-	fieryAttackHitmarks        = []int{20, 7, 31}
+	fieryAttackHitmarks        = []int{18, 29, 37}
 	fieryAttackHitlagFactor    = []float64{0, 0, 0.01}
 	fieryAttackHitlagHaltFrame = []float64{0, 0, 0.03}
 	fieryAttackHitboxes        = [][]float64{{2, 3}, {2, 3}, {2.5, 3}}

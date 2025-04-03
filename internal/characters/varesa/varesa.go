@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -91,17 +92,44 @@ func (c *char) Condition(fields []string) (any, error) {
 func (c *char) generatePlungeNightsoul() {
 	c.nightsoulState.GeneratePoints(25)
 	if !c.nightsoulState.HasBlessing() && c.nightsoulState.Points() == c.nightsoulState.MaxPoints {
-		c.nightsoulState.EnterBlessing(c.nightsoulState.MaxPoints)
+		c.nightsoulState.EnterTimedBlessing(c.nightsoulState.Points(), 15*60, c.clearNightsoul)
 		c.freeSkill = true // TODO: duration?
 	}
 }
 
-func (c *char) clearNightsoul(next action.AnimationState) {
+func (c *char) clearNightsoul() {
+	c.freeSkill = false
+	c.nightsoulState.ExitBlessing()
+}
+
+func (c *char) clearNightsoulCB(next action.AnimationState) {
 	// ignore volcanic kablam
 	if next == action.BurstState {
 		return
 	}
 	if c.exitNS {
-		c.nightsoulState.ExitBlessing()
+		c.clearNightsoul()
+	}
+}
+
+func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	if c.nightsoulState.HasBlessing() {
+		switch k {
+		case model.AnimationXingqiuN0StartDelay:
+			return 23
+		case model.AnimationYelanN0StartDelay:
+			return 5
+		default:
+			return c.Character.AnimationStartDelay(k)
+		}
+	}
+
+	switch k {
+	case model.AnimationXingqiuN0StartDelay:
+		return 34
+	case model.AnimationYelanN0StartDelay:
+		return 4
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
 }

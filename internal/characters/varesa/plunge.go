@@ -18,12 +18,12 @@ var (
 	lowPlungeFrames       []int
 )
 
-// based on gaming frames
-// TODO: update frames
+// TODO: update low_plunge frames and hitlags/hitboxes
 
 const lowPlungeHitmark = 39
-const highPlungeHitmark = 39 + 3
-const collisionHitmark = lowPlungeHitmark - 6
+const highPlungeHitmark = 37
+const fieryHighPlungeHitmark = 41
+const collisionHitmark = highPlungeHitmark - 6
 
 const lowPlungeRadius = 3.0
 const highPlungeRadius = 5.0
@@ -42,6 +42,7 @@ func init() {
 	// high_plunge -> x
 	highPlungeFrames = frames.InitAbilSlice(72) // Plunge -> Walk
 	highPlungeFrames[action.ActionAttack] = 40
+	highPlungeFrames[action.ActionCharge] = 47
 	highPlungeFrames[action.ActionSkill] = 40
 	highPlungeFrames[action.ActionBurst] = 40
 	highPlungeFrames[action.ActionDash] = 40
@@ -51,6 +52,7 @@ func init() {
 	// fiery high_plunge -> x
 	fieryHighPlungeFrames = frames.InitAbilSlice(90) // Plunge -> Walk
 	fieryHighPlungeFrames[action.ActionAttack] = 47
+	fieryHighPlungeFrames[action.ActionCharge] = 46
 	fieryHighPlungeFrames[action.ActionSkill] = 47
 	fieryHighPlungeFrames[action.ActionBurst] = 47
 	fieryHighPlungeFrames[action.ActionDash] = 40
@@ -96,6 +98,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           lowPlunge[c.TalentLvlAttack()],
+		FlatDmg:        c.c4FlatBonus(),
 	}
 
 	cb := c.generatePlungeNightsoul
@@ -116,6 +119,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		lowPlungeHitmark,
 		c.a1Cancel,
 		c.c2CB(),
+		c.c4CB,
 	)
 	c.Core.Tasks.Add(cb, lowPlungeHitmark)
 
@@ -124,7 +128,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
-		OnRemoved:       c.clearNightsoul,
+		OnRemoved:       c.clearNightsoulCB,
 	}
 }
 
@@ -166,17 +170,22 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           highPlunge[c.TalentLvlAttack()],
+		FlatDmg:        c.c4FlatBonus(),
 	}
 
-	cb := c.generatePlungeNightsoul
+	hitmark := highPlungeHitmark
 	c.exitNS = false
 	plungeFrames := highPlungeFrames
 	if c.nightsoulState.HasBlessing() {
 		ai.Abil = "Fiery Passion High Plunge"
 		ai.Mult = fieryHighPlunge[c.TalentLvlAttack()]
-		cb = c.nightsoulState.ClearPoints
+		hitmark = fieryHighPlungeHitmark
 		c.exitNS = true
 		plungeFrames = fieryHighPlungeFrames
+
+		c.QueueCharTask(c.nightsoulState.ClearPoints, 2)
+	} else {
+		c.QueueCharTask(c.generatePlungeNightsoul, 42)
 	}
 	ai.Mult += c.a1PlungeBuff()
 	c.getApexDrive()
@@ -184,19 +193,19 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
-		highPlungeHitmark,
-		highPlungeHitmark,
+		hitmark,
+		hitmark,
 		c.a1Cancel,
 		c.c2CB(),
+		c.c4CB,
 	)
-	c.Core.Tasks.Add(cb, highPlungeHitmark)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(plungeFrames),
 		AnimationLength: plungeFrames[action.InvalidAction],
 		CanQueueAfter:   plungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
-		OnRemoved:       c.clearNightsoul,
+		OnRemoved:       c.clearNightsoulCB,
 	}
 }
 

@@ -10,26 +10,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
+// TODO: update hitlags/hitboxes
 var (
 	skillFrames      []int
 	fierySkillFrames []int
 )
 
 const (
-	skillHitmark = 21
-	cdStart      = 0
-
-	fierySkillHitmark = 25
-	fieryCdStart      = 0
+	skillHitmark      = 5
+	fierySkillHitmark = 2
 
 	skillStatus = "follow-up"
 )
 
-// based on dendromc
-// TODO: update frames
-
 func init() {
-	skillFrames = frames.InitAbilSlice(43) // E -> N1
+	skillFrames = frames.InitAbilSlice(43) // E -> Walk
 	skillFrames[action.ActionAttack] = 22
 	skillFrames[action.ActionCharge] = 22
 	skillFrames[action.ActionBurst] = 22
@@ -37,10 +32,13 @@ func init() {
 	skillFrames[action.ActionJump] = 37
 	skillFrames[action.ActionSwap] = 21
 
-	fierySkillFrames = frames.InitAbilSlice(39) // E -> Jump
+	fierySkillFrames = frames.InitAbilSlice(52) // E -> Swap
 	fierySkillFrames[action.ActionAttack] = 23
+	fierySkillFrames[action.ActionCharge] = 23
 	fierySkillFrames[action.ActionSkill] = 22
+	fierySkillFrames[action.ActionBurst] = 22
 	fierySkillFrames[action.ActionDash] = 38
+	fierySkillFrames[action.ActionJump] = 39
 	fierySkillFrames[action.ActionSwap] = 21
 }
 
@@ -73,7 +71,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		particleCD = nil
 		c.freeSkill = false
 	} else {
-		c.SetCDWithDelay(action.ActionSkill, 9*60, cdStart)
+		c.SetCD(action.ActionSkill, 9*60)
 	}
 
 	c.Core.QueueAttack(
@@ -85,8 +83,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	)
 
 	c.a1()
-	c.nightsoulState.GeneratePoints(20)
-	c.AddStatus(skillStatus, 9*60, false) // TODO: duration?
+	c.QueueCharTask(func() { c.nightsoulState.GeneratePoints(20) }, 5)
+	c.AddStatus(skillStatus, 5*60, true)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(sFrames),

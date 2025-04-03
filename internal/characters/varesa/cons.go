@@ -4,10 +4,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+const c4Status = "diligent-refinement"
 
 func (c *char) c2CB() func(combat.AttackCB) {
 	if c.Base.Cons < 2 {
@@ -32,8 +35,6 @@ func (c *char) c4() {
 		return
 	}
 
-	// TODO: first half
-
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 1.0
 	c.AddAttackMod(character.AttackMod{
@@ -48,6 +49,36 @@ func (c *char) c4() {
 			return m, true
 		},
 	})
+}
+
+func (c *char) c4Burst() {
+	if c.Base.Cons < 4 {
+		return
+	}
+	if c.nightsoulState.HasBlessing() || c.StatusIsActive(apexState) {
+		return
+	}
+	c.AddStatus(c4Status, 15*60, true)
+}
+
+func (c *char) c4FlatBonus() float64 {
+	if c.Base.Cons < 4 {
+		return 0
+	}
+	if !c.StatusIsActive(c4Status) {
+		return 0
+	}
+	bonus := min(c.TotalAtk()*5, 20000)
+	c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, "varesa c4 flat dmg bonus").
+		Write("bonus", bonus)
+	return bonus
+}
+
+func (c *char) c4CB(_ combat.AttackCB) {
+	if c.Base.Cons < 4 {
+		return
+	}
+	c.DeleteStatus(c4Status)
 }
 
 func (c *char) c6() {

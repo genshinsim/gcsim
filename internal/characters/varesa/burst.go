@@ -8,16 +8,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
+// TODO: update hitlags/hitboxes
 var (
 	burstFrames    []int
 	volcanicFrames []int
 )
 
 const (
-	burstHitmark     = 92
-	burstEnergyFrame = 10
+	burstHitmark     = 88
+	burstEnergyFrame = 9
 
-	kablamHitmark = 44
+	kablamHitmark = 42
 	kablamCost    = 30
 	kablamAbil    = "Volcano Kablam"
 )
@@ -38,6 +39,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
+	c.c4Burst()
+
 	if c.StatusIsActive(apexState) {
 		c.DeleteStatus(apexState)
 		return c.volcanicKablam(), nil
@@ -55,6 +58,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability:     25,
 		Mult:           kick[c.TalentLvlBurst()],
 	}
+
+	c.QueueCharTask(func() {
+		c.nightsoulState.GeneratePoints(c.nightsoulState.MaxPoints)
+		c.generatePlungeNightsoul()
+	}, 3)
 
 	if c.nightsoulState.HasBlessing() {
 		ai.Abil = "Fiery Passion Flying Kick"
@@ -112,6 +120,6 @@ func (c *char) volcanicKablam() action.Info {
 		AnimationLength: volcanicFrames[action.InvalidAction],
 		CanQueueAfter:   volcanicFrames[action.ActionSwap],
 		State:           action.BurstState, // TODO: or plunge state?
-		OnRemoved:       c.clearNightsoul,
+		OnRemoved:       c.clearNightsoulCB,
 	}
 }

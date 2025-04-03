@@ -9,35 +9,36 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
+// TODO: update hitlags/hitboxes
 var (
 	chargeFrames      []int
 	fieryChargeFrames []int
 )
 
 const (
-	chargeHitmark      = 143
-	fieryChargeHitmark = 143
+	chargeHitmark      = 69
+	fieryChargeHitmark = 69
 
-	fastChargeHitmark      = 9
-	fastFieryChargeHitmark = 10
+	fastChargeHitmark      = 11
+	fastFieryChargeHitmark = 11
 
 	fastChargedFrame      = 57
 	fastFieryChargedFrame = 58
 )
 
-// TODO: update frames
-
 func init() {
 	chargeFrames = frames.InitAbilSlice(143) // CA -> Q/Dash/Jump
 	chargeFrames[action.ActionAttack] = 142
+	chargeFrames[action.ActionCharge] = 141
 	chargeFrames[action.ActionSkill] = 142
 	chargeFrames[action.ActionWalk] = 142
 	chargeFrames[action.ActionSwap] = 139
 	chargeFrames[action.ActionHighPlunge] = 77
 
-	fieryChargeFrames = frames.InitAbilSlice(143) // CA -> Jump
+	fieryChargeFrames = frames.InitAbilSlice(143) // CA -> CA/Jump
 	fieryChargeFrames[action.ActionAttack] = 142
 	fieryChargeFrames[action.ActionSkill] = 141
+	fieryChargeFrames[action.ActionBurst] = 141
 	fieryChargeFrames[action.ActionDash] = 142
 	fieryChargeFrames[action.ActionWalk] = 141
 	fieryChargeFrames[action.ActionSwap] = 138
