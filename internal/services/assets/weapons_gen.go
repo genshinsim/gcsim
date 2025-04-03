@@ -82,6 +82,7 @@ var weaponMap = map[string]string{
 	"thrillingtalesofdragonslayers":   "UI_EquipIcon_Catalyst_Pulpfic",
 	"tulaytullahsremembrance":         "UI_EquipIcon_Catalyst_Alaya",
 	"twinnephrite":                    "UI_EquipIcon_Catalyst_Phoney",
+	"vividnotions":                    "UI_EquipIcon_Catalyst_VaresaTransformer",
 	"wanderingevenstar":               "UI_EquipIcon_Catalyst_Pleroma",
 	"waveridingwhirl":                 "UI_EquipIcon_Catalyst_Umpakati",
 	"thewidsith":                      "UI_EquipIcon_Catalyst_Troupe",

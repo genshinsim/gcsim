@@ -56,6 +56,7 @@ var setNames = []string{
 	"huskofopulentdreams",
 	"instructor",
 	"lavawalker",
+	"longnightsoath",
 	"luckydog",
 	"maidenbeloved",
 	"marechausseehunter",
@@ -113,6 +114,7 @@ const (
 	HuskOfOpulentDreams
 	Instructor
 	Lavawalker
+	LongNightsOath
 	LuckyDog
 	MaidenBeloved
 	MarechausseeHunter
