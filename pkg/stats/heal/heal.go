@@ -19,12 +19,18 @@ type buffer struct {
 }
 
 func NewStat(core *core.Core) (stats.Collector, error) {
+	partySize := len(core.Player.Chars())
 	out := buffer{
-		events: make([][]stats.HealEvent, len(core.Player.Chars())),
+		events: make([][]stats.HealEvent, partySize),
 	}
 
 	core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		info := args[0].(*info.HealInfo)
+		// Abyss card buff- heal may originate from no character at all. Do not log.
+		if info.Caller < 0 || info.Caller >= partySize {
+			return false
+		}
+
 		target := args[1].(int)
 		amount := args[2].(float64)
 
