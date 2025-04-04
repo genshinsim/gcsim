@@ -93,7 +93,7 @@ func (c *char) generatePlungeNightsoul() {
 	c.nightsoulState.GeneratePoints(25)
 	if !c.nightsoulState.HasBlessing() && c.nightsoulState.Points() == c.nightsoulState.MaxPoints {
 		c.nightsoulState.EnterTimedBlessing(c.nightsoulState.Points(), 15*60, c.clearNightsoul)
-		c.freeSkill = true // TODO: duration?
+		c.freeSkill = true
 	}
 }
 
@@ -109,6 +109,7 @@ func (c *char) clearNightsoulCB(next action.AnimationState) {
 	}
 	if c.exitNS {
 		c.clearNightsoul()
+		c.exitNS = false
 	}
 }
 

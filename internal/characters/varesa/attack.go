@@ -58,6 +58,9 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
+	// OnRemoved is sometimes called after the next action is executed. so we need to exit nightsoul here too
+	c.clearNightsoulCB(action.NormalAttackState)
+
 	if c.StatusIsActive(skillStatus) {
 		// TODO: or c.Core.Player.Exec(action.ActionCharge, c.Base.Key, nil)
 		return c.ChargeAttack(p)

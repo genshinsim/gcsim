@@ -185,7 +185,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 
 		c.QueueCharTask(c.nightsoulState.ClearPoints, 2)
 	} else {
-		c.QueueCharTask(c.generatePlungeNightsoul, 42)
+		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
 	}
 	ai.Mult += c.a1PlungeBuff()
 	c.getApexDrive()

@@ -46,6 +46,9 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	// OnRemoved is sometimes called after the next action is executed. so we need to exit nightsoul here too
+	c.clearNightsoulCB(action.ChargeAttackState)
+
 	if c.nightsoulState.HasBlessing() {
 		return c.fieryChargeAttack(), nil
 	}

@@ -43,6 +43,9 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	// OnRemoved is sometimes called after the next action is executed. so we need to exit nightsoul here too
+	c.clearNightsoulCB(action.SkillState)
+
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Rush",
@@ -65,12 +68,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		sFrames = fierySkillFrames
 	}
 
-	c.particleGenerated = false
-	particleCD := c.particleCB
+	particleCB := c.particleCB
 	if c.freeSkill {
-		particleCD = nil
+		particleCB = nil
 		c.freeSkill = false
 	} else {
+		c.particleGenerated = false
 		c.SetCD(action.ActionSkill, 9*60)
 	}
 
@@ -79,7 +82,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: -0.3}, 6.5, 130),
 		hitmark,
 		hitmark,
-		particleCD,
+		particleCB,
 	)
 
 	c.a1()
