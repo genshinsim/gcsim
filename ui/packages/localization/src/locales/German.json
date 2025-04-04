@@ -390,7 +390,10 @@
         "dash_body": "Einige Iterationen verzögerten die Ausführung einer oder mehrerer Rennen aufgrund von ihrer Abklingzeit. Dies führt dazu, dass die aktive Figur im Leerlauf ist, bis die Abklingzeit von Rennen abgelaufen ist. Erwägen Sie, die Konfiguration zu aktualisieren, wenn die untenstehende Ausfallzeit unerwünscht ist.",
         "dash_data_header": "Gesamtverzögerung des Rennens aufgrund der Abklingzeit pro Iteration",
         "ignore_burst_energy_title": "\"Spezialfähigkeit-Energiekosten ignorieren\"-Modus ist aktiviert",
-        "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen."
+        "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen.",
+        "time_manip_title": "Verwendete Zeitmanipulationsfunktion",
+        "time_manip_body": "Diese Simulation enthält Aktionen, mit denen der Timer im Spiel manipuliert werden kann. Dazu gehört auch die Manipulation von Tausch-, Kristallisations- oder anderen Abklingzeiten und kann in zukünftigen Versionen des Spiels gepatcht werden.",
+        "time_manip_data_header": "Gesamtzeit, die für die Manipulation des Gefechtstimers aufgewendet wurde"
     },
     "states": {
         "true": "wahr",

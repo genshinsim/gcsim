@@ -201,6 +201,7 @@ message Warnings {
   bool skill_cd = 5 [json_name="skill_cd"];
   bool dash_cd = 6 [json_name="dash_cd"];
   bool burst_cd = 7 [json_name="burst_cd"];
+  bool time_manip = 8 [json_name="time_manip"];
 }
 
 message FailedActions {
@@ -210,6 +211,7 @@ message FailedActions {
   DescriptiveStats skill_cd = 4 [json_name="skill_cd"];
   DescriptiveStats dash_cd = 5 [json_name="dash_cd"];
   DescriptiveStats burst_cd = 6 [json_name="burst_cd"];
+  DescriptiveStats time_manip = 7 [json_name="time_manip"];
 }
 
 message ShieldInfo {

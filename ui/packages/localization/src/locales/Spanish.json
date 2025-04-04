@@ -390,7 +390,10 @@
         "dash_body": "Algunas iteraciones retrasaron la ejecución de uno o más Esprints debido a su enfriamiento. Esto hace que el personaje activo se quede inactivo hasta que el Esprint esté fuera del TdE. Considere actualizar la configuración si el tiempo de inactividad a continuación no es deseado.",
         "dash_data_header": "Retraso Total del Esprint Debido al TdE Por Iteración",
         "ignore_burst_energy_title": "Se Ha Habilitado el Modo \"Ignorar Costos de Energía de la Habilidad Definitiva\"",
-        "ignore_burst_energy_body": "La simulación está ignorando los requisitos de energía de la Habilidad Definitiva. Esto puede resultar en simulaciones inexactas."
+        "ignore_burst_energy_body": "La simulación está ignorando los requisitos de energía de la Habilidad Definitiva. Esto puede resultar en simulaciones inexactas.",
+        "time_manip_title": "Función de manipulación del tiempo utilizada",
+        "time_manip_body": "Esta simulación contiene acciones utilizadas para manipular el temporizador del juego. Esto incluye la manipulación de intercambio, cristalización u otros tiempos de reutilización, y puede ser parcheado en futuras versiones del juego.",
+        "time_manip_data_header": "Tiempo total dedicado a manipular el temporizador de batalla"
     },
     "states": {
         "true": "verdadero",
