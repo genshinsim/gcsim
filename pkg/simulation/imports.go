@@ -142,6 +142,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/thrilling"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/tulaytullahsremembrance"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/twin"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/vividnotions"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wanderingevenstar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/waveridingwhirl"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/widsith"

@@ -33,8 +33,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatus(burstKey, ajawDuration, false)
 	if c.nightsoulState.HasBlessing() {
 		// extend Nightsoul's Blessing time limit countdown
-		duration := (c.exitStateF - c.Core.F) + 1.7*60
-		c.setNightsoulExitTimer(duration)
+		duration := c.nightsoulState.Duration()
+		if duration > 0 {
+			c.nightsoulState.SetNightsoulExitTimer(duration+1.7*60, c.cancelNightsoul)
+		}
 	}
 
 	ai := combat.AttackInfo{
