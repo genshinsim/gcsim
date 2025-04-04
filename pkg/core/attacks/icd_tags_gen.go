@@ -34,6 +34,7 @@ const (
 	ICDTagNilouTranquilityAura
 	ICDTagOroronElmentalBurst
 	ICDTagTartagliaRiptideFlash
+	ICDTagVaresaCombatCycle
 	ICDTagWandererC6
 	ICDTagWandererA4
 	ICDTagXilonenSkate
