@@ -685,6 +685,23 @@
       },
       "name_text_hash_map ": "1940919994"
     },
+    "iansan": {
+      "id": 10000110,
+      "key": "iansan",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Iansan",
+      "skill_details": {
+        "skill": 11102,
+        "burst": 11105,
+        "attack": 11101,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "3120492514"
+    },
     "itto": {
       "id": 10000057,
       "key": "itto",
