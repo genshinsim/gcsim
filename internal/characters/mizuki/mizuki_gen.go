@@ -4,13 +4,21 @@ package mizuki
 import (
 	_ "embed"
 
+	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
+	"slices"
 )
 
 //go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
+var paramKeysValidation = map[action.Action][]string{
+	1: {"travel"},
+}
 
 func init() {
 	base = &model.AvatarData{}
@@ -18,8 +26,285 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	validation.RegisterCharParamValidationFunc(keys.Mizuki, ValidateParamKeys)
+}
+
+func ValidateParamKeys(a action.Action, keys []string) error {
+	valid, ok := paramKeysValidation[a]
+	if !ok {
+		return nil
+	}
+	for _, v := range keys {
+		if !slices.Contains(valid, v) {
+			return fmt.Errorf("key %v is invalid for action %v", v, a.String())
+		}
+	}
+	return nil
 }
 
 func (x *char) Data() *model.AvatarData {
 	return base
 }
+
+var (
+	attack = [][]float64{
+		attack_1,
+		attack_2,
+		attack_3,
+	}
+)
+
+var (
+	// attack: attack_1 = [0]
+	attack_1 = []float64{
+		0.522768,
+		0.561976,
+		0.601183,
+		0.65346,
+		0.692668,
+		0.731875,
+		0.784152,
+		0.836429,
+		0.888706,
+		0.940982,
+		0.993259,
+		1.045536,
+		1.110882,
+		1.176228,
+		1.241574,
+	}
+	// attack: attack_2 = [1]
+	attack_2 = []float64{
+		0.469144,
+		0.50433,
+		0.539516,
+		0.58643,
+		0.621616,
+		0.656802,
+		0.703716,
+		0.75063,
+		0.797545,
+		0.844459,
+		0.891374,
+		0.938288,
+		0.996931,
+		1.055574,
+		1.114217,
+	}
+	// attack: attack_3 = [2]
+	attack_3 = []float64{
+		0.713688,
+		0.767215,
+		0.820741,
+		0.89211,
+		0.945637,
+		0.999163,
+		1.070532,
+		1.141901,
+		1.21327,
+		1.284638,
+		1.356007,
+		1.427376,
+		1.516587,
+		1.605798,
+		1.695009,
+	}
+	// attack: charge = [3]
+	charge = []float64{
+		1.3,
+		1.3975,
+		1.495,
+		1.625,
+		1.7225,
+		1.82,
+		1.95,
+		2.08,
+		2.21,
+		2.34,
+		2.47,
+		2.6,
+		2.7625,
+		2.925,
+		3.0875,
+	}
+	// attack: collision = [4]
+	collision = []float64{
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+		50,
+	}
+	// attack: highPlunge = [6]
+	highPlunge = []float64{
+		1.136335,
+		1.228828,
+		1.32132,
+		1.453452,
+		1.545944,
+		1.65165,
+		1.796995,
+		1.94234,
+		2.087686,
+		2.246244,
+		2.404802,
+		2.563361,
+		2.721919,
+		2.880478,
+		3.039036,
+	}
+	// attack: lowPlunge = [5]
+	lowPlunge = []float64{
+		0.568288,
+		0.614544,
+		0.6608,
+		0.72688,
+		0.773136,
+		0.826,
+		0.898688,
+		0.971376,
+		1.044064,
+		1.12336,
+		1.202656,
+		1.281952,
+		1.361248,
+		1.440544,
+		1.51984,
+	}
+	// skill: cloudDMG = [1]
+	cloudDMG = []float64{
+		0.0018,
+		0.0021,
+		0.0024,
+		0.0027,
+		0.003,
+		0.0033,
+		0.0036,
+		0.0039,
+		0.0042,
+		0.0045,
+		0.0048,
+		0.0051,
+		0.0054,
+		0.0057,
+		0.006,
+	}
+	// skill: skill = [0]
+	skill = []float64{
+		0.44912,
+		0.482804,
+		0.516488,
+		0.5614,
+		0.595084,
+		0.628768,
+		0.67368,
+		0.718592,
+		0.763504,
+		0.808416,
+		0.853328,
+		0.89824,
+		0.95438,
+		1.01052,
+		1.06666,
+	}
+	// skill: swirlDMG = [2]
+	swirlDMG = []float64{
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+	}
+	// burst: burstDMG = [0]
+	burstDMG = []float64{
+		0.9408,
+		1.01136,
+		1.08192,
+		1.176,
+		1.24656,
+		1.31712,
+		1.4112,
+		1.50528,
+		1.59936,
+		1.69344,
+		1.78752,
+		1.8816,
+		1.9992,
+		2.1168,
+		2.2344,
+	}
+	// burst: snackDMG = [1]
+	snackDMG = []float64{
+		0.7056,
+		0.75852,
+		0.81144,
+		0.882,
+		0.93492,
+		0.98784,
+		1.0584,
+		1.12896,
+		1.19952,
+		1.27008,
+		1.34064,
+		1.4112,
+		1.4994,
+		1.5876,
+		1.6758,
+	}
+	// burst: snackHealEM = [2]
+	snackHealEM = []float64{
+		1.3056,
+		1.40352,
+		1.50144,
+		1.632,
+		1.72992,
+		1.82784,
+		1.9584,
+		2.08896,
+		2.21952,
+		2.35008,
+		2.48064,
+		2.6112,
+		2.7744,
+		2.9376,
+		3.1008,
+	}
+	// burst: snackHealFLat = [3]
+	snackHealFLat = []float64{
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+		15,
+	}
+)
