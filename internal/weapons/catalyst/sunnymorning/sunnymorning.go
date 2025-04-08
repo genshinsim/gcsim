@@ -146,10 +146,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}
 
-	c.Events.Subscribe(event.OnSwirlElectro, swirlFunc(attributes.Electro, "sunny-morning-electro-swirl", false), fmt.Sprintf("sunny-morning-%v-swirl", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnSwirlCryo, swirlFunc(attributes.Cryo, "sunny-morning-cryo-swirl", false), fmt.Sprintf("sunny-morning-%v-swirl", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnSwirlHydro, swirlFunc(attributes.Hydro, "sunny-morning-hydro-swirl", false), fmt.Sprintf("sunny-morning-%v-swirl", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnSwirlPyro, swirlFunc(attributes.Pyro, "sunny-morning-pyro-swirl", false), fmt.Sprintf("sunny-morning-%v-swirl", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlElectro, swirlFunc(attributes.Electro, "sunny-morning-electro-swirl", false), fmt.Sprintf("sunny-morning-%v-electro-swirl", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlCryo, swirlFunc(attributes.Cryo, "sunny-morning-cryo-swirl", false), fmt.Sprintf("sunny-morning-%v-cryo-swirl", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlHydro, swirlFunc(attributes.Hydro, "sunny-morning-hydro-swirl", false), fmt.Sprintf("sunny-morning-%v-hydro-swirl", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlPyro, swirlFunc(attributes.Pyro, "sunny-morning-pyro-swirl", false), fmt.Sprintf("sunny-morning-%v-pyro-swirl", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnEnemyHit, skillFunc, fmt.Sprintf("sunny-morning-%v-skill-hit", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnEnemyHit, burstFunc, fmt.Sprintf("sunny-morning-%v-burst-hit", char.Base.Key.String()))
