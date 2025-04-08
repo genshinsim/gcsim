@@ -1320,6 +1320,14 @@
       "image_name": "UI_EquipIcon_Sword_Kunwu",
       "name_text_hash_map ": "944332883"
     },
+    "sunnymorning": {
+      "id": 14518,
+      "key": "sunnymorning",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_SakuraFan",
+      "name_text_hash_map ": "3790622667"
+    },
     "surfsup": {
       "id": 14516,
       "key": "surfsup",

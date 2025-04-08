@@ -1,0 +1,55 @@
+id: 14518
+key: "sunnymorning"
+rarity: 5
+weapon_class: WEAPON_CATALYST
+image_name: "UI_EquipIcon_Catalyst_SakuraFan"
+base_stats: {
+   base_props: {
+      prop_type: FIGHT_PROP_BASE_ATTACK
+      initial_value: 44.3358
+      curve: GROW_CURVE_ATTACK_304
+   }
+   base_props: {
+      prop_type: FIGHT_PROP_ELEMENT_MASTERY
+      initial_value: 57.6
+      curve: GROW_CURVE_CRITICAL_301
+   }
+   promo_data: {}
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 31.1
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 62.2
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 93.4
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 124.5
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 155.6
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 186.7
+      }
+   }
+}
+name_text_hash_map: 3790622667
