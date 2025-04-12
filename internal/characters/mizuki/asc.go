@@ -10,10 +10,12 @@ import (
 )
 
 const (
-	a1ICDKey   = "mizuki-a1-icd"
-	a1ICD      = 0.3 * 60
-	a4Duration = 4 * 60
-	a4EMBuff   = 100
+	a1ICDKey                      = "mizuki-a1-icd"
+	a1ICD                         = 0.3 * 60
+	a4Duration                    = 4 * 60
+	a4EMBuff                      = 100
+	dreamDrifterExtensions        = 2
+	dreamDrifterDurationExtension = 2.5 * 60
 )
 
 func (c *char) a1() {

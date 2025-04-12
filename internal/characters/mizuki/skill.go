@@ -13,17 +13,21 @@ import (
 var skillFrames []int
 
 const (
-	skillHitmark                  = 2
-	skillActivateDMGRadius        = 5.5
-	skillActivatePoise            = 30
-	skillActivateDurability       = 25
-	skillCdDelay                  = 23
-	skillCd                       = 15 * 60
-	skillCloudPoise               = 30
-	skillParticleGenerations      = 4
-	dreamDrifterStateKey          = "dreamdrifter-state"
-	dreamDrifterBaseDuration      = 5 * 60
-	dreamDrifterDurationExtension = 2.5 * 60
+	skillHitmark                 = 2
+	skillActivateDMGRadius       = 5.5
+	skillActivatePoise           = 30
+	skillActivateDurability      = 25
+	skillCdDelay                 = 23
+	skillCd                      = 15 * 60
+	cloudPoise                   = 20
+	cloudDurability              = 25
+	cloudExplosionRadius         = 4
+	cloudTravelTime              = 10
+	cloudFirstHit            int = 0.25 * 60
+	cloudHitInterval         int = 0.75 * 60
+	skillParticleGenerations     = 4
+	dreamDrifterStateKey         = "dreamdrifter-state"
+	dreamDrifterBaseDuration     = 5 * 60
 )
 
 func init() {
@@ -47,8 +51,9 @@ func init() {
 //   - Swap (Cancels state)
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 
-	// Activate DMG
-	ai := combat.AttackInfo{
+	c.SetCD()
+	// Activation DMG
+	activationAttack := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Aisa Utamakura Pilgrimage",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -64,11 +69,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.particleGenerationsRemaining = skillParticleGenerations
 
 	if c.Base.Ascension >= 1 {
-		c.dreamDrifterExtensionsRemaining = 2
+		c.dreamDrifterExtensionsRemaining = dreamDrifterExtensions
 	}
 
 	c.Core.QueueAttack(
-		ai,
+		activationAttack,
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.Player(),
@@ -83,6 +88,34 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.SetCDWithDelay(action.ActionSkill, skillCd, skillCdDelay)
 
 	c.Core.Status.Add(dreamDrifterStateKey, dreamDrifterBaseDuration)
+
+	// clouds DMG snapshots on activation
+	cloudAttack := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Dreamdrifter Continuous Attack",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupMizukiSkill,
+		StrikeType: attacks.StrikeTypeDefault,
+		PoiseDMG:   cloudPoise,
+		Element:    attributes.Anemo,
+		Durability: cloudDurability,
+		Mult:       cloudDMG[c.TalentLvlSkill()],
+	}
+
+	snap := c.Snapshot(&cloudAttack)
+
+	c.Core.QueueAttackWithSnap(cloudAttack, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius), cloudFirstHit+cloudTravelTime)
+
+	var hitFunc func()
+	hitFunc = func() {
+		if !c.StatusIsActive(dreamDrifterStateKey) {
+			return
+		}
+		c.Core.QueueAttackWithSnap(cloudAttack, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius), cloudTravelTime)
+		c.QueueCharTask(hitFunc, cloudHitInterval)
+	}
+	c.QueueCharTask(hitFunc, cloudHitInterval)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -110,9 +143,9 @@ func (c *char) registerSkillCallbacks() {
 		prev := args[0].(int)
 
 		if prev == c.Index {
-
+			c.Core.Status.Delete(dreamDrifterStateKey)
 		}
-		c.Core.Status.Delete(dreamDrifterStateKey)
+
 		return false
 	}, "mizuki-exit")
 }
