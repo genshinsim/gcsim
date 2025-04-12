@@ -14,6 +14,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	particleGenerationsRemaining int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
