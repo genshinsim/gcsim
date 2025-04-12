@@ -98,7 +98,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 func (s *Set) gainBuff() {
 	s.buff[attributes.DmgP] = 0.5
-	s.core.Log.NewEvent("golden troupe 4pc proc'd", glog.LogArtifactEvent, s.char.Index)
+	// s.core.Log.NewEvent("golden troupe 4pc proc'd", glog.LogArtifactEvent, s.char.Index)
 }
 
 func (s *Set) clearBuff(src int) func() {

@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -90,9 +91,11 @@ func (s *Set) enemyCheck() {
 	}
 	if c.F-s.lastF > 6*60 && c.F > s.icdF && s.stacks > 0 {
 		s.stacks--
+		c.Log.NewEvent("Unfinished stack lost", glog.LogArtifactEvent, char.Index).Write("stacks", s.stacks)
 		s.icdF = c.F + icd
 	} else if c.F == s.lastF && c.F > s.icdF && s.stacks < 5 {
 		s.stacks++
+		s.c.Log.NewEvent("Unfinished stack gained", glog.LogArtifactEvent, char.Index).Write("stacks", s.stacks)
 		s.icdF = c.F + icd
 	}
 	char.QueueCharTask(s.enemyCheck, checkInterval)
