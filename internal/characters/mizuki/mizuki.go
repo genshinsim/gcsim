@@ -14,7 +14,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	particleGenerationsRemaining int
+	particleGenerationsRemaining    int
+	dreamDrifterExtensionsRemaining int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -27,6 +28,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-
+	c.registerSkillCallbacks()
+	c.a1()
+	c.a4()
 	return nil
 }
