@@ -171,6 +171,14 @@
       "desc": "Number of Prop Surplus stacks."
     }
   ],
+  "mavuika": [
+    {
+      "fields": [
+        ".mavuika.fightingspirit"
+      ],
+      "desc": "Amount of Fighting Spirit."
+    }
+  ],
   "mualani": [
     {
       "fields": [
