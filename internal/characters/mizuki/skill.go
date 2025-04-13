@@ -54,6 +54,14 @@ func init() {
 //   - Swap (Cancels state)
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 
+	if c.StatusIsActive(dreamDrifterStateKey) {
+		c.DeleteStatus(dreamDrifterStateKey)
+		return action.Info{
+			CanQueueAfter: skillFrames[action.ActionSwap], // earliest cancel is swap
+			State:         action.Idle,
+		}, nil
+	}
+
 	// Activation DMG
 	activationAttack := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -89,7 +97,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.SetCDWithDelay(action.ActionSkill, skillCd, skillCdDelay)
 
-	c.Core.Status.Add(dreamDrifterStateKey, dreamDrifterBaseDuration)
+	c.AddStatus(dreamDrifterStateKey, dreamDrifterBaseDuration, false)
 
 	// clouds DMG snapshots on activation
 	cloudAttack := combat.AttackInfo{
@@ -117,6 +125,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.QueueAttackWithSnap(cloudAttack, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius), cloudTravelTime)
 		c.QueueCharTask(hitFunc, cloudHitInterval)
 	}
+
 	c.QueueCharTask(hitFunc, cloudHitInterval)
 
 	if c.Base.Cons >= 1 {
@@ -167,7 +176,7 @@ func (c *char) registerSkillCallbacks() {
 		prev := args[0].(int)
 
 		if prev == c.Index {
-			c.Core.Status.Delete(dreamDrifterStateKey)
+			c.DeleteStatus(dreamDrifterStateKey)
 		}
 
 		return false

@@ -1,7 +1,6 @@
 package mizuki
 
 import (
-	"fmt"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -42,12 +41,18 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) NextQueueItemIsValid(targetChar keys.Char, a action.Action, p map[string]int) error {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	if !c.StatusIsActive(dreamDrifterStateKey) {
-		return nil
+		return c.Character.ActionReady(a, p)
 	}
-	if a != action.ActionDash && a != action.ActionSwap && a != action.ActionBurst && a != action.ActionSkill {
-		return fmt.Errorf("%v: Tried to execute %v when not dreamdrifter state", c.Base.Key, a)
+
+	if a == action.ActionSkill {
+		// cancel
+		return true, action.NoFailure
 	}
-	return nil
+
+	if a != action.ActionDash && a != action.ActionSwap && a != action.ActionBurst {
+		return false, action.NoFailure
+	}
+	return c.Character.ActionReady(a, p)
 }
