@@ -7,8 +7,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -31,6 +34,7 @@ const (
 	cloudHitInterval              int = 0.75 * 60
 	dreamDrifterStateKey              = "dreamdrifter-state"
 	dreamDrifterBaseDuration          = 5 * 60
+	dreamDrifterSwirlBuffKey          = "mizuki-swirl-buff"
 )
 
 func init() {
@@ -55,10 +59,12 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	if c.StatusIsActive(dreamDrifterStateKey) {
-		c.DeleteStatus(dreamDrifterStateKey)
+		c.cancelDreamDrifterState()
 		return action.Info{
-			CanQueueAfter: skillFrames[action.ActionSwap], // earliest cancel is swap
-			State:         action.Idle,
+			Frames:          frames.NewAbilFunc(skillFrames),
+			AnimationLength: skillFrames[action.InvalidAction],
+			CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel is swap
+			State:           action.Idle,
 		}, nil
 	}
 
@@ -98,6 +104,27 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.SetCDWithDelay(action.ActionSkill, skillCd, skillCdDelay)
 
 	c.AddStatus(dreamDrifterStateKey, dreamDrifterBaseDuration, false)
+
+	for _, char := range c.Core.Player.Chars() {
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, dreamDrifterBaseDuration),
+			Amount: func(ai combat.AttackInfo) (float64, bool) {
+				// check to make sure this is not an amped swirl
+				if ai.Amped {
+					return 0, false
+				}
+				switch ai.AttackTag {
+				case attacks.AttackTagSwirlCryo:
+				case attacks.AttackTagSwirlElectro:
+				case attacks.AttackTagSwirlHydro:
+				case attacks.AttackTagSwirlPyro:
+				default:
+					return 0, false
+				}
+				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM), false
+			},
+		})
+	}
 
 	// clouds DMG snapshots on activation
 	cloudAttack := combat.AttackInfo{
@@ -169,6 +196,16 @@ func (c *char) particleCB(a combat.AttackCB) {
 	}
 }
 
+func (c *char) cancelDreamDrifterState() {
+	c.DeleteStatus(dreamDrifterStateKey)
+
+	for _, char := range c.Core.Player.Chars() {
+		char.DeleteReactBonusMod(dreamDrifterSwirlBuffKey)
+	}
+
+	c.Core.Log.NewEvent("dreamdrifter cancelled", glog.LogCharacterEvent, c.Index)
+}
+
 func (c *char) registerSkillCallbacks() {
 
 	// Remove the dreamDrifter state when she leaves the field
@@ -176,7 +213,7 @@ func (c *char) registerSkillCallbacks() {
 		prev := args[0].(int)
 
 		if prev == c.Index {
-			c.DeleteStatus(dreamDrifterStateKey)
+			c.cancelDreamDrifterState()
 		}
 
 		return false

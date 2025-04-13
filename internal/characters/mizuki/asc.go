@@ -14,6 +14,7 @@ const (
 	a1ICD                         = 0.3 * 60
 	a4Duration                    = 4 * 60
 	a4EMBuff                      = 100
+	a4BuffKey                     = "mizuki-a4-buff"
 	dreamDrifterExtensions        = 2
 	dreamDrifterDurationExtension = 2.5 * 60
 )
@@ -52,6 +53,11 @@ func (c *char) a1() {
 		c.AddStatus(a1ICDKey, a1ICD, false)
 
 		c.ExtendStatus(dreamDrifterStateKey, dreamDrifterDurationExtension)
+
+		for _, char := range c.Core.Player.Chars() {
+			char.ExtendStatus(dreamDrifterSwirlBuffKey, dreamDrifterDurationExtension)
+		}
+
 		c.dreamDrifterExtensionsRemaining--
 
 		return false
@@ -92,7 +98,7 @@ func (c *char) a4() {
 		// Only when enemy is hit by Pyro, Hydro, Cryo, Electro
 		if element == attributes.Electro || element == attributes.Hydro || element == attributes.Pyro || element == attributes.Cryo {
 			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("mizuki-a4", a4Duration), // 4s
+				Base:         modifier.NewBase(a4BuffKey, a4Duration), // 4s
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return a4Buff, true
