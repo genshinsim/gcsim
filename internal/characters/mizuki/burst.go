@@ -82,7 +82,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				Caller:  c.Index,
 				Target:  c.Core.Player.Active(),
 				Message: "Snack Pick-Up",
-				Src:     (c.Stat(attributes.EM) * snackHealEM[c.TalentLvlBurst()]) + snackHealFLat[c.TalentLvlBurst()],
+				Src:     (c.Stat(attributes.EM) * snackHealEM[c.TalentLvlBurst()]) + snackHealFlat[c.TalentLvlBurst()],
 				Bonus:   c.Stat(attributes.Heal),
 			})
 		}
