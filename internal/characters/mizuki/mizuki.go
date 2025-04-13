@@ -24,6 +24,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
+	c.EnergyMax = 60
+	c.NormalHitNum = normalHitNum
+	c.BurstCon = 5
+	c.SkillCon = 3
+
 	w.Character = &c
 
 	return nil
@@ -33,6 +38,7 @@ func (c *char) Init() error {
 	c.registerSkillCallbacks()
 	c.a1()
 	c.a4()
+	c.a1()
 	return nil
 }
 

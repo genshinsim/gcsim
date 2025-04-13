@@ -12,32 +12,32 @@ icd_groups:
 skill_data_mapping:
   attack:
     attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
+      - 0 # 1-Hit DMG|{param1:F1P}
     attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
+      - 1 # 2-Hit DMG|{param2:F1P}
     attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
+      - 2 # 3-Hit DMG|{param3:F1P}
     charge:
-      - 3 # Charged Attack DMG|{param3:F1P}
+      - 3 # Charged Attack DMG|{param4:F1P}
     collision:
-      - 4 # Plunge DMG|{param4:F1P}
+      - 5 # Plunge DMG|{param6:F1P}
     lowPlunge:
-      - 5 # Low/High Plunge DMG|{param5:P}/{param6:P}
+      - 6 # Low/High Plunge DMG|{param7:P}/{param8:P}
     highPlunge:
-      - 6 # Low/High Plunge DMG|{param5:P}/{param6:P}
+      - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
   skill:
     skill:
-      - 0 # Skill DMG|{param0:F1P}
+      - 3 # Skill DMG|{param4:F1P}
     cloudDMG:
-      - 1 # Continuous Attack DMG|{param1:F1P}
+      - 0 # Continuous Attack DMG|{param1:F1P}
     swirlDMG:
-      - 2 # Elemental Mastery-Based Swirl DMG Increase|{param2:F1P} per Point
+      - 1 # Elemental Mastery-Based Swirl DMG Increase|{param2:F2P} per Point
   burst:
     burstDMG:
-      - 0 # Skill DMG|{param0:F1P}
+      - 0 # Skill DMG|{param1:F1P}
     snackDMG:
-      - 1 # Munen Shockwave DMG|{param1:F1P}
+      - 1 # Munen Shockwave DMG|{param2:F1P}
     snackHealEM:
-      - 2 # Snack Pick-Up HP Regeneration|{param2:F1P} Elemental Mastery + {param3:I}
-    snackHealFLat:
-      - 3 # Snack Pick-Up HP Regeneration|{param2:F1P} Elemental Mastery + {param3:I}
+      - 2 # Snack Pick-Up HP Regeneration|{param3:F1P} Elemental Mastery+{param7:I}
+    snackHealFlat:
+      - 6 # Snack Pick-Up HP Regeneration|{param3:F1P} Elemental Mastery+{param7:I}

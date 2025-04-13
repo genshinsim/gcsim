@@ -8,26 +8,29 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var skillFrames []int
 
 const (
-	skillHitmark                 = 2
-	skillActivateDMGRadius       = 5.5
-	skillActivatePoise           = 30
-	skillActivateDurability      = 25
-	skillCdDelay                 = 23
-	skillCd                      = 15 * 60
-	cloudPoise                   = 20
-	cloudDurability              = 25
-	cloudExplosionRadius         = 4
-	cloudTravelTime              = 10
-	cloudFirstHit            int = 0.25 * 60
-	cloudHitInterval         int = 0.75 * 60
-	skillParticleGenerations     = 4
-	dreamDrifterStateKey         = "dreamdrifter-state"
-	dreamDrifterBaseDuration     = 5 * 60
+	skillHitmark                      = 2
+	skillActivateDMGRadius            = 5.5
+	skillActivatePoise                = 30
+	skillActivateDurability           = 25
+	skillCdDelay                      = 23
+	skillCd                           = 15 * 60
+	skillParticleGenerations          = 4
+	skillParticleGenerationIcd        = 0.5 * 60
+	skillParticleGenerationIcdKey     = "mizuki-particle-icd"
+	cloudPoise                        = 20
+	cloudDurability                   = 25
+	cloudExplosionRadius              = 4
+	cloudTravelTime                   = 10
+	cloudFirstHit                 int = 0.25 * 60
+	cloudHitInterval              int = 0.75 * 60
+	dreamDrifterStateKey              = "dreamdrifter-state"
+	dreamDrifterBaseDuration          = 5 * 60
 )
 
 func init() {
@@ -51,7 +54,6 @@ func init() {
 //   - Swap (Cancels state)
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 
-	c.SetCD()
 	// Activation DMG
 	activationAttack := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -117,6 +119,22 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.QueueCharTask(hitFunc, cloudHitInterval)
 
+	if c.Base.Cons >= 1 {
+		var c1Func func()
+		c1Func = func() {
+			if !c.StatusIsActive(dreamDrifterStateKey) {
+				return
+			}
+			for _, target := range c.Core.Combat.Enemies() {
+				if e, ok := target.(*enemy.Enemy); ok {
+					e.AddStatus(c1Key, c1Duration, false)
+				}
+			}
+			c.QueueCharTask(hitFunc, c1Interval)
+		}
+		c.QueueCharTask(c1Func, c1Interval)
+	}
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
@@ -130,7 +148,13 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
+
+	if c.StatusIsActive(skillParticleGenerationIcdKey) {
+		return
+	}
+
 	if c.particleGenerationsRemaining > 0 {
+		c.AddStatus(skillParticleGenerationIcdKey, skillParticleGenerationIcd, false)
 		c.particleGenerationsRemaining--
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Anemo, c.ParticleDelay)
 	}
