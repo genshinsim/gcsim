@@ -103,29 +103,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.SetCDWithDelay(action.ActionSkill, skillCd, skillCdDelay)
 
-	c.AddStatus(dreamDrifterStateKey, dreamDrifterBaseDuration, false)
+	c.applyDreamDrifterEffect()
 
-	for _, char := range c.Core.Player.Chars() {
-		char.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, dreamDrifterBaseDuration),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				// check to make sure this is not an amped swirl
-				if ai.Amped {
-					return 0, false
-				}
-				switch ai.AttackTag {
-				case attacks.AttackTagSwirlCryo:
-				case attacks.AttackTagSwirlElectro:
-				case attacks.AttackTagSwirlHydro:
-				case attacks.AttackTagSwirlPyro:
-				default:
-					return 0, false
-				}
-				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM), false
-			},
-		})
-	}
+	return action.Info{
+		Frames:          frames.NewAbilFunc(skillFrames),
+		AnimationLength: skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel is swap
+		State:           action.SkillState,
+	}, nil
+}
 
+func (c *char) startCloudAttacks() {
 	// clouds DMG snapshots on activation
 	cloudAttack := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -154,29 +142,66 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	c.QueueCharTask(hitFunc, cloudHitInterval)
+}
 
-	if c.Base.Cons >= 1 {
-		var c1Func func()
-		c1Func = func() {
-			if !c.StatusIsActive(dreamDrifterStateKey) {
-				return
+func (c *char) applyC1Effect() {
+	var c1Func func()
+	c1Func = func() {
+		if !c.StatusIsActive(dreamDrifterStateKey) {
+			return
+		}
+		for _, target := range c.Core.Combat.Enemies() {
+			if e, ok := target.(*enemy.Enemy); ok {
+				e.AddStatus(c1Key, c1Duration, false)
 			}
-			for _, target := range c.Core.Combat.Enemies() {
-				if e, ok := target.(*enemy.Enemy); ok {
-					e.AddStatus(c1Key, c1Duration, false)
-				}
-			}
-			c.QueueCharTask(hitFunc, c1Interval)
 		}
 		c.QueueCharTask(c1Func, c1Interval)
 	}
+	c.QueueCharTask(c1Func, c1Interval)
+}
 
-	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel is swap
-		State:           action.SkillState,
-	}, nil
+func (c *char) removeC1Effect() {
+	// TODO: are the existing debuffs really cancelled? We need to check it
+	//for _, target := range c.Core.Combat.Enemies() {
+	//	if e, ok := target.(*enemy.Enemy); ok {
+	//		e.DeleteStatus(c1Key)
+	//	}
+	//}
+}
+
+func (c *char) applyDreamDrifterEffect() {
+	c.AddStatus(dreamDrifterStateKey, dreamDrifterBaseDuration, false)
+
+	c.applySwirlBuff()
+
+	c.startCloudAttacks()
+
+	if c.Base.Cons >= 1 {
+		c.applyC1Effect()
+	}
+}
+
+func (c *char) applySwirlBuff() {
+	for _, char := range c.Core.Player.Chars() {
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, dreamDrifterBaseDuration),
+			Amount: func(ai combat.AttackInfo) (float64, bool) {
+				// check to make sure this is not an amped swirl
+				if ai.Amped {
+					return 0, false
+				}
+				switch ai.AttackTag {
+				case attacks.AttackTagSwirlCryo:
+				case attacks.AttackTagSwirlElectro:
+				case attacks.AttackTagSwirlHydro:
+				case attacks.AttackTagSwirlPyro:
+				default:
+					return 0, false
+				}
+				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM), false
+			},
+		})
+	}
 }
 
 // Generates up to 4 particles on each E DMG either on activation or cloud.
@@ -199,11 +224,17 @@ func (c *char) particleCB(a combat.AttackCB) {
 func (c *char) cancelDreamDrifterState() {
 	c.DeleteStatus(dreamDrifterStateKey)
 
+	c.removeSwirlBuff()
+
+	c.removeC1Effect()
+
+	c.Core.Log.NewEvent("dreamdrifter cancelled", glog.LogCharacterEvent, c.Index)
+}
+
+func (c *char) removeSwirlBuff() {
 	for _, char := range c.Core.Player.Chars() {
 		char.DeleteReactBonusMod(dreamDrifterSwirlBuffKey)
 	}
-
-	c.Core.Log.NewEvent("dreamdrifter cancelled", glog.LogCharacterEvent, c.Index)
 }
 
 func (c *char) registerSkillCallbacks() {
