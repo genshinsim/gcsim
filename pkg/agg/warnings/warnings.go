@@ -17,29 +17,31 @@ func init() {
 }
 
 type buffer struct {
-	overlap bool
-	energy  calc.StreamStats
-	stamina calc.StreamStats
-	swap    calc.StreamStats
-	skill   calc.StreamStats
-	dash    calc.StreamStats
-	burstcd calc.StreamStats
+	overlap   bool
+	energy    calc.StreamStats
+	stamina   calc.StreamStats
+	swap      calc.StreamStats
+	skill     calc.StreamStats
+	dash      calc.StreamStats
+	burstcd   calc.StreamStats
+	timeManip calc.StreamStats
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
-		energy:  calc.StreamStats{},
-		stamina: calc.StreamStats{},
-		swap:    calc.StreamStats{},
-		skill:   calc.StreamStats{},
-		dash:    calc.StreamStats{},
-		burstcd: calc.StreamStats{},
+		energy:    calc.StreamStats{},
+		stamina:   calc.StreamStats{},
+		swap:      calc.StreamStats{},
+		skill:     calc.StreamStats{},
+		dash:      calc.StreamStats{},
+		burstcd:   calc.StreamStats{},
+		timeManip: calc.StreamStats{},
 	}
 	return &out, nil
 }
 
 func (b *buffer) Add(result stats.Result) {
-	var energy, stamina, swap, skill, dash, burstcd float64
+	var energy, stamina, swap, skill, dash, burstcd, timeManip float64
 
 	for i := range result.Characters {
 		for _, fail := range result.Characters[i].FailedActions {
@@ -56,6 +58,8 @@ func (b *buffer) Add(result stats.Result) {
 				dash += float64(fail.End-fail.Start) / 60
 			case action.BurstCD.String():
 				burstcd += float64(fail.End-fail.Start) / 60
+			case action.TimeManip.String():
+				timeManip += float64(fail.End-fail.Start) / 60
 			}
 		}
 	}
@@ -66,6 +70,7 @@ func (b *buffer) Add(result stats.Result) {
 	b.skill.Add(skill)
 	b.dash.Add(dash)
 	b.burstcd.Add(burstcd)
+	b.timeManip.Add(timeManip)
 	b.overlap = b.overlap || result.TargetOverlap
 }
 
@@ -78,5 +83,6 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		SkillCd:             b.skill.Mean() >= 1.0,
 		DashCd:              b.dash.Mean() >= 1.0,
 		BurstCd:             b.burstcd.Mean() >= 1.0,
+		TimeManip:           b.timeManip.Mean() > 0.0, // If any time manipulation occurs, display
 	}
 }
