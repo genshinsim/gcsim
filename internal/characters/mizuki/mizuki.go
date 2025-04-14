@@ -37,7 +37,7 @@ func (c *char) Init() error {
 	c.registerSkillCallbacks()
 	c.a1()
 	c.a4()
-	c.a1()
+	c.c1()
 	return nil
 }
 

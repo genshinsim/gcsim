@@ -157,7 +157,7 @@ func (c *char) applyC1Effect() {
 		}
 		c.QueueCharTask(c1Func, c1Interval)
 	}
-	c.QueueCharTask(c1Func, c1Interval)
+	c.QueueCharTask(c1Func, 0)
 }
 
 func (c *char) removeC1Effect() {
