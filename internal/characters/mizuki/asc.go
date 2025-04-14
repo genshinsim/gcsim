@@ -56,6 +56,9 @@ func (c *char) a1() {
 
 		for _, char := range c.Core.Player.Chars() {
 			char.ExtendStatus(dreamDrifterSwirlBuffKey, dreamDrifterDurationExtension)
+			if c.Base.Cons >= 2 {
+				char.ExtendStatus(c2Key, dreamDrifterDurationExtension)
+			}
 		}
 
 		c.dreamDrifterExtensionsRemaining--

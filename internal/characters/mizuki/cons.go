@@ -10,10 +10,12 @@ import (
 )
 
 const (
-	c1Key        = "mizuki-c1"
-	c1Interval   = 3.5 * 60
-	c1Duration   = 3 * 60
-	c1Multiplier = 11.0
+	c1Key          = "mizuki-c1"
+	c1Interval     = 3.5 * 60
+	c1Duration     = 3 * 60
+	c1Multiplier   = 11.0
+	c2Key          = "mizuki-c2"
+	c2EMMultiplier = 0.0004
 )
 
 func (c *char) c1() {
@@ -55,6 +57,7 @@ func (c *char) c1() {
 			Write("em", c.Stat(attributes.EM))
 
 		atk.Info.FlatDmg += additionalDmg
+		atk.Info.Abil += " (Mizuki C1)"
 
 		e.DeleteStatus(c1Key)
 
