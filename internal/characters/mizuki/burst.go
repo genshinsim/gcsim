@@ -69,23 +69,46 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.AddStatus(burstKey, burstDuration, false)
 
+	c.c4EnergyGenerationsRemaining = c4EnergyGenerations
 	var hitFunc func()
 	hitFunc = func() {
 		if !c.StatusIsActive(burstKey) {
 			return
 		}
 
-		if c.Core.Player.ActiveChar().CurrentHP() > (c.Core.Player.ActiveChar().MaxHP() * snackHealTriggerHpRatio) {
-			c.Core.QueueAttack(snackAttack, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, snackRadius), 0, snackHitmark)
+		heal := false
+		dmg := false
+
+		if c.Base.Cons >= 4 {
+			dmg = true
+			heal = true
 		} else {
-			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
-				Target:  c.Core.Player.Active(),
-				Message: "Snack Pick-Up",
-				Src:     (c.Stat(attributes.EM) * snackHealEM[c.TalentLvlBurst()]) + snackHealFlat[c.TalentLvlBurst()],
-				Bonus:   c.Stat(attributes.Heal),
-			})
+			dmg = c.Core.Player.ActiveChar().CurrentHP() > (c.Core.Player.ActiveChar().MaxHP() * snackHealTriggerHpRatio)
+			heal = !dmg
 		}
+
+		snapshot := c.Snapshot(&snackAttack)
+
+		c.QueueCharTask(func() {
+			if dmg {
+				c.Core.QueueAttackWithSnap(snackAttack, snapshot, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, snackRadius), 0)
+			}
+
+			if heal {
+				c.Core.Player.Heal(info.HealInfo{
+					Caller:  c.Index,
+					Target:  c.Core.Player.Active(),
+					Message: "Snack Pick-Up",
+					Src:     (c.Stat(attributes.EM) * snackHealEM[c.TalentLvlBurst()]) + snackHealFlat[c.TalentLvlBurst()],
+					Bonus:   c.Stat(attributes.Heal),
+				})
+			}
+
+			if c.c4EnergyGenerationsRemaining > 0 {
+				c.c4EnergyGenerationsRemaining--
+				c.AddEnergy(c4Key, c4Energy)
+			}
+		}, snackHitmark)
 
 		c.QueueCharTask(hitFunc, snackInterval)
 	}

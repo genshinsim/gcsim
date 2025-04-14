@@ -17,6 +17,7 @@ type char struct {
 	*tmpl.Character
 	particleGenerationsRemaining    int
 	dreamDrifterExtensionsRemaining int
+	c4EnergyGenerationsRemaining    int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -38,6 +39,7 @@ func (c *char) Init() error {
 	c.a1()
 	c.a4()
 	c.c1()
+	c.c6()
 	return nil
 }
 

@@ -179,6 +179,10 @@ func (c *char) applyDreamDrifterEffect() {
 	if c.Base.Cons >= 1 {
 		c.applyC1Effect()
 	}
+
+	if c.Base.Cons >= 2 {
+		c.applyC2Buff()
+	}
 }
 
 func (c *char) applySwirlBuff() {
@@ -198,6 +202,7 @@ func (c *char) applySwirlBuff() {
 				default:
 					return 0, false
 				}
+
 				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM), false
 			},
 		})
@@ -221,12 +226,42 @@ func (c *char) particleCB(a combat.AttackCB) {
 	}
 }
 
+func (c *char) applyC2Buff() {
+	for _, char := range c.Core.Player.Chars() {
+		if char.Index == c.Index {
+			continue
+		}
+		char.AddStatMod(character.StatMod{
+			Base: modifier.NewBase(c2Key, dreamDrifterBaseDuration),
+			Amount: func() ([]float64, bool) {
+				buff := make([]float64, attributes.EndStatType)
+				dmgBonus := c.Stat(attributes.EM) * c2EMMultiplier
+				buff[attributes.PyroP] = dmgBonus
+				buff[attributes.HydroP] = dmgBonus
+				buff[attributes.ElectroP] = dmgBonus
+				buff[attributes.CryoP] = dmgBonus
+				return buff, true
+			},
+		})
+	}
+}
+
+func (c *char) removeC2Buff() {
+	for _, target := range c.Core.Combat.Enemies() {
+		if e, ok := target.(*enemy.Enemy); ok {
+			e.DeleteStatus(c2Key)
+		}
+	}
+}
+
 func (c *char) cancelDreamDrifterState() {
 	c.DeleteStatus(dreamDrifterStateKey)
 
 	c.removeSwirlBuff()
 
 	c.removeC1Effect()
+
+	c.removeC2Buff()
 
 	c.Core.Log.NewEvent("dreamdrifter cancelled", glog.LogCharacterEvent, c.Index)
 }
