@@ -28,7 +28,7 @@ func (c *char) a1() {
 		return
 	}
 
-	swirlfunc := func(args ...interface{}) bool {
+	swirlFunc := func(args ...interface{}) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -64,10 +64,10 @@ func (c *char) a1() {
 		return false
 	}
 
-	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc, fmt.Sprintf(a1SwirlKey, attributes.Pyro))
-	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc, fmt.Sprintf(a1SwirlKey, attributes.Hydro))
-	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc, fmt.Sprintf(a1SwirlKey, attributes.Electro))
-	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlfunc, fmt.Sprintf(a1SwirlKey, attributes.Cryo))
+	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Pyro))
+	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Hydro))
+	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Electro))
+	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Cryo))
 }
 
 // While Yumemizuki Mizuki is in the Dreamdrifter state, when other nearby party members hit opponents with

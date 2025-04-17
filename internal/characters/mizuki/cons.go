@@ -89,7 +89,7 @@ func (c *char) applyC1Effect() {
 	}
 
 	// Debuff does not take 3.5s to apply but does not trigger on initial skill activation swirl according to testing.
-	// First cloud (0.45s after skill activation) can trigger it.
+	// First cloud (0.45s after skill activation) can trigger it so queue it a few frames later
 	c.QueueCharTask(c1Func, skillHitmark+2)
 }
 
@@ -104,6 +104,7 @@ func (c *char) c2() {
 		if char.Index == c.Index {
 			continue
 		}
+		// TODO: check if this buff changes the DMG of snapshoting talents, e.g. does Oz dmg Increases while this is active?
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase(c2Key, -1),
 			Amount: func() ([]float64, bool) {
@@ -151,11 +152,9 @@ func (c *char) c6() {
 			return false
 		}
 
-		ae.Snapshot.Stats[attributes.CR] += c6CR
-		ae.Snapshot.Stats[attributes.CD] += c6CD
-
-		c.Core.Log.NewEvent("mizuki c6 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
-			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
+		// Crit rate/DMG is fixed to 30% CR and 100% CD
+		ae.Snapshot.Stats[attributes.CR] = c6CR
+		ae.Snapshot.Stats[attributes.CD] = c6CD
 
 		return false
 	}, c6Key)

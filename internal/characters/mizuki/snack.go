@@ -15,7 +15,7 @@ import (
 const (
 	snackDuration             = 4 * 60
 	snackSize                 = 2
-	snackSizeMizukiMultiplier = 1.75
+	snackSizeMizukiMultiplier = 1.75 // Assumption
 )
 
 type snack struct {
@@ -60,7 +60,7 @@ func newSnack(c *char, pos geometry.Point) *snack {
 			return
 		}
 
-		// default size is increased. The increased size is only valid for mizuki in dreamdrifter state
+		// default size is increased. The increased size is only valid for mizuki in dreamdrifter state,
 		// so check for collision with actual size if this is not the case
 		collidesDefault := p.collidesWithActiveCharacterDefaultSize()
 		if c.Core.Player.ActiveChar().Index != c.Index {
@@ -75,7 +75,9 @@ func newSnack(c *char, pos geometry.Point) *snack {
 		p.onPickedUp()
 	}
 
-	p.char.Core.Log.NewEvent("Snack generated", glog.LogCharacterEvent, c.Index)
+	p.char.Core.Log.NewEvent("Snack spawned", glog.LogCharacterEvent, c.Index).
+		Write("x", pos.X).
+		Write("y", pos.Y)
 	return p
 }
 
@@ -101,7 +103,9 @@ func (p *snack) onPickedUp() {
 	}
 
 	mizuki.Core.Tasks.Add(func() {
-		p.char.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index)
+		p.char.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index).
+			Write("heal", heal).
+			Write("dmg", dmg)
 		if dmg {
 			p.explode()
 		}

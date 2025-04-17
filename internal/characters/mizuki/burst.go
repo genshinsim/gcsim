@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -29,6 +30,7 @@ const (
 	snackPoise              = 30
 	snackRadius             = 4
 	snackHealTriggerHpRatio = 0.7
+	snackSpawnRadius        = 4 // assumption
 )
 
 func init() {
@@ -57,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstDMG[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstRadius), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, burstRadius), burstHitmark, burstHitmark)
 
 	// might be useful for checking
 	c.AddStatus(burstKey, burstDuration, false)
@@ -81,7 +83,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 func (c *char) queueSnacks() {
 	snackFunc := func() {
-		pos := c.Core.Combat.PrimaryTarget().Pos()
+
+		pos := c.calculateSnackSpawnLocation()
+
+		// randomize a bit the spawn location
 		pos.Y += c.Core.Rand.Float64() * 0.2
 		pos.X += c.Core.Rand.Float64() * 0.2
 
@@ -93,4 +98,37 @@ func (c *char) queueSnacks() {
 		spawnTime += snackInterval
 		c.Core.Tasks.Add(snackFunc, spawnTime)
 	}
+}
+
+func (c *char) calculateSnackSpawnLocation() geometry.Point {
+	playerPos := c.Core.Combat.Player().Pos()
+	finalPosition := playerPos
+
+	// find the closest enemy
+	target := c.Core.Combat.ClosestEnemyWithinArea(combat.AttackPattern{
+		Shape: geometry.NewCircle(playerPos, snackSpawnRadius, geometry.DefaultDirection(), 360),
+	}, nil)
+
+	// if no enemy found, it spawns on active character
+	if target != nil {
+
+		// spawns around the enemy bounds, not inside
+		targetShape := target.Shape()
+		direction := geometry.Point{
+			X: playerPos.X - targetShape.Pos().X,
+			Y: playerPos.Y - targetShape.Pos().Y,
+		}
+		pos := target.Pos()
+		if v, ok := targetShape.(*geometry.Circle); ok {
+			direction = direction.Normalize()
+			pos.X += v.Radius() * direction.X
+			pos.Y += v.Radius() * direction.Y
+		} else if _, ok := targetShape.(*geometry.Rectangle); ok {
+			// currently we cannot reliably get an edge to spawn the snack on rectangle.
+			// place it somewhere around the middle
+			pos.X += direction.X / 2
+			pos.Y += direction.Y / 2
+		}
+	}
+	return finalPosition
 }
