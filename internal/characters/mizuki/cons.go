@@ -6,7 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const (
@@ -24,6 +26,10 @@ const (
 	c6CD                = 1.0
 )
 
+// When Yumemizuki Mizuki is in the Dreamdrifter state, she will continuously apply the "Twenty-Three Nights' Awaiting"
+// effect to nearby opponents for 3s every 3.5s. When an opponent is affected by Anemo DMG-triggered Swirl reactions
+// while the aforementioned effect is active, the effect will be canceled and this Swirl instance has its DMG against
+// this opponent increased by 1100% of Mizuki's Elemental Mastery.
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
@@ -35,16 +41,13 @@ func (c *char) c1() {
 			return false
 		}
 
-		// Only when dream drifter is active
-		if !c.StatusIsActive(dreamDrifterStateKey) {
-			return false
-		}
-
+		// Check if enemy has the debuff
 		e := args[0].(*enemy.Enemy)
 		if !e.StatusIsActive(c1Key) {
 			return false
 		}
 
+		// Only on swirls. The swirl source does not matter, it can be either mizuki or other anemo char.
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagSwirlCryo:
 		case attacks.AttackTagSwirlElectro:
@@ -59,26 +62,81 @@ func (c *char) c1() {
 		c.Core.Log.NewEvent("mizuki c1 proc", glog.LogPreDamageMod, atk.Info.ActorIndex).
 			Write("before", atk.Info.FlatDmg).
 			Write("addition", additionalDmg).
-			Write("final", atk.Info.FlatDmg+additionalDmg).
-			Write("em", c.Stat(attributes.EM))
+			Write("final", atk.Info.FlatDmg+additionalDmg)
 
 		atk.Info.FlatDmg += additionalDmg
 		atk.Info.Abil += " (Mizuki C1)"
 
+		// Cancel the effect
 		e.DeleteStatus(c1Key)
 
 		return false
 	}, c1Key)
 }
 
+func (c *char) applyC1Effect() {
+	var c1Func func()
+	c1Func = func() {
+		if !c.StatusIsActive(dreamDrifterStateKey) {
+			return
+		}
+		for _, target := range c.Core.Combat.Enemies() {
+			if e, ok := target.(*enemy.Enemy); ok {
+				e.AddStatus(c1Key, c1Duration, false)
+			}
+		}
+		c.QueueCharTask(c1Func, c1Interval)
+	}
+
+	// Debuff does not take 3.5s to apply but does not trigger on initial skill activation swirl according to testing.
+	// First cloud (0.45s after skill activation) can trigger it.
+	c.QueueCharTask(c1Func, skillHitmark+2)
+}
+
+// When Yumemizuki Mizuki enters the Dreamdrifter state, every Elemental Mastery point she has will increase all nearby
+// party members' Pyro, Hydro, Cryo, and Electro DMG Bonuses by 0.04% until the Dreamdrifter state ends.
+func (c *char) c2() {
+	if c.Base.Cons < 2 {
+		return
+	}
+	c.c2Buff = make([]float64, attributes.EndStatType)
+	for _, char := range c.Core.Player.Chars() {
+		if char.Index == c.Index {
+			continue
+		}
+		char.AddStatMod(character.StatMod{
+			Base: modifier.NewBase(c2Key, -1),
+			Amount: func() ([]float64, bool) {
+				if !c.StatusIsActive(dreamDrifterStateKey) {
+					return nil, false
+				}
+				dmgBonus := c.Stat(attributes.EM) * c2EMMultiplier
+				c.c2Buff[attributes.PyroP] = dmgBonus
+				c.c2Buff[attributes.HydroP] = dmgBonus
+				c.c2Buff[attributes.ElectroP] = dmgBonus
+				c.c2Buff[attributes.CryoP] = dmgBonus
+				return c.c2Buff, true
+			},
+		})
+	}
+}
+
+// While Yumemizuki Mizuki is in the Dreamdrifter state, Swirl DMG dealt by nearby party members can Crit,
+// with CRIT Rate fixed at 30%, and CRIT DMG fixed at 100%.
 func (c *char) c6() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
 		}
+
 		ae := args[1].(*combat.AttackEvent)
 
+		// Only on swirls. The swirl source does not matter, it can be either mizuki or other anemo char.
 		switch ae.Info.AttackTag {
 		case attacks.AttackTagSwirlPyro:
 		case attacks.AttackTagSwirlCryo:
@@ -88,6 +146,7 @@ func (c *char) c6() {
 			return false
 		}
 
+		// The effect is only when mizuki is in dreamDrifter state
 		if !c.StatusIsActive(dreamDrifterStateKey) {
 			return false
 		}

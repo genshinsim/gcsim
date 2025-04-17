@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -18,7 +17,8 @@ var skillFrames []int
 
 const (
 	skillHitmark                      = 2
-	skillActivateDMGRadius            = 5.5
+	skillActivateDmgName              = "Aisa Utamakura Pilgrimage"
+	skillActivateDmgRadius            = 5.5
 	skillActivatePoise                = 30
 	skillActivateDurability           = 25
 	skillCdDelay                      = 23
@@ -26,11 +26,12 @@ const (
 	skillParticleGenerations          = 4
 	skillParticleGenerationIcd        = 0.5 * 60
 	skillParticleGenerationIcdKey     = "mizuki-particle-icd"
+	cloudDmgName                      = "Dreamdrifter Continuous Attack"
 	cloudPoise                        = 20
 	cloudDurability                   = 25
 	cloudExplosionRadius              = 4
 	cloudTravelTime                   = 10
-	cloudFirstHit                 int = 0.25 * 60
+	cloudFirstHit                 int = 0.45 * 60
 	cloudHitInterval              int = 0.75 * 60
 	dreamDrifterStateKey              = "dreamdrifter-state"
 	dreamDrifterBaseDuration          = 5 * 60
@@ -45,19 +46,23 @@ func init() {
 	skillFrames[action.ActionSwap] = 30    // E -> Swap
 }
 
-// Mizuki skill. Things that happen when you tap E:
-// - DMG enemies with anemo
-// - Mizuki enters DreamDrifter state (lasts 5s):
-//   - Team gains Swirl DMG Bonus based on Mizuki Em
-//   - Mizuki starts floating fowards
-//   - Projectiles attack nearby enemies every 0.75s
-//   - Mizuki cannot do anything appart:
-//   - Tap E again (Cancels state)
-//   - Burst (does not cancel state, skill still attacks while in animation)
-//   - Dash, she dashes while in state. Only usefull for dodging, affects nothing else.
-//   - Swap (Cancels state)
+// Weaves memories of lovely dreams, entering a Dreamdrifter state where she floats above the ground, and dealing
+// 1 instance of AoE Anemo DMG to nearby opponents.
+//
+// Dreamdrifter
+//
+//   - While in the Dreamdrifter state, Yumemizuki Mizuki will continuously drift forward, dealing AoE Anemo DMG to nearby
+//     opponents at regular intervals.
+//
+//   - During this time, Yumemizuki Mizuki can control her direction of drift, and the pick-up distance of Yumemi Style
+//     Special Snacks from the Elemental Burst Anraku Secret Spring Therapy will be increased.
+//
+//   - Increases the Swirl DMG that nearby party members deal based on Yumemizuki Mizuki's Elemental Mastery.
+//
+//     Dreamdrifter will end when Mizuki leaves the field or uses her Elemental Skill again.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 
+	// if used while in dreamDrifter state, cancel the state.
 	if c.StatusIsActive(dreamDrifterStateKey) {
 		c.cancelDreamDrifterState()
 		return action.Info{
@@ -71,7 +76,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Activation DMG
 	activationAttack := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Aisa Utamakura Pilgrimage",
+		Abil:       skillActivateDmgName,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -82,28 +87,28 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.particleGenerationsRemaining = skillParticleGenerations
-
-	if c.Base.Ascension >= 1 {
-		c.dreamDrifterExtensionsRemaining = dreamDrifterExtensions
-	}
-
 	c.Core.QueueAttack(
 		activationAttack,
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.Player(),
 			nil,
-			skillActivateDMGRadius,
+			skillActivateDmgRadius,
 		),
 		0,
 		skillHitmark,
 		c.particleCB,
 	)
 
-	c.SetCDWithDelay(action.ActionSkill, skillCd, skillCdDelay)
+	c.particleGenerationsRemaining = skillParticleGenerations
+
+	if c.Base.Ascension >= 1 {
+		c.dreamDrifterExtensionsRemaining = dreamDrifterExtensions
+	}
 
 	c.applyDreamDrifterEffect()
+
+	c.SetCDWithDelay(action.ActionSkill, skillCd, skillCdDelay)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -113,83 +118,24 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) startCloudAttacks() {
-	// clouds DMG snapshots on activation
-	cloudAttack := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Dreamdrifter Continuous Attack",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArt,
-		ICDGroup:   attacks.ICDGroupMizukiSkill,
-		StrikeType: attacks.StrikeTypeDefault,
-		PoiseDMG:   cloudPoise,
-		Element:    attributes.Anemo,
-		Durability: cloudDurability,
-		Mult:       cloudDMG[c.TalentLvlSkill()],
-	}
-
-	snap := c.Snapshot(&cloudAttack)
-
-	c.Core.QueueAttackWithSnap(cloudAttack, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius), cloudFirstHit+cloudTravelTime)
-
-	var hitFunc func()
-	hitFunc = func() {
-		if !c.StatusIsActive(dreamDrifterStateKey) {
-			return
-		}
-		c.Core.QueueAttackWithSnap(cloudAttack, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius), cloudTravelTime)
-		c.QueueCharTask(hitFunc, cloudHitInterval)
-	}
-
-	c.QueueCharTask(hitFunc, cloudHitInterval)
-}
-
-func (c *char) applyC1Effect() {
-	var c1Func func()
-	c1Func = func() {
-		if !c.StatusIsActive(dreamDrifterStateKey) {
-			return
-		}
-		for _, target := range c.Core.Combat.Enemies() {
-			if e, ok := target.(*enemy.Enemy); ok {
-				e.AddStatus(c1Key, c1Duration, false)
-			}
-		}
-		c.QueueCharTask(c1Func, c1Interval)
-	}
-	c.QueueCharTask(c1Func, 0)
-}
-
-func (c *char) removeC1Effect() {
-	// TODO: are the existing debuffs really cancelled? We need to check it
-	//for _, target := range c.Core.Combat.Enemies() {
-	//	if e, ok := target.(*enemy.Enemy); ok {
-	//		e.DeleteStatus(c1Key)
-	//	}
-	//}
-}
-
 func (c *char) applyDreamDrifterEffect() {
 	c.AddStatus(dreamDrifterStateKey, dreamDrifterBaseDuration, false)
-
-	c.applySwirlBuff()
 
 	c.startCloudAttacks()
 
 	if c.Base.Cons >= 1 {
 		c.applyC1Effect()
 	}
-
-	if c.Base.Cons >= 2 {
-		c.applyC2Buff()
-	}
 }
 
-func (c *char) applySwirlBuff() {
+func (c *char) skillInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, dreamDrifterBaseDuration),
+			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, -1),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
+				if !c.StatusIsActive(dreamDrifterStateKey) {
+					return 0, false
+				}
 				// check to make sure this is not an amped swirl
 				if ai.Amped {
 					return 0, false
@@ -207,6 +153,47 @@ func (c *char) applySwirlBuff() {
 			},
 		})
 	}
+
+	// Remove the dreamDrifter state when she leaves the field
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		prev := args[0].(int)
+
+		if prev == c.Index {
+			c.cancelDreamDrifterState()
+		}
+
+		return false
+	}, "mizuki-exit")
+}
+
+func (c *char) startCloudAttacks() {
+
+	// clouds DMG snapshots on activation
+	cloudAttack := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       cloudDmgName,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupMizukiSkill,
+		StrikeType: attacks.StrikeTypeDefault,
+		PoiseDMG:   cloudPoise,
+		Element:    attributes.Anemo,
+		Durability: cloudDurability,
+		Mult:       cloudDMG[c.TalentLvlSkill()],
+	}
+
+	snap := c.Snapshot(&cloudAttack)
+
+	var hitFunc func()
+	hitFunc = func() {
+		if !c.StatusIsActive(dreamDrifterStateKey) {
+			return
+		}
+		c.Core.QueueAttackWithSnap(cloudAttack, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius), cloudTravelTime)
+		c.QueueCharTask(hitFunc, cloudHitInterval)
+	}
+
+	c.QueueCharTask(hitFunc, cloudFirstHit)
 }
 
 // Generates up to 4 particles on each E DMG either on activation or cloud.
@@ -226,62 +213,8 @@ func (c *char) particleCB(a combat.AttackCB) {
 	}
 }
 
-func (c *char) applyC2Buff() {
-	for _, char := range c.Core.Player.Chars() {
-		if char.Index == c.Index {
-			continue
-		}
-		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBase(c2Key, dreamDrifterBaseDuration),
-			Amount: func() ([]float64, bool) {
-				buff := make([]float64, attributes.EndStatType)
-				dmgBonus := c.Stat(attributes.EM) * c2EMMultiplier
-				buff[attributes.PyroP] = dmgBonus
-				buff[attributes.HydroP] = dmgBonus
-				buff[attributes.ElectroP] = dmgBonus
-				buff[attributes.CryoP] = dmgBonus
-				return buff, true
-			},
-		})
-	}
-}
-
-func (c *char) removeC2Buff() {
-	for _, target := range c.Core.Combat.Enemies() {
-		if e, ok := target.(*enemy.Enemy); ok {
-			e.DeleteStatus(c2Key)
-		}
-	}
-}
-
 func (c *char) cancelDreamDrifterState() {
 	c.DeleteStatus(dreamDrifterStateKey)
 
-	c.removeSwirlBuff()
-
-	c.removeC1Effect()
-
-	c.removeC2Buff()
-
-	c.Core.Log.NewEvent("dreamdrifter cancelled", glog.LogCharacterEvent, c.Index)
-}
-
-func (c *char) removeSwirlBuff() {
-	for _, char := range c.Core.Player.Chars() {
-		char.DeleteReactBonusMod(dreamDrifterSwirlBuffKey)
-	}
-}
-
-func (c *char) registerSkillCallbacks() {
-
-	// Remove the dreamDrifter state when she leaves the field
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		prev := args[0].(int)
-
-		if prev == c.Index {
-			c.cancelDreamDrifterState()
-		}
-
-		return false
-	}, "mizuki-exit")
+	c.Core.Log.NewEvent("dreamDrifter cancelled", glog.LogCharacterEvent, c.Index)
 }

@@ -17,6 +17,8 @@ type char struct {
 	*tmpl.Character
 	particleGenerationsRemaining    int
 	dreamDrifterExtensionsRemaining int
+	a4Buff                          []float64
+	c2Buff                          []float64
 	c4EnergyGenerationsRemaining    int
 }
 
@@ -35,26 +37,31 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.registerSkillCallbacks()
+	c.skillInit()
 	c.a1()
 	c.a4()
 	c.c1()
+	c.c2()
 	c.c6()
 	return nil
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+
 	if !c.StatusIsActive(dreamDrifterStateKey) {
 		return c.Character.ActionReady(a, p)
 	}
 
+	// Allow to press E while in dreamDrifter that cancels the effect
 	if a == action.ActionSkill {
 		// cancel
 		return true, action.NoFailure
 	}
 
+	// restrict actions that can be performed while in dreamDrifter stat to swap, dash, burst
 	if a != action.ActionDash && a != action.ActionSwap && a != action.ActionBurst {
 		return false, action.NoFailure
 	}
+
 	return c.Character.ActionReady(a, p)
 }
