@@ -158,7 +158,7 @@ func (c *char) skillInit() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 
-		if prev == c.Index {
+		if prev == c.Index && c.StatusIsActive(dreamDrifterStateKey) {
 			c.cancelDreamDrifterState()
 		}
 

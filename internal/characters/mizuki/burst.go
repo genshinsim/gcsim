@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -81,69 +80,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) queueSnacks() {
-	snackAttack := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       snackDmgName,
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Anemo,
-		Durability: snackDurability,
-		PoiseDMG:   snackPoise,
-		Mult:       snackDMG[c.TalentLvlBurst()],
-	}
-
 	snackFunc := func() {
-		heal := false
-		dmg := false
+		pos := c.Core.Combat.PrimaryTarget().Pos()
+		pos.Y += c.Core.Rand.Float64() * 0.2
+		pos.X += c.Core.Rand.Float64() * 0.2
 
-		// C4 triggers both DMG and Heal
-		if c.Base.Cons >= 4 {
-			dmg = true
-			heal = true
-		} else {
-			// Heals active char if is bellow 70% hp otherwise deals DMG
-			dmg = c.Core.Player.ActiveChar().CurrentHP() > (c.Core.Player.ActiveChar().MaxHP() * snackHealTriggerHpRatio)
-			heal = !dmg
-		}
-
-		// Not sure if it snapshots on creation (here) or on hitmark
-		snapshot := c.Snapshot(&snackAttack)
-
-		c.Core.Tasks.Add(func() {
-			if dmg {
-				// Snacks spawn on nearby enemy when enemies exist, otherwise on active character
-				// Maybe implement it as gadget?
-				c.Core.QueueAttackWithSnap(snackAttack, snapshot, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, snackRadius), 0)
-			}
-
-			if heal {
-				// Heals double the amount on Mizuki
-				healMultiplier := 1.0
-				if c.Core.Player.Active() == c.Index {
-					healMultiplier = 2.0
-				}
-				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
-					Target:  c.Core.Player.Active(),
-					Message: snackHealName,
-					Src:     ((c.Stat(attributes.EM) * snackHealEM[c.TalentLvlBurst()]) + snackHealFlat[c.TalentLvlBurst()]) * healMultiplier,
-					Bonus:   c.Stat(attributes.Heal),
-				})
-			}
-
-			// C4 restores 5 energy to mizuki up to 4 times
-			if c.Base.Cons >= 4 {
-				if c.c4EnergyGenerationsRemaining > 0 {
-					c.c4EnergyGenerationsRemaining--
-					c.AddEnergy(c4Key, c4Energy)
-				}
-			}
-		}, snackHitmark)
+		newSnack(c, pos)
 	}
 
-	spawnTime := snackHitmark
+	spawnTime := burstHitmark
 	for i := int(snackInterval); i <= burstDuration; i += snackInterval {
 		spawnTime += snackInterval
 		c.Core.Tasks.Add(snackFunc, spawnTime)
