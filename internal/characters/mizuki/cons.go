@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -16,6 +17,7 @@ const (
 	c1Interval          = 3.5 * 60
 	c1Duration          = 3 * 60
 	c1Multiplier        = 11.0
+	c1Range             = 30
 	c2Key               = "mizuki-c2"
 	c2EMMultiplier      = 0.0004
 	c4EnergyGenerations = 4
@@ -47,13 +49,18 @@ func (c *char) c1() {
 			return false
 		}
 
-		// Only on swirls. The swirl source does not matter, it can be either mizuki or other anemo char.
+		// Only on swirls. The swirl source does not matter, it can be either mizuki or another anemo char.
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagSwirlCryo:
 		case attacks.AttackTagSwirlElectro:
 		case attacks.AttackTagSwirlHydro:
 		case attacks.AttackTagSwirlPyro:
 		default:
+			return false
+		}
+
+		// do not proc on 0 DMG swirls (e.g. hydro AOE swirls or swirl ICD)
+		if atk.Info.FlatDmg == 0 {
 			return false
 		}
 
@@ -80,9 +87,16 @@ func (c *char) applyC1Effect() {
 		if !c.StatusIsActive(dreamDrifterStateKey) {
 			return
 		}
-		for _, target := range c.Core.Combat.Enemies() {
+
+		// The range cannot be determined exactly, but from testing it seems that it is at least 25 meters or more.
+		// For simulation purposes we can assume a bit more than that.
+		area := combat.AttackPattern{
+			Shape: geometry.NewCircle(c.Core.Combat.Player().Pos(), c1Range, geometry.DefaultDirection(), 360),
+		}
+		for _, target := range c.Core.Combat.EnemiesWithinArea(area, nil) {
 			if e, ok := target.(*enemy.Enemy); ok {
-				e.AddStatus(c1Key, c1Duration, false)
+				// is it even possible to verify if it is affected by hitlag?
+				e.AddStatus(c1Key, c1Duration, true)
 			}
 		}
 		c.QueueCharTask(c1Func, c1Interval)
@@ -99,12 +113,14 @@ func (c *char) c2() {
 	if c.Base.Cons < 2 {
 		return
 	}
+
 	c.c2Buff = make([]float64, attributes.EndStatType)
+
 	for _, char := range c.Core.Player.Chars() {
 		if char.Index == c.Index {
 			continue
 		}
-		// TODO: check if this buff changes the DMG of snapshoting talents, e.g. does Oz dmg Increases while this is active?
+		// TODO: Test whether this is indeed a static buff once we have C2
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase(c2Key, -1),
 			Amount: func() ([]float64, bool) {

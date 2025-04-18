@@ -12,25 +12,26 @@ import (
 var burstFrames []int
 
 const (
-	burstActivationDmgName  = "Anraku Secret Spring Therapy"
-	burstKey                = "mizuki-burst"
-	burstHitmark            = 93
-	burstDurability         = 50
-	burstPoise              = 100
-	burstDuration           = 12 * 60
-	burstCdDelay            = 1
-	burstEnergyDrainDelay   = 4
-	burstCd                 = 15 * 60
-	burstRadius             = 8
-	snackDmgName            = "Munen Shockwave"
-	snackHealName           = "Snack Pick-Up"
-	snackInterval           = 1.5 * 60
-	snackHitmark            = 22
-	snackDurability         = 25
-	snackPoise              = 30
-	snackRadius             = 4
-	snackHealTriggerHpRatio = 0.7
-	snackSpawnRadius        = 4 // assumption
+	burstActivationDmgName     = "Anraku Secret Spring Therapy"
+	burstKey                   = "mizuki-burst"
+	burstHitmark               = 93
+	burstDurability            = 50
+	burstPoise                 = 100
+	burstDuration              = 12 * 60
+	burstCdDelay               = 1
+	burstEnergyDrainDelay      = 4
+	burstCd                    = 15 * 60
+	burstRadius                = 8
+	snackDmgName               = "Munen Shockwave"
+	snackHealName              = "Snack Pick-Up"
+	snackInterval              = 1.5 * 60
+	snackHitmark               = 22
+	snackDurability            = 25
+	snackPoise                 = 30
+	snackDmgRadius             = 4
+	snackHealTriggerHpRatio    = 0.7
+	snackSpawnOnEnemyRadius    = 6 // assumption
+	snackSpawnLocationVariance = 1.0
 )
 
 func init() {
@@ -61,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, burstRadius), burstHitmark, burstHitmark)
 
-	// might be useful for checking
+	// might be useful for checking in scripts
 	c.AddStatus(burstKey, burstDuration, false)
 
 	if c.Base.Cons >= 4 {
@@ -82,17 +83,26 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) queueSnacks() {
+
+	randomSign := func() float64 {
+		rnd := c.Core.Rand.Float64()
+		if 0.5 < rnd {
+			return -1
+		}
+		return 1
+	}
 	snackFunc := func() {
 
 		pos := c.calculateSnackSpawnLocation()
 
 		// randomize a bit the spawn location
-		pos.Y += c.Core.Rand.Float64() * 0.2
-		pos.X += c.Core.Rand.Float64() * 0.2
+		pos.Y += c.Core.Rand.Float64() * snackSpawnLocationVariance * randomSign()
+		pos.X += c.Core.Rand.Float64() * snackSpawnLocationVariance * randomSign()
 
 		newSnack(c, pos)
 	}
 
+	// Spawn timer starts at burst hitmark
 	spawnTime := burstHitmark
 	for i := int(snackInterval); i <= burstDuration; i += snackInterval {
 		spawnTime += snackInterval
@@ -101,33 +111,38 @@ func (c *char) queueSnacks() {
 }
 
 func (c *char) calculateSnackSpawnLocation() geometry.Point {
+
+	// According to testing, snacks appear within a small range (1m) in front of the target/player.
+	// However since the enemy direction is not set by default towards the player, we calculate
+	// a position relative to the player/enemy
 	playerPos := c.Core.Combat.Player().Pos()
 	finalPosition := playerPos
 
 	// find the closest enemy
 	target := c.Core.Combat.ClosestEnemyWithinArea(combat.AttackPattern{
-		Shape: geometry.NewCircle(playerPos, snackSpawnRadius, geometry.DefaultDirection(), 360),
+		Shape: geometry.NewCircle(playerPos, snackSpawnOnEnemyRadius, geometry.DefaultDirection(), 360),
 	}, nil)
 
-	// if no enemy found, it spawns on active character
+	// if enemy is found use this, otherwise use the player position
 	if target != nil {
 
-		// spawns around the enemy bounds, not inside
 		targetShape := target.Shape()
+		finalPosition = targetShape.Pos()
 		direction := geometry.Point{
-			X: playerPos.X - targetShape.Pos().X,
-			Y: playerPos.Y - targetShape.Pos().Y,
+			X: playerPos.X - finalPosition.X,
+			Y: playerPos.Y - finalPosition.Y,
 		}
-		pos := target.Pos()
 		if v, ok := targetShape.(*geometry.Circle); ok {
-			direction = direction.Normalize()
-			pos.X += v.Radius() * direction.X
-			pos.Y += v.Radius() * direction.Y
+			if finalPosition != playerPos {
+				direction = direction.Normalize()
+				finalPosition.X += v.Radius() * direction.X
+				finalPosition.Y += v.Radius() * direction.Y
+			}
 		} else if _, ok := targetShape.(*geometry.Rectangle); ok {
 			// currently we cannot reliably get an edge to spawn the snack on rectangle.
 			// place it somewhere around the middle
-			pos.X += direction.X / 2
-			pos.Y += direction.Y / 2
+			finalPosition.X += direction.X / 2
+			finalPosition.Y += direction.Y / 2
 		}
 	}
 	return finalPosition

@@ -41,11 +41,12 @@ func newSnack(c *char, pos geometry.Point) *snack {
 			PoiseDMG:   snackPoise,
 			Mult:       snackDMG[c.TalentLvlBurst()],
 		},
-		pattern: combat.NewCircleHitOnTarget(pos, nil, snackRadius),
+		pattern: combat.NewCircleHitOnTarget(pos, nil, snackDmgRadius),
 	}
 	p.snapshot = c.Snapshot(&p.attackInfo)
 
 	// we increase snack size to make sure we get it when mizuki is in dreamdrifter state
+	// because mizuki's pickup range is increased while in this state.
 	p.Gadget = gadget.New(c.Core, pos, snackSize*snackSizeMizukiMultiplier, combat.GadgetTypYumemiSnack)
 	p.Gadget.Duration = snackDuration
 	c.Core.Combat.AddGadget(p)
@@ -106,6 +107,7 @@ func (p *snack) onPickedUp() {
 		p.char.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index).
 			Write("heal", heal).
 			Write("dmg", dmg)
+
 		if dmg {
 			p.explode()
 		}

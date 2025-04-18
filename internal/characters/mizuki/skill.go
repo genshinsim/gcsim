@@ -36,6 +36,7 @@ const (
 	dreamDrifterStateKey              = "dreamdrifter-state"
 	dreamDrifterBaseDuration          = 5 * 60
 	dreamDrifterSwirlBuffKey          = "mizuki-swirl-buff"
+	mizukiSwapOutKey                  = "mizuki-exit"
 )
 
 func init() {
@@ -69,7 +70,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			Frames:          frames.NewAbilFunc(skillFrames),
 			AnimationLength: skillFrames[action.InvalidAction],
 			CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel is swap
-			State:           action.Idle,
+			State:           action.Idle,                    // is this correct?
 		}, nil
 	}
 
@@ -119,7 +120,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) applyDreamDrifterEffect() {
-	c.AddStatus(dreamDrifterStateKey, dreamDrifterBaseDuration, false)
+	c.AddStatus(dreamDrifterStateKey, dreamDrifterBaseDuration, true)
 
 	c.startCloudAttacks()
 
@@ -136,8 +137,10 @@ func (c *char) skillInit() {
 				if !c.StatusIsActive(dreamDrifterStateKey) {
 					return 0, false
 				}
-				// check to make sure this is not an amped swirl
-				if ai.Amped {
+				// These flags imply AOE Swirl, in which case this Swirl DMG bonus does not apply because
+				// it was calculated in a prior call of this callback. In these cases the other reaction bonuses
+				// apply instead (e.g. Melt DMG Bonus, Aggravate DMG Bonus, etc.)
+				if ai.Amped || ai.Catalyzed {
 					return 0, false
 				}
 				switch ai.AttackTag {
@@ -163,7 +166,7 @@ func (c *char) skillInit() {
 		}
 
 		return false
-	}, "mizuki-exit")
+	}, mizukiSwapOutKey)
 }
 
 func (c *char) startCloudAttacks() {
@@ -184,16 +187,17 @@ func (c *char) startCloudAttacks() {
 
 	snap := c.Snapshot(&cloudAttack)
 
-	var hitFunc func()
-	hitFunc = func() {
+	var cloudFunc func()
+	cloudFunc = func() {
 		if !c.StatusIsActive(dreamDrifterStateKey) {
 			return
 		}
-		c.Core.QueueAttackWithSnap(cloudAttack, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius), cloudTravelTime)
-		c.QueueCharTask(hitFunc, cloudHitInterval)
+		c.Core.QueueAttackWithSnap(cloudAttack, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius), cloudTravelTime, c.particleCB)
+		c.QueueCharTask(cloudFunc, cloudHitInterval)
 	}
 
-	c.QueueCharTask(hitFunc, cloudFirstHit)
+	// First cloud is launched at approximately 0.45s after skill activation.
+	c.QueueCharTask(cloudFunc, cloudFirstHit)
 }
 
 // Generates up to 4 particles on each E DMG either on activation or cloud.
@@ -216,5 +220,5 @@ func (c *char) particleCB(a combat.AttackCB) {
 func (c *char) cancelDreamDrifterState() {
 	c.DeleteStatus(dreamDrifterStateKey)
 
-	c.Core.Log.NewEvent("dreamDrifter cancelled", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("DreamDrifter effect cancelled", glog.LogCharacterEvent, c.Index)
 }

@@ -55,7 +55,7 @@ func (c *char) a1() {
 			return false
 		}
 
-		c.AddStatus(a1ICDKey, a1ICD, false)
+		c.AddStatus(a1ICDKey, a1ICD, true)
 
 		c.ExtendStatus(dreamDrifterStateKey, dreamDrifterDurationExtension)
 
@@ -102,7 +102,7 @@ func (c *char) a4() {
 		// Only when enemy is hit by Pyro, Hydro, Cryo, Electro
 		if element == attributes.Electro || element == attributes.Hydro || element == attributes.Pyro || element == attributes.Cryo {
 			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase(a4Key, a4Duration), // 4s
+				Base:         modifier.NewBaseWithHitlag(a4Key, a4Duration), // 4s
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return c.a4Buff, true
