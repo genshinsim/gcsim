@@ -61,6 +61,7 @@ var SetNameToKey = map[string]keys.Set{
 	"lavawalker":                         keys.Lavawalker,
 	"lw":                                 keys.Lavawalker,
 	"longnightsoath":                     keys.LongNightsOath,
+	"lno":                                keys.LongNightsOath,
 	"luckydog":                           keys.LuckyDog,
 	"maidenbeloved":                      keys.MaidenBeloved,
 	"maiden":                             keys.MaidenBeloved,
