@@ -11,23 +11,26 @@ import (
 var chargeFrames []int
 
 const (
-	chargeHitmark = 67
+	chargeHitmark = 51
 	chargeRadius  = 1
 )
 
-// charlotte frames. CHANGE
 func init() {
-	chargeFrames = frames.InitAbilSlice(84) // CA -> CA
-	chargeFrames[action.ActionAttack] = 79
-	chargeFrames[action.ActionSkill] = 71
-	chargeFrames[action.ActionBurst] = 71
-	chargeFrames[action.ActionDash] = 21
-	chargeFrames[action.ActionJump] = 21
-	chargeFrames[action.ActionWalk] = 74
-	chargeFrames[action.ActionSwap] = 60
+	chargeFrames = frames.InitAbilSlice(52) // CA -> CA
+	chargeFrames[action.ActionAttack] = 49
+	chargeFrames[action.ActionBurst] = 51
+	chargeFrames[action.ActionDash] = 45
+	chargeFrames[action.ActionJump] = 46
+	chargeFrames[action.ActionWalk] = 56
+	chargeFrames[action.ActionSwap] = 50
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 10
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
@@ -40,18 +43,6 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	windup := 0
-	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState:
-		windup = 14
-	case action.SkillState:
-		if c.Core.Player.LastAction.Param["hold"] == 0 {
-			windup = 8
-		}
-	case action.BurstState:
-		windup = 3
-	}
-
 	pos := c.Core.Combat.PrimaryTarget().Pos()
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(
@@ -62,12 +53,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			0,
 			0,
 		)
-	}, chargeHitmark-windup)
+	}, chargeHitmark+travel)
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
-		AnimationLength: chargeFrames[action.InvalidAction] - windup,
-		CanQueueAfter:   chargeFrames[action.ActionDash] - windup,
+		Frames:          func(next action.Action) int { return chargeFrames[next] },
+		AnimationLength: chargeFrames[action.InvalidAction],
+		CanQueueAfter:   chargeFrames[action.ActionDash] + travel,
 		State:           action.ChargeAttackState,
 	}, nil
 }

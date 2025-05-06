@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	itzpapaInterval           = 60 // looking at footage, seems like both attack and NS consumption intervals are the same
-	obsidianTzitzimitlHitmark = 23
+	itzpapaInterval           = 59
+	obsidianTzitzimitlHitmark = 20
 
 	itzpapaKey       = "itzpapa-key"
 	opalFireStateKey = "opal-fire-state"
@@ -23,7 +23,13 @@ var (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(49) // E -> Q
+	skillFrames = frames.InitAbilSlice(42) // E -> N1
+	skillFrames[action.ActionSkill] = obsidianTzitzimitlHitmark
+	skillFrames[action.ActionBurst] = 41
+	skillFrames[action.ActionDash] = 49
+	skillFrames[action.ActionJump] = 49
+	skillFrames[action.ActionWalk] = 50
+	skillFrames[action.ActionSwap] = 41
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -41,25 +47,28 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), obsidianTzitzimitlHitmark, obsidianTzitzimitlHitmark, c.particleCB)
 
-	// TODO: Confirm Delays
 	// with delay
 	c.QueueCharTask(func() {
 		c.SetCD(action.ActionSkill, 16*60)
-		c.addShield()
-	}, 1)
+	}, 18)
 
-	// instantly
-	if c.nightsoulState.HasBlessing() {
-		c.nightsoulState.GeneratePoints(24)
-		c.skillReactivated = true
-	} else {
-		c.nightsoulState.EnterBlessing(c.nightsoulState.Points() + 24)
-		c.skillReactivated = false
-	}
+	c.QueueCharTask(func() {
+		c.addShield()
+	}, 37)
+
+	c.QueueCharTask(func() {
+		if c.nightsoulState.HasBlessing() {
+			c.nightsoulState.GeneratePoints(24)
+			c.skillReactivated = true
+		} else {
+			c.nightsoulState.EnterBlessing(c.nightsoulState.Points() + 24)
+			c.skillReactivated = false
+		}
+		c.tryEnterOpalFireState(c.Core.F)
+	}, 22)
 
 	c.itzpapaSrc = c.Core.F
 	c.summonItzpapa(c.Core.F)
-	c.tryEnterOpalFireState(c.Core.F)
 
 	if c.Base.Cons >= 1 {
 		c.numStellarBlades = 10
@@ -122,7 +131,7 @@ func (c *char) ItzpapaHit(src int) func() {
 		if !c.StatusIsActive(opalFireStateKey) {
 			return
 		}
-		if c.nightsoulState.Points() == 0 {
+		if c.nightsoulState.Points() <= 0.001 {
 			if c.Base.Cons < 6 {
 				c.DeleteStatus(opalFireStateKey)
 				return
@@ -145,9 +154,8 @@ func (c *char) ItzpapaHit(src int) func() {
 			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+int(min(8, c.nightsoulState.Points())))
 		}
 		c.nightsoulState.ConsumePoints(8)
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), 0, 0, c.c4SkullCB)
 		c.QueueCharTask(c.ItzpapaHit(src), itzpapaInterval)
-		c.c4Skull()
 	}
 }
 

@@ -87,7 +87,7 @@ func (c *char) c2() {
 	}
 }
 
-func (c *char) c4Skull() {
+func (c *char) c4SkullCB(a combat.AttackCB) {
 	if c.Base.Cons < 4 {
 		return
 	}

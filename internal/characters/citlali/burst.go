@@ -10,7 +10,7 @@ import (
 
 const (
 	iceStormHitmark          = 118
-	spiritVesselSkullHitmark = 223
+	spiritVesselSkullHitmark = 210
 
 	iceStormAbil = "Ice Storm DMG"
 )
@@ -20,7 +20,10 @@ var (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(133) // Q -> Swap
+	burstFrames = frames.InitAbilSlice(112) // Q -> N1
+	burstFrames[action.ActionSkill] = 111
+	burstFrames[action.JumpState] = 113
+	burstFrames[action.ActionSwap] = 110
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -49,26 +52,37 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability:     25,
 		Mult:           spiritVessel[c.TalentLvlBurst()],
 	}
+
+	// with delay
 	c.ConsumeEnergy(5)
-	c.SetCD(action.ActionBurst, 15*60)
-	c.nightsoulState.GeneratePoints(24)
-	c.tryEnterOpalFireState(c.itzpapaSrc)
-	c.Core.QueueAttack(aiIceStorm, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5), iceStormHitmark, iceStormHitmark)
-	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), nil)
 	c.QueueCharTask(func() {
+		c.SetCD(action.ActionBurst, 15*60)
+	}, 1)
+	c.QueueCharTask(func() {
+		c.nightsoulState.GeneratePoints(24)
+		c.tryEnterOpalFireState(c.itzpapaSrc)
+	}, 115)
+
+	// initial hit
+	c.Core.QueueAttack(aiIceStorm, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5), iceStormHitmark, iceStormHitmark)
+
+	// skull hits
+	c.QueueCharTask(func() {
+		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), nil)
+		for i, enemy := range enemies {
+			if i > 2 {
+				break
+			}
+			c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewCircleHitOnTarget(enemy.Pos(), nil, 3.5), 0, 0)
+		}
 		c.nightsoulState.GeneratePoints(float64(3 * min(3, len(enemies))))
 		c.tryEnterOpalFireState(c.itzpapaSrc)
 	}, spiritVesselSkullHitmark)
-	for i, enemy := range enemies {
-		if i > 2 {
-			break
-		}
-		c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewCircleHitOnTarget(enemy.Pos(), nil, 3.5), spiritVesselSkullHitmark, spiritVesselSkullHitmark)
-	}
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionBurst],
+		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
 	}, nil
 }
