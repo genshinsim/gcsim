@@ -33,6 +33,7 @@ func init() {
 }
 
 func (c *char) Skill(_ map[string]int) (action.Info, error) {
+	// do initial attack
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Obsidian Tzitzimitl DMG",
@@ -47,7 +48,7 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), obsidianTzitzimitlHitmark, obsidianTzitzimitlHitmark, c.particleCB)
 
-	// with delay
+	// to do with delay
 	c.QueueCharTask(func() {
 		c.SetCD(action.ActionSkill, 16*60)
 	}, 18)
@@ -59,16 +60,18 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		if c.nightsoulState.HasBlessing() {
 			c.nightsoulState.GeneratePoints(24)
-			c.skillReactivated = true
 		} else {
 			c.nightsoulState.EnterBlessing(c.nightsoulState.Points() + 24)
-			c.skillReactivated = false
 		}
-		c.tryEnterOpalFireState(c.Core.F)
+		c.tryEnterOpalFireState(c.itzpapaSrc)
 	}, 22)
 
+	// to do now
+	// summon Itzpapa and immediately check if Opal Fire state can be activated
 	c.itzpapaSrc = c.Core.F
 	c.summonItzpapa(c.Core.F)
+	c.DeleteStatus(opalFireStateKey)
+	c.tryEnterOpalFireState(c.itzpapaSrc)
 
 	if c.Base.Cons >= 1 {
 		c.numStellarBlades = 10
@@ -110,10 +113,8 @@ func (c *char) itzpapaExit(src int) func() {
 // try to activate Opal Fire each time Citlali gains NS points to avoid event subscribtion
 func (c *char) tryEnterOpalFireState(src int) {
 	if (c.nightsoulState.Points() >= 50 || c.Base.Cons >= 6) && c.nightsoulState.HasBlessing() {
-		// if it's activation or REactivation
-		if !c.StatusIsActive(opalFireStateKey) || c.skillReactivated {
-			// this status is active only when Itzpapa is in "attack mode"
-			c.skillReactivated = false
+		// if it's activation or REactivation (of Opal Fire state)
+		if !c.StatusIsActive(opalFireStateKey) {
 			c.AddStatus(opalFireStateKey, -1, false)
 			c.QueueCharTask(c.ItzpapaHit(src), itzpapaInterval)
 		}
