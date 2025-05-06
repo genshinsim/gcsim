@@ -32,7 +32,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 41
 }
 
-func (c *char) Skill(p map[string]int) (action.Info, error) {
+func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Obsidian Tzitzimitl DMG",

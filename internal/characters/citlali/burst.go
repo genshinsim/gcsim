@@ -26,7 +26,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 110
 }
 
-func (c *char) Burst(p map[string]int) (action.Info, error) {
+func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	aiIceStorm := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           iceStormAbil,

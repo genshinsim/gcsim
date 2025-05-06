@@ -273,7 +273,12 @@
     {
       "ability": "attack",
       "param": "travel",
-      "desc": "Projectile travel time. Default ??? frames, which corresponds to standing closest to the enemy."
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "charge",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
     }
   ],
   "collei": [
