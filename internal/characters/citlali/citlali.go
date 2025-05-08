@@ -20,7 +20,7 @@ type char struct {
 	itzpapaSrc       int
 	skillShield      *shd
 	numStellarBlades int
-	numC6Stacks      int
+	numC6Stacks      float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -49,12 +49,19 @@ func (c *char) Init() error {
 	c.a4()
 
 	c.c1()
+	c.c2()
 	c.c6()
 	return nil
 }
 
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
+	case "stellar-blade":
+		return c.numStellarBlades, nil
+	case "opal-fire":
+		return c.StatusIsActive(opalFireStateKey), nil
+	case "c6-stacks":
+		return c.numC6Stacks, nil
 	case "nightsoul":
 		return c.nightsoulState.Condition(fields)
 	default:

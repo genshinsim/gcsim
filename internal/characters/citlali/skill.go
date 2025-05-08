@@ -71,14 +71,12 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	// to do now
 	if c.Base.Cons >= 1 {
 		c.numStellarBlades = 10
-		c.c2() // under C1 check to make less calls
 	}
 
 	if c.Base.Cons >= 6 {
-		c.numC6Stacks = 0
 		currentPoints := c.nightsoulState.Points()
 		c.nightsoulState.ClearPoints()
-		c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+int(currentPoints))
+		c.numC6Stacks = min(maxC6Stacks, currentPoints)
 	}
 
 	return action.Info{
@@ -130,7 +128,10 @@ func (c *char) nightsoulPointReduceTask(src int) {
 
 		// reduce 0.8 point every 6f, which is 8 per second
 		c.nightsoulState.ConsumePoints(0.8)
-		if c.nightsoulState.Points() < 0.001 {
+		if c.Base.Cons >= 6 {
+			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+0.8)
+		}
+		if c.nightsoulState.Points() < 0.001 && c.Base.Cons < 6 {
 			c.DeleteStatus(opalFireStateKey)
 			return
 		}
@@ -160,10 +161,6 @@ func (c *char) itzpapaHitTask(src int) {
 			Mult:           frostfall[c.TalentLvlSkill()],
 			FlatDmg:        c.a4Dmg(frostFallAbil),
 			HitlagFactor:   0.01,
-		}
-		if c.Base.Cons >= 6 {
-			points := int(c.nightsoulState.Points())
-			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+min(8, points))
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), 0, 0, c.c4SkullCB)
 		c.itzpapaHitTask(src)
