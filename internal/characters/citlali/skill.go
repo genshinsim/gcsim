@@ -13,7 +13,6 @@ const (
 	itzpapaInterval           = 59
 	obsidianTzitzimitlHitmark = 20
 
-	itzpapaKey       = "itzpapa-key"
 	opalFireStateKey = "opal-fire-state"
 	frostFallAbil    = "Frostfall Storm DMG"
 )
@@ -23,12 +22,12 @@ var (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(42) // E -> N1
-	skillFrames[action.ActionSkill] = obsidianTzitzimitlHitmark
+	skillFrames = frames.InitAbilSlice(50) // E -> Walk
+	skillFrames[action.ActionAttack] = 42
+	skillFrames[action.ActionCharge] = 42
 	skillFrames[action.ActionBurst] = 41
 	skillFrames[action.ActionDash] = 49
 	skillFrames[action.ActionJump] = 49
-	skillFrames[action.ActionWalk] = 50
 	skillFrames[action.ActionSwap] = 41
 }
 
@@ -45,34 +44,31 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 		Element:        attributes.Cryo,
 		Durability:     25,
 		Mult:           skill[c.TalentLvlSkill()],
+		HitlagFactor:   0.01,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), obsidianTzitzimitlHitmark, obsidianTzitzimitlHitmark, c.particleCB)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6),
+		obsidianTzitzimitlHitmark,
+		obsidianTzitzimitlHitmark,
+		c.particleCB,
+	)
 
 	// to do with delay
 	c.QueueCharTask(func() {
 		c.SetCD(action.ActionSkill, 16*60)
 	}, 18)
 
-	c.QueueCharTask(func() {
-		c.addShield()
-	}, 37)
+	c.QueueCharTask(c.addShield, 37)
 
 	c.QueueCharTask(func() {
-		if c.nightsoulState.HasBlessing() {
-			c.nightsoulState.GeneratePoints(24)
-		} else {
-			c.nightsoulState.EnterBlessing(c.nightsoulState.Points() + 24)
-		}
+		// summon Itzpapa and immediately check if Opal Fire state can be activated
+		c.nightsoulState.EnterTimedBlessing(c.nightsoulState.Points()+24, 20*60, c.exitNightsoul)
+		c.itzpapaSrc = c.Core.F
 		c.tryEnterOpalFireState(c.itzpapaSrc)
 	}, 22)
 
 	// to do now
-	// summon Itzpapa and immediately check if Opal Fire state can be activated
-	c.itzpapaSrc = c.Core.F
-	c.summonItzpapa(c.Core.F)
-	c.DeleteStatus(opalFireStateKey)
-	c.tryEnterOpalFireState(c.itzpapaSrc)
-
 	if c.Base.Cons >= 1 {
 		c.numStellarBlades = 10
 		c.c2() // under C1 check to make less calls
@@ -93,71 +89,85 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) summonItzpapa(src int) {
-	c.AddStatus(itzpapaKey, -1, false)
-	c.QueueCharTask(c.itzpapaExit(src), 20*60)
+func (c *char) exitNightsoul() {
+	c.numC6Stacks = 0
+	c.numStellarBlades = 0
+	c.DeleteStatus(opalFireStateKey)
+	c.nightsoulState.ExitBlessing()
 }
 
-func (c *char) itzpapaExit(src int) func() {
-	return func() {
-		if c.itzpapaSrc != src {
-			return
-		}
-		c.numC6Stacks = 0
-		c.numStellarBlades = 0
-		c.DeleteStatus(itzpapaKey)
-		c.nightsoulState.ExitBlessing()
-	}
+func (c *char) generateNightsoulPoints(amount float64) {
+	c.nightsoulState.GeneratePoints(amount)
+	c.tryEnterOpalFireState(c.itzpapaSrc)
 }
 
 // try to activate Opal Fire each time Citlali gains NS points to avoid event subscribtion
 func (c *char) tryEnterOpalFireState(src int) {
-	if (c.nightsoulState.Points() >= 50 || c.Base.Cons >= 6) && c.nightsoulState.HasBlessing() {
-		// if it's activation or REactivation (of Opal Fire state)
-		if !c.StatusIsActive(opalFireStateKey) {
-			c.AddStatus(opalFireStateKey, -1, false)
-			c.QueueCharTask(c.ItzpapaHit(src), itzpapaInterval)
-		}
+	if !c.nightsoulState.HasBlessing() {
+		return
 	}
+	if c.nightsoulState.Points() < 50 && c.Base.Cons < 6 {
+		return
+	}
+	// if it's activation or REactivation (of Opal Fire state)
+	if c.StatusIsActive(opalFireStateKey) {
+		return
+	}
+	c.AddStatus(opalFireStateKey, -1, false)
+	c.itzpapaHitTask(src)
+	c.nightsoulPointReduceTask(src)
 }
 
-func (c *char) ItzpapaHit(src int) func() {
-	return func() {
+func (c *char) nightsoulPointReduceTask(src int) {
+	const tickInterval = .1
+	c.QueueCharTask(func() {
+		if c.itzpapaSrc != src {
+			return
+		}
+		if !c.StatusIsActive(opalFireStateKey) {
+			return
+		}
+
+		// reduce 0.8 point every 6f, which is 8 per second
+		c.nightsoulState.ConsumePoints(0.8)
+		if c.nightsoulState.Points() < 0.001 {
+			c.DeleteStatus(opalFireStateKey)
+			return
+		}
+
+		c.nightsoulPointReduceTask(src)
+	}, 60*tickInterval)
+}
+
+func (c *char) itzpapaHitTask(src int) {
+	c.QueueCharTask(func() {
 		if src != c.itzpapaSrc {
 			return
 		}
-		if !c.StatusIsActive(itzpapaKey) {
-			return
-		}
 		if !c.StatusIsActive(opalFireStateKey) {
 			return
-		}
-		if c.nightsoulState.Points() <= 0.001 {
-			if c.Base.Cons < 6 {
-				c.DeleteStatus(opalFireStateKey)
-				return
-			}
 		}
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           frostFallAbil,
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-			ICDTag:         attacks.ICDTagKinichScalespikerCannon,
-			ICDGroup:       attacks.ICDGroupKinichScalespikerCannon,
+			ICDTag:         attacks.ICDTagCitlaliFrostfallStorm,
+			ICDGroup:       attacks.ICDGroupCitlaliFrostfallStorm,
 			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        attributes.Cryo,
 			Durability:     25,
 			Mult:           frostfall[c.TalentLvlSkill()],
 			FlatDmg:        c.a4Dmg(frostFallAbil),
+			HitlagFactor:   0.01,
 		}
 		if c.Base.Cons >= 6 {
-			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+int(min(8, c.nightsoulState.Points())))
+			points := int(c.nightsoulState.Points())
+			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+min(8, points))
 		}
-		c.nightsoulState.ConsumePoints(8)
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 6), 0, 0, c.c4SkullCB)
-		c.QueueCharTask(c.ItzpapaHit(src), itzpapaInterval)
-	}
+		c.itzpapaHitTask(src)
+	}, itzpapaInterval)
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

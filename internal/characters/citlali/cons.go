@@ -76,7 +76,7 @@ func (c *char) c2() {
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				// character should be followed by Itzpapa, i.e. the character is active
-				if c.Core.Player.Active() != this.Index && c.StatusIsActive(itzpapaKey) {
+				if c.Core.Player.Active() != this.Index && c.nightsoulState.HasBlessing() {
 					return nil, false
 				}
 				buffOther := make([]float64, attributes.EndStatType)

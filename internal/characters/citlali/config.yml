@@ -6,7 +6,7 @@ icd_tags:
   - ICDTagCitlaliFrostfallStorm
 icd_groups:
   - group_name: ICDGroupCitlaliFrostfallStorm
-    reset_timer: 120
+    reset_timer: 90
     ele_app_sequence: [1, 0]
     damage_sequence: [1, 1]
 action_param_keys:

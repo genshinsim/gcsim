@@ -16,8 +16,8 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnMelt, c.a1Hook, "citlali-a1-onmelt-res-shred")
-	c.Core.Events.Subscribe(event.OnFrozen, c.a1Hook, "citlali-a1-onfrozen-res-shred")
+	c.Core.Events.Subscribe(event.OnMelt, c.a1Hook, "citlali-a1-onmelt")
+	c.Core.Events.Subscribe(event.OnFrozen, c.a1Hook, "citlali-a1-onfrozen")
 }
 
 func (c *char) a1Hook(args ...interface{}) bool {
@@ -30,9 +30,8 @@ func (c *char) a1Hook(args ...interface{}) bool {
 	}
 
 	if !c.StatusIsActive(nightSoulGenerationIcd) {
-		c.AddStatus(nightSoulGenerationIcd, 8*60, false)
-		c.nightsoulState.GeneratePoints(16)
-		c.tryEnterOpalFireState(c.itzpapaSrc)
+		c.AddStatus(nightSoulGenerationIcd, 8*60, true)
+		c.generateNightsoulPoints(16)
 		if c.Base.Cons >= 1 {
 			c.numStellarBlades += 3
 		}
@@ -44,12 +43,12 @@ func (c *char) a1Hook(args ...interface{}) bool {
 	}
 
 	t.AddResistMod(combat.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("citlali-a1-hydro-res-shred", 12*60),
+		Base:  modifier.NewBaseWithHitlag("citlali-a1-hydro", 12*60),
 		Ele:   attributes.Hydro,
 		Value: amt,
 	})
 	t.AddResistMod(combat.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("citlali-a1-pyro-res-shred", 12*60),
+		Base:  modifier.NewBaseWithHitlag("citlali-a1-pyro", 12*60),
 		Ele:   attributes.Pyro,
 		Value: amt,
 	})
@@ -62,8 +61,7 @@ func (c *char) a4() {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
-		c.nightsoulState.GeneratePoints(4)
-		c.tryEnterOpalFireState(c.itzpapaSrc)
+		c.generateNightsoulPoints(4)
 		return false
 	}, "citlali-a4-ns-gain")
 }

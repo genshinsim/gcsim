@@ -108,7 +108,7 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupChioriSkill] = []float64{1, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupChioriSkill] = []float64{1, 1, 1, 1, 1}
 
-	ICDGroupResetTimer[ICDGroupCitlaliFrostfallStorm] = 120
+	ICDGroupResetTimer[ICDGroupCitlaliFrostfallStorm] = 90
 	ICDGroupEleApplicationSequence[ICDGroupCitlaliFrostfallStorm] = []float64{1, 0}
 	ICDGroupDamageSequence[ICDGroupCitlaliFrostfallStorm] = []float64{1, 1}
 

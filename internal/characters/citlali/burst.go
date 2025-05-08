@@ -20,9 +20,12 @@ var (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(112) // Q -> N1
+	burstFrames = frames.InitAbilSlice(113) // Q -> Jump
+	burstFrames[action.ActionAttack] = 112
+	burstFrames[action.ActionCharge] = 112
 	burstFrames[action.ActionSkill] = 111
-	burstFrames[action.JumpState] = 113
+	burstFrames[action.ActionDash] = 112
+	burstFrames[action.ActionWalk] = 112
 	burstFrames[action.ActionSwap] = 110
 }
 
@@ -54,13 +57,10 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	}
 
 	// with delay
-	c.ConsumeEnergy(5)
+	c.ConsumeEnergy(8)
+	c.SetCD(action.ActionBurst, 15*60)
 	c.QueueCharTask(func() {
-		c.SetCD(action.ActionBurst, 15*60)
-	}, 1)
-	c.QueueCharTask(func() {
-		c.nightsoulState.GeneratePoints(24)
-		c.tryEnterOpalFireState(c.itzpapaSrc)
+		c.generateNightsoulPoints(24)
 	}, 115)
 
 	// initial hit
@@ -69,14 +69,15 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	// skull hits
 	c.QueueCharTask(func() {
 		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), nil)
+		points := 0.0
 		for i, enemy := range enemies {
 			if i > 2 {
 				break
 			}
+			points += 3.0
 			c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewCircleHitOnTarget(enemy.Pos(), nil, 3.5), 0, 0)
 		}
-		c.nightsoulState.GeneratePoints(float64(3 * min(3, len(enemies))))
-		c.tryEnterOpalFireState(c.itzpapaSrc)
+		c.generateNightsoulPoints(points)
 	}, spiritVesselSkullHitmark)
 
 	return action.Info{

@@ -11,7 +11,7 @@ type shd struct {
 }
 
 func (c *char) addShield() {
-	em := c.NonExtraStat(attributes.EM)
+	em := c.Stat(attributes.EM)
 	shieldHP := shieldEM[c.TalentLvlSkill()]*em + shieldFlat[c.TalentLvlSkill()]
 	c.skillShield = &shd{
 		Tmpl: &shield.Tmpl{

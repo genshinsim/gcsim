@@ -13,29 +13,26 @@ import (
 const normalHitNum = 3
 
 var (
-	attackFrames   [][]int
-	attackHitmarks = []int{16, 16, 36}
-	attackRadius   = []float64{0.75, 0.75, 0.75}
+	attackFrames       [][]int
+	attackHitmarks     = []int{16, 16, 36}
+	attackRadius       = 0.8
+	attackHitlagFactor = 0.05
 )
 
-// charlotte frames. CHANGE
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], attackHitmarks[0]) // N1 -> Earliest cancel (jump)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 38) // N1 -> Walk
 	attackFrames[0][action.ActionAttack] = 34
 	attackFrames[0][action.ActionCharge] = 33
-	attackFrames[0][action.ActionWalk] = 38
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], attackHitmarks[1]) // N2 -> Earliest cancel (jump)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 39) // N2 -> Walk
 	attackFrames[1][action.ActionAttack] = 37
 	attackFrames[1][action.ActionCharge] = 37
-	attackFrames[1][action.ActionWalk] = 39
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], attackHitmarks[2]) // N3 -> Earliest cancel (jump)
-	attackFrames[0][action.ActionAttack] = 49
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 52) // N3 -> Walk
+	attackFrames[2][action.ActionAttack] = 49
 	attackFrames[2][action.ActionCharge] = 50
-	attackFrames[1][action.ActionWalk] = 52
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -45,27 +42,29 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  attacks.AttackTagNormal,
-		ICDTag:     attacks.ICDTagNormalAttack,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+		ActorIndex:   c.Index,
+		Abil:         fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:    attacks.AttackTagNormal,
+		ICDTag:       attacks.ICDTagNormalAttack,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeDefault,
+		Element:      attributes.Cryo,
+		Durability:   25,
+		Mult:         attack[c.NormalCounter][c.TalentLvlAttack()],
+		HitlagFactor: attackHitlagFactor,
 	}
 
-	ap := combat.NewCircleHitOnTarget(
+	ap := combat.NewCircleHit(
+		c.Core.Combat.Player(),
 		c.Core.Combat.PrimaryTarget(),
 		nil,
-		attackRadius[c.NormalCounter],
+		attackRadius,
 	)
 
 	c.Core.QueueAttack(
 		ai,
 		ap,
-		attackHitmarks[c.NormalCounter]+travel,
+		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)
 
@@ -74,7 +73,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter] + travel,
+		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
 }
