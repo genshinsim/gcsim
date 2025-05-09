@@ -60,6 +60,7 @@ const (
 	Lyney
 	Mavuika
 	Mika
+	Mizuki
 	Mona
 	Mualani
 	Nahida
@@ -313,6 +314,10 @@ func init() {
 	charNames[Mika] = "mika"
 	charPrettyName[Mika] = "Mika"
 	CharKeyToEle[Mika] = attributes.Cryo
+
+	charNames[Mizuki] = "mizuki"
+	charPrettyName[Mizuki] = "Mizuki"
+	CharKeyToEle[Mizuki] = attributes.Anemo
 
 	charNames[Mona] = "mona"
 	charPrettyName[Mona] = "Mona"
