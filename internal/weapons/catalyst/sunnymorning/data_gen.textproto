@@ -14,38 +14,46 @@ base_stats: {
       initial_value: 57.6
       curve: GROW_CURVE_CRITICAL_301
    }
-   promo_data: {}
    promo_data: {
+      max_level: 20
+   }
+   promo_data: {
+      max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
          value: 31.1
       }
    }
    promo_data: {
+      max_level: 50
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
          value: 62.2
       }
    }
    promo_data: {
+      max_level: 60
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
          value: 93.4
       }
    }
    promo_data: {
+      max_level: 70
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
          value: 124.5
       }
    }
    promo_data: {
+      max_level: 80
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
          value: 155.6
       }
    }
    promo_data: {
+      max_level: 90
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
          value: 186.7
