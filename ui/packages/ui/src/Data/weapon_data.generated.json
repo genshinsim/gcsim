@@ -1344,6 +1344,14 @@
       "image_name": "UI_EquipIcon_Sword_Purewill",
       "name_text_hash_map ": "3016493955"
     },
+    "symphonistofscents": {
+      "id": 13514,
+      "key": "symphonistofscents",
+      "rarity": 5,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Trident",
+      "name_text_hash_map ": "518077587"
+    },
     "talkingstick": {
       "id": 12424,
       "key": "talkingstick",

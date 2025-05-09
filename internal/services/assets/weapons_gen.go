@@ -157,6 +157,7 @@ var weaponMap = map[string]string{
 	"royalspear":                      "UI_EquipIcon_Pole_Theocrat",
 	"staffofthescarletsands":          "UI_EquipIcon_Pole_Deshret",
 	"skywardspine":                    "UI_EquipIcon_Pole_Dvalin",
+	"symphonistofscents":              "UI_EquipIcon_Pole_Trident",
 	"tamayurateinoohanashi":           "UI_EquipIcon_Pole_Aoandon",
 	"vortexvanquisher":                "UI_EquipIcon_Pole_Kunwu",
 	"wavebreakersfin":                 "UI_EquipIcon_Pole_Maria",
