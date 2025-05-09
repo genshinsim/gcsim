@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	nightSoulGenerationIcd = "a1-ns-icd-key"
+	nightSoulGenerationIcd = "citlali-a1-ns-icd"
 )
 
 func (c *char) a1() {
@@ -70,7 +70,7 @@ func (c *char) a4Dmg(abil string) float64 {
 	if c.Base.Ascension < 4 {
 		return 0
 	}
-	em := c.NonExtraStat(attributes.EM)
+	em := c.Stat(attributes.EM)
 	if abil == iceStormAbil {
 		return 12 * em
 	}

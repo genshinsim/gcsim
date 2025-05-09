@@ -12,9 +12,9 @@ import (
 const (
 	itzpapaInterval           = 59
 	obsidianTzitzimitlHitmark = 20
-
-	opalFireStateKey = "opal-fire-state"
-	frostFallAbil    = "Frostfall Storm DMG"
+	particleICDKey            = "citlali-particle-icd"
+	opalFireStateKey          = "opal-fire-state"
+	frostFallAbil             = "Frostfall Storm DMG"
 )
 
 var (
@@ -65,7 +65,7 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 		// summon Itzpapa and immediately check if Opal Fire state can be activated
 		c.nightsoulState.EnterTimedBlessing(c.nightsoulState.Points()+24, 20*60, c.exitNightsoul)
 		c.itzpapaSrc = c.Core.F
-		c.tryEnterOpalFireState(c.itzpapaSrc)
+		c.tryEnterOpalFireState()
 	}, 22)
 
 	// to do now
@@ -96,11 +96,12 @@ func (c *char) exitNightsoul() {
 
 func (c *char) generateNightsoulPoints(amount float64) {
 	c.nightsoulState.GeneratePoints(amount)
-	c.tryEnterOpalFireState(c.itzpapaSrc)
+	c.tryEnterOpalFireState()
 }
 
 // try to activate Opal Fire each time Citlali gains NS points to avoid event subscribtion
-func (c *char) tryEnterOpalFireState(src int) {
+func (c *char) tryEnterOpalFireState() {
+	src := c.itzpapaSrc
 	if !c.nightsoulState.HasBlessing() {
 		return
 	}
@@ -171,5 +172,9 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.1*60, false)
 	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Cryo, c.ParticleDelay)
 }

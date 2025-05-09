@@ -12,6 +12,8 @@ icd_groups:
 action_param_keys:
   attack:
     - param: "travel"
+  charge:
+    - param: "travel"
 skill_data_mapping:
   attack: # Normal Attack: Shadow-Stealing Spirit Vessel
     attack_1:

@@ -47,8 +47,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadius)
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, ap, 0, 0)
-	}, chargeHitmark+travel)
+		c.Core.QueueAttack(ai, ap, 0, travel)
+	}, chargeHitmark)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),

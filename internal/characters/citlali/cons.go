@@ -38,7 +38,7 @@ func (c *char) c1() {
 			return false
 		}
 		if c.numStellarBlades > 0 {
-			em := c.NonExtraStat(attributes.EM)
+			em := c.Stat(attributes.EM)
 			amt := em * 2
 			if c.Core.Flags.LogDebug {
 				c.Core.Log.NewEvent("Citlali C1 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
