@@ -1,6 +1,8 @@
 package athousandfloatingdreams
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -37,7 +39,7 @@ func (w *Weapon) Init() error {
 			diffCount++
 		}
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBase("a-thousand-floating-dreams-party", -1),
+			Base: modifier.NewBase(fmt.Sprintf("a-thousand-floating-dreams-party-%v", w.self.Base.Key.String()), -1),
 			Amount: func() ([]float64, bool) {
 				return w.teamBuff, true
 			},
