@@ -29,11 +29,6 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	// Gain 12% All Elemental DMG Bonus. Obtain Consummation for 20s after using
-	// an Elemental Skill, causing ATK to increase by 3.2% per second. This ATK
-	// increase has a maximum of 6 stacks. When the character equipped with this
-	// weapon is not on the field, Consummation's ATK increase is doubled.
-
 	// ATK is increased by 12%. When the equipping character is off-field, ATK
 	// is increased by an additional 12%. When initiating healing, the equipping
 	// character and healed character(s) will obtain the "Chanson de Baies"
@@ -77,22 +72,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
-		if index >= 0 {
-			otherChar := c.Player.Chars()[index]
-			otherChar.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(buffKey, bufDur),
-				AffectedStat: attributes.ATKP,
-				Amount: func() ([]float64, bool) {
-					return buffOnHeal, true
-				},
-			})
-			return false
-		}
-
-		for _, otherChar := range c.Player.Chars() {
-			if otherChar.Index == char.Index {
-				continue
-			}
+		if index != char.Index {
+			otherChar := c.Player.ByIndex(index)
 			otherChar.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(buffKey, bufDur),
 				AffectedStat: attributes.ATKP,
