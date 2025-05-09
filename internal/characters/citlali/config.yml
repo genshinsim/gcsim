@@ -44,3 +44,12 @@ skill_data_mapping:
       - 0 # Ice Storm DMG|{param0:F1P}
     spiritVessel:
       - 1 # Spiritvessel Skull DMG|{param1:F1P}
+
+documentation:
+  fields_data:
+    - fields: [.citlali.stellar-blade]
+      desc: Number of Stellar Blade (C1) stacks.
+    - fields: [.citlali.opal-fire]
+      desc: Whether Itzpapa is in the Opal Fire state.
+    - fields: [.citlali.c6-stacks]
+      desc: Number of Cifra of the Secret Law (C6) points.
