@@ -57,16 +57,14 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	// to do with delay
 	c.QueueCharTask(func() {
 		c.SetCD(action.ActionSkill, 16*60)
-	}, 18)
 
-	c.QueueCharTask(c.addShield, 37)
-
-	c.QueueCharTask(func() {
 		// summon Itzpapa and immediately check if Opal Fire state can be activated
 		c.nightsoulState.EnterTimedBlessing(c.nightsoulState.Points()+24, 20*60, c.exitNightsoul)
 		c.itzpapaSrc = c.Core.F
 		c.tryEnterOpalFireState()
-	}, 22)
+	}, 18)
+
+	c.QueueCharTask(c.addShield, 37)
 
 	// to do now
 	if c.Base.Cons >= 1 {
