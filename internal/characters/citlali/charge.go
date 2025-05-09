@@ -43,6 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Durability:   25,
 		Mult:         charge[c.TalentLvlAttack()],
 		HitlagFactor: 0.05,
+		IsDeployable: true,
 	}
 
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadius)

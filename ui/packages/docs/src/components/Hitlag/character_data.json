@@ -212,6 +212,33 @@
       }
     ]
   },
+  "citlali": {
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Obsidian-Tzitzimitl",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-Frostfall-Storm",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ]
+  },
   "itto": {
     "normal": [
       {

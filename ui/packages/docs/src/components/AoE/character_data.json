@@ -1959,7 +1959,7 @@
   "citlali": {
     "cons": [
       {
-        "ability": "C4 Spiritvessel Skull",
+        "ability": "C4-Spiritvessel-Skull",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 3.5
@@ -1990,18 +1990,18 @@
         "ability": "CA",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 1.0
+        "radius": 0.8
       }
     ],
     "skill": [
       {
-        "ability": "Obsidian Tzitzimitl",
+        "ability": "E-Obsidian-Tzitzimitl",
         "shape": "Circle",
         "center": "Player",
         "radius": 6
       },
       {
-        "ability": "Frostfall Storm",
+        "ability": "E-Frostfall-Storm",
         "shape": "Circle",
         "center": "Player",
         "radius": 6
@@ -2009,13 +2009,13 @@
     ],
     "burst": [
       {
-        "ability": "Ice Storm",
+        "ability": "Q-Ice-Storm",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 6.5
       },
       {
-        "ability": "Spiritvessel Skull",
+        "ability": "Q-Spiritvessel-Skull",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 3.5

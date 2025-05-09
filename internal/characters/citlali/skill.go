@@ -175,6 +175,6 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 0.1*60, false)
+	c.AddStatus(particleICDKey, 0.3*60, false)
 	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Cryo, c.ParticleDelay)
 }
