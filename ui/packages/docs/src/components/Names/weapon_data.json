@@ -55,7 +55,9 @@
   "bloodtaintedgreatsword": [
     "bloodtainted"
   ],
-  "calamityofeshu": [],
+  "calamityofeshu": [
+    "eshu"
+  ],
   "calamityqueller": [
     "calamity"
   ],
@@ -370,7 +372,9 @@
     "pines",
     "sobp"
   ],
-  "songofstillness": [],
+  "songofstillness": [
+    "stillness"
+  ],
   "splendoroftranquilwaters": [
     "splendoroftranquilwaters",
     "tranquilwaters",
@@ -403,7 +407,8 @@
     "symphonist"
   ],
   "tamayurateinoohanashi": [
-    "tamayuratei"
+    "tamayuratei",
+    "lamppost"
   ],
   "talkingstick": [],
   "thealleyflash": [
