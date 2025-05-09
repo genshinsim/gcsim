@@ -1956,6 +1956,72 @@
       }
     ]
   },
+  "citlali": {
+    "cons": [
+      {
+        "ability": "C4-Spiritvessel-Skull",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5
+      }
+    ],
+    "normals": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Obsidian-Tzitzimitl",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "E-Frostfall-Storm",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Ice-Storm",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6.5
+      },
+      {
+        "ability": "Q-Spiritvessel-Skull",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5
+      }
+    ]
+  },
   "clorinde": {
     "normal": [
       {
