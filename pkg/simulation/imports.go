@@ -138,6 +138,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/skyward"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/solar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/starcallerswatch"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/sunnymorning"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/surfsup"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/thrilling"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/tulaytullahsremembrance"
