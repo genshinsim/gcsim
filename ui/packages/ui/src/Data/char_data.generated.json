@@ -515,6 +515,23 @@
       },
       "name_text_hash_map ": "1705786122"
     },
+    "escoffier": {
+      "id": 10000112,
+      "key": "escoffier",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Escoffier",
+      "skill_details": {
+        "skill": 11122,
+        "burst": 11125,
+        "attack": 11121,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "4035850498"
+    },
     "eula": {
       "id": 10000051,
       "key": "eula",
