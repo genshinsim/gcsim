@@ -52,6 +52,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Durability:   25,
 		Mult:         attack[c.NormalCounter][c.TalentLvlAttack()],
 		HitlagFactor: attackHitlagFactor,
+		IsDeployable: true,
 	}
 
 	ap := combat.NewCircleHit(

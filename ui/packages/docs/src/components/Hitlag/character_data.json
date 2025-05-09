@@ -213,6 +213,29 @@
     ]
   },
   "citlali": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ],
     "charge": [
       {
         "ability": "CA",

@@ -1970,19 +1970,19 @@
         "ability": "N1",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 0.75
+        "radius": 0.8
       },
       {
         "ability": "N2",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 0.75
+        "radius": 0.8
       },
       {
         "ability": "N3",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 0.75
+        "radius": 0.8
       }
     ],
     "charge": [
