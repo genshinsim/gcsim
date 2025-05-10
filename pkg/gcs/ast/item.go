@@ -110,6 +110,7 @@ const (
 	keywordParticleElement   // particle_element
 	keywordHurt              // hurt
 	keywordElement           // element
+	keywordElementDurability // element_durability
 
 	// Keywords specific to gcsim appears after this
 	itemKeys

@@ -44,6 +44,7 @@ var key = map[string]TokenType{
 	"energy":              keywordEnergy,
 	"hurt":                keywordHurt,
 	"element":             keywordElement,
+	"element_durability":  keywordElementDurability,
 	// commands
 	// team keywords
 	// flags

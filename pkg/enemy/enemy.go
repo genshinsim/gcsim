@@ -54,8 +54,8 @@ func New(core *core.Core, p info.EnemyProfile) *Enemy {
 		e.hp = p.HP
 		e.maxhp = p.HP
 	}
-	if p.Element != attributes.NoElement {
-		e.ApplySelfInfusion(p.Element, 100, -1)
+	if p.Element != attributes.NoElement && p.ElementDurability > 0 {
+		e.ApplySelfInfusion(p.Element, p.ElementDurability, -1)
 
 		var mod reactable.Modifier
 		switch p.Element {

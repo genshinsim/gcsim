@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -165,6 +166,17 @@ func parseTarget(p *Parser) (parseFn, error) {
 			if ele, ok := eleKeys[item.Val]; ok {
 				r.Element = ele
 			}
+			r.Modified = true
+		case keywordElementDurability:
+			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err != nil {
+				return nil, err
+			}
+			dur, err := itemNumberToFloat64(item)
+			if err != nil {
+				return nil, err
+			}
+			r.ElementDurability = reactions.Durability(dur)
 			r.Modified = true
 		case itemTerminateLine:
 			p.res.Targets = append(p.res.Targets, r)
