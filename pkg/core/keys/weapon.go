@@ -198,9 +198,11 @@ var weaponNames = []string{
 	"starcallerswatch",
 	"sturdybone",
 	"summitshaper",
+	"sunnymorningsleepin",
 	"surfsup",
 	"swordofdescension",
 	"swordofnarzissenkreuz",
+	"symphonistofscents",
 	"talkingstick",
 	"tamayurateinoohanashi",
 	"thealleyflash",
@@ -408,9 +410,11 @@ const (
 	StarcallersWatch
 	SturdyBone
 	SummitShaper
+	SunnyMorningSleepIn
 	SurfsUp
 	SwordOfDescension
 	SwordOfNarzissenkreuz
+	SymphonistOfScents
 	TalkingStick
 	TamayurateiNoOhanashi
 	TheAlleyFlash

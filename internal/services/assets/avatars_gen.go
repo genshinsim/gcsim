@@ -19,6 +19,7 @@ var avatarMap = map[string]string{
 	"chevreuse":     "UI_AvatarIcon_Chevreuse",
 	"chiori":        "UI_AvatarIcon_Chiori",
 	"chongyun":      "UI_AvatarIcon_Chongyun",
+	"citlali":       "UI_AvatarIcon_Citlali",
 	"clorinde":      "UI_AvatarIcon_Clorinde",
 	"collei":        "UI_AvatarIcon_Collei",
 	"cyno":          "UI_AvatarIcon_Cyno",

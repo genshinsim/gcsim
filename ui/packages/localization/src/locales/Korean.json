@@ -355,6 +355,7 @@
         "return_to_sim": "시뮬레이터로 돌아가기",
         "sample": "샘플",
         "search": "검색하기",
+        "seed_custom": "사용자 지정 시드",
         "seed_sample": "샘플 시드",
         "seed_min": "최소 시드",
         "seed_max": "최대 시드",

@@ -65,3 +65,8 @@ skill_data_mapping:
             - 3 # Motorcycle Normal Attack Bonus|{param3:F2P} ATK per War God Energy Point
         burstCABonus:
             - 4 # Motorcycle Charged Attack Bonus|{param4:F2P} ATK per War God Energy Point
+
+documentation:
+    fields_data:
+        - fields: [.mavuika.fightingspirit]
+          desc: Amount of Fighting Spirit.

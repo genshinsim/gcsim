@@ -3,6 +3,7 @@ import {
   HTMLSelect,
   Intent,
   NonIdealState,
+  NumericInput,
   OptionProps,
   Spinner,
   SpinnerSize,
@@ -102,6 +103,9 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
     case data.statistics?.p75_seed:
       startValue = "q3";
       break;
+    default:
+      startValue = "custom";
+      break;
   }
   const [value, setValue] = useState(startValue);
   const options: OptionProps[] = [
@@ -112,7 +116,13 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
     { label: t<string>("viewer.seed_p", { p: 25 }), value: "q1" },
     { label: t<string>("viewer.seed_p", { p: 50 }), value: "q2" },
     { label: t<string>("viewer.seed_p", { p: 75 }), value: "q3" },
+    { label: t<string>("viewer.seed_custom"), value: "custom" },
   ];
+
+  const parsed = queryString.parse(location.hash);
+  const [customSeed, setCustomSeed] = useState<string>(
+    (parsed.sample as string) ?? Math.floor(Number.MAX_SAFE_INTEGER * Math.random())
+  );
 
   const disabled = () => {
     return running && ["min", "max", "q1", "q2", "q3"].includes(value);
@@ -142,6 +152,8 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
       case "q3":
         seed = data.statistics?.p75_seed ?? seed;
         break;
+      case "custom":
+        seed = "" + customSeed;
     }
 
     const parsed = queryString.parse(location.hash);
@@ -164,6 +176,11 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
         onChange={(e) => setValue(e.currentTarget.value)}
         fill={true}
       />
+      {value == 'custom' ? <NumericInput
+        value={customSeed}
+        onValueChange={(valueAsNumber, valueAsString) => setCustomSeed(valueAsString)}
+        fill={true}
+      /> : <></>}
       <Button
         large={true}
         text={t<string>("viewer.generate")}
