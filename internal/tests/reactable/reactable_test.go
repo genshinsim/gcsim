@@ -37,6 +37,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 				Y: 0,
 				R: 1,
 			},
+			Element: attributes.NoElement,
 		})
 		trgs = append(trgs, e)
 		c.Combat.AddEnemy(e)
