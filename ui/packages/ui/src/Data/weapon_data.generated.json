@@ -1144,6 +1144,14 @@
       "image_name": "UI_EquipIcon_Bow_Old",
       "name_text_hash_map ": "2340970067"
     },
+    "sequenceofsolitude": {
+      "id": 15432,
+      "key": "sequenceofsolitude",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Stinger",
+      "name_text_hash_map ": "2846112523"
+    },
     "serpentspine": {
       "id": 12409,
       "key": "serpentspine",

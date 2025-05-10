@@ -170,6 +170,15 @@
       "notes": "Spawns on the enemy that the weapon proc'd on."
     }
   ],
+  "sequenceofsolitude": [
+    {
+      "ability": "Sequence of Solitude",
+      "shape": "Circle",
+      "center": "GlobalValue",
+      "radius": 3,
+      "notes": "Spawns on the enemy that the weapon proc'd on."
+    }
+  ],
   "skywardatlas": [
     {
       "ability": "Skyward Atlas Enemy Detection",

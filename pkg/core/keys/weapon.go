@@ -176,6 +176,7 @@ var weaponNames = []string{
 	"sapwoodblade",
 	"scionoftheblazingsun",
 	"seasonedhuntersbow",
+	"sequenceofsolitude",
 	"serpentspine",
 	"sharpshootersoath",
 	"silvershowerheartstrings",
@@ -388,6 +389,7 @@ const (
 	SapwoodBlade
 	ScionOfTheBlazingSun
 	SeasonedHuntersBow
+	SequenceOfSolitude
 	SerpentSpine
 	SharpshootersOath
 	SilvershowerHeartstrings
