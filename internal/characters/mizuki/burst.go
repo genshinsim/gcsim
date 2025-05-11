@@ -45,7 +45,6 @@ func init() {
 // Summons forth countless lovely dreams and nightmares that pull in nearby objects and opponents,
 // dealing AoE Anemo DMG and summoning a Mini Baku.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-
 	// Activation dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -83,7 +82,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) queueSnacks() {
-
 	randomSign := func() float64 {
 		rnd := c.Core.Rand.Float64()
 		if 0.5 < rnd {
@@ -111,7 +109,6 @@ func (c *char) queueSnacks() {
 }
 
 func (c *char) calculateSnackSpawnLocation() geometry.Point {
-
 	// According to testing, snacks appear within a small range (1m) in front of the target/player.
 	// However since the enemy direction is not set by default towards the player, we calculate
 	// a position relative to the player/enemy
@@ -125,7 +122,6 @@ func (c *char) calculateSnackSpawnLocation() geometry.Point {
 
 	// if enemy is found use this, otherwise use the player position
 	if target != nil {
-
 		targetShape := target.Shape()
 		finalPosition = targetShape.Pos()
 		direction := geometry.Point{

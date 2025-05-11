@@ -62,7 +62,6 @@ func init() {
 //
 //     Dreamdrifter will end when Mizuki leaves the field or uses her Elemental Skill again.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-
 	// if used while in dreamDrifter state, cancel the state.
 	if c.StatusIsActive(dreamDrifterStateKey) {
 		c.cancelDreamDrifterState()
@@ -170,7 +169,6 @@ func (c *char) skillInit() {
 }
 
 func (c *char) startCloudAttacks() {
-
 	// clouds DMG snapshots on activation
 	cloudAttack := combat.AttackInfo{
 		ActorIndex: c.Index,

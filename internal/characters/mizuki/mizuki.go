@@ -47,7 +47,6 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
-
 	if !c.StatusIsActive(dreamDrifterStateKey) {
 		return c.Character.ActionReady(a, p)
 	}
