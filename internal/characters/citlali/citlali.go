@@ -17,7 +17,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	nightsoulState   *nightsoul.State
-	itzpapaSrc       int
+	opalFireSrc      int
 	skillShield      *shd
 	numStellarBlades int
 	numC6Stacks      float64
@@ -38,7 +38,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.nightsoulState = nightsoul.New(s, w)
 	c.nightsoulState.MaxPoints = 100
 
-	c.itzpapaSrc = -1
+	c.opalFireSrc = -1
 	c.numC6Stacks = 0
 
 	return nil
