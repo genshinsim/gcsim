@@ -89,7 +89,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	switch a {
 	case action.ActionBurst:
-		if c.fightingSpirit < 100 {
+		if !c.Core.Flags.IgnoreBurstEnergy && c.fightingSpirit < 100 {
 			return false, action.InsufficientEnergy
 		}
 		return c.Character.ActionReady(a, p)
