@@ -2,6 +2,7 @@ package citlali
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -60,8 +61,14 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 
 		// summon Itzpapa and immediately check if Opal Fire state can be activated
 		c.nightsoulState.EnterTimedBlessing(c.nightsoulState.Points()+24, 20*60, c.exitNightsoul)
-		c.itzpapaSrc = c.Core.F
 		c.tryEnterOpalFireState()
+
+		// apply cryo
+		player, ok := c.Core.Combat.Player().(*avatar.Player)
+		if !ok {
+			panic("target 0 should be Player but is not!!")
+		}
+		player.ApplySelfInfusion(attributes.Cryo, 25, 0.1*60)
 	}, 18)
 
 	c.QueueCharTask(c.addShield, 37)
@@ -88,6 +95,7 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 func (c *char) exitNightsoul() {
 	c.numC6Stacks = 0
 	c.numStellarBlades = 0
+	c.opalFireSrc = -1
 	c.DeleteStatus(opalFireStateKey)
 	c.nightsoulState.ExitBlessing()
 }
@@ -99,7 +107,7 @@ func (c *char) generateNightsoulPoints(amount float64) {
 
 // try to activate Opal Fire each time Citlali gains NS points to avoid event subscribtion
 func (c *char) tryEnterOpalFireState() {
-	src := c.itzpapaSrc
+	src := c.opalFireSrc
 	if !c.nightsoulState.HasBlessing() {
 		return
 	}
@@ -118,7 +126,7 @@ func (c *char) tryEnterOpalFireState() {
 func (c *char) nightsoulPointReduceTask(src int) {
 	const tickInterval = .1
 	c.QueueCharTask(func() {
-		if c.itzpapaSrc != src {
+		if c.opalFireSrc != src {
 			return
 		}
 		if !c.StatusIsActive(opalFireStateKey) {
@@ -131,6 +139,7 @@ func (c *char) nightsoulPointReduceTask(src int) {
 			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+0.8)
 		}
 		if c.nightsoulState.Points() < 0.001 && c.Base.Cons < 6 {
+			c.opalFireSrc = -1
 			c.DeleteStatus(opalFireStateKey)
 			return
 		}
@@ -141,7 +150,7 @@ func (c *char) nightsoulPointReduceTask(src int) {
 
 func (c *char) itzpapaHitTask(src int) {
 	c.QueueCharTask(func() {
-		if src != c.itzpapaSrc {
+		if src != c.opalFireSrc {
 			return
 		}
 		if !c.StatusIsActive(opalFireStateKey) {
