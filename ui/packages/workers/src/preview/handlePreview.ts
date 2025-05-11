@@ -1,27 +1,27 @@
-import { IRequest } from "itty-router";
+import {IRequest} from 'itty-router';
 
 export async function handlePreview(
   request: IRequest,
-  event: FetchEvent
+  event: FetchEvent,
 ): Promise<Response> {
   //get last bit of url and change if valid uuid
-  const pn = new URL(request.url).pathname
-  const segments = pn.split("/");
+  const pn = new URL(request.url).pathname;
+  const segments = pn.split('/');
   let last = segments.pop() || segments.pop(); // Handle potential trailing slash
   console.log(last);
   //if this ends in db/{key}, we need to stick in the db in front
-  if (pn.includes("/db/")) {
-    last = "db/" + last
+  if (pn.includes('/db/')) {
+    last = 'db/' + last;
   }
 
   if (last === undefined) {
     return new Response(null, {
       status: 400,
-      statusText: "Bad Request",
+      statusText: 'Bad Request',
     });
   }
   //strip .png
-  last = last.replace(".png", "");
+  last = last.replace('.png', '');
 
   const cacheUrl = new URL(request.url);
   const cacheKey = new Request(cacheUrl.toString(), request);
@@ -31,21 +31,24 @@ export async function handlePreview(
 
   if (!response) {
     console.log(
-      `Response for request url: ${request.url} not present in cache. Fetching and caching request.`
+      `Response for request url: ${request.url} not present in cache. Fetching and caching request.`,
     );
 
     const resp = await fetch(
-      new Request(API_ENDPOINT + "/api/preview/" + last),
+      new Request(API_ENDPOINT + '/api/preview/' + last),
       {
         cf: {
           cacheTtl: 60 * 24 * 60 * 60,
           cacheEverything: true,
         },
-      }
+      },
     );
 
     response = new Response(resp.body, resp);
-    if (resp.headers.get('Cache-Control') !== 'no-cache') {
+    if (
+      resp.status === 200 &&
+      resp.headers.get('Cache-Control') !== 'no-cache'
+    ) {
       response.headers.set('Cache-Control', 'max-age=5184000');
       event.waitUntil(cache.put(cacheKey, response.clone()));
     }
