@@ -107,7 +107,6 @@ func (c *char) generateNightsoulPoints(amount float64) {
 
 // try to activate Opal Fire each time Citlali gains NS points to avoid event subscribtion
 func (c *char) tryEnterOpalFireState() {
-	src := c.opalFireSrc
 	if !c.nightsoulState.HasBlessing() {
 		return
 	}
@@ -119,8 +118,9 @@ func (c *char) tryEnterOpalFireState() {
 		return
 	}
 	c.AddStatus(opalFireStateKey, -1, false)
-	c.itzpapaHitTask(src)
-	c.nightsoulPointReduceTask(src)
+	c.opalFireSrc = c.Core.F
+	c.itzpapaHitTask(c.opalFireSrc)
+	c.nightsoulPointReduceTask(c.opalFireSrc)
 }
 
 func (c *char) nightsoulPointReduceTask(src int) {
