@@ -6,19 +6,17 @@ import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import "@blueprintjs/select/lib/css/blueprint-select.css";
 import "@gcsim/components/src/index.css";
+import "./i18n";
 import "./index.css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-
-import { i18n } from "@gcsim/utils";
-import { I18nextProvider } from "react-i18next";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <I18nextProvider i18n={i18n}><App /></I18nextProvider>
+    <App />
   </React.StrictMode>
 );
