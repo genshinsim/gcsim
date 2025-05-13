@@ -134,9 +134,11 @@ func (c *char) nightsoulPointReduceTask(src int) {
 		}
 
 		// reduce 0.8 point every 6f, which is 8 per second
+		prev := c.nightsoulState.Points()
 		c.nightsoulState.ConsumePoints(0.8)
 		if c.Base.Cons >= 6 {
-			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+0.8)
+			diff := prev - c.nightsoulState.Points()
+			c.numC6Stacks = min(maxC6Stacks, c.numC6Stacks+diff)
 		}
 		if c.nightsoulState.Points() < 0.001 && c.Base.Cons < 6 {
 			c.opalFireSrc = -1
