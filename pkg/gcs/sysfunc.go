@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
@@ -33,11 +34,15 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("set_target_pos", e.setTargetPos, env)
 	e.addSysFunc("set_player_pos", e.setPlayerPos, env)
 	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
-	e.addSysFunc("set_swap_icd", e.setSwapICD, env)
-	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 	e.addSysFunc("kill_target", e.killTarget, env)
 	e.addSysFunc("is_target_dead", e.isTargetDead, env)
 	e.addSysFunc("pick_up_crystallize", e.pickUpCrystallize, env)
+
+	// Timer manipulation
+	e.addSysFunc("set_swap_icd", e.setSwapICD, env)
+	e.addSysFunc("reduce_swap_cd", e.reduceSwapCD, env)
+	e.addSysFunc("reduce_crystallize_gcd", e.reduceCrystallizeGCD, env)
+	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 
 	// math
 	e.addSysFunc("sin", e.sin, env)
@@ -300,10 +305,11 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 // Set SwapICD to any integer, to simulate booking. May be any non-negative integer.
+// Replicates booking after every swap that occurs after this function call.
 func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
 	// setSwapCD
 
-	// set_player_pos(x, y)
+	// set_swap_ICD(delay)
 	if len(c.Args) != 1 {
 		return nil, fmt.Errorf("invalid number of params for set_swap_icd, expected 1 got %v", len(c.Args))
 	}
@@ -314,7 +320,7 @@ func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	n, ok := t.(*number)
 	if !ok {
-		return nil, fmt.Errorf("set_swap_icd argument x coord should evaluate to a number, got %v", t.Inspect())
+		return nil, fmt.Errorf("set_swap_icd argument delay should evaluate to a number, got %v", t.Inspect())
 	}
 	// n should be int
 	x := int(n.ival)
@@ -327,6 +333,192 @@ func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Player.SetSwapICD(x)
+	return &null{}, nil
+}
+
+// Reduce Swap CD by any integer, to simulate booking. May be any non-negative integer.
+// Functions as a single instance of booking.
+// Only reduces the currently-ongoing swap cd.
+// Param 1: frames to reduce CD by, integer
+// Optional Param 2: frame delay to pass before reducing CD (in case a swap occurs in the middle of an action. Currently impossible, but a chiori-like ability may occur in the future.), integer. Default 0.
+// Optional Param 3: Whether to have delay be affected by hitlag. Default 0.
+func (e *Eval) reduceSwapCD(c *ast.CallExpr, env *Env) (Obj, error) {
+	// setSwapCD
+
+	// reduce_swap_cd(frames, [delay, [hitlag]])
+	if len(c.Args) < 1 || len(c.Args) > 3 {
+		return nil, fmt.Errorf("invalid number of params for reduce_swap_cd, expected 1 to 3, got %v. Usage: reduce_swap_cd(frames int[, delay int[, hitlag int]])", len(c.Args))
+	}
+
+	// Required argument 1: Frames to reduce CD by.
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	n, ok := t.(*number)
+	if !ok {
+		return nil, fmt.Errorf("reduce_swap_cd argument f should evaluate to a number, got %v", t.Inspect())
+	}
+	// n should be int
+	f := int(n.ival)
+	if n.isFloat {
+		f = int(n.fval)
+	}
+
+	if f < 0 {
+		return nil, fmt.Errorf("invald value for reduce swap cd arg 1: frames, expected non-negative integer, got %v", f)
+	}
+
+	delay := 0
+	// Optional Argument 2: Delay to wait before booking.
+	if len(c.Args) > 1 {
+		t, err = e.evalExpr(c.Args[1], env)
+		if err != nil {
+			return nil, err
+		}
+		n, ok := t.(*number)
+		if !ok {
+			return nil, fmt.Errorf("set_swap_icd argument delay should evaluate to a number, got %v", t.Inspect())
+		}
+		// n should be int
+		delay = int(n.ival)
+		if n.isFloat {
+			delay = int(n.fval)
+		}
+
+		if delay < 0 {
+			return nil, fmt.Errorf("invald value for reduce swap cd arg 2: delay, expected non-negative integer, got %v", f)
+		}
+	}
+
+	hitlag := 0
+	// Optional Argument 3: Whether to extend delay when hitlag occurs. Any non-0 number, including negative, will count as true.
+	if len(c.Args) > 2 {
+		t, err = e.evalExpr(c.Args[2], env)
+		if err != nil {
+			return nil, err
+		}
+		n, ok := t.(*number)
+		if !ok {
+			return nil, fmt.Errorf("set_swap_icd argument hitlag should evaluate to a number, got %v", t.Inspect())
+		}
+		// n should be int
+		hitlag = int(n.ival)
+		if n.isFloat {
+			hitlag = int(n.fval)
+		}
+	}
+
+	fn := func() {
+		e.Core.Player.ReduceSwapCD(f)
+	}
+	// I could check for delay == 0 and not go through the Queue Task, but this simplifies code and performance shouldn't be too badly affected,
+	// Since QueuCharTask checks for delay == 0 itself.
+	queueTask := e.Core.Tasks.Add
+	if hitlag != 0 {
+		// Use active character queue.
+		// If a character would swap, then the user would only have to delay the booking until after the current character swaps,
+		// So we don't care about hitlag on the next char anyway
+		queueTask = e.Core.Player.ActiveChar().QueueCharTask
+	}
+
+	queueTask(fn, delay)
+
+	return &null{}, nil
+}
+
+// Reduce Crystallize GCD by any integer, to simulate booking. May be any non-negative integer.
+// Functions as a single instance of booking. All enemies are affected. For now, gadgets are not affected.
+// Only reduces the currently-ongoing Crystallize GCD.
+// Param 1: frames to reduce CD by, integer
+// Optional Param 2: frame delay to pass before reducing CD (in case a Crystallize occurs in the middle of an action, integer. Default 0.
+// Optional Param 3: Whether to have delay be affected by hitlag, integer. Default 0.
+func (e *Eval) reduceCrystallizeGCD(c *ast.CallExpr, env *Env) (Obj, error) {
+	// setSwapCD
+
+	// reduce_crystallize_gcd(frames, [delay, [hitlag]])
+	if len(c.Args) < 1 || len(c.Args) > 3 {
+		return nil, fmt.Errorf("invalid number of params for reduce_crystallize_gcd, expected 1 to 3, got %v. Usage: reduce_crystallize_gcd(frames int[, delay int[, hitlag int]])", len(c.Args))
+	}
+
+	// Required argument 1: Frames to reduce CD by.
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	n, ok := t.(*number)
+	if !ok {
+		return nil, fmt.Errorf("reduce_crystallize_gcd argument f should evaluate to a number, got %v", t.Inspect())
+	}
+	// n should be int
+	f := int(n.ival)
+	if n.isFloat {
+		f = int(n.fval)
+	}
+
+	if f < 0 {
+		return nil, fmt.Errorf("invald value for reduce reduce_crystallize_gcd arg 1: frames, expected non-negative integer, got %v", f)
+	}
+
+	delay := 0
+	// Optional Argument 2: Delay to wait before booking.
+	if len(c.Args) > 1 {
+		t, err = e.evalExpr(c.Args[1], env)
+		if err != nil {
+			return nil, err
+		}
+		n, ok := t.(*number)
+		if !ok {
+			return nil, fmt.Errorf("reduce_crystallize_gcd argument delay should evaluate to a number, got %v", t.Inspect())
+		}
+		// n should be int
+		delay = int(n.ival)
+		if n.isFloat {
+			delay = int(n.fval)
+		}
+
+		if delay < 0 {
+			return nil, fmt.Errorf("invald value for reduce_crystallize_gcd arg 2: delay, expected non-negative integer, got %v", f)
+		}
+	}
+
+	hitlag := 0
+	// Optional Argument 3: Whether to extend delay when hitlag occurs. Any non-0 number, including negative, will count as true.
+	if len(c.Args) > 2 {
+		t, err = e.evalExpr(c.Args[2], env)
+		if err != nil {
+			return nil, err
+		}
+		n, ok := t.(*number)
+		if !ok {
+			return nil, fmt.Errorf("reduce_crystallize_gcd argument hitlag should evaluate to a number, got %v", t.Inspect())
+		}
+		// n should be int
+		hitlag = int(n.ival)
+		if n.isFloat {
+			hitlag = int(n.fval)
+		}
+	}
+
+	fn := func() {
+		enemies := e.Core.Combat.Enemies()
+
+		for _, v := range enemies {
+			v.(*enemy.Enemy).Reactable.ReduceCrystallizeGCD(f)
+		}
+	}
+	// I could check for delay == 0 and not go through the Queue Task, but this simplifies code and performance shouldn't be too badly affected,
+	// Since QueuCharTask checks for delay == 0 itself.
+	queueTask := e.Core.Tasks.Add
+	if hitlag != 0 {
+		// Use active character queue.
+		// If a character would swap, then the action in progress would be over anyway.
+		// We only care about enabling booking within one action at a time, not delayed for multiple actions.
+		queueTask = e.Core.Player.ActiveChar().QueueCharTask
+	}
+
+	queueTask(fn, delay)
+
 	return &null{}, nil
 }
 

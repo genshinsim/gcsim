@@ -17,6 +17,7 @@ const (
 	InsufficientStamina
 	CharacterDeceased // TODO: need chars to die first
 	DashCD
+	TimeManip
 )
 
 var failureString = [...]string{
@@ -28,6 +29,7 @@ var failureString = [...]string{
 	"insufficient_stamina",
 	"character_deceased",
 	"dash_cd",
+	"time_manip",
 }
 
 func (e Failure) String() string {

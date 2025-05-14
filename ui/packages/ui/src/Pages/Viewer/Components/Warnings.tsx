@@ -19,7 +19,8 @@ export default (props: WarningProps) => {
     <StaminaWarning key="stamina" {...props} />,
     <SwapWarning key="swap" {...props} />,
     <DashWarning key="dash" {...props} />,
-    <IgnoreBurstEnergyMode key="ignore_burst_energy" {...props} />
+    <IgnoreBurstEnergyMode key="ignore_burst_energy" {...props} />,
+    <TimeManipWarning key="time_manip" {...props} />
   ];
 
   return (
@@ -221,6 +222,27 @@ const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {
       <p>
         {t<string>("warnings.ignore_burst_energy_body")}
       </p>
+    </DismissibleCallout>
+  );
+};
+
+const TimeManipWarning = ({data}: WarningProps) => {
+  const {t} = useTranslation();
+  const [show, setShow] = useState(true);
+  const visible = show && (data?.statistics?.warnings?.time_manip ?? false);
+
+  return (
+    <DismissibleCallout
+      title={t<string>("warnings.time_manip_title")}
+      intent={Intent.WARNING}
+      show={visible}
+      onDismiss={() => setShow(false)}>
+      <p>{t<string>("warnings.time_manip_body")}</p>
+      <FailedActionDetails
+        title={t<string>("warnings.time_manip_data_header")}
+        data={data}
+        stat={(fa) => fa.time_manip}
+      />
     </DismissibleCallout>
   );
 };

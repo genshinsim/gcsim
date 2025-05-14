@@ -258,9 +258,12 @@ set_swap_icd(arg1);
 - This function replicates behavior not found in typical gameplay. 
 - By default, characters in Genshin cannot swap more than once per second. However, by 'booking' (opening the Adventurer's Handbook mid-combat), the swap timer can continue while other in-game timers (such as the Spiral Abyss timer) remain paused.
 - If you use this function, the resulting dps will not represent damage per real time, but will instead represent damage per in-game time.
+- Changing the swap icd will not affect the cooldown for any swap delays in progress; only future swaps will use the new icd.
+- As this is one of the "Booking" functions, a Time Manipulation warning will be displayed on the results if used.
 :::
 
 - `set_swap_icd` will set the default swap ICD for all characters equal to the number of frames in `arg1`.
+- This function will cause a `cooldown` log to appear in the sample.
 - If `arg1` evaluates to a number that is less than 0, an error will be returned.
 - `set_swap_icd` will always evaluate to 0.
 
@@ -270,11 +273,93 @@ set_swap_icd(arg1);
 
 :::info 
 Example:
-
+Reduce swap ICD to 0, allowing future swaps to be able to occur as frequently as `swap_delay` allows.
 ```
 set_swap_icd(0);
 ```
 
+:::
+
+## reduce_swap_cd
+
+```
+reduce_swap_cd(arg1, [optional arg2 delay, optional arg3 hitlag_delay]);
+```
+:::caution
+- This function replicates behavior not found in typical gameplay. 
+- By default, characters in Genshin cannot swap more than once per second. However, by 'booking' (opening the Adventurer's Handbook mid-combat), the swap timer can continue while other in-game timers (such as the Spiral Abyss timer) remain paused.
+- If you use this function, the resulting dps will not represent damage per real time, but will instead represent damage per in-game time.
+- Reducing the swap cd will not affect the cooldown for any future swaps; only the current swap cd will be affected.
+- As this is one of the "Booking" functions, a Time Manipulation warning will be displayed on the results if used.
+:::
+
+- `reduce_swap_cd` will reduce the current swap cd by the number of frames in `arg1`. If the cd would be reduced to less than 0, it is capped at 0 instead.
+- This function will cause a `cooldown` log to appear in the sample.
+- If `arg1` evaluates to a number that is less than 0, an error will be returned.
+- `arg2` will cause the execution of this function to be delayed by `delay` frames. If `arg3` is set, this delay will be further extended by hitlag. This function is non-blocking and will not cause a delay within the config. 
+- `reduce_swap_cd` will always evaluate to 0.
+
+:::danger 
+- `arg1` must be a non-negative number or an expression that evaluates to a non-negative number. 
+- `arg2` May be excluded, or must be a non-negative number or an expression that evaluates to a non-negative number.
+- `arg3` May be excluded, or must be a non-negative number or an expression that evaluates to a non-negative number. `arg3` may not be included if `arg2` is excluded.
+:::
+
+:::info 
+Example:
+- Reduce swap cd by 40 frames, allowing the next swap to occur after as few as 20 frames pass.
+```
+reduce_swap_cd(40);
+```
+- Reduce swap cd by 40 frames, to be executed after 10 frames have elapsed. If a swap occurs between the calling of this function and the swap cd reduction, then the swap cd reduction will apply on this most recent swap.
+```
+set_swap_cd(40, 10);
+```
+- Reduce swap cd by 40 frames, to be executed after 10 frames have elapsed. If hitlag occurs between the calling of this function and the end of the 10f delay, then the reduction of the swap cd will be further delayed by the hitlag.
+```
+set_swap_cd(40, 10, 1);
+```
+:::
+
+## reduce_crystallize_gcd
+
+```
+reduce_crystallize_gcd(arg1, [optional arg2 delay, optional arg3 hitlag_delay]);
+```
+:::caution
+- This function replicates behavior not found in typical gameplay. 
+- By default, characters in Genshin cannot crystallize any given enemy more than once per second. However, by 'booking' (opening the Adventurer's Handbook mid-combat), the gcd timer can continue while other in-game timers (such as the Spiral Abyss timer) remain paused.
+- If you use this function, the resulting dps will not represent damage per real time, but will instead represent damage per in-game time.
+- As this is one of the "Booking" functions, a Time Manipulation warning will be displayed on the results if used. 
+:::
+
+- `reduce_crystallize_gcd` will reduce the current swap cd by the number of frames in `arg1`. If the cd would be reduced to less than 0, it is capped at 0 instead.
+- All enemies will have their crystallize gcd reduced when this function is called.
+- This function will cause a `cooldown` log to appear in the sample.
+- If `arg1` evaluates to a number that is less than 0, an error will be returned.
+- `arg2` will cause the internal execution of this function to be delayed by `delay` frames. If `arg3` is set, this delay will be further extended by hitlag. This function will not cause a delay within the config. 
+- `reduce_crystallize_gcd` will always evaluate to 0.
+
+:::danger 
+`arg1` must be a non-negative number or an expression that evaluates to a non-negative number. 
+`arg2` May be excluded, or must be a non-negative number or an expression that evaluates to a non-negative number.
+`arg3` May be excluded, or must be a non-negative number or an expression that evaluates to a non-negative number. `arg3` may not be included if `arg2` is excluded.
+:::
+
+:::info 
+Example:
+- Reduce crystallize gcd by 40 frames, allowing the next crystallize to occur after as few as 20 frames pass.
+```
+reduce_crystallize_gcd(40);
+```
+- Reduce crystallize gcd by 40 frames, to be executed after 10 frames have elapsed. If a crystallize occurs between the calling of this function and the crystallze gcd reduction, then the crystallize gcd reduction will apply on this most recent crystallize.
+```
+reduce_crystallize_gcd(40, 10);
+```
+- Reduce crystallize gcd by 40 frames, to be executed after 10 frames have elapsed. If hitlag occurs between the calling of this function and the end of the 10f delay, then the reduction of the crystallize gcd will be further delayed by the hitlag.
+```
+reduce_crystallize_gcd(40, 10, 1);
+```
 :::
 
 ## set_default_target

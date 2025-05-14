@@ -213,6 +213,7 @@ export interface Warnings {
   skill_cd?: boolean | undefined;
   dash_cd?: boolean | undefined;
   burst_cd?: boolean | undefined;
+  time_manip?: boolean | undefined;
 }
 
 export interface FailedActions {
@@ -222,6 +223,7 @@ export interface FailedActions {
   skill_cd?: DescriptiveStats | undefined;
   dash_cd?: DescriptiveStats | undefined;
   burst_cd?: DescriptiveStats | undefined;
+  time_manip?: DescriptiveStats | undefined;
 }
 
 export interface ShieldInfo {
@@ -3087,6 +3089,7 @@ function createBaseWarnings(): Warnings {
     skill_cd: false,
     dash_cd: false,
     burst_cd: false,
+    time_manip: false,
   };
 }
 
@@ -3112,6 +3115,9 @@ export const Warnings = {
     }
     if (message.burst_cd !== undefined && message.burst_cd !== false) {
       writer.uint32(56).bool(message.burst_cd);
+    }
+    if (message.time_manip !== undefined && message.time_manip !== false) {
+      writer.uint32(64).bool(message.time_manip);
     }
     return writer;
   },
@@ -3172,6 +3178,13 @@ export const Warnings = {
 
           message.burst_cd = reader.bool();
           continue;
+        case 8:
+          if (tag !== 64) {
+            break;
+          }
+
+          message.time_manip = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3192,6 +3205,7 @@ export const Warnings = {
       skill_cd: isSet(object.skill_cd) ? globalThis.Boolean(object.skill_cd) : false,
       dash_cd: isSet(object.dash_cd) ? globalThis.Boolean(object.dash_cd) : false,
       burst_cd: isSet(object.burst_cd) ? globalThis.Boolean(object.burst_cd) : false,
+      time_manip: isSet(object.time_manip) ? globalThis.Boolean(object.time_manip) : false,
     };
   },
 
@@ -3218,6 +3232,9 @@ export const Warnings = {
     if (message.burst_cd !== undefined && message.burst_cd !== false) {
       obj.burst_cd = message.burst_cd;
     }
+    if (message.time_manip !== undefined && message.time_manip !== false) {
+      obj.time_manip = message.time_manip;
+    }
     return obj;
   },
 
@@ -3233,6 +3250,7 @@ export const Warnings = {
     message.skill_cd = object.skill_cd ?? false;
     message.dash_cd = object.dash_cd ?? false;
     message.burst_cd = object.burst_cd ?? false;
+    message.time_manip = object.time_manip ?? false;
     return message;
   },
 };
@@ -3245,6 +3263,7 @@ function createBaseFailedActions(): FailedActions {
     skill_cd: undefined,
     dash_cd: undefined,
     burst_cd: undefined,
+    time_manip: undefined,
   };
 }
 
@@ -3267,6 +3286,9 @@ export const FailedActions = {
     }
     if (message.burst_cd !== undefined) {
       DescriptiveStats.encode(message.burst_cd, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.time_manip !== undefined) {
+      DescriptiveStats.encode(message.time_manip, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -3320,6 +3342,13 @@ export const FailedActions = {
 
           message.burst_cd = DescriptiveStats.decode(reader, reader.uint32());
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.time_manip = DescriptiveStats.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3341,6 +3370,7 @@ export const FailedActions = {
       skill_cd: isSet(object.skill_cd) ? DescriptiveStats.fromJSON(object.skill_cd) : undefined,
       dash_cd: isSet(object.dash_cd) ? DescriptiveStats.fromJSON(object.dash_cd) : undefined,
       burst_cd: isSet(object.burst_cd) ? DescriptiveStats.fromJSON(object.burst_cd) : undefined,
+      time_manip: isSet(object.time_manip) ? DescriptiveStats.fromJSON(object.time_manip) : undefined,
     };
   },
 
@@ -3363,6 +3393,9 @@ export const FailedActions = {
     }
     if (message.burst_cd !== undefined) {
       obj.burst_cd = DescriptiveStats.toJSON(message.burst_cd);
+    }
+    if (message.time_manip !== undefined) {
+      obj.time_manip = DescriptiveStats.toJSON(message.time_manip);
     }
     return obj;
   },
@@ -3389,6 +3422,9 @@ export const FailedActions = {
       : undefined;
     message.burst_cd = (object.burst_cd !== undefined && object.burst_cd !== null)
       ? DescriptiveStats.fromPartial(object.burst_cd)
+      : undefined;
+    message.time_manip = (object.time_manip !== undefined && object.time_manip !== null)
+      ? DescriptiveStats.fromPartial(object.time_manip)
       : undefined;
     return message;
   },
