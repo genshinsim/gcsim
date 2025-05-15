@@ -90,11 +90,15 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		ai.Element = attributes.Hydro
 		// add namisen stack
 		flatdmg := c.MaxHP() * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
-		ai.FlatDmg += flatdmg
-		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index).
-			Write("damage_added", flatdmg).
-			Write("stacks", c.stacks).
-			Write("expiry", c.StatusExpiry(skillBuffKey))
+		// namisen doesn't affect c6
+		if ai.Abil != c6Abil {
+			ai.FlatDmg += flatdmg
+			c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index).
+				Write("damage_added", flatdmg).
+				Write("stacks", c.stacks).
+				Write("expiry", c.StatusExpiry(skillBuffKey))
+		}
+
 	}
 	return ds
 }
