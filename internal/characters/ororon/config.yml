@@ -10,6 +10,10 @@ action_param_keys:
     - param: "weakspot"
   skill:
     - param: "travel"
+  jump:
+    - param: "hold"
+  high_plunge:
+    - param: "fall"
 skill_data_mapping:
   attack:
     aim:

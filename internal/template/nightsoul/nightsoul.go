@@ -113,12 +113,14 @@ func (s *State) EnterBlessing(amount float64) {
 	s.EnterTimedBlessing(amount, -1, nil)
 }
 
+// Only exits regular NS blessing, not special transmission blessing.
 func (s *State) ExitBlessing() {
 	s.ExitStateF = -1
 	s.char.DeleteStatus(NightsoulBlessingStatus)
 	s.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, s.char.Index)
 }
 
+// Returns true if either normal or transmission blessing is active.
 func (s *State) HasBlessing() bool {
 	return s.char.StatusIsActive(NightsoulBlessingStatus)
 }

@@ -97,9 +97,8 @@ func (c *char) a1NightSoulAttack(atk *combat.AttackEvent) {
 		return
 	}
 	c.AddStatus(a1DamageIcdKey, 1.8*60, true)
-	if !c.nightsoulState.HasBlessing() {
-		c.a1EnterBlessing()
-	}
+	c.a1EnterBlessing()
+
 	c.nightsoulState.ConsumePoints(10)
 	c.hypersense(1.6, a1Abil, atk.Pattern.Shape.Pos())
 }
@@ -137,9 +136,25 @@ func (c *char) hypersense(mult float64, abil string, initialTargetPos geometry.P
 	c.c6onHypersense()
 }
 
+// When Ororon has the jump blessing, do nothing. Blessing will exit when jump is done.
+func (c *char) a1ExitBlessing() {
+	c.inA1Blessing = false
+	if !c.inTransmissionBlessing {
+		c.nightsoulState.ExitBlessing()
+	}
+}
+
 func (c *char) a1EnterBlessing() {
 	c.nightsoulState.EnterBlessing(c.nightsoulState.Points())
-	c.QueueCharTask(c.nightsoulState.ExitBlessing, 6*60)
+	c.inA1Blessing = true
+	c.a1Src = c.Core.F
+	src := c.a1Src
+	c.QueueCharTask(func() {
+		if src != c.a1Src {
+			return
+		}
+		c.a1ExitBlessing()
+	}, 6*60)
 }
 
 func (c *char) a1OnSkill() {
