@@ -2,13 +2,13 @@ package finaleofthedeepgalleries
 
 import (
 	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -89,13 +89,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			s.procNormalExpireF = c.F + procDurNormal
-			s.procBurstExpireF = c.F + procDurBurst
-
-			c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, char.Index).
-				Write("normal_buff_stop_expiry", s.procNormalExpireF).
-				Write("burst_buff_stop_expiry", s.procBurstExpireF)
-
+			if atk.Info.AttackTag == attacks.AttackTagNormal {
+				s.procBurstExpireF = c.F + procDurBurst
+				c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, char.Index).
+					Write("burst_buff_stop_expiry", s.procBurstExpireF)
+			} else {
+				s.procNormalExpireF = c.F + procDurNormal
+				c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, char.Index).
+					Write("normal_buff_stop_expiry", s.procNormalExpireF)
+			}
 			return false
 		}, fmt.Sprintf("deep-galleries-4pc-%v", char.Base.Key.String()))
 	}
