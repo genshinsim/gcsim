@@ -97,9 +97,6 @@ func (c *char) a4Init() {
 		if c.Index != index {
 			return false
 		}
-		c.Core.Log.NewEvent("hp debt changed", glog.LogCharacterEvent, c.Index).
-			Write("amt", amount).
-			Write("current_debt", c.CurrentHPDebt())
 		c.a4(amount)
 		c.prevHpDebt = c.CurrentHPDebtRatio()
 		return false

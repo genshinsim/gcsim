@@ -19,6 +19,7 @@ type char struct {
 	*tmpl.Character
 
 	normalSCounter int
+	prevHpDebt     float64
 	a1stacks       *stacks.MultipleRefreshNoRemove
 	a1BuffPercent  float64
 	a1Cap          float64

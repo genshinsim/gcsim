@@ -86,5 +86,5 @@ func (c *char) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
 	if hi.Caller == c.Index {
 		return c.Character.ReceiveHeal(hi, healAmt)
 	}
-	return c.GetReceivedHeal(healAmt)
+	return 0
 }

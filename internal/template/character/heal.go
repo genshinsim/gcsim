@@ -44,8 +44,8 @@ func (c *Character) Heal(hi *info.HealInfo) (float64, float64) {
 		Write("previous_hp_debt", prevHPDebt).
 		Write("base amount", hp).
 		Write("bonus", bonus).
-		Write("final amount before hp debt", healAmt).
-		Write("final amount after hp debt", heal).
+		Write("final amount", healAmt).
+		Write("received amount", heal).
 		Write("overheal", overheal).
 		Write("current_hp_ratio", c.CurrentHPRatio()).
 		Write("current_hp", c.CurrentHP()).
@@ -73,7 +73,7 @@ func (c *Character) Drain(di *info.DrainInfo) float64 {
 	return di.Amount
 }
 
-func (c *Character) GetReceivedHeal(healAmt float64) float64 {
+func (c *Character) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
 	// calc actual heal amount considering hp debt
 	// TODO: assumes that healing can occur in the same heal as debt being cleared, could also be that it can only occur starting from next heal
 	// example: hp debt is 10, heal is 11, so char will get healed by 11 - 10 = 1 instead of receiving no healing at all
@@ -81,11 +81,6 @@ func (c *Character) GetReceivedHeal(healAmt float64) float64 {
 	if heal < 0 {
 		heal = 0
 	}
-	return heal
-}
-
-func (c *Character) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
-	heal := c.GetReceivedHeal(healAmt)
 
 	// update hp debt based on original heal amount
 	c.ModifyHPDebtByAmount(-healAmt)

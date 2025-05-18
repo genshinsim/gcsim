@@ -27,5 +27,5 @@ func (c *char) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
 		Write("bol_amount", amt)
 	c.ModifyHPDebtByAmount(amt)
 
-	return c.GetReceivedHeal(healAmt)
+	return 0
 }
