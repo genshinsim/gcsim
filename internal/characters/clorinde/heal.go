@@ -1,23 +1,25 @@
 package clorinde
 
 import (
+	"strings"
+
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func (c *char) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
-	// keep heal by clorinde by default
-	if hi.Caller == c.Index {
-		return c.Character.ReceiveHeal(hi, healAmt)
-	}
-
 	// no healing if in skill state; otherwise behave as normal
 	if !c.StatusIsActive(skillStateKey) {
 		return c.Character.ReceiveHeal(hi, healAmt)
 	}
 
+	// keep heal by clorinde by default
+	if hi.Caller == c.Index && strings.HasPrefix(hi.Message, "Impale the Night") {
+		return c.Character.ReceiveHeal(hi, healAmt)
+	}
+
 	// amount is converted into bol
-	factor := skillBOLGain[c.TalentLvlSkill()]
+	factor := healingBOL[c.TalentLvlSkill()]
 	if c.Base.Ascension >= 4 {
 		factor = 1
 	}
