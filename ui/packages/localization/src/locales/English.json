@@ -343,6 +343,7 @@
     "return_to_sim": "Return to Simulator",
     "sample": "Sample",
     "search": "Search",
+    "seed_custom": "Custom Seed",
     "seed_sample": "Sample Seed",
     "seed_min": "Min Seed",
     "seed_max": "Max Seed",

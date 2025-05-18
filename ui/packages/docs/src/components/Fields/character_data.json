@@ -49,6 +49,26 @@
       "desc": "Whether Chevreuse has an Overcharged Ball or not."
     }
   ],
+  "citlali": [
+    {
+      "fields": [
+        ".citlali.stellar-blade"
+      ],
+      "desc": "Number of Stellar Blade (C1) stacks."
+    },
+    {
+      "fields": [
+        ".citlali.opal-fire"
+      ],
+      "desc": "Whether Itzpapa is in the Opal Fire state."
+    },
+    {
+      "fields": [
+        ".citlali.c6-stacks"
+      ],
+      "desc": "Number of Cifra of the Secret Law (C6) points."
+    }
+  ],
   "faruzan": [
     {
       "fields": [
@@ -169,6 +189,14 @@
         ".lyney.propSurplusStacks"
       ],
       "desc": "Number of Prop Surplus stacks."
+    }
+  ],
+  "mavuika": [
+    {
+      "fields": [
+        ".mavuika.fightingspirit"
+      ],
+      "desc": "Amount of Fighting Spirit."
     }
   ],
   "mualani": [
