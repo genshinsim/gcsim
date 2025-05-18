@@ -22,6 +22,12 @@
   "ashgravendrinkinghorn": [
     "ashgraven"
   ],
+  "astralvulturescrimsonplumage": [
+    "avcp"
+  ],
+  "athousandblazingsuns": [
+    "tbs"
+  ],
   "athousandfloatingdreams": [
     "thousandfloatingdreams",
     "tfd"
@@ -48,6 +54,9 @@
   "blacktassel": [],
   "bloodtaintedgreatsword": [
     "bloodtainted"
+  ],
+  "calamityofeshu": [
+    "eshu"
   ],
   "calamityqueller": [
     "calamity"
@@ -103,6 +112,9 @@
   "fadingtwilight": [
     "twilight"
   ],
+  "fangofthemountainking": [
+    "fotmk"
+  ],
   "favoniuscodex": [
     "favcodex"
   ],
@@ -132,6 +144,7 @@
     "fleuve",
     "pipe"
   ],
+  "flowerwreathedfeathers": [],
   "fluteofezpitzal": [
     "ezpital"
   ],
@@ -359,7 +372,9 @@
     "pines",
     "sobp"
   ],
-  "songofstillness": [],
+  "songofstillness": [
+    "stillness"
+  ],
   "splendoroftranquilwaters": [
     "splendoroftranquilwaters",
     "tranquilwaters",
@@ -374,9 +389,15 @@
     "scarlet",
     "sss"
   ],
+  "starcallerswatch": [
+    "scw"
+  ],
   "sturdybone": [],
   "summitshaper": [
     "summit"
+  ],
+  "sunnymorning": [
+    "sunnymorningsleepin"
   ],
   "surfsup": [],
   "swordofdescension": [
@@ -384,6 +405,13 @@
   ],
   "swordofnarzissenkreuz": [
     "narzissenkreuz"
+  ],
+  "symphonistofscents": [
+    "symphonist"
+  ],
+  "tamayurateinoohanashi": [
+    "tamayuratei",
+    "lamppost"
   ],
   "talkingstick": [],
   "thealleyflash": [
@@ -452,6 +480,7 @@
     "misugiri"
   ],
   "verdict": [],
+  "vividnotions": [],
   "vortexvanquisher": [
     "vortex"
   ],
@@ -462,6 +491,7 @@
   "wavebreakersfin": [
     "wavebreaker"
   ],
+  "waveridingwhirl": [],
   "whiteblind": [],
   "whiteirongreatsword": [],
   "whitetassel": [],

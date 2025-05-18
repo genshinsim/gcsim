@@ -80,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 
 		if w.stacks == 2 {
-			bonus := teamBonus * char.TotalDef() / 1000.0
+			bonus := teamBonus * char.TotalDef(true) / 1000.0
 			bonus = min(bonus, maxTeamBonus)
 			for i := attributes.PyroP; i <= attributes.DendroP; i++ {
 				t[i] = bonus

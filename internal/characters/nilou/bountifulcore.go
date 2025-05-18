@@ -2,6 +2,7 @@ package nilou
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
@@ -27,17 +28,24 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *Bo
 
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
-		ai, snap := reactable.NewBloomAttack(char, b)
-		ap := combat.NewCircleHitOnTarget(b.Gadget, nil, 6.5)
-		c.QueueAttackWithSnap(ai, snap, ap, 1)
+		c.Tasks.Add(func() {
+			ai, snap := reactable.NewBloomAttack(char, b, func(atk *combat.AttackInfo) {
+				// atk.Abil += " (bountiful core)"
+				// FIXME: some external code only match against AttackTagBloom. fix A4 if you uncomment this
+				// atk.AttackTag = attacks.AttackTagBountifulCore
+				atk.ICDTag = attacks.ICDTagBountifulCoreDamage
+			})
+			ap := combat.NewCircleHitOnTarget(b.Gadget, nil, 6.5)
+			c.QueueAttackWithSnap(ai, snap, ap, 0)
 
-		// self damage
-		ai.Abil += reactions.SelfDamageSuffix
-		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[targets.TargettablePlayer] = false
-		ap.SkipTargets[targets.TargettableEnemy] = true
-		ap.SkipTargets[targets.TargettableGadget] = true
-		c.QueueAttackWithSnap(ai, snap, ap, 1)
+			// self damage
+			ai.Abil += reactions.SelfDamageSuffix
+			ai.FlatDmg = 0.05 * ai.FlatDmg
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			c.QueueAttackWithSnap(ai, snap, ap, 0)
+		}, 1)
 	}
 	b.Gadget.OnExpiry = explode
 	b.Gadget.OnKill = explode

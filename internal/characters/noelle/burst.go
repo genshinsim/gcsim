@@ -22,6 +22,7 @@ const (
 func init() {
 	burstFrames = frames.InitAbilSlice(121)
 	burstFrames[action.ActionAttack] = 83
+	burstFrames[action.ActionCharge] = 82
 	burstFrames[action.ActionSkill] = 82
 	burstFrames[action.ActionDash] = 81
 	burstFrames[action.ActionJump] = 81
@@ -36,7 +37,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Abil:       "Sweeping Time (Stat Snapshot)",
 	}
 	c.Snapshot(&aiSnapshot)
-	burstDefSnapshot := c.Base.Def*(1+c.NonExtraStat(attributes.DEFP)) + c.NonExtraStat(attributes.DEF)
+	burstDefSnapshot := c.TotalDef(true)
 	mult := defconv[c.TalentLvlBurst()]
 	if c.Base.Cons >= 6 {
 		mult += 0.5

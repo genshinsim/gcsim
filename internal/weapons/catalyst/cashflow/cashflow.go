@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -144,6 +145,9 @@ func (w *Weapon) onChangeHP() {
 			Base:         modifier.NewBaseWithHitlag(atkSpdKey, 4*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
+				if w.core.Player.CurrentState() != action.NormalAttackState {
+					return nil, false
+				}
 				w.mAtkSpd[attributes.AtkSpd] = 0.06 + float64(w.refine)*0.02
 				return w.mAtkSpd, true
 			},

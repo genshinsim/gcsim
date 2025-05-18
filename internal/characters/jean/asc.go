@@ -24,12 +24,11 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 
 		snap := a.AttackEvent.Snapshot
 		if c.Core.Rand.Float64() < 0.5 {
-			heal := 0.15 * (snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK])
 			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,
 				Message: "Wind Companion",
-				Src:     heal,
+				Src:     snap.Stats.TotalATK() * .15,
 				Bonus:   c.Stat(attributes.Heal),
 			})
 		}

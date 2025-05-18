@@ -311,6 +311,23 @@
       },
       "name_text_hash_map ": "3831162130"
     },
+    "chasca": {
+      "id": 10000104,
+      "key": "chasca",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Wind",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Chasca",
+      "skill_details": {
+        "skill": 11042,
+        "burst": 11045,
+        "attack": 11041,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "3746229466"
+    },
     "chevreuse": {
       "id": 10000090,
       "key": "chevreuse",
@@ -361,6 +378,23 @@
         "burst_energy_cost": 40
       },
       "name_text_hash_map ": "2876340530"
+    },
+    "citlali": {
+      "id": 10000107,
+      "key": "citlali",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Citlali",
+      "skill_details": {
+        "skill": 11072,
+        "burst": 11075,
+        "attack": 11071,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1197975042"
     },
     "clorinde": {
       "id": 10000098,
@@ -770,6 +804,23 @@
       },
       "name_text_hash_map ": "1864015138"
     },
+    "kinich": {
+      "id": 10000101,
+      "key": "kinich",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Grass",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Kinich",
+      "skill_details": {
+        "skill": 11012,
+        "burst": 11015,
+        "attack": 11011,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "4172712634"
+    },
     "kirara": {
       "id": 10000061,
       "key": "kirara",
@@ -837,6 +888,23 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "1940821986"
+    },
+    "lanyan": {
+      "id": 10000108,
+      "key": "lanyan",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Lanyan",
+      "skill_details": {
+        "skill": 11082,
+        "burst": 11085,
+        "attack": 11081,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1888132250"
     },
     "layla": {
       "id": 10000074,
@@ -996,6 +1064,22 @@
       },
       "name_text_hash_map ": "2472444970"
     },
+    "mavuika": {
+      "id": 10000106,
+      "key": "mavuika",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Mavuika",
+      "skill_details": {
+        "skill": 11062,
+        "burst": 11065,
+        "attack": 11061
+      },
+      "name_text_hash_map ": "113398050"
+    },
     "mika": {
       "id": 10000080,
       "key": "mika",
@@ -1148,6 +1232,23 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "1921418842"
+    },
+    "ororon": {
+      "id": 10000105,
+      "key": "ororon",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Electric",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Olorun",
+      "skill_details": {
+        "skill": 30502,
+        "burst": 30505,
+        "attack": 30501,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1198350762"
     },
     "qiqi": {
       "id": 10000035,

@@ -16,7 +16,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	c1Chance float64
-	sparkICD int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -27,8 +26,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.SkillCon = 3
 	c.BurstCon = 5
-
-	c.sparkICD = -1
 
 	c.SetNumCharges(action.ActionSkill, 2)
 
@@ -44,7 +41,7 @@ func (c *char) Init() error {
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a == action.ActionCharge {
-		if c.Core.Status.Duration("kleespark") > 0 {
+		if c.StatusIsActive(a1SparkKey) {
 			return 0
 		}
 		return 50

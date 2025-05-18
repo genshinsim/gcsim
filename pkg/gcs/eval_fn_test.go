@@ -36,6 +36,7 @@ func TestFib(t *testing.T) {
 		resultChan <- res
 	}()
 	for {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if a == nil {
 			break
@@ -90,6 +91,7 @@ func TestFunctional(t *testing.T) {
 		resultChan <- res
 	}()
 	for {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if a == nil {
 			break
@@ -137,6 +139,7 @@ func TestAnonFunc(t *testing.T) {
 		resultChan <- res
 	}()
 	for {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if a == nil {
 			break
@@ -184,6 +187,7 @@ func TestStringFunc(t *testing.T) {
 		resultChan <- res
 	}()
 	for {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if a == nil {
 			break
@@ -214,7 +218,7 @@ func TestStringFunc(t *testing.T) {
 func TestNestedActions(t *testing.T) {
 	prog := `
 	fn do() {
-		xingqiu attack;
+		print("hi");
 	}
 	do();
 	`
@@ -231,9 +235,13 @@ func TestNestedActions(t *testing.T) {
 	go func() {
 		res, err := eval.Run()
 		fmt.Printf("done with result: %v, err: %v\n", res, err)
+		if err != nil {
+			log.Fatalf("test run failed with error: %v", err)
+		}
 		resultChan <- res
 	}()
 	for {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if a == nil {
 			break
@@ -243,10 +251,51 @@ func TestNestedActions(t *testing.T) {
 		}
 	}
 	result := <-resultChan
-	if result.Typ() != typNull {
-		t.Errorf("expecting type to return null, got %v", typStrings[result.Typ()])
+	// by default, functions return num
+	if result.Typ() != typNum {
+		t.Errorf("expecting type to return num, got %v", typStrings[result.Typ()])
 	}
 	if eval.Err() != nil {
 		t.Error(eval.Err())
+	}
+}
+
+func TestIsEven(t *testing.T) {
+	prog := `is_even(1);`
+	p := ast.New(prog)
+	_, gcsl, err := p.Parse()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println("program:")
+	fmt.Println(gcsl.String())
+	eval, _ := NewEvaluator(gcsl, nil)
+	eval.Log = log.Default()
+	resultChan := make(chan Obj)
+	go func() {
+		res, err := eval.Run()
+		fmt.Printf("done with result: %v, err: %v\n", res, err)
+		resultChan <- res
+	}()
+	for {
+		eval.Continue()
+		a, err := eval.NextAction()
+		if a == nil {
+			break
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	result := <-resultChan
+	if result.Typ() != typNum {
+		t.Errorf("expecting type to return num, got %v", typStrings[result.Typ()])
+	}
+	if eval.Err() != nil {
+		t.Error(eval.Err())
+	}
+	val := result.(*number)
+	if val.ival != 0 {
+		t.Errorf("expecting result to be 0, got %v", val.ival)
 	}
 }

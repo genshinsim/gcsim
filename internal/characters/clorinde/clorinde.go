@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
@@ -18,11 +19,10 @@ type char struct {
 	*tmpl.Character
 
 	normalSCounter int
-	prevHpDebt     float64
-	a1stacks       *stackTracker
+	a1stacks       *stacks.MultipleRefreshNoRemove
 	a1BuffPercent  float64
 	a1Cap          float64
-	a4stacks       *stackTracker
+	a4stacks       *stacks.MultipleRefreshNoRemove
 	a4bonus        []float64
 	c6Stacks       int
 }
@@ -49,6 +49,11 @@ func (c *char) Init() error {
 	return nil
 }
 
+func (c *char) ResetNormalCounter() {
+	c.normalSCounter = 0
+	c.Character.ResetNormalCounter()
+}
+
 func (c *char) AdvanceNormalIndex() {
 	if c.StatusIsActive(skillStateKey) {
 		c.normalSCounter++
@@ -57,10 +62,14 @@ func (c *char) AdvanceNormalIndex() {
 		}
 		return
 	}
-	c.NormalCounter++
-	if c.NormalCounter == c.NormalHitNum {
-		c.NormalCounter = 0
+	c.Character.AdvanceNormalIndex()
+}
+
+func (c *char) NextNormalCounter() int {
+	if c.StatusIsActive(skillStateKey) {
+		return c.normalSCounter + 1
 	}
+	return c.Character.NextNormalCounter()
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {

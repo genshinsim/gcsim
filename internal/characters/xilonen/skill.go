@@ -21,7 +21,6 @@ const (
 	samplerInterval = 0.3 * 60
 
 	skilRecastCD     = "xilonen-e-recast-cd"
-	skillMaxDurKey   = "xilonen-e-limit"
 	particleICDKey   = "xilonen-particle-icd"
 	samplerShredKey  = "xilonen-e-shred"
 	activeSamplerKey = "xilonen-samplers-activated"
@@ -58,18 +57,17 @@ func (c *char) canUseNightsoul() bool {
 }
 
 func (c *char) enterNightsoul() {
-	c.nightsoulState.EnterBlessing(45)
 	c.nightsoulSrc = c.Core.F
-	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 6)
+	c.nightsoulPointReduceTask(c.nightsoulSrc)
 	c.NormalHitNum = rollerHitNum
 	c.NormalCounter = 0
 
 	duration := int(9 * 60 * c.nightsoulDurationMul())
-	c.setNightsoulExitTimer(duration)
+	c.nightsoulState.EnterTimedBlessing(45, duration, c.exitNightsoul)
 	c.skillLastStamF = c.Core.Player.LastStamUse
 	c.Core.Player.LastStamUse = math.MaxInt
 	// Don't queue the task if C2 or higher
-	if c.Base.Cons < 2 {
+	if c.Base.Cons < 2 && c.samplersConverted < 3 {
 		c.activeGeoSampler(c.nightsoulSrc)()
 	}
 }
@@ -89,15 +87,16 @@ func (c *char) exitNightsoul() {
 	c.DeleteStatus(c6key)
 }
 
-func (c *char) nightsoulPointReduceFunc(src int) func() {
-	return func() {
+func (c *char) nightsoulPointReduceTask(src int) {
+	const tickInterval = .1
+	c.QueueCharTask(func() {
 		if c.nightsoulSrc != src {
 			return
 		}
+		// reduce 0.5 point every 6f, which is 5 per second
 		c.reduceNightsoulPoints(0.5)
-		// reduce 0.5 point per 6, which is 5 per second
-		c.Core.Tasks.Add(c.nightsoulPointReduceFunc(src), 6)
-	}
+		c.nightsoulPointReduceTask(src)
+	}, 60*tickInterval)
 }
 
 func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy) {
@@ -112,6 +111,11 @@ func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy)
 
 func (c *char) activeGeoSampler(src int) func() {
 	return func() {
+		// Xilonen only has 3 samplers; if all 3 are converted then no geo samplers can remain.
+		if c.samplersConverted >= 3 {
+			return
+		}
+
 		if c.Base.Cons < 2 {
 			if c.nightsoulSrc != src {
 				return
@@ -216,24 +220,4 @@ func (c *char) particleCB(a combat.AttackCB) {
 	}
 	c.AddStatus(particleICDKey, 0.5*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Geo, c.ParticleDelay)
-}
-
-func (c *char) setNightsoulExitTimer(duration int) {
-	c.exitStateSrc = c.Core.F
-	src := c.exitStateSrc
-	c.QueueCharTask(func() {
-		if c.exitStateSrc != src {
-			return
-		}
-		c.nightsoulState.ClearPoints()
-		if !c.canUseNightsoul() {
-			// don't exit nightsoul while in NA/Plunge
-			switch c.Core.Player.CurrentState() {
-			case action.NormalAttackState, action.PlungeAttackState:
-				return
-			}
-			c.exitNightsoul()
-		}
-	}, duration)
-	c.AddStatus(skillMaxDurKey, duration, true)
 }

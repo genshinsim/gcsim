@@ -11,10 +11,11 @@ import (
 )
 
 var burstFrames []int
-var burstDiceHitmarks = []int{25, 30, 36, 41} // c2 hitmark not framecounted
+var burstTravel = 20
 
 // initial hit
 const burstHitmark = 76
+const c2Hitmark = 17
 
 func init() {
 	burstFrames = frames.InitAbilSlice(93) // Q -> N1/CA/D
@@ -39,6 +40,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		HitlagFactor:     0.05,
 		IsDeployable:     true,
 	}
+
+	travel, ok := p["travel"]
+	if ok {
+		burstTravel = travel
+	}
+
 	// apply hydro every 3rd hit
 	// triggered on normal attack or yelan's skill
 
@@ -79,6 +86,7 @@ func (c *char) burstWaveWrapper() {
 }
 
 func (c *char) summonExquisiteThrow() {
+	hp := c.MaxHP()
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Exquisite Throw",
@@ -89,27 +97,27 @@ func (c *char) summonExquisiteThrow() {
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       0,
-		FlatDmg:    burstDice[c.TalentLvlBurst()] * c.MaxHP(),
+		FlatDmg:    burstDice[c.TalentLvlBurst()] * hp,
 	}
+	snap := c.Snapshot(&ai)
 	for i := 0; i < 3; i++ {
-		//TODO: probably snapshots before hitmark
-		c.Core.QueueAttack(
+		c.Core.QueueAttackWithSnap(
 			ai,
+			snap,
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
 				nil,
 				0.5,
 			),
-			burstDiceHitmarks[i],
-			burstDiceHitmarks[i],
+			burstTravel+i*6,
 		)
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
 		ai.Abil = "Yelan C2 Proc"
 		ai.ICDTag = attacks.ICDTagNone
 		ai.ICDGroup = attacks.ICDGroupDefault
-		ai.FlatDmg = 14.0 / 100 * c.MaxHP()
+		ai.FlatDmg = 14.0 / 100 * hp
 		c.c2icd = c.Core.F + 1.8*60
 		//TODO: frames timing on this?
 		c.Core.QueueAttack(
@@ -120,8 +128,8 @@ func (c *char) summonExquisiteThrow() {
 				nil,
 				0.5,
 			),
-			burstDiceHitmarks[3],
-			burstDiceHitmarks[3],
+			0,
+			c2Hitmark,
 		)
 	}
 }

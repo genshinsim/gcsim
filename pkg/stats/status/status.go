@@ -61,7 +61,7 @@ func avgUpdate(arr []float64, index int, value float64) []float64 {
 }
 
 func damageMod(c *character.CharWrapper, elvl int) float64 {
-	def := c.TotalDef()
+	def := c.TotalDef(false)
 	defmod := 1 - (def / (def + 5*float64(elvl) + 500))
 	// TODO: implement resmod
 	resmod := 1.0

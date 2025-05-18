@@ -5,7 +5,6 @@
 *.pprof
 .DS_Store
 /*.txt
-/build/*
 *.out
 !.keep
 out.json
@@ -38,6 +37,7 @@ computebin
 .cache
 .npm
 .task/
+.venv
 # release binaries to avoid tinting repo
 gcsim_windows_amd64.exe
 gcsim_darwin_arm64

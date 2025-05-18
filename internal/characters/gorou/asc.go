@@ -29,7 +29,7 @@ func (c *char) a4Skill() float64 {
 	if c.Base.Ascension < 4 {
 		return 0
 	}
-	return c.TotalDef() * 1.56
+	return c.TotalDef(false) * 1.56
 }
 
 // Gorou receives the following DMG Bonuses to his attacks based on his DEF:
@@ -39,5 +39,5 @@ func (c *char) a4Burst() float64 {
 	if c.Base.Ascension < 4 {
 		return 0
 	}
-	return c.TotalDef() * 0.156
+	return c.TotalDef(false) * 0.156
 }

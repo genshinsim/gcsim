@@ -22,6 +22,7 @@ const (
 	particleICDKey = "clorinde-particle-icd"
 
 	skillDashHitmark = 11
+	skillHealFrame   = 6 // no ping
 	tolerance        = 0.0000001
 	skillStart       = 6
 	skillCD          = 16 * 60
@@ -51,8 +52,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillStateKey) {
 		return c.skillDash(p)
 	}
-	c.QueueCharTask(c.c6skill, 0)
 	c.AddStatus(skillStateKey, skillStart+int(60*skillStateDuration[0]), true)
+	c.QueueCharTask(c.c6skill, 0)
 	c.SetCDWithDelay(action.ActionSkill, skillCD, skillStart)
 
 	return action.Info{
@@ -70,10 +71,6 @@ func (c *char) skillDash(p map[string]int) (action.Info, error) {
 	ratio := c.CurrentHPDebtRatio()
 	switch {
 	case ratio >= 1:
-		if c.Base.Cons >= 6 && c.c6Stacks > 0 {
-			c.c6()
-			c.c6Stacks -= 1
-		}
 		return c.skillDashFullBOL(p)
 	case math.Abs(ratio) < tolerance:
 		return c.skillDashNoBOL(p)
@@ -132,10 +129,17 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 		c.Core.QueueAttack(ai, ap, skillDashHitmark, skillDashHitmark, c.particleCB)
 	}
 
-	// Bond of Life timing is ping dependent
 	c.QueueCharTask(func() {
 		c.skillHeal(skillLungeFullBOLHeal[0], "Impale the Night (100%+ BoL)")
-	}, skillDashHitmark)
+	}, skillHealFrame)
+
+	if c.Base.Cons >= 6 && c.c6Stacks > 0 {
+		c.QueueCharTask(func() {
+			if c.StatusIsActive(skillStateKey) {
+				c.c6()
+			}
+		}, 37)
+	}
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillDashFrames),
@@ -163,10 +167,9 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.8)
 	c.Core.QueueAttack(ai, ap, skillDashHitmark, skillDashHitmark, c.particleCB)
 
-	// Bond of Life timing is ping dependent
 	c.QueueCharTask(func() {
 		c.skillHeal(skillLungeLowBOLHeal[0], "Impale the Night (<100% BoL)")
-	}, skillDashHitmark)
+	}, skillHealFrame)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillDashFrames),

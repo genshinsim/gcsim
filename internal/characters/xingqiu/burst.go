@@ -121,17 +121,17 @@ func (c *char) summonSwordWave() {
 		}
 	}
 
+	snap := c.Snapshot(&ai)
 	for i := 0; i < c.numSwords; i++ {
-		//TODO: this snapshot timing is off? perhaps should be 0?
-		c.Core.QueueAttack(
+		c.Core.QueueAttackWithSnap(
 			ai,
+			snap,
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
 				nil,
 				0.5,
 			),
-			20,
 			20,
 			c2cb,
 			c6cb,

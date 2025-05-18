@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				Caller:  char.Index,
 				Target:  c.Player.Active(),
 				Message: "The Black Sword",
-				Src:     heal * (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[attributes.ATKP]) + atk.Snapshot.Stats[attributes.ATK]),
+				Src:     heal * atk.Snapshot.Stats.TotalATK(),
 				Bonus:   char.Stat(attributes.Heal),
 			})
 			// trigger cd

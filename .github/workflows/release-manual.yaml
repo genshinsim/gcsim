@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Scheduled Release
+
+concurrency:
+  group: container-release
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+    inputs:
+      appsToBuild:
+        description: App(s) to build
+        required: false
+        type: string
+        default: all
+      force:
+        description: Force rebuild
+        type: boolean
+        default: false
+        required: true
+      version:
+        description: release version
+        type: string
+        default: nightly
+        required: true
+  # schedule:
+  #   - cron: "0 * * * *"
+
+jobs:
+  build-images:
+    name: Build Images
+    # uses: genshinsim/gcsim/.github/workflows/build-images.yaml@main
+    uses: genshinsim/gcsim/.github/workflows/build-images.yaml@containers
+    secrets: inherit
+    permissions:
+      contents: read
+      packages: write
+    with:
+      appsToBuild: ${{ inputs.appsToBuild }}
+      force: ${{ inputs.force == true }}
+      pushImages: true
+      sendNotifications: true
+      version: ${{ inputs.version }}

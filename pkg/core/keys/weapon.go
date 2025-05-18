@@ -42,6 +42,8 @@ var weaponNames = []string{
 	"aquasimulacra",
 	"aquilafavonia",
 	"ashgravendrinkinghorn",
+	"astralvulturescrimsonplumage",
+	"athousandblazingsuns",
 	"athousandfloatingdreams",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
@@ -54,6 +56,7 @@ var weaponNames = []string{
 	"blackcliffwarbow",
 	"blacktassel",
 	"bloodtaintedgreatsword",
+	"calamityofeshu",
 	"calamityqueller",
 	"cashflowsupervision",
 	"chainbreaker",
@@ -80,6 +83,7 @@ var weaponNames = []string{
 	"everlastingmoonglow",
 	"eyeofperception",
 	"fadingtwilight",
+	"fangofthemountainking",
 	"favoniuscodex",
 	"favoniusgreatsword",
 	"favoniuslance",
@@ -90,6 +94,7 @@ var weaponNames = []string{
 	"filletblade",
 	"finaleofthedeep",
 	"fleuvecendreferryman",
+	"flowerwreathedfeathers",
 	"fluteofezpitzal",
 	"flowingpurity",
 	"footprintoftherainbow",
@@ -190,12 +195,16 @@ var weaponNames = []string{
 	"splendoroftranquilwaters",
 	"staffofhoma",
 	"staffofthescarletsands",
+	"starcallerswatch",
 	"sturdybone",
 	"summitshaper",
+	"sunnymorningsleepin",
 	"surfsup",
 	"swordofdescension",
 	"swordofnarzissenkreuz",
+	"symphonistofscents",
 	"talkingstick",
+	"tamayurateinoohanashi",
 	"thealleyflash",
 	"thebell",
 	"theblacksword",
@@ -218,10 +227,12 @@ var weaponNames = []string{
 	"ultimateoverlordsmegamagicsword",
 	"urakumisugiri",
 	"verdict",
+	"vividnotions",
 	"vortexvanquisher",
 	"wanderingevenstar",
 	"wastergreatsword",
 	"wavebreakersfin",
+	"waveridingwhirl",
 	"whiteblind",
 	"whiteirongreatsword",
 	"whitetassel",
@@ -243,6 +254,8 @@ const (
 	AquaSimulacra
 	AquilaFavonia
 	AshGravenDrinkingHorn
+	AstralVulturesCrimsonPlumage
+	AThousandBlazingSuns
 	AThousandFloatingDreams
 	BalladOfTheBoundlessBlue
 	BalladOfTheFjords
@@ -255,6 +268,7 @@ const (
 	BlackcliffWarbow
 	BlackTassel
 	BloodtaintedGreatsword
+	CalamityOfEshu
 	CalamityQueller
 	CashflowSupervision
 	ChainBreaker
@@ -281,6 +295,7 @@ const (
 	EverlastingMoonglow
 	EyeOfPerception
 	FadingTwilight
+	FangOfTheMountainKing
 	FavoniusCodex
 	FavoniusGreatsword
 	FavoniusLance
@@ -291,6 +306,7 @@ const (
 	FilletBlade
 	FinaleOfTheDeep
 	FleuveCendreFerryman
+	FlowerWreathedFeathers
 	FluteOfEzpitzal
 	FlowingPurity
 	FootprintOfTheRainbow
@@ -391,12 +407,16 @@ const (
 	SplendorOfTranquilWaters
 	StaffOfHoma
 	StaffOfTheScarletSands
+	StarcallersWatch
 	SturdyBone
 	SummitShaper
+	SunnyMorningSleepIn
 	SurfsUp
 	SwordOfDescension
 	SwordOfNarzissenkreuz
+	SymphonistOfScents
 	TalkingStick
+	TamayurateiNoOhanashi
 	TheAlleyFlash
 	TheBell
 	TheBlackSword
@@ -419,10 +439,12 @@ const (
 	UltimateOverlordsMegaMagicSword
 	UrakuMisugiri
 	Verdict
+	VividNotions
 	VortexVanquisher
 	WanderingEvenstar
 	WasterGreatsword
 	WavebreakersFin
+	WaveridingWhirl
 	Whiteblind
 	WhiteIronGreatsword
 	WhiteTassel

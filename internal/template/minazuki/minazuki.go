@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
@@ -18,6 +19,7 @@ import (
 type Watcher struct {
 	// mandatory data
 	key         keys.Char // name of the watcher; used for keying subscribers
+	caster      *character.CharWrapper
 	abil        string
 	statusKey   string
 	icdKey      string
@@ -26,9 +28,10 @@ type Watcher struct {
 	tickerFreq  int
 
 	// other fields including optional overrides
-	state       action.AnimationState   // the state change we are watching for
-	delayKey    model.AnimationDelayKey // delay key used to check delay func
-	shouldDelay func() bool             // function to be called to see if delayed should be applied
+	state        action.AnimationState   // the state change we are watching for
+	delayKey     model.AnimationDelayKey // delay key used to check delay func
+	shouldDelay  func() bool             // function to be called to see if delayed should be applied
+	tickOnActive bool
 
 	tickSrc int
 }
@@ -47,6 +50,13 @@ func New(cfg ...Config) (*Watcher, error) {
 			return nil, err
 		}
 	}
+
+	caster, ok := w.core.Player.ByKey(w.key)
+	if !ok {
+		return nil, errors.New("caster key is invalid")
+	}
+	w.caster = caster
+
 	w.stateChangeHook()
 	return w, nil
 }
@@ -58,9 +68,6 @@ func WithMandatory(key keys.Char, abil, statusKey, icdKey string, tickerFreq int
 		}
 		if statusKey == "" {
 			return errors.New("status key cannot be blank")
-		}
-		if icdKey == "" {
-			return errors.New("icd key cannot be blank")
 		}
 		if tickerFreq == 0 {
 			return errors.New("ticker frequency cannot be 0")
@@ -80,6 +87,13 @@ func WithAnimationDelayCheck(key model.AnimationDelayKey, shouldDelay func() boo
 	return func(w *Watcher) error {
 		w.delayKey = key
 		w.shouldDelay = shouldDelay
+		return nil
+	}
+}
+
+func WithTickOnActive(v bool) Config {
+	return func(w *Watcher) error {
+		w.tickOnActive = v
 		return nil
 	}
 }
@@ -111,7 +125,7 @@ func (w *Watcher) stateChangeHook() {
 		if w.shouldDelay != nil { //TODO: to maintain old implementation equivalent; should be removed
 			// if w.shouldDelay() {
 			if delay := w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey); delay > 0 {
-				c, _ := w.core.Player.ByKey(w.key)
+				c := w.caster
 				w.core.Log.NewEventBuildMsg(glog.LogDebugEvent, c.Index, w.abil, " delay on state change").
 					Write("delay", delay)
 				w.core.Tasks.Add(w.onStateChange(next), delay)
@@ -126,12 +140,11 @@ func (w *Watcher) stateChangeHook() {
 
 func (w *Watcher) onStateChange(next action.AnimationState) func() {
 	return func() {
-		//TODO: can this ever fail?
-		c, _ := w.core.Player.ByKey(w.key)
+		c := w.caster
 		if !c.StatusIsActive(w.statusKey) {
 			return
 		}
-		if c.StatusIsActive(w.icdKey) {
+		if w.icdKey != "" && c.StatusIsActive(w.icdKey) {
 			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " not triggered on state change; on icd").
 				Write("icd", c.StatusExpiry(w.icdKey)).
 				Write("icd_key", w.icdKey)
@@ -142,16 +155,28 @@ func (w *Watcher) onStateChange(next action.AnimationState) func() {
 			Write("state", next).
 			Write("icd", c.StatusExpiry(w.icdKey)).
 			Write("icd_key", w.icdKey)
+
 		w.tickSrc = w.core.F
-		// use the hitlag affected queue for this
-		c.QueueCharTask(w.tickerFunc(w.core.F), w.tickerFreq)
+		w.queueTick(w.core.F)
 	}
+}
+
+func (w *Watcher) queueTick(src int) {
+	if w.tickerFreq <= 0 {
+		return
+	}
+
+	c := w.caster
+	if w.tickOnActive {
+		c = w.core.Player.ActiveChar()
+	}
+	// use the hitlag affected queue for this
+	c.QueueCharTask(w.tickerFunc(src), w.tickerFreq)
 }
 
 func (w *Watcher) tickerFunc(src int) func() {
 	return func() {
-		//TODO: can this ever fail?
-		c, _ := w.core.Player.ByKey(w.key)
+		c := w.caster
 		// check if buff is up
 		if !c.StatusIsActive(w.statusKey) {
 			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " not triggered on tick; on icd").
@@ -192,6 +217,6 @@ func (w *Watcher) tickerFunc(src int) func() {
 		w.triggerFunc()
 		// in theory this should not hit an icd?
 		// use the hitlag affected queue for this
-		c.QueueCharTask(w.tickerFunc(src), w.tickerFreq)
+		w.queueTick(src)
 	}
 }

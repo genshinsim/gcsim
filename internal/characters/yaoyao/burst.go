@@ -70,7 +70,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) getBurstHealInfo(snap *combat.Snapshot) info.HealInfo {
-	maxhp := snap.BaseHP*(1+snap.Stats[attributes.HPP]) + snap.Stats[attributes.HP]
+	maxhp := snap.Stats.MaxHP()
 	heal := burstRadishHealing[0][c.TalentLvlBurst()]*maxhp + burstRadishHealing[1][c.TalentLvlBurst()]
 	return info.HealInfo{
 		Caller:  c.Index,

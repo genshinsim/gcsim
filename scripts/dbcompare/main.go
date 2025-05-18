@@ -3,11 +3,16 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
+	"math"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
@@ -31,38 +36,71 @@ type dbEntry struct {
 	} `json:"summary"`
 }
 
+type opts struct {
+	mustHaveChar string
+	iters        int
+	workers      int
+}
+
 func main() {
+	var opt opts
+	flag.StringVar(&opt.mustHaveChar, "must", "", "comma separated character names that must be present, otherwise skip. default blank")
+	flag.IntVar(&opt.iters, "iters", 1000, "iterations to run each comparison")
+	flag.IntVar(&opt.workers, "workers", 30, "number of workers to use")
+	flag.Parse()
 	res, err := getDBEntries()
 	if err != nil {
 		panic(err)
 	}
-	// fmt.Println(len(res))
-	fmt.Println("id,original,next,diff,err")
+	filters := strings.Split(opt.mustHaveChar, ",")
+	fmt.Println("id,original,next,diff,abs_diff,per_diff,err")
 	for _, v := range res {
-		dps, err := runSim(v)
-		fmt.Printf("%v,%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, dps-v.Summary.MeanDpsPerTarget, err)
+		simcfg, gcsl, err := simulator.Parse(v.Config)
+		if err != nil {
+			fmt.Printf(",,,,,,,%v\n", err)
+			continue
+		}
+		simcfg.Settings.Iterations = opt.iters
+		simcfg.Settings.NumberOfWorkers = opt.workers
+
+		var team string
+		for i := range simcfg.Characters {
+			team += "+" + simcfg.Characters[i].Base.Key.String()
+		}
+		team = strings.TrimPrefix(team, "+")
+		// check for ignores
+		if len(filters) > 0 {
+			// teams must contain all filters
+			allFound := true
+			for _, v := range filters {
+				if !strings.Contains(team, v) {
+					allFound = false
+					break
+				}
+			}
+			if !allFound {
+				continue
+			}
+		}
+		dps, err := runSim(simcfg, gcsl, v.Config)
+		diff := dps - v.Summary.MeanDpsPerTarget
+		absDiff := math.Abs(diff)
+		percentDiff := absDiff / v.Summary.MeanDpsPerTarget
+		fmt.Printf("%v,%v,%v,%v,%v,%v,%v,%v\n", team, v.Id, v.Summary.MeanDpsPerTarget, dps, diff, absDiff, percentDiff, err)
 	}
 }
 
-func runSim(w dbEntry) (float64, error) {
+func runSim(simcfg *info.ActionList, gcsl ast.Node, cfg string) (float64, error) {
 	// start := time.Now()
 	// compute work??
 	// log.Printf("got work %v; starting compute", w.Id)
 	// compute result
-	simcfg, gcsl, err := simulator.Parse(w.Config)
-	if err != nil {
-		// log.Printf("could not parse config for id %v: %v\n", w.Id, err)
-		//TODO: we should post something here??
-		return 0, err
-	}
-	simcfg.Settings.Iterations = 1000
-	simcfg.Settings.NumberOfWorkers = 30
 	simcfg.Settings.CollectStats = []string{"overview"}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30)*time.Second)
 	defer cancel()
 
-	result, err := simulator.RunWithConfig(ctx, w.Config, simcfg, gcsl, simulator.Options{}, time.Now())
+	result, err := simulator.RunWithConfig(ctx, cfg, simcfg, gcsl, simulator.Options{}, time.Now())
 	if err != nil {
 		// log.Printf("error running sim %v: %v\n", w.Id, err)
 		return 0, err

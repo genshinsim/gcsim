@@ -12,6 +12,7 @@ import (
 const (
 	EquipAffixExcelConfigData   = `EquipAffixExcelConfigData.json`
 	ReliquarySetExcelConfigData = `ReliquarySetExcelConfigData.json`
+	ReliquaryExcelConfigData    = `ReliquaryExcelConfigData.json`
 )
 
 func load(path string, res any) error {
@@ -48,6 +49,19 @@ func loadReliquarySetExcel(path string) (map[int64]dm.ReliquarySetExcel, error) 
 			return nil, fmt.Errorf("unexpected duplicated id: %v", v.SetID)
 		}
 		data[v.SetID] = v
+	}
+	return data, nil
+}
+
+func loadReliquaryExcel(path string) (map[int64][]dm.ReliquaryExcel, error) {
+	var res []dm.ReliquaryExcel
+	err := load(path, &res)
+	if err != nil {
+		return nil, err
+	}
+	data := make(map[int64][]dm.ReliquaryExcel)
+	for _, v := range res {
+		data[v.SetID] = append(data[v.SetID], v)
 	}
 	return data, nil
 }

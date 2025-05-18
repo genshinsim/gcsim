@@ -1,5 +1,5 @@
 ---
-title: Itto
+title: Arataki Itto
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,0 +1,39 @@
+<!---
+NOTE: AUTO-GENERATED FILE
+to edit this file, instead edit its template at: ./github/scripts/templates/README.md.j2
+-->
+<div align="center">
+## Containers
+</div>
+
+Welcome to gcsim container images. This registry contains containers for various gcsim services.
+
+## Tag immutability
+
+The containers built here do not use immutable tags, as least not in the more common way you have seen from [linuxserver.io](https://fleet.linuxserver.io/) or [Bitnami](https://bitnami.com/stacks/containers).
+
+We do take a similar approach but instead of appending a `-ls69` or `-r420` prefix to the tag we instead insist on pinning to the sha256 digest of the image, while this is not as pretty it is just as functional in making the images immutable.
+
+| Container                                          | Immutable |
+|----------------------------------------------------|-----------|
+| `ghcr.io/genshinsim/embedgenerator:rolling`                   | ❌         |
+| `ghcr.io/genshinsim/embedgenerator:3.0.8.1507`                | ❌         |
+| `ghcr.io/genshinsim/embedgenerator:rolling@sha256:8053...`    | ✅         |
+| `ghcr.io/genshinsim/embedgenerator:3.0.8.1507@sha256:8053...` | ✅         |
+
+_If pinning an image to the sha256 digest, tools like [Renovate](https://github.com/renovatebot/renovate) support updating the container on a digest or application version change._
+
+
+## Available Images
+
+Each Image will be built with a `rolling` tag, along with tags specific to it's version. Available Images Below
+
+Container | Channel | Image
+--- | --- | ---
+{% for image in app_images | sort(attribute="name") -%}
+[{{ image.name }}]({{ image.html_url }}) | {{ image.channel }} | ghcr.io/{{ image.owner }}/{{ image.name }}
+{% endfor %}
+
+## Credits
+
+This build script is based on the hard work of [onedr0p](https://github.com/onedr0p) and [joryirving](https://github.com/joryirving).

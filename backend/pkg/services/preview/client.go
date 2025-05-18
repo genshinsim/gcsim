@@ -20,7 +20,7 @@ type Client struct {
 func NewClient(cfg ClientCfg, cust ...func(*Client) error) (*Client, error) {
 	c := &Client{cfg: cfg}
 
-	conn, err := grpc.Dial(cfg.Addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(cfg.Addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}

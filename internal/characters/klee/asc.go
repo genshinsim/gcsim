@@ -2,8 +2,12 @@ package klee
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+)
+
+const (
+	a1IcdKey   = "a1-icd"
+	a1SparkKey = "a1-spark"
 )
 
 // When Jumpy Dumpty and Normal Attacks deal DMG, Klee has a 50% chance to obtain an Explosive Spark.
@@ -13,17 +17,17 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if c.Core.F < c.sparkICD {
+		if c.StatusIsActive(a1IcdKey) {
 			return
 		}
 		if c.Core.Rand.Float64() < 0.5 {
 			return
 		}
+		c.AddStatus(a1IcdKey, 60*5, true)
 
-		c.sparkICD = c.Core.F + 60*4
-		c.Core.Status.Add("kleespark", 60*30)
-		c.Core.Log.NewEvent("klee gained spark", glog.LogCharacterEvent, c.Index).
-			Write("icd", c.sparkICD)
+		if !c.StatusIsActive(a1SparkKey) {
+			c.AddStatus(a1SparkKey, 60*30, true)
+		}
 	}
 }
 

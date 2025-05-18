@@ -2,40 +2,119 @@ package nightsoul
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 const NightsoulBlessingStatus = "nightsoul-blessing"
+const delayEventKey = "ns-extend-state"
 
 type State struct {
 	char            *character.CharWrapper
 	c               *core.Core
 	nightsoulPoints float64
-
-	MaxPoints float64
+	ExitStateF      int
+	MaxPoints       float64
+	extendNsStates  []action.AnimationState
 }
 
 func New(c *core.Core, char *character.CharWrapper) *State {
 	t := &State{
-		char:      char,
-		c:         c,
-		MaxPoints: -1.0, // no limits
+		char:       char,
+		c:          c,
+		ExitStateF: -1,
+		MaxPoints:  -1.0, // no limits
 	}
 	return t
 }
 
-func (s *State) EnterBlessing(amount float64) {
+// Set the set of animation states that will prevent NS from expiring
+// If NS would expire during one of the states set here, delay until state expiry instead
+func (s *State) SetExtendNsStates(states []action.AnimationState) {
+	s.extendNsStates = states
+}
+
+func (s *State) Duration() int {
+	return s.char.StatusDuration(NightsoulBlessingStatus)
+}
+
+// Change the current duration of the NS status if applicable, and apply cb on expiry.
+// If NS is not currently active, do nothing.
+// The callback will not be called if ExitNightsoul() is used
+func (s *State) SetNightsoulExitTimer(duration int, cb func()) {
+	if !s.HasBlessing() {
+		return
+	}
+
+	if s.Duration() != duration {
+		s.char.AddStatus(NightsoulBlessingStatus, duration, true)
+	}
+
+	src := s.c.F + duration
+	s.ExitStateF = src
+	s.char.QueueCharTask(func() {
+		if s.ExitStateF != src {
+			return
+		}
+
+		if !slices.Contains(s.extendNsStates, s.c.Player.CurrentState()) {
+			cb()
+			return
+		}
+
+		// When the char is off-field, state cannot be extended by animation
+		if !s.c.Player.CharIsActive(s.char.Base.Key) {
+			cb()
+			return
+		}
+
+		// If NS shouldn't expire because the player is in the state; delay expiry until state ends
+		evtKey := fmt.Sprintf("%v-%v", delayEventKey, s.char.Base.Key.String())
+		f := func(...interface{}) bool {
+			if s.ExitStateF == src {
+				cb()
+			}
+			return true
+		}
+		s.c.Events.Subscribe(event.OnStateChange, f, evtKey)
+
+		// Extend NS until removed on state end
+		s.char.AddStatus(NightsoulBlessingStatus, -1, false)
+		s.c.Log.NewEvent("Action extending timed Nightsoul Blessing",
+			glog.LogActionEvent,
+			s.char.Index)
+	}, duration)
+}
+
+// Enters NS blessing with specified points.
+// If duration is not infinite, expire NS upon duration and optionally trigger a CB.
+// CB will not be called if the duration is changed before expiry.
+func (s *State) EnterTimedBlessing(amount float64, duration int, cb func()) {
 	s.nightsoulPoints = amount
-	s.char.AddStatus(NightsoulBlessingStatus, -1, true)
+	s.char.AddStatus(NightsoulBlessingStatus, duration, true)
+
+	if cb == nil {
+		cb = s.ExitBlessing
+	}
+	if duration > 0 {
+		s.SetNightsoulExitTimer(duration, cb)
+	}
 	s.c.Log.NewEvent("enter nightsoul blessing", glog.LogCharacterEvent, s.char.Index).
-		Write("points", s.nightsoulPoints)
+		Write("points", s.nightsoulPoints).
+		Write("duration", duration)
+}
+
+func (s *State) EnterBlessing(amount float64) {
+	s.EnterTimedBlessing(amount, -1, nil)
 }
 
 func (s *State) ExitBlessing() {
+	s.ExitStateF = -1
 	s.char.DeleteStatus(NightsoulBlessingStatus)
 	s.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, s.char.Index)
 }
@@ -92,6 +171,8 @@ func (s *State) Condition(fields []string) (any, error) {
 		return s.HasBlessing(), nil
 	case "points":
 		return s.Points(), nil
+	case "duration":
+		return s.Duration(), nil
 	default:
 		return nil, fmt.Errorf("invalid nightsoul condition: %v", fields[1])
 	}

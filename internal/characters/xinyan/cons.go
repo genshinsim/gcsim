@@ -60,6 +60,9 @@ func (c *char) c2() {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
+			if atk.Info.Element != attributes.Physical {
+				return nil, false
+			}
 			return c.c2Buff, true
 		},
 	})

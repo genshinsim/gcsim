@@ -33,7 +33,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	bonus := ppatk[c.TalentLvlSkill()] * c.MaxHP()
-	maxBonus := c.Base.Atk * 4
+	maxBonus := c.Stat(attributes.BaseATK) * 4
 	if bonus > maxBonus {
 		bonus = maxBonus
 	}

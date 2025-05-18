@@ -77,13 +77,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		snap := char.Snapshot(&ai)
 		c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 6), 1)
 
-		atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
-
 		c.Player.Heal(info.HealInfo{
 			Caller:  char.Index,
 			Target:  c.Player.Active(),
 			Message: "Aquila Favonia",
-			Src:     atk * heal,
+			Src:     snap.Stats.TotalATK() * heal,
 			Bonus:   char.Stat(attributes.Heal),
 		})
 		return false

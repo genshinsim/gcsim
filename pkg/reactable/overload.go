@@ -58,7 +58,7 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 		char := r.core.Player.ByIndex(a.Info.ActorIndex)
 		em := char.Stat(attributes.EM)
 		flatdmg, snap := calcReactionDmg(char, atk, em)
-		atk.FlatDmg = 2 * flatdmg
+		atk.FlatDmg = 2.75 * flatdmg
 		r.core.QueueAttackWithSnap(atk, snap, combat.NewCircleHitOnTarget(r.self, nil, 3), 1)
 	}
 

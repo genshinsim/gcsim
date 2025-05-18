@@ -144,13 +144,14 @@ func (c *char) c6skill() {
 // will appear under specific circumstances, executing an attack
 // that deals 200% of Clorinde's ATK as Electro DMG.
 // DMG dealt this way is considered Normal Attack DMG.
-
 func (c *char) c6() {
 	if c.StatusIsActive(c6GlimbrightIcdKey) {
 		return
 	}
 
-	c.AddStatus(c6GlimbrightIcdKey, 1*60, false)
+	c.c6Stacks--
+	c.AddStatus(c6GlimbrightIcdKey, 1*60, true)
+
 	c6AI := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Glimbright Shade (C6)",
@@ -163,10 +164,5 @@ func (c *char) c6() {
 		Mult:           c6GlimbrightAtkP,
 		IgnoreInfusion: true,
 	}
-	c.Core.QueueAttack(
-		c6AI,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 8),
-		1, //TODO: c6 hitmark
-		1,
-	)
+	c.Core.QueueAttack(c6AI, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 8), 0, 0)
 }

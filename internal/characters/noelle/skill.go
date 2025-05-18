@@ -18,6 +18,7 @@ const skillHitmark = 14
 func init() {
 	skillFrames = frames.InitAbilSlice(78)
 	skillFrames[action.ActionAttack] = 12
+	skillFrames[action.ActionCharge] = 13
 	skillFrames[action.ActionSkill] = 14 // uses burst frames
 	skillFrames[action.ActionBurst] = 14
 	skillFrames[action.ActionDash] = 11
@@ -43,7 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	snap := c.Snapshot(&ai)
 
 	// add shield first
-	defFactor := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
+	defFactor := snap.Stats.TotalDEF()
 	shieldhp := shieldFlat[c.TalentLvlSkill()] + shieldDef[c.TalentLvlSkill()]*defFactor
 	c.Core.Player.Shields.Add(c.newShield(shieldhp, shield.NoelleSkill, 720))
 
@@ -106,8 +107,8 @@ func (c *char) skillHealCB() combat.AttackCBFunc {
 			}
 			if c.Core.Rand.Float64() < prob {
 				// heal target
-				x := atk.AttackEvent.Snapshot.BaseDef*(1+atk.AttackEvent.Snapshot.Stats[attributes.DEFP]) + atk.AttackEvent.Snapshot.Stats[attributes.DEF]
-				heal := shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]
+				def := atk.AttackEvent.Snapshot.Stats.TotalDEF()
+				heal := shieldHeal[c.TalentLvlSkill()]*def + shieldHealFlat[c.TalentLvlSkill()]
 				c.Core.Player.Heal(info.HealInfo{
 					Caller:  c.Index,
 					Target:  -1,

@@ -80,7 +80,7 @@ func (c *char) burstHeal(ai combat.AttackInfo) {
 	for _, hitmark := range burstHealHitmarks {
 		c.Core.Tasks.Add(func() {
 			hi.Target = c.Core.Player.Active()
-			hi.Src = burstHealBase[c.TalentLvlBurst()] + c.TotalDef()*burstHealPer[c.TalentLvlBurst()]
+			hi.Src = burstHealBase[c.TalentLvlBurst()] + c.TotalDef(false)*burstHealPer[c.TalentLvlBurst()]
 			hi.Bonus = c.Stat(attributes.Heal)
 			c.Core.Player.Heal(hi)
 		}, hitmark)

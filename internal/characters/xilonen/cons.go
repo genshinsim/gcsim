@@ -59,6 +59,10 @@ func (c *char) c2() {
 		return
 	}
 
+	if c.samplersConverted >= 3 {
+		return
+	}
+
 	c.activeGeoSampler(-1)()
 	for _, ch := range c.Core.Player.Chars() {
 		if ch.Base.Element != attributes.Geo {
@@ -141,7 +145,7 @@ func (c *char) c4Init() {
 			return false
 		}
 
-		amt := 0.65 * c.TotalDef()
+		amt := 0.65 * c.TotalDef(false)
 		char.SetTag(c4key, char.Tag(c4key)-1)
 
 		c.Core.Log.NewEvent("xilonen c4 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
@@ -180,8 +184,8 @@ func (c *char) applyC6() {
 	c.c6FlatDmg() // sets c6 key
 
 	// "pause" Nightsoul's Blessing time limit countdown
-	duration := c.StatusDuration(skillMaxDurKey) + c6Duration
-	c.setNightsoulExitTimer(duration)
+	duration := c.nightsoulState.Duration() + c6Duration
+	c.nightsoulState.SetNightsoulExitTimer(duration, c.exitNightsoul)
 
 	for i := 1; i <= 3; i++ {
 		c.Core.Tasks.Add(func() {
@@ -189,7 +193,7 @@ func (c *char) applyC6() {
 				return
 			}
 			hpplus := c.Stat(attributes.Heal)
-			heal := c.TotalDef() * 1.2
+			heal := c.TotalDef(false) * 1.2
 			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,
@@ -214,7 +218,7 @@ func (c *char) c6FlatDmg() {
 				return nil, false
 			}
 
-			amt := c.TotalDef() * 3.0
+			amt := c.TotalDef(false) * 3.0
 			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index).
 				Write("amt", amt)
 

@@ -119,6 +119,15 @@ func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Act
 		if act == action.ActionSwap {
 			return c.Player.SwapCD, nil
 		}
+		if act == action.ActionDash {
+			if c.Player.Active() == char.Index && c.Player.DashLockout {
+				return c.Player.DashCDExpirationFrame - c.F, nil
+			}
+			if c.Player.Active() != char.Index && char.DashLockout {
+				return char.RemainingDashCD, nil
+			}
+			return 0, nil
+		}
 		return char.Cooldown(act), nil
 	case "charge":
 		return char.Charges(act), nil

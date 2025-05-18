@@ -33,6 +33,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("set_target_pos", e.setTargetPos, env)
 	e.addSysFunc("set_player_pos", e.setPlayerPos, env)
 	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
+	e.addSysFunc("set_swap_icd", e.setSwapICD, env)
 	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 	e.addSysFunc("kill_target", e.killTarget, env)
 	e.addSysFunc("is_target_dead", e.isTargetDead, env)
@@ -43,6 +44,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("cos", e.cos, env)
 	e.addSysFunc("asin", e.asin, env)
 	e.addSysFunc("acos", e.acos, env)
+	e.addSysFunc("is_even", e.isEven, env)
 
 	// events
 	e.addSysFunc("set_on_tick", e.setOnTick, env)
@@ -297,6 +299,37 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{}, nil
 }
 
+// Set SwapICD to any integer, to simulate booking. May be any non-negative integer.
+func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
+	// setSwapCD
+
+	// set_player_pos(x, y)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for set_swap_icd, expected 1 got %v", len(c.Args))
+	}
+
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	n, ok := t.(*number)
+	if !ok {
+		return nil, fmt.Errorf("set_swap_icd argument x coord should evaluate to a number, got %v", t.Inspect())
+	}
+	// n should be int
+	x := int(n.ival)
+	if n.isFloat {
+		x = int(n.fval)
+	}
+
+	if x < 0 {
+		return nil, fmt.Errorf("invald value for swap icd, expected non-negative integer, got %v", x)
+	}
+
+	e.Core.Player.SetSwapICD(x)
+	return &null{}, nil
+}
+
 func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	if len(c.Args) != 1 {
 		return nil, fmt.Errorf("invalid number of params for set_default_target, expected 1 got %v", len(c.Args))
@@ -495,6 +528,36 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 	}, nil
 }
 
+func (e *Eval) isEven(c *ast.CallExpr, env *Env) (Obj, error) {
+	// is_even(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for is_even, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("is_even argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	// if float, floor it
+	var v int64
+	v = n.ival
+	if n.isFloat {
+		v = int64(n.fval)
+	}
+
+	if v%2 == 0 {
+		return bton(true), nil
+	}
+	return bton(false), nil
+}
+
 func (e *Eval) sin(c *ast.CallExpr, env *Env) (Obj, error) {
 	// sin(number goes in here)
 	if len(c.Args) != 1 {
@@ -655,7 +718,7 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 		if v.Typ() != typNum {
 			return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
 		}
-		params[k] = int(v.(*number).ival)
+		params[k] = int(ntof(v.(*number)))
 	}
 
 	charKey := keys.Char(char.ival)

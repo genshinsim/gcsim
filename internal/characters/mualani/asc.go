@@ -42,13 +42,5 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
 		c.a4Stacks = min(c.a4Stacks+1, 3)
 		return false
-	}, "maulani-a4")
-}
-func (c *char) a4amount() float64 {
-	if c.Base.Ascension < 1 {
-		return 0.0
-	}
-	s := c.a4Stacks
-	c.a4Stacks = 0
-	return 0.15 * float64(s) * c.MaxHP()
+	}, "maulani-a4-nightsoul")
 }

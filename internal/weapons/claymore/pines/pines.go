@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -91,6 +92,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					Base:         modifier.NewBaseWithHitlag("pines-proc", buffDuration),
 					AffectedStat: attributes.AtkSpd,
 					Amount: func() ([]float64, bool) {
+						if c.Player.CurrentState() != action.NormalAttackState {
+							return nil, false
+						}
 						return uniqueVal, true
 					},
 				})

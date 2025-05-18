@@ -35,7 +35,7 @@ type char struct {
 	c2Extension    int
 	c6Buff         []float64
 	a1Buff         []float64
-	healFieldStats [attributes.EndStatType]float64
+	healFieldStats attributes.Stats
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

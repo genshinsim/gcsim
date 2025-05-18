@@ -2,7 +2,6 @@ package character
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -25,10 +24,8 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 		case info.WeaponClassCatalyst:
 			return 50
 		case info.WeaponClassClaymore:
-			c.Core.Log.NewEvent("CLAYMORE CHARGE NOT IMPLEMENTED", glog.LogWarnings, c.Index)
 			return 0
 		case info.WeaponClassBow:
-			c.Core.Log.NewEvent("BOWS DONT HAVE CHARGE ATTACK; USE AIM", glog.LogWarnings, c.Index)
 			return 0
 		default:
 			return 0
@@ -88,13 +85,7 @@ func (c *Character) QueueDashStaminaConsumption(p map[string]int) {
 	// consume stam at the end
 	c.Core.Tasks.Add(func() {
 		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
-		c.Core.Player.Stam -= req
-		// this really shouldn't happen??
-		if c.Core.Player.Stam < 0 {
-			c.Core.Player.Stam = 0
-		}
-		c.Core.Player.LastStamUse = c.Core.F
-		c.Core.Events.Emit(event.OnStamUse, action.DashState)
+		c.Core.Player.UseStam(req, action.ActionDash)
 	}, c.DashLength()-1)
 }
 

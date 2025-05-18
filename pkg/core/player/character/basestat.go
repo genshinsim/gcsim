@@ -18,13 +18,10 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	if err != nil {
 		return err
 	}
-	asc := AvatarAsc(c.Base.MaxLevel, data)
 	for i, v := range base {
-		if i >= int(attributes.DelimBaseStat) {
-			break
-		}
 		c.BaseStats[i] += v
 	}
+	asc := AvatarAsc(c.Base.MaxLevel, data)
 	c.Base.Ascension = asc
 
 	wdata := c.Equip.Weapon.Data()
@@ -36,16 +33,8 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		return err
 	}
 	for i, v := range basew {
-		if i >= int(attributes.DelimBaseStat) {
-			break
-		}
 		c.BaseStats[i] += v
 	}
-
-	// set base
-	c.Base.HP += base[attributes.BaseHP] + basew[attributes.BaseHP]
-	c.Base.Atk += base[attributes.BaseATK] + basew[attributes.BaseATK]
-	c.Base.Def += base[attributes.BaseDEF] + basew[attributes.BaseDEF]
 
 	// misc data
 	c.Base.Rarity = info.ConvertRarity(data.Rarity)

@@ -5,7 +5,6 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/queue"
 )
 
 func (e *Enemy) ApplyHitlag(factor, dur float64) {
@@ -42,7 +41,11 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 }
 
 func (e *Enemy) QueueEnemyTask(f func(), delay int) {
-	queue.Add(&e.queue, f, e.timePassed+delay)
+	if delay == 0 {
+		f()
+		return
+	}
+	e.queue.Add(f, delay)
 }
 
 func (e *Enemy) Tick() {
@@ -67,6 +70,6 @@ func (e *Enemy) Tick() {
 	}
 	e.timePassed += left
 
-	queue.Run(&e.queue, e.timePassed)
+	e.queue.Run()
 	e.Reactable.Tick()
 }

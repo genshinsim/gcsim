@@ -46,7 +46,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	snap := c.Snapshot(&ai)
 
-	defFactor := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
+	defFactor := snap.Stats.TotalDEF()
 
 	hitOpponents := 0
 	cb := func(_ combat.AttackCB) {
@@ -109,17 +109,7 @@ func (c *char) shieldDot(src int) func() {
 			return
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Sweeping Fervor (DoT)",
-			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Pyro,
-			Durability: 25,
-			Mult:       skillDot[c.TalentLvlSkill()],
-		}
+		ai := c.getAttackInfoShieldDoT()
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
@@ -129,6 +119,20 @@ func (c *char) shieldDot(src int) func() {
 		)
 
 		c.Core.Tasks.Add(c.shieldDot(src), 2*60)
+	}
+}
+
+func (c *char) getAttackInfoShieldDoT() combat.AttackInfo {
+	return combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Sweeping Fervor (DoT)",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Pyro,
+		Durability: 25,
+		Mult:       skillDot[c.TalentLvlSkill()],
 	}
 }
 

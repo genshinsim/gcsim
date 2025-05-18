@@ -1,0 +1,11 @@
+---
+app: embedgenerator
+channels:
+  - name: develop
+    platforms: ["linux/amd64"]
+    # this script should prob be linked to each platform in a dict of sort
+    build_scripts:
+      linux/amd64: ./ci/build-linux-amd64.sh
+    tests:
+      enabled: true
+      type: web

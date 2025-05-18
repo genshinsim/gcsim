@@ -37,11 +37,60 @@ func (g *Generator) DumpUIJSON(path string) error {
 	return nil
 }
 
-type outData struct {
+type OutData struct {
 	CharacterNames map[string]string `json:"character_names"`
 	WeaponNames    map[string]string `json:"weapon_names"`
 	ArtifactNames  map[string]string `json:"artifact_names"`
 	EnemyNames     map[string]string `json:"enemy_names"`
+}
+
+func (g *Generator) GetNames(lang string) (OutData, error) {
+	data := OutData{
+		CharacterNames: make(map[string]string),
+		WeaponNames:    make(map[string]string),
+		ArtifactNames:  make(map[string]string),
+		EnemyNames:     make(map[string]string),
+	}
+	// load generator for this language
+	tp := g.Languages[lang]
+	src, err := textmap.NewTextMapSource(tp)
+	if err != nil {
+		return data, fmt.Errorf("error creating text map src for %v: %w", lang, err)
+	}
+	// go through all char/weap/art and get names
+	for _, v := range g.Characters {
+		s, err := src.Get(v.NameTextHashMap)
+		if err != nil {
+			fmt.Printf("error getting string for char %v id %v\n", v.Key, v.NameTextHashMap)
+			continue
+		}
+		data.CharacterNames[v.Key] = s
+	}
+	for _, v := range g.Weapons {
+		s, err := src.Get(v.NameTextHashMap)
+		if err != nil {
+			fmt.Printf("error getting string for weapon %v id %v\n", v.Key, v.NameTextHashMap)
+			continue
+		}
+		data.WeaponNames[v.Key] = s
+	}
+	for _, v := range g.Artifacts {
+		s, err := src.Get(v.TextMapId)
+		if err != nil {
+			fmt.Printf("error getting string for set %v id %v\n", v.Key, v.TextMapId)
+			continue
+		}
+		data.ArtifactNames[v.Key] = s
+	}
+	for _, v := range g.Enemies {
+		s, err := src.Get(v.NameTextHashMap)
+		if err != nil {
+			fmt.Printf("error getting string for enemy %v id %v\n", v.Key, v.NameTextHashMap)
+			continue
+		}
+		data.EnemyNames[v.Key] = s
+	}
+	return data, nil
 }
 
 func (g *Generator) writeTranslationJSON(path string) error {
@@ -52,55 +101,13 @@ func (g *Generator) writeTranslationJSON(path string) error {
 	}
 	sort.Strings(keys)
 
-	out := make(map[string]outData)
+	out := make(map[string]OutData)
 
 	for _, k := range keys {
-		data := outData{
-			CharacterNames: make(map[string]string),
-			WeaponNames:    make(map[string]string),
-			ArtifactNames:  make(map[string]string),
-			EnemyNames:     make(map[string]string),
-		}
-		// load generator for this language
-		tp := g.Languages[k]
-		src, err := textmap.NewTextMapSource(tp)
+		data, err := g.GetNames(k)
 		if err != nil {
-			return fmt.Errorf("error creating text map src for %v: %w", k, err)
+			return err
 		}
-		// go through all char/weap/art and get names
-		for _, v := range g.Characters {
-			s, err := src.Get(v.NameTextHashMap)
-			if err != nil {
-				fmt.Printf("error getting string for char %v id %v\n", v.Key, v.NameTextHashMap)
-				continue
-			}
-			data.CharacterNames[v.Key] = s
-		}
-		for _, v := range g.Weapons {
-			s, err := src.Get(v.NameTextHashMap)
-			if err != nil {
-				fmt.Printf("error getting string for weapon %v id %v\n", v.Key, v.NameTextHashMap)
-				continue
-			}
-			data.WeaponNames[v.Key] = s
-		}
-		for _, v := range g.Artifacts {
-			s, err := src.Get(v.TextMapId)
-			if err != nil {
-				fmt.Printf("error getting string for set %v id %v\n", v.Key, v.TextMapId)
-				continue
-			}
-			data.ArtifactNames[v.Key] = s
-		}
-		for _, v := range g.Enemies {
-			s, err := src.Get(v.NameTextHashMap)
-			if err != nil {
-				fmt.Printf("error getting string for enemy %v id %v\n", v.Key, v.NameTextHashMap)
-				continue
-			}
-			data.EnemyNames[v.Key] = s
-		}
-
 		out[k] = data
 	}
 

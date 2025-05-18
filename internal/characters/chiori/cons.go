@@ -180,6 +180,6 @@ func (c *char) c6NAIncrease(ai *combat.AttackInfo, snap *combat.Snapshot) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	ai.FlatDmg = snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
+	ai.FlatDmg = snap.Stats.TotalDEF()
 	ai.FlatDmg *= 2.35
 }

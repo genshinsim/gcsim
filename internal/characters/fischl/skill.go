@@ -26,6 +26,7 @@ const (
 	skillRecastCD    = 92 // 2f CD delay
 	skillRecastCDKey = "fischl-skill-recast-cd"
 	particleICDKey   = "fischl-particle-icd"
+	ozActiveKey      = "oz-active"
 )
 
 func init() {
@@ -134,7 +135,7 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 		c.ozActive = true
 		c.ozSource = c.Core.F
 		c.ozTickSrc = c.Core.F
-		c.ozActiveUntil = c.Core.F + dur
+		c.AddStatus(ozActiveKey, dur, false)
 		// queue up oz removal at the end of the duration for gcsl conditional
 		c.Core.Tasks.Add(c.removeOz(c.Core.F), dur)
 		ai := combat.AttackInfo{
@@ -162,7 +163,6 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 		c.Core.Tasks.Add(c.ozTick(c.Core.F), firstTick)
 		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index).
 			Write("source", src).
-			Write("expected end", c.ozActiveUntil).
 			Write("next expected tick", c.Core.F+60)
 	}
 	if ozSpawn > 0 {
@@ -178,10 +178,14 @@ func (c *char) ozTick(src int) func() {
 		if src != c.ozTickSrc {
 			return
 		}
+		if !c.StatusIsActive(ozActiveKey) {
+			return
+		}
+
 		c.Core.Log.NewEvent("Oz ticked", glog.LogCharacterEvent, c.Index).
 			Write("next expected tick", c.Core.F+60).
-			Write("active", c.ozActiveUntil).
 			Write("src", src)
+
 		// trigger damage
 		ae := c.ozSnapshot
 		ae.Pattern = combat.NewBoxHit(
@@ -193,10 +197,7 @@ func (c *char) ozTick(src int) func() {
 		)
 		c.Core.QueueAttackEvent(&ae, c.ozTravel)
 
-		// queue up next hit only if next hit oz is still active
-		if c.Core.F+ozTickInterval <= c.ozActiveUntil {
-			c.Core.Tasks.Add(c.ozTick(src), ozTickInterval)
-		}
+		c.Core.Tasks.Add(c.ozTick(src), ozTickInterval)
 	}
 }
 

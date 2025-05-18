@@ -42,6 +42,7 @@ type AttackInfo struct {
 	Mult             float64 // ability multiplier. could set to 0 from initial Mona dmg
 	StrikeType       attacks.StrikeType
 	UseDef           bool    // we use this instead of flatdmg to make sure stat snapshotting works properly
+	UseHP            bool    // we use this instead of flatdmg to make sure stat snapshotting works properly
 	FlatDmg          float64 // flat dmg;
 	IgnoreDefPercent float64 // by default this value is 0; if = 1 then the attack will ignore defense; raiden c2 should be set to 0.6 (i.e. ignore 60%)
 	IgnoreInfusion   bool
@@ -64,14 +65,8 @@ type AttackInfo struct {
 }
 
 type Snapshot struct {
-	CharLvl    int
-	ActorEle   attributes.Element
-	ExtraIndex int                             // this is currently purely for Kaeya icicle ICD
-	Cancelled  bool                            // set to true if this snap should be ignored
-	Stats      [attributes.EndStatType]float64 // total character stats including from artifact, bonuses, etc...
-	BaseAtk    float64                         // base attack used in calc
-	BaseDef    float64
-	BaseHP     float64
+	Stats   attributes.Stats // total character stats including from artifact, bonuses, etc...
+	CharLvl int
 
 	SourceFrame int           // frame snapshot was generated at
 	Logs        []interface{} // logs for the snapshot

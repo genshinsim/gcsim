@@ -56,7 +56,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		this := char
-		// start eye at hitmark only, eye dmg shouldn't be able to proc before the eye spawns
+		// starts 1s after cd delay
 		c.Core.Tasks.Add(func() {
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
@@ -69,7 +69,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 					return m, true
 				},
 			})
-		}, skillHitmark)
+		}, 6+60)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 6)
@@ -121,7 +121,9 @@ func (c *char) eyeOnDamage() {
 			return false
 		}
 		// ignore self dmg
-		if ae.Info.Abil == "Eye of Stormy Judgement" {
+		if ae.Info.ActorIndex == c.Index &&
+			ae.Info.AttackTag == attacks.AttackTagElementalArt &&
+			ae.Info.StrikeType == attacks.StrikeTypeSlash {
 			return false
 		}
 		// ignore 0 damage
