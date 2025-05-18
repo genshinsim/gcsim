@@ -90,7 +90,6 @@ func (c *char) queueSnacks() {
 		return 1
 	}
 	snackFunc := func() {
-
 		pos := c.calculateSnackSpawnLocation()
 
 		// randomize a bit the spawn location
