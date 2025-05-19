@@ -28,6 +28,9 @@ func (c *char) c1() {
 		if c.Index == atk.Info.ActorIndex {
 			return false
 		}
+		if c.Core.Player.Active() != atk.Info.ActorIndex {
+			return false
+		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
