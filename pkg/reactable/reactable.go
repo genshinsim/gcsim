@@ -46,7 +46,7 @@ var modifierElement = []attributes.Element{
 	attributes.Frozen,
 	attributes.Anemo,
 	attributes.Geo,
-	attributes.Pyro,
+	attributes.Burning,
 	attributes.UnknownElement,
 }
 
