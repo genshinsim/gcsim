@@ -46,7 +46,6 @@ var modifierElement = []attributes.Element{
 	attributes.Frozen,
 	attributes.Anemo,
 	attributes.Geo,
-	attributes.Burning,
 	attributes.UnknownElement,
 }
 
@@ -63,7 +62,6 @@ var ModifierString = []string{
 	"frozen",
 	"anemo",
 	"geo",
-	"burning",
 	"",
 }
 

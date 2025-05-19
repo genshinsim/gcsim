@@ -22,7 +22,6 @@ const (
 	Geo
 	NoElement
 	Physical
-	Burning
 	UnknownElement
 	EndEleType
 )
@@ -62,7 +61,6 @@ var ElementString = [...]string{
 	"geo",
 	"",
 	"physical",
-	"burning",
 	"unknown",
 }
 
