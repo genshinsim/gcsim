@@ -7353,7 +7353,7 @@
     ],
     "skill": [
       {
-        "ability": "Spirit Orb Hit",
+        "ability": "Spirit-Orb-Hit",
         "shape": "Single",
         "center": "GlobalValue",
         "notes": "Spawns on target Spirit Orb bounced to."
@@ -7361,14 +7361,14 @@
     ],
     "burst": [
       {
-        "ability": "Burst Cast",
+        "ability": "Burst-Cast",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 2.3,
         "radius": 6.5
       },
       {
-        "ability": "Soundwave Collision",
+        "ability": "Soundwave-Collision",
         "shape": "Circle",
         "center": "GlobalValue",
         "note": "This is an approximation because we do not actually know the real AoE. Based on Burst Cast position."
