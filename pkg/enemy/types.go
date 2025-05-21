@@ -49,6 +49,8 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 		enemyInfo.ParticleDropCount = profile.ParticleDropCount
 		enemyInfo.ParticleElement = profile.ParticleElement
 		enemyInfo.ParticleDrops = []*model.MonsterHPDrop{}
+	} else {
+		enemyInfo.ParticleElement = attributes.NoElement
 	}
 	*profile = enemyInfo
 	return nil
@@ -92,5 +94,6 @@ func getMonsterInfo(name string) (info.EnemyProfile, error) {
 		HpGrowCurve:   result.BaseStats.HpCurve,
 		Id:            int(result.Id),
 		MonsterName:   result.Key,
+		Element:       attributes.NoElement,
 	}, nil
 }
