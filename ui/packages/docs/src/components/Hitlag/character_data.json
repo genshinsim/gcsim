@@ -2829,6 +2829,22 @@
         "canBeDefenseHalt": false,
         "deployable": true
       }
+    ],
+    "burst": [
+      {
+        "ability": "Burst-Cast",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "Soundwave-Collision",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.02,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
     ]
   },
   "qiqi": {
