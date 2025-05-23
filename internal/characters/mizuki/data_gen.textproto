@@ -1,0 +1,144 @@
+id: 10000109
+key: "mizuki"
+rarity: QUALITY_ORANGE
+body: BODY_GIRL
+region: ASSOC_TYPE_INAZUMA
+element: Wind
+weapon_class: WEAPON_CATALYST
+icon_name: "UI_AvatarIcon_Mizuki"
+stats: {
+   base_hp: 991.4528
+   base_atk: 16.758
+   base_def: 58.93255
+   hp_curve: GROW_CURVE_HP_S5
+   atk_curve: GROW_CURVE_ATTACK_S5
+   def_cruve: GROW_CURVE_HP_S5
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ELEMENT_MASTERY
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 850.0811
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 50.5305
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 14.36742
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ELEMENT_MASTERY
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 1454.0862
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 86.43375
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 24.57585
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ELEMENT_MASTERY
+         value: 28.8
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2259.4263
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 134.30475
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 38.18709
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ELEMENT_MASTERY
+         value: 57.6
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2863.4312
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 170.208
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 48.39552
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ELEMENT_MASTERY
+         value: 57.6
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 3467.4363
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 206.11125
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 58.60395
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ELEMENT_MASTERY
+         value: 86.4
+      }
+   }
+   promo_data: {
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 4071.4412
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 242.0145
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 68.81238
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_ELEMENT_MASTERY
+         value: 115.2
+      }
+   }
+}
+skill_details: {
+   skill: 11092
+   burst: 11095
+   attack: 11091
+   burst_energy_cost: 60
+}
+name_text_hash_map: 3784387538
