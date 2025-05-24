@@ -171,7 +171,7 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 	x := ntof(objs[0].(*number))
-	y := ntof(objs[0].(*number))
+	y := ntof(objs[1].(*number))
 
 	e.Core.Combat.SetPlayerPos(geometry.Point{X: x, Y: y})
 	e.Core.Combat.Player().SetDirectionToClosestEnemy()
