@@ -46,6 +46,13 @@ func ntof(v *number) float64 {
 	return float64(v.ival)
 }
 
+func ntoi(v *number) int64 {
+	if v.isFloat {
+		return int64(v.fval)
+	}
+	return v.ival
+}
+
 func gt(l, r *number) *number {
 	return bton(ntof(l) > ntof(r))
 }
