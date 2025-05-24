@@ -181,18 +181,19 @@ const (
 	// typTerminate
 )
 
+var typStrings = map[ObjTyp]string{
+	typNull: "null",
+	typNum:  "number",
+	typStr:  "string",
+	typFun:  "function",
+	typBif:  "builtin_function",
+	typMap:  "map",
+	typRet:  "return",
+	typCtr:  "control",
+}
+
 func (o ObjTyp) String() string {
-	typeMap := map[ObjTyp]string{
-		typNull: "null",
-		typNum:  "number",
-		typStr:  "string",
-		typFun:  "function",
-		typBif:  "built-in function",
-		typMap:  "map",
-		typRet:  "return",
-		typCtr:  "control",
-	}
-	if name, ok := typeMap[o]; ok {
+	if name, ok := typStrings[o]; ok {
 		return name
 	}
 	return "unknown"
