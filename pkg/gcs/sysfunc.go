@@ -100,34 +100,20 @@ func (e *Eval) randnorm(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 	// wait(number goes in here)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for wait, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
 
-	n, ok := val.(*number)
-	if !ok {
-		return nil, fmt.Errorf("wait argument should evaluate to a number, got %v", val.Inspect())
-	}
-
-	f := int(n.ival)
-	if n.isFloat {
-		f = int(n.fval)
-	}
-
+	f := ntoi(objs[0].(*number))
 	if f < 0 {
 		// do nothing if less or equal to 0
-		return &number{}, nil
+		return &null{}, nil
 	}
 
 	e.sendWork(&action.Eval{
 		Action: action.ActionWait,
-		Param:  map[string]int{"f": f},
+		Param:  map[string]int{"f": int(f)},
 	})
 	// block until sim is done with the action; unless we're done
 	err = e.waitForNext()
@@ -135,39 +121,25 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 
-	return &number{}, nil
+	return &null{}, nil
 }
 
 func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
 	// delay(number goes in here)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for delay, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
 
-	n, ok := val.(*number)
-	if !ok {
-		return nil, fmt.Errorf("delay argument should evaluate to a number, got %v", val.Inspect())
-	}
-
-	f := int(n.ival)
-	if n.isFloat {
-		f = int(n.fval)
-	}
-
+	f := ntoi(objs[0].(*number))
 	if f < 0 {
 		// do nothing if less or equal to 0
-		return &number{}, nil
+		return &null{}, nil
 	}
 
 	e.sendWork(&action.Eval{
 		Action: action.ActionDelay,
-		Param:  map[string]int{"f": f},
+		Param:  map[string]int{"f": int(f)},
 	})
 	// block until sim is done with the action; unless we're done
 	err = e.waitForNext()
@@ -180,71 +152,26 @@ func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 	// type(var)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for type, expected 1 got %v", len(c.Args))
+	err := validateNumberParams(c, 1)
+	if err != nil {
+		return nil, err
 	}
 
 	t, err := e.evalExpr(c.Args[0], env)
 	if err != nil {
 		return nil, err
 	}
-
-	str := "unknown"
-	switch t.Typ() {
-	case typNull:
-		str = "null"
-	case typNum:
-		str = "number"
-	case typStr:
-		str = "string"
-	case typMap:
-		str = "map"
-	case typFun:
-		fallthrough
-	case typBif:
-		str = t.Inspect()
-	}
-
-	if e.Core == nil {
-		fmt.Println(str)
-	}
-
-	return &strval{str}, nil
+	return &strval{t.Typ().String()}, nil
 }
 
 func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	// set_player_pos(x, y)
-	if len(c.Args) != 2 {
-		return nil, fmt.Errorf("invalid number of params for set_player_pos, expected 2 got %v", len(c.Args))
-	}
-
-	t, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum, typNum)
 	if err != nil {
 		return nil, err
 	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_player_pos argument x coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be float
-	x := n.fval
-	if !n.isFloat {
-		x = float64(n.ival)
-	}
-
-	t, err = e.evalExpr(c.Args[1], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok = t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_player_pos argument y coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be float
-	y := n.fval
-	if !n.isFloat {
-		y = float64(n.ival)
-	}
+	x := ntof(objs[0].(*number))
+	y := ntof(objs[0].(*number))
 
 	e.Core.Combat.SetPlayerPos(geometry.Point{X: x, Y: y})
 	e.Core.Combat.Player().SetDirectionToClosestEnemy()
@@ -254,99 +181,52 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 	// set_particle_delay("character", x);
-	if len(c.Args) != 2 {
-		return nil, fmt.Errorf("invalid number of params for set_particle_delay, expected 2 got %v", len(c.Args))
-	}
-	t, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typStr, typNum)
 	if err != nil {
 		return nil, err
 	}
-	name, ok := t.(*strval)
-	if !ok {
-		return nil, fmt.Errorf("set_particle_delay first argument should evaluate to a string, got %v", t.Inspect())
-	}
+	name := objs[0].(*strval)
+	delay := ntoi(objs[1].(*number))
 
 	// check name exists on team
 	ck, ok := shortcut.CharNameToKey[name.str]
 	if !ok {
 		return nil, fmt.Errorf("set_particle_delay first argument %v is not a valid character", name.str)
 	}
-
 	char, ok := e.Core.Player.ByKey(ck)
 	if !ok {
 		return nil, fmt.Errorf("set_particle_delay: %v is not on this team", name.str)
 	}
 
-	t, err = e.evalExpr(c.Args[1], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_particle_delay second argument should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	delay := int(n.ival)
-	if n.isFloat {
-		delay = int(n.fval)
-	}
-	if delay < 0 {
-		delay = 0
-	}
+	char.ParticleDelay = int(delay)
 
-	char.ParticleDelay = delay
-
-	return &number{}, nil
+	return &null{}, nil
 }
 
 // Set SwapICD to any integer, to simulate booking. May be any non-negative integer.
 func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
-	// setSwapCD
-
-	// set_player_pos(x, y)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for set_swap_icd, expected 1 got %v", len(c.Args))
-	}
-
-	t, err := e.evalExpr(c.Args[0], env)
+	// set_swap_icd(f)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_swap_icd argument x coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	x := int(n.ival)
-	if n.isFloat {
-		x = int(n.fval)
+	f := ntoi(objs[0].(*number))
+
+	if f < 0 {
+		return nil, fmt.Errorf("invald value for set_swap_icd, expected non-negative integer, got %v", f)
 	}
 
-	if x < 0 {
-		return nil, fmt.Errorf("invald value for swap icd, expected non-negative integer, got %v", x)
-	}
-
-	e.Core.Player.SetSwapICD(x)
+	e.Core.Player.SetSwapICD(int(f))
 	return &null{}, nil
 }
 
 func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for set_default_target, expected 1 got %v", len(c.Args))
-	}
-	t, err := e.evalExpr(c.Args[0], env)
+	// set_default_target(index)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_default_target argument should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	idx := int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
+	idx := int(ntoi(objs[0].(*number)))
 
 	// check if index is in range
 	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
@@ -361,52 +241,13 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	// set_target_pos(1,x,y)
-	if len(c.Args) != 3 {
-		return nil, fmt.Errorf("invalid number of params for set_target_pos, expected 3 got %v", len(c.Args))
-	}
-
-	// all 3 param should eval to numbers
-	t, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum, typNum, typNum)
 	if err != nil {
 		return nil, err
 	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_target_pos argument target index should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	idx := int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
-
-	t, err = e.evalExpr(c.Args[1], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok = t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_target_pos argument x coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be float
-	x := n.fval
-	if !n.isFloat {
-		x = float64(n.ival)
-	}
-
-	t, err = e.evalExpr(c.Args[2], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok = t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_target_pos argument y coord should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be float
-	y := n.fval
-	if !n.isFloat {
-		y = float64(n.ival)
-	}
+	idx := int(ntoi(objs[0].(*number)))
+	x := ntof(objs[1].(*number))
+	y := ntof(objs[2].(*number))
 
 	// check if index is in range
 	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
@@ -425,23 +266,11 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, errors.New("damage mode is not activated")
 	}
 
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for kill_target, expected 1 got %v", len(c.Args))
-	}
-
-	t, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("kill_target argument target index should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	idx := int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
+	idx := int(ntoi(objs[0].(*number)))
 
 	// check if index is in range
 	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
@@ -459,45 +288,27 @@ func (e *Eval) isTargetDead(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, errors.New("damage mode is not activated")
 	}
 
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for is_target_dead, expected 1 got %v", len(c.Args))
-	}
-
-	t, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("is_target_dead argument target index should evaluate to a number, got %v", t.Inspect())
-	}
-	// n should be int
-	idx := int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
+	idx := int(ntoi(objs[0].(*number)))
 
 	// check if index is in range
 	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
 		return nil, fmt.Errorf("index for is_target_dead is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
-	return bton(!e.Core.Combat.Enemies()[idx-1].IsAlive()), nil
+	return bton(!e.Core.Combat.Enemy(idx - 1).IsAlive()), nil
 }
 
 func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 	// pick_up_crystallize("element");
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for pick_up_crystallize, expected 1 got %v", len(c.Args))
-	}
-	t, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typStr)
 	if err != nil {
 		return nil, err
 	}
-	name, ok := t.(*strval)
-	if !ok {
-		return nil, fmt.Errorf("pick_up_crystallize argument element should evaluate to a string, got %v", t.Inspect())
-	}
+	name := objs[0].(*strval)
 
 	// check if element is vaild
 	pickupEle := attributes.StringToEle(name.str)
@@ -530,52 +341,22 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) isEven(c *ast.CallExpr, env *Env) (Obj, error) {
 	// is_even(number goes in here)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for is_even, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
-
-	n, ok := val.(*number)
-	if !ok {
-		return nil, fmt.Errorf("is_even argument should evaluate to a number, got %v", val.Inspect())
-	}
-
-	// if float, floor it
-	var v int64
-	v = n.ival
-	if n.isFloat {
-		v = int64(n.fval)
-	}
-
-	if v%2 == 0 {
-		return bton(true), nil
-	}
-	return bton(false), nil
+	v := ntoi(objs[0].(*number))
+	return bton(v%2 == 0), nil
 }
 
 func (e *Eval) sin(c *ast.CallExpr, env *Env) (Obj, error) {
 	// sin(number goes in here)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for sin, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
+	v := ntof(objs[0].(*number))
 
-	n, ok := val.(*number)
-	if !ok {
-		return nil, fmt.Errorf("sin argument should evaluate to a number, got %v", val.Inspect())
-	}
-
-	v := ntof(n)
 	return &number{
 		fval:    math.Sin(v),
 		isFloat: true,
@@ -584,22 +365,12 @@ func (e *Eval) sin(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) cos(c *ast.CallExpr, env *Env) (Obj, error) {
 	// cos(number goes in here)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for cos, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
+	v := ntof(objs[0].(*number))
 
-	n, ok := val.(*number)
-	if !ok {
-		return nil, fmt.Errorf("cos argument should evaluate to a number, got %v", val.Inspect())
-	}
-
-	v := ntof(n)
 	return &number{
 		fval:    math.Cos(v),
 		isFloat: true,
@@ -608,22 +379,12 @@ func (e *Eval) cos(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) asin(c *ast.CallExpr, env *Env) (Obj, error) {
 	// asin(number goes in here)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for asin, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
+	v := ntof(objs[0].(*number))
 
-	n, ok := val.(*number)
-	if !ok {
-		return nil, fmt.Errorf("asin argument should evaluate to a number, got %v", val.Inspect())
-	}
-
-	v := ntof(n)
 	return &number{
 		fval:    math.Asin(v),
 		isFloat: true,
@@ -632,22 +393,12 @@ func (e *Eval) asin(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) acos(c *ast.CallExpr, env *Env) (Obj, error) {
 	// acos(number goes in here)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for acos, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum)
 	if err != nil {
 		return nil, err
 	}
+	v := ntof(objs[0].(*number))
 
-	n, ok := val.(*number)
-	if !ok {
-		return nil, fmt.Errorf("acos argument should evaluate to a number, got %v", val.Inspect())
-	}
-
-	v := ntof(n)
 	return &number{
 		fval:    math.Acos(v),
 		isFloat: true,
@@ -656,22 +407,19 @@ func (e *Eval) acos(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 	// set_on_tick(func)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for set_on_tick, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a function
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typFun)
 	if err != nil {
 		return nil, err
 	}
-	if val.Typ() != typFun {
-		return nil, fmt.Errorf("set_on_tick argument should evaluate to a function, got %v", val.Inspect())
-	}
+	fn := objs[0].(*funcval)
 
-	fn := val.(*funcval)
 	e.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
-		e.evalNode(fn.Body, env)
+		_, err := e.evalNode(fn.Body, env)
+		if err != nil {
+			// handle the error
+			e.err = err
+		}
+
 		return false
 	}, "sysfunc-ontick")
 	return &null{}, nil
@@ -679,40 +427,15 @@ func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	// execute_action(char, action, params)
-	if len(c.Args) != 3 {
-		return nil, fmt.Errorf("invalid number of params for execute_action, expected 3 got %v", len(c.Args))
-	}
-
-	// char
-	val, err := e.evalExpr(c.Args[0], env)
+	objs, err := e.validateArguments(c, env, typNum, typNum, typMap)
 	if err != nil {
 		return nil, err
 	}
-	if val.Typ() != typNum {
-		return nil, fmt.Errorf("execute_action argument char should evaluate to a number, got %v", val.Inspect())
-	}
-	char := val.(*number)
+	char := objs[0].(*number)
+	ac := objs[1].(*number)
+	p := objs[2].(*mapval)
 
-	// action
-	val, err = e.evalExpr(c.Args[1], env)
-	if err != nil {
-		return nil, err
-	}
-	if val.Typ() != typNum {
-		return nil, fmt.Errorf("execute_action argument action should evaluate to a number, got %v", val.Inspect())
-	}
-	ac := val.(*number)
-
-	// params
-	val, err = e.evalExpr(c.Args[2], env)
-	if err != nil {
-		return nil, err
-	}
-	if val.Typ() != typMap {
-		return nil, fmt.Errorf("execute_action argument params should evaluate to a map, got %v", val.Inspect())
-	}
-
-	p := val.(*mapval)
+	// convert map
 	params := make(map[string]int)
 	for k, v := range p.fields {
 		if v.Typ() != typNum {
