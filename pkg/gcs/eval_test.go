@@ -35,7 +35,7 @@ func TestType(t *testing.T) {
 	}
 	result := <-resultChan
 	if result.Typ() != typStr {
-		t.Errorf("expecting type to return string, got %v", result.Typ().String())
+		t.Errorf("expecting type to return string, got %v", result.Typ())
 	}
 	if eval.Err() != nil {
 		t.Error(eval.Err())
