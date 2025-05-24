@@ -1,5 +1,6 @@
 package event
 
+//go:generate enumer -type=Event
 type Event int
 
 const (
