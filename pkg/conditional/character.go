@@ -82,7 +82,7 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 	case "bol":
 		return char.CurrentHPDebt(), nil
 	case "bolratio":
-		return char.CurrentHPDebt() / char.MaxHP(), nil
+		return char.CurrentHPDebtRatio(), nil
 	case "sets":
 		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err

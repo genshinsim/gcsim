@@ -89,6 +89,18 @@ func (c *char) a4Init() {
 	}
 	c.a4stacks = stacks.NewMultipleRefreshNoRemove(2, c.QueueCharTask, &c.Core.F)
 	c.a4bonus = make([]float64, attributes.EndStatType)
+	c.prevHpDebt = c.CurrentHPDebtRatio()
+
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+		index := args[0].(int)
+		amount := -args[1].(float64)
+		if c.Index != index {
+			return false
+		}
+		c.a4(amount)
+		c.prevHpDebt = c.CurrentHPDebtRatio()
+		return false
+	}, "clorinde-a4")
 }
 
 func (c *char) a4(change float64) {
@@ -96,7 +108,7 @@ func (c *char) a4(change float64) {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	if c.currentHPDebtRatio() < 1 {
+	if c.prevHpDebt < 1 {
 		return
 	}
 	if math.Abs(change) < tolerance {
