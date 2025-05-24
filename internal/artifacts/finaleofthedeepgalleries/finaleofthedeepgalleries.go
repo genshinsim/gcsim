@@ -15,6 +15,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	normalDebuffKey = "deep-galleries-4pc-normal-debuff"
+	burstDebuffKey  = "deep-galleries-4pc-burst-debuff"
+)
+
 func init() {
 	core.RegisterSetFunc(keys.FinaleOfTheDeepGalleries, NewSet)
 }
@@ -23,10 +28,8 @@ type Set struct {
 	Index int
 	Count int
 
-	c                 *core.Core
-	char              *character.CharWrapper
-	procNormalExpireF int
-	procBurstExpireF  int
+	c    *core.Core
+	char *character.CharWrapper
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
@@ -82,10 +85,10 @@ func (s *Set) pc4() {
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
-			if atk.Info.AttackTag == attacks.AttackTagNormal && s.c.F < s.procNormalExpireF {
+			if atk.Info.AttackTag == attacks.AttackTagNormal && s.char.StatusIsActive(normalDebuffKey) {
 				return nil, false
 			}
-			if atk.Info.AttackTag == attacks.AttackTagElementalBurst && s.c.F < s.procBurstExpireF {
+			if atk.Info.AttackTag == attacks.AttackTagElementalBurst && s.char.StatusIsActive(burstDebuffKey) {
 				return nil, false
 			}
 			return m, true
@@ -98,19 +101,19 @@ func (s *Set) pc4() {
 		if atk.Info.ActorIndex != s.char.Index {
 			return false
 		}
-		// If this is not a normal attack then ignore
+		// If this is not a normal attack or elemental burst then ignore
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 			return false
 		}
 
 		if atk.Info.AttackTag == attacks.AttackTagNormal {
-			s.procBurstExpireF = s.c.F + procDurBurst
+			s.char.AddStatus(burstDebuffKey, procDurBurst, true)
 			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index).
-				Write("burst_buff_stop_expiry", s.procBurstExpireF)
+				Write("burst_buff_stop_expiry", s.c.F+procDurBurst)
 		} else {
-			s.procNormalExpireF = s.c.F + procDurNormal
+			s.char.AddStatus(normalDebuffKey, procDurNormal, true)
 			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index).
-				Write("normal_buff_stop_expiry", s.procNormalExpireF)
+				Write("normal_buff_stop_expiry", s.c.F+procDurNormal)
 		}
 		return false
 	}, fmt.Sprintf("deep-galleries-4pc-%v", s.char.Base.Key.String()))
