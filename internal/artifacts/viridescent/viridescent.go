@@ -53,7 +53,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		Base: modifier.NewBase("vv-4pc", -1),
 		Amount: func(ai combat.AttackInfo) (float64, bool) {
 			// check to make sure this is not an amped swirl
-			if ai.Amped {
+			if ai.Amped || ai.Catalyzed {
 				return 0, false
 			}
 			switch ai.AttackTag {
