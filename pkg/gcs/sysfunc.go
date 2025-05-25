@@ -147,7 +147,7 @@ func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 
-	return &number{}, nil
+	return &null{}, nil
 }
 
 func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
