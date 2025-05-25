@@ -54,7 +54,7 @@ func newSnack(c *char, pos geometry.Point) *snack {
 	p.Gadget.CollidableTypes[targets.TargettablePlayer] = true
 	p.Gadget.OnExpiry = func() {
 		p.explodeWithHitmark(snackHitmark)
-		p.char.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index)
+		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index)
 	}
 	p.Gadget.OnCollision = func(target combat.Target) {
 		if _, ok := target.(*avatar.Player); !ok {
@@ -76,14 +76,14 @@ func newSnack(c *char, pos geometry.Point) *snack {
 		p.onPickedUp()
 	}
 
-	p.char.Core.Log.NewEvent("Snack spawned", glog.LogCharacterEvent, c.Index).
+	p.Core.Log.NewEvent("Snack spawned", glog.LogCharacterEvent, c.Index).
 		Write("x", pos.X).
 		Write("y", pos.Y)
 	return p
 }
 
 func (p *snack) collidesWithActiveCharacterDefaultSize() bool {
-	return p.char.Core.Combat.Player().WillCollide(geometry.NewCircle(p.Gadget.Pos(), snackSize, geometry.DefaultDirection(), 360))
+	return p.Core.Combat.Player().WillCollide(geometry.NewCircle(p.Gadget.Pos(), snackSize, geometry.DefaultDirection(), 360))
 }
 
 func (p *snack) onPickedUp() {
@@ -91,7 +91,7 @@ func (p *snack) onPickedUp() {
 	dmg := false
 
 	mizuki := p.char
-	activeChar := p.char.Core.Player.ActiveChar()
+	activeChar := p.Core.Player.ActiveChar()
 
 	// C4 triggers both DMG and Heal
 	if mizuki.Base.Cons >= 4 {
@@ -104,7 +104,7 @@ func (p *snack) onPickedUp() {
 	}
 
 	mizuki.Core.Tasks.Add(func() {
-		p.char.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index).
+		p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index).
 			Write("heal", heal).
 			Write("dmg", dmg)
 
@@ -143,7 +143,7 @@ func (p *snack) explode() {
 }
 
 func (p *snack) explodeWithHitmark(hitmark int) {
-	p.char.Core.QueueAttackWithSnap(p.attackInfo, p.snapshot, p.pattern, hitmark)
+	p.Core.QueueAttackWithSnap(p.attackInfo, p.snapshot, p.pattern, hitmark)
 }
 
 func (p *snack) HandleAttack(atk *combat.AttackEvent) float64 {

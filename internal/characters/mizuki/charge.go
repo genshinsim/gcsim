@@ -14,10 +14,13 @@ var chargeFrames []int
 const chargeHitmark = 39
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(62)
+	chargeFrames = frames.InitAbilSlice(81) // CA -> Walk
+	chargeFrames[action.ActionAttack] = 62
+	chargeFrames[action.ActionCharge] = 62
+	chargeFrames[action.ActionSkill] = 62
+	chargeFrames[action.ActionBurst] = 60
 	chargeFrames[action.ActionDash] = 37
 	chargeFrames[action.ActionJump] = 37
-	chargeFrames[action.ActionWalk] = 81
 	chargeFrames[action.ActionSwap] = 64
 }
 
@@ -25,15 +28,16 @@ func init() {
 // CA has no travel time
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charge",
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Anemo,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
+		ActorIndex:   c.Index,
+		Abil:         "Charge",
+		AttackTag:    attacks.AttackTagExtra,
+		ICDTag:       attacks.ICDTagNone,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeDefault,
+		Element:      attributes.Anemo,
+		Durability:   25,
+		Mult:         charge[c.TalentLvlAttack()],
+		HitlagFactor: 0.05,
 	}
 
 	// CA windup on idle
@@ -54,7 +58,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
-		CanQueueAfter:   chargeHitmark - windup,
+		CanQueueAfter:   chargeFrames[action.ActionDash] - windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }

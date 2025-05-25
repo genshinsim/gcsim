@@ -35,11 +35,13 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(93)
-	burstFrames[action.ActionCharge] = 92 // Q -> CA
-	burstFrames[action.ActionDash] = 91   // Q -> D
-	burstFrames[action.ActionWalk] = 92   // Q -> Walk
-	burstFrames[action.ActionSwap] = 94   // Q -> Swap
+	burstFrames = frames.InitAbilSlice(94) // Q -> Swap
+	burstFrames[action.ActionAttack] = 93
+	burstFrames[action.ActionCharge] = 92
+	burstFrames[action.ActionSkill] = 93
+	burstFrames[action.ActionDash] = 91
+	burstFrames[action.ActionJump] = 93
+	burstFrames[action.ActionWalk] = 92
 }
 
 // Summons forth countless lovely dreams and nightmares that pull in nearby objects and opponents,
@@ -47,16 +49,17 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Activation dmg
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       burstActivationDmgName,
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Anemo,
-		Durability: burstDurability,
-		PoiseDMG:   burstPoise,
-		Mult:       burstDMG[c.TalentLvlBurst()],
+		ActorIndex:   c.Index,
+		Abil:         burstActivationDmgName,
+		AttackTag:    attacks.AttackTagElementalBurst,
+		ICDTag:       attacks.ICDTagNone,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeDefault,
+		Element:      attributes.Anemo,
+		Durability:   burstDurability,
+		PoiseDMG:     burstPoise,
+		Mult:         burstDMG[c.TalentLvlBurst()],
+		HitlagFactor: 0.05,
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, burstRadius), burstHitmark, burstHitmark)
@@ -76,7 +79,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap],
+		CanQueueAfter:   burstFrames[action.ActionDash],
 		State:           action.BurstState,
 	}, nil
 }
