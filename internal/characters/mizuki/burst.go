@@ -118,9 +118,10 @@ func (c *char) calculateSnackSpawnLocation() geometry.Point {
 	finalPosition := playerPos
 
 	// find the closest enemy
-	target := c.Core.Combat.ClosestEnemyWithinArea(combat.AttackPattern{
-		Shape: geometry.NewCircle(playerPos, snackSpawnOnEnemyRadius, geometry.DefaultDirection(), 360),
-	}, nil)
+	target := c.Core.Combat.ClosestEnemyWithinArea(
+		combat.NewCircleHitOnTarget(playerPos, nil, snackSpawnOnEnemyRadius),
+		nil,
+	)
 
 	// if enemy is found use this, otherwise use the player position
 	if target != nil {

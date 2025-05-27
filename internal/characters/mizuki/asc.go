@@ -17,6 +17,8 @@ const (
 	a1ICD                         = 0.3 * 60
 	a4Duration                    = 4 * 60
 	a4Key                         = "mizuki-a4"
+	a4ICDKey                      = "mizuki-a4-icd"
+	a4ICD                         = 0.3 * 60
 	a4EMBuff                      = 100
 	dreamDrifterExtensions        = 2
 	dreamDrifterDurationExtension = 2.5 * 60
@@ -97,19 +99,29 @@ func (c *char) a4() {
 			return false
 		}
 
-		// is there any ICD?
-		element := atk.Info.Element
+		// ICD
+		if c.StatusIsActive(a4ICDKey) {
+			return false
+		}
+		c.AddStatus(a4ICDKey, a4ICD, true)
 
 		// Only when enemy is hit by Pyro, Hydro, Cryo, Electro
-		if element == attributes.Electro || element == attributes.Hydro || element == attributes.Pyro || element == attributes.Cryo {
-			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(a4Key, a4Duration), // 4s
-				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return c.a4Buff, true
-				},
-			})
+		switch atk.Info.Element {
+		case attributes.Electro:
+		case attributes.Hydro:
+		case attributes.Pyro:
+		case attributes.Cryo:
+		default:
+			return false
 		}
+
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(a4Key, a4Duration), // 4s
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return c.a4Buff, true
+			},
+		})
 
 		return false
 	}

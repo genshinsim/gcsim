@@ -18,6 +18,7 @@ type char struct {
 	particleGenerationsRemaining    int
 	dreamDrifterExtensionsRemaining int
 	a4Buff                          []float64
+	c1EM                            float64
 	c2Buff                          []float64
 	c4EnergyGenerationsRemaining    int
 }

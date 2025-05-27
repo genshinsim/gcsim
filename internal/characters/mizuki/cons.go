@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -17,9 +16,10 @@ const (
 	c1Interval          = 3.5 * 60
 	c1Duration          = 3 * 60
 	c1Multiplier        = 11.0
-	c1Range             = 30
+	c1Range             = 12
 	c2Key               = "mizuki-c2"
 	c2EMMultiplier      = 0.0004
+	c2Interval          = 0.5 * 60
 	c4EnergyGenerations = 4
 	c4Key               = "mizuki-c4"
 	c4Energy            = 5
@@ -38,13 +38,13 @@ func (c *char) c1() {
 	}
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*combat.AttackEvent)
-		if _, ok := args[0].(*enemy.Enemy); !ok {
+		if !ok {
 			return false
 		}
 
 		// Check if enemy has the debuff
-		e := args[0].(*enemy.Enemy)
 		if !e.StatusIsActive(c1Key) {
 			return false
 		}
@@ -64,7 +64,7 @@ func (c *char) c1() {
 			return false
 		}
 
-		additionalDmg := c1Multiplier * c.Stat(attributes.EM)
+		additionalDmg := c1Multiplier * c.c1EM
 
 		c.Core.Log.NewEvent("mizuki c1 proc", glog.LogPreDamageMod, atk.Info.ActorIndex).
 			Write("before", atk.Info.FlatDmg).
@@ -88,11 +88,8 @@ func (c *char) applyC1Effect() {
 			return
 		}
 
-		// The range cannot be determined exactly, but from testing it seems that it is at least 25 meters or more.
-		// For simulation purposes we can assume a bit more than that.
-		area := combat.AttackPattern{
-			Shape: geometry.NewCircle(c.Core.Combat.Player().Pos(), c1Range, geometry.DefaultDirection(), 360),
-		}
+		c.c1EM = c.Stat(attributes.EM)
+		area := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, c1Range)
 		for _, target := range c.Core.Combat.EnemiesWithinArea(area, nil) {
 			if e, ok := target.(*enemy.Enemy); ok {
 				// is it even possible to verify if it is affected by hitlag?
@@ -115,6 +112,7 @@ func (c *char) c2() {
 	}
 
 	c.c2Buff = make([]float64, attributes.EndStatType)
+	c.c2UpdateTask()
 
 	for _, char := range c.Core.Player.Chars() {
 		if char.Index == c.Index {
@@ -127,14 +125,39 @@ func (c *char) c2() {
 				if !c.StatusIsActive(dreamDrifterStateKey) {
 					return nil, false
 				}
-				dmgBonus := c.Stat(attributes.EM) * c2EMMultiplier
-				c.c2Buff[attributes.PyroP] = dmgBonus
-				c.c2Buff[attributes.HydroP] = dmgBonus
-				c.c2Buff[attributes.ElectroP] = dmgBonus
-				c.c2Buff[attributes.CryoP] = dmgBonus
 				return c.c2Buff, true
 			},
 		})
+	}
+}
+
+func (c *char) c2UpdateTask() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	c.QueueCharTask(func() {
+		dmgBonus := c.NonExtraStat(attributes.EM) * c2EMMultiplier
+		c.c2Buff[attributes.PyroP] = dmgBonus
+		c.c2Buff[attributes.HydroP] = dmgBonus
+		c.c2Buff[attributes.ElectroP] = dmgBonus
+		c.c2Buff[attributes.CryoP] = dmgBonus
+
+		c.c2UpdateTask()
+	}, c2Interval)
+}
+
+// Picking up a Yumemi Style Special Snack from the Elemental Burst Anraku Secret Spring Therapy will both deal DMG
+// and heal, and will restore 5 Energy to Yumemizuki Mizuki. Energy can be restored this way 4 times per Anraku
+// Secret Spring Therapy duration.
+func (c *char) c4() {
+	if c.Base.Cons < 4 {
+		return
+	}
+
+	if c.c4EnergyGenerationsRemaining > 0 {
+		c.c4EnergyGenerationsRemaining--
+		c.AddEnergy(c4Key, c4Energy)
 	}
 }
 

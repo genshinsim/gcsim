@@ -14,34 +14,38 @@ import (
 
 const (
 	snackDuration             = 4 * 60
-	snackSize                 = 2
+	snackSize                 = 2.5
 	snackSizeMizukiMultiplier = 1.75 // Assumption
+	snackCantTriggerDuration  = 0.3 * 60
 )
 
 type snack struct {
 	*gadget.Gadget
-	char       *char
-	attackInfo combat.AttackInfo
-	snapshot   combat.Snapshot
-	pattern    combat.AttackPattern
+	char         *char
+	attackInfo   combat.AttackInfo
+	snapshot     combat.Snapshot
+	pattern      combat.AttackPattern
+	allowPickupF int
 }
 
 func newSnack(c *char, pos geometry.Point) *snack {
 	p := &snack{
 		char: c,
 		attackInfo: combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       snackDmgName,
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Anemo,
-			Durability: snackDurability,
-			PoiseDMG:   snackPoise,
-			Mult:       snackDMG[c.TalentLvlBurst()],
+			ActorIndex:   c.Index,
+			Abil:         snackDmgName,
+			AttackTag:    attacks.AttackTagElementalBurst,
+			ICDTag:       attacks.ICDTagElementalBurst,
+			ICDGroup:     attacks.ICDGroupDefault,
+			StrikeType:   attacks.StrikeTypeDefault,
+			Element:      attributes.Anemo,
+			Durability:   snackDurability,
+			PoiseDMG:     snackPoise,
+			Mult:         snackDMG[c.TalentLvlBurst()],
+			HitlagFactor: 0.05,
 		},
-		pattern: combat.NewCircleHitOnTarget(pos, nil, snackDmgRadius),
+		pattern:      combat.NewCircleHitOnTarget(pos, nil, snackDmgRadius),
+		allowPickupF: c.Core.F + snackCantTriggerDuration,
 	}
 	p.snapshot = c.Snapshot(&p.attackInfo)
 
@@ -53,11 +57,14 @@ func newSnack(c *char, pos geometry.Point) *snack {
 
 	p.Gadget.CollidableTypes[targets.TargettablePlayer] = true
 	p.Gadget.OnExpiry = func() {
-		p.explodeWithHitmark(snackHitmark)
+		p.explode()
 		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index)
 	}
 	p.Gadget.OnCollision = func(target combat.Target) {
 		if _, ok := target.(*avatar.Player); !ok {
+			return
+		}
+		if p.Core.F < p.allowPickupF {
 			return
 		}
 
@@ -103,38 +110,32 @@ func (p *snack) onPickedUp() {
 		heal = !dmg
 	}
 
-	mizuki.Core.Tasks.Add(func() {
-		p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index).
-			Write("heal", heal).
-			Write("dmg", dmg)
+	p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index).
+		Write("heal", heal).
+		Write("dmg", dmg)
 
-		if dmg {
-			p.explode()
-		}
+	if dmg {
+		p.explode()
+	}
 
-		if heal {
-			// Heals double the amount on Mizuki
-			healMultiplier := 1.0
-			if activeChar.Index == mizuki.Index {
-				healMultiplier = 2.0
-			}
-			mizuki.Core.Player.Heal(info.HealInfo{
-				Caller:  mizuki.Index,
-				Target:  activeChar.Index,
-				Message: snackHealName,
-				Src:     ((mizuki.Stat(attributes.EM) * snackHealEM[mizuki.TalentLvlBurst()]) + snackHealFlat[mizuki.TalentLvlBurst()]) * healMultiplier,
-				Bonus:   mizuki.Stat(attributes.Heal),
-			})
+	if heal {
+		// Heals double the amount on Mizuki
+		healMultiplier := 1.0
+		if activeChar.Index == mizuki.Index {
+			healMultiplier = 2.0
 		}
+		mizuki.Core.Player.Heal(info.HealInfo{
+			Caller:  mizuki.Index,
+			Target:  activeChar.Index,
+			Message: snackHealName,
+			Src:     ((mizuki.Stat(attributes.EM) * snackHealEM[mizuki.TalentLvlBurst()]) + snackHealFlat[mizuki.TalentLvlBurst()]) * healMultiplier,
+			Bonus:   mizuki.Stat(attributes.Heal),
+		})
+	}
 
-		// C4 restores 5 energy to mizuki up to 4 times
-		if mizuki.Base.Cons >= 4 {
-			if mizuki.c4EnergyGenerationsRemaining > 0 {
-				mizuki.c4EnergyGenerationsRemaining--
-				mizuki.AddEnergy(c4Key, c4Energy)
-			}
-		}
-	}, snackHitmark)
+	// C4 restores 5 energy to mizuki up to 4 times
+	mizuki.c4()
+
 	p.Kill()
 }
 

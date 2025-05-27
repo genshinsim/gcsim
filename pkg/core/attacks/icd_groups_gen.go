@@ -170,8 +170,8 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupLyneyExtra] = []float64{1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupMizukiSkill] = 72
-	ICDGroupEleApplicationSequence[ICDGroupMizukiSkill] = []float64{1, 0}
-	ICDGroupDamageSequence[ICDGroupMizukiSkill] = []float64{1, 1}
+	ICDGroupEleApplicationSequence[ICDGroupMizukiSkill] = []float64{1, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupMizukiSkill] = []float64{1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupNahidaSkill] = 60
 	ICDGroupEleApplicationSequence[ICDGroupNahidaSkill] = []float64{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
