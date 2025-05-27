@@ -88,8 +88,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		activationAttack,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
+		combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			nil,
 			skillActivateDmgRadius,

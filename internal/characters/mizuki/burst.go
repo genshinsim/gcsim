@@ -22,15 +22,8 @@ const (
 	burstEnergyDrainDelay      = 4
 	burstCd                    = 15 * 60
 	burstRadius                = 8
-	snackDmgName               = "Munen Shockwave"
-	snackHealName              = "Snack Pick-Up"
 	snackInterval              = 1.5 * 60
-	snackHitmark               = 22
-	snackDurability            = 25
-	snackPoise                 = 30
-	snackDmgRadius             = 4
-	snackHealTriggerHpRatio    = 0.7
-	snackSpawnOnEnemyRadius    = 6 // assumption
+	snackSpawnOnEnemyRadius    = 6
 	snackSpawnLocationVariance = 1.0
 )
 
@@ -105,8 +98,7 @@ func (c *char) queueSnacks() {
 	// Spawn timer starts at burst hitmark
 	spawnTime := burstHitmark
 	for i := int(snackInterval); i <= burstDuration; i += snackInterval {
-		spawnTime += snackInterval
-		c.Core.Tasks.Add(snackFunc, spawnTime)
+		c.Core.Tasks.Add(snackFunc, spawnTime+i)
 	}
 }
 

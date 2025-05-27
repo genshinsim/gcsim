@@ -13,6 +13,11 @@ import (
 )
 
 const (
+	snackDmgName              = "Munen Shockwave"
+	snackHealName             = "Snack Pick-Up"
+	snackDurability           = 25
+	snackDmgRadius            = 4
+	snackHealTriggerHpRatio   = 0.7
 	snackDuration             = 4 * 60
 	snackSize                 = 2.5
 	snackSizeMizukiMultiplier = 1.75 // Assumption
@@ -40,7 +45,6 @@ func newSnack(c *char, pos geometry.Point) *snack {
 			StrikeType:   attacks.StrikeTypeDefault,
 			Element:      attributes.Anemo,
 			Durability:   snackDurability,
-			PoiseDMG:     snackPoise,
 			Mult:         snackDMG[c.TalentLvlBurst()],
 			HitlagFactor: 0.05,
 		},
