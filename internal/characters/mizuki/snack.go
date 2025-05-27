@@ -98,8 +98,8 @@ func (p *snack) collidesWithActiveCharacterDefaultSize() bool {
 }
 
 func (p *snack) onPickedUp() {
-	heal := false
-	dmg := false
+	var heal bool
+	var dmg bool
 
 	mizuki := p.char
 	activeChar := p.Core.Player.ActiveChar()
