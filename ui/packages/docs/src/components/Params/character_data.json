@@ -917,6 +917,18 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "mizuki": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time for Continuous Attack. Default 30 frames."
+    }
+  ],
   "mona": [
     {
       "ability": "dash",
