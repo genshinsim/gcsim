@@ -33,6 +33,7 @@ const (
 	Diona
 	Dori
 	Emilie
+	Escoffier
 	Eula
 	Faruzan
 	Fischl
@@ -206,6 +207,10 @@ func init() {
 	charNames[Emilie] = "emilie"
 	charPrettyName[Emilie] = "Emilie"
 	CharKeyToEle[Emilie] = attributes.Dendro
+
+	charNames[Escoffier] = "escoffier"
+	charPrettyName[Escoffier] = "Escoffier"
+	CharKeyToEle[Escoffier] = attributes.Cryo
 
 	charNames[Eula] = "eula"
 	charPrettyName[Eula] = "Eula"
