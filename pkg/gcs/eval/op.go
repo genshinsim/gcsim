@@ -1,4 +1,4 @@
-package gcs
+package eval
 
 func otob(v Obj) bool {
 	switch x := v.(type) {

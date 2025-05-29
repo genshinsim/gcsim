@@ -8,8 +8,8 @@ import (
 func TestFields(t *testing.T) {
 	input := `if .status.field > 0 { print("hi") };`
 
-	l := lex(input)
-	for n := l.nextItem(); n.Typ != itemEOF; n = l.nextItem() {
+	l := NewLexer(input)
+	for n := l.NextItem(); n.Typ != ItemEOF; n = l.NextItem() {
 		fmt.Println(n)
 	}
 }
@@ -49,124 +49,124 @@ func TestBasicToken(t *testing.T) {
 
 	expected := []Token{
 		// function
-		{Typ: keywordLet, Val: "let"},
-		{Typ: itemIdentifier, Val: "y"},
-		{Typ: itemAssign, Val: "="},
-		{Typ: keywordFn, Val: "fn"},
-		{Typ: itemLeftParen, Val: "("},
-		{Typ: itemIdentifier, Val: "x"},
+		{Typ: KeywordLet, Val: "let"},
+		{Typ: ItemIdentifier, Val: "y"},
+		{Typ: ItemAssign, Val: "="},
+		{Typ: KeywordFn, Val: "fn"},
+		{Typ: ItemLeftParen, Val: "("},
+		{Typ: ItemIdentifier, Val: "x"},
 		// {typ: typeNum, Val: "num"},
-		{Typ: itemRightParen, Val: ")"},
+		{Typ: ItemRightParen, Val: ")"},
 		// {typ: typeNum, Val: "num"}
-		{Typ: itemLeftBrace, Val: "{"},
-		{Typ: keywordReturn, Val: "return"},
-		{Typ: itemIdentifier, Val: "x"},
+		{Typ: ItemLeftBrace, Val: "{"},
+		{Typ: KeywordReturn, Val: "return"},
+		{Typ: ItemIdentifier, Val: "x"},
 		{Typ: ItemPlus, Val: "+"},
-		{Typ: itemNumber, Val: "1"},
-		{Typ: itemTerminateLine, Val: ";"},
-		{Typ: itemRightBrace, Val: "}"},
+		{Typ: ItemNumber, Val: "1"},
+		{Typ: ItemTerminateLine, Val: ";"},
+		{Typ: ItemRightBrace, Val: "}"},
 		// variable
-		{Typ: keywordLet, Val: "let"},
-		{Typ: itemIdentifier, Val: "x"},
-		{Typ: itemAssign, Val: "="},
-		{Typ: itemNumber, Val: "5"},
-		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: KeywordLet, Val: "let"},
+		{Typ: ItemIdentifier, Val: "x"},
+		{Typ: ItemAssign, Val: "="},
+		{Typ: ItemNumber, Val: "5"},
+		{Typ: ItemTerminateLine, Val: ";"},
 		// label
-		{Typ: keywordLabel, Val: "label"},
-		{Typ: itemIdentifier, Val: "A"},
-		{Typ: itemColon, Val: ":"},
+		{Typ: KeywordLabel, Val: "label"},
+		{Typ: ItemIdentifier, Val: "A"},
+		{Typ: ItemColon, Val: ":"},
 		// while loop
-		{Typ: keywordWhile, Val: "while"},
-		{Typ: itemLeftBrace, Val: "{"},
+		{Typ: KeywordWhile, Val: "while"},
+		{Typ: ItemLeftBrace, Val: "{"},
 		// comment
 		// {typ: itemComment, Val: "comment"},
 		// function call
-		{Typ: itemIdentifier, Val: "x"},
-		{Typ: itemAssign, Val: "="},
-		{Typ: itemIdentifier, Val: "y"},
-		{Typ: itemLeftParen, Val: "("},
-		{Typ: itemIdentifier, Val: "x"},
-		{Typ: itemRightParen, Val: ")"},
-		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: ItemIdentifier, Val: "x"},
+		{Typ: ItemAssign, Val: "="},
+		{Typ: ItemIdentifier, Val: "y"},
+		{Typ: ItemLeftParen, Val: "("},
+		{Typ: ItemIdentifier, Val: "x"},
+		{Typ: ItemRightParen, Val: ")"},
+		{Typ: ItemTerminateLine, Val: ";"},
 		// if statement
-		{Typ: keywordIf, Val: "if"},
-		{Typ: itemIdentifier, Val: "x"},
+		{Typ: KeywordIf, Val: "if"},
+		{Typ: ItemIdentifier, Val: "x"},
 		{Typ: OpGreaterThan, Val: ">"},
-		{Typ: itemNumber, Val: "10"},
-		{Typ: itemLeftBrace, Val: "{"},
+		{Typ: ItemNumber, Val: "10"},
+		{Typ: ItemLeftBrace, Val: "{"},
 		// break
-		{Typ: keywordBreak, Val: "break"},
-		{Typ: itemIdentifier, Val: "A"},
-		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: KeywordBreak, Val: "break"},
+		{Typ: ItemIdentifier, Val: "A"},
+		{Typ: ItemTerminateLine, Val: ";"},
 		// end if
-		{Typ: itemRightBrace, Val: "}"},
+		{Typ: ItemRightBrace, Val: "}"},
 		// comment
 		// {typ: itemComment, Val: "comment"},
 		// switch
-		{Typ: keywordSwitch, Val: "switch"},
-		{Typ: itemIdentifier, Val: "x"},
-		{Typ: itemLeftBrace, Val: "{"},
+		{Typ: KeywordSwitch, Val: "switch"},
+		{Typ: ItemIdentifier, Val: "x"},
+		{Typ: ItemLeftBrace, Val: "{"},
 		// case
-		{Typ: keywordCase, Val: "case"},
-		{Typ: itemNumber, Val: "1"},
-		{Typ: itemColon, Val: ":"},
-		{Typ: keywordFallthrough, Val: "fallthrough"},
-		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: KeywordCase, Val: "case"},
+		{Typ: ItemNumber, Val: "1"},
+		{Typ: ItemColon, Val: ":"},
+		{Typ: KeywordFallthrough, Val: "fallthrough"},
+		{Typ: ItemTerminateLine, Val: ";"},
 		// case
-		{Typ: keywordCase, Val: "case"},
-		{Typ: itemNumber, Val: "2"},
-		{Typ: itemColon, Val: ":"},
-		{Typ: keywordFallthrough, Val: "fallthrough"},
-		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: KeywordCase, Val: "case"},
+		{Typ: ItemNumber, Val: "2"},
+		{Typ: ItemColon, Val: ":"},
+		{Typ: KeywordFallthrough, Val: "fallthrough"},
+		{Typ: ItemTerminateLine, Val: ";"},
 		// case
-		{Typ: keywordCase, Val: "case"},
-		{Typ: itemNumber, Val: "3"},
-		{Typ: itemColon, Val: ":"},
-		{Typ: keywordBreak, Val: "break"},
-		{Typ: itemIdentifier, Val: "A"},
-		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: KeywordCase, Val: "case"},
+		{Typ: ItemNumber, Val: "3"},
+		{Typ: ItemColon, Val: ":"},
+		{Typ: KeywordBreak, Val: "break"},
+		{Typ: ItemIdentifier, Val: "A"},
+		{Typ: ItemTerminateLine, Val: ";"},
 		// end switch
-		{Typ: itemRightBrace, Val: "}"},
+		{Typ: ItemRightBrace, Val: "}"},
 		// end while
-		{Typ: itemRightBrace, Val: "}"},
+		{Typ: ItemRightBrace, Val: "}"},
 		// for loop
-		{Typ: keywordFor, Val: "for"},
-		{Typ: itemIdentifier, Val: "x"},
-		{Typ: itemAssign, Val: "="},
-		{Typ: itemNumber, Val: "0"},
-		{Typ: itemTerminateLine, Val: ";"},
-		{Typ: itemIdentifier, Val: "x"},
+		{Typ: KeywordFor, Val: "for"},
+		{Typ: ItemIdentifier, Val: "x"},
+		{Typ: ItemAssign, Val: "="},
+		{Typ: ItemNumber, Val: "0"},
+		{Typ: ItemTerminateLine, Val: ";"},
+		{Typ: ItemIdentifier, Val: "x"},
 		{Typ: OpLessThan, Val: "<"},
-		{Typ: itemNumber, Val: "5"},
-		{Typ: itemTerminateLine, Val: ";"},
-		{Typ: itemIdentifier, Val: "x"},
-		{Typ: itemAssign, Val: "="},
-		{Typ: itemIdentifier, Val: "x"},
+		{Typ: ItemNumber, Val: "5"},
+		{Typ: ItemTerminateLine, Val: ";"},
+		{Typ: ItemIdentifier, Val: "x"},
+		{Typ: ItemAssign, Val: "="},
+		{Typ: ItemIdentifier, Val: "x"},
 		{Typ: ItemPlus, Val: "+"},
-		{Typ: itemNumber, Val: "1"},
-		{Typ: itemLeftBrace, Val: "{"},
+		{Typ: ItemNumber, Val: "1"},
+		{Typ: ItemLeftBrace, Val: "{"},
 		// body
-		{Typ: keywordLet, Val: "let"},
-		{Typ: itemIdentifier, Val: "i"},
-		{Typ: itemAssign, Val: "="},
-		{Typ: itemIdentifier, Val: "y"},
-		{Typ: itemLeftParen, Val: "("},
-		{Typ: itemIdentifier, Val: "x"},
-		{Typ: itemRightParen, Val: ")"},
-		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: KeywordLet, Val: "let"},
+		{Typ: ItemIdentifier, Val: "i"},
+		{Typ: ItemAssign, Val: "="},
+		{Typ: ItemIdentifier, Val: "y"},
+		{Typ: ItemLeftParen, Val: "("},
+		{Typ: ItemIdentifier, Val: "x"},
+		{Typ: ItemRightParen, Val: ")"},
+		{Typ: ItemTerminateLine, Val: ";"},
 		// end for
-		{Typ: itemRightBrace, Val: "}"},
+		{Typ: ItemRightBrace, Val: "}"},
 		// misc tests
-		{Typ: itemNumber, Val: "-1"},
-		{Typ: itemNumber, Val: "1"},
+		{Typ: ItemNumber, Val: "-1"},
+		{Typ: ItemNumber, Val: "1"},
 		{Typ: ItemMinus, Val: "-"},
 		{Typ: ItemMinus, Val: "-"},
-		{Typ: itemIdentifier, Val: "a"},
+		{Typ: ItemIdentifier, Val: "a"},
 	}
 
-	l := lex(input)
+	l := NewLexer(input)
 	i := 0
-	for n := l.nextItem(); n.Typ != itemEOF; n = l.nextItem() {
+	for n := l.NextItem(); n.Typ != ItemEOF; n = l.NextItem() {
 		if expected[i].Typ != n.Typ && expected[i].Val != n.Val {
 			t.Errorf("expected %v got %v", expected[i], n)
 		}
@@ -183,20 +183,20 @@ func TestElseSpace(t *testing.T) {
 
 	expected := []Token{
 		// function
-		{Typ: keywordIf, Val: "if"},
-		{Typ: itemIdentifier, Val: "x"},
+		{Typ: KeywordIf, Val: "if"},
+		{Typ: ItemIdentifier, Val: "x"},
 		{Typ: OpGreaterThan, Val: ">"},
-		{Typ: itemNumber, Val: "1"},
-		{Typ: itemLeftBrace, Val: "{"},
-		{Typ: itemRightBrace, Val: "}"},
-		{Typ: keywordElse, Val: "else"},
-		{Typ: itemLeftBrace, Val: "{"},
-		{Typ: itemRightBrace, Val: "}"},
+		{Typ: ItemNumber, Val: "1"},
+		{Typ: ItemLeftBrace, Val: "{"},
+		{Typ: ItemRightBrace, Val: "}"},
+		{Typ: KeywordElse, Val: "else"},
+		{Typ: ItemLeftBrace, Val: "{"},
+		{Typ: ItemRightBrace, Val: "}"},
 	}
 
-	l := lex(input)
+	l := NewLexer(input)
 	i := 0
-	for n := l.nextItem(); n.Typ != itemEOF; n = l.nextItem() {
+	for n := l.NextItem(); n.Typ != ItemEOF; n = l.NextItem() {
 		if expected[i].Typ != n.Typ && expected[i].Val != n.Val {
 			t.Errorf("expected %v got %v", expected[i], n)
 			t.FailNow()
