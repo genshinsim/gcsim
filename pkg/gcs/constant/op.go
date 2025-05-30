@@ -135,15 +135,13 @@ func sub(l, r *number) *number {
 func UnaryOp(op ast.Token, right Value) (Value, error) {
 	switch op.Typ {
 	case ast.ItemPlus:
-		switch right.(type) {
-		case *number:
+		if right, ok := right.(*number); ok {
 			return right, nil
 		}
 	case ast.LogicNot:
 		return bton(!ToBool(right)), nil
 	case ast.ItemMinus:
-		switch right := right.(type) {
-		case *number:
+		if right, ok := right.(*number); ok {
 			return sub(&number{}, right), nil
 		}
 	}
@@ -152,8 +150,7 @@ func UnaryOp(op ast.Token, right Value) (Value, error) {
 }
 
 func BinaryOp(op ast.Token, left, right Value) (Value, error) {
-	switch left := left.(type) {
-	case *number:
+	if left, ok := left.(*number); ok {
 		right, ok := right.(*number)
 		if !ok {
 			return nil, fmt.Errorf("invalid binary operator %v%v%v", left.Inspect(), op, right.Inspect())
