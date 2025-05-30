@@ -21,19 +21,17 @@ func parseTarget(p *Parser) (parseFn, error) {
 			switch n.Val {
 			case "pos": // pos will end up defaulting to 0,0 if not set
 				// pos=1.00,2,00
-				item, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
+				if _, err := p.consume(ast.ItemAssign); err != nil {
+					return nil, err
+				}
+				x, err := p.parseFloat64Const()
 				if err != nil {
 					return nil, err
 				}
-				x, err := itemNumberToFloat64(item)
-				if err != nil {
+				if _, err := p.consume(ast.ItemComma); err != nil {
 					return nil, err
 				}
-				item, err = p.acceptSeqReturnLast(ast.ItemComma, ast.ItemNumber)
-				if err != nil {
-					return nil, err
-				}
-				y, err := itemNumberToFloat64(item)
+				y, err := p.parseFloat64Const()
 				if err != nil {
 					return nil, err
 				}
@@ -64,11 +62,10 @@ func parseTarget(p *Parser) (parseFn, error) {
 				}
 				p.res.Settings.DamageMode = true
 			case "freeze_resist":
-				item, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
-				if err != nil {
+				if _, err := p.consume(ast.ItemAssign); err != nil {
 					return nil, err
 				}
-				v, err := itemNumberToFloat64(item)
+				v, err := p.parseFloat64Const()
 				if err != nil {
 					return nil, err
 				}
@@ -98,11 +95,10 @@ func parseTarget(p *Parser) (parseFn, error) {
 			}
 		case ast.KeywordResist:
 			// this sets all resistance
-			item, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
-			if err != nil {
+			if _, err := p.consume(ast.ItemAssign); err != nil {
 				return nil, err
 			}
-			amt, err := itemNumberToFloat64(item)
+			amt, err := p.parseFloat64Const()
 			if err != nil {
 				return nil, err
 			}
@@ -147,11 +143,10 @@ func parseTarget(p *Parser) (parseFn, error) {
 			r.Modified = true
 		case ast.ItemElementKey:
 			s := n.Val
-			item, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
-			if err != nil {
+			if _, err := p.consume(ast.ItemAssign); err != nil {
 				return nil, err
 			}
-			amt, err := itemNumberToFloat64(item)
+			amt, err := p.parseFloat64Const()
 			if err != nil {
 				return nil, err
 			}
