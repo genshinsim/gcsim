@@ -1,4 +1,4 @@
-package gcs
+package eval
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/conditional"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/constant"
 )
 
 func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
@@ -126,19 +127,16 @@ func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	// unary expressions should only result in number results
-	// otherwise panic for now?
-	r, ok := right.(*number)
-	if !ok {
-		return nil, fmt.Errorf("unary expression does not evaluate to a number, got %v ", right.Inspect())
+
+	rconst := makeConstant(right)
+	if rconst == nil {
+		return nil, fmt.Errorf("unary expression does not evaluate to a comparable variable, got %v ", right.Inspect())
 	}
-	switch b.Op.Typ {
-	case ast.LogicNot:
-		return eq(&number{}, r), nil
-	case ast.ItemMinus:
-		return sub(&number{}, r), nil
+	result, err := constant.UnaryOp(b.Op, rconst)
+	if err != nil {
+		return nil, err
 	}
-	return &null{}, nil
+	return fromConstant(result), nil
 }
 
 func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
@@ -151,46 +149,20 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	// binary expressions should only result in number results
-	// otherwise panic for now?
-	l, ok := left.(*number)
-	if !ok {
-		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", left.Inspect())
+
+	lconst := makeConstant(left)
+	if lconst == nil {
+		return nil, fmt.Errorf("binary expression does not evaluate to a comparable variable, got %v ", left.Inspect())
 	}
-	r, ok := right.(*number)
-	if !ok {
-		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", right.Inspect())
+	rconst := makeConstant(right)
+	if rconst == nil {
+		return nil, fmt.Errorf("binary expression does not evaluate to a comparable variable, got %v ", right.Inspect())
 	}
-	switch b.Op.Typ {
-	case ast.LogicAnd:
-		return and(l, r), nil
-	case ast.LogicOr:
-		return or(l, r), nil
-	case ast.ItemPlus:
-		return add(l, r), nil
-	case ast.ItemMinus:
-		return sub(l, r), nil
-	case ast.ItemAsterisk:
-		return mul(l, r), nil
-	case ast.ItemForwardSlash:
-		if !r.isFloat && r.ival == 0 {
-			return nil, fmt.Errorf("division by zero")
-		}
-		return div(l, r), nil
-	case ast.OpGreaterThan:
-		return gt(l, r), nil
-	case ast.OpGreaterThanOrEqual:
-		return gte(l, r), nil
-	case ast.OpEqual:
-		return eq(l, r), nil
-	case ast.OpNotEqual:
-		return neq(l, r), nil
-	case ast.OpLessThan:
-		return lt(l, r), nil
-	case ast.OpLessThanOrEqual:
-		return lte(l, r), nil
+	result, err := constant.BinaryOp(b.Op, lconst, rconst)
+	if err != nil {
+		return nil, err
 	}
-	return &null{}, nil
+	return fromConstant(result), nil
 }
 
 func (e *Eval) evalField(n *ast.Field) (Obj, error) {
@@ -202,9 +174,7 @@ func (e *Eval) evalField(n *ast.Field) (Obj, error) {
 	num := &number{}
 	switch v := r.(type) {
 	case bool:
-		if v {
-			num.ival = 1
-		}
+		num = bton(v)
 	case int:
 		num.ival = int64(v)
 	case int64:
@@ -234,4 +204,31 @@ func (e *Eval) evalMap(m *ast.MapExpr, env *Env) (Obj, error) {
 		r.fields[k] = obj
 	}
 	return r, nil
+}
+
+func makeConstant(ex Obj) constant.Value {
+	switch v := ex.(type) {
+	case *number:
+		if v.isFloat {
+			return constant.Make(v.fval)
+		}
+		return constant.Make(v.ival)
+	case *strval:
+		return constant.Make(v.str)
+	default:
+		return nil
+	}
+}
+
+func fromConstant(x constant.Value) Obj {
+	switch v := constant.Val(x).(type) {
+	case int64:
+		return &number{ival: v}
+	case float64:
+		return &number{fval: v, isFloat: true}
+	case string:
+		return &strval{str: v}
+	default:
+		return &null{}
+	}
 }

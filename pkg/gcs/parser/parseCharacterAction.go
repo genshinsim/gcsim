@@ -1,56 +1,57 @@
-package ast
+package parser
 
 import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 // parseAction returns a node contain a character action, or a block of node containing
 // a list of character actions
-func (p *Parser) parseAction() (Stmt, error) {
-	char, err := p.consume(itemCharacterKey)
+func (p *Parser) parseAction() (ast.Stmt, error) {
+	char, err := p.consume(ast.ItemCharacterKey)
 	if err != nil {
 		// this really shouldn't happen since we already checked
-		return nil, fmt.Errorf("ln%v: expecting character key, got %v", char.line, char.Val)
+		return nil, fmt.Errorf("ln%v: expecting character key, got %v", char.Line, char.Val)
 	}
 	charKey := shortcut.CharNameToKey[char.Val]
 
 	// should be multiple action keys next
-	var actions []*CallExpr
-	if n := p.peek(); n.Typ != itemActionKey {
-		return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.line, char.Val, n.Val)
+	var actions []*ast.CallExpr
+	if n := p.peek(); n.Typ != ast.ItemActionKey {
+		return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.Line, char.Val, n.Val)
 	}
 
 	// all actions needs to come before any + flags
 Loop:
 	for {
 		switch n := p.next(); n.Typ {
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			// stop here
 			break Loop
-		case itemActionKey:
+		case ast.ItemActionKey:
 			actionKey := action.StringToAction(n.Val)
-			expr := &CallExpr{
-				Pos: char.pos,
-				Fun: &Ident{
-					Pos:   n.pos,
+			expr := &ast.CallExpr{
+				Pos: char.Pos,
+				Fun: &ast.Ident{
+					Pos:   n.Pos,
 					Value: "execute_action",
 				},
-				Args: make([]Expr, 0),
+				Args: make([]ast.Expr, 0),
 			}
 			expr.Args = append(expr.Args,
 				// char
-				&NumberLit{
-					Pos:      char.pos,
+				&ast.NumberLit{
+					Pos:      char.Pos,
 					IntVal:   int64(charKey),
 					FloatVal: float64(charKey),
 				},
 				// action
-				&NumberLit{
-					Pos:      n.pos,
+				&ast.NumberLit{
+					Pos:      n.Pos,
 					IntVal:   int64(actionKey),
 					FloatVal: float64(actionKey),
 				},
@@ -61,18 +62,18 @@ Loop:
 				return nil, err
 			}
 			if param == nil {
-				param = &MapExpr{Pos: n.pos}
+				param = &ast.MapExpr{Pos: n.Pos}
 			}
 			// validate params
 			// TODO: this is inefficient but we don't have a "compile" step yet
-			m := param.(*MapExpr).Fields
+			m := param.(*ast.MapExpr).Fields
 			keys := make([]string, 0, len(m))
 			for k := range m {
 				keys = append(keys, k)
 			}
 			err = validation.ValidateCharParamKeys(charKey, actionKey, keys)
 			if err != nil {
-				return nil, fmt.Errorf("ln%v: character %v: %w", n.line, charKey, err)
+				return nil, fmt.Errorf("ln%v: character %v: %w", n.Line, charKey, err)
 			}
 			expr.Args = append(expr.Args, param)
 
@@ -89,29 +90,29 @@ Loop:
 			}
 
 			n = p.next()
-			if n.Typ != itemComma {
+			if n.Typ != ast.ItemComma {
 				p.backup()
 				break Loop
 			}
 		default:
 			//TODO: fix invalid key error
-			return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.line, char.Val, n.Val)
+			return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.Line, char.Val, n.Val)
 		}
 	}
 	// check for optional flags
 
 	// build stmt
-	b := newBlockStmt(char.pos)
+	b := ast.NewBlockStmt(char.Pos)
 	for _, v := range actions {
-		b.append(v)
+		b.Append(v)
 	}
 	return b, nil
 }
 
-func (p *Parser) acceptOptionalParamReturnMap() (Expr, error) {
+func (p *Parser) acceptOptionalParamReturnMap() (ast.Expr, error) {
 	// check for params
 	n := p.peek()
-	if n.Typ != itemLeftSquareParen {
+	if n.Typ != ast.ItemLeftSquareParen {
 		return nil, nil
 	}
 
@@ -129,14 +130,14 @@ func (p *Parser) acceptOptionalParamReturnOnlyIntMap() (map[string]int, error) {
 		return r, nil
 	}
 
-	for k, v := range result.(*MapExpr).Fields {
+	for k, v := range result.(*ast.MapExpr).Fields {
 		switch v.(type) {
-		case *NumberLit:
+		case *ast.NumberLit:
 			// skip
 		default:
 			return nil, fmt.Errorf("expected number in the map, got %v", v.String())
 		}
-		r[k] = int(v.(*NumberLit).IntVal)
+		r[k] = int(v.(*ast.NumberLit).IntVal)
 	}
 	return r, nil
 }
@@ -144,14 +145,14 @@ func (p *Parser) acceptOptionalParamReturnOnlyIntMap() (map[string]int, error) {
 func (p *Parser) acceptOptionalRepeaterReturnCount() (int, error) {
 	count := 1
 	n := p.next()
-	if n.Typ != itemColon {
+	if n.Typ != ast.ItemColon {
 		p.backup()
 		return count, nil
 	}
 	// should be a number next
 	n = p.next()
-	if n.Typ != itemNumber {
-		return count, fmt.Errorf("ln%v: expected a number after : but got %v", n.line, n)
+	if n.Typ != ast.ItemNumber {
+		return count, fmt.Errorf("ln%v: expected a number after : but got %v", n.Line, n)
 	}
 	// parse number
 	count, err := itemNumberToInt(n)

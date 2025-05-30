@@ -2,8 +2,8 @@ package optstats
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -51,7 +51,7 @@ func (p *PoolCustomStats[T]) worker() {
 				p.errCh <- err
 				break
 			}
-			eval, err := gcs.NewEvaluator(job.Actions, c)
+			eval, err := eval.NewEvaluator(job.Actions, c)
 			if err != nil {
 				p.errCh <- err
 				break

@@ -1,8 +1,10 @@
-package ast
+package parser
 
 import (
 	"errors"
 	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
 func parseHurt(p *Parser) (parseFn, error) {
@@ -10,19 +12,19 @@ func parseHurt(p *Parser) (parseFn, error) {
 	// hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
 	n := p.next()
 	switch n.Typ {
-	case itemIdentifier:
+	case ast.ItemIdentifier:
 		switch n.Val {
 		case "once":
 			return parseHurtOnce, nil
 		case "every":
 			return parseHurtEvery, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.line, n.Val)
+			return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.Line, n.Val)
 		}
-	case itemTerminateLine:
+	case ast.ItemTerminateLine:
 		return parseRows, nil
 	default:
-		return nil, fmt.Errorf("ln%v: unrecognized token parsing options: %v", n.line, n)
+		return nil, fmt.Errorf("ln%v: unrecognized token parsing options: %v", n.Line, n)
 	}
 }
 
@@ -32,16 +34,16 @@ func parseHurtOnce(p *Parser) (parseFn, error) {
 	p.res.HurtSettings.Active = true
 	p.res.HurtSettings.Once = true
 
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case itemIdentifier:
+		case ast.ItemIdentifier:
 			switch n.Val {
-			case IntervalVal:
-				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			case ast.IntervalVal:
+				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 				if err == nil {
 					p.res.HurtSettings.Start, err = itemNumberToInt(n)
 				}
-			case AmountVal:
+			case ast.AmountVal:
 				err := parseHurtAmount(p)
 				if err != nil {
 					return nil, err
@@ -52,12 +54,12 @@ func parseHurtOnce(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 			default:
-				return nil, fmt.Errorf("ln%v: unrecognized hurt event specified: %v", n.line, n.Val)
+				return nil, fmt.Errorf("ln%v: unrecognized hurt event specified: %v", n.Line, n.Val)
 			}
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing hurt event: %v", n.line, n)
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing hurt event: %v", n.Line, n)
 		}
 		if err != nil {
 			return nil, err
@@ -72,12 +74,12 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 	p.res.HurtSettings.Active = true
 	p.res.HurtSettings.Once = false
 
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case itemIdentifier:
+		case ast.ItemIdentifier:
 			switch n.Val {
-			case IntervalVal:
-				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			case ast.IntervalVal:
+				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 				if err != nil {
 					return nil, err
 				}
@@ -86,7 +88,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 
-				n, err = p.acceptSeqReturnLast(itemComma, itemNumber)
+				n, err = p.acceptSeqReturnLast(ast.ItemComma, ast.ItemNumber)
 				if err != nil {
 					return nil, err
 				}
@@ -94,7 +96,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-			case AmountVal:
+			case ast.AmountVal:
 				err := parseHurtAmount(p)
 				if err != nil {
 					return nil, err
@@ -105,12 +107,12 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 			default:
-				return nil, fmt.Errorf("ln%v: unrecognized hurt event specified: %v", n.line, n.Val)
+				return nil, fmt.Errorf("ln%v: unrecognized hurt event specified: %v", n.Line, n.Val)
 			}
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing hurt event: %v", n.line, n)
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing hurt event: %v", n.Line, n)
 		}
 		if err != nil {
 			return nil, err
@@ -120,7 +122,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 }
 
 func parseHurtAmount(p *Parser) error {
-	item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+	item, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 	if err != nil {
 		return err
 	}
@@ -129,7 +131,7 @@ func parseHurtAmount(p *Parser) error {
 		return err
 	}
 
-	item, err = p.acceptSeqReturnLast(itemComma, itemNumber)
+	item, err = p.acceptSeqReturnLast(ast.ItemComma, ast.ItemNumber)
 	if err != nil {
 		return err
 	}
@@ -145,14 +147,14 @@ func parseHurtAmount(p *Parser) error {
 }
 
 func parseHurtElement(p *Parser) error {
-	_, err := p.consume(itemAssign)
+	_, err := p.consume(ast.ItemAssign)
 	if err != nil {
 		return err
 	}
 	n := p.next()
-	if n.Typ != itemElementKey {
-		return fmt.Errorf("<hurt> bad token at line %v - %v: %v", n.line, n.pos, n)
+	if n.Typ != ast.ItemElementKey {
+		return fmt.Errorf("<hurt> bad token at line %v - %v: %v", n.Line, n.Pos, n)
 	}
-	p.res.HurtSettings.Element = eleKeys[n.Val]
+	p.res.HurtSettings.Element = ast.EleKeys[n.Val]
 	return nil
 }

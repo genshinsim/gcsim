@@ -1,4 +1,4 @@
-package gcs
+package eval
 
 import (
 	"fmt"
@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 )
 
 func TestType(t *testing.T) {
-	p := ast.New("type(1);")
+	p := parser.New("type(1);")
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
@@ -44,7 +44,7 @@ func TestType(t *testing.T) {
 
 func TestForceTerminate(t *testing.T) {
 	// test terminate eval early should gracefully exit
-	p := ast.New(`
+	p := parser.New(`
 	for let i = 0; i < 50; i = i + 1 {
 		delay(1);
 	}`)
@@ -94,7 +94,7 @@ func TestForceTerminate(t *testing.T) {
 
 func TestSleepAsWaitAlias(t *testing.T) {
 	// make sure sleep is evaluated as wait
-	p := ast.New("sleep(1);")
+	p := parser.New("sleep(1);")
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
@@ -129,7 +129,7 @@ func TestSleepAsWaitAlias(t *testing.T) {
 
 func TestDoneCheck(t *testing.T) {
 	// eval should exit once out of action; NextAction() should return nil
-	p := ast.New(`
+	p := parser.New(`
 	for let i = 0; i < 4; i = i + 1 {
 		delay(1);
 	}`)
