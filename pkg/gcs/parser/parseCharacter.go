@@ -256,11 +256,10 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
 		case ast.ItemStatKey:
-			x, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
-			if err != nil {
+			if _, err := p.consume(ast.ItemAssign); err != nil {
 				return nil, err
 			}
-			amt, err := itemNumberToFloat64(x)
+			amt, err := p.parseFloat64Const()
 			if err != nil {
 				return nil, err
 			}

@@ -141,3 +141,27 @@ func itemNumberToFloat64(i ast.Token) (float64, error) {
 	r, err := strconv.ParseFloat(i.Val, 64)
 	return r, err
 }
+
+func (p *Parser) parseFloat64Const() (float64, error) {
+	expr, err := p.parseExpr(ast.Lowest)
+	if err != nil {
+		return 0, err
+	}
+	switch expr := expr.(type) {
+	case *ast.NumberLit:
+		if expr.IsFloat {
+			return expr.FloatVal, nil
+		}
+		return float64(expr.IntVal), nil
+	default:
+		return 0, fmt.Errorf("expecting number, got %v", expr.String())
+	}
+}
+
+func (p *Parser) parseIntConst() (int, error) {
+	result, err := p.parseFloat64Const()
+	if err != nil {
+		return 0, err
+	}
+	return int(result), err
+}
