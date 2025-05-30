@@ -10,9 +10,8 @@ func evalConstant(ex ast.Expr) constant.Value {
 	case *ast.NumberLit:
 		if v.IsFloat {
 			return constant.Make(v.FloatVal)
-		} else {
-			return constant.Make(v.IntVal)
 		}
+		return constant.Make(v.IntVal)
 	case *ast.StringLit:
 		return constant.Make(v.Value)
 	default:

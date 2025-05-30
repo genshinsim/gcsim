@@ -31,14 +31,6 @@ func bton(b bool) *number {
 	return &number{}
 }
 
-func and(l, r *number) *number {
-	return bton(ntob(l) && ntob(r))
-}
-
-func or(l, r *number) *number {
-	return bton(ntob(l) || ntob(r))
-}
-
 func ntof(v *number) float64 {
 	if v.isFloat {
 		return v.fval
@@ -53,28 +45,8 @@ func ntoi(v *number) int64 {
 	return v.ival
 }
 
-func gt(l, r *number) *number {
-	return bton(ntof(l) > ntof(r))
-}
-
-func gte(l, r *number) *number {
-	return bton(ntof(l) >= ntof(r))
-}
-
-func lt(l, r *number) *number {
-	return bton(ntof(l) < ntof(r))
-}
-
-func lte(l, r *number) *number {
-	return bton(ntof(l) <= ntof(r))
-}
-
 func eq(l, r *number) *number {
 	return bton(ntof(l) == ntof(r))
-}
-
-func neq(l, r *number) *number {
-	return bton(ntof(l) != ntof(r))
 }
 
 func add(l, r *number) *number {

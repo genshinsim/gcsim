@@ -162,10 +162,10 @@ func (p *Parser) parseFloat64Const() (float64, error) {
 	}
 }
 
-func (p *Parser) parseIntConst() (int, error) {
-	result, err := p.parseFloat64Const()
-	if err != nil {
-		return 0, err
-	}
-	return int(result), err
-}
+// func (p *Parser) parseIntConst() (int, error) {
+// 	result, err := p.parseFloat64Const()
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	return int(result), err
+// }
