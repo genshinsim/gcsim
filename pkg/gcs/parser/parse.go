@@ -624,7 +624,7 @@ func (p *Parser) parseExpr(pre ast.Precedence) (ast.Expr, error) {
 	for n := p.peek(); n.Typ != ast.ItemTerminateLine && pre < n.Precedence(); n = p.peek() {
 		infix := p.infixParseFns[n.Typ]
 		if infix == nil {
-			return leftExp, nil
+			break
 		}
 
 		leftExp, err = infix(leftExp)
@@ -633,6 +633,10 @@ func (p *Parser) parseExpr(pre ast.Precedence) (ast.Expr, error) {
 		}
 	}
 
+	leftExp, err = foldConstants(leftExp)
+	if err != nil {
+		return nil, err
+	}
 	return leftExp, nil
 }
 
