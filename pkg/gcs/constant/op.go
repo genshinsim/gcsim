@@ -183,6 +183,10 @@ func BinaryOp(op ast.Token, left, right Value) (Value, error) {
 			return lt(left, right), nil
 		case ast.OpLessThanOrEqual:
 			return lte(left, right), nil
+		case ast.LogicAnd:
+			return and(left, right), nil
+		case ast.LogicOr:
+			return or(left, right), nil
 		}
 	}
 

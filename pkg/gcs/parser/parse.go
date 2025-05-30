@@ -633,10 +633,13 @@ func (p *Parser) parseExpr(pre ast.Precedence) (ast.Expr, error) {
 		}
 	}
 
-	leftExp, err = foldConstants(leftExp)
-	if err != nil {
-		return nil, err
+	if p.constantFolding {
+		leftExp, err = foldConstants(leftExp)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	return leftExp, nil
 }
 

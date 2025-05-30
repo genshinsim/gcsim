@@ -28,6 +28,9 @@ type Parser struct {
 	// parseFn
 	prefixParseFns map[ast.TokenType]func() (ast.Expr, error)
 	infixParseFns  map[ast.TokenType]func(ast.Expr) (ast.Expr, error)
+
+	// flags
+	constantFolding bool // for TestOrderPrecedence
 }
 
 type parseFn func(*Parser) (parseFn, error)
@@ -56,6 +59,7 @@ func New(input string) *Parser {
 		},
 	}
 	p.prog = ast.NewBlockStmt(0)
+	p.constantFolding = true
 	// expr functions
 	p.prefixParseFns[ast.ItemIdentifier] = p.parseIdent
 	p.prefixParseFns[ast.ItemField] = p.parseField

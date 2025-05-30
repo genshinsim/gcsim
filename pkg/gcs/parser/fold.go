@@ -15,8 +15,9 @@ func evalConstant(ex ast.Expr) constant.Value {
 		}
 	case *ast.StringLit:
 		return constant.Make(v.Value)
+	default:
+		return nil
 	}
-	return nil
 }
 
 func constToExpr(pos ast.Pos, x constant.Value) ast.Expr {
@@ -46,22 +47,35 @@ func constToExpr(pos ast.Pos, x constant.Value) ast.Expr {
 func foldConstants(ex ast.Expr) (ast.Expr, error) {
 	switch ex := ex.(type) {
 	case *ast.UnaryExpr:
-		right := evalConstant(ex.Right)
-		if right == nil {
+		right, err := foldConstants(ex.Right)
+		if err != nil {
+			return nil, err
+		}
+		r := evalConstant(right)
+		if r == nil {
 			return ex, nil
 		}
-		val, err := constant.UnaryOp(ex.Op, right)
+		val, err := constant.UnaryOp(ex.Op, r)
 		if err != nil {
 			return nil, err
 		}
 		return constToExpr(ex.Pos, val), nil
 	case *ast.BinaryExpr:
-		left := evalConstant(ex.Left)
-		right := evalConstant(ex.Right)
-		if left == nil || right == nil {
+		left, err := foldConstants(ex.Left)
+		if err != nil {
+			return nil, err
+		}
+		right, err := foldConstants(ex.Right)
+		if err != nil {
+			return nil, err
+		}
+
+		l := evalConstant(left)
+		r := evalConstant(right)
+		if l == nil || r == nil {
 			return ex, nil
 		}
-		val, err := constant.BinaryOp(ex.Op, left, right)
+		val, err := constant.BinaryOp(ex.Op, l, r)
 		if err != nil {
 			return nil, err
 		}
