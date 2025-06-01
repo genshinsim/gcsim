@@ -6495,6 +6495,13 @@
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 4
+      },
+      {
+        "ability": "Q-Snack-Trigger",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2.5,
+        "notes": "Mizuki's pickup range is increased while the Dreamdrifter state (assumed x2.1)."
       }
     ],
     "charge": [

@@ -20,7 +20,7 @@ const (
 	snackHealTriggerHpRatio   = 0.7
 	snackDuration             = 4 * 60
 	snackSize                 = 2.5
-	snackSizeMizukiMultiplier = 1.75 // Assumption
+	snackSizeMizukiMultiplier = 2.1 // Assumption
 	snackCantTriggerDuration  = 0.3 * 60
 )
 
@@ -55,6 +55,7 @@ func newSnack(c *char, pos geometry.Point) *snack {
 
 	// we increase snack size to make sure we get it when mizuki is in dreamdrifter state
 	// because mizuki's pickup range is increased while in this state.
+	// https://docs.google.com/spreadsheets/d/1UU0EVPBatEndl4GRZyIs8Ix8O3kcZUDAwOHqM8_jQJw/edit?gid=339012102#gid=339012102
 	p.Gadget = gadget.New(c.Core, pos, snackSize*snackSizeMizukiMultiplier, combat.GadgetTypYumemiSnack)
 	p.Gadget.Duration = snackDuration
 	c.Core.Combat.AddGadget(p)
@@ -74,15 +75,8 @@ func newSnack(c *char, pos geometry.Point) *snack {
 
 		// default size is increased. The increased size is only valid for mizuki in dreamdrifter state,
 		// so check for collision with actual size if this is not the case
-		collidesDefault := p.collidesWithActiveCharacterDefaultSize()
-		if c.Core.Player.ActiveChar().Index != c.Index {
-			if !collidesDefault {
-				return
-			}
-		} else {
-			if !c.StatusIsActive(dreamDrifterStateKey) && !collidesDefault {
-				return
-			}
+		if !c.StatusIsActive(dreamDrifterStateKey) && !p.collidesWithActiveCharacterDefaultSize() {
+			return
 		}
 		p.onPickedUp()
 	}
@@ -94,7 +88,8 @@ func newSnack(c *char, pos geometry.Point) *snack {
 }
 
 func (p *snack) collidesWithActiveCharacterDefaultSize() bool {
-	return p.Core.Combat.Player().WillCollide(geometry.NewCircle(p.Gadget.Pos(), snackSize, geometry.DefaultDirection(), 360))
+	defaultSize := combat.NewCircleHitOnTarget(p.Gadget, nil, snackSize)
+	return p.Core.Combat.Player().IsWithinArea(defaultSize)
 }
 
 func (p *snack) onPickedUp() {
@@ -144,11 +139,7 @@ func (p *snack) onPickedUp() {
 }
 
 func (p *snack) explode() {
-	p.explodeWithHitmark(0)
-}
-
-func (p *snack) explodeWithHitmark(hitmark int) {
-	p.Core.QueueAttackWithSnap(p.attackInfo, p.snapshot, p.pattern, hitmark)
+	p.Core.QueueAttackWithSnap(p.attackInfo, p.snapshot, p.pattern, 0)
 }
 
 func (p *snack) HandleAttack(atk *combat.AttackEvent) float64 {

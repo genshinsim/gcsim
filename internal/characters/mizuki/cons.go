@@ -81,9 +81,11 @@ func (c *char) c1() {
 	}, c1Key)
 }
 
-func (c *char) applyC1Effect() {
-	var c1Func func()
-	c1Func = func() {
+func (c *char) c1Task(src, hitmark int) {
+	c.QueueCharTask(func() {
+		if c.cloudSrc != src {
+			return
+		}
 		if !c.StatusIsActive(dreamDrifterStateKey) {
 			return
 		}
@@ -96,12 +98,8 @@ func (c *char) applyC1Effect() {
 				e.AddStatus(c1Key, c1Duration, true)
 			}
 		}
-		c.QueueCharTask(c1Func, c1Interval)
-	}
-
-	// Debuff does not take 3.5s to apply but does not trigger on initial skill activation swirl according to testing.
-	// First cloud (0.45s after skill activation) can trigger it so queue it a few frames later
-	c.QueueCharTask(c1Func, skillHitmark+2)
+		c.c1Task(src, c1Interval)
+	}, hitmark)
 }
 
 // When Yumemizuki Mizuki enters the Dreamdrifter state, every Elemental Mastery point she has will increase all nearby
