@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 const (
@@ -181,6 +182,13 @@ func (c *char) cancelNightsoul() {
 	c.nightsoulState.ExitBlessing()
 	c.nightsoulSrc = -1
 	c.blindSpotAngularPosition = -1
+
+	// Clear desolation status from all enemies
+	for _, t := range c.Core.Combat.Enemies() {
+		if e, ok := t.(*enemy.Enemy); ok {
+			e.DeleteStatus(desolationKey)
+		}
+	}
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
