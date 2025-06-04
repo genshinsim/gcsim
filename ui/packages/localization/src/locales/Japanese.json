@@ -330,6 +330,7 @@
         "return_to_sim": "シミュレーターに戻る",
         "sample": "サンプル",
         "search": "検索",
+        "seed_custom": "カスタムシード",
         "seed_sample": "サンプルシード",
         "seed_min": "最小シード",
         "seed_max": "最大シード",

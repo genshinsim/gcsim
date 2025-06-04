@@ -1797,7 +1797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.24.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.24.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.24.4
   resolution: "@babel/runtime@npm:7.24.4"
   dependencies:
@@ -3339,6 +3339,8 @@ __metadata:
     "@types/react-dom": ^18.0.6
     "@vitejs/plugin-react": ^3.1.0
     axios: ^1.1.3
+    i18next: ^23.10.1
+    i18next-browser-languagedetector: ^7.2.0
     prettier: ^2.8.3
     prettier-plugin-organize-imports: ^3.2.2
     react: ^18.2.0
@@ -3456,7 +3458,7 @@ __metadata:
     lucide-react: ^0.360.0
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-i18next: ^14.1.0
+    react-i18next: ^12.0.0
     storybook: ^8.0.2
     storybook-react-i18next: ^3.0.1
     tailwind-merge: ^2.2.2
@@ -3535,8 +3537,8 @@ __metadata:
     fast-deep-equal: ^3.1.3
     file-saver: ^2.0.5
     framer-motion: ^7.6.2
-    i18next: ^22.0.2
-    i18next-browser-languagedetector: ^7.0.1
+    i18next: ^23.10.1
+    i18next-browser-languagedetector: ^7.2.0
     lodash-es: ^4.17.21
     merge: ^2.1.1
     pako: ^2.1.0
@@ -15217,12 +15219,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:^7.0.1, i18next-browser-languagedetector@npm:^7.2.0":
-  version: 7.2.1
-  resolution: "i18next-browser-languagedetector@npm:7.2.1"
+"i18next-browser-languagedetector@npm:^7.2.0":
+  version: 7.2.2
+  resolution: "i18next-browser-languagedetector@npm:7.2.2"
   dependencies:
     "@babel/runtime": ^7.23.2
-  checksum: 159958be2d8f19444e9378512c36c2bf13a8ab85eddac2fc0000198a03dbc28c73a6f44594ab040b242bdc82dfeabb7c1ab805884b5438ee0a48a8e2b52ca062
+  checksum: d67e2da74fe7a6e1c1f7c96f59034cc43ff5b6f58b99ed9088985bdc80a03dfd19ceebe95e2721225edcf47e678c8190c6414445fe73f7d32fcdabf481a568a5
   languageName: node
   linkType: hard
 
@@ -15232,15 +15234,6 @@ __metadata:
   dependencies:
     cross-fetch: 4.0.0
   checksum: 4586b3332984a18641f1acca2d0cf440d6259d14a5164dd561d4932f3d6c1606291df295d3b15bf6d7a9fa607e63a683c4a7cff3a5f05abbf108dc7ad026a910
-  languageName: node
-  linkType: hard
-
-"i18next@npm:^22.0.2":
-  version: 22.5.1
-  resolution: "i18next@npm:22.5.1"
-  dependencies:
-    "@babel/runtime": ^7.20.6
-  checksum: 175f8ab7fac2abcee147b00cc2d8e7d4fa9b05cdc227f02cac841fc2fd9545ed4a6d88774f594f8ad12dc944e4d34cc8e88aa00c8b9947baef9e859d93abd305
   languageName: node
   linkType: hard
 
@@ -21429,24 +21422,6 @@ __metadata:
     react-native:
       optional: true
   checksum: fe3f360e5184bc63861734e94bf625a09b9ec0d28fab41779a68758af258fd1737dde25ff7a88ddb66c1571a3e3de5b3403825a91b4949bf9832a00615acb87a
-  languageName: node
-  linkType: hard
-
-"react-i18next@npm:^14.1.0":
-  version: 14.1.0
-  resolution: "react-i18next@npm:14.1.0"
-  dependencies:
-    "@babel/runtime": ^7.23.9
-    html-parse-stringify: ^3.0.1
-  peerDependencies:
-    i18next: ">= 23.2.3"
-    react: ">= 16.8.0"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 96fbc4b0919b9f0c639f9f3eb35eecac528174aa97e3b1af469cfdbff4b34e40ae8969c26c0b737691a5fa9b56bb13093524cfca79b93cbd58f1319530da31b2
   languageName: node
   linkType: hard
 

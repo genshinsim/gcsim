@@ -24,6 +24,7 @@ const (
 	Chevreuse
 	Chiori
 	Chongyun
+	Citlali
 	Clorinde
 	Collei
 	Cyno
@@ -60,6 +61,7 @@ const (
 	Lyney
 	Mavuika
 	Mika
+	Mizuki
 	Mona
 	Mualani
 	Nahida
@@ -169,6 +171,10 @@ func init() {
 	charNames[Chongyun] = "chongyun"
 	charPrettyName[Chongyun] = "Chongyun"
 	CharKeyToEle[Chongyun] = attributes.Cryo
+
+	charNames[Citlali] = "citlali"
+	charPrettyName[Citlali] = "Citlali"
+	CharKeyToEle[Citlali] = attributes.Cryo
 
 	charNames[Clorinde] = "clorinde"
 	charPrettyName[Clorinde] = "Clorinde"
@@ -313,6 +319,10 @@ func init() {
 	charNames[Mika] = "mika"
 	charPrettyName[Mika] = "Mika"
 	CharKeyToEle[Mika] = attributes.Cryo
+
+	charNames[Mizuki] = "mizuki"
+	charPrettyName[Mizuki] = "Mizuki"
+	CharKeyToEle[Mizuki] = attributes.Anemo
 
 	charNames[Mona] = "mona"
 	charPrettyName[Mona] = "Mona"

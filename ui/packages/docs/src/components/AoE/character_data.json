@@ -1956,6 +1956,72 @@
       }
     ]
   },
+  "citlali": {
+    "cons": [
+      {
+        "ability": "C4-Spiritvessel-Skull",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5
+      }
+    ],
+    "normals": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Obsidian-Tzitzimitl",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "E-Frostfall-Storm",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Ice-Storm",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6.5
+      },
+      {
+        "ability": "Q-Spiritvessel-Skull",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5
+      }
+    ]
+  },
   "clorinde": {
     "normal": [
       {
@@ -6390,6 +6456,77 @@
       }
     ]
   },
+  "mizuki": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Init",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 8
+      },
+      {
+        "ability": "Q-Find-Enemy",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 6
+      },
+      {
+        "ability": "Q-Munen-Shockwave",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 4
+      },
+      {
+        "ability": "Q-Snack-Trigger",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2.5,
+        "notes": "Mizuki's pickup range is increased while the Dreamdrifter state (assumed x2.1)."
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 3.5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Init",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5.5
+      },
+      {
+        "ability": "E-Continuous-Attack",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4.0
+      }
+    ]
+  },
   "mona": {
     "asc": [
       {
@@ -7287,7 +7424,7 @@
     ],
     "skill": [
       {
-        "ability": "Spirit Orb Hit",
+        "ability": "Spirit-Orb-Hit",
         "shape": "Single",
         "center": "GlobalValue",
         "notes": "Spawns on target Spirit Orb bounced to."
@@ -7295,14 +7432,14 @@
     ],
     "burst": [
       {
-        "ability": "Burst Cast",
+        "ability": "Burst-Cast",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 2.3,
         "radius": 6.5
       },
       {
-        "ability": "Soundwave Collision",
+        "ability": "Soundwave-Collision",
         "shape": "Circle",
         "center": "GlobalValue",
         "note": "This is an approximation because we do not actually know the real AoE. Based on Burst Cast position."

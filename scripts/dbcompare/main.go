@@ -53,7 +53,7 @@ func main() {
 		panic(err)
 	}
 	filters := strings.Split(opt.mustHaveChar, ",")
-	fmt.Println("id,original,next,diff,abs_diff,per_diff,err")
+	fmt.Println("chars,id,original,next,diff,abs_diff,per_diff,err")
 	for _, v := range res {
 		simcfg, gcsl, err := simulator.Parse(v.Config)
 		if err != nil {

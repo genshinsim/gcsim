@@ -47,7 +47,7 @@ func TestFib(t *testing.T) {
 	}
 	result := <-resultChan
 	if result.Typ() != typRet {
-		t.Errorf("expecting type to return ret, got %v", typStrings[result.Typ()])
+		t.Errorf("expecting type to return ret, got %v", result.Typ())
 	}
 	if eval.Err() != nil {
 		t.Error(eval.Err())
@@ -56,7 +56,7 @@ func TestFib(t *testing.T) {
 	res := result.(*retval)
 	val, ok := res.res.(*number)
 	if !ok {
-		t.Errorf("expecting number for return, got %v", typStrings[res.res.Typ()])
+		t.Errorf("expecting number for return, got %v", res.res.Typ())
 		t.FailNow()
 	}
 	if val.ival != 34 {
@@ -102,7 +102,7 @@ func TestFunctional(t *testing.T) {
 	}
 	result := <-resultChan
 	if result.Typ() != typRet {
-		t.Errorf("expecting type to return ret, got %v", typStrings[result.Typ()])
+		t.Errorf("expecting type to return ret, got %v", result.Typ())
 	}
 	if eval.Err() != nil {
 		t.Error(eval.Err())
@@ -111,7 +111,7 @@ func TestFunctional(t *testing.T) {
 	res := result.(*retval)
 	val, ok := res.res.(*number)
 	if !ok {
-		t.Errorf("expecting number for return, got %v", typStrings[res.res.Typ()])
+		t.Errorf("expecting number for return, got %v", res.res.Typ())
 		t.FailNow()
 	}
 	if val.ival != 2 {
@@ -150,7 +150,7 @@ func TestAnonFunc(t *testing.T) {
 	}
 	result := <-resultChan
 	if result.Typ() != typRet {
-		t.Errorf("expecting type to return ret, got %v", typStrings[result.Typ()])
+		t.Errorf("expecting type to return ret, got %v", result.Typ())
 	}
 	if eval.Err() != nil {
 		t.Error(eval.Err())
@@ -159,7 +159,7 @@ func TestAnonFunc(t *testing.T) {
 	res := result.(*retval)
 	val, ok := res.res.(*number)
 	if !ok {
-		t.Errorf("expecting number for return, got %v", typStrings[res.res.Typ()])
+		t.Errorf("expecting number for return, got %v", res.res.Typ())
 		t.FailNow()
 	}
 	if val.ival != 5 {
@@ -198,7 +198,7 @@ func TestStringFunc(t *testing.T) {
 	}
 	result := <-resultChan
 	if result.Typ() != typRet {
-		t.Errorf("expecting type to return ret, got %v", typStrings[result.Typ()])
+		t.Errorf("expecting type to return ret, got %v", result.Typ())
 	}
 	if eval.Err() != nil {
 		t.Error(eval.Err())
@@ -207,7 +207,7 @@ func TestStringFunc(t *testing.T) {
 	res := result.(*retval)
 	val, ok := res.res.(*strval)
 	if !ok {
-		t.Errorf("expecting number for return, got %v", typStrings[res.res.Typ()])
+		t.Errorf("expecting number for return, got %v", res.res.Typ())
 		t.FailNow()
 	}
 	if val.str != "hello world" {
@@ -253,7 +253,7 @@ func TestNestedActions(t *testing.T) {
 	result := <-resultChan
 	// by default, functions return num
 	if result.Typ() != typNum {
-		t.Errorf("expecting type to return num, got %v", typStrings[result.Typ()])
+		t.Errorf("expecting type to return num, got %v", result.Typ())
 	}
 	if eval.Err() != nil {
 		t.Error(eval.Err())
@@ -289,7 +289,7 @@ func TestIsEven(t *testing.T) {
 	}
 	result := <-resultChan
 	if result.Typ() != typNum {
-		t.Errorf("expecting type to return num, got %v", typStrings[result.Typ()])
+		t.Errorf("expecting type to return num, got %v", result.Typ())
 	}
 	if eval.Err() != nil {
 		t.Error(eval.Err())

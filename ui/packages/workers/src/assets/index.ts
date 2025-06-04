@@ -23,10 +23,13 @@ export async function handleAssets(
     });
 
     response = new Response(resp.body, resp);
-    response.headers.set('Cache-Control', 'max-age=5184000');
 
-    // only cache if response = 200
-    if (resp.status === 200) {
+    // only cache if response = 200 and this is not a placeholder
+    if (
+      resp.status === 200 &&
+      resp.headers.get('Cache-Control') !== 'no-cache'
+    ) {
+      response.headers.set('Cache-Control', 'max-age=5184000');
       event.waitUntil(cache.put(cacheKey, response.clone()));
     }
   }
