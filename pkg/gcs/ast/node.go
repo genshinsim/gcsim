@@ -136,10 +136,10 @@ func (*WhileStmt) stmtNode()  {}
 func (*ForStmt) stmtNode()    {}
 
 // BlockStmt.
-func newBlockStmt(pos Pos) *BlockStmt {
+func NewBlockStmt(pos Pos) *BlockStmt {
 	return &BlockStmt{Pos: pos}
 }
-func (b *BlockStmt) append(n Node) {
+func (b *BlockStmt) Append(n Node) {
 	b.List = append(b.List, n)
 }
 
@@ -160,9 +160,9 @@ func (b *BlockStmt) CopyBlock() *BlockStmt {
 	if b == nil {
 		return b
 	}
-	n := newBlockStmt(b.Pos)
+	n := NewBlockStmt(b.Pos)
 	for _, elem := range b.List {
-		n.append(elem.Copy())
+		n.Append(elem.Copy())
 	}
 	return n
 }

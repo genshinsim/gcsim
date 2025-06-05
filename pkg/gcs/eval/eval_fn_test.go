@@ -1,11 +1,11 @@
-package gcs
+package eval
 
 import (
 	"fmt"
 	"log"
 	"testing"
 
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 )
 
 func TestFib(t *testing.T) {
@@ -20,7 +20,7 @@ func TestFib(t *testing.T) {
 	print(y);
 	return y;
 	`
-	p := ast.New(prog)
+	p := parser.New(prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
@@ -75,7 +75,7 @@ func TestFunctional(t *testing.T) {
 	print(x);
 	return x;
 	`
-	p := ast.New(prog)
+	p := parser.New(prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
@@ -125,7 +125,7 @@ func TestAnonFunc(t *testing.T) {
 	print(x);
 	return x;
 	`
-	p := ast.New(prog)
+	p := parser.New(prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
@@ -173,7 +173,7 @@ func TestStringFunc(t *testing.T) {
 	print(x);
 	return x;
 	`
-	p := ast.New(prog)
+	p := parser.New(prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
@@ -222,7 +222,7 @@ func TestNestedActions(t *testing.T) {
 	}
 	do();
 	`
-	p := ast.New(prog)
+	p := parser.New(prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
@@ -262,7 +262,7 @@ func TestNestedActions(t *testing.T) {
 
 func TestIsEven(t *testing.T) {
 	prog := `is_even(1);`
-	p := ast.New(prog)
+	p := parser.New(prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)

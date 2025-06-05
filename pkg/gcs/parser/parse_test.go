@@ -1,4 +1,4 @@
-package ast
+package parser
 
 import (
 	"fmt"
@@ -57,6 +57,7 @@ func TestOrderPrecedence(t *testing.T) {
 
 	for _, test := range tests {
 		p := New(test.input)
+		p.constantFolding = false
 		_, prog, err := p.Parse()
 		if err != nil {
 			t.Error(err)
