@@ -130,17 +130,22 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 		Mult:           scalespikerCannon[c.TalentLvlSkill()],
 		FlatDmg:        c.a4Amount(),
 	}
-	s, radius := c.c2Bonus(&ai)
+
+	// Nightsoul points are drained before snapshot
+	c.Core.Tasks.Add(c.nightsoulState.ClearPoints, releaseFrame+hold+pointsConsumptionsDelay)
+	c.Core.Tasks.Add(func() {
+		c.cannonSnap, c.cannonRadius = c.c2Bonus(&ai)
+	}, releaseFrame+hold+pointsConsumptionsDelay)
+
 	target := c.Core.Combat.PrimaryTarget()
-	ap := combat.NewCircleHitOnTarget(target, nil, radius)
+	ap := combat.NewCircleHitOnTarget(target, nil, c.cannonRadius)
 
 	c.Core.Tasks.Add(func() {
-		c.Core.QueueAttackWithSnap(ai, s, ap, 0, c.particleCB, c.a1CB, c.c2ResShredCB)
+		c.Core.QueueAttackWithSnap(ai, c.cannonSnap, ap, 0, c.particleCB, c.a1CB, c.c2ResShredCB)
 		c.c4()
-		c.c6(ai, &s, radius, target, c6Travel)
+		c.c6(ai, &c.cannonSnap, c.cannonRadius, target, c6Travel)
 	}, releaseFrame+hold+travel)
 
-	c.Core.Tasks.Add(c.nightsoulState.ClearPoints, releaseFrame+hold+pointsConsumptionsDelay)
 	c.Core.Tasks.Add(c.createBlindSpot, releaseFrame+hold+blindSpotDelay)
 
 	return action.Info{

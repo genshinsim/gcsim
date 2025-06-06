@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -27,6 +28,8 @@ type char struct {
 	normalSCounter           int
 	characterAngularPosition float64 // [0, 360)
 	blindSpotAngularPosition float64 // [0, 360)
+	cannonRadius             float64
+	cannonSnap               combat.Snapshot
 	particlesGenerated       bool
 	c2AoeIncreased           bool
 }
