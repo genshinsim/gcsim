@@ -8,13 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
 	skillCD                  = 18 * 60
 	skillStart               = 9
-	scalespikerDefaultTravel = 13
+	scalespikerDefaultTravel = 12
 	pointsConsumptionsDelay  = 1
 	nightSoulEnterDelay      = 11
 	scalespikerHoldFrameDiff = 18
@@ -26,7 +27,7 @@ var (
 	scalespikerFrames []int
 )
 
-var blindSpotAppearanceDelays = []int{5, 31} // tap, hold (both tap and hold for entering nightsoul)
+var blindSpotAppearanceDelays = []int{5, 30} // tap, hold (both tap and hold for entering nightsoul)
 var scalespikerReleases = []int{35, 17}      // tap, hold
 
 func init() {
@@ -130,18 +131,30 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 		Mult:           scalespikerCannon[c.TalentLvlSkill()],
 		FlatDmg:        c.a4Amount(),
 	}
-	s, radius := c.c2Bonus(&ai)
+
 	target := c.Core.Combat.PrimaryTarget()
-	ap := combat.NewCircleHitOnTarget(target, nil, radius)
+	radius := 3.0
 
-	c.Core.Tasks.Add(func() {
-		c.Core.QueueAttackWithSnap(ai, s, ap, 0, c.particleCB, c.a1CB, c.c2ResShredCB)
-		c.c4()
-		c.c6(ai, &s, radius, target, c6Travel)
-	}, releaseFrame+hold+travel)
-
-	c.Core.Tasks.Add(c.nightsoulState.ClearPoints, releaseFrame+hold+pointsConsumptionsDelay)
-	c.Core.Tasks.Add(c.createBlindSpot, releaseFrame+hold+blindSpotDelay)
+	var snap combat.Snapshot
+	c.QueueCharTask(func() {
+		// Nightsoul points are drained before snapshot
+		c.nightsoulState.ClearPoints()
+		snap = c.Snapshot(&ai)
+		c.Core.Tasks.Add(c.createBlindSpot, blindSpotDelay)
+		c.Core.Tasks.Add(func() {
+			if c.Base.Cons >= 2 && !c.c2AoeIncreased {
+				c.c2AoeIncreased = true
+				radius = 5.0
+				snap.Stats[attributes.DmgP] += 1.0
+				c.Core.Log.NewEvent("C2 bonus dmg% applied", glog.LogCharacterEvent, c.Index).
+					Write("final", snap.Stats[attributes.DmgP])
+			}
+			ap := combat.NewCircleHitOnTarget(target, nil, radius)
+			c.Core.QueueAttackWithSnap(ai, snap, ap, 0, c.particleCB, c.a1CB, c.c2ResShredCB)
+			c.c4()
+			c.c6(ai, &snap, radius, target, c6Travel)
+		}, travel)
+	}, releaseFrame+hold+pointsConsumptionsDelay)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
