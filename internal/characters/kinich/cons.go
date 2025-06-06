@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -59,21 +58,6 @@ func (c *char) c2ResShredCB(a combat.AttackCB) {
 		Ele:   attributes.Dendro,
 		Value: -0.3,
 	})
-}
-
-func (c *char) c2Bonus(ai *combat.AttackInfo) (combat.Snapshot, float64) {
-	s := c.Snapshot(ai)
-	if c.Base.Cons < 2 {
-		return s, 3.0
-	}
-	if c.c2AoeIncreased {
-		return s, 3.0
-	}
-	c.c2AoeIncreased = true
-	s.Stats[attributes.DmgP] += 1.0
-	c.Core.Log.NewEvent("Kinich C2 Damage Bonus", glog.LogCharacterEvent, c.Index).
-		Write("final", s.Stats[attributes.DmgP])
-	return s, 5.0
 }
 
 func (c *char) c4() {
