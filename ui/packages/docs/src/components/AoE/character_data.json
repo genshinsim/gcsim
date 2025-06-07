@@ -3011,6 +3011,102 @@
       }
     ]
   },
+  "escoffier": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1,
+        "boxY": 3.5
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 3.6,
+        "fanAngle": 270
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 3.6
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 3.6
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.1,
+        "boxX": 2.8,
+        "boxY": 4.8
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 4
+      },
+      {
+        "ability": "E-Arkhe",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 4.5
+      },
+      {
+        "ability": "E-Tick",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 1.0
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      }
+    ]
+  },
   "eula": {
     "asc": [
       {

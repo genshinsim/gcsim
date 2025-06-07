@@ -11,8 +11,8 @@ action_param_keys:
 icd_groups:
   - group_name: ICDGroupEscoffierSkill
     reset_timer: 90
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ele_app_sequence: [1, 0, 0, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1]
 skill_data_mapping:
   attack: # Kitchen Skills
     attack_1:

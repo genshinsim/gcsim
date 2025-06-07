@@ -42,7 +42,7 @@ func ceil(x float64) int {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 10
+		travel = 5
 	}
 
 	ai := combat.AttackInfo{
@@ -56,7 +56,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skillInital[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), skillInitHitmark, skillInitHitmark, c.particleCB, c.makeA4CB())
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 4), skillInitHitmark, skillInitHitmark, c.particleCB, c.makeA4CB())
 
 	// E duration and ticks are not affected by hitlag
 	c.skillSrc = c.Core.F
@@ -75,7 +75,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			// TODO: Apply Arkhe
 			ActorIndex: c.Index,
 			Abil:       "Surging Blade (" + c.Base.Key.Pretty() + ")",
-			AttackTag:  attacks.AttackTagNone,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeSpear,
@@ -134,6 +134,6 @@ func (c *char) skillTick(src, travel int) func() {
 			Mult:       skillDot[c.TalentLvlSkill()],
 		}
 		// trigger damage
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2), 0, travel, c.makeA4CB())
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), 0, travel, c.makeA4CB())
 	}
 }

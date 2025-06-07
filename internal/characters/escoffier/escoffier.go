@@ -53,3 +53,16 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	}
 	return c.Character.AnimationStartDelay(k)
 }
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "c2-count":
+		return c.c2Count, nil
+	case "c4-count":
+		return c.c4Count, nil
+	case "c6-count":
+		return c.c6Count, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
