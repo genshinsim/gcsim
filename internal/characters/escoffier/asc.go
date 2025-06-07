@@ -12,7 +12,8 @@ import (
 const a1Scaling = 1.3824
 const a1key = "escoffier-a1"
 const a1Count = 9
-const a1Interval = 60
+const a1FirstTick = 157
+const a1Interval = 58.5
 const a4Dur = 12 * 60
 
 var a4Shred = []float64{0.0, 0.05, 0.10, 0.15, 0.55}
@@ -23,17 +24,16 @@ func (c *char) a1() {
 	}
 	c.a1Src = c.Core.F
 	ticks := a1Count + c.c4ExtraCount()
-	c.QueueCharTask(c.a1Tick(c.a1Src, ticks), a1Interval)
+	for i := 0; i < ticks; i++ {
+		c.QueueCharTask(c.a1Tick(c.a1Src), a1FirstTick+ceil(a1Interval*float64(i)))
+	}
 	// this status is purely cosmetic and doesn't do anything right now
-	c.AddStatus(a1key, ticks*a1Interval, true)
+	c.AddStatus(a1key, a1FirstTick+ceil(float64(ticks-1)*a1Interval), true)
 }
 
-func (c *char) a1Tick(src, count int) func() {
+func (c *char) a1Tick(src int) func() {
 	return func() {
 		if src != c.a1Src {
-			return
-		}
-		if count <= 0 {
 			return
 		}
 		scale := a1Scaling + c.c4ExtraHeal()
@@ -45,8 +45,6 @@ func (c *char) a1Tick(src, count int) func() {
 			Src:     heal,
 			Bonus:   c.Stat(attributes.Heal),
 		})
-
-		c.Core.Tasks.Add(c.a1Tick(src, count-1), a1Interval)
 	}
 }
 
