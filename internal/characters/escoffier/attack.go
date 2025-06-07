@@ -16,9 +16,9 @@ var (
 	attackHitmarks        = [][]int{{7}, {16}, {27, 40}}
 	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02, 0.02}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true, true}}
-	attackHitboxes        = [][]float64{{2.5}, {2.5}, {2.2, 3.6}}
-	attackOffsets         = []float64{0.5, 0.5, 0}
-	attackFanAngles       = []float64{360, 360, 360}
+	attackHitboxes        = [][]float64{{1, 3.6}, {3.6}, {3.6, 3.6}}
+	attackOffsets         = []float64{0, 0.5, 0.5}
+	attackFanAngles       = []float64{360, 270, 270}
 )
 
 const normalHitNum = 3

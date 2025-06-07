@@ -69,6 +69,26 @@
       "desc": "Number of Cifra of the Secret Law (C6) points."
     }
   ],
+  "escoffier": [
+    {
+      "fields": [
+        ".escoffier.c2-count"
+      ],
+      "desc": "Number of Cold Dish (C2) stacks"
+    },
+    {
+      "fields": [
+        ".escoffier.c4-count"
+      ],
+      "desc": "Number of extra healing and energy restore effects (C4) left"
+    },
+    {
+      "fields": [
+        ".escoffier.c6-count"
+      ],
+      "desc": "Number of Special-Grade Frosty Parfait (C6) attacks left"
+    }
+  ],
   "faruzan": [
     {
       "fields": [
