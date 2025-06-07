@@ -10,12 +10,16 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 30
+const chargeHitmark = 20
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(54)
+	chargeFrames = frames.InitAbilSlice(65)
+	chargeFrames[action.ActionAttack] = 53
+	chargeFrames[action.ActionSkill] = 52
+	chargeFrames[action.ActionBurst] = 52
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = 52
 }
 
 // Charge attack damage queue generator
@@ -27,13 +31,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagExtraAttack,
 		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
-		StrikeType:         attacks.StrikeTypeSpear,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
-		IsDeployable:       true,
 	}
 
 	c.Core.QueueAttack(
