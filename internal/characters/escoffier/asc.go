@@ -24,8 +24,8 @@ func (c *char) a1() {
 	}
 	c.a1Src = c.Core.F
 	ticks := a1Count + c.c4ExtraCount()
-	for i := 0; i < ticks; i++ {
-		c.QueueCharTask(c.a1Tick(c.a1Src), a1FirstTick+ceil(a1Interval*float64(i)))
+	for i := range ticks {
+		c.QueueCharTask(c.a1Tick(c.a1Src), a1FirstTick+ceil(float64(i)*a1Interval))
 	}
 	// this status is purely cosmetic and doesn't do anything right now
 	c.AddStatus(a1key, a1FirstTick+ceil(float64(ticks-1)*a1Interval), true)

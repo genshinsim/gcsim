@@ -60,8 +60,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// E duration and ticks are not affected by hitlag
 	c.skillSrc = c.Core.F
-	for i := 0.0; i < skillTicks; i++ {
-		c.Core.Tasks.Add(c.skillTick(c.skillSrc, travel), skillFirstTickDelay+ceil(skillInterval*i))
+	for i := range skillTicks {
+		c.Core.Tasks.Add(c.skillTick(c.skillSrc, travel), skillFirstTickDelay+ceil(float64(i)*skillInterval))
 	}
 	c.AddStatus(skillKey, skillFirstTickDelay+ceil((skillTicks-1)*skillInterval), false)
 
