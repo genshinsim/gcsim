@@ -100,6 +100,7 @@ func (r *Modifier) UnmarshalJSON(b []byte) error {
 type Reactable struct {
 	Durability [EndModifier]reactions.Durability
 	DecayRate  [EndModifier]reactions.Durability
+	Mutable    [EndModifier]bool
 	// Source     []int //source frame of the aura
 	self combat.Target
 	core *core.Core
@@ -134,6 +135,10 @@ const frzDecayCap reactions.Durability = 10.0 / 60.0
 const ZeroDur reactions.Durability = 0.00000000001
 
 func (r *Reactable) Init(self combat.Target, c *core.Core) *Reactable {
+	for i := Invalid; i < EndModifier; i++ {
+		r.Mutable[i] = true
+	}
+
 	r.self = self
 	r.core = c
 	r.DecayRate[Frozen] = frzDecayCap
@@ -250,6 +255,9 @@ func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur reactions.Durabili
 }
 
 func (r *Reactable) attachOverlap(mod Modifier, amt, length reactions.Durability) {
+	if !r.Mutable[mod] {
+		return
+	}
 	if r.Durability[mod] > ZeroDur {
 		add := max(amt-r.Durability[mod], 0)
 		if add > 0 {
@@ -264,6 +272,9 @@ func (r *Reactable) attachOverlap(mod Modifier, amt, length reactions.Durability
 }
 
 func (r *Reactable) attachOverlapRefreshDuration(mod Modifier, amt, length reactions.Durability) {
+	if !r.Mutable[mod] {
+		return
+	}
 	if amt < r.Durability[mod] {
 		return
 	}
@@ -277,6 +288,9 @@ func (r *Reactable) attachBurning() {
 }
 
 func (r *Reactable) addDurability(mod Modifier, amt reactions.Durability) {
+	if !r.Mutable[mod] {
+		return
+	}
 	r.Durability[mod] += amt
 	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
@@ -329,7 +343,9 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor reactions.Durabilit
 			// reset decay rate to 0
 		}
 
-		r.Durability[i] -= red
+		if r.Mutable[i] {
+			r.Durability[i] -= red
+		}
 
 		if red > reduced {
 			reduced = red
@@ -362,7 +378,7 @@ func (r *Reactable) Tick() {
 		if r.DecayRate[i] == 0 {
 			continue
 		}
-		if r.Durability[i] > ZeroDur {
+		if r.Durability[i] > ZeroDur && r.Mutable[i] {
 			r.Durability[i] -= r.DecayRate[i]
 			r.deplete(i)
 		}
@@ -385,6 +401,9 @@ func (r *Reactable) Tick() {
 	// otherwise it uses it's own
 	for i := Dendro; i <= Quicken; i++ {
 		if r.Durability[i] < ZeroDur {
+			continue
+		}
+		if !r.Mutable[i] {
 			continue
 		}
 		rate := r.DecayRate[i]

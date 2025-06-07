@@ -2,6 +2,7 @@ package info
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
@@ -19,6 +20,8 @@ type EnemyProfile struct {
 	HpGrowCurve           model.MonsterCurveType `json:"-"`
 	Id                    int                    `json:"-"`
 	MonsterName           string                 `json:"monster_name"`
+	Element               attributes.Element     `json:"element"`
+	ElementDurability     reactions.Durability   `json:"element_durability"`
 	Modified              bool                   `json:"modified"`
 }
 
