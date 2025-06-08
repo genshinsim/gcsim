@@ -36,6 +36,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
+		HitlagHaltFrames:   0.10,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
