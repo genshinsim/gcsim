@@ -99,7 +99,11 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 				continue
 			}
 			value *= statsFinal.charSubstatRarityMod[idxChar]
-			finalString += fmt.Sprintf(" %v=%.6g", attributes.StatTypeString[idxSubstat], value*float64(statsFinal.fixedSubstatCount+statsFinal.charSubstatFinal[idxChar][idxSubstat]))
+			if o.optionsMap["show_substat_scalars"] > 0 {
+				finalString += fmt.Sprintf(" %v=%.6g*%v", attributes.StatTypeString[idxSubstat], value, float64(statsFinal.fixedSubstatCount+statsFinal.charSubstatFinal[idxChar][idxSubstat]))
+			} else {
+				finalString += fmt.Sprintf(" %v=%.6g", attributes.StatTypeString[idxSubstat], value*float64(statsFinal.fixedSubstatCount+statsFinal.charSubstatFinal[idxChar][idxSubstat]))
+			}
 		}
 
 		fmt.Println(finalString + ";")
