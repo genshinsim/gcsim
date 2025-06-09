@@ -112,9 +112,6 @@ func (c *char) naBuff() {
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	counter := c.NormalCounter
 	for i, mult := range attack[counter] {
-		// clone the values into another variable so that it won't be changed when the queued task executes
-		i := i
-		mult := mult
 		c.QueueCharTask(func() {
 			ai := combat.AttackInfo{
 				ActorIndex:         c.Index,
