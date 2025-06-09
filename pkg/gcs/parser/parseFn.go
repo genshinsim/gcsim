@@ -1,61 +1,65 @@
-package ast
+package parser
 
-import "fmt"
+import (
+	"fmt"
 
-func (p *Parser) parseFnStmt() (Stmt, error) {
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+)
+
+func (p *Parser) parseFnStmt() (ast.Stmt, error) {
 	// fn ident(...deint){ block }
 	n := p.next()
-	if n.Typ != keywordFn {
-		return nil, fmt.Errorf("ln %v: expecting fn, got %v", n.line, n.Val)
+	if n.Typ != ast.KeywordFn {
+		return nil, fmt.Errorf("ln %v: expecting fn, got %v", n.Line, n.Val)
 	}
 	n = p.next()
-	if n.Typ != itemIdentifier {
-		return nil, fmt.Errorf("ln %v: expecting identifier after fn, got %v", n.line, n.Val)
+	if n.Typ != ast.ItemIdentifier {
+		return nil, fmt.Errorf("ln %v: expecting identifier after fn, got %v", n.Line, n.Val)
 	}
 	// expecting function body
 	lit, err := p.parseFn()
 	if err != nil {
 		return nil, err
 	}
-	return &FnStmt{
-		Pos:   n.pos,
+	return &ast.FnStmt{
+		Pos:   n.Pos,
 		Ident: n,
 		Func:  lit,
 	}, nil
 }
 
-func (p *Parser) parseFnExpr() (Expr, error) {
+func (p *Parser) parseFnExpr() (ast.Expr, error) {
 	// fn (...ident) { block }
 	// consume the fn
 	n := p.next()
-	if n.Typ != keywordFn {
-		return nil, fmt.Errorf("ln %v: expecting fn, got %v", n.line, n.Val)
+	if n.Typ != ast.KeywordFn {
+		return nil, fmt.Errorf("ln %v: expecting fn, got %v", n.Line, n.Val)
 	}
 	// expecting function body
 	lit, err := p.parseFn()
 	if err != nil {
 		return nil, err
 	}
-	return &FuncExpr{
-		Pos:  n.pos,
+	return &ast.FuncExpr{
+		Pos:  n.Pos,
 		Func: lit,
 	}, nil
 }
 
-func (p *Parser) parseFn() (*FuncLit, error) {
+func (p *Parser) parseFn() (*ast.FuncLit, error) {
 	// (...ident){ block }
 	var err error
 
 	// expect n to be left parent
 	n := p.peek()
-	if n.Typ != itemLeftParen {
-		return nil, fmt.Errorf("ln%v: expecting ( after identifier, got %v", n.line, n.Val)
+	if n.Typ != ast.ItemLeftParen {
+		return nil, fmt.Errorf("ln%v: expecting ( after identifier, got %v", n.Line, n.Val)
 	}
 
-	lit := &FuncLit{
-		Pos: n.pos,
-		Signature: &FuncType{
-			Pos: n.pos,
+	lit := &ast.FuncLit{
+		Pos: n.Pos,
+		Signature: &ast.FuncType{
+			Pos: n.Pos,
 		},
 	}
 
@@ -69,13 +73,13 @@ func (p *Parser) parseFn() (*FuncLit, error) {
 	chk := make(map[string]bool)
 	for _, v := range lit.Args {
 		if _, ok := chk[v.Value]; ok {
-			return nil, fmt.Errorf("ln%v: fn contains duplicated param name %v", n.line, v.Value)
+			return nil, fmt.Errorf("ln%v: fn contains duplicated param name %v", n.Line, v.Value)
 		}
 		chk[v.Value] = true
 	}
 
 	// if next is not left brace then we're expecting typing info
-	if l := p.peek(); l.Typ != itemLeftBrace {
+	if l := p.peek(); l.Typ != ast.ItemLeftBrace {
 		lit.Signature.ResultType, err = p.parseTyping()
 		if err != nil {
 			return nil, err
@@ -85,7 +89,7 @@ func (p *Parser) parseFn() (*FuncLit, error) {
 	if lit.Signature.ResultType == nil {
 		//TODO: the position here is wrong... really shouldn't be the position of the open bracket
 		//TODO: should fix this by adding a current position the parser
-		lit.Signature.ResultType = &NumberType{Pos: n.pos}
+		lit.Signature.ResultType = &ast.NumberType{Pos: n.Pos}
 	}
 
 	lit.Body, err = p.parseBlock()
@@ -96,18 +100,18 @@ func (p *Parser) parseFn() (*FuncLit, error) {
 	return lit, nil
 }
 
-func (p *Parser) parseFnArgs() ([]*Ident, []ExprType, error) {
+func (p *Parser) parseFnArgs() ([]*ast.Ident, []ast.ExprType, error) {
 	// consume (
-	var args []*Ident
-	var argsType []ExprType
+	var args []*ast.Ident
+	var argsType []ast.ExprType
 	p.next()
-	for n := p.next(); n.Typ != itemRightParen; n = p.next() {
-		a := &Ident{}
+	for n := p.next(); n.Typ != ast.ItemRightParen; n = p.next() {
+		a := &ast.Ident{}
 		// expecting ident, comma
-		if n.Typ != itemIdentifier {
-			return nil, nil, fmt.Errorf("ln%v: expecting identifier in param list, got %v", n.line, n.Val)
+		if n.Typ != ast.ItemIdentifier {
+			return nil, nil, fmt.Errorf("ln%v: expecting identifier in param list, got %v", n.Line, n.Val)
 		}
-		a.Pos = n.pos
+		a.Pos = n.Pos
 		a.Value = n.Val
 
 		args = append(args, a)
@@ -120,17 +124,17 @@ func (p *Parser) parseFnArgs() ([]*Ident, []ExprType, error) {
 		}
 		//TODO: if nil we are assuming number for compatbility reasons
 		if typ == nil {
-			typ = &NumberType{Pos: n.pos}
+			typ = &ast.NumberType{Pos: n.Pos}
 		}
 
 		argsType = append(argsType, typ)
 
 		// if next token is a comma, then there should be another ident after that
 		// otherwise we have a problem
-		if l := p.peek(); l.Typ == itemComma {
+		if l := p.peek(); l.Typ == ast.ItemComma {
 			p.next() // consume the comma
-			if l = p.peek(); l.Typ != itemIdentifier {
-				return nil, nil, fmt.Errorf("ln%v: expecting another identifier after comma in param list, got %v", n.line, n.Val)
+			if l = p.peek(); l.Typ != ast.ItemIdentifier {
+				return nil, nil, fmt.Errorf("ln%v: expecting another identifier after comma in param list, got %v", n.Line, n.Val)
 			}
 		}
 	}

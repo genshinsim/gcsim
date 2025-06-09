@@ -1,4 +1,4 @@
-package ast
+package parser
 
 import (
 	"errors"
@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -16,12 +17,12 @@ func parseCharacter(p *Parser) (parseFn, error) {
 	// 	add
 	// should be any action here
 	switch n := p.next(); n.Typ {
-	case keywordChar:
+	case ast.KeywordChar:
 		return parseCharDetails, nil
-	case keywordAdd:
+	case ast.KeywordAdd:
 		return parseCharacterAdd, nil
 	default:
-		return nil, fmt.Errorf("ln%v: unexpected token after <character>: %v", n.line, n)
+		return nil, fmt.Errorf("ln%v: unexpected token after <character>: %v", n.Line, n)
 	}
 }
 
@@ -43,19 +44,19 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 	// xiangling c lvl=80/90 cons=4 talent=6,9,9;
 	c := p.chars[p.currentCharKey]
 	var err error
-	var x Token
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	var x ast.Token
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case keywordLvl:
+		case ast.KeywordLvl:
 			c.Base.Level, c.Base.MaxLevel, err = p.acceptLevelReturnBaseMax()
 			// err check below
-		case keywordCons:
-			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+		case ast.KeywordCons:
+			x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 			if err == nil {
 				c.Base.Cons, err = itemNumberToInt(x)
 			}
-		case keywordTalent:
-			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+		case ast.KeywordTalent:
+			x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 			if err != nil {
 				return nil, err
 			}
@@ -64,7 +65,7 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 
-			x, err = p.acceptSeqReturnLast(itemComma, itemNumber)
+			x, err = p.acceptSeqReturnLast(ast.ItemComma, ast.ItemNumber)
 			if err != nil {
 				return nil, err
 			}
@@ -73,7 +74,7 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 
-			x, err = p.acceptSeqReturnLast(itemComma, itemNumber)
+			x, err = p.acceptSeqReturnLast(ast.ItemComma, ast.ItemNumber)
 			if err != nil {
 				return nil, err
 			}
@@ -81,22 +82,22 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			if err != nil {
 				return nil, err
 			}
-		case ItemPlus: // optional flags
+		case ast.ItemPlus: // optional flags
 			n = p.next()
 			switch n.Typ {
-			case keywordParams:
+			case ast.KeywordParams:
 				// expecting =[
-				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
+				_, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemLeftSquareParen)
 				if err != nil {
-					return nil, fmt.Errorf("ln%v: invalid token after param;", n.line)
+					return nil, fmt.Errorf("ln%v: invalid token after param;", n.Line)
 				}
 				p.backup()
 				// overriding here if it already exists
 				c.Params, err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
-				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
+				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.Line, n)
 			}
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			return parseRows, nil
 		}
 		if err != nil {
@@ -110,14 +111,14 @@ func parseCharacterAdd(p *Parser) (parseFn, error) {
 	// after add we expect either weapon, set, or stats
 	n := p.next()
 	switch n.Typ {
-	case keywordWeapon:
+	case ast.KeywordWeapon:
 		return parseCharAddWeapon, nil
-	case keywordSet:
+	case ast.KeywordSet:
 		return parseCharAddSet, nil
-	case keywordStats:
+	case ast.KeywordStats:
 		return parseCharAddStats, nil
 	default:
-		return nil, fmt.Errorf("ln%v: unexpected token after <character> add: %v", n.line, n)
+		return nil, fmt.Errorf("ln%v: unexpected token after <character> add: %v", n.Line, n)
 	}
 }
 
@@ -125,8 +126,8 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 	// xiangling add set="seal of insulation" count=4;
 	c := p.chars[p.currentCharKey]
 	var err error
-	var x Token
-	x, err = p.acceptSeqReturnLast(itemAssign, itemString)
+	var x ast.Token
+	x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemString)
 	if err != nil {
 		return nil, err
 	}
@@ -143,33 +144,33 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 	}
 	count := 0
 
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case keywordCount:
-			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+		case ast.KeywordCount:
+			x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 			if err == nil {
 				count, err = itemNumberToInt(x)
 			}
-		case ItemPlus: // optional flags
+		case ast.ItemPlus: // optional flags
 			n = p.next()
 			switch n.Typ {
-			case keywordParams:
+			case ast.KeywordParams:
 				// expecting =[
-				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
+				_, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemLeftSquareParen)
 				if err != nil {
-					return nil, fmt.Errorf("ln%v: invalid token after param", n.line)
+					return nil, fmt.Errorf("ln%v: invalid token after param", n.Line)
 				}
 				p.backup()
 				// overriding here if it already exists
 				c.SetParams[label], err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
-				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
+				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.Line, n)
 			}
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			c.Sets[label] = count
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unexpected token after in parsing sets: %v", n.line, n)
+			return nil, fmt.Errorf("ln%v: unexpected token after in parsing sets: %v", n.Line, n)
 		}
 		if err != nil {
 			return nil, err
@@ -182,8 +183,8 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 	// weapon="string name" lvl=??/?? refine=xx
 	c := p.chars[p.currentCharKey]
 	var err error
-	var x Token
-	x, err = p.acceptSeqReturnLast(itemAssign, itemString)
+	var x ast.Token
+	x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemString)
 	if err != nil {
 		return nil, err
 	}
@@ -200,42 +201,42 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 	lvlOk := false
 	refineOk := false
 
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case keywordLvl:
+		case ast.KeywordLvl:
 			c.Weapon.Level, c.Weapon.MaxLevel, err = p.acceptLevelReturnBaseMax()
 			lvlOk = true
-		case keywordRefine:
-			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+		case ast.KeywordRefine:
+			x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 			if err == nil {
 				c.Weapon.Refine, err = itemNumberToInt(x)
 				refineOk = true
 			}
-		case ItemPlus: // optional flags
+		case ast.ItemPlus: // optional flags
 			n = p.next()
 			switch n.Typ {
-			case keywordParams:
+			case ast.KeywordParams:
 				// expecting =[
-				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
+				_, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemLeftSquareParen)
 				if err != nil {
-					return nil, fmt.Errorf("ln%v: invalid token after param", n.line)
+					return nil, fmt.Errorf("ln%v: invalid token after param", n.Line)
 				}
 				p.backup()
 				// overriding here if it already exists
 				c.Weapon.Params, err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
-				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
+				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.Line, n)
 			}
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			if !lvlOk {
-				return nil, fmt.Errorf("ln%v: weapon %v missing lvl", n.line, s)
+				return nil, fmt.Errorf("ln%v: weapon %v missing lvl", n.Line, s)
 			}
 			if !refineOk {
-				return nil, fmt.Errorf("ln%v: weapon %v missing refine", n.line, s)
+				return nil, fmt.Errorf("ln%v: weapon %v missing refine", n.Line, s)
 			}
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing add weapon: %v", n.line, n)
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing add weapon: %v", n.Line, n)
 		}
 		if err != nil {
 			return nil, err
@@ -252,26 +253,26 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 	var line = make([]float64, attributes.EndStatType)
 	var key string
 
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case itemStatKey:
-			x, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+		case ast.ItemStatKey:
+			if _, err := p.consume(ast.ItemAssign); err != nil {
+				return nil, err
+			}
+			amt, err := p.parseFloat64Const()
 			if err != nil {
 				return nil, err
 			}
-			amt, err := itemNumberToFloat64(x)
-			if err != nil {
-				return nil, err
-			}
-			pos := statKeys[n.Val]
+			// TODO: use attributes.StrToStatType?
+			pos := ast.StatKeys[n.Val]
 			line[pos] += amt
-		case keywordLabel:
-			x, err := p.acceptSeqReturnLast(itemAssign, itemIdentifier)
+		case ast.KeywordLabel:
+			x, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemIdentifier)
 			if err != nil {
 				return nil, err
 			}
 			key = x.Val
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			// add stats into label
 			m, ok := c.StatsByLabel[key]
 			if !ok {
@@ -283,13 +284,13 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 			}
 			c.StatsByLabel[key] = m
 			return parseRows, nil
-		case itemIdentifier:
+		case ast.ItemIdentifier:
 			if n.Val == "random" {
 				return parseCharAddRandomStats(p)
 			}
 			fallthrough
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats: %v", n.line, n)
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats: %v", n.Line, n)
 		}
 	}
 	return nil, errors.New("unexpected end of line while parsing character add stats")
@@ -303,21 +304,21 @@ func parseCharAddRandomStats(p *Parser) (parseFn, error) {
 		Rarity: 5, // default to 5 star
 	}
 
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			// check to make sure all values are valid
 			err := rs.Validate()
 			if err != nil {
-				return nil, fmt.Errorf("ln%v: %w", n.line, err)
+				return nil, fmt.Errorf("ln%v: %w", n.Line, err)
 			}
 			c := p.chars[p.currentCharKey]
 			c.RandomSubstats = rs
 			return parseRows, nil
-		case itemIdentifier:
+		case ast.ItemIdentifier:
 			switch n.Val {
 			case "rarity":
-				x, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+				x, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 				if err != nil {
 					return nil, err
 				}
@@ -326,28 +327,28 @@ func parseCharAddRandomStats(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 			case "sand":
-				x, err := p.acceptSeqReturnLast(itemAssign, itemStatKey)
+				x, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemStatKey)
 				if err != nil {
 					return nil, err
 				}
-				rs.Sand = statKeys[x.Val]
+				rs.Sand = ast.StatKeys[x.Val]
 			case "goblet":
-				x, err := p.acceptSeqReturnLast(itemAssign, itemStatKey)
+				x, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemStatKey)
 				if err != nil {
 					return nil, err
 				}
-				rs.Goblet = statKeys[x.Val]
+				rs.Goblet = ast.StatKeys[x.Val]
 			case "circlet":
-				x, err := p.acceptSeqReturnLast(itemAssign, itemStatKey)
+				x, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemStatKey)
 				if err != nil {
 					return nil, err
 				}
-				rs.Circlet = statKeys[x.Val]
+				rs.Circlet = ast.StatKeys[x.Val]
 			default:
-				return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats random: %v", n.line, n)
+				return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats random: %v", n.Line, n)
 			}
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats random: %v", n.line, n)
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats random: %v", n.Line, n)
 		}
 	}
 	return nil, errors.New("unexpected end of line while parsing character add stats (with random subs)")
@@ -358,33 +359,33 @@ func (p *Parser) acceptLevelReturnBaseMax() (int, int, error) {
 	maxlvl := 0
 	var err error
 	// expect =xx/yy
-	var x Token
-	x, err = p.consume(itemAssign)
+	var x ast.Token
+	x, err = p.consume(ast.ItemAssign)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.Line, x)
 	}
-	x, err = p.consume(itemNumber)
+	x, err = p.consume(ast.ItemNumber)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.Line, x)
 	}
 	base, err = itemNumberToInt(x)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.Line, x)
 	}
-	x, err = p.consume(ItemForwardSlash)
+	x, err = p.consume(ast.ItemForwardSlash)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.Line, x)
 	}
-	x, err = p.consume(itemNumber)
+	x, err = p.consume(ast.ItemNumber)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.Line, x)
 	}
 	maxlvl, err = itemNumberToInt(x)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.line, x)
+		return base, maxlvl, fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.Line, x)
 	}
 	if maxlvl < base {
-		return base, maxlvl, fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.line, maxlvl, base)
+		return base, maxlvl, fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.Line, maxlvl, base)
 	}
 	return base, maxlvl, nil
 }

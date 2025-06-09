@@ -1,8 +1,10 @@
-package ast
+package parser
 
 import (
 	"errors"
 	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
 func parseEnergy(p *Parser) (parseFn, error) {
@@ -10,19 +12,19 @@ func parseEnergy(p *Parser) (parseFn, error) {
 	// energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	n := p.next()
 	switch n.Typ {
-	case itemIdentifier:
+	case ast.ItemIdentifier:
 		switch n.Val {
 		case "once":
 			return parseEnergyOnce, nil
 		case "every":
 			return parseEnergyEvery, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.line, n.Val)
+			return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.Line, n.Val)
 		}
-	case itemTerminateLine:
+	case ast.ItemTerminateLine:
 		return parseRows, nil
 	default:
-		return nil, fmt.Errorf("ln%v: unrecognized token parsing options: %v", n.line, n)
+		return nil, fmt.Errorf("ln%v: unrecognized token parsing options: %v", n.Line, n)
 	}
 }
 
@@ -32,17 +34,17 @@ func parseEnergyOnce(p *Parser) (parseFn, error) {
 	p.res.EnergySettings.Active = true
 	p.res.EnergySettings.Once = true
 
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case itemIdentifier:
+		case ast.ItemIdentifier:
 			switch n.Val {
-			case IntervalVal:
-				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			case ast.IntervalVal:
+				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 				if err == nil {
 					p.res.EnergySettings.Start, err = itemNumberToInt(n)
 				}
-			case AmountVal:
-				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+			case ast.AmountVal:
+				item, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 				if err != nil {
 					return nil, err
 				}
@@ -52,12 +54,12 @@ func parseEnergyOnce(p *Parser) (parseFn, error) {
 				}
 				p.res.EnergySettings.Amount = count
 			default:
-				return nil, fmt.Errorf("ln%v: unrecognized energy event specified: %v", n.line, n.Val)
+				return nil, fmt.Errorf("ln%v: unrecognized energy event specified: %v", n.Line, n.Val)
 			}
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing energy event: %v", n.line, n)
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing energy event: %v", n.Line, n)
 		}
 		if err != nil {
 			return nil, err
@@ -72,12 +74,12 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 	p.res.EnergySettings.Active = true
 	p.res.EnergySettings.Once = false
 
-	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
-		case itemIdentifier:
+		case ast.ItemIdentifier:
 			switch n.Val {
-			case IntervalVal:
-				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			case ast.IntervalVal:
+				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 				if err != nil {
 					return nil, err
 				}
@@ -86,7 +88,7 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 
-				n, err = p.acceptSeqReturnLast(itemComma, itemNumber)
+				n, err = p.acceptSeqReturnLast(ast.ItemComma, ast.ItemNumber)
 				if err != nil {
 					return nil, err
 				}
@@ -94,8 +96,8 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-			case AmountVal:
-				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+			case ast.AmountVal:
+				item, err := p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 				if err != nil {
 					return nil, err
 				}
@@ -105,12 +107,12 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 				}
 				p.res.EnergySettings.Amount = count
 			default:
-				return nil, fmt.Errorf("ln%v: unrecognized energy event specified: %v", n.line, n.Val)
+				return nil, fmt.Errorf("ln%v: unrecognized energy event specified: %v", n.Line, n.Val)
 			}
-		case itemTerminateLine:
+		case ast.ItemTerminateLine:
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing energy event: %v", n.line, n)
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing energy event: %v", n.Line, n)
 		}
 		if err != nil {
 			return nil, err
