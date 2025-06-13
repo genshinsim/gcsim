@@ -42,7 +42,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.c4Burst()
 
 	if c.StatusIsActive(apexState) {
-		c.DeleteStatus(apexState)
 		return c.volcanicKablam(), nil
 	}
 
@@ -57,6 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           kick[c.TalentLvlBurst()],
+		HitlagFactor:   0.1,
 	}
 
 	c.QueueCharTask(func() {
@@ -99,18 +99,22 @@ func (c *char) volcanicKablam() action.Info {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           kablam[c.TalentLvlBurst()],
+		HitlagFactor:   0.1,
 	}
 
 	if c.Base.Cons >= 1 {
 		c.a1()
 	}
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
-		kablamHitmark,
-		kablamHitmark,
-	)
+	c.Core.Tasks.Add(func() {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
+			0,
+			0,
+		)
+		c.DeleteStatus(apexState)
+	}, kablamHitmark)
 
 	c.AddEnergy("varesa-kablam", -kablamCost)
 	c.SetCD(action.ActionBurst, 1*60)

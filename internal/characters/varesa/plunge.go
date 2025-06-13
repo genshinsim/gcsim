@@ -18,9 +18,8 @@ var (
 	lowPlungeFrames       []int
 )
 
-// TODO: update low_plunge frames and hitlags/hitboxes
+// TODO: update low_plunge frames and hitboxes
 
-const lowPlungeHitmark = 39
 const highPlungeHitmark = 37
 const fieryHighPlungeHitmark = 41
 const collisionHitmark = highPlungeHitmark - 6
@@ -28,17 +27,12 @@ const collisionHitmark = highPlungeHitmark - 6
 const lowPlungeRadius = 3.0
 const highPlungeRadius = 5.0
 
-const apexState = "apex-drive"
+const (
+	apexState    = "apex-drive"
+	apexDuration = 140
+)
 
 func init() {
-	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(84)
-	lowPlungeFrames[action.ActionAttack] = 56
-	lowPlungeFrames[action.ActionSkill] = 56
-	lowPlungeFrames[action.ActionBurst] = 56
-	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
-	lowPlungeFrames[action.ActionSwap] = 67
-
 	// high_plunge -> x
 	highPlungeFrames = frames.InitAbilSlice(72) // Plunge -> Walk
 	highPlungeFrames[action.ActionAttack] = 40
@@ -58,78 +52,6 @@ func init() {
 	fieryHighPlungeFrames[action.ActionDash] = 40
 	fieryHighPlungeFrames[action.ActionJump] = 79
 	fieryHighPlungeFrames[action.ActionSwap] = 45
-}
-
-// Low Plunge attack damage queue generator
-// Use the "collision" optional argument if you want to do a falling hit on the way down
-// Default = 0
-func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
-	if c.Core.Player.CurrentState() == action.ChargeAttackState {
-		return c.lowPlungeXY(p), nil
-	}
-
-	defer c.Core.Player.SetAirborne(player.Grounded)
-	switch c.Core.Player.Airborne() {
-	case player.AirborneXianyun:
-		return c.lowPlungeXY(p), nil
-	default:
-		return action.Info{}, errors.New("low_plunge can only be used while airborne")
-	}
-}
-
-func (c *char) lowPlungeXY(p map[string]int) action.Info {
-	collision, ok := p["collision"]
-	if !ok {
-		collision = 0 // Whether or not collision hit
-	}
-
-	if collision > 0 {
-		c.plungeCollision(collisionHitmark)
-	}
-
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           "Low Plunge",
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		AttackTag:      attacks.AttackTagPlunge,
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Electro,
-		Durability:     25,
-		Mult:           lowPlunge[c.TalentLvlAttack()],
-		FlatDmg:        c.c4FlatBonus(),
-	}
-
-	cb := c.generatePlungeNightsoul
-	c.exitNS = false
-	if c.nightsoulState.HasBlessing() {
-		ai.Abil = "Fiery Passion Low Plunge"
-		ai.Mult = fieryLowPlunge[c.TalentLvlAttack()]
-		cb = c.nightsoulState.ClearPoints
-		c.exitNS = true
-	}
-	ai.Mult += c.a1PlungeBuff()
-	c.getApexDrive()
-
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
-		lowPlungeHitmark,
-		lowPlungeHitmark,
-		c.a1Cancel,
-		c.c2CB(),
-		c.c4CB,
-	)
-	c.Core.Tasks.Add(cb, lowPlungeHitmark)
-
-	return action.Info{
-		Frames:          frames.NewAbilFunc(lowPlungeFrames),
-		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
-		State:           action.PlungeAttackState,
-		OnRemoved:       c.clearNightsoulCB,
-	}
 }
 
 // High Plunge attack damage queue generator
@@ -171,6 +93,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		Durability:     25,
 		Mult:           highPlunge[c.TalentLvlAttack()],
 		FlatDmg:        c.c4FlatBonus(),
+		HitlagFactor:   0.1,
 	}
 
 	hitmark := highPlungeHitmark
@@ -213,15 +136,16 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Plunge Collision",
-		AttackTag:  attacks.AttackTagPlunge,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Electro,
-		Durability: 0,
-		Mult:       collision[c.TalentLvlAttack()],
+		ActorIndex:   c.Index,
+		Abil:         "Plunge Collision",
+		AttackTag:    attacks.AttackTagPlunge,
+		ICDTag:       attacks.ICDTagNone,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeDefault,
+		Element:      attributes.Electro,
+		Durability:   0,
+		Mult:         collision[c.TalentLvlAttack()],
+		HitlagFactor: 0.02,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), delay, delay)
 }
@@ -230,7 +154,7 @@ func (c *char) getApexDrive() {
 	if c.Base.Cons < 2 && !c.nightsoulState.HasBlessing() {
 		return
 	}
-	c.AddStatus(apexState, 2*60, true) // TODO: duration?
+	c.AddStatus(apexState, apexDuration, true)
 	if c.Base.Cons >= 6 {
 		c.AddEnergy("varesa-c6", 30)
 	}

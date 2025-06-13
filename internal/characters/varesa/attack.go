@@ -11,19 +11,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: update hitlags/hitboxes
+// TODO: hitboxes
 var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{28, 7, 33}
-	attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
+	attackHitlagHaltFrame = []float64{0, 0, 0.03}
+	attackHitlagFactor    = []float64{0, 0, 0.01}
 	attackHitboxes        = [][]float64{{2, 3}, {2, 3}, {2.2}}
 	attackOffsets         = []float64{-0.2, -0.2, 1.1}
 
-	fieryAttackFrames          [][]int
-	fieryAttackHitmarks        = []int{18, 29, 37}
-	fieryAttackHitlagFactor    = []float64{0, 0, 0.01}
-	fieryAttackHitlagHaltFrame = []float64{0, 0, 0.03}
-	fieryAttackHitboxes        = [][]float64{{2, 3}, {2, 3}, {2.5, 3}}
+	fieryAttackFrames   [][]int
+	fieryAttackHitmarks = []int{18, 29, 37}
+	fieryAttackHitboxes = [][]float64{{2, 3}, {2, 3}, {2.5, 3}}
 )
 
 const normalHitNum = 3
@@ -49,11 +48,11 @@ func init() {
 	fieryAttackFrames[0][action.ActionAttack] = 29
 	fieryAttackFrames[0][action.ActionCharge] = 31
 
-	fieryAttackFrames[1] = frames.InitNormalCancelSlice(fieryAttackHitmarks[0], 47) // N2 -> Walk
+	fieryAttackFrames[1] = frames.InitNormalCancelSlice(fieryAttackHitmarks[1], 47) // N2 -> Walk
 	fieryAttackFrames[1][action.ActionAttack] = 39
 	fieryAttackFrames[1][action.ActionCharge] = 25
 
-	fieryAttackFrames[2] = frames.InitNormalCancelSlice(fieryAttackHitmarks[0], 63) // N3 -> N4/Walk
+	fieryAttackFrames[2] = frames.InitNormalCancelSlice(fieryAttackHitmarks[2], 63) // N3 -> N4/Walk
 	fieryAttackFrames[2][action.ActionCharge] = 37
 }
 
@@ -119,8 +118,8 @@ func (c *char) fieryAttack() action.Info {
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               fieryAttack[c.NormalCounter][c.TalentLvlAttack()],
-		HitlagFactor:       fieryAttackHitlagFactor[c.NormalCounter],
-		HitlagHaltFrames:   fieryAttackHitlagHaltFrame[c.NormalCounter] * 60,
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.03 * 60,
 		CanBeDefenseHalted: true,
 	}
 

@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: update hitlags/hitboxes
+// TODO: hitboxes
 var (
 	chargeFrames      []int
 	fieryChargeFrames []int
@@ -65,8 +65,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Durability:         25,
 		Mult:               charged[c.TalentLvlAttack()],
 		HitlagFactor:       0.01,
-		HitlagHaltFrames:   0.09 * 60,
-		CanBeDefenseHalted: false,
+		HitlagHaltFrames:   0.03 * 60,
+		CanBeDefenseHalted: true,
 	}
 
 	hitmark := chargeHitmark
@@ -94,18 +94,19 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 func (c *char) fieryChargeAttack() action.Info {
 	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
-		Abil:             "Fiery Passion Charged Attack",
-		AdditionalTags:   []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		AttackTag:        attacks.AttackTagExtra,
-		ICDTag:           attacks.ICDTagVaresaCombatCycle,
-		ICDGroup:         attacks.ICDGroupDefault,
-		StrikeType:       attacks.StrikeTypeDefault,
-		Element:          attributes.Electro,
-		Durability:       25,
-		Mult:             fieryCharged[c.TalentLvlAttack()],
-		HitlagFactor:     0.01,
-		HitlagHaltFrames: 0.09 * 60,
+		ActorIndex:         c.Index,
+		Abil:               "Fiery Passion Charged Attack",
+		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagVaresaCombatCycle,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
+		Element:            attributes.Electro,
+		Durability:         25,
+		Mult:               fieryCharged[c.TalentLvlAttack()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.03 * 60,
+		CanBeDefenseHalted: true,
 	}
 
 	hitmark := fieryChargeHitmark

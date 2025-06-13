@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-// TODO: update hitlags/hitboxes
+// TODO: update hitboxes
 var (
 	skillFrames      []int
 	fierySkillFrames []int
@@ -47,16 +47,18 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.clearNightsoulCB(action.SkillState)
 
 	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           "Rush",
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		AttackTag:      attacks.AttackTagElementalArt,
-		ICDTag:         attacks.ICDTagVaresaCombatCycle,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Electro,
-		Durability:     25,
-		Mult:           rush[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Rush",
+		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagVaresaCombatCycle,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
+		Element:            attributes.Electro,
+		Durability:         25,
+		Mult:               rush[c.TalentLvlSkill()],
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 
 	hitmark := skillHitmark
