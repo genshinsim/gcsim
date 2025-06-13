@@ -26,7 +26,7 @@ func (c *char) c6() {
 		return false
 	}, "hutao-c6")
 	// check for C6 proc every 2s from start of sim regardless of hurt
-	c.checkc6(true)
+	c.Core.Tasks.Add(func() { c.checkc6(true) }, 1) // start to check after hp set
 }
 
 func (c *char) checkc6(check1HP bool) {

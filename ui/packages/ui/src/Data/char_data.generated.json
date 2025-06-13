@@ -379,6 +379,23 @@
       },
       "name_text_hash_map ": "2876340530"
     },
+    "citlali": {
+      "id": 10000107,
+      "key": "citlali",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Citlali",
+      "skill_details": {
+        "skill": 11072,
+        "burst": 11075,
+        "attack": 11071,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1197975042"
+    },
     "clorinde": {
       "id": 10000098,
       "key": "clorinde",
@@ -1079,6 +1096,23 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "231911858"
+    },
+    "mizuki": {
+      "id": 10000109,
+      "key": "mizuki",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Mizuki",
+      "skill_details": {
+        "skill": 11092,
+        "burst": 11095,
+        "attack": 11091,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "3784387538"
     },
     "mona": {
       "id": 10000041,

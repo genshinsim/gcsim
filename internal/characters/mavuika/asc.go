@@ -38,8 +38,6 @@ func (c *char) a4Init() {
 	}
 	c.a4buff = make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
-		// make sure variable isn't mutated by later loops
-		char := char
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(a4BufKey, -1),
 			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {

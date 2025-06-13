@@ -140,10 +140,15 @@ func (c *char) onBurstStackCount() {
 				stacks *= 1.2
 			}
 		}
+		previous := c.stacks
 		c.stacks += stacks
 		if c.stacks > 60 {
 			c.stacks = 60
 		}
+		c.Core.Log.NewEvent("resolve stacks gained", glog.LogCharacterEvent, c.Index).
+			Write("previous", previous).
+			Write("amount", stacks).
+			Write("final", c.stacks)
 		return false
 	}, "raiden-stacks")
 }

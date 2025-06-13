@@ -330,6 +330,7 @@
         "return_to_sim": "返回模拟器",
         "sample": "样本",
         "search": "搜索",
+        "seed_custom": "定制种子",
         "seed_sample": "样本种子",
         "seed_min": "最低种子",
         "seed_max": "最大种子",

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var (
@@ -148,6 +149,7 @@ func (c *char) skillAttack(p map[string]int) (action.Info, error) {
 	if cross {
 		time := math.Abs(NormalizeAngle180(boundary-c.characterAngularPosition)) / angularVelocity
 		c.QueueCharTask(func() {
+			c.Core.Log.NewEvent("blind spot entered", glog.LogCharacterEvent, c.Index)
 			c.nightsoulState.GeneratePoints(4)
 			c.blindSpotAngularPosition = -1
 		}, int(time))

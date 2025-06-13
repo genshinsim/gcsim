@@ -11,6 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	c6Abil = "Boundless Origin (C6)"
+)
+
 func (c *char) c1() {
 	if c.Core.Combat.DamageMode {
 		m := make([]float64, attributes.EndStatType)
@@ -67,7 +71,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 
 		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
 		ai := combat.AttackInfo{
-			Abil:               "Ayato C6",
+			Abil:               c6Abil,
 			ActorIndex:         c.Index,
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,

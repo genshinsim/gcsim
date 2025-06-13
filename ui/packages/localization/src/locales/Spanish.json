@@ -343,6 +343,7 @@
         "return_to_sim": "Volver al Simulador",
         "sample": "Muestra",
         "search": "Buscar",
+        "seed_custom": "Semilla a medida",
         "seed_sample": "Semilla de Muestra",
         "seed_min": "Semilla Mínima",
         "seed_max": "Semilla Máxima",

@@ -20,10 +20,15 @@ func (c *char) a1() {
 			return false
 		}
 		particleICD = c.Core.F + 180 // once every 3 seconds
+		previous := c.stacks
 		c.stacks += 2
 		if c.stacks > 60 {
 			c.stacks = 60
 		}
+		c.Core.Log.NewEvent("resolve stacks gained", glog.LogCharacterEvent, c.Index).
+			Write("previous", previous).
+			Write("amount", 2).
+			Write("final", c.stacks)
 		return false
 	}, "raiden-particle-stacks")
 }

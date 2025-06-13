@@ -43,6 +43,9 @@
     "eosf",
     "esf"
   ],
+  "finaleofthedeepgalleries": [
+    "deepgalleries"
+  ],
   "flowerofparadiselost": [
     "paradiselost",
     "fopl"
@@ -76,7 +79,9 @@
   "lavawalker": [
     "lw"
   ],
-  "longnightsoath": [],
+  "longnightsoath": [
+    "lno"
+  ],
   "maidenbeloved": [
     "maiden",
     "mb"

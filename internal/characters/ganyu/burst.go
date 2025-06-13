@@ -50,7 +50,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// tick every 0.3s from burstStart
 	for i := 0; i < 15*60; i += 18 {
 		// c4 related
-		tick := i
 		c.Core.Tasks.Add(func() {
 			// burst tick
 			enemy := c.Core.Combat.RandomEnemyWithinArea(
@@ -86,7 +85,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				enemies := c.Core.Combat.EnemiesWithinArea(burstArea, nil)
 				// increase stacks every 3s but apply c4 status on every tick
 				// c4 lingers for 3s
-				increase := tick%180 == 0
+				increase := i%180 == 0
 				for _, e := range enemies {
 					e.AddStatus(c4Key, c4Dur, true)
 					if increase {

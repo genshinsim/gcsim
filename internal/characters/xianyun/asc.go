@@ -24,9 +24,8 @@ var a1Crit = []float64{0.0, 0.04, 0.06, 0.08, 0.10}
 // each stack's duration is calculated independently.
 
 func (c *char) a1() {
-	for idx, char := range c.Core.Player.Chars() {
+	for i, char := range c.Core.Player.Chars() {
 		mCR := make([]float64, attributes.EndStatType)
-		i := idx
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("xianyun-a1-buff", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {

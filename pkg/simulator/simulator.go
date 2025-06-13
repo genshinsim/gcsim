@@ -19,6 +19,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -59,7 +60,7 @@ func Version() string {
 }
 
 func Parse(cfg string) (*info.ActionList, ast.Node, error) {
-	parser := ast.New(cfg)
+	parser := parser.New(cfg)
 	simcfg, gcsl, err := parser.Parse()
 	if err != nil {
 		return &info.ActionList{}, nil, err
