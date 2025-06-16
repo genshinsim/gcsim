@@ -2713,7 +2713,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "legal": true
     },
     {
       "ability": "swap",
