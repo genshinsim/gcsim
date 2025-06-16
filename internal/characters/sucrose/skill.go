@@ -19,6 +19,7 @@ func init() {
 	skillFrames[action.ActionAttack] = 57
 	skillFrames[action.ActionCharge] = 56
 	skillFrames[action.ActionSkill] = 56
+	skillFrames[action.ActionBurst] = 57
 	skillFrames[action.ActionDash] = 11
 	skillFrames[action.ActionJump] = 11
 	skillFrames[action.ActionSwap] = 56
