@@ -24,6 +24,7 @@ func init() {
 	// TODO: check if hitmarks for NA->CA and CA->CA lines up
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 28) // walk
 	attackFrames[0][action.ActionAttack] = 17
+	attackFrames[0][action.ActionCharge] = 20
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 38) // walk
 	attackFrames[1][action.ActionAttack] = 26
