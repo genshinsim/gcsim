@@ -36,10 +36,6 @@ func (w *Weapon) Init() error {
 		}
 	}
 
-	if stacks > 3 {
-		stacks = 3
-	}
-
 	mAtk := make([]float64, attributes.EndStatType)
 	mAtk[attributes.ATKP] = w.atkStack * float64(stacks)
 	w.self.AddStatMod(character.StatMod{
