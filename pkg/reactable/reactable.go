@@ -100,6 +100,7 @@ func (r *Modifier) UnmarshalJSON(b []byte) error {
 type Reactable struct {
 	Durability [EndModifier]reactions.Durability
 	DecayRate  [EndModifier]reactions.Durability
+	AppliedBy  [EndModifier]int // the character that applied the aura. means nothing if durability is 0
 	// Source     []int //source frame of the aura
 	self combat.Target
 	core *core.Core
@@ -232,7 +233,7 @@ func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
 	// handle pyro, electro, hydro, cryo, dendro
 	// special attachment of dendro (burning fuel) is handled in tryBurning
 	if mod, ok := elementToModifier[a.Info.Element]; ok {
-		r.attachOrRefillNormalEle(mod, a.Info.Durability)
+		r.attachOrRefillNormalEle(mod, a.Info.Durability, a.Info.ActorIndex)
 		return true
 	}
 	return false
@@ -240,44 +241,48 @@ func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
 
 // attachOrRefillNormalEle is used for pyro, electro, hydro, cryo, and dendro which don't have special attachment
 // rules
-func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur reactions.Durability) {
+func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur reactions.Durability, actorIndex int) {
 	amt := 0.8 * dur
 	if mod == Pyro {
-		r.attachOverlapRefreshDuration(Pyro, amt, 6*dur+420)
+		r.attachOverlapRefreshDuration(Pyro, amt, 6*dur+420, actorIndex)
 	} else {
-		r.attachOverlap(mod, amt, 6*dur+420)
+		r.attachOverlap(mod, amt, 6*dur+420, actorIndex)
 	}
 }
 
-func (r *Reactable) attachOverlap(mod Modifier, amt, length reactions.Durability) {
+func (r *Reactable) attachOverlap(mod Modifier, amt, length reactions.Durability, actorIndex int) {
 	if r.Durability[mod] > ZeroDur {
 		add := max(amt-r.Durability[mod], 0)
 		if add > 0 {
-			r.addDurability(mod, add)
+			r.addDurability(mod, add, actorIndex)
 		}
 	} else {
 		r.Durability[mod] = amt
+		r.AppliedBy[mod] = actorIndex
 		if length > ZeroDur {
 			r.DecayRate[mod] = amt / length
 		}
 	}
 }
 
-func (r *Reactable) attachOverlapRefreshDuration(mod Modifier, amt, length reactions.Durability) {
+func (r *Reactable) attachOverlapRefreshDuration(mod Modifier, amt, length reactions.Durability, actorIndex int) {
 	if amt < r.Durability[mod] {
 		return
 	}
 	r.Durability[mod] = amt
+	r.AppliedBy[mod] = actorIndex
 	r.DecayRate[mod] = amt / length
 }
 
-func (r *Reactable) attachBurning() {
+func (r *Reactable) attachBurning(actorIndex int) {
 	r.Durability[Burning] = 50
+	r.AppliedBy[Burning] = actorIndex
 	r.DecayRate[Burning] = 0
 }
 
-func (r *Reactable) addDurability(mod Modifier, amt reactions.Durability) {
+func (r *Reactable) addDurability(mod Modifier, amt reactions.Durability, actorIndex int) {
 	r.Durability[mod] += amt
+	r.AppliedBy[mod] = actorIndex
 	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
 

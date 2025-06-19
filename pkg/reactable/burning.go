@@ -39,8 +39,8 @@ func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
 	// a.Reacted = true
 
 	if r.Durability[BurningFuel] < ZeroDur {
-		r.attachBurningFuel(max(dendroDur, r.Durability[Quicken]), 1)
-		r.attachBurning()
+		r.attachBurningFuel(max(dendroDur, r.Durability[Quicken]), 1, a.Info.ActorIndex)
+		r.attachBurning(a.Info.ActorIndex)
 
 		r.core.Events.Emit(event.OnBurning, r.self, a)
 		r.calcBurningDmg(a)
@@ -56,16 +56,17 @@ func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
 	}
 	// overwrite burning fuel and recalc burning dmg
 	if a.Info.Element == attributes.Dendro {
-		r.attachBurningFuel(a.Info.Durability, 0.8)
+		r.attachBurningFuel(a.Info.Durability, 0.8, a.Info.ActorIndex)
 	}
 	r.calcBurningDmg(a)
 
 	return false
 }
 
-func (r *Reactable) attachBurningFuel(dur, mult reactions.Durability) {
+func (r *Reactable) attachBurningFuel(dur, mult reactions.Durability, actorIndex int) {
 	// burning fuel always overwrites
 	r.Durability[BurningFuel] = mult * dur
+	r.AppliedBy[BurningFuel] = actorIndex
 	decayRate := mult * dur / (6*dur + 420)
 	if decayRate < 10.0/60.0 {
 		decayRate = 10.0 / 60.0

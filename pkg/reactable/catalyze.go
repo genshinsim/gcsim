@@ -71,7 +71,7 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	r.core.Events.Emit(event.OnQuicken, r.self, a)
 
 	// attach quicken aura; special amount
-	r.attachQuicken(consumed)
+	r.attachQuicken(consumed, a.Info.ActorIndex)
 
 	if r.Durability[Hydro] >= ZeroDur {
 		r.core.Tasks.Add(func() {
@@ -82,6 +82,6 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) attachQuicken(dur reactions.Durability) {
-	r.attachOverlapRefreshDuration(Quicken, dur, 12*dur+360)
+func (r *Reactable) attachQuicken(dur reactions.Durability, actorIndex int) {
+	r.attachOverlapRefreshDuration(Quicken, dur, 12*dur+360, actorIndex)
 }
