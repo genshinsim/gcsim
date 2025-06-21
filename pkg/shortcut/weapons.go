@@ -27,6 +27,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"athousandfloatingdreams":         keys.AThousandFloatingDreams,
 	"thousandfloatingdreams":          keys.AThousandFloatingDreams,
 	"tfd":                             keys.AThousandFloatingDreams,
+	"azurelight":                      keys.Azurelight,
 	"balladoftheboundlessblue":        keys.BalladOfTheBoundlessBlue,
 	"boundlessblue":                   keys.BalladOfTheBoundlessBlue,
 	"balladofthefjords":               keys.BalladOfTheFjords,
