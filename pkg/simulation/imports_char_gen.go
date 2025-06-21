@@ -75,6 +75,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/sethos"
 	_ "github.com/genshinsim/gcsim/internal/characters/shenhe"
 	_ "github.com/genshinsim/gcsim/internal/characters/sigewinne"
+	_ "github.com/genshinsim/gcsim/internal/characters/skirk"
 	_ "github.com/genshinsim/gcsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gcsim/internal/characters/tartaglia"
 	_ "github.com/genshinsim/gcsim/internal/characters/thoma"
