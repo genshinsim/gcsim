@@ -95,7 +95,6 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		c.AddSerpentsSubtlety(c.Base.Key.String()+"-skill-hold", 45.0)
 		c.c2OnSkill()
-
 		c.absorbVoidRift()
 	}, skillHoldGainSS)
 
