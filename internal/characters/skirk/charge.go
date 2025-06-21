@@ -28,6 +28,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
 		return c.ChargeAttackSkill(p)
 	}
+
+	windup := 0
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
+		windup = 6
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagExtra,
@@ -54,9 +60,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeFrames[action.ActionJump], // earliest cancel
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
+		CanQueueAfter:   chargeFrames[action.ActionJump] - windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }

@@ -25,7 +25,7 @@ type char struct {
 	skillSrc         int
 	burstCount       int
 	burstVoids       int
-	voidRiftCount    int
+	voidRifts        RingQueue[int]
 	a4Stacks         []int
 	c2Atk            []float64
 	c6Stacks         RingQueue[int]
@@ -114,6 +114,7 @@ func (c *char) Condition(fields []string) (any, error) {
 }
 
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+	// TODO: Adjust this value based on if windup happened for the NA
 	if k == model.AnimationXingqiuN0StartDelay {
 		return 6
 	}
@@ -140,12 +141,7 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 func (c *char) AddSerpentsSubtlety(src string, e float64) {
 	pre := c.serpentsSubtlety
 	c.serpentsSubtlety += e
-	if c.serpentsSubtlety > maxSerpentsSubtlety {
-		c.serpentsSubtlety = maxSerpentsSubtlety
-	}
-	if c.serpentsSubtlety < 0 {
-		c.serpentsSubtlety = 0
-	}
+	c.serpentsSubtlety = min(max(c.serpentsSubtlety, 0), maxSerpentsSubtlety)
 
 	c.Core.Log.NewEvent(fmt.Sprintf("+%.1f serpent's subtlety, next: %.1f", e, c.serpentsSubtlety), glog.LogEnergyEvent, c.Index).
 		Write("added", e).
@@ -157,12 +153,7 @@ func (c *char) AddSerpentsSubtlety(src string, e float64) {
 func (c *char) ReduceSerpentsSubtlety(src string, e float64) {
 	pre := c.serpentsSubtlety
 	c.serpentsSubtlety -= e
-	if c.serpentsSubtlety > maxSerpentsSubtlety {
-		c.serpentsSubtlety = maxSerpentsSubtlety
-	}
-	if c.serpentsSubtlety < 0 {
-		c.serpentsSubtlety = 0
-	}
+	c.serpentsSubtlety = min(max(c.serpentsSubtlety, 0), maxSerpentsSubtlety)
 
 	c.Core.Log.NewEvent(fmt.Sprintf("-%.1f serpent's subtlety, next: %.1f", e, c.serpentsSubtlety), glog.LogEnergyEvent, c.Index).
 		Write("reduced", e).
@@ -171,6 +162,7 @@ func (c *char) ReduceSerpentsSubtlety(src string, e float64) {
 		Write("source", src)
 }
 
+// Consumes SS after a specified delay. Not hitlag affected
 func (c *char) ConsumeSerpentsSubtlety(delay int, src string) {
 	if delay == 0 {
 		c.Core.Log.NewEvent("draining serpent's subtlety", glog.LogEnergyEvent, c.Index).

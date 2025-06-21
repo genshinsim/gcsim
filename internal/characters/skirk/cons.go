@@ -121,11 +121,13 @@ func (c *char) c6OnBurstRuin() {
 		5,
 	)
 
-	for !c.c6Stacks.IsEmpty() {
-		src, _ := c.c6Stacks.Pop()
-		if src+c6Dur < c.TimePassed {
-			continue
-		}
+	filter := func(src int) bool {
+		return src+c6Dur >= c.TimePassed
+	}
+
+	count := c.c6Stacks.Count(filter)
+	c.c6Stacks.Clear()
+	for range count {
 		c.Core.QueueAttack(ai, ap, 3, 3)
 	}
 }
