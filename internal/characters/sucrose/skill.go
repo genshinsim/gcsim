@@ -15,9 +15,11 @@ var skillFrames []int
 const particleICDKey = "sucrose-particle-icd"
 
 func init() {
-	skillFrames = frames.InitAbilSlice(57)
+	skillFrames = frames.InitAbilSlice(68) // walk
+	skillFrames[action.ActionAttack] = 57
 	skillFrames[action.ActionCharge] = 56
 	skillFrames[action.ActionSkill] = 56
+	skillFrames[action.ActionBurst] = 57
 	skillFrames[action.ActionDash] = 11
 	skillFrames[action.ActionJump] = 11
 	skillFrames[action.ActionSwap] = 56
