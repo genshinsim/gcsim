@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
+const a1Dur = 1054
 const a1Key = "skirk-a1"
 const a1IcdKey = "skirk-a1-icd"
 const a4Key = "deaths-crossing"
@@ -17,6 +18,7 @@ var a4MultAttack = []float64{1, 1.1, 1.2, 1.7}
 var a4MultBurst = []float64{1, 1.05, 1.15, 1.60}
 
 func (c *char) a1Init() {
+
 	a1Hook := func(args ...interface{}) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
@@ -29,6 +31,7 @@ func (c *char) a1Init() {
 
 		return false
 	}
+	c.voidRifts = NewRingQueue[int](3)
 	c.Core.Events.Subscribe(event.OnFrozen, a1Hook, a1Key+"frozen")
 	c.Core.Events.Subscribe(event.OnSuperconduct, a1Hook, a1Key+"superconduct")
 	c.Core.Events.Subscribe(event.OnSwirlCryo, a1Hook, a1Key+"cryo-swirl")
@@ -42,26 +45,28 @@ func (c *char) absorbVoidRiftCB(a combat.AttackCB) {
 	c.absorbVoidRift()
 }
 
-func (c *char) absorbVoidRift() {
-	count := c.voidRiftCount
-	if count > 3 {
-		count = 3
+func (c *char) absorbVoidRift() int {
+	filter := func(src int) bool {
+		return src+a1Dur >= c.Core.F
 	}
+	count := c.voidRifts.Count(filter)
+	c.voidRifts.Clear()
+
 	if count <= 0 {
-		return
+		return 0
 	}
+
 	c.AddSerpentsSubtlety("a1-void-rifts", float64(count)*8.0)
 
 	for i := 0; i < count; i++ {
 		c.c1()
 		c.c6OnVoidAbsorb()
 	}
-	c.voidRiftCount = 0
+	return count
 }
 
 func (c *char) createVoidRift() {
-	c.voidRiftCount++
-	// TODO: when do these time out?
+	c.voidRifts.Push(c.Core.F)
 }
 
 func (c *char) a4Init() {

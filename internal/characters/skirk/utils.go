@@ -90,3 +90,19 @@ func (r *RingQueue[T]) Index(ind int) (T, error) {
 	}
 	return r.data[(r.start+ind)%len(r.data)], nil
 }
+
+func (r *RingQueue[T]) Clear() {
+	r.start = r.end
+	r.isFull = false
+}
+
+func (r *RingQueue[T]) Count(filter func(x T) bool) int {
+	count := 0
+	for i := range r.Len() {
+		val, _ := r.Index(i)
+		if filter(val) {
+			count++
+		}
+	}
+	return count
+}
