@@ -75,6 +75,7 @@ var avatarMap = map[string]string{
 	"sethos":        "UI_AvatarIcon_Sethos",
 	"shenhe":        "UI_AvatarIcon_Shenhe",
 	"sigewinne":     "UI_AvatarIcon_Sigewinne",
+	"skirk":         "UI_AvatarIcon_SkirkNew",
 	"sucrose":       "UI_AvatarIcon_Sucrose",
 	"tartaglia":     "UI_AvatarIcon_Tartaglia",
 	"thoma":         "UI_AvatarIcon_Tohma",
