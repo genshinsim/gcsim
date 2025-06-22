@@ -26,7 +26,6 @@ type char struct {
 	burstCount       int
 	burstVoids       int
 	voidRifts        RingQueue[int]
-	a4Stacks         []int
 	c2Atk            []float64
 	c6Stacks         RingQueue[int]
 }
@@ -99,14 +98,16 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "serpents_subtlety":
 		return c.serpentsSubtlety, nil
+	case "a4_stacks":
+		return c.getA4Stacks(), nil
 	case "c6_stacks":
-		count := 0
-		for i := 0; i < c.c6Stacks.Len(); i++ {
-			src, _ := c.c6Stacks.Index(i)
-			if src+c6Dur >= c.TimePassed {
-				count++
-			}
+		if c.Base.Cons < 6 {
+			return 0, nil
 		}
+		filter := func(src int) bool {
+			return src+c6Dur >= c.TimePassed
+		}
+		count := c.c6Stacks.Count(filter)
 		return count, nil
 	default:
 		return c.Character.Condition(fields)
