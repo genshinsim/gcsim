@@ -16,7 +16,7 @@ var skillHoldFrames []int
 const (
 	maxSerpentsSubtlety = 100
 	skillGainSS         = 25
-	skillKey            = "seven-phase-slash"
+	skillKey            = "seven-phase-flash"
 	particleICDKey      = "skirk-particle-icd"
 	skillHoldGainSS     = 16
 )
@@ -44,7 +44,7 @@ func (c *char) skillTap() (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel is before skillHitmark
+		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}, nil
 }
@@ -88,8 +88,8 @@ func (c *char) serpentsReduceTask(src int) {
 
 func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	duration := p["hold"]
-	if duration < 10 {
-		duration = 10
+	if duration < 1 {
+		duration = 1
 	}
 
 	c.QueueCharTask(func() {
@@ -98,14 +98,14 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		c.absorbVoidRift()
 	}, skillHoldGainSS)
 
-	c.SetCDWithDelay(action.ActionSkill, 8*60, duration)
+	c.SetCDWithDelay(action.ActionSkill, 8*60, duration+skillHoldGainSS)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return skillHoldFrames[next] + duration
 		},
 		AnimationLength: skillHoldFrames[action.InvalidAction] + duration,
-		CanQueueAfter:   skillHoldFrames[action.ActionDash] + duration, // earliest cancel is before skillHitmark
+		CanQueueAfter:   skillHoldFrames[action.ActionDash] + duration,
 		State:           action.SkillState,
 	}, nil
 }
