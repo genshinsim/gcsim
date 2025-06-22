@@ -1,6 +1,8 @@
 package skirk
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -58,7 +60,7 @@ func (c *char) absorbVoidRift() int {
 
 	c.AddSerpentsSubtlety("a1-void-rifts", float64(count)*8.0)
 
-	for i := 0; i < count; i++ {
+	for range count {
 		c.c1()
 		c.c6OnVoidAbsorb()
 	}
@@ -70,7 +72,6 @@ func (c *char) createVoidRift() {
 }
 
 func (c *char) a4Init() {
-	c.a4Stacks = make([]int, len(c.Core.Player.Chars()))
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		charElem := c.Core.Player.Chars()[atk.Info.ActorIndex].Base.Element
@@ -86,16 +87,20 @@ func (c *char) a4Init() {
 		default:
 			return false
 		}
-		c.a4Stacks[atk.Info.ActorIndex] = c.TimePassed
+		c.AddStatus(getA4StackName(atk.Info.ActorIndex), a4Dur, true)
 
 		return false
 	}, a4Key+"-hook")
 }
 
+func getA4StackName(index int) string {
+	return fmt.Sprintf("%s-char%d", a4Key, index)
+}
+
 func (c *char) getA4Stacks() int {
 	count := 0
-	for _, f := range c.a4Stacks {
-		if f != 0 && f+a4Dur > c.TimePassed {
+	for index := range c.Core.Player.Chars() {
+		if c.StatusIsActive(getA4StackName(index)) {
 			count++
 		}
 	}
