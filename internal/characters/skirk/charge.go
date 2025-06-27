@@ -13,15 +13,32 @@ import (
 
 var (
 	chargeFrames   []int
-	chargeHitmarks = []int{7, 11, 17} // CA-1 and CA-2 hit at the same time
-	chargeOffsets  = []float64{1, 1.3, 1.3}
+	chargeHitmarks = []int{27, 27 + 7}
+	chargeOffsets  = []float64{1, 1.3}
+
+	chargeSkillFrames   []int
+	chargeSkillHitmarks = []int{27, 27 + 7, 27 + 7 + 7}
+	chargeSkillOffsets  = []float64{1, 1.3, 1.3}
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(46) // CA -> N1
-	chargeFrames[action.ActionDash] = 25    // CA -> D
-	chargeFrames[action.ActionJump] = 24    // CA -> J
-	chargeFrames[action.ActionSwap] = 30    // CA -> Swap
+	chargeFrames = frames.InitAbilSlice(53) // CA -> W
+	chargeFrames[action.ActionAttack] = 43  // CA -> N1
+	chargeFrames[action.ActionCharge] = 43  // CA -> CA
+	chargeFrames[action.ActionSkill] = 31   // CA -> E
+	chargeFrames[action.ActionBurst] = 31   // CA -> Q
+	chargeFrames[action.ActionDash] = 27    // CA -> D
+	chargeFrames[action.ActionJump] = 28    // CA -> J
+	chargeFrames[action.ActionSwap] = 42    // CA -> Swap
+
+	chargeSkillFrames = frames.InitAbilSlice(54) // CA -> N1
+	chargeSkillFrames[action.ActionCharge] = 53  // CA -> CA
+	chargeSkillFrames[action.ActionSkill] = 31   // CA -> E
+	chargeSkillFrames[action.ActionBurst] = 31   // CA -> Q
+	chargeSkillFrames[action.ActionDash] = 27    // CA -> D
+	chargeSkillFrames[action.ActionJump] = 28    // CA -> J
+	chargeSkillFrames[action.ActionWalk] = 52    // CA -> W
+	chargeSkillFrames[action.ActionSwap] = 42    // CA -> Swap
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -29,15 +46,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.ChargeAttackSkill(p)
 	}
 
-	windup := 0
-	if c.Core.Player.CurrentState() == action.NormalAttackState {
-		windup = 6
-	}
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDTag:     attacks.ICDTagExtraAttack,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
@@ -60,9 +72,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
-		AnimationLength: chargeFrames[action.InvalidAction] - windup,
-		CanQueueAfter:   chargeFrames[action.ActionJump] - windup,
+		Frames:          func(next action.Action) int { return chargeFrames[next] },
+		AnimationLength: chargeFrames[action.InvalidAction],
+		CanQueueAfter:   chargeFrames[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}, nil
 }
@@ -71,7 +83,7 @@ func (c *char) ChargeAttackSkill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		AttackTag:      attacks.AttackTagExtra,
-		ICDTag:         attacks.ICDTagNormalAttack,
+		ICDTag:         attacks.ICDTagExtraAttack,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeSlash,
 		Element:        attributes.Cryo,
@@ -86,19 +98,19 @@ func (c *char) ChargeAttackSkill(p map[string]int) (action.Info, error) {
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: chargeOffsets[i]},
+				geometry.Point{Y: chargeSkillOffsets[i]},
 				2.2,
 			),
-			chargeHitmarks[i],
-			chargeHitmarks[i],
+			chargeSkillHitmarks[i],
+			chargeSkillHitmarks[i],
 			c.absorbVoidRiftCB,
 		)
 	}
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeFrames[action.ActionJump], // earliest cancel
+		Frames:          frames.NewAbilFunc(chargeSkillFrames),
+		AnimationLength: chargeSkillFrames[action.InvalidAction],
+		CanQueueAfter:   chargeSkillFrames[action.ActionDash], // earliest cancel
 		State:           action.ChargeAttackState,
 	}, nil
 }
