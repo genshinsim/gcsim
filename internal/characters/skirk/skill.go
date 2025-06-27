@@ -17,13 +17,24 @@ const (
 	maxSerpentsSubtlety = 100
 	skillGainSS         = 25
 	skillKey            = "seven-phase-flash"
-	particleICDKey      = "skirk-particle-icd"
-	skillHoldGainSS     = 16
+	skillKeyDelay       = 19
+	skillDur            = 754
+
+	particleICDKey  = "skirk-particle-icd"
+	skillHoldGainSS = 18
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(34)
-	skillHoldFrames = frames.InitAbilSlice(16)
+	skillFrames = frames.InitAbilSlice(43) // E -> W
+	skillFrames[action.ActionAttack] = 21
+	skillFrames[action.ActionCharge] = 21
+	skillFrames[action.ActionBurst] = 31
+	skillFrames[action.ActionDash] = 29
+	skillFrames[action.ActionJump] = 30
+	skillFrames[action.ActionSwap] = 29
+
+	skillHoldFrames = frames.InitAbilSlice(18)
+	skillHoldFrames[action.ActionSwap] = 15
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -38,25 +49,25 @@ func (c *char) skillTap() (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
 		c.exitSkillState(c.skillSrc)
 	} else {
-		c.QueueCharTask(func() { c.enterSkillState() }, skillGainSS)
+		c.QueueCharTask(func() { c.enterSkillState() }, skillKeyDelay)
 	}
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash],
+		CanQueueAfter:   skillFrames[action.ActionAttack],
 		State:           action.SkillState,
 	}, nil
 }
 
 func (c *char) enterSkillState() {
 	c.skillSrc = c.Core.F
-	c.AddStatus(skillKey, 12.5*60, false)
+	c.AddStatus(skillKey, skillDur, false)
 	c.AddSerpentsSubtlety(c.Base.Key.String()+"-skill", 45.0)
 	c.c2OnSkill()
 	c.serpentsReduceTask(c.skillSrc)
 	src := c.skillSrc
-	c.Core.Tasks.Add(func() { c.exitSkillState(src) }, 12.5*60)
+	c.Core.Tasks.Add(func() { c.exitSkillState(src) }, skillDur)
 }
 
 func (c *char) exitSkillState(src int) {
@@ -67,6 +78,7 @@ func (c *char) exitSkillState(src int) {
 	c.skillSrc = -1
 	c.DeleteAttackMod(c2Key)
 	c.DeleteStatus(skillKey)
+	c.DeleteStatus(burstKey)
 	c.SetCD(action.ActionSkill, 8*60)
 	c.ConsumeSerpentsSubtlety(0, c.Base.Key.String()+"-skill-exit")
 }
@@ -88,10 +100,7 @@ func (c *char) serpentsReduceTask(src int) {
 
 func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	duration := p["hold"]
-	if duration < 1 {
-		duration = 1
-	}
-
+	duration -= 1 // subtract 1 because frames are listed as the minimum already
 	c.QueueCharTask(func() {
 		c.AddSerpentsSubtlety(c.Base.Key.String()+"-skill-hold", 45.0)
 		c.c2OnSkill()

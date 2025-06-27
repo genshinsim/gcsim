@@ -1,19 +1,12 @@
 package skirk
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 )
 
 var dashFrames []int
 
-const skillDashLength = 10
-
-func init() {
-	dashFrames = frames.InitAbilSlice(35)
-	dashFrames[action.ActionDash] = 30
-	dashFrames[action.ActionSwap] = 34
-}
+const skillDashLength = 11
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if !c.StatusIsActive(skillKey) {

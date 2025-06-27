@@ -35,6 +35,7 @@ func (c *char) c1() {
 		nil,
 		5,
 	)
+	// TODO: Attack Delay on C1?
 	c.Core.QueueAttack(ai, ap, 3, 3)
 }
 
@@ -128,6 +129,7 @@ func (c *char) c6OnBurstRuin() {
 	count := c.c6Stacks.Count(filter)
 	c.c6Stacks.Clear()
 	for range count {
+		// TODO: Attack Delay on C6?
 		c.Core.QueueAttack(ai, ap, 3, 3)
 	}
 }
