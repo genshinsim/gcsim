@@ -12,18 +12,24 @@ import (
 
 var burstFrames []int
 var burstSkillFrames []int
+var burstHitmarks = []int{109, 109 + 2, 109 + 2 + 3, 109 + 2 + 3 + 11, 109 + 2 + 3 + 11 + 10}
 
 const (
-	burstHitmark = 115
-	burstKey     = "skirk-burst"
-	burstICDKey  = "skirk-burst-icd"
+	burstHitmarkFinal = 109 + 2 + 3 + 11 + 10 + 23
+	burstKey          = "skirk-burst"
+	burstICDKey       = "skirk-burst-icd"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(101)
-	burstFrames[action.ActionSwap] = 101
+	burstFrames = frames.InitAbilSlice(151) // Q -> W
+	burstFrames[action.ActionAttack] = 102  // Q -> N1
+	burstFrames[action.ActionCharge] = 102  // Q -> CA
+	burstFrames[action.ActionSkill] = 102   // Q -> E
+	burstFrames[action.ActionDash] = 102    // Q -> D
+	burstFrames[action.ActionJump] = 102    // Q -> J
+	burstFrames[action.ActionSwap] = 101    // Q -> Swap
 
-	burstSkillFrames = frames.InitAbilSlice(39)
+	burstSkillFrames = frames.InitAbilSlice(40)
 }
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
@@ -34,39 +40,37 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 func (c *char) BurstRuin(p map[string]int) (action.Info, error) {
 	bonusSerpentsSubtlety := c.serpentsSubtlety - 50.0
-	bonusSerpentsSubtlety = min(bonusSerpentsSubtlety, 12+c.c2OnBurstRuin())
+	bonusSerpentsSubtlety = max(min(bonusSerpentsSubtlety, 12+c.c2OnBurstRuin()), 0)
 
-	c.QueueCharTask(func() {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Havoc: Ruin (DoT)",
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Cryo,
-			Durability: 25,
-			Mult:       (burstDoT[c.TalentLvlBurst()] + bonusSerpentsSubtlety*burstBonus[c.TalentLvlBurst()]) * c.a4MultBurst(),
-		}
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Havoc: Ruin (DoT)",
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Cryo,
+		Durability: 25,
+		Mult:       (burstDoT[c.TalentLvlBurst()] + bonusSerpentsSubtlety*burstBonus[c.TalentLvlBurst()]) * c.a4MultBurst(),
+	}
 
-		ap := combat.NewBoxHitOnTarget(
-			c.Core.Combat.PrimaryTarget(),
-			nil,
-			5,
-			5,
-		)
-		for i := 0; i < 5; i++ {
-			c.Core.QueueAttack(ai, ap, 0, i*5)
-		}
+	ap := combat.NewBoxHitOnTarget(
+		c.Core.Combat.PrimaryTarget(),
+		nil,
+		5,
+		5,
+	)
+	for _, delay := range burstHitmarks {
+		c.Core.QueueAttack(ai, ap, delay, delay)
+	}
 
-		ai.Abil = "Havoc: Ruin (Final)"
-		ai.Mult = (burstFinal[c.TalentLvlBurst()] + bonusSerpentsSubtlety*burstBonus[c.TalentLvlBurst()]) * c.a4MultBurst()
-		c.Core.QueueAttack(ai, ap, 0, 5*5)
+	ai.Abil = "Havoc: Ruin (Final)"
+	ai.Mult = (burstFinal[c.TalentLvlBurst()] + bonusSerpentsSubtlety*burstBonus[c.TalentLvlBurst()]) * c.a4MultBurst()
+	c.Core.QueueAttack(ai, ap, burstHitmarkFinal, burstHitmarkFinal)
 
-		c.c6OnBurstRuin()
-	}, burstHitmark)
+	c.c6OnBurstRuin()
 
-	c.ConsumeSerpentsSubtlety(0, c.Base.Key.String()+"-burst")
+	c.ConsumeSerpentsSubtlety(7, c.Base.Key.String()+"-burst")
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
 
@@ -101,6 +105,9 @@ func (c *char) BurstInit() {
 			}
 			c.AddStatus(burstICDKey, 0.1*60, true)
 			c.burstCount--
+			if c.burstCount <= 0 {
+				c.DeleteStatus(burstKey)
+			}
 			mDmg[attributes.DmgP] = burstDMG[c.burstVoids][c.TalentLvlBurst()]
 			return mDmg, true
 		},
