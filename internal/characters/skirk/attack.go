@@ -87,12 +87,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		return c.AttackSkill(p)
 	}
 
-	windup_remove := 0
+	windupRemove := 0
 
-	// skip windup out of NA
-	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState, action.BurstState:
-		windup_remove = windup
+	// skip N1 windup out of NA and Q
+	if c.NormalCounter == 0 && c.Core.Player.CurrentState() == action.NormalAttackState {
+		windupRemove = windup
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -134,24 +133,21 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.AtkSpdAdjust(attackFrames[normalCounter][next], c.Stat(attributes.AtkSpd)) - windup_remove
+			return frames.AtkSpdAdjust(attackFrames[normalCounter][next], c.Stat(attributes.AtkSpd)) - windupRemove
 		},
-		AnimationLength: attackFrames[normalCounter][action.InvalidAction] - windup_remove,
-		CanQueueAfter:   attackHitmarks[normalCounter][len(attackHitmarks[normalCounter])-1] - windup_remove,
+		AnimationLength: attackFrames[normalCounter][action.InvalidAction] - windupRemove,
+		CanQueueAfter:   attackHitmarks[normalCounter][len(attackHitmarks[normalCounter])-1] - windupRemove,
 		State:           action.NormalAttackState,
 	}, nil
 }
 
 // Standard attack - nothing special
 func (c *char) AttackSkill(p map[string]int) (action.Info, error) {
-	windup := 0
+	windupRemove := 0
 
 	// skip N1 windup out of NA and Q
-	if c.NormalCounter == 0 {
-		switch c.Core.Player.CurrentState() {
-		case action.NormalAttackState:
-			windup = 2
-		}
+	if c.NormalCounter == 0 && c.Core.Player.CurrentState() == action.NormalAttackState {
+		windupRemove = windup
 	}
 
 	for i, mult := range skillAttack[c.NormalCounter] {
@@ -195,10 +191,10 @@ func (c *char) AttackSkill(p map[string]int) (action.Info, error) {
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.AtkSpdAdjust(attackSkillFrames[normalCounter][next], c.Stat(attributes.AtkSpd)) - windup
+			return frames.AtkSpdAdjust(attackSkillFrames[normalCounter][next], c.Stat(attributes.AtkSpd)) - windupRemove
 		},
-		AnimationLength: attackSkillFrames[normalCounter][action.InvalidAction] - windup,
-		CanQueueAfter:   attackSkillHitmarks[normalCounter][len(attackSkillHitmarks[normalCounter])-1] - windup,
+		AnimationLength: attackSkillFrames[normalCounter][action.InvalidAction] - windupRemove,
+		CanQueueAfter:   attackSkillHitmarks[normalCounter][len(attackSkillHitmarks[normalCounter])-1] - windupRemove,
 		State:           action.NormalAttackState,
 	}, nil
 }

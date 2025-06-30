@@ -4,8 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 )
 
-var dashFrames []int
-
 const skillDashLength = 11
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {

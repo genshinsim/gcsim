@@ -20,7 +20,6 @@ var a4MultAttack = []float64{1, 1.1, 1.2, 1.7}
 var a4MultBurst = []float64{1, 1.05, 1.15, 1.60}
 
 func (c *char) a1Init() {
-
 	a1Hook := func(args ...interface{}) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
