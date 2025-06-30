@@ -120,12 +120,10 @@ func (c *char) BurstInit() {
 }
 
 func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
-	c.QueueCharTask(func() {
-		c.AddStatus(burstKey, 12.5*60, true)
-		c.burstCount = 10
-		c.burstVoids = c.absorbVoidRift()
+	c.AddStatus(burstKey, 12.5*60, true)
+	c.burstCount = 10
+	c.burstVoids = c.absorbVoidRift()
 
-	}, 30)
 	c.c2OnBurstExtinction()
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
 
