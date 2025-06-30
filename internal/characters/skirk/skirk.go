@@ -23,6 +23,7 @@ type char struct {
 	*tmpl.Character
 	serpentsSubtlety float64
 	skillSrc         int
+	prevNASkillState bool
 	burstCount       int
 	burstVoids       int
 	voidRifts        RingQueue[int]
