@@ -100,21 +100,27 @@ func (c *char) serpentsReduceTask(src int) {
 
 func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	duration := p["hold"]
-	duration -= 1 // subtract 1 because frames are listed as the minimum already
+	// TODO: max duration of hold E?
+	extra_duration := min(duration, 8*60) - 1 // subtract 1 because frames are listed as the minimum already
 	c.QueueCharTask(func() {
 		c.AddSerpentsSubtlety(c.Base.Key.String()+"-skill-hold", 45.0)
 		c.c2OnSkill()
 		c.absorbVoidRift()
 	}, skillHoldGainSS)
 
-	c.SetCDWithDelay(action.ActionSkill, 8*60, duration+skillHoldGainSS)
+	for i := range extra_duration {
+		// absorb void rifts constantly
+		c.QueueCharTask(func() { c.absorbVoidRift() }, skillHoldGainSS+i+1)
+	}
+
+	c.SetCDWithDelay(action.ActionSkill, 8*60, extra_duration+skillHoldGainSS)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return skillHoldFrames[next] + duration
+			return skillHoldFrames[next] + extra_duration
 		},
-		AnimationLength: skillHoldFrames[action.InvalidAction] + duration,
-		CanQueueAfter:   skillHoldFrames[action.ActionDash] + duration,
+		AnimationLength: skillHoldFrames[action.InvalidAction] + extra_duration,
+		CanQueueAfter:   skillHoldFrames[action.ActionDash] + extra_duration,
 		State:           action.SkillState,
 	}, nil
 }
