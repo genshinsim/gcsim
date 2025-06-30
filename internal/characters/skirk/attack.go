@@ -17,7 +17,7 @@ var (
 	attackFrames [][]int
 
 	// The n1 hitmark includes 2f of windup
-	attackHitmarks        = [][]int{{11 + windup}, {6}, {8, 8 + 8}, {11}, {35}}
+	attackHitmarks        = [][]int{{11 + windup}, {6}, {8, 8 + 14}, {11}, {35}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0.03}, {0.03}, {0.12}}
 	attackHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.05, 0.05}, {0.05}, {0.01}}
 	attackHitboxes        = [][]float64{{1.2}, {1.4, 2.2}, {1.6}, {1.6}, {2.2}}
@@ -89,11 +89,12 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	windup_remove := 0
 
-	// skip windup out of NA and Q
+	// skip windup out of NA
 	switch c.Core.Player.CurrentState() {
 	case action.NormalAttackState, action.BurstState:
 		windup_remove = windup
 	}
+
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,

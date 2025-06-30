@@ -22,14 +22,19 @@ const (
 
 func init() {
 	burstFrames = frames.InitAbilSlice(151) // Q -> W
-	burstFrames[action.ActionAttack] = 102  // Q -> N1
+	burstFrames[action.ActionAttack] = 100  // Q -> N1
 	burstFrames[action.ActionCharge] = 102  // Q -> CA
 	burstFrames[action.ActionSkill] = 102   // Q -> E
 	burstFrames[action.ActionDash] = 102    // Q -> D
 	burstFrames[action.ActionJump] = 102    // Q -> J
 	burstFrames[action.ActionSwap] = 101    // Q -> Swap
 
-	burstSkillFrames = frames.InitAbilSlice(40)
+	burstSkillFrames = frames.InitAbilSlice(41)
+	burstSkillFrames[action.ActionAttack] = 39 // Q -> N1
+	burstSkillFrames[action.ActionCharge] = 39 // Q -> CA
+	burstSkillFrames[action.ActionDash] = 39   // Q -> D
+	burstSkillFrames[action.ActionJump] = 40   // Q -> J
+	burstSkillFrames[action.ActionSwap] = 39   // Q -> Swap
 }
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
