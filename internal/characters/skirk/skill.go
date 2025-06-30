@@ -101,7 +101,7 @@ func (c *char) serpentsReduceTask(src int) {
 func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	duration := p["hold"]
 	// TODO: max duration of hold E?
-	extra_duration := min(duration, 8*60) - 1 // subtract 1 because frames are listed as the minimum already
+	extra_duration := min(duration, 184) - 1 // subtract 1 because frames are listed as the minimum already
 	c.QueueCharTask(func() {
 		c.AddSerpentsSubtlety(c.Base.Key.String()+"-skill-hold", 45.0)
 		c.c2OnSkill()
