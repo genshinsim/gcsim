@@ -128,6 +128,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}, attackHitmarks[c.NormalCounter][i]-windup)
 	}
 
+	c.prevNASkillState = false
 	normalCounter := c.NormalCounter
 	defer c.AdvanceNormalIndex()
 
@@ -188,6 +189,7 @@ func (c *char) AttackSkill(p map[string]int) (action.Info, error) {
 		}, attackSkillHitmarks[c.NormalCounter][i])
 	}
 
+	c.prevNASkillState = true
 	normalCounter := c.NormalCounter
 	defer c.AdvanceNormalIndex()
 
