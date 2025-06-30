@@ -1186,6 +1186,13 @@
       "desc": "Number of ticks for Elemental Burst. Default is maximum number of ticks, minimum 2. If the number of ticks is not the maximum, the next action must be Dash, or Jump."
     }
   ],
+  "skirk": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 184 for Hold. The number determines the hold E duration in frames."
+    }
+  ],
   "sucrose": [
     {
       "ability": "low_plunge",
