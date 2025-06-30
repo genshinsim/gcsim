@@ -25,9 +25,9 @@ var (
 	attackFanAngles       = [][]float64{{360}, {360}, {30, 360}, {360}, {360}}
 
 	attackSkillFrames          [][]int
-	attackSkillHitmarks        = [][]int{{11 + windup}, {11}, {11, 11 + 12}, {9, 9 + 20}, {25}}
-	attackSkillHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0.00}, {0.00, 0.0}, {0.05}}
-	attackSkillHitlagFactor    = [][]float64{{0.05}, {0.05}, {0.05, 0.01}, {0.05, 0.05}, {0.05}}
+	attackSkillHitmarks        = [][]int{{11 + windup}, {11}, {11, 11 + 12}, {11, 11 + 16}, {25}}
+	attackSkillHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0.00}, {0.03, 0.0}, {0.05}}
+	attackSkillHitlagFactor    = [][]float64{{0.05}, {0.05}, {0.05, 0.05}, {0.05, 0.05}, {0.05}}
 	attackSkillHitboxes        = [][]float64{{1.2}, {1.4, 2.2}, {1.6}, {1.6}, {2.2}}
 	attackSkillOffsets         = [][]float64{{0.8}, {0}, {1, 0.6}, {0.6, 0.6}, {1}}
 	attackSkillFanAngles       = [][]float64{{360}, {360}, {30, 360}, {360, 360}, {360}}
