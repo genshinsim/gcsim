@@ -80,6 +80,7 @@ const (
 	Sethos
 	Shenhe
 	Sigewinne
+	Skirk
 	Sucrose
 	Tartaglia
 	Thoma
@@ -395,6 +396,10 @@ func init() {
 	charNames[Sigewinne] = "sigewinne"
 	charPrettyName[Sigewinne] = "Sigewinne"
 	CharKeyToEle[Sigewinne] = attributes.Hydro
+
+	charNames[Skirk] = "skirk"
+	charPrettyName[Skirk] = "Skirk"
+	CharKeyToEle[Skirk] = attributes.Cryo
 
 	charNames[Sucrose] = "sucrose"
 	charPrettyName[Sucrose] = "Sucrose"
