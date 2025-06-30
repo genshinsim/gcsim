@@ -1,6 +1,7 @@
 package skirk
 
 import (
+	"errors"
 	"fmt"
 
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
@@ -136,6 +137,9 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 	// can use charge without attack beforehand unlike most of the other sword users
 	if a == action.ActionCharge {
 		return nil
+	}
+	if c.StatusIsActive(skillKey) && a == action.ActionSkill {
+		return errors.New("skirk: cannot use skill in seven-phase flash")
 	}
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
