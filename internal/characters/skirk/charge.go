@@ -17,7 +17,7 @@ var (
 	chargeOffsets  = []float64{1, 1.3}
 
 	chargeSkillFrames   []int
-	chargeSkillHitmarks = []int{27, 27 + 7, 27 + 7 + 7}
+	chargeSkillHitmarks = []int{28, 28 + 9, 28 + 9 + 9}
 	chargeSkillOffsets  = []float64{1, 1.3, 1.3}
 )
 
@@ -25,16 +25,15 @@ func init() {
 	chargeFrames = frames.InitAbilSlice(53) // CA -> W
 	chargeFrames[action.ActionAttack] = 43  // CA -> N1
 	chargeFrames[action.ActionCharge] = 43  // CA -> CA
-	chargeFrames[action.ActionSkill] = 31   // CA -> E
-	chargeFrames[action.ActionBurst] = 31   // CA -> Q
+	chargeFrames[action.ActionSkill] = 43   // CA -> E
+	chargeFrames[action.ActionBurst] = 43   // CA -> Q
 	chargeFrames[action.ActionDash] = 27    // CA -> D
 	chargeFrames[action.ActionJump] = 28    // CA -> J
 	chargeFrames[action.ActionSwap] = 42    // CA -> Swap
 
 	chargeSkillFrames = frames.InitAbilSlice(54) // CA -> N1
 	chargeSkillFrames[action.ActionCharge] = 53  // CA -> CA
-	chargeSkillFrames[action.ActionSkill] = 31   // CA -> E
-	chargeSkillFrames[action.ActionBurst] = 31   // CA -> Q
+	chargeSkillFrames[action.ActionBurst] = 43   // CA -> Q
 	chargeSkillFrames[action.ActionDash] = 27    // CA -> D
 	chargeSkillFrames[action.ActionJump] = 28    // CA -> J
 	chargeSkillFrames[action.ActionWalk] = 52    // CA -> W
