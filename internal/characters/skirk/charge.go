@@ -14,11 +14,11 @@ import (
 var (
 	chargeFrames   []int
 	chargeHitmarks = []int{27, 27 + 7}
-	chargeOffsets  = []float64{1, 1.3}
+	chargeOffsets  = []float64{1.3, 1.3}
 
 	chargeSkillFrames   []int
 	chargeSkillHitmarks = []int{28, 28 + 9, 28 + 9 + 9}
-	chargeSkillOffsets  = []float64{1, 1.3, 1.3}
+	chargeSkillOffsets  = []float64{1.3, 1.3, 1.3}
 )
 
 func init() {

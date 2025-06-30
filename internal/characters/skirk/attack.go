@@ -18,16 +18,16 @@ var (
 
 	// The n1 hitmark includes 2f of windup
 	attackHitmarks        = [][]int{{11 + windup}, {6}, {8, 8 + 14}, {11}, {35}}
-	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0.03}, {0.03}, {0.12}}
-	attackHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.05, 0.05}, {0.05}, {0.01}}
+	attackHitlagHaltFrame = [][]float64{{0.02}, {0.03}, {0.03, 0.00}, {0.05}, {0.06}}
+	attackHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.05, 0.00}, {0.01}, {0.01}}
 	attackHitboxes        = [][]float64{{1.2}, {1.4, 2.2}, {1.6}, {1.6}, {2.2}}
 	attackOffsets         = [][]float64{{0.8}, {0}, {1, 0.6}, {0.6, 0.6}, {1}}
 	attackFanAngles       = [][]float64{{360}, {360}, {30, 360}, {360}, {360}}
 
 	attackSkillFrames          [][]int
 	attackSkillHitmarks        = [][]int{{11 + windup}, {11}, {11, 11 + 12}, {11, 11 + 16}, {25}}
-	attackSkillHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0.00}, {0.03, 0.0}, {0.05}}
-	attackSkillHitlagFactor    = [][]float64{{0.05}, {0.05}, {0.05, 0.05}, {0.05, 0.05}, {0.05}}
+	attackSkillHitlagHaltFrame = [][]float64{{0.02}, {0.03}, {0.03, 0.00}, {0.03, 0.00}, {0.06}}
+	attackSkillHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.01, 0.00}, {0.01, 0.00}, {0.01}}
 	attackSkillHitboxes        = [][]float64{{1.2}, {1.4, 2.2}, {1.6}, {1.6}, {2.2}}
 	attackSkillOffsets         = [][]float64{{0.8}, {0}, {1, 0.6}, {0.6, 0.6}, {1}}
 	attackSkillFanAngles       = [][]float64{{360}, {360}, {30, 360}, {360, 360}, {360}}
@@ -97,18 +97,17 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-			Mult:               mult[c.TalentLvlAttack()],
-			AttackTag:          attacks.AttackTagNormal,
-			ICDTag:             attacks.ICDTagNormalAttack,
-			ICDGroup:           attacks.ICDGroupDefault,
-			StrikeType:         attacks.StrikeTypeSlash,
-			Element:            attributes.Physical,
-			Durability:         25,
-			HitlagFactor:       attackHitlagFactor[c.NormalCounter][i],
-			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
-			CanBeDefenseHalted: true,
+			ActorIndex:       c.Index,
+			Abil:             fmt.Sprintf("Normal %v", c.NormalCounter),
+			Mult:             mult[c.TalentLvlAttack()],
+			AttackTag:        attacks.AttackTagNormal,
+			ICDTag:           attacks.ICDTagNormalAttack,
+			ICDGroup:         attacks.ICDGroupDefault,
+			StrikeType:       attacks.StrikeTypeSlash,
+			Element:          attributes.Physical,
+			Durability:       25,
+			HitlagFactor:     attackHitlagFactor[c.NormalCounter][i],
+			HitlagHaltFrames: attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
