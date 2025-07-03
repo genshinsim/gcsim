@@ -259,6 +259,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"seasoned":                        keys.SeasonedHuntersBow,
 	"serpentspine":                    keys.SerpentSpine,
 	"serpent":                         keys.SerpentSpine,
+	"sequenceofsolitude":              keys.SequenceOfSolitude,
+	"solitude":                        keys.SequenceOfSolitude,
 	"sharpshootersoath":               keys.SharpshootersOath,
 	"sharpshooters":                   keys.SharpshootersOath,
 	"sharpshooter":                    keys.SharpshootersOath,
