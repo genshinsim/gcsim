@@ -104,6 +104,11 @@
     "element": "electro",
     "weapon_class": "claymore"
   },
+  "escoffier": {
+    "rarity": 5,
+    "element": "cryo",
+    "weapon_class": "polearm"
+  },
   "eula": {
     "rarity": 5,
     "element": "cryo",
@@ -163,7 +168,7 @@
     "rarity": 4,
     "element": "dendro",
     "weapon_class": "sword"
-  }, 
+  },
   "kazuha": {
     "rarity": 5,
     "element": "anemo",
@@ -235,7 +240,7 @@
     "weapon_class": "sword"
   },
   "nahida": {
-   "rarity": 5,
+    "rarity": 5,
     "element": "dendro",
     "weapon_class": "catalyst"
   },

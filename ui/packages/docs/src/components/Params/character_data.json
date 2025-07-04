@@ -405,6 +405,23 @@
       "desc": "Level 1/2 Lumidouce Case Attack travel time. Default 5 frames."
     }
   ],
+  "escoffier": [
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Frosty Parfait travel time. Default 5 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "eula": [
     {
       "ability": "skill",
