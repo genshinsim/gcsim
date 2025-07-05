@@ -229,6 +229,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/alley"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/amenoma"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/aquila"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/azurelight"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/blacksword"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/calamityofeshu"
