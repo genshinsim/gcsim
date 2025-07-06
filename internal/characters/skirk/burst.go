@@ -75,7 +75,7 @@ func (c *char) BurstRuin(p map[string]int) (action.Info, error) {
 
 	c.c6OnBurstRuin()
 
-	c.ConsumeSerpentsSubtlety(7, c.Base.Key.String()+"-burst")
+	c.ConsumeSerpentsSubtlety(7, c.Base.Key.String()+"-burst-ruin")
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
 
@@ -111,7 +111,9 @@ func (c *char) BurstInit() {
 			c.AddStatus(burstICDKey, 0.1*60, true)
 			c.burstCount--
 			if c.burstCount <= 0 {
-				c.DeleteStatus(burstKey)
+				// Cannot delete statuses in an attack mod
+				// c.DeleteStatus(burstKey)
+				c.AddStatus(burstKey, 0, false)
 			}
 			mDmg[attributes.DmgP] = burstDMG[c.burstVoids][c.TalentLvlBurst()]
 			return mDmg, true
@@ -120,7 +122,7 @@ func (c *char) BurstInit() {
 }
 
 func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
-	c.AddStatus(burstKey, 12.5*60, true)
+	c.AddStatus(burstKey, 12.5*60, false)
 	c.burstCount = 10
 	c.burstVoids = c.absorbVoidRift()
 
