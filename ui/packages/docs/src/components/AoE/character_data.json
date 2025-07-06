@@ -3102,7 +3102,8 @@
         "ability": "Q",
         "shape": "Circle",
         "center": "Player",
-        "radius": 4
+        "offsetY": -1.5,
+        "radius": 7
       }
     ],
     "cons": [
