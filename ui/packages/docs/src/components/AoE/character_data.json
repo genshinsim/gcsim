@@ -3017,30 +3017,30 @@
         "ability": "N1",
         "shape": "Box",
         "center": "Player",
-        "boxX": 1,
-        "boxY": 3.5
+        "offsetY": 1,
+        "boxX": 1.6,
+        "boxY": 2
       },
       {
         "ability": "N2",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": 0.5,
-        "radius": 3.6,
-        "fanAngle": 270
+        "offsetY": -0.2,
+        "radius": 2
       },
       {
         "ability": "N3-1",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": 0.5,
-        "radius": 3.6
+        "offsetY": -0.2,
+        "radius": 2.5
       },
       {
         "ability": "N3-2",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": 0.5,
-        "radius": 3.6
+        "offsetY": -0.2,
+        "radius": 2.5
       }
     ],
     "charge": [
@@ -3048,9 +3048,9 @@
         "ability": "CA",
         "shape": "Box",
         "center": "Player",
-        "offsetY": -0.1,
-        "boxX": 2.8,
-        "boxY": 4.8
+        "offsetY": 1.5,
+        "boxX": 3.3,
+        "boxY": 3
       }
     ],
     "plunge": [

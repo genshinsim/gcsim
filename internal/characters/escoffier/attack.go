@@ -16,9 +16,8 @@ var (
 	attackHitmarks        = [][]int{{7}, {16}, {27, 40}}
 	attackHitlagHaltFrame = [][]float64{{0.06}, {0.06}, {0.06, 0.06}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true, true}}
-	attackHitboxes        = [][]float64{{1, 3.6}, {3.6}, {3.6, 3.6}}
-	attackOffsets         = []float64{0, 0.5, 0.5}
-	attackFanAngles       = []float64{360, 270, 270}
+	attackHitboxes        = [][][]float64{{{1.6, 2}}, {{2}}, {{2.5}, {2.5}}}
+	attackOffsets         = [][]float64{{1}, {-0.2}, {-0.2, -0.2}}
 )
 
 const normalHitNum = 3
@@ -57,19 +56,19 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-		ap := combat.NewCircleHitOnTargetFanAngle(
+
+		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][0],
-			attackFanAngles[c.NormalCounter],
+			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+			attackHitboxes[c.NormalCounter][i][0],
 		)
 		if c.NormalCounter == 0 {
 			ai.StrikeType = attacks.StrikeTypeSpear
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
-				attackHitboxes[c.NormalCounter][0],
-				attackHitboxes[c.NormalCounter][1],
+				geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+				attackHitboxes[c.NormalCounter][i][0],
+				attackHitboxes[c.NormalCounter][i][1],
 			)
 		}
 		c.QueueCharTask(func() {
