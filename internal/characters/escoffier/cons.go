@@ -178,8 +178,7 @@ func (c *char) c6Init() {
 			Mult:       c6Scaling,
 		}
 		// trigger damage
-		//TODO: travel time
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2), 0, 10, c.makeA4CB())
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4), 0, c.skillTravel, c.makeA4CB())
 
 		c.c6Count--
 

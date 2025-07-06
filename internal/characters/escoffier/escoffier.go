@@ -16,6 +16,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	skillSrc         int
+	skillTravel      int
 	a1Src            int
 	a4HydroCryoCount int
 	c1Active         bool

@@ -44,28 +44,29 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		travel = 5
 	}
+	c.skillTravel = travel
 
+	skillPos := c.Core.Combat.Player()
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low-Temperature Cooking",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupEscoffierSkill,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       skillInital[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 4), skillInitHitmark, skillInitHitmark, c.particleCB, c.makeA4CB())
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(skillPos, geometry.Point{Y: -1.5}, 5), skillInitHitmark, skillInitHitmark, c.particleCB, c.makeA4CB())
 
 	// E duration and ticks are not affected by hitlag
 	c.skillSrc = c.Core.F
 	for i := 0.0; i < skillTicks; i++ {
-		c.Core.Tasks.Add(c.skillTick(c.skillSrc, travel), skillFirstTickDelay+ceil(skillInterval*i))
+		c.Core.Tasks.Add(c.skillTick(c.skillSrc), skillFirstTickDelay+ceil(skillInterval*i))
 	}
 	c.AddStatus(skillKey, skillFirstTickDelay+ceil((skillTicks-1)*skillInterval), false)
 
-	skillPos := c.Core.Combat.Player().Pos()
 	c.QueueCharTask(func() {
 		if c.StatusIsActive(skillAlignedICDKey) {
 			return
@@ -85,7 +86,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 		c.Core.QueueAttack(
 			aiBlade,
-			combat.NewCircleHitOnTarget(skillPos, geometry.Point{Y: 1}, 4.5),
+			combat.NewCircleHitOnTarget(skillPos, nil, 5),
 			0, // TODO: snapshot delay?
 			0, // TODO: snapshot delay?
 			c.makeA4CB(),
@@ -116,7 +117,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) skillTick(src, travel int) func() {
+func (c *char) skillTick(src int) func() {
 	return func() {
 		if src != c.skillSrc {
 			return
@@ -134,6 +135,6 @@ func (c *char) skillTick(src, travel int) func() {
 			Mult:       skillDot[c.TalentLvlSkill()],
 		}
 		// trigger damage
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), 0, travel, c.makeA4CB())
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 0, c.skillTravel, c.makeA4CB())
 	}
 }

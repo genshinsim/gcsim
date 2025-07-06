@@ -3081,21 +3081,20 @@
         "ability": "E",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": 1,
-        "radius": 4
+        "offsetY": -1.5,
+        "radius": 5
       },
       {
         "ability": "E-Arkhe",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": 1,
-        "radius": 4.5
+        "radius": 5
       },
       {
         "ability": "E-Tick",
         "shape": "Circle",
-        "center": "GlobalValue",
-        "radius": 1.0
+        "center": "PrimaryTarget",
+        "radius": 1.5
       }
     ],
     "burst": [
@@ -3103,7 +3102,15 @@
         "ability": "Q",
         "shape": "Circle",
         "center": "Player",
-        "radius": 6
+        "radius": 4
+      }
+    ],
+    "cons": [
+      {
+        "ability": "E-C6",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4
       }
     ]
   },
