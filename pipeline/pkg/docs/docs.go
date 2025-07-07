@@ -93,7 +93,7 @@ func (g *Generator) GenerateDocsPages(path string) {
 			Name: g.Names.EnemyNames[v.Key],
 			Key:  v.Key,
 			Type: "enemy",
-		}, docPageTmpl)
+		}, enemyPageTmpl)
 	}
 }
 
@@ -111,6 +111,31 @@ func (g *Generator) generateDocPage(path string, data docsData, tmpl string) err
 	os.WriteFile(fmt.Sprintf("%v/%v.md", path, data.Key), src, 0o644)
 	return nil
 }
+
+const enemyPageTmpl = `---
+title: "{{ .Name }}"
+---
+
+import HPTable from "@site/src/components/HP/HPTable";
+import NamesList from "@site/src/components/Names/NamesList";
+import ResistTable from "@site/src/components/Resist/ResistTable";
+import ParticleTable from "@site/src/components/Particle/ParticleTable";
+
+## HP Data
+
+<HPTable item_key="{{ .Key }}" data_src="{{ .Type }}" />
+
+## Names
+
+<NamesList item_key="{{ .Key }}" data_src="{{ .Type }}" />
+
+## Resist Data
+
+<ResistTable item_key="{{ .Key }}" data_src="{{ .Type }}" />
+
+## Particle Data
+
+<ParticleTable item_key="{{ .Key }}" data_src="{{ .Type }}" />`
 
 const docPageTmpl = `---
 title: {{ .Name }}
