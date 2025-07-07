@@ -35,6 +35,7 @@ var weaponMap = map[string]string{
 	"sacrificialbow":                  "UI_EquipIcon_Bow_Fossil",
 	"scionoftheblazingsun":            "UI_EquipIcon_Bow_Gurabad",
 	"seasonedhuntersbow":              "UI_EquipIcon_Bow_Old",
+	"sequenceofsolitude":              "UI_EquipIcon_Bow_Stinger",
 	"sharpshootersoath":               "UI_EquipIcon_Bow_Arjuna",
 	"skywardharp":                     "UI_EquipIcon_Bow_Dvalin",
 	"slingshot":                       "UI_EquipIcon_Bow_Sling",
