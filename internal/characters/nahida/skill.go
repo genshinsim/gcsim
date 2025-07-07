@@ -117,7 +117,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold-17+30)
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return hold - 17 + skillHoldFrames[next] },
+		Frames:          func(next action.Action) int { return hold - 17 + 30 + skillHoldFrames[next] },
 		AnimationLength: hold - 17 + 30 + skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   hold - 17 + 30 + skillHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
