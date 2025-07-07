@@ -13,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/gcs/eval"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
@@ -279,7 +280,7 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 // internal helper functions
 
 func initialize(raw string) error {
-	parser := ast.New(raw)
+	parser := parser.New(raw)
 	out, prog, err := parser.Parse()
 	if err != nil {
 		return err
