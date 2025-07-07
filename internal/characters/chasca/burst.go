@@ -108,7 +108,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		return action.Info{
 			Frames:          c.skillNextFrames(frames, 0),
 			AnimationLength: burstFramesNS[action.InvalidAction],
-			CanQueueAfter:   burstNSFall, // can't start falling until frame 102
+			CanQueueAfter:   burstHitmark,
 			State:           action.BurstState,
 		}, nil
 	}
@@ -116,7 +116,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames,
 		AnimationLength: burstFramesGrounded[action.InvalidAction],
-		CanQueueAfter:   burstFramesGrounded[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFramesGrounded[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
