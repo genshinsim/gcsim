@@ -82,7 +82,7 @@ func (c *char) skillHold(travel int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldFrames[action.ActionJump], // earliest cancel
+		CanQueueAfter:   skillHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
