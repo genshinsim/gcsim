@@ -46,7 +46,7 @@ func (w *Weapon) Init() error {
 		},
 	})
 
-	if stacks == 3 {
+	if stacks >= 3 {
 		mEm := make([]float64, attributes.EndStatType)
 		mEm[attributes.EM] = float64(w.emBuff)
 		w.self.AddStatMod(character.StatMod{
