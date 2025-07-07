@@ -13,6 +13,15 @@ icd_groups:
     reset_timer: 90
     ele_app_sequence: [1, 0, 0, 0, 0, 0]
     damage_sequence: [1, 1, 1, 1, 1]
+documentation:
+  fields_data:
+    - fields: [.escoffier.c2-count]
+      desc: "Number of Cold Dish (C2) stacks"
+    - fields: [.escoffier.c4-count]
+      desc: "Number of extra healing and energy restore effects (C4) left"
+    - fields: [.escoffier.c6-count]
+      desc: "Number of Special-Grade Frosty Parfait (C6) attacks left"
+
 skill_data_mapping:
   attack: # Kitchen Skills
     attack_1:
