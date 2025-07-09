@@ -89,7 +89,23 @@ func (c *char) c2Init() {
 		if c.c2Count <= 0 {
 			return false
 		}
+		if atk.Info.Element != attributes.Cryo {
+			return false
+		}
+
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
+		case attacks.AttackTagPlunge:
+		case attacks.AttackTagElementalArt:
+		case attacks.AttackTagElementalArtHold:
+		case attacks.AttackTagElementalBurst:
+		default:
+			return false
+		}
+
 		amt := c.TotalAtk() * c2Per
+		c.c2Count--
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("Escoffier C2 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 				Write("before", atk.Info.FlatDmg).
@@ -97,7 +113,6 @@ func (c *char) c2Init() {
 				Write("Cold Dishes left", c.c2Count)
 		}
 		atk.Info.FlatDmg += amt
-		c.c2Count--
 		return false
 	}, c2Key+"-on-dmg")
 }
