@@ -139,7 +139,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionDash],
+		CanQueueAfter:   highPlungeFrames[action.ActionSkill],
 		State:           action.PlungeAttackState,
 	}
 }

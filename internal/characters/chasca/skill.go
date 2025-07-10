@@ -119,8 +119,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.exitNightsoul()
 		return action.Info{
 			Frames:          frames.NewAbilFunc(skillCancelFrames),
-			AnimationLength: skillFrames[action.InvalidAction],
-			CanQueueAfter:   skillFrames[action.ActionLowPlunge], // earliest cancel
+			AnimationLength: skillCancelFrames[action.InvalidAction],
+			CanQueueAfter:   skillCancelFrames[action.ActionLowPlunge], // earliest cancel
 			State:           action.SkillState,
 		}, nil
 	}
@@ -147,7 +147,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          c.skillNextFrames(frames.NewAbilFunc(skillFrames), 0),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

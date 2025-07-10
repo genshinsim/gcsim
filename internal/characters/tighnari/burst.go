@@ -59,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap],
+		CanQueueAfter:   burstFrames[action.ActionAttack],
 		State:           action.BurstState,
 	}, nil
 }
