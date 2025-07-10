@@ -28,12 +28,12 @@ func init() {
 	skillPressFrames[action.ActionJump] = 11    // Tap E -> J
 	skillPressFrames[action.ActionSwap] = 16    // Tap E -> Swap
 
-	skillHoldFrames = frames.InitAbilSlice(49) // Hold E -> E
-	skillHoldFrames[action.ActionAttack] = 36  // Hold E -> N1
-	skillHoldFrames[action.ActionBurst] = 37   // Hold E -> Q
-	skillHoldFrames[action.ActionDash] = 31    // Hold E -> D
-	skillHoldFrames[action.ActionJump] = 31    // Hold E -> J
-	skillHoldFrames[action.ActionSwap] = 23    // Hold E -> Swap
+	skillHoldFrames = frames.InitAbilSlice(49)            // Hold E -> E
+	skillHoldFrames[action.ActionAttack] = 36             // Hold E -> N1
+	skillHoldFrames[action.ActionBurst] = 37              // Hold E -> Q
+	skillHoldFrames[action.ActionDash] = 31               // Hold E -> D
+	skillHoldFrames[action.ActionJump] = 31               // Hold E -> J
+	skillHoldFrames[action.ActionSwap] = skillHoldHitmark // Hold E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
