@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -41,6 +42,8 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstStacks = c.fightingSpirit
+	c.Core.Log.NewEvent("fighting spirit consumed", glog.LogCharacterEvent, c.Index).
+		Write("amount", c.fightingSpirit)
 	c.fightingSpirit = 0
 	c.enterBike()
 	c.QueueCharTask(func() {
