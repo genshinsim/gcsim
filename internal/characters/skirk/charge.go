@@ -8,17 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
 	chargeFrames   []int
 	chargeHitmarks = []int{27, 27 + 7}
-	chargeOffsets  = []float64{1.3, 1.3}
 
 	chargeSkillFrames   []int
 	chargeSkillHitmarks = []int{28, 28 + 9, 28 + 9 + 9}
-	chargeSkillOffsets  = []float64{1.3, 1.3, 1.3}
 )
 
 func init() {
@@ -63,12 +60,13 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
+		// TODO: y=1 offset when no target in range. What is the range?
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: chargeOffsets[i]},
-				2.2,
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				2.8,
 			),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
@@ -98,12 +96,13 @@ func (c *char) ChargeAttackSkill(p map[string]int) (action.Info, error) {
 	for i, mult := range skillCharge {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		ai.Abil = fmt.Sprintf("Charge (Skill) %v", i)
+		// TODO: y=1 offset when no target in range. What is the range?
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: chargeSkillOffsets[i]},
-				2.2,
+				nil,
+				3.3,
 			),
 			chargeSkillHitmarks[i],
 			chargeSkillHitmarks[i],

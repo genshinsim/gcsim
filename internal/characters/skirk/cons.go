@@ -23,17 +23,18 @@ func (c *char) c1() {
 		Abil:               "Far to Fall",
 		Mult:               5,
 		AttackTag:          attacks.AttackTagExtra,
-		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDTag:             attacks.ICDTagSkirkCons,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		CanBeDefenseHalted: false,
 	}
-	ap := combat.NewCircleHitOnTarget(
+	ap := combat.NewBoxHitOnTarget(
 		c.Core.Combat.Player(),
 		nil,
-		5,
+		4,
+		4,
 	)
 	// TODO: Attack Delay on C1?
 	c.Core.QueueAttack(ai, ap, 3, 3)
@@ -108,7 +109,7 @@ func (c *char) c6OnBurstRuin() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Havoc: Sever (Burst)",
-		Mult:       7.5,
+		Mult:       7.5 * c.a4MultBurst(),
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -129,8 +130,8 @@ func (c *char) c6OnBurstRuin() {
 	count := c.c6Stacks.Count(filter)
 	c.c6Stacks.Clear()
 	for range count {
-		// TODO: Attack Delay on C6?
-		c.Core.QueueAttack(ai, ap, 3, 3)
+		// TODO: Record Attack Delay on C6?
+		c.Core.QueueAttack(ai, ap, 0.2*60, 0.2*60)
 	}
 }
 
@@ -165,7 +166,7 @@ func (c *char) c6OnAttackCB() func(a combat.AttackCB) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Havoc: Sever (Normal)",
-			Mult:       1.8,
+			Mult:       1.8 * c.a4MultAttack(),
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagNormalAttack,
 			ICDGroup:   attacks.ICDGroupDefault,

@@ -1,6 +1,8 @@
 package_name: skirk
 genshin_id: 10000114
 key: skirk
+icd_tags:
+  - ICDTagSkirkCons
 action_param_keys:
   skill:
     - param: "hold"
@@ -61,3 +63,12 @@ skill_data_mapping:
       - 4 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
       - 5 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
       - 6 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
+
+documentation:
+  fields_data:
+    - fields: [.skirk.serpents_subtlety]
+      desc: Amount of Serpent's Subtlety.
+    - fields: [.skirk.a4_stacks]
+      desc: Number of A4 stacks.
+    - fields: [.skirk.c6_stacks]
+      desc: Number of C6 stacks.
