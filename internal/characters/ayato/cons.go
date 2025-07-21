@@ -74,7 +74,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 			Abil:               c6Abil,
 			ActorIndex:         c.Index,
 			AttackTag:          attacks.AttackTagNormal,
-			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDTag:             attacks.ICDTagNone,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Hydro,
