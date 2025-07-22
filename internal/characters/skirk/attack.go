@@ -93,7 +93,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-
 		ai := combat.AttackInfo{
 			ActorIndex:       c.Index,
 			Abil:             fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -112,6 +111,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackHitboxes[c.NormalCounter][i][0],
 		)
+
+		if i == 3 {
+			ai.StrikeType = attacks.StrikeTypeSpear
+		}
+
 		if c.NormalCounter == 2 || c.NormalCounter == 3 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
@@ -162,6 +166,10 @@ func (c *char) AttackSkill(p map[string]int) (action.Info, error) {
 			HitlagFactor:     attackSkillHitlagFactor[c.NormalCounter][i],
 			HitlagHaltFrames: attackSkillHitlagHaltFrame[c.NormalCounter][i] * 60,
 			IgnoreInfusion:   true,
+		}
+
+		if i == 3 {
+			ai.StrikeType = attacks.StrikeTypeSpear
 		}
 
 		ap := combat.NewBoxHitOnTarget(

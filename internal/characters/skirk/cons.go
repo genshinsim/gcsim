@@ -25,7 +25,7 @@ func (c *char) c1() {
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagSkirkCons,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeSlash,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		CanBeDefenseHalted: false,
@@ -113,7 +113,7 @@ func (c *char) c6OnBurstRuin() {
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 	}
