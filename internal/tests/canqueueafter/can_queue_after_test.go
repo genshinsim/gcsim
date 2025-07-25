@@ -109,7 +109,7 @@ func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[str
 	c.Combat.DefaultTarget = trg[0].Key()
 	c.Flags.IgnoreBurstEnergy = true
 
-	advanceCoreFrame(t, c)
+	advanceCoreFrame(c)
 
 	for i, a := range acts {
 		p := params[i]
@@ -127,7 +127,7 @@ func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[str
 				t.Errorf("unexpected error waiting for action to be ready: %v", err)
 				t.FailNow()
 			}
-			advanceCoreFrame(t, c)
+			advanceCoreFrame(c)
 			if c.F > 10000 {
 				t.Errorf("%s: actions: %s params: %v did not complete after 10000 frames. Check if IgnoreBurstEnergy is correctly taken into account. Otherwise check if all actions can be exec'd", c.Player.ActiveChar().Base.Key.String(), acts, params)
 				t.FailNow()
@@ -154,7 +154,11 @@ func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[str
 			}
 		}
 		for !c.Player.CanQueueNextAction() {
-			advanceCoreFrame(t, c)
+			advanceCoreFrame(c)
+			if c.F > 10000 {
+				t.Errorf("%s: actions: %s params: %v did not complete after 10000 frames. Check if all actions can be queue'd", c.Player.ActiveChar().Base.Key.String(), acts, params)
+				t.FailNow()
+			}
 		}
 	}
 }
@@ -234,7 +238,7 @@ func defProfile(key keys.Char) info.CharacterProfile {
 	return p
 }
 
-func advanceCoreFrame(t *testing.T, c *core.Core) {
+func advanceCoreFrame(c *core.Core) {
 	c.F++
 	c.Tick()
 }
