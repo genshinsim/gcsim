@@ -8590,6 +8590,150 @@
       }
     ]
   },
+  "skirk": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.1,
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.1,
+        "radius": 2.2
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.5,
+        "boxX": 2.5,
+        "boxY": 3.2
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.5,
+        "boxX": 2.5,
+        "boxY": 3.2
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.1,
+        "boxX": 2.5,
+        "boxY": 2.4
+      },
+      {
+        "ability": "N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.1,
+        "radius": 3.2
+      },
+      {
+        "ability": "E-N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.9,
+        "boxX": 7,
+        "boxY": 2.4
+      },
+      {
+        "ability": "E-N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.4,
+        "boxX": 7,
+        "boxY": 3
+      },
+      {
+        "ability": "E-N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 6,
+        "boxY": 3.6
+      },
+      {
+        "ability": "E-N3-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 6,
+        "boxY": 3.6
+      },
+      {
+        "ability": "E-N4-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 5,
+        "boxY": 3.6
+      },
+      {
+        "ability": "E-N4-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 5,
+        "boxY": 3.6
+      },
+      {
+        "ability": "E-N5",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 11,
+        "boxY": 3.6
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.8
+      },
+      {
+        "ability": "E-CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.3
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 2.5,
+        "boxX": 14,
+        "boxY": 9
+      }
+    ],
+    "cons": [
+      {
+        "ability": "Far to Fall (C1)",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 4,
+        "boxY": 4
+      },
+      {
+        "ability": "Havoc: Sever (C6)",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5
+      }
+    ]
+  },
   "heizou": {
     "normal": [
       {

@@ -35,6 +35,7 @@ const (
 	ICDTagNeuvilletteC6
 	ICDTagNilouTranquilityAura
 	ICDTagOroronElmentalBurst
+	ICDTagSkirkCons
 	ICDTagTartagliaRiptideFlash
 	ICDTagWandererC6
 	ICDTagWandererA4
