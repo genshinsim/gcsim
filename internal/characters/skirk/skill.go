@@ -50,9 +50,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) skillTap() (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
 		return action.Info{}, errors.New("skill cannot be used while in seven-phase flash")
-	} else {
-		c.QueueCharTask(func() { c.enterSkillState() }, skillDelay)
 	}
+
+	c.QueueCharTask(func() { c.enterSkillState() }, skillDelay)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
