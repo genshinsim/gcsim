@@ -84,7 +84,7 @@ func (c *char) BurstRuin(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
@@ -133,7 +133,7 @@ func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstSkillFrames),
 		AnimationLength: burstSkillFrames[action.InvalidAction],
-		CanQueueAfter:   burstSkillFrames[action.ActionJump], // earliest cancel
+		CanQueueAfter:   burstSkillFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }

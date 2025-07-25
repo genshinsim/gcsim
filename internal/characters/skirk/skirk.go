@@ -127,7 +127,7 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	switch a {
 	case action.ActionBurst:
-		if !c.StatusIsActive(skillKey) && c.serpentsSubtlety < 50 {
+		if !c.Core.Flags.IgnoreBurstEnergy && !c.StatusIsActive(skillKey) && c.serpentsSubtlety < 50 {
 			return false, action.InsufficientEnergy
 		}
 	case action.ActionSkill:

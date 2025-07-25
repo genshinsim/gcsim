@@ -122,7 +122,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 			return skillHoldFrames[next] + extraDuration
 		},
 		AnimationLength: skillHoldFrames[action.InvalidAction] + extraDuration,
-		CanQueueAfter:   skillHoldFrames[action.ActionDash] + extraDuration,
+		CanQueueAfter:   skillHoldFrames[action.ActionSwap] + extraDuration,
 		State:           action.SkillState,
 	}, nil
 }
