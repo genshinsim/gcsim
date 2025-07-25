@@ -1,6 +1,8 @@
 package skirk
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -17,11 +19,11 @@ const (
 	maxSerpentsSubtlety = 100
 	skillGainSS         = 25
 	skillKey            = "seven-phase-flash"
-	skillKeyDelay       = 19
+	skillDelay          = 19
 	skillDur            = 754
-
-	particleICDKey  = "skirk-particle-icd"
-	skillHoldGainSS = 18
+	particleICD         = 15 * 60
+	particleICDKey      = "skirk-particle-icd"
+	skillHoldGainSS     = 18
 )
 
 func init() {
@@ -47,9 +49,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) skillTap() (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
-		c.exitSkillState(c.skillSrc)
+		return action.Info{}, errors.New("skill cannot be used while in seven-phase flash")
 	} else {
-		c.QueueCharTask(func() { c.enterSkillState() }, skillKeyDelay)
+		c.QueueCharTask(func() { c.enterSkillState() }, skillDelay)
 	}
 
 	return action.Info{
@@ -78,7 +80,7 @@ func (c *char) exitSkillState(src int) {
 	c.skillSrc = -1
 	c.DeleteAttackMod(c2Key)
 	c.DeleteStatus(skillKey)
-	c.DeleteStatus(burstKey)
+	c.DeleteStatus(burstExtinctKey)
 	c.SetCD(action.ActionSkill, 8*60)
 	c.ConsumeSerpentsSubtlety(0, c.Base.Key.String()+"-skill-exit")
 }
@@ -143,7 +145,7 @@ func (c *char) particleInit() {
 		if c.StatusIsActive(particleICDKey) {
 			return false
 		}
-		c.AddStatus(particleICDKey, 15*60, false)
+		c.AddStatus(particleICDKey, particleICD, false)
 
 		count := 4.0
 		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)

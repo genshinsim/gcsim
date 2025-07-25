@@ -17,8 +17,9 @@ var burstHitmarks = []int{109, 109 + 2, 109 + 2 + 3, 109 + 2 + 3 + 11, 109 + 2 +
 
 const (
 	burstHitmarkFinal = 109 + 2 + 3 + 11 + 10 + 23
-	burstKey          = "skirk-burst"
-	burstICDKey       = "skirk-burst-icd"
+	burstExtinctKey   = "skirk-burst-extinction"
+	burstRuinKey      = "skirk-burst-ruin"
+	burstICDKey       = "skirk-burst-extinction-icd"
 )
 
 func init() {
@@ -76,7 +77,7 @@ func (c *char) BurstRuin(p map[string]int) (action.Info, error) {
 
 	c.c6OnBurstRuin()
 
-	c.ConsumeSerpentsSubtlety(7, c.Base.Key.String()+"-burst-ruin")
+	c.ConsumeSerpentsSubtlety(7, burstRuinKey)
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
 
@@ -91,7 +92,7 @@ func (c *char) BurstRuin(p map[string]int) (action.Info, error) {
 func (c *char) BurstInit() {
 	mDmg := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(burstKey+"-dmg", -1),
+		Base: modifier.NewBase(burstExtinctKey+"-dmg", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if c.burstCount <= 0 {
 				return nil, false
@@ -102,7 +103,7 @@ func (c *char) BurstInit() {
 				return nil, false
 			}
 
-			if !c.StatusIsActive(burstKey) {
+			if !c.StatusIsActive(burstExtinctKey) {
 				return nil, false
 			}
 
@@ -113,8 +114,7 @@ func (c *char) BurstInit() {
 			c.burstCount--
 			if c.burstCount <= 0 {
 				// Cannot delete statuses in an attack mod
-				// c.DeleteStatus(burstKey)
-				c.AddStatus(burstKey, 0, false)
+				c.AddStatus(burstExtinctKey, 0, false)
 			}
 			mDmg[attributes.DmgP] = burstDMG[c.burstVoids][c.TalentLvlBurst()]
 			return mDmg, true
@@ -123,7 +123,7 @@ func (c *char) BurstInit() {
 }
 
 func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
-	c.AddStatus(burstKey, 12.5*60, false)
+	c.AddStatus(burstExtinctKey, 12.5*60, false)
 	c.burstCount = 10
 	c.burstVoids = c.absorbVoidRift()
 
