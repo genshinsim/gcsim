@@ -28,12 +28,12 @@ func init() {
 	skillPressFrames[action.ActionJump] = 11    // Tap E -> J
 	skillPressFrames[action.ActionSwap] = 16    // Tap E -> Swap
 
-	skillHoldFrames = frames.InitAbilSlice(49) // Hold E -> E
-	skillHoldFrames[action.ActionAttack] = 36  // Hold E -> N1
-	skillHoldFrames[action.ActionBurst] = 37   // Hold E -> Q
-	skillHoldFrames[action.ActionDash] = 31    // Hold E -> D
-	skillHoldFrames[action.ActionJump] = 31    // Hold E -> J
-	skillHoldFrames[action.ActionSwap] = 23    // Hold E -> Swap
+	skillHoldFrames = frames.InitAbilSlice(49)            // Hold E -> E
+	skillHoldFrames[action.ActionAttack] = 36             // Hold E -> N1
+	skillHoldFrames[action.ActionBurst] = 37              // Hold E -> Q
+	skillHoldFrames[action.ActionDash] = 31               // Hold E -> D
+	skillHoldFrames[action.ActionJump] = 31               // Hold E -> J
+	skillHoldFrames[action.ActionSwap] = skillHoldHitmark // Hold E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -82,7 +82,7 @@ func (c *char) skillHold(travel int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldFrames[action.ActionJump], // earliest cancel
+		CanQueueAfter:   skillHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

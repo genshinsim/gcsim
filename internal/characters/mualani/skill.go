@@ -85,7 +85,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return action.Info{
 			Frames:          frames.NewAbilFunc(skillCancelFrames),
 			AnimationLength: skillCancelFrames[action.InvalidAction],
-			CanQueueAfter:   skillCancelFrames[action.ActionAttack], // earliest cancel
+			CanQueueAfter:   skillCancelFrames[action.ActionBurst], // earliest cancel
 			State:           action.SkillState,
 		}, nil
 	}

@@ -16,7 +16,6 @@ import (
 var endLag []int
 
 const (
-	earliestCancel = 122
 	chargeBurstDur = 99
 )
 
@@ -76,7 +75,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			return chargeBurstDur + c.tickAnimLength + endLag[next]
 		},
 		AnimationLength: chargeBurstDur + c.burstMaxDuration,
-		CanQueueAfter:   earliestCancel,
+		CanQueueAfter:   chargeBurstDur,
 		State:           action.BurstState,
 		OnRemoved: func(next action.AnimationState) {
 			// need to calculate correct swap cd in case of early cancel

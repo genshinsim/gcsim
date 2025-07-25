@@ -161,7 +161,7 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 			return frames.AtkSpdAdjust(skillAttackFrames[n][next], atkspd)
 		},
 		AnimationLength: frames.AtkSpdAdjust(skillAttackFrames[n][action.InvalidAction], atkspd),
-		CanQueueAfter:   frames.AtkSpdAdjust(skillAttackFrames[n][action.ActionBurst], atkspd),
+		CanQueueAfter:   frames.AtkSpdAdjust(skillAttackFrames[n][action.ActionDash], atkspd),
 		State:           action.NormalAttackState,
 	}, nil
 }
