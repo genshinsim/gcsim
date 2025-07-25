@@ -24,7 +24,7 @@ var (
 	attackOffsets         = [][]float64{{-0.1}, {-0.1}, {1.5, 1.5}, {1.1}, {-0.1}}
 
 	attackSkillFrames          [][]int
-	attackSkillHitmarks        = [][]int{{11 + windup}, {11}, {11, 11 + 12}, {11, 11 + 16}, {25}}
+	attackSkillHitmarks        = [][]int{{10 + windup}, {11}, {11, 11 + 12}, {11, 11 + 16}, {25}}
 	attackSkillHitlagHaltFrame = [][]float64{{0.02}, {0.03}, {0.03, 0.00}, {0.03, 0.00}, {0.06}}
 	attackSkillHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.01, 0.00}, {0.01, 0.00}, {0.01}}
 	attackSkillHitboxes        = [][][]float64{{{7, 2.4}}, {{7, 3}}, {{6, 3.6}, {6, 3.6}}, {{5, 3.6}, {5, 3.6}}, {{11, 3.6}}}
@@ -131,6 +131,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	c.prevNASkillState = false
 	normalCounter := c.NormalCounter
+
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
