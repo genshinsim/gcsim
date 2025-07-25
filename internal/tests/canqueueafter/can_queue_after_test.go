@@ -128,6 +128,10 @@ func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[str
 				t.FailNow()
 			}
 			advanceCoreFrame(t, c)
+			if c.F > 10000 {
+				t.Errorf("%s: actions: %s params: %v did not complete after 10000 frames. Check if IgnoreBurstEnergy is correctly taken into account. Otherwise check if all actions can be exec'd", c.Player.ActiveChar().Base.Key.String(), acts, params)
+				t.FailNow()
+			}
 		}
 
 		evt, err := getAction(c.Player.ActiveChar(), a)(p)
@@ -233,8 +237,4 @@ func defProfile(key keys.Char) info.CharacterProfile {
 func advanceCoreFrame(t *testing.T, c *core.Core) {
 	c.F++
 	c.Tick()
-
-	if c.F > 10000 {
-		t.Errorf("Test did not complete after 10000 frames. Check if IgnoreBurstEnergy is correctly taken into account. Otherwise check if all actions can be exec'd")
-	}
 }
