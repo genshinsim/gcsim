@@ -11,9 +11,6 @@
   "kinich": [
     "The actual Kinich's circular movement is not simulated, so Loop Shots/Scalespiker Cannon will damage the Primary target, which does not depend on attack angle."
   ],
-  "skirk": [
-    "ICD and Hitboxes are not known"
-  ],
   "xianyun": [
     "Not all characters can plunge after a Adeptal Assistance boosted jump"
   ]
