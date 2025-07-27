@@ -18,6 +18,12 @@ skill_data_mapping:
             - 4 # 4-Hit DMG|{param4:F1P}
         charge:
             - 5 # Charged Attack DMG|{param5:F1P}
+        collision:
+            - 8 # Plunge DMG
+        lowPlunge:
+            - 9 # Low/High Plunge DMG
+        highPlunge:
+            - 10 # Low/High Plunge DMG
     skill:
         skillDmg:
             - 0 # Shield DMG Absorption|{param0:F1P} Max HP+{param1:I}
