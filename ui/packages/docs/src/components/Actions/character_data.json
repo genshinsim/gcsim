@@ -364,6 +364,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -549,6 +557,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -1399,6 +1415,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -1752,6 +1776,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -2491,6 +2523,14 @@
       "legal": true
     },
     {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
       "ability": "dash",
       "legal": true
     },
@@ -2523,6 +2563,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
@@ -3524,6 +3572,14 @@
     {
       "ability": "burst",
       "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
     },
     {
       "ability": "dash",
