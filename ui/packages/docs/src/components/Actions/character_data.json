@@ -381,7 +381,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -576,7 +576,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -1432,7 +1432,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -1795,7 +1795,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -2540,7 +2540,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -2582,7 +2582,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
@@ -3591,7 +3591,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
     },
     {
       "ability": "swap",
