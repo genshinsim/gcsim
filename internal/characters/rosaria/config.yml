@@ -4,6 +4,10 @@ key: rosaria
 action_param_keys:
     skill:
         - param: "nobehind"
+    low_plunge:
+        - param: "collision"
+    high_plunge:
+        - param: "collision"
 skill_data_mapping:
     attack:
         attack_1:
