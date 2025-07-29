@@ -4,6 +4,10 @@ key: lanyan
 action_param_keys:
   skill:
     - param: "hold"
+  low_plunge:
+    - param: "collision"
+  high_plunge:
+    - param: "collision"
 icd_tags:
   - ICDTagLanyanRingAttack
   - ICDTagLanyanRingAttackMix
