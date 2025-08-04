@@ -83,7 +83,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			count := 0
-			if char.Energy < char.EnergyMax {
+			if char.Energy < char.EnergyMax || char.EnergyMax == 0 {
 				count++
 			}
 			if char.StatusIsActive(normalBuffKey) {

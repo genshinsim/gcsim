@@ -2754,6 +2754,41 @@
       "legal": true
     }
   ],
+  "skirk": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true,
+      "notes": "Cannot be used in Seven-Phase Flash."
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "sucrose": [
     {
       "ability": "attack",

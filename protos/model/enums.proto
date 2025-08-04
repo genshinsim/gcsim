@@ -77,6 +77,7 @@ enum ZoneType {
   ASSOC_TYPE_MAINACTOR = 8; // traveler is cool
   ASSOC_TYPE_FONTAINE = 9;
   ASSOC_TYPE_NATLAN = 10;
+  ASSOC_TYPE_OMNI_SCOURGE = 11;
 }
 
 enum Element {
