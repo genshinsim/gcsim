@@ -40,6 +40,10 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(skillKey) {
+		return action.Info{}, errors.New("skill cannot be used while in seven-phase flash")
+	}
+
 	h := p["hold"]
 	if h > 0 {
 		return c.skillHold(p)
@@ -48,10 +52,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillTap() (action.Info, error) {
-	if c.StatusIsActive(skillKey) {
-		return action.Info{}, errors.New("skill cannot be used while in seven-phase flash")
-	}
-
 	c.QueueCharTask(func() { c.enterSkillState() }, skillDelay)
 
 	return action.Info{
