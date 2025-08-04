@@ -34,7 +34,7 @@ func init() {
 	burstSkillFrames = frames.InitAbilSlice(41)
 	burstSkillFrames[action.ActionAttack] = 39 // Q -> N1
 	burstSkillFrames[action.ActionCharge] = 39 // Q -> CA
-	burstSkillFrames[action.ActionDash] = 39   // Q -> D
+	burstSkillFrames[action.ActionDash] = 40   // Q -> D
 	burstSkillFrames[action.ActionJump] = 40   // Q -> J
 	burstSkillFrames[action.ActionSwap] = 39   // Q -> Swap
 }

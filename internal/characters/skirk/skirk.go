@@ -119,7 +119,7 @@ func (c *char) Condition(fields []string) (any, error) {
 func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	// TODO: Adjust this value based on if windup happened for the NA
 	if k == model.AnimationXingqiuN0StartDelay {
-		return 6
+		return 12
 	}
 	return c.Character.AnimationStartDelay(k)
 }

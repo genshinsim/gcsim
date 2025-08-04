@@ -42,7 +42,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.ChargeAttackSkill(p)
 	}
 
-	// If the previous attack has N1 to N4 of skill state, this CA is also in skill state
+	// If the previous attack is N1 to N4 of skill state, this CA is also in skill state
 	if c.Core.Player.CurrentState() == action.NormalAttackState && c.Core.Player.ActiveChar().NormalCounter > 0 && c.prevNASkillState {
 		return c.ChargeAttackSkill(p)
 	}

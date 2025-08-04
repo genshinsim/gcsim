@@ -17,7 +17,7 @@ var (
 	attackFrames [][]int
 
 	// The n1 hitmark includes 2f of windup
-	attackHitmarks        = [][]int{{11 + windup}, {6}, {8, 8 + 14}, {11}, {35}}
+	attackHitmarks        = [][]int{{11 + windup}, {7}, {8, 8 + 14}, {11}, {35}}
 	attackHitlagHaltFrame = [][]float64{{0.02}, {0.03}, {0.03, 0.00}, {0.05}, {0.06}}
 	attackHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.01, 0.00}, {0.01}, {0.01}}
 	attackHitboxes        = [][][]float64{{{2}}, {{2.2}}, {{2.5, 3.2}, {2.5, 3.2}}, {{2.5, 2.4}}, {{3.2}}}
@@ -36,9 +36,9 @@ const normalHitNum = 5
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 27) // N1 -> W
-	attackFrames[0][action.ActionCharge] = 18 + windup                       // N1 -> CA
-	attackFrames[0][action.ActionAttack] = 17 + windup                       // N1 -> N2
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 25+windup) // N1 -> W
+	attackFrames[0][action.ActionCharge] = 18 + windup                              // N1 -> CA
+	attackFrames[0][action.ActionAttack] = 17 + windup                              // N1 -> N2
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 25) // N2 -> W
 	attackFrames[1][action.ActionAttack] = 18                                // N2 -> N3
@@ -59,7 +59,7 @@ func init() {
 	attackSkillFrames = make([][]int, normalHitNum)
 
 	attackSkillFrames[0] = frames.InitNormalCancelSlice(attackSkillHitmarks[0][0], 30) // N1 -> W
-	attackSkillFrames[0][action.ActionAttack] = 11 + windup                            // N1 -> N2
+	attackSkillFrames[0][action.ActionAttack] = 10 + windup                            // N1 -> N2
 	attackSkillFrames[0][action.ActionCharge] = 11 + windup                            // N1 -> CA
 
 	attackSkillFrames[1] = frames.InitNormalCancelSlice(attackSkillHitmarks[1][0], 43) // N2 -> W
@@ -88,8 +88,13 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	windupRemove := 0
 
 	// skip N1 windup out of NA and Q
-	if c.NormalCounter == 0 && c.Core.Player.CurrentState() == action.NormalAttackState {
-		windupRemove = windup
+	if c.NormalCounter == 0 {
+		switch c.Core.Player.CurrentState() {
+		case action.BurstState:
+			windupRemove = windup
+		case action.NormalAttackState:
+			windupRemove = windup
+		}
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -148,7 +153,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 func (c *char) AttackSkill(p map[string]int) (action.Info, error) {
 	windupRemove := 0
 
-	// skip N1 windup out of NA and Q
+	// skip N1 windup out of NA
 	if c.NormalCounter == 0 && c.Core.Player.CurrentState() == action.NormalAttackState {
 		windupRemove = windup
 	}
@@ -183,7 +188,7 @@ func (c *char) AttackSkill(p map[string]int) (action.Info, error) {
 		c6cb := c.c6OnAttackCB()
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ai, ap, 0, 0, c6cb)
-		}, attackSkillHitmarks[c.NormalCounter][i])
+		}, attackSkillHitmarks[c.NormalCounter][i]-windupRemove)
 	}
 
 	c.prevNASkillState = true
