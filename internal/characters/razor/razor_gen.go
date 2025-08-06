@@ -5,12 +5,13 @@ import (
 	_ "embed"
 
 	"fmt"
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
-	"slices"
 )
 
 //go:embed data_gen.textproto
@@ -127,6 +128,60 @@ var (
 		2.84464,
 		2.98378,
 		3.12292,
+	}
+	// attack: collision = [8]
+	collision = []float64{
+		0.820466,
+		0.887248,
+		0.95403,
+		1.049433,
+		1.116215,
+		1.192538,
+		1.297481,
+		1.402424,
+		1.507367,
+		1.621851,
+		1.736335,
+		1.850818,
+		1.965302,
+		2.079785,
+		2.194269,
+	}
+	// attack: highPlunge = [10]
+	highPlunge = []float64{
+		2.049178,
+		2.215971,
+		2.382765,
+		2.621042,
+		2.787835,
+		2.978456,
+		3.240560,
+		3.502665,
+		3.764769,
+		4.050701,
+		4.336632,
+		4.622564,
+		4.908496,
+		5.194428,
+		5.480360,
+	}
+	// attack: lowPlunge = [9]
+	lowPlunge = []float64{
+		1.640584,
+		1.774120,
+		1.907656,
+		2.098421,
+		2.231957,
+		2.384570,
+		2.594412,
+		2.804254,
+		3.014096,
+		3.243015,
+		3.471933,
+		3.700852,
+		3.929771,
+		4.158690,
+		4.387608,
 	}
 	// skill: skillHold = [1]
 	skillHold = []float64{
