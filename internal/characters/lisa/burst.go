@@ -129,29 +129,29 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 						dischargeCount = 2
 					}
 				} else {
-					randVal := c.Core.Rand.Float64()
+					rand := c.Core.Rand.Float64()
 					switch c.previousDischargeCount {
 					case 1:
 						// after a 1: 20% 1, 50% 2, 30% 3
-						if randVal < 0.2 {
+						if rand < 0.2 {
 							dischargeCount = 1
-						} else if randVal < 0.7 {
+						} else if rand < 0.7 {
 							dischargeCount = 2
 						} else {
 							dischargeCount = 3
 						}
 					case 2:
 						// after a 2: 25% 1, 50% 2, 25% 3
-						if randVal < 0.25 {
+						if rand < 0.25 {
 							dischargeCount = 1
-						} else if randVal < 0.75 {
+						} else if rand < 0.75 {
 							dischargeCount = 2
 						} else {
 							dischargeCount = 3
 						}
 					case 3:
 						// after a 3: next is 50% 1, 50% 2, 0% 3
-						if c.Core.Rand.Float64() < 0.5 {
+						if rand < 0.5 {
 							dischargeCount = 1
 						} else {
 							dischargeCount = 2
