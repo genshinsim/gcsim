@@ -66,17 +66,19 @@ func (c *char) c2OnBurstExtinction() {
 	if c.Base.Cons < 2 {
 		return
 	}
-
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase(c2Key, 12.5*60),
-		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
-			if !c.StatusIsActive(skillKey) {
-				return nil, false
-			}
-			return c.c2Atk, true
-		},
-	})
+	// delay buff to the end of burst. c1 hits from burst don't benefit from c2
+	c.QueueCharTask(func() {
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(c2Key, 12.5*60),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				if !c.StatusIsActive(skillKey) {
+					return nil, false
+				}
+				return c.c2Atk, true
+			},
+		})
+	}, 39)
 }
 
 func (c *char) c4Init() {
