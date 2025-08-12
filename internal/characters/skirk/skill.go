@@ -16,15 +16,15 @@ var skillFrames []int
 var skillHoldFrames []int
 
 const (
-	maxSerpentsSubtlety = 100
-	skillGainSS         = 25
-	skillKey            = "seven-phase-flash"
-	skillDelay          = 19
-	skillDur            = 754
-	particleICD         = 15 * 60
-	particleICDKey      = "skirk-particle-icd"
-	skillHoldGainSS     = 18
-	absorbRiftAnimKey   = "absorb-rift-anim"
+	maxSerpentsSubtlety    = 100
+	skillGainSS            = 25
+	skillKey               = "seven-phase-flash"
+	skillDelay             = 19
+	skillDur               = 754
+	particleICD            = 15 * 60
+	particleICDKey         = "skirk-particle-icd"
+	skillHoldGainSS        = 18
+	skillAbsorbRiftAnimKey = "skirk-hold-e-anim"
 )
 
 func init() {
@@ -112,7 +112,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	}, skillHoldGainSS)
 
 	// status used to absorb void rifts constantly during the hold E animation
-	c.AddStatus(absorbRiftAnimKey, extraDuration, true)
+	c.AddStatus(skillAbsorbRiftAnimKey, extraDuration, true)
 
 	c.SetCDWithDelay(action.ActionSkill, 8*60, extraDuration+skillHoldGainSS)
 

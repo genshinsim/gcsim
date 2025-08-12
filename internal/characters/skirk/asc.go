@@ -71,9 +71,13 @@ func (c *char) onVoidAbsorb(count int) {
 }
 
 func (c *char) createVoidRift() {
-	// absorb the rift immediately if currently in the E-Burst animation
-	if c.StatusIsActive(absorbRiftAnimKey) {
+	// absorb the rift immediately if currently in the hE/ or E-Burst animation
+	if c.StatusIsActive(skillAbsorbRiftAnimKey) {
 		c.onVoidAbsorb(1)
+	}
+	if c.StatusIsActive(burstAbsorbRiftAnimKey) {
+		c.onVoidAbsorb(1)
+		c.burstVoids = min(c.burstVoids+1, 3)
 	}
 	c.voidRifts.Push(c.Core.F)
 }

@@ -16,10 +16,11 @@ var burstSkillFrames []int
 var burstHitmarks = []int{109, 109 + 2, 109 + 2 + 3, 109 + 2 + 3 + 11, 109 + 2 + 3 + 11 + 10}
 
 const (
-	burstHitmarkFinal = 109 + 2 + 3 + 11 + 10 + 23
-	burstExtinctKey   = "skirk-burst-extinction"
-	burstRuinKey      = "skirk-burst-ruin"
-	burstICDKey       = "skirk-burst-extinction-icd"
+	burstHitmarkFinal      = 109 + 2 + 3 + 11 + 10 + 23
+	burstExtinctKey        = "skirk-burst-extinction"
+	burstRuinKey           = "skirk-burst-ruin"
+	burstICDKey            = "skirk-burst-extinction-icd"
+	burstAbsorbRiftAnimKey = "skirk-burst-extinction-anim"
 )
 
 func init() {
@@ -127,7 +128,7 @@ func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
 	c.burstCount = 10
 	c.burstVoids = c.absorbVoidRifts()
 	// status used to absorb void rifts constantly during the burst animation
-	c.AddStatus(absorbRiftAnimKey, 39, true)
+	c.AddStatus(burstAbsorbRiftAnimKey, 39, true)
 
 	c.c2OnBurstExtinction()
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
