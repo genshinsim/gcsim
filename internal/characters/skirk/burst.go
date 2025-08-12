@@ -128,7 +128,7 @@ func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
 	c.burstCount = 10
 	c.burstVoids = c.absorbVoidRifts()
 	// status used to absorb void rifts constantly during the burst animation
-	c.AddStatus(burstAbsorbRiftAnimKey, 39, true)
+	c.AddStatus(burstAbsorbRiftAnimKey, burstSkillFrames[action.InvalidAction], true)
 
 	c.c2OnBurstExtinction()
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
@@ -138,5 +138,6 @@ func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
 		AnimationLength: burstSkillFrames[action.InvalidAction],
 		CanQueueAfter:   burstSkillFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
+		OnRemoved:       func(next action.AnimationState) { c.DeleteStatus(burstAbsorbRiftAnimKey) },
 	}, nil
 }
