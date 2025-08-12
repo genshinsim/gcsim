@@ -125,7 +125,14 @@ func (c *char) BurstInit() {
 func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
 	c.AddStatus(burstExtinctKey, 12.5*60, false)
 	c.burstCount = 10
-	c.burstVoids = c.absorbVoidRift()
+
+	// absorb void rifts constantly during the burst animation
+	for i := range burstSkillFrames[action.ActionAttack] {
+		c.QueueCharTask(func() {
+			c.burstVoids += c.absorbVoidRift()
+			c.burstVoids = min(c.burstVoids, 3)
+		}, i)
+	}
 
 	c.c2OnBurstExtinction()
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
