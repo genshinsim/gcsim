@@ -16,10 +16,11 @@ var burstSkillFrames []int
 var burstHitmarks = []int{109, 109 + 2, 109 + 2 + 3, 109 + 2 + 3 + 11, 109 + 2 + 3 + 11 + 10}
 
 const (
-	burstHitmarkFinal = 109 + 2 + 3 + 11 + 10 + 23
-	burstExtinctKey   = "skirk-burst-extinction"
-	burstRuinKey      = "skirk-burst-ruin"
-	burstICDKey       = "skirk-burst-extinction-icd"
+	burstHitmarkFinal      = 109 + 2 + 3 + 11 + 10 + 23
+	burstExtinctKey        = "skirk-burst-extinction"
+	burstRuinKey           = "skirk-burst-ruin"
+	burstICDKey            = "skirk-burst-extinction-icd"
+	burstAbsorbRiftAnimKey = "skirk-burst-extinction-anim"
 )
 
 func init() {
@@ -125,14 +126,9 @@ func (c *char) BurstInit() {
 func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
 	c.AddStatus(burstExtinctKey, 12.5*60, false)
 	c.burstCount = 10
-
-	// absorb void rifts constantly during the burst animation
-	for i := range burstSkillFrames[action.ActionAttack] {
-		c.QueueCharTask(func() {
-			c.burstVoids += c.absorbVoidRift()
-			c.burstVoids = min(c.burstVoids, 3)
-		}, i)
-	}
+	c.burstVoids = c.absorbVoidRifts()
+	// status used to absorb void rifts constantly during the burst animation
+	c.AddStatus(burstAbsorbRiftAnimKey, burstSkillFrames[action.InvalidAction], true)
 
 	c.c2OnBurstExtinction()
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
@@ -142,5 +138,6 @@ func (c *char) BurstExtinction(p map[string]int) (action.Info, error) {
 		AnimationLength: burstSkillFrames[action.InvalidAction],
 		CanQueueAfter:   burstSkillFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
+		OnRemoved:       func(next action.AnimationState) { c.DeleteStatus(burstAbsorbRiftAnimKey) },
 	}, nil
 }
