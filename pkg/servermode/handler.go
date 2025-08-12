@@ -273,3 +273,35 @@ func (s *Server) info() http.HandlerFunc {
 
 	}
 }
+
+type Progress struct {
+	Curr int
+	Max  int
+	Err  error
+}
+
+func (s *Server) Progress() map[string]Progress {
+	progress := make(map[string]Progress)
+	s.Lock()
+	for id, wk := range s.pool {
+		prog := Progress{}
+		if wk.err != nil {
+			prog.Err = wk.err
+			continue
+		}
+		if wk.result == nil {
+			s.Log.Info("unexpected result is nil", "id", id)
+		}
+
+		prog.Max = int(wk.result.GetSimulatorSettings().Iterations)
+		if wk.result.Statistics == nil {
+			prog.Curr = 0
+		} else {
+			prog.Curr = int(wk.result.Statistics.Iterations)
+		}
+
+		progress[id] = prog
+	}
+	s.Unlock()
+	return progress
+}
