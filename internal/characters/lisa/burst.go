@@ -109,31 +109,60 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			case 1:
 				dischargeCount = 1
 			case 2:
-				threshold := 0.16
+				threshold := 0.15
 				if progress == firstTick {
+					// first arc: 60% chance 1, 40% chance 2
 					threshold = 0.6
 				}
+				// rest: 15% chance 1, 85% chance 2
 				if c.Core.Rand.Float64() < threshold {
 					dischargeCount = 1
 				} else {
 					dischargeCount = 2
 				}
-			case 3:
-				if progress == firstTick || c.previousDischargeCount == 3 {
-					if c.Core.Rand.Float64() < 0.5 {
+			default: // 3 or more entities
+				if progress == firstTick {
+					// first arc: 55% 1, 45% 2
+					if c.Core.Rand.Float64() < 0.55 {
 						dischargeCount = 1
 					} else {
 						dischargeCount = 2
 					}
-					break
+					c.previousDischargeCount = dischargeCount
+					if dischargeCount == 0 {
+						return
+					}
+					return
 				}
-				switch rand := c.Core.Rand.Float64(); {
-				case rand < 0.25:
-					dischargeCount = 1
-				case rand <= 0.25 && rand < 0.75:
-					dischargeCount = 2
-				default:
-					dischargeCount = 3
+				rand := c.Core.Rand.Float64()
+				switch c.previousDischargeCount {
+				case 1:
+					// after a 1: 20% 1, 50% 2, 30% 3
+					switch {
+					case rand < 0.2:
+						dischargeCount = 1
+					case rand < 0.7:
+						dischargeCount = 2
+					default:
+						dischargeCount = 3
+					}
+				case 2:
+					// after a 2: 25% 1, 50% 2, 25% 3
+					switch {
+					case rand < 0.25:
+						dischargeCount = 1
+					case rand < 0.75:
+						dischargeCount = 2
+					default:
+						dischargeCount = 3
+					}
+				case 3:
+					// after a 3: next is 50% 1, 50% 2, 0% 3
+					if rand < 0.5 {
+						dischargeCount = 1
+					} else {
+						dischargeCount = 2
+					}
 				}
 			}
 			c.previousDischargeCount = dischargeCount
