@@ -43,18 +43,23 @@ func (c *char) absorbVoidRiftCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
-	c.absorbVoidRift()
+	c.absorbVoidRifts()
 }
 
-func (c *char) absorbVoidRift() int {
+func (c *char) absorbVoidRifts() int {
 	filter := func(src int) bool {
 		return src+a1Dur >= c.Core.F
 	}
 	count := c.voidRifts.Count(filter)
 	c.voidRifts.Clear()
 
+	c.onVoidAbsorb(count)
+	return count
+}
+
+func (c *char) onVoidAbsorb(count int) {
 	if count <= 0 {
-		return 0
+		return
 	}
 
 	c.AddSerpentsSubtlety("a1-void-rifts", float64(count)*8.0)
@@ -63,10 +68,13 @@ func (c *char) absorbVoidRift() int {
 		c.c1()
 		c.c6OnVoidAbsorb()
 	}
-	return count
 }
 
 func (c *char) createVoidRift() {
+	// absorb the rift immediately if currently in the E-Burst animation
+	if c.StatusIsActive(absorbRiftAnimKey) {
+		c.onVoidAbsorb(1)
+	}
 	c.voidRifts.Push(c.Core.F)
 }
 
