@@ -37,6 +37,7 @@ const (
 	ICDTagOroronElmentalBurst
 	ICDTagSkirkCons
 	ICDTagTartagliaRiptideFlash
+	ICDTagVaresaCombatCycle
 	ICDTagWandererC6
 	ICDTagWandererA4
 	ICDTagXilonenSkate
