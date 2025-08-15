@@ -45,6 +45,7 @@ var weaponNames = []string{
 	"astralvulturescrimsonplumage",
 	"athousandblazingsuns",
 	"athousandfloatingdreams",
+	"azurelight",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
 	"beaconofthereedsea",
@@ -176,6 +177,7 @@ var weaponNames = []string{
 	"sapwoodblade",
 	"scionoftheblazingsun",
 	"seasonedhuntersbow",
+	"sequenceofsolitude",
 	"serpentspine",
 	"sharpshootersoath",
 	"silvershowerheartstrings",
@@ -257,6 +259,7 @@ const (
 	AstralVulturesCrimsonPlumage
 	AThousandBlazingSuns
 	AThousandFloatingDreams
+	Azurelight
 	BalladOfTheBoundlessBlue
 	BalladOfTheFjords
 	BeaconOfTheReedSea
@@ -388,6 +391,7 @@ const (
 	SapwoodBlade
 	ScionOfTheBlazingSun
 	SeasonedHuntersBow
+	SequenceOfSolitude
 	SerpentSpine
 	SharpshootersOath
 	SilvershowerHeartstrings

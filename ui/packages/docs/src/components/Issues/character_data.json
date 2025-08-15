@@ -5,6 +5,9 @@
   "chasca": [
     "Cannot jump while in Nightsoul Blessing"
   ],
+  "escoffier": [
+    "Hitboxes, Striketype, Elemental Gauge, and PoiseDmg are estimated"
+  ],
   "kinich": [
     "The actual Kinich's circular movement is not simulated, so Loop Shots/Scalespiker Cannon will damage the Primary target, which does not depend on attack angle."
   ],

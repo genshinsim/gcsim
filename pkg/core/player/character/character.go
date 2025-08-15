@@ -237,6 +237,9 @@ func (c *CharWrapper) TalentLvlAttack() int {
 func (c *CharWrapper) TalentLvlSkill() int {
 	c.consCheck()
 	add := -1
+	if c.Tags[keys.SkirkPassive] > 0 {
+		add++
+	}
 	if c.SkillCon > 0 && c.Base.Cons >= c.SkillCon {
 		add += 3
 	}

@@ -96,6 +96,14 @@
       "image_name": "UI_EquipIcon_Catalyst_Ayus",
       "name_text_hash_map ": "1201790667"
     },
+    "azurelight": {
+      "id": 11517,
+      "key": "azurelight",
+      "rarity": 5,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_OuterSword",
+      "name_text_hash_map ": "1479741275"
+    },
     "balladoftheboundlessblue": {
       "id": 14426,
       "key": "balladoftheboundlessblue",
@@ -1143,6 +1151,14 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Old",
       "name_text_hash_map ": "2340970067"
+    },
+    "sequenceofsolitude": {
+      "id": 15432,
+      "key": "sequenceofsolitude",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Stinger",
+      "name_text_hash_map ": "2846112523"
     },
     "serpentspine": {
       "id": 12409,

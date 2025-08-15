@@ -532,6 +532,23 @@
       },
       "name_text_hash_map ": "1705786122"
     },
+    "escoffier": {
+      "id": 10000112,
+      "key": "escoffier",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Escoffier",
+      "skill_details": {
+        "skill": 11122,
+        "burst": 11125,
+        "attack": 11121,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "4035850498"
+    },
     "eula": {
       "id": 10000051,
       "key": "eula",
@@ -1419,6 +1436,22 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "781488962"
+    },
+    "skirk": {
+      "id": 10000114,
+      "key": "skirk",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": 11,
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_SkirkNew",
+      "skill_details": {
+        "skill": 11142,
+        "burst": 11145,
+        "attack": 11141
+      },
+      "name_text_hash_map ": "123650890"
     },
     "sucrose": {
       "id": 10000043,
