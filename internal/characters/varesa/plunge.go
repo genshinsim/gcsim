@@ -15,16 +15,14 @@ import (
 var (
 	highPlungeFrames      []int
 	fieryHighPlungeFrames []int
-	lowPlungeFrames       []int
 )
 
-// TODO: update low_plunge frames and hitboxes
+// TODO: low_plunge
 
 const highPlungeHitmark = 37
 const fieryHighPlungeHitmark = 41
 const collisionHitmark = highPlungeHitmark - 6
 
-const lowPlungeRadius = 3.0
 const highPlungeRadius = 5.0
 
 const (

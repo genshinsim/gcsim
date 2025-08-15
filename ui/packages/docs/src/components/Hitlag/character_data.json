@@ -3938,6 +3938,123 @@
       }
     ]
   },
+  "varesa": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Fiery-N1",
+        "hitHaltTime": 0.01,
+        "hitHaltTimeScale": 0.03,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Fiery-N2",
+        "hitHaltTime": 0.01,
+        "hitHaltTimeScale": 0.03,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Fiery-N3",
+        "hitHaltTime": 0.01,
+        "hitHaltTimeScale": 0.03,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.1,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "Fiery-Q",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.1,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "Q-Volcano-Kablam",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.1,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0.01,
+        "hitHaltTimeScale": 0.03,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Fiery-CA",
+        "hitHaltTime": 0.01,
+        "hitHaltTimeScale": 0.03,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.1,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "High_Plunge",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.1,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.1,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Fiery-E",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.1,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ]
+  },
   "venti": {
     "aim": [
       {

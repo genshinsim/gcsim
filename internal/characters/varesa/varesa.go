@@ -81,10 +81,6 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "nightsoul":
 		return c.nightsoulState.Condition(fields)
-	case skillStatus:
-		return c.StatusIsActive(skillStatus), nil
-	case apexState:
-		return c.StatusIsActive(apexState), nil
 	default:
 		return c.Character.Condition(fields)
 	}
