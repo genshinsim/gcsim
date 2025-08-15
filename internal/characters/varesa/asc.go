@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -31,11 +32,14 @@ func (c *char) a1PlungeBuff() float64 {
 	return 0.5
 }
 
-func (c *char) a1Cancel(_ combat.AttackCB) {
+func (c *char) a1Cancel(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.DeleteAttackMod(a1Status)
+	c.DeleteStatus(a1Status)
 }
 
 func (c *char) a4() {

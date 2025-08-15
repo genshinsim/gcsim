@@ -24,6 +24,7 @@ type char struct {
 	freeSkill         bool
 	exitNS            bool
 	a4Stacks          *stacks.MultipleRefreshNoRemove
+	usedShortBurst    bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

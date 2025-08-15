@@ -116,14 +116,18 @@ func (c *char) volcanicKablam() action.Info {
 		c.DeleteStatus(apexState)
 	}, kablamHitmark)
 
-	c.AddEnergy("varesa-kablam", -kablamCost)
+	c.ConsumeEnergyPartial(0, kablamCost)
 	c.SetCD(action.ActionBurst, 1*60)
+	c.usedShortBurst = true
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(volcanicFrames),
 		AnimationLength: volcanicFrames[action.InvalidAction],
 		CanQueueAfter:   volcanicFrames[action.ActionSwap],
 		State:           action.BurstState, // TODO: or plunge state?
-		OnRemoved:       c.clearNightsoulCB,
+		OnRemoved: func(next action.AnimationState) {
+			c.clearNightsoulCB(next)
+			c.usedShortBurst = false
+		},
 	}
 }

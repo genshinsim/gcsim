@@ -90,6 +90,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.a1()
 	c.QueueCharTask(func() { c.nightsoulState.GeneratePoints(20) }, 5)
 	c.AddStatus(skillStatus, 5*60, true)
+	if c.StatusIsActive(apexState) {
+		c.DeleteStatus(apexState)
+	}
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(sFrames),

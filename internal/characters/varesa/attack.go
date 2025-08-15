@@ -14,14 +14,14 @@ import (
 // TODO: hitboxes
 var (
 	attackFrames          [][]int
-	attackHitmarks        = []int{28, 7, 33}
+	attackHitmarks        = []int{23, 7, 33}
 	attackHitlagHaltFrame = []float64{0, 0, 0.03}
 	attackHitlagFactor    = []float64{0, 0, 0.01}
 	attackHitboxes        = [][]float64{{2, 3}, {2, 3}, {2.2}}
 	attackOffsets         = []float64{-0.2, -0.2, 1.1}
 
 	fieryAttackFrames   [][]int
-	fieryAttackHitmarks = []int{18, 29, 37}
+	fieryAttackHitmarks = []int{17, 29, 37}
 	fieryAttackHitboxes = [][]float64{{2, 3}, {2, 3}, {2.5, 3}}
 )
 
@@ -68,6 +68,15 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		return c.fieryAttack(), nil
 	}
 
+	windup := 0
+	if c.NormalCounter == 0 {
+		if c.Core.Player.CurrentState() == action.BurstState && c.usedShortBurst {
+			windup = 4
+		} else {
+			windup = 6
+		}
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -95,14 +104,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			attackHitboxes[c.NormalCounter][1],
 		)
 	}
-	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter]-windup, attackHitmarks[c.NormalCounter]-windup)
 
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		Frames:          func(next action.Action) int { return attackFrames[c.NormalCounter][next] - windup },
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction] - windup,
+		CanQueueAfter:   attackHitmarks[c.NormalCounter] - windup,
 		State:           action.NormalAttackState,
 	}, nil
 }
@@ -123,20 +132,32 @@ func (c *char) fieryAttack() action.Info {
 		CanBeDefenseHalted: true,
 	}
 
+	windup := 6
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState:
+		windup = 0
+	case action.BurstState:
+		if c.usedShortBurst {
+			windup = 0
+		} else {
+			windup = 4
+		}
+	}
+
 	ap := combat.NewBoxHitOnTarget(
 		c.Core.Combat.Player(),
 		nil,
 		fieryAttackHitboxes[c.NormalCounter][0],
 		fieryAttackHitboxes[c.NormalCounter][1],
 	)
-	c.Core.QueueAttack(ai, ap, fieryAttackHitmarks[c.NormalCounter], fieryAttackHitmarks[c.NormalCounter])
+	c.Core.QueueAttack(ai, ap, fieryAttackHitmarks[c.NormalCounter]-windup, fieryAttackHitmarks[c.NormalCounter]-windup)
 
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, fieryAttackFrames),
-		AnimationLength: fieryAttackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   fieryAttackHitmarks[c.NormalCounter],
+		Frames:          func(next action.Action) int { return fieryAttackFrames[c.NormalCounter][next] - windup },
+		AnimationLength: fieryAttackFrames[c.NormalCounter][action.InvalidAction] - windup,
+		CanQueueAfter:   fieryAttackHitmarks[c.NormalCounter] - windup,
 		State:           action.NormalAttackState,
 	}
 }

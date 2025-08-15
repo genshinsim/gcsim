@@ -74,7 +74,10 @@ func (c *char) c4FlatBonus() float64 {
 	return bonus
 }
 
-func (c *char) c4CB(_ combat.AttackCB) {
+func (c *char) c4CB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
 	if c.Base.Cons < 4 {
 		return
 	}
@@ -95,7 +98,6 @@ func (c *char) c6() {
 			switch {
 			case atk.Info.AttackTag == attacks.AttackTagElementalBurst:
 			case atk.Info.AttackTag == attacks.AttackTagPlunge && atk.Info.Durability > 0: // TODO: collision?
-			case atk.Info.Abil == kablamAbil:
 			default:
 				return nil, false
 			}

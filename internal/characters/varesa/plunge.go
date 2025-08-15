@@ -58,17 +58,11 @@ func init() {
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
 	if c.Core.Player.CurrentState() == action.ChargeAttackState {
 		return c.highPlungeXY(p), nil
 	}
-
-	defer c.Core.Player.SetAirborne(player.Grounded)
-	switch c.Core.Player.Airborne() {
-	case player.AirborneXianyun:
-		return c.highPlungeXY(p), nil
-	default:
-		return action.Info{}, errors.New("high_plunge can only be used while airborne")
-	}
+	return action.Info{}, errors.New("high_plunge can only be used after charge")
 }
 
 func (c *char) highPlungeXY(p map[string]int) action.Info {
