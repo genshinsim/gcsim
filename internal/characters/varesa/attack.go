@@ -11,18 +11,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: hitboxes
 var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{23, 7, 33}
 	attackHitlagHaltFrame = []float64{0, 0, 0.03}
 	attackHitlagFactor    = []float64{0, 0, 0.01}
-	attackHitboxes        = [][]float64{{2, 3}, {2, 3}, {2.2}}
-	attackOffsets         = []float64{-0.2, -0.2, 1.1}
+	attackHitboxes        = [][]float64{{2.5, 2.5}, {2.8, 3.5}, {2.5}}
+	attackOffsets         = []float64{-0.2, -0.2, 0}
 
 	fieryAttackFrames   [][]int
 	fieryAttackHitmarks = []int{17, 29, 37}
-	fieryAttackHitboxes = [][]float64{{2, 3}, {2, 3}, {2.5, 3}}
+	fieryAttackHitboxes = [][]float64{{2.5}, {4, 4}, {4, 4.5}}
+	fieryAttackOffsets  = []float64{1, -0.5, -0.5}
 )
 
 const normalHitNum = 3
@@ -87,16 +87,19 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
-		HitlagFactor:       0.01,
+		HitlagFactor:       attackHitlagFactor[c.NormalCounter],
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		geometry.Point{Y: attackOffsets[c.NormalCounter]},
-		attackHitboxes[c.NormalCounter][0],
-	)
-	if c.NormalCounter == 0 || c.NormalCounter == 1 {
+	var ap combat.AttackPattern
+	switch len(attackHitboxes[c.NormalCounter]) {
+	case 1: // circle
+		ap = combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+		)
+	case 2: // box
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
@@ -144,12 +147,22 @@ func (c *char) fieryAttack() action.Info {
 		}
 	}
 
-	ap := combat.NewBoxHitOnTarget(
-		c.Core.Combat.Player(),
-		nil,
-		fieryAttackHitboxes[c.NormalCounter][0],
-		fieryAttackHitboxes[c.NormalCounter][1],
-	)
+	var ap combat.AttackPattern
+	switch len(fieryAttackHitboxes[c.NormalCounter]) {
+	case 1: // circle
+		ap = combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: fieryAttackOffsets[c.NormalCounter]},
+			fieryAttackHitboxes[c.NormalCounter][0],
+		)
+	case 2: // box
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: fieryAttackOffsets[c.NormalCounter]},
+			fieryAttackHitboxes[c.NormalCounter][0],
+			fieryAttackHitboxes[c.NormalCounter][1],
+		)
+	}
 	c.Core.QueueAttack(ai, ap, fieryAttackHitmarks[c.NormalCounter]-windup, fieryAttackHitmarks[c.NormalCounter]-windup)
 
 	defer c.AdvanceNormalIndex()

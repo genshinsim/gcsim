@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: update hitlags/hitboxes
 var (
 	burstFrames    []int
 	volcanicFrames []int
@@ -50,9 +50,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Abil:           "Flying Kick",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		PoiseDMG:       100,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
+		StrikeType:     attacks.StrikeTypeBlunt,
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           kick[c.TalentLvlBurst()],
@@ -66,12 +67,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	if c.nightsoulState.HasBlessing() {
 		ai.Abil = "Fiery Passion Flying Kick"
+		ai.PoiseDMG = 150
 		ai.Mult = fieryKick[c.TalentLvlBurst()]
 	}
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
+		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1}, 7.5),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -92,10 +94,11 @@ func (c *char) volcanicKablam() action.Info {
 		ActorIndex:     c.Index,
 		Abil:           kablamAbil,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		PoiseDMG:       75,
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagVaresaCombatCycle,
 		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
+		StrikeType:     attacks.StrikeTypeBlunt,
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           kablam[c.TalentLvlBurst()],
@@ -109,7 +112,7 @@ func (c *char) volcanicKablam() action.Info {
 	c.Core.Tasks.Add(func() {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
+			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1}, 7.5),
 			0,
 			0,
 		)

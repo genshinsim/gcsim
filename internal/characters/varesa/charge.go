@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: hitboxes
 var (
 	chargeFrames      []int
 	fieryChargeFrames []int
@@ -58,9 +57,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Abil:               "Charged Attack",
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		AttackTag:          attacks.AttackTagExtra,
+		PoiseDMG:           80,
 		ICDTag:             attacks.ICDTagVaresaCombatCycle,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               charged[c.TalentLvlAttack()],
@@ -80,7 +80,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.2}, 2.8, 3.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.7}, 3.5),
 		hitmark,
 		hitmark,
 	)
@@ -97,10 +97,11 @@ func (c *char) fieryChargeAttack() action.Info {
 		ActorIndex:         c.Index,
 		Abil:               "Fiery Passion Charged Attack",
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		PoiseDMG:           120,
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagVaresaCombatCycle,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               fieryCharged[c.TalentLvlAttack()],
@@ -120,7 +121,7 @@ func (c *char) fieryChargeAttack() action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.2}, 2.8, 3.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.7}, 3.5),
 		hitmark,
 		hitmark,
 	)
