@@ -12,13 +12,15 @@ func (c *CharWrapper) ConsumeEnergy(delay int) {
 
 func (c *CharWrapper) ConsumeEnergyPartial(delay int, amount float64) {
 	f := func() {
+		preEnergy := c.Energy
 		post := max(c.Energy-amount, 0)
 		c.log.NewEvent("draining energy", glog.LogEnergyEvent, c.Index).
-			Write("pre_drain", c.Energy).
+			Write("pre_drain", preEnergy).
 			Write("post_drain", post).
 			Write("source", c.Base.Key.String()+"-burst-energy-drain").
 			Write("max_energy", c.EnergyMax)
 		c.Energy = post
+		c.events.Emit(event.OnEnergyBurst, c, preEnergy, amount)
 	}
 
 	if delay == 0 {
