@@ -84,6 +84,8 @@ var avatarMap = map[string]string{
 	"luminegeo":     "UI_AvatarIcon_PlayerGirl",
 	"aetherhydro":   "UI_AvatarIcon_PlayerBoy",
 	"luminehydro":   "UI_AvatarIcon_PlayerGirl",
+	"aetherpyro":    "UI_AvatarIcon_PlayerBoy",
+	"luminepyro":    "UI_AvatarIcon_PlayerGirl",
 	"venti":         "UI_AvatarIcon_Venti",
 	"wanderer":      "UI_AvatarIcon_Wanderer",
 	"wriothesley":   "UI_AvatarIcon_Wriothesley",

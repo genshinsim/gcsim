@@ -16,12 +16,14 @@ var skillFrames [][]int
 var skillHoldFrames [][]int
 
 const (
-	skillTapHitmark                = 26
-	skillHoldHitmark               = 52
-	blazingThresholdInterval       = 65
+	skillTapHitmark                = 24
+	skillHoldHitmark               = 50
+	blazingThresholdInterval       = 66
 	scorchingThresholdHitmarkDelay = 12
-	tapCdStart                     = 25
-	holdCdStart                    = 47
+	tapCdStart                     = 19
+	holdCdStart                    = 48
+	enterNightsoulDelay            = 19
+	nightsoulReduceDelay           = 10
 	particleICDKey                 = "travelerpyro-particle-icd"
 	scoringThresholdKey            = "travelerpyro-e"
 )
@@ -32,15 +34,33 @@ func init() {
 
 	// Male
 	// Tap
-	skillFrames[0] = frames.InitAbilSlice(50)
+	skillFrames[0] = frames.InitAbilSlice(49) // E -> N1
+	skillFrames[0][action.ActionDash] = 31
+	skillFrames[0][action.ActionJump] = 31
+	skillFrames[0][action.ActionSwap] = 48
 	// Hold
-	skillHoldFrames[0] = frames.InitAbilSlice(58) // E -> Ungray + 2
+	skillHoldFrames[0] = frames.InitAbilSlice(77) // E -> E
+	skillHoldFrames[0][action.ActionAttack] = 61
+	skillHoldFrames[0][action.ActionBurst] = 59
+	skillHoldFrames[0][action.ActionDash] = 60
+	skillHoldFrames[0][action.ActionJump] = 61
+	skillHoldFrames[0][action.ActionWalk] = 81
+	skillHoldFrames[0][action.ActionSwap] = 59
 
 	// Female
 	// Tap
-	skillFrames[1] = frames.InitAbilSlice(50)
+	skillFrames[1] = frames.InitAbilSlice(49) // E -> N1
+	skillFrames[1][action.ActionDash] = 31
+	skillFrames[1][action.ActionJump] = 31
+	skillFrames[1][action.ActionSwap] = 48
 	// Hold
-	skillHoldFrames[1] = frames.InitAbilSlice(58) // E -> Ungray + 2
+	skillHoldFrames[1] = frames.InitAbilSlice(77) // E -> E
+	skillHoldFrames[1][action.ActionAttack] = 61
+	skillHoldFrames[1][action.ActionBurst] = 59
+	skillHoldFrames[1][action.ActionDash] = 60
+	skillHoldFrames[1][action.ActionJump] = 61
+	skillHoldFrames[1][action.ActionWalk] = 81
+	skillHoldFrames[1][action.ActionSwap] = 59
 }
 
 func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
@@ -55,14 +75,6 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 		return action.Info{}, fmt.Errorf("invalid hold param supplied, got %v", hold)
 	}
 
-	// Enter Nightsoul and start reducing Points
-	if c.nightsoulState.HasBlessing() {
-		c.nightsoulState.GeneratePoints(42)
-	} else {
-		c.nightsoulState.EnterBlessing(c.nightsoulState.Points() + 42)
-	}
-	c.nightsoulSrc = c.Core.F
-	c.QueueCharTask(c.nightsoulPointReduceFunc(c.Core.F), 10)
 	c.c1AddMod()
 	c.c2()
 	c.c6AddMod()
@@ -74,8 +86,20 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *Traveler) SkillTap(p map[string]int) (action.Info, error) {
+	// Enter Nightsoul and start reducing Points
+	skillSrc := c.Core.F + enterNightsoulDelay
+	c.QueueCharTask(func() {
+		c.nightsoulSrc = skillSrc
+		if c.nightsoulState.HasBlessing() {
+			c.nightsoulState.ClearPoints()
+			c.nightsoulState.GeneratePoints(42)
+		} else {
+			c.nightsoulState.EnterBlessing(42)
+		}
+		c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), nightsoulReduceDelay)
+	}, enterNightsoulDelay)
 	c.SetCDWithDelay(action.ActionSkill, 18*60, tapCdStart)
-	c.QueueCharTask(c.blazingThresholdHit(c.Core.F), skillTapHitmark)
+	c.QueueCharTask(c.blazingThresholdHit(skillSrc), skillTapHitmark)
 	c.DeleteStatus(scoringThresholdKey)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),
@@ -86,6 +110,15 @@ func (c *Traveler) SkillTap(p map[string]int) (action.Info, error) {
 }
 
 func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
+	c.QueueCharTask(func() {
+		if c.nightsoulState.HasBlessing() {
+			c.nightsoulState.GeneratePoints(42)
+		} else {
+			c.nightsoulState.EnterBlessing(42)
+		}
+		c.nightsoulSrc = c.Core.F
+		c.QueueCharTask(c.nightsoulPointReduceFunc(c.Core.F), nightsoulReduceDelay)
+	}, 48)
 	c.SetCDWithDelay(action.ActionSkill, 18*60, holdCdStart)
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
@@ -127,7 +160,7 @@ func (c *Traveler) nightsoulPointReduceFunc(src int) func() {
 		}
 		val := 1.
 		c.reduceNightsoulPoints(src, val)
-		c.QueueCharTask(c.nightsoulPointReduceFunc(src), 10)
+		c.QueueCharTask(c.nightsoulPointReduceFunc(src), nightsoulReduceDelay)
 	}
 }
 
@@ -150,12 +183,16 @@ func (c *Traveler) reduceNightsoulPoints(src int, val float64) {
 
 func (c *Traveler) blazingThresholdHit(src int) func() {
 	return func() {
+		fmt.Println(c.Core.F, "procking blazing threshold hit")
 		if src != c.nightsoulSrc {
+			fmt.Println(c.Core.F, "not the same src", src, c.nightsoulSrc)
 			return
 		}
 		if !c.nightsoulState.HasBlessing() {
+			fmt.Println(c.Core.F, "no blessing")
 			return
 		}
+		fmt.Println(c.Core.F, "procking blazing threshold hit", src, c.nightsoulSrc)
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Blazing Threshold DMG",
@@ -239,6 +276,7 @@ func (c *Traveler) particleCB(a combat.AttackCB) {
 	}
 	c.AddStatus(particleICDKey, int(2.9*60), true)
 
+	// TODO: confirm particle count
 	count := 1.0
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }

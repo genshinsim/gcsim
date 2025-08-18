@@ -11,26 +11,30 @@ import (
 var burstFrames [][]int
 
 const (
-	burstHitmark = 38
+	burstHitmark = 40
+)
+
+var (
+	nightsoulGainDelays = []int{42, 52, 59, 59}
 )
 
 func init() {
 	burstFrames = make([][]int, 2)
 
 	// Male
-	burstFrames[0] = frames.InitAbilSlice(58)
-	burstFrames[0][action.ActionSwap] = 57 // Q -> Swap
+	burstFrames[0] = frames.InitAbilSlice(49) // Q -> N1
+	burstFrames[0][action.ActionSkill] = 48   // Q -> E, Eh
+	burstFrames[0][action.ActionSwap] = 47
 
 	// Female
-	burstFrames[1] = frames.InitAbilSlice(58)
-	burstFrames[1][action.ActionSwap] = 57 // Q -> Swap
+	burstFrames[1] = frames.InitAbilSlice(49) // Q -> N1
+	burstFrames[1][action.ActionSkill] = 48   // Q -> E, Eh
+	burstFrames[1][action.ActionSwap] = 47
 }
 
 func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
-	c.QueueCharTask(func() {
-		c.SetCD(action.ActionBurst, 18*60)
-	}, 2)
-	c.ConsumeEnergy(5)
+	c.SetCD(action.ActionBurst, 18*60)
+	c.ConsumeEnergy(19)
 
 	c.c4AddMod()
 
@@ -54,8 +58,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		burstHitmark,
 	)
 
-	// check this
-	c.QueueCharTask(c.nightsoulGainFunc(0), 0)
+	c.QueueCharTask(c.nightsoulGainFunc(0), nightsoulGainDelays[0])
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),
@@ -67,10 +70,9 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 
 func (c *Traveler) nightsoulGainFunc(count int) func() {
 	return func() {
-		if count > 3 {
-			return
-		}
 		c.nightsoulState.GeneratePoints(7)
-		c.QueueCharTask(c.nightsoulGainFunc(count+1), 60)
+		if count < 3 {
+			c.QueueCharTask(c.nightsoulGainFunc(count+1), nightsoulGainDelays[count+1])
+		}
 	}
 }
