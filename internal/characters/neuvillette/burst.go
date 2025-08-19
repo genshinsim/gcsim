@@ -59,11 +59,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		FlatDmg:    burstWaterfall[c.TalentLvlBurst()] * c.MaxHP(),
 	}
 	for i := 0; i < 3; i++ {
-		ix := i // avoid closure issue
-
-		dropletCount := 3 - ix
+		dropletCount := 3 - i
 		ai := aiInitialHit
-		if ix > 0 {
+		if i > 0 {
 			ai = aiWaterfall
 		}
 
@@ -75,11 +73,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					geometry.CalcRandomPointFromCenter(
 						geometry.CalcOffsetPoint(
 							player.Pos(),
-							geometry.Point{X: dropletPosOffsets[ix][j][0], Y: dropletPosOffsets[ix][j][1]},
+							geometry.Point{X: dropletPosOffsets[i][j][0], Y: dropletPosOffsets[i][j][1]},
 							player.Direction(),
 						),
-						dropletRandomRanges[ix][0],
-						dropletRandomRanges[ix][1],
+						dropletRandomRanges[i][0],
+						dropletRandomRanges[i][1],
 						c.Core.Rand,
 					),
 					combat.GadgetTypSourcewaterDropletNeuv,
@@ -91,14 +89,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			// initial tick
 			ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 8)
 			// 2nd and 3rd tick
-			if ix > 0 {
+			if i > 0 {
 				// determine attack pattern pos
 				// default assumption: no target in range -> ticks should spawn at specific offset from player
 				apPos := geometry.CalcOffsetPoint(
 					player.Pos(),
 					geometry.Point{
-						X: defaultBurstAtkPosOffsets[ix-1][0],
-						Y: defaultBurstAtkPosOffsets[ix-1][1],
+						X: defaultBurstAtkPosOffsets[i-1][0],
+						Y: defaultBurstAtkPosOffsets[i-1][1],
 					},
 					player.Direction(),
 				)
@@ -112,7 +110,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					apPos = geometry.CalcRandomPointFromCenter(
 						geometry.CalcOffsetPoint(
 							target.Pos(),
-							geometry.Point{X: burstTickTargetXOffsets[ix-1]},
+							geometry.Point{X: burstTickTargetXOffsets[i-1]},
 							target.Direction(),
 						),
 						0,
@@ -130,7 +128,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				0,
 				0,
 			)
-		}, burstHitmarks[ix])
+		}, burstHitmarks[i])
 	}
 
 	c.SetCD(action.ActionBurst, 18*60)

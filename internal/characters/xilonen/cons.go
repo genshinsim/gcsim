@@ -59,6 +59,10 @@ func (c *char) c2() {
 		return
 	}
 
+	if c.samplersConverted >= 3 {
+		return
+	}
+
 	c.activeGeoSampler(-1)()
 	for _, ch := range c.Core.Player.Chars() {
 		if ch.Base.Element != attributes.Geo {
@@ -180,8 +184,8 @@ func (c *char) applyC6() {
 	c.c6FlatDmg() // sets c6 key
 
 	// "pause" Nightsoul's Blessing time limit countdown
-	duration := c.StatusDuration(skillMaxDurKey) + c6Duration
-	c.setNightsoulExitTimer(duration)
+	duration := c.nightsoulState.Duration() + c6Duration
+	c.nightsoulState.SetNightsoulExitTimer(duration, c.exitNightsoul)
 
 	for i := 1; i <= 3; i++ {
 		c.Core.Tasks.Add(func() {

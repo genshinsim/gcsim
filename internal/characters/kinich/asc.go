@@ -1,6 +1,7 @@
 package kinich
 
 import (
+	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -44,6 +45,9 @@ func (c *char) a1() {
 
 func (c *char) a1CB(a combat.AttackCB) {
 	if c.Base.Ascension < 1 {
+		return
+	}
+	if !c.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
 		return
 	}
 	e, ok := a.Target.(*enemy.Enemy)

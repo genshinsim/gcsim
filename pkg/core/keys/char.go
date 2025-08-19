@@ -38,7 +38,7 @@ func (c Char) Pretty() string {
 }
 
 const ChildePassive = "childe-talent-passive"
-
+const SkirkPassive = "skirk-talent-passive"
 const (
 	NoChar Char = iota
 	AetherAnemo

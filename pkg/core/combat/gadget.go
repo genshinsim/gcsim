@@ -24,6 +24,7 @@ const (
 	GadgetTypSourcewaterDropletNeuv
 	GadgetTypSourcewaterDropletSigewinne
 	GadgetTypCrystallizeShard
+	GadgetTypYumemiSnack
 	GadgetTypTest
 	EndGadgetTyp
 )

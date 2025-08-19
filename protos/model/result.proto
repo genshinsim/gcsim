@@ -200,6 +200,7 @@ message Warnings {
   bool swap_cd = 4 [json_name="swap_cd"];
   bool skill_cd = 5 [json_name="skill_cd"];
   bool dash_cd = 6 [json_name="dash_cd"];
+  bool burst_cd = 7 [json_name="burst_cd"];
 }
 
 message FailedActions {
@@ -208,6 +209,7 @@ message FailedActions {
   DescriptiveStats swap_cd = 3 [json_name="swap_cd"];
   DescriptiveStats skill_cd = 4 [json_name="skill_cd"];
   DescriptiveStats dash_cd = 5 [json_name="dash_cd"];
+  DescriptiveStats burst_cd = 6 [json_name="burst_cd"];
 }
 
 message ShieldInfo {

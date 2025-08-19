@@ -68,7 +68,7 @@ func (c *char) skillDash(p map[string]int) (action.Info, error) {
 	c.normalSCounter = 0
 
 	// depending on BOL lvl it does either 1 hit or 3 hit
-	ratio := c.currentHPDebtRatio()
+	ratio := c.CurrentHPDebtRatio()
 	switch {
 	case ratio >= 1:
 		return c.skillDashFullBOL(p)
@@ -181,7 +181,7 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 
 func (c *char) skillHeal(bolMult float64, msg string) {
 	amt := c.CurrentHPDebt() * bolMult
-	c.heal(&info.HealInfo{
+	c.Heal(&info.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Index,
 		Message: msg,

@@ -55,6 +55,11 @@
       "text_map_id": "2276480763",
       "key": "emblemofseveredfate"
     },
+    "finaleofthedeepgalleries": {
+      "id": "15040",
+      "text_map_id": "2177723555",
+      "key": "finaleofthedeepgalleries"
+    },
     "flowerofparadiselost": {
       "id": "15028",
       "text_map_id": "3094139291",
@@ -104,6 +109,11 @@
       "id": "14003",
       "text_map_id": "1632377563",
       "key": "lavawalker"
+    },
+    "longnightsoath": {
+      "id": "15039",
+      "text_map_id": "3761477451",
+      "key": "longnightsoath"
     },
     "maidenbeloved": {
       "id": "14004",

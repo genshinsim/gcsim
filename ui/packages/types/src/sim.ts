@@ -106,6 +106,7 @@ export interface Warnings {
   swap_cd?: boolean;
   skill_cd?: boolean;
   dash_cd?: boolean;
+  burst_cd?: boolean;
 }
 
 export interface FailedActions {
@@ -114,6 +115,7 @@ export interface FailedActions {
   swap_cd?: FloatStat;
   skill_cd?: FloatStat;
   dash_cd?: FloatStat;
+  burst_cd?: FloatStat;
 }
 
 export interface Shields {

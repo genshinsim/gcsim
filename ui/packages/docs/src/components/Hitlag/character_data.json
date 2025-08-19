@@ -212,6 +212,56 @@
       }
     ]
   },
+  "citlali": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Obsidian-Tzitzimitl",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-Frostfall-Storm",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ]
+  },
   "itto": {
     "normal": [
       {
@@ -554,6 +604,31 @@
         "hitHaltTime": 0,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
+  "chasca": {
+    "aim": [
+      {
+        "ability": "Aim-Head",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "FullAim-Head",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "E-Aimed",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
         "deployable": false
       }
     ]
@@ -2183,6 +2258,70 @@
       }
     ]
   },
+  "lanyan": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3-1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N3-2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Ring",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "sara": {
     "aim": [
       {
@@ -2315,6 +2454,82 @@
       }
     ]
   },
+  "mavuika": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-1",
+        "hitHaltTime": 0.05,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2-2",
+        "hitHaltTime": 0.05,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.1,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N1 (Flamestrider)",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2 (Flamestrider)",
+        "hitHaltTime": 0.08,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3 (Flamestrider)",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4 (Flamestrider)",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Flamestrider CA (Final)",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "mika": {
     "normal": [
       {
@@ -2375,6 +2590,72 @@
         "hitHaltTime": 0,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
+  "mizuki": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Init",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "Q-Munen-Shockwave",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Init",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-Continuous-Attack",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
         "deployable": false
       }
     ]
@@ -2545,14 +2826,14 @@
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
-        "deployable": true
+        "deployable": false
       },
       {
         "ability": "CA-Final",
         "hitHaltTime": 0.15,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
-        "deployable": true
+        "deployable": false
       }
     ],
     "skill": [
@@ -2613,6 +2894,22 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": true
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Burst-Cast",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "Soundwave-Collision",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.02,
+        "canBeDefenseHalt": false,
+        "deployable": false
       }
     ]
   },
@@ -3069,6 +3366,80 @@
       {
         "ability": "Q-Hit",
         "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ]
+  },
+  "skirk": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N3-1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.05,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N5",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-N1",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-N3-1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-N4-1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-N5",
+        "hitHaltTime": 0.06,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": false

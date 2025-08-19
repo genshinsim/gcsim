@@ -422,6 +422,44 @@
       "legal": true
     }
   ],
+  "chasca": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Must have just exited Nightsoul Blessing"
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "chevreuse": [
     {
       "ability": "attack",
@@ -523,6 +561,40 @@
     {
       "ability": "walk",
       "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "citlali": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
     },
     {
       "ability": "swap",
@@ -810,6 +882,48 @@
     {
       "ability": "charge",
       "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "escoffier": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "notes": "Need to use attack right before charge."
     },
     {
       "ability": "skill",
@@ -1622,6 +1736,40 @@
       "legal": true
     }
   ],
+  "lanyan": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "notes": "Need to use attack right before charge."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "sara": [
     {
       "ability": "attack",
@@ -1808,6 +1956,48 @@
       "legal": true
     }
   ],
+  "mavuika": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be a walking Flamestrider jump or jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "mika": [
     {
       "ability": "attack",
@@ -1816,6 +2006,40 @@
     {
       "ability": "charge",
       "notes": "Need to use attack right before charge."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "mizuki": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
     },
     {
       "ability": "skill",
@@ -2095,8 +2319,7 @@
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
+      "legal": true
     },
     {
       "ability": "skill",
@@ -2124,7 +2347,7 @@
     },
     {
       "ability": "walk",
-      "notes": "Everything except normal followed by walk has proper frames."
+      "legal": true
     },
     {
       "ability": "swap",
@@ -2531,6 +2754,41 @@
       "legal": true
     }
   ],
+  "skirk": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true,
+      "notes": "Cannot be used in Seven-Phase Flash."
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "sucrose": [
     {
       "ability": "attack",
@@ -2566,7 +2824,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "legal": true
     },
     {
       "ability": "swap",

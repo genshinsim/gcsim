@@ -23,7 +23,6 @@ type char struct {
 	*tmpl.Character
 	nightsoulState           *nightsoul.State
 	nightsoulSrc             int
-	exitStateF               int
 	ajawSrc                  int
 	normalSCounter           int
 	characterAngularPosition float64 // [0, 360)
@@ -98,10 +97,9 @@ func (c *char) Condition(fields []string) (any, error) {
 	case "blind_spot":
 		if c.blindSpotAngularPosition == -1 {
 			return 0, nil
-		} else {
-			diff := NormalizeAngle180(c.blindSpotAngularPosition - c.characterAngularPosition)
-			return diff / math.Abs(diff), nil
 		}
+		diff := NormalizeAngle180(c.blindSpotAngularPosition - c.characterAngularPosition)
+		return diff / math.Abs(diff), nil
 	default:
 		return c.Character.Condition(fields)
 	}

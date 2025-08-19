@@ -55,7 +55,9 @@
   "bloodtaintedgreatsword": [
     "bloodtainted"
   ],
-  "calamityofeshu": [],
+  "calamityofeshu": [
+    "eshu"
+  ],
   "calamityqueller": [
     "calamity"
   ],
@@ -142,6 +144,7 @@
     "fleuve",
     "pipe"
   ],
+  "flowerwreathedfeathers": [],
   "fluteofezpitzal": [
     "ezpital"
   ],
@@ -335,6 +338,9 @@
   "seasonedhuntersbow": [
     "seasoned"
   ],
+  "sequenceofsolitude": [
+    "solitude"
+  ],
   "serpentspine": [
     "serpent"
   ],
@@ -369,7 +375,9 @@
     "pines",
     "sobp"
   ],
-  "songofstillness": [],
+  "songofstillness": [
+    "stillness"
+  ],
   "splendoroftranquilwaters": [
     "splendoroftranquilwaters",
     "tranquilwaters",
@@ -391,12 +399,22 @@
   "summitshaper": [
     "summit"
   ],
+  "sunnymorning": [
+    "sunnymorningsleepin"
+  ],
   "surfsup": [],
   "swordofdescension": [
     "descension"
   ],
   "swordofnarzissenkreuz": [
     "narzissenkreuz"
+  ],
+  "symphonistofscents": [
+    "symphonist"
+  ],
+  "tamayurateinoohanashi": [
+    "tamayuratei",
+    "lamppost"
   ],
   "talkingstick": [],
   "thealleyflash": [
@@ -465,6 +483,7 @@
     "misugiri"
   ],
   "verdict": [],
+  "vividnotions": [],
   "vortexvanquisher": [
     "vortex"
   ],

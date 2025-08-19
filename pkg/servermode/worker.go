@@ -4,8 +4,8 @@ import (
 	"log/slog"
 
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
@@ -152,7 +152,7 @@ func (w *worker) iter(work chan job, res chan stats.Result, errChan chan error) 
 				errChan <- err
 				return
 			}
-			eval, err := gcs.NewEvaluator(job.node, c)
+			eval, err := eval.NewEvaluator(job.node, c)
 			if err != nil {
 				errChan <- err
 				break

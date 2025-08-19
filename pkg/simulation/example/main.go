@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/gcs"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 )
 
@@ -58,7 +58,7 @@ noelle attack:3, dash, attack:3, dash, attack;
 
 func main() {
 	// parse cfg
-	p := ast.New(cfg)
+	p := parser.New(cfg)
 	cfg, gcsl, err := p.Parse()
 	if err != nil {
 		panic(err)
@@ -78,7 +78,7 @@ func main() {
 	}
 
 	// create new eval
-	eval, err := gcs.NewEvaluator(gcsl, c)
+	eval, err := eval.NewEvaluator(gcsl, c)
 	if err != nil {
 		panic(err)
 	}

@@ -77,7 +77,8 @@ func mainImpl() error {
 - total_liquid_substats (default = 20): Total liquid substats available to be assigned across all substats
 - indiv_liquid_cap (default = 10): Total liquid substats that can be assigned to a single substat
 - fixed_substats_count (default = 2): Amount of fixed substats that are assigned to all substats
-- fine_tune (default = 1): Set to 0 to disable fine tune step of substat optimizer.`)
+- fine_tune (default = 1): Set to 0 to disable fine tune step of substat optimizer.
+- show_substat_scalars (default = 1): Set to 0 to disable formatting substats by their scalars in the resulting config.`)
 	flag.StringVar(&opt.cpuprofile, "cpuprofile", "", `write cpu profile to a file. supply file path (otherwise empty string for disabled). 
 can be viewed in the browser via "go tool pprof -http=localhost:3000 cpu.prof" (insert your desired host/port/filename, requires Graphviz)`)
 	flag.StringVar(&opt.memprofile, "memprofile", "", `write memory profile to a file. supply file path (otherwise empty string for disabled). 

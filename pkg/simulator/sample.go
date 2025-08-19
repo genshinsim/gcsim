@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/genshinsim/gcsim/pkg/gcs"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -22,7 +22,7 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 	if err != nil {
 		return &model.Sample{}, err
 	}
-	eval, err := gcs.NewEvaluator(gcsl, c)
+	eval, err := eval.NewEvaluator(gcsl, c)
 	if err != nil {
 		return nil, err
 	}

@@ -99,15 +99,7 @@ func (c *char) a4() {
 				if ai.AttackTag != attacks.AttackTagBloom {
 					return 0, false
 				}
-
-				// check is bountiful core?
-				var t combat.Gadget
-				for _, v := range c.Core.Combat.Gadgets() {
-					if v != nil && v.Key() == ai.DamageSrc {
-						t = v
-					}
-				}
-				if _, ok := t.(*BountifulCore); !ok {
+				if ai.ICDTag != attacks.ICDTagBountifulCoreDamage {
 					return 0, false
 				}
 

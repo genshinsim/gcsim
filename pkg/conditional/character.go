@@ -82,7 +82,7 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 	case "bol":
 		return char.CurrentHPDebt(), nil
 	case "bolratio":
-		return char.CurrentHPDebt() / char.MaxHP(), nil
+		return char.CurrentHPDebtRatio(), nil
 	case "sets":
 		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err
@@ -118,6 +118,15 @@ func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Act
 	case "cd":
 		if act == action.ActionSwap {
 			return c.Player.SwapCD, nil
+		}
+		if act == action.ActionDash {
+			if c.Player.Active() == char.Index && c.Player.DashLockout {
+				return c.Player.DashCDExpirationFrame - c.F, nil
+			}
+			if c.Player.Active() != char.Index && char.DashLockout {
+				return char.RemainingDashCD, nil
+			}
+			return 0, nil
 		}
 		return char.Cooldown(act), nil
 	case "charge":
