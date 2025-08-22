@@ -7,9 +7,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
+func AddMultiple(ss *stats.StreamStats, x float64, count uint) {
+	for range count {
+		ss.Add(0)
+	}
+}
+
 func ToDescriptiveStats(ss *stats.StreamStats, iters uint) *model.DescriptiveStats {
 	if ss.Count < iters {
-		ss.AddMultiple(0, iters-ss.Count)
+		AddMultiple(ss, 0, iters-ss.Count)
 	}
 	sd := ss.StdDev()
 	if math.IsNaN(sd) {
