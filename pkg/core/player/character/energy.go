@@ -7,23 +7,27 @@ import (
 )
 
 func (c *CharWrapper) ConsumeEnergy(delay int) {
-	if delay == 0 {
+	c.ConsumeEnergyPartial(delay, c.Energy)
+}
+
+func (c *CharWrapper) ConsumeEnergyPartial(delay int, amount float64) {
+	f := func() {
+		preEnergy := c.Energy
+		post := max(c.Energy-amount, 0)
 		c.log.NewEvent("draining energy", glog.LogEnergyEvent, c.Index).
-			Write("pre_drain", c.Energy).
-			Write("post_drain", 0).
+			Write("pre_drain", preEnergy).
+			Write("post_drain", post).
 			Write("source", c.Base.Key.String()+"-burst-energy-drain").
 			Write("max_energy", c.EnergyMax)
-		c.Energy = 0
-		return
+		c.Energy = post
+		c.events.Emit(event.OnEnergyBurst, c, preEnergy, amount)
 	}
-	c.tasks.Add(func() {
-		c.log.NewEvent("draining energy", glog.LogEnergyEvent, c.Index).
-			Write("pre_drain", c.Energy).
-			Write("post_drain", 0).
-			Write("source", c.Base.Key.String()+"-burst-energy-drain").
-			Write("max_energy", c.EnergyMax)
-		c.Energy = 0
-	}, delay)
+
+	if delay == 0 {
+		f()
+	} else {
+		c.tasks.Add(f, delay)
+	}
 }
 
 func (c *CharWrapper) AddEnergy(src string, e float64) {
