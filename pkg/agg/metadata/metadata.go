@@ -40,7 +40,7 @@ func (b *buffer) Add(result stats.Result) {
 	b.runs = append(b.runs, run{seed: result.Seed, dps: result.DPS})
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics) {
+func (b buffer) Flush(result *model.SimulationStatistics) {
 	iterations := len(b.runs)
 	result.Iterations = uint32(iterations)
 
