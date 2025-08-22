@@ -16,7 +16,7 @@ type Config struct {
 type Aggregator interface {
 	Add(result stats.Result)
 	// TODO: Merge(other Aggregator) Aggregator for multi-threaded aggregations (optional optimization)
-	Flush(result *model.SimulationStatistics)
+	Flush(result *model.SimulationStatistics, iter uint)
 }
 
 type NewAggFunc func(cfg *info.ActionList) (Aggregator, error)

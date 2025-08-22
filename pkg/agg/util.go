@@ -7,7 +7,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func ToDescriptiveStats(ss *stats.StreamStats) *model.DescriptiveStats {
+func ToDescriptiveStats(ss *stats.StreamStats, iters uint) *model.DescriptiveStats {
+	if ss.Count < iters {
+		ss.AddMultiple(0, iters-ss.Count)
+	}
 	sd := ss.StdDev()
 	if math.IsNaN(sd) {
 		sd = 0

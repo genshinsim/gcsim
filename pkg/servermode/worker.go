@@ -127,12 +127,12 @@ iters:
 		if count-lastFlush > flushInterval {
 			w.log.Debug("flushing results", "id", w.id, "count", count, "flush", lastFlush)
 			lastFlush = count
-			stats := flush(aggregators)
+			stats := flush(aggregators, uint(count))
 			w.result.Statistics = stats
 		}
 	}
 	w.log.Info("sim done", "id", w.id, "count", count, "flush", lastFlush)
-	stats := flush(aggregators)
+	stats := flush(aggregators, uint(count))
 	w.result.Statistics = stats
 }
 

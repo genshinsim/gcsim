@@ -43,11 +43,11 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics) {
+func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
 	result.EndStats = make([]*model.EndStats, len(b.endStats))
 	for i, v := range b.endStats {
 		result.EndStats[i] = &model.EndStats{
-			EndingEnergy: agg.ToDescriptiveStats(v.endingEnergy),
+			EndingEnergy: agg.ToDescriptiveStats(v.endingEnergy, iters),
 		}
 	}
 }

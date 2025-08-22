@@ -81,12 +81,12 @@ func (b *buffer) Add(result stats.Result) {
 	b.eps.Xs[iX] /= b.duration.Xs[iX]
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics) {
+func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
 	result.Duration = agg.ToOverviewStats(b.duration)
 	result.DPS = agg.ToOverviewStats(b.dps)
 	result.RPS = agg.ToOverviewStats(b.rps)
 	result.EPS = agg.ToOverviewStats(b.eps)
 	result.HPS = agg.ToOverviewStats(b.hps)
 	result.SHP = agg.ToOverviewStats(b.shp)
-	result.TotalDamage = agg.ToDescriptiveStats(&b.totalDamage)
+	result.TotalDamage = agg.ToDescriptiveStats(&b.totalDamage, iters)
 }

@@ -84,7 +84,7 @@ func (b *buffer) Add(result stats.Result) {
 	b.uptime["effective"].Add(effectiveUptime / float64(result.Duration))
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics) {
+func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
 	result.Shields = make(map[string]*model.ShieldInfo)
 	for k, s := range b.shieldHP {
 		outHP := make(map[string]*model.DescriptiveStats)
@@ -100,7 +100,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 
 		result.Shields[k] = &model.ShieldInfo{
 			Hp:     outHP,
-			Uptime: agg.ToDescriptiveStats(b.uptime[k]),
+			Uptime: agg.ToDescriptiveStats(b.uptime[k], iters),
 		}
 	}
 }

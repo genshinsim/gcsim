@@ -42,12 +42,12 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics) {
+func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
 	result.TargetAuraUptime = make([]*model.SourceStats, len(b.auraUptime))
 	for i, c := range b.auraUptime {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
-			source[k] = agg.ToDescriptiveStats(s)
+			source[k] = agg.ToDescriptiveStats(s, iters)
 		}
 
 		result.TargetAuraUptime[i] = &model.SourceStats{

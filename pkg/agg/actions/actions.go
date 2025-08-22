@@ -46,12 +46,12 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics) {
+func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
 	result.CharacterActions = make([]*model.SourceStats, len(b.characterActions))
 	for i, c := range b.characterActions {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
-			source[k] = agg.ToDescriptiveStats(s)
+			source[k] = agg.ToDescriptiveStats(s, iters)
 		}
 
 		result.CharacterActions[i] = &model.SourceStats{

@@ -78,16 +78,16 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics) {
+func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
 	result.FailedActions = make([]*model.FailedActions, len(b.failures))
 	for i, c := range b.failures {
 		result.FailedActions[i] = &model.FailedActions{
-			InsufficientEnergy:  agg.ToDescriptiveStats(c.energy),
-			InsufficientStamina: agg.ToDescriptiveStats(c.stamina),
-			SwapCd:              agg.ToDescriptiveStats(c.swap),
-			SkillCd:             agg.ToDescriptiveStats(c.skill),
-			DashCd:              agg.ToDescriptiveStats(c.dash),
-			BurstCd:             agg.ToDescriptiveStats(c.burstcd),
+			InsufficientEnergy:  agg.ToDescriptiveStats(c.energy, iters),
+			InsufficientStamina: agg.ToDescriptiveStats(c.stamina, iters),
+			SwapCd:              agg.ToDescriptiveStats(c.swap, iters),
+			SkillCd:             agg.ToDescriptiveStats(c.skill, iters),
+			DashCd:              agg.ToDescriptiveStats(c.dash, iters),
+			BurstCd:             agg.ToDescriptiveStats(c.burstcd, iters),
 		}
 	}
 }

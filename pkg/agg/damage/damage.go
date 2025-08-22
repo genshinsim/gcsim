@@ -220,22 +220,22 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics) {
+func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
 	result.ElementDps = make(map[string]*model.DescriptiveStats)
 	for k, v := range b.elementDPS {
 		if v.Mean() > 0 {
-			result.ElementDps[k] = agg.ToDescriptiveStats(v)
+			result.ElementDps[k] = agg.ToDescriptiveStats(v, iters)
 		}
 	}
 
 	result.TargetDps = make(map[int32]*model.DescriptiveStats)
 	for k, v := range b.targetDPS {
-		result.TargetDps[int32(k)] = agg.ToDescriptiveStats(v)
+		result.TargetDps[int32(k)] = agg.ToDescriptiveStats(v, iters)
 	}
 
 	result.CharacterDps = make([]*model.DescriptiveStats, len(b.characterDPS))
 	for i, v := range b.characterDPS {
-		result.CharacterDps[i] = agg.ToDescriptiveStats(v)
+		result.CharacterDps[i] = agg.ToDescriptiveStats(v, iters)
 	}
 
 	result.BreakdownByElementDps = make([]*model.ElementStats, len(b.dpsByElement))
@@ -243,7 +243,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		elements := make(map[string]*model.DescriptiveStats)
 		for k, v := range em {
 			if v.Mean() > 0 {
-				elements[k] = agg.ToDescriptiveStats(v)
+				elements[k] = agg.ToDescriptiveStats(v, iters)
 			}
 		}
 
@@ -256,7 +256,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, t := range b.dpsByTarget {
 		targets := make(map[int32]*model.DescriptiveStats)
 		for k, v := range t {
-			targets[int32(k)] = agg.ToDescriptiveStats(v)
+			targets[int32(k)] = agg.ToDescriptiveStats(v, iters)
 		}
 
 		result.BreakdownByTargetDps[i] = &model.TargetStats{
@@ -266,7 +266,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 
 	damageBuckets := make([]*model.DescriptiveStats, len(b.damageBuckets))
 	for i, v := range b.damageBuckets {
-		damageBuckets[i] = agg.ToDescriptiveStats(v)
+		damageBuckets[i] = agg.ToDescriptiveStats(v, iters)
 	}
 	result.DamageBuckets = &model.BucketStats{
 		BucketSize: bucketSize,
@@ -277,7 +277,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, c := range b.cumulativeContrib {
 		buckets := make([]*model.DescriptiveStats, len(c))
 		for j, v := range c {
-			buckets[j] = agg.ToDescriptiveStats(v)
+			buckets[j] = agg.ToDescriptiveStats(v, iters)
 		}
 		characterBuckets[i] = &model.CharacterBuckets{
 			Buckets: buckets,
@@ -288,7 +288,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, c := range b.sourceDPS {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
-			source[k] = agg.ToDescriptiveStats(s)
+			source[k] = agg.ToDescriptiveStats(s, iters)
 		}
 
 		result.SourceDps[i] = &model.SourceStats{
@@ -300,7 +300,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, c := range b.sourceDamageInstances {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
-			source[k] = agg.ToDescriptiveStats(s)
+			source[k] = agg.ToDescriptiveStats(s, iters)
 		}
 
 		result.SourceDamageInstances[i] = &model.SourceStats{
