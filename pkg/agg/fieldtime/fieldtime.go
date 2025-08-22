@@ -37,9 +37,9 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
+func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.FieldTime = make([]*model.DescriptiveStats, len(b.fieldTimes))
 	for i, c := range b.fieldTimes {
-		result.FieldTime[i] = agg.ToDescriptiveStats(c, iters)
+		result.FieldTime[i] = agg.ToDescriptiveStats(c)
 	}
 }

@@ -23,6 +23,7 @@ type buffer struct {
 	hps         *calc.Sample
 	shp         *calc.Sample
 	totalDamage calc.StreamStats
+	iters       uint
 }
 
 func newSample(itr int) *calc.Sample {
@@ -79,14 +80,15 @@ func (b *buffer) Add(result stats.Result) {
 	b.rps.Xs[iX] /= b.duration.Xs[iX]
 	b.hps.Xs[iX] /= b.duration.Xs[iX]
 	b.eps.Xs[iX] /= b.duration.Xs[iX]
+	b.iters++
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
+func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.Duration = agg.ToOverviewStats(b.duration)
 	result.DPS = agg.ToOverviewStats(b.dps)
 	result.RPS = agg.ToOverviewStats(b.rps)
 	result.EPS = agg.ToOverviewStats(b.eps)
 	result.HPS = agg.ToOverviewStats(b.hps)
 	result.SHP = agg.ToOverviewStats(b.shp)
-	result.TotalDamage = agg.ToDescriptiveStats(&b.totalDamage, iters)
+	result.TotalDamage = agg.ToDescriptiveStats(&b.totalDamage)
 }

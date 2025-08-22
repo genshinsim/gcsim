@@ -17,6 +17,7 @@ func init() {
 
 type buffer struct {
 	auraUptime []map[string]*calc.StreamStats
+	iters      uint
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
@@ -42,12 +43,13 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
+func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.TargetAuraUptime = make([]*model.SourceStats, len(b.auraUptime))
 	for i, c := range b.auraUptime {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
-			source[k] = agg.ToDescriptiveStats(s, iters)
+			agg.PadStreamStatToCount(s, b.iters)
+			source[k] = agg.ToDescriptiveStats(s)
 		}
 
 		result.TargetAuraUptime[i] = &model.SourceStats{

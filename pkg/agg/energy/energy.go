@@ -17,6 +17,7 @@ func init() {
 
 type buffer struct {
 	sourceEnergy []map[string]*calc.StreamStats
+	iters        uint
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
@@ -44,14 +45,16 @@ func (b *buffer) Add(result stats.Result) {
 			b.sourceEnergy[i][k].Add(v)
 		}
 	}
+	b.iters++
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
+func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.TotalSourceEnergy = make([]*model.SourceStats, len(b.sourceEnergy))
 	for i, c := range b.sourceEnergy {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
-			source[k] = agg.ToDescriptiveStats(s, iters)
+			agg.PadStreamStatToCount(s, b.iters)
+			source[k] = agg.ToDescriptiveStats(s)
 		}
 
 		result.TotalSourceEnergy[i] = &model.SourceStats{

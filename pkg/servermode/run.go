@@ -35,10 +35,10 @@ func (s *Server) isRunning(id string) bool {
 	return ok
 }
 
-func flush(aggregators []agg.Aggregator, iters uint) *model.SimulationStatistics {
+func flush(aggregators []agg.Aggregator) *model.SimulationStatistics {
 	stats := &model.SimulationStatistics{}
 	for _, a := range aggregators {
-		a.Flush(stats, iters)
+		a.Flush(stats)
 	}
 	return stats
 }

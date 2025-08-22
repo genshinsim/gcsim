@@ -164,7 +164,7 @@ func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcs
 	// generate final agg results
 	stats := &model.SimulationStatistics{}
 	for _, a := range aggregators {
-		a.Flush(stats, uint(count))
+		a.Flush(stats)
 	}
 	result.Statistics = stats
 

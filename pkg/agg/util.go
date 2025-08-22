@@ -7,16 +7,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func AddMultiple(ss *stats.StreamStats, x float64, count uint) {
-	for range count {
+// If the count is smaller than ss.Count, nothing will happen.
+// Otherwise, 0s will be added to ss until ss.Count is equal to count.
+func PadStreamStatToCount(ss *stats.StreamStats, count uint) {
+	if count < ss.Count {
+		return
+	}
+	for range count - ss.Count {
 		ss.Add(0)
 	}
 }
 
-func ToDescriptiveStats(ss *stats.StreamStats, iters uint) *model.DescriptiveStats {
-	if ss.Count < iters {
-		AddMultiple(ss, 0, iters-ss.Count)
-	}
+func ToDescriptiveStats(ss *stats.StreamStats) *model.DescriptiveStats {
 	sd := ss.StdDev()
 	if math.IsNaN(sd) {
 		sd = 0

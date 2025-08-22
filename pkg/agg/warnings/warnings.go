@@ -69,7 +69,7 @@ func (b *buffer) Add(result stats.Result) {
 	b.overlap = b.overlap || result.TargetOverlap
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
+func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.Warnings = &model.Warnings{
 		TargetOverlap:       b.overlap,
 		InsufficientEnergy:  b.energy.Mean() >= 1.0,

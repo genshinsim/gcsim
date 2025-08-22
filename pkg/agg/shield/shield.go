@@ -33,6 +33,7 @@ func init() {
 type buffer struct {
 	shieldHP map[string]map[string]*stats.WeightedStreamStats
 	uptime   map[string]*calc.StreamStats
+	iters    uint
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
@@ -82,9 +83,10 @@ func (b *buffer) Add(result stats.Result) {
 		}
 	}
 	b.uptime["effective"].Add(effectiveUptime / float64(result.Duration))
+	b.iters++
 }
 
-func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
+func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.Shields = make(map[string]*model.ShieldInfo)
 	for k, s := range b.shieldHP {
 		outHP := make(map[string]*model.DescriptiveStats)
@@ -100,7 +102,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics, iters uint) {
 
 		result.Shields[k] = &model.ShieldInfo{
 			Hp:     outHP,
-			Uptime: agg.ToDescriptiveStats(b.uptime[k], iters),
+			Uptime: agg.ToDescriptiveStats(b.uptime[k]),
 		}
 	}
 }
