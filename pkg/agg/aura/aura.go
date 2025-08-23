@@ -41,6 +41,7 @@ func (b *buffer) Add(result stats.Result) {
 			b.auraUptime[i][k].Add(float64(v) / float64(result.Duration) * 100)
 		}
 	}
+	b.iters++
 }
 
 func (b *buffer) Flush(result *model.SimulationStatistics) {
