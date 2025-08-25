@@ -32,7 +32,7 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	c.SkillCon = 3
 	c.NormalHitNum = 5
 
-	common.TravelerBaseAtkIncrease(w, p)
+	common.TravelerStoryBuffs(w, p)
 
 	c.nightsoulState = nightsoul.New(s, w)
 	c.nightsoulState.MaxPoints = 80

@@ -183,16 +183,12 @@ func (c *Traveler) reduceNightsoulPoints(src int, val float64) {
 
 func (c *Traveler) blazingThresholdHit(src int) func() {
 	return func() {
-		fmt.Println(c.Core.F, "procking blazing threshold hit")
 		if src != c.nightsoulSrc {
-			fmt.Println(c.Core.F, "not the same src", src, c.nightsoulSrc)
 			return
 		}
 		if !c.nightsoulState.HasBlessing() {
-			fmt.Println(c.Core.F, "no blessing")
 			return
 		}
-		fmt.Println(c.Core.F, "procking blazing threshold hit", src, c.nightsoulSrc)
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Blazing Threshold DMG",

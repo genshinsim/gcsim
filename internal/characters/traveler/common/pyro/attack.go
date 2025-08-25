@@ -77,7 +77,7 @@ func (c *Traveler) Attack(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.gender][c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	if c.Base.Cons >= 6 {
+	if c.Base.Cons >= 6 && c.nightsoulState.HasBlessing() {
 		ai.Element = attributes.Pyro
 		ai.IgnoreInfusion = true
 		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
