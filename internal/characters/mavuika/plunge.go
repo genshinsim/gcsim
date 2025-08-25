@@ -134,7 +134,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	switch c.Core.Player.Airborne() {
 	case player.AirborneXianyun:
 		if c.nightsoulState.HasBlessing() && c.armamentState == bike {
-			c.bikePlungeAttack(highBikePlungeFrames, highPlungeHitmark)
+			return c.bikePlungeAttack(highBikePlungeFrames, highPlungeHitmark), nil
 		}
 		return c.highPlungeXY(p), nil
 	default:
