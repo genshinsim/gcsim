@@ -92,19 +92,19 @@
     },
     "aetherpyro": {
       "id": 10000005,
-      "sub_id": 508,
+      "sub_id": 502,
       "key": "aetherpyro",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
       "region": "ASSOC_TYPE_MAINACTOR",
-      "element": "Grass",
+      "element": "Fire",
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "icon_name": "UI_AvatarIcon_PlayerBoy",
       "skill_details": {
-        "skill": 10117,
-        "burst": 10118,
-        "attack": 100547,
-        "burst_energy_cost": 80
+        "skill": 10097,
+        "burst": 10098,
+        "attack": 100541,
+        "burst_energy_cost": 70
       },
       "name_text_hash_map ": "1533656818"
     },
@@ -329,6 +329,23 @@
       },
       "name_text_hash_map ": "3831162130"
     },
+    "chasca": {
+      "id": 10000104,
+      "key": "chasca",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Wind",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Chasca",
+      "skill_details": {
+        "skill": 11042,
+        "burst": 11045,
+        "attack": 11041,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "3746229466"
+    },
     "chevreuse": {
       "id": 10000090,
       "key": "chevreuse",
@@ -379,6 +396,23 @@
         "burst_energy_cost": 40
       },
       "name_text_hash_map ": "2876340530"
+    },
+    "citlali": {
+      "id": 10000107,
+      "key": "citlali",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Citlali",
+      "skill_details": {
+        "skill": 11072,
+        "burst": 11075,
+        "attack": 11071,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1197975042"
     },
     "clorinde": {
       "id": 10000098,
@@ -515,6 +549,23 @@
         "burst_energy_cost": 50
       },
       "name_text_hash_map ": "1705786122"
+    },
+    "escoffier": {
+      "id": 10000112,
+      "key": "escoffier",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Escoffier",
+      "skill_details": {
+        "skill": 11122,
+        "burst": 11125,
+        "attack": 11121,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "4035850498"
     },
     "eula": {
       "id": 10000051,
@@ -873,6 +924,23 @@
       },
       "name_text_hash_map ": "1940821986"
     },
+    "lanyan": {
+      "id": 10000108,
+      "key": "lanyan",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Lanyan",
+      "skill_details": {
+        "skill": 11082,
+        "burst": 11085,
+        "attack": 11081,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1888132250"
+    },
     "layla": {
       "id": 10000074,
       "key": "layla",
@@ -999,19 +1067,19 @@
     },
     "luminepyro": {
       "id": 10000007,
-      "sub_id": 708,
+      "sub_id": 702,
       "key": "luminepyro",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
       "region": "ASSOC_TYPE_MAINACTOR",
-      "element": "Grass",
+      "element": "Fire",
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "icon_name": "UI_AvatarIcon_PlayerGirl",
       "skill_details": {
-        "skill": 10117,
-        "burst": 10118,
-        "attack": 100557,
-        "burst_energy_cost": 80
+        "skill": 10097,
+        "burst": 10098,
+        "attack": 100551,
+        "burst_energy_cost": 70
       },
       "name_text_hash_map ": "3816664530"
     },
@@ -1049,6 +1117,22 @@
       },
       "name_text_hash_map ": "2472444970"
     },
+    "mavuika": {
+      "id": 10000106,
+      "key": "mavuika",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Mavuika",
+      "skill_details": {
+        "skill": 11062,
+        "burst": 11065,
+        "attack": 11061
+      },
+      "name_text_hash_map ": "113398050"
+    },
     "mika": {
       "id": 10000080,
       "key": "mika",
@@ -1065,6 +1149,23 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "231911858"
+    },
+    "mizuki": {
+      "id": 10000109,
+      "key": "mizuki",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Mizuki",
+      "skill_details": {
+        "skill": 11092,
+        "burst": 11095,
+        "attack": 11091,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "3784387538"
     },
     "mona": {
       "id": 10000041,
@@ -1371,6 +1472,22 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "781488962"
+    },
+    "skirk": {
+      "id": 10000114,
+      "key": "skirk",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": 11,
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_SkirkNew",
+      "skill_details": {
+        "skill": 11142,
+        "burst": 11145,
+        "attack": 11141
+      },
+      "name_text_hash_map ": "123650890"
     },
     "sucrose": {
       "id": 10000043,

@@ -49,6 +49,46 @@
       "desc": "Whether Chevreuse has an Overcharged Ball or not."
     }
   ],
+  "citlali": [
+    {
+      "fields": [
+        ".citlali.stellar-blade"
+      ],
+      "desc": "Number of Stellar Blade (C1) stacks."
+    },
+    {
+      "fields": [
+        ".citlali.opal-fire"
+      ],
+      "desc": "Whether Itzpapa is in the Opal Fire state."
+    },
+    {
+      "fields": [
+        ".citlali.c6-stacks"
+      ],
+      "desc": "Number of Cifra of the Secret Law (C6) points."
+    }
+  ],
+  "escoffier": [
+    {
+      "fields": [
+        ".escoffier.c2-count"
+      ],
+      "desc": "Number of Cold Dish (C2) stacks"
+    },
+    {
+      "fields": [
+        ".escoffier.c4-count"
+      ],
+      "desc": "Number of extra healing and energy restore effects (C4) left"
+    },
+    {
+      "fields": [
+        ".escoffier.c6-count"
+      ],
+      "desc": "Number of Special-Grade Frosty Parfait (C6) attacks left"
+    }
+  ],
   "faruzan": [
     {
       "fields": [
@@ -171,6 +211,14 @@
       "desc": "Number of Prop Surplus stacks."
     }
   ],
+  "mavuika": [
+    {
+      "fields": [
+        ".mavuika.fightingspirit"
+      ],
+      "desc": "Amount of Fighting Spirit."
+    }
+  ],
   "mualani": [
     {
       "fields": [
@@ -213,6 +261,26 @@
         ".ningguang.jadeCount"
       ],
       "desc": "Number of Star Jades."
+    }
+  ],
+  "skirk": [
+    {
+      "fields": [
+        ".skirk.serpents_subtlety"
+      ],
+      "desc": "Amount of Serpent's Subtlety."
+    },
+    {
+      "fields": [
+        ".skirk.a4_stacks"
+      ],
+      "desc": "Number of A4 stacks."
+    },
+    {
+      "fields": [
+        ".skirk.c6_stacks"
+      ],
+      "desc": "Number of C6 stacks."
     }
   ],
   "wanderer": [

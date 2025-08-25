@@ -246,6 +246,35 @@ Example:
 ```
 set_particle_delay("xingqiu", 100);
 ```
+
+:::
+
+## set_swap_icd
+
+```
+set_swap_icd(arg1);
+```
+:::caution
+- This function replicates behavior not found in typical gameplay. 
+- By default, characters in Genshin cannot swap more than once per second. However, by 'booking' (opening the Adventurer's Handbook mid-combat), the swap timer can continue while other in-game timers (such as the Spiral Abyss timer) remain paused.
+- If you use this function, the resulting dps will not represent damage per real time, but will instead represent damage per in-game time.
+:::
+
+- `set_swap_icd` will set the default swap ICD for all characters equal to the number of frames in `arg1`.
+- If `arg1` evaluates to a number that is less than 0, an error will be returned.
+- `set_swap_icd` will always evaluate to 0.
+
+:::danger 
+`arg1` must be a number or an expression that evaluates to a number. 
+:::
+
+:::info 
+Example:
+
+```
+set_swap_icd(0);
+```
+
 :::
 
 ## set_default_target

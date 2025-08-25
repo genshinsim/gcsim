@@ -45,6 +45,7 @@ var weaponNames = []string{
 	"astralvulturescrimsonplumage",
 	"athousandblazingsuns",
 	"athousandfloatingdreams",
+	"azurelight",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
 	"beaconofthereedsea",
@@ -94,6 +95,7 @@ var weaponNames = []string{
 	"filletblade",
 	"finaleofthedeep",
 	"fleuvecendreferryman",
+	"flowerwreathedfeathers",
 	"fluteofezpitzal",
 	"flowingpurity",
 	"footprintoftherainbow",
@@ -175,6 +177,7 @@ var weaponNames = []string{
 	"sapwoodblade",
 	"scionoftheblazingsun",
 	"seasonedhuntersbow",
+	"sequenceofsolitude",
 	"serpentspine",
 	"sharpshootersoath",
 	"silvershowerheartstrings",
@@ -197,10 +200,13 @@ var weaponNames = []string{
 	"starcallerswatch",
 	"sturdybone",
 	"summitshaper",
+	"sunnymorningsleepin",
 	"surfsup",
 	"swordofdescension",
 	"swordofnarzissenkreuz",
+	"symphonistofscents",
 	"talkingstick",
+	"tamayurateinoohanashi",
 	"thealleyflash",
 	"thebell",
 	"theblacksword",
@@ -223,6 +229,7 @@ var weaponNames = []string{
 	"ultimateoverlordsmegamagicsword",
 	"urakumisugiri",
 	"verdict",
+	"vividnotions",
 	"vortexvanquisher",
 	"wanderingevenstar",
 	"wastergreatsword",
@@ -252,6 +259,7 @@ const (
 	AstralVulturesCrimsonPlumage
 	AThousandBlazingSuns
 	AThousandFloatingDreams
+	Azurelight
 	BalladOfTheBoundlessBlue
 	BalladOfTheFjords
 	BeaconOfTheReedSea
@@ -301,6 +309,7 @@ const (
 	FilletBlade
 	FinaleOfTheDeep
 	FleuveCendreFerryman
+	FlowerWreathedFeathers
 	FluteOfEzpitzal
 	FlowingPurity
 	FootprintOfTheRainbow
@@ -382,6 +391,7 @@ const (
 	SapwoodBlade
 	ScionOfTheBlazingSun
 	SeasonedHuntersBow
+	SequenceOfSolitude
 	SerpentSpine
 	SharpshootersOath
 	SilvershowerHeartstrings
@@ -404,10 +414,13 @@ const (
 	StarcallersWatch
 	SturdyBone
 	SummitShaper
+	SunnyMorningSleepIn
 	SurfsUp
 	SwordOfDescension
 	SwordOfNarzissenkreuz
+	SymphonistOfScents
 	TalkingStick
+	TamayurateiNoOhanashi
 	TheAlleyFlash
 	TheBell
 	TheBlackSword
@@ -430,6 +443,7 @@ const (
 	UltimateOverlordsMegaMagicSword
 	UrakuMisugiri
 	Verdict
+	VividNotions
 	VortexVanquisher
 	WanderingEvenstar
 	WasterGreatsword

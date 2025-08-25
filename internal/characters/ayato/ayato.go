@@ -88,6 +88,10 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 			return ds
 		}
 		ai.Element = attributes.Hydro
+		// namisen doesn't affect c6
+		if ai.Abil == c6Abil {
+			return ds
+		}
 		// add namisen stack
 		flatdmg := c.MaxHP() * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
 		ai.FlatDmg += flatdmg

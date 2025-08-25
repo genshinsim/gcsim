@@ -49,6 +49,14 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 		return 0, fmt.Errorf("bad element condition: %w", err)
 	}
 
+	if ele == "burning" {
+		result := reactions.Durability(0)
+		if e.IsBurning() {
+			result = e.Durability[reactable.Burning]
+		}
+		return float64(result), nil
+	}
+
 	elekey := attributes.StringToEle(ele)
 	if elekey == attributes.UnknownElement {
 		return 0, fmt.Errorf("bad element condition: invalid element %s", ele)

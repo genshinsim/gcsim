@@ -18,6 +18,7 @@ const skillHitmark = 14
 func init() {
 	skillFrames = frames.InitAbilSlice(78)
 	skillFrames[action.ActionAttack] = 12
+	skillFrames[action.ActionCharge] = 13
 	skillFrames[action.ActionSkill] = 14 // uses burst frames
 	skillFrames[action.ActionBurst] = 14
 	skillFrames[action.ActionDash] = 11

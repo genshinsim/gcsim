@@ -43,7 +43,7 @@ linters:
     - dogsled # checks assignments with too many blank identifiers (e.g. x, , , _, := f())
     - errorlint # finds code that will cause problems with the error wrapping scheme introduced in Go 1.13
     - errchkjson # checks for unnecessary json marshal error checks
-    - exportloopref # checks for pointers to enclosing loop variables
+    - copyloopvar # detects places where loop variables are copied
     - makezero # finds slice declarations with non-zero initial length
     - nilerr # finds the code that returns nil even if it checks that the error is not nil
     - nakedret # finds naked returns in functions greater than a specified function length
@@ -134,7 +134,6 @@ linters-settings:
 
   govet:
     enable-all: true
-    check-shadowing: false
     disable:
       - fieldalignment # great for micro-optimizations, too much work for us to maintain
       - shadow # can help to find hard to find bugs, but annoying to make golang code compatible

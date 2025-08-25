@@ -104,7 +104,7 @@ func init() {
 	// NA cancels (burst)
 	swordFrames = make([][]int, normalHitNum)
 
-	swordFrames[0] = frames.InitNormalCancelSlice(swordHitmarks[0][0], 24)
+	swordFrames[0] = frames.InitNormalCancelSlice(swordHitmarks[0][0], 21)
 	swordFrames[0][action.ActionAttack] = 19
 
 	swordFrames[1] = frames.InitNormalCancelSlice(swordHitmarks[1][0], 26)

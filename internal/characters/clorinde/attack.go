@@ -23,7 +23,7 @@ var (
 
 var (
 	skillAttackFrames   [][]int
-	skillAttackHitmarks = []int{10, 10, 11}
+	skillAttackHitmarks = []int{8, 8, 9}
 )
 
 const (
@@ -133,7 +133,7 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 	t := c.Core.Combat.PrimaryTarget()
 	gainBOL := true
 	var ap combat.AttackPattern
-	if c.currentHPDebtRatio() < 1 {
+	if c.CurrentHPDebtRatio() < 1 {
 		// TODO: assume this is just a big rectangle center on target
 		ap = combat.NewBoxHitOnTarget(t, nil, 2, 14)
 	} else {
@@ -160,8 +160,8 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 		Frames: func(next action.Action) int {
 			return frames.AtkSpdAdjust(skillAttackFrames[n][next], atkspd)
 		},
-		AnimationLength: skillAttackFrames[c.normalSCounter][action.InvalidAction],
-		CanQueueAfter:   skillAttackFrames[c.normalSCounter][action.ActionBurst],
+		AnimationLength: frames.AtkSpdAdjust(skillAttackFrames[n][action.InvalidAction], atkspd),
+		CanQueueAfter:   frames.AtkSpdAdjust(skillAttackFrames[n][action.ActionBurst], atkspd),
 		State:           action.NormalAttackState,
 	}, nil
 }

@@ -6,43 +6,43 @@ import (
 )
 
 var key = map[string]TokenType{
-	".":           itemDot,
-	"let":         keywordLet,
-	"while":       keywordWhile,
-	"if":          keywordIf,
-	"else":        keywordElse,
-	"fn":          keywordFn,
-	"switch":      keywordSwitch,
-	"case":        keywordCase,
-	"default":     keywordDefault,
-	"break":       keywordBreak,
-	"continue":    keywordContinue,
-	"fallthrough": keywordFallthrough,
-	"return":      keywordReturn,
-	"for":         keywordFor,
+	".":           ItemDot,
+	"let":         KeywordLet,
+	"while":       KeywordWhile,
+	"if":          KeywordIf,
+	"else":        KeywordElse,
+	"fn":          KeywordFn,
+	"switch":      KeywordSwitch,
+	"case":        KeywordCase,
+	"default":     KeywordDefault,
+	"break":       KeywordBreak,
+	"continue":    KeywordContinue,
+	"fallthrough": KeywordFallthrough,
+	"return":      KeywordReturn,
+	"for":         KeywordFor,
 	// genshin specific keywords
-	"options":             keywordOptions,
-	"add":                 keywordAdd,
-	"char":                keywordChar,
-	"stats":               keywordStats,
-	"weapon":              keywordWeapon,
-	"set":                 keywordSet,
-	"lvl":                 keywordLvl,
-	"refine":              keywordRefine,
-	"cons":                keywordCons,
-	"talent":              keywordTalent,
-	"count":               keywordCount,
-	"params":              keywordParams,
-	"label":               keywordLabel,
-	"until":               keywordUntil,
-	"active":              keywordActive,
-	"target":              keywordTarget,
-	"particle_threshold":  keywordParticleThreshold,
-	"particle_drop_count": keywordParticleDropCount,
-	"particle_element":    keywordParticleElement,
-	"resist":              keywordResist,
-	"energy":              keywordEnergy,
-	"hurt":                keywordHurt,
+	"options":             KeywordOptions,
+	"add":                 KeywordAdd,
+	"char":                KeywordChar,
+	"stats":               KeywordStats,
+	"weapon":              KeywordWeapon,
+	"set":                 KeywordSet,
+	"lvl":                 KeywordLvl,
+	"refine":              KeywordRefine,
+	"cons":                KeywordCons,
+	"talent":              KeywordTalent,
+	"count":               KeywordCount,
+	"params":              KeywordParams,
+	"label":               KeywordLabel,
+	"until":               KeywordUntil,
+	"active":              KeywordActive,
+	"target":              KeywordTarget,
+	"particle_threshold":  KeywordParticleThreshold,
+	"particle_drop_count": KeywordParticleDropCount,
+	"particle_element":    KeywordParticleElement,
+	"resist":              KeywordResist,
+	"energy":              KeywordEnergy,
+	"hurt":                KeywordHurt,
 	// commands
 	// team keywords
 	// flags
@@ -51,7 +51,7 @@ var key = map[string]TokenType{
 	// target related
 }
 
-var statKeys = map[string]attributes.Stat{
+var StatKeys = map[string]attributes.Stat{
 	"def%":     attributes.DEFP,
 	"def":      attributes.DEF,
 	"hp":       attributes.HP,
@@ -76,7 +76,7 @@ var statKeys = map[string]attributes.Stat{
 	"dmg%":    attributes.DmgP,
 }
 
-var eleKeys = map[string]attributes.Element{
+var EleKeys = map[string]attributes.Element{
 	"electro":  attributes.Electro,
 	"pyro":     attributes.Pyro,
 	"cryo":     attributes.Cryo,

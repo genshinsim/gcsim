@@ -12,8 +12,9 @@ import (
 var (
 	burstFrames []int
 
-	boxHitmark  = 38
-	mineExpired = "kirara-cardamoms-expired"
+	mineSnapshot = 34
+	boxHitmark   = 38
+	mineExpired  = "kirara-cardamoms-expired"
 )
 
 func init() {
@@ -75,7 +76,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		IsDeployable:       true,
 	}
 
-	c.mineSnap = c.Snapshot(&mineAi)
+	c.QueueCharTask(func() {
+		c.mineSnap = c.Snapshot(&mineAi)
+	}, mineSnapshot)
+
 	c.minePattern = combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2)
 
 	// box
@@ -83,7 +87,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	boxPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
 	c.QueueCharTask(func() {
 		c.AddStatus(mineExpired, 12*60, true)
-		c.Core.QueueAttackWithSnap(boxAi, c.mineSnap, combat.NewCircleHitOnTarget(boxPos, nil, 6), 0)
+		c.Core.QueueAttack(boxAi, combat.NewCircleHitOnTarget(boxPos, nil, 6), 0, 0)
 	}, boxHitmark)
 
 	// mine hits

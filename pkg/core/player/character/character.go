@@ -65,6 +65,7 @@ type HP interface {
 	CurrentHPRatio() float64
 	CurrentHP() float64
 	CurrentHPDebt() float64
+	CurrentHPDebtRatio() float64
 
 	SetHPByAmount(float64)
 	SetHPByRatio(float64)
@@ -76,6 +77,8 @@ type HP interface {
 
 	Heal(*info.HealInfo) (float64, float64) // return actual hp healed and amount of hp debt cleared
 	Drain(*info.DrainInfo) float64
+
+	ReceiveHeal(*info.HealInfo, float64) float64
 }
 
 type CharWrapper struct {
@@ -127,7 +130,7 @@ type CharWrapper struct {
 	DashLockout     bool
 
 	// hitlag stuff
-	timePassed   int // how many frames have passed since start of sim
+	TimePassed   int // how many frames have passed since start of sim
 	frozenFrames int // how many frames are we still frozen for
 	queue        *task.Handler
 }
@@ -153,7 +156,7 @@ func New(
 		f:             f,
 		debug:         debug,
 	}
-	c.queue = task.New(&c.timePassed)
+	c.queue = task.New(&c.TimePassed)
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]info.Set)
@@ -234,6 +237,9 @@ func (c *CharWrapper) TalentLvlAttack() int {
 func (c *CharWrapper) TalentLvlSkill() int {
 	c.consCheck()
 	add := -1
+	if c.Tags[keys.SkirkPassive] > 0 {
+		add++
+	}
 	if c.SkillCon > 0 && c.Base.Cons >= c.SkillCon {
 		add += 3
 	}

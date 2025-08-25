@@ -206,6 +206,38 @@
       "desc": "0 for no A1 (default), non-zero value for A1. This sets hold to 1."
     }
   ],
+  "chasca": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default)."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    },
+    {
+      "ability": "aim",
+      "param": "bullets",
+      "desc": "Number of bullets to fire. Default is maximum number of bullets. Must be between 1 and 6."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "charlotte": [
     {
       "ability": "skill",
@@ -235,6 +267,18 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
+  "citlali": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "charge",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
     }
   ],
   "collei": [
@@ -359,6 +403,23 @@
       "ability": "burst",
       "param": "travel",
       "desc": "Level 1/2 Lumidouce Case Attack travel time. Default 5 frames."
+    }
+  ],
+  "escoffier": [
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Frosty Parfait travel time. Default 5 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "eula": [
@@ -739,6 +800,13 @@
       "desc": "Projectile travel time. Default 10 frames."
     }
   ],
+  "lanyan": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 610 for Hold."
+    }
+  ],
   "layla": [
     {
       "ability": "burst",
@@ -822,11 +890,60 @@
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     }
   ],
+  "mavuika": [
+    {
+      "ability": "charge",
+      "param": "hold",
+      "desc": "Number of frames to extend Charge Attack by. Min 1, max 45, can only be used after a Charge attack has started."
+    },
+    {
+      "ability": "charge",
+      "param": "final",
+      "desc": "Used to explicitly initiate the Flamestrider's final hit of the charge attack."
+    },
+    {
+      "ability": "charge",
+      "param": "buffered",
+      "desc": "Number of frames to buffer CA. Range 0-15, lower values can be used to trigger certain N0 abilities."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold."
+    },
+    {
+      "ability": "skill",
+      "param": "recast",
+      "desc": "0 to use E (default), 1 to use Recast E. Recast E is only possible if Nightsoul Blessing is active and Recast E is not on cooldown."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision."
+    }
+  ],
   "mika": [
     {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
+  "mizuki": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time for Continuous Attack. Default 30 frames."
     }
   ],
   "mona": [
@@ -917,6 +1034,16 @@
     }
   ],
   "noelle": [
+    {
+      "ability": "charge",
+      "param": "final",
+      "desc": "0 for inserting a finisher based on next action, 1 for executing a finisher immediately. Default 0."
+    },
+    {
+      "ability": "charge",
+      "param": "no_limit",
+      "desc": "Whether to ignore charge attack duration limit. Default 0."
+    },
     {
       "ability": "burst",
       "param": "extend",
@@ -1057,6 +1184,18 @@
       "ability": "burst",
       "param": "ticks",
       "desc": "Number of ticks for Elemental Burst. Default is maximum number of ticks, minimum 2. If the number of ticks is not the maximum, the next action must be Dash, or Jump."
+    }
+  ],
+  "skirk": [
+    {
+      "ability": "-",
+      "param": "start_serpents_subtlety",
+      "desc": "Set the starting amount of Serpent's Subtlety stacks. Default 100."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 184 for Hold. The number determines the hold E duration in frames."
     }
   ],
   "sucrose": [
@@ -1352,6 +1491,11 @@
       "ability": "skill",
       "param": "marked",
       "desc": "Number of enemies to mark with the Lifeline. Default 1."
+    },
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Exquisite Throw projectile travel time. Default 20 frames."
     }
   ],
   "yoimiya": [

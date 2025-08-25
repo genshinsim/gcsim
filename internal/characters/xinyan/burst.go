@@ -10,6 +10,7 @@ import (
 )
 
 var burstFrames []int
+var c2PulseHitmarks = []int{65, 83}
 
 const burstInitialHitmark = 22
 const burstShieldStart = 43
@@ -86,6 +87,20 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.QueueCharTask(func() {
 			c.updateShield(3, defFactor)
 		}, burstShieldStart)
+
+		// C2 causes extra pulses of level 3 shield DoT
+		// Can vary with fps, frame video has 2 pulses
+		// See https://library.keqingmains.com/evidence/characters/pyro/xinyan#xinyan-c2-shield-formation-pulses-extra-times
+		ai := c.getAttackInfoShieldDoT()
+		for i := 0; i < 2; i++ {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
+				1,
+				c2PulseHitmarks[i],
+				c.makeC1CB(),
+			)
+		}
 	}
 
 	c.ConsumeEnergy(5)

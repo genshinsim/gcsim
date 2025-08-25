@@ -20,9 +20,11 @@ const (
 	Bennett
 	Candace
 	Charlotte
+	Chasca
 	Chevreuse
 	Chiori
 	Chongyun
+	Citlali
 	Clorinde
 	Collei
 	Cyno
@@ -31,6 +33,7 @@ const (
 	Diona
 	Dori
 	Emilie
+	Escoffier
 	Eula
 	Faruzan
 	Fischl
@@ -52,11 +55,14 @@ const (
 	Klee
 	Kokomi
 	Kuki
+	Lanyan
 	Layla
 	Lisa
 	Lynette
 	Lyney
+	Mavuika
 	Mika
+	Mizuki
 	Mona
 	Mualani
 	Nahida
@@ -75,6 +81,7 @@ const (
 	Sethos
 	Shenhe
 	Sigewinne
+	Skirk
 	Sucrose
 	Tartaglia
 	Thoma
@@ -151,6 +158,10 @@ func init() {
 	charPrettyName[Charlotte] = "Charlotte"
 	CharKeyToEle[Charlotte] = attributes.Cryo
 
+	charNames[Chasca] = "chasca"
+	charPrettyName[Chasca] = "Chasca"
+	CharKeyToEle[Chasca] = attributes.Anemo
+
 	charNames[Chevreuse] = "chevreuse"
 	charPrettyName[Chevreuse] = "Chevreuse"
 	CharKeyToEle[Chevreuse] = attributes.Pyro
@@ -162,6 +173,10 @@ func init() {
 	charNames[Chongyun] = "chongyun"
 	charPrettyName[Chongyun] = "Chongyun"
 	CharKeyToEle[Chongyun] = attributes.Cryo
+
+	charNames[Citlali] = "citlali"
+	charPrettyName[Citlali] = "Citlali"
+	CharKeyToEle[Citlali] = attributes.Cryo
 
 	charNames[Clorinde] = "clorinde"
 	charPrettyName[Clorinde] = "Clorinde"
@@ -194,6 +209,10 @@ func init() {
 	charNames[Emilie] = "emilie"
 	charPrettyName[Emilie] = "Emilie"
 	CharKeyToEle[Emilie] = attributes.Dendro
+
+	charNames[Escoffier] = "escoffier"
+	charPrettyName[Escoffier] = "Escoffier"
+	CharKeyToEle[Escoffier] = attributes.Cryo
 
 	charNames[Eula] = "eula"
 	charPrettyName[Eula] = "Eula"
@@ -279,6 +298,10 @@ func init() {
 	charPrettyName[Kuki] = "Kuki"
 	CharKeyToEle[Kuki] = attributes.Electro
 
+	charNames[Lanyan] = "lanyan"
+	charPrettyName[Lanyan] = "Lanyan"
+	CharKeyToEle[Lanyan] = attributes.Anemo
+
 	charNames[Layla] = "layla"
 	charPrettyName[Layla] = "Layla"
 	CharKeyToEle[Layla] = attributes.Cryo
@@ -295,9 +318,17 @@ func init() {
 	charPrettyName[Lyney] = "Lyney"
 	CharKeyToEle[Lyney] = attributes.Pyro
 
+	charNames[Mavuika] = "mavuika"
+	charPrettyName[Mavuika] = "Mavuika"
+	CharKeyToEle[Mavuika] = attributes.Pyro
+
 	charNames[Mika] = "mika"
 	charPrettyName[Mika] = "Mika"
 	CharKeyToEle[Mika] = attributes.Cryo
+
+	charNames[Mizuki] = "mizuki"
+	charPrettyName[Mizuki] = "Mizuki"
+	CharKeyToEle[Mizuki] = attributes.Anemo
 
 	charNames[Mona] = "mona"
 	charPrettyName[Mona] = "Mona"
@@ -370,6 +401,10 @@ func init() {
 	charNames[Sigewinne] = "sigewinne"
 	charPrettyName[Sigewinne] = "Sigewinne"
 	CharKeyToEle[Sigewinne] = attributes.Hydro
+
+	charNames[Skirk] = "skirk"
+	charPrettyName[Skirk] = "Skirk"
+	CharKeyToEle[Skirk] = attributes.Cryo
 
 	charNames[Sucrose] = "sucrose"
 	charPrettyName[Sucrose] = "Sucrose"

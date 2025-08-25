@@ -37,6 +37,7 @@ const (
 	ICDTagSwirlElectro
 	ICDTagBurningDamage
 	ICDTagBloomDamage
+	ICDTagBountifulCoreDamage // special tag for nilou
 	ICDTagBurgeonDamage
 	ICDTagHyperbloomDamage
 
