@@ -1313,18 +1313,6 @@
       "desc": "Projectile travel time. Default 0 frames."
     }
   ],
-  "travelerpyro": [
-    {
-      "ability": "-",
-      "param": "traveler_story_buff",
-      "desc": "0 for no buffs, 1 for Chapter III: Act I buffs (+3 base atk), 2 (default) for all buffs (+10 base atk, +15 EM, +50 base HP). Set via '+params=[traveler_story_buff=...]' in the char's line."
-    },
-    {
-      "ability": "skill",
-      "param": "hold",
-      "desc": "0 for Blazing Threshold; 1 for Scorching Threshold. Default 0."
-    }
-  ],
   "venti": [
     {
       "ability": "attack",
@@ -1552,8 +1540,13 @@
   "travelergeo": [
     {
       "ability": "-",
-      "param": "traveler_story_buff",
-      "desc": "0 for no buffs, 1 for Chapter III: Act I buffs (+3 base atk), 2 (default) for all buffs (+10 base atk, +15 EM, +50 base HP). Set via '+params=[traveler_story_buff=...]' in the char's line."
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -1579,8 +1572,13 @@
   "travelerelectro": [
     {
       "ability": "-",
-      "param": "traveler_story_buff",
-      "desc": "0 for no buffs, 1 for Chapter III: Act I buffs (+3 base atk), 2 (default) for all buffs (+10 base atk, +15 EM, +50 base HP). Set via '+params=[traveler_story_buff=...]' in the char's line."
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -1601,8 +1599,13 @@
   "traveleranemo": [
     {
       "ability": "-",
-      "param": "traveler_story_buff",
-      "desc": "0 for no buffs, 1 for Chapter III: Act I buffs (+3 base atk), 2 (default) for all buffs (+10 base atk, +15 EM, +50 base HP). Set via '+params=[traveler_story_buff=...]' in the char's line."
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -1618,8 +1621,13 @@
   "travelerhydro": [
     {
       "ability": "-",
-      "param": "traveler_story_buff",
-      "desc": "0 for no buffs, 1 for Chapter III: Act I buffs (+3 base atk), 2 (default) for all buffs (+10 base atk, +15 EM, +50 base HP). Set via '+params=[traveler_story_buff=...]' in the char's line."
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -1645,8 +1653,30 @@
   "travelerdendro": [
     {
       "ability": "-",
-      "param": "traveler_story_buff",
-      "desc": "0 for no buffs, 1 for Chapter III: Act I buffs (+3 base atk), 2 (default) for all buffs (+10 base atk, +15 EM, +50 base HP). Set via '+params=[traveler_story_buff=...]' in the char's line."
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    }
+  ],
+  "travelerpyro": [
+    {
+      "ability": "-",
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Blazing Threshold; 1 for Scorching Threshold. Default 0."
     }
   ],
   "neuvillette": [
