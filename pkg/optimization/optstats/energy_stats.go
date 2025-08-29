@@ -64,9 +64,10 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 		return false
 	}, "substat-opt-energy-log")
 
-	core.Events.Subscribe(event.OnBurst, func(_ ...interface{}) bool {
-		char := core.Player.ActiveChar()
+	core.Events.Subscribe(event.OnEnergyBurst, func(args ...interface{}) bool {
+		char := args[0].(*character.CharWrapper)
 		ind := char.Index
+		amount := args[2].(float64)
 
 		wERsum := 0.0
 		wsum := 0.0
@@ -82,7 +83,7 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 
 		erNeeded := 999999999999.9
 		if charRawParticles[ind] > 0 {
-			erNeeded = max((char.EnergyMax-charFlatEnergy[ind])/charRawParticles[ind], 1.0)
+			erNeeded = max((amount-charFlatEnergy[ind])/charRawParticles[ind], 1.0)
 		}
 		erPerParticleEvent[ind] = nil
 		rawPerParticleEvent[ind] = nil

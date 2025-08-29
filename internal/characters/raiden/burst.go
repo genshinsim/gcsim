@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -126,13 +127,14 @@ func (c *char) onSwapClearBurst() {
 
 func (c *char) onBurstStackCount() {
 	// TODO: this used to be on PostBurst; need to check if it works correctly still
-	c.Core.Events.Subscribe(event.OnBurst, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnergyBurst, func(args ...interface{}) bool {
 		if c.Core.Player.Active() == c.Index {
 			return false
 		}
-		char := c.Core.Player.ActiveChar()
+		char := args[0].(*character.CharWrapper)
+		amount := args[2].(float64)
 		// add stacks based on char max energy
-		stacks := resolveStackGain[c.TalentLvlBurst()] * char.EnergyMax
+		stacks := resolveStackGain[c.TalentLvlBurst()] * amount
 		if c.Base.Cons > 0 {
 			if char.Base.Element == attributes.Electro {
 				stacks *= 1.8
