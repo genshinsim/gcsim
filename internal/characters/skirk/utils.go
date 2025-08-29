@@ -34,7 +34,7 @@ func (r *RingQueue[T]) Push(elem T) error {
 	if r.isFull {
 		return fmt.Errorf("out of bounds push, container is full")
 	}
-	r.push_unchecked(elem)
+	r.pushUnchecked(elem)
 
 	return nil
 }
@@ -42,13 +42,13 @@ func (r *RingQueue[T]) Push(elem T) error {
 func (r *RingQueue[T]) PushOverwrite(elem T) {
 	if r.isFull {
 		r.Pop()
-		r.push_unchecked(elem)
+		r.pushUnchecked(elem)
 		return
 	}
-	r.push_unchecked(elem)
+	r.pushUnchecked(elem)
 }
 
-func (r *RingQueue[T]) push_unchecked(elem T) {
+func (r *RingQueue[T]) pushUnchecked(elem T) {
 	r.data[r.end] = elem              // place the new element on the available space
 	r.end = (r.end + 1) % len(r.data) // move the end forward by modulo of capacity
 	r.isFull = r.end == r.start       // check if we're full now
