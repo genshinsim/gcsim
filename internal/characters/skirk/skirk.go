@@ -100,6 +100,11 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "serpents_subtlety":
 		return c.serpentsSubtlety, nil
+	case "void_rifts":
+		filter := func(src int) bool {
+			return src+a1Dur >= c.Core.F
+		}
+		return c.voidRifts.Count(filter), nil
 	case "a4_stacks":
 		return c.getA4Stacks(), nil
 	case "c6_stacks":

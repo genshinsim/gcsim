@@ -79,7 +79,7 @@ func (c *char) createVoidRift() {
 		c.onVoidAbsorb(1)
 		c.burstVoids = min(c.burstVoids+1, 3)
 	}
-	c.voidRifts.Push(c.Core.F)
+	c.voidRifts.PushOverwrite(c.Core.F)
 }
 
 func (c *char) a4Init() {
