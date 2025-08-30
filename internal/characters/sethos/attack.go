@@ -58,15 +58,16 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		1,
 	)
 
-	for i, mult := range attack[c.NormalCounter] {
+	counter := c.NormalCounter
+	for i, mult := range attack[counter] {
 		c.QueueCharTask(func() {
 			var c4cb combat.AttackCBFunc
 			if c.StatusIsActive(burstBuffKey) {
-				ai.Abil = fmt.Sprintf("Dusk Bolt %v", c.NormalCounter)
+				ai.Abil = fmt.Sprintf("Dusk Bolt %v", counter)
 				ai.AttackTag = attacks.AttackTagExtra
 				ai.ICDTag = attacks.ICDTagElementalBurst
 				ai.Element = attributes.Electro
-				ai.FlatDmg += burstEM[c.TalentLvlBurst()] * c.Stat(attributes.EM)
+				ai.FlatDmg = burstEM[c.TalentLvlBurst()] * c.Stat(attributes.EM)
 
 				deltaPos := c.Core.Combat.Player().Pos().Sub(c.Core.Combat.PrimaryTarget().Pos())
 				dist := deltaPos.Magnitude()
@@ -89,7 +90,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				travel,
 				c4cb,
 			)
-		}, attackHitmarks[c.NormalCounter][i])
+		}, attackHitmarks[counter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
