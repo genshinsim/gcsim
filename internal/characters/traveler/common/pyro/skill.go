@@ -218,9 +218,8 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 		if !c.StatusIsActive(scoringThresholdKey) {
 			return false
 		}
-		// ignore EC, hydro swirl, and burning damage
-		// this clause is here since these damage types are sourced to the target rather than character
-		if ae.Info.AttackTag == attacks.AttackTagECDamage || ae.Info.AttackTag == attacks.AttackTagBurningDamage ||
+		// ignore burning damage
+		if ae.Info.AttackTag == attacks.AttackTagBurningDamage ||
 			ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
 			return false
 		}
