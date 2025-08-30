@@ -6,7 +6,7 @@ const a4OnReactICD = "travelerpyro-a4-icd"
 
 func (c *Traveler) a4() {
 	fReactionHook := func(args ...interface{}) bool {
-		// if PMC is in NS Blessinng, then the active character should
+		// if PMC is in NS Blessing, then the active character should
 		// be inside a Blazing Threshold or Scorching Threshold since it
 		// always follows active character
 		if !c.nightsoulState.HasBlessing() {
@@ -16,11 +16,7 @@ func (c *Traveler) a4() {
 			return false
 		}
 
-		if c.Base.Cons >= 2 && c.StatusIsActive(c2StatusKey) && c.c2ActivationsPerSkill < 2 {
-			c.nightsoulState.GeneratePoints(14)
-		}
-
-		c.AddStatus(a4OnReactICD, 12, false) // TODO: hitlag affected?
+		c.AddStatus(a4OnReactICD, 12, true)
 		c.AddEnergy("travelerpyro-a4-energy", 5)
 		return false
 	}

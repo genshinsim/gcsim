@@ -10127,24 +10127,42 @@
     ],
     "skill": [
       {
-        "ability": "E Hold DMG"
+        "ability": "E Hold DMG",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.0
       },
       {
-        "ability": "E Scorcing Threshold"
+        "ability": "E Scorcing Threshold",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.5
       },
       {
-        "ability": "E Blazing Threshold"
+        "ability": "E Blazing Threshold",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.5
       },
       {
-        "ability": "E Scorcing Threshold (A1)"
+        "ability": "E Scorcing Threshold (A1)",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4.0
       },
       {
-        "ability": "E Blazing Threshold (A1)"
+        "ability": "E Blazing Threshold (A1)",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.0
       }
     ],
     "burst": [
       {
-        "ability": "Q"
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4.5
       }
     ]
   },

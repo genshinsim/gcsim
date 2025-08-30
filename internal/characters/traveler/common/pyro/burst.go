@@ -48,12 +48,12 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Pyro,
 		Durability:     25,
-		Mult:           burst[c.TalentLvlSkill()],
+		Mult:           burst[c.TalentLvlBurst()],
 	}
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4.5),
 		burstHitmark,
 		burstHitmark,
 	)

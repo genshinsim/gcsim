@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var skillFrames [][]int
@@ -23,9 +24,11 @@ const (
 	tapCdStart                     = 19
 	holdCdStart                    = 48
 	enterNightsoulDelay            = 19
-	nightsoulReduceDelay           = 10
+	nightsoulReduceDelay           = 8 // From wiki: consumption is 7.5 points per second -> 1 per 8f
+	scorchingThresholdICD          = 180
 	particleICDKey                 = "travelerpyro-particle-icd"
 	scoringThresholdKey            = "travelerpyro-e"
+	scorchingThresholdICDKey       = "travelerpyro-scorching-threshold-icd"
 )
 
 func init() {
@@ -76,7 +79,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	c.c1AddMod()
-	c.c2()
+	c.c2OnSkill()
 	c.c6AddMod()
 
 	if hold == 0 {
@@ -90,12 +93,7 @@ func (c *Traveler) SkillTap(p map[string]int) (action.Info, error) {
 	skillSrc := c.Core.F + enterNightsoulDelay
 	c.QueueCharTask(func() {
 		c.nightsoulSrc = skillSrc
-		if c.nightsoulState.HasBlessing() {
-			c.nightsoulState.ClearPoints()
-			c.nightsoulState.GeneratePoints(42)
-		} else {
-			c.nightsoulState.EnterBlessing(42)
-		}
+		c.nightsoulState.EnterTimedBlessing(42, 12*60, nil)
 		c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), nightsoulReduceDelay)
 	}, enterNightsoulDelay)
 	c.SetCDWithDelay(action.ActionSkill, 18*60, tapCdStart)
@@ -104,18 +102,14 @@ func (c *Traveler) SkillTap(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),
 		AnimationLength: skillFrames[c.gender][action.InvalidAction],
-		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[c.gender][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
 
 func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
-		if c.nightsoulState.HasBlessing() {
-			c.nightsoulState.GeneratePoints(42)
-		} else {
-			c.nightsoulState.EnterBlessing(42)
-		}
+		c.nightsoulState.EnterTimedBlessing(42, 12*60, nil)
 		c.nightsoulSrc = c.Core.F
 		c.QueueCharTask(c.nightsoulPointReduceFunc(c.Core.F), nightsoulReduceDelay)
 	}, 48)
@@ -135,7 +129,7 @@ func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.0),
 		skillHoldHitmark,
 		skillHoldHitmark,
 	)
@@ -145,7 +139,7 @@ func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames[c.gender]),
 		AnimationLength: skillHoldFrames[c.gender][action.InvalidAction],
-		CanQueueAfter:   skillHoldFrames[c.gender][action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillHoldFrames[c.gender][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
@@ -201,10 +195,9 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 			Durability:     25,
 			Mult:           blazingThreshold[c.TalentLvlSkill()],
 		}
-		// TODO: change hurtbox
-		radius := 4.
+		radius := 0.5
 		if c.Base.Ascension >= 1 && c.nightsoulState.Points() >= 20 {
-			radius = 6.
+			radius = 3.
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius), 0, 0, c.particleCB)
 		c.QueueCharTask(c.blazingThresholdHit(src), blazingThresholdInterval)
@@ -213,9 +206,13 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 
 func (c *Traveler) scorchingThresholdOnDamage() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		_, ok := args[0].(*enemy.Enemy)
 		ae := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
-		if c.scorchingThresholdICD > c.Core.F {
+		if !ok {
+			return false
+		}
+		if c.StatusIsActive(scorchingThresholdICDKey) {
 			return false
 		}
 		if !c.StatusIsActive(scoringThresholdKey) {
@@ -227,12 +224,6 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 			ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
 			return false
 		}
-		// ignore self dmg
-		if ae.Info.ActorIndex == c.Index &&
-			ae.Info.AttackTag == attacks.AttackTagElementalArt &&
-			ae.Info.StrikeType == attacks.StrikeTypeSlash {
-			return false
-		}
 		// ignore 0 damage
 		if dmg == 0 {
 			return false
@@ -240,7 +231,7 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
-			Abil:           "Scorching Threshold DMG",
+			Abil:           "Scorching Threshold",
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 			ICDTag:         attacks.ICDTagTravelerScorchingThreshold,
@@ -250,15 +241,14 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 			Durability:     25,
 			Mult:           scorchingThreshold[c.TalentLvlSkill()],
 		}
-		// TODO: change hurtbox
-		radius := 4.
+		radius := 1.5
 		if c.Base.Ascension >= 1 && c.nightsoulState.Points() >= 20 {
-			radius = 6.
+			radius = 4.
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius),
 			scorchingThresholdHitmarkDelay, scorchingThresholdHitmarkDelay, c.particleCB)
 
-		c.scorchingThresholdICD = c.Core.F + 180 // 3 sec icd
+		c.AddStatus(scorchingThresholdICDKey, scorchingThresholdICD, false)
 		return false
 	}, "travelerpyro-scorching-threshold")
 }

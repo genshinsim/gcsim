@@ -15,7 +15,6 @@ type Traveler struct {
 	*tmpl.Character
 	nightsoulState        *nightsoul.State
 	nightsoulSrc          int
-	scorchingThresholdICD int
 	gender                int
 	c2ActivationsPerSkill int
 }
@@ -44,6 +43,7 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 func (c *Traveler) Init() error {
 	c.scorchingThresholdOnDamage()
 	c.a4()
+	c.c2()
 	return nil
 }
 
