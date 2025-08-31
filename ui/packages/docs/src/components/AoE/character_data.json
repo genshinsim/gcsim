@@ -10133,7 +10133,7 @@
         "radius": 3.0
       },
       {
-        "ability": "E Scorcing Threshold",
+        "ability": "E Scorching Threshold",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 1.5
@@ -10145,7 +10145,7 @@
         "radius": 0.5
       },
       {
-        "ability": "E Scorcing Threshold (A1)",
+        "ability": "E Scorching Threshold (A1)",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 4.0

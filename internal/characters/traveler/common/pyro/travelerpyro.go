@@ -42,8 +42,10 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 
 func (c *Traveler) Init() error {
 	c.scorchingThresholdOnDamage()
-	c.a4()
-	c.c2()
+	c.a4Init()
+	c.c1Init()
+	c.c2Init()
+	c.c6Init()
 	return nil
 }
 

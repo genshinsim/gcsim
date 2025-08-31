@@ -1,6 +1,8 @@
 package pyro
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -16,7 +18,7 @@ const (
 	c6AttackModKey = "travelerpyro-c6"
 )
 
-func (c *Traveler) c1AddMod() {
+func (c *Traveler) c1Init() {
 	if c.Base.Cons < 1 {
 		return
 	}
@@ -30,6 +32,9 @@ func (c *Traveler) c1AddMod() {
 				if c.Core.Player.Active() != this.Index {
 					return nil, false
 				}
+				if !c.nightsoulState.HasBlessing() {
+					return nil, false
+				}
 				mDmg[attributes.DmgP] = 0.06
 				if this.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
 					mDmg[attributes.DmgP] += 0.09
@@ -40,7 +45,7 @@ func (c *Traveler) c1AddMod() {
 	}
 }
 
-func (c *Traveler) c2() {
+func (c *Traveler) c2Init() {
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -58,7 +63,7 @@ func (c *Traveler) c2() {
 	}
 
 	c.Core.Events.Subscribe(event.OnBurning, fReactionHook, "travelerpyro-c2-onburning")
-	c.Core.Events.Subscribe(event.OnVaporize, fReactionHook, "travelerpyro-a4-onvaporize")
+	c.Core.Events.Subscribe(event.OnVaporize, fReactionHook, "travelerpyro-c2-onvaporize")
 	c.Core.Events.Subscribe(event.OnMelt, fReactionHook, "travelerpyro-c2-onmelt")
 	c.Core.Events.Subscribe(event.OnOverload, fReactionHook, "travelerpyro-c2-onoverload")
 	c.Core.Events.Subscribe(event.OnBurgeon, fReactionHook, "travelerpyro-c2-onburgeon")
@@ -88,7 +93,7 @@ func (c *Traveler) c4AddMod() {
 	})
 }
 
-func (c *Traveler) c6AddMod() {
+func (c *Traveler) c6Init() {
 	if c.Base.Cons < 6 {
 		return
 	}
@@ -104,7 +109,7 @@ func (c *Traveler) c6AddMod() {
 			default:
 				return nil, false
 			}
-			if !c.nightsoulState.HasBlessing() {
+			if !slices.Contains(ae.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
 				return nil, false
 			}
 			return mCD, true

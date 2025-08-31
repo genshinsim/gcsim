@@ -7,11 +7,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-// TravelerStoryBuffs applies buffs based on completed story quests
-// 0 - no buffs
-// 1 - buffs from completing "Chapter III: Act I of sumeru archon quest" (+3 base atk)
-// 2 (default) - buff from 1 + buffs from completing "Skirk's Story Quest" (+7 additional base atk, +15 EM, +50 base HP)
 func TravelerStoryBuffs(c *character.CharWrapper, p info.CharacterProfile) {
+	// TravelerStoryBuffs applies buffs based on completed story quests
+	//
+	// base_atk_buff
+	// 		buffs from completing Chapter III: Act I (Sumeru Archon Quest)
+	// 		+3 base atk
+	// skirk_story_buff
+	// 		buffs from completing Crystallina Chapter: Act I (Skirk's Story Quest)
+	// 		+7 base atk, +15 EM, +50 base HP
+	//
+	// All buffs default to enabled
 	baseAtkBuff, okBaseAtkBuff := p.Params["base_atk_buff"]
 	skirkBuff, okSkirkBuff := p.Params["skirk_story_buff"]
 	if !okBaseAtkBuff {

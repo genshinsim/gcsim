@@ -78,9 +78,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 		return action.Info{}, fmt.Errorf("invalid hold param supplied, got %v", hold)
 	}
 
-	c.c1AddMod()
 	c.c2OnSkill()
-	c.c6AddMod()
 
 	if hold == 0 {
 		return c.SkillTap(p)
@@ -165,10 +163,6 @@ func (c *Traveler) reduceNightsoulPoints(src int, val float64) {
 			return
 		}
 		c.DeleteStatus(scoringThresholdKey)
-		for _, char := range c.Core.Player.Chars() {
-			char.DeleteAttackMod(c1AttackModKey)
-		}
-		c.DeleteAttackMod(c6AttackModKey)
 		c.nightsoulState.ExitBlessing()
 		c.nightsoulState.ClearPoints()
 		c.nightsoulSrc = -1
@@ -247,7 +241,7 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius),
 			scorchingThresholdHitmarkDelay, scorchingThresholdHitmarkDelay, c.particleCB)
 
-		c.AddStatus(scorchingThresholdICDKey, scorchingThresholdICD, false)
+		c.AddStatus(scorchingThresholdICDKey, scorchingThresholdICD, true)
 		return false
 	}, "travelerpyro-scorching-threshold")
 }

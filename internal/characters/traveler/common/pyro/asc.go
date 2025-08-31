@@ -4,7 +4,10 @@ import "github.com/genshinsim/gcsim/pkg/core/event"
 
 const a4OnReactICD = "travelerpyro-a4-icd"
 
-func (c *Traveler) a4() {
+func (c *Traveler) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	fReactionHook := func(args ...interface{}) bool {
 		// if PMC is in NS Blessing, then the active character should
 		// be inside a Blazing Threshold or Scorching Threshold since it
