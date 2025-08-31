@@ -15,6 +15,12 @@ import (
 var (
 	highPlungeFrames      []int
 	fieryHighPlungeFrames []int
+
+	xianyunLowPlungeFrames  []int
+	xianyunHighPlungeFrames []int
+
+	xianyunFieryLowPlungeFrames  []int
+	xianyunFieryHighPlungeFrames []int
 )
 
 // TODO: low_plunge
@@ -23,6 +29,16 @@ const highPlungeHitmark = 37
 const fieryHighPlungeHitmark = 41
 const collisionHitmark = highPlungeHitmark - 6
 
+const xianyunLowPlungeHitmark = 37
+const xianyunHighPlungeHitmark = 38
+
+const xianyunLowPlungeNonNSWalk = 72
+const xianyunHighPlungeNonNSWalk = 72
+
+const xianyunFieryLowPlungeHitmark = 40
+const xianyunFieryHighPlungeHitmark = 40
+
+const lowPlungeRadius = 3.0
 const highPlungeRadius = 5.0
 
 const (
@@ -50,6 +66,46 @@ func init() {
 	fieryHighPlungeFrames[action.ActionDash] = 40
 	fieryHighPlungeFrames[action.ActionJump] = 79
 	fieryHighPlungeFrames[action.ActionSwap] = 45
+
+	// xianyun low_plunge -> x
+	xianyunLowPlungeFrames = frames.InitAbilSlice(75) // Plunge -> Walk
+	xianyunLowPlungeFrames[action.ActionAttack] = 40
+	xianyunLowPlungeFrames[action.ActionCharge] = 39
+	xianyunLowPlungeFrames[action.ActionSkill] = 39
+	xianyunLowPlungeFrames[action.ActionBurst] = 39
+	xianyunLowPlungeFrames[action.ActionDash] = xianyunLowPlungeHitmark
+	xianyunLowPlungeFrames[action.ActionJump] = 50
+	xianyunLowPlungeFrames[action.ActionSwap] = 38
+
+	// xianyun high_plunge -> x
+	xianyunHighPlungeFrames = frames.InitAbilSlice(77) // Plunge -> Walk
+	xianyunHighPlungeFrames[action.ActionAttack] = 39
+	xianyunHighPlungeFrames[action.ActionCharge] = 40
+	xianyunHighPlungeFrames[action.ActionSkill] = 39
+	xianyunHighPlungeFrames[action.ActionBurst] = 39
+	xianyunHighPlungeFrames[action.ActionDash] = xianyunHighPlungeHitmark
+	xianyunHighPlungeFrames[action.ActionJump] = 49
+	xianyunHighPlungeFrames[action.ActionSwap] = 39
+
+	// xianyun nightsoul low_plunge -> x
+	xianyunFieryLowPlungeFrames = frames.InitAbilSlice(91) // Plunge -> Walk
+	xianyunFieryLowPlungeFrames[action.ActionAttack] = 46
+	xianyunFieryLowPlungeFrames[action.ActionCharge] = 45
+	xianyunFieryLowPlungeFrames[action.ActionSkill] = 45
+	xianyunFieryLowPlungeFrames[action.ActionBurst] = 46
+	xianyunFieryLowPlungeFrames[action.ActionDash] = xianyunFieryLowPlungeHitmark
+	xianyunFieryLowPlungeFrames[action.ActionJump] = 76
+	xianyunFieryLowPlungeFrames[action.ActionSwap] = 46
+
+	// xianyun nightsoul high_plunge -> x
+	xianyunFieryHighPlungeFrames = frames.InitAbilSlice(91) // Plunge -> Walk
+	xianyunFieryHighPlungeFrames[action.ActionAttack] = 47
+	xianyunFieryHighPlungeFrames[action.ActionCharge] = 47
+	xianyunFieryHighPlungeFrames[action.ActionSkill] = 47
+	xianyunFieryHighPlungeFrames[action.ActionBurst] = 47
+	xianyunFieryHighPlungeFrames[action.ActionDash] = xianyunFieryHighPlungeHitmark
+	xianyunFieryHighPlungeFrames[action.ActionJump] = 77
+	xianyunFieryHighPlungeFrames[action.ActionSwap] = 46
 }
 
 // High Plunge attack damage queue generator
@@ -58,12 +114,30 @@ func init() {
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	if c.Core.Player.CurrentState() == action.ChargeAttackState {
-		return c.highPlungeXY(p), nil
+		return c.highPlungeCA(p), nil
 	}
-	return action.Info{}, errors.New("high_plunge can only be used after charge")
+	switch c.Core.Player.Airborne() {
+	case player.AirborneXianyun:
+		return c.highPlungeXY(p), nil
+	default:
+		return action.Info{}, errors.New("high_plunge can only be used after charge or while airborne")
+	}
 }
 
-func (c *char) highPlungeXY(p map[string]int) action.Info {
+// Low Plunge attack damage queue generator
+// Use the "collision" optional argument if you want to do a falling hit on the way down
+// Default = 0
+func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
+	defer c.Core.Player.SetAirborne(player.Grounded)
+	switch c.Core.Player.Airborne() {
+	case player.AirborneXianyun:
+		return c.lowPlungeXY(p), nil
+	default:
+		return action.Info{}, errors.New("low_plunge can only be used while airborne")
+	}
+}
+
+func (c *char) highPlungeCA(p map[string]int) action.Info {
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not collision hit
@@ -121,6 +195,138 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		CanQueueAfter:   plungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 		OnRemoved:       c.clearNightsoulCB,
+	}
+}
+
+func (c *char) highPlungeXY(p map[string]int) action.Info {
+	collision, ok := p["collision"]
+	if !ok {
+		collision = 0 // Whether or not collision hit
+	}
+
+	if collision > 0 {
+		c.plungeCollision(collisionHitmark)
+	}
+
+	ai := combat.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "High Plunge",
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AttackTag:      attacks.AttackTagPlunge,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.Electro,
+		Durability:     25,
+		Mult:           highPlunge[c.TalentLvlAttack()],
+		FlatDmg:        c.c4FlatBonus(),
+		HitlagFactor:   0.1,
+	}
+
+	hitmark := xianyunHighPlungeHitmark
+	c.exitNS = false
+	plungeFrames := c.newAbilFuncXYPlunge(xianyunHighPlungeFrames, xianyunHighPlungeNonNSWalk)
+	if c.nightsoulState.HasBlessing() {
+		ai.Abil = "Fiery Passion High Plunge"
+		ai.Mult = fieryHighPlunge[c.TalentLvlAttack()]
+		hitmark = xianyunFieryHighPlungeHitmark
+		c.exitNS = true
+		plungeFrames = frames.NewAbilFunc(xianyunFieryHighPlungeFrames)
+
+		c.QueueCharTask(c.nightsoulState.ClearPoints, 2)
+	} else {
+		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
+	}
+	ai.Mult += c.a1PlungeBuff()
+	c.getApexDrive()
+
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
+		hitmark,
+		hitmark,
+		c.a1Cancel,
+		c.c2CB(),
+		c.c4CB,
+	)
+
+	return action.Info{
+		Frames:          plungeFrames,
+		AnimationLength: plungeFrames(action.InvalidAction),
+		CanQueueAfter:   plungeFrames(action.ActionDash),
+		State:           action.PlungeAttackState,
+		OnRemoved:       c.clearNightsoulCB,
+	}
+}
+
+func (c *char) lowPlungeXY(p map[string]int) action.Info {
+	collision, ok := p["collision"]
+	if !ok {
+		collision = 0 // Whether or not collision hit
+	}
+
+	if collision > 0 {
+		c.plungeCollision(collisionHitmark)
+	}
+
+	ai := combat.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "Low Plunge",
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AttackTag:      attacks.AttackTagPlunge,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.Electro,
+		Durability:     25,
+		Mult:           lowPlunge[c.TalentLvlAttack()],
+		FlatDmg:        c.c4FlatBonus(),
+		HitlagFactor:   0.1,
+	}
+
+	hitmark := xianyunLowPlungeHitmark
+	c.exitNS = false
+	plungeFrames := c.newAbilFuncXYPlunge(xianyunLowPlungeFrames, xianyunLowPlungeNonNSWalk)
+	if c.nightsoulState.HasBlessing() {
+		ai.Abil = "Fiery Passion Low Plunge"
+		ai.Mult = fieryLowPlunge[c.TalentLvlAttack()]
+		hitmark = xianyunFieryLowPlungeHitmark
+		c.exitNS = true
+		plungeFrames = frames.NewAbilFunc(xianyunFieryLowPlungeFrames)
+
+		c.QueueCharTask(c.nightsoulState.ClearPoints, 2)
+	} else {
+		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
+	}
+	ai.Mult += c.a1PlungeBuff()
+	c.getApexDrive()
+
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
+		hitmark,
+		hitmark,
+		c.a1Cancel,
+		c.c2CB(),
+		c.c4CB,
+	)
+
+	return action.Info{
+		Frames:          plungeFrames,
+		AnimationLength: plungeFrames(action.InvalidAction),
+		CanQueueAfter:   plungeFrames(action.ActionDash),
+		State:           action.PlungeAttackState,
+		OnRemoved:       c.clearNightsoulCB,
+	}
+}
+
+func (c *char) newAbilFuncXYPlunge(slice []int, nonNSWalk int) func(action.Action) int {
+	// This is different because the walk frames after plunge change based on if in nightsoul or not
+	return func(next action.Action) int {
+		if !c.nightsoulState.HasBlessing() && next == action.ActionWalk {
+			return nonNSWalk
+		}
+		return slice[next]
 	}
 }
 
