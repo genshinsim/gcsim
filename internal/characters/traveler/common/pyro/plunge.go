@@ -27,7 +27,6 @@ const highPlungePoiseDMG = 150.0
 const highPlungeRadius = 5.0
 
 func init() {
-
 	// low_plunge -> x
 	lowPlungeFrames = make([][]int, 2)
 
