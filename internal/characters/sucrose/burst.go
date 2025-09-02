@@ -68,15 +68,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	snapAbs := c.Snapshot(&aiAbs)
 
-	done := false
 	cb := func(a combat.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
-		if done {
-			return
-		}
-		done = true
 		c.a4()
 	}
 
