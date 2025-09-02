@@ -33,7 +33,6 @@ func init() {
 	lowPlungeFrames[action.ActionSkill] = 51
 	lowPlungeFrames[action.ActionBurst] = 51
 	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
-	lowPlungeFrames[action.ActionJump] = 81
 	lowPlungeFrames[action.ActionWalk] = 79
 	lowPlungeFrames[action.ActionSwap] = 64
 
@@ -44,7 +43,6 @@ func init() {
 	highPlungeFrames[action.ActionSkill] = 52
 	highPlungeFrames[action.ActionBurst] = 53
 	highPlungeFrames[action.ActionDash] = highPlungeHitmark
-	highPlungeFrames[action.ActionJump] = 82
 	highPlungeFrames[action.ActionWalk] = 81
 	highPlungeFrames[action.ActionSwap] = 66
 }
