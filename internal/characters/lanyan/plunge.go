@@ -25,7 +25,7 @@ const highPlungeRadius = 3.5
 
 func init() {
 	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(67) //Jump
+	lowPlungeFrames = frames.InitAbilSlice(67) // Jump
 	lowPlungeFrames[action.ActionAttack] = 56
 	lowPlungeFrames[action.ActionSkill] = 56
 	lowPlungeFrames[action.ActionBurst] = 57
@@ -34,7 +34,7 @@ func init() {
 	lowPlungeFrames[action.ActionSwap] = 53
 
 	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(67) //Jump
+	highPlungeFrames = frames.InitAbilSlice(67) // Jump
 	highPlungeFrames[action.ActionAttack] = 58
 	highPlungeFrames[action.ActionSkill] = 59
 	highPlungeFrames[action.ActionBurst] = 60
