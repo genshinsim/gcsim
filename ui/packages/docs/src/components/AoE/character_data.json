@@ -5751,12 +5751,14 @@
         "ability": "Low_Plunge",
         "shape": "Circle",
         "center": "Player",
+        "offsetY": -0.5,
         "radius": 3
       },
       {
         "ability": "High_Plunge",
         "shape": "Circle",
         "center": "Player",
+        "offsetY": -0.5,
         "radius": 3.5
       }
     ],
