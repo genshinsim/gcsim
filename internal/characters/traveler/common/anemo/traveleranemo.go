@@ -35,7 +35,7 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
-	common.TravelerBaseAtkIncrease(w, p)
+	common.TravelerStoryBuffs(w, p)
 	return &c, nil
 }
 

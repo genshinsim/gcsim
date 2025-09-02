@@ -22,6 +22,9 @@ const (
 	ICDTagDash
 	ICDTagTravelerWakeOfEarth
 	ICDTagTravelerDewdrop
+	ICDTagTravelerScorchingThreshold
+	ICDTagTravelerBlazingThreshold
+	ICDTagTravelerHoldDMG
 
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage

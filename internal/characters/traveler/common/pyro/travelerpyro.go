@@ -1,11 +1,11 @@
-package electro
+package pyro
 
 import (
 	"github.com/genshinsim/gcsim/internal/characters/traveler/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
+	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -13,13 +13,10 @@ import (
 
 type Traveler struct {
 	*tmpl.Character
-	abundanceAmulets      int
-	burstC6Hits           int
-	burstC6WillGiveEnergy bool
-	burstSnap             combat.Snapshot
-	burstAtk              *combat.AttackEvent
-	burstSrc              int
+	nightsoulState        *nightsoul.State
+	nightsoulSrc          int
 	gender                int
+	c2ActivationsPerSkill int
 }
 
 func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile, gender int) (*Traveler, error) {
@@ -28,18 +25,27 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Electro
-	c.EnergyMax = 80
-	c.BurstCon = 3
-	c.SkillCon = 5
-	c.NormalHitNum = normalHitNum
+	c.Base.Element = attributes.Pyro
+	c.EnergyMax = 70
+	c.BurstCon = 5
+	c.SkillCon = 3
+	c.NormalHitNum = 5
 
 	common.TravelerStoryBuffs(w, p)
+
+	c.nightsoulState = nightsoul.New(s, w)
+	c.nightsoulState.MaxPoints = 80
+	c.c2ActivationsPerSkill = 0
+
 	return &c, nil
 }
 
 func (c *Traveler) Init() error {
-	c.burstProc()
+	c.scorchingThresholdOnDamage()
+	c.a4Init()
+	c.c1Init()
+	c.c2Init()
+	c.c6Init()
 	return nil
 }
 
@@ -52,5 +58,14 @@ func (c *Traveler) AnimationStartDelay(k model.AnimationDelayKey) int {
 		return 7
 	default:
 		return c.Character.AnimationStartDelay(k)
+	}
+}
+
+func (c *Traveler) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
+	default:
+		return c.Character.Condition(fields)
 	}
 }
