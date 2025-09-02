@@ -32,7 +32,6 @@ func init() {
 	lowPlungeFrames[action.ActionSkill] = 60
 	lowPlungeFrames[action.ActionBurst] = 59
 	lowPlungeFrames[action.ActionDash] = 77
-	lowPlungeFrames[action.ActionJump] = 78
 	lowPlungeFrames[action.ActionWalk] = 74
 	lowPlungeFrames[action.ActionSwap] = 66
 
@@ -42,7 +41,6 @@ func init() {
 	highPlungeFrames[action.ActionSkill] = 60
 	highPlungeFrames[action.ActionBurst] = 60
 	highPlungeFrames[action.ActionDash] = 77
-	highPlungeFrames[action.ActionJump] = 80
 	highPlungeFrames[action.ActionWalk] = 76
 	highPlungeFrames[action.ActionSwap] = 67
 }
@@ -92,7 +90,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
+		CanQueueAfter:   lowPlungeFrames[action.ActionAttack],
 		State:           action.PlungeAttackState,
 	}
 }
@@ -142,7 +140,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeFrames[action.ActionDash],
+		CanQueueAfter:   highPlungeFrames[action.ActionAttack],
 		State:           action.PlungeAttackState,
 	}
 }
