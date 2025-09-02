@@ -90,9 +90,7 @@ func (c *Traveler) SkillTap(p map[string]int) (action.Info, error) {
 	// Enter Nightsoul and start reducing Points
 	skillSrc := c.Core.F + enterNightsoulDelay
 	c.QueueCharTask(func() {
-		c.nightsoulSrc = skillSrc
-		c.nightsoulState.EnterTimedBlessing(42, 12*60, nil)
-		c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), nightsoulReduceDelay)
+		c.enterNightsoul(skillSrc)
 	}, enterNightsoulDelay)
 	c.SetCDWithDelay(action.ActionSkill, 18*60, tapCdStart)
 	c.QueueCharTask(c.blazingThresholdHit(skillSrc), skillTapHitmark)
@@ -107,9 +105,7 @@ func (c *Traveler) SkillTap(p map[string]int) (action.Info, error) {
 
 func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
-		c.nightsoulState.EnterTimedBlessing(42, 12*60, nil)
-		c.nightsoulSrc = c.Core.F
-		c.QueueCharTask(c.nightsoulPointReduceFunc(c.Core.F), nightsoulReduceDelay)
+		c.enterNightsoul(c.Core.F)
 	}, 48)
 	c.SetCDWithDelay(action.ActionSkill, 18*60, holdCdStart)
 	ai := combat.AttackInfo{
@@ -151,21 +147,15 @@ func (c *Traveler) nightsoulPointReduceFunc(src int) func() {
 			return
 		}
 		val := 1.
-		c.reduceNightsoulPoints(src, val)
+		c.reduceNightsoulPoints(val)
 		c.QueueCharTask(c.nightsoulPointReduceFunc(src), nightsoulReduceDelay)
 	}
 }
 
-func (c *Traveler) reduceNightsoulPoints(src int, val float64) {
+func (c *Traveler) reduceNightsoulPoints(val float64) {
 	c.nightsoulState.ConsumePoints(val)
-	if c.nightsoulState.Points() <= 0.00001 || c.Core.F >= src+12*60 {
-		if !c.nightsoulState.HasBlessing() {
-			return
-		}
-		c.DeleteStatus(scoringThresholdKey)
-		c.nightsoulState.ExitBlessing()
-		c.nightsoulState.ClearPoints()
-		c.nightsoulSrc = -1
+	if c.nightsoulState.Points() <= 0.00001 && c.nightsoulState.HasBlessing() {
+		c.exitNightsoul()
 	}
 }
 
@@ -255,7 +245,19 @@ func (c *Traveler) particleCB(a combat.AttackCB) {
 	}
 	c.AddStatus(particleICDKey, int(2.9*60), true)
 
-	// TODO: confirm particle count
 	count := 1.0
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
+}
+
+func (c *Traveler) enterNightsoul(src int) {
+	c.nightsoulSrc = src
+	c.nightsoulState.EnterTimedBlessing(42, 12*60, c.exitNightsoul)
+	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), nightsoulReduceDelay)
+}
+
+func (c *Traveler) exitNightsoul() {
+	c.DeleteStatus(scoringThresholdKey)
+	c.nightsoulState.ExitBlessing()
+	c.nightsoulState.ClearPoints()
+	c.nightsoulSrc = -1
 }
