@@ -7,7 +7,7 @@ import (
 )
 
 func (c *CharWrapper) ConsumeEnergy(delay int) {
-	c.ConsumeEnergyPartial(delay, c.Energy)
+	c.ConsumeEnergyPartial(delay, c.EnergyMax)
 }
 
 func (c *CharWrapper) ConsumeEnergyPartial(delay int, amount float64) {
