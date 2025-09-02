@@ -140,13 +140,20 @@ func (c *char) c6onHypersense() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	active := c.Core.Player.ActiveChar()
+
 	c.c6stacks.Add(9 * 60)
-	active.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag(c6Key, 9*60),
-		Amount: func() ([]float64, bool) {
-			c.c6bonus[attributes.ATKP] = float64(c.c6stacks.Count()) * 0.1
-			return c.c6bonus, true
-		},
-	})
+
+	// TODO: Is this buff hitlag affected per character? Or is it hitlag affected on Ororon only?
+	for _, char := range c.Core.Player.Chars() {
+		char.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag(c6Key, 9*60),
+			Amount: func() ([]float64, bool) {
+				if c.Core.Player.Active() != char.Index {
+					return nil, false
+				}
+				c.c6bonus[attributes.ATKP] = float64(c.c6stacks.Count()) * 0.1
+				return c.c6bonus, true
+			},
+		})
+	}
 }
