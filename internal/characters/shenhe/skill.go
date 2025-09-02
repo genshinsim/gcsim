@@ -251,8 +251,8 @@ func (c *char) quillDamageMod() {
 				c.Core.Log.NewEvent("Shenhe Quill proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 					Write("before", atk.Info.FlatDmg).
 					Write("addition", amt).
-					Write("effect_ends_at", c.StatusExpiry(quillKey)).
-					Write("quill_left", c.Tags[quillKey])
+					Write("effect_ends_at", char.StatusExpiry(quillKey)).
+					Write("quill_left", char.Tags[quillKey])
 			}
 
 			atk.Info.FlatDmg += amt
