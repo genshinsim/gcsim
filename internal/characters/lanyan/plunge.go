@@ -8,14 +8,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var highPlungeFrames []int
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 45
-const highPlungeHitmark = 47
+const lowPlungeHitmark = 44
+const highPlungeHitmark = 46
 const collisionHitmark = lowPlungeHitmark - 6
 
 const lowPlungeRadius = 3.0
@@ -24,24 +25,21 @@ const highPlungeRadius = 3.5
 
 func init() {
 	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(75) // Jump
-	lowPlungeFrames[action.ActionAttack] = 68
-	lowPlungeFrames[action.ActionSkill] = 67
-	lowPlungeFrames[action.ActionBurst] = 67
+	lowPlungeFrames = frames.InitAbilSlice(67) //Jump
+	lowPlungeFrames[action.ActionAttack] = 56
+	lowPlungeFrames[action.ActionSkill] = 56
+	lowPlungeFrames[action.ActionBurst] = 57
 	lowPlungeFrames[action.ActionDash] = lowPlungeHitmark
-	lowPlungeFrames[action.ActionJump] = 75
-	lowPlungeFrames[action.ActionWalk] = 75
-	lowPlungeFrames[action.ActionSwap] = 60
+	lowPlungeFrames[action.ActionWalk] = 65
+	lowPlungeFrames[action.ActionSwap] = 53
 
 	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(78) // Jump
-	highPlungeFrames[action.ActionAttack] = 69
-	highPlungeFrames[action.ActionSkill] = 70
-	highPlungeFrames[action.ActionBurst] = 69
+	highPlungeFrames = frames.InitAbilSlice(67) //Jump
+	highPlungeFrames[action.ActionAttack] = 58
+	highPlungeFrames[action.ActionSkill] = 59
+	highPlungeFrames[action.ActionBurst] = 60
 	highPlungeFrames[action.ActionDash] = highPlungeHitmark
-	highPlungeFrames[action.ActionJump] = 78
-	highPlungeFrames[action.ActionWalk] = 76
-	highPlungeFrames[action.ActionSwap] = 62
+	highPlungeFrames[action.ActionSwap] = 53
 }
 
 // Low Plunge attack damage queue generator
@@ -80,7 +78,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, lowPlungeRadius),
 		lowPlungeHitmark,
 		lowPlungeHitmark,
 	)
@@ -129,7 +127,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, highPlungeRadius),
 		highPlungeHitmark,
 		highPlungeHitmark,
 	)
