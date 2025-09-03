@@ -14,7 +14,7 @@ import (
 
 const (
 	c1AttackModKey = "travelerpyro-c1"
-	c2StatusKey    = "travelerpyro-c2-key"
+	c2StatusKey    = "travelerpyro-c2"
 	c6AttackModKey = "travelerpyro-c6"
 )
 
@@ -50,7 +50,7 @@ func (c *Traveler) c2Init() {
 		return
 	}
 	fReactionHook := func(args ...interface{}) bool {
-		if c.StatusIsActive(c2StatusKey) {
+		if !c.StatusIsActive(c2StatusKey) {
 			return false
 		}
 
