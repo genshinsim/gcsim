@@ -1,7 +1,7 @@
 import {Button, Card} from '@blueprintjs/core';
 import tagData from '@gcsim/data/src/tags.json';
 import {useTranslation} from 'react-i18next';
-import {LatestVersion} from 'SharedComponents/LatestVersion';
+import {LatestVersion} from '@gcsim/components';
 import {useLocation} from 'wouter';
 
 export const Home = () => {

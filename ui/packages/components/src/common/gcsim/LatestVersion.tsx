@@ -5,7 +5,7 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { AvatarPortrait } from "@gcsim/components";
-import LatestCharactersData from '../Data/latest_chars.json'
+import LatestCharactersData from '@gcsim/data/src/latest_chars.json'
 
 const majorVersionRegex = /v\d+\.\d+/gm;
 

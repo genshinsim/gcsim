@@ -1,11 +1,10 @@
 import {AnchorButton, Card} from '@blueprintjs/core';
-import {Button, DBCard} from '@gcsim/components';
+import {Button, DBCard, LatestVersion} from '@gcsim/components';
 import {db} from '@gcsim/types';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Link} from 'react-router-dom';
-import {LatestVersion} from 'SharedComponents/LatestVersion';
 
 const randQuery = {
   query: {
