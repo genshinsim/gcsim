@@ -17,7 +17,17 @@ export const DBView = (props: Props) => {
   return (
     <div className="flex flex-col gap-4 m-8 my-4 items-center">
       <ActionBar simCount={props.data.length} />
-      <Warning />
+      <Warning
+        hideKey="hide-warning-risk"
+        headerKey="warnings.gcsim_risk_title"
+        bodyKey="warnings.gcsim_risk_body"
+        className="bg-red-950 border-red-800"
+      />
+      <Warning
+        hideKey="hide-warning-db"
+        headerKey="db.readme_header"
+        bodyKey="db.readme_body"
+      />
       {props.data.length === 0 ? (
         <div className="6 flex flex-col justify-center items-center h-screen">
           <img src={eula} className=" object-contain opacity-50 w-32 h-32" />
