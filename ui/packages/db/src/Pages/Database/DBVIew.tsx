@@ -3,7 +3,7 @@ import eula from 'images/eula.png';
 import {useTranslation} from 'react-i18next';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ActionBar} from 'SharedComponents/ActionBar';
-import {Warning} from '@gcsim/components';
+import {Warning, RiskWarning} from '@gcsim/components';
 import {ListView} from '../../SharedComponents/ListView';
 
 type Props = {
@@ -17,13 +17,7 @@ export const DBView = (props: Props) => {
   return (
     <div className="flex flex-col gap-4 m-8 my-4 items-center">
       <ActionBar simCount={props.data.length} />
-      <Warning
-        hideKey="hide-warning-risk"
-        headerKey="warnings.gcsim_risk_title"
-        bodyKey="warnings.gcsim_risk_body"
-        className="bg-red-950 border-red-800"
-        showButton={false}
-      />
+      <RiskWarning />
       <Warning
         hideKey="hide-warning-db"
         headerKey="db.readme_header"
