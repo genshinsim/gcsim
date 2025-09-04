@@ -1,21 +1,21 @@
 import {Button} from '@blueprintjs/core';
-import tanuki from 'images/tanuki.png';
+import tanuki from '../../images/tanuki.png'
 import React from 'react';
-import {Trans, TransProps, useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 
 interface WarningProps {
   hideKey: string;
   headerKey: string;
   bodyKey: string;
+  showButton?: boolean;
   className?: string;
-  backgroundColor?: string;
-  borderColor?: string;
 }
 
 export function Warning({
   hideKey,
   headerKey,
   bodyKey,
+  showButton = true,
   className = "bg-slate-900 border-blue-800",
 }: WarningProps) {
   const { t } = useTranslation();
@@ -27,6 +27,9 @@ export function Warning({
   }, [hide, hideKey]);
 
   if (hide) {
+    if (!showButton) {
+      return <></>;
+    }
     return (
       <div className="flex flex-col py-0 min-[1300px]:w-[1100px]">
         <div className="ml-auto">

@@ -15,6 +15,7 @@ import { RootState, useAppSelector } from "@ui/Stores/store";
 import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
 import { useTranslation } from "react-i18next";
+import { Warning } from "@gcsim/components";
 
 type ViewerProps = {
   running: boolean;
@@ -61,6 +62,15 @@ export default ({ running, data, hash = "", recoveryConfig, error, src, redirect
 
   return (
     <div className="flex flex-col flex-grow w-full pb-6">
+      <div className="flex flex-col px-2 pt-4 empty:pt-0 2xl:mx-auto items-center justify-center">
+        <Warning
+          hideKey="hide-warning-risk"
+          headerKey="warnings.gcsim_risk_title"
+          bodyKey="warnings.gcsim_risk_body"
+          className="bg-red-950 border-red-800"
+          showButton={false}
+        />
+      </div>
       <Warnings data={data} />
       <div className="px-2 py-4 w-full 2xl:mx-auto 2xl:container">
         <ViewerNav

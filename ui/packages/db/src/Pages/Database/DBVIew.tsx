@@ -3,7 +3,7 @@ import eula from 'images/eula.png';
 import {useTranslation} from 'react-i18next';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ActionBar} from 'SharedComponents/ActionBar';
-import {Warning} from 'SharedComponents/Warning';
+import {Warning} from '@gcsim/components';
 import {ListView} from '../../SharedComponents/ListView';
 
 type Props = {
@@ -22,6 +22,7 @@ export const DBView = (props: Props) => {
         headerKey="warnings.gcsim_risk_title"
         bodyKey="warnings.gcsim_risk_body"
         className="bg-red-950 border-red-800"
+        showButton={false}
       />
       <Warning
         hideKey="hide-warning-db"
