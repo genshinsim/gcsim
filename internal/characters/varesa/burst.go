@@ -90,6 +90,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) volcanicKablam() action.Info {
+	if c.Base.Cons >= 1 {
+		c.a1()
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           kablamAbil,
@@ -103,10 +107,7 @@ func (c *char) volcanicKablam() action.Info {
 		Durability:     25,
 		Mult:           kablam[c.TalentLvlBurst()],
 		HitlagFactor:   0.1,
-	}
-
-	if c.Base.Cons >= 1 {
-		c.a1()
+		FlatDmg:        c.a1PlungeBonus(),
 	}
 
 	c.Core.Tasks.Add(func() {
@@ -115,6 +116,7 @@ func (c *char) volcanicKablam() action.Info {
 			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1}, 7.5),
 			0,
 			0,
+			c.a1Cancel,
 		)
 		c.DeleteStatus(apexState)
 	}, kablamHitmark)

@@ -158,7 +158,7 @@ func (c *char) highPlungeCA(p map[string]int) action.Info {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           highPlunge[c.TalentLvlAttack()],
-		FlatDmg:        c.c4FlatBonus(),
+		FlatDmg:        c.a1PlungeBonus() + c.c4FlatBonus(),
 		HitlagFactor:   0.1,
 	}
 
@@ -176,7 +176,6 @@ func (c *char) highPlungeCA(p map[string]int) action.Info {
 	} else {
 		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
 	}
-	ai.Mult += c.a1PlungeBuff()
 	c.getApexDrive()
 
 	c.Core.QueueAttack(
@@ -219,7 +218,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           highPlunge[c.TalentLvlAttack()],
-		FlatDmg:        c.c4FlatBonus(),
+		FlatDmg:        c.a1PlungeBonus() + c.c4FlatBonus(),
 		HitlagFactor:   0.1,
 	}
 
@@ -237,7 +236,6 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	} else {
 		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
 	}
-	ai.Mult += c.a1PlungeBuff()
 	c.getApexDrive()
 
 	c.Core.QueueAttack(
@@ -280,7 +278,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		Element:        attributes.Electro,
 		Durability:     25,
 		Mult:           lowPlunge[c.TalentLvlAttack()],
-		FlatDmg:        c.c4FlatBonus(),
+		FlatDmg:        c.a1PlungeBonus() + c.c4FlatBonus(),
 		HitlagFactor:   0.1,
 	}
 
@@ -298,7 +296,6 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	} else {
 		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
 	}
-	ai.Mult += c.a1PlungeBuff()
 	c.getApexDrive()
 
 	c.Core.QueueAttack(
