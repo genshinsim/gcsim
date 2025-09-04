@@ -10,7 +10,9 @@
       "aetherhydro": "Aether (Hydro)",
       "luminehydro": "Lumine (Hydro)",
       "aetherdendro": "Aether (Dendro)",
-      "luminedendro": "Lumine (Dendro)"
+      "luminedendro": "Lumine (Dendro)",
+      "aetherpyro": "Aether (Pyro)",
+      "luminepyro": "Lumine (Pyro)"
     }
   },
   "Chinese": {
@@ -24,7 +26,9 @@
       "aetherhydro": "空 (水元素)",
       "luminehydro": "荧 (水元素)",
       "aetherdendro": "空 (草元素)",
-      "luminedendro": "荧 (草元素)"
+      "luminedendro": "荧 (草元素)",
+      "aetherpyro": "空 (火元素)",
+      "luminepyro": "荧 (火元素)"
     }
   },
   "Japanese": {
@@ -38,7 +42,9 @@
       "aetherhydro": "空 (水元素)",
       "luminehydro": "蛍 (水元素)",
       "aetherdendro": "空 (草元素)",
-      "luminedendro": "蛍 (草元素)"
+      "luminedendro": "蛍 (草元素)",
+      "aetherpyro": "空 (炎元素)",
+      "luminepyro": "蛍 (炎元素)"
     }
   },
   "Korean": {
@@ -52,7 +58,9 @@
       "aetherhydro": "아이테르 (물)",
       "luminehydro": "루미네 (물)",
       "aetherdendro": "아이테르 (풀)",
-      "luminedendro": "루미네 (풀)"
+      "luminedendro": "루미네 (풀)",
+      "aetherpyro": "아이테르 (불)",
+      "luminepyro": "루미네 (불)"
     }
   },
   "Spanish": {
@@ -66,7 +74,9 @@
       "aetherhydro": "Éter (Hydro)",
       "luminehydro": "Lumina (Hydro)",
       "aetherdendro": "Éter (Dendro)",
-      "luminedendro": "Lumina (Dendro)"
+      "luminedendro": "Lumina (Dendro)",
+      "aetherpyro": "Éter (Pyro)",
+      "luminepyro": "Lumina (Pyro)"
     }
   },
   "Russian": {
@@ -80,7 +90,9 @@
       "aetherhydro": "Итэр (Гидро)",
       "luminehydro": "Люмин (Гидро)",
       "aetherdendro": "Итэр (Дендро)",
-      "luminedendro": "Люмин (Дендро)"
+      "luminedendro": "Люмин (Дендро)",
+      "aetherpyro": "Итэр (Пиро)",
+      "luminepyro": "Люмин (Пиро)"
     }
   },
   "German": {
@@ -94,7 +106,9 @@
       "aetherhydro": "Leer (Hydro)",
       "luminehydro": "Lumine (Hydro)",
       "aetherdendro": "Leer (Dendro)",
-      "luminedendro": "Lumine (Dendro)"
+      "luminedendro": "Lumine (Dendro)",
+      "aetherpyro": "Leer (Pyro)",
+      "luminepyro": "Lumine (Pyro)"
     }
   }
 }

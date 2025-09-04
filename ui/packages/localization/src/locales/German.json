@@ -71,7 +71,8 @@
         "users_submitted": "Schau was Nutzer eingereicht haben:",
         "visit_teams_db": "Teamdatenbank besuchen",
         "latest_release": "Neuester Release: ",
-        "view_releases": "Releases auf GitHub anschauen"
+        "view_releases": "Releases auf GitHub anschauen",
+        "new_characters": "Neue Charaktere"
     },
     "db": {
         "author": "Autor: ",
@@ -391,7 +392,9 @@
         "dash_body": "Einige Iterationen verzögerten die Ausführung einer oder mehrerer Rennen aufgrund von ihrer Abklingzeit. Dies führt dazu, dass die aktive Figur im Leerlauf ist, bis die Abklingzeit von Rennen abgelaufen ist. Erwägen Sie, die Konfiguration zu aktualisieren, wenn die untenstehende Ausfallzeit unerwünscht ist.",
         "dash_data_header": "Gesamtverzögerung des Rennens aufgrund der Abklingzeit pro Iteration",
         "ignore_burst_energy_title": "\"Spezialfähigkeit-Energiekosten ignorieren\"-Modus ist aktiviert",
-        "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen."
+        "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen.",
+        "gcsim_risk_title": "Die Zukunft von gcsim ist in Gefahr!",
+        "gcsim_risk_body": "<p><b>Wir suchen Freiwillige, die an Updates mitarbeiten möchten.</b></p> <p>Wir brauchen Nutzer, die bereit sind, sich in den Code einzuarbeiten, um neue Charaktere und Mechaniken zu implementieren und zu überprüfen, damit Updates rechtzeitig veröffentlicht werden können. Außerdem suchen wir aktive UI-Entwickler.</p> <p>Bei Interesse schreibt uns bitte auf <discordlink>Discord</discordlink>.</p>"
     },
     "states": {
         "true": "wahr",

@@ -83,7 +83,8 @@
         "users_submitted": "유저들이 제출한 심을 구경해보세요:",
         "visit_teams_db": "팀 데이터베이스 방문",
         "latest_release": "최신 릴리스: ",
-        "view_releases": "GitHub에서 릴리스 보기"
+        "view_releases": "GitHub에서 릴리스 보기",
+        "new_characters": "신규 캐릭터"
     },
     "db": {
         "author": "작성자: ",
@@ -403,7 +404,9 @@
         "dash_body": "일부 이터레이션이 대시 재사용 대기시간으로 인해 한 번 이상의 대시를 지연시켰습니다. 이는 현재 필드 위의 캐릭터가 대시 재사용이 가능할 때까지 계속 대기하게 만듭니다. 만약 아래에 표시된 다운타임이 원하지 않은 것이라면 config 수정을 고려하세요.",
         "dash_data_header": "이터레이션 당 재사용 대기시간으로 인한 총 대시 지연 시간",
         "ignore_burst_energy_title": "\"원소 폭발 에너지 요구량 무시\" 모드 활성화",
-        "ignore_burst_energy_body": "시뮬레이션이 원소 폭발 에너지 요구량을 무시합니다. 이는 부정확한 시뮬레이션을 초래할 수 있습니다."
+        "ignore_burst_energy_body": "시뮬레이션이 원소 폭발 에너지 요구량을 무시합니다. 이는 부정확한 시뮬레이션을 초래할 수 있습니다.",
+        "gcsim_risk_title": "gcsim의 미래가 위험합니다!",
+        "gcsim_risk_body": "<p><b>업데이트 작업에 참여할 지원자를 찾고 있습니다.</b></p> <p>제 때에 업데이트를 출시하기 위해서는 최신 캐릭터 및 메커니즘을 구현하고 피어 리뷰하기 위해 코드 베이스를 배울 의향이 있는 유저들이 필요합니다. 또한 활발히 활동할 UI 개발자도 찾고 있습니다.</p> <p>관심이 있으신 분들은 저희 <discordlink>Discord</discordlink>에서 메시지 해주세요.</p>"
     },
     "states": {
         "true": "참",
