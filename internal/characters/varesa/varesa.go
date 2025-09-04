@@ -23,6 +23,8 @@ type char struct {
 	particleGenerated bool
 	freeSkill         bool
 	exitNS            bool
+	a1Src             int
+	a1Atk             float64
 	a4Stacks          *stacks.MultipleRefreshNoRemove
 	usedShortBurst    bool
 }
@@ -47,6 +49,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
+	c.a1Src = c.Core.F
+	c.updateA1Bonus(c.a1Src)
 	c.a4()
 	c.c4()
 	c.c6()

@@ -3149,6 +3149,44 @@
       "legal": true
     }
   ],
+  "varesa": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "notes": "Hold skill is not implemented."
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be charge or jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be jump buffed via Xianyun's burst for example."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "venti": [
     {
       "ability": "attack",

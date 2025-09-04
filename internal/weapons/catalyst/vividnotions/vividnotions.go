@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -65,8 +66,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnPlunge, func(args ...interface{}) bool {
-		char.AddStatus(plungeBuff, 15*60, true)
+	c.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+		next := args[1].(action.AnimationState)
+		if next == action.PlungeAttackState {
+			char.AddStatus(plungeBuff, 15*60, true)
+		}
 		return false
 	}, fmt.Sprintf("vividnotions-plunge-%s", char.Base.Key.String()))
 
@@ -93,10 +97,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		// TODO: hitlag affected?
+		plungeF := char.StatusExpiry(plungeBuff)
+		skillBurstF := char.StatusExpiry(skillBurstBuff)
 		char.QueueCharTask(func() {
-			char.DeleteStatus(plungeBuff)
-			char.DeleteStatus(skillBurstBuff)
-		}, 0.05*60)
+			if plungeF == char.StatusExpiry(plungeBuff) {
+				char.DeleteStatus(plungeBuff)
+			}
+			if skillBurstF == char.StatusExpiry(skillBurstBuff) {
+				char.DeleteStatus(skillBurstBuff)
+			}
+		}, 0.1*60)
 
 		return false
 	}, fmt.Sprintf("vividnotions-%s", char.Base.Key.String()))
