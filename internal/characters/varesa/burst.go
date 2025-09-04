@@ -127,7 +127,7 @@ func (c *char) volcanicKablam() action.Info {
 		Frames:          frames.NewAbilFunc(volcanicFrames),
 		AnimationLength: volcanicFrames[action.InvalidAction],
 		CanQueueAfter:   volcanicFrames[action.ActionSwap],
-		State:           action.BurstState, // TODO: or plunge state?
+		State:           action.PlungeAttackState,
 		OnRemoved: func(next action.AnimationState) {
 			c.clearNightsoulCB(next)
 			c.usedShortBurst = false
