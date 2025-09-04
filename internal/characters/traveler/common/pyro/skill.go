@@ -251,7 +251,7 @@ func (c *Traveler) particleCB(a combat.AttackCB) {
 
 func (c *Traveler) enterNightsoul(src int) {
 	c.nightsoulSrc = src
-	c.nightsoulState.EnterTimedBlessing(42, 12*60, c.exitNightsoul)
+	c.nightsoulState.EnterTimedBlessing(c.nightsoulState.Points()+42, 12*60, c.exitNightsoul)
 	c.QueueCharTask(c.nightsoulPointReduceFunc(c.nightsoulSrc), nightsoulReduceDelay)
 }
 
