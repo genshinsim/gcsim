@@ -71,7 +71,8 @@
         "users_submitted": "看看用户提交的内容:",
         "visit_teams_db": "访问配队数据库",
         "latest_release": "最新发布版: ",
-        "view_releases": "在 GitHub 上查看发布版"
+        "view_releases": "在 GitHub 上查看发布版",
+        "new_characters": "新角色"
     },
     "db": {
         "author": "作者：",
@@ -378,7 +379,9 @@
         "dash_body": "由于冲刺的冷却时间，一些次迭代延迟执行一个或多个冲刺。这会导致站场角色闲置，直到冲刺结束冷却时间。如果不希望出现以下停滞时间，请考虑更新配置。",
         "dash_data_header": "每次迭代因冷却时间造成的冲刺延迟总量",
         "ignore_burst_energy_title": "\"忽略元素爆发能量成本 \"模式已启用",
-        "ignore_burst_energy_body": "模拟忽略了元素爆发的能量需求。这可能导致模拟不准确。"
+        "ignore_burst_energy_body": "模拟忽略了元素爆发的能量需求。这可能导致模拟不准确。",
+        "gcsim_risk_title": "gcsim 的未来正面临风险！",
+        "gcsim_risk_body": "<p><b>我们正在寻找志愿者来协助更新。</b></p> <p>我们需要愿意学习代码库的用户，来实现和审核新的角色/机制，以便及时发布更新。同时，我们也在寻找积极参与的 UI 开发者。</p> <p>如果有兴趣，请通过 <discordlink>Discord</discordlink> 联系我们。</p>"
     },
     "states": {
         "true": "真",
