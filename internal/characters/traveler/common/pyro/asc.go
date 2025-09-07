@@ -19,7 +19,7 @@ func (c *Traveler) a4Init() {
 			return false
 		}
 
-		c.AddStatus(a4OnReactICD, 12, true)
+		c.AddStatus(a4OnReactICD, 12*60, true)
 		c.AddEnergy("travelerpyro-a4-energy", 5)
 		return false
 	}
