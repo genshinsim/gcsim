@@ -1,6 +1,9 @@
 package pyro
 
-import "github.com/genshinsim/gcsim/pkg/core/event"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+)
 
 const a4OnReactICD = "travelerpyro-a4-icd"
 
@@ -9,9 +12,11 @@ func (c *Traveler) a4Init() {
 		return
 	}
 	fReactionHook := func(args ...interface{}) bool {
-		// if PMC is in NS Blessing, then the active character should
-		// be inside a Blazing Threshold or Scorching Threshold since it
-		// always follows active character
+		// Attack must be from active character
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != c.Core.Player.Active() {
+			return false
+		}
 		if !c.nightsoulState.HasBlessing() {
 			return false
 		}
