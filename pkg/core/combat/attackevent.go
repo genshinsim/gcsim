@@ -3,8 +3,8 @@ package combat
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model/reactions"
 )
 
 type AttackEvent struct {

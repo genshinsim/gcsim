@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/model/reactions"
 )
 
 type Modifier int

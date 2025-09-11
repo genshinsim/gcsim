@@ -10,8 +10,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model/reactions"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )

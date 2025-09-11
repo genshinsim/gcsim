@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/model/reactions"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 

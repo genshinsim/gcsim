@@ -4,8 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model/reactions"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 

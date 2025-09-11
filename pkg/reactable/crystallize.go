@@ -11,8 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/model/reactions"
 )
 
 type CrystallizeShield struct {

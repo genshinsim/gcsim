@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/model/reactions"
 )
 
 const swirlAbil = "swirl-pyro (aoe)"
