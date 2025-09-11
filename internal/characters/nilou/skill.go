@@ -170,7 +170,7 @@ func (c *char) Pirouette(p map[string]int, srcType nilouSkillType) action.Info {
 				}
 				c.AddStatus(tranquilityAuraStatus, dur, true)
 				c.auraSrc = c.Core.F
-				c.QueueCharTask(c.TranquilityAura(c.auraSrc), 30) // every 0.5 sec
+				c.TranquilityAura(c.auraSrc)()
 			}
 		}, delay)
 	}
@@ -323,7 +323,7 @@ func (c *char) TranquilityAura(src int) func() {
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5), -1, 1)
 
-		c.QueueCharTask(c.TranquilityAura(src), 30)
+		c.QueueCharTask(c.TranquilityAura(src), 30) // every 0.5 sec
 	}
 }
 
