@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -91,7 +91,7 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 	s.ShatterCheck(atk)
 
 	if atk.Info.Durability > 0 {
-		atk.Info.Durability *= reactions.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+		atk.Info.Durability *= model.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
 			existing := s.Reactable.ActiveAuraString()
 			applied := atk.Info.Durability

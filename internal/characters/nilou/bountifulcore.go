@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -39,7 +39,7 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *Bo
 			c.QueueAttackWithSnap(ai, snap, ap, 0)
 
 			// self damage
-			ai.Abil += reactions.SelfDamageSuffix
+			ai.Abil += model.SelfDamageSuffix
 			ai.FlatDmg = 0.05 * ai.FlatDmg
 			ap.SkipTargets[targets.TargettablePlayer] = false
 			ap.SkipTargets[targets.TargettableEnemy] = true

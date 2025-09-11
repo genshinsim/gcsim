@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -87,18 +87,18 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 		if attack.Info.Amped {
 			switch attack.Info.AmpType {
-			case reactions.Vaporize:
+			case model.ReactionTypeVaporize:
 				event.ReactionModifier = stats.Vaporize
-			case reactions.Melt:
+			case model.ReactionTypeMelt:
 				event.ReactionModifier = stats.Melt
 			}
 		}
 
 		if attack.Info.Catalyzed {
 			switch attack.Info.CatalyzedType {
-			case reactions.Aggravate:
+			case model.ReactionTypeAggravate:
 				event.ReactionModifier = stats.Aggravate
-			case reactions.Spread:
+			case model.ReactionTypeSpread:
 				event.ReactionModifier = stats.Spread
 			}
 		}

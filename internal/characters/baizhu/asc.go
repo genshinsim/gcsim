@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -64,7 +64,7 @@ func (c *char) a4() {
 			if limitHP > 50 {
 				limitHP = 50
 			}
-			if ai.Catalyzed && (ai.CatalyzedType == reactions.Aggravate || ai.CatalyzedType == reactions.Spread) {
+			if ai.Catalyzed && (ai.CatalyzedType == model.ReactionTypeAggravate || ai.CatalyzedType == model.ReactionTypeSpread) {
 				return limitHP * 0.008, false
 			}
 			switch ai.AttackTag {

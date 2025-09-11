@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -108,13 +108,13 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 				continue
 			}
 			// burning durability wiped out to 0 if any of the other char still on icd re burning dmg
-			atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i))
+			atk.Info.Durability *= model.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i))
 		}
 	}
 	// check tags
 	if atk.Info.Durability > 0 {
 		// check for ICD first
-		atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+		atk.Info.Durability *= model.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		checkBurningICD()
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
 			existing := e.Reactable.ActiveAuraString()

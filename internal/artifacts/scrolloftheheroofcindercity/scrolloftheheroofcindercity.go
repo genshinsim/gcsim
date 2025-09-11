@@ -13,32 +13,32 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var reactToElements = map[reactions.ReactionType][]attributes.Element{
-	reactions.Overload:           {attributes.Electro, attributes.Pyro},
-	reactions.Superconduct:       {attributes.Electro, attributes.Cryo},
-	reactions.Melt:               {attributes.Pyro, attributes.Cryo},
-	reactions.Vaporize:           {attributes.Pyro, attributes.Hydro},
-	reactions.Freeze:             {attributes.Cryo, attributes.Hydro},
-	reactions.ElectroCharged:     {attributes.Electro, attributes.Hydro},
-	reactions.SwirlHydro:         {attributes.Anemo, attributes.Hydro},
-	reactions.SwirlCryo:          {attributes.Anemo, attributes.Cryo},
-	reactions.SwirlElectro:       {attributes.Anemo, attributes.Electro},
-	reactions.SwirlPyro:          {attributes.Anemo, attributes.Pyro},
-	reactions.CrystallizeHydro:   {attributes.Geo, attributes.Hydro},
-	reactions.CrystallizeCryo:    {attributes.Geo, attributes.Cryo},
-	reactions.CrystallizeElectro: {attributes.Geo, attributes.Electro},
-	reactions.CrystallizePyro:    {attributes.Geo, attributes.Pyro},
-	reactions.Aggravate:          {attributes.Dendro, attributes.Electro},
-	reactions.Spread:             {attributes.Dendro},
-	reactions.Quicken:            {attributes.Dendro, attributes.Electro},
-	reactions.Bloom:              {attributes.Dendro, attributes.Hydro},
-	reactions.Hyperbloom:         {attributes.Dendro, attributes.Electro},
-	reactions.Burgeon:            {attributes.Dendro, attributes.Pyro},
-	reactions.Burning:            {attributes.Dendro, attributes.Pyro},
+var reactToElements = map[model.ReactionType][]attributes.Element{
+	model.ReactionTypeOverload:           {attributes.Electro, attributes.Pyro},
+	model.ReactionTypeSuperconduct:       {attributes.Electro, attributes.Cryo},
+	model.ReactionTypeMelt:               {attributes.Pyro, attributes.Cryo},
+	model.ReactionTypeVaporize:           {attributes.Pyro, attributes.Hydro},
+	model.ReactionTypeFreeze:             {attributes.Cryo, attributes.Hydro},
+	model.ReactionTypeElectroCharged:     {attributes.Electro, attributes.Hydro},
+	model.ReactionTypeSwirlHydro:         {attributes.Anemo, attributes.Hydro},
+	model.ReactionTypeSwirlCryo:          {attributes.Anemo, attributes.Cryo},
+	model.ReactionTypeSwirlElectro:       {attributes.Anemo, attributes.Electro},
+	model.ReactionTypeSwirlPyro:          {attributes.Anemo, attributes.Pyro},
+	model.ReactionTypeCrystallizeHydro:   {attributes.Geo, attributes.Hydro},
+	model.ReactionTypeCrystallizeCryo:    {attributes.Geo, attributes.Cryo},
+	model.ReactionTypeCrystallizeElectro: {attributes.Geo, attributes.Electro},
+	model.ReactionTypeCrystallizePyro:    {attributes.Geo, attributes.Pyro},
+	model.ReactionTypeAggravate:          {attributes.Dendro, attributes.Electro},
+	model.ReactionTypeSpread:             {attributes.Dendro},
+	model.ReactionTypeQuicken:            {attributes.Dendro, attributes.Electro},
+	model.ReactionTypeBloom:              {attributes.Dendro, attributes.Hydro},
+	model.ReactionTypeHyperbloom:         {attributes.Dendro, attributes.Electro},
+	model.ReactionTypeBurgeon:            {attributes.Dendro, attributes.Pyro},
+	model.ReactionTypeBurning:            {attributes.Dendro, attributes.Pyro},
 }
 
 func init() {
@@ -59,7 +59,7 @@ func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
-func (s *Set) buffCB(react reactions.ReactionType, gadgetEmit bool) func(args ...interface{}) bool {
+func (s *Set) buffCB(react model.ReactionType, gadgetEmit bool) func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		if gadgetEmit && trg.Type() != targets.TargettableGadget {
@@ -132,28 +132,28 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// equipping character can trigger this effect while off-field, and the DMG bonus
 	// from Artifact Sets with the same name do not stack.
 	if count >= 4 {
-		for evt, react := range map[event.Event]reactions.ReactionType{
-			event.OnOverload:           reactions.Overload,
-			event.OnSuperconduct:       reactions.Superconduct,
-			event.OnMelt:               reactions.Melt,
-			event.OnVaporize:           reactions.Vaporize,
-			event.OnFrozen:             reactions.Freeze,
-			event.OnElectroCharged:     reactions.ElectroCharged,
-			event.OnSwirlHydro:         reactions.SwirlHydro,
-			event.OnSwirlCryo:          reactions.SwirlCryo,
-			event.OnSwirlElectro:       reactions.SwirlElectro,
-			event.OnSwirlPyro:          reactions.SwirlPyro,
-			event.OnCrystallizeHydro:   reactions.CrystallizeHydro,
-			event.OnCrystallizeCryo:    reactions.CrystallizeCryo,
-			event.OnCrystallizeElectro: reactions.CrystallizeElectro,
-			event.OnCrystallizePyro:    reactions.CrystallizePyro,
-			event.OnAggravate:          reactions.Aggravate,
-			event.OnSpread:             reactions.Spread,
-			event.OnQuicken:            reactions.Quicken,
-			event.OnBloom:              reactions.Bloom,
-			event.OnHyperbloom:         reactions.Hyperbloom,
-			event.OnBurgeon:            reactions.Burgeon,
-			event.OnBurning:            reactions.Burning,
+		for evt, react := range map[event.Event]model.ReactionType{
+			event.OnOverload:           model.ReactionTypeOverload,
+			event.OnSuperconduct:       model.ReactionTypeSuperconduct,
+			event.OnMelt:               model.ReactionTypeMelt,
+			event.OnVaporize:           model.ReactionTypeVaporize,
+			event.OnFrozen:             model.ReactionTypeFreeze,
+			event.OnElectroCharged:     model.ReactionTypeElectroCharged,
+			event.OnSwirlHydro:         model.ReactionTypeSwirlHydro,
+			event.OnSwirlCryo:          model.ReactionTypeSwirlCryo,
+			event.OnSwirlElectro:       model.ReactionTypeSwirlElectro,
+			event.OnSwirlPyro:          model.ReactionTypeSwirlPyro,
+			event.OnCrystallizeHydro:   model.ReactionTypeCrystallizeHydro,
+			event.OnCrystallizeCryo:    model.ReactionTypeCrystallizeCryo,
+			event.OnCrystallizeElectro: model.ReactionTypeCrystallizeElectro,
+			event.OnCrystallizePyro:    model.ReactionTypeCrystallizePyro,
+			event.OnAggravate:          model.ReactionTypeAggravate,
+			event.OnSpread:             model.ReactionTypeSpread,
+			event.OnQuicken:            model.ReactionTypeQuicken,
+			event.OnBloom:              model.ReactionTypeBloom,
+			event.OnHyperbloom:         model.ReactionTypeHyperbloom,
+			event.OnBurgeon:            model.ReactionTypeBurgeon,
+			event.OnBurning:            model.ReactionTypeBurning,
 		} {
 			elements := reactToElements[react]
 			if !slices.Contains(elements, char.Base.Element) {
@@ -161,7 +161,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			gadgetEmit := false
 			switch react {
-			case reactions.Burgeon, reactions.Hyperbloom:
+			case model.ReactionTypeBurgeon, model.ReactionTypeHyperbloom:
 				gadgetEmit = true
 			}
 			c.Combat.Events.Subscribe(evt, s.buffCB(react, gadgetEmit), fmt.Sprintf("scroll-4pc-%v-%v", react, char.Base.Key.String()))

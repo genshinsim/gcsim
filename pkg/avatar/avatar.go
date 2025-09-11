@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
@@ -231,7 +231,7 @@ func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
 	return damage, isCrit
 }
 
-func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durability, f int) {
+func (p *Player) ApplySelfInfusion(ele attributes.Element, dur model.Durability, f int) {
 	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).
 		Write("durability", dur).
 		Write("duration", f)
@@ -264,7 +264,7 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durabil
 	}
 	// otherwise calculate decay based on specified f (in frames)
 	p.Durability[mod] = dur
-	p.DecayRate[mod] = dur / reactions.Durability(f)
+	p.DecayRate[mod] = dur / model.Durability(f)
 }
 
 func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {

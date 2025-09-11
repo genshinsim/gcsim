@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Modifier int
@@ -98,8 +98,8 @@ func (r *Modifier) UnmarshalJSON(b []byte) error {
 }
 
 type Reactable struct {
-	Durability [EndModifier]reactions.Durability
-	DecayRate  [EndModifier]reactions.Durability
+	Durability [EndModifier]model.Durability
+	DecayRate  [EndModifier]model.Durability
 	// Source     []int //source frame of the aura
 	self combat.Target
 	core *core.Core
@@ -128,10 +128,10 @@ type Enemy interface {
 	QueueEnemyTask(f func(), delay int)
 }
 
-const frzDelta reactions.Durability = 2.5 / (60 * 60) // 2 * 1.25
-const frzDecayCap reactions.Durability = 10.0 / 60.0
+const frzDelta model.Durability = 2.5 / (60 * 60) // 2 * 1.25
+const frzDecayCap model.Durability = 10.0 / 60.0
 
-const ZeroDur reactions.Durability = 0.00000000001
+const ZeroDur model.Durability = 0.00000000001
 
 func (r *Reactable) Init(self combat.Target, c *core.Core) *Reactable {
 	r.self = self
@@ -240,7 +240,7 @@ func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
 
 // attachOrRefillNormalEle is used for pyro, electro, hydro, cryo, and dendro which don't have special attachment
 // rules
-func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur reactions.Durability) {
+func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur model.Durability) {
 	amt := 0.8 * dur
 	if mod == Pyro {
 		r.attachOverlapRefreshDuration(Pyro, amt, 6*dur+420)
@@ -249,7 +249,7 @@ func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur reactions.Durabili
 	}
 }
 
-func (r *Reactable) attachOverlap(mod Modifier, amt, length reactions.Durability) {
+func (r *Reactable) attachOverlap(mod Modifier, amt, length model.Durability) {
 	if r.Durability[mod] > ZeroDur {
 		add := max(amt-r.Durability[mod], 0)
 		if add > 0 {
@@ -263,7 +263,7 @@ func (r *Reactable) attachOverlap(mod Modifier, amt, length reactions.Durability
 	}
 }
 
-func (r *Reactable) attachOverlapRefreshDuration(mod Modifier, amt, length reactions.Durability) {
+func (r *Reactable) attachOverlapRefreshDuration(mod Modifier, amt, length model.Durability) {
 	if amt < r.Durability[mod] {
 		return
 	}
@@ -276,7 +276,7 @@ func (r *Reactable) attachBurning() {
 	r.DecayRate[Burning] = 0
 }
 
-func (r *Reactable) addDurability(mod Modifier, amt reactions.Durability) {
+func (r *Reactable) addDurability(mod Modifier, amt model.Durability) {
 	r.Durability[mod] += amt
 	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
@@ -307,9 +307,9 @@ func (r *Reactable) IsBurning() bool {
 // reduce the requested element by dur * factor, return the amount of dur consumed
 // if multiple modifier with same element are present, all of them are reduced
 // the max on reduced is used for consumption purpose
-func (r *Reactable) reduce(e attributes.Element, dur, factor reactions.Durability) reactions.Durability {
+func (r *Reactable) reduce(e attributes.Element, dur, factor model.Durability) model.Durability {
 	m := dur * factor // maximum amount reduceable
-	var reduced reactions.Durability
+	var reduced model.Durability
 
 	for i := Invalid; i < EndModifier; i++ {
 		if i.Element() != e {
@@ -403,7 +403,7 @@ func (r *Reactable) Tick() {
 	if r.Durability[Frozen] > ZeroDur {
 		// ramp up decay rate first
 		r.DecayRate[Frozen] += frzDelta
-		r.Durability[Frozen] -= r.DecayRate[Frozen] / reactions.Durability(1.0-r.FreezeResist)
+		r.Durability[Frozen] -= r.DecayRate[Frozen] / model.Durability(1.0-r.FreezeResist)
 
 		r.checkFreeze()
 	} else if r.DecayRate[Frozen] > frzDecayCap { // otherwise ramp down decay rate

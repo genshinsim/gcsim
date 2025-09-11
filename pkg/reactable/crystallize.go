@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type CrystallizeShield struct {
@@ -22,28 +22,28 @@ type CrystallizeShield struct {
 
 func (r *Reactable) TryCrystallizeElectro(a *combat.AttackEvent) bool {
 	if r.Durability[Electro] > ZeroDur {
-		return r.tryCrystallizeWithEle(a, attributes.Electro, reactions.CrystallizeElectro, event.OnCrystallizeElectro)
+		return r.tryCrystallizeWithEle(a, attributes.Electro, model.ReactionTypeCrystallizeElectro, event.OnCrystallizeElectro)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizeHydro(a *combat.AttackEvent) bool {
 	if r.Durability[Hydro] > ZeroDur {
-		return r.tryCrystallizeWithEle(a, attributes.Hydro, reactions.CrystallizeHydro, event.OnCrystallizeHydro)
+		return r.tryCrystallizeWithEle(a, attributes.Hydro, model.ReactionTypeCrystallizeHydro, event.OnCrystallizeHydro)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizeCryo(a *combat.AttackEvent) bool {
 	if r.Durability[Cryo] > ZeroDur {
-		return r.tryCrystallizeWithEle(a, attributes.Cryo, reactions.CrystallizeCryo, event.OnCrystallizeCryo)
+		return r.tryCrystallizeWithEle(a, attributes.Cryo, model.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizePyro(a *combat.AttackEvent) bool {
 	if r.Durability[Pyro] > ZeroDur || r.Durability[Burning] > ZeroDur {
-		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, reactions.CrystallizePyro, event.OnCrystallizePyro)
+		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, model.ReactionTypeCrystallizePyro, event.OnCrystallizePyro)
 		r.burningCheck()
 		return reacted
 	}
@@ -52,12 +52,12 @@ func (r *Reactable) TryCrystallizePyro(a *combat.AttackEvent) bool {
 
 func (r *Reactable) TryCrystallizeFrozen(a *combat.AttackEvent) bool {
 	if r.Durability[Frozen] > ZeroDur {
-		return r.tryCrystallizeWithEle(a, attributes.Frozen, reactions.CrystallizeCryo, event.OnCrystallizeCryo)
+		return r.tryCrystallizeWithEle(a, attributes.Frozen, model.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
-func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt reactions.ReactionType, evt event.Event) bool {
+func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt model.ReactionType, evt event.Event) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -219,7 +219,7 @@ type CrystallizeShard struct {
 	expiry int
 }
 
-func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt reactions.ReactionType, typ attributes.Element, src int) {
+func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt model.ReactionType, typ attributes.Element, src int) {
 	// delay shard spawn
 	r.core.Tasks.Add(func() {
 		// grab current snapshot for shield

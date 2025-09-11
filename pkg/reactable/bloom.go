@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const DendroCoreDelay = 30
@@ -21,7 +21,7 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed reactions.Durability
+	var consumed model.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// this part is annoying. bloom will happen if any of the dendro like aura is present
@@ -122,7 +122,7 @@ func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *Den
 				c.QueueAttackWithSnap(ai, snap, ap, 0)
 
 				// self damage
-				ai.Abil += reactions.SelfDamageSuffix
+				ai.Abil += model.SelfDamageSuffix
 				ai.FlatDmg = 0.05 * ai.FlatDmg
 				ap.SkipTargets[targets.TargettablePlayer] = false
 				ap.SkipTargets[targets.TargettableEnemy] = true
@@ -174,7 +174,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 				s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 
 				// also queue self damage
-				ai.Abil += reactions.SelfDamageSuffix
+				ai.Abil += model.SelfDamageSuffix
 				ai.FlatDmg = 0.05 * ai.FlatDmg
 				ap.SkipTargets[targets.TargettablePlayer] = false
 				ap.SkipTargets[targets.TargettableEnemy] = true
@@ -202,7 +202,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 
 			// queue self damage
-			ai.Abil += reactions.SelfDamageSuffix
+			ai.Abil += model.SelfDamageSuffix
 			ai.FlatDmg = 0.05 * ai.FlatDmg
 			ap.SkipTargets[targets.TargettablePlayer] = false
 			ap.SkipTargets[targets.TargettableEnemy] = true
@@ -243,7 +243,7 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target, modify func(
 		ICDTag:           attacks.ICDTagBloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(reactions.Bloom),
+		Abil:             string(model.ReactionTypeBloom),
 		IgnoreDefPercent: 1,
 	}
 	if modify != nil {
@@ -264,7 +264,7 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.At
 		ICDTag:           attacks.ICDTagBurgeonDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(reactions.Burgeon),
+		Abil:             string(model.ReactionTypeBurgeon),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)
@@ -282,7 +282,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 		ICDTag:           attacks.ICDTagHyperbloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(reactions.Hyperbloom),
+		Abil:             string(model.ReactionTypeHyperbloom),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)

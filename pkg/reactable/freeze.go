@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
@@ -15,7 +15,7 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	// so if already frozen there are 2 cases:
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
-	var consumed reactions.Durability
+	var consumed model.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
@@ -51,7 +51,7 @@ func (r *Reactable) PoiseDMGCheck(a *combat.AttackEvent) bool {
 		return false
 	}
 	// remove frozen durability according to poise dmg
-	r.Durability[Frozen] -= reactions.Durability(0.15 * a.Info.PoiseDMG)
+	r.Durability[Frozen] -= model.Durability(0.15 * a.Info.PoiseDMG)
 	r.checkFreeze()
 	return true
 }
@@ -76,7 +76,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 		ai := combat.AttackInfo{
 			ActorIndex:       a.Info.ActorIndex,
 			DamageSrc:        r.self.Key(),
-			Abil:             string(reactions.Shatter),
+			Abil:             string(model.ReactionTypeShatter),
 			AttackTag:        attacks.AttackTagShatter,
 			ICDTag:           attacks.ICDTagShatter,
 			ICDGroup:         attacks.ICDGroupReactionA,
@@ -101,7 +101,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 }
 
 // add to freeze durability and return amount of durability consumed
-func (r *Reactable) triggerFreeze(a, b reactions.Durability) reactions.Durability {
+func (r *Reactable) triggerFreeze(a, b model.Durability) model.Durability {
 	d := min(a, b)
 	if r.FreezeResist >= 1 {
 		return d

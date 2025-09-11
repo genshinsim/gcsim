@@ -6,17 +6,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func calcSwirlAtkDurability(consumed, src reactions.Durability) reactions.Durability {
+func calcSwirlAtkDurability(consumed, src model.Durability) model.Durability {
 	if consumed < src {
 		return 1.25*(0.5*consumed-1) + 25
 	}
 	return 1.25*(src-1) + 25
 }
 
-func (r *Reactable) queueSwirl(rt reactions.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur reactions.Durability, charIndex int) {
+func (r *Reactable) queueSwirl(rt model.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur model.Durability, charIndex int) {
 	// swirl triggers two attacks; one self with no gauge
 	// and one aoe with gauge
 	ai := combat.AttackInfo{
@@ -75,7 +75,7 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	if !(r.swirlElectroGCD != -1 && r.core.F < r.swirlElectroGCD) {
 		r.swirlElectroGCD = r.core.F + 0.1*60
 		r.queueSwirl(
-			reactions.SwirlElectro,
+			model.ReactionTypeSwirlElectro,
 			attributes.Electro,
 			attacks.AttackTagSwirlElectro,
 			attacks.ICDTagSwirlElectro,
@@ -113,7 +113,7 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	if !(r.swirlHydroGCD != -1 && r.core.F < r.swirlHydroGCD) {
 		r.swirlHydroGCD = r.core.F + 0.1*60
 		r.queueSwirl(
-			reactions.SwirlHydro,
+			model.ReactionTypeSwirlHydro,
 			attributes.Hydro,
 			attacks.AttackTagSwirlHydro,
 			attacks.ICDTagSwirlHydro,
@@ -143,7 +143,7 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	if !(r.swirlCryoGCD != -1 && r.core.F < r.swirlCryoGCD) {
 		r.swirlCryoGCD = r.core.F + 0.1*60
 		r.queueSwirl(
-			reactions.SwirlCryo,
+			model.ReactionTypeSwirlCryo,
 			attributes.Cryo,
 			attacks.AttackTagSwirlCryo,
 			attacks.ICDTagSwirlCryo,
@@ -174,7 +174,7 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	if !(r.swirlPyroGCD != -1 && r.core.F < r.swirlPyroGCD) {
 		r.swirlPyroGCD = r.core.F + 0.1*60
 		r.queueSwirl(
-			reactions.SwirlPyro,
+			model.ReactionTypeSwirlPyro,
 			attributes.Pyro,
 			attacks.AttackTagSwirlPyro,
 			attacks.ICDTagSwirlPyro,
@@ -204,7 +204,7 @@ func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 	if !(r.swirlCryoGCD != -1 && r.core.F < r.swirlCryoGCD) {
 		r.swirlCryoGCD = r.core.F + 0.1*60
 		r.queueSwirl(
-			reactions.SwirlCryo,
+			model.ReactionTypeSwirlCryo,
 			attributes.Cryo,
 			attacks.AttackTagSwirlCryo,
 			attacks.ICDTagSwirlCryo,

@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
@@ -21,7 +21,7 @@ func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
 	// em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
-	a.Info.CatalyzedType = reactions.Aggravate
+	a.Info.CatalyzedType = model.ReactionTypeAggravate
 	a.Info.FlatDmg += 1.15 * r.calcCatalyzeDmg(a.Info, em)
 	return true
 }
@@ -40,7 +40,7 @@ func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
 	// em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
-	a.Info.CatalyzedType = reactions.Spread
+	a.Info.CatalyzedType = model.ReactionTypeSpread
 	a.Info.FlatDmg += 1.25 * r.calcCatalyzeDmg(a.Info, em)
 	return true
 }
@@ -50,7 +50,7 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 		return false
 	}
 
-	var consumed reactions.Durability
+	var consumed model.Durability
 	switch a.Info.Element {
 	case attributes.Dendro:
 		if r.Durability[Electro] < ZeroDur {
@@ -82,6 +82,6 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) attachQuicken(dur reactions.Durability) {
+func (r *Reactable) attachQuicken(dur model.Durability) {
 	r.attachOverlapRefreshDuration(Quicken, dur, 12*dur+360)
 }

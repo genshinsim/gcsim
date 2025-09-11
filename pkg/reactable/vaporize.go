@@ -4,14 +4,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TryVaporize(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed reactions.Durability
+	var consumed model.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		// make sure there's hydro
@@ -42,7 +42,7 @@ func (r *Reactable) TryVaporize(a *combat.AttackEvent) bool {
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
 	a.Info.Amped = true
-	a.Info.AmpType = reactions.Vaporize
+	a.Info.AmpType = model.ReactionTypeVaporize
 	r.core.Events.Emit(event.OnVaporize, r.self, a)
 	return true
 }

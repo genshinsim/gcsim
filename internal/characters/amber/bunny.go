@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -36,7 +36,7 @@ func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
 	//TODO: Check if sucrose E or faruzan E on Bunny is 25 dur or 50 dur
 
 	if atk.Info.Durability > 0 {
-		atk.Info.Durability *= reactions.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+		atk.Info.Durability *= model.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
 			existing := b.Reactable.ActiveAuraString()
 			applied := atk.Info.Durability

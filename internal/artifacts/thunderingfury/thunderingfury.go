@@ -14,7 +14,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -60,7 +60,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	char.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("tf-4pc", -1),
 		Amount: func(ai combat.AttackInfo) (float64, bool) {
-			if ai.Catalyzed && ai.CatalyzedType == reactions.Aggravate {
+			if ai.Catalyzed && ai.CatalyzedType == model.ReactionTypeAggravate {
 				return 0.2, false
 			}
 			switch ai.AttackTag {

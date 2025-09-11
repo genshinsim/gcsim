@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type BogglecatBox struct {
@@ -86,7 +86,7 @@ func (b *BogglecatBox) HandleAttack(atk *combat.AttackEvent) float64 {
 	if atk.Info.Durability <= 0 {
 		return 0
 	}
-	atk.Info.Durability *= reactions.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+	atk.Info.Durability *= model.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 	if atk.Info.Durability <= 0 {
 		return 0
 	}
