@@ -20,6 +20,11 @@ var elementsTick = []model.Element{
 	model.Element_BurningFuel,
 }
 
+var dendroElementsTick = []model.Element{
+	model.Element_Grass,
+	model.Element_Overdose,
+}
+
 type Reactable struct {
 	Durability [model.Element_COUNT]reactions.Durability
 	DecayRate  [model.Element_COUNT]reactions.Durability
@@ -260,7 +265,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor reactions.Durabilit
 	var reduced reactions.Durability
 
 	for i := model.Element_None; i < model.Element_COUNT; i++ {
-		if attributes.ElementToModifier[e] == i {
+		if attributes.ModifierToElement[i] != e {
 			continue
 		}
 		if r.Durability[i] < ZeroDur {
@@ -330,7 +335,7 @@ func (r *Reactable) Tick() {
 
 	// if burning fuel is present, dendro and quicken uses burning fuel decay rate
 	// otherwise it uses it's own
-	for i := model.Element_Grass; i <= model.Element_Overdose; i++ {
+	for _, i := range dendroElementsTick {
 		if r.Durability[i] < ZeroDur {
 			continue
 		}
