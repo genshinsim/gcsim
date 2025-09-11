@@ -18,7 +18,7 @@ import (
 
 type Player struct {
 	*target.Target
-	*reactable.Reactable
+	core.Reactable
 }
 
 func New(core *core.Core, pos geometry.Point, r float64) *Player {
@@ -240,31 +240,19 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durabil
 	if ele == attributes.Frozen {
 		return
 	}
-	var mod reactable.Modifier
-	switch ele {
-	case attributes.Electro:
-		mod = reactable.Electro
-	case attributes.Hydro:
-		mod = reactable.Hydro
-	case attributes.Pyro:
-		mod = reactable.Pyro
-	case attributes.Cryo:
-		mod = reactable.Cryo
-	case attributes.Dendro:
-		mod = reactable.Dendro
-	}
+
+	mod := attributes.ElementToModifier[ele]
 
 	// we're assuming refill maintains the same decay rate?
-	if p.Durability[mod] > reactable.ZeroDur {
+	if p.GetAuraDurability(mod) > reactable.ZeroDur {
 		// make sure we're not adding more than incoming
-		if p.Durability[mod] < dur {
-			p.Durability[mod] = dur
+		if p.GetAuraDurability(mod) < dur {
+			p.SetAuraDurability(mod, dur, p.GetAuraDecayRate(mod))
 		}
 		return
 	}
 	// otherwise calculate decay based on specified f (in frames)
-	p.Durability[mod] = dur
-	p.DecayRate[mod] = dur / reactions.Durability(f)
+	p.SetAuraDurability(mod, dur, dur/reactions.Durability(f))
 }
 
 func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {

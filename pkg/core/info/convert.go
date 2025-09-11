@@ -79,9 +79,9 @@ func ConvertProtoElement(e model.Element) attributes.Element {
 		return attributes.Hydro
 	case model.Element_Grass:
 		return attributes.Dendro
-	case model.Element_ELEMENT_QUICKEN:
+	case model.Element_Overdose:
 		return attributes.Quicken
-	case model.Element_ELEMENT_FROZEN:
+	case model.Element_Frozen:
 		return attributes.Frozen
 	case model.Element_Wind:
 		return attributes.Anemo

@@ -278,7 +278,7 @@ func (a *DataSource) parseElement(c *model.AvatarData, err error) error {
 		return multierr.Append(err, fmt.Errorf("skill with id %v not found in skill excel data", burstId))
 	}
 	c.Element = model.Element(model.Element_value[se.CostElemType])
-	if c.Element == model.Element_INVALID_ELEMENT {
+	if c.Element == model.Element_None {
 		return multierr.Append(err, errors.New("element type is invalid"))
 	}
 	return err

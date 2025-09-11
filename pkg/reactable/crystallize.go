@@ -13,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type CrystallizeShield struct {
@@ -21,28 +22,28 @@ type CrystallizeShield struct {
 }
 
 func (r *Reactable) TryCrystallizeElectro(a *combat.AttackEvent) bool {
-	if r.Durability[Electro] > ZeroDur {
+	if r.Durability[model.Element_Electric] > ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Electro, reactions.CrystallizeElectro, event.OnCrystallizeElectro)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizeHydro(a *combat.AttackEvent) bool {
-	if r.Durability[Hydro] > ZeroDur {
+	if r.Durability[model.Element_Water] > ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Hydro, reactions.CrystallizeHydro, event.OnCrystallizeHydro)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizeCryo(a *combat.AttackEvent) bool {
-	if r.Durability[Cryo] > ZeroDur {
+	if r.Durability[model.Element_Ice] > ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Cryo, reactions.CrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizePyro(a *combat.AttackEvent) bool {
-	if r.Durability[Pyro] > ZeroDur || r.Durability[Burning] > ZeroDur {
+	if r.Durability[model.Element_Fire] > ZeroDur || r.Durability[model.Element_Burning] > ZeroDur {
 		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, reactions.CrystallizePyro, event.OnCrystallizePyro)
 		r.burningCheck()
 		return reacted
@@ -51,7 +52,7 @@ func (r *Reactable) TryCrystallizePyro(a *combat.AttackEvent) bool {
 }
 
 func (r *Reactable) TryCrystallizeFrozen(a *combat.AttackEvent) bool {
-	if r.Durability[Frozen] > ZeroDur {
+	if r.Durability[model.Element_Frozen] > ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Frozen, reactions.CrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
@@ -76,7 +77,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	r.core.Events.Emit(evt, r.self, a)
 	// check freeze + ec
 	switch {
-	case ele == attributes.Electro && r.Durability[Hydro] > ZeroDur:
+	case ele == attributes.Electro && r.Durability[model.Element_Water] > ZeroDur:
 		r.checkEC()
 	case ele == attributes.Frozen:
 		r.checkFreeze()

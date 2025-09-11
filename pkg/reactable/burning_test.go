@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func TestBurning(t *testing.T) {
@@ -27,8 +28,8 @@ func TestBurning(t *testing.T) {
 		},
 	})
 	// dendro electro gone; 20 quicken
-	if !durApproxEqual(20, trg.Durability[Quicken], 0.00001) {
-		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[Quicken])
+	if !durApproxEqual(20, trg.Durability[model.Element_Overdose], 0.00001) {
+		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[model.Element_Overdose])
 	}
 	if trg.AuraContains(attributes.Dendro, attributes.Electro) {
 		t.Error("expecting target to not contain any remaining dendro or electro aura")

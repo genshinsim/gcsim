@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
@@ -13,19 +14,19 @@ func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
 		return false
 	}
 	// this is for non frozen one
-	if r.Durability[Frozen] >= ZeroDur {
+	if r.Durability[model.Element_Frozen] >= ZeroDur {
 		return false
 	}
 	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
-		if r.Durability[Cryo] < ZeroDur {
+		if r.Durability[model.Element_Ice] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 1)
 	case attributes.Cryo:
 		// could be ec potentially
-		if r.Durability[Electro] < ZeroDur {
+		if r.Durability[model.Element_Electric] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
@@ -45,7 +46,7 @@ func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) bool {
 		return false
 	}
 	// this is for frozen
-	if r.Durability[Frozen] < ZeroDur {
+	if r.Durability[model.Element_Frozen] < ZeroDur {
 		return false
 	}
 	switch a.Info.Element {

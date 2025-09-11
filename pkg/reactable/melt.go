@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
@@ -14,7 +15,7 @@ func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
 	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
-		if r.Durability[Cryo] < ZeroDur && r.Durability[Frozen] < ZeroDur {
+		if r.Durability[model.Element_Ice] < ZeroDur && r.Durability[model.Element_Frozen] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 2)
@@ -24,7 +25,7 @@ func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
 		}
 		a.Info.AmpMult = 2.0
 	case attributes.Cryo:
-		if r.Durability[Pyro] < ZeroDur && r.Durability[Burning] < ZeroDur {
+		if r.Durability[model.Element_Fire] < ZeroDur && r.Durability[model.Element_Burning] < ZeroDur {
 			return false
 		}
 		r.reduce(attributes.Pyro, a.Info.Durability, 0.5)

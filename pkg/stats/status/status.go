@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -37,7 +38,7 @@ type buffer struct {
 
 	reactionUptime  []map[string]int
 	enemyReactions  [][]stats.ReactionStatusInterval
-	activeReactions []map[reactable.Modifier]int
+	activeReactions []map[model.Element]int
 }
 
 func maxUpdate(arr []float64, index int, value float64) []float64 {
@@ -77,12 +78,12 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 		reactionUptime:  make([]map[string]int, len(core.Combat.Enemies())),
 		enemyReactions:  make([][]stats.ReactionStatusInterval, len(core.Combat.Enemies())),
-		activeReactions: make([]map[reactable.Modifier]int, len(core.Combat.Enemies())),
+		activeReactions: make([]map[model.Element]int, len(core.Combat.Enemies())),
 	}
 
 	for i := 0; i < len(core.Combat.Enemies()); i++ {
 		out.reactionUptime[i] = make(map[string]int)
-		out.activeReactions[i] = make(map[reactable.Modifier]int)
+		out.activeReactions[i] = make(map[model.Element]int)
 
 		if enemy, ok := core.Combat.Enemies()[i].(*enemy.Enemy); ok {
 			if enemy.Level > out.maxEnemyLvl {
@@ -110,14 +111,14 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 				continue
 			}
 
-			current := make(map[reactable.Modifier]int)
+			current := make(map[model.Element]int)
 
-			for r, v := range enemy.Durability {
+			for r, v := range enemy.GetDurability() {
 				if v <= reactable.ZeroDur {
 					continue
 				}
-				var key = reactable.Modifier(r)
-				out.reactionUptime[i][key.String()] += 1
+				var key = model.Element(r)
+				out.reactionUptime[i][model.ElementToString(key)] += 1
 
 				if start, ok := out.activeReactions[i][key]; ok {
 					current[key] = start

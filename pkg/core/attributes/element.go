@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // Element is a string representing an element i.e. HYDRO/PYRO/etc...
@@ -93,4 +95,26 @@ func EleToDmgP(e Element) Stat {
 		return PhyP
 	}
 	return -1
+}
+
+var ElementToModifier = map[Element]model.Element{
+	Electro: model.Element_Electric,
+	Pyro:    model.Element_Fire,
+	Cryo:    model.Element_Ice,
+	Hydro:   model.Element_Water,
+	Dendro:  model.Element_Grass,
+	Anemo:   model.Element_Wind,
+	Geo:     model.Element_Rock,
+	Frozen:  model.Element_Frozen,
+}
+
+var ModifierToElement = map[model.Element]Element{
+	model.Element_Electric: Electro,
+	model.Element_Fire:     Pyro,
+	model.Element_Ice:      Cryo,
+	model.Element_Water:    Hydro,
+	model.Element_Grass:    Dendro,
+	model.Element_Wind:     Anemo,
+	model.Element_Rock:     Geo,
+	model.Element_Frozen:   Frozen,
 }

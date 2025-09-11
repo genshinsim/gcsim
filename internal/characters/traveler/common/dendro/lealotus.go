@@ -3,6 +3,7 @@ package dendro
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -11,12 +12,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type LeaLotus struct {
 	*gadget.Gadget
-	*reactable.Reactable
+	core.Reactable
 	burstAtk     *combat.AttackEvent
 	char         *Traveler
 	hitboxRadius float64
@@ -33,7 +35,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	s.Gadget = gadget.New(c.Core, c.burstPos, 1, combat.GadgetTypLeaLotus)
 	s.Reactable = &reactable.Reactable{}
 	s.Reactable.Init(s, c.Core)
-	s.Durability[reactable.Dendro] = 10
+	s.SetAuraDurability(model.Element_Grass, 10, 0)
 
 	s.Duration = 12 * 60
 	if c.Base.Cons >= 2 {

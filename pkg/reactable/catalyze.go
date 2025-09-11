@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
@@ -12,7 +13,7 @@ func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
 		return false
 	}
 
-	if r.Durability[Quicken] < ZeroDur {
+	if r.Durability[model.Element_Overdose] < ZeroDur {
 		return false
 	}
 
@@ -31,7 +32,7 @@ func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
 		return false
 	}
 
-	if r.Durability[Quicken] < ZeroDur {
+	if r.Durability[model.Element_Overdose] < ZeroDur {
 		return false
 	}
 
@@ -53,12 +54,12 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Dendro:
-		if r.Durability[Electro] < ZeroDur {
+		if r.Durability[model.Element_Electric] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	case attributes.Electro:
-		if r.Durability[Dendro] < ZeroDur {
+		if r.Durability[model.Element_Grass] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Dendro, a.Info.Durability, 1)
@@ -73,7 +74,7 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	// attach quicken aura; special amount
 	r.attachQuicken(consumed)
 
-	if r.Durability[Hydro] >= ZeroDur {
+	if r.Durability[model.Element_Water] >= ZeroDur {
 		r.core.Tasks.Add(func() {
 			r.tryQuickenBloom(a)
 		}, 0)
@@ -83,5 +84,5 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 }
 
 func (r *Reactable) attachQuicken(dur reactions.Durability) {
-	r.attachOverlapRefreshDuration(Quicken, dur, 12*dur+360)
+	r.attachOverlapRefreshDuration(model.Element_Overdose, dur, 12*dur+360)
 }

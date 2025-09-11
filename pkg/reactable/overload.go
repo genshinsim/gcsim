@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
@@ -16,7 +17,7 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Electro:
 		// must have pyro; pyro cant coexist (for now) so ok to ignore count?
-		if r.Durability[Pyro] < ZeroDur && r.Durability[Burning] < ZeroDur {
+		if r.Durability[model.Element_Fire] < ZeroDur && r.Durability[model.Element_Burning] < ZeroDur {
 			return false
 		}
 		// reduce; either gone or left; don't care how much actually reacted
@@ -24,7 +25,7 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 		r.burningCheck()
 	case attributes.Pyro:
 		// must have electro; gotta be careful with ec?
-		if r.Durability[Electro] < ZeroDur {
+		if r.Durability[model.Element_Electric] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)

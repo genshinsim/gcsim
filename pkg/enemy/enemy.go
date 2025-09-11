@@ -16,7 +16,7 @@ import (
 
 type Enemy struct {
 	*target.Target
-	*reactable.Reactable
+	core.Reactable
 
 	Level   int
 	resists map[attributes.Element]float64
@@ -48,7 +48,7 @@ func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	e.Target = target.New(core, geometry.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
-	e.Reactable.FreezeResist = e.prof.FreezeResist
+	e.Reactable.SetFreezeResist(e.prof.FreezeResist)
 	e.mods = make([]modifier.Mod, 0, 10)
 	if core.Combat.DamageMode {
 		e.hp = p.HP

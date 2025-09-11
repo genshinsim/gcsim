@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func TestFreezePlusCryoHydro(t *testing.T) {
@@ -25,8 +26,8 @@ func TestFreezePlusCryoHydro(t *testing.T) {
 		},
 	})
 	// without ticking, we should have 50 frozen here
-	if !durApproxEqual(40, trg.Durability[Frozen], 0.00001) {
-		t.Errorf("frozen expected to be 40, got %v", trg.Durability[Frozen])
+	if !durApproxEqual(40, trg.Durability[model.Element_Frozen], 0.00001) {
+		t.Errorf("frozen expected to be 40, got %v", trg.Durability[model.Element_Frozen])
 		t.FailNow()
 	}
 
@@ -38,8 +39,8 @@ func TestFreezePlusCryoHydro(t *testing.T) {
 	})
 
 	// should have frozen + cryo here
-	if !durApproxEqual(20, trg.Durability[Cryo], 0.00001) {
-		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[Cryo])
+	if !durApproxEqual(20, trg.Durability[model.Element_Ice], 0.00001) {
+		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[model.Element_Ice])
 	}
 }
 
@@ -61,8 +62,8 @@ func TestFreezePlusAddFreeze(t *testing.T) {
 		},
 	})
 	// without ticking, we should have 50 frozen here
-	if !durApproxEqual(40, trg.Durability[Frozen], 0.00001) {
-		t.Errorf("frozen expected to be 40, got %v", trg.Durability[Frozen])
+	if !durApproxEqual(40, trg.Durability[model.Element_Frozen], 0.00001) {
+		t.Errorf("frozen expected to be 40, got %v", trg.Durability[model.Element_Frozen])
 		t.FailNow()
 	}
 
@@ -80,7 +81,7 @@ func TestFreezePlusAddFreeze(t *testing.T) {
 	})
 
 	// should have frozen + cryo here
-	if !durApproxEqual(80, trg.Durability[Frozen], 0.00001) {
-		t.Errorf("expecting 80 frozen attached, got %v", trg.Durability[Frozen])
+	if !durApproxEqual(80, trg.Durability[model.Element_Frozen], 0.00001) {
+		t.Errorf("expecting 80 frozen attached, got %v", trg.Durability[model.Element_Frozen])
 	}
 }

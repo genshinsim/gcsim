@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
@@ -17,7 +18,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	}
 	// if there's still frozen left don't try to ec
 	// game actively rejects ec reaction if frozen is present
-	if r.Durability[Frozen] > ZeroDur {
+	if r.Durability[model.Element_Frozen] > ZeroDur {
 		return false
 	}
 
@@ -25,22 +26,22 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if there's no existing hydro or electro then do nothing
-		if r.Durability[Electro] < ZeroDur {
+		if r.Durability[model.Element_Electric] < ZeroDur {
 			return false
 		}
 		// add to hydro durability (can't add if the atk already reacted)
 		//TODO: this shouldn't happen here
 		if !a.Reacted {
-			r.attachOrRefillNormalEle(Hydro, a.Info.Durability)
+			r.attachOrRefillNormalEle(model.Element_Water, a.Info.Durability)
 		}
 	case attributes.Electro:
 		// if there's no existing hydro or electro then do nothing
-		if r.Durability[Hydro] < ZeroDur {
+		if r.Durability[model.Element_Water] < ZeroDur {
 			return false
 		}
 		// add to electro durability (can't add if the atk already reacted)
 		if !a.Reacted {
-			r.attachOrRefillNormalEle(Electro, a.Info.Durability)
+			r.attachOrRefillNormalEle(model.Element_Electric, a.Info.Durability)
 		}
 	default:
 		return false
@@ -100,7 +101,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 				return false
 			}
 			// ignore if we no longer have both electro and hydro
-			if r.Durability[Electro] < ZeroDur || r.Durability[Hydro] < ZeroDur {
+			if r.Durability[model.Element_Electric] < ZeroDur || r.Durability[model.Element_Water] < ZeroDur {
 				return true
 			}
 
@@ -118,25 +119,25 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 }
 
 func (r *Reactable) waneEC() {
-	r.Durability[Electro] -= 10
-	r.Durability[Electro] = max(0, r.Durability[Electro])
-	r.Durability[Hydro] -= 10
-	r.Durability[Hydro] = max(0, r.Durability[Hydro])
+	r.Durability[model.Element_Electric] -= 10
+	r.Durability[model.Element_Electric] = max(0, r.Durability[model.Element_Electric])
+	r.Durability[model.Element_Water] -= 10
+	r.Durability[model.Element_Water] = max(0, r.Durability[model.Element_Water])
 	r.core.Log.NewEvent("ec wane",
 		glog.LogElementEvent,
 		-1,
 	).
 		Write("aura", "ec").
 		Write("target", r.self.Key()).
-		Write("hydro", r.Durability[Hydro]).
-		Write("electro", r.Durability[Electro])
+		Write("hydro", r.Durability[model.Element_Water]).
+		Write("electro", r.Durability[model.Element_Electric])
 
 	// ec is gone
 	r.checkEC()
 }
 
 func (r *Reactable) checkEC() {
-	if r.Durability[Electro] < ZeroDur || r.Durability[Hydro] < ZeroDur {
+	if r.Durability[model.Element_Electric] < ZeroDur || r.Durability[model.Element_Water] < ZeroDur {
 		r.ecTickSrc = -1
 		r.core.Events.Unsubscribe(event.OnEnemyDamage, fmt.Sprintf("ec-%v", r.self.Key()))
 		r.core.Log.NewEvent("ec expired",
@@ -145,8 +146,8 @@ func (r *Reactable) checkEC() {
 		).
 			Write("aura", "ec").
 			Write("target", r.self.Key()).
-			Write("hydro", r.Durability[Hydro]).
-			Write("electro", r.Durability[Electro])
+			Write("hydro", r.Durability[model.Element_Water]).
+			Write("electro", r.Durability[model.Element_Electric])
 	}
 }
 
@@ -158,7 +159,7 @@ func (r *Reactable) nextTick(src int) func() {
 		}
 		// ec SHOULD be active still, since if not we would have
 		// called cleanup and set source to -1
-		if r.Durability[Electro] < ZeroDur || r.Durability[Hydro] < ZeroDur {
+		if r.Durability[model.Element_Electric] < ZeroDur || r.Durability[model.Element_Water] < ZeroDur {
 			return
 		}
 

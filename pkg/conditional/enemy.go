@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -52,7 +53,7 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 	if ele == "burning" {
 		result := reactions.Durability(0)
 		if e.IsBurning() {
-			result = e.Durability[reactable.Burning]
+			result = e.GetAuraDurability(model.Element_Burning)
 		}
 		return float64(result), nil
 	}
@@ -62,9 +63,10 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 		return 0, fmt.Errorf("bad element condition: invalid element %s", ele)
 	}
 	result := reactions.Durability(0)
-	for i := reactable.Invalid; i < reactable.EndModifier; i++ {
-		if i.Element() == elekey && e.Durability[i] > reactable.ZeroDur && e.Durability[i] > result {
-			result = e.Durability[i]
+	for i := model.Element_None; i < model.Element_COUNT; i++ {
+		dur := e.GetAuraDurability(i)
+		if attributes.ModifierToElement[i] == elekey && dur > reactable.ZeroDur && dur > result {
+			result = dur
 		}
 	}
 	return float64(result), nil

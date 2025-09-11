@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func TestCrystallizeCryo(t *testing.T) {
@@ -42,8 +43,8 @@ func TestCrystallizeCryo(t *testing.T) {
 		t.Errorf("expecting player to be shielded")
 	}
 
-	if !durApproxEqual(7.5, trg.Durability[Cryo], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[Cryo])
+	if !durApproxEqual(7.5, trg.Durability[model.Element_Ice], 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[model.Element_Ice])
 	}
 }
 
@@ -66,7 +67,7 @@ func TestCrystallizePyro(t *testing.T) {
 		},
 	})
 	// force on burning
-	trg.Durability[Burning] = 50
+	trg.Durability[model.Element_Burning] = 50
 
 	trg.React(&combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -83,10 +84,10 @@ func TestCrystallizePyro(t *testing.T) {
 	if trg.core.Player.Shields.Count() == 0 {
 		t.Errorf("expecting player to be shielded")
 	}
-	if !durApproxEqual(7.5, trg.Durability[Pyro], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[Pyro])
+	if !durApproxEqual(7.5, trg.Durability[model.Element_Fire], 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[model.Element_Fire])
 	}
-	if !durApproxEqual(37.5, trg.Durability[Burning], 0.0001) {
-		t.Errorf("expecting 37.5 burning left, got %v", trg.Durability[Burning])
+	if !durApproxEqual(37.5, trg.Durability[model.Element_Burning], 0.0001) {
+		t.Errorf("expecting 37.5 burning left, got %v", trg.Durability[model.Element_Burning])
 	}
 }

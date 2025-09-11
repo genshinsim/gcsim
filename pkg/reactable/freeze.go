@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
@@ -19,19 +20,19 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
-		if r.Durability[Cryo] < ZeroDur {
+		if r.Durability[model.Element_Ice] < ZeroDur {
 			return false
 		}
-		consumed = r.triggerFreeze(r.Durability[Cryo], a.Info.Durability)
-		r.Durability[Cryo] -= consumed
-		r.Durability[Cryo] = max(r.Durability[Cryo], 0)
+		consumed = r.triggerFreeze(r.Durability[model.Element_Ice], a.Info.Durability)
+		r.Durability[model.Element_Ice] -= consumed
+		r.Durability[model.Element_Ice] = max(r.Durability[model.Element_Ice], 0)
 	case attributes.Cryo:
-		if r.Durability[Hydro] < ZeroDur {
+		if r.Durability[model.Element_Water] < ZeroDur {
 			return false
 		}
-		consumed := r.triggerFreeze(r.Durability[Hydro], a.Info.Durability)
-		r.Durability[Hydro] -= consumed
-		r.Durability[Hydro] = max(r.Durability[Hydro], 0)
+		consumed := r.triggerFreeze(r.Durability[model.Element_Water], a.Info.Durability)
+		r.Durability[model.Element_Water] -= consumed
+		r.Durability[model.Element_Water] = max(r.Durability[model.Element_Water], 0)
 	default:
 		// should be here
 		return false
@@ -44,27 +45,27 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 }
 
 func (r *Reactable) PoiseDMGCheck(a *combat.AttackEvent) bool {
-	if r.Durability[Frozen] < ZeroDur {
+	if r.Durability[model.Element_Frozen] < ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt {
 		return false
 	}
 	// remove frozen durability according to poise dmg
-	r.Durability[Frozen] -= reactions.Durability(0.15 * a.Info.PoiseDMG)
+	r.Durability[model.Element_Frozen] -= reactions.Durability(0.15 * a.Info.PoiseDMG)
 	r.checkFreeze()
 	return true
 }
 
 func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
-	if r.Durability[Frozen] < ZeroDur {
+	if r.Durability[model.Element_Frozen] < ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
 		return false
 	}
 	// remove 200 freeze gauge if available
-	r.Durability[Frozen] -= 200
+	r.Durability[model.Element_Frozen] -= 200
 	r.checkFreeze()
 
 	r.core.Events.Emit(event.OnShatter, r.self, a)
@@ -107,13 +108,13 @@ func (r *Reactable) triggerFreeze(a, b reactions.Durability) reactions.Durabilit
 		return d
 	}
 	// trigger freeze should only addDurability and should not touch decay rate
-	r.attachOverlap(Frozen, 2*d, ZeroDur)
+	r.attachOverlap(model.Element_Frozen, 2*d, ZeroDur)
 	return d
 }
 
 func (r *Reactable) checkFreeze() {
-	if r.Durability[Frozen] <= ZeroDur {
-		r.Durability[Frozen] = 0
+	if r.Durability[model.Element_Frozen] <= ZeroDur {
+		r.Durability[model.Element_Frozen] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
 		// trigger another attack here, purely for the purpose of breaking bubbles >.>
 		ai := combat.AttackInfo{
@@ -131,4 +132,8 @@ func (r *Reactable) checkFreeze() {
 		//TODO: delay attack by 1 frame ok?
 		r.core.QueueAttack(ai, combat.NewSingleTargetHit(r.self.Key()), -1, 0)
 	}
+}
+
+func (r *Reactable) SetFreezeResist(resist float64) {
+	r.FreezeResist = resist
 }

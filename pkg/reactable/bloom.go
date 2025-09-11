@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const DendroCoreDelay = 30
@@ -27,9 +28,9 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 		// this part is annoying. bloom will happen if any of the dendro like aura is present
 		// so we gotta check for all 3...
 		switch {
-		case r.Durability[Dendro] > ZeroDur:
-		case r.Durability[Quicken] > ZeroDur:
-		case r.Durability[BurningFuel] > ZeroDur:
+		case r.Durability[model.Element_Grass] > ZeroDur:
+		case r.Durability[model.Element_Overdose] > ZeroDur:
+		case r.Durability[model.Element_BurningFuel] > ZeroDur:
 		default:
 			return false
 		}
@@ -40,7 +41,7 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 			consumed = f
 		}
 	case attributes.Dendro:
-		if r.Durability[Hydro] < ZeroDur {
+		if r.Durability[model.Element_Water] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, 2)
@@ -59,17 +60,17 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
 // this reaction will check if any hydro exists and if so trigger a bloom reaction
 func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
-	if r.Durability[Quicken] < ZeroDur {
+	if r.Durability[model.Element_Overdose] < ZeroDur {
 		// this should be a sanity check; should not happen realistically unless something wipes off
 		// the quicken immediately (same frame) after catalyze
 		return
 	}
-	if r.Durability[Hydro] < ZeroDur {
+	if r.Durability[model.Element_Water] < ZeroDur {
 		return
 	}
-	avail := r.Durability[Quicken]
+	avail := r.Durability[model.Element_Overdose]
 	consumed := r.reduce(attributes.Hydro, avail, 2)
-	r.Durability[Quicken] -= consumed
+	r.Durability[model.Element_Overdose] -= consumed
 
 	r.addBloomGadget(a)
 	r.core.Events.Emit(event.OnBloom, r.self, a)

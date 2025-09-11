@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -45,12 +44,6 @@ type Flags struct {
 	EnableHitlag      bool // hitlag enabled
 	IgnoreBurstEnergy bool // for ignoring energy when using burst
 	Custom            map[string]float64
-}
-
-type Reactable interface {
-	React(a *combat.AttackEvent)
-	AuraContains(e ...attributes.Element) bool
-	Tick()
 }
 
 // type Enemy interface {

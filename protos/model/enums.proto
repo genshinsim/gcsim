@@ -81,19 +81,26 @@ enum ZoneType {
 }
 
 enum Element {
-  INVALID_ELEMENT = 0;
-  Electric = 1;
-  Fire = 2;
-  Ice = 3;
-  Water = 4;
-  Grass = 5;
-  ELEMENT_QUICKEN = 6;
-  ELEMENT_FROZEN = 7;
-  Wind = 8;
-  Rock = 9;
-  ELEMENT_NONE = 10;
-  ELEMENT_PHYSICAL = 11;
-  ELEMENT_UNKNOWN = 12;
+  None = 0;
+  Fire = 1;
+  Water = 2;
+  Grass = 3;
+  Electric = 4;
+  Ice = 5;
+  Frozen = 6;
+  Wind = 7;
+  Rock = 8;
+  AntiFire = 9;
+  VechicleMuteIce = 10;
+  Mushroom = 11;
+  Overdose = 12;
+  Wood = 13;
+  LiquidPhlogiston = 14;
+  SolidPhlogiston = 15;
+  SolidifyPhlogiston = 16;
+  Burning = 17;     // TODO: remove in future
+  BurningFuel = 18; // TODO: remove in future
+  COUNT = 19;
 }
 
 enum StatType {
@@ -143,7 +150,8 @@ enum DBTag {
   DB_TAG_TESTING = 2;
   DB_TAG_ITTO_SIMPS = 5;
   DB_TAG_RANDOM_DELAYS = 6;
-  DB_TAG_ARFOIRE_NEWBIES = 7; // reissue4917 (1070054618895233035) tag for newbie players
+  DB_TAG_ARFOIRE_NEWBIES =
+      7; // reissue4917 (1070054618895233035) tag for newbie players
   DB_TAG_APL = 8;
   DB_TAG_GUIDES = 9;
   DB_TAG_ADMIN_DO_NOT_USE = 99999999;
@@ -154,9 +162,9 @@ enum DBTag {
 
 enum EquipType {
   INVALID_EQUIP_TYPE = 0;
-  EQUIP_BRACER = 1; // flower
-	EQUIP_NECKLACE = 2; // plume
-	EQUIP_SHOES = 3; // sands
-	EQUIP_RING = 4; // goblet
-	EQUIP_DRESS = 5; // circlet
+  EQUIP_BRACER = 1;   // flower
+  EQUIP_NECKLACE = 2; // plume
+  EQUIP_SHOES = 3;    // sands
+  EQUIP_RING = 4;     // goblet
+  EQUIP_DRESS = 5;    // circlet
 }

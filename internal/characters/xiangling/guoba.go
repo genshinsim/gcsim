@@ -2,7 +2,9 @@ package xiangling
 
 import (
 	"github.com/genshinsim/gcsim/internal/characters/faruzan"
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
@@ -10,12 +12,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type panda struct {
 	*gadget.Gadget
-	*reactable.Reactable
+	core.Reactable
 	c     *char
 	ai    combat.AttackInfo
 	snap  combat.Snapshot
@@ -55,10 +58,7 @@ func (p *panda) Tick() {
 	case 103, 203, 303, 403: // swirl window
 		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index).
 			SetEnded(p.c.Core.F + infuseWindow + 1)
-		p.Durability[reactable.Pyro] = infuseDurability
-		p.Core.Tasks.Add(func() {
-			p.Durability[reactable.Pyro] = 0
-		}, infuseWindow+1) // +1 since infuse window is inclusive
+		p.SetAuraDurability(model.Element_Fire, infuseDurability, infuseDurability/(infuseWindow+1)) // +1 since infuse window is inclusive
 		p.SetDirectionToClosestEnemy()
 		// queue this in advance because that's how it is on live
 		p.breath()
@@ -90,7 +90,7 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 		return 0, false
 	}
 	// check pyro window
-	if p.Durability[reactable.Pyro] <= reactable.ZeroDur {
+	if !p.AuraContains(attributes.Pyro) {
 		return 0, false
 	}
 
@@ -110,11 +110,12 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	atk.Info.Durability = 50
 
 	// cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
-	oldDur := p.Durability[reactable.Pyro]
-	p.Durability[reactable.Pyro] = infuseDurability
+	oldDur := p.GetAuraDurability(model.Element_Fire)
+	oldDecay := p.GetAuraDecayRate(model.Element_Fire)
+	p.SetAuraDurability(model.Element_Fire, infuseDurability, oldDecay)
 	p.React(atk)
 	// restore the durability after
-	p.Durability[reactable.Pyro] = oldDur
+	p.SetAuraDurability(model.Element_Fire, oldDur, oldDecay)
 
 	return 0, false
 }

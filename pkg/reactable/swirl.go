@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func calcSwirlAtkDurability(consumed, src reactions.Durability) reactions.Durability {
@@ -61,7 +62,7 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[Electro] < ZeroDur {
+	if r.Durability[model.Element_Electric] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Electro, a.Info.Durability, 0.5)
@@ -86,7 +87,7 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 
 	// at this point if any durability left, we need to check for prescence of
 	// hydro in case of EC
-	if a.Info.Durability > ZeroDur && r.Durability[Hydro] > ZeroDur {
+	if a.Info.Durability > ZeroDur && r.Durability[model.Element_Water] > ZeroDur {
 		// trigger swirl hydro
 		r.TrySwirlHydro(a)
 		// check EC clean up
@@ -99,7 +100,7 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[Hydro] < ZeroDur {
+	if r.Durability[model.Element_Water] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Hydro, a.Info.Durability, 0.5)
@@ -129,7 +130,7 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[Cryo] < ZeroDur {
+	if r.Durability[model.Element_Ice] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Cryo, a.Info.Durability, 0.5)
@@ -159,7 +160,7 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[Pyro] < ZeroDur {
+	if r.Durability[model.Element_Fire] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Pyro, a.Info.Durability, 0.5)
@@ -190,7 +191,7 @@ func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[Frozen] < ZeroDur {
+	if r.Durability[model.Element_Frozen] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Frozen, a.Info.Durability, 0.5)
