@@ -106,6 +106,7 @@ var ElementToModifier = map[Element]model.Element{
 	Anemo:   model.Element_Wind,
 	Geo:     model.Element_Rock,
 	Frozen:  model.Element_Frozen,
+	Quicken: model.Element_Overdose,
 }
 
 var ModifierToElement = map[model.Element]Element{
@@ -117,4 +118,6 @@ var ModifierToElement = map[model.Element]Element{
 	model.Element_Wind:     Anemo,
 	model.Element_Rock:     Geo,
 	model.Element_Frozen:   Frozen,
+	model.Element_Overdose: Quicken,
+	model.Element_Burning:  Pyro,
 }
