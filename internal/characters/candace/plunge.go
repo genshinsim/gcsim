@@ -40,6 +40,7 @@ func init() {
 	highPlungeFrames[action.ActionSkill] = 62
 	highPlungeFrames[action.ActionBurst] = 62
 	highPlungeFrames[action.ActionDash] = 82
+	highPlungeFrames[action.ActionWalk] = 81
 	highPlungeFrames[action.ActionSwap] = 66
 }
 
