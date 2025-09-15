@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const a1IcdKey = "noelle-a1-icd"
@@ -35,7 +34,7 @@ func (c *char) a1() {
 			return false
 		}
 		c.AddStatus(a1IcdKey, 3600, false)
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A1 Shield",
 			AttackTag:  attacks.AttackTagNone,
@@ -59,12 +58,12 @@ func (c *char) a1() {
 
 // Noelle will decrease the CD of Breastplate by 1s for every 4 Normal or Charged Attack hits she scores on opponents.
 // One hit may be counted every 0.1s.
-func (c *char) makeA4CB() model.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 	done := false
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

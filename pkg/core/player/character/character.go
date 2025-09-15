@@ -41,12 +41,12 @@ type Character interface {
 	ReduceActionCooldown(a action.Action, v int)
 	Charges(a action.Action) int
 
-	Snapshot(a *model.AttackInfo) model.Snapshot
+	Snapshot(a *info.AttackInfo) info.Snapshot
 
 	AddEnergy(src string, amt float64)
 
 	ApplyHitlag(factor, dur float64)
-	AnimationStartDelay(model.AnimationDelayKey) int
+	AnimationStartDelay(info.AnimationDelayKey) int
 
 	Condition([]string) (any, error)
 

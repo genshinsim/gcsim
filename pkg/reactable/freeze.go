@@ -5,17 +5,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (r *Reactable) TryFreeze(a *model.AttackEvent) bool {
+func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
 	// so if already frozen there are 2 cases:
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
-	var consumed model.Durability
+	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
@@ -43,7 +43,7 @@ func (r *Reactable) TryFreeze(a *model.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) PoiseDMGCheck(a *model.AttackEvent) bool {
+func (r *Reactable) PoiseDMGCheck(a *info.AttackEvent) bool {
 	if r.Durability[Frozen] < ZeroDur {
 		return false
 	}
@@ -51,12 +51,12 @@ func (r *Reactable) PoiseDMGCheck(a *model.AttackEvent) bool {
 		return false
 	}
 	// remove frozen durability according to poise dmg
-	r.Durability[Frozen] -= model.Durability(0.15 * a.Info.PoiseDMG)
+	r.Durability[Frozen] -= info.Durability(0.15 * a.Info.PoiseDMG)
 	r.checkFreeze()
 	return true
 }
 
-func (r *Reactable) ShatterCheck(a *model.AttackEvent) bool {
+func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
 	if r.Durability[Frozen] < ZeroDur {
 		return false
 	}
@@ -73,10 +73,10 @@ func (r *Reactable) ShatterCheck(a *model.AttackEvent) bool {
 	if !(r.shatterGCD != -1 && r.core.F < r.shatterGCD) {
 		r.shatterGCD = r.core.F + 0.2*60
 		// trigger shatter attack
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:       a.Info.ActorIndex,
 			DamageSrc:        r.self.Key(),
-			Abil:             string(model.ReactionTypeShatter),
+			Abil:             string(info.ReactionTypeShatter),
 			AttackTag:        attacks.AttackTagShatter,
 			ICDTag:           attacks.ICDTagShatter,
 			ICDGroup:         attacks.ICDGroupReactionA,
@@ -101,7 +101,7 @@ func (r *Reactable) ShatterCheck(a *model.AttackEvent) bool {
 }
 
 // add to freeze durability and return amount of durability consumed
-func (r *Reactable) triggerFreeze(a, b model.Durability) model.Durability {
+func (r *Reactable) triggerFreeze(a, b info.Durability) info.Durability {
 	d := min(a, b)
 	if r.FreezeResist >= 1 {
 		return d
@@ -116,7 +116,7 @@ func (r *Reactable) checkFreeze() {
 		r.Durability[Frozen] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
 		// trigger another attack here, purely for the purpose of breaking bubbles >.>
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:  0,
 			DamageSrc:   r.self.Key(),
 			Abil:        "Freeze Broken",

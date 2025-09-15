@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -23,7 +22,7 @@ type char struct {
 	jadeCount     int
 	lastScreen    int
 	prevAttack    attackType
-	skillSnapshot model.Snapshot
+	skillSnapshot info.Snapshot
 }
 
 type attackType int
@@ -104,9 +103,9 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return c.xingqiuN0Delay()
 	default:
 		return c.Character.AnimationStartDelay(k)

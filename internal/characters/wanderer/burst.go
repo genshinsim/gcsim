@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFramesNormal []int
@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		return c.WindfavoredBurst(p)
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Kyougen: Five Ceremonial Plays",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -77,7 +77,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) WindfavoredBurst(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Kyougen: Five Ceremonial Plays (Windfavored)",
 		AttackTag:  attacks.AttackTagElementalBurst,

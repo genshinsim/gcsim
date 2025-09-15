@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -59,7 +59,7 @@ func init() {
 
 func (c *Traveler) SkillPress() action.Info {
 	hitmark := 34
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex (Tap)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -88,7 +88,7 @@ func (c *Traveler) SkillPress() action.Info {
 	}
 }
 
-func (c *Traveler) pressParticleCB(a model.AttackCB) {
+func (c *Traveler) pressParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -104,7 +104,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 	c.eICDTag = attacks.ICDTagNone
 	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3)
 
-	aiCut := model.AttackInfo{
+	aiCut := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Cutting (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
@@ -179,7 +179,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 	}
 	// move the hitmark back by 1 tick (15f) then forward by 5f for the Storm damage
 	hitmark = hitmark - 15 + 5
-	aiStorm := model.AttackInfo{
+	aiStorm := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Storm (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -197,7 +197,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 	aiStormAbs.Element = attributes.NoElement
 	aiStormAbs.Mult = skillInitialStormAbsorb[c.TalentLvlSkill()]
 
-	var particleCB model.AttackCBFunc
+	var particleCB info.AttackCBFunc
 	// it does max storm when there are 2 or more ticks
 	if holdTicks >= 2 {
 		aiStorm.Mult = skillMaxStorm[c.TalentLvlSkill()]
@@ -243,7 +243,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 	}
 }
 
-func (c *Traveler) holdParticleCB(a model.AttackCB) {
+func (c *Traveler) holdParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

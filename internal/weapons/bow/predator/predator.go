@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -58,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stackDuration := 360
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -85,7 +84,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("predator-dmg", stackDuration),
-			Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if (atk.Info.AttackTag == attacks.AttackTagNormal) || (atk.Info.AttackTag == attacks.AttackTagExtra) {
 					mDMG[attributes.DmgP] = buffDmgP * float64(stacks)
 					return mDMG, true

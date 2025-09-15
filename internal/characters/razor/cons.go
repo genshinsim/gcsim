@@ -6,10 +6,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -42,7 +42,7 @@ func (c *char) c2() {
 
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("razor-c2", -1),
-			Amount: func(_ *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
@@ -57,7 +57,7 @@ func (c *char) c2() {
 }
 
 // When casting Claw and Thunder (Press), opponents hit will have their DEF decreased by 15% for 7s.
-func (c *char) c4cb(a model.AttackCB) {
+func (c *char) c4cb(a info.AttackCB) {
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -72,7 +72,7 @@ const c6ICDKey = "razor-c6-icd"
 
 // Every 10s, Razor's sword charges up, causing the next Normal Attack to release lightning that deals 100% of Razor's ATK as Electro DMG.
 // When Razor is not using Lightning Fang, a lightning strike on an opponent will grant Razor an Electro Sigil for Claw and Thunder.
-func (c *char) c6cb(a model.AttackCB) {
+func (c *char) c6cb(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -83,7 +83,7 @@ func (c *char) c6cb(a model.AttackCB) {
 
 	c.AddStatus(c6ICDKey, 600, true)
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lupus Fulguris",
 		AttackTag:  attacks.AttackTagNone, // TODO: it has another tag?
@@ -95,7 +95,7 @@ func (c *char) c6cb(a model.AttackCB) {
 		Mult:       1,
 	}
 
-	sigilcb := func(a model.AttackCB) {
+	sigilcb := func(a info.AttackCB) {
 		// add sigil only outside burst
 		if c.StatusIsActive(burstBuffKey) {
 			return

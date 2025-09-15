@@ -5,8 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -37,7 +37,7 @@ func (c *char) a1() {
 
 	// Bountiful Cores
 	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if !char.StatusIsActive(a1Status) {
 			return false
@@ -63,7 +63,7 @@ func (c *char) a1() {
 		if !char.StatusIsActive(a1Status) {
 			return false
 		}
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Element != attributes.Dendro {
 			return false
 		}
@@ -95,7 +95,7 @@ func (c *char) a4() {
 		// TODO: a4 should be an extra buff
 		this.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
-			Amount: func(ai model.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) (float64, bool) {
 				if ai.AttackTag != attacks.AttackTagBloom {
 					return 0, false
 				}

@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames [][]int
@@ -46,7 +46,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		maxConstructCount = 4
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wake of Earth",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -64,10 +64,10 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	// The shockwave triggered by Wake of Earth regenerates 5 Energy for every opponent hit.
 	// A maximum of 25 Energy can be regenerated in this manner at any one time.
 	src := c.Core.F
-	var c4cb model.AttackCBFunc
+	var c4cb info.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		energyCount := 0
-		c4cb = func(a model.AttackCB) {
+		c4cb = func(a info.AttackCB) {
 			t, ok := a.Target.(*enemy.Enemy)
 			if !ok {
 				return

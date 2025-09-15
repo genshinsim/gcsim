@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -57,7 +57,7 @@ func (c *char) burstTick() {
 		return
 	}
 
-	tickAI := model.AttackInfo{
+	tickAI := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wondrous Trick: Miracle Parade",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -96,7 +96,7 @@ func (c *char) explosiveFirework() {
 		e.DeleteStatus(burstMarkKey)
 	}
 
-	explodeAI := model.AttackInfo{
+	explodeAI := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wondrous Trick: Miracle Parade (Explosive Firework)",
 		AttackTag:  attacks.AttackTagElementalBurst,

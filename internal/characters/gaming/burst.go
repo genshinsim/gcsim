@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -54,7 +53,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(c.queueManChai, burstHitmark+1)
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Suanni's Gilded Dance (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,

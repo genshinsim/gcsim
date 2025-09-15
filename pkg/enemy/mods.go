@@ -6,7 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -77,7 +77,7 @@ func (e *Enemy) StatusExpiry(key string) int { return e.getModExpiry(key) }
 // Amount.
 
 // TODO: this needs to purge if done?
-func (e *Enemy) resist(ai *model.AttackInfo, evt glog.Event) float64 {
+func (e *Enemy) resist(ai *info.AttackInfo, evt glog.Event) float64 {
 	var logDetails []interface{}
 	var sb strings.Builder
 

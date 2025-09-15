@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var lowPlungeFrames []int
@@ -84,7 +84,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -137,7 +137,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		collision = 0 // Whether or not collision hit
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -152,7 +152,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 	highPlungeFrames := highPlungeFrames
 	collisionHitmark := collisionHitmark
-	var a1cb model.AttackCBFunc
+	var a1cb info.AttackCBFunc
 	if c.canUseNightsoul() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
@@ -192,7 +192,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -204,7 +204,7 @@ func (c *char) plungeCollision(delay int) {
 		Mult:       collision[c.TalentLvlAttack()],
 		UseDef:     true,
 	}
-	var a1cb model.AttackCBFunc
+	var a1cb info.AttackCBFunc
 	if c.canUseNightsoul() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true

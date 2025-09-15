@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -31,7 +30,7 @@ func (c *char) c1Ready() bool {
 // - The DMG Bonus gained will be further increased to 200%.
 // - When it hits while Wriothesley is in the Chilling Penalty state, that state's duration is extended by 4s. 1 such extension can occur per 1 Chilling Penalty duration.
 // You must first unlock the Passive Talent "There Shall Be a Plea for Justice."
-func (c *char) c1(ai *model.AttackInfo, snap *model.Snapshot) (model.AttackCBFunc, bool) {
+func (c *char) c1(ai *info.AttackInfo, snap *info.Snapshot) (info.AttackCBFunc, bool) {
 	if !c.c1Ready() {
 		return nil, false
 	}
@@ -54,7 +53,7 @@ func (c *char) c1(ai *model.AttackInfo, snap *model.Snapshot) (model.AttackCBFun
 	c.addC6Buff(snap)
 
 	// return callback to heal, extend E, remove C1 and apply 2.5s cd
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -84,11 +83,11 @@ func (c *char) c1(ai *model.AttackInfo, snap *model.Snapshot) (model.AttackCBFun
 	}, c.Base.Cons >= 6
 }
 
-func (c *char) makeC1N5CB() model.AttackCBFunc {
+func (c *char) makeC1N5CB() info.AttackCBFunc {
 	if c.Base.Cons < 1 || c.NormalCounter != 4 {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -115,7 +114,7 @@ func (c *char) resetC1SkillExtension() {
 // When using Darkgold Wolfbite, each Prosecution Edict stack from the Passive Talent
 // "There Shall Be a Reckoning for Sin" will increase said ability's DMG dealt by 40%.
 // You must first unlock the Passive Talent "There Shall Be a Reckoning for Sin."
-func (c *char) c2(snap *model.Snapshot) {
+func (c *char) c2(snap *info.Snapshot) {
 	if c.Base.Ascension < 4 {
 		return
 	}
@@ -193,7 +192,7 @@ func (c *char) c4() {
 }
 
 // The CRIT Rate of Rebuke: Vaulting Fist will be increased by 10%, and its CRIT DMG by 80%.
-func (c *char) addC6Buff(snap *model.Snapshot) {
+func (c *char) addC6Buff(snap *info.Snapshot) {
 	if c.Base.Cons < 6 {
 		return
 	}

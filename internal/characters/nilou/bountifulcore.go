@@ -7,9 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -18,7 +18,7 @@ type BountifulCore struct {
 	*gadget.Gadget
 }
 
-func newBountifulCore(c *core.Core, p geometry.Point, a *model.AttackEvent) *BountifulCore {
+func newBountifulCore(c *core.Core, p geometry.Point, a *info.AttackEvent) *BountifulCore {
 	b := &BountifulCore{
 		srcFrame: c.F,
 	}
@@ -29,7 +29,7 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *model.AttackEvent) *Bou
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
 		c.Tasks.Add(func() {
-			ai, snap := reactable.NewBloomAttack(char, b, func(atk *model.AttackInfo) {
+			ai, snap := reactable.NewBloomAttack(char, b, func(atk *info.AttackInfo) {
 				// atk.Abil += " (bountiful core)"
 				// FIXME: some external code only match against AttackTagBloom. fix A4 if you uncomment this
 				// atk.AttackTag = attacks.AttackTagBountifulCore
@@ -39,7 +39,7 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *model.AttackEvent) *Bou
 			c.QueueAttackWithSnap(ai, snap, ap, 0)
 
 			// self damage
-			ai.Abil += model.SelfDamageSuffix
+			ai.Abil += info.SelfDamageSuffix
 			ai.FlatDmg = 0.05 * ai.FlatDmg
 			ap.SkipTargets[targets.TargettablePlayer] = false
 			ap.SkipTargets[targets.TargettableEnemy] = true
@@ -58,13 +58,13 @@ func (b *BountifulCore) Tick() {
 	b.Gadget.Tick()
 }
 
-func (b *BountifulCore) HandleAttack(atk *model.AttackEvent) float64 {
+func (b *BountifulCore) HandleAttack(atk *info.AttackEvent) float64 {
 	b.Core.Events.Emit(event.OnGadgetHit, b, atk)
 	return 0
 }
-func (b *BountifulCore) Attack(*model.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (b *BountifulCore) SetDirection(trg geometry.Point)                       {}
-func (b *BountifulCore) SetDirectionToClosestEnemy()                           {}
+func (b *BountifulCore) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (b *BountifulCore) SetDirection(trg geometry.Point)                      {}
+func (b *BountifulCore) SetDirectionToClosestEnemy()                          {}
 func (b *BountifulCore) CalcTempDirection(trg geometry.Point) geometry.Point {
 	return geometry.DefaultDirection()
 }

@@ -5,12 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // attack returns true if the attack lands
-func (h *Handler) attack(t model.Target, a *model.AttackEvent) (float64, bool) {
+func (h *Handler) attack(t info.Target, a *info.AttackEvent) (float64, bool) {
 	willHit, reason := t.AttackWillLand(a.Pattern)
 	if !willHit {
 		// Move target logs into the "Sim" event log to avoid cluttering main display for stuff like Guoba
@@ -32,7 +32,7 @@ func (h *Handler) attack(t model.Target, a *model.AttackEvent) (float64, bool) {
 	return dmg, true
 }
 
-func (h *Handler) ApplyAttack(a *model.AttackEvent) float64 {
+func (h *Handler) ApplyAttack(a *info.AttackEvent) float64 {
 	h.Events.Emit(event.OnApplyAttack, a)
 	// died := false
 	var total float64

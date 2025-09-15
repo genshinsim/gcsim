@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -127,7 +127,7 @@ func (c *char) c4() {
 			return false
 		}
 		// attack not na/ca/plunge
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
@@ -173,7 +173,7 @@ func (c *char) c6CooldownReduction() {
 
 // In addition, the DMG dealt by Chiori's own Normal Attacks is increased by an
 // amount equal to 235% of her own DEF.
-func (c *char) c6NAIncrease(ai *model.AttackInfo, snap *model.Snapshot) {
+func (c *char) c6NAIncrease(ai *info.AttackInfo, snap *info.Snapshot) {
 	if c.Base.Ascension < 1 {
 		return
 	}

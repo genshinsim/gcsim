@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -62,7 +62,7 @@ func (c *char) c1() {
 		// Currently assuming affected by hitlag on characters
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c1Key, c1Dur),
-			Amount: func(ae *model.AttackEvent, _ model.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Cryo {
 					return nil, false
 				}
@@ -77,7 +77,7 @@ func (c *char) c2Init() {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if c.Index == atk.Info.ActorIndex {
 			return false
 		}
@@ -162,7 +162,7 @@ func (c *char) c6Init() {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
 			return false
 		}
@@ -182,7 +182,7 @@ func (c *char) c6Init() {
 		}
 
 		c.AddStatus(c6ICDKey, c6ICD, true)
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Special-Grade Frozen Parfait (C6)",
 			AttackTag:  attacks.AttackTagElementalArt,

@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,8 +24,8 @@ func (c *char) c1() {
 // This effect can be triggered once every 5s.
 func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*model.AttackEvent)
-		t := args[0].(model.Target)
+		ae := args[1].(*info.AttackEvent)
+		t := args[0].(info.Target)
 		// only trigger with the active character
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
@@ -34,7 +33,7 @@ func (c *char) c2() {
 		if c.StatusIsActive(c2ICDKey) {
 			return false
 		}
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Gossamer Sprite: Splice. (Baizhu's C2)",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -46,7 +45,7 @@ func (c *char) c2() {
 			Mult:       2.5,
 		}
 		c.c6done = false
-		var c6cb model.AttackCBFunc
+		var c6cb info.AttackCBFunc
 		if c.Base.Cons >= 6 {
 			c6cb = c.makeC6CB()
 		}
@@ -93,9 +92,9 @@ func (c *char) c4() {
 // Increases the DMG dealt by Holistic Revivification's Spiritveins by 8% of Baizhu's Max HP.
 // Additionally, when Gossamer Sprite or Gossamer Sprite: Splice hit opponents, there is a 100% chance of generating one of Healing Holism's
 // Seamless Shields. This effect can only be triggered once by a Gossamer Sprite or Gossamer Sprite: Splice.
-func (c *char) makeC6CB() model.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	done := false
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if done {
 			return
 		}

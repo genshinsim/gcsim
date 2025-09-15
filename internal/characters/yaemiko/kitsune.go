@@ -8,14 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type kitsune struct {
 	src         int
 	deleted     bool
-	kitsuneArea model.AttackPattern
+	kitsuneArea info.AttackPattern
 }
 
 func (c *char) makeKitsune() {
@@ -81,7 +81,7 @@ func (c *char) popOldestKitsune() {
 	c.SetTag(yaeTotemCount, len(c.kitsunes))
 }
 
-func (c *char) kitsuneBurst(ai model.AttackInfo, pattern model.AttackPattern) {
+func (c *char) kitsuneBurst(ai info.AttackInfo, pattern info.AttackPattern) {
 	for i := 0; i < c.sakuraLevelCheck(); i++ {
 		c.Core.QueueAttack(ai, pattern, burstThunderbolt1Hitmark+i*24, burstThunderbolt1Hitmark+i*24)
 		if c.Base.Cons >= 1 {
@@ -111,7 +111,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			lvl += 1
 		}
 
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Sesshou Sakura Tick",
 			ActorIndex: c.Index,
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -126,10 +126,10 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
 			Write("sakura level", lvl+1)
 
-		var c4cb model.AttackCBFunc
+		var c4cb info.AttackCBFunc
 		if c.Base.Cons >= 4 {
 			done := false
-			c4cb = func(a model.AttackCB) {
+			c4cb = func(a info.AttackCB) {
 				if a.Target.Type() != targets.TargettableEnemy {
 					return
 				}

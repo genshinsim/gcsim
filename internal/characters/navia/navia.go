@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -50,7 +49,7 @@ func (c *char) Condition(fields []string) (any, error) {
 		return c.Character.Condition(fields)
 	}
 }
-func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
+func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.Character.StatusIsActive(a1Key) { // weapon infusion can't be overriden for navia
@@ -66,11 +65,11 @@ func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
 	return ds
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 19
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 19
 	default:
 		return c.Character.AnimationStartDelay(k)

@@ -12,7 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -112,7 +111,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					// d.FlatDmg = bubbleHealStacks * .9
 					// c.QueueDmg(&d, 0)
 
-					atk := model.AttackInfo{
+					atk := info.AttackInfo{
 						ActorIndex:       char.Index,
 						Abil:             "Sea-Dyed Foam",
 						AttackTag:        attacks.AttackTagNoneStat,

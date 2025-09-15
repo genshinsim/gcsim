@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -82,7 +82,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Passion Overload (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -120,7 +120,7 @@ func (c *char) skillPress() (action.Info, error) {
 	}, nil
 }
 
-func (c *char) pressParticleCB(a model.AttackCB) {
+func (c *char) pressParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -137,7 +137,7 @@ func (c *char) pressParticleCB(a model.AttackCB) {
 }
 
 func (c *char) skillHold(level int, c4Active bool) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Passion Overload (Level %v)", level),
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -233,7 +233,7 @@ func (c *char) skillHold(level int, c4Active bool) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) holdParticleCB(a model.AttackCB) {
+func (c *char) holdParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

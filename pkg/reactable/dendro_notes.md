@@ -129,7 +129,7 @@ When `quicken` reacts with `electro` or `dendro`, aggravate and and spread is tr
 The amount of damage added follows the same base [reaction damage formula](https://github.com/genshinsim/gcsim/blob/40b1617647c1dbcd541e684b7f5b09d9dd424851/pkg/reactable/reactable.go#L170) but uses a different EM multiplier. Calculation should be as follows:
 
 ```go
-func (r *Reactable) calcQuickenReactionDmgBase(atk model.AttackInfo, em float64) float64 {
+func (r *Reactable) calcQuickenReactionDmgBase(atk info.AttackInfo, em float64) float64 {
 	char := r.core.Player.ByIndex(atk.ActorIndex)
 	lvl := char.Base.Level - 1
 	if lvl > 89 {
@@ -142,11 +142,11 @@ func (r *Reactable) calcQuickenReactionDmgBase(atk model.AttackInfo, em float64)
 	return (1 + ((5 * em) / (2000 + em)) + r.core.Player.ByIndex(atk.ActorIndex).ReactBonus(atk)) * reactionLvlBase[lvl]
 }
 
-func (r *Reactable) calcAggravateDmg(atk model.AttackInfo, em float64) float64 {
+func (r *Reactable) calcAggravateDmg(atk info.AttackInfo, em float64) float64 {
 	return 1.15 * r.calcQuickenReactionDmgBase(atk, em)
 }
 
-func (r *Reactable) calcSpreadDmg(atk model.AttackInfo, em float64) float64 {
+func (r *Reactable) calcSpreadDmg(atk info.AttackInfo, em float64) float64 {
 	return 1.25 * r.calcQuickenReactionDmgBase(atk, em)
 }
 ```
@@ -170,7 +170,7 @@ Seeds have a lifetime of 5 seconds. From spawn it should be closer to 6 seconds?
 If the dendro core does not come in contact with `pyro` or `electro` (simple attack collision check), it will explode on expiriy. Radius is 5. AttackInfo is as follows:
 
 ```go
-	atk := model.AttackInfo{
+	atk := info.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
 		Abil:             string(reactions.Bloom),
@@ -198,7 +198,7 @@ When dendro core comes in contact with `electro`, `hyperbloom` is triggered, dea
 All 3 explosions will trigger an additional attack that damages the player, with AttackInfo as follows:
 
 ```go
-	atk := model.AttackInfo{
+	atk := info.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
 		Abil:             string(reactions.Bloom),
@@ -298,7 +298,7 @@ While `burning` is active, every 0.25s it will trigger a spherical attack with r
 AttackInfo is as follows:
 
 ```go
-	atk := model.AttackInfo{
+	atk := info.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
 		Abil:             string(reactions.Burning),

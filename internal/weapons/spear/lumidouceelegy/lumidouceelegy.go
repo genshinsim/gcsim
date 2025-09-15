@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -56,7 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnBurning, func(args ...interface{}) bool {
 		_, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -69,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -104,7 +103,7 @@ func (w *Weapon) bonusCB() {
 
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(bonusBuffKey, 8*60),
-		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			w.buff[attributes.DmgP] = (0.05*float64(w.refine) + 0.13) * float64(w.stacks)
 			return w.buff, true
 		},

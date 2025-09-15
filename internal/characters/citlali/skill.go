@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -35,7 +35,7 @@ func init() {
 
 func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	// do initial attack
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Obsidian Tzitzimitl DMG",
 		AttackTag:      attacks.AttackTagElementalArt,
@@ -159,7 +159,7 @@ func (c *char) itzpapaHitTask(src int) {
 		if !c.StatusIsActive(opalFireStateKey) {
 			return
 		}
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           frostFallAbil,
 			AttackTag:      attacks.AttackTagElementalArt,
@@ -178,7 +178,7 @@ func (c *char) itzpapaHitTask(src int) {
 	}, itzpapaInterval)
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

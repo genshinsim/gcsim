@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -45,7 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) getSkillHealInfo(snap *model.Snapshot) info.HealInfo {
+func (c *char) getSkillHealInfo(snap *info.Snapshot) info.HealInfo {
 	maxhp := snap.Stats.MaxHP()
 	heal := skillRadishHealing[0][c.TalentLvlSkill()]*maxhp + skillRadishHealing[1][c.TalentLvlSkill()]
 	return info.HealInfo{

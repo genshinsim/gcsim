@@ -12,7 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -74,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != w.char.Index {
 			return false
 		}
@@ -104,7 +103,7 @@ func (w *Weapon) addStacks(num int) {
 
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(canopyFavorKey, stackDuration),
-		Amount: func(a *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch a.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:

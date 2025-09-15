@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var attackFrames [][]int
@@ -34,7 +34,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
@@ -60,7 +60,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	// check for c1
 	if c.Base.Cons >= 1 && !c.StatusIsActive(ozActiveKey) {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl C1",
 			AttackTag:  attacks.AttackTagNormal,

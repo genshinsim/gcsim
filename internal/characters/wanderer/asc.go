@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -26,11 +26,11 @@ const (
 // For each Kuugo: Fushoudan and Kuugo: Toufukai that does not produce this effect, the next attack
 // of those types will have a 12% increased chance of producing it.
 // The calculation of the effect production is done once every 0.1s.
-func (c *char) makeA4CB() model.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
 			return
 		}
@@ -77,7 +77,7 @@ func (c *char) a4() bool {
 		a4Mult = 0.6
 	}
 
-	a4Info := model.AttackInfo{
+	a4Info := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gales of Reverie",
 		AttackTag:  attacks.AttackTagNone,
@@ -170,11 +170,11 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 }
 
 // When Normal and Charged Attacks hit an opponent, 0.8 Energy will be restored. Energy can be restored this way once every 0.2s.
-func (c *char) makeA1ElectroCB() model.AttackCBFunc {
+func (c *char) makeA1ElectroCB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if !c.StatusIsActive(a1ElectroKey) {
 			return
 		}

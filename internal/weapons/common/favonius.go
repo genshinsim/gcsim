@@ -32,7 +32,7 @@ func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.W
 	cd := 810 - p.Refine*90
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		crit := args[3].(bool)
 		if dmg == 0 {

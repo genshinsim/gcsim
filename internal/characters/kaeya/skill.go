@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -30,7 +29,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Frostgnaw",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -41,7 +40,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	cb := func(a model.AttackCB) {
+	cb := func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -78,7 +77,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -96,12 +95,12 @@ func (c *char) particleCB(a model.AttackCB) {
 
 // Opponents Frozen by Frostgnaw will drop additional Elemental Particles.
 // Frostgnaw may only produce a maximum of 2 additional Elemental Particles per use.
-func (c *char) makeA4ParticleCB() model.AttackCBFunc {
+func (c *char) makeA4ParticleCB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 	a4Count := 0
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return

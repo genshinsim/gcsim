@@ -7,10 +7,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(), nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -65,7 +65,7 @@ func (c *char) particleCB(a model.AttackCB) {
 
 // TODO: how long do stacks last?
 func (c *char) skillPress() action.Info {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -77,7 +77,7 @@ func (c *char) skillPress() action.Info {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	cb := func(a model.AttackCB) {
+	cb := func(a info.AttackCB) {
 		// doesn't stack off-field
 		if c.Core.Player.Active() != c.Index {
 			return
@@ -114,7 +114,7 @@ func (c *char) skillPress() action.Info {
 // Deals great amounts of extra damage to opponents based on the number of Conductive stacks applied to them, and clears their Conductive status.
 func (c *char) skillHold() action.Info {
 	// no multiplier as that's target dependent
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -140,9 +140,9 @@ func (c *char) skillHold() action.Info {
 	}
 
 	count := 0
-	var c1cb func(a model.AttackCB)
+	var c1cb func(a info.AttackCB)
 	if c.Base.Cons > 0 {
-		c1cb = func(a model.AttackCB) {
+		c1cb = func(a info.AttackCB) {
 			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}
@@ -175,7 +175,7 @@ func (c *char) skillHold() action.Info {
 
 func (c *char) skillHoldMult() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false

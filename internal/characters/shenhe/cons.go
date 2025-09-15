@@ -3,8 +3,8 @@ package shenhe
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -13,7 +13,7 @@ const c4BuffKey = "shenhe-c4"
 func (c *char) c2(active *character.CharWrapper, dur int) {
 	active.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("shenhe-c2", dur),
-		Amount: func(ae *model.AttackEvent, _ model.Target) ([]float64, bool) {
+		Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if ae.Info.Element != attributes.Cryo {
 				return nil, false
 			}
@@ -46,7 +46,7 @@ func (c *char) c4() float64 {
 
 // C4 stacks are gained after the damage has been dealt and not before
 // https://library.keqingmains.com/evidence/characters/cryo/shenhe?q=shenhe#c4-insight
-func (c *char) c4CB(a model.AttackCB) {
+func (c *char) c4CB(a info.AttackCB) {
 	// reset stacks to zero if all expired
 	if !c.StatusIsActive(c4BuffKey) {
 		c.c4count = 0

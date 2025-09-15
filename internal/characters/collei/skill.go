@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -35,7 +35,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// The game has ICD as AttackTagElementalArt, ICDTagElementalArt,
 	// ICDGroupColleiBoomerangForward, and ICDGroupColleiBoomerangBack. However,
 	// we believe this is unnecessary, so just use ICDTagNone.
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Floral Brush",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -48,10 +48,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	var c6Cb func(a model.AttackCB)
+	var c6Cb func(a info.AttackCB)
 	if c.Base.Cons >= 6 {
 		c6Triggered := false
-		c6Cb = func(a model.AttackCB) {
+		c6Cb = func(a info.AttackCB) {
 			if c6Triggered {
 				return
 			}
@@ -106,9 +106,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() model.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type (
@@ -26,13 +26,13 @@ type (
 		shp         geometry.Shape
 		alive       bool
 		collideWith [targets.TargettableTypeCount]bool
-		onCollision func(model.Target)
+		onCollision func(info.Target)
 		direction   geometry.Point
 	}
 )
 
 // char
-func (t *testchar) ApplyAttackMods(a *model.AttackEvent, x model.Target) []interface{} {
+func (t *testchar) ApplyAttackMods(a *info.AttackEvent, x info.Target) []interface{} {
 	return nil
 }
 
@@ -41,25 +41,25 @@ func (t *testteam) CombatByIndex(i int) Character             { return &testchar
 func (t *testteam) ApplyHitlag(char int, factor, dur float64) {}
 
 // target
-func (t *testtarg) Index() int                                            { return t.idx }
-func (t *testtarg) SetIndex(i int)                                        { t.idx = i }
-func (t *testtarg) Key() targets.TargetKey                                { return t.key }
-func (t *testtarg) SetKey(i targets.TargetKey)                            { t.key = i }
-func (t *testtarg) Type() targets.TargettableType                         { return t.typ }
-func (t *testtarg) Shape() geometry.Shape                                 { return t.shp }
-func (t *testtarg) Pos() geometry.Point                                   { return t.shp.Pos() }
-func (t *testtarg) SetPos(p geometry.Point)                               {} // ??
-func (t *testtarg) IsAlive() bool                                         { return t.alive }
-func (t *testtarg) SetTag(key string, val int)                            {}
-func (t *testtarg) GetTag(key string) int                                 { return -1 }
-func (t *testtarg) RemoveTag(key string)                                  {}
-func (t *testtarg) Attack(*model.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (t *testtarg) Tick()                                                 {}
-func (t *testtarg) Kill()                                                 { t.hdlr.RemoveGadget(t.Key()) }
-func (t *testtarg) CollidableWith(x targets.TargettableType) bool         { return t.collideWith[x] }
-func (t *testtarg) GadgetTyp() GadgetTyp                                  { return t.gadgetTyp }
-func (t *testtarg) Src() int                                              { return t.src }
-func (t *testtarg) CollidedWith(x model.Target) {
+func (t *testtarg) Index() int                                           { return t.idx }
+func (t *testtarg) SetIndex(i int)                                       { t.idx = i }
+func (t *testtarg) Key() targets.TargetKey                               { return t.key }
+func (t *testtarg) SetKey(i targets.TargetKey)                           { t.key = i }
+func (t *testtarg) Type() targets.TargettableType                        { return t.typ }
+func (t *testtarg) Shape() geometry.Shape                                { return t.shp }
+func (t *testtarg) Pos() geometry.Point                                  { return t.shp.Pos() }
+func (t *testtarg) SetPos(p geometry.Point)                              {} // ??
+func (t *testtarg) IsAlive() bool                                        { return t.alive }
+func (t *testtarg) SetTag(key string, val int)                           {}
+func (t *testtarg) GetTag(key string) int                                { return -1 }
+func (t *testtarg) RemoveTag(key string)                                 {}
+func (t *testtarg) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (t *testtarg) Tick()                                                {}
+func (t *testtarg) Kill()                                                { t.hdlr.RemoveGadget(t.Key()) }
+func (t *testtarg) CollidableWith(x targets.TargettableType) bool        { return t.collideWith[x] }
+func (t *testtarg) GadgetTyp() GadgetTyp                                 { return t.gadgetTyp }
+func (t *testtarg) Src() int                                             { return t.src }
+func (t *testtarg) CollidedWith(x info.Target) {
 	if t.onCollision != nil {
 		t.onCollision(x)
 	}
@@ -78,9 +78,9 @@ func (t *testtarg) WillCollide(s geometry.Shape) bool {
 	}
 }
 
-func (t *testtarg) HandleAttack(*model.AttackEvent) float64 { return 0 }
+func (t *testtarg) HandleAttack(*info.AttackEvent) float64 { return 0 }
 
-func (t *testtarg) AttackWillLand(a model.AttackPattern) (bool, string) {
+func (t *testtarg) AttackWillLand(a info.AttackPattern) (bool, string) {
 	// geometry.Shape shouldn't be nil; panic here
 	if a.Shape == nil {
 		panic("unexpected nil geometry.Shape")
@@ -113,7 +113,7 @@ func (t *testtarg) AttackWillLand(a model.AttackPattern) (bool, string) {
 	}
 }
 
-func (t *testtarg) IsWithinArea(a model.AttackPattern) bool {
+func (t *testtarg) IsWithinArea(a info.AttackPattern) bool {
 	return a.Shape.PointInShape(t.Pos())
 }
 

@@ -13,7 +13,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -49,7 +48,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-			atk := args[1].(*model.AttackEvent)
+			atk := args[1].(*info.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
 				return false

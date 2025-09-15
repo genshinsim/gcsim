@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -84,7 +83,7 @@ func (c *char) summonSeamlessShieldHealing() {
 }
 
 func (c *char) summonSpiritvein() {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spiritvein Damage",
 		AttackTag:  attacks.AttackTagElementalBurst,

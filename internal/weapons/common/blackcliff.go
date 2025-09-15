@@ -55,7 +55,7 @@ func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info
 		if !ok {
 			return false
 		}
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		// don't proc if someone else defeated the enemy
 		if atk.Info.ActorIndex != char.Index {
 			return false

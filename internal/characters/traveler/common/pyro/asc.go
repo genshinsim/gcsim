@@ -2,7 +2,7 @@ package pyro
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const a4OnReactICD = "travelerpyro-a4-icd"
@@ -13,7 +13,7 @@ func (c *Traveler) a4Init() {
 	}
 	fReactionHook := func(args ...interface{}) bool {
 		// Attack must be from active character
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}

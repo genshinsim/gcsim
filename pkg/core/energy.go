@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, delay int) {
@@ -48,7 +47,7 @@ func (c *Core) SetupOnNormalHitEnergy() {
 	//TODO: not sure if there's like a 0.2s icd on this. for now let's add it in to be safe
 	icd := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}

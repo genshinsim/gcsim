@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillPressFrames []int
@@ -54,7 +54,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -95,7 +95,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		hold = 1
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -125,7 +125,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -136,7 +136,7 @@ func (c *char) particleCB(a model.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 }
 
-func (c *char) skillMarkTargets(a model.AttackCB) {
+func (c *char) skillMarkTargets(a info.AttackCB) {
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -176,7 +176,7 @@ func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
 		return false
 	}
 	// only on bloom, burgeon, hyperbloom damage
-	ae, ok := args[1].(*model.AttackEvent)
+	ae, ok := args[1].(*info.AttackEvent)
 	if !ok {
 		return false
 	}
@@ -209,13 +209,13 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		if !e.StatusIsActive(skillMarkKey) {
 			continue
 		}
-		var cb model.AttackCBFunc
+		var cb info.AttackCBFunc
 		if !done {
 			cb = c.particleCB
 			done = true
 		}
 
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification",
 			AttackTag:  attacks.AttackTagElementalArt,

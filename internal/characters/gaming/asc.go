@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -13,12 +12,12 @@ const a1Key = "gaming-a1"
 
 // After Bestial Ascent's Plunging Attack: Charmed Cloudstrider hits an opponent,
 // Gaming will regain 1.5% of his Max HP once every 0.2s for 0.8s.
-func (c *char) makeA1CB() model.AttackCBFunc {
+func (c *char) makeA1CB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
 
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -69,7 +68,7 @@ func (c *char) a4() {
 	mDmg[attributes.DmgP] = 0.2
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("gaming-a4-dmg-bonus", -1),
-		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if c.CurrentHPRatio() < 0.5 {
 				return nil, false
 			}

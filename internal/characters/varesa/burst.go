@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		return c.volcanicKablam(), nil
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Flying Kick",
 		AttackTag:      attacks.AttackTagElementalBurst,
@@ -95,7 +95,7 @@ func (c *char) volcanicKablam() action.Info {
 		c.a1()
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           kablamAbil,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

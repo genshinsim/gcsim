@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -76,7 +75,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		// add mod for duration, override last
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("kaguras-verity", stackDuration),
-			Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.ActorIndex != char.Index {
 					return nil, false
 				}

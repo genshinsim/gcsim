@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -38,8 +38,8 @@ func init() {
 // "mine" determines the number of mines that hit the enemy
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	type attackData struct {
-		ai   model.AttackInfo
-		snap model.Snapshot
+		ai   info.AttackInfo
+		snap info.Snapshot
 	}
 
 	bounce, ok := p["bounce"]
@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	bounceAttacks := make([]attackData, bounce)
 	for i := range bounceAttacks {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Jumpy Dumpty",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		mineHitmark = 240
 	}
 	mineAttacks := make([]attackData, minehits)
-	mineAi := model.AttackInfo{
+	mineAi := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Jumpy Dumpty Mine Hit",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -152,9 +152,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return actionInfo, nil
 }
 
-func (c *char) makeParticleCB() model.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

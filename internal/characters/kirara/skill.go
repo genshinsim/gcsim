@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(), nil
 }
 
-func (c *char) kickParticleCB(a model.AttackCB) {
+func (c *char) kickParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -90,7 +90,7 @@ func (c *char) kickParticleCB(a model.AttackCB) {
 	c.Core.QueueParticle("kirara-kick", 3, attributes.Dendro, c.ParticleDelay)
 }
 
-func (c *char) rollParticleCB(a model.AttackCB) {
+func (c *char) rollParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -102,7 +102,7 @@ func (c *char) rollParticleCB(a model.AttackCB) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Tail-Flicking Flying Kick",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -149,7 +149,7 @@ func (c *char) skillShortHold() action.Info {
 	}, 17)
 
 	// Flipclaw Strike DMG
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Flipclaw Strike",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -203,7 +203,7 @@ func (c *char) skillHold(duration int) action.Info {
 	}
 
 	// Flipclaw Strike DMG
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Flipclaw Strike",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -245,8 +245,8 @@ func (c *char) skillHold(duration int) action.Info {
 	}
 }
 
-func (c *char) createSkillHoldSnapshot() *model.AttackEvent {
-	ai := model.AttackInfo{
+func (c *char) createSkillHoldSnapshot() *info.AttackEvent {
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Urgent Neko Parcel",
 		AttackTag:  attacks.AttackTagElementalArtHold,
@@ -259,7 +259,7 @@ func (c *char) createSkillHoldSnapshot() *model.AttackEvent {
 	}
 	snap := c.Snapshot(&ai)
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
-	ae := model.AttackEvent{
+	ae := info.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,

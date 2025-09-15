@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -42,7 +42,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	player := c.Core.Combat.Player()
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lumidouce Case (Summon)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -82,7 +82,7 @@ func (c *char) arkheAttack() {
 	}
 	c.AddStatus(lumidouceArkheCD, int(skillArkeCD[c.TalentLvlSkill()]*60), true)
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spiritbreath Thorn",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -102,7 +102,7 @@ func (c *char) arkheAttack() {
 	)
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

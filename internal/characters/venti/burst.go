@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -28,7 +28,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.absorbCheckLocation = combat.NewBoxHitOnTarget(c.qPos, geometry.Point{Y: -1}, 2.5, 2.5)
 
 	// 8 second duration, tick every .4 second
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wind's Grand Ode",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -47,13 +47,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.aiAbsorb.Element = attributes.NoElement
 
 	// snapshot is around cd frame and 1st tick?
-	var snap model.Snapshot
+	var snap info.Snapshot
 	c.Core.Tasks.Add(func() {
 		snap = c.Snapshot(&ai)
 		c.snapAbsorb = c.Snapshot(&c.aiAbsorb)
 	}, 104)
 
-	var cb model.AttackCBFunc
+	var cb info.AttackCBFunc
 	if c.Base.Cons >= 6 {
 		cb = c.c6(attributes.Anemo)
 	}
@@ -83,7 +83,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) burstAbsorbedTicks() {
-	var cb model.AttackCBFunc
+	var cb info.AttackCBFunc
 	if c.Base.Cons >= 6 {
 		cb = c.c6(c.qAbsorb)
 	}

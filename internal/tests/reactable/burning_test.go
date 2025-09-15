@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -23,7 +23,7 @@ func TestBurningTicks(t *testing.T) {
 	// expecting 8 ticks: https://www.youtube.com/watch?v=PdZ6Qxo7pSY
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*model.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 		}
@@ -31,24 +31,24 @@ func TestBurningTicks(t *testing.T) {
 	}, "burning-ticks")
 
 	// yanfei auto at 80
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 70)
 	// tighnari skill at 200
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 200)
 	// lisa 250
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -95,7 +95,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 	count := 0
 	countByActor := []int{0, 0}
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*model.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 			countByActor[ae.Info.ActorIndex]++
@@ -103,39 +103,39 @@ func TestBurningQuickenFuel(t *testing.T) {
 		return false
 	}, "burning-ticks")
 
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 290)
 	// beidou e should apply hitlag here
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 327)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 			ActorIndex: 0,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 396)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 			ActorIndex: 1,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 462)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 100,
 		},
@@ -202,50 +202,50 @@ func TestPyroDendroCoexist(t *testing.T) {
 		t.FailNow()
 	}
 	//https://www.youtube.com/watch?v=dXzQTNCYfeU&list=PL10DrkffqpyuwG8i0JOq-TgcqPES6bsja&index=16
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 121)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 133)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 195)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 202)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 249)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 327)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
@@ -278,29 +278,29 @@ func TestDendroDecayTry1(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 155)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 168)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 230)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
@@ -335,22 +335,22 @@ func TestDendroDecayTry2(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 80)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 440)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
@@ -385,29 +385,29 @@ func TestQuickenBurningDecay(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 61)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 128)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 188)
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},

@@ -3,10 +3,10 @@ package ganyu
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -19,13 +19,13 @@ const (
 
 // Ganyu C1: Taking DMG from a Charge Level 2 Frostflake Arrow or Frostflake Arrow Bloom decreases opponents' Cryo RES by 15% for 6s.
 // A hit regenerates 2 Energy for Ganyu. This effect can only occur once per Charge Level 2 Frostflake Arrow, regardless if Frostflake Arrow itself or its Bloom hit the target.
-func (c *char) c1() model.AttackCBFunc {
+func (c *char) c1() info.AttackCBFunc {
 	if c.Base.Cons < 1 {
 		return nil
 	}
 	done := false
 
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		e := a.Target.(*enemy.Enemy)
 		if e.Type() != targets.TargettableEnemy {
 			return
@@ -48,7 +48,7 @@ func (c *char) c4() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c4Key, -1),
-			Amount: func(_ *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false

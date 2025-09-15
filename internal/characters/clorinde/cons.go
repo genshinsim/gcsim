@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -45,7 +45,7 @@ func (c *char) c1() {
 		if c.StatusIsActive(c1IcdKey) {
 			return false
 		}
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
@@ -56,7 +56,7 @@ func (c *char) c1() {
 			return false
 		}
 		c.AddStatus(c1IcdKey, c1Icd, false)
-		c1AI := model.AttackInfo{
+		c1AI := info.AttackInfo{
 			ActorIndex:       c.Index,
 			Abil:             "Nightwatch Shade (C1)",
 			AttackTag:        attacks.AttackTagNormal,
@@ -95,7 +95,7 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("clorinde-c4-burst-bonus", -1),
-		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
@@ -153,7 +153,7 @@ func (c *char) c6() {
 	c.c6Stacks--
 	c.AddStatus(c6GlimbrightIcdKey, 1*60, true)
 
-	c6AI := model.AttackInfo{
+	c6AI := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Glimbright Shade (C6)",
 		AttackTag:      attacks.AttackTagNormal,

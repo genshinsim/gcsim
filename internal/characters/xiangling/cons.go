@@ -5,13 +5,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func (c *char) c1(a model.AttackCB) {
+func (c *char) c1(a info.AttackCB) {
 	if c.Base.Cons < 1 {
 		return
 	}
@@ -26,8 +26,8 @@ func (c *char) c1(a model.AttackCB) {
 	})
 }
 
-func (c *char) c2(done bool) model.AttackCBFunc {
-	return func(atk model.AttackCB) {
+func (c *char) c2(done bool) info.AttackCBFunc {
+	return func(atk info.AttackCB) {
 		if done {
 			return
 		}
@@ -44,7 +44,7 @@ func (c *char) c2(done bool) model.AttackCBFunc {
 }
 func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 	return func() {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Oil Meets Fire (C2)",
 			AttackTag:  attacks.AttackTagNone,

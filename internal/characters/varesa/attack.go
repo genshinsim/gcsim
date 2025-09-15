@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -78,7 +78,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
@@ -92,7 +92,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	var ap model.AttackPattern
+	var ap info.AttackPattern
 	switch len(attackHitboxes[c.NormalCounter]) {
 	case 1: // circle
 		ap = combat.NewCircleHitOnTarget(
@@ -121,7 +121,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) fieryAttack() action.Info {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Fiery Passion %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
@@ -148,7 +148,7 @@ func (c *char) fieryAttack() action.Info {
 		}
 	}
 
-	var ap model.AttackPattern
+	var ap info.AttackPattern
 	switch len(fieryAttackHitboxes[c.NormalCounter]) {
 	case 1: // circle
 		ap = combat.NewCircleHitOnTarget(

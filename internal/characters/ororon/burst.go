@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -29,7 +29,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// first zap has no icd and hits everyone
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Ritual DMG",
 		AttackTag:      attacks.AttackTagElementalBurst,
@@ -80,7 +80,7 @@ func (c *char) burstTick(src int) {
 			return
 		}
 
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Soundwave Collision DMG",
 			AttackTag:      attacks.AttackTagElementalBurst,

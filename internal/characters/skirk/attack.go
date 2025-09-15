@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const windup = 2
@@ -99,7 +99,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:       c.Index,
 			Abil:             fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:             mult[c.TalentLvlAttack()],
@@ -160,7 +160,7 @@ func (c *char) AttackSkill(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range skillAttack[c.NormalCounter] {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:       c.Index,
 			Abil:             fmt.Sprintf("Normal (Skill) %v", c.NormalCounter),
 			Mult:             mult[c.TalentLvlSkill()] * c.a4MultAttack(),

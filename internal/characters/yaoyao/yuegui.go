@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -23,9 +22,9 @@ type yuegui struct {
 	*gadget.Gadget
 	// *reactable.Reactable
 	c            *char
-	ai           model.AttackInfo
-	snap         model.Snapshot
-	aoe          model.AttackPattern
+	ai           info.AttackInfo
+	snap         info.Snapshot
+	aoe          info.AttackPattern
 	throwCounter int
 }
 
@@ -87,7 +86,7 @@ func (c *char) newYueguiJump() {
 	c.numYueguiJumping += 1
 }
 
-func (c *char) heal(area model.AttackPattern, hi info.HealInfo) func() {
+func (c *char) heal(area info.AttackPattern, hi info.HealInfo) func() {
 	return func() {
 		if !c.Core.Combat.Player().IsWithinArea(area) {
 			return
@@ -105,11 +104,11 @@ func (yg *yuegui) Tick() {
 	yg.Gadget.Tick()
 }
 
-func (yg *yuegui) makeParticleCB() model.AttackCBFunc {
+func (yg *yuegui) makeParticleCB() info.AttackCBFunc {
 	if yg.GadgetTyp() != combat.GadgetTypYueguiThrowing {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -155,8 +154,8 @@ func (yg *yuegui) throw() {
 	yg.throwCounter += 1
 }
 
-func (yg *yuegui) getInfos() (model.AttackInfo, info.HealInfo) {
-	var ai model.AttackInfo
+func (yg *yuegui) getInfos() (info.AttackInfo, info.HealInfo) {
+	var ai info.AttackInfo
 	var hi info.HealInfo
 
 	if yg.c.StatusIsActive(burstKey) {
@@ -170,15 +169,15 @@ func (yg *yuegui) getInfos() (model.AttackInfo, info.HealInfo) {
 }
 
 // TODO: Confirm if yueguis can infuse cryo
-func (yg *yuegui) HandleAttack(atk *model.AttackEvent) float64 {
+func (yg *yuegui) HandleAttack(atk *info.AttackEvent) float64 {
 	// yg.Core.Events.Emit(event.OnGadgetHit, yg, atk)
 	// yg.Attack(atk, nil)
 	return 0
 }
 
-func (yg *yuegui) Attack(*model.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (yg *yuegui) SetDirection(trg geometry.Point)                       {}
-func (yg *yuegui) SetDirectionToClosestEnemy()                           {}
+func (yg *yuegui) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (yg *yuegui) SetDirection(trg geometry.Point)                      {}
+func (yg *yuegui) SetDirectionToClosestEnemy()                          {}
 func (yg *yuegui) CalcTempDirection(trg geometry.Point) geometry.Point {
 	return geometry.DefaultDirection()
 }

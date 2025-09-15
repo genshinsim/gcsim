@@ -8,11 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // Test to make sure in 2 target scenario, Beidou burst bounces between the 2 targets
@@ -43,7 +43,7 @@ func TestBeidouBounce(t *testing.T) {
 		if !ok {
 			return false
 		}
-		ae, ok := args[1].(*model.AttackEvent)
+		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return false
 		}

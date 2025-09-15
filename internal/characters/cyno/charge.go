@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFrames []int
@@ -26,7 +26,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.chargeB()
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
 		AttackTag:          attacks.AttackTagExtra,
@@ -79,7 +79,7 @@ func init() {
 func (c *char) chargeB() (action.Info, error) {
 	c.tryBurstPPSlide(chargeBHitmark)
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Pactsworn Pathclearer Charge",
 		AttackTag:          attacks.AttackTagExtra,

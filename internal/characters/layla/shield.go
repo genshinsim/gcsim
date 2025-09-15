@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -86,7 +86,7 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 	}
 }
 
-func (c *char) shootStars(src int, last combat.Enemy, particleCB model.AttackCBFunc) func() {
+func (c *char) shootStars(src int, last combat.Enemy, particleCB info.AttackCBFunc) func() {
 	return func() {
 		if c.shootStarSrc != src {
 			return
@@ -119,7 +119,7 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB model.AttackCBF
 			}
 		}
 
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Shooting Star",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -133,7 +133,7 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB model.AttackCBF
 		}
 
 		done := false
-		c2CB := func(_ model.AttackCB) {
+		c2CB := func(_ info.AttackCB) {
 			if done {
 				return
 			}
@@ -165,7 +165,7 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB model.AttackCBF
 	}
 }
 
-func (c *char) makeParticleCB() model.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	var particleICDKey string
 	if c.particleCBSwitch {
 		particleICDKey = particleICD2Key
@@ -173,7 +173,7 @@ func (c *char) makeParticleCB() model.AttackCBFunc {
 		particleICDKey = particleICD1Key
 	}
 	c.particleCBSwitch = !c.particleCBSwitch
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

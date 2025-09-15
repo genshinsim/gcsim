@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -27,7 +27,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// snapshots before or during Burst Animation
 	// https://library.keqingmains.com/evidence/characters/cryo/aloy#burst-mechanics
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Prophecies of Dawn",
 		AttackTag:  attacks.AttackTagElementalBurst,

@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -163,7 +162,7 @@ func (c *char) clearShadowSign() {
 	}
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -190,9 +189,9 @@ func (c *char) skillAligned(hitmark int) {
 
 // When the Enigma Thrust hits an opponent, it will restore Lynette's HP based on her Max HP,
 // and in the 4s afterward, she will lose a certain amount of HP per second.
-func (c *char) makeSkillHealAndDrainCB() model.AttackCBFunc {
+func (c *char) makeSkillHealAndDrainCB() info.AttackCBFunc {
 	done := false
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

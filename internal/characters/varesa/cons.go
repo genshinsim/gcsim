@@ -4,21 +4,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const c4Status = "diligent-refinement"
 
-func (c *char) c2CB() func(model.AttackCB) {
+func (c *char) c2CB() func(info.AttackCB) {
 	if c.Base.Cons < 2 {
 		return nil
 	}
 
 	done := false
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -39,7 +39,7 @@ func (c *char) c4() {
 	m[attributes.DmgP] = 1.0
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("varesa-c4", -1),
-		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst && atk.Info.Abil != kablamAbil {
 				return nil, false
 			}
@@ -74,7 +74,7 @@ func (c *char) c4FlatBonus() float64 {
 	return bonus
 }
 
-func (c *char) c4CB(a model.AttackCB) {
+func (c *char) c4CB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -94,7 +94,7 @@ func (c *char) c6() {
 	m[attributes.CD] = 1.0
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("varesa-c6", -1),
-		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch {
 			case atk.Info.AttackTag == attacks.AttackTagElementalBurst:
 			case atk.Info.AttackTag == attacks.AttackTagPlunge && atk.Info.Durability > 0: // TODO: collision?

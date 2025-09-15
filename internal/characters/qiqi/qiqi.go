@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -21,7 +20,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	skillLastUsed     int
-	skillHealSnapshot model.Snapshot // Required as both on hit procs and continuous healing need to use this
+	skillHealSnapshot info.Snapshot // Required as both on hit procs and continuous healing need to use this
 }
 
 // TODO: Not implemented - C6 (revival mechanic, not suitable for sim)
@@ -61,14 +60,14 @@ func (c *char) healDynamic(healScalePer, healScaleFlat []float64, talentLevel in
 }
 
 // Helper function to calculate healing amount from a snapshot instance
-func (c *char) healSnapshot(d *model.Snapshot, healScalePer, healScaleFlat []float64, talentLevel int) float64 {
+func (c *char) healSnapshot(d *info.Snapshot, healScalePer, healScaleFlat []float64, talentLevel int) float64 {
 	atk := d.Stats.TotalATK()
 	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 7
 	}
 	return c.Character.AnimationStartDelay(k)

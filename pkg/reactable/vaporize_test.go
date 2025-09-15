@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func TestHydroVaporize(t *testing.T) {
@@ -14,24 +14,24 @@ func TestHydroVaporize(t *testing.T) {
 	trg := addTargetToCore(c)
 	c.Init()
 
-	var next *model.AttackEvent
+	var next *info.AttackEvent
 	c.Events.Subscribe(event.OnVaporize, func(args ...interface{}) bool {
-		if ae, ok := args[1].(*model.AttackEvent); ok {
+		if ae, ok := args[1].(*info.AttackEvent); ok {
 			next = ae
 		}
 		return false
 	}, "vape-test")
 
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 		Pattern: combat.NewCircleHitOnTarget(trg, nil, 100),
 	}, 0)
 	c.Tick()
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
@@ -56,24 +56,24 @@ func TestPyroVaporize(t *testing.T) {
 	c := testCore()
 	trg := addTargetToCore(c)
 	c.Init()
-	var next *model.AttackEvent
+	var next *info.AttackEvent
 	c.Events.Subscribe(event.OnVaporize, func(args ...interface{}) bool {
-		if ae, ok := args[1].(*model.AttackEvent); ok {
+		if ae, ok := args[1].(*info.AttackEvent); ok {
 			next = ae
 		}
 		return false
 	}, "vape-test")
 
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
 		Pattern: combat.NewCircleHitOnTarget(trg, nil, 100),
 	}, 0)
 	c.Tick()
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},

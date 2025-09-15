@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -80,25 +79,25 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if c.nightsoulState.HasBlessing() {
 		if c.momentumStacks >= 3 {
 			switch k {
-			case model.AnimationXingqiuN0StartDelay:
+			case info.AnimationXingqiuN0StartDelay:
 				return 44
 			default:
 				return 37
 			}
 		}
 		switch k {
-		case model.AnimationXingqiuN0StartDelay:
+		case info.AnimationXingqiuN0StartDelay:
 			return 11
 		default:
 			return 9
 		}
 	}
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 11
 	default:
 		return 11

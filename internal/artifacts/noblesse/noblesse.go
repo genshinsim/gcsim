@@ -12,7 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -49,7 +48,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.nob2buff[attributes.DmgP] = 0.20
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("nob-2pc", -1),
-			Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false
 				}

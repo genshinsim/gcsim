@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type BogglecatBox struct {
@@ -39,7 +39,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	b.char.AddStatus(burstKey, b.Duration, false)
 
 	// initial hit
-	initialAI := model.AttackInfo{
+	initialAI := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Magic Trick: Astonishing Shift",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -53,7 +53,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	c.Core.QueueAttack(initialAI, combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1.5}, 4.5), burstHitmark-burstSpawn, burstHitmark-burstSpawn)
 
 	// bogglecat ticks
-	bogglecatAI := model.AttackInfo{
+	bogglecatAI := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bogglecat Box",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -78,7 +78,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	return b
 }
 
-func (b *BogglecatBox) HandleAttack(atk *model.AttackEvent) float64 {
+func (b *BogglecatBox) HandleAttack(atk *info.AttackEvent) float64 {
 	b.Core.Events.Emit(event.OnGadgetHit, b, atk)
 
 	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box hit by %s", atk.Info.Abil), glog.LogCharacterEvent, b.char.Index)
@@ -86,7 +86,7 @@ func (b *BogglecatBox) HandleAttack(atk *model.AttackEvent) float64 {
 	if atk.Info.Durability <= 0 {
 		return 0
 	}
-	atk.Info.Durability *= model.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+	atk.Info.Durability *= info.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 	if atk.Info.Durability <= 0 {
 		return 0
 	}
@@ -110,7 +110,7 @@ func (b *BogglecatBox) absorbRoutine(absorbedElement attributes.Element) {
 	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box came into contact with %s", absorbedElement.String()), glog.LogCharacterEvent, b.char.Index)
 
 	// vivid shots
-	vividShotAI := model.AttackInfo{
+	vividShotAI := info.AttackInfo{
 		ActorIndex: b.char.Index,
 		Abil:       "Vivid Shot",
 		AttackTag:  attacks.AttackTagElementalBurst,

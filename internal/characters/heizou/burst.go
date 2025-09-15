@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -25,7 +25,7 @@ const burstHitmark = 34
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstTaggedCount = 0
-	burstCB := func(a model.AttackCB) {
+	burstCB := func(a info.AttackCB) {
 		// check if enemy
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 		c.irisDmg(a.Target)
 	}
-	auraCheck := model.AttackInfo{
+	auraCheck := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Windmuster Iris (Aura check)",
 		AttackTag:  attacks.AttackTagNone,
@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ap.SkipTargets[targets.TargettableGadget] = true
 	c.Core.QueueAttack(auraCheck, ap, burstHitmark, burstHitmark, burstCB)
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fudou Style Vacuum Slugger",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -93,14 +93,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 // these opponents will be afflicted with Windmuster Iris.
 // This Windmuster Iris will explode after a moment and dissipate,
 // dealing AoE DMG of the corresponding aforementioned elemental type.
-func (c *char) irisDmg(t model.Target) {
-	x, ok := t.(model.TargetWithAura)
+func (c *char) irisDmg(t info.Target) {
+	x, ok := t.(info.TargetWithAura)
 	if !ok {
 		//TODO: check if this is correct? should we be doing nothing here?
 		return
 	}
 	//TODO: does burst iris snapshot
-	aiAbs := model.AttackInfo{
+	aiAbs := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Windmuster Iris",
 		AttackTag:  attacks.AttackTagElementalBurst,

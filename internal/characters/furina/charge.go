@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -31,7 +31,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() == action.NormalAttackState {
 		windup = 11
 	}
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             fmt.Sprintf("Charge %v", c.arkhe),
 		AttackTag:        attacks.AttackTagExtra,
@@ -45,7 +45,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.6)
 	c.QueueCharTask(func() {
-		var c6cb model.AttackCBFunc
+		var c6cb info.AttackCBFunc
 		// TODO: Check if DMG bonus still applies if c6 runs out between start of CA and the hit
 		if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 			ai.FlatDmg = c.c6BonusDMG()

@@ -7,8 +7,8 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -50,7 +50,7 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 	}
 
 	if ele == "burning" {
-		result := model.Durability(0)
+		result := info.Durability(0)
 		if e.IsBurning() {
 			result = e.Durability[reactable.Burning]
 		}
@@ -61,7 +61,7 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 	if elekey == attributes.UnknownElement {
 		return 0, fmt.Errorf("bad element condition: invalid element %s", ele)
 	}
-	result := model.Durability(0)
+	result := info.Durability(0)
 	for i := reactable.Invalid; i < reactable.EndModifier; i++ {
 		if i.Element() == elekey && e.Durability[i] > reactable.ZeroDur && e.Durability[i] > result {
 			result = e.Durability[i]

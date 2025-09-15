@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -40,7 +40,7 @@ func (c *char) c1() {
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -173,7 +173,7 @@ func (c *char) c6() {
 			return false
 		}
 
-		ae := args[1].(*model.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 
 		// Only on swirls. The swirl source does not matter, it can be either mizuki or other anemo char.
 		switch ae.Info.AttackTag {

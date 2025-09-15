@@ -10,8 +10,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillTapFrames []int
@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(c.skillMirrorGain, 15)
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form",
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -91,7 +91,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) SkillHold() (action.Info, error) {
 	c.Core.Tasks.Add(c.skillMirrorGain, 23)
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form (Hold)",
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -191,7 +191,7 @@ func (c *char) mirrorLoss(src, consumed int) func() {
 	}
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -202,7 +202,7 @@ func (c *char) particleCB(a model.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Dendro, c.ParticleDelay)
 }
 
-func (c *char) projectionAttack(a model.AttackCB) {
+func (c *char) projectionAttack(a info.AttackCB) {
 	ae := a.AttackEvent
 	// ignore if projection on icd
 	if c.StatusIsActive(projectionICDKey) {
@@ -224,7 +224,7 @@ func (c *char) projectionAttack(a model.AttackCB) {
 		return
 	}
 
-	var c1cb model.AttackCBFunc
+	var c1cb info.AttackCBFunc
 	if c.Base.Cons >= 1 {
 		c1cb = c.c1
 	}
@@ -235,7 +235,7 @@ func (c *char) projectionAttack(a model.AttackCB) {
 		strikeType = attacks.StrikeTypeSpear
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Chisel-Light Mirror: Projection Attack %v", c.mirrorCount),
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -249,7 +249,7 @@ func (c *char) projectionAttack(a model.AttackCB) {
 	}
 
 	player := c.Core.Combat.Player()
-	var ap model.AttackPattern
+	var ap info.AttackPattern
 	var mirrorsHitmark []int
 	switch c.mirrorCount {
 	case 3:

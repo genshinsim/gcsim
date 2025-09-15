@@ -2,16 +2,16 @@ package combat
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type positional interface {
 	Pos() geometry.Point
 }
 
-func NewSingleTargetHit(ind targets.TargetKey) model.AttackPattern {
-	a := model.AttackPattern{
+func NewSingleTargetHit(ind targets.TargetKey) info.AttackPattern {
+	a := info.AttackPattern{
 		Shape: &geometry.SingleTarget{Target: ind},
 	}
 	a.SkipTargets[targets.TargettablePlayer] = true
@@ -21,8 +21,8 @@ func NewSingleTargetHit(ind targets.TargetKey) model.AttackPattern {
 func getCenterAndDirection(src, center, offset positional) (geometry.Point, geometry.Point) {
 	c := center.Pos()
 	dir := geometry.DefaultDirection()
-	srcTrg, srcIsATarget := src.(model.Target)
-	centerTrg, centerIsATarget := center.(model.Target)
+	srcTrg, srcIsATarget := src.(info.Target)
+	centerTrg, centerIsATarget := center.(info.Target)
 
 	// determine direction to use for adding offset
 	if srcIsATarget {
@@ -49,41 +49,41 @@ func getCenterAndDirection(src, center, offset positional) (geometry.Point, geom
 	return newCenter, dir
 }
 
-func NewCircleHit(src, center, offset positional, r float64) model.AttackPattern {
+func NewCircleHit(src, center, offset positional, r float64) info.AttackPattern {
 	c, dir := getCenterAndDirection(src, center, offset)
-	a := model.AttackPattern{
+	a := info.AttackPattern{
 		Shape: geometry.NewCircle(c, r, dir, 360),
 	}
 	a.SkipTargets[targets.TargettablePlayer] = true
 	return a
 }
 
-func NewCircleHitFanAngle(src, center, offset positional, r, fanAngle float64) model.AttackPattern {
+func NewCircleHitFanAngle(src, center, offset positional, r, fanAngle float64) info.AttackPattern {
 	c, dir := getCenterAndDirection(src, center, offset)
-	a := model.AttackPattern{
+	a := info.AttackPattern{
 		Shape: geometry.NewCircle(c, r, dir, fanAngle),
 	}
 	a.SkipTargets[targets.TargettablePlayer] = true
 	return a
 }
 
-func NewCircleHitOnTarget(trg, offset positional, r float64) model.AttackPattern {
+func NewCircleHitOnTarget(trg, offset positional, r float64) info.AttackPattern {
 	return NewCircleHit(trg, trg, offset, r)
 }
 
-func NewCircleHitOnTargetFanAngle(trg, offset positional, r, fanAngle float64) model.AttackPattern {
+func NewCircleHitOnTargetFanAngle(trg, offset positional, r, fanAngle float64) info.AttackPattern {
 	return NewCircleHitFanAngle(trg, trg, offset, r, fanAngle)
 }
 
-func NewBoxHit(src, center, offset positional, w, h float64) model.AttackPattern {
+func NewBoxHit(src, center, offset positional, w, h float64) info.AttackPattern {
 	c, dir := getCenterAndDirection(src, center, offset)
-	a := model.AttackPattern{
+	a := info.AttackPattern{
 		Shape: geometry.NewRectangle(c, w, h, dir),
 	}
 	a.SkipTargets[targets.TargettablePlayer] = true
 	return a
 }
 
-func NewBoxHitOnTarget(trg, offset positional, w, h float64) model.AttackPattern {
+func NewBoxHitOnTarget(trg, offset positional, w, h float64) info.AttackPattern {
 	return NewBoxHit(trg, trg, offset, w, h)
 }

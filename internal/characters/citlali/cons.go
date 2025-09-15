@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,7 +25,7 @@ func (c *char) c1() {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if c.Index == atk.Info.ActorIndex {
 			return false
 		}
@@ -101,7 +101,7 @@ func (c *char) c2() {
 	}
 }
 
-func (c *char) c4SkullCB(a model.AttackCB) {
+func (c *char) c4SkullCB(a info.AttackCB) {
 	if c.Base.Cons < 4 {
 		return
 	}
@@ -112,7 +112,7 @@ func (c *char) c4SkullCB(a model.AttackCB) {
 
 	c.generateNightsoulPoints(16)
 	c.AddEnergy("citlali-c4", 8)
-	aiSpiritVesselSkull := model.AttackInfo{
+	aiSpiritVesselSkull := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Spiritvessel Skull DMG (C4)",
 		AttackTag:      attacks.AttackTagNone,
@@ -158,7 +158,7 @@ func (c *char) c6() {
 	}
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("citlali-c6", -1),
-		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			buffSelf[attributes.DmgP] = 0.025 * c.numC6Stacks
 			return buffSelf, true
 		},

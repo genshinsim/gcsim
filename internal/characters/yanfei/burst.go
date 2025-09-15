@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -36,7 +36,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
-		Amount: func(atk *model.AttackEvent, _ model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagExtra {
 				return c.burstBuff, true
 			}
@@ -45,7 +45,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	})
 
 	done := false
-	addSeal := func(_ model.AttackCB) {
+	addSeal := func(_ info.AttackCB) {
 		if done {
 			return
 		}
@@ -59,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		done = true
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Done Deal",
 		AttackTag:          attacks.AttackTagElementalBurst,

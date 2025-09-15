@@ -5,10 +5,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -22,7 +22,7 @@ func (c *char) c1() {
 		m[attributes.DmgP] = 0.4
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("ayato-c1", -1),
-			Amount: func(a *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
@@ -54,11 +54,11 @@ func (c *char) c2() {
 // After using Kamisato Art: Kyouka, Ayato's next Shunsuiken attack will create
 // 2 extra Shunsuiken strikes when they hit opponents, each one dealing 450% of Ayato's ATK as DMG.
 // Both these Shunsuiken attacks will not be affected by Namisen.
-func (c *char) makeC6CB() model.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	if c.Base.Cons < 6 || !c.c6Ready {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -71,7 +71,7 @@ func (c *char) makeC6CB() model.AttackCBFunc {
 		c.c6Ready = false
 
 		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:               c6Abil,
 			ActorIndex:         c.Index,
 			AttackTag:          attacks.AttackTagNormal,

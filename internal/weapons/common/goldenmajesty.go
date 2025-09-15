@@ -40,7 +40,7 @@ func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p i
 	m := make([]float64, attributes.EndStatType)
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*model.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 
 		if ae.Info.ActorIndex != char.Index {
 			return false

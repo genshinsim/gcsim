@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames [][]int
@@ -39,7 +39,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 
 	c.c4AddMod()
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Plains Scorcher",
 		AttackTag:      attacks.AttackTagElementalBurst,

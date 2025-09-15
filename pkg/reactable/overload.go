@@ -5,14 +5,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (r *Reactable) TryOverload(a *model.AttackEvent) bool {
+func (r *Reactable) TryOverload(a *info.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed model.Durability
+	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
 		// must have pyro; pyro cant coexist (for now) so ok to ignore count?
@@ -43,10 +43,10 @@ func (r *Reactable) TryOverload(a *model.AttackEvent) bool {
 	if !(r.overloadGCD != -1 && r.core.F < r.overloadGCD) {
 		r.overloadGCD = r.core.F + 0.1*60
 		// trigger an overload attack
-		atk := model.AttackInfo{
+		atk := info.AttackInfo{
 			ActorIndex:       a.Info.ActorIndex,
 			DamageSrc:        r.self.Key(),
-			Abil:             string(model.ReactionTypeOverload),
+			Abil:             string(info.ReactionTypeOverload),
 			AttackTag:        attacks.AttackTagOverloadDamage,
 			ICDTag:           attacks.ICDTagOverloadDamage,
 			ICDGroup:         attacks.ICDGroupReactionB,

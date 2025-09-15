@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -32,7 +31,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.waveCount = 0
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Wagtail's Tide (Q)",
 		AttackTag:          attacks.AttackTagElementalBurst,
@@ -112,7 +111,7 @@ func (c *char) burstSwap() {
 		if c.waveCount > 2 {
 			return false
 		}
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Sacred Rite: Wagtail's Tide (Wave)",
 			AttackTag:          attacks.AttackTagElementalBurst,
@@ -141,7 +140,7 @@ func (c *char) burstInit(char *character.CharWrapper) {
 	m[attributes.DmgP] = 0.2
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(burstDmgKey, -1),
-		Amount: func(atk *model.AttackEvent, _ model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if !c.StatusIsActive(burstKey) {
 				return nil, false
 			}

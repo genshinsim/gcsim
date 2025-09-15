@@ -13,7 +13,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -121,9 +120,9 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	// TODO: Adjust this value based on if windup happened for the NA
-	if k == model.AnimationXingqiuN0StartDelay {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 12
 	}
 	return c.Character.AnimationStartDelay(k)

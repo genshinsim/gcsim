@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -68,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// deals damage proc on normal/charged attacks. i dont know why description in game sucks
 	dmgper := .15 + .05*float64(r)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		// check if char is correct?
 		if atk.Info.ActorIndex != char.Index {
@@ -85,7 +84,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		// add a new action that deals % dmg immediately
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Blade Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
@@ -96,7 +95,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       dmgper,
 		}
-		trg := args[0].(model.Target)
+		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))

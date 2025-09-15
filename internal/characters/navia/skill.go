@@ -12,10 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -136,7 +136,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.SetCDWithDelay(action.ActionSkill, 9*60, firingTime)
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rosula Shardshot",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -215,7 +215,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	e := a.Target.(*enemy.Enemy)
 	if e.Type() != targets.TargettableEnemy {
 		return
@@ -235,7 +235,7 @@ func (c *char) particleCB(a model.AttackCB) {
 
 // add the buffs by modifying snap
 // needs to be done this way so that excess calculated during firing is also used for that firing's surgingBlade
-func (c *char) addShrapnelBuffs(snap *model.Snapshot, count int) {
+func (c *char) addShrapnelBuffs(snap *info.Snapshot, count int) {
 	// Calculate buffs based on excess shrapnel
 	excess := float64(max(count-3, 0))
 
@@ -279,7 +279,7 @@ func (c *char) surgingBlade(count int) {
 	if c.StatusIsActive(arkheICDKey) {
 		return
 	}
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Surging Blade",
 		AttackTag:  attacks.AttackTagElementalArt,

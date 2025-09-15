@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -46,7 +46,7 @@ func (c *char) createKinu(src int, centerOffset, minRandom, maxRandom float64) f
 func (c *char) kinuAttack(src int, kinu *ticker, pos geometry.Point) func() {
 	return func() {
 		c.Core.Tasks.Add(func() {
-			ai := model.AttackInfo{
+			ai := info.AttackInfo{
 				Abil:       "Fluttering Hasode (Kinu)",
 				ActorIndex: c.Index,
 				AttackTag:  attacks.AttackTagElementalArt,

@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -45,7 +44,7 @@ func (c *char) Init() error {
 }
 
 // Noelle Geo infusion can't be overridden, so it must be a snapshot modification rather than a weapon infuse
-func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
+func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatModIsActive(burstBuffKey) {
@@ -63,11 +62,11 @@ func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
 	return ds
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 24
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 18
 	default:
 		return c.Character.AnimationStartDelay(k)

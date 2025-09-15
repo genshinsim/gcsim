@@ -4,9 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -26,7 +26,7 @@ func (c *char) a1() {
 				return false
 			}
 
-			atk := args[1].(*model.AttackEvent)
+			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false
 			}

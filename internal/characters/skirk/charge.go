@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -48,7 +48,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.ChargeAttackSkill(p)
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagExtraAttack,
@@ -83,7 +83,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) ChargeAttackSkill(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		AttackTag:      attacks.AttackTagExtra,
 		ICDTag:         attacks.ICDTagExtraAttack,

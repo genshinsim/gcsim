@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var aimedFrames [][]int
@@ -64,7 +64,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	// While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
 	skillActive := c.Base.Ascension >= 1 && c.Core.Status.Duration(coverKey) > 0
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
@@ -119,7 +119,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
 	if skillActive && hold == attacks.AimParamLv1 {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tengu Juurai: Ambush",
 			AttackTag:  attacks.AttackTagElementalArt,

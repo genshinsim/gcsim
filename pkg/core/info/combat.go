@@ -1,4 +1,4 @@
-package model
+package info
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"

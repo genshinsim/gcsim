@@ -4,9 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -51,12 +51,12 @@ const c6BuffKey = "xiao-c6"
 // Implements Xiao C6:
 // While under the effect of Bane of All Evil, hitting at least 2 opponents with Xiao's Plunge Attack will immediately grant him 1 charge of Lemniscatic Wind Cycling, and for the next 1s, he may use Lemniscatic Wind Cycling while ignoring its CD.
 // Adds an OnDamage event checker - if we record two or more instances of plunge damage, then activate C6
-func (c *char) c6cb() model.AttackCBFunc {
+func (c *char) c6cb() info.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
 	c.c6Count = 0
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

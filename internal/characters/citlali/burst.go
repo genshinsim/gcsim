@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -31,7 +31,7 @@ func init() {
 }
 
 func (c *char) Burst(_ map[string]int) (action.Info, error) {
-	aiIceStorm := model.AttackInfo{
+	aiIceStorm := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           iceStormAbil,
 		AttackTag:      attacks.AttackTagElementalBurst,
@@ -44,7 +44,7 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 		Mult:           iceStorm[c.TalentLvlBurst()],
 		FlatDmg:        c.a4Dmg(iceStormAbil),
 	}
-	aiSpiritVesselSkull := model.AttackInfo{
+	aiSpiritVesselSkull := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Spiritvessel Skull DMG",
 		AttackTag:      attacks.AttackTagElementalBurst,

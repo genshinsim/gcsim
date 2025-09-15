@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -32,7 +32,7 @@ func init() {
 
 // Burst attack damage queue generator
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Divine Maiden's Deliverance (Initial)",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -62,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	c.AddStatus(burstKey, burstDuration, false)
 
-	ai = model.AttackInfo{
+	ai = info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Divine Maiden's Deliverance (DoT)",
 		AttackTag:  attacks.AttackTagElementalBurst,

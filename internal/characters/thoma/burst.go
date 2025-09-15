@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -27,7 +27,7 @@ func init() {
 
 // Burst attack damage queue generator
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Crimson Ooyoroi",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -77,7 +77,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) summonFieryCollapse() {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fiery Collapse",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -90,7 +90,7 @@ func (c *char) summonFieryCollapse() {
 		FlatDmg:    c.a4(),
 	}
 	done := false
-	shieldCb := func(_ model.AttackCB) {
+	shieldCb := func(_ info.AttackCB) {
 		if done {
 			return
 		}

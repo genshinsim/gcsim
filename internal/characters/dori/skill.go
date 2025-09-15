@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -30,7 +30,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		travel = 10
 	}
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Troubleshooter Shot",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -80,7 +80,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -91,15 +91,15 @@ func (c *char) particleCB(a model.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Electro, c.ParticleDelay)
 }
 
-func (c *char) afterSales() model.AttackCBFunc {
+func (c *char) afterSales() info.AttackCBFunc {
 	done := false
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if done {
 			return
 		}
 		done = true
 
-		ae := model.AttackInfo{
+		ae := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "After-Sales Service Round",
 			AttackTag:  attacks.AttackTagElementalArt,

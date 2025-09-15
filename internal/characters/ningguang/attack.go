@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -58,7 +58,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	done := false
-	cb := func(_ model.AttackCB) {
+	cb := func(_ info.AttackCB) {
 		// doesn't gain jades off-field
 		if c.Core.Player.Active() != c.Index {
 			return
@@ -91,7 +91,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		nextAttack = attackTypeLeft
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal (%s)", nextAttack),
 		AttackTag:  attacks.AttackTagNormal,

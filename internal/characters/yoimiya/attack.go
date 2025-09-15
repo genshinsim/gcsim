@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -35,7 +35,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
@@ -50,7 +50,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ai.ICDTag = attacks.ICDTagNormalAttack
 	}
 
-	var particleCB model.AttackCBFunc
+	var particleCB info.AttackCBFunc
 	if c.StatusIsActive(skillKey) {
 		particleCB = c.particleCB
 	}
@@ -80,7 +80,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 && c.StatusIsActive(skillKey) && c.Core.Rand.Float64() < 0.5 {
 		// trigger attack
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter),
 			AttackTag:  attacks.AttackTagNormal,

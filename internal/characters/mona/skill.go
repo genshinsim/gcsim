@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// DoT
 	// ticks 4 times
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Mirror Reflection of Doom (Tick)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -64,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	// Explosion
-	aiExplode := model.AttackInfo{
+	aiExplode := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Mirror Reflection of Doom (Explode)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -87,7 +87,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

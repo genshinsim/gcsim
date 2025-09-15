@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -18,7 +18,7 @@ const (
 
 // When a Projection Attack hits an opponent, Universality: An Elaboration on Form's CD is decreased by 1.2s.
 // This effect can be triggered once every 1s.
-func (c *char) c1(a model.AttackCB) {
+func (c *char) c1(a info.AttackCB) {
 	// ignore if c1 on icd
 	if c.StatusIsActive(c1IcdKey) {
 		return

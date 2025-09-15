@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const a4Status = "yaoyao-a4"
@@ -36,8 +35,8 @@ func (c *char) a1Throw() {
 
 	c.QueueCharTask(func() {
 		var hi info.HealInfo
-		var ai model.AttackInfo
-		var snap model.Snapshot
+		var ai info.AttackInfo
+		var snap info.Snapshot
 
 		if c.StatusIsActive(burstKey) {
 			ai = c.burstRadishAI

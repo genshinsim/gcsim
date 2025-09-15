@@ -4,8 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -23,7 +23,7 @@ func (c *char) a1() {
 		if !ok {
 			return false
 		}
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagBurningDamage:
 		case attacks.AttackTagBurgeon:
@@ -43,7 +43,7 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, hook, "kinich-a1")
 }
 
-func (c *char) a1CB(a model.AttackCB) {
+func (c *char) a1CB(a info.AttackCB) {
 	if c.Base.Ascension < 1 {
 		return
 	}

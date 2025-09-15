@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -59,7 +59,7 @@ func (c *char) lumidouceAttack(src int) func() {
 		}
 
 		level := c.Tag(lumidouceLevel)
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Lumidouce Case (Level %v)", level),
 			AttackTag:  attacks.AttackTagElementalArt,

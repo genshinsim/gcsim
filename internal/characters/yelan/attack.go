@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var attackFrames [][]int
@@ -37,7 +37,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 && c.Core.Status.Duration(c6Status) > 0 {
 		// c6 is default ICD group for some odd reason
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
 			AttackTag:  attacks.AttackTagExtra,
@@ -67,7 +67,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			)
 		}
 	} else {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:  attacks.AttackTagNormal,

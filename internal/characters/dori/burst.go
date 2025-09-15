@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -29,7 +28,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -75,7 +74,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				External:   true,
 			})
 			if c.Core.F > icdSrc[idx]+attacks.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
-				dur := model.Durability(25)
+				dur := info.Durability(25)
 				if p.AuraCount() == 0 {
 					dur = 20
 				}

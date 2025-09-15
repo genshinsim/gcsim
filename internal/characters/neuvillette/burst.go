@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -37,7 +37,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.chargeEarlyCancelled = false
 	player := c.Core.Combat.Player()
 
-	aiInitialHit := model.AttackInfo{
+	aiInitialHit := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "O Tides, I Have Returned: Skill DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		FlatDmg:    burst[c.TalentLvlBurst()] * c.MaxHP(),
 	}
-	aiWaterfall := model.AttackInfo{
+	aiWaterfall := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "O Tides, I Have Returned: Waterfall DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,

@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -51,7 +50,7 @@ func (w *Weapon) enemyCheck(char *character.CharWrapper, c *core.Core) func() {
 		if enemies != nil {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("aquasimulacra-dmg", 72),
-				Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					return w.dmgBuff, true
 				},
 			})

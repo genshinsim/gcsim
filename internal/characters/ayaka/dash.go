@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var dashFrames []int
@@ -28,7 +28,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	}
 
 	// no dmg attack at end of dash
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Dash",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagNone,

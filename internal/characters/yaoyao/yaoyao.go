@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -17,8 +16,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	skillRadishAI    model.AttackInfo
-	burstRadishAI    model.AttackInfo
+	skillRadishAI    info.AttackInfo
+	burstRadishAI    info.AttackInfo
 	numYueguiJumping int
 	yueguiJumping    []*yuegui
 	a4Srcs           []int
@@ -39,7 +38,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.skillRadishAI = model.AttackInfo{
+	c.skillRadishAI = info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Radish (Skill)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -53,7 +52,7 @@ func (c *char) Init() error {
 		IsDeployable:       true,
 	}
 
-	c.burstRadishAI = model.AttackInfo{
+	c.burstRadishAI = info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Radish (Burst)",
 		AttackTag:          attacks.AttackTagElementalBurst,

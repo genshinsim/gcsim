@@ -9,10 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -44,7 +44,7 @@ func (c *char) c1() {
 				// requires ReactBonusMod refactor
 				char.AddReactBonusMod(character.ReactBonusMod{
 					Base: modifier.NewBase("mona-c1", 8*60),
-					Amount: func(ai model.AttackInfo) (float64, bool) {
+					Amount: func(ai info.AttackInfo) (float64, bool) {
 						// doesn't work off-field
 						if c.Core.Player.Active() != char.Index {
 							return 0, false
@@ -74,7 +74,7 @@ func (c *char) c1() {
 // C2:
 // When a Normal Attack hits, there is a 20% chance that it will be automatically followed by a Charged Attack.
 // This effect can only occur once every 5s.
-func (c *char) c2(a model.AttackCB) {
+func (c *char) c2(a info.AttackCB) {
 	trg := a.Target
 	if c.Base.Cons < 2 {
 		return
@@ -89,7 +89,7 @@ func (c *char) c2(a model.AttackCB) {
 		return
 	}
 	c.c2icd = c.Core.F + 300 // every 5 seconds
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
@@ -113,7 +113,7 @@ func (c *char) c4() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("mona-c4", -1),
-			Amount: func(_ *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
@@ -159,7 +159,7 @@ func (c *char) c6(src int) func() {
 		m := make([]float64, attributes.EndStatType)
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c6Key, 8*60),
-			Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false
 				}
@@ -175,11 +175,11 @@ func (c *char) c6(src int) func() {
 	}
 }
 
-func (c *char) makeC6CAResetCB() model.AttackCBFunc {
+func (c *char) makeC6CAResetCB() info.AttackCBFunc {
 	if c.Base.Cons < 6 || !c.StatusIsActive(c6Key) {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() == targets.TargettableEnemy {
 			return
 		}

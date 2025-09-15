@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -27,7 +26,7 @@ func (c *char) a1Ready() bool {
 // Normal Attack: Forceful Fists of Frost will be enhanced to become Rebuke: Vaulting Fist. It will not consume
 // Stamina, deal 50% increased DMG, and will restore HP for Wriothesley after hitting equal to 30% of his Max HP.
 // You can gain a Gracious Rebuke this way once every 5s.
-func (c *char) a1(ai *model.AttackInfo, snap *model.Snapshot) model.AttackCBFunc {
+func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 	if !c.a1Ready() {
 		return nil
 	}
@@ -46,7 +45,7 @@ func (c *char) a1(ai *model.AttackInfo, snap *model.Snapshot) model.AttackCBFunc
 	c.Core.Log.NewEvent("adding a1", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
 
 	// return callback to heal, remove A1 and apply 5s cd
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

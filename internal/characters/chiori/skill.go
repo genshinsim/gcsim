@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -120,7 +120,7 @@ func (c *char) skillRecast() (action.Info, error) {
 func (c *char) handleSkill(hold int) {
 	// handle upward sweep
 	c.Core.Tasks.Add(func() {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Fluttering Hasode (Upward Sweep)",
 			ActorIndex: c.Index,
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -199,7 +199,7 @@ func (c *char) createDollConstructChecker() {
 func (c *char) skillDollAttack(src int, abil string, pos geometry.Point) func() {
 	return func() {
 		c.Core.Tasks.Add(func() {
-			ai := model.AttackInfo{
+			ai := info.AttackInfo{
 				Abil:       abil,
 				ActorIndex: c.Index,
 				AttackTag:  attacks.AttackTagElementalArt,
@@ -269,7 +269,7 @@ func (c *char) createRockDoll() {
 	c.rockDoll = rd
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

@@ -11,8 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -78,7 +78,7 @@ type ChargeState struct {
 }
 
 type HittableEntity struct {
-	Entity     model.Target
+	Entity     info.Target
 	isOneTick  bool   // Does entity get destroyed after a single maxHitCount?
 	CollFrames [2]int // Frames of the CA spin on which collision happens
 }
@@ -87,7 +87,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		return c.BikeCharge(p)
 	}
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge",
 		AttackTag:          attacks.AttackTagExtra,
@@ -354,7 +354,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 			return
 		}
 
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:       c.Index,
 			Abil:             "Flamestrider Charged Attack (Final)",
 			AttackTag:        attacks.AttackTagExtra,
@@ -417,8 +417,8 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 	}, nil
 }
 
-func (c *char) GetBikeChargeAttackAttackInfo() model.AttackInfo {
-	ai := model.AttackInfo{
+func (c *char) GetBikeChargeAttackAttackInfo() info.AttackInfo {
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Flamestrider Charged Attack (Cyclic)",
 		AttackTag:      attacks.AttackTagExtra,
@@ -533,7 +533,7 @@ func (c *char) buildValidTargetList() ([]HittableEntity, error) {
 
 		if isIntersecting {
 			hittableEnemies = append(hittableEnemies, HittableEntity{
-				Entity:     model.Target(v),
+				Entity:     info.Target(v),
 				isOneTick:  false,
 				CollFrames: collisionFrames,
 			})
@@ -582,7 +582,7 @@ func (c *char) IsGadgetHittable(v combat.Gadget) (HittableEntity, bool, error) {
 
 	if isIntersecting {
 		newGadget = HittableEntity{
-			Entity:     model.Target(v),
+			Entity:     info.Target(v),
 			isOneTick:  true,
 			CollFrames: collisionFrames,
 		}
@@ -723,7 +723,7 @@ func (c *char) CalculateValidCollisionFrames(durationCA int, collisionFrames [2]
 
 // Calculate start and end frames for each spin during which target is within Mav hitbox
 // Return false if target is not circle or has no overlap
-func (c *char) BikeHitboxIntersectionAngles(v model.Target, f []int, offsetAngle float64) (bool, error) {
+func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle float64) (bool, error) {
 	enemyShape := v.Shape()
 	var enemyRadius float64
 	switch v := enemyShape.(type) {

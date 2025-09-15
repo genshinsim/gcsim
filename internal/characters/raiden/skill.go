@@ -7,9 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -34,7 +34,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Eye of Stormy Judgement",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -61,7 +61,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(func() {
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
-				Amount: func(atk *model.AttackEvent, _ model.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 						return nil, false
 					}
@@ -83,7 +83,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -104,8 +104,8 @@ The Eye can initiate one coordinated attack every 0.9s per party.
 */
 func (c *char) eyeOnDamage() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(model.Target)
-		ae := args[1].(*model.AttackEvent)
+		trg := args[0].(info.Target)
+		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		// ignore if eye on icd
 		if c.eyeICD > c.Core.F {
@@ -134,7 +134,7 @@ func (c *char) eyeOnDamage() {
 
 		// hit mark 857, eye land 862
 		// electro appears to be applied right away
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Eye of Stormy Judgement (Strike)",
 			AttackTag:  attacks.AttackTagElementalArt,

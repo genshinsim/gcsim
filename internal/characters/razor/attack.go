@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -34,7 +34,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -63,11 +63,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		)
 	}
 
-	var cb model.AttackCBFunc
+	var cb info.AttackCBFunc
 	if c.StatusIsActive(burstBuffKey) {
 		cb = c.wolfBurst(c.NormalCounter)
 	}
-	var c6cb func(a model.AttackCB)
+	var c6cb func(a info.AttackCB)
 	if c.Base.Cons >= 6 {
 		c6cb = c.c6cb
 	}

@@ -11,9 +11,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -34,7 +34,7 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
 	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		log.Printf("hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
 		return false
 	}, "hit-check")
@@ -70,8 +70,8 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 100,
 		},
@@ -105,13 +105,13 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
 	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		log.Printf("gadget hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
 		return false
 	}, "hit-check")
 	dmgCount := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp Explosion" {
 			dmgCount++
 			log.Println("big boom at: ", c.F)
@@ -150,8 +150,8 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 100,
 		},
@@ -195,7 +195,7 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	c.Combat.DefaultTarget = trg[0].Key()
 	dmgCount := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
 			log.Println("boom at (adjusted): ", c.F-54-1)
@@ -241,7 +241,7 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	c.Combat.DefaultTarget = trg[0].Key()
 	dmgCount := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
 			log.Println("boom at (adjusted): ", c.F-54-1)
@@ -264,8 +264,8 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
-	c.QueueAttackEvent(&model.AttackEvent{
-		Info: model.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 100,
 		},

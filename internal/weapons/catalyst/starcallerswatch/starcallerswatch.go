@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -81,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			this := x
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase(buffKey, -1),
-				Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					if c.Player.Active() != this.Index {
 						return nil, false
 					}

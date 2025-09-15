@@ -1,6 +1,9 @@
-package model
+package info
 
-import "github.com/genshinsim/gcsim/pkg/core/attributes"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/model"
+)
 
 type ReactionType string
 
@@ -40,13 +43,13 @@ type Reactable interface {
 
 	React(a *AttackEvent)
 	AttachOrRefill(a *AttackEvent) bool
-	SetAuraDurability(mod Element, dur Durability, decay Durability)
+	SetAuraDurability(mod model.Element, dur Durability, decay Durability)
 
 	ActiveAuraString() []string
 	AuraCount() int
-	GetAuraDurability(mod Element) Durability
+	GetAuraDurability(mod model.Element) Durability
 	GetDurability() []Durability
-	GetAuraDecayRate(mod Element) Durability
+	GetAuraDecayRate(mod model.Element) Durability
 	AuraContains(e ...attributes.Element) bool
 
 	ReactableBloom

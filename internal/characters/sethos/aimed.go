@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var aimedFrames [][]int
@@ -71,7 +71,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	weakspot := p["weakspot"]
 
 	c.QueueCharTask(func() {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:           c.Index,
 			Abil:                 "Fully-Charged Aimed Shot",
 			AttackTag:            attacks.AttackTagExtra,
@@ -134,7 +134,7 @@ func (c *char) ShadowPierce(p map[string]int) (action.Info, error) {
 
 	c.QueueCharTask(func() {
 		em := c.Stat(attributes.EM)
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:           c.Index,
 			Abil:                 shadowPierceShotAil,
 			AttackTag:            attacks.AttackTagExtra,

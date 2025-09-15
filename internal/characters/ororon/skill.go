@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -31,7 +31,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Spirit Orb DMG",
 		AttackTag:      attacks.AttackTagElementalArt,
@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		HitlagFactor:   0.05,
 	}
 
-	enemies := []model.Target{c.Core.Combat.PrimaryTarget()}
+	enemies := []info.Target{c.Core.Combat.PrimaryTarget()}
 	maxHits := 3 + c.c1ExtraBounce()
 	for i := 0; len(enemies) < maxHits && i < c.Core.Combat.EnemyCount(); i++ {
 		newEnemy := c.Core.Combat.Enemy(i)
@@ -76,7 +76,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

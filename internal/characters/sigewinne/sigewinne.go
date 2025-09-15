@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -21,8 +20,8 @@ type char struct {
 	*tmpl.Character
 
 	// skill
-	skillAttackInfo model.AttackInfo
-	skillSnapshot   model.Snapshot
+	skillAttackInfo info.AttackInfo
+	skillSnapshot   info.Snapshot
 
 	particleGenerated bool
 	lastSummonSrc     int
@@ -119,11 +118,11 @@ func (c *char) consumeDroplet(g *sourcewaterdroplet.Gadget) {
 	c.ModifyHPDebtByAmount(c.MaxHP() * BoLPctPerDroplet)
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 13
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 5
 	default:
 		return c.Character.AnimationStartDelay(k)

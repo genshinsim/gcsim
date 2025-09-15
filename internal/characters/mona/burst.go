@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// bubble status bursts either -> takes dmg no freeze OR freeze and freeze disappears
 
 	// apply first non damage after 1.7 seconds
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Initial)",
 		AttackTag:  attacks.AttackTagNone,
@@ -44,7 +44,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       0,
 	}
-	cb := func(a model.AttackCB) {
+	cb := func(a info.AttackCB) {
 		t, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), -1, burstHitmark, cb)
 
 	// queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
-	aiBreak := model.AttackInfo{
+	aiBreak := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Break)",
 		AttackTag:  attacks.AttackTagMonaBubbleBreak,
@@ -88,7 +88,7 @@ func (c *char) burstDamageBonus() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("mona-omen", -1),
-			Amount: func(_ *model.AttackEvent, t model.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
@@ -121,7 +121,7 @@ func (c *char) burstHook() {
 			return false
 		}
 		// always break if it's due to time up
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag == attacks.AttackTagMonaBubbleBreak {
 			c.triggerBubbleBurst(t)
 			return false
@@ -144,7 +144,7 @@ func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	dur := int(omenDuration[c.TalentLvlBurst()] * 60)
 	t.AddStatus(omenKey, dur, true)
 	// trigger dmg
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Explosion)",
 		AttackTag:  attacks.AttackTagElementalBurst,

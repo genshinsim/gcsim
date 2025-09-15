@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -15,7 +14,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	skillAtk *model.AttackEvent
+	skillAtk *info.AttackEvent
 	c6done   bool
 }
 
@@ -44,11 +43,11 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 8
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 5
 	default:
 		return c.Character.AnimationStartDelay(k)

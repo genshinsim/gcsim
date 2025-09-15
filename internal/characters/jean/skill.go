@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -33,7 +33,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	hitmark := skillHitmark + hold
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gale Blade",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -68,7 +68,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) baseParticleCB(a model.AttackCB) {
+func (c *char) baseParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -79,7 +79,7 @@ func (c *char) baseParticleCB(a model.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) extraParticleCB(a model.AttackCB) {
+func (c *char) extraParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

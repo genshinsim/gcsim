@@ -28,7 +28,7 @@ type Character struct {
 	*character.CharWrapper
 }
 
-func (c *Character) Snapshot(a *model.AttackInfo) model.Snapshot { return model.Snapshot{} }
+func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot { return info.Snapshot{} }
 func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }

@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -30,7 +30,7 @@ const (
 )
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Explosive Grenade",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	mineAi := model.AttackInfo{
+	mineAi := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Secondary Explosive Shell",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -82,7 +82,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			direction := geometry.DegreesToDirection(mineSteps[i][j]).Rotate(burstInitialDirection)
 
 			// can't use combat attack pattern func because can't easily supply direction
-			mineAp := model.AttackPattern{
+			mineAp := info.AttackPattern{
 				Shape: geometry.NewCircle(burstInitialPos, 6, direction, 60),
 			}
 			mineAp.SkipTargets[targets.TargettablePlayer] = true

@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -34,7 +33,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Initial damage
 	// Both healing and damage are snapshot
 	c.Core.Tasks.Add(func() {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Herald of Frost: Initial Damage",
 			AttackTag:          attacks.AttackTagElementalArt,
@@ -84,7 +83,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		aiTick.IsDeployable = true // ticks still apply hitlag but is a deployable so doesnt affect qiqi
 
 		snapTick := c.Snapshot(&aiTick)
-		tickAE := &model.AttackEvent{
+		tickAE := &info.AttackEvent{
 			Info:        aiTick,
 			Snapshot:    snapTick,
 			SourceFrame: c.Core.F,
@@ -111,7 +110,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 // Handles skill damage swipe instances
 // Also handles C1:
 // When the Herald of Frost hits an opponent marked by a Fortune-Preserving Talisman, Qiqi regenerates 2 Energy.
-func (c *char) skillDmgTickTask(src int, ae *model.AttackEvent, lastTickDuration int) func() {
+func (c *char) skillDmgTickTask(src int, ae *info.AttackEvent, lastTickDuration int) func() {
 	return func() {
 		if !c.StatusIsActive(skillBuffKey) {
 			return

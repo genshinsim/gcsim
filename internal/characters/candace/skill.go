@@ -7,9 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		windup = 55
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Heron's Sanctum (E)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -63,7 +63,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 	}
 
-	var ap model.AttackPattern
+	var ap info.AttackPattern
 	var particleCount float64
 	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
@@ -92,7 +92,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ap,
 		hitmark,
 		hitmark,
-		func(_ model.AttackCB) {
+		func(_ info.AttackCB) {
 			if c.Base.Cons >= 2 {
 				c.c2()
 			}
@@ -126,8 +126,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB(particleCount float64) model.AttackCBFunc {
-	return func(a model.AttackCB) {
+func (c *char) makeParticleCB(particleCount float64) info.AttackCBFunc {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

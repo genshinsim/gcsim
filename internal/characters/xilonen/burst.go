@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -27,7 +26,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Ocelotlicue Point!",
 		AttackTag:      attacks.AttackTagElementalBurst,
@@ -60,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstDamage(ai model.AttackInfo) {
+func (c *char) burstDamage(ai info.AttackInfo) {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 	for i, hitmark := range burstDamageHitmarks {
 		if i > 0 {
@@ -71,7 +70,7 @@ func (c *char) burstDamage(ai model.AttackInfo) {
 	}
 }
 
-func (c *char) burstHeal(ai model.AttackInfo) {
+func (c *char) burstHeal(ai info.AttackInfo) {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), burstDamageHitmarks[0], burstDamageHitmarks[0])
 
 	hi := info.HealInfo{

@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -55,7 +55,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
@@ -73,8 +73,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		c.QueueCharTask(func() {
 			// TODO: when should this check happen?
 			skillIndex := 0
-			var particleCB model.AttackCBFunc
-			var chillingPenalty model.AttackCBFunc
+			var particleCB info.AttackCBFunc
+			var chillingPenalty info.AttackCBFunc
 			if c.skillBuffActive() {
 				skillIndex = 1
 				particleCB = c.particleCB

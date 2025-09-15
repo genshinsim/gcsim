@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -64,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	cd := 20 * 60
 
 	stackFunc := func(args ...interface{}) bool {
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -93,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				})
 				char.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBaseWithHitlag("freedomsworn", buffDuration),
-					Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+					Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 						switch atk.Info.AttackTag {
 						case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
 							return uniqueVal, true

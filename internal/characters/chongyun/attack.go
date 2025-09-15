@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -34,7 +34,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagNormal,
@@ -67,7 +67,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c4CB)
 
 	if c.Base.Cons >= 1 && c.NormalCounter == 3 {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Chongyun C1",
 			ActorIndex: c.Index,
 			AttackTag:  attacks.AttackTagNone,

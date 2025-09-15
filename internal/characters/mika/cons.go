@@ -2,21 +2,21 @@ package mika
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // When Starfrost Swirl's Flowfrost Arrow first hits an opponent, or its Rimestar Flare hits an opponent,
 // 1 Detector stack from Passive Talent "Suppressive Barrage" will be generated.
 // You must have unlocked the Passive Talent "Suppressive Barrage" first.
-func (c *char) c2() func(model.AttackCB) {
+func (c *char) c2() func(info.AttackCB) {
 	if c.Base.Cons < 2 || c.Base.Ascension < 1 {
 		return nil
 	}
 
 	done := false
-	return func(_ model.AttackCB) {
+	return func(_ info.AttackCB) {
 		if done {
 			return
 		}
@@ -32,7 +32,7 @@ func (c *char) c2() func(model.AttackCB) {
 func (c *char) c6(char *character.CharWrapper) {
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("mika-c6", skillBuffDuration),
-		Amount: func(atk *model.AttackEvent, _ model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if c.Core.Player.Active() != char.Index {
 				return nil, false
 			}

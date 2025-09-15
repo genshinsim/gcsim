@@ -8,10 +8,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -84,7 +84,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) pressSkill() action.Info {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Icetide Vortex",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -100,7 +100,7 @@ func (c *char) pressSkill() action.Info {
 		CanBeDefenseHalted: true,
 	}
 	// add 1 to grim heart if not capped by icd
-	cb := func(a model.AttackCB) {
+	cb := func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -130,7 +130,7 @@ func (c *char) pressSkill() action.Info {
 	}
 }
 
-func (c *char) pressParticleCB(a model.AttackCB) {
+func (c *char) pressParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -151,7 +151,7 @@ func (c *char) holdSkill() action.Info {
 	// 296 to 341, but cd starts at 322
 	// 60 fps = 108 frames cast, cd starts 62 frames in so need to + 62 frames to cd
 	lvl := c.TalentLvlSkill()
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Icetide Vortex (Hold)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -178,9 +178,9 @@ func (c *char) holdSkill() action.Info {
 	v := c.currentGrimheartStacks()
 
 	// shred
-	var shredCB model.AttackCBFunc
+	var shredCB info.AttackCBFunc
 	if v > 0 {
-		shredCB = func(a model.AttackCB) {
+		shredCB = func(a info.AttackCB) {
 			e, ok := a.Target.(*enemy.Enemy)
 			if !ok {
 				return
@@ -201,7 +201,7 @@ func (c *char) holdSkill() action.Info {
 	for i := 0; i < v; i++ {
 		// multiple brand hits
 		//TODO: need to double check if this is affected by hitlag; might be a deployable
-		icewhirlAI := model.AttackInfo{
+		icewhirlAI := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Icetide Vortex (Icewhirl)",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -267,7 +267,7 @@ func (c *char) holdSkill() action.Info {
 	}
 }
 
-func (c *char) holdParticleCB(a model.AttackCB) {
+func (c *char) holdParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

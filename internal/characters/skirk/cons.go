@@ -4,9 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -19,7 +19,7 @@ func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
 	}
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Far to Fall",
 		Mult:               5,
@@ -109,7 +109,7 @@ func (c *char) c6OnBurstRuin() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Havoc: Sever (Burst)",
 		Mult:       7.5 * c.a4MultBurst(),
@@ -138,7 +138,7 @@ func (c *char) c6OnBurstRuin() {
 	}
 }
 
-func (c *char) c6OnAttackCB() func(a model.AttackCB) {
+func (c *char) c6OnAttackCB() func(a info.AttackCB) {
 	if c.Base.Cons < 6 {
 		return nil
 	}
@@ -149,7 +149,7 @@ func (c *char) c6OnAttackCB() func(a model.AttackCB) {
 		return nil
 	}
 
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -166,7 +166,7 @@ func (c *char) c6OnAttackCB() func(a model.AttackCB) {
 			return
 		}
 
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Havoc: Sever (Normal)",
 			Mult:       1.8 * c.a4MultAttack(),

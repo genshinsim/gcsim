@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -93,7 +93,7 @@ func (c *char) lumidouceBurstAttack(src int) func() {
 		burstArea := combat.NewCircleHitOnTarget(c.lumidoucePos, nil, burstRadius)
 		pos := c.getRandomEnemyPosition(burstArea)
 
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Lumidouce Case (Level 3)",
 			AttackTag:  attacks.AttackTagElementalBurst,
@@ -111,7 +111,7 @@ func (c *char) lumidouceBurstAttack(src int) func() {
 	}
 }
 
-func (c *char) getRandomEnemyPosition(area model.AttackPattern) geometry.Point {
+func (c *char) getRandomEnemyPosition(area info.AttackPattern) geometry.Point {
 	enemy := c.Core.Combat.RandomEnemyWithinArea(
 		area,
 		func(e combat.Enemy) bool {

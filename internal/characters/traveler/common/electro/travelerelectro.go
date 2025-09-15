@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Traveler struct {
@@ -15,8 +14,8 @@ type Traveler struct {
 	abundanceAmulets      int
 	burstC6Hits           int
 	burstC6WillGiveEnergy bool
-	burstSnap             model.Snapshot
-	burstAtk              *model.AttackEvent
+	burstSnap             info.Snapshot
+	burstAtk              *info.AttackEvent
 	burstSrc              int
 	gender                int
 }
@@ -42,9 +41,9 @@ func (c *Traveler) Init() error {
 	return nil
 }
 
-func (c *Traveler) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *Traveler) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		if c.gender == 0 {
 			return 8
 		}

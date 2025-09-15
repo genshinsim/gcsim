@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -84,7 +83,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
+func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatModIsActive(paramitaBuff) {
@@ -100,8 +99,8 @@ func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
 	return ds
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 10
 	}
 	return c.Character.AnimationStartDelay(k)

@@ -5,10 +5,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (r *Reactable) TrySuperconduct(a *model.AttackEvent) bool {
+func (r *Reactable) TrySuperconduct(a *info.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -16,7 +16,7 @@ func (r *Reactable) TrySuperconduct(a *model.AttackEvent) bool {
 	if r.Durability[Frozen] >= ZeroDur {
 		return false
 	}
-	var consumed model.Durability
+	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
 		if r.Durability[Cryo] < ZeroDur {
@@ -40,7 +40,7 @@ func (r *Reactable) TrySuperconduct(a *model.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) TryFrozenSuperconduct(a *model.AttackEvent) bool {
+func (r *Reactable) TryFrozenSuperconduct(a *info.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -66,7 +66,7 @@ func (r *Reactable) TryFrozenSuperconduct(a *model.AttackEvent) bool {
 	return false
 }
 
-func (r *Reactable) queueSuperconduct(a *model.AttackEvent) {
+func (r *Reactable) queueSuperconduct(a *info.AttackEvent) {
 	r.core.Events.Emit(event.OnSuperconduct, r.self, a)
 
 	// 0.1s gcd on superconduct attack
@@ -76,10 +76,10 @@ func (r *Reactable) queueSuperconduct(a *model.AttackEvent) {
 	r.superconductGCD = r.core.F + 0.1*60
 
 	// superconduct attack
-	atk := model.AttackInfo{
+	atk := info.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(model.ReactionTypeSuperconduct),
+		Abil:             string(info.ReactionTypeSuperconduct),
 		AttackTag:        attacks.AttackTagSuperconductDamage,
 		ICDTag:           attacks.ICDTagSuperconductDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,

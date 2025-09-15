@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -21,7 +21,7 @@ type (
 		Amount AttackModFunc
 		modifier.Base
 	}
-	AttackModFunc func(atk *model.AttackEvent, t model.Target) ([]float64, bool)
+	AttackModFunc func(atk *info.AttackEvent, t info.Target) ([]float64, bool)
 
 	CooldownMod struct {
 		Amount CooldownModFunc
@@ -45,7 +45,7 @@ type (
 		Amount ReactBonusModFunc
 		modifier.Base
 	}
-	ReactBonusModFunc func(model.AttackInfo) (float64, bool)
+	ReactBonusModFunc func(info.AttackInfo) (float64, bool)
 
 	StatMod struct {
 		AffectedStat attributes.Stat
@@ -187,7 +187,7 @@ func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMo
 
 // Amount.
 
-func (c *CharWrapper) ApplyAttackMods(a *model.AttackEvent, t model.Target) []interface{} {
+func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []interface{} {
 	// skip if this is reaction damage
 	if a.Info.AttackTag >= attacks.AttackTagNoneStat {
 		return nil
@@ -329,7 +329,7 @@ func (c *CharWrapper) HealBonus() float64 {
 
 // TODO: consider merging this with just attack mods? reaction bonus should
 // maybe just be it's own stat instead of being a separate mod really
-func (c *CharWrapper) ReactBonus(atk model.AttackInfo) float64 {
+func (c *CharWrapper) ReactBonus(atk info.AttackInfo) float64 {
 	n := 0
 	amt := 0.0
 	for _, v := range c.mods {

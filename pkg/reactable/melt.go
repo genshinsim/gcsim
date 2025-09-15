@@ -3,14 +3,14 @@ package reactable
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (r *Reactable) TryMelt(a *model.AttackEvent) bool {
+func (r *Reactable) TryMelt(a *info.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed model.Durability
+	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		if r.Durability[Cryo] < ZeroDur && r.Durability[Frozen] < ZeroDur {
@@ -37,7 +37,7 @@ func (r *Reactable) TryMelt(a *model.AttackEvent) bool {
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
 	a.Info.Amped = true
-	a.Info.AmpType = model.ReactionTypeMelt
+	a.Info.AmpType = info.ReactionTypeMelt
 	r.core.Events.Emit(event.OnMelt, r.self, a)
 	return true
 }

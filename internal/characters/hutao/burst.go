@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -46,14 +45,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// 		Write("new_duration", c.Core.Status.Duration("paramita"))
 	// }
 
-	var bbcb model.AttackCBFunc
+	var bbcb info.AttackCBFunc
 
 	if c.Base.Cons >= 2 {
 		bbcb = c.applyBB
 	}
 
 	//TODO: currently snapshotting at cast but apparently damage is based on stats on contact, not at cast??
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spirit Soother",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -84,7 +83,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstHealCB(atk model.AttackCB) {
+func (c *char) burstHealCB(atk info.AttackCB) {
 	if c.burstHealCount == 5 {
 		return
 	}

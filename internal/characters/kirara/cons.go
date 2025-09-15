@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -35,7 +35,7 @@ func (c *char) c4() {
 			return false
 		}
 
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal,
 			attacks.AttackTagExtra,
@@ -43,10 +43,10 @@ func (c *char) c4() {
 		default:
 			return false
 		}
-		t := args[0].(model.Target)
+		t := args[0].(info.Target)
 
 		// TODO: snapshot? damage delay?
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Steed of Skanda",
 			AttackTag:          attacks.AttackTagElementalBurst,

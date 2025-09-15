@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	// Activation DMG
-	activationAttack := model.AttackInfo{
+	activationAttack := info.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         skillActivateDmgName,
 		AttackTag:    attacks.AttackTagElementalArt,
@@ -137,7 +137,7 @@ func (c *char) skillInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, -1),
-			Amount: func(ai model.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) (float64, bool) {
 				if !c.StatusIsActive(dreamDrifterStateKey) {
 					return 0, false
 				}
@@ -175,7 +175,7 @@ func (c *char) skillInit() {
 
 func (c *char) startCloudAttacks(travel int) {
 	// clouds DMG snapshots on activation
-	c.cloudAttack = model.AttackInfo{
+	c.cloudAttack = info.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         cloudDmgName,
 		AttackTag:    attacks.AttackTagElementalArt,
@@ -196,7 +196,7 @@ func (c *char) startCloudAttacks(travel int) {
 }
 
 // Generates up to 4 particles on each E DMG either on activation or cloud.
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

@@ -7,10 +7,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -61,7 +61,7 @@ func (c *char) a1CBGadget(...interface{}) bool {
 	return false
 }
 
-func (c *char) a1Amount(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+func (c *char) a1Amount(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 	var amt float64
 	switch atk.Info.AttackTag {
 	case attacks.AttackTagNormal:

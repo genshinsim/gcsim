@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 // Reduces Starfell Sword's CD by 2s.
@@ -21,7 +21,7 @@ func (c *Traveler) a4() {
 	if c.Base.Ascension < 4 || c.NormalCounter != c.NormalHitNum-1 {
 		return
 	}
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Frenzied Rockslide (A4)",
 		AttackTag:  attacks.AttackTagNormal,

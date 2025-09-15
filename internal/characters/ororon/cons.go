@@ -2,11 +2,11 @@ package ororon
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,7 +25,7 @@ func (c *char) c1Init() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1Key, -1),
-		Amount: func(ae *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
 			trg, ok := t.(*enemy.Enemy)
 			if !ok {
 				return nil, false
@@ -48,14 +48,14 @@ func (c *char) c1ExtraBounce() int {
 	return 2
 }
 
-func (c *char) makeC1cb() func(model.AttackCB) {
+func (c *char) makeC1cb() func(info.AttackCB) {
 	if c.Base.Cons < 1 {
 		return nil
 	}
 	if c.Base.Ascension < 1 {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -89,11 +89,11 @@ func (c *char) c2OnBurst() {
 	})
 }
 
-func (c *char) makeC2cb() func(model.AttackCB) {
+func (c *char) makeC2cb() func(info.AttackCB) {
 	if c.Base.Cons < 2 {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

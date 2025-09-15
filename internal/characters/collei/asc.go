@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -55,8 +55,8 @@ func (c *char) a1() {
 	}
 }
 
-func (c *char) a1AttackInfo() model.AttackInfo {
-	return model.AttackInfo{
+func (c *char) a1AttackInfo() info.AttackInfo {
+	return info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Floral Sidewinder (A1)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -82,7 +82,7 @@ func (c *char) a4() {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if !char.StatusIsActive(a4Key) {
 			return false
@@ -112,7 +112,7 @@ func (c *char) a4() {
 	}
 }
 
-func (c *char) a1Ticks(startFrame int, snap model.Snapshot) {
+func (c *char) a1Ticks(startFrame int, snap info.Snapshot) {
 	if !c.StatusIsActive(sproutKey) {
 		return
 	}

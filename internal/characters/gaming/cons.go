@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -66,11 +65,11 @@ func (c *char) c2() {
 
 // When Bestial Ascent's Plunging Attack: Charmed Cloudstrider hits an opponent,
 // it will restore 2 Energy to Gaming. This effect can be triggered once every 0.2s.
-func (c *char) makeC4CB() model.AttackCBFunc {
+func (c *char) makeC4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -96,7 +95,7 @@ func (c *char) c6() {
 	m[attributes.CD] = 0.4
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c6Key, -1),
-		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.Abil != specialPlungeKey {
 				return nil, false
 			}

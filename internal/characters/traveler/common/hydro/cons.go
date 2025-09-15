@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const c4ICDKey = "travelerhydro-c4-icd"
@@ -40,11 +39,11 @@ func (c *Traveler) c4() {
 	})
 }
 
-func (c *Traveler) makeC4CB() model.AttackCBFunc {
+func (c *Traveler) makeC4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

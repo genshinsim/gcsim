@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.skillTravel = travel
 
 	skillPos := c.Core.Combat.Player()
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low-Temperature Cooking",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			return
 		}
 		c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
-		aiBlade := model.AttackInfo{
+		aiBlade := info.AttackInfo{
 			// TODO: Apply Arkhe
 			ActorIndex: c.Index,
 			Abil:       "Surging Blade (" + c.Base.Key.Pretty() + ")",
@@ -107,7 +107,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a model.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -124,7 +124,7 @@ func (c *char) skillTick(src int) func() {
 			return
 		}
 
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Frosty Parfait",
 			AttackTag:  attacks.AttackTagElementalArt,

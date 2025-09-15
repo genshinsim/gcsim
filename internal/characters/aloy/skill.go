@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -58,7 +58,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		delay = 0
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Freeze Bomb",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	)
 
 	// Bomblets snapshot on cast
-	ai = model.AttackInfo{
+	ai = info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Chillwater Bomblets",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -114,9 +114,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() model.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a model.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -129,7 +129,7 @@ func (c *char) makeParticleCB() model.AttackCBFunc {
 }
 
 // Handles coil stacking and associated effects, including triggering rushing ice
-func (c *char) coilStacks(a model.AttackCB) {
+func (c *char) coilStacks(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -164,7 +164,7 @@ func (c *char) rushingIce() {
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", rushingIceDuration),
-		Amount: func(atk *model.AttackEvent, _ model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagNormal {
 				return val, true
 			}
@@ -181,7 +181,7 @@ func (c *char) coilMod() {
 	val := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("aloy-coil-stacks", -1),
-		Amount: func(atk *model.AttackEvent, _ model.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagNormal && c.coils > 0 {
 				val[attributes.DmgP] = skillCoilNABonus[c.coils-1][c.TalentLvlSkill()]
 				return val, true

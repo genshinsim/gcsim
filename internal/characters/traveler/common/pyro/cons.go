@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -27,7 +27,7 @@ func (c *Traveler) c1Init() {
 		this := char
 		this.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c1AttackModKey, -1),
-			Amount: func(ae *model.AttackEvent, _ model.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				// char must be active
 				if c.Core.Player.Active() != this.Index {
 					return nil, false
@@ -101,7 +101,7 @@ func (c *Traveler) c6Init() {
 	mCD[attributes.CD] = 0.4
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c6AttackModKey, -1),
-		Amount: func(ae *model.AttackEvent, _ model.Target) ([]float64, bool) {
+		Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			switch ae.Info.AttackTag {
 			case attacks.AttackTagNormal:
 			case attacks.AttackTagExtra:

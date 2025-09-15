@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Character struct {
@@ -54,8 +53,8 @@ func New(c *core.Core) *Character {
 	return t
 }
 
-func (c *Character) Snapshot(a *model.AttackInfo) model.Snapshot {
-	s := model.Snapshot{
+func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot {
+	s := info.Snapshot{
 		CharLvl:     c.Base.Level,
 		SourceFrame: c.Core.F,
 	}

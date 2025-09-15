@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -59,7 +59,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i := 0; i < len(attack[c.NormalCounter]); i++ {
-		ai := model.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
@@ -76,7 +76,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			ai.HitlagFactor = 0.01
 		}
 
-		var ap model.AttackPattern
+		var ap info.AttackPattern
 		switch {
 		case len(attackHitboxes[c.NormalCounter]) == 2: // box
 			ap = combat.NewBoxHitOnTarget(
@@ -130,7 +130,7 @@ func (c *char) reathermoonRings() action.Info {
 }
 
 func (c *char) reathermoonRingsDetail(abilName string, hitmarks []int) {
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagElementalArt,
 		StrikeType:         attacks.StrikeTypeDefault,

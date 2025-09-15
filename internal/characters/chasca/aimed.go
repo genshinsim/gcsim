@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 // Aim keeps charging
@@ -71,7 +71,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
@@ -183,7 +183,7 @@ func (c *char) fireBullets() {
 		return
 	}
 
-	ai := model.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Shadowhunt Shell",
 		AttackTag:      attacks.AttackTagExtra,
@@ -197,7 +197,7 @@ func (c *char) fireBullets() {
 		HitlagFactor:   0.01,
 	}
 
-	var c2cb model.AttackCBFunc
+	var c2cb info.AttackCBFunc
 	applyC6buff := c.c6buff()
 
 	bulletFireFrame := c.Core.F

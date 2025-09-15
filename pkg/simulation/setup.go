@@ -18,7 +18,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -146,7 +145,7 @@ func SetupResonance(s *core.Core) {
 		case attributes.Cryo:
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.CR] = .15
-			f := func(ae *model.AttackEvent, t model.Target) ([]float64, bool) {
+			f := func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
 				r, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
@@ -204,7 +203,7 @@ func SetupResonance(s *core.Core) {
 				if !ok {
 					return false
 				}
-				atk := args[1].(*model.AttackEvent)
+				atk := args[1].(*info.AttackEvent)
 				if s.Player.Shields.CharacterIsShielded(atk.Info.ActorIndex, s.Player.Active()) {
 					t.AddResistMod(combat.ResistMod{
 						Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
@@ -217,7 +216,7 @@ func SetupResonance(s *core.Core) {
 
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.DmgP] = .15
-			atkf := func(ae *model.AttackEvent, t model.Target) ([]float64, bool) {
+			atkf := func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if s.Player.Shields.CharacterIsShielded(ae.Info.ActorIndex, s.Player.Active()) {
 					return val, true
 				}
@@ -310,7 +309,7 @@ func SetupMisc(c *core.Core) {
 		if !ok {
 			return false
 		}
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagSuperconductDamage {
 			return false
 		}
@@ -346,7 +345,7 @@ func setupNightsoulBurst(core *core.Core) {
 		if !ok {
 			return false
 		}
-		atk := args[1].(*model.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.Element {
 		case attributes.Electro:
 		case attributes.Pyro:
@@ -410,7 +409,7 @@ func (s *Simulation) handleHurt() {
 		s.cfg.HurtSettings.Active = false
 
 		s.C.Tasks.Add(func() {
-			ai := model.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex:       s.C.Player.Active(),
 				Abil:             "Hurt",
 				AttackTag:        attacks.AttackTagNone,
@@ -442,7 +441,7 @@ func (s *Simulation) handleHurt() {
 		s.cfg.HurtSettings.LastHurt = s.C.F + f
 
 		s.C.Tasks.Add(func() {
-			ai := model.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex:       s.C.Player.Active(),
 				Abil:             "Hurt",
 				AttackTag:        attacks.AttackTagNone,

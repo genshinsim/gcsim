@@ -4,12 +4,12 @@ import (
 	"sort"
 
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 // all targets
 
-func enemiesWithinAreaFiltered(a model.AttackPattern, filter func(t Enemy) bool, originalEnemies []model.Target) []Enemy {
+func enemiesWithinAreaFiltered(a info.AttackPattern, filter func(t Enemy) bool, originalEnemies []info.Target) []Enemy {
 	var enemies []Enemy
 	hasFilter := filter != nil
 	for _, v := range originalEnemies {
@@ -31,7 +31,7 @@ func enemiesWithinAreaFiltered(a model.AttackPattern, filter func(t Enemy) bool,
 	return enemies
 }
 
-func gadgetsWithinAreaFiltered(a model.AttackPattern, filter func(t Gadget) bool, originalGadgets []Gadget) []Gadget {
+func gadgetsWithinAreaFiltered(a info.AttackPattern, filter func(t Gadget) bool, originalGadgets []Gadget) []Gadget {
 	var gadgets []Gadget
 	hasFilter := filter != nil
 	for _, v := range originalGadgets {
@@ -57,7 +57,7 @@ func gadgetsWithinAreaFiltered(a model.AttackPattern, filter func(t Gadget) bool
 }
 
 // returns enemies within the given area, no sorting, pass nil for no filter
-func (h *Handler) EnemiesWithinArea(a model.AttackPattern, filter func(t Enemy) bool) []Enemy {
+func (h *Handler) EnemiesWithinArea(a info.AttackPattern, filter func(t Enemy) bool) []Enemy {
 	enemies := enemiesWithinAreaFiltered(a, filter, h.enemies)
 	if len(enemies) == 0 {
 		return nil
@@ -66,7 +66,7 @@ func (h *Handler) EnemiesWithinArea(a model.AttackPattern, filter func(t Enemy) 
 }
 
 // returns gadgets within the given area, no sorting, pass nil for no filter
-func (h *Handler) GadgetsWithinArea(a model.AttackPattern, filter func(t Gadget) bool) []Gadget {
+func (h *Handler) GadgetsWithinArea(a info.AttackPattern, filter func(t Gadget) bool) []Gadget {
 	gadgets := gadgetsWithinAreaFiltered(a, filter, h.gadgets)
 	if len(gadgets) == 0 {
 		return nil
@@ -77,7 +77,7 @@ func (h *Handler) GadgetsWithinArea(a model.AttackPattern, filter func(t Gadget)
 // random targets
 
 // returns a random enemy within the given area, pass nil for no filter
-func (h *Handler) RandomEnemyWithinArea(a model.AttackPattern, filter func(t Enemy) bool) Enemy {
+func (h *Handler) RandomEnemyWithinArea(a info.AttackPattern, filter func(t Enemy) bool) Enemy {
 	enemies := h.EnemiesWithinArea(a, filter)
 	if enemies == nil {
 		return nil
@@ -86,7 +86,7 @@ func (h *Handler) RandomEnemyWithinArea(a model.AttackPattern, filter func(t Ene
 }
 
 // returns a random gadget within the given area, pass nil for no filter
-func (h *Handler) RandomGadgetWithinArea(a model.AttackPattern, filter func(t Gadget) bool) Gadget {
+func (h *Handler) RandomGadgetWithinArea(a info.AttackPattern, filter func(t Gadget) bool) Gadget {
 	gadgets := h.GadgetsWithinArea(a, filter)
 	if gadgets == nil {
 		return nil
@@ -95,7 +95,7 @@ func (h *Handler) RandomGadgetWithinArea(a model.AttackPattern, filter func(t Ga
 }
 
 // returns a list of random enemies within the given area, pass nil for no filter
-func (h *Handler) RandomEnemiesWithinArea(a model.AttackPattern, filter func(t Enemy) bool, maxCount int) []Enemy {
+func (h *Handler) RandomEnemiesWithinArea(a info.AttackPattern, filter func(t Enemy) bool, maxCount int) []Enemy {
 	enemies := h.EnemiesWithinArea(a, filter)
 	if enemies == nil {
 		return nil
@@ -120,7 +120,7 @@ func (h *Handler) RandomEnemiesWithinArea(a model.AttackPattern, filter func(t E
 }
 
 // returns a list of random gadgets within the given area, pass nil for no filter
-func (h *Handler) RandomGadgetsWithinArea(a model.AttackPattern, filter func(t Gadget) bool, maxCount int) []Gadget {
+func (h *Handler) RandomGadgetsWithinArea(a info.AttackPattern, filter func(t Gadget) bool, maxCount int) []Gadget {
 	gadgets := h.GadgetsWithinArea(a, filter)
 	if gadgets == nil {
 		return nil
@@ -151,7 +151,7 @@ type enemyTuple struct {
 	dist  float64
 }
 
-func enemiesWithinAreaSorted(a model.AttackPattern, filter func(t Enemy) bool, skipAttackPattern bool, originalEnemies []model.Target) []enemyTuple {
+func enemiesWithinAreaSorted(a info.AttackPattern, filter func(t Enemy) bool, skipAttackPattern bool, originalEnemies []info.Target) []enemyTuple {
 	var enemies []enemyTuple
 
 	hasFilter := filter != nil
@@ -188,7 +188,7 @@ type gadgetTuple struct {
 	dist   float64
 }
 
-func gadgetsWithinAreaSorted(a model.AttackPattern, filter func(t Gadget) bool, skipAttackPattern bool, originalGadgets []Gadget) []gadgetTuple {
+func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t Gadget) bool, skipAttackPattern bool, originalGadgets []Gadget) []gadgetTuple {
 	var gadgets []gadgetTuple
 
 	hasFilter := filter != nil
@@ -242,7 +242,7 @@ func (h *Handler) ClosestGadget(pos geometry.Point) Gadget {
 }
 
 // returns the closest enemy within the given area, pass nil for no filter
-func (h *Handler) ClosestEnemyWithinArea(a model.AttackPattern, filter func(t Enemy) bool) Enemy {
+func (h *Handler) ClosestEnemyWithinArea(a info.AttackPattern, filter func(t Enemy) bool) Enemy {
 	enemies := enemiesWithinAreaSorted(a, filter, false, h.enemies)
 	if enemies == nil {
 		return nil
@@ -251,7 +251,7 @@ func (h *Handler) ClosestEnemyWithinArea(a model.AttackPattern, filter func(t En
 }
 
 // returns the closest gadget within the given area, pass nil for no filter
-func (h *Handler) ClosestGadgetWithinArea(a model.AttackPattern, filter func(t Gadget) bool) Gadget {
+func (h *Handler) ClosestGadgetWithinArea(a info.AttackPattern, filter func(t Gadget) bool) Gadget {
 	gadgets := gadgetsWithinAreaSorted(a, filter, false, h.gadgets)
 	if gadgets == nil {
 		return nil
@@ -260,7 +260,7 @@ func (h *Handler) ClosestGadgetWithinArea(a model.AttackPattern, filter func(t G
 }
 
 // returns enemies within the given area, sorted from closest to furthest, pass nil for no filter
-func (h *Handler) ClosestEnemiesWithinArea(a model.AttackPattern, filter func(t Enemy) bool) []Enemy {
+func (h *Handler) ClosestEnemiesWithinArea(a info.AttackPattern, filter func(t Enemy) bool) []Enemy {
 	enemies := enemiesWithinAreaSorted(a, filter, false, h.enemies)
 	if enemies == nil {
 		return nil
@@ -274,7 +274,7 @@ func (h *Handler) ClosestEnemiesWithinArea(a model.AttackPattern, filter func(t 
 }
 
 // returns enemies within the given area, sorted from closest to furthest, pass nil for no filter
-func (h *Handler) ClosestGadgetsWithinArea(a model.AttackPattern, filter func(t Gadget) bool) []Gadget {
+func (h *Handler) ClosestGadgetsWithinArea(a info.AttackPattern, filter func(t Gadget) bool) []Gadget {
 	gadgets := gadgetsWithinAreaSorted(a, filter, false, h.gadgets)
 	if gadgets == nil {
 		return nil
