@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/internal/template/minazuki"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -21,7 +20,7 @@ type char struct {
 	*tmpl.Character
 	// field use for calculating oz damage
 	ozPos           geometry.Point
-	ozSnapshot      combat.AttackEvent
+	ozSnapshot      model.AttackEvent
 	ozSource        int  // keep tracks of source of oz aka resets
 	ozActive        bool // purely used for gscl conditional purposes
 	ozTickSrc       int  // used for oz recast attacks

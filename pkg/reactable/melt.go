@@ -2,12 +2,11 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
+func (r *Reactable) TryMelt(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}

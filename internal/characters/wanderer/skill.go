@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -38,7 +39,7 @@ func (c *char) skillActivate() action.Info {
 	c.Core.Tasks.Add(c.depleteSkydwellerPoints, 6)
 
 	// Initial Skill Damage
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Hanega: Song of the Wind",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -141,7 +142,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillDeactivate(), nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

@@ -3,7 +3,6 @@ package baizhu
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -59,7 +58,7 @@ func (c *char) a4() {
 	}
 	c.Core.Player.ActiveChar().AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBaseWithHitlag("baizhu-a4", 6*60),
-		Amount: func(ai combat.AttackInfo) (float64, bool) {
+		Amount: func(ai model.AttackInfo) (float64, bool) {
 			limitHP := c.MaxHP() / 1000.0
 			if limitHP > 50 {
 				limitHP = 50

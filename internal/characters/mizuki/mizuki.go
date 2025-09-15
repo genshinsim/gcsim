@@ -4,10 +4,10 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -18,8 +18,8 @@ type char struct {
 	*tmpl.Character
 	particleGenerationsRemaining    int
 	dreamDrifterExtensionsRemaining int
-	cloudAttack                     combat.AttackInfo
-	cloudSnap                       combat.Snapshot
+	cloudAttack                     model.AttackInfo
+	cloudSnap                       model.Snapshot
 	cloudSrc                        int
 	a4Buff                          []float64
 	c1EM                            float64

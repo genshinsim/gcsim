@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -14,7 +15,7 @@ func (c *char) a4(delay, src int, useOldSnapshot bool) {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spirit Blade: Chonghua's Layered Frost (A4)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -27,7 +28,7 @@ func (c *char) a4(delay, src int, useOldSnapshot bool) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	// need to snap both snapshot and skill area into the task closure
-	var snap combat.Snapshot
+	var snap model.Snapshot
 	if useOldSnapshot {
 		snap = c.a4Snap
 	} else {
@@ -41,7 +42,7 @@ func (c *char) a4(delay, src int, useOldSnapshot bool) {
 			return
 		}
 		enemy := c.Core.Combat.ClosestEnemyWithinArea(skillPattern, nil)
-		var ap combat.AttackPattern
+		var ap model.AttackPattern
 		if enemy != nil {
 			ap = combat.NewCircleHitOnTarget(enemy, nil, 3.5)
 		} else {
@@ -52,7 +53,7 @@ func (c *char) a4(delay, src int, useOldSnapshot bool) {
 }
 
 // Opponents hit by this blade will have their Cryo RES decreased by 10% for 8s.
-func (c *char) a4CB(a combat.AttackCB) {
+func (c *char) a4CB(a model.AttackCB) {
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return

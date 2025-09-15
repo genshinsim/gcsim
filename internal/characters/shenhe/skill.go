@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -57,7 +58,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Spring Spirit Summoning (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -102,9 +103,9 @@ func (c *char) skillPress() action.Info {
 	}
 }
 
-func (c *char) makePressParticleCB() combat.AttackCBFunc {
+func (c *char) makePressParticleCB() model.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -117,7 +118,7 @@ func (c *char) makePressParticleCB() combat.AttackCBFunc {
 }
 
 func (c *char) skillHold() action.Info {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spring Spirit Summoning (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -154,7 +155,7 @@ func (c *char) skillHold() action.Info {
 	}
 }
 
-func (c *char) holdParticleCB(a combat.AttackCB) {
+func (c *char) holdParticleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -176,7 +177,7 @@ func (c *char) skillPressBuff() {
 		char.SetTag(quillKey, 5)              // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 10*60),
-			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(a *model.AttackEvent, _ model.Target) ([]float64, bool) {
 				switch a.Info.AttackTag {
 				case attacks.AttackTagElementalArt:
 				case attacks.AttackTagElementalArtHold:
@@ -200,7 +201,7 @@ func (c *char) skillHoldBuff() {
 		char.SetTag(quillKey, 7)              // 5 quill on hold
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
-			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(a *model.AttackEvent, _ model.Target) ([]float64, bool) {
 				switch a.Info.AttackTag {
 				case attacks.AttackTagNormal:
 				case attacks.AttackTagExtra:
@@ -216,7 +217,7 @@ func (c *char) skillHoldBuff() {
 
 func (c *char) quillDamageMod() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		consumeStack := true
 		if atk.Info.Element != attributes.Cryo {
 			return false

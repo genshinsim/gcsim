@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -38,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val[attributes.DmgP] = burstDmgIncrease
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("luxurious-sea-lord", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
 				return val, true
 			}
@@ -49,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	tunaDmg := .75 + float64(r)*0.25
 	const icdKey = "sealord-icd"
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -63,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		char.AddStatus(icdKey, 900, true)
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Luxurious Sea-Lord Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
@@ -74,7 +75,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       tunaDmg,
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(model.Target)
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
 
 		return false

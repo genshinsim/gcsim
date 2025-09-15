@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames [][]int
@@ -105,7 +106,7 @@ func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
 	}, nil
 }
 func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Salon Solitaire: Ousia Bubble",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -160,7 +161,7 @@ func (c *char) summonSinger(delay int) {
 	}, delay)
 }
 
-func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackPattern, delay int) {
+func (c *char) queueSalonAttack(src int, ai model.AttackInfo, ap model.AttackPattern, delay int) {
 	// This implementation is to make attack be cancelled if the pets are desummoned to CA or new skill used
 	// TODO: Test if Chevalmarin or Usher projectile disappear on CA/Skill/Timing out, and if Crab body slam is cancelled by CA/Skill/Timing out
 	c.Core.Tasks.Add(func() {
@@ -171,7 +172,7 @@ func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackP
 		if !c.StatusIsActive(skillKey) {
 			return
 		}
-		var c4cb combat.AttackCBFunc
+		var c4cb model.AttackCBFunc
 		if c.Base.Cons >= 4 {
 			c4cb = c.c4cb
 		}
@@ -196,7 +197,7 @@ func (c *char) surintendanteChevalmarin(src, tick int) func() {
 		alliesWithDrainedHPCounter := c.consumeAlliesHealth(0.016)
 		damageMultiplier := 1 + 0.1*float64(alliesWithDrainedHPCounter)
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("%v: Surintendante Chevalmarin", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -231,7 +232,7 @@ func (c *char) gentilhommeUsher(src, tick int) func() {
 		alliesWithDrainedHPCounter := c.consumeAlliesHealth(0.024)
 		damageMultiplier := 1 + 0.1*float64(alliesWithDrainedHPCounter)
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("%v: Gentilhomme Usher", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -267,7 +268,7 @@ func (c *char) mademoiselleCrabaletta(src, tick int) func() {
 		alliesWithDrainedHPCounter := c.consumeAlliesHealth(0.036)
 		damageMultiplier := 1 + 0.1*float64(alliesWithDrainedHPCounter)
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("%v: Mademoiselle Crabaletta", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -315,7 +316,7 @@ func (c *char) singerOfManyWaters(src int) func() {
 	}
 }
 
-func (c *char) particleCB(ac combat.AttackCB) {
+func (c *char) particleCB(ac model.AttackCB) {
 	if ac.Target.Type() != targets.TargettableEnemy {
 		return
 	}

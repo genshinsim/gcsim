@@ -3,10 +3,10 @@ package yunjin
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,7 +25,7 @@ func (c *char) c2() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c2Key, 12*60),
-			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(ae *model.AttackEvent, _ model.Target) ([]float64, bool) {
 				if ae.Info.AttackTag == attacks.AttackTagNormal {
 					return m, true
 				}
@@ -56,7 +56,7 @@ func (c *char) c4() {
 			return false
 		}
 
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		if ae.Info.ActorIndex != c.Index {
 			return false
 		}

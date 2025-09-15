@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -52,7 +53,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -66,8 +67,8 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 // Helper function since this needs to be created both on skill use and burst use
-func (c *char) createSkillSnapshot() *combat.AttackEvent {
-	ai := combat.AttackInfo{
+func (c *char) createSkillSnapshot() *model.AttackEvent {
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bake-Kurage",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -79,7 +80,7 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	ae := combat.AttackEvent{
+	ae := model.AttackEvent{
 		Info:        ai,
 		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3}, 6),
 		SourceFrame: c.Core.F,
@@ -90,7 +91,7 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 }
 
 // Helper function that handles damage, healing, and particle components of every tick of her E
-func (c *char) skillTick(d *combat.AttackEvent) {
+func (c *char) skillTick(d *model.AttackEvent) {
 	// check if skill has burst bonus snapshot
 	// snapshot is between 1st and 2nd tick
 	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < c.skillLastUsed+100 {
@@ -132,7 +133,7 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 
 // Handles repeating skill damage ticks. Split into a separate function as you can only have 1 jellyfish on field at once
 // Skill snapshots, so inputs into the function are the originating snapshot
-func (c *char) skillTickTask(originalSnapshot *combat.AttackEvent, src int) func() {
+func (c *char) skillTickTask(originalSnapshot *model.AttackEvent, src int) func() {
 	return func() {
 		c.Core.Log.NewEvent("Skill Tick Debug", glog.LogCharacterEvent, c.Index).
 			Write("current dur", c.Core.Status.Duration("kokomiskill")).

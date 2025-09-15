@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -29,7 +30,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		travel = 10
 	}
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Troubleshooter Shot",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -79,7 +80,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -90,15 +91,15 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Electro, c.ParticleDelay)
 }
 
-func (c *char) afterSales() combat.AttackCBFunc {
+func (c *char) afterSales() model.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if done {
 			return
 		}
 		done = true
 
-		ae := combat.AttackInfo{
+		ae := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "After-Sales Service Round",
 			AttackTag:  attacks.AttackTagElementalArt,

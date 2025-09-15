@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -36,7 +37,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Status.Add(burstKey, 720+burstStartFrame)
 	// hook for buffs; active right away after cast
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fantastic Voyage",
 		AttackTag:  attacks.AttackTagElementalBurst,

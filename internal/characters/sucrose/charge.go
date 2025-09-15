@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -26,7 +27,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
@@ -45,7 +46,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		windup = 15
 	}
 
-	var c4cb combat.AttackCBFunc
+	var c4cb model.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		c4cb = c.makeC4Callback()
 	}

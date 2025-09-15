@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -44,7 +45,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// OnRemoved is sometimes called after the next action is executed. so we need to exit nightsoul here too
 	c.clearNightsoulCB(action.SkillState)
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Rush",
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -100,7 +101,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

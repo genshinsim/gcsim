@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillPressFrames [][]int
@@ -65,8 +66,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillHold(glide), nil
 }
 
-func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+func (c *char) makeParticleCB(count float64) model.AttackCBFunc {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -80,7 +81,7 @@ func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
 
 func (c *char) skillPress(glide int) action.Info {
 	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillPressRadius)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Chihayaburu",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -130,7 +131,7 @@ func (c *char) skillPress(glide int) action.Info {
 
 func (c *char) skillHold(glide int) action.Info {
 	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillHoldRadius)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Chihayaburu",
 		AttackTag:  attacks.AttackTagElementalArt,

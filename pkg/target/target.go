@@ -3,10 +3,10 @@ package target
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const MaxTeamSize = 4
@@ -17,7 +17,7 @@ type Target struct {
 	Hitbox          geometry.Circle
 	Tags            map[string]int
 	CollidableTypes [targets.TargettableTypeCount]bool
-	OnCollision     func(combat.Target)
+	OnCollision     func(model.Target)
 
 	Alive bool
 
@@ -44,7 +44,7 @@ func New(core *core.Core, p geometry.Point, r float64) *Target {
 
 func (t *Target) Collidable() bool                              { return t.OnCollision != nil }
 func (t *Target) CollidableWith(x targets.TargettableType) bool { return t.CollidableTypes[x] }
-func (t *Target) CollidedWith(x combat.Target) {
+func (t *Target) CollidedWith(x model.Target) {
 	if t.OnCollision != nil {
 		t.OnCollision(x)
 	}
@@ -83,7 +83,7 @@ func (t *Target) WillCollide(s geometry.Shape) bool {
 	}
 }
 
-func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
+func (t *Target) AttackWillLand(a model.AttackPattern) (bool, string) {
 	// shape shouldn't be nil; panic here
 	if a.Shape == nil {
 		panic("unexpected nil shape")
@@ -116,7 +116,7 @@ func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
 	}
 }
 
-func (t *Target) IsWithinArea(a combat.AttackPattern) bool {
+func (t *Target) IsWithinArea(a model.AttackPattern) bool {
 	return a.Shape.PointInShape(t.Pos())
 }
 

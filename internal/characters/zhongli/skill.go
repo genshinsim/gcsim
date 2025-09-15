@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillPressFrames []int
@@ -55,7 +56,7 @@ func (c *char) skillPress() action.Info {
 
 func (c *char) skillHold(createStele bool) action.Info {
 	// hold does dmg
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,

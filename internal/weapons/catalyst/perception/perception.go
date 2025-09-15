@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -20,8 +21,8 @@ func init() {
 
 type Weapon struct {
 	Index int
-	ai    combat.AttackInfo
-	snap  combat.Snapshot
+	ai    model.AttackInfo
+	snap  model.Snapshot
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -29,12 +30,12 @@ func (w *Weapon) Init() error      { return nil }
 
 const bounceKey = "eye-of-perception-bounce"
 
-func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) func(a combat.AttackCB) {
+func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) func(a model.AttackCB) {
 	if count == 4 {
 		return nil
 	}
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		// check target is an enemey
 		t, ok := a.Target.(*enemy.Enemy)
 		if !ok {
@@ -67,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	cd := (13 - r) * 60
 	dmg := 2.1 * float64(r) * 0.3
 
-	w.ai = combat.AttackInfo{
+	w.ai = model.AttackInfo{
 		ActorIndex: char.Index,
 		Abil:       "Eye of Preception Proc",
 		AttackTag:  attacks.AttackTagWeaponSkill,
@@ -80,7 +81,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}

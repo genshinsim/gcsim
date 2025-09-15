@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -89,7 +88,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 // Itto Geo infusion can't be overridden, so it must be a snapshot modification rather than a weapon infuse
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
 	ds := c.Character.Snapshot(ai)
 	if c.StatModIsActive(burstBuffKey) {
 		// apply infusion to attacks only

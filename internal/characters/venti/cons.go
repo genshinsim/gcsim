@@ -7,12 +7,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // C1:
 // Fires 2 additional arrows per Aimed Shot, each dealing 33% of the original arrow's DMG.
-func (c *char) c1(ai combat.AttackInfo, hitmark, travel int) {
+func (c *char) c1(ai model.AttackInfo, hitmark, travel int) {
 	ai.Abil += " (C1)"
 	ai.Mult /= 3.0
 	for i := 0; i < 2; i++ {
@@ -35,7 +36,7 @@ func (c *char) c1(ai combat.AttackInfo, hitmark, travel int) {
 // Skyward Sonnet decreases opponents' Anemo RES and Physical RES by 12% for 10s.
 // Opponents launched by Skyward Sonnet suffer an additional 12% Anemo RES and Physical RES decrease while airborne.
 // TODO: the airborne part isn't implemented
-func (c *char) c2(a combat.AttackCB) {
+func (c *char) c2(a model.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -81,8 +82,8 @@ func (c *char) c4() {
 // C6:
 // Targets who take DMG from Wind's Grand Ode have their Anemo RES decreased by 20%.
 // If an Elemental Absorption occurred, then their RES towards the corresponding Element is also decreased by 20%.
-func (c *char) c6(ele attributes.Element) func(a combat.AttackCB) {
-	return func(a combat.AttackCB) {
+func (c *char) c6(ele attributes.Element) func(a model.AttackCB) {
+	return func(a model.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return

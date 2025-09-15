@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -27,16 +28,16 @@ const (
 type snack struct {
 	*gadget.Gadget
 	char         *char
-	attackInfo   combat.AttackInfo
-	snapshot     combat.Snapshot
-	pattern      combat.AttackPattern
+	attackInfo   model.AttackInfo
+	snapshot     model.Snapshot
+	pattern      model.AttackPattern
 	allowPickupF int
 }
 
 func newSnack(c *char, pos geometry.Point) *snack {
 	p := &snack{
 		char: c,
-		attackInfo: combat.AttackInfo{
+		attackInfo: model.AttackInfo{
 			ActorIndex:   c.Index,
 			Abil:         snackDmgName,
 			AttackTag:    attacks.AttackTagElementalBurst,
@@ -65,7 +66,7 @@ func newSnack(c *char, pos geometry.Point) *snack {
 		p.explode()
 		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index)
 	}
-	p.Gadget.OnCollision = func(target combat.Target) {
+	p.Gadget.OnCollision = func(target model.Target) {
 		if _, ok := target.(*avatar.Player); !ok {
 			return
 		}
@@ -142,7 +143,7 @@ func (p *snack) explode() {
 	p.Core.QueueAttackWithSnap(p.attackInfo, p.snapshot, p.pattern, 0)
 }
 
-func (p *snack) HandleAttack(atk *combat.AttackEvent) float64 {
+func (p *snack) HandleAttack(atk *model.AttackEvent) float64 {
 	// only collisions with the player can affect this or if it expires
 	return 0
 }

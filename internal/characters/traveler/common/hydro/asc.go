@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const a1ICDKey = "sourcewater-droplet-icd"
@@ -14,12 +15,12 @@ const a1ICDKey = "sourcewater-droplet-icd"
 // After the Dewdrop fired by the Hold Mode of the Aquacrest Saber hits an opponent, a Sourcewater Droplet will be
 // generated near to the Traveler. If the Traveler picks it up, they will restore 7% HP.
 // 1 Droplet can be created this way every second, and each use of Aquacrest Saber can create 4 Droplets at most.
-func (c *Traveler) makeA1CB() combat.AttackCBFunc {
+func (c *Traveler) makeA1CB() model.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
 	count := 0
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if count >= 4 {
 			return
 		}

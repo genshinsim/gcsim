@@ -3,9 +3,9 @@ package thoma
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -42,7 +42,7 @@ func (c *char) genShield(src string, shieldamt float64, shouldStack bool) {
 		for _, char := range c.Core.Player.Chars() {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("thoma-c6", 360),
-				Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+				Amount: func(ae *model.AttackEvent, _ model.Target) ([]float64, bool) {
 					switch ae.Info.AttackTag {
 					case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
 						return c.c6buff, true

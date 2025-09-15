@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
+func (r *Reactable) TryBurning(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -73,8 +73,8 @@ func (r *Reactable) attachBurningFuel(dur, mult model.Durability) {
 	r.DecayRate[BurningFuel] = decayRate
 }
 
-func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
-	atk := combat.AttackInfo{
+func (r *Reactable) calcBurningDmg(a *model.AttackEvent) {
+	atk := model.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
 		Abil:             string(model.ReactionTypeBurning),

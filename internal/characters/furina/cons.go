@@ -2,10 +2,10 @@ package furina
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -34,7 +34,7 @@ func (c *char) c2() {
 	})
 }
 
-func (c *char) c4cb(a combat.AttackCB) {
+func (c *char) c4cb(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -58,7 +58,7 @@ func (c *char) c6BonusDMGNoExtra() float64 {
 	return scaleHP * c.MaxHP()
 }
 
-func (c *char) c6cb(a combat.AttackCB) {
+func (c *char) c6cb(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

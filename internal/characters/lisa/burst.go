@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -24,7 +25,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// first zap has no icd and hits everyone
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Rose (Initial)",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -40,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// duration is 15 seconds, tick every .5 sec
 	// 30 zaps once every 30 frame, starting at 119
-	ai = combat.AttackInfo{
+	ai = model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Rose (Tick)",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -52,7 +53,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	var snap combat.Snapshot
+	var snap model.Snapshot
 	c.Core.Tasks.Add(func() {
 		snap = c.Snapshot(&ai)
 	}, burstHitmark-1)

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -124,7 +125,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -178,7 +179,7 @@ func (c *char) surfingTick() {
 			return false
 		}
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Surfing Hit",
 			AttackTag:          attacks.AttackTagNone,
@@ -197,7 +198,7 @@ func (c *char) surfingTick() {
 	}, "mualani-surfing")
 }
 
-func (c *char) surfingCB(a combat.AttackCB) {
+func (c *char) surfingCB(a model.AttackCB) {
 	enemy, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return

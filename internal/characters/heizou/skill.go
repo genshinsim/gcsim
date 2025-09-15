@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillEndFrames []int
@@ -54,7 +55,7 @@ func (c *char) addDecStack() {
 func (c *char) skillRelease(delay int) action.Info {
 	c.Core.Tasks.Add(func() {
 		hitDelay := skillHitmark - skillCDStart
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Heartstopper Strike",
 			AttackTag:          attacks.AttackTagElementalArt,
@@ -83,7 +84,7 @@ func (c *char) skillRelease(delay int) action.Info {
 		}
 
 		done := false
-		skillCB := func(a combat.AttackCB) {
+		skillCB := func(a model.AttackCB) {
 			c.decStack = 0
 			if a.Target.Type() != targets.TargettableEnemy {
 				return
@@ -142,7 +143,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(), nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

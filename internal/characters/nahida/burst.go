@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -51,7 +52,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				if c.pyroCount > 0 {
 					c.AddAttackMod(character.AttackMod{
 						Base: modifier.NewBaseWithHitlag(burstKey, 60),
-						Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+						Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 							return c.pyroBurstBuff, atk.Info.Abil == "Tri-Karma Purification"
 						},
 					})

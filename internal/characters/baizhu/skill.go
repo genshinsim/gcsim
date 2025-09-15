@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -30,7 +31,7 @@ const (
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Universal Diagnosis",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -43,7 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	snap := c.Snapshot(&ai)
-	c.skillAtk = &combat.AttackEvent{
+	c.skillAtk = &model.AttackEvent{
 		Info:     ai,
 		Snapshot: snap,
 	}
@@ -71,11 +72,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) chain(src, count int) combat.AttackCBFunc {
+func (c *char) chain(src, count int) model.AttackCBFunc {
 	if count == 3 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		// on hit figure out the next target
 		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 10), nil)
 		if next == nil {
@@ -101,9 +102,9 @@ func (c *char) chain(src, count int) combat.AttackCBFunc {
 	}
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() model.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

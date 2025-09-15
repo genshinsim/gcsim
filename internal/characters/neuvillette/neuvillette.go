@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -29,7 +30,7 @@ type char struct {
 	a1BaseStackCount       int
 	a1Statuses             []NeuvA1Keys
 	a4Buff                 []float64
-	chargeAi               combat.AttackInfo
+	chargeAi               model.AttackInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

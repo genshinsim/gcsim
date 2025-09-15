@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 //nolint:unparam // all calls currently have y = 0 but that can change
@@ -22,7 +23,7 @@ func TestGadgetCollision(t *testing.T) {
 		typ:   targets.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
 		alive: true,
-		onCollision: func(Target) {
+		onCollision: func(model.Target) {
 			log.Printf("collision shouldn't happen with player!!")
 			t.FailNow()
 		},
@@ -34,7 +35,7 @@ func TestGadgetCollision(t *testing.T) {
 			typ:   targets.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
-			onCollision: func(Target) {
+			onCollision: func(model.Target) {
 				log.Printf("collision shouldn't happen with enemy!!")
 				t.FailNow()
 			},
@@ -54,7 +55,7 @@ func TestGadgetCollision(t *testing.T) {
 			shp:         newSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
-			onCollision: func(t Target) {
+			onCollision: func(t model.Target) {
 				log.Printf("Collided with %v, type: %v!\n", t, t.Type())
 				count++
 			},
@@ -79,7 +80,7 @@ func TestGadgetLimits(t *testing.T) {
 		typ:   targets.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
 		alive: true,
-		onCollision: func(Target) {
+		onCollision: func(model.Target) {
 			log.Printf("collision shouldn't happen with player!!")
 			t.FailNow()
 		},
@@ -91,7 +92,7 @@ func TestGadgetLimits(t *testing.T) {
 			typ:   targets.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
-			onCollision: func(Target) {
+			onCollision: func(model.Target) {
 				log.Printf("collision shouldn't happen with enemy!!")
 				t.FailNow()
 			},
@@ -161,7 +162,7 @@ func BenchmarkCollisionCheck(b *testing.B) {
 			shp:         newSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
-			onCollision: func(t Target) {
+			onCollision: func(t model.Target) {
 			},
 		}
 		c.AddGadget(v)
@@ -181,7 +182,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 		typ:   targets.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
 		alive: true,
-		onCollision: func(Target) {
+		onCollision: func(model.Target) {
 			log.Printf("collision shouldn't happen with player!!")
 			t.FailNow()
 		},
@@ -193,7 +194,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 			typ:   targets.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
-			onCollision: func(Target) {
+			onCollision: func(model.Target) {
 				log.Printf("collision shouldn't happen with enemy!!")
 				t.FailNow()
 			},
@@ -213,7 +214,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 			alive:       true,
 			collideWith: cw,
 		}
-		v.onCollision = func(t Target) {
+		v.onCollision = func(t model.Target) {
 			count++
 			// kill self
 			c.RemoveGadget(v.key)

@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -133,7 +134,7 @@ func (c *char) burstInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("furina-burst-damage-buff", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 				if !c.StatusIsActive(burstKey) {
 					return nil, false
 				}
@@ -155,7 +156,7 @@ func (c *char) burstInit() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Let the People Rejoice",
 		AttackTag:  attacks.AttackTagElementalBurst,

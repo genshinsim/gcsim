@@ -3,7 +3,6 @@ package beidou
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -18,7 +17,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstAtk *combat.AttackEvent
+	burstAtk *model.AttackEvent
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

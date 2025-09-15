@@ -3,9 +3,9 @@ package itto
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -60,7 +60,7 @@ func (c *char) a1Update(curSlash SlashType) {
 }
 
 // Arataki Kesagiri DMG is increased by 35% of Arataki Itto's DEF.
-func (c *char) a4(ai *combat.AttackInfo) {
+func (c *char) a4(ai *model.AttackInfo) {
 	if c.Base.Ascension < 4 {
 		return
 	}

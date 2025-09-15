@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -22,7 +23,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		Abil:       "Charge",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagExtra,
@@ -53,7 +54,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		)
 	}
 
-	charge := func(target combat.Target) {
+	charge := func(target model.Target) {
 		for j := 0; j < 3; j++ {
 			// queue up ca hits because target could move
 			c.Core.Tasks.Add(func() {

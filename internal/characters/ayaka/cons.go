@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -18,7 +19,7 @@ const (
 // Callback for Ayaka C1 that is attached to NA/CA hits
 // When Kamisato Ayaka's Normal or Charged Attacks deal Cryo DMG to opponents, it has a 50% chance of decreasing the CD of Kamisato Art: Hyouka by 0.3s.
 // This effect can occur once every 0.1s.
-func (c *char) c1(a combat.AttackCB) {
+func (c *char) c1(a model.AttackCB) {
 	if c.Base.Cons < 1 {
 		return
 	}
@@ -40,7 +41,7 @@ func (c *char) c1(a combat.AttackCB) {
 
 // Callback for Ayaka C4 that is attached to Burst hits
 // Opponents damaged by Kamisato Art: Soumetsu's Frostflake Seki no To will have their DEF decreased by 30% for 6s.
-func (c *char) c4(a combat.AttackCB) {
+func (c *char) c4(a model.AttackCB) {
 	if c.Base.Cons < 4 {
 		return
 	}
@@ -59,7 +60,7 @@ func (c *char) c4(a combat.AttackCB) {
 }
 
 // Callback for Ayaka C6 that is attached to CA hits
-func (c *char) c6(a combat.AttackCB) {
+func (c *char) c6(a model.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
@@ -87,7 +88,7 @@ func (c *char) c6AddBuff() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("ayaka-c6", -1),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, _ model.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}

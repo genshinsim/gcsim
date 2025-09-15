@@ -3,11 +3,11 @@ package xianyun
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -28,7 +28,7 @@ func (c *char) a1() {
 		mCR := make([]float64, attributes.EndStatType)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("xianyun-a1-buff", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagPlunge {
 					return nil, false
 				}
@@ -43,11 +43,11 @@ func (c *char) a1() {
 	}
 }
 
-func (c *char) a1cb() combat.AttackCBFunc {
+func (c *char) a1cb() model.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -98,7 +98,7 @@ func (c *char) a4() {
 	c.a4Ratio = 2.0
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		if ae.Info.AttackTag != attacks.AttackTagPlunge {
 			return false
 		}

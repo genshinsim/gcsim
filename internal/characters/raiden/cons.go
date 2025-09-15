@@ -3,9 +3,9 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -29,7 +29,7 @@ func (c *char) c4() {
 	}
 }
 
-func (c *char) c6(ac combat.AttackCB) {
+func (c *char) c6(ac model.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}

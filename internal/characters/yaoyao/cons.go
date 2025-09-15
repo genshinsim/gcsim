@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -36,7 +37,7 @@ func (c *char) c1() {
 	c.AddStatus(c1ICDkey, 5*60, false)
 }
 
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() model.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
@@ -44,7 +45,7 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 		return nil
 	}
 
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -73,7 +74,7 @@ func (c *char) c4() {
 }
 
 func (yg *yuegui) c6(target geometry.Point) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         yg.c.Index,
 		Abil:               "Mega Radish",
 		AttackTag:          attacks.AttackTagNone,

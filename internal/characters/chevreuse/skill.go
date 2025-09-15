@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -56,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Short-Range Rapid Interdiction Fire",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -104,11 +105,11 @@ func (c *char) skillHold(p map[string]int) action.Info {
 	hitmark := hold + skillHoldHitmark
 	cdStart := hold + skillHoldCDStart
 
-	var ai combat.AttackInfo
-	var ap combat.AttackPattern
+	var ai model.AttackInfo
+	var ap model.AttackPattern
 
 	if c.overChargedBall {
-		ai = combat.AttackInfo{
+		ai = model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Short-Range Rapid Interdiction Fire [Overcharged]",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -126,7 +127,7 @@ func (c *char) skillHold(p map[string]int) action.Info {
 		c.overChargedBall = false
 		c.Core.Tasks.Add(c.a4, cdStart)
 	} else {
-		ai = combat.AttackInfo{
+		ai = model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Short-Range Rapid Interdiction Fire [Hold]",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -170,15 +171,15 @@ func (c *char) skillHold(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) arkhe(delay int) combat.AttackCBFunc {
+func (c *char) arkhe(delay int) model.AttackCBFunc {
 	// triggers on hitting anything, not just enemy
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if c.StatusIsActive(arkheICDKey) {
 			return
 		}
 		c.AddStatus(arkheICDKey, 10*60, true)
 
-		aiArkhe := combat.AttackInfo{
+		aiArkhe := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Surging Blade (" + c.Base.Key.Pretty() + ")",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -234,7 +235,7 @@ func (c *char) startSkillHealing() {
 	c.Core.Tasks.Add(c.startSkillHealing, skillHealInterval)
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

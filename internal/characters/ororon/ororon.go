@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -21,7 +20,7 @@ type char struct {
 	nightsoulState     *nightsoul.State
 	particlesGenerated bool
 	burstSrc           int
-	burstArea          combat.AttackPattern
+	burstArea          model.AttackPattern
 	c2Bonus            []float64
 	c6stacks           *stacks.MultipleRefreshNoRemove
 	c6bonus            []float64

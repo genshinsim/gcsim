@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -26,7 +27,7 @@ func init() {
 // Note that his CAs share an ICD with his NAs when he is under the effects of his burst
 // TODO: No information available on whether regular CAs follow a similar pattern
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge",
 		AttackTag:          attacks.AttackTagExtra,

@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillPressFrames []int
@@ -28,7 +29,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Skyward Sonnett",
 		AttackTag:    attacks.AttackTagElementalArt,
@@ -78,9 +79,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return act, nil
 }
 
-func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
+func (c *char) makeParticleCB(count float64) model.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

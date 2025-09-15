@@ -74,9 +74,9 @@ func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 }
 
 //nolint:unparam // dur is always 25 atm but that might change
-func makeAOEAttack(ele attributes.Element, dur model.Durability) *combat.AttackEvent {
-	return &combat.AttackEvent{
-		Info: combat.AttackInfo{
+func makeAOEAttack(ele attributes.Element, dur model.Durability) *model.AttackEvent {
+	return &model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
@@ -84,9 +84,9 @@ func makeAOEAttack(ele attributes.Element, dur model.Durability) *combat.AttackE
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur model.Durability, trg targets.TargetKey) *combat.AttackEvent {
-	return &combat.AttackEvent{
-		Info: combat.AttackInfo{
+func makeSTAttack(ele attributes.Element, dur model.Durability, trg targets.TargetKey) *model.AttackEvent {
+	return &model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
@@ -99,12 +99,12 @@ type testTarget struct {
 	*target.Target
 	src  int
 	typ  targets.TargettableType
-	last combat.AttackEvent
+	last model.AttackEvent
 }
 
 func (target *testTarget) Type() targets.TargettableType { return target.typ }
 
-func (target *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
+func (target *testTarget) HandleAttack(atk *model.AttackEvent) float64 {
 	target.Attack(atk, nil)
 	// delay damage event to end of the frame
 	target.Core.Combat.Tasks.Add(func() {
@@ -115,7 +115,7 @@ func (target *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 1
 }
 
-func (target *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (target *testTarget) Attack(atk *model.AttackEvent, evt glog.Event) (float64, bool) {
 	target.last = *atk
 	target.ShatterCheck(atk)
 	if atk.Info.Durability > 0 {
@@ -125,7 +125,7 @@ func (target *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float
 	return 0, false
 }
 
-func (target *testTarget) applyDamage(atk *combat.AttackEvent) {
+func (target *testTarget) applyDamage(atk *model.AttackEvent) {
 	if !atk.Reacted {
 		target.Reactable.AttachOrRefill(atk)
 	}
@@ -192,8 +192,8 @@ func TestTick(t *testing.T) {
 	trg.src = 1
 
 	// test electro
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -220,26 +220,26 @@ func TestTick(t *testing.T) {
 	// test multiple aura
 	trg.Durability[Electro] = 0 // reset from previous test
 	trg.DecayRate[Electro] = 0
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
@@ -253,8 +253,8 @@ func TestTick(t *testing.T) {
 	}
 
 	// test refilling
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -268,8 +268,8 @@ func TestTick(t *testing.T) {
 	life := int((left + 40) / decay)
 	// log.Println(decay, left, life)
 
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 50,
 		},

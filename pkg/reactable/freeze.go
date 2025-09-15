@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
+func (r *Reactable) TryFreeze(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -43,7 +43,7 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) PoiseDMGCheck(a *combat.AttackEvent) bool {
+func (r *Reactable) PoiseDMGCheck(a *model.AttackEvent) bool {
 	if r.Durability[Frozen] < ZeroDur {
 		return false
 	}
@@ -56,7 +56,7 @@ func (r *Reactable) PoiseDMGCheck(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
+func (r *Reactable) ShatterCheck(a *model.AttackEvent) bool {
 	if r.Durability[Frozen] < ZeroDur {
 		return false
 	}
@@ -73,7 +73,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	if !(r.shatterGCD != -1 && r.core.F < r.shatterGCD) {
 		r.shatterGCD = r.core.F + 0.2*60
 		// trigger shatter attack
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:       a.Info.ActorIndex,
 			DamageSrc:        r.self.Key(),
 			Abil:             string(model.ReactionTypeShatter),
@@ -116,7 +116,7 @@ func (r *Reactable) checkFreeze() {
 		r.Durability[Frozen] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
 		// trigger another attack here, purely for the purpose of breaking bubbles >.>
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:  0,
 			DamageSrc:   r.self.Key(),
 			Abil:        "Freeze Broken",

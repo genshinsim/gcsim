@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -58,7 +59,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	})
 
 	// trigger 0 damage attack; matters because this breaks freeze
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Paramita (0 dmg)",
 		AttackTag:  attacks.AttackTagNone,
@@ -79,7 +80,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -98,7 +99,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay) // TODO: this used to be 80
 }
 
-func (c *char) applyBB(a combat.AttackCB) {
+func (c *char) applyBB(a model.AttackCB) {
 	trg, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -125,7 +126,7 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 			Write("src", src)
 
 		// queue up one damage instance
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Blood Blossom",
 			AttackTag:  attacks.AttackTagElementalArt,

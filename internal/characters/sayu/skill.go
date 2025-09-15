@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -71,7 +72,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(), nil
 }
 
-func (c *char) kickParticleCB(a combat.AttackCB) {
+func (c *char) kickParticleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -82,7 +83,7 @@ func (c *char) kickParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle("sayu-kick", 2, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) rollParticleCB(a combat.AttackCB) {
+func (c *char) rollParticleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -97,7 +98,7 @@ func (c *char) skillPress() action.Info {
 	c.c2Bonus = 0.033
 
 	// Fuufuu Windwheel DMG
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fuufuu Windwheel (DoT Press)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
@@ -117,7 +118,7 @@ func (c *char) skillPress() action.Info {
 	)
 
 	// Fuufuu Whirlwind Kick Press DMG
-	ai = combat.AttackInfo{
+	ai = model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Press)",
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -174,7 +175,7 @@ func (c *char) skillShortHold() action.Info {
 	}, 18)
 
 	// Fuufuu Whirlwind Kick Hold DMG
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -234,7 +235,7 @@ func (c *char) skillHold(duration int) action.Info {
 	}
 
 	// Fuufuu Whirlwind Kick Hold DMG
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -268,8 +269,8 @@ func (c *char) skillHold(duration int) action.Info {
 }
 
 // TODO: is this helper needed?
-func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
-	ai := combat.AttackInfo{
+func (c *char) createSkillHoldSnapshot() *model.AttackEvent {
+	ai := model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Windwheel (DoT Hold)",
 		AttackTag:        attacks.AttackTagElementalArtHold,
@@ -285,7 +286,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	}
 	snap := c.Snapshot(&ai)
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
-	ae := combat.AttackEvent{
+	ae := model.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
@@ -324,7 +325,7 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 func (c *char) rollAbsorb() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -345,7 +346,7 @@ func (c *char) rollAbsorb() {
 		// DoT always has ElementalArtHold tag
 		case attacks.AttackTagElementalArtHold:
 			// DoT Elemental DMG
-			ai := combat.AttackInfo{
+			ai := model.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Fuufuu Windwheel Elemental (Elemental DoT Hold)",
 				AttackTag:  attacks.AttackTagElementalArtHold,
@@ -360,7 +361,7 @@ func (c *char) rollAbsorb() {
 		// Kick always has ElementalArt tag
 		case attacks.AttackTagElementalArt:
 			// Kick Elemental DMG
-			ai := combat.AttackInfo{
+			ai := model.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Fuufuu Whirlwind Elemental (Elemental Kick Hold)",
 				AttackTag:  attacks.AttackTagElementalArt,

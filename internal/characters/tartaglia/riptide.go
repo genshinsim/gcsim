@@ -9,11 +9,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // While aiming, the power of Hydro will accumulate on the arrowhead.
 // A arrow fully charged with the torrent will deal Hydro DMG and apply the Riptide status.
-func (c *char) aimedApplyRiptide(a combat.AttackCB) {
+func (c *char) aimedApplyRiptide(a model.AttackCB) {
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -28,7 +29,7 @@ func (c *char) aimedApplyRiptide(a combat.AttackCB) {
 }
 
 // Swiftly fires a Hydro-imbued magic arrow, dealing AoE Hydro DMG and applying the Riptide status.
-func (c *char) rangedBurstApplyRiptide(a combat.AttackCB) {
+func (c *char) rangedBurstApplyRiptide(a model.AttackCB) {
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -81,7 +82,7 @@ func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 
 // Riptide Flash: A fully-charged Aimed Shot that hits an opponent affected
 // by Riptide deals consecutive bouts of AoE DMG. Can occur once every 0.7s.
-func (c *char) rtFlashCallback(a combat.AttackCB) {
+func (c *char) rtFlashCallback(a model.AttackCB) {
 	// make sure it's actually an enemey
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
@@ -108,7 +109,7 @@ func (c *char) rtFlashCallback(a combat.AttackCB) {
 
 func (c *char) rtFlashTick(t *enemy.Enemy) {
 	// queue damage
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Flash",
 		AttackTag:  attacks.AttackTagNormal,
@@ -138,7 +139,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 
 // Hitting an opponent affected by Riptide with a melee attack unleashes a Riptide Slash that deals AoE Hydro DMG.
 // DMG dealt in this way is considered Elemental Skill DMG, and can only occur once every 1.5s.
-func (c *char) rtSlashCallback(a combat.AttackCB) {
+func (c *char) rtSlashCallback(a model.AttackCB) {
 	// make sure it's actually an enemey
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
@@ -165,7 +166,7 @@ func (c *char) rtSlashCallback(a combat.AttackCB) {
 
 func (c *char) rtSlashTick(t *enemy.Enemy) {
 	// trigger attack
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Slash",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -192,7 +193,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 
 // When the obliterating waters hit an opponent affected by Riptide, it clears their Riptide status
 // and triggers a Hydro Explosion that deals AoE Hydro DMG. DMG dealt in this way is considered Elemental Burst DMG.
-func (c *char) rtBlastCallback(a combat.AttackCB) {
+func (c *char) rtBlastCallback(a model.AttackCB) {
 	// make sure it's actually an enemey
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
@@ -207,7 +208,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		return
 	}
 	// queue damage
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Blast",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -249,7 +250,7 @@ func (c *char) onDefeatTargets() {
 			return false
 		}
 		c.Core.Tasks.Add(func() {
-			ai := combat.AttackInfo{
+			ai := model.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Riptide Burst",
 				AttackTag:  attacks.AttackTagNormal,

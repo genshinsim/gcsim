@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
+func (r *Reactable) TryAddEC(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -51,7 +51,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 
 	// at this point ec is refereshed so we need to trigger a reaction
 	// and change ownership
-	atk := combat.AttackInfo{
+	atk := model.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
 		Abil:             string(model.ReactionTypeElectroCharged),
@@ -85,8 +85,8 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 		// subscribe to wane ticks
 		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			// target should be first, then snapshot
-			n := args[0].(combat.Target)
-			a := args[1].(*combat.AttackEvent)
+			n := args[0].(model.Target)
+			a := args[1].(*model.AttackEvent)
 			dmg := args[2].(float64)
 			//TODO: there's no target index
 			if n.Key() != r.self.Key() {

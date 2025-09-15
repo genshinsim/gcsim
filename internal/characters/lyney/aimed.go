@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -73,7 +74,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
@@ -127,7 +128,7 @@ func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	propAI := combat.AttackInfo{
+	propAI := model.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Fully-Charged Aimed Shot (Prop Arrow)",
 		AttackTag:            attacks.AttackTagExtra,
@@ -221,7 +222,7 @@ func (c *char) skillAligned(pos geometry.Point) func() {
 		}
 		c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
-		propAlignedAI := combat.AttackInfo{
+		propAlignedAI := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 			AttackTag:  attacks.AttackTagExtra,

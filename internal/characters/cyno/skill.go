@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -44,7 +45,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillB()
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Secret Rite: Chasmic Soulfarer",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -80,7 +81,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillB() (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             skillBName,
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -163,8 +164,8 @@ func (c *char) triggerSkillCD() {
 	c.SetCD(action.ActionLowPlunge, skillBCD)
 }
 
-func (c *char) makeParticleCB(burst bool) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+func (c *char) makeParticleCB(burst bool) model.AttackCBFunc {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

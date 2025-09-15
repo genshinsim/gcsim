@@ -14,6 +14,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/model"
 
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -106,7 +107,7 @@ func TestSingleTarget(t *testing.T) {
 	for i := 0; i < len(trgs); i++ {
 		count = 0
 
-		c.QueueAttackEvent(&combat.AttackEvent{
+		c.QueueAttackEvent(&model.AttackEvent{
 			Pattern: combat.NewSingleTargetHit(trgs[i].Key()),
 		}, 0)
 		advanceCoreFrame(c)
@@ -140,7 +141,7 @@ func TestSingleTarget(t *testing.T) {
 // 	for i := 0; i < len(trgs)-1; i++ {
 // 		count = 0
 
-// 		c.QueueAttackEvent(&combat.AttackEvent{
+// 		c.QueueAttackEvent(&model.AttackEvent{
 // 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 // 		}, 0)
 // 		advanceCoreFrame(c)
@@ -155,7 +156,7 @@ type testGadget struct {
 	*gadget.Gadget
 }
 
-func (t *testGadget) HandleAttack(atk *combat.AttackEvent) float64 {
+func (t *testGadget) HandleAttack(atk *model.AttackEvent) float64 {
 	t.Core.Events.Emit(event.OnGadgetHit, t, atk)
 	return 0
 }
@@ -185,7 +186,7 @@ func TestDefaultHitGadget(t *testing.T) {
 	for i := 0; i < len(trgs); i++ {
 		count = 0
 
-		c.QueueAttackEvent(&combat.AttackEvent{
+		c.QueueAttackEvent(&model.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}, 0)
 		advanceCoreFrame(c)
@@ -220,7 +221,7 @@ func TestSkipTargets(t *testing.T) {
 
 	for i := 0; i < len(trgs); i++ {
 		count = 0
-		ae := &combat.AttackEvent{
+		ae := &model.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}
 		ae.Pattern.SkipTargets[targets.TargettableEnemy] = true
@@ -235,7 +236,7 @@ func TestSkipTargets(t *testing.T) {
 
 	for i := 0; i < len(trgs); i++ {
 		count = 0
-		ae := &combat.AttackEvent{
+		ae := &model.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}
 		ae.Pattern.SkipTargets[targets.TargettablePlayer] = false
@@ -304,7 +305,7 @@ func circleAttackCollision(attackRadius float64, attackOffset geometry.Point, fa
 	trgs[1].SetPos(geometry.Point{X: 7, Y: 4})
 	player.SetDirection(trgs[1].Pos())
 
-	c.QueueAttackEvent(&combat.AttackEvent{
+	c.QueueAttackEvent(&model.AttackEvent{
 		Pattern: combat.NewCircleHitOnTargetFanAngle(player, attackOffset, attackRadius, fanAngle),
 	}, 0)
 	advanceCoreFrame(c)
@@ -356,7 +357,7 @@ func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset ge
 	trgs[1].SetPos(geometry.Point{X: 7, Y: 4})
 	player.SetDirection(trgs[1].Pos())
 
-	c.QueueAttackEvent(&combat.AttackEvent{
+	c.QueueAttackEvent(&model.AttackEvent{
 		Pattern: combat.NewBoxHitOnTarget(player, attackOffset, attackWidth, attackHeight),
 	}, 0)
 	advanceCoreFrame(c)

@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -40,7 +41,7 @@ func init() {
 // These effects will be cleared once Sangonomiya Kokomi leaves the field.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Snapshot timing is not yet known. Assume it's dynamic for now
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Nereid's Ascension",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -111,9 +112,9 @@ func (c *char) burstDmgBonus(a attacks.AttackTag) float64 {
 // When her Normal and Charged Attacks hit opponents,
 // Kokomi will restore HP for all nearby party members,
 // and the amount restored is based on her Max HP.
-func (c *char) makeBurstHealCB() combat.AttackCBFunc {
+func (c *char) makeBurstHealCB() model.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

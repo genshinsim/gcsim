@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // start a new orbital or extended if already active; duration is length
@@ -52,7 +53,7 @@ func (c *char) orbitalTickTask(src int) func() {
 			return
 		}
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Xingqiu Orbital",
 			AttackTag:  attacks.AttackTagNone,

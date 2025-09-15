@@ -1,9 +1,9 @@
 package qiqi
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -20,7 +20,7 @@ func (c *char) a1() {
 		if c.StatusIsActive(skillBuffKey) {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 
 		// Active char is the only one under the effects of Qiqi skill
 		active := c.Core.Player.ActiveChar()

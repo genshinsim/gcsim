@@ -21,8 +21,8 @@ type char struct {
 	*tmpl.Character
 
 	// skill
-	skillAttackInfo combat.AttackInfo
-	skillSnapshot   combat.Snapshot
+	skillAttackInfo model.AttackInfo
+	skillSnapshot   model.Snapshot
 
 	particleGenerated bool
 	lastSummonSrc     int

@@ -2,12 +2,11 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
+func (r *Reactable) TryAggravate(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -26,7 +25,7 @@ func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
+func (r *Reactable) TrySpread(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -45,7 +44,7 @@ func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
+func (r *Reactable) TryQuicken(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}

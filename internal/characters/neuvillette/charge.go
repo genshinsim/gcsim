@@ -13,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -93,7 +94,7 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		orbs := c.legalEvalFindDroplets()
 		chargeLegalEvalLeft -= dropletLegalEvalReduction[orbs]
 
-		c.chargeAi = combat.AttackInfo{
+		c.chargeAi = model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       chargeJudgementName,
 			AttackTag:  attacks.AttackTagExtra,
@@ -160,7 +161,7 @@ func (c *char) chargeAttackShort(windup int) (action.Info, error) {
 		}
 		if c.Core.Player.Stam > 50*r {
 			c.Core.Player.UseStam(50*r, action.ActionCharge)
-			ai := combat.AttackInfo{
+			ai := model.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Charge Attack",
 				AttackTag:  attacks.AttackTagExtra,

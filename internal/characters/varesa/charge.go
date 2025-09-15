@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -52,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.fieryChargeAttack(), nil
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charged Attack",
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -93,7 +94,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) fieryChargeAttack() action.Info {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Fiery Passion Charged Attack",
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

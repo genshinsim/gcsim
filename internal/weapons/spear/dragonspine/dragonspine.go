@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -41,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if !ok {
 			return false
 		}
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -56,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		if c.Rand.Float64() < prob {
 			char.AddStatus(icdKey, icd, true)
-			ai := combat.AttackInfo{
+			ai := model.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Dragonspine Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,

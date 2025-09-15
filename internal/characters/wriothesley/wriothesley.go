@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -50,7 +49,7 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	// apply skill multiplier

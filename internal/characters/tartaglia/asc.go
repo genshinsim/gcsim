@@ -1,8 +1,8 @@
 package tartaglia
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // Extends Riptide duration by 8s.
@@ -15,11 +15,11 @@ func (c *char) a1() {
 
 // When Tartaglia is in Foul Legacy: Raging Tide's Melee Stance, on dealing a CRIT hit,
 // Normal and Charged Attacks apply the Riptide status effect to opponents.
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() model.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.IsCrit {
 			t, ok := a.Target.(*enemy.Enemy)
 			if !ok {

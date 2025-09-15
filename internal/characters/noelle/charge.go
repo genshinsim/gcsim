@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const chargeHitNum = 1
@@ -166,7 +167,7 @@ func (c *char) queueChargeAttack(hitIndex int) {
 		burstIndex = 1
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagNormalAttack,

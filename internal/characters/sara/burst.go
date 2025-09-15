@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -34,7 +35,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// No ICD should not functionally matter as this only hits once
 
 	// titanbreaker
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Tengu Juurai: Titanbreaker",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -46,9 +47,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstMain[c.TalentLvlBurst()],
 	}
 
-	var c1cb combat.AttackCBFunc
+	var c1cb model.AttackCBFunc
 	if c.Base.Cons >= 1 {
-		c1cb = func(a combat.AttackCB) {
+		c1cb = func(a model.AttackCB) {
 			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}

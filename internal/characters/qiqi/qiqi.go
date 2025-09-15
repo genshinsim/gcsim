@@ -3,7 +3,6 @@ package qiqi
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -22,7 +21,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	skillLastUsed     int
-	skillHealSnapshot combat.Snapshot // Required as both on hit procs and continuous healing need to use this
+	skillHealSnapshot model.Snapshot // Required as both on hit procs and continuous healing need to use this
 }
 
 // TODO: Not implemented - C6 (revival mechanic, not suitable for sim)
@@ -62,7 +61,7 @@ func (c *char) healDynamic(healScalePer, healScaleFlat []float64, talentLevel in
 }
 
 // Helper function to calculate healing amount from a snapshot instance
-func (c *char) healSnapshot(d *combat.Snapshot, healScalePer, healScaleFlat []float64, talentLevel int) float64 {
+func (c *char) healSnapshot(d *model.Snapshot, healScalePer, healScaleFlat []float64, talentLevel int) float64 {
 	atk := d.Stats.TotalATK()
 	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal

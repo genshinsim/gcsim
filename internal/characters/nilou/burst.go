@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -27,7 +28,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dance of Abzendegi: Distant Dreams, Listening Spring",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -58,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) LingeringAeon(a combat.AttackCB) {
+func (c *char) LingeringAeon(a model.AttackCB) {
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -66,7 +67,7 @@ func (c *char) LingeringAeon(a combat.AttackCB) {
 	t.AddStatus(lingeringAeonStatus, burstAeonHitmark, false)
 
 	t.QueueEnemyTask(func() {
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Lingering Aeon",
 			AttackTag:  attacks.AttackTagElementalBurst,

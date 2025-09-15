@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -39,7 +40,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.absorbCheckLocation = combat.NewBoxHitOnTarget(player, geometry.Point{Y: 4}, 2.5, 2.5)
 
 	c.Core.Status.Add("sucroseburst", duration)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Forbidden Creation-Isomer 75/Type II",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -55,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	//TODO: does sucrose burst snapshot?
 	snap := c.Snapshot(&ai)
 	//TODO: does burst absorb snapshot
-	aiAbs := combat.AttackInfo{
+	aiAbs := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Forbidden Creation-Isomer 75/Type II (Absorb)",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -68,7 +69,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	snapAbs := c.Snapshot(&aiAbs)
 
-	cb := func(a combat.AttackCB) {
+	cb := func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

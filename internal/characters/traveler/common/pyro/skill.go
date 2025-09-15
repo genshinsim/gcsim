@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames [][]int
@@ -108,7 +109,7 @@ func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
 		c.enterNightsoul(c.Core.F)
 	}, 48)
 	c.SetCDWithDelay(action.ActionSkill, 18*60, holdCdStart)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Flowfire Blade (Hold DMG)",
 		AttackTag:      attacks.AttackTagElementalArt,
@@ -167,7 +168,7 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Blazing Threshold DMG",
 			AttackTag:      attacks.AttackTagElementalArt,
@@ -191,7 +192,7 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 func (c *Traveler) scorchingThresholdOnDamage() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		_, ok := args[0].(*enemy.Enemy)
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		dmg := args[2].(float64)
 		if !ok {
 			return false
@@ -212,7 +213,7 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 			return false
 		}
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Scorching Threshold",
 			AttackTag:      attacks.AttackTagElementalArt,
@@ -236,7 +237,7 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 	}, "travelerpyro-scorching-threshold")
 }
 
-func (c *Traveler) particleCB(a combat.AttackCB) {
+func (c *Traveler) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

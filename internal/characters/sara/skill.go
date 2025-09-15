@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,7 +42,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// C2 handling
 	if c.Base.Cons >= 2 {
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tengu Juurai: Ambush C2",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -68,7 +69,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -81,7 +82,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // Handles attack boost from Sara's skills
 // Checks for the onfield character at the delay frame, then applies buff to that character
-func (c *char) attackBuff(a combat.AttackPattern, delay int) {
+func (c *char) attackBuff(a model.AttackPattern, delay int) {
 	c.Core.Tasks.Add(func() {
 		if collision, _ := c.Core.Combat.Player().AttackWillLand(a); !collision {
 			return

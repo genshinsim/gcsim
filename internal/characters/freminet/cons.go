@@ -4,11 +4,11 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,7 +30,7 @@ func (c *char) c1() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1Key, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			if !strings.HasPrefix(atk.Info.Abil, pressureBaseName) {
 				return nil, false
 			}
@@ -65,7 +65,7 @@ func (c *char) c4c6() {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}

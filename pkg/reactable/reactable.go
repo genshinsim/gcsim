@@ -8,7 +8,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -101,15 +100,15 @@ type Reactable struct {
 	Durability [EndModifier]model.Durability
 	DecayRate  [EndModifier]model.Durability
 	// Source     []int //source frame of the aura
-	self combat.Target
+	self model.Target
 	core *core.Core
 	// ec specific
-	ecAtk      combat.AttackInfo // index of owner of next ec ticks
-	ecSnapshot combat.Snapshot
+	ecAtk      model.AttackInfo // index of owner of next ec ticks
+	ecSnapshot model.Snapshot
 	ecTickSrc  int
 	// burning specific
-	burningAtk      combat.AttackInfo
-	burningSnapshot combat.Snapshot
+	burningAtk      model.AttackInfo
+	burningSnapshot model.Snapshot
 	burningTickSrc  int
 	// freeze specific
 	FreezeResist float64
@@ -133,7 +132,7 @@ const frzDecayCap model.Durability = 10.0 / 60.0
 
 const ZeroDur model.Durability = 0.00000000001
 
-func (r *Reactable) Init(self combat.Target, c *core.Core) *Reactable {
+func (r *Reactable) Init(self model.Target, c *core.Core) *Reactable {
 	r.self = self
 	r.core = c
 	r.DecayRate[Frozen] = frzDecayCap
@@ -170,7 +169,7 @@ func (r *Reactable) AuraCount() int {
 	return count
 }
 
-func (r *Reactable) React(a *combat.AttackEvent) {
+func (r *Reactable) React(a *model.AttackEvent) {
 	// TODO: double check order of reactions
 	switch a.Info.Element {
 	case attributes.Electro:
@@ -222,7 +221,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 // AttachOrRefill is called after the damage event if the attack has not reacted with anything
 // and will either create a new modifier if non exist, or update according to the rules of
 // each modifier
-func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
+func (r *Reactable) AttachOrRefill(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -423,7 +422,7 @@ func (r *Reactable) Tick() {
 	}
 }
 
-func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em float64) (float64, combat.Snapshot) {
+func calcReactionDmg(char *character.CharWrapper, atk model.AttackInfo, em float64) (float64, model.Snapshot) {
 	lvl := char.Base.Level - 1
 	if lvl > 89 {
 		lvl = 89
@@ -431,14 +430,14 @@ func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em floa
 	if lvl < 0 {
 		lvl = 0
 	}
-	snap := combat.Snapshot{
+	snap := model.Snapshot{
 		CharLvl: char.Base.Level,
 	}
 	snap.Stats[attributes.EM] = em
 	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl], snap
 }
 
-func (r *Reactable) calcCatalyzeDmg(atk combat.AttackInfo, em float64) float64 {
+func (r *Reactable) calcCatalyzeDmg(atk model.AttackInfo, em float64) float64 {
 	char := r.core.Player.ByIndex(atk.ActorIndex)
 	lvl := char.Base.Level - 1
 	if lvl > 89 {

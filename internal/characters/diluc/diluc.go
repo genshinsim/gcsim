@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -72,7 +71,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 }
 
 // pyro infuse can't be overwritter
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatusIsActive(burstBuffKey) {

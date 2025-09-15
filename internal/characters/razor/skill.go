@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -77,7 +78,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) SkillPress(burstActive int) action.Info {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Claw and Thunder (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -92,12 +93,12 @@ func (c *char) SkillPress(burstActive int) action.Info {
 		CanBeDefenseHalted: true,
 	}
 
-	var particleCB combat.AttackCBFunc
+	var particleCB model.AttackCBFunc
 	if !c.StatusIsActive(burstBuffKey) {
 		particleCB = c.pressParticleCB
 	}
 
-	var c4cb combat.AttackCBFunc
+	var c4cb model.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		c4cb = c.c4cb
 	}
@@ -132,7 +133,7 @@ func (c *char) SkillPress(burstActive int) action.Info {
 	}
 }
 
-func (c *char) pressParticleCB(a combat.AttackCB) {
+func (c *char) pressParticleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -144,7 +145,7 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) SkillHold(burstActive int) action.Info {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Claw and Thunder (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -157,7 +158,7 @@ func (c *char) SkillHold(burstActive int) action.Info {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	var particleCB combat.AttackCBFunc
+	var particleCB model.AttackCBFunc
 	if !c.StatusIsActive(burstBuffKey) {
 		particleCB = c.holdParticleCB
 	}
@@ -182,7 +183,7 @@ func (c *char) SkillHold(burstActive int) action.Info {
 	}
 }
 
-func (c *char) holdParticleCB(a combat.AttackCB) {
+func (c *char) holdParticleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -193,8 +194,8 @@ func (c *char) holdParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Electro, c.ParticleDelay)
 }
 
-func (c *char) addSigil(done bool) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+func (c *char) addSigil(done bool) model.AttackCBFunc {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

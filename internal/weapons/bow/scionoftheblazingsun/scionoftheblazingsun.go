@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -44,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = 0.21 + 0.07*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("scion", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
 				return nil, false
@@ -65,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if !ok {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -79,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Sunfire Arrow",
 			AttackTag:  attacks.AttackTagWeaponSkill,
@@ -98,7 +99,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	return w, nil
 }
 
-func (w *Weapon) applyDebuff(a combat.AttackCB) {
+func (w *Weapon) applyDebuff(a model.AttackCB) {
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return

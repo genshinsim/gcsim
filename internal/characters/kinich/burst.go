@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -39,7 +40,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Hail to the Almighty Dragonlord (Skill DMG)",
 		AttackTag:      attacks.AttackTagElementalBurst,
@@ -78,7 +79,7 @@ func (c *char) QueueLaser(step, src int) func() {
 			c.DeleteStatus(burstKey)
 			return
 		}
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Hail to the Almighty Dragonlord (Dragon Breath DMG)",
 			AttackTag:      attacks.AttackTagElementalBurst,

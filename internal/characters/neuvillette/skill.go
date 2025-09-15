@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -40,7 +41,7 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.chargeEarlyCancelled = false
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "O Tears, I Shall Repay",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -62,7 +63,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.particleCB,
 	)
 
-	aiThorn := combat.AttackInfo{
+	aiThorn := model.AttackInfo{
 		// TODO: Apply Pneuma
 		ActorIndex:         c.Index,
 		Abil:               "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
@@ -100,7 +101,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -112,9 +113,9 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Hydro, c.ParticleDelay)
 }
 
-func (c *char) makeDropletCB() combat.AttackCBFunc {
+func (c *char) makeDropletCB() model.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

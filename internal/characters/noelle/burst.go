@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -32,7 +33,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
-	aiSnapshot := combat.AttackInfo{
+	aiSnapshot := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Sweeping Time (Stat Snapshot)",
 	}
@@ -83,7 +84,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Write("atk added", c.burstBuff[attributes.ATK]).
 		Write("mult", mult)
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sweeping Time (Burst)",
 		AttackTag:          attacks.AttackTagElementalBurst,

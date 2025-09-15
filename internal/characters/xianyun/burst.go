@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -58,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 func (c *char) burstCast() {
 	// initial heal
 	c.QueueCharTask(func() {
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Stars Gather at Dusk (Initial)",
 			AttackTag:  attacks.AttackTagElementalBurst,
@@ -106,7 +107,7 @@ func (c *char) burstCast() {
 func (c *char) burstPlungeDoTTrigger() {
 	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...interface{}) bool {
 		// ApplyAttack occurs only once per attack, so we do not need to add an ICD status
-		atk := args[0].(*combat.AttackEvent)
+		atk := args[0].(*model.AttackEvent)
 
 		// TODO: fragile
 		// needs to be like this because of raiden q plunge being burst dmg not plunge dmg
@@ -139,7 +140,7 @@ func (c *char) burstPlungeDoTTrigger() {
 		c.AddStatus(lossKey, lossIcd, false)
 
 		aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstDoTRadius)
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Starwicker",
 			AttackTag:  attacks.AttackTagElementalBurst,

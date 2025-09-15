@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const normalHitNum = 5
@@ -50,7 +51,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
@@ -65,7 +66,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ai.Mult = mult[c.TalentLvlAttack()]
 
-		var ap combat.AttackPattern
+		var ap model.AttackPattern
 		switch c.NormalCounter {
 		case 0, 2, 4:
 			ap = combat.NewBoxHitOnTarget(

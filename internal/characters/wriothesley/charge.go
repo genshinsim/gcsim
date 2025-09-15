@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -24,7 +25,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Charge Attack",
 		AttackTag:        attacks.AttackTagExtra,
@@ -41,9 +42,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	// TODO: snapshot timing
 	snap := c.Snapshot(&ai)
-	var ap combat.AttackPattern
-	var rebukeCB combat.AttackCBFunc
-	var particleCB combat.AttackCBFunc
+	var ap model.AttackPattern
+	var rebukeCB model.AttackCBFunc
+	var particleCB model.AttackCBFunc
 	var c6Attack bool
 	if c.Base.Ascension >= 1 {
 		if c.Base.Cons >= 1 {

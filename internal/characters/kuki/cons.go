@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -20,8 +21,8 @@ func (c *char) c4() {
 	//TODO: idk if the damage is instant or not
 	const c4IcdKey = "kuki-c4-icd"
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		trg := args[0].(combat.Target)
+		ae := args[1].(*model.AttackEvent)
+		trg := args[0].(model.Target)
 		// ignore if C4 on icd
 		if c.StatusIsActive(c4IcdKey) {
 			return false
@@ -40,7 +41,7 @@ func (c *char) c4() {
 		c.AddStatus(c4IcdKey, 300, true) // 5s * 60
 
 		//TODO:frames for this and ICD tag
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Thundergrass Mark",
 			AttackTag:  attacks.AttackTagElementalArt,

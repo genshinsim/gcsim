@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const normalHitNum = 3
@@ -79,7 +80,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		return c.sharkBite(p), nil
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
@@ -125,7 +126,7 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 	c.QueueCharTask(func() {
 		c.momentumStacks = 0
 		mult := bite[c.TalentLvlSkill()] + momentumBonus[c.TalentLvlSkill()]*float64(momentumStacks) + c.c1()
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           fmt.Sprintf("Sharky's Bite (%v momentum)", momentumStacks),
 			AttackTag:      attacks.AttackTagNormal,
@@ -194,7 +195,7 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) removeEnemyMarkCB(a combat.AttackCB) {
+func (c *char) removeEnemyMarkCB(a model.AttackCB) {
 	enemy, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return

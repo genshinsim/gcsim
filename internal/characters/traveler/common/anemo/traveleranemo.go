@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -16,10 +15,10 @@ type Traveler struct {
 	*tmpl.Character
 	qAbsorb              attributes.Element
 	qICDTag              attacks.ICDTag
-	qAbsorbCheckLocation combat.AttackPattern
+	qAbsorbCheckLocation model.AttackPattern
 	eAbsorb              attributes.Element
 	eICDTag              attacks.ICDTag
-	eAbsorbCheckLocation combat.AttackPattern
+	eAbsorbCheckLocation model.AttackPattern
 	gender               int
 }
 

@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -41,7 +42,7 @@ func init() {
 // dealing AoE Anemo DMG and summoning a Mini Baku.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Activation dmg
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         burstActivationDmgName,
 		AttackTag:    attacks.AttackTagElementalBurst,

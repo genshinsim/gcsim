@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -22,16 +23,16 @@ func TestBurgeon(t *testing.T) {
 	}
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		ae := args[1].(*combat.AttackEvent)
+		trg := args[0].(model.Target)
+		ae := args[1].(*model.AttackEvent)
 		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "burgeon" {
 			count++
 		}
 		return false
 	}, "burgeon")
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
@@ -39,8 +40,8 @@ func TestBurgeon(t *testing.T) {
 	}, 0)
 	advanceCoreFrame(c)
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
@@ -58,8 +59,8 @@ func TestBurgeon(t *testing.T) {
 		t.Errorf("expecting target to not contain any remaining hydro or dendro aura, got %v", trg[0].ActiveAuraString())
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
@@ -84,8 +85,8 @@ func TestECBurgeon(t *testing.T) {
 
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		ae := args[1].(*combat.AttackEvent)
+		trg := args[0].(model.Target)
+		ae := args[1].(*model.AttackEvent)
 		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "burgeon" {
 			count++
 		}
@@ -93,16 +94,16 @@ func TestECBurgeon(t *testing.T) {
 	}, "burgeon")
 
 	// create 2 seeds with ec
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -113,8 +114,8 @@ func TestECBurgeon(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
@@ -129,8 +130,8 @@ func TestECBurgeon(t *testing.T) {
 		t.Errorf("expected 2 bloom gadgets, got %v", c.Combat.GadgetCount())
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},

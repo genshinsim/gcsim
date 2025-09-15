@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -65,7 +66,7 @@ func (c *char) burstPunchFunc(src int) func() {
 		if c.Core.Player.Active() != c.Index {
 			return
 		}
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Flame-Mane's Fist",
 			AttackTag:  attacks.AttackTagElementalBurst,
@@ -106,7 +107,7 @@ func (c *char) burstKickFunc(src int) func() {
 		if c.Core.Player.Active() != c.Index {
 			return
 		}
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Incineration Drive",
 			AttackTag:  attacks.AttackTagElementalBurst,

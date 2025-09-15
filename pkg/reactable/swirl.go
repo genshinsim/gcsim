@@ -19,7 +19,7 @@ func calcSwirlAtkDurability(consumed, src model.Durability) model.Durability {
 func (r *Reactable) queueSwirl(rt model.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur model.Durability, charIndex int) {
 	// swirl triggers two attacks; one self with no gauge
 	// and one aoe with gauge
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       charIndex,
 		DamageSrc:        r.self.Key(),
 		Abil:             string(rt),
@@ -57,7 +57,7 @@ func (r *Reactable) queueSwirl(rt model.ReactionType, ele attributes.Element, ta
 	)
 }
 
-func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
+func (r *Reactable) TrySwirlElectro(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -95,7 +95,7 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
+func (r *Reactable) TrySwirlHydro(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -125,7 +125,7 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
+func (r *Reactable) TrySwirlCryo(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -155,7 +155,7 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
+func (r *Reactable) TrySwirlPyro(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -186,7 +186,7 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
+func (r *Reactable) TrySwirlFrozen(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}

@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -111,7 +112,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index).
 		Write("rtexpiry", c.Core.F+30*60)
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Foul Legacy: Raging Tide",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -166,7 +167,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

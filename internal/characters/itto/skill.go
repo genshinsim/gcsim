@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -63,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	// deal damage when created
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Masatsu Zetsugi: Akaushi Burst!",
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -85,7 +86,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Attack
 	// Ushi callback to create construct
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(a model.AttackCB) {
 		if done {
 			return
 		}
@@ -129,7 +130,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

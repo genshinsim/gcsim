@@ -6,12 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // C1:
 // Increases the pulling speed of Gale Blade after holding for more than 1s, and increases the DMG dealt by 40%.
-func (c *char) c1(snap *combat.Snapshot) {
+func (c *char) c1(snap *model.Snapshot) {
 	// add 40% dmg
 	snap.Stats[attributes.DmgP] += .4
 	c.Core.Log.NewEvent("jean c1 adding 40% dmg", glog.LogCharacterEvent, c.Index).

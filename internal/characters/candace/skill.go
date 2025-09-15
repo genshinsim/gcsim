@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -47,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		windup = 55
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Heron's Sanctum (E)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -62,7 +63,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 	}
 
-	var ap combat.AttackPattern
+	var ap model.AttackPattern
 	var particleCount float64
 	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
@@ -91,7 +92,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ap,
 		hitmark,
 		hitmark,
-		func(_ combat.AttackCB) {
+		func(_ model.AttackCB) {
 			if c.Base.Cons >= 2 {
 				c.c2()
 			}
@@ -125,8 +126,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB(particleCount float64) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+func (c *char) makeParticleCB(particleCount float64) model.AttackCBFunc {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

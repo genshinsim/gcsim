@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -47,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillRecast(), nil
 	}
 	// always trigger electro no ICD on initial summon
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Oz (Summon)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -93,7 +94,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -138,7 +139,7 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 		c.AddStatus(ozActiveKey, dur, false)
 		// queue up oz removal at the end of the duration for gcsl conditional
 		c.Core.Tasks.Add(c.removeOz(c.Core.F), dur)
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Oz (%v)", src),
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -153,7 +154,7 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 		c.ozPos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 1.5}, player.Direction())
 
 		snap := c.Snapshot(&ai)
-		c.ozSnapshot = combat.AttackEvent{
+		c.ozSnapshot = model.AttackEvent{
 			Info:        ai,
 			Snapshot:    snap,
 			SourceFrame: c.Core.F,

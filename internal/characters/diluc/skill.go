@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -67,7 +68,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		m[attributes.DmgP] = 0.3
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("diluc-c6-dmg", 360),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
@@ -102,7 +103,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// times out after 4 seconds of not using
 	// every hit applies pyro
 	// apply attack speed
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Searing Onslaught %v", c.eCounter),
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -165,7 +166,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

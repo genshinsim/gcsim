@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,7 +42,7 @@ func init() {
 // - The Whirlwind Pulse will also apply Prayerful Wind's Gift to all nearby
 // characters when it is unleashed, granting them Anemo DMG Bonus.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "The Wind's Secret Ways (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -141,11 +142,11 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 	}
 }
 
-func applyBurstShredCb(a combat.AttackCB) {
+func applyBurstShredCb(a model.AttackCB) {
 	applyBurstShred(a.Target)
 }
 
-func applyBurstShred(trg combat.Target) {
+func applyBurstShred(trg model.Target) {
 	t, ok := trg.(*enemy.Enemy)
 	if !ok {
 		return

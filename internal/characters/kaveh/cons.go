@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -42,7 +43,7 @@ func (c *char) c2() {
 func (c *char) c4() {
 	c.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("kaveh-c4", -1),
-		Amount: func(ai combat.AttackInfo) (float64, bool) {
+		Amount: func(ai model.AttackInfo) (float64, bool) {
 			if ai.AttackTag == attacks.AttackTagBloom {
 				return 0.6, false
 			}
@@ -53,7 +54,7 @@ func (c *char) c4() {
 
 func (c *char) c6() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
@@ -76,7 +77,7 @@ func (c *char) c6() {
 
 		c.AddStatus(c6ICDKey, 180, false)
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			Abil:             "Pairidaeza's Dreams (C6)",
 			ActorIndex:       c.Index,
 			AttackTag:        attacks.AttackTagNone,

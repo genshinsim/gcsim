@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -20,7 +21,7 @@ func (c *char) c1() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("nilou-c1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			if atk.Info.Abil != "Luminous Illusion" {
 				return nil, false
 			}
@@ -34,7 +35,7 @@ func (c *char) c1() {
 // You need to have unlocked the “Court of Dancing Petals” Talent.
 func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		dmg := args[2].(float64)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
@@ -76,7 +77,7 @@ func (c *char) c4() {
 	m[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("nilou-c4", 8*60),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
@@ -85,7 +86,7 @@ func (c *char) c4() {
 	})
 }
 
-func (c *char) c4cb() combat.AttackCBFunc {
+func (c *char) c4cb() model.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
@@ -94,7 +95,7 @@ func (c *char) c4cb() combat.AttackCBFunc {
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

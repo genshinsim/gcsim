@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -67,7 +68,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		}
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
@@ -89,11 +90,11 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 
 	var a action.Info
-	var skillCb func(a combat.AttackCB)
+	var skillCb func(a model.AttackCB)
 	if skillActive && hold == attacks.AimParamLv1 {
 		ai.Abil += " (Hurricane Arrow)"
 		done := false
-		skillCb = func(a combat.AttackCB) {
+		skillCb = func(a model.AttackCB) {
 			if done {
 				return
 			}

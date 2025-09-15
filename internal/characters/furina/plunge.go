@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var highPlungeFrames []int
@@ -70,7 +71,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -84,7 +85,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	}
 
 	// TODO: Check if C6 can expire during plunge
-	var c6cb combat.AttackCBFunc
+	var c6cb model.AttackCBFunc
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 		ai.Element = attributes.Hydro
 		ai.IgnoreInfusion = true
@@ -131,7 +132,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -145,7 +146,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 
 	// TODO: Check if C6 can expire during plunge
-	var c6cb combat.AttackCBFunc
+	var c6cb model.AttackCBFunc
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 		ai.Element = attributes.Hydro
 		ai.IgnoreInfusion = true
@@ -172,7 +173,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,

@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -48,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		})
 	}, burstHitmark)
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Fang",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -80,14 +81,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
+func (c *char) wolfBurst(normalCounter int) func(model.AttackCB) {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if done {
 			return
 		}
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("The Wolf Within %v", normalCounter),
 			AttackTag:  attacks.AttackTagElementalBurst,

@@ -3,10 +3,10 @@ package chongyun
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -14,11 +14,11 @@ const c4ICDKey = "chongyun-c4-icd"
 
 // Chongyun regenerates 1 Energy every time he hits an opponent affected by Cryo.
 // This effect can only occur once every 2s.
-func (c *char) makeC4Callback() combat.AttackCBFunc {
+func (c *char) makeC4Callback() model.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -45,7 +45,7 @@ func (c *char) c6() {
 		m[attributes.DmgP] = 0.15
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("chongyun-c6", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false
 				}

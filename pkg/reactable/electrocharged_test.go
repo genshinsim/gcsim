@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func TestEC(t *testing.T) {
@@ -18,7 +18,7 @@ func TestEC(t *testing.T) {
 
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		if ae, ok := args[1].(*combat.AttackEvent); ok {
+		if ae, ok := args[1].(*model.AttackEvent); ok {
 			if ae.Info.Abil == "electrocharged" {
 				count++
 			}

@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -44,11 +45,11 @@ const c2ICD = "cyno-c2-icd"
 // When Cyno's Normal Attacks hit opponents, his Electro DMG Bonus will
 // increase by 10% for 4s. This effect can be triggered once every 0.1s. Max 5
 // stacks.
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() model.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -86,7 +87,7 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 func (c *char) c4() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	restore := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
@@ -136,11 +137,11 @@ func (c *char) c6Init() {
 // "Day of the Jackal" lasts for 8s. Max 8 stacks. It will be canceled once Pactsworn Pathclearer ends.
 // A maximum of 1 Duststalker Bolt can be unleashed this way every 0.4s.
 // You must first unlock the Passive Talent "Featherfall Judgment."
-func (c *char) makeC6CB() combat.AttackCBFunc {
+func (c *char) makeC6CB() model.AttackCBFunc {
 	if c.Base.Cons < 6 || c.c6Stacks == 0 || !c.StatusIsActive(c6Key) {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -157,7 +158,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		c.c6Stacks--
 
 		// technically should use ICDGroupCynoC6, but it's just reskinned standard ICD
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:   c.Index,
 			Abil:         "Raiment: Just Scales (C6)",
 			AttackTag:    attacks.AttackTagElementalArtHold,

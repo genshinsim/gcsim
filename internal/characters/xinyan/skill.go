@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -29,7 +30,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sweeping Fervor",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -49,7 +50,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	defFactor := snap.Stats.TotalDEF()
 
 	hitOpponents := 0
-	cb := func(_ combat.AttackCB) {
+	cb := func(_ model.AttackCB) {
 		hitOpponents++
 		c.QueueCharTask(func() {
 			if hitOpponents >= c.shieldLevel3Requirement && c.shieldLevel < 3 {
@@ -86,7 +87,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -122,8 +123,8 @@ func (c *char) shieldDot(src int) func() {
 	}
 }
 
-func (c *char) getAttackInfoShieldDoT() combat.AttackInfo {
-	return combat.AttackInfo{
+func (c *char) getAttackInfoShieldDoT() model.AttackInfo {
+	return model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Sweeping Fervor (DoT)",
 		AttackTag:  attacks.AttackTagElementalArt,

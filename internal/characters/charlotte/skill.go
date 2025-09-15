@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -64,7 +65,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Framing: Freezing Point Composition",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -110,7 +111,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		hold = 809
 	}
 	hitmark := hold + skillHoldHitmark
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Framing: Freezing Point Composition (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -144,21 +145,21 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) skillPressParticleCB(a combat.AttackCB) {
+func (c *char) skillPressParticleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), skillPressParticleCount, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) skillHoldParticleCB(a combat.AttackCB) {
+func (c *char) skillHoldParticleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), skillHoldParticleCount, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) skillPressMarkTargets(a combat.AttackCB) {
+func (c *char) skillPressMarkTargets(a model.AttackCB) {
 	if c.markCount == 5 {
 		return
 	}
@@ -180,7 +181,7 @@ func (c *char) skillPressMarkTargets(a combat.AttackCB) {
 	t.QueueEnemyTask(c.skillPressMark(c.Core.F, t), 1.5*60)
 }
 
-func (c *char) skillHoldMarkTargets(a combat.AttackCB) {
+func (c *char) skillHoldMarkTargets(a model.AttackCB) {
 	if c.markCount == 5 {
 		return
 	}
@@ -210,7 +211,7 @@ func (c *char) skillPressMark(src int, t *enemy.Enemy) func() {
 		if !t.StatusIsActive(skillPressMarkKey) {
 			return
 		}
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Snappy Silhouette Mark",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -234,7 +235,7 @@ func (c *char) skillHoldMark(src int, t *enemy.Enemy) func() {
 		if !t.StatusIsActive(skillHoldMarkKey) {
 			return
 		}
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Focused Impression Mark",
 			AttackTag:  attacks.AttackTagElementalArt,

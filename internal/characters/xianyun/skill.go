@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillLeapFrames [][]int
@@ -83,7 +84,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// This should only hit enemies once at most
 	// During each Cloud Transmogrification state Xianyun enters, Skyladder may be used up to 3 times and only 1 instance of Skyladder DMG can be dealt to any one opponent.
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Skyladder",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -134,12 +135,12 @@ func (c *char) cooldownReduce(src int) func() {
 	}
 }
 
-func (c *char) particleCB() func(combat.AttackCB) {
+func (c *char) particleCB() func(model.AttackCB) {
 	// Particles are not produced if the skill was from c6
 	if c.skillWasC6 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

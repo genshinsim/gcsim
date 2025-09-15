@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const particleICDKey = "zhongli-particle-icd"
@@ -15,7 +16,7 @@ const particleICDKey = "zhongli-particle-icd"
 func (c *char) newStele(dur int) {
 	flat := c.a4Skill()
 	// deal damage when created
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Initial)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -57,7 +58,7 @@ func (c *char) newStele(dur int) {
 		Write("next_tick", c.Core.F+120)
 
 	// Snapshot buffs for resonance ticks
-	aiSnap := combat.AttackInfo{
+	aiSnap := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Tick)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -71,7 +72,7 @@ func (c *char) newStele(dur int) {
 		FlatDmg:    flat,
 	}
 	snap := c.Snapshot(&aiSnap)
-	c.steleSnapshot = combat.AttackEvent{
+	c.steleSnapshot = model.AttackEvent{
 		Info:        aiSnap,
 		Snapshot:    snap,
 		SourceFrame: c.Core.F,
@@ -137,8 +138,8 @@ func (c *char) resonance(src int) func() {
 	}
 }
 
-func (c *char) particleCB() combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+func (c *char) particleCB() model.AttackCBFunc {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

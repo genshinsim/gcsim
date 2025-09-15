@@ -18,7 +18,7 @@ type BountifulCore struct {
 	*gadget.Gadget
 }
 
-func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *BountifulCore {
+func newBountifulCore(c *core.Core, p geometry.Point, a *model.AttackEvent) *BountifulCore {
 	b := &BountifulCore{
 		srcFrame: c.F,
 	}
@@ -29,7 +29,7 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *Bo
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
 		c.Tasks.Add(func() {
-			ai, snap := reactable.NewBloomAttack(char, b, func(atk *combat.AttackInfo) {
+			ai, snap := reactable.NewBloomAttack(char, b, func(atk *model.AttackInfo) {
 				// atk.Abil += " (bountiful core)"
 				// FIXME: some external code only match against AttackTagBloom. fix A4 if you uncomment this
 				// atk.AttackTag = attacks.AttackTagBountifulCore
@@ -58,13 +58,13 @@ func (b *BountifulCore) Tick() {
 	b.Gadget.Tick()
 }
 
-func (b *BountifulCore) HandleAttack(atk *combat.AttackEvent) float64 {
+func (b *BountifulCore) HandleAttack(atk *model.AttackEvent) float64 {
 	b.Core.Events.Emit(event.OnGadgetHit, b, atk)
 	return 0
 }
-func (b *BountifulCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (b *BountifulCore) SetDirection(trg geometry.Point)                        {}
-func (b *BountifulCore) SetDirectionToClosestEnemy()                            {}
+func (b *BountifulCore) Attack(*model.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (b *BountifulCore) SetDirection(trg geometry.Point)                       {}
+func (b *BountifulCore) SetDirectionToClosestEnemy()                           {}
 func (b *BountifulCore) CalcTempDirection(trg geometry.Point) geometry.Point {
 	return geometry.DefaultDirection()
 }

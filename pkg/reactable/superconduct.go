@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
+func (r *Reactable) TrySuperconduct(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -40,7 +40,7 @@ func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) bool {
+func (r *Reactable) TryFrozenSuperconduct(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -66,7 +66,7 @@ func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) bool {
 	return false
 }
 
-func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
+func (r *Reactable) queueSuperconduct(a *model.AttackEvent) {
 	r.core.Events.Emit(event.OnSuperconduct, r.self, a)
 
 	// 0.1s gcd on superconduct attack
@@ -76,7 +76,7 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	r.superconductGCD = r.core.F + 0.1*60
 
 	// superconduct attack
-	atk := combat.AttackInfo{
+	atk := model.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
 		Abil:             string(model.ReactionTypeSuperconduct),

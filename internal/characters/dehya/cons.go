@@ -3,12 +3,12 @@ package dehya
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -52,7 +52,7 @@ func (c *char) c2() {
 	val[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("dehya-sanctum-dot-c2", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			if atk.Info.Abil != skillDoTAbil || !c.hasC2DamageBuff {
 				return nil, false
 			}
@@ -84,11 +84,11 @@ func (c *char) c2() {
 const c4Key = "dehya-c4"
 const c4ICDKey = "dehya-c4-icd"
 
-func (c *char) c4CB() combat.AttackCBFunc {
+func (c *char) c4CB() model.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -121,7 +121,7 @@ func (c *char) c6() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("dehya-c6", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
@@ -134,12 +134,12 @@ func (c *char) c6() {
 
 const c6ICDKey = "dehya-c6-icd"
 
-func (c *char) c6CB() combat.AttackCBFunc {
+func (c *char) c6CB() model.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
 
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

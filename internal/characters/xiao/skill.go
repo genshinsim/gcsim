@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -29,7 +30,7 @@ const a4BuffKey = "xiao-a4"
 // Additionally implements A4
 // Using Lemniscatic Wind Cycling increases the DMG of subsequent uses of Lemniscatic Wind Cycling by 15%. This effect lasts for 7s and has a maximum of 3 stacks. Gaining a new stack refreshes the duration of this effect.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lemniscatic Wind Cycling",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -42,7 +43,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	// Cannot create energy during burst uptime
-	var particleCB combat.AttackCBFunc
+	var particleCB model.AttackCBFunc
 	if !c.StatusIsActive(burstBuffKey) {
 		particleCB = c.makeParticleCB()
 	}
@@ -82,9 +83,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() model.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

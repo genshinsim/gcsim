@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -52,7 +53,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}, 420+burstHitmark)
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Musou Shinsetsu",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -93,7 +94,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstRestorefunc(a combat.AttackCB) {
+func (c *char) burstRestorefunc(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

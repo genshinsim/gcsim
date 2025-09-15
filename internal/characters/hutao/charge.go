@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -38,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	// check for particles
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
 		AttackTag:          attacks.AttackTagExtra,
@@ -77,7 +78,7 @@ func (c *char) ppChargeAttack() action.Info {
 	c.ExtendStatus(paramitaBuff, 1.8*60)
 
 	//TODO: currently assuming snapshot is on cast since it's a bullet and nothing implemented re "pp slide"
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
 		AttackTag:          attacks.AttackTagExtra,

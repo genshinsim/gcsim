@@ -20,28 +20,28 @@ type CrystallizeShield struct {
 	emBonus float64
 }
 
-func (r *Reactable) TryCrystallizeElectro(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizeElectro(a *model.AttackEvent) bool {
 	if r.Durability[Electro] > ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Electro, model.ReactionTypeCrystallizeElectro, event.OnCrystallizeElectro)
 	}
 	return false
 }
 
-func (r *Reactable) TryCrystallizeHydro(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizeHydro(a *model.AttackEvent) bool {
 	if r.Durability[Hydro] > ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Hydro, model.ReactionTypeCrystallizeHydro, event.OnCrystallizeHydro)
 	}
 	return false
 }
 
-func (r *Reactable) TryCrystallizeCryo(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizeCryo(a *model.AttackEvent) bool {
 	if r.Durability[Cryo] > ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Cryo, model.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
-func (r *Reactable) TryCrystallizePyro(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizePyro(a *model.AttackEvent) bool {
 	if r.Durability[Pyro] > ZeroDur || r.Durability[Burning] > ZeroDur {
 		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, model.ReactionTypeCrystallizePyro, event.OnCrystallizePyro)
 		r.burningCheck()
@@ -50,14 +50,14 @@ func (r *Reactable) TryCrystallizePyro(a *combat.AttackEvent) bool {
 	return false
 }
 
-func (r *Reactable) TryCrystallizeFrozen(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizeFrozen(a *model.AttackEvent) bool {
 	if r.Durability[Frozen] > ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Frozen, model.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
-func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt model.ReactionType, evt event.Event) bool {
+func (r *Reactable) tryCrystallizeWithEle(a *model.AttackEvent, ele attributes.Element, rt model.ReactionType, evt event.Event) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -223,7 +223,7 @@ func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt model.Re
 	// delay shard spawn
 	r.core.Tasks.Add(func() {
 		// grab current snapshot for shield
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: char.Index,
 			DamageSrc:  r.self.Key(),
 			Abil:       string(rt),
@@ -300,13 +300,13 @@ func (cs *CrystallizeShard) AddShieldKillShard() bool {
 	return true
 }
 
-func (cs *CrystallizeShard) HandleAttack(atk *combat.AttackEvent) float64 {
+func (cs *CrystallizeShard) HandleAttack(atk *model.AttackEvent) float64 {
 	cs.Core.Events.Emit(event.OnGadgetHit, cs, atk)
 	return 0
 }
-func (cs *CrystallizeShard) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (cs *CrystallizeShard) SetDirection(trg geometry.Point)                        {}
-func (cs *CrystallizeShard) SetDirectionToClosestEnemy()                            {}
+func (cs *CrystallizeShard) Attack(*model.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (cs *CrystallizeShard) SetDirection(trg geometry.Point)                       {}
+func (cs *CrystallizeShard) SetDirectionToClosestEnemy()                           {}
 func (cs *CrystallizeShard) CalcTempDirection(trg geometry.Point) geometry.Point {
 	return geometry.DefaultDirection()
 }

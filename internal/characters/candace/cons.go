@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -32,7 +33,7 @@ func (c *char) c2() {
 // every 2.3s and is considered Elemental Burst DMG.
 func (c *char) c6() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
@@ -56,7 +57,7 @@ func (c *char) c6() {
 			return false
 		}
 		c.AddStatus(c6ICDKey, 138, true)
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "The Overflow (C6)",
 			AttackTag:          attacks.AttackTagElementalBurst,

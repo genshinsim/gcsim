@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -24,7 +25,7 @@ type DefMod struct {
 }
 
 type Enemy interface {
-	Target
+	model.Target
 	// hp related
 	MaxHP() float64
 	HP() float64
@@ -47,7 +48,7 @@ type Enemy interface {
 	StatusExpiry(key string) int
 }
 
-func (h *Handler) Enemy(i int) Target {
+func (h *Handler) Enemy(i int) model.Target {
 	if i < 0 || i > len(h.enemies) {
 		return nil
 	}
@@ -71,16 +72,16 @@ func (h *Handler) SetEnemyPos(i int, p geometry.Point) bool {
 
 func (h *Handler) KillEnemy(i int) {
 	h.enemies[i].Kill()
-	h.Events.Emit(event.OnTargetDied, h.enemies[i], &AttackEvent{}) // TODO: it's fine?
+	h.Events.Emit(event.OnTargetDied, h.enemies[i], &model.AttackEvent{}) // TODO: it's fine?
 	h.Log.NewEvent("enemy dead", glog.LogSimEvent, -1).Write("index", i)
 }
 
-func (h *Handler) AddEnemy(t Target) {
+func (h *Handler) AddEnemy(t model.Target) {
 	h.enemies = append(h.enemies, t)
 	t.SetKey(h.nextkey())
 }
 
-func (h *Handler) Enemies() []Target {
+func (h *Handler) Enemies() []model.Target {
 	return h.enemies
 }
 
@@ -88,7 +89,7 @@ func (h *Handler) EnemyCount() int {
 	return len(h.enemies)
 }
 
-func (h *Handler) PrimaryTarget() Target {
+func (h *Handler) PrimaryTarget() model.Target {
 	for _, v := range h.enemies {
 		if v.Key() == h.DefaultTarget {
 			if !v.IsAlive() {

@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,7 +26,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash",
 		AttackTag:          attacks.AttackTagElementalBurst,
@@ -45,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// every 1.8 second +on added shoots between 3 to 5, ignore the queue thing.. space it out .2 between each wave i guess
 
 	// snapshot at end of animation?
-	var snap combat.Snapshot
+	var snap model.Snapshot
 	c.Core.Tasks.Add(func() {
 		snap = c.Snapshot(&ai)
 	}, 100)
@@ -129,7 +130,7 @@ func (c *char) onExitField() {
 
 		if c.Base.Cons >= 4 {
 			// blow up
-			ai := combat.AttackInfo{
+			ai := model.AttackInfo{
 				ActorIndex:         c.Index,
 				Abil:               "Sparks'n'Splash C4",
 				AttackTag:          attacks.AttackTagNone,

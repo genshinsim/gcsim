@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -42,7 +41,7 @@ type Character interface {
 	ReduceActionCooldown(a action.Action, v int)
 	Charges(a action.Action) int
 
-	Snapshot(a *combat.AttackInfo) combat.Snapshot
+	Snapshot(a *model.AttackInfo) model.Snapshot
 
 	AddEnergy(src string, amt float64)
 

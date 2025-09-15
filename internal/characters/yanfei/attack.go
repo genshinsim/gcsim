@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var attackFrames [][]int
@@ -41,7 +42,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	done := false
-	addSeal := func(a combat.AttackCB) {
+	addSeal := func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -61,7 +62,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		done = true
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,

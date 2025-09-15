@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -68,7 +69,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		c.exitNightsoul()
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
@@ -107,7 +108,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) nightsoulAttack() action.Info {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Blade Roller %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
@@ -126,7 +127,7 @@ func (c *char) nightsoulAttack() action.Info {
 		IgnoreInfusion:     true,
 	}
 
-	var ap combat.AttackPattern
+	var ap model.AttackPattern
 	if c.NormalCounter == 0 || c.NormalCounter == 3 {
 		ap = combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),

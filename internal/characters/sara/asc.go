@@ -2,8 +2,8 @@ package sara
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // A1 is implemented in aimed.go:
@@ -17,11 +17,11 @@ const a4ICDKey = "sara-a4-icd"
 // - according to library finding, text description is inaccurate
 //
 // - it's more like for every 1% of ER, she grants 0.012 flat energy
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() model.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

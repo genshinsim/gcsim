@@ -3,9 +3,9 @@ package sethos
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -33,7 +33,7 @@ func (c *char) c1() {
 	m[attributes.CR] = 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("sethos-c1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}
@@ -92,12 +92,12 @@ func (c *char) c4() {
 	c.c4Buff[attributes.EM] = 80
 }
 
-func (c *char) makeC4cb() combat.AttackCBFunc {
+func (c *char) makeC4cb() model.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
 	count := 0
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -119,7 +119,7 @@ func (c *char) makeC4cb() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) makeC6cb(energy float64) combat.AttackCBFunc {
+func (c *char) makeC6cb(energy float64) model.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
@@ -128,7 +128,7 @@ func (c *char) makeC6cb(energy float64) combat.AttackCBFunc {
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

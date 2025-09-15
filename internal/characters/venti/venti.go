@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -20,9 +19,9 @@ type char struct {
 	*tmpl.Character
 	qPos                geometry.Point
 	qAbsorb             attributes.Element
-	absorbCheckLocation combat.AttackPattern
-	aiAbsorb            combat.AttackInfo
-	snapAbsorb          combat.Snapshot
+	absorbCheckLocation model.AttackPattern
+	aiAbsorb            model.AttackInfo
+	snapAbsorb          model.Snapshot
 	c4bonus             []float64
 }
 

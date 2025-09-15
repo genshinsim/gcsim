@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type GadgetTyp int
@@ -45,7 +46,7 @@ func init() {
 }
 
 type Gadget interface {
-	Target
+	model.Target
 	Src() int
 	GadgetTyp() GadgetTyp
 }

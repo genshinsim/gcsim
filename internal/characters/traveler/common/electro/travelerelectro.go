@@ -5,7 +5,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -16,8 +15,8 @@ type Traveler struct {
 	abundanceAmulets      int
 	burstC6Hits           int
 	burstC6WillGiveEnergy bool
-	burstSnap             combat.Snapshot
-	burstAtk              *combat.AttackEvent
+	burstSnap             model.Snapshot
+	burstAtk              *model.AttackEvent
 	burstSrc              int
 	gender                int
 }

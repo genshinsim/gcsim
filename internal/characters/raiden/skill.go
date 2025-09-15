@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -33,7 +34,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Eye of Stormy Judgement",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -60,7 +61,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(func() {
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
-				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+				Amount: func(atk *model.AttackEvent, _ model.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 						return nil, false
 					}
@@ -82,7 +83,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -103,8 +104,8 @@ The Eye can initiate one coordinated attack every 0.9s per party.
 */
 func (c *char) eyeOnDamage() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		ae := args[1].(*combat.AttackEvent)
+		trg := args[0].(model.Target)
+		ae := args[1].(*model.AttackEvent)
 		dmg := args[2].(float64)
 		// ignore if eye on icd
 		if c.eyeICD > c.Core.F {
@@ -133,7 +134,7 @@ func (c *char) eyeOnDamage() {
 
 		// hit mark 857, eye land 862
 		// electro appears to be applied right away
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Eye of Stormy Judgement (Strike)",
 			AttackTag:  attacks.AttackTagElementalArt,

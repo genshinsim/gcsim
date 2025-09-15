@@ -2,8 +2,8 @@ package yelan
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -45,7 +45,7 @@ func (c *char) a4() {
 		this := char
 		this.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("yelan-a4", 15*60),
-			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(_ *model.AttackEvent, _ model.Target) ([]float64, bool) {
 				// char must be active
 				if c.Core.Player.Active() != this.Index {
 					return nil, false

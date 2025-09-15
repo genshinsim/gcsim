@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
+func (r *Reactable) TryOverload(a *model.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -43,7 +43,7 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 	if !(r.overloadGCD != -1 && r.core.F < r.overloadGCD) {
 		r.overloadGCD = r.core.F + 0.1*60
 		// trigger an overload attack
-		atk := combat.AttackInfo{
+		atk := model.AttackInfo{
 			ActorIndex:       a.Info.ActorIndex,
 			DamageSrc:        r.self.Key(),
 			Abil:             string(model.ReactionTypeOverload),

@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const normalHitNum = 3
@@ -39,7 +40,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
@@ -61,7 +62,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	counter := c.NormalCounter
 	for i, mult := range attack[counter] {
 		c.QueueCharTask(func() {
-			var c4cb combat.AttackCBFunc
+			var c4cb model.AttackCBFunc
 			if c.StatusIsActive(burstBuffKey) {
 				ai.Abil = fmt.Sprintf("Dusk Bolt %v", counter)
 				ai.AttackTag = attacks.AttackTagExtra

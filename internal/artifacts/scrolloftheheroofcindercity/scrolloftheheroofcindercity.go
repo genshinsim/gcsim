@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -61,7 +60,7 @@ func (s *Set) Init() error      { return nil }
 
 func (s *Set) buffCB(react model.ReactionType, gadgetEmit bool) func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
+		trg := args[0].(model.Target)
 		if gadgetEmit && trg.Type() != targets.TargettableGadget {
 			return false
 		}
@@ -69,7 +68,7 @@ func (s *Set) buffCB(react model.ReactionType, gadgetEmit bool) func(args ...int
 			return false
 		}
 
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		if ae.Info.ActorIndex != s.char.Index {
 			return false
 		}

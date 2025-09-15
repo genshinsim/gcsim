@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -59,7 +58,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	char.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("tf-4pc", -1),
-		Amount: func(ai combat.AttackInfo) (float64, bool) {
+		Amount: func(ai model.AttackInfo) (float64, bool) {
 			if ai.Catalyzed && ai.CatalyzedType == model.ReactionTypeAggravate {
 				return 0.2, false
 			}
@@ -76,7 +75,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	reduce := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}

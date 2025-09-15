@@ -1,18 +1,20 @@
 package core
 
-import "github.com/genshinsim/gcsim/pkg/core/combat"
+import (
+	"github.com/genshinsim/gcsim/pkg/model"
+)
 
 func (c *Core) QueueAttackWithSnap(
-	a combat.AttackInfo,
-	s combat.Snapshot,
-	p combat.AttackPattern,
+	a model.AttackInfo,
+	s model.Snapshot,
+	p model.AttackPattern,
 	dmgDelay int,
-	callbacks ...combat.AttackCBFunc,
+	callbacks ...model.AttackCBFunc,
 ) {
 	if dmgDelay < 0 {
 		panic("dmgDelay cannot be less than 0")
 	}
-	ae := combat.AttackEvent{
+	ae := model.AttackEvent{
 		Info:        a,
 		Pattern:     p,
 		Snapshot:    s,
@@ -27,16 +29,16 @@ func (c *Core) QueueAttackWithSnap(
 	c.queueDmg(&ae, dmgDelay)
 }
 
-func (c *Core) QueueAttackEvent(ae *combat.AttackEvent, dmgDelay int) {
+func (c *Core) QueueAttackEvent(ae *model.AttackEvent, dmgDelay int) {
 	c.queueDmg(ae, dmgDelay)
 }
 
 func (c *Core) QueueAttack(
-	a combat.AttackInfo,
-	p combat.AttackPattern,
+	a model.AttackInfo,
+	p model.AttackPattern,
 	snapshotDelay int,
 	dmgDelay int,
-	callbacks ...combat.AttackCBFunc,
+	callbacks ...model.AttackCBFunc,
 ) {
 	// panic if dmgDelay < snapshotDelay; this should not happen. if it happens then there's something wrong with the
 	// character's code
@@ -47,7 +49,7 @@ func (c *Core) QueueAttack(
 		panic("dmgDelay cannot be less than 0")
 	}
 	// create attackevent
-	ae := combat.AttackEvent{
+	ae := model.AttackEvent{
 		Info:        a,
 		Pattern:     p,
 		SourceFrame: c.F,
@@ -80,11 +82,11 @@ func (c *Core) QueueAttack(
 // since it's a convenience function wrapped around queuedamage
 //
 // does it make sense for core to have any knowledge of teams? probably not??
-func (c *Core) generateSnapshot(a *combat.AttackEvent) {
+func (c *Core) generateSnapshot(a *model.AttackEvent) {
 	a.Snapshot = c.Player.ByIndex(a.Info.ActorIndex).Snapshot(&a.Info)
 }
 
-func (c *Core) queueDmg(a *combat.AttackEvent, delay int) {
+func (c *Core) queueDmg(a *model.AttackEvent, delay int) {
 	if delay == 0 {
 		c.Combat.ApplyAttack(a)
 		return

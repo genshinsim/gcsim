@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillFrames []int
@@ -34,7 +35,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All is Ash (Spike)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -48,7 +49,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 0.5)
 	c.Core.QueueAttack(ai, skillArea, spikeHitmark, spikeHitmark)
 
-	ai = combat.AttackInfo{
+	ai = model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "All is Ash (Cleave)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -75,7 +76,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -86,7 +87,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Pyro, c.ParticleDelay)
 }
 
-func (c *char) bloodDebtDirective(a combat.AttackCB) {
+func (c *char) bloodDebtDirective(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -115,7 +116,7 @@ func (c *char) directiveTickFunc(src, count int, trg *enemy.Enemy) func() {
 			Write("src", src)
 
 		// queue up one damage instance
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Blood Debt Directive",
 			AttackTag:  attacks.AttackTagElementalArt,

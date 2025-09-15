@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -42,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -60,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index)
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Atlas Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,

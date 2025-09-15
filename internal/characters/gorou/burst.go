@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -28,7 +29,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Initial Hit
 	// A1/C6/Q duration all start on Initial Hit
 	c.Core.Tasks.Add(func() {
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Juuga: Forward Unto Victory",
 			AttackTag:  attacks.AttackTagElementalBurst,
@@ -68,7 +69,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// C4
 		if c.Base.Cons >= 4 && c.geoCharCount > 1 {
 			// TODO: not sure if this actually snapshots stats
-			// ai := combat.AttackInfo{
+			// ai := model.AttackInfo{
 			// 	Abil:      "Inuzaka All-Round Defense C4",
 			// 	AttackTag: attacks.AttackTagNone,
 			// }
@@ -109,7 +110,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			return
 		}
 		// trigger damage
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Crystal Collapse",
 			AttackTag:  attacks.AttackTagElementalBurst,

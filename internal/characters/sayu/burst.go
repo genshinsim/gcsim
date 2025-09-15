@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -23,7 +24,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// dmg
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Yoohoo Art: Mujina Flurry",
 		AttackTag:        attacks.AttackTagElementalBurst,
@@ -116,8 +117,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 // TODO: is this helper function needed?
-func (c *char) createBurstSnapshot() *combat.AttackEvent {
-	ai := combat.AttackInfo{
+func (c *char) createBurstSnapshot() *model.AttackEvent {
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Muji-Muji Daruma",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -129,7 +130,7 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 		Mult:       burstSkill[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-	ae := combat.AttackEvent{
+	ae := model.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,

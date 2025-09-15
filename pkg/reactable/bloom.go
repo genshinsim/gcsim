@@ -16,7 +16,7 @@ import (
 
 const DendroCoreDelay = 30
 
-func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
+func (r *Reactable) TryBloom(a *model.AttackEvent) bool {
 	// can be hydro bloom, dendro bloom, or quicken bloom
 	if a.Info.Durability < ZeroDur {
 		return false
@@ -58,7 +58,7 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
 // this reaction will check if any hydro exists and if so trigger a bloom reaction
-func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
+func (r *Reactable) tryQuickenBloom(a *model.AttackEvent) {
 	if r.Durability[Quicken] < ZeroDur {
 		// this should be a sanity check; should not happen realistically unless something wipes off
 		// the quicken immediately (same frame) after catalyze
@@ -81,7 +81,7 @@ type DendroCore struct {
 	CharIndex int
 }
 
-func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
+func (r *Reactable) addBloomGadget(a *model.AttackEvent) {
 	r.core.Tasks.Add(func() {
 		t := NewDendroCore(r.core, r.self.Shape(), a)
 		r.core.Combat.AddGadget(t)
@@ -96,7 +96,7 @@ func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	}, DendroCoreDelay)
 }
 
-func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *DendroCore {
+func NewDendroCore(c *core.Core, shp geometry.Shape, a *model.AttackEvent) *DendroCore {
 	s := &DendroCore{
 		srcFrame:  c.F,
 		CharIndex: a.Info.ActorIndex,
@@ -148,13 +148,13 @@ func (s *DendroCore) Tick() {
 	s.Gadget.Tick()
 }
 
-func (s *DendroCore) HandleAttack(atk *combat.AttackEvent) float64 {
+func (s *DendroCore) HandleAttack(atk *model.AttackEvent) float64 {
 	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
 	s.Attack(atk, nil)
 	return 0
 }
 
-func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (s *DendroCore) Attack(atk *model.AttackEvent, evt glog.Event) (float64, bool) {
 	if atk.Info.Durability < ZeroDur {
 		return 0, false
 	}
@@ -233,9 +233,9 @@ const (
 	HyperbloomMultiplier = 3
 )
 
-func NewBloomAttack(char *character.CharWrapper, src combat.Target, modify func(*combat.AttackInfo)) (combat.AttackInfo, combat.Snapshot) {
+func NewBloomAttack(char *character.CharWrapper, src model.Target, modify func(*model.AttackInfo)) (model.AttackInfo, model.Snapshot) {
 	em := char.Stat(attributes.EM)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
@@ -254,9 +254,9 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target, modify func(
 	return ai, snap
 }
 
-func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
+func NewBurgeonAttack(char *character.CharWrapper, src model.Target) (model.AttackInfo, model.Snapshot) {
 	em := char.Stat(attributes.EM)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
@@ -272,9 +272,9 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.At
 	return ai, snap
 }
 
-func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
+func NewHyperbloomAttack(char *character.CharWrapper, src model.Target) (model.AttackInfo, model.Snapshot) {
 	em := char.Stat(attributes.EM)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,

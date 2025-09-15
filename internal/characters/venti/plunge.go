@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var highPlungeFrames []int
@@ -29,7 +30,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		return action.Info{}, errors.New("high_plunge should be preceded by hold skill")
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "High Plunge",
 		AttackTag:      attacks.AttackTagPlunge,

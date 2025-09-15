@@ -29,7 +29,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,

@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const a1Dur = 1054
@@ -39,7 +39,7 @@ func (c *char) a1Init() {
 	c.Core.Events.Subscribe(event.OnCrystallizeCryo, a1Hook, a1Key+"cryo-crystallize")
 }
 
-func (c *char) absorbVoidRiftCB(a combat.AttackCB) {
+func (c *char) absorbVoidRiftCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -84,7 +84,7 @@ func (c *char) createVoidRift() {
 
 func (c *char) a4Init() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		charElem := c.Core.Player.Chars()[atk.Info.ActorIndex].Base.Element
 		if atk.Info.ActorIndex == c.Index {
 			return false

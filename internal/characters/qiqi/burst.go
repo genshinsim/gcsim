@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -26,7 +27,7 @@ func init() {
 
 // Only applies burst damage. Main Talisman functions are handled in qiqi.go
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fortune-Preserving Talisman",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -41,7 +42,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
 	// Talisman is applied via a 0 dmg attack way before the damage is dealt
-	talismanAi := combat.AttackInfo{
+	talismanAi := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fortune-Preserving Talisman (Talisman application)",
 		AttackTag:  attacks.AttackTagNone,
@@ -50,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 	}
-	talismanCB := func(a combat.AttackCB) {
+	talismanCB := func(a model.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -73,7 +74,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 func (c *char) talismanHealHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -106,7 +107,7 @@ func (c *char) talismanHealHook() {
 func (c *char) onNACAHitHook() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if !ok {
 			return false
 		}

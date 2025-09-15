@@ -21,6 +21,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/status"
 	"github.com/genshinsim/gcsim/pkg/core/task"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Core struct {
@@ -48,7 +49,7 @@ type Flags struct {
 }
 
 type Reactable interface {
-	React(a *combat.AttackEvent)
+	React(a *model.AttackEvent)
 	AuraContains(e ...attributes.Element) bool
 	Tick()
 }

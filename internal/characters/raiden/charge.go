@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -26,7 +27,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.swordCharge(), nil
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
 		AttackTag:          attacks.AttackTagExtra,
@@ -68,7 +69,7 @@ func init() {
 
 func (c *char) swordCharge() action.Info {
 	for i, mult := range chargeSword {
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Musou Isshin (Charge Attack)",
 			AttackTag:          attacks.AttackTagElementalBurst,

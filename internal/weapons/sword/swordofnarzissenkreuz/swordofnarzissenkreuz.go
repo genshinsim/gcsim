@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -61,14 +62,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mult := 1.2 + float64(r)*0.4
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(model.Target)
 
 		// only proc on normal, charge and plunging dmg
 		switch atk.Info.AttackTag {
@@ -84,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(icdKey, icd, true)
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Sword of Narzissenkreuz",
 			AttackTag:  attacks.AttackTagWeaponSkill,

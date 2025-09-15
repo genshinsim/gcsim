@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -43,7 +44,7 @@ func (c *char) c1() {
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -67,7 +68,7 @@ func (c *char) c1A1() {
 	m[attributes.DmgP] = 0.2
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1ModKey, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.Abil != "Cleardew Cologne (A1)" {
 				return nil, false
 			}
@@ -86,7 +87,7 @@ func (c *char) c1Scent() {
 	c.generateScent()
 }
 
-func (c *char) c2(a combat.AttackCB) {
+func (c *char) c2(a model.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -117,7 +118,7 @@ func (c *char) c6() {
 	c.AddStatus(c6ICDKey, c6ICD, true)
 }
 
-func (c *char) applyC6Bonus(ai *combat.AttackInfo) {
+func (c *char) applyC6Bonus(ai *model.AttackInfo) {
 	if c.Base.Cons < 6 {
 		return
 	}
@@ -135,7 +136,7 @@ func (c *char) applyC6Bonus(ai *combat.AttackInfo) {
 	ai.IgnoreInfusion = true
 }
 
-func (c *char) c6ScentCB() func(combat.AttackCB) {
+func (c *char) c6ScentCB() func(model.AttackCB) {
 	if c.Base.Cons < 6 {
 		return nil
 	}
@@ -144,7 +145,7 @@ func (c *char) c6ScentCB() func(combat.AttackCB) {
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if done {
 			return
 		}

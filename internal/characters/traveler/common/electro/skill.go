@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -34,7 +35,7 @@ func init() {
 }
 
 func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Blade",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -76,7 +77,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 		amuletDelay = 107 // ~1.79s
 	}
 
-	amuletCB := func(a combat.AttackCB) {
+	amuletCB := func(a model.AttackCB) {
 		// generate amulet if generated amulets < limit
 		if c.abundanceAmulets >= maxAmulets {
 			return
@@ -126,9 +127,9 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *Traveler) makeParticleCB() combat.AttackCBFunc {
+func (c *Traveler) makeParticleCB() model.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

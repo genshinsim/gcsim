@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -77,7 +78,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		return c.bikeAttack(), nil
 	}
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
@@ -93,7 +94,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 	}
 
-	var ap combat.AttackPattern
+	var ap model.AttackPattern
 	switch {
 	case len(attackHitboxes[c.NormalCounter]) == 2: // box
 		ap = combat.NewBoxHitOnTarget(
@@ -127,7 +128,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 // Mavuika's bike normals do not immediately reset after sprinting and will carry the counter upon losing NS Blessing (Handled in Dash)
 func (c *char) bikeAttack() action.Info {
 	delay := bikeAttackHitmarks[c.NormalCounter]
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             fmt.Sprintf("Flamestrider Normal %v", c.NormalCounter),
 		AttackTag:        attacks.AttackTagNormal,
@@ -149,7 +150,7 @@ func (c *char) bikeAttack() action.Info {
 		hitboxes = bikeAttackBurstHitboxes
 	}
 
-	var ap combat.AttackPattern
+	var ap model.AttackPattern
 	switch {
 	case len(hitboxes[c.NormalCounter]) == 2: // box
 		ap = combat.NewBoxHitOnTarget(

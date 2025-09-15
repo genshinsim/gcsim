@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -39,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stacks := 0
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -65,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			stacks = 0
 			char.DeleteStatus(durationKey)
 
-			ai := combat.AttackInfo{
+			ai := model.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Flute Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
@@ -76,7 +77,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				Durability: 100,
 				Mult:       0.75 + 0.25*float64(r),
 			}
-			trg := args[0].(combat.Target)
+			trg := args[0].(model.Target)
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 0, 1)
 		}
 		return false

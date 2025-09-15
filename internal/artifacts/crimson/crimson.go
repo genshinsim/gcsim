@@ -6,12 +6,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -80,7 +80,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("crimson-4pc", -1),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
+			Amount: func(ai model.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
 				case attacks.AttackTagOverloadDamage,
 					attacks.AttackTagBurningDamage,

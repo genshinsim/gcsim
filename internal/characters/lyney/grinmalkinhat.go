@@ -8,16 +8,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gadget"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type GrinMalkinHat struct {
 	*gadget.Gadget
 	char                *char
 	pos                 geometry.Point
-	pyrotechnicAI       combat.AttackInfo
-	pyrotechnicSnapshot combat.Snapshot
+	pyrotechnicAI       model.AttackInfo
+	pyrotechnicSnapshot model.Snapshot
 	hpDrained           bool
-	a1CB                combat.AttackCBFunc
+	a1CB                model.AttackCBFunc
 }
 
 func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool, duration int) *GrinMalkinHat {
@@ -32,7 +33,7 @@ func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool, duration int
 	g.Duration = duration
 	g.char.AddStatus(grinMalkinHatKey, g.Duration, false)
 
-	g.pyrotechnicAI = combat.AttackInfo{
+	g.pyrotechnicAI = model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Pyrotechnic Strike",
 		AttackTag:  attacks.AttackTagExtra,
@@ -56,7 +57,7 @@ func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool, duration int
 	return g
 }
 
-func (g *GrinMalkinHat) HandleAttack(atk *combat.AttackEvent) float64 {
+func (g *GrinMalkinHat) HandleAttack(atk *model.AttackEvent) float64 {
 	g.Core.Events.Emit(event.OnGadgetHit, g, atk)
 
 	// TODO: gadget taking damage is not implemented

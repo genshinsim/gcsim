@@ -1,10 +1,10 @@
-package combat
+package model
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type AttackEvent struct {
@@ -36,7 +36,7 @@ type AttackInfo struct {
 	ICDTag           attacks.ICDTag
 	ICDGroup         attacks.ICDGroup
 	Element          attributes.Element // element of ability
-	Durability       model.Durability   // durability of aura, 0 if nothing applied
+	Durability       Durability         // durability of aura, 0 if nothing applied
 	NoImpulse        bool
 	HitWeakPoint     bool
 	Mult             float64 // ability multiplier. could set to 0 from initial Mona dmg
@@ -47,12 +47,12 @@ type AttackInfo struct {
 	IgnoreDefPercent float64 // by default this value is 0; if = 1 then the attack will ignore defense; raiden c2 should be set to 0.6 (i.e. ignore 60%)
 	IgnoreInfusion   bool
 	// amp info
-	Amped   bool               // new flag used by new reaction system
-	AmpMult float64            // amplier
-	AmpType model.ReactionType // melt or vape i guess
+	Amped   bool         // new flag used by new reaction system
+	AmpMult float64      // amplier
+	AmpType ReactionType // melt or vape i guess
 	// catalyze info
 	Catalyzed     bool
-	CatalyzedType model.ReactionType
+	CatalyzedType ReactionType
 	// special flag for sim generated attack
 	SourceIsSim bool
 	DoNotLog    bool
@@ -70,4 +70,42 @@ type Snapshot struct {
 
 	SourceFrame int           // frame snapshot was generated at
 	Logs        []interface{} // logs for the snapshot
+}
+
+type Target interface {
+	Key() targets.TargetKey        // unique key for the target
+	SetKey(k targets.TargetKey)    // update key
+	Type() targets.TargettableType // type of target
+	Shape() geometry.Shape         // geometry.Shape of target
+	Pos() geometry.Point           // center of target
+	SetPos(p geometry.Point)       // move target
+	IsAlive() bool
+	SetTag(key string, val int)
+	GetTag(key string) int
+	RemoveTag(key string)
+	HandleAttack(*AttackEvent) float64
+	AttackWillLand(a AttackPattern) (bool, string) // hurtbox collides with AttackPattern
+	IsWithinArea(a AttackPattern) bool             // center is in AttackPattern
+	Tick()                                         // called every tick
+	Kill()
+	// for collision check
+	CollidableWith(targets.TargettableType) bool
+	CollidedWith(t Target)
+	WillCollide(geometry.Shape) bool
+	// direction related
+	Direction() geometry.Point                           // returns viewing direction as a geometry.Point
+	SetDirection(trg geometry.Point)                     // calculates viewing direction relative to default direction (0, 1)
+	SetDirectionToClosestEnemy()                         // looks for closest enemy
+	CalcTempDirection(trg geometry.Point) geometry.Point // used for stuff like Bow CA
+}
+
+type TargetWithAura interface {
+	Target
+	AuraContains(e ...attributes.Element) bool
+}
+
+type AttackPattern struct {
+	Shape       geometry.Shape
+	SkipTargets [targets.TargettableTypeCount]bool
+	IgnoredKeys []targets.TargetKey
 }

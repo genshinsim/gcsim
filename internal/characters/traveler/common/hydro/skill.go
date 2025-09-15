@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -118,7 +119,7 @@ func (c *Traveler) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [
 }
 
 func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
-	aiHold := combat.AttackInfo{
+	aiHold := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dewdrop (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
@@ -159,7 +160,7 @@ func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 }
 
 func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
-	aiHold := combat.AttackInfo{
+	aiHold := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dewdrop (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
@@ -248,7 +249,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}
 }
 
-func (c *Traveler) skillParticleCB(a combat.AttackCB) {
+func (c *Traveler) skillParticleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -265,7 +266,7 @@ func (c *Traveler) skillParticleCB(a combat.AttackCB) {
 }
 
 func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Torrent Surge",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -286,7 +287,7 @@ func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 	c.Core.QueueAttack(ai, hitbox, hitmark, hitmark, c.skillParticleCB)
 
 	if !c.StatusIsActive(spiritbreathThornICDKey) {
-		ai = combat.AttackInfo{
+		ai = model.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Spiritbreath Thorn",
 			AttackTag:          attacks.AttackTagElementalArt,
@@ -304,7 +305,7 @@ func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 	}
 }
 
-func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
+func (c *Traveler) skillLosingHP(ai *model.AttackInfo) {
 	if c.StatusIsActive(skillLosingHPICDKey) {
 		return
 	}

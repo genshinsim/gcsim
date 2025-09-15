@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -39,7 +40,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// add initial damage
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Glacial Illumination",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -94,7 +95,7 @@ func (c *char) triggerBurst() {
 	if c.burstCounter > 30 {
 		c.burstCounter = 30
 	}
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Glacial Illumination (Lightfall)",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -123,7 +124,7 @@ func (c *char) triggerBurst() {
 
 // When Eula's own Normal Attack, Elemental Skill, and Elemental Burst deal DMG to opponents,
 // they will charge the Lightfall Sword, which can gain an energy stack once every 0.1s.
-func (c *char) burstStackCB(a combat.AttackCB) {
+func (c *char) burstStackCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

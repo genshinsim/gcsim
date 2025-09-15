@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const c4Key = "beidou-c4"
@@ -31,11 +32,11 @@ func (c *char) c4Init() {
 
 // TODO: this should also be added to her CA
 // Beidou's Normal Attacks gain an additional instance of 20% Electro DMG for 10s.
-func (c *char) makeC4Callback() combat.AttackCBFunc {
+func (c *char) makeC4Callback() model.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		trg := a.Target
 		if trg.Type() != targets.TargettableEnemy {
 			return
@@ -46,7 +47,7 @@ func (c *char) makeC4Callback() combat.AttackCBFunc {
 
 		c.Core.Log.NewEvent("c4 proc'd on attack", glog.LogCharacterEvent, c.Index).
 			Write("char", c.Index)
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Beidou C4",
 			AttackTag:  attacks.AttackTagNone,

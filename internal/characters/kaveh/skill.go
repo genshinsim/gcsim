@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -28,7 +29,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		Abil:       "Artistic Ingenuity (E)",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -58,7 +59,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) ruptureDendroCores(ap combat.AttackPattern) {
+func (c *char) ruptureDendroCores(ap model.AttackPattern) {
 	for _, g := range c.Core.Combat.Gadgets() {
 		seed, ok := g.(*reactable.DendroCore)
 		if !ok {
@@ -71,7 +72,7 @@ func (c *char) ruptureDendroCores(ap combat.AttackPattern) {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

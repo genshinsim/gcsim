@@ -2,9 +2,9 @@ package yoimiya
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -13,11 +13,11 @@ const a1Key = "yoimiya-a1"
 // During Niwabi Fire-Dance, shots from Yoimiya's Normal Attack will increase
 // her Pyro DMG Bonus by 2% on hit. This effect lasts for 3s and can have a
 // maximum of 10 stacks.
-func (c *char) makeA1CB() combat.AttackCBFunc {
+func (c *char) makeA1CB() model.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

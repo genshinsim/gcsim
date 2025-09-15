@@ -3,11 +3,11 @@ package dori
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // After a character connected to the Jinni triggers an Electro-Charged, Superconduct, Overloaded, Quicken, Aggravate, Hyperbloom,
@@ -22,7 +22,7 @@ func (c *char) a1() {
 	icd := 180 // 3s * 60
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	reduce := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*model.AttackEvent)
 
 		if c.Core.Player.Active() != atk.Info.ActorIndex { // only for on field character
 			return false
@@ -59,13 +59,13 @@ func (c *char) a1() {
 // Dori will restore 5 Elemental Energy for every 100% Energy Recharge possessed.
 // Per Spirit-Warding Lamp: Troubleshooter Cannon, only one instance of Energy restoration can be triggered
 // and a maximum of 15 Energy can be restored this way.
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() model.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

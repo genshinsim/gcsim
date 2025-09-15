@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -85,7 +84,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatModIsActive(paramitaBuff) {

@@ -5,11 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -49,7 +49,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		// TODO: does multiple instructor holders extend the duration?
 		add := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
+			atk := args[1].(*model.AttackEvent)
 			// Character must be on field to proc bonus
 			if c.Player.Active() != char.Index {
 				return false

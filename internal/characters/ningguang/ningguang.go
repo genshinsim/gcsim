@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -24,7 +23,7 @@ type char struct {
 	jadeCount     int
 	lastScreen    int
 	prevAttack    attackType
-	skillSnapshot combat.Snapshot
+	skillSnapshot model.Snapshot
 }
 
 type attackType int

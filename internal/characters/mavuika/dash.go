@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var dashFrames []int
@@ -23,7 +24,7 @@ func init() {
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Flamestrider Sprint",
 			AttackTag:      attacks.AttackTagNone,

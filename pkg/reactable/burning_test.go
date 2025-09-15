@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func TestBurning(t *testing.T) {
@@ -14,14 +14,14 @@ func TestBurning(t *testing.T) {
 	c.Init()
 
 	//TODO: write tests for burning (this is copypasted from quicken for now)
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 	})
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&model.AttackEvent{
+		Info: model.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},

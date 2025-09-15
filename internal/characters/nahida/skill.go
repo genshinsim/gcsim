@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var skillPressFrames []int
@@ -53,7 +54,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -94,7 +95,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		hold = 1
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -124,7 +125,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a model.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -135,7 +136,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 }
 
-func (c *char) skillMarkTargets(a combat.AttackCB) {
+func (c *char) skillMarkTargets(a model.AttackCB) {
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -175,7 +176,7 @@ func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
 		return false
 	}
 	// only on bloom, burgeon, hyperbloom damage
-	ae, ok := args[1].(*combat.AttackEvent)
+	ae, ok := args[1].(*model.AttackEvent)
 	if !ok {
 		return false
 	}
@@ -208,13 +209,13 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		if !e.StatusIsActive(skillMarkKey) {
 			continue
 		}
-		var cb combat.AttackCBFunc
+		var cb model.AttackCBFunc
 		if !done {
 			cb = c.particleCB
 			done = true
 		}
 
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification",
 			AttackTag:  attacks.AttackTagElementalArt,

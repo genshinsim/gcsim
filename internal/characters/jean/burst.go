@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var burstFrames []int
@@ -33,7 +34,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		delay = 600 / enter
 	}
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dandelion Breeze",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -86,7 +87,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// attack self
-	selfSwirl := combat.AttackInfo{
+	selfSwirl := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dandelion Breeze (Self Swirl)",
 		Element:    attributes.Anemo,
@@ -114,7 +115,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				})
 
 				// self swirl
-				ae := combat.AttackEvent{
+				ae := model.AttackEvent{
 					Info:        selfSwirl,
 					Pattern:     combat.NewSingleTargetHit(0),
 					SourceFrame: c.Core.F,

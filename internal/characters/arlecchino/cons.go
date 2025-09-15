@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -36,7 +37,7 @@ func (c *char) c2OnAbsorbDue() {
 	}
 
 	c.AddStatus(c2IcdKey, 10*60, true)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Balemoon Bloodfire (C2)",
 		AttackTag:  attacks.AttackTagNone,
@@ -101,7 +102,7 @@ func (c *char) c6skill() {
 	m[attributes.CD] = 0.7
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6Key, 20*60),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *model.AttackEvent, t model.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalBurst, attacks.AttackTagNormal:
 				return m, true

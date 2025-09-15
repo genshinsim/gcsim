@@ -5,10 +5,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -18,7 +18,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	qAbsorb             attributes.Element
-	absorbCheckLocation combat.AttackPattern
+	absorbCheckLocation model.AttackPattern
 	a1Buff              []float64
 	a4Buff              []float64
 	c4Count             int

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -59,12 +60,12 @@ func (c *char) c1() {
 	}, "charlotte-c1")
 }
 
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() model.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
 	c.c2Hits = 0
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -88,7 +89,7 @@ func (c *char) c4() {
 	counter := 0
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -127,7 +128,7 @@ func (c *char) c6() {
 		if !t.StatusIsActive(skillHoldMarkKey) {
 			return false
 		}
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*model.AttackEvent)
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
@@ -135,7 +136,7 @@ func (c *char) c6() {
 			return false
 		}
 		c.AddStatus(c6IcdKey, 6*60, true)
-		ai := combat.AttackInfo{
+		ai := model.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               c6CoordinateAtk,
 			AttackTag:          attacks.AttackTagElementalBurst,

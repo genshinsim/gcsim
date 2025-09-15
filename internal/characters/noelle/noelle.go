@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -46,7 +45,7 @@ func (c *char) Init() error {
 }
 
 // Noelle Geo infusion can't be overridden, so it must be a snapshot modification rather than a weapon infuse
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(ai *model.AttackInfo) model.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatModIsActive(burstBuffKey) {

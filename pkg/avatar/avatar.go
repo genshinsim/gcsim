@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -31,7 +30,7 @@ func New(core *core.Core, pos geometry.Point, r float64) *Player {
 
 func (p *Player) Type() targets.TargettableType { return targets.TargettablePlayer }
 
-func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
+func (p *Player) HandleAttack(atk *model.AttackEvent) float64 {
 	activeChar := p.Core.Player.Active()
 	p.Core.Combat.Events.Emit(event.OnPlayerHit, activeChar, atk)
 
@@ -79,7 +78,7 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	// towards the sim's TotalDamage and DPS statistic
 	return 0
 }
-func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
+func (p *Player) calc(atk *model.AttackEvent) (float64, bool) {
 	var isCrit bool
 
 	st := attributes.EleToDmgP(atk.Info.Element)
@@ -267,7 +266,7 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur model.Durability,
 	p.DecayRate[mod] = dur / model.Durability(f)
 }
 
-func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
+func (p *Player) ReactWithSelf(atk *model.AttackEvent) {
 	// check if have an element
 	if p.AuraCount() == 0 {
 		return

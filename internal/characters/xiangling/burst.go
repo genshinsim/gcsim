@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var (
@@ -23,7 +24,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	for i := range pyronadoInitial {
-		initialHit := combat.AttackInfo{
+		initialHit := model.AttackInfo{
 			Abil:               fmt.Sprintf("Pyronado Hit %v", i+1),
 			ActorIndex:         c.Index,
 			AttackTag:          attacks.AttackTagElementalBurst,
@@ -48,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: anim length idk if this is accurate or not
 	a := 56
 
-	burstHit := combat.AttackInfo{
+	burstHit := model.AttackInfo{
 		Abil:       "Pyronado",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalBurst,

@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -20,7 +21,7 @@ func (c *char) c1(delay int) {
 	}
 	c.c1Chance = 0.1
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash C1",
 		AttackTag:          attacks.AttackTagElementalBurst,
@@ -37,7 +38,7 @@ func (c *char) c1(delay int) {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 0, delay)
 }
 
-func (c *char) c2(a combat.AttackCB) {
+func (c *char) c2(a model.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}

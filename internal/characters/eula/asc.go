@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // If 2 stacks of Grimheart are consumed upon unleashing the Holding Mode of Icetide Vortex,
@@ -18,7 +19,7 @@ func (c *char) a1() {
 	}
 	// make sure this gets executed after hold e hitlag starts but before hold e is over
 	// this makes it so it doesn't get affected by hitlag after Hold E is over
-	aiA1 := combat.AttackInfo{
+	aiA1 := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Icetide (Lightfall)",
 		AttackTag:  attacks.AttackTagElementalBurst,

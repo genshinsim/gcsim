@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -17,9 +16,9 @@ type char struct {
 	// tracking skill information
 	hasRecastSkill     bool
 	hasC2DamageBuff    bool
-	skillArea          combat.AttackPattern
-	skillAttackInfo    combat.AttackInfo
-	skillSnapshot      combat.Snapshot
+	skillArea          model.AttackPattern
+	skillAttackInfo    model.AttackInfo
+	skillSnapshot      model.Snapshot
 	skillRedmanesBlood float64
 	skillSelfDoTQueued bool
 	sanctumSavedDur    int

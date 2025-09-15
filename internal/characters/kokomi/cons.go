@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -18,7 +19,7 @@ func (c *char) c1(f, travel int) {
 	}
 
 	// TODO: Assume that these are 1A (not specified in library)
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "At Water's Edge (C1)",
 		AttackTag:  attacks.AttackTagNone,
@@ -45,11 +46,11 @@ const c4ICDKey = "kokomi-c4-icd"
 // C4 (Energy piece only) handling
 // While donning the Ceremonial Garment created by Nereid's Ascension, Sangonomiya Kokomi's Normal Attack SPD is increased by 10%.
 // and Normal Attacks that hit opponents will restore 0.8 Energy for her. This effect can occur once every 0.2s.
-func (c *char) makeC4CB() combat.AttackCBFunc {
+func (c *char) makeC4CB() model.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

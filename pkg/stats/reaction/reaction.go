@@ -2,7 +2,6 @@ package reaction
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -51,8 +50,8 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 	eventSubFunc := func(reaction model.ReactionType) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
-			target := args[0].(combat.Target)
-			attack := args[1].(*combat.AttackEvent)
+			target := args[0].(model.Target)
+			attack := args[1].(*model.AttackEvent)
 
 			event := stats.ReactionEvent{
 				Frame:    attack.SourceFrame,

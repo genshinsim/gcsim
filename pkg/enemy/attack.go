@@ -6,7 +6,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -25,7 +24,7 @@ var particleIDToElement = []attributes.Element{
 	attributes.Geo,
 }
 
-func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
+func (e *Enemy) HandleAttack(atk *model.AttackEvent) float64 {
 	// at this point attack will land
 	e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
 
@@ -63,7 +62,7 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 		e.Core.Combat.TotalDamage += actualDmg
 		e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, actualDmg, crit)
 		// callbacks
-		cb := combat.AttackCB{
+		cb := model.AttackCB{
 			Target:      e,
 			AttackEvent: atk,
 			Damage:      actualDmg,
@@ -86,7 +85,7 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 	return dmg
 }
 
-func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (e *Enemy) attack(atk *model.AttackEvent, evt glog.Event) (float64, bool) {
 	// if target is frozen prior to attack landing, set impulse to 0
 	// let the break freeze attack to trigger actual impulse
 	if e.Durability[reactable.Frozen] > reactable.ZeroDur {
@@ -215,7 +214,7 @@ func (e *Enemy) tryHPDropParticle() (float64, attributes.Element) {
 	return e.prof.ParticleDropCount * float64(count), e.prof.ParticleElement
 }
 
-func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) float64 {
+func (e *Enemy) applyDamage(atk *model.AttackEvent, damage float64) float64 {
 	// record dmg
 	// do not let hp become negative because this function can be called multiple times in same frame
 	actualDmg := min(damage, e.hp) // do not let dmg be greater than remaining enemy hp

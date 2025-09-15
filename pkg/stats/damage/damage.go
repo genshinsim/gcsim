@@ -2,7 +2,6 @@ package damage
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -37,9 +36,9 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	out.cumuTarget = append(out.cumuTarget, make([]float64, len(core.Combat.Enemies())))
 
 	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		target := args[0].(combat.Target)
+		target := args[0].(model.Target)
 		targetKey := target.Key()
-		attack := args[1].(*combat.AttackEvent)
+		attack := args[1].(*model.AttackEvent)
 		damage := args[2].(float64)
 		crit := args[3].(bool)
 

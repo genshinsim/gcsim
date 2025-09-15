@@ -3,7 +3,6 @@ package albedo
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -17,12 +16,12 @@ func init() {
 type char struct {
 	*tmpl.Character
 	lastConstruct int
-	bloomSnapshot combat.Snapshot
+	bloomSnapshot model.Snapshot
 	// tracking skill information
 	skillActive     bool
-	skillArea       combat.AttackPattern
-	skillAttackInfo combat.AttackInfo
-	skillSnapshot   combat.Snapshot
+	skillArea       model.AttackPattern
+	skillAttackInfo model.AttackInfo
+	skillSnapshot   model.Snapshot
 	// c2 tracking
 	c2stacks int
 }

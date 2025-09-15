@@ -5,7 +5,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -14,7 +13,7 @@ import (
 type Traveler struct {
 	*tmpl.Character
 	skillCD     int
-	burstArea   combat.AttackPattern // needed for c1
+	burstArea   model.AttackPattern // needed for c1
 	c1TickCount int
 	gender      int
 }

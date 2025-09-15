@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var chargeFrames []int
@@ -26,7 +27,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
@@ -39,7 +40,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(a model.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -59,10 +60,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			done = true
 		}
 	}
-	var c4CB combat.AttackCBFunc
+	var c4CB model.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		energyCount := 0
-		c4CB = func(a combat.AttackCB) {
+		c4CB = func(a model.AttackCB) {
 			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}

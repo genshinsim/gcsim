@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var aimedFrames [][]int
@@ -54,7 +55,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	ai := combat.AttackInfo{
+	ai := model.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,

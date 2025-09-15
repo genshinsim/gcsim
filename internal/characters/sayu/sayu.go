@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -23,7 +22,7 @@ type char struct {
 	eDuration           int
 	eAbsorb             attributes.Element
 	eAbsorbTag          attacks.ICDTag
-	absorbCheckLocation combat.AttackPattern
+	absorbCheckLocation model.AttackPattern
 	qTickRadius         float64
 	c2Bonus             float64
 }
