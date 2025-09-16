@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -22,16 +23,16 @@ func TestHyperbloom(t *testing.T) {
 	}
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		ae := args[1].(*combat.AttackEvent)
+		trg := args[0].(info.Target)
+		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
 			count++
 		}
 		return false
 	}, "hyperbloom")
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
@@ -39,8 +40,8 @@ func TestHyperbloom(t *testing.T) {
 	}, 0)
 	advanceCoreFrame(c)
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
@@ -58,8 +59,8 @@ func TestHyperbloom(t *testing.T) {
 		t.Errorf("expecting target to not contain any remaining hydro or dendro aura, got %v", trg[0].ActiveAuraString())
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -90,8 +91,8 @@ func TestECHyperbloom(t *testing.T) {
 
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		ae := args[1].(*combat.AttackEvent)
+		trg := args[0].(info.Target)
+		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
 			count++
 		}
@@ -99,16 +100,16 @@ func TestECHyperbloom(t *testing.T) {
 	}, "hyperbloom")
 
 	// create 2 seeds with ec
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -119,8 +120,8 @@ func TestECHyperbloom(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
@@ -135,8 +136,8 @@ func TestECHyperbloom(t *testing.T) {
 		t.Errorf("expected 2 bloom gadgets, got %v", c.Combat.GadgetCount())
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},

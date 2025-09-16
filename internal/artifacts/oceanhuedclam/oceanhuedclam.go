@@ -111,7 +111,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					// d.FlatDmg = bubbleHealStacks * .9
 					// c.QueueDmg(&d, 0)
 
-					atk := combat.AttackInfo{
+					atk := info.AttackInfo{
 						ActorIndex:       char.Index,
 						Abil:             "Sea-Dyed Foam",
 						AttackTag:        attacks.AttackTagNoneStat,

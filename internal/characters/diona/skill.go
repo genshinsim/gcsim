@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -47,9 +48,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(travel)
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -100,8 +101,8 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	// note that each paw should only be able to trigger callback once (if hit multi target)
 	// and that subsequent shield generation should increase duation only
 	// TODO: need to look into maybe additional paw hits actually create "new" shields?
-	pawCB := func(done bool) combat.AttackCBFunc {
-		return func(_ combat.AttackCB) {
+	pawCB := func(done bool) info.AttackCBFunc {
+		return func(_ info.AttackCB) {
 			if done {
 				return
 			}
@@ -133,7 +134,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 		}
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Icy Paw",
 		AttackTag:  attacks.AttackTagElementalArt,

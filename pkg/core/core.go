@@ -48,7 +48,7 @@ type Flags struct {
 }
 
 type Reactable interface {
-	React(a *combat.AttackEvent)
+	React(a *info.AttackEvent)
 	AuraContains(e ...attributes.Element) bool
 	Tick()
 }

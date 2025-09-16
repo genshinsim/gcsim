@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if !ok {
 			return false
 		}
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		if c.Rand.Float64() < prob {
 			char.AddStatus(icdKey, icd, true)
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Dragonspine Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,

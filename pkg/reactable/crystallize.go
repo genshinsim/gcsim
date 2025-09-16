@@ -9,9 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -20,44 +20,44 @@ type CrystallizeShield struct {
 	emBonus float64
 }
 
-func (r *Reactable) TryCrystallizeElectro(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizeElectro(a *info.AttackEvent) bool {
 	if r.Durability[Electro] > ZeroDur {
-		return r.tryCrystallizeWithEle(a, attributes.Electro, reactions.CrystallizeElectro, event.OnCrystallizeElectro)
+		return r.tryCrystallizeWithEle(a, attributes.Electro, info.ReactionTypeCrystallizeElectro, event.OnCrystallizeElectro)
 	}
 	return false
 }
 
-func (r *Reactable) TryCrystallizeHydro(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizeHydro(a *info.AttackEvent) bool {
 	if r.Durability[Hydro] > ZeroDur {
-		return r.tryCrystallizeWithEle(a, attributes.Hydro, reactions.CrystallizeHydro, event.OnCrystallizeHydro)
+		return r.tryCrystallizeWithEle(a, attributes.Hydro, info.ReactionTypeCrystallizeHydro, event.OnCrystallizeHydro)
 	}
 	return false
 }
 
-func (r *Reactable) TryCrystallizeCryo(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizeCryo(a *info.AttackEvent) bool {
 	if r.Durability[Cryo] > ZeroDur {
-		return r.tryCrystallizeWithEle(a, attributes.Cryo, reactions.CrystallizeCryo, event.OnCrystallizeCryo)
+		return r.tryCrystallizeWithEle(a, attributes.Cryo, info.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
-func (r *Reactable) TryCrystallizePyro(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizePyro(a *info.AttackEvent) bool {
 	if r.Durability[Pyro] > ZeroDur || r.Durability[Burning] > ZeroDur {
-		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, reactions.CrystallizePyro, event.OnCrystallizePyro)
+		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, info.ReactionTypeCrystallizePyro, event.OnCrystallizePyro)
 		r.burningCheck()
 		return reacted
 	}
 	return false
 }
 
-func (r *Reactable) TryCrystallizeFrozen(a *combat.AttackEvent) bool {
+func (r *Reactable) TryCrystallizeFrozen(a *info.AttackEvent) bool {
 	if r.Durability[Frozen] > ZeroDur {
-		return r.tryCrystallizeWithEle(a, attributes.Frozen, reactions.CrystallizeCryo, event.OnCrystallizeCryo)
+		return r.tryCrystallizeWithEle(a, attributes.Frozen, info.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
-func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt reactions.ReactionType, evt event.Event) bool {
+func (r *Reactable) tryCrystallizeWithEle(a *info.AttackEvent, ele attributes.Element, rt info.ReactionType, evt event.Event) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -219,11 +219,11 @@ type CrystallizeShard struct {
 	expiry int
 }
 
-func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt reactions.ReactionType, typ attributes.Element, src int) {
+func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt info.ReactionType, typ attributes.Element, src int) {
 	// delay shard spawn
 	r.core.Tasks.Add(func() {
 		// grab current snapshot for shield
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: char.Index,
 			DamageSrc:  r.self.Key(),
 			Abil:       string(rt),
@@ -300,13 +300,13 @@ func (cs *CrystallizeShard) AddShieldKillShard() bool {
 	return true
 }
 
-func (cs *CrystallizeShard) HandleAttack(atk *combat.AttackEvent) float64 {
+func (cs *CrystallizeShard) HandleAttack(atk *info.AttackEvent) float64 {
 	cs.Core.Events.Emit(event.OnGadgetHit, cs, atk)
 	return 0
 }
-func (cs *CrystallizeShard) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (cs *CrystallizeShard) SetDirection(trg geometry.Point)                        {}
-func (cs *CrystallizeShard) SetDirectionToClosestEnemy()                            {}
+func (cs *CrystallizeShard) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (cs *CrystallizeShard) SetDirection(trg geometry.Point)                      {}
+func (cs *CrystallizeShard) SetDirectionToClosestEnemy()                          {}
 func (cs *CrystallizeShard) CalcTempDirection(trg geometry.Point) geometry.Point {
 	return geometry.DefaultDirection()
 }

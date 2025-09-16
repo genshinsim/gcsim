@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const c6key = "chasca-c6"
@@ -34,17 +35,17 @@ func (c *char) c2A1Stack() int {
 	return 1
 }
 
-func (c *char) c2cb(src int) combat.AttackCBFunc {
+func (c *char) c2cb(src int) info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
-	return func(ac combat.AttackCB) {
+	return func(ac info.AttackCB) {
 		if c.c2Src == src {
 			return
 		}
 		c.c2Src = src
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Shining Shadowhunt Shell (C2)",
 			AttackTag:      attacks.AttackTagExtra,
@@ -61,18 +62,18 @@ func (c *char) c2cb(src int) combat.AttackCBFunc {
 	}
 }
 
-func (c *char) c4cb(src int) combat.AttackCBFunc {
+func (c *char) c4cb(src int) info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(ac combat.AttackCB) {
+	return func(ac info.AttackCB) {
 		c.AddEnergy("chasca-c4", 1.5)
 		if c.c4Src == src {
 			return
 		}
 		c.c4Src = src
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Radiant Shadowhunt Shell (C4)",
 			AttackTag:      attacks.AttackTagExtra,
@@ -119,7 +120,7 @@ func (c *char) c6AddBuff() {
 	c.DeleteStatus(c6key)
 }
 
-func (c *char) c6buff() func(*combat.Snapshot) {
+func (c *char) c6buff() func(*info.Snapshot) {
 	if c.Base.Cons < 6 {
 		return nil
 	}
@@ -131,7 +132,7 @@ func (c *char) c6buff() func(*combat.Snapshot) {
 	}
 	c.c6Used = false
 
-	return func(snap *combat.Snapshot) {
+	return func(snap *info.Snapshot) {
 		old := snap.Stats[attributes.CD]
 		snap.Stats[attributes.CD] += 1.20
 		c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index).

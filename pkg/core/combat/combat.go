@@ -10,6 +10,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
@@ -20,14 +21,14 @@ type CharHandler interface {
 }
 
 type Character interface {
-	ApplyAttackMods(a *AttackEvent, t Target) []interface{}
+	ApplyAttackMods(a *info.AttackEvent, t info.Target) []interface{}
 }
 
 type Handler struct {
 	Opt
-	enemies     []Target
+	enemies     []info.Target
 	gadgets     []Gadget
-	player      Target
+	player      info.Target
 	TotalDamage float64
 	gccount     int
 	keycount    targets.TargetKey
@@ -51,7 +52,7 @@ func New(opt Opt) *Handler {
 		Opt:      opt,
 		keycount: 1,
 	}
-	h.enemies = make([]Target, 0, 5)
+	h.enemies = make([]info.Target, 0, 5)
 	h.gadgets = make([]Gadget, 0, 10)
 
 	return h

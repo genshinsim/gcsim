@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -64,7 +65,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 
 	noMeteorite := p["no_meteorite"] == 1
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Starfell Sword",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -113,9 +114,9 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *Traveler) makeParticleCB() combat.AttackCBFunc {
+func (c *Traveler) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -152,7 +153,7 @@ func (c *Traveler) newStone(dur int, dir, pos geometry.Point) *stone {
 
 func (s *stone) OnDestruct() {
 	if s.char.Base.Cons >= 2 {
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:         s.char.Index,
 			Abil:               "Rockcore Meltdown",
 			AttackTag:          attacks.AttackTagElementalArt,

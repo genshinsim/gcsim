@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -37,7 +38,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.a4()
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Tidecaller (E)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -82,8 +83,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB(counter int) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+func (c *char) makeParticleCB(counter int) info.AttackCBFunc {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

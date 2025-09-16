@@ -2,16 +2,15 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
+func (r *Reactable) TryMelt(a *info.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed reactions.Durability
+	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		if r.Durability[Cryo] < ZeroDur && r.Durability[Frozen] < ZeroDur {
@@ -38,7 +37,7 @@ func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
 	a.Info.Amped = true
-	a.Info.AmpType = reactions.Melt
+	a.Info.AmpType = info.ReactionTypeMelt
 	r.core.Events.Emit(event.OnMelt, r.self, a)
 	return true
 }

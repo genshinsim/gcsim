@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -29,7 +30,7 @@ func init() {
 // Default behavior is to appear behind enemy - set "nobehind=1" to diasble A1 proc
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// No ICD to the 2 hits
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Ravaging Confession (Hit 1)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -45,7 +46,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	// We always assume that A1 procs on hit 1 to simplify
-	var a1CB combat.AttackCBFunc
+	var a1CB info.AttackCBFunc
 	if p["nobehind"] != 1 {
 		a1CB = c.makeA1CB()
 	}
@@ -64,7 +65,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// Rosaria E is dynamic, so requires a second snapshot
 	//TODO: check snapshot timing here
-	ai = combat.AttackInfo{
+	ai = info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Ravaging Confession (Hit 2)",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -101,7 +102,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

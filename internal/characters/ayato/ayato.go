@@ -5,12 +5,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -77,7 +75,7 @@ func (c *char) AdvanceNormalIndex() {
 }
 
 // TODO: maybe move infusion out of snapshot?
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatusIsActive(skillBuffKey) {
@@ -103,9 +101,9 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	return ds
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		if c.StatusIsActive(skillBuffKey) {
 			return 17
 		}

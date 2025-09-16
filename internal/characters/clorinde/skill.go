@@ -84,7 +84,7 @@ func (c *char) gainBOLOnAttack() {
 }
 
 func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Impale the Night (0% BoL)",
 		AttackTag:      attacks.AttackTagNormal,
@@ -111,7 +111,7 @@ func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
 
 func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 	for i := 0; i < 3; i++ {
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Impale the Night (100%+ BoL)",
 			AttackTag:      attacks.AttackTagNormal,
@@ -150,7 +150,7 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Impale the Night (<100% BoL)",
 		AttackTag:      attacks.AttackTagNormal,
@@ -190,7 +190,7 @@ func (c *char) skillHeal(bolMult float64, msg string) {
 	})
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

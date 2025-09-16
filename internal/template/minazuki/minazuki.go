@@ -10,9 +10,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // Watcher watches state change and triggers accordingly
@@ -28,9 +28,9 @@ type Watcher struct {
 	tickerFreq  int
 
 	// other fields including optional overrides
-	state        action.AnimationState   // the state change we are watching for
-	delayKey     model.AnimationDelayKey // delay key used to check delay func
-	shouldDelay  func() bool             // function to be called to see if delayed should be applied
+	state        action.AnimationState  // the state change we are watching for
+	delayKey     info.AnimationDelayKey // delay key used to check delay func
+	shouldDelay  func() bool            // function to be called to see if delayed should be applied
 	tickOnActive bool
 
 	tickSrc int
@@ -41,7 +41,7 @@ type Config func(w *Watcher) error
 func New(cfg ...Config) (*Watcher, error) {
 	w := &Watcher{
 		// defaults
-		delayKey: model.InvalidAnimationDelayKey,
+		delayKey: info.InvalidAnimationDelayKey,
 		state:    action.NormalAttackState,
 	}
 	for _, f := range cfg {
@@ -83,7 +83,7 @@ func WithMandatory(key keys.Char, abil, statusKey, icdKey string, tickerFreq int
 	}
 }
 
-func WithAnimationDelayCheck(key model.AnimationDelayKey, shouldDelay func() bool) Config {
+func WithAnimationDelayCheck(key info.AnimationDelayKey, shouldDelay func() bool) Config {
 	return func(w *Watcher) error {
 		w.delayKey = key
 		w.shouldDelay = shouldDelay

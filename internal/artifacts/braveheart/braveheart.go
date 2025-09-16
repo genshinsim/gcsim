@@ -3,7 +3,6 @@ package braveheart
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -52,7 +51,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	m[attributes.DmgP] = 0.30
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("braveheart-4pc", -1),
-		Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 			x, ok := t.(*enemy.Enemy)
 			if !ok {
 				return nil, false

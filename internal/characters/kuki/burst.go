@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -20,7 +21,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gyoei Narukami Kariyama Rite",
 		AttackTag:  attacks.AttackTagElementalBurst,

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -80,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		val[attributes.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("ripping-upheaval", 480),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}

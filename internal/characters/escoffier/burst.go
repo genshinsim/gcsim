@@ -24,7 +24,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Scoring Cuts",
 		AttackTag:  attacks.AttackTagElementalBurst,

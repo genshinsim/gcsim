@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -25,7 +26,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Hyouka",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -57,7 +58,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

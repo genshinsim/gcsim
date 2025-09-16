@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -115,7 +114,7 @@ func (w *Weapon) onChangeHP() {
 	w.char.AddStatus(buffIcd, 0.3*60, true)
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(buffKey, 4*60),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			w.buffCA[attributes.DmgP] = (0.10 + 0.04*float64(w.refine)) * float64(w.stacks)
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagExtra:

@@ -45,14 +45,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// 		Write("new_duration", c.Core.Status.Duration("paramita"))
 	// }
 
-	var bbcb combat.AttackCBFunc
+	var bbcb info.AttackCBFunc
 
 	if c.Base.Cons >= 2 {
 		bbcb = c.applyBB
 	}
 
 	//TODO: currently snapshotting at cast but apparently damage is based on stats on contact, not at cast??
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spirit Soother",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -83,7 +83,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstHealCB(atk combat.AttackCB) {
+func (c *char) burstHealCB(atk info.AttackCB) {
 	if c.burstHealCount == 5 {
 		return
 	}

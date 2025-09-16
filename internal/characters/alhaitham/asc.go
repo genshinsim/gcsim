@@ -3,7 +3,7 @@ package alhaitham
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -13,11 +13,11 @@ const a1IcdKey = "alhaitham-a1-icd"
 
 // When Alhaitham's Charged or Plunging Attacks hit opponents, they will generate 1 Chisel-Light Mirror.
 // This effect can be triggered once every 12s.
-func (c *char) makeA1CB() combat.AttackCBFunc {
+func (c *char) makeA1CB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -41,7 +41,7 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("alhaitham-a4", -1),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			// only trigger on projection attack and burst damage
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst &&
 				atk.Info.ICDGroup != attacks.ICDGroupAlhaithamProjectionAttack {

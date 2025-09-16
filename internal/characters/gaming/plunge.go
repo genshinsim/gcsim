@@ -89,7 +89,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -143,7 +143,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -173,7 +173,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -194,7 +194,7 @@ func (c *char) specialPlunge(p map[string]int) action.Info {
 		c.manChaiWalkBack = 92
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           specialPlungeKey,
 		AttackTag:      attacks.AttackTagPlunge,
@@ -248,7 +248,7 @@ func (c *char) specialPlunge(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

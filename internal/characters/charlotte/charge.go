@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFrames []int
@@ -30,7 +31,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
@@ -81,7 +82,7 @@ func (c *char) arkhe(pos geometry.Point) func() {
 			return
 		}
 		c.AddStatus(arkheIcdKeys, 6*60, true)
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Spiritbreath Thorn" + " (" + c.Base.Key.Pretty() + ")",
 			AttackTag:      attacks.AttackTagExtra,

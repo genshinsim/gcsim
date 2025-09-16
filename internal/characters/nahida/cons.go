@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -30,7 +31,7 @@ func (c *char) c2() {
 		if !ok {
 			return false
 		}
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 
 		switch ae.Info.AttackTag {
 		case attacks.AttackTagBurningDamage:
@@ -117,11 +118,11 @@ const (
 // is considered Elemental Skill DMG and can be triggered once every 0.2s. This
 // effect can last up to 10s and will be removed after Nahida has unleashed 6
 // instances of Tri-Karma Purification: Karmic Oblivion.
-func (c *char) makeC6CB() combat.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -140,7 +141,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		}
 		c.AddStatus(c6ICDKey, 0.2*60, true)
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification: Karmic Oblivion",
 			AttackTag:  attacks.AttackTagElementalArt,

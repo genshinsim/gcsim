@@ -4,9 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
-	aiSnapshot := combat.AttackInfo{
+	aiSnapshot := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Royal Descent: Behold, Itto the Evil! (Stat Snapshot)",
 	}

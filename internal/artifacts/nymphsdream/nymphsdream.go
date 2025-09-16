@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -91,7 +90,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	const stackDuration = 480
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}

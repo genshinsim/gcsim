@@ -39,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stacks := 0
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			stacks = 0
 			char.DeleteStatus(durationKey)
 
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Flute Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				Durability: 100,
 				Mult:       0.75 + 0.25*float64(r),
 			}
-			trg := args[0].(combat.Target)
+			trg := args[0].(info.Target)
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 0, 1)
 		}
 		return false

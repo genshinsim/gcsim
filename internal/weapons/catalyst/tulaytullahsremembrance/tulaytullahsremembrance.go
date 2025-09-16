@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -79,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 14*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
@@ -92,7 +91,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	// gain 2 stacks on normal attack dmg, 0.3s icd
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}

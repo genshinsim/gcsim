@@ -31,11 +31,11 @@ func (c *char) c4Init() {
 
 // TODO: this should also be added to her CA
 // Beidou's Normal Attacks gain an additional instance of 20% Electro DMG for 10s.
-func (c *char) makeC4Callback() combat.AttackCBFunc {
+func (c *char) makeC4Callback() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		trg := a.Target
 		if trg.Type() != targets.TargettableEnemy {
 			return
@@ -46,7 +46,7 @@ func (c *char) makeC4Callback() combat.AttackCBFunc {
 
 		c.Core.Log.NewEvent("c4 proc'd on attack", glog.LogCharacterEvent, c.Index).
 			Write("char", c.Index)
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Beidou C4",
 			AttackTag:  attacks.AttackTagNone,

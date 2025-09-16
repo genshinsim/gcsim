@@ -2,9 +2,9 @@ package keqing
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -15,11 +15,11 @@ const c2ICDKey = "keqing-c2-icd"
 // When Keqing's Normal and Charged Attacks hit opponents affected by Electro,
 // they have a 50% chance of producing an Elemental Particle.
 // This effect can only occur once every 5s.
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -44,7 +44,7 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 func (c *char) c4() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	cb := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}

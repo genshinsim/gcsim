@@ -29,7 +29,7 @@ type char struct {
 	a1BaseStackCount       int
 	a1Statuses             []NeuvA1Keys
 	a4Buff                 []float64
-	chargeAi               combat.AttackInfo
+	chargeAi               info.AttackInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

@@ -59,12 +59,12 @@ func (c *char) c1() {
 	}, "charlotte-c1")
 }
 
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
 	c.c2Hits = 0
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -88,7 +88,7 @@ func (c *char) c4() {
 	counter := 0
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -127,7 +127,7 @@ func (c *char) c6() {
 		if !t.StatusIsActive(skillHoldMarkKey) {
 			return false
 		}
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
@@ -135,7 +135,7 @@ func (c *char) c6() {
 			return false
 		}
 		c.AddStatus(c6IcdKey, 6*60, true)
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               c6CoordinateAtk,
 			AttackTag:          attacks.AttackTagElementalBurst,

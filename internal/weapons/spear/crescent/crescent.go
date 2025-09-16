@@ -45,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("cp-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if ae.Info.ActorIndex != char.Index {
 			return false
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		if char.StatusIsActive(buffKey) {
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Crescent Pike Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				Durability: 100,
 				Mult:       atk,
 			}
-			trg := args[0].(combat.Target)
+			trg := args[0].(info.Target)
 			c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
 		}
 		return false

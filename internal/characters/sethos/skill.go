@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -28,11 +29,11 @@ func init() {
 func (c *char) skillRefundHook() {
 	refundCB := func(args ...interface{}) bool {
 		// TODO: Check if Sethos E filters by enemy
-		// a := args[0].(combat.Target)
+		// a := args[0].(info.Target)
 		// if a.Type() != targets.TargettableEnemy {
 		// 	return false
 		// }
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != c.Index {
 			return false
 		}
@@ -60,7 +61,7 @@ func (c *char) skillRefundHook() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Ancient Rite: Thunderous Roar of Sand",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -85,7 +86,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

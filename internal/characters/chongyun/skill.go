@@ -32,7 +32,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Spirit Blade: Chonghua's Layered Frost",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -102,7 +102,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

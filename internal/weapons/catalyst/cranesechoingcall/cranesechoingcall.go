@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -49,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	energyRestore := 2.25 + float64(r)*0.25
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 
 		// can only trigger on plunge dmg
 		if atk.Info.AttackTag != attacks.AttackTagPlunge {
@@ -61,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			for _, char := range c.Player.Chars() {
 				char.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBaseWithHitlag(buffKey, buffDuration),
-					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 						if atk.Info.AttackTag != attacks.AttackTagPlunge {
 							return nil, false
 						}

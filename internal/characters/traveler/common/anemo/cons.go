@@ -3,6 +3,7 @@ package anemo
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -21,8 +22,8 @@ func (c *Traveler) c2() {
 	})
 }
 
-func c6cb(ele attributes.Element) func(a combat.AttackCB) {
-	return func(a combat.AttackCB) {
+func c6cb(ele attributes.Element) func(a info.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return

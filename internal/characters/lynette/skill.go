@@ -162,7 +162,7 @@ func (c *char) clearShadowSign() {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -189,9 +189,9 @@ func (c *char) skillAligned(hitmark int) {
 
 // When the Enigma Thrust hits an opponent, it will restore Lynette's HP based on her Max HP,
 // and in the 4s afterward, she will lose a certain amount of HP per second.
-func (c *char) makeSkillHealAndDrainCB() combat.AttackCBFunc {
+func (c *char) makeSkillHealAndDrainCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

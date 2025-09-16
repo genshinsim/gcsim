@@ -36,7 +36,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// restart a4 counter
 	c.a4extendCount = 0
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Let the Show Begin♪ (Droplet)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -131,7 +131,7 @@ func (c *char) barbaraSelfTick(healAmt, hpplus float64, skillInitF int) func() {
 	}
 }
 
-func (c *char) barbaraMelodyTick(ai combat.AttackInfo, skillInitF int) func() {
+func (c *char) barbaraMelodyTick(ai info.AttackInfo, skillInitF int) func() {
 	return func() {
 		// make sure it's not overwritten
 		if c.skillInitF != skillInitF {

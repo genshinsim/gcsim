@@ -69,7 +69,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.hasRecastSkill = false
 	c.hasC2DamageBuff = false
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Molten Inferno",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -110,8 +110,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) skillDmgHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		// atk := args[1].(*combat.AttackEvent)
+		trg := args[0].(info.Target)
+		// atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if !c.StatusIsActive(dehyaFieldKey) {
 			return false
@@ -149,7 +149,7 @@ func (c *char) skillDmgHook() {
 }
 
 func (c *char) skillRecast() (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Ranging Flame",
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -217,7 +217,7 @@ func (c *char) addField(dur int) {
 		Write("DoT tick CD", c.StatusDuration(skillICDKey))
 
 	// snapshot for ticks
-	c.skillAttackInfo = combat.AttackInfo{
+	c.skillAttackInfo = info.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             skillDoTAbil,
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -326,7 +326,7 @@ func (c *char) skillSelfDoT() {
 	// do self DoT
 	// TODO: hack because system is not designed to hit a character directly which is off-field
 	// this is true physical dmg so dmg formula/element resist does not matter
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       skillSelfDoTAbil,
 		AttackTag:  attacks.AttackTagNone,
@@ -339,7 +339,7 @@ func (c *char) skillSelfDoT() {
 	}
 	ap := combat.NewSingleTargetHit(c.Core.Combat.Player().Key())
 	snap := c.Snapshot(&ai)
-	ae := &combat.AttackEvent{
+	ae := &info.AttackEvent{
 		Info:        ai,
 		Pattern:     ap,
 		Snapshot:    snap,

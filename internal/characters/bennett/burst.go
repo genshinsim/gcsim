@@ -36,7 +36,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Status.Add(burstKey, 720+burstStartFrame)
 	// hook for buffs; active right away after cast
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fantastic Voyage",
 		AttackTag:  attacks.AttackTagElementalBurst,

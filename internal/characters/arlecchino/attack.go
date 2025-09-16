@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -113,7 +114,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	counter := c.NormalCounter
 	for i, mult := range attack[counter] {
 		c.QueueCharTask(func() {
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex:         c.Index,
 				Abil:               fmt.Sprintf("Normal %v", counter),
 				AttackTag:          attacks.AttackTagNormal,
@@ -138,7 +139,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				ai.FlatDmg += c.bondBonus()
 			}
 
-			var ap combat.AttackPattern
+			var ap info.AttackPattern
 			if len(attackHitboxes[naIndex][counter][i]) == 1 { // circle or fan
 				ap = combat.NewCircleHitOnTargetFanAngle(
 					c.Core.Combat.Player(),
@@ -178,7 +179,7 @@ func (c *char) bondBonus() float64 {
 	return amt
 }
 
-func (c *char) bondConsumeCB(a combat.AttackCB) {
+func (c *char) bondConsumeCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

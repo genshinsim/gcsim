@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const icdKey = "prototype-archaic-icd"
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -47,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		if c.Rand.Float64() < 0.5 {
 			char.AddStatus(icdKey, 15*60, true)
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Prototype Archaic Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				Durability: 100,
 				Mult:       atk,
 			}
-			trg := args[0].(combat.Target)
+			trg := args[0].(info.Target)
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
 		}
 		return false

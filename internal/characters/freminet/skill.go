@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -62,7 +63,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.skillStacks = 0
 	c.AddStatus(persTimeKey, 10*60, true)
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Pressurized Floe: Upward Thrust",
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -107,7 +108,7 @@ func (c *char) skillAligned() {
 	}
 	c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
-	aiSpiritbreath := combat.AttackInfo{
+	aiSpiritbreath := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Pressurized Floe: Spiritbreath Thorn",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -137,7 +138,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		if c.skillStacks > 0 {
 			poiseDMG = 70.0
 		}
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:       c.Index,
 			Abil:             pressureBaseName + " (Cryo)",
 			AttackTag:        attacks.AttackTagElementalArt,
@@ -165,7 +166,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		if c.skillStacks < 4 {
 			poiseDMG = 70.0
 		}
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       pressureBaseName + " (Physical)",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -183,7 +184,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		}
 
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5)
-		var particleCB combat.AttackCBFunc
+		var particleCB info.AttackCBFunc
 		if c.skillStacks == 4 {
 			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: 0.5, Y: 0.5}, 3, 7)
 			particleCB = c.particleCBLv4
@@ -215,7 +216,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCBThrust(a combat.AttackCB) {
+func (c *char) particleCBThrust(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -231,7 +232,7 @@ func (c *char) particleCBThrust(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), particles, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) particleCBLv4(a combat.AttackCB) {
+func (c *char) particleCBLv4(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

@@ -1,19 +1,19 @@
 package mualani
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const a1Delay = 20
 
-func (c *char) a1cb() combat.AttackCBFunc {
+func (c *char) a1cb() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if c.a1Count >= 2 {
 			return
 		}

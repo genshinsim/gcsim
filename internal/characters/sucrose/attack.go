@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -40,7 +41,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
@@ -52,7 +53,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	var c4cb combat.AttackCBFunc
+	var c4cb info.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		c4cb = c.makeC4Callback()
 	}

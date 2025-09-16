@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -36,7 +37,7 @@ func init() {
 // Unleashes a massive cannon bombardment on opponents in front of her, dealing AoE Geo DMG and
 // providing Cannon Fire Support for a duration afterward, periodically dealing Geo DMG to nearby opponents.
 func (c *char) Burst(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "As the Sunlit Sky's Singing Salute",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -104,8 +105,8 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 
 // When cannon attacks hit opponents, Navia will gain 1 stack of Crystal Shrapnel.
 // This effect can be triggered up to once every 2.4s.
-func (c *char) burstCB() combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+func (c *char) burstCB() info.AttackCBFunc {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

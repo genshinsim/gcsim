@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -42,12 +41,12 @@ type Character interface {
 	ReduceActionCooldown(a action.Action, v int)
 	Charges(a action.Action) int
 
-	Snapshot(a *combat.AttackInfo) combat.Snapshot
+	Snapshot(a *info.AttackInfo) info.Snapshot
 
 	AddEnergy(src string, amt float64)
 
 	ApplyHitlag(factor, dur float64)
-	AnimationStartDelay(model.AnimationDelayKey) int
+	AnimationStartDelay(info.AnimationDelayKey) int
 
 	Condition([]string) (any, error)
 

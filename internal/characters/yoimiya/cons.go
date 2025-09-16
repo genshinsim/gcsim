@@ -2,8 +2,8 @@ package yoimiya
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -38,11 +38,11 @@ func (c *char) c1() {
 
 // When Yoimiya's Pyro DMG scores a CRIT Hit, Yoimiya will gain a 25% Pyro DMG Bonus for 6s.
 // This effect can be triggered even when Yoimiya is not the active character.
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

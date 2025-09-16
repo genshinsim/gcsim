@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -54,7 +55,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Flowfrost Arrow",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -68,10 +69,10 @@ func (c *char) skillPress() action.Info {
 		CanBeDefenseHalted: true,
 	}
 
-	var a1CB combat.AttackCBFunc
+	var a1CB info.AttackCBFunc
 	if c.Base.Ascension >= 1 {
 		gen := false
-		a1CB = func(a combat.AttackCB) {
+		a1CB = func(a info.AttackCB) {
 			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}
@@ -105,7 +106,7 @@ func (c *char) skillPress() action.Info {
 }
 
 func (c *char) skillHold() action.Info {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rimestar Flare",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -138,9 +139,9 @@ func (c *char) skillHold() action.Info {
 	}
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -152,9 +153,9 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
+func (c *char) makeRimestarShardsCB() func(info.AttackCB) {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -163,7 +164,7 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 		}
 		done = true
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Rimestar Shard",
 			AttackTag:  attacks.AttackTagElementalArt,
@@ -181,10 +182,10 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 			3,
 		)
 		for i := 0; i < len(enemies); i++ {
-			var a1CB combat.AttackCBFunc
+			var a1CB info.AttackCBFunc
 			if c.Base.Ascension >= 1 {
 				done := false
-				a1CB = func(a combat.AttackCB) {
+				a1CB = func(a info.AttackCB) {
 					if a.Target.Type() != targets.TargettableEnemy {
 						return
 					}

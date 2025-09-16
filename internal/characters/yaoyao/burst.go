@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// use up energy
 	c.ConsumeEnergy(7)
 
-	burstAI := combat.AttackInfo{
+	burstAI := info.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Moonjade Descent",
 		AttackTag:        attacks.AttackTagElementalBurst,
@@ -69,7 +69,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) getBurstHealInfo(snap *combat.Snapshot) info.HealInfo {
+func (c *char) getBurstHealInfo(snap *info.Snapshot) info.HealInfo {
 	maxhp := snap.Stats.MaxHP()
 	heal := burstRadishHealing[0][c.TalentLvlBurst()]*maxhp + burstRadishHealing[1][c.TalentLvlBurst()]
 	return info.HealInfo{

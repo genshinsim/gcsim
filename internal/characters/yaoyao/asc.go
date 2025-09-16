@@ -35,8 +35,8 @@ func (c *char) a1Throw() {
 
 	c.QueueCharTask(func() {
 		var hi info.HealInfo
-		var ai combat.AttackInfo
-		var snap combat.Snapshot
+		var ai info.AttackInfo
+		var snap info.Snapshot
 
 		if c.StatusIsActive(burstKey) {
 			ai = c.burstRadishAI

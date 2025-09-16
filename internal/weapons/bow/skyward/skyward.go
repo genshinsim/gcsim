@@ -48,9 +48,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	cd := 270 - 30*r
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Harp Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,

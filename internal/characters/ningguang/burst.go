@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -28,7 +29,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		travel = 0
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Starshatter",
 		AttackTag:          attacks.AttackTagElementalBurst,

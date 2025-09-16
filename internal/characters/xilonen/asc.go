@@ -5,8 +5,8 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -37,7 +37,7 @@ func (c *char) a1() {
 	m[attributes.DmgP] = 0.30
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a1Key, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge && atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil, false
 			}
@@ -49,7 +49,7 @@ func (c *char) a1() {
 	})
 }
 
-func (c *char) a1cb(cb combat.AttackCB) {
+func (c *char) a1cb(cb info.AttackCB) {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -102,7 +102,7 @@ func (c *char) a4() {
 	}, a4Key)
 }
 
-func (c *char) a4MaxPoints(t combat.Target, ae *combat.AttackEvent) {
+func (c *char) a4MaxPoints(t info.Target, ae *info.AttackEvent) {
 	if c.Base.Ascension < 4 {
 		return
 	}

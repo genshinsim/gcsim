@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const icdKey = "skyward-spine-icd"
 	atk := .25 + .15*float64(r)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		// check if char is correct?
 		if ae.Info.ActorIndex != char.Index {
 			return false
@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		// add a new action that deals % dmg immediately
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Spine Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
@@ -79,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       atk,
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewBoxHitOnTarget(trg, nil, 0.1, 0.1), 0, 1)
 
 		// trigger cd

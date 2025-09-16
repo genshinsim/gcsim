@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -46,7 +47,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		return c.detonateSkill()
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagNormal,
@@ -85,7 +86,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			frostMod *= 2
 		}
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Pressurized Floe: Pers Time Frost",
 			AttackTag:  attacks.AttackTagElementalArt,

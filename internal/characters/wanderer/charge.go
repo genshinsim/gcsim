@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFramesNormal []int
@@ -43,7 +44,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	windup := c.chargeWindupNormal() + delay
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
@@ -79,7 +80,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 func (c *char) WindfavoredChargeAttack(p map[string]int) (action.Info, error) {
 	windup := c.chargeWindupE()
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack (Windfavored)",
 		AttackTag:  attacks.AttackTagExtra,

@@ -13,7 +13,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/target"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
@@ -74,9 +73,9 @@ func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 }
 
 //nolint:unparam // dur is always 25 atm but that might change
-func makeAOEAttack(ele attributes.Element, dur reactions.Durability) *combat.AttackEvent {
-	return &combat.AttackEvent{
-		Info: combat.AttackInfo{
+func makeAOEAttack(ele attributes.Element, dur info.Durability) *info.AttackEvent {
+	return &info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
@@ -84,9 +83,9 @@ func makeAOEAttack(ele attributes.Element, dur reactions.Durability) *combat.Att
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur reactions.Durability, trg targets.TargetKey) *combat.AttackEvent {
-	return &combat.AttackEvent{
-		Info: combat.AttackInfo{
+func makeSTAttack(ele attributes.Element, dur info.Durability, trg targets.TargetKey) *info.AttackEvent {
+	return &info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
@@ -99,12 +98,12 @@ type testTarget struct {
 	*target.Target
 	src  int
 	typ  targets.TargettableType
-	last combat.AttackEvent
+	last info.AttackEvent
 }
 
 func (target *testTarget) Type() targets.TargettableType { return target.typ }
 
-func (target *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
+func (target *testTarget) HandleAttack(atk *info.AttackEvent) float64 {
 	target.Attack(atk, nil)
 	// delay damage event to end of the frame
 	target.Core.Combat.Tasks.Add(func() {
@@ -115,7 +114,7 @@ func (target *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 1
 }
 
-func (target *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (target *testTarget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	target.last = *atk
 	target.ShatterCheck(atk)
 	if atk.Info.Durability > 0 {
@@ -125,7 +124,7 @@ func (target *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float
 	return 0, false
 }
 
-func (target *testTarget) applyDamage(atk *combat.AttackEvent) {
+func (target *testTarget) applyDamage(atk *info.AttackEvent) {
 	if !atk.Reacted {
 		target.Reactable.AttachOrRefill(atk)
 	}
@@ -192,8 +191,8 @@ func TestTick(t *testing.T) {
 	trg.src = 1
 
 	// test electro
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -220,26 +219,26 @@ func TestTick(t *testing.T) {
 	// test multiple aura
 	trg.Durability[Electro] = 0 // reset from previous test
 	trg.DecayRate[Electro] = 0
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
@@ -253,8 +252,8 @@ func TestTick(t *testing.T) {
 	}
 
 	// test refilling
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -263,13 +262,13 @@ func TestTick(t *testing.T) {
 		trg.Tick()
 	}
 	// calculate expected duration
-	decay := reactions.Durability(20.0 / (6*25 + 420))
+	decay := info.Durability(20.0 / (6*25 + 420))
 	left := 20 - 100*decay
 	life := int((left + 40) / decay)
 	// log.Println(decay, left, life)
 
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 50,
 		},
@@ -343,7 +342,7 @@ func (target *testTarget) allNil(t *testing.T) bool {
 	return ok
 }
 
-func durApproxEqual(expect, result, tol reactions.Durability) bool {
+func durApproxEqual(expect, result, tol info.Durability) bool {
 	if expect > result {
 		return expect-result < tol
 	}

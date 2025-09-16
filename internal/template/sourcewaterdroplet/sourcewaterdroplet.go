@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
@@ -21,12 +22,12 @@ func New(core *core.Core, pos geometry.Point, typ combat.GadgetTyp) *Gadget {
 	return p
 }
 
-func (s *Gadget) HandleAttack(*combat.AttackEvent) float64 { return 0 }
-func (s *Gadget) SetDirection(trg geometry.Point)          {}
-func (s *Gadget) SetDirectionToClosestEnemy()              {}
+func (s *Gadget) HandleAttack(*info.AttackEvent) float64 { return 0 }
+func (s *Gadget) SetDirection(trg geometry.Point)        {}
+func (s *Gadget) SetDirectionToClosestEnemy()            {}
 func (s *Gadget) CalcTempDirection(trg geometry.Point) geometry.Point {
 	return geometry.DefaultDirection()
 }
 
-func (s *Gadget) Type() targets.TargettableType                          { return targets.TargettableGadget }
-func (s *Gadget) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (s *Gadget) Type() targets.TargettableType                        { return targets.TargettableGadget }
+func (s *Gadget) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }

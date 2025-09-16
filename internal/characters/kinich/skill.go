@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -119,7 +120,7 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 		blindSpotDelay = blindSpotAppearanceDelays[1]
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Scalespiker Cannon",
 		AttackTag:      attacks.AttackTagElementalArt,
@@ -136,7 +137,7 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 	target := c.Core.Combat.PrimaryTarget()
 	radius := 3.0
 
-	var snap combat.Snapshot
+	var snap info.Snapshot
 	c.QueueCharTask(func() {
 		// Nightsoul points are drained before snapshot
 		c.nightsoulState.ClearPoints()
@@ -204,7 +205,7 @@ func (c *char) cancelNightsoul() {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

@@ -83,7 +83,7 @@ func (c *char) summonSeamlessShieldHealing() {
 }
 
 func (c *char) summonSpiritvein() {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spiritvein Damage",
 		AttackTag:  attacks.AttackTagElementalBurst,

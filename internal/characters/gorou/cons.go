@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -26,9 +27,9 @@ func (c *char) c1() {
 			return false
 		}
 
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		// need to check if target hit is inside the field
-		var area combat.AttackPattern
+		var area info.AttackPattern
 		if eActive {
 			area = c.eFieldArea
 		} else {
@@ -40,7 +41,7 @@ func (c *char) c1() {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex == c.Index {
 			return false
 		}
@@ -93,7 +94,7 @@ func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c6key, 720),
-			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Geo {
 					return nil, false
 				}

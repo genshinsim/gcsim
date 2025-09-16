@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -29,7 +28,7 @@ type Character struct {
 	*character.CharWrapper
 }
 
-func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot { return combat.Snapshot{} }
+func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot { return info.Snapshot{} }
 func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }

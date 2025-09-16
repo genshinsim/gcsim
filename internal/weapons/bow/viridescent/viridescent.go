@@ -36,14 +36,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mult := 0.3 + float64(r)*0.1
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 
 		// only proc on normal and charge attack
 		switch atk.Info.AttackTag {
@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Viridescent",
 			AttackTag:  attacks.AttackTagWeaponSkill,

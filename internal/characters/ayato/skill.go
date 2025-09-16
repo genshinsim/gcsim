@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -28,7 +29,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		delay = 360
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Kamisato Art: Kyouka",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -63,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -79,7 +80,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay) // TODO: this used to be 80 for particle delay
 }
 
-func (c *char) skillStacks(ac combat.AttackCB) {
+func (c *char) skillStacks(ac info.AttackCB) {
 	if c.stacks < c.stacksMax {
 		c.stacks++
 		c.Core.Log.NewEvent("gained namisen stack", glog.LogCharacterEvent, c.Index).

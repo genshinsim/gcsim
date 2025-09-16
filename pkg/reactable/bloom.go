@@ -8,20 +8,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
 const DendroCoreDelay = 30
 
-func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
+func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 	// can be hydro bloom, dendro bloom, or quicken bloom
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed reactions.Durability
+	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// this part is annoying. bloom will happen if any of the dendro like aura is present
@@ -58,7 +58,7 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
 // this reaction will check if any hydro exists and if so trigger a bloom reaction
-func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
+func (r *Reactable) tryQuickenBloom(a *info.AttackEvent) {
 	if r.Durability[Quicken] < ZeroDur {
 		// this should be a sanity check; should not happen realistically unless something wipes off
 		// the quicken immediately (same frame) after catalyze
@@ -81,7 +81,7 @@ type DendroCore struct {
 	CharIndex int
 }
 
-func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
+func (r *Reactable) addBloomGadget(a *info.AttackEvent) {
 	r.core.Tasks.Add(func() {
 		t := NewDendroCore(r.core, r.self.Shape(), a)
 		r.core.Combat.AddGadget(t)
@@ -96,7 +96,7 @@ func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	}, DendroCoreDelay)
 }
 
-func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *DendroCore {
+func NewDendroCore(c *core.Core, shp geometry.Shape, a *info.AttackEvent) *DendroCore {
 	s := &DendroCore{
 		srcFrame:  c.F,
 		CharIndex: a.Info.ActorIndex,
@@ -122,7 +122,7 @@ func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *Den
 				c.QueueAttackWithSnap(ai, snap, ap, 0)
 
 				// self damage
-				ai.Abil += reactions.SelfDamageSuffix
+				ai.Abil += info.SelfDamageSuffix
 				ai.FlatDmg = 0.05 * ai.FlatDmg
 				ap.SkipTargets[targets.TargettablePlayer] = false
 				ap.SkipTargets[targets.TargettableEnemy] = true
@@ -148,13 +148,13 @@ func (s *DendroCore) Tick() {
 	s.Gadget.Tick()
 }
 
-func (s *DendroCore) HandleAttack(atk *combat.AttackEvent) float64 {
+func (s *DendroCore) HandleAttack(atk *info.AttackEvent) float64 {
 	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
 	s.Attack(atk, nil)
 	return 0
 }
 
-func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (s *DendroCore) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	if atk.Info.Durability < ZeroDur {
 		return 0, false
 	}
@@ -174,7 +174,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 				s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 
 				// also queue self damage
-				ai.Abil += reactions.SelfDamageSuffix
+				ai.Abil += info.SelfDamageSuffix
 				ai.FlatDmg = 0.05 * ai.FlatDmg
 				ap.SkipTargets[targets.TargettablePlayer] = false
 				ap.SkipTargets[targets.TargettableEnemy] = true
@@ -202,7 +202,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 
 			// queue self damage
-			ai.Abil += reactions.SelfDamageSuffix
+			ai.Abil += info.SelfDamageSuffix
 			ai.FlatDmg = 0.05 * ai.FlatDmg
 			ap.SkipTargets[targets.TargettablePlayer] = false
 			ap.SkipTargets[targets.TargettableEnemy] = true
@@ -233,9 +233,9 @@ const (
 	HyperbloomMultiplier = 3
 )
 
-func NewBloomAttack(char *character.CharWrapper, src combat.Target, modify func(*combat.AttackInfo)) (combat.AttackInfo, combat.Snapshot) {
+func NewBloomAttack(char *character.CharWrapper, src info.Target, modify func(*info.AttackInfo)) (info.AttackInfo, info.Snapshot) {
 	em := char.Stat(attributes.EM)
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
@@ -243,7 +243,7 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target, modify func(
 		ICDTag:           attacks.ICDTagBloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(reactions.Bloom),
+		Abil:             string(info.ReactionTypeBloom),
 		IgnoreDefPercent: 1,
 	}
 	if modify != nil {
@@ -254,9 +254,9 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target, modify func(
 	return ai, snap
 }
 
-func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
+func NewBurgeonAttack(char *character.CharWrapper, src info.Target) (info.AttackInfo, info.Snapshot) {
 	em := char.Stat(attributes.EM)
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
@@ -264,7 +264,7 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.At
 		ICDTag:           attacks.ICDTagBurgeonDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(reactions.Burgeon),
+		Abil:             string(info.ReactionTypeBurgeon),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)
@@ -272,9 +272,9 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.At
 	return ai, snap
 }
 
-func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
+func NewHyperbloomAttack(char *character.CharWrapper, src info.Target) (info.AttackInfo, info.Snapshot) {
 	em := char.Stat(attributes.EM)
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
@@ -282,7 +282,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 		ICDTag:           attacks.ICDTagHyperbloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(reactions.Hyperbloom),
+		Abil:             string(info.ReactionTypeHyperbloom),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)

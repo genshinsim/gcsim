@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -70,7 +69,7 @@ func (c *char) c2() {
 		}
 		ch.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c2BuffKey, -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				return c2Buffs[attributes.Geo], true
 			},
 		})
@@ -130,7 +129,7 @@ func (c *char) c4Init() {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
@@ -208,7 +207,7 @@ func (c *char) applyC6() {
 func (c *char) c6FlatDmg() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6key, c6Duration),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagNormal, attacks.AttackTagPlunge:
 			default:

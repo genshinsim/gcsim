@@ -93,7 +93,7 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		orbs := c.legalEvalFindDroplets()
 		chargeLegalEvalLeft -= dropletLegalEvalReduction[orbs]
 
-		c.chargeAi = combat.AttackInfo{
+		c.chargeAi = info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       chargeJudgementName,
 			AttackTag:  attacks.AttackTagExtra,
@@ -160,7 +160,7 @@ func (c *char) chargeAttackShort(windup int) (action.Info, error) {
 		}
 		if c.Core.Player.Stam > 50*r {
 			c.Core.Player.UseStam(50*r, action.ActionCharge)
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Charge Attack",
 				AttackTag:  attacks.AttackTagExtra,

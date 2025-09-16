@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFramesGrounded []int
@@ -36,7 +37,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Galesplitting Soulseeker Shell",
 		AttackTag:      attacks.AttackTagElementalBurst,
@@ -60,7 +61,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.ICDTag = attacks.ICDTagChascaBurst
 	ai.ICDGroup = attacks.ICDGroupChascaBurst
 
-	var c4cb combat.AttackCBFunc
+	var c4cb info.AttackCBFunc
 
 	enemies := c.Core.Combat.EnemiesWithinArea(ap, nil)
 	burstBullets := make([]attributes.Element, 0, 6)

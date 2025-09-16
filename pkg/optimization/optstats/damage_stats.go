@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -22,8 +21,8 @@ func OptimizerDmgStat(core *core.Core) (CollectorCustomStats[CustomDamageStatsBu
 	}
 
 	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		target := args[0].(combat.Target)
-		attack := args[1].(*combat.AttackEvent)
+		target := args[0].(info.Target)
+		attack := args[1].(*info.AttackEvent)
 		damage := args[2].(float64)
 		crit := args[3].(bool)
 

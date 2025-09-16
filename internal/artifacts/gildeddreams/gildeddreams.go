@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -84,7 +83,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		const icdKey = "gd-4pc-icd"
 		add := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
+			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}

@@ -37,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	icd := 600
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if c.Rand.Float64() < prob {
 			char.AddStatus(icdKey, icd, true)
 
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Frostbearer Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,

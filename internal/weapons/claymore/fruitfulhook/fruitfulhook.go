@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -36,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR[attributes.CR] = 0.12 + 0.04*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("fruitful-hook-cr", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagPlunge {
 				return mCR, true
 			}
@@ -48,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mDMG := make([]float64, attributes.EndStatType)
 	mDMG[attributes.DmgP] = 0.12 + 0.04*float64(r)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -57,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("fruitful-hook-dmg%", 10*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				switch atk.Info.AttackTag {
 				case attacks.AttackTagNormal:
 				case attacks.AttackTagExtra:

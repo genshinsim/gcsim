@@ -14,7 +14,7 @@ func (c *Traveler) a1() {
 	if c.Base.Ascension < 1 || c.NormalCounter != c.NormalHitNum-1 {
 		return
 	}
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Slitting Wind (A1)",
 		AttackTag:  attacks.AttackTagNormal,
@@ -52,7 +52,7 @@ func (c *Traveler) a4() {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}

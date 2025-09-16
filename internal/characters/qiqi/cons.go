@@ -3,14 +3,14 @@ package qiqi
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func (c *char) c1(a combat.AttackCB) {
+func (c *char) c1(a info.AttackCB) {
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -31,7 +31,7 @@ func (c *char) c2() {
 	m[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("qiqi-c2", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}

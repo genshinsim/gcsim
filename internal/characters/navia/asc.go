@@ -3,8 +3,8 @@ package navia
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -27,7 +27,7 @@ func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(a1Key, 60*4), // 4s
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			// skip if not normal/charged/plunge
 			if atk.Info.AttackTag != attacks.AttackTagNormal &&
 				atk.Info.AttackTag != attacks.AttackTagExtra &&

@@ -2,8 +2,8 @@ package mavuika
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -40,7 +40,7 @@ func (c *char) a4Init() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(a4BufKey, -1),
-			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				// char must be active
 				if c.Core.Player.Active() != char.Index {
 					return nil, false

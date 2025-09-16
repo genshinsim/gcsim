@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -98,7 +99,7 @@ func (c *char) driftcloudWave() action.Info {
 	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, plungeRadius[skillInd])
 	skillHitmark := plungeHitmarks[skillInd]
 	c.QueueCharTask(func() {
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Driftcloud Wave (%v Leaps)", c.skillCounter),
 			AttackTag:  attacks.AttackTagPlunge,
@@ -158,7 +159,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -194,7 +195,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
@@ -223,7 +224,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,

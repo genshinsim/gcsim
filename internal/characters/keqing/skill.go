@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -46,7 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillFirst() action.Info {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Stellar Restoration",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -85,7 +86,7 @@ func (c *char) skillFirst() action.Info {
 func (c *char) skillRecast() action.Info {
 	// C1 DMG happens before Recast DMG
 	if c.Base.Cons >= 1 {
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Stellar Restoration (C1)",
 			ActorIndex: c.Index,
 			AttackTag:  attacks.AttackTagElementalArtHold,
@@ -111,7 +112,7 @@ func (c *char) skillRecast() action.Info {
 		)
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:             "Stellar Restoration (Slashing)",
 		ActorIndex:       c.Index,
 		AttackTag:        attacks.AttackTagElementalArt,
@@ -147,7 +148,7 @@ func (c *char) skillRecast() action.Info {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

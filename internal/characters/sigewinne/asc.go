@@ -3,9 +3,9 @@ package sigewinne
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -22,7 +22,7 @@ const (
 
 func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalArt:
 		case attacks.AttackTagElementalArtHold:
@@ -74,7 +74,7 @@ func (c *char) a1Self() {
 	buff[attributes.HydroP] = a1DmgBuff
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("sigewinne-a1", skillCD*60),
-		Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			return buff, true
 		},
 	})

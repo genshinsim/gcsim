@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -55,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		c.a4()
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Sunfell Slice",
 			AttackTag:      attacks.AttackTagElementalBurst,
@@ -129,7 +130,7 @@ func (c *char) burstInit() {
 	}, "mavuika-fighting-spirit-ns")
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false

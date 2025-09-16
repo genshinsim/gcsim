@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -18,16 +19,16 @@ func TestQuicken(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -55,24 +56,24 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
 		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},

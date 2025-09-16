@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func TestCrystallizeCryo(t *testing.T) {
@@ -20,14 +20,14 @@ func TestCrystallizeCryo(t *testing.T) {
 
 	c.Init()
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
 	})
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Geo,
 			Durability: 25,
 		},
@@ -59,8 +59,8 @@ func TestCrystallizePyro(t *testing.T) {
 
 	c.Init()
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
@@ -68,8 +68,8 @@ func TestCrystallizePyro(t *testing.T) {
 	// force on burning
 	trg.Durability[Burning] = 50
 
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Geo,
 			Durability: 25,
 		},

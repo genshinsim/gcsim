@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -26,7 +27,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// assume it does skill dmg at end of it's animation
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Aurous Blaze",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -67,7 +68,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) applyAB(a combat.AttackCB) {
+func (c *char) applyAB(a info.AttackCB) {
 	// marker an opponent after first hit
 	// ignore the bouncing around for now (just assume it's always target 0)
 	// icd of 2s, removed if down
@@ -95,7 +96,7 @@ func (c *char) burstHook() {
 	// check on attack landed for target 0
 	// if aurous active then trigger dmg if not on cd
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		trg, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
@@ -125,7 +126,7 @@ func (c *char) burstHook() {
 			return false
 		}
 		// do explosion, set icd
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Aurous Blaze (Explode)",
 			AttackTag:  attacks.AttackTagElementalBurst,

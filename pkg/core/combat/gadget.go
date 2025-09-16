@@ -3,6 +3,7 @@ package combat
 import (
 	"math"
 
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -45,7 +46,7 @@ func init() {
 }
 
 type Gadget interface {
-	Target
+	info.Target
 	Src() int
 	GadgetTyp() GadgetTyp
 }

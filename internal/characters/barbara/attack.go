@@ -49,7 +49,7 @@ func init() {
 
 // Standard attack function with seal handling
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
@@ -61,7 +61,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

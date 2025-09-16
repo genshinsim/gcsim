@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -17,12 +18,12 @@ type panda struct {
 	*gadget.Gadget
 	*reactable.Reactable
 	c     *char
-	ai    combat.AttackInfo
-	snap  combat.Snapshot
+	ai    info.AttackInfo
+	snap  info.Snapshot
 	timer int
 }
 
-func (c *char) newGuoba(ai combat.AttackInfo) *panda {
+func (c *char) newGuoba(ai info.AttackInfo) *panda {
 	p := &panda{
 		ai:   ai,
 		snap: c.Snapshot(&ai),
@@ -79,13 +80,13 @@ func (p *panda) breath() {
 
 func (p *panda) Type() targets.TargettableType { return targets.TargettableGadget }
 
-func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
+func (p *panda) HandleAttack(atk *info.AttackEvent) float64 {
 	p.Core.Events.Emit(event.OnGadgetHit, p, atk)
 	p.Attack(atk, nil)
 	return 0
 }
 
-func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 		return 0, false
 	}

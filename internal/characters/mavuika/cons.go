@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -132,11 +133,11 @@ func (c *char) isRingFollowing() bool {
 	return true
 }
 
-func (c *char) c6RingCB() func(a combat.AttackCB) {
+func (c *char) c6RingCB() func(a info.AttackCB) {
 	if c.Base.Cons < 6 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -144,7 +145,7 @@ func (c *char) c6RingCB() func(a combat.AttackCB) {
 			return
 		}
 		c.AddStatus(c6IcdKey, 0.5*60, true)
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Flamestrider (C6)",
 			AttackTag:      attacks.AttackTagElementalArt,
@@ -185,7 +186,7 @@ func (c *char) c6RingAtk(src int) func() {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Rings of Searing Radiance (C6)",
 			AttackTag:      attacks.AttackTagElementalArt,

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -68,7 +67,7 @@ func (s *Set) pc2() {
 	m[attributes.DmgP] = 0.25
 	s.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("longnightsoath-2pc", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge {
 				return nil, false
 			}
@@ -83,7 +82,7 @@ func (s *Set) pc4() {
 	}
 
 	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != s.char.Index {
 			return false
 		}
@@ -115,7 +114,7 @@ func (s *Set) pc4() {
 	m := make([]float64, attributes.EndStatType)
 	s.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("longnightsoath-4pc", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge {
 				return nil, false
 			}

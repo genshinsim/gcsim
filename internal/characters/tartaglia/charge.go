@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -37,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		hitWeakPoint = 0
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Charged Attack",
 		AttackTag:    attacks.AttackTagExtra,

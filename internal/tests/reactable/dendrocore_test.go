@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -24,8 +25,8 @@ func TestModifyDendroCore(t *testing.T) {
 	}
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		ae := args[1].(*combat.AttackEvent)
+		trg := args[0].(info.Target)
+		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "bloom" {
 			count++
 		}
@@ -45,8 +46,8 @@ func TestModifyDendroCore(t *testing.T) {
 		return false
 	}, "modify-core")
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
@@ -54,8 +55,8 @@ func TestModifyDendroCore(t *testing.T) {
 	}, 0)
 	advanceCoreFrame(c)
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
@@ -89,11 +90,11 @@ type fakeCore struct {
 	*gadget.Gadget
 }
 
-func (f *fakeCore) Tick()                                                  {}
-func (f *fakeCore) HandleAttack(*combat.AttackEvent) float64               { return 0 }
-func (f *fakeCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (f *fakeCore) SetDirection(trg geometry.Point)                        {}
-func (f *fakeCore) SetDirectionToClosestEnemy()                            {}
+func (f *fakeCore) Tick()                                                {}
+func (f *fakeCore) HandleAttack(*info.AttackEvent) float64               { return 0 }
+func (f *fakeCore) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (f *fakeCore) SetDirection(trg geometry.Point)                      {}
+func (f *fakeCore) SetDirectionToClosestEnemy()                          {}
 func (f *fakeCore) CalcTempDirection(trg geometry.Point) geometry.Point {
 	return geometry.DefaultDirection()
 }

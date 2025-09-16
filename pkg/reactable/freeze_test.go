@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func TestFreezePlusCryoHydro(t *testing.T) {
@@ -12,14 +12,14 @@ func TestFreezePlusCryoHydro(t *testing.T) {
 	trg := addTargetToCore(c)
 	c.Init()
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
 	})
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
@@ -30,8 +30,8 @@ func TestFreezePlusCryoHydro(t *testing.T) {
 		t.FailNow()
 	}
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
@@ -48,14 +48,14 @@ func TestFreezePlusAddFreeze(t *testing.T) {
 	trg := addTargetToCore(c)
 	c.Init()
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
 	})
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
@@ -66,14 +66,14 @@ func TestFreezePlusAddFreeze(t *testing.T) {
 		t.FailNow()
 	}
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 50, // gives us 40 attached
 		},
 	})
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},

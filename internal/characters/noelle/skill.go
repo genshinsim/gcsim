@@ -27,7 +27,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Breastplate",
 		AttackTag:          attacks.AttackTagElementalArt,
@@ -88,9 +88,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) skillHealCB() combat.AttackCBFunc {
+func (c *char) skillHealCB() info.AttackCBFunc {
 	done := false
-	return func(atk combat.AttackCB) {
+	return func(atk info.AttackCB) {
 		if atk.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -126,7 +126,7 @@ func (c *char) skillHealCB() combat.AttackCBFunc {
 // When Breastplate's duration expires or it is destroyed by DMG, it will deal 400% ATK of Geo DMG to surrounding opponents.
 func (c *char) explodeShield() {
 	c.shieldTimer = 0
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Breastplate (C4)",
 		AttackTag:          attacks.AttackTagElementalArt,

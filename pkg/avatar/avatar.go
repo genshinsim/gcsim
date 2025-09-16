@@ -5,12 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
@@ -31,7 +29,7 @@ func New(core *core.Core, pos geometry.Point, r float64) *Player {
 
 func (p *Player) Type() targets.TargettableType { return targets.TargettablePlayer }
 
-func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
+func (p *Player) HandleAttack(atk *info.AttackEvent) float64 {
 	activeChar := p.Core.Player.Active()
 	p.Core.Combat.Events.Emit(event.OnPlayerHit, activeChar, atk)
 
@@ -79,7 +77,7 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	// towards the sim's TotalDamage and DPS statistic
 	return 0
 }
-func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
+func (p *Player) calc(atk *info.AttackEvent) (float64, bool) {
 	var isCrit bool
 
 	st := attributes.EleToDmgP(atk.Info.Element)
@@ -231,7 +229,7 @@ func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
 	return damage, isCrit
 }
 
-func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durability, f int) {
+func (p *Player) ApplySelfInfusion(ele attributes.Element, dur info.Durability, f int) {
 	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).
 		Write("durability", dur).
 		Write("duration", f)
@@ -264,10 +262,10 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durabil
 	}
 	// otherwise calculate decay based on specified f (in frames)
 	p.Durability[mod] = dur
-	p.DecayRate[mod] = dur / reactions.Durability(f)
+	p.DecayRate[mod] = dur / info.Durability(f)
 }
 
-func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
+func (p *Player) ReactWithSelf(atk *info.AttackEvent) {
 	// check if have an element
 	if p.AuraCount() == 0 {
 		return

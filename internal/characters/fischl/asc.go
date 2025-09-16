@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -23,7 +24,7 @@ func (c *char) a4() {
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	a4cb := func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
@@ -38,7 +39,7 @@ func (c *char) a4() {
 		}
 		active.AddStatus(a4IcdKey, 0.5*60, true)
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl A4",
 			AttackTag:  attacks.AttackTagElementalArt,

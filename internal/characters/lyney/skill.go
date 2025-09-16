@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillBurst(), nil
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bewildering Lights",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -108,7 +108,7 @@ func (c *char) skillBurst() action.Info {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

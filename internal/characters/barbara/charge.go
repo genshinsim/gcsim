@@ -26,7 +26,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
@@ -39,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -59,10 +59,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			done = true
 		}
 	}
-	var c4CB combat.AttackCBFunc
+	var c4CB info.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		energyCount := 0
-		c4CB = func(a combat.AttackCB) {
+		c4CB = func(a info.AttackCB) {
 			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}

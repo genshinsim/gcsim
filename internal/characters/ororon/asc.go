@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -35,7 +36,7 @@ func (c *char) a1Init() {
 	}, a1NSBurstKey)
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 
 		// ignores ororon himself
 		if atk.Info.ActorIndex == c.Index {
@@ -66,7 +67,7 @@ func (c *char) a1Init() {
 	}, a1ElectroHydroKey)
 
 	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -75,7 +76,7 @@ func (c *char) a1Init() {
 	}, a1ECTriggerKey)
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.ActorIndex == c.Index {
 			return false
@@ -89,7 +90,7 @@ func (c *char) a1Init() {
 	}, a1NSTriggerKey)
 }
 
-func (c *char) a1NightSoulAttack(atk *combat.AttackEvent) {
+func (c *char) a1NightSoulAttack(atk *info.AttackEvent) {
 	if c.nightsoulState.Points() < 10 {
 		return
 	}
@@ -105,7 +106,7 @@ func (c *char) a1NightSoulAttack(atk *combat.AttackEvent) {
 }
 
 func (c *char) hypersense(mult float64, abil string, initialTargetPos geometry.Point) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               abil,
 		AttackTag:          attacks.AttackTagNone,
@@ -156,7 +157,7 @@ func (c *char) a4Init() {
 	}
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		active := c.Core.Player.ActiveChar()
 		if atk.Info.ActorIndex != active.Index {
 			return false
@@ -191,11 +192,11 @@ func (c *char) a4Init() {
 	}, a4Key)
 }
 
-func (c *char) makeA4cb() func(combat.AttackCB) {
+func (c *char) makeA4cb() func(info.AttackCB) {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

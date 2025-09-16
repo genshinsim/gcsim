@@ -3,8 +3,8 @@ package tighnari
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -16,7 +16,7 @@ func (c *char) c1() {
 	m[attributes.CR] = 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("tighnari-c1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}
@@ -75,7 +75,7 @@ func (c *char) c4() {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}

@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -36,7 +37,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if burstAction != nil {
 		return *burstAction, nil
 	}
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,

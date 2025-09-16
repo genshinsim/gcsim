@@ -53,7 +53,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(c.queueManChai, burstHitmark+1)
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Suanni's Gilded Dance (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,

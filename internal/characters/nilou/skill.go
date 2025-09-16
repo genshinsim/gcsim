@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -92,7 +93,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.Pirouette(p, NilouSkillTypeSteps), nil
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dance of Haftkarsvar",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -127,7 +128,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) initialParticleCB(a combat.AttackCB) {
+func (c *char) initialParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -178,7 +179,7 @@ func (c *char) Pirouette(p map[string]int, srcType nilouSkillType) action.Info {
 	return actionInfo
 }
 
-func (c *char) pirouetteParticleCB(a combat.AttackCB) {
+func (c *char) pirouetteParticleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -201,7 +202,7 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 	s := c.Tag(skillStep)
 	travel := 0
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Sword Dance %v", s),
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -238,7 +239,7 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 		)
 	}
 
-	var particleCB func(combat.AttackCB)
+	var particleCB func(info.AttackCB)
 	if c.StatusIsActive(pirouetteStatus) {
 		particleCB = c.pirouetteParticleCB
 	}
@@ -260,7 +261,7 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 func (c *char) WhirlingSteps(p map[string]int) action.Info {
 	s := c.Tag(skillStep)
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Whirling Steps %v", s),
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -286,7 +287,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.Info {
 		)
 	}
 
-	var particleCB func(combat.AttackCB)
+	var particleCB func(info.AttackCB)
 	if c.StatusIsActive(pirouetteStatus) {
 		particleCB = c.pirouetteParticleCB
 	}
@@ -311,7 +312,7 @@ func (c *char) TranquilityAura(src int) func() {
 			return
 		}
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tranquility Aura",
 			AttackTag:  attacks.AttackTagNone,

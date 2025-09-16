@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if !ok {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -55,7 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		if c.Rand.Float64() < prob {
 			char.AddStatus(icdKey, 600, true)
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Starsilver Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,

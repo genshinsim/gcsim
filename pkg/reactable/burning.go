@@ -5,11 +5,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
+func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
@@ -63,7 +63,7 @@ func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
 	return false
 }
 
-func (r *Reactable) attachBurningFuel(dur, mult reactions.Durability) {
+func (r *Reactable) attachBurningFuel(dur, mult info.Durability) {
 	// burning fuel always overwrites
 	r.Durability[BurningFuel] = mult * dur
 	decayRate := mult * dur / (6*dur + 420)
@@ -73,11 +73,11 @@ func (r *Reactable) attachBurningFuel(dur, mult reactions.Durability) {
 	r.DecayRate[BurningFuel] = decayRate
 }
 
-func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
-	atk := combat.AttackInfo{
+func (r *Reactable) calcBurningDmg(a *info.AttackEvent) {
+	atk := info.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(reactions.Burning),
+		Abil:             string(info.ReactionTypeBurning),
 		AttackTag:        attacks.AttackTagBurningDamage,
 		ICDTag:           attacks.ICDTagBurningDamage,
 		ICDGroup:         attacks.ICDGroupBurning,
@@ -117,7 +117,7 @@ func (r *Reactable) nextBurningTick(src, counter int, t Enemy) func() {
 				0,
 			)
 			// self damage
-			ai.Abil += reactions.SelfDamageSuffix
+			ai.Abil += info.SelfDamageSuffix
 			ap.SkipTargets[targets.TargettablePlayer] = false
 			ap.SkipTargets[targets.TargettableEnemy] = true
 			ap.SkipTargets[targets.TargettableGadget] = true

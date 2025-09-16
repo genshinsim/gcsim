@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -22,7 +23,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Soumetsu",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -50,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	)
 
 	// C2 mini-frostflake bloom
-	var aiC2 combat.AttackInfo
+	var aiC2 info.AttackInfo
 	if c.Base.Cons >= 2 {
 		aiC2 = ai
 		aiC2.Mult = burstBloom[c.TalentLvlBurst()] * .2

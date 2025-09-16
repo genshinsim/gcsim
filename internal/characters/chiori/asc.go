@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -65,7 +66,7 @@ func (c *char) a1TapestrySetup() {
 			return false
 		}
 		// attack not na/ca/plunge
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
@@ -90,7 +91,7 @@ func (c *char) a1TapestrySetup() {
 		c.AddStatus(a1SeizeTheMomentICDKey, a1SeizeTheMomentICD, true)
 
 		// deal dmg
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Fluttering Hasode (Seize the Moment)",
 			ActorIndex: c.Index,
 			AttackTag:  attacks.AttackTagElementalArt,

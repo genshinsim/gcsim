@@ -2,16 +2,15 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (r *Reactable) TryVaporize(a *combat.AttackEvent) bool {
+func (r *Reactable) TryVaporize(a *info.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed reactions.Durability
+	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		// make sure there's hydro
@@ -42,7 +41,7 @@ func (r *Reactable) TryVaporize(a *combat.AttackEvent) bool {
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
 	a.Info.Amped = true
-	a.Info.AmpType = reactions.Vaporize
+	a.Info.AmpType = info.ReactionTypeVaporize
 	r.core.Events.Emit(event.OnVaporize, r.self, a)
 	return true
 }

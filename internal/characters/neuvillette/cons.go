@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -32,7 +33,7 @@ func (c *char) c2() {
 	c2Buff := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("neuvillette-c2", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if strings.Contains(atk.Info.Abil, chargeJudgementName) {
 				c2Buff[attributes.CD] = 0.14 * float64(c.countA1())
 				return c2Buff, true
@@ -108,7 +109,7 @@ func (c *char) c6DropletCheck(src int) func() {
 	}
 }
 
-func (c *char) c6cb(a combat.AttackCB) {
+func (c *char) c6cb(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -116,7 +117,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 		return
 	}
 	c.AddStatus(c6ICDKey, 2*60, true)
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       chargeJudgementName + " (C6)",
 		AttackTag:  attacks.AttackTagExtra,

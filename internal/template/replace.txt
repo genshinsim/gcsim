@@ -11,4 +11,4 @@ core.TargettableEnemy
 targets.TargettableEnemy
 
 core.AttackCB
-combat.AttackCB
+info.AttackCB

@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -113,11 +114,11 @@ func (c *char) c2StackCheck(src int) func() {
 }
 
 // After an opponent is hit by Lyney's Pyro Charged Attack, this opponent's Pyro RES will be decreased by 20% for 6s.
-func (c *char) makeC4CB() combat.AttackCBFunc {
+func (c *char) makeC4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -136,7 +137,7 @@ func (c *char) c6(c6Travel int) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Pyrotechnic Strike: Reprised",
 		AttackTag:  attacks.AttackTagExtra,

@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -15,11 +16,11 @@ const c1ICDKey = "xinyan-c1-icd"
 
 // Upon scoring a CRIT Hit, increases ATK SPD of Xinyan's Normal and Charged Attacks by 12% for 5s.
 // Can only occur once every 5s.
-func (c *char) makeC1CB() combat.AttackCBFunc {
+func (c *char) makeC1CB() info.AttackCBFunc {
 	if c.Base.Cons < 1 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -56,7 +57,7 @@ func (c *char) c2() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("xinyan-c2", -1),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
@@ -69,11 +70,11 @@ func (c *char) c2() {
 }
 
 // Sweeping Fervor's swing DMG decreases opponent's Physical RES by 15% for 12s.
-func (c *char) makeC4CB() combat.AttackCBFunc {
+func (c *char) makeC4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return

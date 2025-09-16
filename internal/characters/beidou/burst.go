@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -29,7 +30,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Stormbreaker (Q)",
 		AttackTag:          attacks.AttackTagElementalBurst,
@@ -54,7 +55,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// beidou burst is not hitlag extendable
 	c.AddStatus(burstKey, dur, false)
 
-	procAI := combat.AttackInfo{
+	procAI := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stormbreak Proc (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -66,7 +67,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstproc[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&procAI)
-	c.burstAtk = &combat.AttackEvent{
+	c.burstAtk = &info.AttackEvent{
 		Info:     procAI,
 		Snapshot: snap,
 	}
@@ -114,8 +115,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 func (c *char) burstProc() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		t := args[0].(combat.Target)
+		ae := args[1].(*info.AttackEvent)
+		t := args[0].(info.Target)
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
@@ -151,14 +152,14 @@ func (c *char) burstProc() {
 	}, "beidou-burst")
 }
 
-func (c *char) chain(src, count int) combat.AttackCBFunc {
+func (c *char) chain(src, count int) info.AttackCBFunc {
 	if c.Base.Cons >= 2 && count == 5 {
 		return nil
 	}
 	if c.Base.Cons <= 1 && count == 3 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		// on hit figure out the next target
 		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t combat.Enemy) bool {
 			return a.Target.Key() != t.Key()

@@ -34,8 +34,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const icdKey = "messenger-icd"
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		trg := args[0].(combat.Target)
+		atk := args[1].(*info.AttackEvent)
+		trg := args[0].(info.Target)
 		// don't proc if dmg not from weapon holder
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, 10*60, true) // 10s icd
 
 		// queue single target proc
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:   char.Index,
 			Abil:         "Messenger Proc",
 			AttackTag:    attacks.AttackTagNone,

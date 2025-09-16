@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -43,7 +44,7 @@ func init() {
 // vortex that deals AoE Anemo DMG and pulls nearby objects and opponents in.
 // The vortex DMG is considered Elemental Skill DMG.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wind Realm of Nasamjnin (E)",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -82,7 +83,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -94,7 +95,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 func (c *char) pressurizedCollapse(pos geometry.Point) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       VortexAbilName,
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -110,7 +111,7 @@ func (c *char) pressurizedCollapse(pos geometry.Point) {
 	// A1:
 	// She can apply The Wind's Secret Ways' Perfidious Wind's Bale to opponents
 	// who are hit by the vortex created by Pressurized Collapse.
-	var shredCb combat.AttackCBFunc
+	var shredCb info.AttackCBFunc
 	if c.Base.Ascension >= 1 {
 		shredCb = applyBurstShredCb
 	}

@@ -170,13 +170,13 @@ func (c *char) spawnDroplets() {
 	}
 }
 
-func (c *char) surgingBladeTask(target combat.Target) {
+func (c *char) surgingBladeTask(target info.Target) {
 	if c.StatusIsActive(skillAlignedICDKey) {
 		return
 	}
 	c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
-	aiThorn := combat.AttackInfo{
+	aiThorn := info.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 		AttackTag:    attacks.AttackTagElementalArt,
@@ -238,7 +238,7 @@ func (c *char) bubbleTierDamageMod() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("sigewinne-bubble-tier", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:
@@ -289,7 +289,7 @@ func (c *char) bubbleTierLoseTask(tick int) {
 	}
 }
 
-func (c *char) particleCB(ac combat.AttackCB) {
+func (c *char) particleCB(ac info.AttackCB) {
 	if ac.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -303,7 +303,7 @@ func (c *char) particleCB(ac combat.AttackCB) {
 }
 
 func (c *char) generateSkillSnapshot() {
-	c.skillAttackInfo = combat.AttackInfo{
+	c.skillAttackInfo = info.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Rebound Hydrotherapy",
 		AttackTag:    attacks.AttackTagElementalArt,

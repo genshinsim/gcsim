@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstHitmarks = []int{96, 94}
@@ -41,7 +42,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	c.qICDTag = attacks.ICDTagNone
 	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.5}, 2.5, 2.5)
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gust Surge",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -55,7 +56,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -1.5}, 3, 3)
 	snap := c.Snapshot(&ai)
 
-	aiAbs := combat.AttackInfo{
+	aiAbs := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gust Surge (Absorbed)",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -70,7 +71,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 
 	snapAbs := c.Snapshot(&aiAbs)
 
-	var cb combat.AttackCBFunc
+	var cb info.AttackCBFunc
 	if c.Base.Cons >= 6 {
 		cb = c6cb(attributes.Anemo)
 	}
@@ -81,7 +82,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(func() {
 			if c.qAbsorb != attributes.NoElement {
 				aiAbs.Element = c.qAbsorb
-				var cbAbs combat.AttackCBFunc
+				var cbAbs info.AttackCBFunc
 				if c.Base.Cons >= 6 {
 					cbAbs = c6cb(c.qAbsorb)
 				}

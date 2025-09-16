@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -29,7 +30,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.a4()
 
 	// initial
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Starward Sword (Initial)",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalBurst,

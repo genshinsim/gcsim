@@ -47,8 +47,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("debate-club-activation-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		trg := args[0].(combat.Target)
+		atk := args[1].(*info.AttackEvent)
+		trg := args[0].(info.Target)
 		// don't proc if dmg not from weapon holder
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, 180, true) // 3s
 
 		// queue proc
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Debate Club Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,

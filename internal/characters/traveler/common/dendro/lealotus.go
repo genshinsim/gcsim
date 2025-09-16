@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -17,7 +17,7 @@ import (
 type LeaLotus struct {
 	*gadget.Gadget
 	*reactable.Reactable
-	burstAtk     *combat.AttackEvent
+	burstAtk     *info.AttackEvent
 	char         *Traveler
 	hitboxRadius float64
 }
@@ -63,7 +63,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	s.hitboxRadius = 2
 	c.burstOverflowingLotuslight = 0
 
-	procAI := combat.AttackInfo{
+	procAI := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lea Lotus Lamp",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -74,7 +74,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],
 	}
-	s.burstAtk = &combat.AttackEvent{
+	s.burstAtk = &info.AttackEvent{
 		Info:     procAI,
 		Snapshot: c.Snapshot(&procAI),
 	}
@@ -82,7 +82,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	return s
 }
 
-func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
+func (s *LeaLotus) HandleAttack(atk *info.AttackEvent) float64 {
 	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
 
 	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", atk.Info.Abil), glog.LogCharacterEvent, s.char.Index)
@@ -91,7 +91,7 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 	s.ShatterCheck(atk)
 
 	if atk.Info.Durability > 0 {
-		atk.Info.Durability *= reactions.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+		atk.Info.Durability *= info.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
 			existing := s.Reactable.ActiveAuraString()
 			applied := atk.Info.Durability
@@ -131,7 +131,7 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 0
 }
 
-func (s *LeaLotus) attachEle(atk *combat.AttackEvent) {
+func (s *LeaLotus) attachEle(atk *info.AttackEvent) {
 	// check for ICD first
 	existing := s.Reactable.ActiveAuraString()
 	applied := atk.Info.Durability
@@ -171,7 +171,7 @@ func (s *LeaLotus) QueueAttack(delay int) {
 	)
 }
 
-func (s *LeaLotus) React(a *combat.AttackEvent) {
+func (s *LeaLotus) React(a *info.AttackEvent) {
 	// only check the ones possible
 	switch a.Info.Element {
 	case attributes.Electro:
@@ -199,7 +199,7 @@ func (s *LeaLotus) React(a *combat.AttackEvent) {
 	}
 }
 
-func (s *LeaLotus) TryQuicken(a *combat.AttackEvent) {
+func (s *LeaLotus) TryQuicken(a *info.AttackEvent) {
 	if !s.Reactable.TryQuicken(a) {
 		return
 	}
@@ -209,7 +209,7 @@ func (s *LeaLotus) TryQuicken(a *combat.AttackEvent) {
 	s.transfig(attributes.Electro)
 }
 
-func (s *LeaLotus) TryBloom(a *combat.AttackEvent) {
+func (s *LeaLotus) TryBloom(a *info.AttackEvent) {
 	if !s.Reactable.TryBloom(a) {
 		return
 	}
@@ -221,7 +221,7 @@ func (s *LeaLotus) TryBloom(a *combat.AttackEvent) {
 	s.transfig(attributes.Hydro)
 }
 
-func (s *LeaLotus) TryBurning(a *combat.AttackEvent) {
+func (s *LeaLotus) TryBurning(a *info.AttackEvent) {
 	if !s.Reactable.TryBurning(a) {
 		return
 	}

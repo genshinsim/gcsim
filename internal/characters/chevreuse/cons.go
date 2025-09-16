@@ -32,7 +32,7 @@ func (c *char) c1() {
 	}
 
 	c.Core.Events.Subscribe(event.OnOverload, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		// does not include chevreuse
 		if atk.Info.ActorIndex == c.Index {
 			return false
@@ -59,18 +59,18 @@ func (c *char) c1() {
 // Each explosion deals Pyro DMG equal to 120% of Chevreuse's ATK.
 // This effect can be triggered up to once every 10s,
 // and DMG dealt this way is considered Elemental Skill DMG.
-func (c *char) c2() combat.AttackCBFunc {
+func (c *char) c2() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
 	// triggers on hitting anything, not just enemy
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if c.StatusIsActive(c2ICDKey) {
 			return
 		}
 		c.AddStatus(c2ICDKey, 10*60, true)
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Sniper Induced Explosion (C2)",
 			AttackTag:  attacks.AttackTagElementalArt,

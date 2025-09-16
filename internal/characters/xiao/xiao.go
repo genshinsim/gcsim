@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -65,7 +64,7 @@ func (c *char) Init() error {
 // Implements burst anemo attack damage conversion and DMG bonus
 // Also implements A1:
 // While under the effects of Bane of All Evil, all DMG dealt by Xiao is increased by 5%. DMG is increased by an additional 5% for every 3s the ability persists. The maximum DMG Bonus is 25%
-func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(a *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(a)
 
 	if c.StatusIsActive("xiaoburst") {

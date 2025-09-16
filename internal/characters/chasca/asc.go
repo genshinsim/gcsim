@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -23,7 +24,7 @@ func (c *char) a1DMGBuff() {
 	// since it would be active for all E-CAs anyways
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("chasca-a1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.ICDTag != attacks.ICDTagChascaShining {
 				return nil, false
 			}
@@ -52,7 +53,7 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "Burning Shadowhunt Shot",
 		AttackTag:      attacks.AttackTagExtra,

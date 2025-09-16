@@ -2,8 +2,8 @@ package position
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -24,7 +24,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	}
 
 	core.Events.Subscribe(event.OnTargetMoved, func(args ...interface{}) bool {
-		target := args[0].(combat.Target)
+		target := args[0].(info.Target)
 
 		for _, enemy := range core.Combat.Enemies() {
 			if enemy.Key() == target.Key() {
@@ -41,7 +41,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	return &out, nil
 }
 
-func overlaps(targets []combat.Target) bool {
+func overlaps(targets []info.Target) bool {
 	for i := 0; i < len(targets); i++ {
 		for j := i + 1; j < len(targets); j++ {
 			if targets[i].WillCollide(targets[j].Shape()) {

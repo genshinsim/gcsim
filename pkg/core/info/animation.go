@@ -1,4 +1,4 @@
-package model
+package info
 
 type AnimationDelayKey int
 

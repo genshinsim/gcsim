@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -28,7 +29,7 @@ func init() {
 
 // Has one parameter, "hits" determines the number of cardamoms that hit the enemy
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	boxAi := combat.AttackInfo{
+	boxAi := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Secret Art: Surprise Dispatch",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -62,7 +63,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if minehits > c.cardamoms {
 		minehits = c.cardamoms
 	}
-	mineAi := combat.AttackInfo{
+	mineAi := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Cat Grass Cardamom Explosion",
 		AttackTag:          attacks.AttackTagElementalBurst,

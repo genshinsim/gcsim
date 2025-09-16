@@ -22,7 +22,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Initial Hit
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Signature Mix (Initial)",
 		AttackTag:  attacks.AttackTagElementalBurst,

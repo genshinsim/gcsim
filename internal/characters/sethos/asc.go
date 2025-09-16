@@ -2,7 +2,7 @@ package sethos
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -43,13 +43,13 @@ func (c *char) a4() {
 	c.a4Count = 0
 }
 
-func (c *char) makeA4cb() combat.AttackCBFunc {
+func (c *char) makeA4cb() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

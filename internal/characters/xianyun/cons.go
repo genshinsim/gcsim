@@ -3,7 +3,6 @@ package xianyun
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -56,12 +55,12 @@ func (c *char) c2buff() {
 	})
 }
 
-func (c *char) c4cb() func(a combat.AttackCB) {
+func (c *char) c4cb() func(a info.AttackCB) {
 	if c.Base.Cons < 4 {
 		return nil
 	}
 
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -90,7 +89,7 @@ func (c *char) c6() {
 	c.SetTag(c6Key, 8)
 }
 
-func (c *char) c6mod(snap *combat.Snapshot) {
+func (c *char) c6mod(snap *info.Snapshot) {
 	if c.Base.Cons < 6 {
 		return
 	}

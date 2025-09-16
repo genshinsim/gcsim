@@ -63,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		char.AddStatus(icdKey, 900, true) // 15 sec
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Aquila Favonia",
 			AttackTag:  attacks.AttackTagWeaponSkill,

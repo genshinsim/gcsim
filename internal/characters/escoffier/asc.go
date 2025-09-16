@@ -59,11 +59,11 @@ func (c *char) a4Init() {
 	}
 }
 
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

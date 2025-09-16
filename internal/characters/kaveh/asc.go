@@ -3,7 +3,6 @@ package kaveh
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -26,7 +25,7 @@ func (c *char) a1() {
 		if char != c.Index {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagBloom &&
 			atk.Info.AttackTag != attacks.AttackTagHyperbloom &&
 			atk.Info.AttackTag != attacks.AttackTagBurgeon {
@@ -67,7 +66,7 @@ func (c *char) a4AddStacksHandler() {
 		if c.a4Stacks >= 4 {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}

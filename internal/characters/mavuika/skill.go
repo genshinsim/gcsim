@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -192,7 +193,7 @@ func (c *char) skillRecast() action.Info {
 }
 
 func (c *char) skillHold() action.Info {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "The Named Moment (Flamestrider)",
 		AttackTag:      attacks.AttackTagElementalArt,
@@ -222,7 +223,7 @@ func (c *char) skillHold() action.Info {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "The Named Moment",
 		AttackTag:      attacks.AttackTagElementalArt,
@@ -248,7 +249,7 @@ func (c *char) skillPress() action.Info {
 
 // Recasting E while on bike, occurs with Sac or Burst allowing E to come off of cd
 func (c *char) skillBikeRefresh() action.Info {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "The Named Moment (Flamestrider)",
 		AttackTag:      attacks.AttackTagElementalArt,
@@ -306,7 +307,7 @@ func (c *char) skillRingTask(src int) {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Rings of Searing Radiance",
 			AttackTag:      attacks.AttackTagElementalArt,
@@ -329,7 +330,7 @@ func (c *char) skillRingTask(src int) {
 	}, 2*60)
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

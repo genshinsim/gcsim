@@ -51,7 +51,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// add +0.6 reaction damage
 	char.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("vv-4pc", -1),
-		Amount: func(ai combat.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) (float64, bool) {
 			// check to make sure this is not an amped swirl
 			if ai.Amped || ai.Catalyzed {
 				return 0, false
@@ -70,7 +70,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	vvfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
+			atk := args[1].(*info.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
 				return false
@@ -103,7 +103,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
 	// Possibly closure related? Not sure
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false

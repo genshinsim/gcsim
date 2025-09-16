@@ -6,11 +6,10 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -25,7 +24,7 @@ var particleIDToElement = []attributes.Element{
 	attributes.Geo,
 }
 
-func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
+func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 	// at this point attack will land
 	e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
 
@@ -63,7 +62,7 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 		e.Core.Combat.TotalDamage += actualDmg
 		e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, actualDmg, crit)
 		// callbacks
-		cb := combat.AttackCB{
+		cb := info.AttackCB{
 			Target:      e,
 			AttackEvent: atk,
 			Damage:      actualDmg,
@@ -86,7 +85,7 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 	return dmg
 }
 
-func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	// if target is frozen prior to attack landing, set impulse to 0
 	// let the break freeze attack to trigger actual impulse
 	if e.Durability[reactable.Frozen] > reactable.ZeroDur {
@@ -108,13 +107,13 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 				continue
 			}
 			// burning durability wiped out to 0 if any of the other char still on icd re burning dmg
-			atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i))
+			atk.Info.Durability *= info.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i))
 		}
 	}
 	// check tags
 	if atk.Info.Durability > 0 {
 		// check for ICD first
-		atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+		atk.Info.Durability *= info.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		checkBurningICD()
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
 			existing := e.Reactable.ActiveAuraString()
@@ -215,7 +214,7 @@ func (e *Enemy) tryHPDropParticle() (float64, attributes.Element) {
 	return e.prof.ParticleDropCount * float64(count), e.prof.ParticleElement
 }
 
-func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) float64 {
+func (e *Enemy) applyDamage(atk *info.AttackEvent, damage float64) float64 {
 	// record dmg
 	// do not let hp become negative because this function can be called multiple times in same frame
 	actualDmg := min(damage, e.hp) // do not let dmg be greater than remaining enemy hp

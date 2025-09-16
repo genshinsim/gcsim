@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const normalHitNum = 3
@@ -41,7 +42,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:    attacks.AttackTagNormal,

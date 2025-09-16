@@ -29,7 +29,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Frostgnaw",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -40,7 +40,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	cb := func(a combat.AttackCB) {
+	cb := func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -77,7 +77,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -95,12 +95,12 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // Opponents Frozen by Frostgnaw will drop additional Elemental Particles.
 // Frostgnaw may only produce a maximum of 2 additional Elemental Particles per use.
-func (c *char) makeA4ParticleCB() combat.AttackCBFunc {
+func (c *char) makeA4ParticleCB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 	a4Count := 0
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return

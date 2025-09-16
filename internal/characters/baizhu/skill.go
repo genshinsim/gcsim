@@ -30,7 +30,7 @@ const (
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Universal Diagnosis",
 		AttackTag:  attacks.AttackTagElementalArt,
@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	snap := c.Snapshot(&ai)
-	c.skillAtk = &combat.AttackEvent{
+	c.skillAtk = &info.AttackEvent{
 		Info:     ai,
 		Snapshot: snap,
 	}
@@ -71,11 +71,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) chain(src, count int) combat.AttackCBFunc {
+func (c *char) chain(src, count int) info.AttackCBFunc {
 	if count == 3 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		// on hit figure out the next target
 		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 10), nil)
 		if next == nil {
@@ -101,9 +101,9 @@ func (c *char) chain(src, count int) combat.AttackCBFunc {
 	}
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

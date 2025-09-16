@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
@@ -34,7 +35,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		travel = tickTravel
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Starlight Slug",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -58,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			}
 
 			done := false
-			cb := func(_ combat.AttackCB) {
+			cb := func(_ info.AttackCB) {
 				if done {
 					return
 				}

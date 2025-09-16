@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -59,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		bonus[attributes.DmgP] = (0.12 + 0.04*float64(refine)) * float64(w.stacks)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(dmgBonusKey, 6*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				return bonus, true
 			},
 		})

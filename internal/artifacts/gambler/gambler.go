@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -40,7 +39,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.20
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("gambler-2pc", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 					return nil, false
 				}
@@ -62,7 +61,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if !ok {
 				return false
 			}
-			atk := args[1].(*combat.AttackEvent)
+			atk := args[1].(*info.AttackEvent)
 			// don't proc if someone else defeated the enemy
 			if atk.Info.ActorIndex != char.Index {
 				return false

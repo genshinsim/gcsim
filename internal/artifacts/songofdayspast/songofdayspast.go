@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -90,7 +89,7 @@ func (s *Set) OnHeal() func(args ...interface{}) bool {
 
 func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalBurst:
 		case attacks.AttackTagElementalArt:

@@ -133,7 +133,7 @@ func (c *char) burstInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("furina-burst-damage-buff", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if !c.StatusIsActive(burstKey) {
 					return nil, false
 				}
@@ -155,7 +155,7 @@ func (c *char) burstInit() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Let the People Rejoice",
 		AttackTag:  attacks.AttackTagElementalBurst,

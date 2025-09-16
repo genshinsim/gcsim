@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -141,7 +142,7 @@ func (c *char) burstWave() {
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 10)
 
 	// TODO: is deployable?
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Super Saturated Syringing",
 		AttackTag:    attacks.AttackTagElementalBurst,

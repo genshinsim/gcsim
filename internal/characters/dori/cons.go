@@ -18,7 +18,7 @@ func (c *char) c1() {
 // When you are in combat and the Jinni heals the character it is connected to,
 // it will fire a Jinni Toop from that character's position that deals 50% of Dori's ATK DMG.
 func (c *char) c2(travel int) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Special Franchise",
 		AttackTag:  attacks.AttackTagNone,
@@ -76,11 +76,11 @@ const c6Key = "dori-c6"
 // - Electro Infusion.
 // - When Normal Attacks hit opponents, all nearby party members will heal HP equivalent to 4% of Dori's Max HP.
 // This type of healing can occur once every 0.1s.
-func (c *char) makeC6CB() combat.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	if c.Base.Cons < 6 || !c.Core.Player.WeaponInfuseIsActive(c.Index, c6Key) {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}

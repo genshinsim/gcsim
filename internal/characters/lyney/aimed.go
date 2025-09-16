@@ -73,7 +73,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
@@ -127,7 +127,7 @@ func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	propAI := combat.AttackInfo{
+	propAI := info.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Fully-Charged Aimed Shot (Prop Arrow)",
 		AttackTag:            attacks.AttackTagExtra,
@@ -221,7 +221,7 @@ func (c *char) skillAligned(pos geometry.Point) func() {
 		}
 		c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
-		propAlignedAI := combat.AttackInfo{
+		propAlignedAI := info.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 			AttackTag:  attacks.AttackTagExtra,

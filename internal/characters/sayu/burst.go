@@ -23,7 +23,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// dmg
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Yoohoo Art: Mujina Flurry",
 		AttackTag:        attacks.AttackTagElementalBurst,
@@ -116,8 +116,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 // TODO: is this helper function needed?
-func (c *char) createBurstSnapshot() *combat.AttackEvent {
-	ai := combat.AttackInfo{
+func (c *char) createBurstSnapshot() *info.AttackEvent {
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Muji-Muji Daruma",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -129,7 +129,7 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 		Mult:       burstSkill[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-	ae := combat.AttackEvent{
+	ae := info.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,

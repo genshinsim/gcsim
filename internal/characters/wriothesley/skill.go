@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -59,7 +58,7 @@ func (c *char) skillBuffActive() bool {
 	return c.StatusIsActive(skillKey) && c.CurrentHPRatio() > 0.5
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -70,7 +69,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) chillingPenalty(a combat.AttackCB) {
+func (c *char) chillingPenalty(a info.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}

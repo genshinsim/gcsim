@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -42,7 +43,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 func (c *char) lowPlungeC() action.Info {
 	c.tryTriggerA1TailoringNA()
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge Attack",
 		AttackTag:  attacks.AttackTagPlunge,

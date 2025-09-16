@@ -3,8 +3,8 @@ package sara
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -27,7 +27,7 @@ func (c *char) c1() {
 func (c *char) c6(char *character.CharWrapper) {
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("sara-c6", 360),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.Element != attributes.Electro {
 				return nil, false
 			}

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -62,7 +61,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("flower-4pc", -1),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
 				case attacks.AttackTagBloom:
 				case attacks.AttackTagHyperbloom:
@@ -76,7 +75,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 		f := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
+			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
@@ -97,7 +96,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			char.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBaseWithHitlag(buffKey, 10*60),
-				Amount: func(ai combat.AttackInfo) (float64, bool) {
+				Amount: func(ai info.AttackInfo) (float64, bool) {
 					switch ai.AttackTag {
 					case attacks.AttackTagBloom:
 					case attacks.AttackTagHyperbloom:

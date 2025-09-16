@@ -31,7 +31,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.waveCount = 0
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Wagtail's Tide (Q)",
 		AttackTag:          attacks.AttackTagElementalBurst,
@@ -111,7 +111,7 @@ func (c *char) burstSwap() {
 		if c.waveCount > 2 {
 			return false
 		}
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Sacred Rite: Wagtail's Tide (Wave)",
 			AttackTag:          attacks.AttackTagElementalBurst,
@@ -140,7 +140,7 @@ func (c *char) burstInit(char *character.CharWrapper) {
 	m[attributes.DmgP] = 0.2
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(burstDmgKey, -1),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if !c.StatusIsActive(burstKey) {
 				return nil, false
 			}

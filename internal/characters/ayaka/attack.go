@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -51,7 +52,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			icdGroup = attacks.ICDGroupPoleExtraAttack   // N5 has a different ICDGroup
 			centerTarget = c.Core.Combat.PrimaryTarget() // N5 is a bullet
 		}
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			ActorIndex:         c.Index,
 			AttackTag:          attacks.AttackTagNormal,
