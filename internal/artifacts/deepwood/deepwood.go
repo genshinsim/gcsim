@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -61,7 +60,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			t.AddResistMod(combat.ResistMod{
+			t.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("dm-4pc", 8*60),
 				Ele:   attributes.Dendro,
 				Value: -0.3,

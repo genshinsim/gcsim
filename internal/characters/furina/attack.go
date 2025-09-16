@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -54,7 +53,7 @@ func (c *char) arkheCB(a info.AttackCB) {
 
 	// calc attack pos
 	player := c.Core.Combat.Player()
-	arkhePos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: -0.3}, player.Direction())
+	arkhePos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: -0.3}, player.Direction())
 	c.QueueCharTask(func() {
 		ai := info.AttackInfo{
 			ActorIndex:     c.Index,
@@ -117,14 +116,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			case 0, 3:
 				ap = combat.NewBoxHitOnTarget(
 					c.Core.Combat.Player(),
-					geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
+					info.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
 					attackHitboxes[c6Index][c.NormalCounter][0],
 					attackHitboxes[c6Index][c.NormalCounter][1],
 				)
 			case 1, 2:
 				ap = combat.NewCircleHitOnTarget(
 					c.Core.Combat.Player(),
-					geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
+					info.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
 					attackHitboxes[c6Index][c.NormalCounter][0],
 				)
 			}

@@ -46,7 +46,7 @@ func (c *char) c2(a info.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(combat.DefMod{
+	e.AddDefMod(info.DefMod{
 		Base:  modifier.NewBaseWithHitlag("kleec2", 10*60),
 		Value: -0.233,
 	})

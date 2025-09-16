@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -73,7 +71,7 @@ func (c *char) skillPress() action.Info {
 	if c.Base.Ascension >= 1 {
 		gen := false
 		a1CB = func(a info.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			if !gen { // ignore a first enemy
@@ -86,7 +84,7 @@ func (c *char) skillPress() action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.4}, 2.5, 10),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.4}, 2.5, 10),
 		skillPressHitmark,
 		skillPressHitmark+skillPressTravel,
 		c.makeParticleCB(),
@@ -142,7 +140,7 @@ func (c *char) skillHold() action.Info {
 func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -156,7 +154,7 @@ func (c *char) makeParticleCB() info.AttackCBFunc {
 func (c *char) makeRimestarShardsCB() func(info.AttackCB) {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -178,7 +176,7 @@ func (c *char) makeRimestarShardsCB() func(info.AttackCB) {
 
 		enemies := c.Core.Combat.RandomEnemiesWithinArea(
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10),
-			func(t combat.Enemy) bool { return a.Target.Key() != t.Key() },
+			func(t info.Enemy) bool { return a.Target.Key() != t.Key() },
 			3,
 		)
 		for i := 0; i < len(enemies); i++ {
@@ -186,7 +184,7 @@ func (c *char) makeRimestarShardsCB() func(info.AttackCB) {
 			if c.Base.Ascension >= 1 {
 				done := false
 				a1CB = func(a info.AttackCB) {
-					if a.Target.Type() != targets.TargettableEnemy {
+					if a.Target.Type() != info.TargettableEnemy {
 						return
 					}
 					if done {

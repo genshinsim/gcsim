@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -25,12 +24,12 @@ func (c *char) createKinu(src int, centerOffset, minRandom, maxRandom float64) f
 	return func() {
 		// determine kinu pos
 		player := c.Core.Combat.Player()
-		center := geometry.CalcOffsetPoint(
+		center := info.CalcOffsetPoint(
 			player.Pos(),
-			geometry.Point{Y: centerOffset},
+			info.Point{Y: centerOffset},
 			player.Direction(),
 		)
-		kinuPos := geometry.CalcRandomPointFromCenter(center, minRandom, maxRandom, c.Core.Rand)
+		kinuPos := info.CalcRandomPointFromCenter(center, minRandom, maxRandom, c.Core.Rand)
 
 		c.Core.Log.NewEvent("kinu spawned", glog.LogCharacterEvent, c.Index).Write("src", src)
 
@@ -43,7 +42,7 @@ func (c *char) createKinu(src int, centerOffset, minRandom, maxRandom float64) f
 	}
 }
 
-func (c *char) kinuAttack(src int, kinu *ticker, pos geometry.Point) func() {
+func (c *char) kinuAttack(src int, kinu *ticker, pos info.Point) func() {
 	return func() {
 		c.Core.Tasks.Add(func() {
 			ai := info.AttackInfo{

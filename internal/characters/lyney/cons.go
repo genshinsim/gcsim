@@ -123,7 +123,7 @@ func (c *char) makeC4CB() info.AttackCBFunc {
 		if !ok {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("lyney-c4", 6*60),
 			Ele:   attributes.Pyro,
 			Value: -0.20,

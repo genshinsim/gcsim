@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -19,7 +18,7 @@ const (
 // the Shield of Safe Transport produced by Meow-teor Kick would have. If Kirara is already protected by a Shield of Safe Transport created by
 // Meow-teor Kick, its DMG absorption will stack with these shields and its duration will reset.
 func (c *char) a1StackGain(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(a1IcdStatus) {

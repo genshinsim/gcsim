@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -103,7 +102,7 @@ func (c *char) queueSnacks() {
 	}
 }
 
-func (c *char) calculateSnackSpawnLocation() geometry.Point {
+func (c *char) calculateSnackSpawnLocation() info.Point {
 	// According to testing, snacks appear within a small range (1m) in front of the target/player.
 	// However since the enemy direction is not set by default towards the player, we calculate
 	// a position relative to the player/enemy
@@ -120,17 +119,17 @@ func (c *char) calculateSnackSpawnLocation() geometry.Point {
 	if target != nil {
 		targetShape := target.Shape()
 		finalPosition = targetShape.Pos()
-		direction := geometry.Point{
+		direction := info.Point{
 			X: playerPos.X - finalPosition.X,
 			Y: playerPos.Y - finalPosition.Y,
 		}
-		if v, ok := targetShape.(*geometry.Circle); ok {
+		if v, ok := targetShape.(*info.Circle); ok {
 			if finalPosition != playerPos {
 				direction = direction.Normalize()
 				finalPosition.X += v.Radius() * direction.X
 				finalPosition.Y += v.Radius() * direction.Y
 			}
-		} else if _, ok := targetShape.(*geometry.Rectangle); ok {
+		} else if _, ok := targetShape.(*info.Rectangle); ok {
 			// currently we cannot reliably get an edge to spawn the snack on rectangle.
 			// place it somewhere around the middle
 			finalPosition.X += direction.X / 2

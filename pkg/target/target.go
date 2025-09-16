@@ -3,20 +3,18 @@ package target
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const MaxTeamSize = 4
 
 type Target struct {
 	Core            *core.Core
-	key             targets.TargetKey
-	Hitbox          geometry.Circle
+	key             info.TargetKey
+	Hitbox          info.Circle
 	Tags            map[string]int
-	CollidableTypes [targets.TargettableTypeCount]bool
+	CollidableTypes [info.TargettableTypeCount]bool
 	OnCollision     func(info.Target)
 
 	Alive bool
@@ -27,36 +25,36 @@ type Target struct {
 	icdDamageTagOnTimer [MaxTeamSize][attacks.ICDTagLength]bool
 	icdDamageTagCounter [MaxTeamSize][attacks.ICDTagLength]int
 
-	direction geometry.Point
+	direction info.Point
 }
 
-func New(core *core.Core, p geometry.Point, r float64) *Target {
+func New(core *core.Core, p info.Point, r float64) *Target {
 	t := &Target{
 		Core: core,
 	}
-	t.Hitbox = *geometry.NewCircle(p, r, geometry.DefaultDirection(), 360)
-	t.direction = geometry.DefaultDirection()
+	t.Hitbox = *info.NewCircle(p, r, info.DefaultDirection(), 360)
+	t.direction = info.DefaultDirection()
 	t.Tags = make(map[string]int)
 	t.Alive = true
 
 	return t
 }
 
-func (t *Target) Collidable() bool                              { return t.OnCollision != nil }
-func (t *Target) CollidableWith(x targets.TargettableType) bool { return t.CollidableTypes[x] }
+func (t *Target) Collidable() bool                           { return t.OnCollision != nil }
+func (t *Target) CollidableWith(x info.TargettableType) bool { return t.CollidableTypes[x] }
 func (t *Target) CollidedWith(x info.Target) {
 	if t.OnCollision != nil {
 		t.OnCollision(x)
 	}
 }
 
-func (t *Target) Key() targets.TargetKey     { return t.key }
-func (t *Target) SetKey(x targets.TargetKey) { t.key = x }
-func (t *Target) Shape() geometry.Shape      { return &t.Hitbox }
-func (t *Target) SetPos(p geometry.Point)    { t.Hitbox.SetPos(p) }
-func (t *Target) Pos() geometry.Point        { return t.Hitbox.Pos() }
-func (t *Target) Kill()                      { t.Alive = false }
-func (t *Target) IsAlive() bool              { return t.Alive }
+func (t *Target) Key() info.TargetKey     { return t.key }
+func (t *Target) SetKey(x info.TargetKey) { t.key = x }
+func (t *Target) Shape() info.Shape       { return &t.Hitbox }
+func (t *Target) SetPos(p info.Point)     { t.Hitbox.SetPos(p) }
+func (t *Target) Pos() info.Point         { return t.Hitbox.Pos() }
+func (t *Target) Kill()                   { t.Alive = false }
+func (t *Target) IsAlive() bool           { return t.Alive }
 func (t *Target) SetTag(key string, val int) {
 	t.Tags[key] = val
 }
@@ -69,14 +67,14 @@ func (t *Target) RemoveTag(key string) {
 	delete(t.Tags, key)
 }
 
-func (t *Target) WillCollide(s geometry.Shape) bool {
+func (t *Target) WillCollide(s info.Shape) bool {
 	if !t.Alive {
 		return false
 	}
 	switch v := s.(type) {
-	case *geometry.Circle:
+	case *info.Circle:
 		return t.Shape().IntersectCircle(*v)
-	case *geometry.Rectangle:
+	case *info.Rectangle:
 		return t.Shape().IntersectRectangle(*v)
 	default:
 		return false
@@ -104,11 +102,11 @@ func (t *Target) AttackWillLand(a info.AttackPattern) (bool, string) {
 
 	// check if shape matches
 	switch v := a.Shape.(type) {
-	case *geometry.Circle:
+	case *info.Circle:
 		return t.Shape().IntersectCircle(*v), "intersect circle"
-	case *geometry.Rectangle:
+	case *info.Rectangle:
 		return t.Shape().IntersectRectangle(*v), "intersect rectangle"
-	case *geometry.SingleTarget:
+	case *info.SingleTarget:
 		// only true if
 		return v.Target == t.key, "target"
 	default:
@@ -120,10 +118,10 @@ func (t *Target) IsWithinArea(a info.AttackPattern) bool {
 	return a.Shape.PointInShape(t.Pos())
 }
 
-func (t *Target) Direction() geometry.Point { return t.direction }
-func (t *Target) SetDirection(trg geometry.Point) {
+func (t *Target) Direction() info.Point { return t.direction }
+func (t *Target) SetDirection(trg info.Point) {
 	src := t.Pos()
-	t.direction = geometry.CalcDirection(src, trg)
+	t.direction = info.CalcDirection(src, trg)
 	t.Core.Combat.Log.NewEvent("set target direction", glog.LogDebugEvent, -1).
 		Write("src target key", t.key).
 		Write("srcX", src.X).
@@ -137,7 +135,7 @@ func (t *Target) SetDirectionToClosestEnemy() {
 	// calculate direction towards closest enemy, or forward direction if none
 	enemy := t.Core.Combat.ClosestEnemy(src)
 	if enemy == nil {
-		t.direction = geometry.DefaultDirection()
+		t.direction = info.DefaultDirection()
 		return
 	}
 	t.SetDirection(enemy.Pos())
@@ -145,9 +143,9 @@ func (t *Target) SetDirectionToClosestEnemy() {
 		Write("enemy key", enemy.Key()).
 		Write("direction", t.direction)
 }
-func (t *Target) CalcTempDirection(trg geometry.Point) geometry.Point {
+func (t *Target) CalcTempDirection(trg info.Point) info.Point {
 	src := t.Pos()
-	direction := geometry.CalcDirection(src, trg)
+	direction := info.CalcDirection(src, trg)
 	t.Core.Combat.Log.NewEvent("using temporary target direction", glog.LogDebugEvent, -1).
 		Write("src target key", t.key).
 		Write("srcX", src.X).

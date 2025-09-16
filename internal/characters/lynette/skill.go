@@ -5,9 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -79,7 +77,7 @@ func (c *char) skillPress() action.Info {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			c.skillAI,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, 1.8, 4.5),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.5}, 1.8, 4.5),
 			0,
 			0,
 			c.particleCB,
@@ -114,7 +112,7 @@ func (c *char) skillHold(duration int) action.Info {
 
 		c.Core.QueueAttack(
 			c.skillAI,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, 1.8, 5),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.5}, 1.8, 5),
 			0,
 			0,
 			c.particleCB,
@@ -163,7 +161,7 @@ func (c *char) clearShadowSign() {
 }
 
 func (c *char) particleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -181,7 +179,7 @@ func (c *char) skillAligned(hitmark int) {
 
 	c.Core.QueueAttack(
 		c.skillAlignedAI,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.3}, 1.2, 4.5),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.3}, 1.2, 4.5),
 		hitmark,
 		hitmark,
 	)
@@ -192,7 +190,7 @@ func (c *char) skillAligned(hitmark int) {
 func (c *char) makeSkillHealAndDrainCB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

@@ -5,11 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -30,12 +28,12 @@ func (c *char) newGuoba(ai info.AttackInfo) *panda {
 		c:    c,
 	}
 	player := c.Core.Combat.Player()
-	pos := geometry.CalcOffsetPoint(
+	pos := info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{Y: 1.3},
+		info.Point{Y: 1.3},
 		player.Direction(),
 	)
-	p.Gadget = gadget.New(c.Core, pos, 0.2, combat.GadgetTypGuoba)
+	p.Gadget = gadget.New(c.Core, pos, 0.2, info.GadgetTypGuoba)
 	p.Gadget.Duration = 438
 	p.Reactable = &reactable.Reactable{}
 	p.Reactable.Init(p, c.Core)
@@ -78,7 +76,7 @@ func (p *panda) breath() {
 	)
 }
 
-func (p *panda) Type() targets.TargettableType { return targets.TargettableGadget }
+func (p *panda) Type() info.TargettableType { return info.TargettableGadget }
 
 func (p *panda) HandleAttack(atk *info.AttackEvent) float64 {
 	p.Core.Events.Emit(event.OnGadgetHit, p, atk)

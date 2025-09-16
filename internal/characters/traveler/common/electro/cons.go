@@ -2,7 +2,6 @@ package electro
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -19,7 +18,7 @@ func (c *Traveler) c2() info.AttackCBFunc {
 		if !ok {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("travelerelectro-c2", 480),
 			Ele:   attributes.Electro,
 			Value: -0.15,

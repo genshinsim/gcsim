@@ -3,12 +3,10 @@ package emilie
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -99,7 +97,7 @@ func (c *char) c2(a info.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag(c2ModKey, c2Duration),
 		Ele:   attributes.Dendro,
 		Value: -0.3,
@@ -149,7 +147,7 @@ func (c *char) c6ScentCB() func(info.AttackCB) {
 		if done {
 			return
 		}
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		done = true

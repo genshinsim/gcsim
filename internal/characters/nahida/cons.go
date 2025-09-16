@@ -65,7 +65,7 @@ func (c *char) c2() {
 			if !t.StatusIsActive(skillMarkKey) {
 				return false
 			}
-			t.AddDefMod(combat.DefMod{
+			t.AddDefMod(info.DefMod{
 				Base:  modifier.NewBaseWithHitlag("nahida-c2", 480),
 				Value: -0.3,
 			})
@@ -88,7 +88,7 @@ func (c *char) c4() {
 		Amount: func() ([]float64, bool) {
 			enemies := c.Core.Combat.EnemiesWithinArea(
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 30),
-				func(t combat.Enemy) bool {
+				func(t info.Enemy) bool {
 					return t.StatusIsActive(skillMarkKey)
 				},
 			)

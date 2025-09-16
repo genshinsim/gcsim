@@ -69,7 +69,7 @@ func (c *char) burstTick() {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), func(e combat.Enemy) bool {
+	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), func(e info.Enemy) bool {
 		return !e.StatusIsActive(burstMarkKey)
 	})
 	for _, enemy := range enemies {

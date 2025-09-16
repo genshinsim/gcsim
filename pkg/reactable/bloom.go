@@ -6,11 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -96,20 +94,20 @@ func (r *Reactable) addBloomGadget(a *info.AttackEvent) {
 	}, DendroCoreDelay)
 }
 
-func NewDendroCore(c *core.Core, shp geometry.Shape, a *info.AttackEvent) *DendroCore {
+func NewDendroCore(c *core.Core, shp info.Shape, a *info.AttackEvent) *DendroCore {
 	s := &DendroCore{
 		srcFrame:  c.F,
 		CharIndex: a.Info.ActorIndex,
 	}
 
-	circ, ok := shp.(*geometry.Circle)
+	circ, ok := shp.(*info.Circle)
 	if !ok {
 		panic("rectangle target hurtbox is not supported for dendro core spawning")
 	}
 
 	// for simplicity, seeds spawn randomly at radius + 0.5
 	r := circ.Radius() + 0.5
-	s.Gadget = gadget.New(c, geometry.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
+	s.Gadget = gadget.New(c, info.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, info.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
@@ -124,9 +122,9 @@ func NewDendroCore(c *core.Core, shp geometry.Shape, a *info.AttackEvent) *Dendr
 				// self damage
 				ai.Abil += info.SelfDamageSuffix
 				ai.FlatDmg = 0.05 * ai.FlatDmg
-				ap.SkipTargets[targets.TargettablePlayer] = false
-				ap.SkipTargets[targets.TargettableEnemy] = true
-				ap.SkipTargets[targets.TargettableGadget] = true
+				ap.SkipTargets[info.TargettablePlayer] = false
+				ap.SkipTargets[info.TargettableEnemy] = true
+				ap.SkipTargets[info.TargettableGadget] = true
 				c.QueueAttackWithSnap(ai, snap, ap, 0)
 
 				c.Log.NewEvent(
@@ -176,9 +174,9 @@ func (s *DendroCore) Attack(atk *info.AttackEvent, evt glog.Event) (float64, boo
 				// also queue self damage
 				ai.Abil += info.SelfDamageSuffix
 				ai.FlatDmg = 0.05 * ai.FlatDmg
-				ap.SkipTargets[targets.TargettablePlayer] = false
-				ap.SkipTargets[targets.TargettableEnemy] = true
-				ap.SkipTargets[targets.TargettableGadget] = true
+				ap.SkipTargets[info.TargettablePlayer] = false
+				ap.SkipTargets[info.TargettableEnemy] = true
+				ap.SkipTargets[info.TargettableGadget] = true
 				s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 			}
 		}, 60)
@@ -204,9 +202,9 @@ func (s *DendroCore) Attack(atk *info.AttackEvent, evt glog.Event) (float64, boo
 			// queue self damage
 			ai.Abil += info.SelfDamageSuffix
 			ai.FlatDmg = 0.05 * ai.FlatDmg
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
+			ap.SkipTargets[info.TargettablePlayer] = false
+			ap.SkipTargets[info.TargettableEnemy] = true
+			ap.SkipTargets[info.TargettableGadget] = true
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 		}, 1)
 
@@ -290,8 +288,8 @@ func NewHyperbloomAttack(char *character.CharWrapper, src info.Target) (info.Att
 	return ai, snap
 }
 
-func (s *DendroCore) SetDirection(trg geometry.Point) {}
-func (s *DendroCore) SetDirectionToClosestEnemy()     {}
-func (s *DendroCore) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (s *DendroCore) SetDirection(trg info.Point) {}
+func (s *DendroCore) SetDirectionToClosestEnemy() {}
+func (s *DendroCore) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

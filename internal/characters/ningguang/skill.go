@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -46,7 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	player := c.Core.Combat.Player()
 	screenDir := player.Direction()
-	screenPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
+	screenPos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: 3}, player.Direction())
 
 	c.Core.Tasks.Add(func() {
 		c.skillSnapshot = c.Snapshot(&ai)
@@ -83,7 +81,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) particleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

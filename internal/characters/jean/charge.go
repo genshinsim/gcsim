@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -40,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1},
+			info.Point{Y: 1},
 			1.8,
 			160,
 		),

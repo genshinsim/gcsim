@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -29,7 +28,7 @@ const (
 	lumidouceScentInterval      = 0.5 * 60
 )
 
-func (c *char) spawnLumidouceCase(level int, pos geometry.Point, afterBurst bool) {
+func (c *char) spawnLumidouceCase(level int, pos info.Point, afterBurst bool) {
 	if c.StatusIsActive(lumidouceStatus) && c.Tag(lumidouceLevel) == 3 { // only update the reset timer during burst
 		c.AddStatus(lumidouceScentResetKey, lumidouceScentResetInterval, true)
 		return

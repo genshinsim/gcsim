@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type kitsune struct {
@@ -130,7 +128,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		if c.Base.Cons >= 4 {
 			done := false
 			c4cb = func(a info.AttackCB) {
-				if a.Target.Type() != targets.TargettableEnemy {
+				if a.Target.Type() != info.TargettableEnemy {
 					return
 				}
 				if done {
@@ -146,7 +144,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 
 		// spawn 1 attack
 		// priority: enemy > gadget
-		tick := func(pos geometry.Point) {
+		tick := func(pos info.Point) {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHitOnTarget(pos, nil, 0.5),

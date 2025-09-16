@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -88,7 +87,7 @@ func (c *char) c4CB() info.AttackCBFunc {
 		return nil
 	}
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c4ICDKey) {
@@ -139,7 +138,7 @@ func (c *char) c6CB() info.AttackCBFunc {
 	}
 
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if !a.IsCrit {

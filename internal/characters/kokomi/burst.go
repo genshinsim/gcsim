@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -114,7 +113,7 @@ func (c *char) burstDmgBonus(a attacks.AttackTag) float64 {
 func (c *char) makeBurstHealCB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.Core.Status.Duration("kokomiburst") == 0 {

@@ -7,11 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -106,7 +104,7 @@ func (c *char) skillPress() action.Info {
 func (c *char) makePressParticleCB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -136,7 +134,7 @@ func (c *char) skillHold() action.Info {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 4),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.5}, 4),
 			0,
 			c.holdParticleCB,
 		)
@@ -156,7 +154,7 @@ func (c *char) skillHold() action.Info {
 }
 
 func (c *char) holdParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {

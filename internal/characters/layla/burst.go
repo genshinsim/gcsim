@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
@@ -50,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Status.Add("laylaburst", 12*60+burstStart)
 
 	player := c.Core.Combat.Player()
-	burstArea := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 12)
+	burstArea := combat.NewCircleHitOnTarget(player, info.Point{Y: 1}, 12)
 	for delay := burstStart; delay < 12*60+burstStart; delay += 90 {
 		c.Core.Tasks.Add(func() {
 			enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)

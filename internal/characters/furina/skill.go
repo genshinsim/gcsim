@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames [][]int
@@ -316,7 +315,7 @@ func (c *char) singerOfManyWaters(src int) func() {
 }
 
 func (c *char) particleCB(ac info.AttackCB) {
-	if ac.Target.Type() != targets.TargettableEnemy {
+	if ac.Target.Type() != info.TargettableEnemy {
 		return
 	}
 

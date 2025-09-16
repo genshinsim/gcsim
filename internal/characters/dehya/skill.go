@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -87,7 +86,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// do initial attack
 	player := c.Core.Combat.Player()
-	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.8}, player.Direction())
+	skillPos := info.CalcOffsetPoint(c.Core.Combat.Player().Pos(), info.Point{Y: 0.8}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
@@ -177,7 +176,7 @@ func (c *char) skillRecast() (action.Info, error) {
 
 	player := c.Core.Combat.Player()
 	// assuming tap e for hitbox offset
-	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.5}, player.Direction())
+	skillPos := info.CalcOffsetPoint(c.Core.Combat.Player().Pos(), info.Point{Y: 0.5}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 6), skillRecastHitmark)
 

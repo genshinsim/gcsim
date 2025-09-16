@@ -3,10 +3,7 @@ package hydro
 import (
 	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const a1ICDKey = "sourcewater-droplet-icd"
@@ -23,7 +20,7 @@ func (c *Traveler) makeA1CB() info.AttackCBFunc {
 		if count >= 4 {
 			return
 		}
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(a1ICDKey) {
@@ -72,16 +69,16 @@ func (c *Traveler) a1PickUp(count int) {
 
 func (c *Traveler) newDroplet() *sourcewaterdroplet.Gadget {
 	player := c.Core.Combat.Player()
-	pos := geometry.CalcRandomPointFromCenter(
-		geometry.CalcOffsetPoint(
+	pos := info.CalcRandomPointFromCenter(
+		info.CalcOffsetPoint(
 			player.Pos(),
-			geometry.Point{Y: 3.5},
+			info.Point{Y: 3.5},
 			player.Direction(),
 		),
 		0.3,
 		3,
 		c.Core.Rand,
 	)
-	droplet := sourcewaterdroplet.New(c.Core, pos, combat.GadgetTypSourcewaterDropletHydroTrav)
+	droplet := sourcewaterdroplet.New(c.Core, pos, info.GadgetTypSourcewaterDropletHydroTrav)
 	return droplet
 }

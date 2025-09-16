@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -37,7 +35,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// there's no collision logic for the gadget thrown by Sucrose
 	// from tests in abyss it looks like the gadget lands around 2 abyss tiles away from Sucrose which is about 5m
 	// at that pos there's an offset of Y: -1, which is why it's Y: 4 here
-	c.absorbCheckLocation = combat.NewBoxHitOnTarget(player, geometry.Point{Y: 4}, 2.5, 2.5)
+	c.absorbCheckLocation = combat.NewBoxHitOnTarget(player, info.Point{Y: 4}, 2.5, 2.5)
 
 	c.Core.Status.Add("sucroseburst", duration)
 	ai := info.AttackInfo{
@@ -51,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 5}, 8)
+	ap := combat.NewCircleHitOnTarget(player, info.Point{Y: 5}, 8)
 
 	//TODO: does sucrose burst snapshot?
 	snap := c.Snapshot(&ai)
@@ -70,7 +68,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	snapAbs := c.Snapshot(&aiAbs)
 
 	cb := func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		c.a4()

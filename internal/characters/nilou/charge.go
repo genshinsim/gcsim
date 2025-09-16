@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -39,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.3),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 2.3),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 		)

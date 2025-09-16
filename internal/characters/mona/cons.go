@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -79,7 +78,7 @@ func (c *char) c2(a info.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.Core.Rand.Float64() > .2 {
@@ -180,7 +179,7 @@ func (c *char) makeC6CAResetCB() info.AttackCBFunc {
 		return nil
 	}
 	return func(a info.AttackCB) {
-		if a.Target.Type() == targets.TargettableEnemy {
+		if a.Target.Type() == info.TargettableEnemy {
 			return
 		}
 		if !c.StatusIsActive(c6Key) {

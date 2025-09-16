@@ -3,8 +3,6 @@ package info
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type AttackEvent struct {
@@ -27,9 +25,9 @@ type AttackCB struct {
 type AttackCBFunc func(AttackCB)
 
 type AttackInfo struct {
-	ActorIndex       int               // character this attack belongs to
-	DamageSrc        targets.TargetKey // source of this attack; should be a unique key identifying the target
-	Abil             string            // name of ability triggering the damage
+	ActorIndex       int       // character this attack belongs to
+	DamageSrc        TargetKey // source of this attack; should be a unique key identifying the target
+	Abil             string    // name of ability triggering the damage
 	AttackTag        attacks.AttackTag
 	AdditionalTags   []attacks.AdditionalTag
 	PoiseDMG         float64 // only needed on blunt attacks for frozen consumption before shatter for now
@@ -73,12 +71,12 @@ type Snapshot struct {
 }
 
 type Target interface {
-	Key() targets.TargetKey        // unique key for the target
-	SetKey(k targets.TargetKey)    // update key
-	Type() targets.TargettableType // type of target
-	Shape() geometry.Shape         // geometry.Shape of target
-	Pos() geometry.Point           // center of target
-	SetPos(p geometry.Point)       // move target
+	Key() TargetKey        // unique key for the target
+	SetKey(k TargetKey)    // update key
+	Type() TargettableType // type of target
+	Shape() Shape          // info.Shape of target
+	Pos() Point            // center of target
+	SetPos(p Point)        // move target
 	IsAlive() bool
 	SetTag(key string, val int)
 	GetTag(key string) int
@@ -89,14 +87,14 @@ type Target interface {
 	Tick()                                         // called every tick
 	Kill()
 	// for collision check
-	CollidableWith(targets.TargettableType) bool
+	CollidableWith(TargettableType) bool
 	CollidedWith(t Target)
-	WillCollide(geometry.Shape) bool
+	WillCollide(Shape) bool
 	// direction related
-	Direction() geometry.Point                           // returns viewing direction as a geometry.Point
-	SetDirection(trg geometry.Point)                     // calculates viewing direction relative to default direction (0, 1)
-	SetDirectionToClosestEnemy()                         // looks for closest enemy
-	CalcTempDirection(trg geometry.Point) geometry.Point // used for stuff like Bow CA
+	Direction() Point                  // returns viewing direction as a info.Point
+	SetDirection(trg Point)            // calculates viewing direction relative to default direction (0, 1)
+	SetDirectionToClosestEnemy()       // looks for closest enemy
+	CalcTempDirection(trg Point) Point // used for stuff like Bow CA
 }
 
 type TargetWithAura interface {
@@ -105,7 +103,7 @@ type TargetWithAura interface {
 }
 
 type AttackPattern struct {
-	Shape       geometry.Shape
-	SkipTargets [targets.TargettableTypeCount]bool
-	IgnoredKeys []targets.TargetKey
+	Shape       Shape
+	SkipTargets [TargettableTypeCount]bool
+	IgnoredKeys []TargetKey
 }

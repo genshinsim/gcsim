@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -41,7 +40,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	snap := c.Snapshot(&ai)
 
-	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 10)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 5}, 10)
 	burstPos := burstArea.Shape.Pos()
 	icdSrc := []int{math.MinInt32, math.MinInt32, math.MinInt32, math.MinInt32}
 	// 32 damage ticks
@@ -60,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewBoxHit(p, burstPos, geometry.Point{Y: -distance}, 1, distance),
+				combat.NewBoxHit(p, burstPos, info.Point{Y: -distance}, 1, distance),
 				0,
 			)
 

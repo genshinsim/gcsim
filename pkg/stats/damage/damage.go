@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -44,7 +43,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 		// TODO: validate if this is still true?
 		// No need to pull damage stats for non-enemies
-		if target.Type() != targets.TargettableEnemy {
+		if target.Type() != info.TargettableEnemy {
 			return false
 		}
 

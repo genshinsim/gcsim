@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
@@ -181,7 +180,7 @@ func (c *char) highPlungeCA(p map[string]int) action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadius),
 		hitmark,
 		hitmark,
 		c.a1Cancel,
@@ -241,7 +240,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadius),
 		hitmark,
 		hitmark,
 		c.a1Cancel,
@@ -301,7 +300,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, lowPlungeRadius),
 		hitmark,
 		hitmark,
 		c.a1Cancel,

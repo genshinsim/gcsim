@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames [][]int
@@ -55,7 +53,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: -0.3}, 6.5, 130),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), info.Point{Y: -0.3}, 6.5, 130),
 		skillHitmark,
 		skillHitmark,
 		skillCB,
@@ -73,7 +71,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *Traveler) particleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

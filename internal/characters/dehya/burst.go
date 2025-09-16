@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -81,7 +80,7 @@ func (c *char) burstPunchFunc(src int) func() {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -2.8}, 5, 7.8),
 			0,
 			0,
 			c.c4CB(),
@@ -122,7 +121,7 @@ func (c *char) burstKickFunc(src int) func() {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 6.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 6.5),
 			0,
 			0,
 			c.c4CB(),

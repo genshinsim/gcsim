@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -38,7 +37,7 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
 		trg := a.Target
-		if trg.Type() != targets.TargettableEnemy {
+		if trg.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.Core.Player.Active() != c.Index {

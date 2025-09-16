@@ -48,7 +48,7 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 
 		next := c.Combat.ClosestEnemyWithinArea(
 			combat.NewCircleHitOnTarget(t, nil, 8),
-			func(e combat.Enemy) bool {
+			func(e info.Enemy) bool {
 				return !e.StatusIsActive(bounceKey)
 			},
 		)
@@ -95,7 +95,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		enemy := c.Combat.ClosestEnemyWithinArea(
 			combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8),
-			func(e combat.Enemy) bool {
+			func(e info.Enemy) bool {
 				return !e.StatusIsActive(bounceKey)
 			},
 		)

@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -89,7 +88,7 @@ func (c *char) summonSwordWave() {
 	if c.nextRegen {
 		done := false
 		c6cb = func(a info.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			if done {
@@ -113,7 +112,7 @@ func (c *char) summonSwordWave() {
 
 			icd = c.Core.F + 1
 			c.Core.Tasks.Add(func() {
-				e.AddResistMod(combat.ResistMod{
+				e.AddResistMod(info.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("xingqiu-c2", 4*60),
 					Ele:   attributes.Hydro,
 					Value: -0.15,

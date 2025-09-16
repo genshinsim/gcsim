@@ -7,10 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -132,12 +130,12 @@ func (c *char) makeBunny() *Bunny {
 	// TODO: Implement hold E for different distances
 	// TODO: Implement collision check for moving Baron Bunny off enemies and players
 	player := c.Core.Combat.Player()
-	bunnyPos := geometry.CalcOffsetPoint(
+	bunnyPos := info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{Y: 1.4},
+		info.Point{Y: 1.4},
 		player.Direction(),
 	)
-	b.Gadget = gadget.New(c.Core, bunnyPos, 1, combat.GadgetTypBaronBunny)
+	b.Gadget = gadget.New(c.Core, bunnyPos, 1, info.GadgetTypBaronBunny)
 	b.Reactable = &reactable.Reactable{}
 	b.Reactable.Init(b, c.Core)
 
@@ -189,7 +187,7 @@ func (b *Bunny) explode() {
 func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -79,13 +77,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	for i := 0; i < mineGroups; i++ {
 		for j := 0; j < mineCounts[i]; j++ {
 			// every shell has its own direction
-			direction := geometry.DegreesToDirection(mineSteps[i][j]).Rotate(burstInitialDirection)
+			direction := info.DegreesToDirection(mineSteps[i][j]).Rotate(burstInitialDirection)
 
 			// can't use combat attack pattern func because can't easily supply direction
 			mineAp := info.AttackPattern{
-				Shape: geometry.NewCircle(burstInitialPos, 6, direction, 60),
+				Shape: info.NewCircle(burstInitialPos, 6, direction, 60),
 			}
-			mineAp.SkipTargets[targets.TargettablePlayer] = true
+			mineAp.SkipTargets[info.TargettablePlayer] = true
 			c.Core.QueueAttack(mineAi, mineAp, snapshotDelay, burstHitmark+mineDelays[i])
 		}
 	}

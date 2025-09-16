@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
@@ -118,9 +117,9 @@ func (r *Reactable) nextBurningTick(src, counter int, t Enemy) func() {
 			)
 			// self damage
 			ai.Abil += info.SelfDamageSuffix
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
+			ap.SkipTargets[info.TargettablePlayer] = false
+			ap.SkipTargets[info.TargettableEnemy] = true
+			ap.SkipTargets[info.TargettableGadget] = true
 			r.core.QueueAttackWithSnap(
 				ai,
 				r.burningSnapshot,

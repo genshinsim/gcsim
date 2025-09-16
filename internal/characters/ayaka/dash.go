@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -41,7 +40,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.1}, 2),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.1}, 2),
 		dashHitmark+f,
 		dashHitmark+f,
 		c.makeA4CB(),

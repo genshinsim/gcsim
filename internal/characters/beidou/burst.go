@@ -92,7 +92,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			c.Core.Tasks.Add(func() {
 				enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), nil)
 				for _, v := range enemies {
-					v.AddResistMod(combat.ResistMod{
+					v.AddResistMod(info.ResistMod{
 						Base:  modifier.NewBaseWithHitlag("beidouc6", 90),
 						Ele:   attributes.Electro,
 						Value: -0.15,
@@ -161,7 +161,7 @@ func (c *char) chain(src, count int) info.AttackCBFunc {
 	}
 	return func(a info.AttackCB) {
 		// on hit figure out the next target
-		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t combat.Enemy) bool {
+		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t info.Enemy) bool {
 			return a.Target.Key() != t.Key()
 		})
 		if next == nil {

@@ -143,16 +143,16 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 			mult += surgingBite[c.TalentLvlSkill()]
 		}
 
-		primaryEnemy, ok := c.Core.Combat.PrimaryTarget().(combat.Enemy)
+		primaryEnemy, ok := c.Core.Combat.PrimaryTarget().(info.Enemy)
 		if !ok {
 			return
 		}
-		var enemiesMissile []combat.Enemy
+		var enemiesMissile []info.Enemy
 		if primaryEnemy.StatusIsActive(markedAsPreyKey) {
 			ap := combat.NewCircleHitOnTarget(primaryEnemy, nil, sharkMissileHitboxes)
 			enemiesMissile = c.Core.Combat.EnemiesWithinArea(
 				ap,
-				func(e combat.Enemy) bool { return e.StatusIsActive(markedAsPreyKey) && e != primaryEnemy },
+				func(e info.Enemy) bool { return e.StatusIsActive(markedAsPreyKey) && e != primaryEnemy },
 			)
 			neighbours := len(enemiesMissile)
 			mult *= max(1.00-0.14*float64(neighbours), 0.72)

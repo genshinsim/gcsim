@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -102,13 +101,13 @@ func (c *char) wolfBurst(normalCounter int) func(info.AttackCB) {
 
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: burstAttackOffsets[normalCounter]},
+			info.Point{Y: burstAttackOffsets[normalCounter]},
 			burstAttackHitboxes[normalCounter][0],
 		)
 		if normalCounter == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: burstAttackOffsets[normalCounter]},
+				info.Point{Y: burstAttackOffsets[normalCounter]},
 				burstAttackHitboxes[normalCounter][0],
 				burstAttackHitboxes[normalCounter][1],
 			)

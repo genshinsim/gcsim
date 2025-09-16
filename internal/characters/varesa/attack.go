@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -97,13 +96,13 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	case 1: // circle
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 		)
 	case 2: // box
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 			attackHitboxes[c.NormalCounter][1],
 		)
@@ -153,13 +152,13 @@ func (c *char) fieryAttack() action.Info {
 	case 1: // circle
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: fieryAttackOffsets[c.NormalCounter]},
+			info.Point{Y: fieryAttackOffsets[c.NormalCounter]},
 			fieryAttackHitboxes[c.NormalCounter][0],
 		)
 	case 2: // box
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: fieryAttackOffsets[c.NormalCounter]},
+			info.Point{Y: fieryAttackOffsets[c.NormalCounter]},
 			fieryAttackHitboxes[c.NormalCounter][0],
 			fieryAttackHitboxes[c.NormalCounter][1],
 		)

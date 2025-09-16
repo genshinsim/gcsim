@@ -1,4 +1,4 @@
-package geometry
+package info
 
 import (
 	"math"
@@ -44,9 +44,9 @@ func CalcDirection(src, trg Point) Point {
 	return trg.Sub(src).Normalize()
 }
 
-// generates a random point that is between minRadius and maxRadius distance away from the provided center
+// generates a random Point that is between minRadius and maxRadius distance away from the provided center
 func CalcRandomPointFromCenter(center Point, minRadius, maxRadius float64, rand *rand.Rand) Point {
-	// generate random point inside unit circle using rejection sampling
+	// generate random Point inside unit circle using rejection sampling
 	var result Point
 	for {
 		p := Point{
@@ -58,7 +58,7 @@ func CalcRandomPointFromCenter(center Point, minRadius, maxRadius float64, rand 
 			maxRadiusSquared := maxRadius * maxRadius
 			// get random radius in the specified range
 			r := math.Sqrt(minRadiusSquared + rand.Float64()*(maxRadiusSquared-minRadiusSquared))
-			// scale generated point to be exactly on the random radius and shift it
+			// scale generated Point to be exactly on the random radius and shift it
 			if p.X == 0 && p.Y == 0 {
 				p = Point{X: 0, Y: 1}
 			}
@@ -83,7 +83,7 @@ func fanAngleAreaCheck(attackCenter, trg, facingDirection Point, fanAngle float6
 	// facingDirection and targetDirection can be different in multi-target situations
 	targetDirection := CalcDirection(attackCenter, trg)
 	dot := facingDirection.Dot(targetDirection)
-	// need to clamp the dot product to [-1, 1] because of floating point arithmetic
+	// need to clamp the dot product to [-1, 1] because of floating Point arithmetic
 	if dot > 1 {
 		dot = 1
 	}
@@ -129,7 +129,7 @@ func IntersectRectangle(r Rectangle, c Circle) bool {
 		return false
 	}
 
-	// circle center has to be close enough to the rectangle edges at this point
+	// circle center has to be close enough to the rectangle edges at this Point
 	// -> accept if circle center is within the coordinate area 0 <= x <= r.w/2 || 0 <= y <= r.h/2
 	// -> if it's in that area, then it definitely intersects with one edge
 	if local.X <= topRight.X || local.Y <= topRight.Y {

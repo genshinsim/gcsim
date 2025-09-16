@@ -5,9 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -247,10 +245,10 @@ func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt info.Rea
 	}, 23)
 }
 
-func NewCrystallizeShard(c *core.Core, shp geometry.Shape, shd *CrystallizeShield) *CrystallizeShard {
+func NewCrystallizeShard(c *core.Core, shp info.Shape, shd *CrystallizeShield) *CrystallizeShard {
 	cs := &CrystallizeShard{}
 
-	circ, ok := shp.(*geometry.Circle)
+	circ, ok := shp.(*info.Circle)
 	if !ok {
 		panic("rectangle target hurtbox is not supported for crystallize shard spawning")
 	}
@@ -258,7 +256,7 @@ func NewCrystallizeShard(c *core.Core, shp geometry.Shape, shd *CrystallizeShiel
 	// for simplicity, crystallize shards spawn randomly at radius + 0.5
 	r := circ.Radius() + 0.5
 	// radius 2 is ok
-	cs.Gadget = gadget.New(c, geometry.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypCrystallizeShard)
+	cs.Gadget = gadget.New(c, info.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, info.GadgetTypCrystallizeShard)
 
 	// shard lasts for 15s from shard spawn
 	cs.Gadget.Duration = 15 * 60
@@ -305,8 +303,8 @@ func (cs *CrystallizeShard) HandleAttack(atk *info.AttackEvent) float64 {
 	return 0
 }
 func (cs *CrystallizeShard) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (cs *CrystallizeShard) SetDirection(trg geometry.Point)                      {}
+func (cs *CrystallizeShard) SetDirection(trg info.Point)                          {}
 func (cs *CrystallizeShard) SetDirectionToClosestEnemy()                          {}
-func (cs *CrystallizeShard) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (cs *CrystallizeShard) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -42,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:           burst[c.TalentLvlBurst()],
 		HitlagFactor:   0.05,
 	}
-	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2.3}, 6.5)
+	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2.3}, 6.5)
 	c.Core.QueueAttack(
 		ai,
 		c.burstArea,

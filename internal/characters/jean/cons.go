@@ -2,7 +2,6 @@ package jean
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -50,7 +49,7 @@ func (c *char) c4() {
 	// add debuff to all targets for 1.2 s
 	enemies := c.Core.Combat.EnemiesWithinArea(c.burstArea, nil)
 	for _, e := range enemies {
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("jean-c4", 72), // 1.2s
 			Ele:   attributes.Anemo,
 			Value: -0.4,

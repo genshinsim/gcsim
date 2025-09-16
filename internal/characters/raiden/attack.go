@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -67,14 +66,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+			info.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 			attackHitboxes[c.NormalCounter][0],
 			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 0 || c.NormalCounter == 2 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+				info.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 				attackHitboxes[c.NormalCounter][0],
 				attackHitboxes[c.NormalCounter][1],
 			)
@@ -147,7 +146,7 @@ func (c *char) swordAttack() action.Info {
 		}
 		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{X: swordOffsets[c.NormalCounter][i][0], Y: swordOffsets[c.NormalCounter][i][1]},
+			info.Point{X: swordOffsets[c.NormalCounter][i][0], Y: swordOffsets[c.NormalCounter][i][1]},
 			swordHitboxes[c.NormalCounter][i][0],
 			swordHitboxes[c.NormalCounter][i][1],
 		)

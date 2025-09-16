@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -107,7 +105,7 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 // This effect can be triggered up to once every 2.4s.
 func (c *char) burstCB() info.AttackCBFunc {
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(burstICDKey) {
@@ -122,7 +120,7 @@ func (c *char) burstCB() info.AttackCBFunc {
 }
 
 // Targets a random enemy if there is an enemy present, if not, it targets a random spot
-func (c *char) calcCannonPos() geometry.Point {
+func (c *char) calcCannonPos() info.Point {
 	player := c.Core.Combat.Player() // gadget is attached to player
 
 	// look for random enemy within 10m radius from player pos
@@ -133,14 +131,14 @@ func (c *char) calcCannonPos() geometry.Point {
 
 	// enemy found: choose random point between 0 and 1.2m from their pos
 	if enemy != nil {
-		return geometry.CalcRandomPointFromCenter(enemy.Pos(), 0, 1.2, c.Core.Rand)
+		return info.CalcRandomPointFromCenter(enemy.Pos(), 0, 1.2, c.Core.Rand)
 	}
 
 	// no enemy: targeting is randomly between 1m and 6m from player pos + Y: 4
-	return geometry.CalcRandomPointFromCenter(
-		geometry.CalcOffsetPoint(
+	return info.CalcRandomPointFromCenter(
+		info.CalcOffsetPoint(
 			player.Pos(),
-			geometry.Point{Y: 4},
+			info.Point{Y: 4},
 			player.Direction(),
 		),
 		1,

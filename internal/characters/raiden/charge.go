@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -44,7 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 2.8, 4.8),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.1}, 2.8, 4.8),
 		chargeHitmark,
 		chargeHitmark,
 	)
@@ -94,7 +93,7 @@ func (c *char) swordCharge() action.Info {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 7.5, 8),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.1}, 7.5, 8),
 				0,
 				0,
 				c.burstRestorefunc,

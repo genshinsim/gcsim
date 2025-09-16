@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -89,7 +87,7 @@ func (c *Traveler) SkillPress() action.Info {
 }
 
 func (c *Traveler) pressParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -102,7 +100,7 @@ func (c *Traveler) pressParticleCB(a info.AttackCB) {
 func (c *Traveler) SkillHold(holdTicks int) action.Info {
 	c.eAbsorb = attributes.NoElement
 	c.eICDTag = attacks.ICDTagNone
-	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3)
+	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.2}, 3)
 
 	aiCut := info.AttackInfo{
 		ActorIndex: c.Index,
@@ -133,7 +131,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 	for i := 0; i < holdTicks; i += 1 {
 		c.Core.QueueAttack(
 			aiCut,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 1.7),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.2}, 1.7),
 			hitmark,
 			hitmark,
 		)
@@ -144,7 +142,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 					aiMaxCutAbs.ICDTag = c.eICDTag
 					c.Core.QueueAttack(
 						aiMaxCutAbs,
-						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3.6),
+						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.2}, 3.6),
 						0,
 						0,
 					)
@@ -158,7 +156,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 					aiCutAbs.ICDTag = c.eICDTag
 					c.Core.QueueAttack(
 						aiCutAbs,
-						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 1.7),
+						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.2}, 1.7),
 						0,
 						0,
 					)
@@ -244,7 +242,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 }
 
 func (c *Traveler) holdParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {

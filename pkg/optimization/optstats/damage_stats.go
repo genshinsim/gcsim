@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type CustomDamageStatsBuffer struct {
@@ -28,7 +27,7 @@ func OptimizerDmgStat(core *core.Core) (CollectorCustomStats[CustomDamageStatsBu
 
 		// TODO: validate if this is still true?
 		// No need to pull damage stats for non-enemies
-		if target.Type() != targets.TargettableEnemy {
+		if target.Type() != info.TargettableEnemy {
 			return false
 		}
 		cr := attack.Snapshot.Stats[attributes.CR]

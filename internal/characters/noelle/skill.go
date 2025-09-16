@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -91,7 +90,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) skillHealCB() info.AttackCBFunc {
 	done := false
 	return func(atk info.AttackCB) {
-		if atk.Target.Type() != targets.TargettableEnemy {
+		if atk.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

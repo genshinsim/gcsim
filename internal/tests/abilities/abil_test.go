@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -76,7 +75,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		Seed:  time.Now().Unix(),
 		Debug: true,
 	})
-	a := avatar.New(c, geometry.Point{X: 0, Y: 0}, 1)
+	a := avatar.New(c, info.Point{X: 0, Y: 0}, 1)
 	c.Combat.SetPlayer(a)
 	var trgs []*enemy.Enemy
 

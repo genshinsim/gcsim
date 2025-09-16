@@ -7,9 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -105,7 +103,7 @@ func (c *char) a1NightSoulAttack(atk *info.AttackEvent) {
 	c.hypersense(1.6, a1Abil, atk.Pattern.Shape.Pos())
 }
 
-func (c *char) hypersense(mult float64, abil string, initialTargetPos geometry.Point) {
+func (c *char) hypersense(mult float64, abil string, initialTargetPos info.Point) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               abil,
@@ -197,7 +195,7 @@ func (c *char) makeA4cb() func(info.AttackCB) {
 		return nil
 	}
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		c.AddStatus(a4Key, 15*60, true)

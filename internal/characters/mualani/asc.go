@@ -3,7 +3,6 @@ package mualani
 import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const a1Delay = 20
@@ -20,7 +19,7 @@ func (c *char) a1cb() info.AttackCBFunc {
 		if done {
 			return
 		}
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		done = true

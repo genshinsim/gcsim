@@ -6,16 +6,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestHyperbloom(t *testing.T) {
 	c, trg := makeCore(2)
-	trg[0].SetPos(geometry.Point{X: 1, Y: 0})
-	trg[1].SetPos(geometry.Point{X: 3.1, Y: 0})
+	trg[0].SetPos(info.Point{X: 1, Y: 0})
+	trg[1].SetPos(info.Point{X: 3.1, Y: 0})
 	err := c.Init()
 	if err != nil {
 		t.Errorf("error initializing core: %v", err)
@@ -25,7 +23,7 @@ func TestHyperbloom(t *testing.T) {
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
-		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
+		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
 			count++
 		}
 		return false
@@ -81,8 +79,8 @@ func TestHyperbloom(t *testing.T) {
 
 func TestECHyperbloom(t *testing.T) {
 	c, trg := makeCore(2)
-	trg[0].SetPos(geometry.Point{X: 1, Y: 0})
-	trg[1].SetPos(geometry.Point{X: 3.1, Y: 0})
+	trg[0].SetPos(info.Point{X: 1, Y: 0})
+	trg[1].SetPos(info.Point{X: 3.1, Y: 0})
 	err := c.Init()
 	if err != nil {
 		t.Errorf("error initializing core: %v", err)
@@ -93,7 +91,7 @@ func TestECHyperbloom(t *testing.T) {
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
-		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
+		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
 			count++
 		}
 		return false

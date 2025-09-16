@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
@@ -27,11 +26,11 @@ type Character interface {
 type Handler struct {
 	Opt
 	enemies     []info.Target
-	gadgets     []Gadget
+	gadgets     []info.Gadget
 	player      info.Target
 	TotalDamage float64
 	gccount     int
-	keycount    targets.TargetKey
+	keycount    info.TargetKey
 }
 
 type Opt struct {
@@ -44,7 +43,7 @@ type Opt struct {
 	DamageMode    bool
 	DefHalt       bool
 	EnableHitlag  bool
-	DefaultTarget targets.TargetKey // index for default target
+	DefaultTarget info.TargetKey // index for default target
 }
 
 func New(opt Opt) *Handler {
@@ -53,12 +52,12 @@ func New(opt Opt) *Handler {
 		keycount: 1,
 	}
 	h.enemies = make([]info.Target, 0, 5)
-	h.gadgets = make([]Gadget, 0, 10)
+	h.gadgets = make([]info.Gadget, 0, 10)
 
 	return h
 }
 
-func (h *Handler) nextkey() targets.TargetKey {
+func (h *Handler) nextkey() info.TargetKey {
 	h.keycount++
 	return h.keycount - 1
 }
@@ -68,13 +67,13 @@ func (h *Handler) Tick() {
 	// enemy and player does not check for collision
 	// gadgets check against player and enemy
 	for i := 0; i < len(h.gadgets); i++ {
-		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(targets.TargettablePlayer) {
+		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(info.TargettablePlayer) {
 			if h.gadgets[i].WillCollide(h.player.Shape()) {
 				h.gadgets[i].CollidedWith(h.player)
 			}
 		}
 		// sanity check in case gadget is gone
-		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(targets.TargettableEnemy) {
+		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(info.TargettableEnemy) {
 			for j := 0; j < len(h.enemies) && h.gadgets[i] != nil; j++ {
 				if h.gadgets[i].WillCollide(h.enemies[j].Shape()) {
 					h.gadgets[i].CollidedWith(h.enemies[j])

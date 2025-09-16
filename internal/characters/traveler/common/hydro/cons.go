@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const c4ICDKey = "travelerhydro-c4-icd"
@@ -44,7 +43,7 @@ func (c *Traveler) makeC4CB() info.AttackCBFunc {
 		return nil
 	}
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c4ICDKey) {

@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -71,7 +69,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ai.PoiseDMG = 150
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: skillOffsets[chargeLevel]},
+			info.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 			skillHitboxes[chargeLevel][1],
 		)
@@ -81,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: skillOffsets[chargeLevel]},
+			info.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 		)
 		particleCount = 3
@@ -128,7 +126,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) makeParticleCB(particleCount float64) info.AttackCBFunc {
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -88,8 +87,8 @@ func (c *char) c2() info.AttackCBFunc {
 		player := c.Core.Combat.Player()
 		targetPos := a.Target.Pos()
 		// TODO: using player direction here is inaccurate since it should maybe be the direction from which it was hit?
-		bomb1Pos := geometry.CalcOffsetPoint(targetPos, geometry.Point{X: -1.5}, player.Direction())
-		bomb2Pos := geometry.CalcOffsetPoint(targetPos, geometry.Point{X: 1.5}, player.Direction())
+		bomb1Pos := info.CalcOffsetPoint(targetPos, info.Point{X: -1.5}, player.Direction())
+		bomb2Pos := info.CalcOffsetPoint(targetPos, info.Point{X: 1.5}, player.Direction())
 
 		// calc delay
 		// random between 0.6s and 1s from hit

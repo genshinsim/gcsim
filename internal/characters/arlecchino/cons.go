@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -54,7 +53,7 @@ func (c *char) c2OnAbsorbDue() {
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: 3},
+			info.Point{Y: 3},
 			6.5,
 		),
 		50,

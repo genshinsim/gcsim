@@ -8,9 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -59,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skillInital[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(skillPos, geometry.Point{Y: -1.5}, 5), skillInitHitmark, skillInitHitmark, c.particleCB, c.makeA4CB())
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(skillPos, info.Point{Y: -1.5}, 5), skillInitHitmark, skillInitHitmark, c.particleCB, c.makeA4CB())
 
 	// E duration and ticks are not affected by hitlag
 	c.skillSrc = c.Core.F
@@ -108,7 +106,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) particleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

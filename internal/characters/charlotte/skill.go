@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -123,7 +121,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: skillHoldOffsetX}, skillHoldBoxX, skillHoldBoxY)
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{X: skillHoldOffsetX}, skillHoldBoxX, skillHoldBoxY)
 
 	c.Core.QueueAttack(
 		ai,
@@ -146,14 +144,14 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPressParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), skillPressParticleCount, attributes.Cryo, c.ParticleDelay)
 }
 
 func (c *char) skillHoldParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), skillHoldParticleCount, attributes.Cryo, c.ParticleDelay)

@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -14,20 +13,20 @@ import (
 type GrinMalkinHat struct {
 	*gadget.Gadget
 	char                *char
-	pos                 geometry.Point
+	pos                 info.Point
 	pyrotechnicAI       info.AttackInfo
 	pyrotechnicSnapshot info.Snapshot
 	hpDrained           bool
 	a1CB                info.AttackCBFunc
 }
 
-func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool, duration int) *GrinMalkinHat {
+func (c *char) newGrinMalkinHat(pos info.Point, hpDrained bool, duration int) *GrinMalkinHat {
 	g := &GrinMalkinHat{}
 
 	g.pos = pos
 
 	// TODO: double check estimation of hitbox
-	g.Gadget = gadget.New(c.Core, g.pos, 1, combat.GadgetTypGrinMalkinHat)
+	g.Gadget = gadget.New(c.Core, g.pos, 1, info.GadgetTypGrinMalkinHat)
 	g.char = c
 
 	g.Duration = duration
@@ -119,8 +118,8 @@ func (g *GrinMalkinHat) updateHats(removeReason string) {
 	}
 }
 
-func (g *GrinMalkinHat) SetDirection(trg geometry.Point) {}
-func (g *GrinMalkinHat) SetDirectionToClosestEnemy()     {}
-func (g *GrinMalkinHat) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (g *GrinMalkinHat) SetDirection(trg info.Point) {}
+func (g *GrinMalkinHat) SetDirectionToClosestEnemy() {}
+func (g *GrinMalkinHat) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

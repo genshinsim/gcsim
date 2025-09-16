@@ -11,11 +11,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
@@ -31,7 +29,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		Seed:  time.Now().Unix(),
 		Debug: true,
 	})
-	a := avatar.New(c, geometry.Point{X: 0, Y: 0}, 1)
+	a := avatar.New(c, info.Point{X: 0, Y: 0}, 1)
 	c.Combat.SetPlayer(a)
 	var trgs []*enemy.Enemy
 
@@ -135,7 +133,7 @@ func TestSingleTarget(t *testing.T) {
 // 	}, "dmg-count")
 
 // 	//last one should be moved aside
-// 	trgs[len(trgs)-1].SetPos(geometry.Point{X: 2, Y: 0})
+// 	trgs[len(trgs)-1].SetPos(info.Point{X: 2, Y: 0})
 
 // 	for i := 0; i < len(trgs)-1; i++ {
 // 		count = 0
@@ -177,7 +175,7 @@ func TestDefaultHitGadget(t *testing.T) {
 	}, "dmg-count")
 
 	g := &testGadget{
-		Gadget: gadget.New(c, geometry.Point{X: 0, Y: 0}, 0, combat.GadgetTypTest),
+		Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0, info.GadgetTypTest),
 	}
 
 	c.Combat.AddGadget(g)
@@ -213,7 +211,7 @@ func TestSkipTargets(t *testing.T) {
 	}, "dmg-count")
 
 	g := &testGadget{
-		Gadget: gadget.New(c, geometry.Point{X: 0, Y: 0}, 0, combat.GadgetTypTest),
+		Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0, info.GadgetTypTest),
 	}
 
 	c.Combat.AddGadget(g)
@@ -223,7 +221,7 @@ func TestSkipTargets(t *testing.T) {
 		ae := &info.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}
-		ae.Pattern.SkipTargets[targets.TargettableEnemy] = true
+		ae.Pattern.SkipTargets[info.TargettableEnemy] = true
 
 		c.QueueAttackEvent(ae, 0)
 		advanceCoreFrame(c)
@@ -238,8 +236,8 @@ func TestSkipTargets(t *testing.T) {
 		ae := &info.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}
-		ae.Pattern.SkipTargets[targets.TargettablePlayer] = false
-		ae.Pattern.SkipTargets[targets.TargettableEnemy] = true
+		ae.Pattern.SkipTargets[info.TargettablePlayer] = false
+		ae.Pattern.SkipTargets[info.TargettableEnemy] = true
 
 		c.QueueAttackEvent(ae, 0)
 		advanceCoreFrame(c)
@@ -258,28 +256,28 @@ func TestSkipTargets(t *testing.T) {
 func TestCircleAttackCollision(t *testing.T) {
 	tests := map[string]struct {
 		attackRadius float64
-		attackOffset geometry.Point
+		attackOffset info.Point
 		fanAngle     float64
 		want         int
 	}{
 		// no offset
-		"no offset, hit nothing": {attackRadius: 1, attackOffset: geometry.Point{}, fanAngle: 360, want: 0},
-		"no offset, hit t0":      {attackRadius: 7.06, attackOffset: geometry.Point{}, fanAngle: 360, want: 1},
-		"no offset, hit t0 & t1": {attackRadius: 7.07, attackOffset: geometry.Point{}, fanAngle: 360, want: 2},
+		"no offset, hit nothing": {attackRadius: 1, attackOffset: info.Point{}, fanAngle: 360, want: 0},
+		"no offset, hit t0":      {attackRadius: 7.06, attackOffset: info.Point{}, fanAngle: 360, want: 1},
+		"no offset, hit t0 & t1": {attackRadius: 7.07, attackOffset: info.Point{}, fanAngle: 360, want: 2},
 		// offset
-		"offset, hit nothing": {attackRadius: 1.7, attackOffset: geometry.Point{X: -1, Y: 5.5}, fanAngle: 360, want: 0},
-		"offset, hit t0":      {attackRadius: 1, attackOffset: geometry.Point{Y: 3}, fanAngle: 360, want: 1},
-		"offset, hit t1":      {attackRadius: 1.78, attackOffset: geometry.Point{X: -1, Y: 5.5}, fanAngle: 360, want: 1},
-		"offset, hit t0 & t1": {attackRadius: 1.79, attackOffset: geometry.Point{X: -1, Y: 5.5}, fanAngle: 360, want: 2},
+		"offset, hit nothing": {attackRadius: 1.7, attackOffset: info.Point{X: -1, Y: 5.5}, fanAngle: 360, want: 0},
+		"offset, hit t0":      {attackRadius: 1, attackOffset: info.Point{Y: 3}, fanAngle: 360, want: 1},
+		"offset, hit t1":      {attackRadius: 1.78, attackOffset: info.Point{X: -1, Y: 5.5}, fanAngle: 360, want: 1},
+		"offset, hit t0 & t1": {attackRadius: 1.79, attackOffset: info.Point{X: -1, Y: 5.5}, fanAngle: 360, want: 2},
 		// no offset, fanAngle
-		"no offset, fanAngle, hit nothing": {attackRadius: 1, attackOffset: geometry.Point{}, fanAngle: 30, want: 0},
-		"no offset, fanAngle, hit t0":      {attackRadius: 7.06, attackOffset: geometry.Point{}, fanAngle: 30, want: 1},
-		"no offset, fanAngle, hit t0 & t1": {attackRadius: 7.07, attackOffset: geometry.Point{}, fanAngle: 30, want: 2},
+		"no offset, fanAngle, hit nothing": {attackRadius: 1, attackOffset: info.Point{}, fanAngle: 30, want: 0},
+		"no offset, fanAngle, hit t0":      {attackRadius: 7.06, attackOffset: info.Point{}, fanAngle: 30, want: 1},
+		"no offset, fanAngle, hit t0 & t1": {attackRadius: 7.07, attackOffset: info.Point{}, fanAngle: 30, want: 2},
 		// offset, fanAngle
-		"offset, fanAngle, hit nothing": {attackRadius: 1, attackOffset: geometry.Point{X: -2, Y: 2}, fanAngle: 30, want: 0},
-		"offset, fanAngle, hit t0":      {attackRadius: 1, attackOffset: geometry.Point{X: -2, Y: 2}, fanAngle: 35, want: 1},
-		"offset, fanAngle, hit t1":      {attackRadius: 1.79, attackOffset: geometry.Point{X: -1, Y: 5.5}, fanAngle: 30, want: 1},
-		"offset, fanAngle, hit t0 & t1": {attackRadius: 1.79, attackOffset: geometry.Point{X: -1, Y: 5.5}, fanAngle: 350, want: 2},
+		"offset, fanAngle, hit nothing": {attackRadius: 1, attackOffset: info.Point{X: -2, Y: 2}, fanAngle: 30, want: 0},
+		"offset, fanAngle, hit t0":      {attackRadius: 1, attackOffset: info.Point{X: -2, Y: 2}, fanAngle: 35, want: 1},
+		"offset, fanAngle, hit t1":      {attackRadius: 1.79, attackOffset: info.Point{X: -1, Y: 5.5}, fanAngle: 30, want: 1},
+		"offset, fanAngle, hit t0 & t1": {attackRadius: 1.79, attackOffset: info.Point{X: -1, Y: 5.5}, fanAngle: 350, want: 2},
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
@@ -291,7 +289,7 @@ func TestCircleAttackCollision(t *testing.T) {
 	}
 }
 
-func circleAttackCollision(attackRadius float64, attackOffset geometry.Point, fanAngle float64) int {
+func circleAttackCollision(attackRadius float64, attackOffset info.Point, fanAngle float64) int {
 	c, trgs := makeCore(2)
 	player := c.Combat.Player()
 	count := 0
@@ -300,8 +298,8 @@ func circleAttackCollision(attackRadius float64, attackOffset geometry.Point, fa
 		count++
 		return false
 	}, "dmg-count")
-	trgs[0].SetPos(geometry.Point{X: 2, Y: 2})
-	trgs[1].SetPos(geometry.Point{X: 7, Y: 4})
+	trgs[0].SetPos(info.Point{X: 2, Y: 2})
+	trgs[1].SetPos(info.Point{X: 7, Y: 4})
 	player.SetDirection(trgs[1].Pos())
 
 	c.QueueAttackEvent(&info.AttackEvent{
@@ -320,18 +318,18 @@ func TestRectangleAttackCollision(t *testing.T) {
 	tests := map[string]struct {
 		attackWidth  float64
 		attackHeight float64
-		attackOffset geometry.Point
+		attackOffset info.Point
 		want         int
 	}{
 		// no offset
-		"no offset, hit nothing": {attackWidth: 3, attackHeight: 1.5, attackOffset: geometry.Point{}, want: 0},
-		"no offset, hit t0":      {attackWidth: 3, attackHeight: 4, attackOffset: geometry.Point{}, want: 1},
-		"no offset, hit t0 & t1": {attackWidth: 3, attackHeight: 15, attackOffset: geometry.Point{}, want: 2},
+		"no offset, hit nothing": {attackWidth: 3, attackHeight: 1.5, attackOffset: info.Point{}, want: 0},
+		"no offset, hit t0":      {attackWidth: 3, attackHeight: 4, attackOffset: info.Point{}, want: 1},
+		"no offset, hit t0 & t1": {attackWidth: 3, attackHeight: 15, attackOffset: info.Point{}, want: 2},
 		// offset
-		"offset, hit nothing": {attackWidth: 2.5, attackHeight: 1, attackOffset: geometry.Point{X: -3, Y: 2}, want: 0},
-		"offset, hit t0":      {attackWidth: 2.6, attackHeight: 1, attackOffset: geometry.Point{X: -3, Y: 2}, want: 1},
-		"offset, hit t1":      {attackWidth: 1, attackHeight: 1, attackOffset: geometry.Point{Y: 9}, want: 1},
-		"offset, hit t0 & t1": {attackWidth: 0.1, attackHeight: 15, attackOffset: geometry.Point{Y: 2}, want: 2},
+		"offset, hit nothing": {attackWidth: 2.5, attackHeight: 1, attackOffset: info.Point{X: -3, Y: 2}, want: 0},
+		"offset, hit t0":      {attackWidth: 2.6, attackHeight: 1, attackOffset: info.Point{X: -3, Y: 2}, want: 1},
+		"offset, hit t1":      {attackWidth: 1, attackHeight: 1, attackOffset: info.Point{Y: 9}, want: 1},
+		"offset, hit t0 & t1": {attackWidth: 0.1, attackHeight: 15, attackOffset: info.Point{Y: 2}, want: 2},
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
@@ -343,7 +341,7 @@ func TestRectangleAttackCollision(t *testing.T) {
 	}
 }
 
-func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset geometry.Point) int {
+func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset info.Point) int {
 	c, trgs := makeCore(2)
 	player := c.Combat.Player()
 	count := 0
@@ -352,8 +350,8 @@ func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset ge
 		count++
 		return false
 	}, "dmg-count")
-	trgs[0].SetPos(geometry.Point{X: 2, Y: 2})
-	trgs[1].SetPos(geometry.Point{X: 7, Y: 4})
+	trgs[0].SetPos(info.Point{X: 2, Y: 2})
+	trgs[1].SetPos(info.Point{X: 7, Y: 4})
 	player.SetDirection(trgs[1].Pos())
 
 	c.QueueAttackEvent(&info.AttackEvent{

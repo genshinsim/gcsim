@@ -9,10 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -143,14 +141,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			if len(attackHitboxes[naIndex][counter][i]) == 1 { // circle or fan
 				ap = combat.NewCircleHitOnTargetFanAngle(
 					c.Core.Combat.Player(),
-					geometry.Point{X: attackOffsets[counter][i][0], Y: attackOffsets[counter][i][1]},
+					info.Point{X: attackOffsets[counter][i][0], Y: attackOffsets[counter][i][1]},
 					attackHitboxes[naIndex][counter][i][0],
 					attackFanAngles[counter][i],
 				)
 			} else { // box
 				ap = combat.NewBoxHitOnTarget(
 					c.Core.Combat.Player(),
-					geometry.Point{X: attackOffsets[counter][i][0], Y: attackOffsets[counter][i][1]},
+					info.Point{X: attackOffsets[counter][i][0], Y: attackOffsets[counter][i][1]},
 					attackHitboxes[naIndex][counter][i][0],
 					attackHitboxes[naIndex][counter][i][1],
 				)
@@ -180,7 +178,7 @@ func (c *char) bondBonus() float64 {
 }
 
 func (c *char) bondConsumeCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if !c.StatusIsActive(naBuffKey) {

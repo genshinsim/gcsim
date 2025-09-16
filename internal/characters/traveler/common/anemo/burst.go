@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -40,7 +39,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 
 	c.qAbsorb = attributes.NoElement
 	c.qICDTag = attacks.ICDTagNone
-	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.5}, 2.5, 2.5)
+	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 2.5, 2.5)
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index,
@@ -53,7 +52,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -1.5}, 3, 3)
+	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -1.5}, 3, 3)
 	snap := c.Snapshot(&ai)
 
 	aiAbs := info.AttackInfo{
@@ -67,7 +66,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       burstAbsorbDot[c.TalentLvlBurst()],
 	}
-	apAbs := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -1}, 2.5, 2.5)
+	apAbs := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -1}, 2.5, 2.5)
 
 	snapAbs := c.Snapshot(&aiAbs)
 

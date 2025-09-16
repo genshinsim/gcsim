@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -84,7 +83,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				ai,
 				combat.NewBoxHitOnTarget(
 					c.Core.Combat.Player(),
-					geometry.Point{Y: attackOffsets[skillIndex]},
+					info.Point{Y: attackOffsets[skillIndex]},
 					attackHitboxes[skillIndex][c.NormalCounter][0],
 					attackHitboxes[skillIndex][c.NormalCounter][1],
 				),

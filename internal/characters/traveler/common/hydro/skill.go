@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -138,7 +136,7 @@ func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 		c.skillLosingHP(&aiHold)
 		c.Core.QueueAttack(
 			aiHold,
-			combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
+			combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.4}, 0.3, 1.3),
 			0,
 			1,
 			c.makeA1CB(),
@@ -183,7 +181,7 @@ func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
 			c.skillLosingHP(&aiHold)
 			c.Core.QueueAttack(
 				aiHold,
-				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
+				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.4}, 0.3, 1.3),
 				0,
 				1,
 				a1cb,
@@ -249,7 +247,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *Traveler) skillParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

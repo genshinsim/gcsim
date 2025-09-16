@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -82,7 +81,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 		if c.abundanceAmulets >= maxAmulets {
 			return
 		}
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 
@@ -130,7 +129,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 func (c *Traveler) makeParticleCB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

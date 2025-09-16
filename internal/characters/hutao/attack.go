@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -99,14 +98,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+			info.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 			attackHitboxes[c.NormalCounter][i][0],
 			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 1 || (c.NormalCounter == 4 && i == 1) {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter][i][1]},
+				info.Point{Y: attackOffsets[c.NormalCounter][i][1]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
 			)
@@ -147,14 +146,14 @@ func (c *char) ppAttack() action.Info {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{X: ppAttackOffsets[c.NormalCounter][i][0], Y: ppAttackOffsets[c.NormalCounter][i][1]},
+			info.Point{X: ppAttackOffsets[c.NormalCounter][i][0], Y: ppAttackOffsets[c.NormalCounter][i][1]},
 			ppAttackHitboxes[c.NormalCounter][i][0],
 			ppAttackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 1 || (c.NormalCounter == 4 && i == 1) {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: ppAttackOffsets[c.NormalCounter][i][1]},
+				info.Point{Y: ppAttackOffsets[c.NormalCounter][i][1]},
 				ppAttackHitboxes[c.NormalCounter][i][0],
 				ppAttackHitboxes[c.NormalCounter][i][1],
 			)

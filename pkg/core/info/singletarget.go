@@ -1,13 +1,11 @@
-package geometry
+package info
 
 import (
 	"fmt"
-
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type SingleTarget struct {
-	Target targets.TargetKey
+	Target TargetKey
 }
 
 func (s *SingleTarget) PointInShape(p Point) bool            { return true }

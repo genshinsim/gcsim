@@ -9,11 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/target"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
@@ -31,9 +29,9 @@ func testCore() *core.Core {
 	})
 	// add player (first target)
 	trg := &testTarget{}
-	trg.Target = target.New(c, geometry.Point{X: 0, Y: 0}, 1)
+	trg.Target = target.New(c, info.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
-	trg.typ = targets.TargettablePlayer
+	trg.typ = info.TargettablePlayer
 	trg.Reactable.Init(trg, c)
 	c.Combat.SetPlayer(trg)
 
@@ -79,11 +77,11 @@ func makeAOEAttack(ele attributes.Element, dur info.Durability) *info.AttackEven
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur info.Durability, trg targets.TargetKey) *info.AttackEvent {
+func makeSTAttack(ele attributes.Element, dur info.Durability, trg info.TargetKey) *info.AttackEvent {
 	return &info.AttackEvent{
 		Info: info.AttackInfo{
 			Element:    ele,
@@ -97,11 +95,11 @@ type testTarget struct {
 	*Reactable
 	*target.Target
 	src  int
-	typ  targets.TargettableType
+	typ  info.TargettableType
 	last info.AttackEvent
 }
 
-func (target *testTarget) Type() targets.TargettableType { return target.typ }
+func (target *testTarget) Type() info.TargettableType { return target.typ }
 
 func (target *testTarget) HandleAttack(atk *info.AttackEvent) float64 {
 	target.Attack(atk, nil)
@@ -132,7 +130,7 @@ func (target *testTarget) applyDamage(atk *info.AttackEvent) {
 
 func addTargetToCore(c *core.Core) *testTarget {
 	trg := &testTarget{}
-	trg.Target = target.New(c, geometry.Point{X: 0, Y: 0}, 1)
+	trg.Target = target.New(c, info.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
 	c.Combat.AddEnemy(trg)

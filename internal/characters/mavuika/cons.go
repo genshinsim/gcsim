@@ -4,10 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -69,11 +67,11 @@ func (c *char) c2Ring() {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		6,
 	)
 	for _, e := range c.Core.Combat.EnemiesWithinArea(ap, nil) {
-		e.AddDefMod(combat.DefMod{
+		e.AddDefMod(info.DefMod{
 			Base:  modifier.NewBaseWithHitlag("mavuika-c2", 30),
 			Value: -0.2,
 		})
@@ -138,7 +136,7 @@ func (c *char) c6RingCB() func(a info.AttackCB) {
 		return nil
 	}
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c6IcdKey) {
@@ -200,7 +198,7 @@ func (c *char) c6RingAtk(src int) func() {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1.0},
+			info.Point{Y: 1.0},
 			6,
 		)
 		c.Core.QueueAttack(ai, ap, 0, 0)

@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -71,31 +70,31 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			for j := 0; j < dropletCount; j++ {
 				sourcewaterdroplet.New(
 					c.Core,
-					geometry.CalcRandomPointFromCenter(
-						geometry.CalcOffsetPoint(
+					info.CalcRandomPointFromCenter(
+						info.CalcOffsetPoint(
 							player.Pos(),
-							geometry.Point{X: dropletPosOffsets[i][j][0], Y: dropletPosOffsets[i][j][1]},
+							info.Point{X: dropletPosOffsets[i][j][0], Y: dropletPosOffsets[i][j][1]},
 							player.Direction(),
 						),
 						dropletRandomRanges[i][0],
 						dropletRandomRanges[i][1],
 						c.Core.Rand,
 					),
-					combat.GadgetTypSourcewaterDropletNeuv,
+					info.GadgetTypSourcewaterDropletNeuv,
 				)
 			}
 			c.Core.Combat.Log.NewEvent(fmt.Sprint("Burst: Spawned ", dropletCount, " droplets"), glog.LogCharacterEvent, c.Index)
 
 			// determine attack pattern
 			// initial tick
-			ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 8)
+			ap := combat.NewCircleHitOnTarget(player, info.Point{Y: 1}, 8)
 			// 2nd and 3rd tick
 			if i > 0 {
 				// determine attack pattern pos
 				// default assumption: no target in range -> ticks should spawn at specific offset from player
-				apPos := geometry.CalcOffsetPoint(
+				apPos := info.CalcOffsetPoint(
 					player.Pos(),
-					geometry.Point{
+					info.Point{
 						X: defaultBurstAtkPosOffsets[i-1][0],
 						Y: defaultBurstAtkPosOffsets[i-1][1],
 					},
@@ -108,10 +107,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					// target in range -> adjust pos
 					// pos is a point in random range from target pos + offset
 					// TODO: offset is not accurate because currently target is always looking in default direction
-					apPos = geometry.CalcRandomPointFromCenter(
-						geometry.CalcOffsetPoint(
+					apPos = info.CalcRandomPointFromCenter(
+						info.CalcOffsetPoint(
 							target.Pos(),
-							geometry.Point{X: burstTickTargetXOffsets[i-1]},
+							info.Point{X: burstTickTargetXOffsets[i-1]},
 							target.Direction(),
 						),
 						0,

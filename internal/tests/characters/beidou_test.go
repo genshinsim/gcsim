@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -37,7 +36,7 @@ func TestBeidouBounce(t *testing.T) {
 	advanceCoreFrame(c)
 
 	// start tests
-	dmgCount := make(map[targets.TargetKey]int)
+	dmgCount := make(map[info.TargetKey]int)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

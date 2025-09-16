@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -80,7 +78,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 2.5),
 		0,
 		skillThrustHitmark,
 		c.particleCBThrust,
@@ -121,7 +119,7 @@ func (c *char) skillAligned() {
 	}
 	c.Core.QueueAttack(
 		aiSpiritbreath,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 2.5),
 		62,
 		62,
 	)
@@ -155,7 +153,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 2.5),
 			0,
 			skillPressureHitmarks[pressureFrameIndex],
 		)
@@ -183,10 +181,10 @@ func (c *char) detonateSkill() (action.Info, error) {
 			ai.HitlagHaltFrames = 0.09 * 60
 		}
 
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 2.5)
 		var particleCB info.AttackCBFunc
 		if c.skillStacks == 4 {
-			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: 0.5, Y: 0.5}, 3, 7)
+			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{X: 0.5, Y: 0.5}, 3, 7)
 			particleCB = c.particleCBLv4
 		}
 
@@ -217,7 +215,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 }
 
 func (c *char) particleCBThrust(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKeyThrust) {
@@ -233,7 +231,7 @@ func (c *char) particleCBThrust(a info.AttackCB) {
 }
 
 func (c *char) particleCBLv4(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKeyLv4) {

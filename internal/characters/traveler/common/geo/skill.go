@@ -7,9 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -117,7 +115,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 func (c *Traveler) makeParticleCB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -137,11 +135,11 @@ type stone struct {
 	src    int
 	expiry int
 	char   *Traveler
-	dir    geometry.Point
-	pos    geometry.Point
+	dir    info.Point
+	pos    info.Point
 }
 
-func (c *Traveler) newStone(dur int, dir, pos geometry.Point) *stone {
+func (c *Traveler) newStone(dur int, dir, pos info.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -183,5 +181,5 @@ func (s *stone) Type() construct.GeoConstructType { return construct.GeoConstruc
 func (s *stone) Expiry() int                      { return s.expiry }
 func (s *stone) IsLimited() bool                  { return true }
 func (s *stone) Count() int                       { return 1 }
-func (s *stone) Direction() geometry.Point        { return s.dir }
-func (s *stone) Pos() geometry.Point              { return s.pos }
+func (s *stone) Direction() info.Point            { return s.dir }
+func (s *stone) Pos() info.Point                  { return s.pos }

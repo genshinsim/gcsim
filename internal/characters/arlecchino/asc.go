@@ -2,9 +2,9 @@ package arlecchino
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -52,7 +52,7 @@ func (c *char) a1OnKill() {
 	}, "arlechinno-a1-onkill")
 }
 
-func (c *char) a1Upgrade(e combat.Enemy, src int) {
+func (c *char) a1Upgrade(e info.Enemy, src int) {
 	if c.Base.Ascension < 1 {
 		return
 	}

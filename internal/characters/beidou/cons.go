@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const c4Key = "beidou-c4"
@@ -37,7 +36,7 @@ func (c *char) makeC4Callback() info.AttackCBFunc {
 	}
 	return func(a info.AttackCB) {
 		trg := a.Target
-		if trg.Type() != targets.TargettableEnemy {
+		if trg.Type() != info.TargettableEnemy {
 			return
 		}
 		if !c.StatusIsActive(c4Key) {

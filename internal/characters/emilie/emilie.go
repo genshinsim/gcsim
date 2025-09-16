@@ -3,7 +3,6 @@ package emilie
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -18,7 +17,7 @@ type char struct {
 
 	caseTravel   int
 	lumidouceSrc int
-	lumidoucePos geometry.Point
+	lumidoucePos info.Point
 
 	prevLumidouceLvl  int
 	burstMarkDuration int

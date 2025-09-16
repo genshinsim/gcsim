@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
@@ -86,7 +85,7 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 	}
 }
 
-func (c *char) shootStars(src int, last combat.Enemy, particleCB info.AttackCBFunc) func() {
+func (c *char) shootStars(src int, last info.Enemy, particleCB info.AttackCBFunc) func() {
 	return func() {
 		if c.shootStarSrc != src {
 			return
@@ -174,7 +173,7 @@ func (c *char) makeParticleCB() info.AttackCBFunc {
 	}
 	c.particleCBSwitch = !c.particleCBSwitch
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {
