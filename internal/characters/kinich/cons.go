@@ -54,7 +54,7 @@ func (c *char) c2ResShredCB(a info.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("kinich-c2", 6*60),
 		Ele:   attributes.Dendro,
 		Value: -0.3,
@@ -90,7 +90,7 @@ func (c *char) c6(ai info.AttackInfo, s *info.Snapshot, radius float64, target i
 	}
 	ai.Abil = c6Abil
 	ai.Mult = 7
-	var next info.Target = c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, radius), func(t combat.Enemy) bool {
+	var next info.Target = c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, radius), func(t info.Enemy) bool {
 		return target.Key() != t.Key()
 	})
 	if next == nil {

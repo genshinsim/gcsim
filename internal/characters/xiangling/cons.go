@@ -19,7 +19,7 @@ func (c *char) c1(a info.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("xiangling-c1", 6*60),
 		Ele:   attributes.Pyro,
 		Value: -0.15,

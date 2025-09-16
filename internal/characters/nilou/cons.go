@@ -3,7 +3,6 @@ package nilou
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -50,13 +49,13 @@ func (c *char) c2() {
 		}
 
 		if atk.Info.Element == attributes.Hydro {
-			t.AddResistMod(combat.ResistMod{
+			t.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-hydro", 10*60),
 				Ele:   attributes.Hydro,
 				Value: -0.35,
 			})
 		} else if atk.Info.AttackTag == attacks.AttackTagBloom {
-			t.AddResistMod(combat.ResistMod{
+			t.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-dendro", 10*60),
 				Ele:   attributes.Dendro,
 				Value: -0.35,

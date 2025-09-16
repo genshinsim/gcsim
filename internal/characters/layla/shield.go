@@ -85,7 +85,7 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 	}
 }
 
-func (c *char) shootStars(src int, last combat.Enemy, particleCB info.AttackCBFunc) func() {
+func (c *char) shootStars(src int, last info.Enemy, particleCB info.AttackCBFunc) func() {
 	return func() {
 		if c.shootStarSrc != src {
 			return

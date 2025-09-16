@@ -44,12 +44,12 @@ func (c *char) c2(a info.AttackCB) {
 		return
 	}
 
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("venti-c2-anemo", 600),
 		Ele:   attributes.Anemo,
 		Value: -0.12,
 	})
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("venti-c2-phys", 600),
 		Ele:   attributes.Physical,
 		Value: -0.12,
@@ -87,7 +87,7 @@ func (c *char) c6(ele attributes.Element) func(a info.AttackCB) {
 		if !ok {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("venti-c6-"+ele.String(), 600),
 			Ele:   ele,
 			Value: -0.20,

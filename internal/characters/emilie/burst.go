@@ -113,7 +113,7 @@ func (c *char) lumidouceBurstAttack(src int) func() {
 func (c *char) getRandomEnemyPosition(area info.AttackPattern) info.Point {
 	enemy := c.Core.Combat.RandomEnemyWithinArea(
 		area,
-		func(e combat.Enemy) bool {
+		func(e info.Enemy) bool {
 			return !e.StatusIsActive(burstMarkKey)
 		},
 	)

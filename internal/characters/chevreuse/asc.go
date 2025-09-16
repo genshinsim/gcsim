@@ -3,7 +3,6 @@ package chevreuse
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -46,12 +45,12 @@ func (c *char) a1() {
 		if !ok {
 			return false
 		}
-		t.AddResistMod(combat.ResistMod{
+		t.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("chev-a1-pyro", 6*60),
 			Ele:   attributes.Pyro,
 			Value: -0.40,
 		})
-		t.AddResistMod(combat.ResistMod{
+		t.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("chev-a1-electro", 6*60),
 			Ele:   attributes.Electro,
 			Value: -0.40,

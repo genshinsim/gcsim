@@ -30,7 +30,7 @@ func (c *char) addJadeShield() {
 			for _, v := range res {
 				key := fmt.Sprintf("zhongli-%v", v.String())
 				for _, e := range enemies {
-					e.AddResistMod(combat.ResistMod{
+					e.AddResistMod(info.ResistMod{
 						Base:  modifier.NewBaseWithHitlag(key, 60),
 						Ele:   v,
 						Value: -0.2,

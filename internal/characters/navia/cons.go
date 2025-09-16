@@ -78,7 +78,7 @@ func (c *char) c4() info.AttackCBFunc {
 		if e.Type() != info.TargettableEnemy {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("navia-c4-shred", 8*60),
 			Ele:   attributes.Geo,
 			Value: -0.2,

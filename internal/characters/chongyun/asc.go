@@ -58,7 +58,7 @@ func (c *char) a4CB(a info.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("chongyun-a4", 480),
 		Ele:   attributes.Cryo,
 		Value: -0.10,

@@ -150,7 +150,7 @@ func applyBurstShred(trg info.Target) {
 	if !ok {
 		return
 	}
-	t.AddResistMod(combat.ResistMod{
+	t.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
 		Ele:   attributes.Anemo,
 		Value: -0.3,

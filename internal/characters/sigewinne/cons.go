@@ -3,7 +3,6 @@ package sigewinne
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -32,7 +31,7 @@ func (c *char) c2CB(a info.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("sigewinne-c2", 8*60),
 		Ele:   attributes.Hydro,
 		Value: -0.35,

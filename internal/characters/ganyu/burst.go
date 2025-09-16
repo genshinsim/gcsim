@@ -54,7 +54,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			// burst tick
 			enemy := c.Core.Combat.RandomEnemyWithinArea(
 				burstArea,
-				func(e combat.Enemy) bool {
+				func(e info.Enemy) bool {
 					return !e.StatusIsActive(burstMarkKey)
 				},
 			)

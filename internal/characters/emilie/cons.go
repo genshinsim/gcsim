@@ -3,7 +3,6 @@ package emilie
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -98,7 +97,7 @@ func (c *char) c2(a info.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag(c2ModKey, c2Duration),
 		Ele:   attributes.Dendro,
 		Value: -0.3,

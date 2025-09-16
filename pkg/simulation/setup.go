@@ -203,7 +203,7 @@ func SetupResonance(s *core.Core) {
 				}
 				atk := args[1].(*info.AttackEvent)
 				if s.Player.Shields.CharacterIsShielded(atk.Info.ActorIndex, s.Player.Active()) {
-					t.AddResistMod(combat.ResistMod{
+					t.AddResistMod(info.ResistMod{
 						Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
 						Ele:   attributes.Geo,
 						Value: -0.2,
@@ -312,7 +312,7 @@ func SetupMisc(c *core.Core) {
 			return false
 		}
 		// add shred
-		t.AddResistMod(combat.ResistMod{
+		t.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
 			Ele:   attributes.Physical,
 			Value: -0.4,

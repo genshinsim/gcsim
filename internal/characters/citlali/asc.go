@@ -2,8 +2,8 @@ package citlali
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -42,12 +42,12 @@ func (c *char) a1Hook(args ...interface{}) bool {
 		amt = -0.4
 	}
 
-	t.AddResistMod(combat.ResistMod{
+	t.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("citlali-a1-hydro", 12*60),
 		Ele:   attributes.Hydro,
 		Value: amt,
 	})
-	t.AddResistMod(combat.ResistMod{
+	t.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("citlali-a1-pyro", 12*60),
 		Ele:   attributes.Pyro,
 		Value: amt,

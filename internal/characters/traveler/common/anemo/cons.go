@@ -2,7 +2,6 @@ package anemo
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -28,7 +27,7 @@ func c6cb(ele attributes.Element) func(a info.AttackCB) {
 		if !ok {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("amc-c6-"+ele.String(), 600),
 			Ele:   ele,
 			Value: -0.20,

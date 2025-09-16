@@ -1,51 +1,10 @@
 package combat
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-type Status struct {
-	modifier.Base
-}
-type ResistMod struct {
-	Ele   attributes.Element
-	Value float64
-	modifier.Base
-}
-
-type DefMod struct {
-	Value float64
-	Dur   int
-	modifier.Base
-}
-
-type Enemy interface {
-	info.Target
-	// hp related
-	MaxHP() float64
-	HP() float64
-	// hitlag related
-	ApplyHitlag(factor, dur float64)
-	QueueEnemyTask(f func(), delay int)
-	// modifier related
-	// add
-	AddStatus(key string, dur int, hitlag bool)
-	AddResistMod(mod ResistMod)
-	AddDefMod(mod DefMod)
-	// delete
-	DeleteStatus(key string)
-	DeleteResistMod(key string)
-	DeleteDefMod(key string)
-	// active
-	StatusIsActive(key string) bool
-	ResistModIsActive(key string) bool
-	DefModIsActive(key string) bool
-	StatusExpiry(key string) int
-}
 
 func (h *Handler) Enemy(i int) info.Target {
 	if i < 0 || i > len(h.enemies) {

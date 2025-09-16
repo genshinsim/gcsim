@@ -108,12 +108,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			}
 			// Q debuff tick
 			for _, e := range c.Core.Combat.EnemiesWithinArea(burstArea, nil) {
-				e.AddResistMod(combat.ResistMod{
+				e.AddResistMod(info.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-cryo", buffDuration),
 					Ele:   attributes.Cryo,
 					Value: -burstrespp[c.TalentLvlBurst()],
 				})
-				e.AddResistMod(combat.ResistMod{
+				e.AddResistMod(info.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-phys", buffDuration),
 					Ele:   attributes.Physical,
 					Value: -burstrespp[c.TalentLvlBurst()],

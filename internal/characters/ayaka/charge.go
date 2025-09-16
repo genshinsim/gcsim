@@ -74,7 +74,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		// check for enemies around the enemy found
 		anchorEnemy := enemies[0]
 		chargeArea := combat.NewCircleHitOnTarget(anchorEnemy, nil, 4)
-		enemies = c.Core.Combat.EnemiesWithinArea(chargeArea, func(t combat.Enemy) bool {
+		enemies = c.Core.Combat.EnemiesWithinArea(chargeArea, func(t info.Enemy) bool {
 			return t.Key() != anchorEnemy.Key() // don't want to target the same enemy twice
 		})
 		enemyCount := len(enemies)

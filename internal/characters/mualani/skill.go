@@ -162,7 +162,7 @@ func (c *char) surfingTick() {
 		useAttack := false
 		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.9}, 0, 1)
 		for _, e := range c.Core.Combat.Enemies() {
-			enemy, ok := e.(combat.Enemy)
+			enemy, ok := e.(info.Enemy)
 			if !ok {
 				continue
 			}

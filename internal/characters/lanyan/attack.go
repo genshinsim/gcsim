@@ -162,7 +162,7 @@ func (c *char) reathermoonRingsDetail(abilName string, hitmarks []int) {
 		}
 
 		// TODO: approximated
-		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, 8), func(t combat.Enemy) bool {
+		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, 8), func(t info.Enemy) bool {
 			return target.Key() != t.Key()
 		})
 		if next != nil {

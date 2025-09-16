@@ -98,9 +98,9 @@ func (c *char) nightsoulPointReduceTask(src int) {
 	}, 60*tickInterval)
 }
 
-func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy) {
+func (c *char) applySamplerShred(ele attributes.Element, enemies []info.Enemy) {
 	for _, e := range enemies {
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag(fmt.Sprintf("%v-%v", samplerShredKey, ele.String()), 60),
 			Ele:   ele,
 			Value: -skillShred[c.TalentLvlSkill()],

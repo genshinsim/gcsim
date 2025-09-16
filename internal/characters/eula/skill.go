@@ -183,12 +183,12 @@ func (c *char) holdSkill() action.Info {
 			if !ok {
 				return
 			}
-			e.AddResistMod(combat.ResistMod{
+			e.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("eula-icewhirl-shred-cryo", 7*v*60),
 				Ele:   attributes.Cryo,
 				Value: -resRed[lvl],
 			})
-			e.AddResistMod(combat.ResistMod{
+			e.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("eula-icewhirl-shred-phys", 7*v*60),
 				Ele:   attributes.Physical,
 				Value: -resRed[lvl],

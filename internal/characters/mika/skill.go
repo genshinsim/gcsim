@@ -176,7 +176,7 @@ func (c *char) makeRimestarShardsCB() func(info.AttackCB) {
 
 		enemies := c.Core.Combat.RandomEnemiesWithinArea(
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10),
-			func(t combat.Enemy) bool { return a.Target.Key() != t.Key() },
+			func(t info.Enemy) bool { return a.Target.Key() != t.Key() },
 			3,
 		)
 		for i := 0; i < len(enemies); i++ {

@@ -71,7 +71,7 @@ func (c *char) c2Ring() {
 		6,
 	)
 	for _, e := range c.Core.Combat.EnemiesWithinArea(ap, nil) {
-		e.AddDefMod(combat.DefMod{
+		e.AddDefMod(info.DefMod{
 			Base:  modifier.NewBaseWithHitlag("mavuika-c2", 30),
 			Value: -0.2,
 		})
