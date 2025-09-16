@@ -10,11 +10,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -163,7 +161,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			// Initially trims enemies to check by scanning only the hit zone
 			shots := 5 + min(c.shrapnel, 3)*2
 			for _, t := range c.Core.Combat.EnemiesWithinArea(
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: -0.20568, Y: -0.043841}, 4.0722, 11.5461),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{X: -0.20568, Y: -0.043841}, 4.0722, 11.5461),
 				nil,
 			) {
 				// Tallies up the hits
@@ -172,7 +170,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 					if ok, _ := t.AttackWillLand(
 						combat.NewBoxHitOnTarget(
 							c.Core.Combat.Player(),
-							geometry.Point{X: hitscans[i][2], Y: hitscans[i][3]}.Rotate(geometry.DegreesToDirection(hitscans[i][1])),
+							info.Point{X: hitscans[i][2], Y: hitscans[i][3]}.Rotate(info.DegreesToDirection(hitscans[i][1])),
 							hitscans[i][0],
 							bulletBoxLength,
 						)); ok {
@@ -217,7 +215,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) particleCB(a info.AttackCB) {
 	e := a.Target.(*enemy.Enemy)
-	if e.Type() != targets.TargettableEnemy {
+	if e.Type() != info.TargettableEnemy {
 		return
 	}
 
@@ -294,9 +292,9 @@ func (c *char) surgingBlade(count int) {
 	// determine attack pos
 	player := c.Core.Combat.Player()
 	// shotgun area
-	e := c.Core.Combat.ClosestEnemyWithinArea(combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: -0.20568, Y: -0.043841}, 4.0722, 11.5461), nil)
+	e := c.Core.Combat.ClosestEnemyWithinArea(combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{X: -0.20568, Y: -0.043841}, 4.0722, 11.5461), nil)
 	// pos is at player + Y: 3.6 by default
-	pos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3.6}, player.Direction())
+	pos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: 3.6}, player.Direction())
 	if e != nil {
 		// enemy in shotgun area: use their pos
 		pos = e.Pos()

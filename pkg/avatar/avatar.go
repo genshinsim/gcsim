@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
@@ -19,7 +17,7 @@ type Player struct {
 	*reactable.Reactable
 }
 
-func New(core *core.Core, pos geometry.Point, r float64) *Player {
+func New(core *core.Core, pos info.Point, r float64) *Player {
 	p := &Player{}
 	p.Target = target.New(core, pos, r)
 	p.Reactable = &reactable.Reactable{}
@@ -27,7 +25,7 @@ func New(core *core.Core, pos geometry.Point, r float64) *Player {
 	return p
 }
 
-func (p *Player) Type() targets.TargettableType { return targets.TargettablePlayer }
+func (p *Player) Type() info.TargettableType { return info.TargettablePlayer }
 
 func (p *Player) HandleAttack(atk *info.AttackEvent) float64 {
 	activeChar := p.Core.Player.Active()

@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -117,7 +116,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -130,7 +129,7 @@ func (c *char) makeParticleCB() info.AttackCBFunc {
 
 // Handles coil stacking and associated effects, including triggering rushing ice
 func (c *char) coilStacks(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.coilICDExpiry > c.Core.F {

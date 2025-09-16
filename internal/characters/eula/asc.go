@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -34,7 +33,7 @@ func (c *char) a1() {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			aiA1,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 6.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 6.5),
 			a1Hitmark-(skillHoldHitmark+1),
 			a1Hitmark-(skillHoldHitmark+1),
 			c.burstStackCB,

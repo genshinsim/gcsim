@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 func calcSwirlAtkDurability(consumed, src info.Durability) info.Durability {
@@ -48,7 +47,7 @@ func (r *Reactable) queueSwirl(rt info.ReactionType, ele attributes.Element, tag
 	ai.Durability = dur
 	ai.Abil = string(rt) + " (aoe)"
 	ap := combat.NewCircleHitOnTarget(r.self, nil, 5)
-	ap.IgnoredKeys = []targets.TargetKey{r.self.Key()}
+	ap.IgnoredKeys = []info.TargetKey{r.self.Key()}
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,

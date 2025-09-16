@@ -8,11 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -62,10 +60,10 @@ func (c *char) c4() {
 		player := c.Core.Combat.Player()
 		sourcewaterdroplet.New(
 			c.Core,
-			geometry.CalcRandomPointFromCenter(
-				geometry.CalcOffsetPoint(
+			info.CalcRandomPointFromCenter(
+				info.CalcOffsetPoint(
 					player.Pos(),
-					geometry.Point{Y: 8},
+					info.Point{Y: 8},
 					player.Direction(),
 				),
 				1.3,
@@ -110,7 +108,7 @@ func (c *char) c6DropletCheck(src int) func() {
 }
 
 func (c *char) c6cb(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(c6ICDKey) {

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -74,7 +73,7 @@ func (c *char) spawnBurstLumidouceCase(duration int) {
 	player := c.Core.Combat.Player()
 
 	c.lumidouceSrc = c.Core.F
-	c.lumidoucePos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.1}, player.Direction())
+	c.lumidoucePos = info.CalcOffsetPoint(player.Pos(), info.Point{Y: 2.1}, player.Direction())
 	c.SetTag(lumidouceLevel, 3)
 	c.AddStatus(lumidouceStatus, duration, true)
 	c.AddStatus(lumidouceScentResetKey, lumidouceScentResetInterval, true)
@@ -111,19 +110,19 @@ func (c *char) lumidouceBurstAttack(src int) func() {
 	}
 }
 
-func (c *char) getRandomEnemyPosition(area info.AttackPattern) geometry.Point {
+func (c *char) getRandomEnemyPosition(area info.AttackPattern) info.Point {
 	enemy := c.Core.Combat.RandomEnemyWithinArea(
 		area,
 		func(e combat.Enemy) bool {
 			return !e.StatusIsActive(burstMarkKey)
 		},
 	)
-	var pos geometry.Point
+	var pos info.Point
 	if enemy != nil {
 		pos = enemy.Pos()
 		enemy.AddStatus(burstMarkKey, c.burstMarkDuration, true) // same enemy can't be targeted again for 0.7s
 	} else {
-		pos = geometry.CalcRandomPointFromCenter(area.Shape.Pos(), 0.5, burstRadius, c.Core.Rand)
+		pos = info.CalcRandomPointFromCenter(area.Shape.Pos(), 0.5, burstRadius, c.Core.Rand)
 	}
 	return pos
 }

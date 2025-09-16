@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -62,7 +61,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 4),
 			0,
 			0,
 			c1CB,
@@ -73,7 +72,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			for i := 0; i < 6; i++ {
 				c.Core.QueueAttack(
 					ai,
-					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
+					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 4),
 					i*17,
 					i*17,
 					c1CB,

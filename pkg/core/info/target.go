@@ -1,4 +1,4 @@
-package targets
+package info
 
 type TargetKey int
 

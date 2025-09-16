@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -30,7 +29,7 @@ func (c *char) skillRefundHook() {
 	refundCB := func(args ...interface{}) bool {
 		// TODO: Check if Sethos E filters by enemy
 		// a := args[0].(info.Target)
-		// if a.Type() != targets.TargettableEnemy {
+		// if a.Type() != info.TargettableEnemy {
 		// 	return false
 		// }
 		ae := args[1].(*info.AttackEvent)
@@ -87,7 +86,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) particleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(skillParticleICDKey) {

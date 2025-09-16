@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -16,7 +15,7 @@ import (
 type BogglecatBox struct {
 	*gadget.Gadget
 	char        *char
-	pos         geometry.Point
+	pos         info.Point
 	vividTravel int
 }
 
@@ -24,9 +23,9 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	b := &BogglecatBox{}
 
 	player := c.Core.Combat.Player()
-	b.pos = geometry.CalcOffsetPoint(
+	b.pos = info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{Y: 1.8},
+		info.Point{Y: 1.8},
 		player.Direction(),
 	)
 
@@ -50,7 +49,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(initialAI, combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1.5}, 4.5), burstHitmark-burstSpawn, burstHitmark-burstSpawn)
+	c.Core.QueueAttack(initialAI, combat.NewCircleHitOnTarget(player, info.Point{Y: 1.5}, 4.5), burstHitmark-burstSpawn, burstHitmark-burstSpawn)
 
 	// bogglecat ticks
 	bogglecatAI := info.AttackInfo{
@@ -150,8 +149,8 @@ func (b *BogglecatBox) absorbCheck() {
 	b.absorbRoutine(absorbedElement)
 }
 
-func (b *BogglecatBox) SetDirection(trg geometry.Point) {}
-func (b *BogglecatBox) SetDirectionToClosestEnemy()     {}
-func (b *BogglecatBox) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (b *BogglecatBox) SetDirection(trg info.Point) {}
+func (b *BogglecatBox) SetDirectionToClosestEnemy() {}
+func (b *BogglecatBox) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

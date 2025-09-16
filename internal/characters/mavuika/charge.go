@@ -10,9 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var chargeFrames []int
@@ -72,7 +70,7 @@ type ChargeState struct {
 	StartFrame      int
 	cAtkFrames      int
 	skippedWindupF  int
-	LastHit         map[targets.TargetKey]int
+	LastHit         map[info.TargetKey]int
 	FacingDirection float64
 	srcFrame        int
 }
@@ -107,7 +105,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ai,
 		combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 0.3},
+			info.Point{Y: 0.3},
 			3.3,
 		),
 		chargeHitmark,
@@ -145,7 +143,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.ChargeAttackState || c.caState.StartFrame == 0 {
 		c.caState = ChargeState{}
 		c.caState.StartFrame = c.Core.F
-		c.caState.LastHit = make(map[targets.TargetKey]int)
+		c.caState.LastHit = make(map[info.TargetKey]int)
 		for _, t := range bikeHittableEntities {
 			targetIndex := t.Entity.Key()
 			c.caState.LastHit[targetIndex] = 0
@@ -381,7 +379,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: 2},
+				info.Point{Y: 2},
 				radius,
 			),
 			0,
@@ -727,7 +725,7 @@ func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle 
 	enemyShape := v.Shape()
 	var enemyRadius float64
 	switch v := enemyShape.(type) {
-	case *geometry.Circle:
+	case *info.Circle:
 		enemyRadius = v.Radius() // Rt
 	default:
 		return false, errors.New("target has non-circular hitbox, Mavuika CA requires circle hitboxes for calculations")
@@ -770,8 +768,8 @@ func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle 
 }
 
 func (c *char) DirectionOffsetToPrimaryTarget() float64 {
-	var enemyDirection = geometry.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
-	if enemyDirection == geometry.DefaultDirection() {
+	var enemyDirection = info.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
+	if enemyDirection == info.DefaultDirection() {
 		return 0
 	}
 

@@ -3,10 +3,8 @@ package yaoyao
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -35,7 +33,7 @@ func (c *char) newYueguiThrow() *yuegui {
 		c:    c,
 	}
 	player := c.Core.Combat.Player()
-	pos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2}, player.Direction())
+	pos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: 2}, player.Direction())
 	yg.Gadget = gadget.New(c.Core, pos, 0.5, combat.GadgetTypYueguiThrowing)
 
 	yg.Gadget.Duration = 600
@@ -65,7 +63,7 @@ func (c *char) newYueguiJump() {
 		c:    c,
 	}
 	player := c.Core.Combat.Player()
-	pos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: -2}, player.Direction())
+	pos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: -2}, player.Direction())
 	yg.Gadget = gadget.New(c.Core, pos, 0.5, combat.GadgetTypYueguiJumping)
 	yg.Gadget.Duration = -1 // They last until they get deleted by the burst
 	yg.Gadget.OnThinkInterval = yg.throw
@@ -109,7 +107,7 @@ func (yg *yuegui) makeParticleCB() info.AttackCBFunc {
 		return nil
 	}
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 
@@ -126,7 +124,7 @@ func (yg *yuegui) throw() {
 	currHPPerc := yg.Core.Player.ActiveChar().CurrentHPRatio()
 	enemy := yg.Core.Combat.RandomEnemyWithinArea(yg.aoe, nil)
 
-	var target geometry.Point
+	var target info.Point
 	if currHPPerc > 0.7 && enemy != nil {
 		target = enemy.Pos()
 	} else {
@@ -176,8 +174,8 @@ func (yg *yuegui) HandleAttack(atk *info.AttackEvent) float64 {
 }
 
 func (yg *yuegui) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (yg *yuegui) SetDirection(trg geometry.Point)                      {}
+func (yg *yuegui) SetDirection(trg info.Point)                          {}
 func (yg *yuegui) SetDirectionToClosestEnemy()                          {}
-func (yg *yuegui) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (yg *yuegui) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

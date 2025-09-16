@@ -5,10 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -33,7 +31,7 @@ type snack struct {
 	allowPickupF int
 }
 
-func newSnack(c *char, pos geometry.Point) *snack {
+func newSnack(c *char, pos info.Point) *snack {
 	p := &snack{
 		char: c,
 		attackInfo: info.AttackInfo{
@@ -60,7 +58,7 @@ func newSnack(c *char, pos geometry.Point) *snack {
 	p.Gadget.Duration = snackDuration
 	c.Core.Combat.AddGadget(p)
 
-	p.Gadget.CollidableTypes[targets.TargettablePlayer] = true
+	p.Gadget.CollidableTypes[info.TargettablePlayer] = true
 	p.Gadget.OnExpiry = func() {
 		p.explode()
 		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index)
@@ -147,8 +145,8 @@ func (p *snack) HandleAttack(atk *info.AttackEvent) float64 {
 	return 0
 }
 
-func (p *snack) SetDirection(trg geometry.Point) {}
-func (p *snack) SetDirectionToClosestEnemy()     {}
-func (p *snack) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (p *snack) SetDirection(trg info.Point) {}
+func (p *snack) SetDirectionToClosestEnemy() {}
+func (p *snack) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

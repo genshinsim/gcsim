@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -26,7 +25,7 @@ func (c *char) c1(a info.AttackCB) {
 	if a.AttackEvent.Info.Element != attributes.Cryo {
 		return
 	}
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(c1ICDKey) {
@@ -64,7 +63,7 @@ func (c *char) c6(a info.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 

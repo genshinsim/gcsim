@@ -9,9 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -129,7 +127,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) initialParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(initialParticleICDKey) {
@@ -180,7 +178,7 @@ func (c *char) Pirouette(p map[string]int, srcType nilouSkillType) action.Info {
 }
 
 func (c *char) pirouetteParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pirouetteParticleICDKey) {
@@ -226,14 +224,14 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 	ap := combat.NewCircleHit(
 		c.Core.Combat.Player(),
 		centerTarget,
-		geometry.Point{Y: swordDanceOffsets[s]},
+		info.Point{Y: swordDanceOffsets[s]},
 		swordDanceHitboxes[s][0],
 	)
 	if s == 0 {
 		ap = combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			centerTarget,
-			geometry.Point{Y: swordDanceOffsets[s]},
+			info.Point{Y: swordDanceOffsets[s]},
 			swordDanceHitboxes[s][0],
 			swordDanceHitboxes[s][1],
 		)
@@ -274,14 +272,14 @@ func (c *char) WhirlingSteps(p map[string]int) action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+		info.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
 		whirlingStepsHitboxes[s][0],
 	)
 	if s == 2 {
 		ai.Abil = "Water Wheel"
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+			info.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
 			whirlingStepsHitboxes[s][0],
 			whirlingStepsHitboxes[s][1],
 		)

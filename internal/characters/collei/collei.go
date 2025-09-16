@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -26,7 +25,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstPos           geometry.Point
+	burstPos           info.Point
 	burstExtendCount   int
 	sproutShouldExtend bool
 	sproutShouldProc   bool

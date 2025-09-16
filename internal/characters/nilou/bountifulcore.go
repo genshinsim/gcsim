@@ -5,10 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -18,7 +16,7 @@ type BountifulCore struct {
 	*gadget.Gadget
 }
 
-func newBountifulCore(c *core.Core, p geometry.Point, a *info.AttackEvent) *BountifulCore {
+func newBountifulCore(c *core.Core, p info.Point, a *info.AttackEvent) *BountifulCore {
 	b := &BountifulCore{
 		srcFrame: c.F,
 	}
@@ -41,9 +39,9 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *info.AttackEvent) *Boun
 			// self damage
 			ai.Abil += info.SelfDamageSuffix
 			ai.FlatDmg = 0.05 * ai.FlatDmg
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
+			ap.SkipTargets[info.TargettablePlayer] = false
+			ap.SkipTargets[info.TargettableEnemy] = true
+			ap.SkipTargets[info.TargettableGadget] = true
 			c.QueueAttackWithSnap(ai, snap, ap, 0)
 		}, 1)
 	}
@@ -63,8 +61,8 @@ func (b *BountifulCore) HandleAttack(atk *info.AttackEvent) float64 {
 	return 0
 }
 func (b *BountifulCore) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (b *BountifulCore) SetDirection(trg geometry.Point)                      {}
+func (b *BountifulCore) SetDirection(trg info.Point)                          {}
 func (b *BountifulCore) SetDirectionToClosestEnemy()                          {}
-func (b *BountifulCore) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (b *BountifulCore) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

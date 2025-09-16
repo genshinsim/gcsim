@@ -4,10 +4,8 @@ package enemy
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -45,7 +43,7 @@ func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	e.resists = p.Resist
 	//TODO: this is kinda redundant to keep both profile and lvl/resist
 	e.prof = p
-	e.Target = target.New(core, geometry.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
+	e.Target = target.New(core, info.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
 	e.Reactable.FreezeResist = e.prof.FreezeResist
@@ -57,7 +55,7 @@ func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	return e
 }
 
-func (e *Enemy) Type() targets.TargettableType { return targets.TargettableEnemy }
+func (e *Enemy) Type() info.TargettableType { return info.TargettableEnemy }
 
 func (e *Enemy) MaxHP() float64 { return e.maxhp }
 func (e *Enemy) HP() float64    { return e.hp }
@@ -77,8 +75,8 @@ func (e *Enemy) Kill() {
 	}
 }
 
-func (e *Enemy) SetDirection(trg geometry.Point) {}
-func (e *Enemy) SetDirectionToClosestEnemy()     {}
-func (e *Enemy) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (e *Enemy) SetDirection(trg info.Point) {}
+func (e *Enemy) SetDirectionToClosestEnemy() {}
+func (e *Enemy) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

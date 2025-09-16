@@ -8,10 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -209,7 +207,7 @@ func (c *char) skillHold() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		6,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
@@ -237,7 +235,7 @@ func (c *char) skillPress() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 0.5},
+		info.Point{Y: 0.5},
 		5,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
@@ -265,7 +263,7 @@ func (c *char) skillBikeRefresh() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		6,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
@@ -321,7 +319,7 @@ func (c *char) skillRingTask(src int) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1.0},
+			info.Point{Y: 1.0},
 			6,
 		)
 		c.Core.QueueAttack(ai, ap, 0, 0, c.c6RingCB())
@@ -331,7 +329,7 @@ func (c *char) skillRingTask(src int) {
 }
 
 func (c *char) particleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

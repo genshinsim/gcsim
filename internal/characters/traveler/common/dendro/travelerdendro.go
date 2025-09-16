@@ -5,14 +5,13 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 type Traveler struct {
 	*tmpl.Character
-	burstPos                   geometry.Point
+	burstPos                   info.Point
 	burstRadius                float64
 	burstOverflowingLotuslight int
 	skillC1                    bool // this variable also ensures that C1 only restores energy once per cast

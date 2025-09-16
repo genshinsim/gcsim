@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -83,7 +82,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			// - https://library.keqingmains.com/evidence/characters/electro/lisa#c4-plasma-eruption
 			// - spawn up to 3 attacks based on enemy + gadget count
 			// - priority: enemy > gadget
-			discharge := func(pos geometry.Point) {
+			discharge := func(pos info.Point) {
 				c.Core.QueueAttackWithSnap(
 					ai,
 					snap,

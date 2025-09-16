@@ -3,18 +3,18 @@ package ningguang
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 type screen struct {
 	src    int
 	expiry int
 	char   *char
-	dir    geometry.Point
-	pos    geometry.Point
+	dir    info.Point
+	pos    info.Point
 }
 
-func (c *char) newScreen(dur int, dir, pos geometry.Point) *screen {
+func (c *char) newScreen(dur int, dir, pos info.Point) *screen {
 	return &screen{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -41,5 +41,5 @@ func (c *screen) Type() construct.GeoConstructType { return construct.GeoConstru
 func (c *screen) Expiry() int                      { return c.expiry }
 func (c *screen) IsLimited() bool                  { return true }
 func (c *screen) Count() int                       { return 1 }
-func (c *screen) Direction() geometry.Point        { return c.dir }
-func (c *screen) Pos() geometry.Point              { return c.pos }
+func (c *screen) Direction() info.Point            { return c.dir }
+func (c *screen) Pos() info.Point                  { return c.pos }

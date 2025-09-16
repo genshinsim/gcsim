@@ -6,7 +6,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -24,7 +23,7 @@ func TestHydroBloom(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -33,7 +32,7 @@ func TestHydroBloom(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -61,7 +60,7 @@ func TestDendroBloom(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -70,7 +69,7 @@ func TestDendroBloom(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s

@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -50,7 +48,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	var c1cb info.AttackCBFunc
 	if c.Base.Cons >= 1 {
 		c1cb = func(a info.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			c.c1()
@@ -81,11 +79,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	for i := 0.0; i < stormClusterCount; i++ {
 		// every stormcluster has its own direction
-		direction := geometry.DegreesToDirection(i * stepSize).Rotate(burstInitialDirection)
+		direction := info.DegreesToDirection(i * stepSize).Rotate(burstInitialDirection)
 		// 6 ticks per stormcluster
 		for j := 0; j < 6; j++ {
 			// start at 3.6 m offset, move 1.35m per tick
-			stormClusterPos := geometry.CalcOffsetPoint(burstInitialPos, geometry.Point{Y: 3.6 + 1.35*float64(j)}, direction)
+			stormClusterPos := info.CalcOffsetPoint(burstInitialPos, info.Point{Y: 3.6 + 1.35*float64(j)}, direction)
 			stormClusterAp := combat.NewCircleHitOnTarget(stormClusterPos, nil, stormClusterRadius)
 
 			c.Core.QueueAttack(ai, stormClusterAp, burstStart, burstClusterHitmark+18*j, c1cb)

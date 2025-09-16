@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -168,9 +166,9 @@ func (c *char) createDoll() {
 
 	// determine doll pos
 	player := c.Core.Combat.Player()
-	dollPos := geometry.CalcOffsetPoint(
+	dollPos := info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{X: skillDollXOffset, Y: skillDollYOffset},
+		info.Point{X: skillDollXOffset, Y: skillDollYOffset},
 		player.Direction(),
 	)
 
@@ -196,7 +194,7 @@ func (c *char) createDollConstructChecker() {
 	c.constructChecker = cc
 }
 
-func (c *char) skillDollAttack(src int, abil string, pos geometry.Point) func() {
+func (c *char) skillDollAttack(src int, abil string, pos info.Point) func() {
 	return func() {
 		c.Core.Tasks.Add(func() {
 			ai := info.AttackInfo{
@@ -255,9 +253,9 @@ func (c *char) createRockDoll() {
 
 	// determine doll pos
 	player := c.Core.Combat.Player()
-	dollPos := geometry.CalcOffsetPoint(
+	dollPos := info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{X: skillDollXOffset, Y: skillDollYOffset},
+		info.Point{X: skillDollXOffset, Y: skillDollYOffset},
 		player.Direction(),
 	)
 
@@ -270,7 +268,7 @@ func (c *char) createRockDoll() {
 }
 
 func (c *char) particleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

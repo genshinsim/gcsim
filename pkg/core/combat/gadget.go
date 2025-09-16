@@ -4,7 +4,6 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type GadgetTyp int
@@ -51,7 +50,7 @@ type Gadget interface {
 	GadgetTyp() GadgetTyp
 }
 
-func (h *Handler) RemoveGadget(key targets.TargetKey) {
+func (h *Handler) RemoveGadget(key info.TargetKey) {
 	h.ReplaceGadget(key, nil)
 }
 
@@ -80,7 +79,7 @@ func (h *Handler) AddGadget(t Gadget) {
 	t.SetKey(h.nextkey())
 }
 
-func (h *Handler) ReplaceGadget(key targets.TargetKey, t Gadget) {
+func (h *Handler) ReplaceGadget(key info.TargetKey, t Gadget) {
 	// do nothing if not found
 	for i, v := range h.gadgets {
 		if v != nil && v.Key() == key {

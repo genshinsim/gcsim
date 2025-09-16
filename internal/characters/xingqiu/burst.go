@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -89,7 +88,7 @@ func (c *char) summonSwordWave() {
 	if c.nextRegen {
 		done := false
 		c6cb = func(a info.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			if done {

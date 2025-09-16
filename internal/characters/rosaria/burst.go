@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -50,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// center on player
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 3.5),
 		15,
 		15,
 		c1CB,
@@ -71,7 +70,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	playerPos := c.Core.Combat.Player()
-	gadgetOffset := geometry.Point{Y: 3}
+	gadgetOffset := info.Point{Y: 3}
 	apHit2 := combat.NewCircleHitOnTarget(playerPos, gadgetOffset, 6)
 	apTick := combat.NewCircleHitOnTarget(playerPos, gadgetOffset, 6.5)
 	// Handle Hit 2 and DoT

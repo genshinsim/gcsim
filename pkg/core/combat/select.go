@@ -3,7 +3,6 @@ package combat
 import (
 	"sort"
 
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -224,7 +223,7 @@ func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t Gadget) bool, s
 }
 
 // returns the closest enemy to the given position without any range restrictions; SHOULD NOT be used outside of pkg
-func (h *Handler) ClosestEnemy(pos geometry.Point) Enemy {
+func (h *Handler) ClosestEnemy(pos info.Point) Enemy {
 	enemies := enemiesWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true, h.enemies)
 	if enemies == nil {
 		return nil
@@ -233,7 +232,7 @@ func (h *Handler) ClosestEnemy(pos geometry.Point) Enemy {
 }
 
 // returns the closest gadget to the given position without any range restrictions; SHOULD NOT be used outside of pkg
-func (h *Handler) ClosestGadget(pos geometry.Point) Gadget {
+func (h *Handler) ClosestGadget(pos info.Point) Gadget {
 	gadgets := gadgetsWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true, h.gadgets)
 	if gadgets == nil {
 		return nil

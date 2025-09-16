@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillLeapFrames [][]int
@@ -98,7 +97,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius)
 	targets := c.Core.Combat.EnemiesWithinArea(aoe, func(t combat.Enemy) bool {
-		return !slices.Contains[[]targets.TargetKey](c.skillEnemiesHit, t.Key())
+		return !slices.Contains[[]info.TargetKey](c.skillEnemiesHit, t.Key())
 	})
 
 	for _, t := range targets {
@@ -141,7 +140,7 @@ func (c *char) particleCB() func(info.AttackCB) {
 		return nil
 	}
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

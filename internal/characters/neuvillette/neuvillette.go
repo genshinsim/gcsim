@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -88,7 +87,7 @@ func (c *char) getSourcewaterDroplets() []*sourcewaterdroplet.Gadget {
 	// TODO: this is an approximation based on an ongoing KQM ticket (faster-neuvi-balls)
 	// The fan is bigger than the 60 degrees in the ticket to account for the 10 degree camera tilt.
 	segment := combat.NewCircleHitOnTargetFanAngle(player, nil, 14, 80)
-	rect := combat.NewBoxHitOnTarget(player, geometry.Point{Y: -7}, 8, 18)
+	rect := combat.NewBoxHitOnTarget(player, info.Point{Y: -7}, 8, 18)
 
 	droplets := make([]*sourcewaterdroplet.Gadget, 0)
 	for _, g := range c.Core.Combat.Gadgets() {

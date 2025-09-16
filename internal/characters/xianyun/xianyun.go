@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 func init() {
@@ -21,7 +20,7 @@ type char struct {
 	skillCounter        int
 	skillSrc            int
 	skillWasC6          bool
-	skillEnemiesHit     []targets.TargetKey
+	skillEnemiesHit     []info.TargetKey
 	a1Buffer            []int
 	a4Atk               float64
 	a4src               int

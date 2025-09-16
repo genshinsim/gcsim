@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -85,7 +84,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// box
 	player := c.Core.Combat.Player()
-	boxPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
+	boxPos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: 3}, player.Direction())
 	c.QueueCharTask(func() {
 		c.AddStatus(mineExpired, 12*60, true)
 		c.Core.QueueAttack(boxAi, combat.NewCircleHitOnTarget(boxPos, nil, 6), 0, 0)

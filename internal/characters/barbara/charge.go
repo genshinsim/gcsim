@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var chargeFrames []int
@@ -40,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	done := false
 	cb := func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -63,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 4 {
 		energyCount := 0
 		c4CB = func(a info.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			// check for healing
@@ -84,7 +82,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 5}, 3),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
 		cb,

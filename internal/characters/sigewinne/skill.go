@@ -10,11 +10,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -156,10 +154,10 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 func (c *char) spawnDroplets() {
 	player := c.Core.Combat.Player()
 	for j := 0; j < 2; j++ {
-		pos := geometry.CalcRandomPointFromCenter(
-			geometry.CalcOffsetPoint(
+		pos := info.CalcRandomPointFromCenter(
+			info.CalcOffsetPoint(
 				player.Pos(),
-				geometry.Point{Y: 1.5},
+				info.Point{Y: 1.5},
 				player.Direction(),
 			),
 			0.3,
@@ -290,7 +288,7 @@ func (c *char) bubbleTierLoseTask(tick int) {
 }
 
 func (c *char) particleCB(ac info.AttackCB) {
-	if ac.Target.Type() != targets.TargettableEnemy {
+	if ac.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.particleGenerated {

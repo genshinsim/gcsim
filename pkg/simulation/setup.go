@@ -11,12 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -26,7 +24,7 @@ const nightsoulBurstICDStatus = "nightsoul-burst-icd"
 // first is 0 because you can't proc it without the natlan character
 var nightsoulBurstICD = []int{0, 18 * 60, 12 * 60, 9 * 60, 9 * 60}
 
-func SetupTargetsInCore(core *core.Core, p geometry.Point, r float64, targets []info.EnemyProfile) error {
+func SetupTargetsInCore(core *core.Core, p info.Point, r float64, targets []info.EnemyProfile) error {
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
 
@@ -422,9 +420,9 @@ func (s *Simulation) handleHurt() {
 				IgnoreDefPercent: 1,
 			}
 			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
+			ap.SkipTargets[info.TargettablePlayer] = false
+			ap.SkipTargets[info.TargettableEnemy] = true
+			ap.SkipTargets[info.TargettableGadget] = true
 			s.C.QueueAttack(ai, ap, -1, 0) // -1 to avoid snapshot
 		}, f)
 
@@ -454,9 +452,9 @@ func (s *Simulation) handleHurt() {
 				IgnoreDefPercent: 1,
 			}
 			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
+			ap.SkipTargets[info.TargettablePlayer] = false
+			ap.SkipTargets[info.TargettableEnemy] = true
+			ap.SkipTargets[info.TargettableGadget] = true
 			s.C.QueueAttack(ai, ap, -1, 0) // -1 to avoid snapshot
 		}, f)
 

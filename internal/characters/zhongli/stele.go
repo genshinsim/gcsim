@@ -5,10 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const particleICDKey = "zhongli-particle-icd"
@@ -30,7 +28,7 @@ func (c *char) newStele(dur int) {
 		FlatDmg:    flat,
 	}
 	steleDir := c.Core.Combat.Player().Direction()
-	stelePos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, steleDir)
+	stelePos := info.CalcOffsetPoint(c.Core.Combat.Player().Pos(), info.Point{Y: 3}, steleDir)
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(stelePos, nil, 2), 0, 0, c.particleCB())
 
 	// create a construct
@@ -97,7 +95,7 @@ func (c *char) resonance(src int) func() {
 		// Use snapshot for damage
 		ae := c.steleSnapshot
 
-		boxOffset := geometry.Point{Y: -4}
+		boxOffset := info.Point{Y: -4}
 		boxSize := 8.0
 		boxSizeSquared := boxSize * boxSize
 
@@ -125,12 +123,12 @@ func (c *char) resonance(src int) func() {
 			}
 
 			// queue stele attack
-			steleAttackPos := geometry.CalcOffsetPoint(stelePos, boxOffset, steleDir)
+			steleAttackPos := info.CalcOffsetPoint(stelePos, boxOffset, steleDir)
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(steleAttackPos, nil, boxSize, boxSize), 0, particleCB)
 
 			// queue resonance attacks
 			for _, con := range resonanceConstructs {
-				resonanceAttackPos := geometry.CalcOffsetPoint(con.Pos(), boxOffset, con.Direction())
+				resonanceAttackPos := info.CalcOffsetPoint(con.Pos(), boxOffset, con.Direction())
 				c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(resonanceAttackPos, nil, boxSize, boxSize), 0, particleCB)
 			}
 		}
@@ -140,7 +138,7 @@ func (c *char) resonance(src int) func() {
 
 func (c *char) particleCB() info.AttackCBFunc {
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

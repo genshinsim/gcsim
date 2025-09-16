@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -39,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// priority: enemy > gadget
 	chargeCount := 5
 	checkDelay := chargeHitmarks[0] - 1 // TODO: exact delay unknown
-	singleCharge := func(pos geometry.Point, hitmark int) {
+	singleCharge := func(pos info.Point, hitmark int) {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(

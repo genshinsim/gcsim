@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
@@ -95,7 +94,7 @@ func (c *char) lowPlungeAl(p map[string]int) action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 3),
 		lowPlungeHitmarkAL-skip,
 		lowPlungeHitmarkAL-skip,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
@@ -135,7 +134,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmarkXY,
 		lowPlungeHitmarkXY,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
@@ -187,7 +186,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmarkXY,
 		highPlungeHitmarkXY,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
@@ -218,7 +217,7 @@ func (c *char) plungeCollision(delay int) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 1),
 		delay,
 		delay,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined

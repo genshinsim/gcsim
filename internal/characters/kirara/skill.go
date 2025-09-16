@@ -7,9 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -80,7 +78,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) kickParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(kickParticleICDKey) {
@@ -91,7 +89,7 @@ func (c *char) kickParticleCB(a info.AttackCB) {
 }
 
 func (c *char) rollParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(rollParticleICDKey) {
@@ -118,7 +116,7 @@ func (c *char) skillPress() action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.5, 270),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), info.Point{Y: 0.5}, 2.5, 270),
 		skillPressHitmark,
 		skillPressHitmark,
 		c.kickParticleCB,
@@ -167,7 +165,7 @@ func (c *char) skillShortHold() action.Info {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 2.6),
 		skillShortHoldKickHitmark,
 		c.kickParticleCB,
 	)
@@ -221,7 +219,7 @@ func (c *char) skillHold(duration int) action.Info {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 2.6),
 		(skillHoldKickHitmark-600)+duration,
 		c.kickParticleCB,
 	)

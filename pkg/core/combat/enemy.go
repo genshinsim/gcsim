@@ -3,7 +3,6 @@ package combat
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -55,7 +54,7 @@ func (h *Handler) Enemy(i int) info.Target {
 	return h.enemies[i]
 }
 
-func (h *Handler) SetEnemyPos(i int, p geometry.Point) bool {
+func (h *Handler) SetEnemyPos(i int, p info.Point) bool {
 	if i < 0 || i > len(h.enemies)-1 {
 		return false
 	}

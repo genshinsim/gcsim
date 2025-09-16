@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -102,7 +101,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	// if you rotate (2.75, 6.67) counterclockwise until ending up with (0, x), then the angle is around 22.5
 	// this angle gets used for determining the wall's viewing direction
 	angles := []float64{22.5, 112.5, 202.5, 292.5}
-	offsets := []geometry.Point{{X: 2.75, Y: 6.67}, {X: 2.75, Y: -6.67}, {X: -2.75, Y: -6.67}, {X: -2.75, Y: 6.67}}
+	offsets := []info.Point{{X: 2.75, Y: 6.67}, {X: 2.75, Y: -6.67}, {X: -2.75, Y: -6.67}, {X: -2.75, Y: 6.67}}
 	c.Core.Tasks.Add(func() {
 		// C1
 		// Party members within the radius of Wake of Earth have their CRIT Rate increased by 10% and have increased resistance against interruption.
@@ -121,8 +120,8 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		}
 		// spawn walls up until the specified limit is reached
 		for i := 0; i < maxConstructCount; i++ {
-			dir := geometry.DegreesToDirection(angles[i]).Rotate(player.Direction())
-			pos := geometry.CalcOffsetPoint(player.Pos(), offsets[i], player.Direction())
+			dir := info.DegreesToDirection(angles[i]).Rotate(player.Direction())
+			pos := info.CalcOffsetPoint(player.Pos(), offsets[i], player.Direction())
 			c.Core.Constructs.NewNoLimitCons(c.newWall(dur, dir, pos), false)
 		}
 	}, burstStart)
@@ -142,11 +141,11 @@ type wall struct {
 	src    int
 	expiry int
 	char   *Traveler
-	dir    geometry.Point
-	pos    geometry.Point
+	dir    info.Point
+	pos    info.Point
 }
 
-func (c *Traveler) newWall(dur int, dir, pos geometry.Point) *wall {
+func (c *Traveler) newWall(dur int, dir, pos info.Point) *wall {
 	return &wall{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -167,5 +166,5 @@ func (w *wall) Type() construct.GeoConstructType { return construct.GeoConstruct
 func (w *wall) Expiry() int                      { return w.expiry }
 func (w *wall) IsLimited() bool                  { return true }
 func (w *wall) Count() int                       { return 1 }
-func (w *wall) Direction() geometry.Point        { return w.dir }
-func (w *wall) Pos() geometry.Point              { return w.pos }
+func (w *wall) Direction() info.Point            { return w.dir }
+func (w *wall) Pos() info.Point                  { return w.pos }

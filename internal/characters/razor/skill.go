@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -112,7 +110,7 @@ func (c *char) SkillPress(burstActive int) action.Info {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1},
+			info.Point{Y: 1},
 			radius,
 			240,
 		),
@@ -134,7 +132,7 @@ func (c *char) SkillPress(burstActive int) action.Info {
 }
 
 func (c *char) pressParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -184,7 +182,7 @@ func (c *char) SkillHold(burstActive int) action.Info {
 }
 
 func (c *char) holdParticleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {
@@ -196,7 +194,7 @@ func (c *char) holdParticleCB(a info.AttackCB) {
 
 func (c *char) addSigil(done bool) info.AttackCBFunc {
 	return func(a info.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

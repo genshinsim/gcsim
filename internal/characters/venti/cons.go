@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -22,7 +21,7 @@ func (c *char) c1(ai info.AttackInfo, hitmark, travel int) {
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				geometry.Point{Y: -0.5},
+				info.Point{Y: -0.5},
 				0.1,
 				1,
 			),

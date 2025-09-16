@@ -4,14 +4,12 @@ import (
 	"log"
 	"testing"
 
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 //nolint:unparam // all calls currently have y = 0 but that can change
-func newSimpleCircle(x, y, r float64) *geometry.Circle {
-	return geometry.NewCircle(geometry.Point{X: x, Y: y}, r, geometry.DefaultDirection(), 360)
+func newSimpleCircle(x, y, r float64) *info.Circle {
+	return info.NewCircle(info.Point{X: x, Y: y}, r, info.DefaultDirection(), 360)
 }
 
 func TestGadgetCollision(t *testing.T) {
@@ -20,7 +18,7 @@ func TestGadgetCollision(t *testing.T) {
 	const gcount = 4
 	// 1 player
 	player := &testtarg{
-		typ:   targets.TargettablePlayer,
+		typ:   info.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
 		alive: true,
 		onCollision: func(info.Target) {
@@ -32,7 +30,7 @@ func TestGadgetCollision(t *testing.T) {
 	// 2 enemies
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
-			typ:   targets.TargettableEnemy,
+			typ:   info.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
 			onCollision: func(info.Target) {
@@ -43,15 +41,15 @@ func TestGadgetCollision(t *testing.T) {
 		c.AddEnemy(v)
 	}
 	// gadget should overlap player and first enemy
-	var cw [targets.TargettableTypeCount]bool
-	cw[targets.TargettableEnemy] = true
-	cw[targets.TargettablePlayer] = true
+	var cw [info.TargettableTypeCount]bool
+	cw[info.TargettableEnemy] = true
+	cw[info.TargettablePlayer] = true
 	count := 0
 	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
 			hdlr:        c,
-			typ:         targets.TargettableGadget,
+			typ:         info.TargettableGadget,
 			shp:         newSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
@@ -77,7 +75,7 @@ func TestGadgetLimits(t *testing.T) {
 	const gcount = 20
 	// 1 player
 	player := &testtarg{
-		typ:   targets.TargettablePlayer,
+		typ:   info.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
 		alive: true,
 		onCollision: func(info.Target) {
@@ -89,7 +87,7 @@ func TestGadgetLimits(t *testing.T) {
 	// 2 enemies
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
-			typ:   targets.TargettableEnemy,
+			typ:   info.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
 			onCollision: func(info.Target) {
@@ -100,15 +98,15 @@ func TestGadgetLimits(t *testing.T) {
 		c.AddEnemy(v)
 	}
 	// gadget should overlap player and first enemy
-	var cw [targets.TargettableTypeCount]bool
-	cw[targets.TargettableEnemy] = true
-	cw[targets.TargettablePlayer] = true
+	var cw [info.TargettableTypeCount]bool
+	cw[info.TargettableEnemy] = true
+	cw[info.TargettablePlayer] = true
 	count := 0
 	// make multiple gadgets; gadgets should not exceed 2
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
 			hdlr:        c,
-			typ:         targets.TargettableGadget,
+			typ:         info.TargettableGadget,
 			gadgetTyp:   GadgetTypTest,
 			shp:         newSimpleCircle(0, 0, 0.1),
 			alive:       true,
@@ -137,7 +135,7 @@ func BenchmarkCollisionCheck(b *testing.B) {
 	const gcount = 20
 	// 1 player
 	player := &testtarg{
-		typ:   targets.TargettablePlayer,
+		typ:   info.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
 		alive: true,
 	}
@@ -145,20 +143,20 @@ func BenchmarkCollisionCheck(b *testing.B) {
 	// 2 enemies
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
-			typ:   targets.TargettableEnemy,
+			typ:   info.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
 		}
 		c.AddEnemy(v)
 	}
 	// gadget should overlap player and first enemy
-	var cw [targets.TargettableTypeCount]bool
-	cw[targets.TargettableEnemy] = true
-	cw[targets.TargettablePlayer] = true
+	var cw [info.TargettableTypeCount]bool
+	cw[info.TargettableEnemy] = true
+	cw[info.TargettablePlayer] = true
 	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
-			typ:         targets.TargettableGadget,
+			typ:         info.TargettableGadget,
 			shp:         newSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
@@ -179,7 +177,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	const gcount = 4
 	// 1 player
 	player := &testtarg{
-		typ:   targets.TargettablePlayer,
+		typ:   info.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
 		alive: true,
 		onCollision: func(info.Target) {
@@ -191,7 +189,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	// 2 enemies
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
-			typ:   targets.TargettableEnemy,
+			typ:   info.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
 			onCollision: func(info.Target) {
@@ -202,14 +200,14 @@ func TestKillGadgetOnCollision(t *testing.T) {
 		c.AddEnemy(v)
 	}
 	// gadget should overlap player and first enemy
-	var cw [targets.TargettableTypeCount]bool
-	cw[targets.TargettableEnemy] = true
-	cw[targets.TargettablePlayer] = true
+	var cw [info.TargettableTypeCount]bool
+	cw[info.TargettableEnemy] = true
+	cw[info.TargettablePlayer] = true
 	count := 0
 	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
-			typ:         targets.TargettableGadget,
+			typ:         info.TargettableGadget,
 			shp:         newSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,

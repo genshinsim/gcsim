@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -24,8 +23,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// reset location
 	c.qAbsorb = attributes.NoElement
 	player := c.Core.Combat.Player()
-	c.qPos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 5}, player.Direction())
-	c.absorbCheckLocation = combat.NewBoxHitOnTarget(c.qPos, geometry.Point{Y: -1}, 2.5, 2.5)
+	c.qPos = info.CalcOffsetPoint(player.Pos(), info.Point{Y: 5}, player.Direction())
+	c.absorbCheckLocation = combat.NewBoxHitOnTarget(c.qPos, info.Point{Y: -1}, 2.5, 2.5)
 
 	// 8 second duration, tick every .4 second
 	ai := info.AttackInfo{

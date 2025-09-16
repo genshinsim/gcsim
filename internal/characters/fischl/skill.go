@@ -8,10 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -68,7 +66,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// hitmark is 5 frames after oz spawns
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1.5}, radius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 1.5}, radius),
 		skillOzSpawn,
 		skillOzHitmark,
 	)
@@ -95,7 +93,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) particleCB(a info.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -151,7 +149,7 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 			Mult:       birdAtk[c.TalentLvlSkill()],
 		}
 		player := c.Core.Combat.Player()
-		c.ozPos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 1.5}, player.Direction())
+		c.ozPos = info.CalcOffsetPoint(player.Pos(), info.Point{Y: 1.5}, player.Direction())
 
 		snap := c.Snapshot(&ai)
 		c.ozSnapshot = info.AttackEvent{
@@ -192,7 +190,7 @@ func (c *char) ozTick(src int) func() {
 		ae.Pattern = combat.NewBoxHit(
 			c.ozPos,
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
+			info.Point{Y: -0.5},
 			0.1,
 			1,
 		)
