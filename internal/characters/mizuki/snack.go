@@ -54,7 +54,7 @@ func newSnack(c *char, pos info.Point) *snack {
 	// we increase snack size to make sure we get it when mizuki is in dreamdrifter state
 	// because mizuki's pickup range is increased while in this state.
 	// https://docs.google.com/spreadsheets/d/1UU0EVPBatEndl4GRZyIs8Ix8O3kcZUDAwOHqM8_jQJw/edit?gid=339012102#gid=339012102
-	p.Gadget = gadget.New(c.Core, pos, snackSize*snackSizeMizukiMultiplier, combat.GadgetTypYumemiSnack)
+	p.Gadget = gadget.New(c.Core, pos, snackSize*snackSizeMizukiMultiplier, info.GadgetTypYumemiSnack)
 	p.Gadget.Duration = snackDuration
 	c.Core.Combat.AddGadget(p)
 

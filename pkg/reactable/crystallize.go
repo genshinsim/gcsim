@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -257,7 +256,7 @@ func NewCrystallizeShard(c *core.Core, shp info.Shape, shd *CrystallizeShield) *
 	// for simplicity, crystallize shards spawn randomly at radius + 0.5
 	r := circ.Radius() + 0.5
 	// radius 2 is ok
-	cs.Gadget = gadget.New(c, info.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypCrystallizeShard)
+	cs.Gadget = gadget.New(c, info.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, info.GadgetTypCrystallizeShard)
 
 	// shard lasts for 15s from shard spawn
 	cs.Gadget.Duration = 15 * 60

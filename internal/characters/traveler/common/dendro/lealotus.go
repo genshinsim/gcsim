@@ -29,7 +29,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 		info.Point{Y: 1},
 		player.Direction(),
 	)
-	s.Gadget = gadget.New(c.Core, c.burstPos, 1, combat.GadgetTypLeaLotus)
+	s.Gadget = gadget.New(c.Core, c.burstPos, 1, info.GadgetTypLeaLotus)
 	s.Reactable = &reactable.Reactable{}
 	s.Reactable.Init(s, c.Core)
 	s.Durability[reactable.Dendro] = 10

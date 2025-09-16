@@ -135,7 +135,7 @@ func (c *char) makeBunny() *Bunny {
 		info.Point{Y: 1.4},
 		player.Direction(),
 	)
-	b.Gadget = gadget.New(c.Core, bunnyPos, 1, combat.GadgetTypBaronBunny)
+	b.Gadget = gadget.New(c.Core, bunnyPos, 1, info.GadgetTypBaronBunny)
 	b.Reactable = &reactable.Reactable{}
 	b.Reactable.Init(b, c.Core)
 

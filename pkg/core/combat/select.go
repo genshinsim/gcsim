@@ -30,15 +30,15 @@ func enemiesWithinAreaFiltered(a info.AttackPattern, filter func(t Enemy) bool, 
 	return enemies
 }
 
-func gadgetsWithinAreaFiltered(a info.AttackPattern, filter func(t Gadget) bool, originalGadgets []Gadget) []Gadget {
-	var gadgets []Gadget
+func gadgetsWithinAreaFiltered(a info.AttackPattern, filter func(t info.Gadget) bool, originalGadgets []info.Gadget) []info.Gadget {
+	var gadgets []info.Gadget
 	hasFilter := filter != nil
 	for _, v := range originalGadgets {
 		if v == nil {
 			continue
 		}
-		// check if gadget is enemy camp, abilities don't target allied gadgets
-		if !(v.GadgetTyp() > StartGadgetTypEnemy && v.GadgetTyp() < EndGadgetTypEnemy) {
+		// check if info.Gadget is enemy camp, abilities don't target allied gadgets
+		if !(v.GadgetTyp() > info.StartGadgetTypEnemy && v.GadgetTyp() < info.EndGadgetTypEnemy) {
 			continue
 		}
 		if hasFilter && !filter(v) {
@@ -65,7 +65,7 @@ func (h *Handler) EnemiesWithinArea(a info.AttackPattern, filter func(t Enemy) b
 }
 
 // returns gadgets within the given area, no sorting, pass nil for no filter
-func (h *Handler) GadgetsWithinArea(a info.AttackPattern, filter func(t Gadget) bool) []Gadget {
+func (h *Handler) GadgetsWithinArea(a info.AttackPattern, filter func(t info.Gadget) bool) []info.Gadget {
 	gadgets := gadgetsWithinAreaFiltered(a, filter, h.gadgets)
 	if len(gadgets) == 0 {
 		return nil
@@ -84,8 +84,8 @@ func (h *Handler) RandomEnemyWithinArea(a info.AttackPattern, filter func(t Enem
 	return enemies[h.Rand.Intn(len(enemies))]
 }
 
-// returns a random gadget within the given area, pass nil for no filter
-func (h *Handler) RandomGadgetWithinArea(a info.AttackPattern, filter func(t Gadget) bool) Gadget {
+// returns a random info.Gadget within the given area, pass nil for no filter
+func (h *Handler) RandomGadgetWithinArea(a info.AttackPattern, filter func(t info.Gadget) bool) info.Gadget {
 	gadgets := h.GadgetsWithinArea(a, filter)
 	if gadgets == nil {
 		return nil
@@ -119,7 +119,7 @@ func (h *Handler) RandomEnemiesWithinArea(a info.AttackPattern, filter func(t En
 }
 
 // returns a list of random gadgets within the given area, pass nil for no filter
-func (h *Handler) RandomGadgetsWithinArea(a info.AttackPattern, filter func(t Gadget) bool, maxCount int) []Gadget {
+func (h *Handler) RandomGadgetsWithinArea(a info.AttackPattern, filter func(t info.Gadget) bool, maxCount int) []info.Gadget {
 	gadgets := h.GadgetsWithinArea(a, filter)
 	if gadgets == nil {
 		return nil
@@ -136,7 +136,7 @@ func (h *Handler) RandomGadgetsWithinArea(a info.AttackPattern, filter func(t Ga
 	}
 
 	// add gadgets given by indexes to the result
-	result := make([]Gadget, 0, count)
+	result := make([]info.Gadget, 0, count)
 	for i := 0; i < count; i++ {
 		result = append(result, gadgets[indexes[i]])
 	}
@@ -183,11 +183,11 @@ func enemiesWithinAreaSorted(a info.AttackPattern, filter func(t Enemy) bool, sk
 }
 
 type gadgetTuple struct {
-	gadget Gadget
+	Gadget info.Gadget
 	dist   float64
 }
 
-func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t Gadget) bool, skipAttackPattern bool, originalGadgets []Gadget) []gadgetTuple {
+func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t info.Gadget) bool, skipAttackPattern bool, originalGadgets []info.Gadget) []gadgetTuple {
 	var gadgets []gadgetTuple
 
 	hasFilter := filter != nil
@@ -195,8 +195,8 @@ func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t Gadget) bool, s
 		if v == nil {
 			continue
 		}
-		// check if gadget is enemy camp, abilities don't target allied gadgets
-		if !(v.GadgetTyp() > StartGadgetTypEnemy && v.GadgetTyp() < EndGadgetTypEnemy) {
+		// check if info.Gadget is enemy camp, abilities don't target allied gadgets
+		if !(v.GadgetTyp() > info.StartGadgetTypEnemy && v.GadgetTyp() < info.EndGadgetTypEnemy) {
 			continue
 		}
 		if hasFilter && !filter(v) {
@@ -208,7 +208,7 @@ func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t Gadget) bool, s
 		if !skipAttackPattern && !v.IsWithinArea(a) {
 			continue
 		}
-		gadgets = append(gadgets, gadgetTuple{gadget: v, dist: a.Shape.Pos().Sub(v.Pos()).MagnitudeSquared()})
+		gadgets = append(gadgets, gadgetTuple{Gadget: v, dist: a.Shape.Pos().Sub(v.Pos()).MagnitudeSquared()})
 	}
 
 	if len(gadgets) == 0 {
@@ -231,13 +231,13 @@ func (h *Handler) ClosestEnemy(pos info.Point) Enemy {
 	return enemies[0].enemy
 }
 
-// returns the closest gadget to the given position without any range restrictions; SHOULD NOT be used outside of pkg
-func (h *Handler) ClosestGadget(pos info.Point) Gadget {
+// returns the closest info.Gadget to the given position without any range restrictions; SHOULD NOT be used outside of pkg
+func (h *Handler) ClosestGadget(pos info.Point) info.Gadget {
 	gadgets := gadgetsWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true, h.gadgets)
 	if gadgets == nil {
 		return nil
 	}
-	return gadgets[0].gadget
+	return gadgets[0].Gadget
 }
 
 // returns the closest enemy within the given area, pass nil for no filter
@@ -249,13 +249,13 @@ func (h *Handler) ClosestEnemyWithinArea(a info.AttackPattern, filter func(t Ene
 	return enemies[0].enemy
 }
 
-// returns the closest gadget within the given area, pass nil for no filter
-func (h *Handler) ClosestGadgetWithinArea(a info.AttackPattern, filter func(t Gadget) bool) Gadget {
+// returns the closest info.Gadget within the given area, pass nil for no filter
+func (h *Handler) ClosestGadgetWithinArea(a info.AttackPattern, filter func(t info.Gadget) bool) info.Gadget {
 	gadgets := gadgetsWithinAreaSorted(a, filter, false, h.gadgets)
 	if gadgets == nil {
 		return nil
 	}
-	return gadgets[0].gadget
+	return gadgets[0].Gadget
 }
 
 // returns enemies within the given area, sorted from closest to furthest, pass nil for no filter
@@ -273,15 +273,15 @@ func (h *Handler) ClosestEnemiesWithinArea(a info.AttackPattern, filter func(t E
 }
 
 // returns enemies within the given area, sorted from closest to furthest, pass nil for no filter
-func (h *Handler) ClosestGadgetsWithinArea(a info.AttackPattern, filter func(t Gadget) bool) []Gadget {
+func (h *Handler) ClosestGadgetsWithinArea(a info.AttackPattern, filter func(t info.Gadget) bool) []info.Gadget {
 	gadgets := gadgetsWithinAreaSorted(a, filter, false, h.gadgets)
 	if gadgets == nil {
 		return nil
 	}
 
-	result := make([]Gadget, 0, len(gadgets))
+	result := make([]info.Gadget, 0, len(gadgets))
 	for _, v := range gadgets {
-		result = append(result, v.gadget)
+		result = append(result, v.Gadget)
 	}
 	return result
 }

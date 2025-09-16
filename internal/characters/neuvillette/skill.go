@@ -144,7 +144,7 @@ func (c *char) makeDropletCB() info.AttackCBFunc {
 					skillDropletRandomRanges[i][j][1],
 					c.Core.Rand,
 				),
-				combat.GadgetTypSourcewaterDropletNeuv,
+				info.GadgetTypSourcewaterDropletNeuv,
 			)
 		}
 		c.Core.Combat.Log.NewEvent("Skill: Spawned 3 droplets", glog.LogCharacterEvent, c.Index)

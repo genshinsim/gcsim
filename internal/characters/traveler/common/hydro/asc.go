@@ -3,7 +3,6 @@ package hydro
 import (
 	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -80,6 +79,6 @@ func (c *Traveler) newDroplet() *sourcewaterdroplet.Gadget {
 		3,
 		c.Core.Rand,
 	)
-	droplet := sourcewaterdroplet.New(c.Core, pos, combat.GadgetTypSourcewaterDropletHydroTrav)
+	droplet := sourcewaterdroplet.New(c.Core, pos, info.GadgetTypSourcewaterDropletHydroTrav)
 	return droplet
 }

@@ -33,7 +33,7 @@ func (c *char) newGuoba(ai info.AttackInfo) *panda {
 		info.Point{Y: 1.3},
 		player.Direction(),
 	)
-	p.Gadget = gadget.New(c.Core, pos, 0.2, combat.GadgetTypGuoba)
+	p.Gadget = gadget.New(c.Core, pos, 0.2, info.GadgetTypGuoba)
 	p.Gadget.Duration = 438
 	p.Reactable = &reactable.Reactable{}
 	p.Reactable.Init(p, c.Core)

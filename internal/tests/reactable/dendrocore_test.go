@@ -34,7 +34,7 @@ func TestModifyDendroCore(t *testing.T) {
 		if g, ok := args[0].(*reactable.DendroCore); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
-				Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0.2, combat.GadgetTypDendroCore),
+				Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0.2, info.GadgetTypDendroCore),
 			})
 			// prevent blowing up
 			g.OnKill = nil

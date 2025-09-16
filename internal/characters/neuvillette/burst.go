@@ -80,7 +80,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 						dropletRandomRanges[i][1],
 						c.Core.Rand,
 					),
-					combat.GadgetTypSourcewaterDropletNeuv,
+					info.GadgetTypSourcewaterDropletNeuv,
 				)
 			}
 			c.Core.Combat.Log.NewEvent(fmt.Sprint("Burst: Spawned ", dropletCount, " droplets"), glog.LogCharacterEvent, c.Index)

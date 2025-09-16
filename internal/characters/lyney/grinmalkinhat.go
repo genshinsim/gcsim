@@ -26,7 +26,7 @@ func (c *char) newGrinMalkinHat(pos info.Point, hpDrained bool, duration int) *G
 	g.pos = pos
 
 	// TODO: double check estimation of hitbox
-	g.Gadget = gadget.New(c.Core, g.pos, 1, combat.GadgetTypGrinMalkinHat)
+	g.Gadget = gadget.New(c.Core, g.pos, 1, info.GadgetTypGrinMalkinHat)
 	g.char = c
 
 	g.Duration = duration

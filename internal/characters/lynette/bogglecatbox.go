@@ -30,7 +30,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	)
 
 	// TODO: double check estimation of hitbox
-	b.Gadget = gadget.New(c.Core, b.pos, 1, combat.GadgetTypBogglecatBox)
+	b.Gadget = gadget.New(c.Core, b.pos, 1, info.GadgetTypBogglecatBox)
 	b.char = c
 	b.vividTravel = vividTravel
 

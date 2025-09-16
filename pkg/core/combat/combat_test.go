@@ -16,7 +16,7 @@ type (
 	testteam struct{}
 	testtarg struct {
 		typ         info.TargettableType
-		gadgetTyp   GadgetTyp
+		gadgetTyp   info.GadgetTyp
 		hdlr        *Handler
 		src         int // source of gadget
 		idx         int
@@ -55,7 +55,7 @@ func (t *testtarg) Attack(*info.AttackEvent, glog.Event) (float64, bool) { retur
 func (t *testtarg) Tick()                                                {}
 func (t *testtarg) Kill()                                                { t.hdlr.RemoveGadget(t.Key()) }
 func (t *testtarg) CollidableWith(x info.TargettableType) bool           { return t.collideWith[x] }
-func (t *testtarg) GadgetTyp() GadgetTyp                                 { return t.gadgetTyp }
+func (t *testtarg) GadgetTyp() info.GadgetTyp                            { return t.gadgetTyp }
 func (t *testtarg) Src() int                                             { return t.src }
 func (t *testtarg) CollidedWith(x info.Target) {
 	if t.onCollision != nil {

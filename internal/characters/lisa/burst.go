@@ -97,7 +97,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			enemies := c.Core.Combat.RandomEnemiesWithinArea(burstArea, nil, dischargeLimit)
 			enemyCount := len(enemies)
 
-			var gadgets []combat.Gadget
+			var gadgets []info.Gadget
 			if enemyCount < dischargeLimit {
 				gadgets = c.Core.Combat.RandomGadgetsWithinArea(burstArea, nil, dischargeLimit-enemyCount)
 			}

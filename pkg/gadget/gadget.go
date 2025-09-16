@@ -5,7 +5,6 @@ package gadget
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
@@ -13,7 +12,7 @@ import (
 type Gadget struct {
 	*target.Target
 	src             int
-	gadgetTyp       combat.GadgetTyp
+	gadgetTyp       info.GadgetTyp
 	core            *core.Core
 	OnKill          func()
 	OnExpiry        func() // only called if gadget dies from expiry
@@ -24,7 +23,7 @@ type Gadget struct {
 	sinceLastThink int
 }
 
-func New(core *core.Core, p info.Point, r float64, typ combat.GadgetTyp) *Gadget {
+func New(core *core.Core, p info.Point, r float64, typ info.GadgetTyp) *Gadget {
 	g := &Gadget{
 		core:      core,
 		src:       core.F,
@@ -42,9 +41,9 @@ func (g *Gadget) Kill() {
 	g.core.Combat.RemoveGadget(g.Key())
 }
 
-func (g *Gadget) Type() info.TargettableType  { return info.TargettableGadget }
-func (g *Gadget) Src() int                    { return g.src }
-func (g *Gadget) GadgetTyp() combat.GadgetTyp { return g.gadgetTyp }
+func (g *Gadget) Type() info.TargettableType { return info.TargettableGadget }
+func (g *Gadget) Src() int                   { return g.src }
+func (g *Gadget) GadgetTyp() info.GadgetTyp  { return g.gadgetTyp }
 
 func (g *Gadget) Tick() {
 	if g.OnThinkInterval != nil && g.ThinkInterval > 0 {

@@ -34,7 +34,7 @@ func (c *char) newYueguiThrow() *yuegui {
 	}
 	player := c.Core.Combat.Player()
 	pos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: 2}, player.Direction())
-	yg.Gadget = gadget.New(c.Core, pos, 0.5, combat.GadgetTypYueguiThrowing)
+	yg.Gadget = gadget.New(c.Core, pos, 0.5, info.GadgetTypYueguiThrowing)
 
 	yg.Gadget.Duration = 600
 	yg.Gadget.OnThinkInterval = yg.throw
@@ -64,7 +64,7 @@ func (c *char) newYueguiJump() {
 	}
 	player := c.Core.Combat.Player()
 	pos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: -2}, player.Direction())
-	yg.Gadget = gadget.New(c.Core, pos, 0.5, combat.GadgetTypYueguiJumping)
+	yg.Gadget = gadget.New(c.Core, pos, 0.5, info.GadgetTypYueguiJumping)
 	yg.Gadget.Duration = -1 // They last until they get deleted by the burst
 	yg.Gadget.OnThinkInterval = yg.throw
 
@@ -103,7 +103,7 @@ func (yg *yuegui) Tick() {
 }
 
 func (yg *yuegui) makeParticleCB() info.AttackCBFunc {
-	if yg.GadgetTyp() != combat.GadgetTypYueguiThrowing {
+	if yg.GadgetTyp() != info.GadgetTypYueguiThrowing {
 		return nil
 	}
 	return func(a info.AttackCB) {
@@ -146,7 +146,7 @@ func (yg *yuegui) throw() {
 			yg.c.makeC2CB(),
 		)
 	}, travelDelay-1)
-	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing && yg.c.Base.Cons >= 6 && (yg.throwCounter == 2 || yg.throwCounter == 5) {
+	if yg.GadgetTyp() == info.GadgetTypYueguiThrowing && yg.c.Base.Cons >= 6 && (yg.throwCounter == 2 || yg.throwCounter == 5) {
 		yg.c6(target)
 	}
 	yg.throwCounter += 1

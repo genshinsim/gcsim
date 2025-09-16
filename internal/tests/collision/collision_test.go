@@ -175,7 +175,7 @@ func TestDefaultHitGadget(t *testing.T) {
 	}, "dmg-count")
 
 	g := &testGadget{
-		Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0, combat.GadgetTypTest),
+		Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0, info.GadgetTypTest),
 	}
 
 	c.Combat.AddGadget(g)
@@ -211,7 +211,7 @@ func TestSkipTargets(t *testing.T) {
 	}, "dmg-count")
 
 	g := &testGadget{
-		Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0, combat.GadgetTypTest),
+		Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0, info.GadgetTypTest),
 	}
 
 	c.Combat.AddGadget(g)

@@ -164,7 +164,7 @@ func (c *char) spawnDroplets() {
 			1,
 			c.Core.Rand,
 		)
-		sourcewaterdroplet.New(c.Core, pos, combat.GadgetTypSourcewaterDropletSigewinne)
+		sourcewaterdroplet.New(c.Core, pos, info.GadgetTypSourcewaterDropletSigewinne)
 	}
 }
 

@@ -70,7 +70,7 @@ func (c *char) c4() {
 				3,
 				c.Core.Rand,
 			),
-			combat.GadgetTypSourcewaterDropletNeuv,
+			info.GadgetTypSourcewaterDropletNeuv,
 		)
 		c.Core.Combat.Log.NewEvent("C4: Spawned 1 droplet", glog.LogCharacterEvent, c.Index)
 

@@ -548,14 +548,14 @@ func (c *char) buildValidGadgetList() []HittableEntity {
 			continue
 		}
 		switch g.GadgetTyp() {
-		case combat.GadgetTypDendroCore, combat.GadgetTypBogglecatBox:
+		case info.GadgetTypDendroCore, info.GadgetTypBogglecatBox:
 			// Calculate start and ending frames for collision
 			// Can ignore hitbox shape errors since these gadgets have circular hitboxes
 			hittableGadget, isHittable, _ := c.IsGadgetHittable(g)
 			if isHittable {
 				hittableGadgets = append(hittableGadgets, hittableGadget)
 			}
-		case combat.GadgetTypLeaLotus:
+		case info.GadgetTypLeaLotus:
 			hittableGadget, isHittable, _ := c.IsGadgetHittable(g)
 			if isHittable {
 				hittableGadget.isOneTick = false
@@ -566,7 +566,7 @@ func (c *char) buildValidGadgetList() []HittableEntity {
 	return hittableGadgets
 }
 
-func (c *char) IsGadgetHittable(v combat.Gadget) (HittableEntity, bool, error) {
+func (c *char) IsGadgetHittable(v info.Gadget) (HittableEntity, bool, error) {
 	collisionFrames := [2]int{-1, -1}
 	var facingDirection float64
 	if c.caState.cAtkFrames == 0 {
@@ -614,11 +614,11 @@ func (c *char) bikeChargeAttackHook() {
 			return false
 		}
 		// If in bike state, add gadget to target list if it can be hit
-		g, ok := args[0].(combat.Gadget)
+		g, ok := args[0].(info.Gadget)
 		if !ok {
 			return false
 		}
-		if g.GadgetTyp() == combat.GadgetTypDendroCore {
+		if g.GadgetTyp() == info.GadgetTypDendroCore {
 			// Might not be necessary to add to list?
 			hittableGadget, isHittable, _ := c.IsGadgetHittable(g)
 			if isHittable {

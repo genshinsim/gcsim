@@ -107,7 +107,7 @@ func TestGadgetLimits(t *testing.T) {
 		v := &testtarg{
 			hdlr:        c,
 			typ:         info.TargettableGadget,
-			gadgetTyp:   GadgetTypTest,
+			gadgetTyp:   info.GadgetTypTest,
 			shp:         newSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
@@ -119,7 +119,7 @@ func TestGadgetLimits(t *testing.T) {
 
 	// check how many we got
 	for _, v := range c.gadgets {
-		if v != nil && v.GadgetTyp() == GadgetTypTest {
+		if v != nil && v.GadgetTyp() == info.GadgetTypTest {
 			count++
 		}
 	}
