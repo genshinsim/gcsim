@@ -36,7 +36,11 @@ export interface SimulationResult {
     | string
     | undefined;
   /** if set to -1 then should result in perm */
-  created_date?: number | undefined;
+  created_date?:
+    | number
+    | undefined;
+  /** --- optional dev debug data; not useful for anything else --- */
+  dev_debug?: DevDebugData | undefined;
 }
 
 export interface SimulationStatistics {
@@ -120,6 +124,20 @@ export interface SimulationStatistics_ShieldsEntry {
 export interface SignedSimulationStatistics {
   stats?: SimulationStatistics | undefined;
   hash?: string | undefined;
+}
+
+export interface DevDebugData {
+  /**
+   * add any dev debug data here
+   * this data is not guaranteed to be stable across versions
+   * and should not be used for anything other than debugging
+   */
+  seeded_dps?: DevDebugSeededDPSResult[] | undefined;
+}
+
+export interface DevDebugSeededDPSResult {
+  seed?: string | undefined;
+  dps?: number | undefined;
 }
 
 export interface OverviewStats {
@@ -331,6 +349,7 @@ function createBaseSimulationResult(): SimulationResult {
     mode: 0,
     key_type: "",
     created_date: 0,
+    dev_debug: undefined,
   };
 }
 
@@ -392,6 +411,9 @@ export const SimulationResult = {
     }
     if (message.created_date !== undefined && message.created_date !== 0) {
       writer.uint32(120).int64(message.created_date);
+    }
+    if (message.dev_debug !== undefined) {
+      DevDebugData.encode(message.dev_debug, writer.uint32(802).fork()).ldelim();
     }
     return writer;
   },
@@ -522,6 +544,13 @@ export const SimulationResult = {
 
           message.created_date = longToNumber(reader.int64() as Long);
           continue;
+        case 100:
+          if (tag !== 802) {
+            break;
+          }
+
+          message.dev_debug = DevDebugData.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -558,6 +587,7 @@ export const SimulationResult = {
       mode: isSet(object.mode) ? simModeFromJSON(object.mode) : 0,
       key_type: isSet(object.key_type) ? globalThis.String(object.key_type) : "",
       created_date: isSet(object.created_date) ? globalThis.Number(object.created_date) : 0,
+      dev_debug: isSet(object.dev_debug) ? DevDebugData.fromJSON(object.dev_debug) : undefined,
     };
   },
 
@@ -614,6 +644,9 @@ export const SimulationResult = {
     if (message.created_date !== undefined && message.created_date !== 0) {
       obj.created_date = Math.round(message.created_date);
     }
+    if (message.dev_debug !== undefined) {
+      obj.dev_debug = DevDebugData.toJSON(message.dev_debug);
+    }
     return obj;
   },
 
@@ -649,6 +682,9 @@ export const SimulationResult = {
     message.mode = object.mode ?? 0;
     message.key_type = object.key_type ?? "";
     message.created_date = object.created_date ?? 0;
+    message.dev_debug = (object.dev_debug !== undefined && object.dev_debug !== null)
+      ? DevDebugData.fromPartial(object.dev_debug)
+      : undefined;
     return message;
   },
 };
@@ -1650,6 +1686,143 @@ export const SignedSimulationStatistics = {
       ? SimulationStatistics.fromPartial(object.stats)
       : undefined;
     message.hash = object.hash ?? "";
+    return message;
+  },
+};
+
+function createBaseDevDebugData(): DevDebugData {
+  return { seeded_dps: [] };
+}
+
+export const DevDebugData = {
+  encode(message: DevDebugData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.seeded_dps !== undefined && message.seeded_dps.length !== 0) {
+      for (const v of message.seeded_dps) {
+        DevDebugSeededDPSResult.encode(v!, writer.uint32(10).fork()).ldelim();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DevDebugData {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDevDebugData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.seeded_dps!.push(DevDebugSeededDPSResult.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DevDebugData {
+    return {
+      seeded_dps: globalThis.Array.isArray(object?.seeded_dps)
+        ? object.seeded_dps.map((e: any) => DevDebugSeededDPSResult.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: DevDebugData): unknown {
+    const obj: any = {};
+    if (message.seeded_dps?.length) {
+      obj.seeded_dps = message.seeded_dps.map((e) => DevDebugSeededDPSResult.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DevDebugData>, I>>(base?: I): DevDebugData {
+    return DevDebugData.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<DevDebugData>, I>>(object: I): DevDebugData {
+    const message = createBaseDevDebugData();
+    message.seeded_dps = object.seeded_dps?.map((e) => DevDebugSeededDPSResult.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseDevDebugSeededDPSResult(): DevDebugSeededDPSResult {
+  return { seed: "", dps: 0 };
+}
+
+export const DevDebugSeededDPSResult = {
+  encode(message: DevDebugSeededDPSResult, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.seed !== undefined && message.seed !== "") {
+      writer.uint32(10).string(message.seed);
+    }
+    if (message.dps !== undefined && message.dps !== 0) {
+      writer.uint32(17).double(message.dps);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DevDebugSeededDPSResult {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDevDebugSeededDPSResult();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.seed = reader.string();
+          continue;
+        case 2:
+          if (tag !== 17) {
+            break;
+          }
+
+          message.dps = reader.double();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DevDebugSeededDPSResult {
+    return {
+      seed: isSet(object.seed) ? globalThis.String(object.seed) : "",
+      dps: isSet(object.dps) ? globalThis.Number(object.dps) : 0,
+    };
+  },
+
+  toJSON(message: DevDebugSeededDPSResult): unknown {
+    const obj: any = {};
+    if (message.seed !== undefined && message.seed !== "") {
+      obj.seed = message.seed;
+    }
+    if (message.dps !== undefined && message.dps !== 0) {
+      obj.dps = message.dps;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DevDebugSeededDPSResult>, I>>(base?: I): DevDebugSeededDPSResult {
+    return DevDebugSeededDPSResult.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<DevDebugSeededDPSResult>, I>>(object: I): DevDebugSeededDPSResult {
+    const message = createBaseDevDebugSeededDPSResult();
+    message.seed = object.seed ?? "";
+    message.dps = object.dps ?? 0;
     return message;
   },
 };

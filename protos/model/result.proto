@@ -64,6 +64,9 @@ message SimulationResult {
   SimMode mode = 13 [json_name="mode"];
   string key_type = 14 [json_name="key_type"];
   int64 created_date = 15 [json_name="created_date"]; //if set to -1 then should result in perm
+
+  // --- optional dev debug data; not useful for anything else ---
+  DevDebugData dev_debug = 100 [json_name="dev_debug"];
 }
 
 message SimulationStatistics {
@@ -125,6 +128,18 @@ message SimulationStatistics {
 message SignedSimulationStatistics {
   SimulationStatistics stats = 1 [json_name="stats"];
   string hash = 2 [json_name="hash"];
+}
+
+message DevDebugData {
+  // add any dev debug data here
+  // this data is not guaranteed to be stable across versions
+  // and should not be used for anything other than debugging
+  repeated DevDebugSeededDPSResult seeded_dps = 1 [json_name="seeded_dps"];
+}
+
+message DevDebugSeededDPSResult {
+  string seed = 1 [json_name="seed"];
+  double dps = 2 [json_name="dps"];
 }
 
 message OverviewStats {
