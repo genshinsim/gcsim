@@ -6,6 +6,7 @@ import (
 	"math"
 	"strings"
 
+	"github.com/genshinsim/gcsim/internal/template/crystallize"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -13,7 +14,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -318,7 +318,7 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	var count int64
 	for _, g := range e.Core.Combat.Gadgets() {
-		shard, ok := g.(*reactable.CrystallizeShard)
+		shard, ok := g.(*crystallize.Shard)
 		// skip if no shard
 		if !ok {
 			continue
