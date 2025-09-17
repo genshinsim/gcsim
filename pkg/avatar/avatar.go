@@ -14,14 +14,15 @@ import (
 
 type Player struct {
 	*target.Target
-	*reactable.Reactable
+	info.Reactable
 }
 
 func New(core *core.Core, pos info.Point, r float64) *Player {
 	p := &Player{}
 	p.Target = target.New(core, pos, r)
-	p.Reactable = &reactable.Reactable{}
-	p.Reactable.Init(p, core)
+	x := &reactable.Reactable{}
+	x.Init(p, core)
+	p.Reactable = x
 	return p
 }
 
@@ -236,31 +237,30 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur info.Durability, 
 	if ele == attributes.Frozen {
 		return
 	}
-	var mod reactable.Modifier
 	switch ele {
 	case attributes.Electro:
-		mod = reactable.Electro
 	case attributes.Hydro:
-		mod = reactable.Hydro
 	case attributes.Pyro:
-		mod = reactable.Pyro
 	case attributes.Cryo:
-		mod = reactable.Cryo
 	case attributes.Dendro:
-		mod = reactable.Dendro
+	default:
+		// catch all case to make sure we don't infuse with invalid element
+		p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "invalid self infusion element: "+ele.String())
+		return
 	}
 
+	active := p.GetAuraDurability(ele)
 	// we're assuming refill maintains the same decay rate?
-	if p.Durability[mod] > info.ZeroDur {
+	if active > info.ZeroDur {
 		// make sure we're not adding more than incoming
-		if p.Durability[mod] < dur {
-			p.Durability[mod] = dur
+		if active < dur {
+			p.SetAuraDurability(ele, dur, p.GetAuraDecayRate(ele))
 		}
 		return
 	}
 	// otherwise calculate decay based on specified f (in frames)
-	p.Durability[mod] = dur
-	p.DecayRate[mod] = dur / info.Durability(f)
+	decay := dur / info.Durability(f)
+	p.SetAuraDurability(ele, dur, decay)
 }
 
 func (p *Player) ReactWithSelf(atk *info.AttackEvent) {
