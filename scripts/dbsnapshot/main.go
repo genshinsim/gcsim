@@ -25,7 +25,6 @@ type opts struct {
 var workers = 5
 
 func main() {
-
 	var opt opts
 	flag.IntVar(&workers, "workers", 5, "number of workers to use")
 	flag.IntVar(&opt.iters, "iters", 10, "number of iterations to run per config")
@@ -54,8 +53,8 @@ func main() {
 	}
 }
 
-func compareFromSnapshot(from string, saveTo string) error {
-	prev, err := Load(from)
+func compareFromSnapshot(from, saveTo string) error {
+	prev, err := load(from)
 	if err != nil {
 		return err
 	}
@@ -104,10 +103,10 @@ func compareFromSnapshot(from string, saveTo string) error {
 		log.Printf("no differences found")
 	} else {
 		for _, v := range warnings {
-			log.Printf(v)
+			log.Println(v)
 		}
 	}
-	return current.Save(saveTo)
+	return current.save(saveTo)
 }
 
 func createSnapshot(filename string, iters int) error {
@@ -130,7 +129,7 @@ func createSnapshot(filename string, iters int) error {
 		s.results = append(s.results, simResult)
 		s.ids = append(s.ids, v.Id)
 	}
-	return s.Save(filename)
+	return s.save(filename)
 }
 
 func runSim(ctx context.Context, config string, iters int) (*model.SimulationResult, error) {

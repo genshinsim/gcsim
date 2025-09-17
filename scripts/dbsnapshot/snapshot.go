@@ -16,7 +16,7 @@ type snapshot struct {
 	results []*model.SimulationResult
 }
 
-func (s *snapshot) Save(filename string) error {
+func (s *snapshot) save(filename string) error {
 	if len(s.ids) != len(s.results) {
 		return fmt.Errorf("mismatched ids and results length")
 	}
@@ -49,7 +49,7 @@ func (s *snapshot) Save(filename string) error {
 	return nil
 }
 
-func Load(filename string) (*snapshot, error) {
+func load(filename string) (*snapshot, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
