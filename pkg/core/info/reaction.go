@@ -44,7 +44,8 @@ type Reactable interface {
 
 	React(a *AttackEvent)
 	AttachOrRefill(a *AttackEvent) bool
-	SetAuraDurability(mod attributes.Element, dur Durability, decay Durability)
+	SetAuraDurability(mod attributes.Element, dur Durability)
+	SetAuraDecayRate(mod attributes.Element, decay Durability)
 
 	ActiveAuraString() []string
 	AuraCount() int

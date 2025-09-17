@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
@@ -20,9 +20,7 @@ type Player struct {
 func New(core *core.Core, pos info.Point, r float64) *Player {
 	p := &Player{}
 	p.Target = target.New(core, pos, r)
-	x := &reactable.Reactable{}
-	x.Init(p, core)
-	p.Reactable = x
+	p.Reactable = hacks.NewReactable(p, core)
 	return p
 }
 
@@ -254,13 +252,14 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur info.Durability, 
 	if active > info.ZeroDur {
 		// make sure we're not adding more than incoming
 		if active < dur {
-			p.SetAuraDurability(ele, dur, p.GetAuraDecayRate(ele))
+			p.SetAuraDurability(ele, dur)
 		}
 		return
 	}
 	// otherwise calculate decay based on specified f (in frames)
 	decay := dur / info.Durability(f)
-	p.SetAuraDurability(ele, dur, decay)
+	p.SetAuraDurability(ele, dur)
+	p.SetAuraDecayRate(ele, decay)
 }
 
 func (p *Player) ReactWithSelf(atk *info.AttackEvent) {

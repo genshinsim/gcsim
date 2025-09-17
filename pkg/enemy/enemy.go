@@ -5,10 +5,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
@@ -45,10 +45,8 @@ func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	e.prof = p
 	e.Target = target.New(core, info.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
 	//TODO: should pass in a info.Reactable instead
-	r := &reactable.Reactable{}
-	r.Init(e, core)
-	r.SetFreezeResist(e.prof.FreezeResist)
-	e.Reactable = r
+	e.Reactable = hacks.NewReactable(e, core)
+	e.SetFreezeResist(e.prof.FreezeResist)
 	e.mods = make([]modifier.Mod, 0, 10)
 	if core.Combat.DamageMode {
 		e.hp = p.HP

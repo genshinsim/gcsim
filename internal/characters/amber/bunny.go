@@ -8,17 +8,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 const manualExplosionAbil = "Baron Bunny (Manual Explosion)"
 
 type Bunny struct {
 	*gadget.Gadget
-	*reactable.Reactable
+	info.Reactable
 	ae   *info.AttackEvent
 	char *char
 }
@@ -136,8 +136,7 @@ func (c *char) makeBunny() *Bunny {
 		player.Direction(),
 	)
 	b.Gadget = gadget.New(c.Core, bunnyPos, 1, info.GadgetTypBaronBunny)
-	b.Reactable = &reactable.Reactable{}
-	b.Reactable.Init(b, c.Core)
+	b.Reactable = hacks.NewReactable(b, c.Core)
 
 	b.Gadget.Duration = 484
 
