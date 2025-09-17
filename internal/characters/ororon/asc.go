@@ -34,12 +34,12 @@ func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.nightsoulState.GeneratePoints(40)
 		return false
 	}, a1NSBurstKey)
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 
 		// ignores ororon himself
@@ -70,7 +70,7 @@ func (c *char) a1Init() {
 		return false
 	}, a1ElectroHydroKey)
 
-	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
@@ -79,7 +79,7 @@ func (c *char) a1Init() {
 		return false
 	}, a1ECTriggerKey)
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.ActorIndex == c.Index() {
@@ -160,7 +160,7 @@ func (c *char) a4Init() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		active := c.Core.Player.ActiveChar()
 		if atk.Info.ActorIndex != active.Index() {

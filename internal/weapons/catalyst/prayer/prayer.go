@@ -65,15 +65,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w.dmg = 0.06 + float64(r)*0.02
 	w.buff = make([]float64, attributes.EndStatType)
 
-	w.stacks = p.Params["stacks"]
-	if w.stacks > 4 {
-		w.stacks = 4
-	}
+	w.stacks = min(p.Params["stacks"], 4)
 	w.updateBuff()
 
 	char.QueueCharTask(w.stackCheck(char, c), 240)
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			w.stacks = 0
 			w.updateBuff()

@@ -78,7 +78,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) addBurstExitHandler() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		c.DeleteStatus(burstKey)
 		c.DeleteStatus(a4Key)
 		c.DeleteStatus(c2Key)

@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	var w Weapon
 	refine := p.Refine
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 
 		if ae.Info.AttackTag != attacks.AttackTagExtra {

@@ -45,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	// gain symbols
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 		amount := args[2].(float64)
@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	em := 30 + 10*float64(r)
 	refund := 1.5 + 0.5*float64(r)
 	m := make([]float64, attributes.EndStatType)
-	buffFunc := func(args ...interface{}) bool {
+	buffFunc := func(args ...any) bool {
 		// skip if no symbols (status not active implies symbols == 0)
 		if !char.StatusIsActive(symbolKey) {
 			return false

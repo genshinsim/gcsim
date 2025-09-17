@@ -102,7 +102,7 @@ The Eye can initiate one coordinated attack every 0.9s per party.
 *
 */
 func (c *char) eyeOnDamage() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)

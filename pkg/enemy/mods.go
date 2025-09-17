@@ -77,11 +77,11 @@ func (e *Enemy) StatusExpiry(key string) int { return e.getModExpiry(key) }
 
 // TODO: this needs to purge if done?
 func (e *Enemy) resist(ai *info.AttackInfo, evt glog.Event) float64 {
-	var logDetails []interface{}
+	var logDetails []any
 	var sb strings.Builder
 
 	if e.Core.Flags.LogDebug {
-		logDetails = make([]interface{}, 0, 5*len(e.mods))
+		logDetails = make([]any, 0, 5*len(e.mods))
 	}
 
 	r := e.resists[ai.Element]
@@ -114,11 +114,11 @@ func (e *Enemy) resist(ai *info.AttackInfo, evt glog.Event) float64 {
 }
 
 func (e *Enemy) defAdj(evt glog.Event) float64 {
-	var logDetails []interface{}
+	var logDetails []any
 	var sb strings.Builder
 
 	if e.Core.Flags.LogDebug {
-		logDetails = make([]interface{}, 0, 3*len(e.mods))
+		logDetails = make([]any, 0, 3*len(e.mods))
 	}
 
 	var r float64

@@ -29,7 +29,7 @@ func (c *char) c1() {
 
 func (c *char) c2() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	f := func(args ...interface{}) bool {
+	f := func(args ...any) bool {
 		if c.sproutShouldExtend {
 			return false
 		}
@@ -49,7 +49,7 @@ func (c *char) c2() {
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Core.Events.Subscribe(evt, f, "collei-c2")
 		default:
-			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
+			c.Core.Events.Subscribe(evt, func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}

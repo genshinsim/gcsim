@@ -20,10 +20,7 @@ func init() {
 const skillBuffKey = "soukaikanka"
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	delay := p["illusion_delay"]
-	if delay < 35 {
-		delay = 35
-	}
+	delay := max(p["illusion_delay"], 35)
 	if delay > 6*60 {
 		delay = 360
 	}
@@ -88,7 +85,7 @@ func (c *char) skillStacks(ac info.AttackCB) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		// do nothing if previous char wasn't ayato
 		prev := args[0].(int)
 		if prev != c.Index() {

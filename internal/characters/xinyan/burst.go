@@ -73,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ai.CanBeDefenseHalted = false // only the first DoT has hitlag
 		// 2nd DoT onwards
 		c.QueueCharTask(func() {
-			for i := 0; i < 6; i++ {
+			for i := range 6 {
 				c.Core.QueueAttack(
 					ai,
 					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 4),
@@ -96,7 +96,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// Can vary with fps, frame video has 2 pulses
 		// See https://library.keqingmains.com/evidence/characters/pyro/xinyan#xinyan-c2-shield-formation-pulses-extra-times
 		ai := c.getAttackInfoShieldDoT()
-		for i := 0; i < 2; i++ {
+		for i := range 2 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),

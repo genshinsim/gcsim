@@ -39,7 +39,7 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 		rawPerParticleEvent[ind] = append(rawPerParticleEvent[ind], 0)
 	}
 
-	core.Events.Subscribe(event.OnEnergyChange, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnergyChange, func(args ...any) bool {
 		character := args[0].(*character.CharWrapper)
 		preEnergy := args[1].(float64)
 		amount := args[2].(float64)
@@ -64,7 +64,7 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 		return false
 	}, "substat-opt-energy-log")
 
-	core.Events.Subscribe(event.OnEnergyBurst, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnergyBurst, func(args ...any) bool {
 		char := args[0].(*character.CharWrapper)
 		ind := char.Index()
 		amount := args[2].(float64)
@@ -128,7 +128,7 @@ func NewEnergyAggBuffer(cfg *info.ActionList) CustomEnergyAggBuffer {
 
 func (agg *CustomEnergyAggBuffer) Add(b CustomEnergyStatsBuffer) {
 	charCount := len(b.WeightedER)
-	for i := 0; i < charCount; i++ {
+	for i := range charCount {
 		burstCount := len(b.WeightedER[i])
 		if burstCount == 0 {
 			agg.WeightedER[i] = append(agg.WeightedER[i], 1.0)
@@ -156,7 +156,7 @@ func (agg *CustomEnergyAggBuffer) Add(b CustomEnergyStatsBuffer) {
 func (agg *CustomEnergyAggBuffer) Flush() {
 	charCount := len(agg.WeightedER)
 
-	for i := 0; i < charCount; i++ {
+	for i := range charCount {
 		slices.Sort(agg.WeightedER[i])
 		slices.Sort(agg.ErNeeded[i])
 		slices.Sort(agg.AdditionalErNeeded[i])

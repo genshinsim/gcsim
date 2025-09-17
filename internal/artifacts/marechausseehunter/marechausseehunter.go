@@ -80,7 +80,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	s.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.ActorIndex != char.Index() {
 			return false
@@ -96,7 +96,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		return false
 	}, fmt.Sprintf("mh-4pc-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)

@@ -143,7 +143,7 @@ func (c *char) particleCB(a info.AttackCB) {
 
 func (c *char) surfingTick() {
 	// TODO: create a gadget?
-	c.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTick, func(args ...any) bool {
 		if c.Core.Player.Active() != c.Index() {
 			return false
 		}

@@ -17,7 +17,7 @@ import (
 // is decreased by 2s. This effect can occur once every 10s.
 func (c *char) c1() {
 	icd := -1
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		eActive := c.Core.Status.Duration(generalWarBannerKey) > 0
 		qActive := c.Core.Status.Duration(generalGloryKey) > 0
 		if !eActive && !qActive {
@@ -65,7 +65,7 @@ func (c *char) c1() {
 // active character obtains an Elemental Shard from a Crystallize reaction.
 // This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) bool {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
 			return false
 		}

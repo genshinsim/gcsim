@@ -31,7 +31,7 @@ func (c *char) c1() {
 
 	c.c1A1()
 
-	c.Core.Events.Subscribe(event.OnBurning, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnBurning, func(args ...any) bool {
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -40,7 +40,7 @@ func (c *char) c1() {
 		return false
 	}, "emilie-a1-on-burning")
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {

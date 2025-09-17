@@ -12,27 +12,27 @@ import (
 
 //nolint:staticcheck // staticcheck can't know nocopy is from easyjson and not json: https://github.com/dominikh/go-tools/issues/836
 type keyVal struct {
-	Key string      `json:"key,nocopy"`
-	Val interface{} `json:"val"`
+	Key string `json:"key,nocopy"`
+	Val any    `json:"val"`
 }
 
 //nolint:staticcheck // staticcheck can't know nocopy is from easyjson and not json: https://github.com/dominikh/go-tools/issues/836
 //easyjson:json
 type LogEvent struct {
-	Event     Source                 `json:"event"`
-	Frame     int                    `json:"frame"`
-	Ended     int                    `json:"ended"`
-	CharIndex int                    `json:"char_index"`
-	Msg       string                 `json:"msg,nocopy"`
-	Logs      map[string]interface{} `json:"logs"`
-	Ordering  map[string]int         `json:"ordering"`
+	Event     Source         `json:"event"`
+	Frame     int            `json:"frame"`
+	Ended     int            `json:"ended"`
+	CharIndex int            `json:"char_index"`
+	Msg       string         `json:"msg,nocopy"`
+	Logs      map[string]any `json:"logs"`
+	Ordering  map[string]int `json:"ordering"`
 	counter   int
 }
 
 //easyjson:json
 type EventArr []*LogEvent
 
-func (e *LogEvent) Write(key string, value interface{}) Event {
+func (e *LogEvent) Write(key string, value any) Event {
 	e.Logs[key] = value
 	e.Ordering[key] = e.counter
 	e.counter++
@@ -40,7 +40,7 @@ func (e *LogEvent) Write(key string, value interface{}) Event {
 	return e
 }
 
-func (e *LogEvent) WriteBuildMsg(keysAndValues ...interface{}) Event {
+func (e *LogEvent) WriteBuildMsg(keysAndValues ...any) Event {
 	// should be even number
 	var key string
 	var ok bool
@@ -119,7 +119,7 @@ func (c *Ctrl) NewEvent(msg string, typ Source, srcChar int) Event {
 		Ended:     *c.f,
 		Event:     typ,
 		CharIndex: srcChar,
-		Logs:      make(map[string]interface{}), //+5 from default just in case we need to add in more keys
+		Logs:      make(map[string]any), //+5 from default just in case we need to add in more keys
 		Ordering:  make(map[string]int),
 	}
 	// c.events = append(c.events, e)

@@ -26,7 +26,7 @@ func (c *char) c1() {
 //     CRIT Rate and CRIT DMG are fixed at 20% and 100% respectively.
 //   - Within 8s of being affected by Quicken, Aggravate, Spread, DEF is decreased by 30%.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -57,7 +57,7 @@ func (c *char) c2() {
 	}, "nahida-c2-reaction-dmg-buff")
 
 	cb := func(rx event.Event) event.Hook {
-		return func(args ...interface{}) bool {
+		return func(args ...any) bool {
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
 				return false
@@ -92,10 +92,7 @@ func (c *char) c4() {
 					return t.StatusIsActive(skillMarkKey)
 				},
 			)
-			count := len(enemies)
-			if count > 4 {
-				count = 4
-			}
+			count := min(len(enemies), 4)
 			if count == 0 {
 				return nil, false
 			}

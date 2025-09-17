@@ -133,7 +133,7 @@ func (c *char) makeDropletCB() info.AttackCBFunc {
 			i = 1
 		}
 
-		for j := 0; j < 3; j++ {
+		for j := range 3 {
 			sourcewaterdroplet.New(
 				c.Core,
 				info.CalcRandomPointFromCenter(

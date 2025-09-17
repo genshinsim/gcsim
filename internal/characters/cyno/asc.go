@@ -49,7 +49,7 @@ func (c *char) a1Buff() {
 // If Cyno dashes with the a1 modifier, he will increase the modifier's
 // durability by 20. This translates to a 0.28s extension.
 func (c *char) a1Extension() {
-	c.Core.Events.Subscribe(event.OnDash, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDash, func(_ ...any) bool {
 		if c.a1Extended {
 			return false
 		}

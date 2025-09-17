@@ -98,7 +98,7 @@ func (c *char) a4() {
 	c.a4Max = 9000
 	c.a4Ratio = 2.0
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag != attacks.AttackTagPlunge {
 			return false

@@ -94,7 +94,7 @@ func (s *Set) pc4() {
 		},
 	})
 
-	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		// If attack does not belong to the equipped character then ignore
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != s.char.Index() {

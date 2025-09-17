@@ -244,7 +244,7 @@ func (c *char) skillAligned(pos info.Point) func() {
 func (c *char) makeGrinMalkinHat(pos info.Point, hpDrained bool) func() {
 	return func() {
 		hatIncrease := 1 + c.c1HatIncrease()
-		for i := 0; i < hatIncrease; i++ {
+		for range hatIncrease {
 			// kill existing hat if reached limit
 			if len(c.hats) == c.maxHatCount {
 				c.hats[0].Kill()

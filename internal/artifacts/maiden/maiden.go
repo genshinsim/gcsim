@@ -43,7 +43,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
-		f := func(args ...interface{}) bool {
+		f := func(args ...any) bool {
 			if c.Player.Active() != char.Index() {
 				return false
 			}

@@ -321,7 +321,7 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 }
 
 func (c *char) rollAbsorb() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {

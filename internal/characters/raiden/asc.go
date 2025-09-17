@@ -15,7 +15,7 @@ func (c *char) a1() {
 		return
 	}
 	particleICD := 0
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) bool {
 		if particleICD > c.Core.F {
 			return false
 		}

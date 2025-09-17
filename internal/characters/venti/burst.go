@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// starts at 106 with 24f interval between ticks. 20 total
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		c.Core.Tasks.Add(func() {
 			c.Core.QueueAttackWithSnap(ai, snap, ap, 0, cb)
 		}, 106+24*i)
@@ -89,7 +89,7 @@ func (c *char) burstAbsorbedTicks() {
 
 	ap := combat.NewCircleHitOnTarget(c.qPos, nil, 6)
 	// ticks at 24f. 15 total
-	for i := 0; i < 15; i++ {
+	for i := range 15 {
 		c.Core.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, ap, i*24, cb)
 	}
 }

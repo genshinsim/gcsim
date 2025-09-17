@@ -69,13 +69,7 @@ func init() {
 // will be summoned next to Chiori. Only 1 additional Tamoto can be summoned in
 // this manner, and its duration is independently counted.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	hold := p["hold"]
-	if hold < 0 {
-		hold = 0
-	}
-	if hold > 1 {
-		hold = 1
-	}
+	hold := min(max(p["hold"], 0), 1)
 
 	// if this is second press, swap and activate a1
 	if c.StatusIsActive(a1WindowKey) {

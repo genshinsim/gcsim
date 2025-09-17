@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	// seal gain on crystallize shard pickup
-	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnShielded, func(args ...any) bool {
 		// Check shield
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {
@@ -75,7 +75,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	// skill dmg increase while seals active
 	skillDmg := 0.135 + float64(r)*0.045
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false

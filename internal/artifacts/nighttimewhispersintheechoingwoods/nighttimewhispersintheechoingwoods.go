@@ -59,8 +59,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	return &s, nil
 }
 
-func (s *Set) OnShielded() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnShielded() func(args ...any) bool {
+	return func(args ...any) bool {
 		shd := args[0].(shield.Shield)
 		if s.core.Player.Active() != s.char.Index() {
 			return false
@@ -73,8 +73,8 @@ func (s *Set) OnShielded() func(args ...interface{}) bool {
 	}
 }
 
-func (s *Set) OnShieldBreak() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnShieldBreak() func(args ...any) bool {
+	return func(args ...any) bool {
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {
 			return false
@@ -87,8 +87,8 @@ func (s *Set) OnShieldBreak() func(args ...interface{}) bool {
 	}
 }
 
-func (s *Set) OnCharacterSwap() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnCharacterSwap() func(args ...any) bool {
+	return func(args ...any) bool {
 		prev := args[0].(int)
 		active := args[1].(int)
 		shd := s.core.Player.Shields.Get(shield.Crystallize)
@@ -107,8 +107,8 @@ func (s *Set) OnCharacterSwap() func(args ...interface{}) bool {
 	}
 }
 
-func (s *Set) OnSkill() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnSkill() func(args ...any) bool {
+	return func(args ...any) bool {
 		if s.core.Player.Active() != s.char.Index() {
 			return false
 		}

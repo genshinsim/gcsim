@@ -30,7 +30,7 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 		t.FailNow()
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		log.Printf("hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
 		return false
@@ -101,13 +101,13 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 		t.FailNow()
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		log.Printf("gadget hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
 		return false
 	}, "hit-check")
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp Explosion" {
 			dmgCount++
@@ -162,7 +162,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	}
 
 	// should get an explosion 60 frfames later
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		advanceCoreFrame(c)
 	}
 
@@ -191,7 +191,7 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
@@ -237,7 +237,7 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++

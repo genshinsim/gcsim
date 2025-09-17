@@ -26,7 +26,7 @@ func init() {
 }
 
 func (c *char) skillRefundHook() {
-	refundCB := func(args ...interface{}) bool {
+	refundCB := func(args ...any) bool {
 		// TODO: Check if Sethos E filters by enemy
 		// a := args[0].(info.Target)
 		// if a.Type() != info.TargettableEnemy {

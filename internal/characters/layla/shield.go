@@ -70,10 +70,7 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 		c.a1Stack++
 	}
 
-	stars := count + c.Tag(nightStars)
-	if stars > 4 {
-		stars = 4
-	}
+	stars := min(count+c.Tag(nightStars), 4)
 	c.SetTag(nightStars, stars)
 	c.Core.Log.NewEvent("adding stars", glog.LogCharacterEvent, c.Index()).
 		Write("stars", stars)

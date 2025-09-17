@@ -78,7 +78,7 @@ func (c *char) c2Init() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if c.Index() == atk.Info.ActorIndex {
 			return false
@@ -163,7 +163,7 @@ func (c *char) c6Init() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
 			return false

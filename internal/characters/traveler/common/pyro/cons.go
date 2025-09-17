@@ -49,7 +49,7 @@ func (c *Traveler) c2Init() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	fReactionHook := func(args ...interface{}) bool {
+	fReactionHook := func(args ...any) bool {
 		if !c.StatusIsActive(c2StatusKey) {
 			return false
 		}

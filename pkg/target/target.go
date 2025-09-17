@@ -1,6 +1,8 @@
 package target
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -94,10 +96,8 @@ func (t *Target) AttackWillLand(a info.AttackPattern) (bool, string) {
 	// 	return false, "wrong type"
 	// }
 	// swirl aoe shouldn't hit the src of the aoe
-	for _, v := range a.IgnoredKeys {
-		if t.Key() == v {
-			return false, "no self harm"
-		}
+	if slices.Contains(a.IgnoredKeys, t.Key()) {
+		return false, "no self harm"
 	}
 
 	// check if shape matches

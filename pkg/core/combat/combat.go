@@ -20,7 +20,7 @@ type CharHandler interface {
 }
 
 type Character interface {
-	ApplyAttackMods(a *info.AttackEvent, t info.Target) []interface{}
+	ApplyAttackMods(a *info.AttackEvent, t info.Target) []any
 }
 
 type Handler struct {

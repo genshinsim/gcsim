@@ -44,7 +44,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	burstPos := burstArea.Shape.Pos()
 	icdSrc := []int{math.MinInt32, math.MinInt32, math.MinInt32, math.MinInt32}
 	// 32 damage ticks
-	for i := 0; i < 32; i++ {
+	for i := range 32 {
 		c.Core.Tasks.Add(func() {
 			p, ok := c.Core.Combat.Player().(*avatar.Player)
 			if !ok {
@@ -93,7 +93,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c2Travel = 10
 	}
 
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		c.Core.Tasks.Add(func() {
 			if !c.Core.Combat.Player().IsWithinArea(burstArea) {
 				return

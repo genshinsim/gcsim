@@ -51,7 +51,7 @@ func (c *char) c4() {
 	}
 	c.c4bonus = make([]float64, attributes.EndStatType)
 	c.c4bonus[attributes.DEFP] = .2
-	charModFunc := func(args ...interface{}) bool {
+	charModFunc := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

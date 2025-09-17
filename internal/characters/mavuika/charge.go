@@ -235,7 +235,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 
 // For given CA length, calculate hits on each target in hittable list
 func (c *char) HoldBikeChargeAttack(cAtkFrames, skippedWindupFrames int, hittableEntities []HittableEntity) {
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
@@ -269,7 +269,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 	dur := min(nsDur+skippedWindupFrames, bikeChargeAttackMaximumDuration-c.caState.cAtkFrames)
 	hitCounter := 0
 
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		if t.Entity != c.Core.Combat.PrimaryTarget() {
 			continue
@@ -299,7 +299,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 		}
 	}
 
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
@@ -616,7 +616,7 @@ func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) (bool,
 
 // Currently used for dendro cores spawning, other movements/additions should not happen mid-CA anim
 func (c *char) bikeChargeAttackHook() {
-	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) bool {
 		// Ignore if not in bike state
 		if c.armamentState != bike && !c.nightsoulState.HasBlessing() {
 			return false

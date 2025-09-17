@@ -15,7 +15,7 @@ import (
 func (c *char) c1(ai info.AttackInfo, hitmark, travel int) {
 	ai.Abil += " (C1)"
 	ai.Mult /= 3.0
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewBoxHit(
@@ -61,7 +61,7 @@ func (c *char) c2(a info.AttackCB) {
 func (c *char) c4() {
 	c.c4bonus = make([]float64, attributes.EndStatType)
 	c.c4bonus[attributes.AnemoP] = 0.25
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...any) bool {
 		// only trigger if Venti catches the particle
 		if c.Core.Player.Active() != c.Index() {
 			return false

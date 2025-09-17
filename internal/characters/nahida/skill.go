@@ -85,15 +85,12 @@ func (c *char) skillPress() action.Info {
 }
 
 func (c *char) skillHold(p map[string]int) (action.Info, error) {
-	hold := p["hold"]
-	// earliest hold can be let go is roughly 16.5, max is 317
-	// adds the value in hold onto the minimum length of 16, so hold=1 gives 17f and hold=5 gives a 22f delay until hitmark.
-	if hold > 300 {
-		hold = 300
-	}
-	if hold < 1 {
-		hold = 1
-	}
+	hold := max(
+		// earliest hold can be let go is roughly 16.5, max is 317
+		// adds the value in hold onto the minimum length of 16, so hold=1 gives 17f and hold=5 gives a 22f delay until hitmark.
+		min(
+
+			p["hold"], 300), 1)
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -161,7 +158,7 @@ func (c *char) updateTriKarmaInterval() {
 	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
 }
 
-func (c *char) triKarmaOnReaction(args ...interface{}) bool {
+func (c *char) triKarmaOnReaction(args ...any) bool {
 	t, ok := args[0].(*enemy.Enemy)
 	if !ok {
 		return false
@@ -170,7 +167,7 @@ func (c *char) triKarmaOnReaction(args ...interface{}) bool {
 	return false
 }
 
-func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
+func (c *char) triKarmaOnBloomDamage(args ...any) bool {
 	t, ok := args[0].(*enemy.Enemy)
 	if !ok {
 		return false

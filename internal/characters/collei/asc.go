@@ -28,7 +28,7 @@ func (c *char) a1() {
 	}
 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	f := func(...interface{}) bool {
+	f := func(...any) bool {
 		if c.sproutShouldProc {
 			return false
 		}
@@ -45,7 +45,7 @@ func (c *char) a1() {
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Core.Events.Subscribe(evt, f, "collei-a1")
 		default:
-			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
+			c.Core.Events.Subscribe(evt, func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
@@ -78,7 +78,7 @@ func (c *char) a4() {
 	}
 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	f := func(args ...interface{}) bool {
+	f := func(args ...any) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
@@ -102,7 +102,7 @@ func (c *char) a4() {
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Core.Events.Subscribe(evt, f, "collei-a4")
 		default:
-			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
+			c.Core.Events.Subscribe(evt, func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}

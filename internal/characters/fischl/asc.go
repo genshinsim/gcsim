@@ -23,7 +23,7 @@ func (c *char) a4() {
 
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	a4cb := func(args ...interface{}) bool {
+	a4cb := func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
@@ -61,7 +61,7 @@ func (c *char) a4() {
 		return false
 	}
 
-	a4cbNoGadget := func(args ...interface{}) bool {
+	a4cbNoGadget := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = 0.15 + float64(r)*0.05
 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	buff := func(args ...interface{}) bool {
+	buff := func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false
@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 		return false
 	}
-	buffNoGadget := func(args ...interface{}) bool {
+	buffNoGadget := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

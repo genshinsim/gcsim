@@ -68,7 +68,7 @@ func (c *char) a4() {
 		Mult:           1.5 * skillShadowhunt[c.TalentLvlSkill()],
 		IsDeployable:   true,
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...any) bool {
 		bulletElem := attributes.Anemo
 		if len(c.partyPHECTypesUnique) > 0 {
 			bulletElem = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]

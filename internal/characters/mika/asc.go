@@ -51,7 +51,7 @@ func (c *char) a1(char *character.CharWrapper) {
 // Additionally, the maximum number of stacks that can be gained through Soulwind alone is increased by 1.
 // Requires Suppressive Barrage to be unlocked first.
 func (c *char) a4() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if c.a4Stack {
 			return false
 		}

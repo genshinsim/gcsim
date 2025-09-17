@@ -82,7 +82,7 @@ func (c *char) getBurstHealInfo(snap *info.Snapshot) info.HealInfo {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.StatusIsActive(burstKey) {
 			c.removeBurst()
 		}

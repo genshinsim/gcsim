@@ -90,7 +90,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// - 1.7s / (0.2 s/attack) ~= 8 attacks total before explosion
 		initialPos := c.Core.Combat.Player().Pos()
 		initialDirection := c.Core.Combat.Player().Direction()
-		for i := 0; i < 8; i++ {
+		for i := range 8 {
 			nextPos := info.CalcOffsetPoint(initialPos, info.Point{Y: 1 + 2.8*float64(i)}, initialDirection)
 			c.Core.QueueAttack(
 				ai,

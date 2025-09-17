@@ -39,7 +39,7 @@ func (s *Sacrificial) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		cd = (19 - (r-4)*3) * 60
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index() {

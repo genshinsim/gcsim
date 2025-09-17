@@ -19,9 +19,9 @@ func (c *char) a1() {
 
 	c.a1Buff = make([]float64, attributes.EndStatType)
 	c.a1Buff[attributes.EM] = 50
-	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
+	swirlfunc := func(ele attributes.Element) func(args ...any) bool {
 		icd := -1
-		return func(args ...interface{}) bool {
+		return func(args ...any) bool {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
 				return false
 			}

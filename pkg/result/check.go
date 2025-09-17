@@ -1,6 +1,8 @@
 package result
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
@@ -10,10 +12,5 @@ var incompleteCharacters = []keys.Char{
 }
 
 func IsCharacterComplete(char keys.Char) bool {
-	for _, v := range incompleteCharacters {
-		if v == char {
-			return false
-		}
-	}
-	return true
+	return !slices.Contains(incompleteCharacters, char)
 }

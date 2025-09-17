@@ -61,7 +61,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 // Hook to end Xiao's burst prematurely if he leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		c.DeleteStatus(burstBuffKey)
 		c.DeleteStatus(a1Key)
 		return false

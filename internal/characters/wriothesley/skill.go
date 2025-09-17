@@ -84,7 +84,7 @@ func (c *char) chillingPenalty(a info.AttackCB) {
 }
 
 func (c *char) onExit() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		if !c.StatusIsActive(skillKey) {
 			return false
 		}

@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	// Using skill
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -82,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("heartstrings-%v", char.Base.Key.String()))
 
 	// Gaining Bond
-	c.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
 		index := args[0].(int)
 		amount := args[1].(float64)
 
@@ -95,7 +95,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("heartstrings-%v", char.Base.Key.String()))
 
 	// Healing
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		src := args[0].(*info.HealInfo)
 
 		if src.Caller != char.Index() {

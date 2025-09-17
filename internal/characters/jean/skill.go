@@ -25,11 +25,9 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	hold := p["hold"]
-	// hold for p up to 5 seconds
-	if hold > 300 {
-		hold = 300
-	}
+	hold := min(
+		// hold for p up to 5 seconds
+		p["hold"], 300)
 	hitmark := skillHitmark + hold
 
 	ai := info.AttackInfo{

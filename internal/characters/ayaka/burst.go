@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		aiC2.Mult = burstBloom[c.TalentLvlBurst()] * .2
 		aiC2.Abil = "C2 Mini-Frostflake Seki no To (Bloom)"
 		// TODO: Not sure about the positioning/size...
-		for i := 0; i < 2; i++ {
+		for range 2 {
 			c.Core.QueueAttack(
 				aiC2,
 				combat.NewCircleHit(
@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}
 
-	for i := 0; i < 19; i++ {
+	for i := range 19 {
 		ai.Mult = burstCut[c.TalentLvlBurst()]
 		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.Abil = "Soumetsu (Cutting)"
@@ -95,7 +95,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			aiC2.StrikeType = attacks.StrikeTypeSlash
 			aiC2.Abil = "C2 Mini-Frostflake Seki no To (Cutting)"
 			// TODO: Not sure about the positioning/size...
-			for j := 0; j < 2; j++ {
+			for range 2 {
 				c.Core.QueueAttack(
 					aiC2,
 					combat.NewCircleHit(

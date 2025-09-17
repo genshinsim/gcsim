@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	onReact := func(...interface{}) bool {
+	onReact := func(...any) bool {
 		if char.StatusIsActive(reactIcdKey) {
 			return false
 		}
@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		w.addStacks(3)
 		return false
 	}
-	c.Events.Subscribe(event.OnBurning, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurning, func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("fangofthemountainking-burning-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnBurgeon, onReact, fmt.Sprintf("fangofthemountainking-burgeon-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -97,7 +97,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 }
 
 func (w *Weapon) addStacks(num int) {
-	for i := 0; i < num; i++ {
+	for range num {
 		w.stackTracker.Add(stackDuration)
 	}
 

@@ -11,7 +11,7 @@ func (c *Traveler) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	fReactionHook := func(args ...interface{}) bool {
+	fReactionHook := func(args ...any) bool {
 		// Attack must be from active character
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
@@ -29,7 +29,7 @@ func (c *Traveler) a4Init() {
 		return false
 	}
 
-	fNSHook := func(args ...interface{}) bool {
+	fNSHook := func(args ...any) bool {
 		c.AddEnergy("travelerpyro-a4-energy", 4)
 		return false
 	}

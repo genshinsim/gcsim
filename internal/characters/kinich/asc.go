@@ -18,7 +18,7 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	hook := func(args ...interface{}) bool {
+	hook := func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -62,7 +62,7 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		stacks := min(c.Tag(a4StackKey)+1, 2)
 		c.AddStatus(a4StackKey, 15*60, true)
 		c.SetTag(a4StackKey, stacks)

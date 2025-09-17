@@ -157,7 +157,7 @@ func (c *char) burstStackCB(a info.AttackCB) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}

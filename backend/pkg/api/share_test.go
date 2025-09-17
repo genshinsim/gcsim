@@ -23,7 +23,7 @@ const (
 )
 
 func TestValidation(t *testing.T) {
-	var res map[string]interface{}
+	var res map[string]any
 	json.Unmarshal([]byte(randomJSON), &res)
 	data, err := json.Marshal(res)
 	if err != nil {

@@ -74,7 +74,7 @@ func (c *char) a4() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if c.Core.Player.Active() != c.Index() {
 			return false
@@ -93,7 +93,7 @@ func (c *char) a4() {
 		return false
 	}, "wriothesley-a4-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)

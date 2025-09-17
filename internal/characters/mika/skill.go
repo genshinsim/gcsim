@@ -181,7 +181,7 @@ func (c *char) makeRimestarShardsCB() func(info.AttackCB) {
 			func(t info.Enemy) bool { return a.Target.Key() != t.Key() },
 			3,
 		)
-		for i := 0; i < len(enemies); i++ {
+		for i := range enemies {
 			var a1CB info.AttackCBFunc
 			if c.Base.Ascension >= 1 {
 				done := false

@@ -23,7 +23,7 @@ var (
 )
 
 func (c *char) a1Init() {
-	a1Hook := func(args ...interface{}) bool {
+	a1Hook := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -86,7 +86,7 @@ func (c *char) createVoidRift() {
 }
 
 func (c *char) a4Init() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		charElem := c.Core.Player.Chars()[atk.Info.ActorIndex].Base.Element
 		if atk.Info.ActorIndex == c.Index() {

@@ -83,7 +83,7 @@ Loop:
 				return nil, err
 			}
 			// add to array
-			for i := 0; i < count; i++ {
+			for range count {
 				// TODO: all the repeated action will access the same map
 				// ability implement should avoid modifying the maps
 				actions = append(actions, expr)

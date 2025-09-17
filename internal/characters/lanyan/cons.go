@@ -18,7 +18,7 @@ func (c *char) c2() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		if !c.hasShield() {
 			return false
 		}

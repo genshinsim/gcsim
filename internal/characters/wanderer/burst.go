@@ -62,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 			delay+burstSnapshotDelay, delay+burstHitmark+i*burstHitmarkDelay)
 	}
@@ -93,7 +93,7 @@ func (c *char) WindfavoredBurst(p map[string]int) (action.Info, error) {
 
 	c.c2()
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 			burstSnapshotDelay, burstHitmark+i*burstHitmarkDelay)
 	}

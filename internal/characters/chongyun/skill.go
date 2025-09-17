@@ -112,7 +112,7 @@ func (c *char) particleCB(a info.AttackCB) {
 }
 
 func (c *char) onSwapHook() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.Core.Status.Duration("chongyunfield") == 0 {
 			return false
 		}

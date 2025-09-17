@@ -3,6 +3,7 @@ package combat
 import (
 	"math/rand"
 	"os"
+	"slices"
 	"testing"
 	"time"
 
@@ -30,7 +31,7 @@ type (
 )
 
 // char
-func (t *testchar) ApplyAttackMods(a *info.AttackEvent, x info.Target) []interface{} {
+func (t *testchar) ApplyAttackMods(a *info.AttackEvent, x info.Target) []any {
 	return nil
 }
 
@@ -92,10 +93,8 @@ func (t *testtarg) AttackWillLand(a info.AttackPattern) (bool, string) {
 	// 	return false, "wrong type"
 	// }
 	// swirl aoe shouldn't hit the src of the aoe
-	for _, v := range a.IgnoredKeys {
-		if t.Key() == v {
-			return false, "no self harm"
-		}
+	if slices.Contains(a.IgnoredKeys, t.Key()) {
+		return false, "no self harm"
 	}
 
 	// check if info.Shape matches

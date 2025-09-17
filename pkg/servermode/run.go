@@ -15,7 +15,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func errorRecover(r interface{}) error {
+func errorRecover(r any) error {
 	var err error
 	switch x := r.(type) {
 	case string:

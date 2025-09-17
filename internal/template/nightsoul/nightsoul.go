@@ -77,7 +77,7 @@ func (s *State) SetNightsoulExitTimer(duration int, cb func()) {
 
 		// If NS shouldn't expire because the player is in the state; delay expiry until state ends
 		evtKey := fmt.Sprintf("%v-%v", delayEventKey, s.char.Base.Key.String())
-		f := func(...interface{}) bool {
+		f := func(...any) bool {
 			if s.ExitStateF == src {
 				cb()
 			}

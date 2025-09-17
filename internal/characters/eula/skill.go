@@ -198,7 +198,7 @@ func (c *char) holdSkill() action.Info {
 		}
 	}
 
-	for i := 0; i < v; i++ {
+	for i := range v {
 		// multiple brand hits
 		// TODO: need to double check if this is affected by hitlag; might be a deployable
 		icewhirlAI := info.AttackInfo{

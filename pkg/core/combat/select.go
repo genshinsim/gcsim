@@ -105,14 +105,11 @@ func (h *Handler) RandomEnemiesWithinArea(a info.AttackPattern, filter func(t in
 	indexes := h.Rand.Perm(enemyCount)
 
 	// determine length of slice to return
-	count := maxCount
-	if enemyCount < maxCount {
-		count = enemyCount
-	}
+	count := min(enemyCount, maxCount)
 
 	// add enemies given by indexes to the result
 	result := make([]info.Enemy, 0, count)
-	for i := 0; i < count; i++ {
+	for i := range count {
 		result = append(result, enemies[indexes[i]])
 	}
 	return result
@@ -130,14 +127,11 @@ func (h *Handler) RandomGadgetsWithinArea(a info.AttackPattern, filter func(t in
 	indexes := h.Rand.Perm(gadgetCount)
 
 	// determine length of slice to return
-	count := maxCount
-	if gadgetCount < maxCount {
-		count = gadgetCount
-	}
+	count := min(gadgetCount, maxCount)
 
 	// add gadgets given by indexes to the result
 	result := make([]info.Gadget, 0, count)
-	for i := 0; i < count; i++ {
+	for i := range count {
 		result = append(result, gadgets[indexes[i]])
 	}
 	return result

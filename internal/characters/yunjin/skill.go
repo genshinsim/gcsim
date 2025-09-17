@@ -48,10 +48,7 @@ func init() {
 // hold = 1 or 2 for regular charging up to level 1 or 2
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Hold parameter gets used in action frames to get earliest possible release frame
-	chargeLevel := p["hold"]
-	if chargeLevel > 2 {
-		chargeLevel = 2
-	}
+	chargeLevel := min(p["hold"], 2)
 	animIdx := chargeLevel
 	if p["perfect"] == 1 {
 		animIdx = 0

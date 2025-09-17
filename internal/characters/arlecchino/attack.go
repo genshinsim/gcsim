@@ -91,7 +91,7 @@ func init() {
 }
 
 func (c *char) naBuff() {
-	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
 		target := args[0].(int)
 		if target != c.Index() {
 			return false

@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// queue up ticks
 		// from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
 		// updated to 140 based on koli's count: https://docs.google.com/spreadsheets/d/1uEbP13O548-w_nGxFPGsf5jqj1qGD3pqFZ_AiV4w3ww/edit#gid=775340159
-		for i := 0; i < 5; i++ {
+		for i := range 5 {
 			c.Core.Tasks.Add(func() {
 				if c.qAbsorb != attributes.NoElement {
 					aiAbsorb.Element = c.qAbsorb

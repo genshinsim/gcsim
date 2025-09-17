@@ -161,7 +161,7 @@ func (c *char) skillInit() {
 	}
 
 	// Remove the dreamDrifter state when she leaves the field
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 
 		if prev == c.Index() && c.StatusIsActive(dreamDrifterStateKey) {

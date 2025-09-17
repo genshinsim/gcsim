@@ -176,7 +176,7 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 	}
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
-		for i := 0; i < 4; i++ {
+		for range 4 {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,

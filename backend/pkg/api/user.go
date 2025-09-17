@@ -59,7 +59,7 @@ func (s *Server) tokenCheck(next http.Handler) http.Handler {
 		}
 		s.Log.Infow("parsing token", "token", c.Value)
 		var cl claim
-		token, err := jwt.ParseWithClaims(c.Value, &cl, func(t *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(c.Value, &cl, func(t *jwt.Token) (any, error) {
 			return []byte(s.cfg.Discord.JWTKey), nil
 		})
 		if err != nil {

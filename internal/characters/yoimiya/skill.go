@@ -53,7 +53,7 @@ func (c *char) particleCB(a info.AttackCB) {
 }
 
 func (c *char) onExit() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 		next := args[1].(int)
 		if prev == c.Index() && next != c.Index() {

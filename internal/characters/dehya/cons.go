@@ -57,7 +57,7 @@ func (c *char) c2() {
 			return val, true
 		},
 	})
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
 		char := args[0].(int)
 		// don't trigger if active char not hit
 		if char != c.Core.Player.Active() {

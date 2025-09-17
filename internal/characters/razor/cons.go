@@ -16,7 +16,7 @@ func (c *char) c1() {
 	c.c1bonus = make([]float64, attributes.EndStatType)
 	c.c1bonus[attributes.DmgP] = 0.1
 
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) bool {
 		// ignore if character not on field
 		if c.Core.Player.Active() != c.Index() {
 			return false

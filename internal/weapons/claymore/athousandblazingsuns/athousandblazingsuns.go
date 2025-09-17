@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := float64(p.Refine)
 
 	m := make([]float64, attributes.EndStatType)
-	scorchingBrilliance := func(args ...interface{}) bool {
+	scorchingBrilliance := func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -93,7 +93,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnSkill, scorchingBrilliance, fmt.Sprintf("%v-athousandblazingsuns-skill", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnBurst, scorchingBrilliance, fmt.Sprintf("%v-athousandblazingsuns-burst", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -124,7 +124,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("%v-athousandblazingsuns-damage", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev, next := args[0].(int), args[1].(int)
 		if prev == char.Index() && char.StatModIsActive(BuffKey) {
 			// swapping out

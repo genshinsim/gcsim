@@ -104,7 +104,7 @@ func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 }
 
 func (c *char) resetChargeState() {
-	c.Core.Events.Subscribe(event.OnActionExec, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnActionExec, func(args ...any) bool {
 		act := args[1].(action.Action)
 
 		if act != action.ActionCharge {

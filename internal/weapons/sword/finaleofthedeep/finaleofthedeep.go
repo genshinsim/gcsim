@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bondPercentage := 0.018 + float64(r)*0.006
 	bondAtkCap := 112.5 + float64(r)*37.5
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -70,7 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("finaleofthedeep-atk%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
 		index := args[0].(int)
 		debtChange := args[1].(float64)
 		if index != char.Index() {

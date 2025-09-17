@@ -43,7 +43,7 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 
 func (c *char) c4() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	cb := func(args ...interface{}) bool {
+	cb := func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
 			return false
@@ -59,7 +59,7 @@ func (c *char) c4() {
 		return false
 	}
 
-	cbNoGadget := func(args ...interface{}) bool {
+	cbNoGadget := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

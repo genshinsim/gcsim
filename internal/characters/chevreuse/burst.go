@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	mineCounts := []int{1, 2, 2, 2, 1}
 	mineSteps := [][]float64{{0}, {45, 315}, {90, 270}, {135, 225}, {180}}
 	mineDelays := []int{24, 33, 42, 51, 60}
-	for i := 0; i < mineGroups; i++ {
+	for i := range mineGroups {
 		for j := 0; j < mineCounts[i]; j++ {
 			// every shell has its own direction
 			direction := info.DegreesToDirection(mineSteps[i][j]).Rotate(burstInitialDirection)

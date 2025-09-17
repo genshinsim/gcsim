@@ -171,7 +171,7 @@ func (r *Reactable) GetAuraDurability(mod info.ReactionModKey) info.Durability {
 
 func (r *Reactable) GetDurability() []info.Durability {
 	result := make([]info.Durability, info.ReactionModKeyEnd)
-	for i := info.ReactionModKeyInvalid; i < info.ReactionModKeyEnd; i++ {
+	for i := range info.ReactionModKeyEnd {
 		result[i] = r.Durability[i]
 	}
 	return result
@@ -239,7 +239,7 @@ func (r *Reactable) addDurability(mod info.ReactionModKey, amt info.Durability) 
 // AuraCountains returns true if any element e is active on the target
 func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 	for _, v := range e {
-		for i := info.ReactionModKeyInvalid; i < info.ReactionModKeyEnd; i++ {
+		for i := range info.ReactionModKeyEnd {
 			if i.Element() == v && r.Durability[i] > info.ZeroDur {
 				return true
 			}
@@ -266,7 +266,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 	m := dur * factor // maximum amount reduceable
 	var reduced info.Durability
 
-	for i := info.ReactionModKeyInvalid; i < info.ReactionModKeyEnd; i++ {
+	for i := range info.ReactionModKeyEnd {
 		if i.Element() != e {
 			continue
 		}
@@ -312,7 +312,7 @@ func (r *Reactable) Tick() {
 	// per frame then we have decay * (1 + 0.25 * (x/60))
 
 	// anything after the delim is special decay so we ignore
-	for i := info.ReactionModKeyInvalid; i < info.ReactionModKeySpecialDecayDelim; i++ {
+	for i := range info.ReactionModKeySpecialDecayDelim {
 		// skip zero decay rates i.e. modifiers that don't decay (i.e. burning)
 		if r.DecayRate[i] == 0 {
 			continue

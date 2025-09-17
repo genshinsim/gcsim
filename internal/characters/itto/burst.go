@@ -121,7 +121,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 		if prev == c.Index() && c.StatModIsActive(burstBuffKey) {
 			c.DeleteStatMod(burstBuffKey)

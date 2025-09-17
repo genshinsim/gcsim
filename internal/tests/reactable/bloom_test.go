@@ -36,7 +36,7 @@ func TestHydroBloom(t *testing.T) {
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < dendrocore.Delay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 1 {
@@ -73,7 +73,7 @@ func TestDendroBloom(t *testing.T) {
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < dendrocore.Delay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 1 {
@@ -118,7 +118,7 @@ func TestECBloom(t *testing.T) {
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
-	for i := 0; i < dendrocore.Delay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 2 {
@@ -154,7 +154,7 @@ func TestBloomSeedLimit(t *testing.T) {
 	}, 0)
 	advanceCoreFrame(c)
 
-	for i := 0; i < dendrocore.Delay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 
@@ -172,7 +172,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 	}
 
 	// oldest should be the 2nd one, which is frame 3 ?
-	for i := 0; i < 6; i++ {
+	for range 6 {
 		c.QueueAttackEvent(&info.AttackEvent{
 			Info: info.AttackInfo{
 				Element:    attributes.Hydro,
@@ -191,7 +191,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 
-	for i := 0; i < dendrocore.Delay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 

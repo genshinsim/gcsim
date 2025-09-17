@@ -60,7 +60,7 @@ func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot {
 	}
 
 	var evt glog.Event
-	var debug []interface{}
+	var debug []any
 
 	if c.Core.Flags.LogDebug {
 		evt = c.Core.Log.NewEvent(a.Abil, glog.LogSnapshotEvent, c.Index()).

@@ -16,7 +16,7 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	a1Hook := func(args ...interface{}) bool {
+	a1Hook := func(args ...any) bool {
 		if c.StatusIsActive(skillBuffKey) {
 			return false
 		}

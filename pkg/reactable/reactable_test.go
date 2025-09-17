@@ -64,7 +64,7 @@ func testCore() *core.Core {
 func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 	c := testCore()
 	var r []*testTarget
-	for i := 0; i < count; i++ {
+	for range count {
 		r = append(r, addTargetToCore(c))
 	}
 	return c, r
@@ -204,7 +204,7 @@ func TestTick(t *testing.T) {
 	}
 
 	// should deplete fully in 570 ticks
-	for i := 0; i < 6*50+420; i++ {
+	for range 6*50 + 420 {
 		trg.Tick()
 		// log.Println(target.Durability)
 	}
@@ -241,7 +241,7 @@ func TestTick(t *testing.T) {
 			Durability: 50,
 		},
 	})
-	for i := 0; i < 6*50+420; i++ {
+	for range 6*50 + 420 {
 		trg.Tick()
 	}
 	ok = trg.allNil(t)
@@ -256,7 +256,7 @@ func TestTick(t *testing.T) {
 			Durability: 25,
 		},
 	})
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		trg.Tick()
 	}
 	// calculate expected duration
@@ -288,7 +288,7 @@ func TestTick(t *testing.T) {
 	// test frozen
 	// 50 frozen should last just over 208 frames (i.e. 0 by 209)
 	trg.Durability[info.ReactionModKeyFrozen] = 50
-	for i := 0; i < 208; i++ {
+	for range 208 {
 		trg.Tick()
 		// log.Println(trg.Durability)
 		// log.Println(trg.DecayRate)
@@ -304,7 +304,7 @@ func TestTick(t *testing.T) {
 		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[info.ReactionModKeyFrozen])
 	}
 	// 105 more frames to full recover
-	for i := 0; i < 104; i++ {
+	for range 104 {
 		trg.Tick()
 		// log.Println(trg.Durability)
 		// log.Println(trg.DecayRate)

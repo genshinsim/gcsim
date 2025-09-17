@@ -34,7 +34,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	out.cumuChar = append(out.cumuChar, make([]float64, len(core.Player.Chars())))
 	out.cumuTarget = append(out.cumuTarget, make([]float64, len(core.Combat.Enemies())))
 
-	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		target := args[0].(info.Target)
 		targetKey := target.Key()
 		attack := args[1].(*info.AttackEvent)

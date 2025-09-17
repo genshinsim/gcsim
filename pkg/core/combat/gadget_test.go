@@ -28,7 +28,7 @@ func TestGadgetCollision(t *testing.T) {
 	}
 	c.SetPlayer(player)
 	// 2 enemies
-	for i := 0; i < ecount; i++ {
+	for i := range ecount {
 		v := &testtarg{
 			typ:   info.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
@@ -46,7 +46,7 @@ func TestGadgetCollision(t *testing.T) {
 	cw[info.TargettablePlayer] = true
 	count := 0
 	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
-	for i := 0; i < gcount; i++ {
+	for range gcount {
 		v := &testtarg{
 			hdlr:        c,
 			typ:         info.TargettableGadget,
@@ -85,7 +85,7 @@ func TestGadgetLimits(t *testing.T) {
 	}
 	c.SetPlayer(player)
 	// 2 enemies
-	for i := 0; i < ecount; i++ {
+	for i := range ecount {
 		v := &testtarg{
 			typ:   info.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
@@ -103,7 +103,7 @@ func TestGadgetLimits(t *testing.T) {
 	cw[info.TargettablePlayer] = true
 	count := 0
 	// make multiple gadgets; gadgets should not exceed 2
-	for i := 0; i < gcount; i++ {
+	for range gcount {
 		v := &testtarg{
 			hdlr:        c,
 			typ:         info.TargettableGadget,
@@ -141,7 +141,7 @@ func BenchmarkCollisionCheck(b *testing.B) {
 	}
 	c.SetPlayer(player)
 	// 2 enemies
-	for i := 0; i < ecount; i++ {
+	for i := range ecount {
 		v := &testtarg{
 			typ:   info.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
@@ -154,7 +154,7 @@ func BenchmarkCollisionCheck(b *testing.B) {
 	cw[info.TargettableEnemy] = true
 	cw[info.TargettablePlayer] = true
 	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
-	for i := 0; i < gcount; i++ {
+	for range gcount {
 		v := &testtarg{
 			typ:         info.TargettableGadget,
 			shp:         newSimpleCircle(0, 0, 0.1),
@@ -187,7 +187,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	}
 	c.SetPlayer(player)
 	// 2 enemies
-	for i := 0; i < ecount; i++ {
+	for i := range ecount {
 		v := &testtarg{
 			typ:   info.TargettableEnemy,
 			shp:   newSimpleCircle(float64(i)*0.5, 0, 0.2),
@@ -205,7 +205,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	cw[info.TargettablePlayer] = true
 	count := 0
 	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
-	for i := 0; i < gcount; i++ {
+	for range gcount {
 		v := &testtarg{
 			typ:         info.TargettableGadget,
 			shp:         newSimpleCircle(0, 0, 0.1),

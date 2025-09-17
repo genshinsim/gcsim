@@ -36,7 +36,7 @@ func calcCorners(spawn Point, w, h float64, dir Point) ([]Point, Point) {
 	bottomLeft := Point{X: -w / 2, Y: 0}
 	corners := []Point{topLeft, topRight, bottomRight, bottomLeft}
 	// add rotation
-	for i := 0; i < len(corners); i++ {
+	for i := range corners {
 		rotatedCorner := corners[i].Rotate(dir)
 		corners[i] = rotatedCorner.Add(spawn)
 	}
@@ -141,7 +141,7 @@ func (r *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 	// https://dyn4j.org/2010/01/sat/
 	r1Axes := r.getAxes()
 	r2Axes := r2.getAxes()
-	for i := 0; i < len(r1Axes); i++ {
+	for i := range r1Axes {
 		axis := r1Axes[i]
 		rProj1 := getProjection(r.corners, axis)
 		rProj2 := getProjection(r2.corners, axis)
@@ -149,7 +149,7 @@ func (r *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 			return false
 		}
 	}
-	for i := 0; i < len(r2Axes); i++ {
+	for i := range r2Axes {
 		axis := r2Axes[i]
 		rProj1 := getProjection(r.corners, axis)
 		rProj2 := getProjection(r2.corners, axis)

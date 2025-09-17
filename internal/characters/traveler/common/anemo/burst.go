@@ -77,7 +77,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		cb = c6cb(attributes.Anemo)
 	}
 
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		c.Core.QueueAttackWithSnap(ai, snap, ap, 94+30*i, cb)
 
 		c.Core.Tasks.Add(func() {

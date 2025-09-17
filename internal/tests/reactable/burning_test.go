@@ -21,7 +21,7 @@ func TestBurningTicks(t *testing.T) {
 	}
 	// expecting 8 ticks: https://www.youtube.com/watch?v=PdZ6Qxo7pSY
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
@@ -66,15 +66,15 @@ func TestBurningTicks(t *testing.T) {
 	advanceCoreFrame(c)
 
 	// log.Printf("count should be 0 right now, got %v", count)
-	for i := 0; i < 8; i++ {
-		for j := 0; j < 15; j++ {
+	for range 8 {
+		for range 15 {
 			advanceCoreFrame(c)
 		}
 		// log.Printf("count should be %v right now, got %v", i+1, count)
 	}
 
 	// extra 200 frames to make sure it doesn't go past 8
-	for i := 0; i < 200; i++ {
+	for range 200 {
 		advanceCoreFrame(c)
 	}
 
@@ -93,7 +93,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 	// https://www.youtube.com/watch?v=En3Ki_vVgR0
 	count := 0
 	countByActor := []int{0, 0}
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
@@ -142,8 +142,8 @@ func TestBurningQuickenFuel(t *testing.T) {
 	}, 536)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -253,8 +253,8 @@ func TestPyroDendroCoexist(t *testing.T) {
 	// pyro ended 546, dendro ended 689
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -307,8 +307,8 @@ func TestDendroDecayTry1(t *testing.T) {
 	}, 263)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -357,8 +357,8 @@ func TestDendroDecayTry2(t *testing.T) {
 	}, 453)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -414,8 +414,8 @@ func TestQuickenBurningDecay(t *testing.T) {
 	}, 206)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}

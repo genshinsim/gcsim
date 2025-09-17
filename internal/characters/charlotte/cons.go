@@ -40,7 +40,7 @@ func (c *char) c1Heal(char *character.CharWrapper) func() {
 }
 
 func (c *char) c1() {
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		src := args[0].(*info.HealInfo)
 		if src.Message != healInitialMsg && src.Message != healDotMsg && src.Message != c6HealMsg {
 			return false
@@ -85,7 +85,7 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 
 func (c *char) c4() {
 	counter := 0
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		ae := args[1].(*info.AttackEvent)
 		if !ok {
@@ -115,7 +115,7 @@ func (c *char) c4() {
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false

@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffOnHeal := make([]float64, attributes.EndStatType)
 	buffOnHeal[attributes.ATKP] = 0.24 + float64(r)*0.08
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 

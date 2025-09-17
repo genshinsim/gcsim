@@ -62,7 +62,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const cdKey = "freedom-sworn-cooldown"
 	cd := 20 * 60
 
-	stackFunc := func(args ...interface{}) bool {
+	stackFunc := func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false

@@ -44,7 +44,7 @@ func (c *char) c2() {
 }
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		target := args[1].(int)
 
 		if c.Core.Player.Active() != c.Index() {

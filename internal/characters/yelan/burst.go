@@ -104,7 +104,7 @@ func (c *char) summonExquisiteThrow() {
 		FlatDmg:    burstDice[c.TalentLvlBurst()] * hp,
 	}
 	snap := c.Snapshot(&ai)
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,

@@ -2,6 +2,7 @@ package wolffang
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -65,7 +66,7 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 	m := make([]float64, attributes.EndStatType)
 	icd := name + "-icd"
 
-	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != w.char.Index() {
 			return false
@@ -103,10 +104,5 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 }
 
 func requiredTag(tag attacks.AttackTag, list ...attacks.AttackTag) bool {
-	for _, value := range list {
-		if tag == value {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(list, tag)
 }

@@ -45,7 +45,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// gets gated by special damage sequence (once every 0.5s)
 	initialPos := c.Core.Combat.Player().Pos()
 	initialDirection := c.Core.Combat.Player().Direction()
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		nextPos := info.CalcOffsetPoint(initialPos, info.Point{Y: 1.65 * float64(i+1)}, initialDirection)
 		c.Core.QueueAttack(
 			ai,

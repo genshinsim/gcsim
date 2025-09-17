@@ -101,7 +101,7 @@ func (c *char) particleCB(a info.AttackCB) {
 }
 
 func (c *char) skillHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		trg := args[0].(info.Target)
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)

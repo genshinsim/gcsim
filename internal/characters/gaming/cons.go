@@ -40,7 +40,7 @@ func (c *char) c2() {
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 

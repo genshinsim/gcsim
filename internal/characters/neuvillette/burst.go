@@ -64,7 +64,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		FlatDmg:    burstWaterfall[c.TalentLvlBurst()] * c.MaxHP(),
 	}
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		dropletCount := 3 - i
 		ai := aiInitialHit
 		if i > 0 {
@@ -73,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		c.QueueCharTask(func() {
 			// spawn droplets for current tick using random point from player pos with offset
-			for j := 0; j < dropletCount; j++ {
+			for j := range dropletCount {
 				sourcewaterdroplet.New(
 					c.Core,
 					info.CalcRandomPointFromCenter(

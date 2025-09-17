@@ -46,13 +46,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1)
 
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		c.Core.QueueAttack(ai, ap, burstRelease, burstHitmarks[i]+travel)
 	}
 
 	ai.Abil = "Secondary Tanglevine Shaft"
 	ai.Mult = burstSecond[c.TalentLvlBurst()]
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		c.Core.QueueAttack(ai, ap, burstHitmarks[i]+travel, burstSecondHitmarks[i]+travel)
 	}
 

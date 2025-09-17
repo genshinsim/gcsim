@@ -271,7 +271,7 @@ func skipUntilCanQueue(s *Simulation) (stateFn, error) {
 
 // nextFrame moves up the frame by 1, performing
 func (s *Simulation) advanceFrames(f int, next stateFn) (stateFn, error) {
-	for i := 0; i < f; i++ {
+	for range f {
 		done, err := s.nextFrame()
 		if err != nil {
 			return nil, err

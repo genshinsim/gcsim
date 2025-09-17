@@ -19,7 +19,7 @@ func OptimizerDmgStat(core *core.Core) (CollectorCustomStats[CustomDamageStatsBu
 		ExpectedDmgCumu: make([]float64, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		target := args[0].(info.Target)
 		attack := args[1].(*info.AttackEvent)
 		damage := args[2].(float64)
@@ -64,7 +64,7 @@ func NewDamageAggBuffer(cfg *info.ActionList) CustomDamageAggBuffer {
 func (agg *CustomDamageAggBuffer) Add(b CustomDamageStatsBuffer) {
 	charCount := len(b.ExpectedDmgCumu)
 	totalExpectedDPS := 0.0
-	for i := 0; i < charCount; i++ {
+	for i := range charCount {
 		charExpectedDps := b.ExpectedDmgCumu[i] / (float64(b.duration) / 60.0)
 		agg.CharExpectedDps[i] = append(agg.CharExpectedDps[i], charExpectedDps)
 		totalExpectedDPS += charExpectedDps
@@ -74,7 +74,7 @@ func (agg *CustomDamageAggBuffer) Add(b CustomDamageStatsBuffer) {
 
 func (agg *CustomDamageAggBuffer) Flush() {
 	charCount := len(agg.CharExpectedDps)
-	for i := 0; i < charCount; i++ {
+	for i := range charCount {
 		slices.Sort(agg.CharExpectedDps[i])
 	}
 	slices.Sort(agg.ExpectedDps)

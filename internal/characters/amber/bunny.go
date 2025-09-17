@@ -210,7 +210,7 @@ func (c *char) manualExplode() {
 
 // explode all bunnies on overload
 func (c *char) overloadExplode() {
-	c.Core.Events.Subscribe(event.OnOverload, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnOverload, func(args ...any) bool {
 		target := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if len(c.bunnies) == 0 {

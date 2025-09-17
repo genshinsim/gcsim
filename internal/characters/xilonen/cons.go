@@ -128,7 +128,7 @@ func (c *char) c4Init() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 
 		switch atk.Info.AttackTag {
@@ -163,7 +163,7 @@ func (c *char) c6() {
 		return
 	}
 
-	onAction := func(...interface{}) bool {
+	onAction := func(...any) bool {
 		if c.Core.Player.Active() == c.Index() && c.nightsoulState.HasBlessing() {
 			c.applyC6()
 		}

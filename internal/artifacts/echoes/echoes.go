@@ -62,7 +62,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	var dmgAdded float64
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		// if the active char is not the equipped char then ignore
 		if c.Player.Active() != char.Index() {
 			return false

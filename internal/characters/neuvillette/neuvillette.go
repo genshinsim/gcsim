@@ -137,7 +137,7 @@ func (c *char) Condition(fields []string) (any, error) {
 
 // used for early CA cancel swap cd calculation
 func (c *char) onSwap() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		// do nothing if next char isn't neuvillette
 		next := args[1].(int)
 		if next != c.Index() {

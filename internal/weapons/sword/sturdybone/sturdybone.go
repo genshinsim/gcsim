@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	naDmg := 0.12 + 0.4*float64(r)
-	c.Events.Subscribe(event.OnDash, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDash, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -52,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("sturdybone-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}

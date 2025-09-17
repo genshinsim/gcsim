@@ -145,7 +145,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 		Mult:       paw[c.TalentLvlSkill()],
 	}
 
-	for i := 0; i < pawCount; i++ {
+	for i := range pawCount {
 		done := false
 		cb := pawCB(done)
 		c.Core.QueueAttack(

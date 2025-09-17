@@ -108,7 +108,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDmgHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		trg := args[0].(info.Target)
 		// atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
@@ -241,7 +241,7 @@ func (c *char) addField(dur int) {
 func (c *char) skillHurtHook() {
 	// mitigates true dmg
 	// should not mitigate corrosion (probably will never be added to sim...)
-	c.Core.Events.Subscribe(event.OnPlayerPreHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerPreHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		// only mitigate external damage
 		if !di.External {

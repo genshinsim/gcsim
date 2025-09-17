@@ -56,7 +56,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	charge := func(target info.Target) {
-		for j := 0; j < 3; j++ {
+		for j := range 3 {
 			// queue up ca hits because target could move
 			c.Core.Tasks.Add(func() {
 				singleCharge(target.Pos(), 0)

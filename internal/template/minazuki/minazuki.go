@@ -110,7 +110,7 @@ func (w *Watcher) Kill() {
 }
 
 func (w *Watcher) stateChangeHook() {
-	w.core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	w.core.Events.Subscribe(event.OnStateChange, func(args ...any) bool {
 		next := args[1].(action.AnimationState)
 		// ignore if it's not the state we are looking for
 		if next != w.state {

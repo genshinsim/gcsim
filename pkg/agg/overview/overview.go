@@ -59,10 +59,7 @@ func (b *buffer) Add(result stats.Result) {
 	iX := len(b.shp.Xs) - 1
 
 	for _, interval := range result.ShieldResults.EffectiveShield["normalized"] {
-		end := interval.End
-		if end > result.Duration {
-			end = result.Duration
-		}
+		end := min(interval.End, result.Duration)
 		b.shp.Xs[iX] += interval.HP * float64(end-interval.Start)
 	}
 	b.shp.Xs[iX] /= float64(result.Duration)

@@ -16,7 +16,7 @@ func (c *char) a1() {
 	}
 
 	count := 0
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false

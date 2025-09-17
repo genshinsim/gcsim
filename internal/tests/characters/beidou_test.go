@@ -37,7 +37,7 @@ func TestBeidouBounce(t *testing.T) {
 
 	// start tests
 	dmgCount := make(map[info.TargetKey]int)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -71,7 +71,7 @@ func TestBeidouBounce(t *testing.T) {
 			t.FailNow()
 		}
 	}
-	for i := 0; i < 200; i++ {
+	for range 200 {
 		advanceCoreFrame(c)
 	}
 

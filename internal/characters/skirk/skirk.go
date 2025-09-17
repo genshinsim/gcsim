@@ -197,7 +197,7 @@ func (c *char) ConsumeSerpentsSubtlety(delay int, src string) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.StatusIsActive(skillKey) {
 			c.exitSkillState(c.skillSrc)
 		}

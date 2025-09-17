@@ -104,7 +104,7 @@ func (c *char) burstCast() {
 }
 
 func (c *char) burstPlungeDoTTrigger() {
-	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) bool {
 		// ApplyAttack occurs only once per attack, so we do not need to add an ICD status
 		atk := args[0].(*info.AttackEvent)
 

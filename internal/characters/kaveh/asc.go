@@ -19,7 +19,7 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
 		char := args[0].(int)
 		// don't trigger if kaveh was not hit
 		if char != c.Index() {
@@ -62,7 +62,7 @@ func (c *char) a4AddStacksHandler() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		if c.a4Stacks >= 4 {
 			return false
 		}

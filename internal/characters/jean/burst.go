@@ -24,10 +24,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// p is the number of times enemy enters or exits the field
-	enter := p["enter"]
-	if enter < 1 {
-		enter = 1
-	}
+	enter := max(p["enter"], 1)
 	delay, ok := p["enter_delay"]
 	if !ok {
 		delay = 600 / enter
@@ -57,7 +54,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
 	// first enter is on burst start
-	for i := 0; i < enter; i++ {
+	for i := range enter {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), burstStart+i*delay)
 	}
 

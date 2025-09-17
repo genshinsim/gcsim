@@ -56,7 +56,7 @@ func (c *char) a1TapestrySetup() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		// seize the moment not active
 		if !c.StatusIsActive(a1SeizeTheMomentKey) {
 			return false
@@ -186,7 +186,7 @@ func (c *char) a4() {
 	}
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.GeoP] = 0.20
-	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...any) bool {
 		c.applyA4Buff()
 		return false
 	}, a4BuffKey)

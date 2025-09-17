@@ -13,7 +13,7 @@ import (
 func (c *char) c1() {
 	const c1Icd = "heizou-c1-icd"
 	// No log value saved as stat mod already shows up in debug view
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		if c.StatusIsActive(c1Icd) {
 			return false
 		}

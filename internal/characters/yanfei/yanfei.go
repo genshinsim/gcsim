@@ -71,7 +71,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 
 // Hook that clears yanfei burst status and seals when she leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		c.sealCount = 0
 		c.DeleteStatus(sealBuffKey)
 		c.Core.Status.Delete("yanfeiburst")

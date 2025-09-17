@@ -63,8 +63,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	return &s, nil
 }
 
-func (s *Set) OnHeal() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnHeal() func(args ...any) bool {
+	return func(args ...any) bool {
 		src := args[0].(*info.HealInfo)
 		healAmt := args[4].(float64)
 		if src.Caller != s.char.Index() {
@@ -87,8 +87,8 @@ func (s *Set) OnHeal() func(args ...interface{}) bool {
 	}
 }
 
-func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnEnemyHit() func(args ...any) bool {
+	return func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalBurst:

@@ -86,7 +86,7 @@ func generateRandSubs(r *info.RandomSubstats, rng *rand.Rand) ([]float64, error)
 		if rng.Float64() <= 0.2 {
 			upgrades = 5
 		}
-		for i := 0; i < 4; i++ {
+		for i := range 4 {
 			// pick stat from weight
 			s := randSub(weight, rng)
 			if s == attributes.NoStat {

@@ -31,7 +31,7 @@ func (c *char) a1() {
 		return
 	}
 
-	swirlFunc := func(args ...interface{}) bool {
+	swirlFunc := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -83,7 +83,7 @@ func (c *char) a4() {
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.EM] = a4EMBuff
 
-	hitFunc := func(args ...interface{}) bool {
+	hitFunc := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

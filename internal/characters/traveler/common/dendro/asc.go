@@ -20,7 +20,7 @@ func (c *Traveler) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 		prevChar := c.Core.Player.ByIndex(prev)
 		prevChar.DeleteStatMod(a1Key)
