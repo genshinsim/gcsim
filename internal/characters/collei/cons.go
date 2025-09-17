@@ -19,7 +19,7 @@ func (c *char) c1() {
 		Base:         modifier.NewBase("collei-c1", -1),
 		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Player.Active() != c.Index {
+			if c.Core.Player.Active() != c.Index() {
 				return m, true
 			}
 			return nil, false
@@ -40,7 +40,7 @@ func (c *char) c2() {
 		if c.StatusIsActive(sproutKey) {
 			c.ExtendStatus(sproutKey, 180)
 		}
-		c.Core.Log.NewEvent("collei c2 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("collei c2 proc", glog.LogCharacterEvent, c.Index())
 		return false
 	}
 
@@ -62,7 +62,7 @@ func (c *char) c2() {
 func (c *char) c4() {
 	for i, char := range c.Core.Player.Chars() {
 		// does not affect collei
-		if c.Index == i {
+		if c.Index() == i {
 			continue
 		}
 		amts := make([]float64, attributes.EndStatType)
@@ -79,7 +79,7 @@ func (c *char) c4() {
 
 func (c *char) c6(t info.Target) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Forest of Falling Arrows (C6)",
 		AttackTag:  attacks.AttackTagNone, // in game has this as AttackTagColleiC6
 		ICDTag:     attacks.ICDTagNone,

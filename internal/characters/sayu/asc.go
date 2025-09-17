@@ -23,10 +23,10 @@ func (c *char) a1() {
 		}
 
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
 		if c.StatusIsActive(a1ICDKey) {
@@ -40,7 +40,7 @@ func (c *char) a1() {
 
 		heal := 300 + c.Stat(attributes.EM)*1.2
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Someone More Capable",
 			Src:     heal,

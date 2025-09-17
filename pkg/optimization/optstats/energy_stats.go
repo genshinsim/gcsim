@@ -44,7 +44,7 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 		preEnergy := args[1].(float64)
 		amount := args[2].(float64)
 		isParticle := args[4].(bool)
-		ind := character.Index
+		ind := character.Index()
 
 		er := character.Stat(attributes.ER)
 
@@ -66,7 +66,7 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 
 	core.Events.Subscribe(event.OnEnergyBurst, func(args ...interface{}) bool {
 		char := args[0].(*character.CharWrapper)
-		ind := char.Index
+		ind := char.Index()
 		amount := args[2].(float64)
 
 		wERsum := 0.0

@@ -28,7 +28,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -65,7 +65,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 			// dori self application
 			// TODO: change this to a ST attack later when self reactions need to be implemented
-			idx := c.Core.Player.ActiveChar().Index
+			idx := c.Core.Player.ActiveChar().Index()
 			c.Core.Player.Drain(info.DrainInfo{
 				ActorIndex: idx,
 				Abil:       ai.Abil,
@@ -103,7 +103,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			}
 			// Heals
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  c.Core.Player.Active(),
 				Message: "Alcazarzaray's Exactitude: Healing",
 				Src:     bursthealpp[c.TalentLvlBurst()]*c.MaxHP() + bursthealflat[c.TalentLvlBurst()],

@@ -58,7 +58,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Freeze Bomb",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// Bomblets snapshot on cast
 	ai = info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Chillwater Bomblets",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -142,7 +142,7 @@ func (c *char) coilStacks(a info.AttackCB) {
 	c.coils++
 	c.coilICDExpiry = c.Core.F + 6
 
-	c.Core.Log.NewEvent("coil stack gained", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("coil stack gained", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.coils)
 
 	c.a1()
@@ -156,7 +156,7 @@ func (c *char) coilStacks(a info.AttackCB) {
 // Handles rushing ice state
 func (c *char) rushingIce() {
 	c.AddStatus(rushingIceKey, rushingIceDuration, true)
-	c.Core.Player.AddWeaponInfuse(c.Index, "aloy-rushing-ice", attributes.Cryo, 600, true, attacks.AttackTagNormal)
+	c.Core.Player.AddWeaponInfuse(c.Index(), "aloy-rushing-ice", attributes.Cryo, 600, true, attacks.AttackTagNormal)
 
 	// Rushing ice NA bonus
 	val := make([]float64, attributes.EndStatType)
@@ -194,7 +194,7 @@ func (c *char) coilMod() {
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
-		if prev != c.Index {
+		if prev != c.Index() {
 			return false
 		}
 		c.lastFieldExit = c.Core.F

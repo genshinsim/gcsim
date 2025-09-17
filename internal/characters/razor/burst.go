@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, burstHitmark)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Lightning Fang",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -88,7 +88,7 @@ func (c *char) wolfBurst(normalCounter int) func(info.AttackCB) {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("The Wolf Within %v", normalCounter),
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -125,7 +125,7 @@ func (c *char) onSwapClearBurst() {
 		}
 		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.DeleteStatus(burstBuffKey)
 		}
 		return false

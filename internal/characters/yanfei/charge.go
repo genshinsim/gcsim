@@ -38,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.a1(c.sealCount)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNone,
@@ -65,7 +65,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		c.makeA4CB(),
 	)
 
-	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index()).
 		Write("current_seals", c.sealCount)
 
 	// Clear the seals next frame just in case for some reason we call stam check late

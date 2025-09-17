@@ -53,7 +53,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// For our purposes, snapshot upon damage proc
 	c.Core.Tasks.Add(func() {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               "Dawn (Strike)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagElementalBurst,

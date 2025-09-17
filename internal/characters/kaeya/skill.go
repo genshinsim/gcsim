@@ -28,7 +28,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Frostgnaw",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		// Every hit with Frostgnaw regenerates HP for Kaeya equal to 15% of his ATK.
 		if c.Base.Ascension >= 1 {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  c.Core.Player.Active(),
 				Message: "Cold-Blooded Strike",
 				Src:     a.AttackEvent.Snapshot.Stats.TotalATK() * .15,
@@ -109,7 +109,7 @@ func (c *char) makeA4ParticleCB() info.AttackCBFunc {
 		if !e.AuraContains(attributes.Frozen) {
 			return
 		}
-		c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index())
 		a4Count++
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
 	}

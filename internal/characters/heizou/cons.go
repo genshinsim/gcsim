@@ -18,7 +18,7 @@ func (c *char) c1() {
 			return false
 		}
 		next := args[1].(int)
-		if next != c.Index {
+		if next != c.Index() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
@@ -57,7 +57,7 @@ func (c *char) c6() (float64, float64) {
 	}
 
 	if cr > 0 {
-		c.Core.Log.NewEvent("heizou-c6 adding stats", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("heizou-c6 adding stats", glog.LogCharacterEvent, c.Index()).
 			Write("cr", cr).
 			Write("cd", cd)
 	}

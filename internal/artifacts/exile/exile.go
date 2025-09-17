@@ -47,7 +47,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 
@@ -62,7 +62,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			for _, x := range c.Player.Chars() {
 				this := x
-				if char.Index == this.Index {
+				if char.Index() == this.Index() {
 					continue
 				}
 				// add exile status to all party members except holder

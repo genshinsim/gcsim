@@ -21,7 +21,7 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Log.NewEvent("a1 infusion added", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("a1 infusion added", glog.LogCharacterEvent, c.Index())
 
 	// add Damage Bonus
 	m := make([]float64, attributes.EndStatType)

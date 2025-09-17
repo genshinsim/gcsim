@@ -164,7 +164,7 @@ func (c *char) c6() {
 	}
 
 	onAction := func(...interface{}) bool {
-		if c.Core.Player.Active() == c.Index && c.nightsoulState.HasBlessing() {
+		if c.Core.Player.Active() == c.Index() && c.nightsoulState.HasBlessing() {
 			c.applyC6()
 		}
 		return false
@@ -194,7 +194,7 @@ func (c *char) applyC6() {
 			hpplus := c.Stat(attributes.Heal)
 			heal := c.TotalDef(false) * 1.2
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  -1,
 				Message: "Imperishable Night Carnival",
 				Src:     heal,
@@ -218,7 +218,7 @@ func (c *char) c6FlatDmg() {
 			}
 
 			amt := c.TotalDef(false) * 3.0
-			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index).
+			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index()).
 				Write("amt", amt)
 
 			atk.Info.FlatDmg += amt

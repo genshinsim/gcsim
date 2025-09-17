@@ -81,7 +81,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,
@@ -127,7 +127,7 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 		c.momentumStacks = 0
 		mult := bite[c.TalentLvlSkill()] + momentumBonus[c.TalentLvlSkill()]*float64(momentumStacks) + c.c1()
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           fmt.Sprintf("Sharky's Bite (%v momentum)", momentumStacks),
 			AttackTag:      attacks.AttackTagNormal,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

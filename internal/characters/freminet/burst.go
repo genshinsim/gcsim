@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.ResetActionCooldown(action.ActionSkill)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Shadowhunter's Ambush",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -65,7 +65,7 @@ func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		// do nothing if previous char wasn't freminet
 		prev := args[0].(int)
-		if prev != c.Index {
+		if prev != c.Index() {
 			return false
 		}
 		if !c.StatusIsActive(burstKey) {

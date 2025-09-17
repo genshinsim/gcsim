@@ -61,7 +61,7 @@ func (c *char) makeC6CB() info.AttackCBFunc {
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !c.c6Ready {
@@ -69,10 +69,10 @@ func (c *char) makeC6CB() info.AttackCBFunc {
 		}
 		c.c6Ready = false
 
-		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index())
 		ai := info.AttackInfo{
 			Abil:               c6Abil,
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNone,
 			ICDGroup:           attacks.ICDGroupDefault,

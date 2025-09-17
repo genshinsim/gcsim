@@ -45,7 +45,7 @@ func (c *char) skillHoldDuration(stacks int) int {
 func (c *char) addDecStack() {
 	if c.decStack < 4 {
 		c.decStack++
-		c.Core.Log.NewEvent("declension stack gained", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("declension stack gained", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", c.decStack)
 	}
 }
@@ -54,7 +54,7 @@ func (c *char) skillRelease(delay int) action.Info {
 	c.Core.Tasks.Add(func() {
 		hitDelay := skillHitmark - skillCDStart
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               "Heartstopper Strike",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagNone,

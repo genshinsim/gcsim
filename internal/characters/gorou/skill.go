@@ -39,7 +39,7 @@ Gorou can deploy only 1 General's War Banner on the field at any one time. Chara
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(func() {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Inuzaka All-Round Defense",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,

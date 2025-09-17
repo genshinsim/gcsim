@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	nabuff := 0.005 + float64(r)*0.005
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
@@ -52,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		flatdmg := char.MaxHP() * nabuff
 		atk.Info.FlatDmg += flatdmg
 
-		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index()).
 			Write("damage_added", flatdmg)
 		return false
 	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Key.String()))
@@ -63,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	icd := 6 // 0.1s * 60
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		char.AddStatus(buffKey, buffDuration, true)
@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {

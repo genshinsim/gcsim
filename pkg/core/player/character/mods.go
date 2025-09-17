@@ -72,43 +72,43 @@ func (c *CharWrapper) AddStatus(key string, dur int, hitlag bool) {
 		mod.ModExpiry = *c.f + mod.Dur
 	}
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("status", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("status", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddAttackMod(mod AttackMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("attack", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("attack", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddCooldownMod(mod CooldownMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("cd", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("cd", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddDamageReductionMod(mod DamageReductionMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("dr", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("dr", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddHealBonusMod(mod HealBonusMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("heal bonus", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("heal bonus", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddReactBonusMod(mod ReactBonusMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("react bonus", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("react bonus", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddStatMod(mod StatMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("stat", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("stat", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 // Delete.
@@ -179,7 +179,7 @@ func (c *CharWrapper) extendMod(key string, ext int) bool {
 	}
 	// other wise add to expiry
 	mod := c.mods[m]
-	mod.Extend(mod.Key(), c.log, c.Index, ext)
+	mod.Extend(mod.Key(), c.log, c.Index(), ext)
 	return true
 }
 
@@ -267,7 +267,7 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 		// if not expired
 		if m.Expiry() == -1 || m.Expiry() > *c.f {
 			amt := m.Amount(a)
-			c.log.NewEvent("applying cooldown modifier", glog.LogActionEvent, c.Index).
+			c.log.NewEvent("applying cooldown modifier", glog.LogActionEvent, c.Index()).
 				Write("key", m.Key()).
 				Write("modifier", amt).
 				Write("expiry", m.Expiry())

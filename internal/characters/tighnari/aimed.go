@@ -59,7 +59,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	weakspot := p["weakspot"]
 
 	ai := info.AttackInfo{
-		ActorIndex:           c.Index,
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -129,7 +129,7 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:           c.Index,
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot (Wreath Arrow)",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -161,7 +161,7 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 	}
 
 	ai = info.AttackInfo{
-		ActorIndex:   c.Index,
+		ActorIndex:   c.Index(),
 		Abil:         "Clusterbloom Arrow",
 		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       attacks.ICDTagExtraAttack,
@@ -190,7 +190,7 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 
 		if c.Base.Cons >= 6 {
 			ai = info.AttackInfo{
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				Abil:       "Karma Adjudged From the Leaden Fruit",
 				AttackTag:  attacks.AttackTagExtra,
 				ICDTag:     attacks.ICDTagNone,

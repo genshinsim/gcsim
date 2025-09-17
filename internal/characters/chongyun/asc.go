@@ -16,7 +16,7 @@ func (c *char) a4(delay, src int, useOldSnapshot bool) {
 		return
 	}
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Spirit Blade: Chonghua's Layered Frost (A4)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

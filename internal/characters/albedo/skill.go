@@ -30,7 +30,7 @@ const (
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Abiogenesis: Solar Isotoma",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -137,7 +137,7 @@ func (c *char) skillHook() {
 		// c1: skill tick regen 1.2 energy
 		if c.Base.Cons >= 1 {
 			c.AddEnergy("albedo-c1", 1.2)
-			c.Core.Log.NewEvent("c1 restoring energy", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("c1 restoring energy", glog.LogCharacterEvent, c.Index())
 		}
 
 		// c2: skill tick grant stacks, lasts 30s; each stack increase burst dmg by 30% of def, stack up to 4 times

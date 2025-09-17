@@ -48,8 +48,8 @@ func (c *Traveler) a1PickUp(count int) {
 		count--
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "Spotless Waters",
 			Src:     c.MaxHP() * 0.07,
 			Bonus:   c.Stat(attributes.Heal),

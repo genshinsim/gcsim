@@ -79,7 +79,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	// Attack
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
 		AttackTag:          attacks.AttackTagNormal,

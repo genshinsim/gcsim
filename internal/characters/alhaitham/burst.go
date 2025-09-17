@@ -25,7 +25,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		Abil:       "Particular Field: Fetters of Phenomena",
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.QueueCharTask(func() {
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		c.mirrorGain(generated)

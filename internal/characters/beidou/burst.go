@@ -31,7 +31,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Stormbreaker (Q)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatus(burstKey, dur, false)
 
 	procAI := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Stormbreak Proc (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -75,7 +75,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 1 {
 		// create a shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Target:     -1,
 			Src:        c.Core.F,
 			ShieldType: shield.BeidouC1,
@@ -128,7 +128,7 @@ func (c *char) burstProc() {
 			return false
 		}
 		if c.StatusIsActive(burstICDKey) {
-			c.Core.Log.NewEvent("beidou Q (active) on icd", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("beidou Q (active) on icd", glog.LogCharacterEvent, c.Index())
 			return false
 		}
 
@@ -142,7 +142,7 @@ func (c *char) burstProc() {
 		}
 		c.Core.QueueAttackEvent(&atk, 1)
 
-		c.Core.Log.NewEvent("beidou Q proc'd", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("beidou Q proc'd", glog.LogCharacterEvent, c.Index()).
 			Write("char", ae.Info.ActorIndex).
 			Write("attack tag", ae.Info.AttackTag)
 

@@ -32,7 +32,7 @@ func init() {
 // Burst attack damage queue generator
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Divine Maiden's Deliverance (Initial)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -62,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatus(burstKey, burstDuration, false)
 
 	ai = info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Divine Maiden's Deliverance (DoT)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,

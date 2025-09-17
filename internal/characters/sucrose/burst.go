@@ -39,7 +39,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Status.Add("sucroseburst", duration)
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Forbidden Creation-Isomer 75/Type II",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -55,7 +55,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	snap := c.Snapshot(&ai)
 	//TODO: does burst absorb snapshot
 	aiAbs := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Forbidden Creation-Isomer 75/Type II (Absorb)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -104,7 +104,7 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.qAbsorb != attributes.NoElement {
 			if c.Base.Cons >= 6 {

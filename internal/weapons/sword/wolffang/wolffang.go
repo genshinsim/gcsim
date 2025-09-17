@@ -67,10 +67,10 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 
 	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != w.char.Index {
+		if atk.Info.ActorIndex != w.char.Index() {
 			return false
 		}
-		if w.c.Player.Active() != w.char.Index {
+		if w.c.Player.Active() != w.char.Index() {
 			return false
 		}
 		if !requiredTag(atk.Info.AttackTag, tags...) {

@@ -114,7 +114,7 @@ func (c *char) c2() {
 	c.c2UpdateTask()
 
 	for _, char := range c.Core.Player.Chars() {
-		if char.Index == c.Index {
+		if char.Index() == c.Index() {
 			continue
 		}
 		// TODO: Test whether this is indeed a static buff once we have C2

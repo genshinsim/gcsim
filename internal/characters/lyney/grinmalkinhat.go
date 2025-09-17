@@ -33,7 +33,7 @@ func (c *char) newGrinMalkinHat(pos info.Point, hpDrained bool, duration int) *G
 	g.char.AddStatus(grinMalkinHatKey, g.Duration, false)
 
 	g.pyrotechnicAI = info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Pyrotechnic Strike",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagLyneyEndBoom,
@@ -51,7 +51,7 @@ func (c *char) newGrinMalkinHat(pos info.Point, hpDrained bool, duration int) *G
 	g.OnExpiry = g.skillPyrotechnic("expiry")
 	g.OnKill = g.skillPyrotechnic("kill")
 
-	g.Core.Log.NewEvent("Lyney Grin-Malkin Hat added", glog.LogCharacterEvent, c.Index).Write("src", g.Src()).Write("hp_drained", g.hpDrained)
+	g.Core.Log.NewEvent("Lyney Grin-Malkin Hat added", glog.LogCharacterEvent, c.Index()).Write("src", g.Src()).Write("hp_drained", g.hpDrained)
 
 	return g
 }
@@ -113,7 +113,7 @@ func (g *GrinMalkinHat) updateHats(removeReason string) {
 	for i := 0; i < len(g.char.hats); i++ {
 		if g.char.hats[i] == g {
 			g.char.hats = append(g.char.hats[:i], g.char.hats[i+1:]...)
-			g.Core.Log.NewEvent("Lyney Grin-Malkin Hat removed", glog.LogCharacterEvent, g.char.Index).Write("src", g.Src()).Write("hp_drained", g.hpDrained).Write("remove_reason", removeReason)
+			g.Core.Log.NewEvent("Lyney Grin-Malkin Hat removed", glog.LogCharacterEvent, g.char.Index()).Write("src", g.Src()).Write("hp_drained", g.hpDrained).Write("remove_reason", removeReason)
 		}
 	}
 }

@@ -69,7 +69,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.hasC2DamageBuff = false
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Molten Inferno",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -149,7 +149,7 @@ func (c *char) skillDmgHook() {
 
 func (c *char) skillRecast() (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             "Ranging Flame",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -199,7 +199,7 @@ func (c *char) pickUpField() {
 	c.a1Reduction()
 	c.sanctumICD = c.StatusDuration(skillICDKey)
 	c.sanctumSavedDur = c.StatusDuration(dehyaFieldKey) + sanctumPickupExtension // dur gets extended on field recast by a low margin, apparently
-	c.Core.Log.NewEvent("sanctum picked up", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("sanctum picked up", glog.LogCharacterEvent, c.Index()).
 		Write("Duration Remaining", c.sanctumSavedDur).
 		Write("DoT tick CD", c.sanctumICD)
 	c.Core.Tasks.Add(func() {
@@ -210,14 +210,14 @@ func (c *char) pickUpField() {
 func (c *char) addField(dur int) {
 	// places field
 	c.AddStatus(dehyaFieldKey, dur, false)
-	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index()).
 		Write("Duration Remaining", dur).
 		Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
 		Write("DoT tick CD", c.StatusDuration(skillICDKey))
 
 	// snapshot for ticks
 	c.skillAttackInfo = info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             skillDoTAbil,
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -275,7 +275,7 @@ func (c *char) skillHurtHook() {
 		// modify hp drain
 		di.Amount = max(di.Amount-mitigation, 0)
 		// log mitigation
-		c.Core.Log.NewEvent("dehya mitigating dmg", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("dehya mitigating dmg", glog.LogCharacterEvent, c.Index()).
 			Write("hurt_before", beforeAmount).
 			Write("mitigation", mitigation).
 			Write("hurt", di.Amount)
@@ -303,7 +303,7 @@ func (c *char) skillSelfDoT() {
 	c.QueueCharTask(c.skillSelfDoT, skillSelfDoTInterval)
 
 	// do not do self DoT if in burst iframes
-	if c.Core.Player.Active() == c.Index && c.Core.Player.CurrentState() == action.BurstState {
+	if c.Core.Player.Active() == c.Index() && c.Core.Player.CurrentState() == action.BurstState {
 		return
 	}
 
@@ -317,7 +317,7 @@ func (c *char) skillSelfDoT() {
 	if c.StatusIsActive(a1ReductionKey) {
 		dmgBefore := dmg
 		dmg *= 1 - a1ReductionMult
-		c.Core.Log.NewEvent("dehya a1 reducing redmane's blood dmg", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("dehya a1 reducing redmane's blood dmg", glog.LogCharacterEvent, c.Index()).
 			Write("dmg_before", dmgBefore).
 			Write("dmg", dmg)
 	}
@@ -326,7 +326,7 @@ func (c *char) skillSelfDoT() {
 	// TODO: hack because system is not designed to hit a character directly which is off-field
 	// this is true physical dmg so dmg formula/element resist does not matter
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       skillSelfDoTAbil,
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
@@ -345,11 +345,11 @@ func (c *char) skillSelfDoT() {
 		SourceFrame: c.Core.F,
 	}
 
-	c.Core.Combat.Events.Emit(event.OnPlayerHit, c.Index, ae)
-	dmgLeft := c.Core.Player.Shields.OnDamage(c.Index, c.Core.Player.Active(), dmg, ae.Info.Element)
+	c.Core.Combat.Events.Emit(event.OnPlayerHit, c.Index(), ae)
+	dmgLeft := c.Core.Player.Shields.OnDamage(c.Index(), c.Core.Player.Active(), dmg, ae.Info.Element)
 	if dmgLeft > 0 {
 		c.Core.Player.Drain(info.DrainInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       ae.Info.Abil,
 			Amount:     dmgLeft,
 			External:   true,

@@ -57,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.DeleteStatus(leapBackStatus)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Swallow-Wisp Pinion Dance: Detect",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,

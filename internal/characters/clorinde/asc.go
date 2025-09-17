@@ -76,7 +76,7 @@ func (c *char) a1Amount(atk *info.AttackEvent, t info.Target) ([]float64, bool) 
 	totalAtk := atk.Snapshot.Stats.TotalATK()
 	amt = min(totalAtk*c.a1BuffPercent*float64(c.a1stacks.Count()), c.a1Cap)
 	atk.Info.FlatDmg += amt
-	c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index()).
 		Write("amt", amt).
 		Write("c2_applied", c.Base.Cons >= 2)
 	// we don't actually change any stats here..
@@ -94,7 +94,7 @@ func (c *char) a4Init() {
 	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
 		index := args[0].(int)
 		amount := -args[1].(float64)
-		if c.Index != index {
+		if c.Index() != index {
 			return false
 		}
 		c.a4(amount)
@@ -119,7 +119,7 @@ func (c *char) a4(change float64) {
 		Base:   modifier.NewBaseWithHitlag(clorindeA4BuffKey, clordineA4BuffDuration),
 		Amount: c.a4Amount,
 	})
-	c.Core.Log.NewEvent("a4 triggered", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("a4 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.a4stacks.Count())
 }
 

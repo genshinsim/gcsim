@@ -92,7 +92,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Dance of Haftkarsvar",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -201,7 +201,7 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 	travel := 0
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Sword Dance %v", s),
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -260,7 +260,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.Info {
 	s := c.Tag(skillStep)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Whirling Steps %v", s),
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -311,7 +311,7 @@ func (c *char) TranquilityAura(src int) func() {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Tranquility Aura",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNilouTranquilityAura,

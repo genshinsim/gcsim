@@ -33,7 +33,7 @@ func (c *char) c1() {
 	c.Core.Events.Subscribe(event.OnOverload, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
 		// does not include chevreuse
-		if atk.Info.ActorIndex == c.Index {
+		if atk.Info.ActorIndex == c.Index() {
 			return false
 		}
 		// does not trigger off-field
@@ -70,7 +70,7 @@ func (c *char) c2() info.AttackCBFunc {
 		c.AddStatus(c2ICDKey, 10*60, true)
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Sniper Induced Explosion (C2)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			// should be ElementalArtExtra but no other chevreuse attack shares this tag so this is ok
@@ -137,7 +137,7 @@ func (c *char) c6TeamHeal() {
 	}
 
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  -1,
 		Message: "In Pursuit of Ending Evil (C6)",
 		Src:     0.1 * c.MaxHP(),
@@ -155,10 +155,10 @@ func (c *char) c6(char *character.CharWrapper) {
 	m[attributes.ElectroP] = 0.20
 
 	char.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("chev-c6-%v-stack", c.c6StackCounts[char.Index]+1), 8*60),
+		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("chev-c6-%v-stack", c.c6StackCounts[char.Index()]+1), 8*60),
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},
 	})
-	c.c6StackCounts[char.Index] = (c.c6StackCounts[char.Index] + 1) % 3
+	c.c6StackCounts[char.Index()] = (c.c6StackCounts[char.Index()] + 1) % 3
 }

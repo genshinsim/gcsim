@@ -47,7 +47,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 		core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
 			// Character that picks it up must be the petra set holder
-			if core.Player.Active() != char.Index {
+			if core.Player.Active() != char.Index() {
 				return false
 			}
 
@@ -60,7 +60,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 			// Activate
 			// TODO: cd for proc?
-			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index).
+			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index()).
 				Write("ele", s.element)
 
 			m[attributes.PyroP] = 0

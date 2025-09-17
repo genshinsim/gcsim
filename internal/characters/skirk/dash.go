@@ -16,7 +16,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 
 	// consume stamina at end of the dash
 	c.Core.Tasks.Add(func() {
-		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
+		req := c.Core.Player.AbilStamCost(c.Index(), action.ActionDash, p)
 		c.Core.Player.UseStam(req, action.ActionDash)
 	}, skillDashLength)
 

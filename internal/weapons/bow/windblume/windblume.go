@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = 0.12 + float64(r)*0.04
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if char.Index != c.Player.Active() {
+		if char.Index() != c.Player.Active() {
 			return false
 		}
 		char.AddStatMod(character.StatMod{

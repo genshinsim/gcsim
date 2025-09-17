@@ -17,7 +17,7 @@ func (c *char) c1(delay int) {
 
 func (c *char) c2() {
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
@@ -38,7 +38,7 @@ func (c *char) c6() {
 		if di.Amount <= 0 {
 			return false
 		}
-		if c.Core.Player.Active() != c.Index { // trigger only when not barbara
+		if c.Core.Player.Active() != c.Index() { // trigger only when not barbara
 			c.checkc6()
 		}
 		return false

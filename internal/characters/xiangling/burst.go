@@ -26,7 +26,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	for i := range pyronadoInitial {
 		initialHit := info.AttackInfo{
 			Abil:               fmt.Sprintf("Pyronado Hit %v", i+1),
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagElementalBurst,
 			ICDGroup:           attacks.ICDGroupDefault,
@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	burstHit := info.AttackInfo{
 		Abil:       "Pyronado",
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

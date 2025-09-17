@@ -24,7 +24,7 @@ func (c *char) a1() {
 
 		// Active char is the only one under the effects of Qiqi skill
 		active := c.Core.Player.ActiveChar()
-		if atk.Info.ActorIndex != active.Index {
+		if atk.Info.ActorIndex != active.Index() {
 			return false
 		}
 

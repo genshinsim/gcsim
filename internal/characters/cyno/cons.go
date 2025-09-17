@@ -87,7 +87,7 @@ func (c *char) c4() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	restore := func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if c.c4Counter > 4 { // counting from 0 to 4, 5 instances max
@@ -96,7 +96,7 @@ func (c *char) c4() {
 		c.c4Counter++
 		for _, this := range c.Core.Player.Chars() {
 			// not for cyno
-			if this.Index != c.Index {
+			if this.Index() != c.Index() {
 				this.AddEnergy("cyno-c4", 3)
 			}
 		}
@@ -158,7 +158,7 @@ func (c *char) makeC6CB() info.AttackCBFunc {
 
 		// technically should use ICDGroupCynoC6, but it's just reskinned standard ICD
 		ai := info.AttackInfo{
-			ActorIndex:   c.Index,
+			ActorIndex:   c.Index(),
 			Abil:         "Raiment: Just Scales (C6)",
 			AttackTag:    attacks.AttackTagElementalArtHold,
 			ICDTag:       attacks.ICDTagElementalArt,

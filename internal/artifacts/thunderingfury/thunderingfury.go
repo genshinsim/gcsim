@@ -75,10 +75,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	reduce := func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -86,7 +86,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 		char.AddStatus(icdKey, icd, true)
 		char.ReduceActionCooldown(action.ActionSkill, 60)
-		c.Log.NewEvent("thunderfury 4pc proc", glog.LogArtifactEvent, char.Index).
+		c.Log.NewEvent("thunderfury 4pc proc", glog.LogArtifactEvent, char.Index()).
 			Write("reaction", atk.Info.Abil).
 			Write("new cd", char.Cooldown(action.ActionSkill))
 		return false

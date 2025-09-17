@@ -67,7 +67,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		Abil:         "Fully-Charged Aimed Shot",
-		ActorIndex:   c.Index,
+		ActorIndex:   c.Index(),
 		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       attacks.ICDTagExtraAttack,
 		ICDGroup:     attacks.ICDGroupAmber,

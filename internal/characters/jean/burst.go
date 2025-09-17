@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Dandelion Breeze",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Dandelion Breeze",
 			Src:     heal,
@@ -87,7 +87,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// attack self
 	selfSwirl := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Dandelion Breeze (Self Swirl)",
 		Element:    attributes.Anemo,
 		Durability: 25,
@@ -106,7 +106,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			if c.Core.Combat.Player().IsWithinArea(c.burstArea) {
 				// heal
 				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
+					Caller:  c.Index(),
 					Target:  c.Core.Player.Active(),
 					Message: "Dandelion Field",
 					Src:     healDot,
@@ -119,7 +119,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					Pattern:     combat.NewSingleTargetHit(0),
 					SourceFrame: c.Core.F,
 				}
-				c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index)
+				c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index())
 				self.ReactWithSelf(&ae)
 			}
 			// C4

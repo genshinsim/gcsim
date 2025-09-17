@@ -34,7 +34,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Both healing and damage are snapshot
 	c.Core.Tasks.Add(func() {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               "Herald of Frost: Initial Damage",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagElementalArt,
@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 		// One healing proc happens immediately on cast
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Herald of Frost (Tick)",
 			Src:     c.healSnapshot(&snap, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()),
@@ -153,7 +153,7 @@ func (c *char) skillHealTickTask(src int) func() {
 		}
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Herald of Frost (Tick)",
 			Src:     c.healSnapshot(&c.skillHealSnapshot, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()),

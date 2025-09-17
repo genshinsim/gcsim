@@ -27,7 +27,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	s := Set{Count: count}
 
 	if count >= 2 {
-		c.Log.NewEvent("thundersoother 2 pc not implemented", glog.LogArtifactEvent, char.Index).
+		c.Log.NewEvent("thundersoother 2 pc not implemented", glog.LogArtifactEvent, char.Index()).
 			Write("frame", c.F)
 	}
 	if count >= 4 {

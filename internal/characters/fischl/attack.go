@@ -34,7 +34,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
@@ -60,7 +60,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	// check for c1
 	if c.Base.Cons >= 1 && !c.StatusIsActive(ozActiveKey) {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Fischl C1",
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagNone,

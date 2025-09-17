@@ -68,7 +68,7 @@ func (c *char) c4FlatBonus() float64 {
 		return 0
 	}
 	bonus := min(c.TotalAtk()*5, 20000)
-	c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, "varesa c4 flat dmg bonus").
+	c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), "varesa c4 flat dmg bonus").
 		Write("bonus", bonus)
 	return bonus
 }

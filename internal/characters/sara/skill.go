@@ -41,7 +41,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// C2 handling
 	if c.Base.Cons >= 2 {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Tengu Juurai: Ambush C2",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
@@ -89,7 +89,7 @@ func (c *char) attackBuff(a info.AttackPattern, delay int) {
 		active := c.Core.Player.ActiveChar()
 		buff := atkBuff[c.TalentLvlSkill()] * c.Stat(attributes.BaseATK)
 
-		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index()).
 			Write("char", active.Index).
 			Write("buff", buff).
 			Write("expiry", c.Core.F+360)
@@ -107,7 +107,7 @@ func (c *char) attackBuff(a info.AttackPattern, delay int) {
 
 		// TODO: change this to a ST attack later
 		c.Core.Player.Drain(info.DrainInfo{
-			ActorIndex: active.Index,
+			ActorIndex: active.Index(),
 			Abil:       "Tengu Juurai: Ambush",
 			Amount:     0,
 			External:   true,

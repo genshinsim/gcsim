@@ -57,7 +57,7 @@ func (c *char) skillPress() action.Info {
 func (c *char) skillHold(createStele bool) action.Info {
 	// hold does dmg
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Stone Stele (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,

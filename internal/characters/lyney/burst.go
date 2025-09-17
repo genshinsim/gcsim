@@ -58,7 +58,7 @@ func (c *char) burstTick() {
 	}
 
 	tickAI := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Wondrous Trick: Miracle Parade",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -97,7 +97,7 @@ func (c *char) explosiveFirework() {
 	}
 
 	explodeAI := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Wondrous Trick: Miracle Parade (Explosive Firework)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

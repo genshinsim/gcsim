@@ -24,7 +24,7 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 		if !ok {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !e.AuraContains(attributes.Electro) {
@@ -36,7 +36,7 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 		if c.Core.Rand.Float64() < 0.5 {
 			c.AddStatus(c2ICDKey, 5*60, true)
 			c.Core.QueueParticle("keqing-c2", 1, attributes.Electro, c.ParticleDelay)
-			c.Core.Log.NewEvent("keqing c2 proc'd", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("keqing c2 proc'd", glog.LogCharacterEvent, c.Index())
 		}
 	}
 }
@@ -45,7 +45,7 @@ func (c *char) c4() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	cb := func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{

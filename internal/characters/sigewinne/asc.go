@@ -30,12 +30,12 @@ func (c *char) a1() {
 			return false
 		}
 
-		if atk.Info.ActorIndex == c.Index {
+		if atk.Info.ActorIndex == c.Index() {
 			return false
 		}
 
 		active := c.Core.Player.ActiveChar()
-		if active.Index == atk.Info.ActorIndex {
+		if active.Index() == atk.Info.ActorIndex {
 			return false
 		}
 

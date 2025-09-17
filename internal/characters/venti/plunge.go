@@ -26,12 +26,12 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	// check if hold skill was used
 	lastAct := c.Core.Player.LastAction
-	if lastAct.Char != c.Index || lastAct.Type != action.ActionSkill || lastAct.Param["hold"] != 0 {
+	if lastAct.Char != c.Index() || lastAct.Type != action.ActionSkill || lastAct.Param["hold"] != 0 {
 		return action.Info{}, errors.New("high_plunge should be preceded by hold skill")
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "High Plunge",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,

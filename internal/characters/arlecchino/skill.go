@@ -34,7 +34,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "All is Ash (Spike)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, skillArea, spikeHitmark, spikeHitmark)
 
 	ai = info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "All is Ash (Cleave)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -110,12 +110,12 @@ func (c *char) directiveTickFunc(src, count int, trg *enemy.Enemy) func() {
 		if !trg.StatusIsActive(directiveKey) {
 			return
 		}
-		c.Core.Log.NewEvent("Blood Debt Directive checking for tick", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Blood Debt Directive checking for tick", glog.LogCharacterEvent, c.Index()).
 			Write("src", src)
 
 		// queue up one damage instance
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Blood Debt Directive",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,

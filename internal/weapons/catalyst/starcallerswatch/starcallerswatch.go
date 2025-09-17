@@ -51,11 +51,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
 		shd := args[0].(shield.Shield)
-		if shd.ShieldOwner() != char.Index {
+		if shd.ShieldOwner() != char.Index() {
 			return false
 		}
 		// TODO: Not sure if the character needs to be on the field
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(ICDKey) {
@@ -81,7 +81,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase(buffKey, -1),
 				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-					if c.Player.Active() != this.Index {
+					if c.Player.Active() != this.Index() {
 						return nil, false
 					}
 					return bonus, true

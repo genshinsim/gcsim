@@ -43,7 +43,7 @@ func (c *char) addFanfareFunc(amt float64) func() {
 		}
 		prevFanfare := c.curFanfare
 		c.curFanfare = min(c.maxC2Fanfare, c.curFanfare+amt)
-		c.Core.Log.NewEvent("Gained Fanfare", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Gained Fanfare", glog.LogCharacterEvent, c.Index()).
 			Write("previous fanfare", prevFanfare).
 			Write("current fanfare", c.curFanfare)
 	}
@@ -156,7 +156,7 @@ func (c *char) burstInit() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Let the People Rejoice",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

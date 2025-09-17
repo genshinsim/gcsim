@@ -50,7 +50,7 @@ func init() {
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	for i := 0; i < attackHits[c.NormalCounter]; i++ {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,

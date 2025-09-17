@@ -18,7 +18,7 @@ import (
 // - checks for ascension level in dash.go to avoid queuing this up only to fail the ascension level check
 func (c *char) a1() {
 	// do nothing if not Mona
-	if c.Core.Player.Active() != c.Index {
+	if c.Core.Player.Active() != c.Index() {
 		return
 	}
 	// do nothing if we aren't dashing anymore
@@ -27,13 +27,13 @@ func (c *char) a1() {
 	}
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 15), nil)
 	if enemies != nil {
-		c.Core.Log.NewEvent("mona-a1 phantom added", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("mona-a1 phantom added", glog.LogCharacterEvent, c.Index()).
 			Write("expiry:", c.Core.F+120)
 		// queue up phantom explosion
 		phantomPos := c.Core.Combat.Player()
 		c.Core.Tasks.Add(func() {
 			aiExplode := info.AttackInfo{
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				Abil:       "Mirror Reflection of Doom (A1 Explode)",
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagNone,

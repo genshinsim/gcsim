@@ -43,7 +43,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Low Plunge Attack",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -68,7 +68,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 
 func (c *char) plungeCollision(fullDelay int) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,

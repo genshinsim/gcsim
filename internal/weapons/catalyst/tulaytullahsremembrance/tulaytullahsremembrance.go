@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	incDmg := 0.036 + float64(r)*0.012
 	mDmg := make([]float64, attributes.EndStatType)
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
@@ -92,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// gain 2 stacks on normal attack dmg, 0.3s icd
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
@@ -116,14 +116,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if gain == 1 {
 			gainMsg = "1 stack"
 		}
-		w.core.Log.NewEvent(fmt.Sprintf("Tulaytullah's Remembrance gained %v via normal attack", gainMsg), glog.LogWeaponEvent, char.Index).
+		w.core.Log.NewEvent(fmt.Sprintf("Tulaytullah's Remembrance gained %v via normal attack", gainMsg), glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 		return false
 	}, fmt.Sprintf("tulaytullahsremembrance-ondmg-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
-		if prev != char.Index {
+		if prev != char.Index() {
 			return false
 		}
 		if !char.StatusIsActive(buffKey) {
@@ -148,7 +148,7 @@ func (w *Weapon) incStack(char *character.CharWrapper, src int) func() {
 			return
 		}
 		w.stacks++
-		w.core.Log.NewEvent("Tulaytullah's Remembrance gained stack via timer", glog.LogWeaponEvent, char.Index).
+		w.core.Log.NewEvent("Tulaytullah's Remembrance gained stack via timer", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks).
 			Write("weapon effect start", w.src).
 			Write("source", src)

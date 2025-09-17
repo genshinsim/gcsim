@@ -77,7 +77,7 @@ func (c *char) chillingPenalty(a info.AttackCB) {
 	}
 	c.AddStatus(skillLoseHPICDKey, skillLoseHPICD, true)
 	c.Core.Player.Drain(info.DrainInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Chilling Penalty",
 		Amount:     0.045 * c.MaxHP(),
 	})
@@ -89,7 +89,7 @@ func (c *char) onExit() {
 			return false
 		}
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.DeleteStatus(skillKey)
 		}
 		return false

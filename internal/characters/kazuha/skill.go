@@ -81,7 +81,7 @@ func (c *char) makeParticleCB(count float64) info.AttackCBFunc {
 func (c *char) skillPress(glide int) action.Info {
 	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillPressRadius)
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Chihayaburu",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -131,7 +131,7 @@ func (c *char) skillPress(glide int) action.Info {
 func (c *char) skillHold(glide int) action.Info {
 	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillHoldRadius)
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Chihayaburu",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

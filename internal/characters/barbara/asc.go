@@ -34,7 +34,7 @@ func (c *char) a4() {
 		c.a4extendCount++
 		c.Core.Status.Extend(barbSkillKey, 60)
 
-		c.Core.Log.NewEvent("barbara skill extended from a4", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("barbara skill extended from a4", glog.LogCharacterEvent, c.Index())
 
 		return false
 	}, "barbara-a4")

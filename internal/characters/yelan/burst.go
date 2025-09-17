@@ -26,7 +26,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             "Depth-Clarion Dice",
 		AttackTag:        attacks.AttackTagElementalBurst,
 		ICDTag:           attacks.ICDTagNone,
@@ -66,7 +66,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.Core.Status.Add(c6Status, 20*60)
 		c.c6count = 0
 	}
-	c.Core.Log.NewEvent("burst activated", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("burst activated", glog.LogCharacterEvent, c.Index()).
 		Write("expiry", c.Core.F+15*60)
 
 	c.SetCD(action.ActionBurst, 18*60)
@@ -88,7 +88,7 @@ func (c *char) burstWaveWrapper() {
 func (c *char) summonExquisiteThrow() {
 	hp := c.MaxHP()
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Exquisite Throw",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagYelanBurst,

@@ -54,7 +54,7 @@ func (c *char) a4() {
 		return
 	}
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Burning Shadowhunt Shot",
 		AttackTag:      attacks.AttackTagExtra,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

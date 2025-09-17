@@ -29,7 +29,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// first zap has no icd and hits everyone
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Ritual DMG",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -80,7 +80,7 @@ func (c *char) burstTick(src int) {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Soundwave Collision DMG",
 			AttackTag:      attacks.AttackTagElementalBurst,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

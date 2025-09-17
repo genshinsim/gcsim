@@ -32,7 +32,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.waveCount = 0
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Sacred Rite: Wagtail's Tide (Q)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
@@ -78,7 +78,7 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 	if src != c.burstSrc {
 		return
 	}
-	if c.Core.Player.Active() != char.Index {
+	if c.Core.Player.Active() != char.Index() {
 		return
 	}
 	if !c.StatusIsActive(burstKey) {
@@ -89,7 +89,7 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 		info.WeaponClassSpear,
 		info.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
-			char.Index,
+			char.Index(),
 			"candace-q-infuse",
 			attributes.Hydro,
 			60,
@@ -112,7 +112,7 @@ func (c *char) burstSwap() {
 			return false
 		}
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               "Sacred Rite: Wagtail's Tide (Wave)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNone,

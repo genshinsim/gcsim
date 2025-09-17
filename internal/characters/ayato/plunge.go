@@ -73,7 +73,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Low Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -128,7 +128,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "High Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -158,7 +158,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,

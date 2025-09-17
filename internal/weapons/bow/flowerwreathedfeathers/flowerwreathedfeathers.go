@@ -62,7 +62,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	c.Events.Subscribe(event.OnAimShoot, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdStatus) {
@@ -74,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.stacks < 6 {
 			w.stacks++
 		}
-		c.Log.NewEvent("flower-wreathed feathers proc'd", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("flower-wreathed feathers proc'd", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 
 		return false
@@ -84,7 +84,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		prev := args[0].(action.AnimationState)
 		next := args[1].(action.AnimationState)
 
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if prev != action.AimState || next == action.AimState {
@@ -102,7 +102,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 
-		if prev != char.Index {
+		if prev != char.Index() {
 			return false
 		}
 		if w.leaveSrc != -1 {
@@ -122,12 +122,12 @@ func (w *Weapon) clearBuff(src int) func() {
 		if w.leaveSrc != src {
 			return
 		}
-		if w.c.Player.Active() == w.char.Index && w.c.Player.CurrentState() == action.AimState {
+		if w.c.Player.Active() == w.char.Index() && w.c.Player.CurrentState() == action.AimState {
 			return
 		}
 
 		w.stacks = 0
-		w.c.Log.NewEvent("flower-wreathed feathers cleared", glog.LogWeaponEvent, w.char.Index).
+		w.c.Log.NewEvent("flower-wreathed feathers cleared", glog.LogWeaponEvent, w.char.Index()).
 			Write("stacks", w.stacks)
 	}
 }

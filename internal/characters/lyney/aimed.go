@@ -73,7 +73,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	weakspot := p["weakspot"]
 
 	ai := info.AttackInfo{
-		ActorIndex:           c.Index,
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -127,7 +127,7 @@ func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 	weakspot := p["weakspot"]
 
 	propAI := info.AttackInfo{
-		ActorIndex:           c.Index,
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot (Prop Arrow)",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -196,7 +196,7 @@ func (c *char) propSurplus() bool {
 		hpdrain = currentHP - propSurplusHPDrainThreshold*maxHP
 	}
 	c.Core.Player.Drain(info.DrainInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Prop Surplus",
 		Amount:     hpdrain,
 	})
@@ -210,7 +210,7 @@ func (c *char) increasePropSurplusStacks() {
 	if c.propSurplusStacks > 5 {
 		c.propSurplusStacks = 5
 	}
-	c.Core.Log.NewEvent("Lyney Prop Surplus stack added", glog.LogCharacterEvent, c.Index).Write("prop_surplus_stacks", c.propSurplusStacks)
+	c.Core.Log.NewEvent("Lyney Prop Surplus stack added", glog.LogCharacterEvent, c.Index()).Write("prop_surplus_stacks", c.propSurplusStacks)
 }
 
 func (c *char) skillAligned(pos info.Point) func() {
@@ -221,7 +221,7 @@ func (c *char) skillAligned(pos info.Point) func() {
 		c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
 		propAlignedAI := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 			AttackTag:  attacks.AttackTagExtra,
 			ICDTag:     attacks.ICDTagNone,

@@ -35,7 +35,7 @@ func newSnack(c *char, pos info.Point) *snack {
 	p := &snack{
 		char: c,
 		attackInfo: info.AttackInfo{
-			ActorIndex:   c.Index,
+			ActorIndex:   c.Index(),
 			Abil:         snackDmgName,
 			AttackTag:    attacks.AttackTagElementalBurst,
 			ICDTag:       attacks.ICDTagElementalBurst,
@@ -61,7 +61,7 @@ func newSnack(c *char, pos info.Point) *snack {
 	p.Gadget.CollidableTypes[info.TargettablePlayer] = true
 	p.Gadget.OnExpiry = func() {
 		p.explode()
-		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index)
+		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index())
 	}
 	p.Gadget.OnCollision = func(target info.Target) {
 		if _, ok := target.(*avatar.Player); !ok {
@@ -79,7 +79,7 @@ func newSnack(c *char, pos info.Point) *snack {
 		p.onPickedUp()
 	}
 
-	p.Core.Log.NewEvent("Snack spawned", glog.LogCharacterEvent, c.Index).
+	p.Core.Log.NewEvent("Snack spawned", glog.LogCharacterEvent, c.Index()).
 		Write("x", pos.X).
 		Write("y", pos.Y)
 	return p
@@ -107,7 +107,7 @@ func (p *snack) onPickedUp() {
 		heal = !dmg
 	}
 
-	p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index).
+	p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index()).
 		Write("heal", heal).
 		Write("dmg", dmg)
 
@@ -118,12 +118,12 @@ func (p *snack) onPickedUp() {
 	if heal {
 		// Heals double the amount on Mizuki
 		healMultiplier := 1.0
-		if activeChar.Index == mizuki.Index {
+		if activeChar.Index() == mizuki.Index() {
 			healMultiplier = 2.0
 		}
 		mizuki.Core.Player.Heal(info.HealInfo{
-			Caller:  mizuki.Index,
-			Target:  activeChar.Index,
+			Caller:  mizuki.Index(),
+			Target:  activeChar.Index(),
 			Message: snackHealName,
 			Src:     ((mizuki.Stat(attributes.EM) * snackHealEM[mizuki.TalentLvlBurst()]) + snackHealFlat[mizuki.TalentLvlBurst()]) * healMultiplier,
 			Bonus:   mizuki.Stat(attributes.Heal),

@@ -63,7 +63,7 @@ func (c *char) c2() {
 		}
 		c.Core.Status.Extend(burstKey, extension)
 		c.c2ProcCount++
-		c.Core.Log.NewEvent("kaeya-c2 proc'd", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("kaeya-c2 proc'd", glog.LogCharacterEvent, c.Index()).
 			Write("c2ProcCount", c.c2ProcCount).
 			Write("extension", extension)
 		return false
@@ -88,8 +88,8 @@ func (c *char) c4() {
 		if c.CurrentHPRatio() < 0.2 {
 			c.c4icd = c.Core.F + 3600
 			c.Core.Player.Shields.Add(&shield.Tmpl{
-				ActorIndex: c.Index,
-				Target:     c.Index,
+				ActorIndex: c.Index(),
+				Target:     c.Index(),
 				Src:        c.Core.F,
 				ShieldType: shield.KaeyaC4,
 				Name:       "Kaeya C4",

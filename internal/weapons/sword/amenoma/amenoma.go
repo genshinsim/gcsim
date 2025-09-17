@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	// TODO: this used to be on postskill. make sure nothing broke here
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		// add 1 seed
@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(seeds[index], 30*60, true)
 
-		c.Log.NewEvent("amenoma proc'd", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("amenoma proc'd", glog.LogWeaponEvent, char.Index()).
 			Write("index", index)
 
 		char.AddStatus(icdKey, 300, true) // 5 sec icd
@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	// TODO: this used to be on postburst. make sure nothing broke here
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		count := 0

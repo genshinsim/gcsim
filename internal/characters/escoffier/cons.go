@@ -78,7 +78,7 @@ func (c *char) c2Init() {
 	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if c.Index == atk.Info.ActorIndex {
+		if c.Index() == atk.Info.ActorIndex {
 			return false
 		}
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
@@ -183,7 +183,7 @@ func (c *char) c6Init() {
 
 		c.AddStatus(c6ICDKey, c6ICD, true)
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Special-Grade Frozen Parfait (C6)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,

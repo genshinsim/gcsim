@@ -83,12 +83,12 @@ func (s *Set) pc4() {
 
 	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != s.char.Index {
+		if atk.Info.ActorIndex != s.char.Index() {
 			return false
 		}
 
 		active := s.c.Player.ActiveChar()
-		if atk.Info.ActorIndex != active.Index {
+		if atk.Info.ActorIndex != active.Index() {
 			return false
 		}
 
@@ -104,7 +104,7 @@ func (s *Set) pc4() {
 		for i := 0; i < info.stacks; i++ {
 			s.stacks.Add(6 * 60)
 		}
-		s.c.Log.NewEventBuildMsg(glog.LogArtifactEvent, s.char.Index, "adding long night's oath stacks").
+		s.c.Log.NewEventBuildMsg(glog.LogArtifactEvent, s.char.Index(), "adding long night's oath stacks").
 			Write("count", info.stacks).
 			Write("total", s.stacks.Count())
 

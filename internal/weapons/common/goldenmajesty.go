@@ -42,10 +42,10 @@ func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p i
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*info.AttackEvent)
 
-		if ae.Info.ActorIndex != char.Index {
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -67,7 +67,7 @@ func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p i
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				m[attributes.ATKP] = atkbuff * float64(stacks)
-				if c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
+				if c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
 					m[attributes.ATKP] *= 2
 				}
 				return m, true

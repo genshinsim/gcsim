@@ -46,13 +46,13 @@ func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		// do nothing if previous char wasn't alhaitham
 		prev := args[0].(int)
-		if prev != c.Index {
+		if prev != c.Index() {
 			return false
 		}
 		c.lastInfusionSrc = -1 // Might prevent undesired behaviour
 		if c.mirrorCount > 0 {
 			c.mirrorCount = 0
-			c.Core.Log.NewEvent("Alhaitham left the field, mirror lost", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("Alhaitham left the field, mirror lost", glog.LogCharacterEvent, c.Index())
 		}
 
 		return false

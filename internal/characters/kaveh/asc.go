@@ -22,7 +22,7 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
 		char := args[0].(int)
 		// don't trigger if kaveh was not hit
-		if char != c.Index {
+		if char != c.Index() {
 			return false
 		}
 		atk := args[1].(*info.AttackEvent)
@@ -36,8 +36,8 @@ func (c *char) a1() {
 		}
 		c.AddStatus(a1ICDKey, 30, true)
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "Creator's Undertaking (A1)",
 			Src:     3.0 * c.Stat(attributes.EM),
 			Bonus:   c.Stat(attributes.Heal),
@@ -67,7 +67,7 @@ func (c *char) a4AddStacksHandler() {
 			return false
 		}
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal &&

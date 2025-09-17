@@ -38,7 +38,7 @@ func (c *Character) Heal(hi *info.HealInfo) (float64, float64) {
 		overheal = 0
 	}
 
-	c.Core.Log.NewEvent(hi.Message, glog.LogHealEvent, c.Index).
+	c.Core.Log.NewEvent(hi.Message, glog.LogHealEvent, c.Index()).
 		Write("previous_hp_ratio", prevHPRatio).
 		Write("previous_hp", prevHP).
 		Write("previous_hp_debt", prevHPDebt).
@@ -52,7 +52,7 @@ func (c *Character) Heal(hi *info.HealInfo) (float64, float64) {
 		Write("current_hp_debt", c.CurrentHPDebt()).
 		Write("max_hp", c.MaxHP())
 
-	c.Core.Events.Emit(event.OnHeal, hi, c.Index, heal, overheal, healAmt)
+	c.Core.Events.Emit(event.OnHeal, hi, c.Index(), heal, overheal, healAmt)
 
 	return heal, healAmt
 }

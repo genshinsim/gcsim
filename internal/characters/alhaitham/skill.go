@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form",
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -91,7 +91,7 @@ func (c *char) SkillHold() (action.Info, error) {
 
 	ai := info.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form (Hold)",
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -131,7 +131,7 @@ func (c *char) mirrorGain(generated int) {
 	if c.mirrorCount == 0 {
 		c.lastInfusionSrc = c.Core.F
 		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), mirrorInterval)
-		c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index())
 	}
 
 	c.mirrorCount += generated
@@ -148,13 +148,13 @@ func (c *char) mirrorGain(generated int) {
 			c.lastInfusionSrc = c.Core.F
 			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), mirrorInterval)
 		}
-		c.Core.Log.NewEvent("mirror overflowed", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("mirror overflowed", glog.LogCharacterEvent, c.Index()).
 			Write("mirrors gained", generated).
 			Write("current mirrors", c.mirrorCount)
 
 		return
 	}
-	c.Core.Log.NewEvent(fmt.Sprintf("Gained %v mirror(s)", generated), glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent(fmt.Sprintf("Gained %v mirror(s)", generated), glog.LogCharacterEvent, c.Index()).
 		Write("current mirrors", c.mirrorCount)
 }
 
@@ -164,13 +164,13 @@ func (c *char) mirrorLoss(src, consumed int) func() {
 			return
 		}
 		if c.lastInfusionSrc != src {
-			c.Core.Log.NewEvent("mirror decrease ignored, src diff", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("mirror decrease ignored, src diff", glog.LogCharacterEvent, c.Index()).
 				Write("src", src).
 				Write("new src", c.lastInfusionSrc)
 			return
 		}
 		if c.mirrorCount == 0 { // just in case
-			c.Core.Log.NewEvent("Mirror count is 0, omitting reduction", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("Mirror count is 0, omitting reduction", glog.LogCharacterEvent, c.Index())
 			return
 		}
 
@@ -179,7 +179,7 @@ func (c *char) mirrorLoss(src, consumed int) func() {
 			c.mirrorCount = 0
 		}
 
-		c.Core.Log.NewEvent(fmt.Sprintf("Consumed %v mirror(s)", consumed), glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent(fmt.Sprintf("Consumed %v mirror(s)", consumed), glog.LogCharacterEvent, c.Index()).
 			Write("current mirrors", c.mirrorCount)
 
 		// queue up again if we still have mirrors
@@ -207,7 +207,7 @@ func (c *char) projectionAttack(a info.AttackCB) {
 		return
 	}
 	// ignore if alhaitham is not on field
-	if c.Core.Player.Active() != c.Index {
+	if c.Core.Player.Active() != c.Index() {
 		return
 	}
 	// ignore if it doesn't have at least a mirror
@@ -234,7 +234,7 @@ func (c *char) projectionAttack(a info.AttackCB) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Chisel-Light Mirror: Projection Attack %v", c.mirrorCount),
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,

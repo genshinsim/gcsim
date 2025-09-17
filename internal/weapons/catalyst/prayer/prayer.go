@@ -30,11 +30,11 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 func (w *Weapon) stackCheck(char *character.CharWrapper, c *core.Core) func() {
 	return func() {
-		if c.Player.Active() == char.Index {
+		if c.Player.Active() == char.Index() {
 			if w.stacks < 4 {
 				w.stacks++
 				w.updateBuff()
-				w.c.Log.NewEvent("lostprayer gained stack", glog.LogWeaponEvent, w.char.Index).
+				w.c.Log.NewEvent("lostprayer gained stack", glog.LogWeaponEvent, w.char.Index()).
 					Write("stacks", w.stacks)
 			}
 		}
@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.QueueCharTask(w.stackCheck(char, c), 240)
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			w.stacks = 0
 			w.updateBuff()
 		}

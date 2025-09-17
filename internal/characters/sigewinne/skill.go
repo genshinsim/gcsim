@@ -135,7 +135,7 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 
 		if c.Base.Cons >= 1 {
 			c.SetTag(convalescenceKey, c.Tag(convalescenceKey)+1)
-			c.Core.Log.NewEvent("bounce: adding a1 stack from c1", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("bounce: adding a1 stack from c1", glog.LogCharacterEvent, c.Index()).
 				Write("current count", c.Tag(convalescenceKey))
 		}
 
@@ -175,7 +175,7 @@ func (c *char) surgingBladeTask(target info.Target) {
 	c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
 	aiThorn := info.AttackInfo{
-		ActorIndex:   c.Index,
+		ActorIndex:   c.Index(),
 		Abil:         "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagNone,
@@ -201,13 +201,13 @@ func (c *char) bubbleHealing() {
 
 	// heal everyone except Sigewinne
 	for _, other := range c.Core.Player.Chars() {
-		if other.Index == c.Index {
+		if other.Index() == c.Index() {
 			continue
 		}
 		skillBonus := float64(c.currentBubbleTier) * bubbleTierBuff
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  other.Index,
+			Caller:  c.Index(),
+			Target:  other.Index(),
 			Message: "Bolstering Bubblebalm Healing",
 			Src:     bolsteringBubblebalmHealingPct[c.TalentLvlSkill()]*c.MaxHP() + bolsteringBubblebalmHealingFlat[c.TalentLvlSkill()],
 			Bonus:   c.Stat(attributes.Heal) + skillBonus,
@@ -223,8 +223,8 @@ func (c *char) bubbleFinalHealing() {
 	// heal only Sigewinne
 	skillBonus := float64(c.currentBubbleTier) * bubbleTierBuff
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: "Bolstering Bubblebalm Healing",
 		Src:     finalBounceHealing[c.TalentLvlSkill()] * c.MaxHP(),
 		Bonus:   c.Stat(attributes.Heal) + skillBonus,
@@ -259,7 +259,7 @@ func (c *char) energyBondClearMod() {
 	// TODO: override healing functions?
 	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
 		index := args[0].(int)
-		if index != c.Index {
+		if index != c.Index() {
 			return false
 		}
 		debtChange := args[1].(float64)
@@ -302,7 +302,7 @@ func (c *char) particleCB(ac info.AttackCB) {
 
 func (c *char) generateSkillSnapshot() {
 	c.skillAttackInfo = info.AttackInfo{
-		ActorIndex:   c.Index,
+		ActorIndex:   c.Index(),
 		Abil:         "Rebound Hydrotherapy",
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagElementalArt,

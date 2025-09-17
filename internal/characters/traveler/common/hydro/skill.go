@@ -117,7 +117,7 @@ func (c *Traveler) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [
 
 func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 	aiHold := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Dewdrop (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagTravelerDewdrop,
@@ -158,7 +158,7 @@ func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 
 func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
 	aiHold := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Dewdrop (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagTravelerDewdrop,
@@ -264,7 +264,7 @@ func (c *Traveler) skillParticleCB(a info.AttackCB) {
 
 func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Torrent Surge",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -285,7 +285,7 @@ func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 
 	if !c.StatusIsActive(spiritbreathThornICDKey) {
 		ai = info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               "Spiritbreath Thorn",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagNone,
@@ -313,7 +313,7 @@ func (c *Traveler) skillLosingHP(ai *info.AttackInfo) {
 
 	drainHP := 0.04 * c.CurrentHP()
 	c.Core.Player.Drain(info.DrainInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Suffusion",
 		Amount:     drainHP,
 	})
@@ -327,7 +327,7 @@ func (c *Traveler) skillLosingHP(ai *info.AttackInfo) {
 			c.a4Bonus = 5000
 		}
 
-		c.Core.Log.NewEvent("travelerhydro a4 adding dmg bonus", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("travelerhydro a4 adding dmg bonus", glog.LogCharacterEvent, c.Index()).
 			Write("dmg bonus", c.a4Bonus)
 	}
 	c.AddStatus(skillLosingHPICDKey, 0.9*60, true)

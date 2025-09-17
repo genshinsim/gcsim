@@ -51,7 +51,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -123,7 +123,7 @@ func init() {
 func (c *char) swordAttack() action.Info {
 	for i, mult := range attackB[c.NormalCounter] {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNormalAttack,

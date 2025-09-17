@@ -75,7 +75,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	// Normal Arrow
 	ai := info.AttackInfo{
-		ActorIndex:           c.Index,
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,

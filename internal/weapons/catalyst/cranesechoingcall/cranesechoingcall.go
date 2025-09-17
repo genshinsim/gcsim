@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		// if dmg came from equipping char, then buff team plunge dmg
-		if atk.Info.ActorIndex == char.Index {
+		if atk.Info.ActorIndex == char.Index() {
 			for _, char := range c.Player.Chars() {
 				char.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBaseWithHitlag(buffKey, buffDuration),

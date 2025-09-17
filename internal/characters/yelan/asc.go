@@ -47,7 +47,7 @@ func (c *char) a4() {
 			Base: modifier.NewBase("yelan-a4", 15*60),
 			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				// char must be active
-				if c.Core.Player.Active() != this.Index {
+				if c.Core.Player.Active() != this.Index() {
 					return nil, false
 				}
 				// floor time elapsed

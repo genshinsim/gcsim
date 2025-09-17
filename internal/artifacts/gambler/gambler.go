@@ -63,17 +63,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			atk := args[1].(*info.AttackEvent)
 			// don't proc if someone else defeated the enemy
-			if atk.Info.ActorIndex != char.Index {
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 			// don't proc if off-field
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 
 			// reset skill cd
 			char.ResetActionCooldown(action.ActionSkill)
-			c.Log.NewEvent("gambler-4pc proc'd", glog.LogArtifactEvent, char.Index)
+			c.Log.NewEvent("gambler-4pc proc'd", glog.LogArtifactEvent, char.Index())
 
 			// set icd
 			char.AddStatus(icdKey, 900, true) // 15s

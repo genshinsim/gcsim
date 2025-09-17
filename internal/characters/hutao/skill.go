@@ -51,14 +51,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// remove some hp
 	c.Core.Player.Drain(info.DrainInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Paramita Papilio",
 		Amount:     0.30 * c.CurrentHP(),
 	})
 
 	// trigger 0 damage attack; matters because this breaks freeze
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Paramita (0 dmg)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
@@ -120,12 +120,12 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 		if !trg.StatusIsActive(bbDebuff) {
 			return
 		}
-		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index()).
 			Write("src", src)
 
 		// queue up one damage instance
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Blood Blossom",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
@@ -142,7 +142,7 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 0)
 
 		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index()).
 				Write("next expected tick", c.Core.F+240).
 				Write("dur", trg.StatusExpiry(bbDebuff)).
 				Write("src", src)

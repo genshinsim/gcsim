@@ -35,7 +35,7 @@ func init() {
 
 func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Lightning Blade",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -89,7 +89,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 		c.abundanceAmulets++
 		c.SetTag("generated", c.abundanceAmulets)
 
-		c.Core.Log.NewEvent("travelerelectro abundance amulet generated", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("travelerelectro abundance amulet generated", glog.LogCharacterEvent, c.Index()).
 			Write("amulets", c.abundanceAmulets)
 	}
 
@@ -175,7 +175,7 @@ func (c *Traveler) collectAmulets(collector *character.CharWrapper) bool {
 	// A1:
 	// When another nearby character in the party obtains an Abundance Amulet created by Lightning Blade,
 	// Lightning Blade's CD is decreased by 1.5s.
-	if c.Base.Ascension >= 1 && collector.Index != c.Index {
+	if c.Base.Ascension >= 1 && collector.Index() != c.Index() {
 		c.ReduceActionCooldown(action.ActionSkill, 90*c.abundanceAmulets)
 	}
 

@@ -30,7 +30,7 @@ const (
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Universal Diagnosis",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -122,7 +122,7 @@ func (c *char) makeParticleCB() info.AttackCBFunc {
 func (c *char) skillHealing() {
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Universal Diagnosis Healing",
 			Src:     skillHealPP[c.TalentLvlBurst()]*c.MaxHP() + skillHealFlat[c.TalentLvlBurst()],

@@ -38,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		src := args[0].(*info.HealInfo)
 
-		if src.Caller != char.Index {
+		if src.Caller != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {

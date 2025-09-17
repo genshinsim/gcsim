@@ -31,7 +31,7 @@ func (c *char) createKinu(src int, centerOffset, minRandom, maxRandom float64) f
 		)
 		kinuPos := info.CalcRandomPointFromCenter(center, minRandom, maxRandom, c.Core.Rand)
 
-		c.Core.Log.NewEvent("kinu spawned", glog.LogCharacterEvent, c.Index).Write("src", src)
+		c.Core.Log.NewEvent("kinu spawned", glog.LogCharacterEvent, c.Index()).Write("src", src)
 
 		// spawn kinu
 		kinu := newTicker(c.Core, kinuDuration, nil)
@@ -47,7 +47,7 @@ func (c *char) kinuAttack(src int, kinu *ticker, pos info.Point) func() {
 		c.Core.Tasks.Add(func() {
 			ai := info.AttackInfo{
 				Abil:       "Fluttering Hasode (Kinu)",
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagChioriSkill,
 				ICDGroup:   attacks.ICDGroupChioriSkill,
@@ -71,7 +71,7 @@ func (c *char) kinuAttack(src int, kinu *ticker, pos info.Point) func() {
 
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(t, nil, skillDollAoE), 0)
 
-			c.Core.Log.NewEvent("kinu killed on attack", glog.LogCharacterEvent, c.Index).Write("src", src)
+			c.Core.Log.NewEvent("kinu killed on attack", glog.LogCharacterEvent, c.Index()).Write("src", src)
 
 			kinu.kill()
 			c.cleanupKinu()

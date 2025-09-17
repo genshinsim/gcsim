@@ -64,7 +64,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	noMeteorite := p["no_meteorite"] == 1
 
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Starfell Sword",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -152,7 +152,7 @@ func (c *Traveler) newStone(dur int, dir, pos info.Point) *stone {
 func (s *stone) OnDestruct() {
 	if s.char.Base.Cons >= 2 {
 		ai := info.AttackInfo{
-			ActorIndex:         s.char.Index,
+			ActorIndex:         s.char.Index(),
 			Abil:               "Rockcore Meltdown",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagElementalArt,

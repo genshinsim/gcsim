@@ -28,7 +28,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
 		// ignore if character not on field
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		c.Player.Heal(info.HealInfo{

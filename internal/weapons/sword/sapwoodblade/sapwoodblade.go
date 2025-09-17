@@ -58,16 +58,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	//nolint:unparam // why events have a return value...
 	handleProc := func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		char.AddStatus(icdKey, 1200, true)
-		c.Log.NewEvent("sapwood proc'd", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("sapwood proc'd", glog.LogWeaponEvent, char.Index())
 		if pickupDelay <= 0 {
-			c.Log.NewEvent("sapwood leaf ignored", glog.LogWeaponEvent, char.Index)
+			c.Log.NewEvent("sapwood leaf ignored", glog.LogWeaponEvent, char.Index())
 			return false
 		}
 		c.Tasks.Add(func() {
@@ -82,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			c.Log.NewEvent(
 				fmt.Sprintf("sapwood leaf picked up by %v", active.Base.Key.String()),
 				glog.LogWeaponEvent,
-				char.Index,
+				char.Index(),
 			)
 		}, pickupDelay)
 		return false

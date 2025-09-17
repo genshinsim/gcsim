@@ -38,7 +38,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Galesplitting Soulseeker Shell",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -98,7 +98,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		if c.nightsoulState.HasBlessing() {
 			return
 		}
-		c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index())
 		c.AddStatus(plungeAvailableKey, 26, true)
 	}, burstNSFall)
 

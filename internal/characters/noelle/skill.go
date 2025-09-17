@@ -27,7 +27,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Breastplate",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -109,7 +109,7 @@ func (c *char) skillHealCB() info.AttackCBFunc {
 				def := atk.AttackEvent.Snapshot.Stats.TotalDEF()
 				heal := shieldHeal[c.TalentLvlSkill()]*def + shieldHealFlat[c.TalentLvlSkill()]
 				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
+					Caller:  c.Index(),
 					Target:  -1,
 					Message: "Breastplate (Attack)",
 					Src:     heal,
@@ -126,7 +126,7 @@ func (c *char) skillHealCB() info.AttackCBFunc {
 func (c *char) explodeShield() {
 	c.shieldTimer = 0
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Breastplate (C4)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,

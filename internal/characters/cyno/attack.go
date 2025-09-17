@@ -46,7 +46,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	c6CB := c.makeC6CB()
 	for i, mult := range attack[c.NormalCounter] {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
 			AttackTag:          attacks.AttackTagNormal,
@@ -133,7 +133,7 @@ func (c *char) attackB() (action.Info, error) {
 	c6CB := c.makeC6CB()
 	for i, mult := range attackB[c.normalBCounter] {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Pactsworn Pathclearer %v", c.normalBCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,

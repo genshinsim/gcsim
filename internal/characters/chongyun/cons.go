@@ -23,7 +23,7 @@ func (c *char) makeC4Callback() info.AttackCBFunc {
 		if !ok {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !e.AuraContains(attributes.Cryo) {
@@ -34,7 +34,7 @@ func (c *char) makeC4Callback() info.AttackCBFunc {
 		}
 		c.AddStatus(c4ICDKey, 2*60, true)
 		c.AddEnergy("chongyun-c4", 2)
-		c.Core.Log.NewEvent("chongyun c4 recovering 2 energy", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("chongyun c4 recovering 2 energy", glog.LogCharacterEvent, c.Index()).
 			Write("final energy", c.Energy)
 	}
 }

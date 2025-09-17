@@ -36,7 +36,7 @@ func (c *char) a1() {
 			return false
 		}
 		c.sproutShouldProc = true
-		c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index())
 		return false
 	}
 
@@ -57,7 +57,7 @@ func (c *char) a1() {
 
 func (c *char) a1AttackInfo() info.AttackInfo {
 	return info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Floral Sidewinder (A1)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagColleiSprout,
@@ -92,7 +92,7 @@ func (c *char) a4() {
 		}
 		c.ExtendStatus(burstKey, 60)
 		c.burstExtendCount++
-		c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index()).
 			Write("extend_count", c.burstExtendCount)
 		return false
 	}
@@ -117,7 +117,7 @@ func (c *char) a1Ticks(startFrame int, snap info.Snapshot) {
 		return
 	}
 	if startFrame != c.sproutSrc {
-		c.Core.Log.NewEvent("collei a1 tick ignored, src diff", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("collei a1 tick ignored, src diff", glog.LogCharacterEvent, c.Index()).
 			Write("src", startFrame).
 			Write("new src", c.sproutSrc)
 		return

@@ -63,7 +63,7 @@ func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot {
 	var debug []interface{}
 
 	if c.Core.Flags.LogDebug {
-		evt = c.Core.Log.NewEvent(a.Abil, glog.LogSnapshotEvent, c.Index).
+		evt = c.Core.Log.NewEvent(a.Abil, glog.LogSnapshotEvent, c.Index()).
 			Write("abil", a.Abil).
 			Write("mult", a.Mult).
 			Write("ele", a.Element.String()).
@@ -78,7 +78,7 @@ func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot {
 	// check infusion
 	var inf attributes.Element
 	if !a.IgnoreInfusion {
-		inf = c.Core.Player.Infused(c.Index, a.AttackTag)
+		inf = c.Core.Player.Infused(c.Index(), a.AttackTag)
 		if inf != attributes.NoElement {
 			a.Element = inf
 		}

@@ -40,7 +40,7 @@ func init() {
 */
 func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Bellowing Thunder",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -60,7 +60,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	// emc burst is not hitlag extendable
 	c.Core.Status.Add("travelerelectroburst", 720) // 12s, starts on cast
 	procAI := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Falling Thunder Proc (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -110,7 +110,7 @@ func (c *Traveler) burstProc() {
 		}
 		// One instance of Falling Thunder can be generated every 0.5s.
 		if icd > c.Core.F {
-			c.Core.Log.NewEvent("travelerelectro Q (active) on icd", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("travelerelectro Q (active) on icd", glog.LogCharacterEvent, c.Index())
 			return false
 		}
 
@@ -138,7 +138,7 @@ func (c *Traveler) burstProc() {
 
 		c.Core.QueueAttackEvent(&atk, 1)
 
-		c.Core.Log.NewEvent("travelerelectro Q proc'd", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("travelerelectro Q proc'd", glog.LogCharacterEvent, c.Index()).
 			Write("char", ae.Info.ActorIndex).
 			Write("attack tag", ae.Info.AttackTag)
 

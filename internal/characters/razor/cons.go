@@ -18,7 +18,7 @@ func (c *char) c1() {
 
 	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
 		// ignore if character not on field
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
@@ -82,7 +82,7 @@ func (c *char) c6cb(a info.AttackCB) {
 	c.AddStatus(c6ICDKey, 600, true)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Lupus Fulguris",
 		AttackTag:  attacks.AttackTagNone, // TODO: it has another tag?
 		ICDTag:     attacks.ICDTagNone,

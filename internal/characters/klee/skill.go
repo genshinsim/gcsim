@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	bounceAttacks := make([]attackData, bounce)
 	for i := range bounceAttacks {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Jumpy Dumpty",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagKleeFireDamage,
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	mineAttacks := make([]attackData, minehits)
 	mineAi := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Jumpy Dumpty Mine Hit",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagKleeFireDamage,

@@ -53,7 +53,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) skillPress() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "All Schemes to Know (Press)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -94,7 +94,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "All Schemes to Know (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -153,7 +153,7 @@ func (c *char) updateTriKarmaInterval() {
 		cd -= int(burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()] * 60)
 	}
 	if cd != c.triKarmaInterval {
-		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index).Write("cooldown", cd)
+		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index()).Write("cooldown", cd)
 		c.triKarmaInterval = cd
 	}
 	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
@@ -214,7 +214,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Tri-Karma Purification",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNahidaSkill,

@@ -36,7 +36,7 @@ func init() {
 // providing Cannon Fire Support for a duration afterward, periodically dealing Geo DMG to nearby opponents.
 func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "As the Sunlit Sky's Singing Salute",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -114,7 +114,7 @@ func (c *char) burstCB() info.AttackCBFunc {
 		c.AddStatus(burstICDKey, 2.4*60, true)
 		if c.shrapnel < 6 {
 			c.shrapnel++
-			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index).Write("shrapnel", c.shrapnel)
+			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index()).Write("shrapnel", c.shrapnel)
 		}
 	}
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func (r *Reactable) TryCrystallizeElectro(a *info.AttackEvent) bool {
@@ -75,12 +74,17 @@ func (r *Reactable) tryCrystallizeWithEle(a *info.AttackEvent, ele attributes.El
 	return true
 }
 
-func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt info.ReactionType, typ attributes.Element, src int) {
+type crystalizeChar interface {
+	Snapshot(*info.AttackInfo) info.Snapshot
+	Index() int
+}
+
+func (r *Reactable) addCrystallizeShard(char crystalizeChar, rt info.ReactionType, typ attributes.Element, src int) {
 	// delay shard spawn
 	r.core.Tasks.Add(func() {
 		// grab current snapshot for shield
 		ai := info.AttackInfo{
-			ActorIndex: char.Index,
+			ActorIndex: char.Index(),
 			DamageSrc:  r.self.Key(),
 			Abil:       string(rt),
 		}
@@ -89,7 +93,7 @@ func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt info.Rea
 		// shield snapshots em on shard spawn
 		em := snap.Stats[attributes.EM]
 		// expiry will get set properly later
-		shd := crystallize.NewShield(char.Index, typ, src, lvl, em, -1)
+		shd := crystallize.NewShield(char.Index(), typ, src, lvl, em, -1)
 		cs := crystallize.NewShard(r.core, r.self.Shape(), shd)
 		r.core.Combat.AddGadget(cs)
 		r.core.Log.NewEvent(

@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// Activation DMG
 	activationAttack := info.AttackInfo{
-		ActorIndex:   c.Index,
+		ActorIndex:   c.Index(),
 		Abil:         skillActivateDmgName,
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagNone,
@@ -164,7 +164,7 @@ func (c *char) skillInit() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 
-		if prev == c.Index && c.StatusIsActive(dreamDrifterStateKey) {
+		if prev == c.Index() && c.StatusIsActive(dreamDrifterStateKey) {
 			c.cancelDreamDrifterState()
 		}
 
@@ -175,7 +175,7 @@ func (c *char) skillInit() {
 func (c *char) startCloudAttacks(travel int) {
 	// clouds DMG snapshots on activation
 	c.cloudAttack = info.AttackInfo{
-		ActorIndex:   c.Index,
+		ActorIndex:   c.Index(),
 		Abil:         cloudDmgName,
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagElementalArt,
@@ -215,7 +215,7 @@ func (c *char) cancelDreamDrifterState() {
 	c.DeleteStatus(dreamDrifterStateKey)
 	c.cloudSrc = -1
 
-	c.Core.Log.NewEvent("DreamDrifter effect cancelled", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("DreamDrifter effect cancelled", glog.LogCharacterEvent, c.Index())
 }
 
 func (c *char) cloudTask(travel, src, hitmark int) {

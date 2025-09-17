@@ -45,7 +45,7 @@ func (c *char) a4() {
 	heal := 0
 	cryop := 0
 	for _, this := range c.Core.Player.Chars() {
-		if c.Index == this.Index {
+		if c.Index() == this.Index() {
 			continue
 		}
 		if this.CharZone == info.ZoneFontaine {

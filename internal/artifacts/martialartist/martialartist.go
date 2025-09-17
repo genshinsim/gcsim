@@ -49,7 +49,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.25
 		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 			// don't proc if someone else used a skill
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 			// add buff

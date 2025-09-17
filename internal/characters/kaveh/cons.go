@@ -55,7 +55,7 @@ func (c *char) c4() {
 func (c *char) c6() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal &&
@@ -79,7 +79,7 @@ func (c *char) c6() {
 
 		ai := info.AttackInfo{
 			Abil:             "Pairidaeza's Dreams (C6)",
-			ActorIndex:       c.Index,
+			ActorIndex:       c.Index(),
 			AttackTag:        attacks.AttackTagNone,
 			ICDTag:           attacks.ICDTagNone,
 			ICDGroup:         attacks.ICDGroupDefault,

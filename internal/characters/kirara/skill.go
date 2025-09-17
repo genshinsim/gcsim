@@ -101,7 +101,7 @@ func (c *char) rollParticleCB(a info.AttackCB) {
 
 func (c *char) skillPress() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Tail-Flicking Flying Kick",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -148,7 +148,7 @@ func (c *char) skillShortHold() action.Info {
 
 	// Flipclaw Strike DMG
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Flipclaw Strike",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -202,7 +202,7 @@ func (c *char) skillHold(duration int) action.Info {
 
 	// Flipclaw Strike DMG
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Flipclaw Strike",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -245,7 +245,7 @@ func (c *char) skillHold(duration int) action.Info {
 
 func (c *char) createSkillHoldSnapshot() *info.AttackEvent {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Urgent Neko Parcel",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagElementalArtHold,

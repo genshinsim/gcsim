@@ -37,7 +37,7 @@ func (c *char) a1Init() {
 		atk := args[1].(*info.AttackEvent)
 
 		// ignores ororon himself
-		if atk.Info.ActorIndex == c.Index {
+		if atk.Info.ActorIndex == c.Index() {
 			return false
 		}
 
@@ -76,7 +76,7 @@ func (c *char) a1Init() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
 
-		if atk.Info.ActorIndex == c.Index {
+		if atk.Info.ActorIndex == c.Index() {
 			return false
 		}
 		if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
@@ -105,7 +105,7 @@ func (c *char) a1NightSoulAttack(atk *info.AttackEvent) {
 
 func (c *char) hypersense(mult float64, abil string, initialTargetPos info.Point) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               abil,
 		AttackTag:          attacks.AttackTagNone,
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -157,7 +157,7 @@ func (c *char) a4Init() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
 		active := c.Core.Player.ActiveChar()
-		if atk.Info.ActorIndex != active.Index {
+		if atk.Info.ActorIndex != active.Index() {
 			return false
 		}
 
@@ -178,7 +178,7 @@ func (c *char) a4Init() {
 		c.AddStatus(a4IcdKey, 60, true)
 
 		active.AddEnergy(a4Key, 3)
-		if active.Index != c.Index {
+		if active.Index() != c.Index() {
 			c.AddEnergy(a4Key, 3)
 		}
 

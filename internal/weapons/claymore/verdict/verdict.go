@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.stacks < 2 {
 			w.stacks++
 		}
-		c.Log.NewEvent("verdict adding stack", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("verdict adding stack", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 		char.AddStatus(buffKey, buffDuration, true)
 		return false
@@ -77,7 +77,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	skillDmg := 0.135 + float64(r)*0.045
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -100,7 +100,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		skillDmgAdd := skillDmg * float64(w.stacks)
 		atk.Snapshot.Stats[attributes.DmgP] += skillDmgAdd
 
-		c.Log.NewEvent("verdict adding skill dmg", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("verdict adding skill dmg", glog.LogPreDamageMod, char.Index()).
 			Write("skill_dmg_added", skillDmgAdd)
 		return false
 	}, fmt.Sprintf("verdict-onhit-%v", char.Base.Key.String()))

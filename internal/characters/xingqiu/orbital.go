@@ -13,7 +13,7 @@ import (
 func (c *char) applyOrbital(duration, delay int) {
 	src := c.Core.F
 	c.Core.Log.NewEvent(
-		"Applying orbital", glog.LogCharacterEvent, c.Index,
+		"Applying orbital", glog.LogCharacterEvent, c.Index(),
 	).Write(
 		"current status", c.StatusExpiry(orbitalKey),
 	)
@@ -24,7 +24,7 @@ func (c *char) applyOrbital(duration, delay int) {
 		c.QueueCharTask(c.orbitalTickTask(src), delay)
 		c.orbitalActive = true
 		c.Core.Log.NewEvent(
-			"orbital applied", glog.LogCharacterEvent, c.Index,
+			"orbital applied", glog.LogCharacterEvent, c.Index(),
 		).Write(
 			"expected end", src+900,
 		).Write(
@@ -33,7 +33,7 @@ func (c *char) applyOrbital(duration, delay int) {
 	}
 	c.AddStatus(orbitalKey, duration, true)
 	c.Core.Log.NewEvent(
-		"orbital duration extended", glog.LogCharacterEvent, c.Index,
+		"orbital duration extended", glog.LogCharacterEvent, c.Index(),
 	).Write(
 		"new expiry", c.StatusExpiry(orbitalKey),
 	)
@@ -42,7 +42,7 @@ func (c *char) applyOrbital(duration, delay int) {
 func (c *char) orbitalTickTask(src int) func() {
 	return func() {
 		c.Core.Log.NewEvent(
-			"orbital checking tick", glog.LogCharacterEvent, c.Index,
+			"orbital checking tick", glog.LogCharacterEvent, c.Index(),
 		).Write(
 			"expiry", c.StatusExpiry(orbitalKey),
 		).Write(
@@ -54,7 +54,7 @@ func (c *char) orbitalTickTask(src int) func() {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Xingqiu Orbital",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNone,
@@ -64,7 +64,7 @@ func (c *char) orbitalTickTask(src int) func() {
 			Durability: 25,
 		}
 		c.Core.Log.NewEvent(
-			"orbital ticked", glog.LogCharacterEvent, c.Index,
+			"orbital ticked", glog.LogCharacterEvent, c.Index(),
 		).Write(
 			"next expected tick", c.Core.F+135,
 		).Write(

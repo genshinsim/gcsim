@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	dmg := 2.1 * float64(r) * 0.3
 
 	w.ai = info.AttackInfo{
-		ActorIndex: char.Index,
+		ActorIndex: char.Index(),
 		Abil:       "Eye of Preception Proc",
 		AttackTag:  attacks.AttackTagWeaponSkill,
 		ICDTag:     attacks.ICDTagNone,
@@ -81,7 +81,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*info.AttackEvent)
-		if ae.Info.ActorIndex != char.Index {
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {

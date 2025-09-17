@@ -41,7 +41,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false
 				}
-				if !c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
+				if !c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
 					return nil, false
 				}
 				return m, true

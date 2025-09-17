@@ -68,7 +68,7 @@ func (c *char) a1Upgrade(e info.Enemy, src int) {
 			return
 		}
 		e.SetTag(directiveKey, level+1)
-		c.Core.Log.NewEvent("Directive upgraded", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Directive upgraded", glog.LogCharacterEvent, c.Index()).
 			Write("new_level", level+1).
 			Write("src", src)
 	}, 5*60)

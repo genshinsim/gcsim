@@ -37,7 +37,7 @@ func (c *char) makeC4Callback() func(info.AttackCB) {
 		// we simply reduce the action cd
 		c.ReduceActionCooldown(action.ActionSkill, cdReduction)
 
-		c.Core.Log.NewEvent("sucrose c4 reducing E CD", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("sucrose c4 reducing E CD", glog.LogCharacterEvent, c.Index()).
 			Write("cd_reduction", cdReduction)
 	}
 }

@@ -61,17 +61,17 @@ func (c *char) c2Setup() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		// swapping off lyney means clearing C2
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.c2Src = -1
 			c.c2Stacks = 0
 			return false
 		}
 		// swapping to lyney means applying C2
 		next := args[1].(int)
-		if next == c.Index {
+		if next == c.Index() {
 			c.c2Src = c.Core.F
 			c.QueueCharTask(c.c2StackCheck(c.Core.F), c2Interval)
-			c.Core.Log.NewEvent("Lyney C2 started", glog.LogCharacterEvent, c.Index).Write("c2_stacks", c.c2Stacks)
+			c.Core.Log.NewEvent("Lyney C2 started", glog.LogCharacterEvent, c.Index()).Write("c2_stacks", c.c2Stacks)
 			return false
 		}
 		return false
@@ -97,7 +97,7 @@ func (c *char) c2StackCheck(src int) func() {
 		}
 		// don't add stack if no longer on-field
 		// sanity check, should be guaranteed via previous check + event subscription
-		if c.Index != c.Core.Player.Active() {
+		if c.Index() != c.Core.Player.Active() {
 			return
 		}
 		// don't add stack if already at max
@@ -107,7 +107,7 @@ func (c *char) c2StackCheck(src int) func() {
 		}
 		// add stack
 		c.c2Stacks++
-		c.Core.Log.NewEvent("Lyney C2 stack added", glog.LogCharacterEvent, c.Index).Write("c2_stacks", c.c2Stacks)
+		c.Core.Log.NewEvent("Lyney C2 stack added", glog.LogCharacterEvent, c.Index()).Write("c2_stacks", c.c2Stacks)
 		// queue up stack check
 		c.QueueCharTask(c.c2StackCheck(src), c2Interval)
 	}
@@ -138,7 +138,7 @@ func (c *char) c6(c6Travel int) {
 		return
 	}
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Pyrotechnic Strike: Reprised",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagLyneyEndBoom,

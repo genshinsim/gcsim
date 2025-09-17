@@ -15,7 +15,7 @@ func (c *char) a1() {
 	for _, char := range c.Core.Player.Chars() {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = .08
-		if char.Index == c.Index {
+		if char.Index() == c.Index() {
 			m[attributes.ATKP] = .16
 		}
 		char.AddStatMod(character.StatMod{

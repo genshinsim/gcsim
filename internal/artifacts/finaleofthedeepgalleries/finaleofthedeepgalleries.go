@@ -97,7 +97,7 @@ func (s *Set) pc4() {
 	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		// If attack does not belong to the equipped character then ignore
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != s.char.Index {
+		if atk.Info.ActorIndex != s.char.Index() {
 			return false
 		}
 		// If this is not a normal attack or elemental burst then ignore
@@ -107,11 +107,11 @@ func (s *Set) pc4() {
 
 		if atk.Info.AttackTag == attacks.AttackTagNormal {
 			s.char.AddStatus(burstDebuffKey, procDurBurst, true)
-			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index).
+			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index()).
 				Write("burst_buff_stop_expiry", s.c.F+procDurBurst)
 		} else {
 			s.char.AddStatus(normalDebuffKey, procDurNormal, true)
-			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index).
+			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index()).
 				Write("normal_buff_stop_expiry", s.c.F+procDurNormal)
 		}
 		return false

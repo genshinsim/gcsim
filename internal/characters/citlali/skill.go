@@ -35,7 +35,7 @@ func init() {
 func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	// do initial attack
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Obsidian Tzitzimitl DMG",
 		AttackTag:      attacks.AttackTagElementalArt,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -159,7 +159,7 @@ func (c *char) itzpapaHitTask(src int) {
 			return
 		}
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           frostFallAbil,
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

@@ -61,7 +61,7 @@ func New(c *core.Core, shp info.Shape, a *info.AttackEvent) *Gadget {
 				c.Log.NewEvent(
 					"dendro core "+reason,
 					glog.LogElementEvent,
-					char.Index,
+					char.Index(),
 				).Write("src", s.Src())
 			}, 1)
 		}
@@ -118,7 +118,7 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		s.Core.Log.NewEvent(
 			"hyperbloom triggered",
 			glog.LogElementEvent,
-			char.Index,
+			char.Index(),
 		).
 			Write("dendro_core_char", s.CharIndex).
 			Write("dendro_core_src", s.Gadget.Src())
@@ -145,7 +145,7 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		s.Core.Log.NewEvent(
 			"burgeon triggered",
 			glog.LogElementEvent,
-			char.Index,
+			char.Index(),
 		).
 			Write("dendro_core_char", s.CharIndex).
 			Write("dendro_core_src", s.Gadget.Src())
@@ -159,7 +159,7 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 func NewBloomAttack(char *character.CharWrapper, src info.Target, modify func(*info.AttackInfo)) (info.AttackInfo, info.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := info.AttackInfo{
-		ActorIndex:       char.Index,
+		ActorIndex:       char.Index(),
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
 		AttackTag:        attacks.AttackTagBloom,
@@ -180,7 +180,7 @@ func NewBloomAttack(char *character.CharWrapper, src info.Target, modify func(*i
 func NewBurgeonAttack(char *character.CharWrapper, src info.Target) (info.AttackInfo, info.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := info.AttackInfo{
-		ActorIndex:       char.Index,
+		ActorIndex:       char.Index(),
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
 		AttackTag:        attacks.AttackTagBurgeon,
@@ -198,7 +198,7 @@ func NewBurgeonAttack(char *character.CharWrapper, src info.Target) (info.Attack
 func NewHyperbloomAttack(char *character.CharWrapper, src info.Target) (info.AttackInfo, info.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := info.AttackInfo{
-		ActorIndex:       char.Index,
+		ActorIndex:       char.Index(),
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
 		AttackTag:        attacks.AttackTagHyperbloom,

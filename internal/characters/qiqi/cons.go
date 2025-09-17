@@ -21,7 +21,7 @@ func (c *char) c1(a info.AttackCB) {
 	}
 
 	c.AddEnergy("qiqi-c1", 2)
-	c.Core.Log.NewEvent("Qiqi C1 Activation - Adding 2 energy", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("Qiqi C1 Activation - Adding 2 energy", glog.LogCharacterEvent, c.Index()).
 		Write("target", a.Target.Key())
 }
 

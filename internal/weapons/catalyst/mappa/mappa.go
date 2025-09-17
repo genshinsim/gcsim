@@ -34,10 +34,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	addStack := func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
-		c.Log.NewEvent("mappa-mare adding stack", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("mappa-mare adding stack", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 
 		return false

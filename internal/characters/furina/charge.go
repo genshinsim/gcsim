@@ -32,7 +32,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		windup = 11
 	}
 	ai := info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             fmt.Sprintf("Charge %v", c.arkhe),
 		AttackTag:        attacks.AttackTagExtra,
 		ICDTag:           attacks.ICDTagExtraAttack,

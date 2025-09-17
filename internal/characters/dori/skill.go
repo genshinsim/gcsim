@@ -30,7 +30,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Troubleshooter Shot",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 {
 		c.Core.Player.AddWeaponInfuse(
-			c.Index,
+			c.Index(),
 			c6Key,
 			attributes.Electro,
 			228, // 3s + 0.8s according to dm
@@ -99,7 +99,7 @@ func (c *char) afterSales() info.AttackCBFunc {
 		done = true
 
 		ae := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "After-Sales Service Round",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,

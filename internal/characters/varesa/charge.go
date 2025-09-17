@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Charged Attack",
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		AttackTag:          attacks.AttackTagExtra,
@@ -94,7 +94,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 func (c *char) fieryChargeAttack() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Fiery Passion Charged Attack",
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
 		PoiseDMG:           120,

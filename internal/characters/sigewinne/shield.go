@@ -18,8 +18,8 @@ func (c *char) addC2Shield() {
 	shieldHP := 0.3 * c.MaxHP()
 	c.c2Shield = &shd{
 		Tmpl: &shield.Tmpl{
-			ActorIndex: c.Index,
-			Target:     c.Index,
+			ActorIndex: c.Index(),
+			Target:     c.Index(),
 			Src:        c.Core.F,
 			Name:       "Sigewinne C2 shield",
 			ShieldType: shield.SigewinneC2,

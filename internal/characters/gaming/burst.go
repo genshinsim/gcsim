@@ -42,8 +42,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(burstKey, burstDuration, true)
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "Suanni's Gilded Dance (Q)",
 			Type:    info.HealTypePercent,
 			Src:     0.3,
@@ -54,7 +54,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(c.queueManChai, burstHitmark+1)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Suanni's Gilded Dance (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -91,7 +91,7 @@ func (c *char) queueManChai() {
 	c.AddStatus(manChaiKey, c.manChaiWalkBack, false)
 	c.Core.Tasks.Add(func() {
 		// can't link up if off-field
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		c.ResetActionCooldown(action.ActionSkill)
@@ -104,7 +104,7 @@ func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		// do nothing if previous char wasn't gaming
 		prev := args[0].(int)
-		if prev != c.Index {
+		if prev != c.Index() {
 			return false
 		}
 		if !c.StatusIsActive(burstKey) {

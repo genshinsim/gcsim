@@ -48,7 +48,7 @@ func (c *char) getSkillHealInfo(snap *info.Snapshot) info.HealInfo {
 	maxhp := snap.Stats.MaxHP()
 	heal := skillRadishHealing[0][c.TalentLvlSkill()]*maxhp + skillRadishHealing[1][c.TalentLvlSkill()]
 	return info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Message: "Yuegui Skill",
 		Src:     heal,
 		Bonus:   snap.Stats[attributes.Heal],

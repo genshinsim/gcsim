@@ -200,8 +200,8 @@ func (c *char) makeSkillHealAndDrainCB() info.AttackCBFunc {
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "Enigmatic Feint",
 			Src:     0.25 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
@@ -221,7 +221,7 @@ func (c *char) skillDrain(count int) func() {
 			return
 		}
 		c.Core.Player.Drain(info.DrainInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Enigmatic Feint",
 			Amount:     0.06 * c.CurrentHP(),
 		})

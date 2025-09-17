@@ -40,10 +40,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
@@ -66,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.DeleteStatus(durationKey)
 
 			ai := info.AttackInfo{
-				ActorIndex: char.Index,
+				ActorIndex: char.Index(),
 				Abil:       "Flute Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
 				ICDTag:     attacks.ICDTagNone,

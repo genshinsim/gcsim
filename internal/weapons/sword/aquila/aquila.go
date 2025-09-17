@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if di.Amount <= 0 {
 			return false
 		}
-		if di.ActorIndex != char.Index {
+		if di.ActorIndex != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(icdKey, 900, true) // 15 sec
 		ai := info.AttackInfo{
-			ActorIndex: char.Index,
+			ActorIndex: char.Index(),
 			Abil:       "Aquila Favonia",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -78,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 6), 1)
 
 		c.Player.Heal(info.HealInfo{
-			Caller:  char.Index,
+			Caller:  char.Index(),
 			Target:  c.Player.Active(),
 			Message: "Aquila Favonia",
 			Src:     snap.Stats.TotalATK() * heal,

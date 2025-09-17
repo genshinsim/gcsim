@@ -50,11 +50,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		add := func(args ...interface{}) bool {
 			atk := args[1].(*info.AttackEvent)
 			// Character must be on field to proc bonus
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 			// Source of elemental reaction must be the character with instructor
-			if atk.Info.ActorIndex != char.Index {
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 

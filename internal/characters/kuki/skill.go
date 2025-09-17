@@ -38,14 +38,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			hpdrain = currentHP - hpDrainThreshold*maxHP
 		}
 		c.Core.Player.Drain(info.DrainInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Sanctifying Ring",
 			Amount:     hpdrain,
 		})
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Sanctifying Ring",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -72,7 +72,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.Status.Add(ringKey, skilldur)
 		c.ringSrc = c.Core.F
 		c.Core.Tasks.Add(c.bellTick(c.Core.F), 90) // Assuming this executes every 90 frames = 1.5s
-		c.Core.Log.NewEvent("Bell activated", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Bell activated", glog.LogCharacterEvent, c.Index()).
 			Write("next expected tick", c.Core.F+90).
 			Write("expected end", c.Core.F+skilldur)
 	}, 23)
@@ -105,10 +105,10 @@ func (c *char) bellTick(src int) func() {
 		if src != c.ringSrc {
 			return
 		}
-		c.Core.Log.NewEvent("Bell ticking", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("Bell ticking", glog.LogCharacterEvent, c.Index())
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Grass Ring of Sanctification",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -125,7 +125,7 @@ func (c *char) bellTick(src int) func() {
 
 		// A4 is considered here
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Grass Ring of Sanctification Healing",
 			Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.a4Healing()),

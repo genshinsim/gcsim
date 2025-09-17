@@ -118,7 +118,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 				shd.Expires += dur
 			} else {
 				shd = &shield.Tmpl{
-					ActorIndex: c.Index,
+					ActorIndex: c.Index(),
 					Target:     -1,
 					Src:        c.Core.F,
 					ShieldType: shield.DionaSkill,
@@ -134,7 +134,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Icy Paw",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,

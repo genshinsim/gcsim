@@ -63,7 +63,7 @@ func (c *char) c4Loss(consumed int) {
 	m[attributes.EM] = 30.0 * float64(consumed)
 	for i, char := range c.Core.Player.Chars() {
 		// skip Alhaitham
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
@@ -107,7 +107,7 @@ func (c *char) c6(generated int) {
 	for i := 0; i < generated; i++ {
 		if c.StatModIsActive(c6key) {
 			c.ExtendStatus(c6key, 360)
-			c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index).Write("c6 expiry on", c.StatusExpiry(c6key))
+			c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index()).Write("c6 expiry on", c.StatusExpiry(c6key))
 		} else {
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag((c6key), 360), // 6s

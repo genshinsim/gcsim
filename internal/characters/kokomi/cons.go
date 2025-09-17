@@ -19,7 +19,7 @@ func (c *char) c1(f, travel int) {
 
 	// TODO: Assume that these are 1A (not specified in library)
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "At Water's Edge (C1)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,

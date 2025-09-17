@@ -25,7 +25,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// first zap has no icd and hits everyone
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Lightning Rose (Initial)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// duration is 15 seconds, tick every .5 sec
 	// 30 zaps once every 30 frame, starting at 119
 	ai = info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Lightning Rose (Tick)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,

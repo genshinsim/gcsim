@@ -59,7 +59,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	for i := 0; i < len(attack[c.NormalCounter]); i++ {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -130,7 +130,7 @@ func (c *char) reathermoonRings() action.Info {
 
 func (c *char) reathermoonRingsDetail(abilName string, hitmarks []int) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagElementalArt,
 		StrikeType:         attacks.StrikeTypeDefault,
 		Durability:         25,

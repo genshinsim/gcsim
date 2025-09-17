@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(*info.DrainInfo)
-		if di.ActorIndex != char.Index {
+		if di.ActorIndex != char.Index() {
 			return false
 		}
 		if di.Amount <= 0 {

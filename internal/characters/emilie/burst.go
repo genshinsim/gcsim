@@ -93,7 +93,7 @@ func (c *char) lumidouceBurstAttack(src int) func() {
 		pos := c.getRandomEnemyPosition(burstArea)
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Lumidouce Case (Level 3)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,

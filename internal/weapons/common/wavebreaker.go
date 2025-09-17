@@ -46,7 +46,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		if amt > maxBonus {
 			amt = maxBonus
 		}
-		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index()).
 			Write("total", energy).
 			Write("per", per).
 			Write("max", maxBonus).

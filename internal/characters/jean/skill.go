@@ -33,7 +33,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hitmark := skillHitmark + hold
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Gale Blade",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

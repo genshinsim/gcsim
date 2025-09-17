@@ -31,7 +31,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Spirit Blade: Chonghua's Layered Frost",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -118,7 +118,7 @@ func (c *char) onSwapHook() {
 		}
 		// add infusion on swap
 		dur := int(infuseDur[c.TalentLvlSkill()] * 60)
-		c.Core.Log.NewEvent("chongyun adding infusion on swap", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("chongyun adding infusion on swap", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.Core.F+dur)
 		active := c.Core.Player.ActiveChar()
 		c.infuse(active)
@@ -145,14 +145,14 @@ func (c *char) infuse(active *character.CharWrapper) {
 	switch active.Weapon.Class {
 	case info.WeaponClassClaymore, info.WeaponClassSpear, info.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
-			active.Index,
+			active.Index(),
 			"chongyun-ice-weapon",
 			attributes.Cryo,
 			dur,
 			true,
 			attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 		)
-		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.Core.F+dur)
 		// A1:
 		// Sword, Claymore, or Polearm-wielding characters within the field created by

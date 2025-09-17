@@ -36,20 +36,20 @@ func (w *Weapon) incStacks() func() {
 				w.char.QueueCharTask(w.incStacks(), w.icd) // check again in 1s if stacks are not max
 			}
 		}
-		w.c.Log.NewEvent("calamity gained stack", glog.LogWeaponEvent, w.char.Index).
+		w.c.Log.NewEvent("calamity gained stack", glog.LogWeaponEvent, w.char.Index()).
 			Write("stacks", w.stacks)
 	}
 }
 func (w *Weapon) checkBuffExpiry(src int) func() {
 	return func() {
 		if w.lastBuffGain != src {
-			w.c.Log.NewEvent("calamity buff expiry check ignored, src diff", glog.LogWeaponEvent, w.char.Index).
+			w.c.Log.NewEvent("calamity buff expiry check ignored, src diff", glog.LogWeaponEvent, w.char.Index()).
 				Write("src", src).
 				Write("new src", w.lastBuffGain)
 			return
 		}
 		w.stacks = 0
-		w.c.Log.NewEvent("calamity buff expired", glog.LogWeaponEvent, w.char.Index).
+		w.c.Log.NewEvent("calamity buff expired", glog.LogWeaponEvent, w.char.Index()).
 			Write("src", src).
 			Write("lastBuffGain", w.lastBuffGain)
 	}
@@ -93,7 +93,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkbonus := .024 + float64(r)*.008
 	skillPressBonus := make([]float64, attributes.EndStatType)
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
@@ -107,7 +107,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				atk := atkbonus * float64(w.stacks)
-				if c.Player.Active() != char.Index {
+				if c.Player.Active() != char.Index() {
 					atk *= 2
 				}
 				skillPressBonus[attributes.ATKP] = atk

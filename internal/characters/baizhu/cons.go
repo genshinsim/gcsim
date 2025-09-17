@@ -34,7 +34,7 @@ func (c *char) c2() {
 			return false
 		}
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Gossamer Sprite: Splice. (Baizhu's C2)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -61,7 +61,7 @@ func (c *char) c2() {
 		// C2 healing
 		c.Core.Tasks.Add(func() {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  c.Core.Player.Active(),
 				Message: "Baizhu's C2: Healing",
 				Src:     (skillHealPP[c.TalentLvlSkill()]*c.MaxHP() + skillHealFlat[c.TalentLvlSkill()]) * 0.2,

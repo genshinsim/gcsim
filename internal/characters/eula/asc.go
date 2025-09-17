@@ -19,7 +19,7 @@ func (c *char) a1() {
 	// make sure this gets executed after hold e hitlag starts but before hold e is over
 	// this makes it so it doesn't get affected by hitlag after Hold E is over
 	aiA1 := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Icetide (Lightfall)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -50,9 +50,9 @@ func (c *char) a4() {
 	if c.grimheartStacks < 2 {
 		c.grimheartStacks++
 	}
-	c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index()).
 		Write("current count", c.grimheartStacks)
 
 	c.ResetActionCooldown(action.ActionSkill)
-	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index())
 }

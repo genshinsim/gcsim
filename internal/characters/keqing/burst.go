@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// initial
 	ai := info.AttackInfo{
 		Abil:       "Starward Sword (Initial)",
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,

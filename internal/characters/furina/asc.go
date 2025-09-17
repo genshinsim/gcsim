@@ -25,7 +25,7 @@ func (c *char) a1() {
 		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 
-		if hi.Caller == c.Index {
+		if hi.Caller == c.Index() {
 			return false
 		}
 
@@ -57,7 +57,7 @@ func (c *char) a1HealingOverTime(src int) func() {
 			return
 		}
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Type:    info.HealTypePercent,
 			Message: "Endless Waltz",

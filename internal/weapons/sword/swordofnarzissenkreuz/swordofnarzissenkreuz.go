@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	if arkhe > 1 {
 		arkhe = 1
 	}
-	c.Log.NewEvent("swordofnarzissenkreuz arkhe", glog.LogWeaponEvent, char.Index).
+	c.Log.NewEvent("swordofnarzissenkreuz arkhe", glog.LogWeaponEvent, char.Index()).
 		Write("arkhe", arkhe)
 
 	// no event sub if char has arkhe
@@ -62,10 +62,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		trg := args[0].(info.Target)
@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, icd, true)
 
 		ai := info.AttackInfo{
-			ActorIndex: char.Index,
+			ActorIndex: char.Index(),
 			Abil:       "Sword of Narzissenkreuz",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,

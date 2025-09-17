@@ -41,7 +41,7 @@ func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 	// 50% increased DMG
 	dmg := 0.5
 	snap.Stats[attributes.DmgP] += dmg
-	c.Core.Log.NewEvent("adding a1", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
+	c.Core.Log.NewEvent("adding a1", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 
 	// return callback to heal, remove A1 and apply 5s cd
 	return func(a info.AttackCB) {
@@ -58,8 +58,8 @@ func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "There Shall Be a Plea for Justice",
 			Src:     c.caHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
@@ -76,10 +76,10 @@ func (c *char) a4() {
 
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(*info.DrainInfo)
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
-		if di.ActorIndex != c.Index {
+		if di.ActorIndex != c.Index() {
 			return false
 		}
 		if di.Amount <= 0 {
@@ -88,7 +88,7 @@ func (c *char) a4() {
 
 		if c.StatusIsActive(skillKey) && c.a4Stack < 5 {
 			c.a4Stack++
-			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index).Write("stacks", c.a4Stack)
+			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index()).Write("stacks", c.a4Stack)
 		}
 		return false
 	}, "wriothesley-a4-drain")
@@ -97,10 +97,10 @@ func (c *char) a4() {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
-		if index != c.Index {
+		if index != c.Index() {
 			return false
 		}
 		if amount <= 0 {
@@ -113,7 +113,7 @@ func (c *char) a4() {
 
 		if c.StatusIsActive(skillKey) && c.a4Stack < 5 {
 			c.a4Stack++
-			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index).Write("stacks", c.a4Stack)
+			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index()).Write("stacks", c.a4Stack)
 		}
 		return false
 	}, "wriothesley-a4-heal")

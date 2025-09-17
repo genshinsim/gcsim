@@ -43,7 +43,7 @@ func init() {
 // The vortex DMG is considered Elemental Skill DMG.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Wind Realm of Nasamjnin (E)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -94,7 +94,7 @@ func (c *char) particleCB(a info.AttackCB) {
 
 func (c *char) pressurizedCollapse(pos info.Point) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       VortexAbilName,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

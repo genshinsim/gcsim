@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	// always trigger electro no ICD on initial summon
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Oz (Summon)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -112,7 +112,7 @@ func (c *char) skillRecast() action.Info {
 		c.ozTickSrc = c.Core.F // reset attack timer
 		c.Core.Tasks.Add(c.ozTick(c.ozTickSrc), 60)
 		c.ozSnapshot.Snapshot = c.Snapshot(&c.ozSnapshot.Info)
-		c.Core.Log.NewEvent("Recasting oz", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Recasting oz", glog.LogCharacterEvent, c.Index()).
 			Write("next expected tick", c.Core.F+60)
 	}, 2) // 2f delay
 	return action.Info{
@@ -138,7 +138,7 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 		// queue up oz removal at the end of the duration for gcsl conditional
 		c.Core.Tasks.Add(c.removeOz(c.Core.F), dur)
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("Oz (%v)", src),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -160,7 +160,7 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 		c.ozSnapshot.Callbacks = append(c.ozSnapshot.Callbacks, c.particleCB)
 
 		c.Core.Tasks.Add(c.ozTick(c.Core.F), firstTick)
-		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index()).
 			Write("source", src).
 			Write("next expected tick", c.Core.F+60)
 	}
@@ -181,7 +181,7 @@ func (c *char) ozTick(src int) func() {
 			return
 		}
 
-		c.Core.Log.NewEvent("Oz ticked", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Oz ticked", glog.LogCharacterEvent, c.Index()).
 			Write("next expected tick", c.Core.F+60).
 			Write("src", src)
 
@@ -204,11 +204,11 @@ func (c *char) removeOz(src int) func() {
 	return func() {
 		// if src != ozSource then this is no longer the same oz, do nothing
 		if c.ozSource != src {
-			c.Core.Log.NewEvent("Oz not removed, src changed", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("Oz not removed, src changed", glog.LogCharacterEvent, c.Index()).
 				Write("src", src)
 			return
 		}
-		c.Core.Log.NewEvent("Oz removed", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Oz removed", glog.LogCharacterEvent, c.Index()).
 			Write("src", src)
 		c.ozActive = false
 	}

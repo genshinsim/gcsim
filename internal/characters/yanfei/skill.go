@@ -42,13 +42,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.sealCount = c.maxTags
 		}
 		c.AddStatus(sealBuffKey, 600, true)
-		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index()).
 			Write("current_seals", c.sealCount)
 		done = true
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Signed Edict",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

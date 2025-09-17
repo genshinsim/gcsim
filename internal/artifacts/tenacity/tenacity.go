@@ -55,7 +55,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*info.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -81,7 +81,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return 0.30, false
 			})
 
-			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index).Write("expiry (without hitlag)", c.F+180).Write("icd (without hitlag)", c.F+s.icd)
+			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index()).Write("expiry (without hitlag)", c.F+180).Write("icd (without hitlag)", c.F+s.icd)
 			return false
 		}, fmt.Sprintf("tom4-%v", char.Base.Key.String()))
 	}

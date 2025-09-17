@@ -72,12 +72,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			src := args[0].(*info.HealInfo)
 			healAmt := args[4].(float64)
 
-			if src.Caller != char.Index {
+			if src.Caller != char.Index() {
 				return false
 			}
 
 			// OHC must either be inactive or this equipped character has to have an OHC bubble active
-			if c.Flags.Custom["OHCActiveChar"] != -1 && c.Flags.Custom["OHCActiveChar"] != float64(char.Index) {
+			if c.Flags.Custom["OHCActiveChar"] != -1 && c.Flags.Custom["OHCActiveChar"] != float64(char.Index()) {
 				return false
 			}
 
@@ -91,7 +91,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.bubbleDurationExpiry = c.F + 3*60
 				bubbleICDExpiry = c.F + 3.5*60
 
-				c.Flags.Custom["OHCActiveChar"] = float64(char.Index)
+				c.Flags.Custom["OHCActiveChar"] = float64(char.Index())
 
 				// Bubble pop task
 				c.Tasks.Add(func() {
@@ -112,7 +112,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					// c.QueueDmg(&d, 0)
 
 					atk := info.AttackInfo{
-						ActorIndex:       char.Index,
+						ActorIndex:       char.Index(),
 						Abil:             "Sea-Dyed Foam",
 						AttackTag:        attacks.AttackTagNoneStat,
 						ICDTag:           attacks.ICDTagNone,
@@ -130,12 +130,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					s.bubbleHealStacks = 0
 				}, 3*60)
 
-				c.Log.NewEvent("ohc bubble activated", glog.LogArtifactEvent, char.Index).
+				c.Log.NewEvent("ohc bubble activated", glog.LogArtifactEvent, char.Index()).
 					Write("bubble_pops_at", s.bubbleDurationExpiry).
 					Write("ohc_icd_expiry", bubbleICDExpiry)
 			}
 
-			c.Log.NewEvent("ohc bubble accumulation", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("ohc bubble accumulation", glog.LogArtifactEvent, char.Index()).
 				Write("bubble_pops_at", s.bubbleDurationExpiry).
 				Write("bubble_total", s.bubbleHealStacks)
 

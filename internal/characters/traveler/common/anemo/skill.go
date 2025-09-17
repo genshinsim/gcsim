@@ -58,7 +58,7 @@ func init() {
 func (c *Traveler) SkillPress() action.Info {
 	hitmark := 34
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Palm Vortex (Tap)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -103,7 +103,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.2}, 3)
 
 	aiCut := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Palm Vortex Initial Cutting (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -178,7 +178,7 @@ func (c *Traveler) SkillHold(holdTicks int) action.Info {
 	// move the hitmark back by 1 tick (15f) then forward by 5f for the Storm damage
 	hitmark = hitmark - 15 + 5
 	aiStorm := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Palm Vortex Initial Storm (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -279,7 +279,7 @@ func (c *Traveler) absorbCheckE(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.eAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.eAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.eAbsorb {
 		case attributes.Cryo:
 			c.eICDTag = attacks.ICDTagElementalArtCryo

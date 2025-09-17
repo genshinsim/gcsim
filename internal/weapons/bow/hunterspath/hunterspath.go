@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	procCount := 0
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagExtra {
@@ -79,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if procCount <= 0 {
 			char.DeleteStatus(buffKey)
 		}
-		c.Log.NewEvent("hunterspath proc dmg add", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("hunterspath proc dmg add", glog.LogPreDamageMod, char.Index()).
 			Write("base_added_dmg", baseDmgAdd).
 			Write("remaining_stacks", procCount)
 		return false

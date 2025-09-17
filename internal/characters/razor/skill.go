@@ -77,7 +77,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) SkillPress(burstActive int) action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Claw and Thunder (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -144,7 +144,7 @@ func (c *char) pressParticleCB(a info.AttackCB) {
 
 func (c *char) SkillHold(burstActive int) action.Info {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Claw and Thunder (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

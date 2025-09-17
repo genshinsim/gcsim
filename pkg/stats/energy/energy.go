@@ -37,13 +37,13 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 			Current: character.Energy,
 		}
 
-		if core.Player.Active() == character.Index {
+		if core.Player.Active() == character.Index() {
 			event.FieldStatus = stats.OnField
 		} else {
 			event.FieldStatus = stats.OffField
 		}
 
-		out.events[character.Index] = append(out.events[character.Index], event)
+		out.events[character.Index()] = append(out.events[character.Index()], event)
 		return false
 	}, "stats-energy-log")
 

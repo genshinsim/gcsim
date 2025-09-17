@@ -81,7 +81,7 @@ type HP interface {
 }
 
 type CharWrapper struct {
-	Index int
+	index int
 	f     *int // current frame
 	debug bool // debug mode?
 	Character
@@ -180,7 +180,11 @@ func New(
 }
 
 func (c *CharWrapper) SetIndex(index int) {
-	c.Index = index
+	c.index = index
+}
+
+func (c *CharWrapper) Index() int {
+	return c.index
 }
 
 func (c *CharWrapper) SetWeapon(w info.Weapon) {

@@ -158,7 +158,7 @@ func (c *char) AddSerpentsSubtlety(src string, e float64) {
 	c.serpentsSubtlety += e
 	c.serpentsSubtlety = min(max(c.serpentsSubtlety, 0), maxSerpentsSubtlety)
 
-	c.Core.Log.NewEvent(fmt.Sprintf("+%.1f serpent's subtlety, next: %.1f", e, c.serpentsSubtlety), glog.LogEnergyEvent, c.Index).
+	c.Core.Log.NewEvent(fmt.Sprintf("+%.1f serpent's subtlety, next: %.1f", e, c.serpentsSubtlety), glog.LogEnergyEvent, c.Index()).
 		Write("added", e).
 		Write("pre_recovery", pre).
 		Write("post_recovery", c.serpentsSubtlety).
@@ -170,7 +170,7 @@ func (c *char) ReduceSerpentsSubtlety(src string, e float64) {
 	c.serpentsSubtlety -= e
 	c.serpentsSubtlety = min(max(c.serpentsSubtlety, 0), maxSerpentsSubtlety)
 
-	c.Core.Log.NewEvent(fmt.Sprintf("-%.1f serpent's subtlety, next: %.1f", e, c.serpentsSubtlety), glog.LogEnergyEvent, c.Index).
+	c.Core.Log.NewEvent(fmt.Sprintf("-%.1f serpent's subtlety, next: %.1f", e, c.serpentsSubtlety), glog.LogEnergyEvent, c.Index()).
 		Write("reduced", e).
 		Write("pre", pre).
 		Write("post", c.serpentsSubtlety).
@@ -180,7 +180,7 @@ func (c *char) ReduceSerpentsSubtlety(src string, e float64) {
 // Consumes SS after a specified delay. Not hitlag affected
 func (c *char) ConsumeSerpentsSubtlety(delay int, src string) {
 	if delay == 0 {
-		c.Core.Log.NewEvent("draining serpent's subtlety", glog.LogEnergyEvent, c.Index).
+		c.Core.Log.NewEvent("draining serpent's subtlety", glog.LogEnergyEvent, c.Index()).
 			Write("pre_drain", c.serpentsSubtlety).
 			Write("post_drain", 0).
 			Write("source", src)
@@ -188,7 +188,7 @@ func (c *char) ConsumeSerpentsSubtlety(delay int, src string) {
 		return
 	}
 	c.Core.Tasks.Add(func() {
-		c.Core.Log.NewEvent("draining serpent's subtlety", glog.LogEnergyEvent, c.Index).
+		c.Core.Log.NewEvent("draining serpent's subtlety", glog.LogEnergyEvent, c.Index()).
 			Write("pre_drain", c.serpentsSubtlety).
 			Write("post_drain", 0).
 			Write("source", src)

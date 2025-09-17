@@ -33,7 +33,7 @@ func (c *char) makeA1CB() info.AttackCBFunc {
 				return m, true
 			},
 		})
-		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index()).
 			Write("ends_on", c.Core.F+300)
 	}
 }
@@ -55,7 +55,7 @@ func (c *char) a4() {
 	m[attributes.CR] = critShare
 	for i, char := range c.Core.Player.Chars() {
 		// skip Rosaria
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
@@ -67,7 +67,7 @@ func (c *char) a4() {
 			},
 		})
 	}
-	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index()).
 		Write("ends_on", c.Core.F+600).
 		Write("crit_share", critShare)
 }

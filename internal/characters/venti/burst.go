@@ -28,7 +28,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// 8 second duration, tick every .4 second
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Wind's Grand Ode",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurstAnemo,
@@ -99,7 +99,7 @@ func (c *char) absorbCheckQ(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 		if c.qAbsorb != attributes.NoElement {
 			c.aiAbsorb.Element = c.qAbsorb
 			switch c.qAbsorb {

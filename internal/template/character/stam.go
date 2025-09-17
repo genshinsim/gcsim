@@ -69,11 +69,11 @@ func (c *Character) ApplyDashCD() {
 	if c.Core.Player.DashCDExpirationFrame > c.Core.F {
 		c.Core.Player.DashLockout = true
 		c.Core.Player.DashCDExpirationFrame = c.Core.F + 1.5*60
-		evt = c.Core.Log.NewEvent("dash cooldown triggered", glog.LogCooldownEvent, c.Index)
+		evt = c.Core.Log.NewEvent("dash cooldown triggered", glog.LogCooldownEvent, c.Index())
 	} else {
 		c.Core.Player.DashLockout = false
 		c.Core.Player.DashCDExpirationFrame = c.Core.F + 0.8*60
-		evt = c.Core.Log.NewEvent("dash lockout evaluation started", glog.LogCooldownEvent, c.Index)
+		evt = c.Core.Log.NewEvent("dash lockout evaluation started", glog.LogCooldownEvent, c.Index())
 	}
 
 	evt.Write("lockout", c.Core.Player.DashLockout).
@@ -84,7 +84,7 @@ func (c *Character) ApplyDashCD() {
 func (c *Character) QueueDashStaminaConsumption(p map[string]int) {
 	// consume stam at the end
 	c.Core.Tasks.Add(func() {
-		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
+		req := c.Core.Player.AbilStamCost(c.Index(), action.ActionDash, p)
 		c.Core.Player.UseStam(req, action.ActionDash)
 	}, c.DashLength()-1)
 }

@@ -46,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			m[attributes.ATKP] = selfAtkP
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				m[attributes.ATKP] += selfAtkP
 			}
 			return m, true
@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 
-		if source.Caller != char.Index {
+		if source.Caller != char.Index() {
 			return false
 		}
 
@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
-		if index != char.Index {
+		if index != char.Index() {
 			otherChar := c.Player.ByIndex(index)
 			otherChar.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(buffKey, bufDur),

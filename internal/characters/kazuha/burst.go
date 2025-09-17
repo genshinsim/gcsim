@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, info.Point{Y: 1}, 8)
 
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Kazuha Slash",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
@@ -123,7 +123,7 @@ func (c *char) absorbCheckQ(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.qAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.qAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.qAbsorb != attributes.NoElement {
 			return
