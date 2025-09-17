@@ -7,13 +7,13 @@ import (
 )
 
 func (r *Reactable) TryMelt(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
-		if r.Durability[Cryo] < ZeroDur && r.Durability[Frozen] < ZeroDur {
+		if r.Durability[Cryo] < info.ZeroDur && r.Durability[Frozen] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 2)
@@ -23,7 +23,7 @@ func (r *Reactable) TryMelt(a *info.AttackEvent) bool {
 		}
 		a.Info.AmpMult = 2.0
 	case attributes.Cryo:
-		if r.Durability[Pyro] < ZeroDur && r.Durability[Burning] < ZeroDur {
+		if r.Durability[Pyro] < info.ZeroDur && r.Durability[Burning] < info.ZeroDur {
 			return false
 		}
 		r.reduce(attributes.Pyro, a.Info.Durability, 0.5)

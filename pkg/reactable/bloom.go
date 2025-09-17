@@ -16,7 +16,7 @@ const DendroCoreDelay = 30
 
 func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 	// can be hydro bloom, dendro bloom, or quicken bloom
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	var consumed info.Durability
@@ -25,9 +25,9 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 		// this part is annoying. bloom will happen if any of the dendro like aura is present
 		// so we gotta check for all 3...
 		switch {
-		case r.Durability[Dendro] > ZeroDur:
-		case r.Durability[Quicken] > ZeroDur:
-		case r.Durability[BurningFuel] > ZeroDur:
+		case r.Durability[Dendro] > info.ZeroDur:
+		case r.Durability[Quicken] > info.ZeroDur:
+		case r.Durability[BurningFuel] > info.ZeroDur:
 		default:
 			return false
 		}
@@ -38,7 +38,7 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 			consumed = f
 		}
 	case attributes.Dendro:
-		if r.Durability[Hydro] < ZeroDur {
+		if r.Durability[Hydro] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, 2)
@@ -57,12 +57,12 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
 // this reaction will check if any hydro exists and if so trigger a bloom reaction
 func (r *Reactable) tryQuickenBloom(a *info.AttackEvent) {
-	if r.Durability[Quicken] < ZeroDur {
+	if r.Durability[Quicken] < info.ZeroDur {
 		// this should be a sanity check; should not happen realistically unless something wipes off
 		// the quicken immediately (same frame) after catalyze
 		return
 	}
-	if r.Durability[Hydro] < ZeroDur {
+	if r.Durability[Hydro] < info.ZeroDur {
 		return
 	}
 	avail := r.Durability[Quicken]
@@ -153,7 +153,7 @@ func (s *DendroCore) HandleAttack(atk *info.AttackEvent) float64 {
 }
 
 func (s *DendroCore) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
-	if atk.Info.Durability < ZeroDur {
+	if atk.Info.Durability < info.ZeroDur {
 		return 0, false
 	}
 

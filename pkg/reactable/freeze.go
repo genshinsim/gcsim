@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	// so if already frozen there are 2 cases:
@@ -19,14 +19,14 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
-		if r.Durability[Cryo] < ZeroDur {
+		if r.Durability[Cryo] < info.ZeroDur {
 			return false
 		}
 		consumed = r.triggerFreeze(r.Durability[Cryo], a.Info.Durability)
 		r.Durability[Cryo] -= consumed
 		r.Durability[Cryo] = max(r.Durability[Cryo], 0)
 	case attributes.Cryo:
-		if r.Durability[Hydro] < ZeroDur {
+		if r.Durability[Hydro] < info.ZeroDur {
 			return false
 		}
 		consumed := r.triggerFreeze(r.Durability[Hydro], a.Info.Durability)
@@ -44,7 +44,7 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) PoiseDMGCheck(a *info.AttackEvent) bool {
-	if r.Durability[Frozen] < ZeroDur {
+	if r.Durability[Frozen] < info.ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt {
@@ -57,7 +57,7 @@ func (r *Reactable) PoiseDMGCheck(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
-	if r.Durability[Frozen] < ZeroDur {
+	if r.Durability[Frozen] < info.ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
@@ -107,12 +107,12 @@ func (r *Reactable) triggerFreeze(a, b info.Durability) info.Durability {
 		return d
 	}
 	// trigger freeze should only addDurability and should not touch decay rate
-	r.attachOverlap(Frozen, 2*d, ZeroDur)
+	r.attachOverlap(Frozen, 2*d, info.ZeroDur)
 	return d
 }
 
 func (r *Reactable) checkFreeze() {
-	if r.Durability[Frozen] <= ZeroDur {
+	if r.Durability[Frozen] <= info.ZeroDur {
 		r.Durability[Frozen] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
 		// trigger another attack here, purely for the purpose of breaking bubbles >.>

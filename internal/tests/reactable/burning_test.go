@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestBurningTicks(t *testing.T) {
@@ -187,7 +186,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 	// dendro or quicken last frame 796
 	for ; i < 2000; i++ {
 		advanceCoreFrame(c)
-		if trg[0].Durability[reactable.Quicken] == 0 {
+		if trg[0].GetAuraDurability(attributes.Quicken) == 0 {
 			log.Printf("quicken gone at f: %v\n", c.F)
 			break
 		}

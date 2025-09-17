@@ -9,23 +9,23 @@ import (
 )
 
 func (r *Reactable) TrySuperconduct(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	// this is for non frozen one
-	if r.Durability[Frozen] >= ZeroDur {
+	if r.Durability[Frozen] >= info.ZeroDur {
 		return false
 	}
 	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
-		if r.Durability[Cryo] < ZeroDur {
+		if r.Durability[Cryo] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 1)
 	case attributes.Cryo:
 		// could be ec potentially
-		if r.Durability[Electro] < ZeroDur {
+		if r.Durability[Electro] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
@@ -41,11 +41,11 @@ func (r *Reactable) TrySuperconduct(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) TryFrozenSuperconduct(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	// this is for frozen
-	if r.Durability[Frozen] < ZeroDur {
+	if r.Durability[Frozen] < info.ZeroDur {
 		return false
 	}
 	switch a.Info.Element {

@@ -3,6 +3,7 @@ package status
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -112,8 +113,8 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 			current := make(map[reactable.Modifier]int)
 
-			for r, v := range enemy.Durability {
-				if v <= reactable.ZeroDur {
+			for r, v := range enemy.GetDurability() {
+				if v <= info.ZeroDur {
 					continue
 				}
 				var key = reactable.Modifier(r)

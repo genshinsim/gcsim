@@ -19,28 +19,28 @@ type CrystallizeShield struct {
 }
 
 func (r *Reactable) TryCrystallizeElectro(a *info.AttackEvent) bool {
-	if r.Durability[Electro] > ZeroDur {
+	if r.Durability[Electro] > info.ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Electro, info.ReactionTypeCrystallizeElectro, event.OnCrystallizeElectro)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizeHydro(a *info.AttackEvent) bool {
-	if r.Durability[Hydro] > ZeroDur {
+	if r.Durability[Hydro] > info.ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Hydro, info.ReactionTypeCrystallizeHydro, event.OnCrystallizeHydro)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizeCryo(a *info.AttackEvent) bool {
-	if r.Durability[Cryo] > ZeroDur {
+	if r.Durability[Cryo] > info.ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Cryo, info.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizePyro(a *info.AttackEvent) bool {
-	if r.Durability[Pyro] > ZeroDur || r.Durability[Burning] > ZeroDur {
+	if r.Durability[Pyro] > info.ZeroDur || r.Durability[Burning] > info.ZeroDur {
 		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, info.ReactionTypeCrystallizePyro, event.OnCrystallizePyro)
 		r.burningCheck()
 		return reacted
@@ -49,14 +49,14 @@ func (r *Reactable) TryCrystallizePyro(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) TryCrystallizeFrozen(a *info.AttackEvent) bool {
-	if r.Durability[Frozen] > ZeroDur {
+	if r.Durability[Frozen] > info.ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Frozen, info.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
 func (r *Reactable) tryCrystallizeWithEle(a *info.AttackEvent, ele attributes.Element, rt info.ReactionType, evt event.Event) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	if r.crystallizeGCD != -1 && r.core.F < r.crystallizeGCD {
@@ -74,7 +74,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *info.AttackEvent, ele attributes.El
 	r.core.Events.Emit(evt, r.self, a)
 	// check freeze + ec
 	switch {
-	case ele == attributes.Electro && r.Durability[Hydro] > ZeroDur:
+	case ele == attributes.Electro && r.Durability[Hydro] > info.ZeroDur:
 		r.checkEC()
 	case ele == attributes.Frozen:
 		r.checkFreeze()

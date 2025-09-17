@@ -89,7 +89,7 @@ func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		return 0, false
 	}
 	// check pyro window
-	if p.Durability[reactable.Pyro] <= reactable.ZeroDur {
+	if p.Durability[reactable.Pyro] <= info.ZeroDur {
 		return 0, false
 	}
 

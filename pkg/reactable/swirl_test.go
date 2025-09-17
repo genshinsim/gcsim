@@ -37,7 +37,7 @@ func TestSwirl50to25(t *testing.T) {
 		t.FailNow()
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -67,7 +67,7 @@ func TestSwirl25to25(t *testing.T) {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -97,7 +97,7 @@ func TestSwirl25to50(t *testing.T) {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -129,7 +129,7 @@ func TestSwirl50to50(t *testing.T) {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -157,7 +157,7 @@ func TestSwirl25to10(t *testing.T) {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -190,7 +190,7 @@ func TestSwirl50to10(t *testing.T) {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }

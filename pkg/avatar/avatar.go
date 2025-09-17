@@ -251,7 +251,7 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur info.Durability, 
 	}
 
 	// we're assuming refill maintains the same decay rate?
-	if p.Durability[mod] > reactable.ZeroDur {
+	if p.Durability[mod] > info.ZeroDur {
 		// make sure we're not adding more than incoming
 		if p.Durability[mod] < dur {
 			p.Durability[mod] = dur

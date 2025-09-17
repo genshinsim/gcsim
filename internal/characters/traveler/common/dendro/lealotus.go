@@ -118,7 +118,7 @@ func (s *LeaLotus) HandleAttack(atk *info.AttackEvent) float64 {
 	if atk.Info.Element != attributes.Cryo {
 		return 0
 	}
-	if atk.Info.Durability < reactable.ZeroDur {
+	if atk.Info.Durability < info.ZeroDur {
 		return 0
 	}
 	if atk.Reacted {

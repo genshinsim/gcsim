@@ -72,6 +72,12 @@ var elementToModifier = map[attributes.Element]Modifier{
 	attributes.Cryo:    Cryo,
 	attributes.Hydro:   Hydro,
 	attributes.Dendro:  Dendro,
+	attributes.Quicken: Quicken,
+	attributes.Frozen:  Frozen,
+	attributes.Geo:     Geo,
+	// TODO: these aren't real attributes and should not be here
+	attributes.Burning:     Burning,
+	attributes.BurningFuel: BurningFuel,
 }
 
 func (r Modifier) Element() attributes.Element { return modifierElement[r] }
@@ -130,8 +136,6 @@ type Enemy interface {
 const frzDelta info.Durability = 2.5 / (60 * 60) // 2 * 1.25
 const frzDecayCap info.Durability = 10.0 / 60.0
 
-const ZeroDur info.Durability = 0.00000000001
-
 func (r *Reactable) Init(self info.Target, c *core.Core) *Reactable {
 	r.self = self
 	r.core = c
@@ -152,7 +156,7 @@ func (r *Reactable) Init(self info.Target, c *core.Core) *Reactable {
 func (r *Reactable) ActiveAuraString() []string {
 	var result []string
 	for i, v := range r.Durability {
-		if v > ZeroDur {
+		if v > info.ZeroDur {
 			result = append(result, Modifier(i).String()+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
 		}
 	}
@@ -162,7 +166,7 @@ func (r *Reactable) ActiveAuraString() []string {
 func (r *Reactable) AuraCount() int {
 	count := 0
 	for _, v := range r.Durability {
-		if v > ZeroDur {
+		if v > info.ZeroDur {
 			count++
 		}
 	}
@@ -222,7 +226,7 @@ func (r *Reactable) React(a *info.AttackEvent) {
 // and will either create a new modifier if non exist, or update according to the rules of
 // each modifier
 func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	if a.Reacted {
@@ -237,6 +241,41 @@ func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
 	return false
 }
 
+func (r *Reactable) GetAuraDurability(mod attributes.Element) info.Durability {
+	if m, ok := elementToModifier[mod]; ok {
+		return r.Durability[m]
+	}
+	return 0
+}
+
+func (r *Reactable) GetDurability() []info.Durability {
+	result := make([]info.Durability, EndModifier)
+	for i := Invalid; i < EndModifier; i++ {
+		result[i] = r.Durability[i]
+	}
+	return result
+}
+
+func (r *Reactable) GetAuraDecayRate(mod attributes.Element) info.Durability {
+	if m, ok := elementToModifier[mod]; ok {
+		return r.DecayRate[m]
+	}
+	return 0
+}
+
+func (r *Reactable) SetAuraDurability(mod attributes.Element, dur info.Durability, decay info.Durability) {
+	if m, ok := elementToModifier[mod]; ok {
+		r.Durability[m] = dur
+		if decay > info.ZeroDur {
+			r.DecayRate[m] = decay
+		}
+	}
+}
+
+func (r *Reactable) SetFreezeResist(fr float64) {
+	r.FreezeResist = fr
+}
+
 // attachOrRefillNormalEle is used for pyro, electro, hydro, cryo, and dendro which don't have special attachment
 // rules
 func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur info.Durability) {
@@ -249,14 +288,14 @@ func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur info.Durability) {
 }
 
 func (r *Reactable) attachOverlap(mod Modifier, amt, length info.Durability) {
-	if r.Durability[mod] > ZeroDur {
+	if r.Durability[mod] > info.ZeroDur {
 		add := max(amt-r.Durability[mod], 0)
 		if add > 0 {
 			r.addDurability(mod, add)
 		}
 	} else {
 		r.Durability[mod] = amt
-		if length > ZeroDur {
+		if length > info.ZeroDur {
 			r.DecayRate[mod] = amt / length
 		}
 	}
@@ -284,12 +323,12 @@ func (r *Reactable) addDurability(mod Modifier, amt info.Durability) {
 func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 	for _, v := range e {
 		for i := Invalid; i < EndModifier; i++ {
-			if i.Element() == v && r.Durability[i] > ZeroDur {
+			if i.Element() == v && r.Durability[i] > info.ZeroDur {
 				return true
 			}
 		}
 		//TODO: not sure if this is best way to go about it? perhaps supplying frozen element is better?
-		if v == attributes.Cryo && r.Durability[Frozen] > ZeroDur {
+		if v == attributes.Cryo && r.Durability[Frozen] > info.ZeroDur {
 			return true
 		}
 	}
@@ -297,7 +336,7 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 }
 
 func (r *Reactable) IsBurning() bool {
-	if r.Durability[BurningFuel] > ZeroDur && r.Durability[Burning] > ZeroDur {
+	if r.Durability[BurningFuel] > info.ZeroDur && r.Durability[Burning] > info.ZeroDur {
 		return true
 	}
 	return false
@@ -314,7 +353,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 		if i.Element() != e {
 			continue
 		}
-		if r.Durability[i] < ZeroDur {
+		if r.Durability[i] < info.ZeroDur {
 			// also skip if durability already 0
 			// this allows us to safely call reduce even if an element doesn't exist
 			continue
@@ -339,7 +378,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 }
 
 func (r *Reactable) deplete(m Modifier) {
-	if r.Durability[m] <= ZeroDur {
+	if r.Durability[m] <= info.ZeroDur {
 		r.Durability[m] = 0
 		r.DecayRate[m] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
@@ -361,14 +400,14 @@ func (r *Reactable) Tick() {
 		if r.DecayRate[i] == 0 {
 			continue
 		}
-		if r.Durability[i] > ZeroDur {
+		if r.Durability[i] > info.ZeroDur {
 			r.Durability[i] -= r.DecayRate[i]
 			r.deplete(i)
 		}
 	}
 
 	// check burning first since that affects dendro/quicken decay
-	if r.burningTickSrc > -1 && r.Durability[BurningFuel] < ZeroDur {
+	if r.burningTickSrc > -1 && r.Durability[BurningFuel] < info.ZeroDur {
 		// reset src when burning fuel is gone
 		r.burningTickSrc = -1
 		// remove burning
@@ -383,11 +422,11 @@ func (r *Reactable) Tick() {
 	// if burning fuel is present, dendro and quicken uses burning fuel decay rate
 	// otherwise it uses it's own
 	for i := Dendro; i <= Quicken; i++ {
-		if r.Durability[i] < ZeroDur {
+		if r.Durability[i] < info.ZeroDur {
 			continue
 		}
 		rate := r.DecayRate[i]
-		if r.Durability[BurningFuel] > ZeroDur {
+		if r.Durability[BurningFuel] > info.ZeroDur {
 			rate = r.DecayRate[BurningFuel]
 			if i == Dendro {
 				rate = max(rate, r.DecayRate[i]*2)
@@ -399,7 +438,7 @@ func (r *Reactable) Tick() {
 
 	// for freeze, durability can be calculated as:
 	// d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
-	if r.Durability[Frozen] > ZeroDur {
+	if r.Durability[Frozen] > info.ZeroDur {
 		// ramp up decay rate first
 		r.DecayRate[Frozen] += frzDelta
 		r.Durability[Frozen] -= r.DecayRate[Frozen] / info.Durability(1.0-r.FreezeResist)
@@ -416,7 +455,7 @@ func (r *Reactable) Tick() {
 
 	// for ec we need to reset src if ec is gone
 	if r.ecTickSrc > -1 {
-		if r.Durability[Electro] < ZeroDur || r.Durability[Hydro] < ZeroDur {
+		if r.Durability[Electro] < info.ZeroDur || r.Durability[Hydro] < info.ZeroDur {
 			r.ecTickSrc = -1
 		}
 	}

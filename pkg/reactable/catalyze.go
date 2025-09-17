@@ -7,11 +7,11 @@ import (
 )
 
 func (r *Reactable) TryAggravate(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 
-	if r.Durability[Quicken] < ZeroDur {
+	if r.Durability[Quicken] < info.ZeroDur {
 		return false
 	}
 
@@ -26,11 +26,11 @@ func (r *Reactable) TryAggravate(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) TrySpread(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 
-	if r.Durability[Quicken] < ZeroDur {
+	if r.Durability[Quicken] < info.ZeroDur {
 		return false
 	}
 
@@ -45,19 +45,19 @@ func (r *Reactable) TrySpread(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 
 	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Dendro:
-		if r.Durability[Electro] < ZeroDur {
+		if r.Durability[Electro] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	case attributes.Electro:
-		if r.Durability[Dendro] < ZeroDur {
+		if r.Durability[Dendro] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Dendro, a.Info.Durability, 1)
@@ -72,7 +72,7 @@ func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
 	// attach quicken aura; special amount
 	r.attachQuicken(consumed)
 
-	if r.Durability[Hydro] >= ZeroDur {
+	if r.Durability[Hydro] >= info.ZeroDur {
 		r.core.Tasks.Add(func() {
 			r.tryQuickenBloom(a)
 		}, 0)

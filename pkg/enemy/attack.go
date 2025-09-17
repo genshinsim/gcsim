@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var particleIDToElement = []attributes.Element{
@@ -88,7 +87,7 @@ func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	// if target is frozen prior to attack landing, set impulse to 0
 	// let the break freeze attack to trigger actual impulse
-	if e.Durability[reactable.Frozen] > reactable.ZeroDur {
+	if e.GetAuraDurability(attributes.Frozen) > info.ZeroDur {
 		atk.Info.NoImpulse = true
 	}
 

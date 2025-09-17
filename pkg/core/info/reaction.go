@@ -2,7 +2,6 @@ package info
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type ReactionType string
@@ -38,18 +37,20 @@ const SelfDamageSuffix = " (self damage)"
 
 type Durability float64
 
+const ZeroDur Durability = 0.00000000001
+
 type Reactable interface {
 	Tick()
 
 	React(a *AttackEvent)
 	AttachOrRefill(a *AttackEvent) bool
-	SetAuraDurability(mod model.Element, dur Durability, decay Durability)
+	SetAuraDurability(mod attributes.Element, dur Durability, decay Durability)
 
 	ActiveAuraString() []string
 	AuraCount() int
-	GetAuraDurability(mod model.Element) Durability
+	GetAuraDurability(mod attributes.Element) Durability
 	GetDurability() []Durability
-	GetAuraDecayRate(mod model.Element) Durability
+	GetAuraDecayRate(mod attributes.Element) Durability
 	AuraContains(e ...attributes.Element) bool
 
 	ReactableBloom
