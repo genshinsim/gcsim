@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -48,7 +47,7 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 		return 0, fmt.Errorf("bad element condition: %w", err)
 	}
 
-	var eleKey attributes.Element
+	var eleKey info.ReactionModKey
 	switch ele {
 	case "burning":
 		result := info.Durability(0)
@@ -56,25 +55,25 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 			// TODO: this really should be a min of Burning and BurningFuel, but leaving it as is to avoid
 			// breaking existing sims that may be relying on this behavior in the current set of changes
 			// this should be fixed
-			result = e.GetAuraDurability(attributes.Burning)
+			result = e.GetAuraDurability(info.ReactionModKeyBurning)
 		}
 		return float64(result), nil
 	case "electro":
-		eleKey = attributes.Electro
+		eleKey = info.ReactionModKeyElectro
 	case "pyro":
-		eleKey = attributes.Pyro
+		eleKey = info.ReactionModKeyPyro
 	case "cryo":
-		eleKey = attributes.Cryo
+		eleKey = info.ReactionModKeyCryo
 	case "hydro":
-		eleKey = attributes.Hydro
+		eleKey = info.ReactionModKeyHydro
 	case "dendro":
-		eleKey = attributes.Dendro
+		eleKey = info.ReactionModKeyDendro
 	case "quicken":
-		eleKey = attributes.Quicken
+		eleKey = info.ReactionModKeyQuicken
 	case "frozen":
-		eleKey = attributes.Frozen
+		eleKey = info.ReactionModKeyFrozen
 	case "geo":
-		eleKey = attributes.Geo
+		eleKey = info.ReactionModKeyGeo
 	default:
 		return 0, fmt.Errorf("bad element condition: invalid element %s", ele)
 	}

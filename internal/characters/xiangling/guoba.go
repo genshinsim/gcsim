@@ -3,7 +3,6 @@ package xiangling
 import (
 	"github.com/genshinsim/gcsim/internal/characters/faruzan"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -54,9 +53,9 @@ func (p *panda) Tick() {
 	case 103, 203, 303, 403: // swirl window
 		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index).
 			SetEnded(p.c.Core.F + infuseWindow + 1)
-		p.SetAuraDurability(attributes.Pyro, infuseDurability)
+		p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
 		p.Core.Tasks.Add(func() {
-			p.SetAuraDurability(attributes.Pyro, 0)
+			p.SetAuraDurability(info.ReactionModKeyPyro, 0)
 		}, infuseWindow+1) // +1 since infuse window is inclusive
 		p.SetDirectionToClosestEnemy()
 		// queue this in advance because that's how it is on live
@@ -89,7 +88,7 @@ func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		return 0, false
 	}
 	// check pyro window
-	if p.GetAuraDurability(attributes.Pyro) <= info.ZeroDur {
+	if p.GetAuraDurability(info.ReactionModKeyPyro) <= info.ZeroDur {
 		return 0, false
 	}
 
@@ -109,11 +108,11 @@ func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	atk.Info.Durability = 50
 
 	// cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
-	oldDur := p.GetAuraDurability(attributes.Pyro)
-	p.SetAuraDurability(attributes.Pyro, infuseDurability)
+	oldDur := p.GetAuraDurability(info.ReactionModKeyPyro)
+	p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
 	p.React(atk)
 	// restore the durability after
-	p.SetAuraDurability(attributes.Pyro, oldDur)
+	p.SetAuraDurability(info.ReactionModKeyPyro, oldDur)
 
 	return 0, false
 }

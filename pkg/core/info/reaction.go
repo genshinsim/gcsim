@@ -44,14 +44,14 @@ type Reactable interface {
 
 	React(a *AttackEvent)
 	AttachOrRefill(a *AttackEvent) bool
-	SetAuraDurability(mod attributes.Element, dur Durability)
-	SetAuraDecayRate(mod attributes.Element, decay Durability)
+	SetAuraDurability(mod ReactionModKey, dur Durability)
+	SetAuraDecayRate(mod ReactionModKey, decay Durability)
+	GetAuraDurability(mod ReactionModKey) Durability
+	GetAuraDecayRate(mod ReactionModKey) Durability
 
 	ActiveAuraString() []string
 	AuraCount() int
-	GetAuraDurability(mod attributes.Element) Durability
 	GetDurability() []Durability
-	GetAuraDecayRate(mod attributes.Element) Durability
 	AuraContains(e ...attributes.Element) bool
 
 	ReactableBloom

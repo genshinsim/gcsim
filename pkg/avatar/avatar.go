@@ -235,31 +235,37 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur info.Durability, 
 	if ele == attributes.Frozen {
 		return
 	}
+	var reactionKey info.ReactionModKey
 	switch ele {
 	case attributes.Electro:
+		reactionKey = info.ReactionModKeyElectro
 	case attributes.Hydro:
+		reactionKey = info.ReactionModKeyHydro
 	case attributes.Pyro:
+		reactionKey = info.ReactionModKeyPyro
 	case attributes.Cryo:
+		reactionKey = info.ReactionModKeyCryo
 	case attributes.Dendro:
+		reactionKey = info.ReactionModKeyDendro
 	default:
 		// catch all case to make sure we don't infuse with invalid element
 		p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "invalid self infusion element: "+ele.String())
 		return
 	}
 
-	active := p.GetAuraDurability(ele)
+	active := p.GetAuraDurability(reactionKey)
 	// we're assuming refill maintains the same decay rate?
 	if active > info.ZeroDur {
 		// make sure we're not adding more than incoming
 		if active < dur {
-			p.SetAuraDurability(ele, dur)
+			p.SetAuraDurability(reactionKey, dur)
 		}
 		return
 	}
 	// otherwise calculate decay based on specified f (in frames)
 	decay := dur / info.Durability(f)
-	p.SetAuraDurability(ele, dur)
-	p.SetAuraDecayRate(ele, decay)
+	p.SetAuraDurability(reactionKey, dur)
+	p.SetAuraDecayRate(reactionKey, decay)
 }
 
 func (p *Player) ReactWithSelf(atk *info.AttackEvent) {

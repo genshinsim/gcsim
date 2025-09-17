@@ -186,7 +186,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 	// dendro or quicken last frame 796
 	for ; i < 2000; i++ {
 		advanceCoreFrame(c)
-		if trg[0].GetAuraDurability(attributes.Quicken) == 0 {
+		if trg[0].GetAuraDurability(info.ReactionModKeyQuicken) == 0 {
 			log.Printf("quicken gone at f: %v\n", c.F)
 			break
 		}

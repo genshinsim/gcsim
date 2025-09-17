@@ -163,11 +163,8 @@ func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
 	return false
 }
 
-func (r *Reactable) GetAuraDurability(mod attributes.Element) info.Durability {
-	if m, ok := elementToModifier[mod]; ok {
-		return r.Durability[m]
-	}
-	return 0
+func (r *Reactable) GetAuraDurability(mod info.ReactionModKey) info.Durability {
+	return r.Durability[mod]
 }
 
 func (r *Reactable) GetDurability() []info.Durability {
@@ -178,23 +175,16 @@ func (r *Reactable) GetDurability() []info.Durability {
 	return result
 }
 
-func (r *Reactable) GetAuraDecayRate(mod attributes.Element) info.Durability {
-	if m, ok := elementToModifier[mod]; ok {
-		return r.DecayRate[m]
-	}
-	return 0
+func (r *Reactable) GetAuraDecayRate(mod info.ReactionModKey) info.Durability {
+	return r.DecayRate[mod]
 }
 
-func (r *Reactable) SetAuraDurability(mod attributes.Element, dur info.Durability) {
-	if m, ok := elementToModifier[mod]; ok {
-		r.Durability[m] = dur
-	}
+func (r *Reactable) SetAuraDurability(mod info.ReactionModKey, dur info.Durability) {
+	r.Durability[mod] = dur
 }
 
-func (r *Reactable) SetAuraDecayRate(mod attributes.Element, decay info.Durability) {
-	if m, ok := elementToModifier[mod]; ok {
-		r.DecayRate[m] = decay
-	}
+func (r *Reactable) SetAuraDecayRate(mod info.ReactionModKey, decay info.Durability) {
+	r.DecayRate[mod] = decay
 }
 
 func (r *Reactable) SetFreezeResist(fr float64) {
