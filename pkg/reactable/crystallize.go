@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func (r *Reactable) TryCrystallizeElectro(a *info.AttackEvent) bool {
@@ -75,7 +74,12 @@ func (r *Reactable) tryCrystallizeWithEle(a *info.AttackEvent, ele attributes.El
 	return true
 }
 
-func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt info.ReactionType, typ attributes.Element, src int) {
+type crystalizeChar interface {
+	Snapshot(*info.AttackInfo) info.Snapshot
+	Index() int
+}
+
+func (r *Reactable) addCrystallizeShard(char crystalizeChar, rt info.ReactionType, typ attributes.Element, src int) {
 	// delay shard spawn
 	r.core.Tasks.Add(func() {
 		// grab current snapshot for shield
