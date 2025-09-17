@@ -31,7 +31,7 @@ func (r *Reactable) queueSwirl(rt info.ReactionType, ele attributes.Element, tag
 	}
 	char := r.core.Player.ByIndex(charIndex)
 	em := char.Stat(attributes.EM)
-	flatdmg, snap := calcReactionDmg(char, ai, em)
+	flatdmg, snap := combat.CalcReactionDmg(char.Base.Level, char, ai, em)
 	ai.FlatDmg = 0.6 * flatdmg
 	// first attack is self no hitbox
 	r.core.QueueAttackWithSnap(

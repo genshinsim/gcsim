@@ -64,7 +64,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	flatdmg, snap := calcReactionDmg(char, atk, em)
+	flatdmg, snap := combat.CalcReactionDmg(char.Base.Level, char, atk, em)
 	atk.FlatDmg = 2.0 * flatdmg
 	r.ecAtk = atk
 	r.ecSnapshot = snap

@@ -247,7 +247,7 @@ func NewBloomAttack(char *character.CharWrapper, src info.Target, modify func(*i
 	if modify != nil {
 		modify(&ai)
 	}
-	flatdmg, snap := calcReactionDmg(char, ai, em)
+	flatdmg, snap := combat.CalcReactionDmg(char.Base.Level, char, ai, em)
 	ai.FlatDmg = BloomMultiplier * flatdmg
 	return ai, snap
 }
@@ -265,7 +265,7 @@ func NewBurgeonAttack(char *character.CharWrapper, src info.Target) (info.Attack
 		Abil:             string(info.ReactionTypeBurgeon),
 		IgnoreDefPercent: 1,
 	}
-	flatdmg, snap := calcReactionDmg(char, ai, em)
+	flatdmg, snap := combat.CalcReactionDmg(char.Base.Level, char, ai, em)
 	ai.FlatDmg = BurgeonMultiplier * flatdmg
 	return ai, snap
 }
@@ -283,7 +283,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src info.Target) (info.Att
 		Abil:             string(info.ReactionTypeHyperbloom),
 		IgnoreDefPercent: 1,
 	}
-	flatdmg, snap := calcReactionDmg(char, ai, em)
+	flatdmg, snap := combat.CalcReactionDmg(char.Base.Level, char, ai, em)
 	ai.FlatDmg = HyperbloomMultiplier * flatdmg
 	return ai, snap
 }

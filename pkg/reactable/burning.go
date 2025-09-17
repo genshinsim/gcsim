@@ -87,7 +87,7 @@ func (r *Reactable) calcBurningDmg(a *info.AttackEvent) {
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	flatdmg, snap := calcReactionDmg(char, atk, em)
+	flatdmg, snap := combat.CalcReactionDmg(char.Base.Level, char, atk, em)
 	atk.FlatDmg = 0.25 * flatdmg
 	r.burningAtk = atk
 	r.burningSnapshot = snap
