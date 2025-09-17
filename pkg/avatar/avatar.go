@@ -74,6 +74,7 @@ func (p *Player) HandleAttack(atk *info.AttackEvent) float64 {
 	// towards the sim's TotalDamage and DPS statistic
 	return 0
 }
+
 func (p *Player) calc(atk *info.AttackEvent) (float64, bool) {
 	var isCrit bool
 

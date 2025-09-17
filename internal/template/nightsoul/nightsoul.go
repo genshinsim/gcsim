@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-const NightsoulBlessingStatus = "nightsoul-blessing"
-const delayEventKey = "ns-extend-state"
+const (
+	NightsoulBlessingStatus = "nightsoul-blessing"
+	delayEventKey           = "ns-extend-state"
+)
 
 type State struct {
 	char            *character.CharWrapper

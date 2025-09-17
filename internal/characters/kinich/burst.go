@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
-var ajawHitmarks = []int{145, 150}
+var (
+	burstFrames  []int
+	ajawHitmarks = []int{145, 150}
+)
 
 const (
 	cdStart            = 1

@@ -122,7 +122,7 @@ func (w *Watcher) stateChangeHook() {
 		// note that this is less performant because we don't actually need to do this check
 		// if say the status is not active at all
 		// however this just simpler to read so... performance hit shouldn't be that big
-		if w.shouldDelay != nil { //TODO: to maintain old implementation equivalent; should be removed
+		if w.shouldDelay != nil { // TODO: to maintain old implementation equivalent; should be removed
 			// if w.shouldDelay() {
 			if delay := w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey); delay > 0 {
 				c := w.caster

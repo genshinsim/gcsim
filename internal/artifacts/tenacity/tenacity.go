@@ -76,7 +76,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				})
 			}
 
-			//TODO: this needs to be affected by hitlag as well
+			// TODO: this needs to be affected by hitlag as well
 			s.core.Player.Shields.AddShieldBonusMod("tom-4pc", 180, func() (float64, bool) {
 				return 0.30, false
 			})

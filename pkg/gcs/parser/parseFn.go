@@ -85,10 +85,10 @@ func (p *Parser) parseFn() (*ast.FuncLit, error) {
 			return nil, err
 		}
 	}
-	//TODO: if nil we are assuming number for compatbility reasons
+	// TODO: if nil we are assuming number for compatbility reasons
 	if lit.Signature.ResultType == nil {
-		//TODO: the position here is wrong... really shouldn't be the position of the open bracket
-		//TODO: should fix this by adding a current position the parser
+		// TODO: the position here is wrong... really shouldn't be the position of the open bracket
+		// TODO: should fix this by adding a current position the parser
 		lit.Signature.ResultType = &ast.NumberType{Pos: n.Pos}
 	}
 
@@ -122,7 +122,7 @@ func (p *Parser) parseFnArgs() ([]*ast.Ident, []ast.ExprType, error) {
 		if err != nil {
 			return nil, nil, err
 		}
-		//TODO: if nil we are assuming number for compatbility reasons
+		// TODO: if nil we are assuming number for compatbility reasons
 		if typ == nil {
 			typ = &ast.NumberType{Pos: n.Pos}
 		}

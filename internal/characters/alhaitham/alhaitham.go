@@ -42,6 +42,7 @@ func (c *char) Init() error {
 	c.a4()
 	return nil
 }
+
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		// do nothing if previous char wasn't alhaitham
@@ -74,6 +75,7 @@ func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	}
 	return ds
 }
+
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "mirrors":

@@ -12,8 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var a1DMGBuff = []float64{0.0, 0.15, 0.35, 0.65, 0.65} // has an extra 0.65 for c2 stack
-var a1ConversionChance = []float64{0.0, 0.333, 0.667, 1.0}
+var (
+	a1DMGBuff          = []float64{0.0, 0.15, 0.35, 0.65, 0.65} // has an extra 0.65 for c2 stack
+	a1ConversionChance = []float64{0.0, 0.333, 0.667, 1.0}
+)
 
 func (c *char) a1DMGBuff() {
 	if c.Base.Ascension < 1 {

@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		// otherwise if this is first time proc'ing, set the duration and queue
 		// task to set icd
 		if !char.StatusIsActive(durationKey) {
-			//TODO: we're assuming icd starts after the effect
+			// TODO: we're assuming icd starts after the effect
 			char.QueueCharTask(func() {
 				char.AddStatus(icdKey, 90, false) // icd lasts for 1.5s
 			}, 6) // icd starts 6 frames after

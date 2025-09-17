@@ -128,7 +128,7 @@ func (r *Reactable) checkFreeze() {
 			SourceIsSim: true,
 			DoNotLog:    true,
 		}
-		//TODO: delay attack by 1 frame ok?
+		// TODO: delay attack by 1 frame ok?
 		r.core.QueueAttack(ai, combat.NewSingleTargetHit(r.self.Key()), -1, 0)
 	}
 }

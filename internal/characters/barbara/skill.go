@@ -12,9 +12,11 @@ import (
 )
 
 // barbara skill - copied from bennett burst
-const skillDuration = 15*60 + 1
-const barbSkillKey = "barbara-e"
-const skillCDStart = 3
+const (
+	skillDuration = 15*60 + 1
+	barbSkillKey  = "barbara-e"
+	skillCDStart  = 3
+)
 
 var (
 	skillHitmarks = []int{42, 78}

@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 const (
 	skillPressCDStart = 16

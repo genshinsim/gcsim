@@ -12,26 +12,38 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var plungePressFrames []int
-var plungeHoldFrames []int
+var (
+	plungePressFrames []int
+	plungeHoldFrames  []int
+)
 
 // a1 is 1 frame before this
 // collision is 6 frame before this
-const plungePressHitmark = 36
-const plungeHoldHitmark = 41
+const (
+	plungePressHitmark = 36
+	plungeHoldHitmark  = 41
+)
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
+var (
+	highPlungeFrames []int
+	lowPlungeFrames  []int
+)
 
-const lowPlungeHitmark = 46
-const highPlungeHitmark = 47
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark  = 46
+	highPlungeHitmark = 47
+	collisionHitmark  = lowPlungeHitmark - 6
+)
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 150.0
+	highPlungeRadius   = 5.0
+)
 
 // TODO: missing plunge -> skill
 func init() {
@@ -146,7 +158,7 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 		State: action.PlungeAttackState,
 	}
 
-	//TODO: is this accurate?? these should be the hitmarks
+	// TODO: is this accurate?? these should be the hitmarks
 	var hitmark int
 	if c.Core.Player.LastAction.Param["hold"] == 0 {
 		hitmark = plungePressHitmark

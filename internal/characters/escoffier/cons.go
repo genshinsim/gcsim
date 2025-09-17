@@ -11,21 +11,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c1Dur = 15 * 60
-const c1Key = "escoffier-c1"
-const c2Key = "escoffier-c2"
-const c2Per = 2.4
-const c2Dur = 15 * 60
-const c4Extra = 6
-const c4ExtraScaling = 1
-const c4Limit = 7
-const c4Key = "escoffier-c4"
-const c4Regen = 2.0
-const c6Key = "escoffier-c6"
-const c6Limit = 6
-const c6Scaling = 5
-const c6ICD = 0.5 * 60
-const c6ICDKey = "escoffier-c6-icd"
+const (
+	c1Dur          = 15 * 60
+	c1Key          = "escoffier-c1"
+	c2Key          = "escoffier-c2"
+	c2Per          = 2.4
+	c2Dur          = 15 * 60
+	c4Extra        = 6
+	c4ExtraScaling = 1
+	c4Limit        = 7
+	c4Key          = "escoffier-c4"
+	c4Regen        = 2.0
+	c6Key          = "escoffier-c6"
+	c6Limit        = 6
+	c6Scaling      = 5
+	c6ICD          = 0.5 * 60
+	c6ICDKey       = "escoffier-c6-icd"
+)
 
 func (c *char) c1Init() {
 	if c.Base.Cons < 1 {

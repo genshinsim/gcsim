@@ -12,8 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var aimedFrames [][]int
-var aimedBarbFrames []int
+var (
+	aimedFrames     [][]int
+	aimedBarbFrames []int
+)
 
 var aimedHitmarks = []int{15, 86}
 

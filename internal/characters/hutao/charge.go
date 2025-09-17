@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var ppChargeFrames []int
+var (
+	chargeFrames   []int
+	ppChargeFrames []int
+)
 
 const (
 	chargeHitmark   = 19
@@ -77,7 +79,7 @@ func (c *char) ppChargeAttack() action.Info {
 	// pp slide: add 1.8s to paramita on charge attack start which gets removed once the charge attack ends
 	c.ExtendStatus(paramitaBuff, 1.8*60)
 
-	//TODO: currently assuming snapshot is on cast since it's a bullet and nothing implemented re "pp slide"
+	// TODO: currently assuming snapshot is on cast since it's a bullet and nothing implemented re "pp slide"
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
 		Abil:               "Charge Attack",
@@ -141,7 +143,7 @@ func (c *char) ppChargeAttack() action.Info {
 		case 4: // N5
 			return 3
 		default:
-			return 500 //TODO: this action is illegal; need better way to handle it
+			return 500 // TODO: this action is illegal; need better way to handle it
 		}
 	}
 

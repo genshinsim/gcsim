@@ -19,9 +19,7 @@ const (
 	burstHitmark   = 106
 )
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 func (c *char) nightsoulConsumptionMul() float64 {
 	if c.StatusIsActive(burstKey) {

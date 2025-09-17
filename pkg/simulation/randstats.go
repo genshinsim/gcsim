@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var subDist [attributes.DelimBaseStat]float64
-var subUpgrade [attributes.DelimBaseStat][4]float64
+var (
+	subDist    [attributes.DelimBaseStat]float64
+	subUpgrade [attributes.DelimBaseStat][4]float64
+)
 
 // mainstat at lvl 20
 var mainStat = map[attributes.Stat]float64{
@@ -79,7 +81,7 @@ func generateRandSubs(r *info.RandomSubstats, rng *rand.Rand) ([]float64, error)
 		copy(weight[:], subDist[:])
 		weight[m] = 0
 
-		//TODO: option to use boss
+		// TODO: option to use boss
 		upgrades := 4
 		if rng.Float64() <= 0.2 {
 			upgrades = 5

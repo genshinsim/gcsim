@@ -77,6 +77,7 @@ func init() {
 	skillFrames[pneuma][action.ActionWalk] = 41   // E -> W
 	skillFrames[pneuma][action.ActionSwap] = 56   // E -> Swap
 }
+
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 6 {
 		c.c6Count = 0
@@ -103,6 +104,7 @@ func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
 		State:           action.SkillState,
 	}, nil
 }
+
 func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -328,7 +330,7 @@ func (c *char) particleCB(ac info.AttackCB) {
 }
 
 func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
-	var alliesWithDrainedHPCounter = 0
+	alliesWithDrainedHPCounter := 0
 
 	for i, char := range c.Core.Player.Chars() {
 		currentHPRatio := char.CurrentHPRatio()

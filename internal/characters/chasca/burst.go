@@ -12,9 +12,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFramesGrounded []int
-var burstFramesNS []int
-var burstSecondaryHitmark = []int{103, 139, 147, 153, 157, 160}
+var (
+	burstFramesGrounded   []int
+	burstFramesNS         []int
+	burstSecondaryHitmark = []int{103, 139, 147, 153, 157, 160}
+)
 
 const (
 	burstHitmark = 96

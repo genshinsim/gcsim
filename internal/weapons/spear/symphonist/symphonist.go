@@ -12,8 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const bufDur = 3 * 60
-const buffKey = "symphonist-chanson-de-baies"
+const (
+	bufDur  = 3 * 60
+	buffKey = "symphonist-chanson-de-baies"
+)
 
 func init() {
 	core.RegisterWeaponFunc(keys.SymphonistOfScents, NewWeapon)

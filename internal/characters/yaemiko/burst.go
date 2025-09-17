@@ -11,8 +11,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 100
-const burstThunderbolt1Hitmark = 154
+const (
+	burstHitmark             = 100
+	burstThunderbolt1Hitmark = 154
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(114) // Q -> CA

@@ -38,8 +38,10 @@ func (c *char) c1() {
 	})
 }
 
-const c2Key = "cyno-c2"
-const c2ICD = "cyno-c2-icd"
+const (
+	c2Key = "cyno-c2"
+	c2ICD = "cyno-c2-icd"
+)
 
 // When Cyno's Normal Attacks hit opponents, his Electro DMG Bonus will
 // increase by 10% for 4s. This effect can be triggered once every 0.1s. Max 5

@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			return c.ppbuff, true
 		},
 	})
-	//TODO: this applies a1 at the end of paramita without checking for "pp extend" (if that's real)
+	// TODO: this applies a1 at the end of paramita without checking for "pp extend" (if that's real)
 	c.applyA1 = true
 	c.QueueCharTask(c.a1, 540+skillStart)
 

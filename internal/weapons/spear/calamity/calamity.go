@@ -40,6 +40,7 @@ func (w *Weapon) incStacks() func() {
 			Write("stacks", w.stacks)
 	}
 }
+
 func (w *Weapon) checkBuffExpiry(src int) func() {
 	return func() {
 		if w.lastBuffGain != src {

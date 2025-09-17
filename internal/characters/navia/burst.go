@@ -10,9 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 const (
 	burstHitmark  = 104

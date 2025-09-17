@@ -49,6 +49,7 @@ func (c *char) Condition(fields []string) (any, error) {
 		return c.Character.Condition(fields)
 	}
 }
+
 func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(ai)
 

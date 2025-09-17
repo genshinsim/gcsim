@@ -15,7 +15,6 @@ const Prompt = ">> "
 func Eval(s string, log *log.Logger) {
 	p := parser.New(s)
 	res, gcsl, err := p.Parse()
-
 	if err != nil {
 		fmt.Println("Error parsing input:")
 		fmt.Printf("\t%v\n", err)

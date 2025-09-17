@@ -41,6 +41,7 @@ func (w *Weapon) stackCheck(char *character.CharWrapper, c *core.Core) func() {
 		char.QueueCharTask(w.stackCheck(char, c), 240)
 	}
 }
+
 func (w *Weapon) updateBuff() {
 	p := w.dmg * float64(w.stacks)
 	w.buff[attributes.PyroP] = p

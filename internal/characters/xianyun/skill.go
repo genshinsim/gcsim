@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillLeapFrames [][]int
-var skillStateDur = []int{220, 238, 179}
+var (
+	skillLeapFrames [][]int
+	skillStateDur   = []int{220, 238, 179}
+)
 
 const (
 	skillPressHitmark = 3
@@ -78,7 +80,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 		c.skillEnemiesHit = nil
 	}
-	//C2: After using White Clouds at Dawn, Xianyun's ATK will be increased by 20% for 15s.
+	// C2: After using White Clouds at Dawn, Xianyun's ATK will be increased by 20% for 15s.
 	c.c2buff()
 
 	// This should only hit enemies once at most

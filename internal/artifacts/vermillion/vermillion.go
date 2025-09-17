@@ -71,7 +71,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	s.buff = make([]float64, attributes.EndStatType)
 
-	//TODO: this used to be post. need to check
+	// TODO: this used to be post. need to check
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index() {
 			return false

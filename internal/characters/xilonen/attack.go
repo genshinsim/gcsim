@@ -27,8 +27,10 @@ var (
 	rollerPoiseDMG         = []float64{52.8, 51.9, 62.1, 81.1}
 )
 
-const normalHitNum = 3
-const rollerHitNum = 4
+const (
+	normalHitNum = 3
+	rollerHitNum = 4
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -43,7 +45,7 @@ func init() {
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 70)
 	attackFrames[2][action.ActionAttack] = 57
-	attackFrames[2][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[2][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 
 	rollerFrames = make([][]int, rollerHitNum)
 

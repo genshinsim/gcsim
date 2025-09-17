@@ -13,7 +13,7 @@ func TestBurning(t *testing.T) {
 
 	c.Init()
 
-	//TODO: write tests for burning (this is copypasted from quicken for now)
+	// TODO: write tests for burning (this is copypasted from quicken for now)
 	trg.AttachOrRefill(&info.AttackEvent{
 		Info: info.AttackInfo{
 			Element:    attributes.Dendro,

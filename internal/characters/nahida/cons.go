@@ -46,7 +46,7 @@ func (c *char) c2() {
 			return false
 		}
 
-		//TODO: should this really be +=??
+		// TODO: should this really be +=??
 		ae.Snapshot.Stats[attributes.CR] += 0.2
 		ae.Snapshot.Stats[attributes.CD] += 1
 

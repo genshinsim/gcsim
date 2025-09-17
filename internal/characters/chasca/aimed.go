@@ -13,11 +13,15 @@ import (
 )
 
 // Aim keeps charging
-const skillAimChargeDelay = 10
-const skillAimFallDelay = 29
+const (
+	skillAimChargeDelay = 10
+	skillAimFallDelay   = 29
+)
 
-var aimedFrames [][]int
-var skillAimFrames []int
+var (
+	aimedFrames    [][]int
+	skillAimFrames []int
+)
 
 var aimedHitmarks = []int{14, 86}
 
@@ -27,8 +31,10 @@ var skillAimHitmarks = []int{4, 7, 10, 13, 16, 19}
 var cumuSkillAimLoadFrames = []int{21, 38, 56, 70, 91, 108}
 
 // TODO: Get C6 load frames. Using 11f windup and 0.23s per bullet
-var cumuSkillAimLoadFramesC6 = []int{14, 28, 42, 55, 69, 83}
-var cumuSkillAimLoadFramesC6Instant = []int{1, 2, 2, 3, 3, 4}
+var (
+	cumuSkillAimLoadFramesC6        = []int{14, 28, 42, 55, 69, 83}
+	cumuSkillAimLoadFramesC6Instant = []int{1, 2, 2, 3, 3, 4}
+)
 
 func init() {
 	aimedFrames = make([][]int, 2)

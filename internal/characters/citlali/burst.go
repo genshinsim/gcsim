@@ -16,9 +16,7 @@ const (
 	iceStormAbil = "Ice Storm DMG"
 )
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 func init() {
 	burstFrames = frames.InitAbilSlice(113) // Q -> Jump

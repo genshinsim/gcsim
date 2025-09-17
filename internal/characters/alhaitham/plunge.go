@@ -16,18 +16,26 @@ var lowPlungeFramesAL []int
 
 const lowPlungeHitmarkAL = 38
 
-const lowPlungeHitmarkXY = 46
-const highPlungeHitmarkXY = 48
-const collisionHitmarkXY = lowPlungeHitmarkXY - 6
+const (
+	lowPlungeHitmarkXY  = 46
+	highPlungeHitmarkXY = 48
+	collisionHitmarkXY  = lowPlungeHitmarkXY - 6
+)
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 150.0
+	highPlungeRadius   = 5.0
+)
 
-var highPlungeFramesXY []int
-var lowPlungeFramesXY []int
+var (
+	highPlungeFramesXY []int
+	lowPlungeFramesXY  []int
+)
 
 func init() {
 	lowPlungeFramesAL = frames.InitAbilSlice(70)

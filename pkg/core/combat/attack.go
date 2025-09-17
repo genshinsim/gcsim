@@ -38,7 +38,7 @@ func (h *Handler) ApplyAttack(a *info.AttackEvent) float64 {
 	var landed bool
 	// check player
 	if !a.Pattern.SkipTargets[info.TargettablePlayer] {
-		//TODO: we don't check for landed here since attack that hit player should never generate hitlag?
+		// TODO: we don't check for landed here since attack that hit player should never generate hitlag?
 		h.attack(h.player, a)
 	}
 	// check enemies

@@ -14,8 +14,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c4ICDKey = "neuvillette-c4-icd"
-const c6ICDKey = "neuvillette-c6-icd"
+const (
+	c4ICDKey = "neuvillette-c4-icd"
+	c6ICDKey = "neuvillette-c6-icd"
+)
 
 func (c *char) c1() {
 	if c.Base.Ascension < 1 {

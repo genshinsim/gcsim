@@ -50,7 +50,7 @@ func (r *Reactable) TryFrozenSuperconduct(a *info.AttackEvent) bool {
 	}
 	switch a.Info.Element {
 	case attributes.Electro:
-		//TODO: the assumption here is we first reduce cryo, and if there's any
+		// TODO: the assumption here is we first reduce cryo, and if there's any
 		// src durability left, we reduce frozen. note that it's still only one
 		// superconduct reaction
 		a.Info.Durability -= r.reduce(attributes.Cryo, a.Info.Durability, 1)

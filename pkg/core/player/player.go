@@ -231,7 +231,7 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	h.chars[char].ApplyHitlag(factor, dur)
 
 	// also extend infusion
-	//TODO: this is a really awkward place to apply this
+	// TODO: this is a really awkward place to apply this
 	h.ExtendInfusion(char, factor, dur)
 
 	// extend the dash cd by the hitlag extension amount

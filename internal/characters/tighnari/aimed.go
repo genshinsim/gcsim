@@ -11,9 +11,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var aimedFrames [][]int
-var aimedHitmarks = []int{14, 86}
-var aimedWreathFrames []int
+var (
+	aimedFrames       [][]int
+	aimedHitmarks     = []int{14, 86}
+	aimedWreathFrames []int
+)
 
 const aimedWreathHitmark = 175
 

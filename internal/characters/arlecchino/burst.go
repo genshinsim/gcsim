@@ -9,12 +9,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-const burstHitmarks = 110
-const balemoonRisingHealAbil = "Balemoon Rising (Heal)"
-
-var (
-	burstFrames []int
+const (
+	burstHitmarks          = 110
+	balemoonRisingHealAbil = "Balemoon Rising (Heal)"
 )
+
+var burstFrames []int
 
 func init() {
 	burstFrames = frames.InitAbilSlice(146)

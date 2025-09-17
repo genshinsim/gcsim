@@ -9,12 +9,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
-var c2PulseHitmarks = []int{65, 83}
+var (
+	burstFrames     []int
+	c2PulseHitmarks = []int{65, 83}
+)
 
-const burstInitialHitmark = 22
-const burstShieldStart = 43
-const burstDoT1Hitmark = 57
+const (
+	burstInitialHitmark = 22
+	burstShieldStart    = 43
+	burstDoT1Hitmark    = 57
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(87) // Q -> E/D/J

@@ -32,6 +32,7 @@ func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot { return info.Sna
 func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }
+
 func (c *Character) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]int) error {
 	return nil
 }

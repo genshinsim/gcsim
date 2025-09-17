@@ -26,8 +26,10 @@ const (
 	arkheICDKey       = "chev-arkhe-icd"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 func init() {
 	// skill (press) -> x

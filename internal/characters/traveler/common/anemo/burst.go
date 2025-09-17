@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstHitmarks = []int{96, 94}
-var burstFrames [][]int
+var (
+	burstHitmarks = []int{96, 94}
+	burstFrames   [][]int
+)
 
 func init() {
 	burstFrames = make([][]int, 2)

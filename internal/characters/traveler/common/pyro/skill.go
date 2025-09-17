@@ -13,8 +13,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillFrames [][]int
-var skillHoldFrames [][]int
+var (
+	skillFrames     [][]int
+	skillHoldFrames [][]int
+)
 
 const (
 	skillTapHitmark                = 24

@@ -13,14 +13,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
-var burstHitmarks = [3]int{95, 95 + 40, 95 + 40 + 19}
+var (
+	burstFrames   []int
+	burstHitmarks = [3]int{95, 95 + 40, 95 + 40 + 19}
+)
 
-var dropletPosOffsets = [][][]float64{{{0, 7}, {-1, 7.5}, {0.8, 6.5}}, {{-3.5, 7.5}, {-2.5, 6}}, {{3.3, 6}}}
-var dropletRandomRanges = [][]float64{{0.5, 2}, {0.5, 1.2}, {0.5, 1.2}}
+var (
+	dropletPosOffsets   = [][][]float64{{{0, 7}, {-1, 7.5}, {0.8, 6.5}}, {{-3.5, 7.5}, {-2.5, 6}}, {{3.3, 6}}}
+	dropletRandomRanges = [][]float64{{0.5, 2}, {0.5, 1.2}, {0.5, 1.2}}
+)
 
-var defaultBurstAtkPosOffsets = [][]float64{{-3, 7.5}, {4, 6}}
-var burstTickTargetXOffsets = []float64{1.5, -1.5}
+var (
+	defaultBurstAtkPosOffsets = [][]float64{{-3, 7.5}, {4, 6}}
+	burstTickTargetXOffsets   = []float64{1.5, -1.5}
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(135)

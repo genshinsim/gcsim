@@ -39,12 +39,12 @@ func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	e := &Enemy{}
 	e.queue = task.New(&e.timePassed)
 	e.Level = p.Level
-	//TODO: do we need to clone this map isntead?
+	// TODO: do we need to clone this map isntead?
 	e.resists = p.Resist
-	//TODO: this is kinda redundant to keep both profile and lvl/resist
+	// TODO: this is kinda redundant to keep both profile and lvl/resist
 	e.prof = p
 	e.Target = target.New(core, info.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
-	//TODO: should pass in a info.Reactable instead
+	// TODO: should pass in a info.Reactable instead
 	e.Reactable = hacks.NewReactable(e, core)
 	e.SetFreezeResist(e.prof.FreezeResist)
 	e.mods = make([]modifier.Mod, 0, 10)

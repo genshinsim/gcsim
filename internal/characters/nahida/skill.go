@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 func init() {
 	skillPressFrames = frames.InitAbilSlice(32)
@@ -67,7 +69,7 @@ func (c *char) skillPress() action.Info {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.2}, 4.6),
-		0, //TODO: snapshot delay?
+		0, // TODO: snapshot delay?
 		skillPressHitmark,
 		c.skillMarkTargets,
 	)
@@ -197,7 +199,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 	if !t.StatusIsActive(skillMarkKey) {
 		return
 	}
-	c.AddStatus(skillICDKey, c.triKarmaInterval, true) //TODO: this is affected by hitlag?
+	c.AddStatus(skillICDKey, c.triKarmaInterval, true) // TODO: this is affected by hitlag?
 	done := false
 	for _, v := range c.Core.Combat.Enemies() {
 		e, ok := v.(*enemy.Enemy)

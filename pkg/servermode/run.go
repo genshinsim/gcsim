@@ -30,7 +30,7 @@ func errorRecover(r interface{}) error {
 
 // isRunning checks if an id is running
 func (s *Server) isRunning(id string) bool {
-	//WARNING: READ ONLY HERE NOT SAFE FOR WRITE
+	// WARNING: READ ONLY HERE NOT SAFE FOR WRITE
 	_, ok := s.pool[id]
 	return ok
 }

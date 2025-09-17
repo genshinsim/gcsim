@@ -46,6 +46,7 @@ func (c *char) c2puffer() {
 		}
 	}
 }
+
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return

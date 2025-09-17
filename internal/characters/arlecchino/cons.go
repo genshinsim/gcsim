@@ -11,10 +11,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2IcdKey = "arlecchino-c2-icd"
-const c4IcdKey = "arlecchino-c4-icd"
-const c6IcdKey = "arlecchino-c6-icd"
-const c6Key = "arlecchino-c6"
+const (
+	c2IcdKey = "arlecchino-c2-icd"
+	c4IcdKey = "arlecchino-c4-icd"
+	c6IcdKey = "arlecchino-c6-icd"
+	c6Key    = "arlecchino-c6"
+)
 
 func (c *char) c2() {
 	c.initialDirectiveLevel = 1

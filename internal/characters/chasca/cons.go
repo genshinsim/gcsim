@@ -8,8 +8,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-const c6key = "chasca-c6"
-const c6IcdKey = "chasca-c6-icd"
+const (
+	c6key    = "chasca-c6"
+	c6IcdKey = "chasca-c6-icd"
+)
 
 func (c *char) c1() float64 {
 	if c.Base.Cons < 1 {

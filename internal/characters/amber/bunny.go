@@ -31,7 +31,7 @@ func (b *Bunny) HandleAttack(atk *info.AttackEvent) float64 {
 	b.PoiseDMGCheck(atk)
 	b.ShatterCheck(atk)
 
-	//TODO: Check if sucrose E or faruzan E on Bunny is 25 dur or 50 dur
+	// TODO: Check if sucrose E or faruzan E on Bunny is 25 dur or 50 dur
 
 	if atk.Info.Durability > 0 {
 		atk.Info.Durability *= info.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
@@ -216,7 +216,7 @@ func (c *char) overloadExplode() {
 		if len(c.bunnies) == 0 {
 			return false
 		}
-		//TODO: only amber trigger?
+		// TODO: only amber trigger?
 		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}

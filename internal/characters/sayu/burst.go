@@ -11,8 +11,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 12
-const tickTaskDelay = 20
+const (
+	burstHitmark  = 12
+	tickTaskDelay = 20
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(65) // Q -> N1/E/J

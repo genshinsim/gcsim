@@ -9,12 +9,16 @@ import (
 
 const c2BuffKey = "furina-c2-hp"
 
-const c4Key = "furina-c4"
-const c4IcdKey = "furina-c4-icd"
+const (
+	c4Key    = "furina-c4"
+	c4IcdKey = "furina-c4-icd"
+)
 
-const c6Key = "center-of-attention"
-const c6IcdKey = "furina-c6-icd"
-const c6OusiaHealKey = "furina-c6-ousia-heal"
+const (
+	c6Key          = "center-of-attention"
+	c6IcdKey       = "furina-c6-icd"
+	c6OusiaHealKey = "furina-c6-ousia-heal"
+)
 
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)

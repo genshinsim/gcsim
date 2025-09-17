@@ -9,9 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 func init() {
 	burstFrames = frames.InitAbilSlice(61) // Q -> Walk

@@ -128,7 +128,7 @@ func SetupResonance(s *core.Core) {
 				})
 			}
 		case attributes.Hydro:
-			//TODO: reduce pyro duration not implemented; may affect bennett Q?
+			// TODO: reduce pyro duration not implemented; may affect bennett Q?
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.HPP] = 0.25
 			for _, c := range chars {

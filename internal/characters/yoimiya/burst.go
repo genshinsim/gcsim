@@ -13,9 +13,11 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 75
-const abDebuff = "aurous-blaze"
-const abIcdKey = "aurous-blaze-icd"
+const (
+	burstHitmark = 75
+	abDebuff     = "aurous-blaze"
+	abIcdKey     = "aurous-blaze-icd"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(113) // Q -> N1

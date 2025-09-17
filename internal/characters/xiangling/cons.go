@@ -42,6 +42,7 @@ func (c *char) c2(done bool) info.AttackCBFunc {
 		done = true
 	}
 }
+
 func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 	return func() {
 		ai := info.AttackInfo{

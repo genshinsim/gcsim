@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillFrames []int
-var skillRecastFrames []int
+var (
+	skillFrames       []int
+	skillRecastFrames []int
+)
 
 const (
 	skillHitmark       = 25

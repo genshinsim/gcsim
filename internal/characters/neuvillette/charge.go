@@ -15,8 +15,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var chargeFrames []int
-var endLag []int
+var (
+	chargeFrames []int
+	endLag       []int
+)
 
 const initialLegalEvalDur = 209
 

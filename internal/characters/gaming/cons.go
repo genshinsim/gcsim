@@ -8,9 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2Key = "gaming-c2"
-const c4Key = "gaming-c4"
-const c6Key = "gaming-c6"
+const (
+	c2Key = "gaming-c2"
+	c4Key = "gaming-c4"
+	c6Key = "gaming-c6"
+)
 
 // When the Suanni Man Chai from Suanni's Gilded Dance meets back up with Gaming,
 // it will heal 15% of Gaming's HP.

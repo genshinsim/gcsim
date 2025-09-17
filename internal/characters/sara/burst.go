@@ -11,9 +11,11 @@ import (
 
 var burstFrames []int
 
-const burstStart = 47           // lines up with cd start
-const burstInitialHitmark = 51  // Initial Hit
-const burstClusterHitmark = 100 // First Cluster Hit
+const (
+	burstStart          = 47  // lines up with cd start
+	burstInitialHitmark = 51  // Initial Hit
+	burstClusterHitmark = 100 // First Cluster Hit
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(80) // Q -> CA

@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 	}
 	particleCB := c.makeParticleCB()
-	//TODO: this should have its own position
+	// TODO: this should have its own position
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
 			ai,

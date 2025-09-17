@@ -11,8 +11,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 75                        // Initial Hit
-const fatalBlossomHitmark = 145 - burstHitmark // Fatal Blossom, accounting for task queuing
+const (
+	burstHitmark        = 75                 // Initial Hit
+	fatalBlossomHitmark = 145 - burstHitmark // Fatal Blossom, accounting for task queuing
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(96) // Q -> N1/E

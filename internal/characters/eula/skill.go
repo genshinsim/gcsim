@@ -13,9 +13,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
-var icewhirlHitmarks = []int{79, 92}
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+	icewhirlHitmarks = []int{79, 92}
+)
 
 const (
 	skillPressHitmark   = 20
@@ -198,7 +200,7 @@ func (c *char) holdSkill() action.Info {
 
 	for i := 0; i < v; i++ {
 		// multiple brand hits
-		//TODO: need to double check if this is affected by hitlag; might be a deployable
+		// TODO: need to double check if this is affected by hitlag; might be a deployable
 		icewhirlAI := info.AttackInfo{
 			ActorIndex: c.Index(),
 			Abil:       "Icetide Vortex (Icewhirl)",
@@ -240,7 +242,7 @@ func (c *char) holdSkill() action.Info {
 
 	// c1 add debuff
 	if c.Base.Cons >= 1 && v > 0 {
-		//TODO: check if the duration is right
+		// TODO: check if the duration is right
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("eula-c1", (6*v+6)*60),
 			AffectedStat: attributes.PhyP,

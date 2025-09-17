@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
-var burstTickOffset = []int{0, 2, 4, 0, 2, 4, 0, 2, 4}
+var (
+	burstFrames     []int
+	burstTickOffset = []int{0, 2, 4, 0, 2, 4, 0, 2, 4}
+)
 
 const (
 	burstStart   = 47

@@ -12,31 +12,47 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
+var (
+	highPlungeFrames []int
+	lowPlungeFrames  []int
+)
 
-var highPlungeFramesB []int
-var lowPlungeFramesB []int
+var (
+	highPlungeFramesB []int
+	lowPlungeFramesB  []int
+)
 
-const lowPlungeHitmark = 41 + 3
-const highPlungeHitmark = 43 + 3
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark  = 41 + 3
+	highPlungeHitmark = 43 + 3
+	collisionHitmark  = lowPlungeHitmark - 6
+)
 
-const lowPlungeHitmarkB = 44 + 3
-const highPlungeHitmarkB = 45 + 3
-const collisionHitmarkB = lowPlungeHitmarkB - 6
+const (
+	lowPlungeHitmarkB  = 44 + 3
+	highPlungeHitmarkB = 45 + 3
+	collisionHitmarkB  = lowPlungeHitmarkB - 6
+)
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 150.0
+	highPlungeRadius   = 5.0
+)
 
-const lowPlungePoiseDMGB = 100.0
-const lowPlungeRadiusB = 4.0
+const (
+	lowPlungePoiseDMGB = 100.0
+	lowPlungeRadiusB   = 4.0
+)
 
-const highPlungePoiseDMGB = 150.0
-const highPlungeRadiusB = 6.0
+const (
+	highPlungePoiseDMGB = 150.0
+	highPlungeRadiusB   = 6.0
+)
 
 func init() {
 	// low_plunge -> x

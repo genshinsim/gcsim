@@ -130,6 +130,7 @@ func (t *Target) SetDirection(trg info.Point) {
 		Write("trgY", trg.Y).
 		Write("direction", t.direction)
 }
+
 func (t *Target) SetDirectionToClosestEnemy() {
 	src := t.Pos()
 	// calculate direction towards closest enemy, or forward direction if none
@@ -143,6 +144,7 @@ func (t *Target) SetDirectionToClosestEnemy() {
 		Write("enemy key", enemy.Key()).
 		Write("direction", t.direction)
 }
+
 func (t *Target) CalcTempDirection(trg info.Point) info.Point {
 	src := t.Pos()
 	direction := info.CalcDirection(src, trg)

@@ -9,14 +9,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-const a1Dur = 1054
-const a1Key = "skirk-a1"
-const a1IcdKey = "skirk-a1-icd"
-const a4Key = "deaths-crossing"
-const a4Dur = 20 * 60
+const (
+	a1Dur    = 1054
+	a1Key    = "skirk-a1"
+	a1IcdKey = "skirk-a1-icd"
+	a4Key    = "deaths-crossing"
+	a4Dur    = 20 * 60
+)
 
-var a4MultAttack = []float64{1, 1.1, 1.2, 1.7}
-var a4MultBurst = []float64{1, 1.05, 1.15, 1.60}
+var (
+	a4MultAttack = []float64{1, 1.1, 1.2, 1.7}
+	a4MultBurst  = []float64{1, 1.05, 1.15, 1.60}
+)
 
 func (c *char) a1Init() {
 	a1Hook := func(args ...interface{}) bool {
@@ -120,6 +124,7 @@ func (c *char) getA4Stacks() int {
 func (c *char) a4MultAttack() float64 {
 	return a4MultAttack[c.getA4Stacks()]
 }
+
 func (c *char) a4MultBurst() float64 {
 	return a4MultBurst[c.getA4Stacks()]
 }

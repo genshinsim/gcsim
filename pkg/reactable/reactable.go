@@ -55,8 +55,10 @@ type Enemy interface {
 	QueueEnemyTask(f func(), delay int)
 }
 
-const frzDelta info.Durability = 2.5 / (60 * 60) // 2 * 1.25
-const frzDecayCap info.Durability = 10.0 / 60.0
+const (
+	frzDelta    info.Durability = 2.5 / (60 * 60) // 2 * 1.25
+	frzDecayCap info.Durability = 10.0 / 60.0
+)
 
 func (r *Reactable) Init(self info.Target, c *core.Core) *Reactable {
 	r.self = self
@@ -130,7 +132,7 @@ func (r *Reactable) React(a *info.AttackEvent) {
 	case attributes.Geo:
 		// can't double crystallize it looks like
 		// freeze can trigger hydro first
-		//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
+		// https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
 		r.TryCrystallizeElectro(a)
 		r.TryCrystallizeHydro(a)
 		r.TryCrystallizeCryo(a)
@@ -242,7 +244,7 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 				return true
 			}
 		}
-		//TODO: not sure if this is best way to go about it? perhaps supplying frozen element is better?
+		// TODO: not sure if this is best way to go about it? perhaps supplying frozen element is better?
 		if v == attributes.Cryo && r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
 			return true
 		}

@@ -7,12 +7,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1Scaling = 1.3824
-const a1key = "escoffier-a1"
-const a1Count = 9
-const a1FirstTick = 157
-const a1Interval = 58.5
-const a4Dur = 12 * 60
+const (
+	a1Scaling   = 1.3824
+	a1key       = "escoffier-a1"
+	a1Count     = 9
+	a1FirstTick = 157
+	a1Interval  = 58.5
+	a4Dur       = 12 * 60
+)
 
 var a4Shred = []float64{0.0, 0.05, 0.10, 0.15, 0.55}
 

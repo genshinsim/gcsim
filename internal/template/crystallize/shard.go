@@ -88,6 +88,7 @@ func (cs *Shard) CalcTempDirection(trg info.Point) info.Point {
 func (cs *Shard) Src() int {
 	return cs.src
 }
+
 func (cs *Shard) Expiry() int {
 	return cs.expiry
 }

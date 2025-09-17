@@ -218,7 +218,7 @@ func (e *Enemy) applyDamage(atk *info.AttackEvent, damage float64) float64 {
 	// do not let hp become negative because this function can be called multiple times in same frame
 	actualDmg := min(damage, e.hp) // do not let dmg be greater than remaining enemy hp
 	e.hp -= actualDmg
-	e.damageTaken += actualDmg //TODO: do we actually need this?
+	e.damageTaken += actualDmg // TODO: do we actually need this?
 
 	// check if target is dead
 	if e.Core.Flags.DamageMode && e.hp <= 0 {

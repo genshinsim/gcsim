@@ -270,6 +270,5 @@ func (s *Server) cancel() http.HandlerFunc {
 
 func (s *Server) info() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 	}
 }

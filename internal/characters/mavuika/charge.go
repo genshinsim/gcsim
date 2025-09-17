@@ -13,31 +13,41 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var bikeChargeFrames []int
-var bikeChargeFinalFrames []int
-var bikeHittableEntityList []HittableEntity
+var (
+	chargeFrames           []int
+	bikeChargeFrames       []int
+	bikeChargeFinalFrames  []int
+	bikeHittableEntityList []HittableEntity
+)
 
 // Minimum CA time before CAF anim is 50f
-var bikeChargeAttackMinimumDuration = 50
-var bikeChargeAttackStartupHitmark = 35
+var (
+	bikeChargeAttackMinimumDuration = 50
+	bikeChargeAttackStartupHitmark  = 35
+)
 
 // Maximum CA time before CAF anim is 375f
-var bikeChargeAttackMaximumDuration = 375
-var bikeChargeFinalHitmark = 45
+var (
+	bikeChargeAttackMaximumDuration = 375
+	bikeChargeFinalHitmark          = 45
+)
 
 // TODO: Replicate frames 35-46 of the CA more accurately
 // var bikeSpinInitialFrames = 11
 // var bikeSpinInitialAngularVelocity = float64(-180 / 11)
 // spin velocity varies by current angle
-var bikeSpinQuadrantAngularVelocity = []float64{-90 / 9, -90 / 7, -90 / 15, -90 / 14} // Quadrant 4, 3, 2, 1
-var bikeSpinQuadrantFrames = []int{9, 7, 15, 14}                                      // Quadrant 4, 3, 2, 1
+var (
+	bikeSpinQuadrantAngularVelocity = []float64{-90 / 9, -90 / 7, -90 / 15, -90 / 14} // Quadrant 4, 3, 2, 1
+	bikeSpinQuadrantFrames          = []int{9, 7, 15, 14}                             // Quadrant 4, 3, 2, 1
+)
 
-const chargeHitmark = 40
-const bikeChargeAttackICD = 42         // Minimum time between CA hits
-const bikeChargeAttackSpinFrames = 45  // One revolution every ~45f
-const bikeChargeAttackHitboxRadius = 3 // Placeholder
-const bikeChargeAttackSpinOffset = 4.0 // Estimated center of hitbox from Mav origin
+const (
+	chargeHitmark                = 40
+	bikeChargeAttackICD          = 42  // Minimum time between CA hits
+	bikeChargeAttackSpinFrames   = 45  // One revolution every ~45f
+	bikeChargeAttackHitboxRadius = 3   // Placeholder
+	bikeChargeAttackSpinOffset   = 4.0 // Estimated center of hitbox from Mav origin
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(48)
@@ -328,7 +338,6 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 	caFrames += newMinSpinDuration
 	adjustedBikeChargeFinalHitmark := bikeChargeFinalHitmark + caFrames
 	bikeHittableEntities, err := c.BuildBikeChargeAttackHittableTargetList()
-
 	if err != nil {
 		return action.Info{}, err
 	}
@@ -524,7 +533,6 @@ func (c *char) buildValidTargetList() ([]HittableEntity, error) {
 			facingDirection = c.caState.FacingDirection
 		}
 		isIntersecting, err := c.BikeHitboxIntersectionAngles(v, collisionFrames[:], facingDirection)
-
 		if err != nil {
 			return hittableEnemies, err
 		}
@@ -768,7 +776,7 @@ func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle 
 }
 
 func (c *char) DirectionOffsetToPrimaryTarget() float64 {
-	var enemyDirection = info.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
+	enemyDirection := info.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
 	if enemyDirection == info.DefaultDirection() {
 		return 0
 	}

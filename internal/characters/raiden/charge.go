@@ -56,8 +56,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-var swordCAFrames []int
-var swordCAHitmarks = []int{24, 32}
+var (
+	swordCAFrames   []int
+	swordCAHitmarks = []int{24, 32}
+)
 
 func init() {
 	// charge (burst) -> x

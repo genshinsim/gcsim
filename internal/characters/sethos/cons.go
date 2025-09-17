@@ -17,12 +17,16 @@ const (
 	c2Dur = 10 * 60
 )
 
-const c4Key = "sethos-c4"
-const c4Dur = 10 * 60
+const (
+	c4Key = "sethos-c4"
+	c4Dur = 10 * 60
+)
 
-const c6Key = "sethos-c6"
-const c6IcdKey = "sethos-c6-icd"
-const c6IcdDur = 15 * 60
+const (
+	c6Key    = "sethos-c6"
+	c6IcdKey = "sethos-c6-icd"
+	c6IcdDur = 15 * 60
+)
 
 func (c *char) c1() {
 	if c.Base.Cons < 1 {

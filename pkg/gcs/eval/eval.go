@@ -94,7 +94,7 @@ func (e *Eval) NextAction() (*action.Eval, error) {
 }
 
 func (e *Eval) Start() {
-	//TODO: consider catching panic here
+	// TODO: consider catching panic here
 	e.Run()
 }
 
@@ -113,7 +113,7 @@ func (e *Eval) Run() (res Obj, err error) {
 		// as defers are called last in first out so this needs to be before any panic handling
 		e.err = err
 	}()
-	//TODO: this should hopefully be removed in the future
+	// TODO: this should hopefully be removed in the future
 	defer func() {
 		// recover from panic if one occured. Set err to nil otherwise.
 		if pErr := recover(); pErr != nil {

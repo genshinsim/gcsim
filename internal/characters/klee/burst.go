@@ -12,8 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
-var waveHitmarks = []int{186, 294, 401, 503, 610, 718}
+var (
+	burstFrames  []int
+	waveHitmarks = []int{186, 294, 401, 503, 610, 718}
+)
 
 const burstStart = 146
 
@@ -74,7 +76,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// every 3 seconds add energy if c6
 	if c.Base.Cons >= 6 {
-		//TODO: this should eventually use hitlag affected queue and duration
+		// TODO: this should eventually use hitlag affected queue and duration
 		// but is not big deal right now b/c klee cant experience hitlag without getting hit
 		for i := burstStart + 180; i < burstStart+600; i += 180 {
 			c.Core.Tasks.Add(func() {

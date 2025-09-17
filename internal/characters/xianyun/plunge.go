@@ -12,16 +12,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var driftcloudFrames [][]int
-var plungeHitmarks = []int{35, 40, 46}
-var plungeRadius = []float64{4, 5, 6.5}
+var (
+	driftcloudFrames [][]int
+	plungeHitmarks   = []int{35, 40, 46}
+	plungeRadius     = []float64{4, 5, 6.5}
+)
 
-var highPlungeFramesXY []int
-var lowPlungeFramesXY []int
+var (
+	highPlungeFramesXY []int
+	lowPlungeFramesXY  []int
+)
 
-const collisionHitmark = 38
-const highPlungeHitmark = 46
-const lowPlungeHitmark = 44
+const (
+	collisionHitmark  = 38
+	highPlungeHitmark = 46
+	lowPlungeHitmark  = 44
+)
 
 const lowPlungeRadius = 3.0
 

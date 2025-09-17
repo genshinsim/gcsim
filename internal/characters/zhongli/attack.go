@@ -49,7 +49,7 @@ func init() {
 	attackFrames[4][action.ActionJump] = 5
 
 	attackFrames[5] = frames.InitNormalCancelSlice(attackEarliestCancel[5], 54)
-	attackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[5][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {

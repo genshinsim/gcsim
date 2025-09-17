@@ -28,8 +28,10 @@ var (
 	bikeAttackOffsets         = []float64{1.5, 1.85, 0.5, -0.8, 1}
 )
 
-const normalHitNum = 4
-const bikeHitNum = 5
+const (
+	normalHitNum = 4
+	bikeHitNum   = 5
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)

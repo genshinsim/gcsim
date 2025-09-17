@@ -16,8 +16,10 @@ var lowPlungeFramesC []int
 
 const lowPlungeHitmarkC = 41
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
 func init() {
 	lowPlungeFramesC = frames.InitAbilSlice(69) // Low Plunge -> J/Walk

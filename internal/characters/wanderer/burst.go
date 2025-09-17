@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFramesNormal []int
-var burstFramesE []int
+var (
+	burstFramesNormal []int
+	burstFramesE      []int
+)
 
 func init() {
 	burstFramesNormal = frames.InitAbilSlice(101)

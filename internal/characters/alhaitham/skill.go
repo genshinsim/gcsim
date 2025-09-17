@@ -12,8 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillTapFrames []int
-var skillHoldFrames []int
+var (
+	skillTapFrames  []int
+	skillHoldFrames []int
+)
 
 const (
 	skillTapHitmark  = 19
@@ -23,11 +25,15 @@ const (
 	particleICDKey   = "alhaitham-particle-icd"
 )
 
-var mirror1HitmarkLeft = []int{39}
-var mirror1HitmarkRight = []int{40}
+var (
+	mirror1HitmarkLeft  = []int{39}
+	mirror1HitmarkRight = []int{40}
+)
 
-var mirror2HitmarksLeft = []int{28, 37}
-var mirror2HitmarksRight = []int{26, 35}
+var (
+	mirror2HitmarksLeft  = []int{28, 37}
+	mirror2HitmarksRight = []int{26, 35}
+)
 
 var mirror3Hitmarks = []int{32, 41, 51}
 
@@ -86,6 +92,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		State:           action.SkillState,
 	}, nil
 }
+
 func (c *char) SkillHold() (action.Info, error) {
 	c.Core.Tasks.Add(c.skillMirrorGain, 23)
 
@@ -123,6 +130,7 @@ func (c *char) skillMirrorGain() {
 	}
 	c.mirrorGain(1)
 }
+
 func (c *char) mirrorGain(generated int) {
 	if generated == 0 {
 		return

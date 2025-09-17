@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c6IcdKey = "mavuika-c6-icd"
-const c1Key = "mavuika-c1"
+const (
+	c6IcdKey = "mavuika-c6-icd"
+	c1Key    = "mavuika-c1"
+)
 
 func (c *char) c1Init() {
 	if c.Base.Cons < 1 {

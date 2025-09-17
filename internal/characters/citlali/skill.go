@@ -18,9 +18,7 @@ const (
 	frostFallAbil             = "Frostfall Storm DMG"
 )
 
-var (
-	skillFrames []int
-)
+var skillFrames []int
 
 func init() {
 	skillFrames = frames.InitAbilSlice(50) // E -> Walk

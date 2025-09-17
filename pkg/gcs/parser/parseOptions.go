@@ -42,7 +42,7 @@ func parseOptions(p *Parser) (parseFn, error) {
 					p.res.Settings.NumberOfWorkers, err = itemNumberToInt(n)
 				}
 			case "mode":
-				//TODO: this is for backward compatibility for now
+				// TODO: this is for backward compatibility for now
 				_, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemIdentifier)
 			case "swap_delay":
 				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)

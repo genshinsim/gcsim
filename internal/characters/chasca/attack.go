@@ -18,8 +18,10 @@ var (
 	attackSkillTapFrames []int
 )
 
-const normalHitNum = 4
-const attackSkillTapHitmark = 11
+const (
+	normalHitNum          = 4
+	attackSkillTapHitmark = 11
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)

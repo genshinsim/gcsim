@@ -14,8 +14,10 @@ import (
 
 var aimedFrames [][]int
 
-var aimedHitmarks = []int{16, 74, 368}
-var startCharge = aimedHitmarks[0]
+var (
+	aimedHitmarks = []int{16, 74, 368}
+	startCharge   = aimedHitmarks[0]
+)
 
 const shadowPierceShotAil = "Shadowpiercing Shot"
 

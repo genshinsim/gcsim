@@ -51,9 +51,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTarget(player, info.Point{Y: 5}, 8)
 
-	//TODO: does sucrose burst snapshot?
+	// TODO: does sucrose burst snapshot?
 	snap := c.Snapshot(&ai)
-	//TODO: does burst absorb snapshot
+	// TODO: does burst absorb snapshot
 	aiAbs := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Forbidden Creation-Isomer 75/Type II (Absorb)",

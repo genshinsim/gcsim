@@ -116,7 +116,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 				if v <= info.ZeroDur {
 					continue
 				}
-				var key = info.ReactionModKey(r)
+				key := info.ReactionModKey(r)
 				out.reactionUptime[i][key.String()] += 1
 
 				if start, ok := out.activeReactions[i][key]; ok {

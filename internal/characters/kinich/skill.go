@@ -28,8 +28,10 @@ var (
 	scalespikerFrames []int
 )
 
-var blindSpotAppearanceDelays = []int{5, 30} // tap, hold (both tap and hold for entering nightsoul)
-var scalespikerReleases = []int{35, 17}      // tap, hold
+var (
+	blindSpotAppearanceDelays = []int{5, 30}  // tap, hold (both tap and hold for entering nightsoul)
+	scalespikerReleases       = []int{35, 17} // tap, hold
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42) // E -> D/J

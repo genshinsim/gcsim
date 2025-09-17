@@ -88,7 +88,7 @@ func (c *char) c6() {
 			Base:         modifier.NewBaseWithHitlag(c6Key, 12*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
-				//TODO: i assume this buff should go away if stacks are gone?
+				// TODO: i assume this buff should go away if stacks are gone?
 				if this.Tags[burstBuffKey] == 0 {
 					return nil, false
 				}

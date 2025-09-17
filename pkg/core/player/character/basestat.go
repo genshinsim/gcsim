@@ -116,7 +116,7 @@ func WeaponBaseStat(weap info.WeaponProfile, data *model.WeaponData) ([]float64,
 	// base props
 	for _, v := range data.BaseStats.BaseProps {
 		s := info.ConvertProtoStat(v.PropType)
-		//TODO: should this be cumulative?
+		// TODO: should this be cumulative?
 		res[s] = v.InitialValue * model.WeaponGrowCurveByLvl[lvl][v.Curve]
 	}
 

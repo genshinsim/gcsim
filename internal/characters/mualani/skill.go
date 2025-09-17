@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillFrames []int
-var skillCancelFrames []int
+var (
+	skillFrames       []int
+	skillCancelFrames []int
+)
 
 const (
 	particleICDKey  = "mualani-particle-icd"

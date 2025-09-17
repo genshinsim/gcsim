@@ -9,11 +9,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
-const skillPressHimark = 24
-const skillHoldHitmark = 48
+const (
+	skillPressHimark = 24
+	skillHoldHitmark = 48
+)
 
 func init() {
 	// skill (press) -> x

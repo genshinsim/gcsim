@@ -62,6 +62,7 @@ func (t *testtarg) CollidedWith(x info.Target) {
 		t.onCollision(x)
 	}
 }
+
 func (t *testtarg) WillCollide(s info.Shape) bool {
 	if !t.alive {
 		return false

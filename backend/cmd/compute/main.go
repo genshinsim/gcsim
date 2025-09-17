@@ -121,7 +121,7 @@ func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error)
 	simcfg, gcsl, err := simulator.Parse(w.Config)
 	if err != nil {
 		log.Printf("could not parse config for id %v: %v\n", w.Id, err)
-		//TODO: we should post something here??
+		// TODO: we should post something here??
 		return nil, err
 	}
 	simcfg.Settings.Iterations = int(w.Iterations)

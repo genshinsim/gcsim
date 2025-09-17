@@ -17,7 +17,7 @@ import (
 //
 // This effect can occur once every 5s.
 func (c *char) c4() {
-	//TODO: idk if the damage is instant or not
+	// TODO: idk if the damage is instant or not
 	const c4IcdKey = "kuki-c4-icd"
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*info.AttackEvent)
@@ -39,7 +39,7 @@ func (c *char) c4() {
 		}
 		c.AddStatus(c4IcdKey, 300, true) // 5s * 60
 
-		//TODO:frames for this and ICD tag
+		// TODO:frames for this and ICD tag
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
 			Abil:       "Thundergrass Mark",

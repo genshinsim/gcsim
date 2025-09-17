@@ -47,7 +47,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	)
 
 	// add cryo infuse
-	//TODO: check weapon infuse timing; this SHOULD be ok?
+	// TODO: check weapon infuse timing; this SHOULD be ok?
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.AddWeaponInfuse(
 			c.Index(),

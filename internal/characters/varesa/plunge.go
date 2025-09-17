@@ -25,21 +25,31 @@ var (
 
 // TODO: low_plunge
 
-const highPlungeHitmark = 37
-const fieryHighPlungeHitmark = 41
-const collisionHitmark = highPlungeHitmark - 6
+const (
+	highPlungeHitmark      = 37
+	fieryHighPlungeHitmark = 41
+	collisionHitmark       = highPlungeHitmark - 6
+)
 
-const xianyunLowPlungeHitmark = 37
-const xianyunHighPlungeHitmark = 38
+const (
+	xianyunLowPlungeHitmark  = 37
+	xianyunHighPlungeHitmark = 38
+)
 
-const xianyunLowPlungeNonNSWalk = 72
-const xianyunHighPlungeNonNSWalk = 72
+const (
+	xianyunLowPlungeNonNSWalk  = 72
+	xianyunHighPlungeNonNSWalk = 72
+)
 
-const xianyunFieryLowPlungeHitmark = 40
-const xianyunFieryHighPlungeHitmark = 40
+const (
+	xianyunFieryLowPlungeHitmark  = 40
+	xianyunFieryHighPlungeHitmark = 40
+)
 
-const lowPlungeRadius = 3.0
-const highPlungeRadius = 5.0
+const (
+	lowPlungeRadius  = 3.0
+	highPlungeRadius = 5.0
+)
 
 const (
 	apexState    = "apex-drive"
