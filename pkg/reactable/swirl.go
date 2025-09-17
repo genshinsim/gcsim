@@ -71,7 +71,7 @@ func (r *Reactable) TrySwirlElectro(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnSwirlElectro, r.self, a)
 
 	// 0.1s gcd on swirl electro attack
-	if !(r.swirlElectroGCD != -1 && r.core.F < r.swirlElectroGCD) {
+	if r.swirlElectroGCD == -1 || r.core.F >= r.swirlElectroGCD {
 		r.swirlElectroGCD = r.core.F + 0.1*60
 		r.queueSwirl(
 			info.ReactionTypeSwirlElectro,
@@ -109,7 +109,7 @@ func (r *Reactable) TrySwirlHydro(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnSwirlHydro, r.self, a)
 
 	// 0.1s gcd on swirl hydro attack
-	if !(r.swirlHydroGCD != -1 && r.core.F < r.swirlHydroGCD) {
+	if r.swirlHydroGCD == -1 || r.core.F >= r.swirlHydroGCD {
 		r.swirlHydroGCD = r.core.F + 0.1*60
 		r.queueSwirl(
 			info.ReactionTypeSwirlHydro,
@@ -139,7 +139,7 @@ func (r *Reactable) TrySwirlCryo(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
 
 	// 0.1s gcd on swirl cryo attack
-	if !(r.swirlCryoGCD != -1 && r.core.F < r.swirlCryoGCD) {
+	if r.swirlCryoGCD == -1 || r.core.F >= r.swirlCryoGCD {
 		r.swirlCryoGCD = r.core.F + 0.1*60
 		r.queueSwirl(
 			info.ReactionTypeSwirlCryo,
@@ -170,7 +170,7 @@ func (r *Reactable) TrySwirlPyro(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnSwirlPyro, r.self, a)
 
 	// 0.1s gcd on swirl pyro attack
-	if !(r.swirlPyroGCD != -1 && r.core.F < r.swirlPyroGCD) {
+	if r.swirlPyroGCD == -1 || r.core.F >= r.swirlPyroGCD {
 		r.swirlPyroGCD = r.core.F + 0.1*60
 		r.queueSwirl(
 			info.ReactionTypeSwirlPyro,
@@ -200,7 +200,7 @@ func (r *Reactable) TrySwirlFrozen(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
 
 	// 0.1s gcd on swirl cryo attack
-	if !(r.swirlCryoGCD != -1 && r.core.F < r.swirlCryoGCD) {
+	if r.swirlCryoGCD == -1 || r.core.F >= r.swirlCryoGCD {
 		r.swirlCryoGCD = r.core.F + 0.1*60
 		r.queueSwirl(
 			info.ReactionTypeSwirlCryo,

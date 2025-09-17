@@ -66,7 +66,7 @@ func (c *char) legalEvalFindDroplets() int {
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.chargeEarlyCancelled {
-		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack: Equitable Judgement with Charged Attack", c.CharWrapper.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack: Equitable Judgement with Charged Attack", c.Base.Key)
 	}
 	// there is a windup out of dash/jump/walk/swap. Otherwise it is rolled into the Q/E/CA/NA -> CA frames
 	windup := 0

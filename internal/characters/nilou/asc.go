@@ -47,12 +47,12 @@ func (c *char) a1() {
 			return false
 		}
 
-		b := newBountifulCore(c.Core, g.Gadget.Pos(), atk)
-		b.Gadget.SetKey(g.Gadget.Key())
+		b := newBountifulCore(c.Core, g.Pos(), atk)
+		b.SetKey(g.Key())
 		c.Core.Combat.ReplaceGadget(g.Key(), b)
 		// prevent blowing up
-		g.Gadget.OnExpiry = nil
-		g.Gadget.OnKill = nil
+		g.OnExpiry = nil
+		g.OnKill = nil
 
 		return false
 	}, "nilou-a1-cores")

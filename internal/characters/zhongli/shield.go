@@ -49,14 +49,14 @@ func (c *char) removeJadeShield() {
 func (c *char) newShield(base float64, dur int) *shd {
 	n := &shd{}
 	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.ActorIndex = c.Index()
-	n.Tmpl.Target = -1
-	n.Tmpl.Src = c.Core.F
-	n.Tmpl.ShieldType = shield.ZhongliJadeShield
-	n.Tmpl.Ele = attributes.Geo
-	n.Tmpl.HP = base
-	n.Tmpl.Name = "Zhongli Skill"
-	n.Tmpl.Expires = c.Core.F + dur
+	n.ActorIndex = c.Index()
+	n.Target = -1
+	n.Src = c.Core.F
+	n.ShieldType = shield.ZhongliJadeShield
+	n.Ele = attributes.Geo
+	n.HP = base
+	n.Name = "Zhongli Skill"
+	n.Expires = c.Core.F + dur
 	n.c = c
 	return n
 }

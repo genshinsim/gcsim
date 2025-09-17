@@ -22,14 +22,14 @@ func NewShield(index int, typ attributes.Element, src, lvl int, em float64, expi
 		lvl = 0
 	}
 
-	s.Tmpl.ActorIndex = index
-	s.Tmpl.Target = -1
-	s.Tmpl.Ele = typ
-	s.Tmpl.ShieldType = shield.Crystallize
-	s.Tmpl.Name = "Crystallize " + typ.String()
-	s.Tmpl.Src = src
-	s.Tmpl.HP = shieldBaseHP[lvl]
-	s.Tmpl.Expires = expiry
+	s.ActorIndex = index
+	s.Target = -1
+	s.Ele = typ
+	s.ShieldType = shield.Crystallize
+	s.Name = "Crystallize " + typ.String()
+	s.Src = src
+	s.HP = shieldBaseHP[lvl]
+	s.Expires = expiry
 
 	s.emBonus = (40.0 / 9.0) * (em / (1400 + em))
 

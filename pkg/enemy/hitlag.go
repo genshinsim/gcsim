@@ -50,7 +50,7 @@ func (e *Enemy) QueueEnemyTask(f func(), delay int) {
 
 func (e *Enemy) Tick() {
 	// dead enemy don't tick
-	if !e.Target.Alive {
+	if !e.Alive {
 		return
 	}
 	// decrement frozen time first

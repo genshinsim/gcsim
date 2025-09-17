@@ -32,7 +32,7 @@ func testCore() *core.Core {
 	trg.Target = target.New(c, info.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
 	trg.typ = info.TargettablePlayer
-	trg.Reactable.Init(trg, c)
+	trg.Init(trg, c)
 	c.Combat.SetPlayer(trg)
 
 	// add default character
@@ -124,7 +124,7 @@ func (target *testTarget) Attack(atk *info.AttackEvent, evt glog.Event) (float64
 
 func (target *testTarget) applyDamage(atk *info.AttackEvent) {
 	if !atk.Reacted {
-		target.Reactable.AttachOrRefill(atk)
+		target.AttachOrRefill(atk)
 	}
 }
 
@@ -132,7 +132,7 @@ func addTargetToCore(c *core.Core) *testTarget {
 	trg := &testTarget{}
 	trg.Target = target.New(c, info.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
-	trg.Reactable.Init(trg, c)
+	trg.Init(trg, c)
 	c.Combat.AddEnemy(trg)
 	return trg
 }

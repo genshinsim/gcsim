@@ -274,7 +274,7 @@ func (p *Player) ReactWithSelf(atk *info.AttackEvent) {
 		return
 	}
 	// otherwise react
-	existing := p.Reactable.ActiveAuraString()
+	existing := p.ActiveAuraString()
 	applied := atk.Info.Durability
 	p.React(atk)
 	p.Core.Log.NewEvent("self reaction occured", glog.LogElementEvent, atk.Info.ActorIndex).
@@ -284,5 +284,5 @@ func (p *Player) ReactWithSelf(atk *info.AttackEvent) {
 		Write("abil", atk.Info.Abil).
 		Write("target", 0).
 		Write("existing", existing).
-		Write("after", p.Reactable.ActiveAuraString())
+		Write("after", p.ActiveAuraString())
 }

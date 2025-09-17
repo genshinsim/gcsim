@@ -208,7 +208,7 @@ func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []inte
 			n++
 			continue
 		}
-		if !(m.Expiry() > *c.f || m.Expiry() == -1) {
+		if m.Expiry() <= *c.f && m.Expiry() != -1 {
 			continue
 		}
 

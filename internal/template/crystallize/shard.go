@@ -35,12 +35,12 @@ func NewShard(c *core.Core, shp info.Shape, shd *Shield) *Shard {
 	cs.Gadget = gadget.New(c, info.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, info.GadgetTypCrystallizeShard)
 
 	// shard lasts for 15s from shard spawn
-	cs.Gadget.Duration = 15 * 60
+	cs.Duration = 15 * 60
 	// earliest shard pickup is 54f from crystallize text, so 31f from shard spawn
 	cs.EarliestPickup = c.F + 31
 	cs.Shield = shd
 	cs.src = c.F
-	cs.expiry = c.F + cs.Gadget.Duration
+	cs.expiry = c.F + cs.Duration
 
 	return cs
 }

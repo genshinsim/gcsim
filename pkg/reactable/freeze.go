@@ -70,7 +70,7 @@ func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnShatter, r.self, a)
 
 	// 0.2s gcd on shatter attack
-	if !(r.shatterGCD != -1 && r.core.F < r.shatterGCD) {
+	if r.shatterGCD == -1 || r.core.F >= r.shatterGCD {
 		r.shatterGCD = r.core.F + 0.2*60
 		// trigger shatter attack
 		ai := info.AttackInfo{

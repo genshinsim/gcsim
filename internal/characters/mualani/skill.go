@@ -104,7 +104,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	canQueueAfter := skillFrames[action.ActionAttack] // earliest cancel
 	// press skill "while" walking
-	isWalking := c.Core.Player.AnimationHandler.CurrentState() == action.WalkState
+	isWalking := c.Core.Player.CurrentState() == action.WalkState
 	if isWalking {
 		canQueueAfter = skillDelay
 	}

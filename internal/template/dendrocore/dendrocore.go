@@ -39,7 +39,7 @@ func New(c *core.Core, shp info.Shape, a *info.AttackEvent) *Gadget {
 	// for simplicity, seeds spawn randomly at radius + 0.5
 	r := circ.Radius() + 0.5
 	s.Gadget = gadget.New(c, info.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, info.GadgetTypDendroCore)
-	s.Gadget.Duration = 300 // ??
+	s.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
@@ -66,8 +66,8 @@ func New(c *core.Core, shp info.Shape, a *info.AttackEvent) *Gadget {
 			}, 1)
 		}
 	}
-	s.Gadget.OnExpiry = explode("expired")
-	s.Gadget.OnKill = explode("killed")
+	s.OnExpiry = explode("expired")
+	s.OnKill = explode("killed")
 
 	return s
 }
@@ -112,8 +112,8 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 			}
 		}, 60)
 
-		s.Gadget.OnKill = nil
-		s.Gadget.Kill()
+		s.OnKill = nil
+		s.Kill()
 		s.Core.Events.Emit(event.OnHyperbloom, s, atk)
 		s.Core.Log.NewEvent(
 			"hyperbloom triggered",
@@ -121,7 +121,7 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 			char.Index(),
 		).
 			Write("dendro_core_char", s.CharIndex).
-			Write("dendro_core_src", s.Gadget.Src())
+			Write("dendro_core_src", s.Src())
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
@@ -139,8 +139,8 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 		}, 1)
 
-		s.Gadget.OnKill = nil
-		s.Gadget.Kill()
+		s.OnKill = nil
+		s.Kill()
 		s.Core.Events.Emit(event.OnBurgeon, s, atk)
 		s.Core.Log.NewEvent(
 			"burgeon triggered",
@@ -148,7 +148,7 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 			char.Index(),
 		).
 			Write("dendro_core_char", s.CharIndex).
-			Write("dendro_core_src", s.Gadget.Src())
+			Write("dendro_core_src", s.Src())
 	default:
 		return 0, false
 	}

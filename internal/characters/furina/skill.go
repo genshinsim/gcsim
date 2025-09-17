@@ -88,7 +88,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	case pneuma:
 		return c.skillPneuma(p)
 	default:
-		return action.Info{}, fmt.Errorf("%v: character is in unknown arkhe: %v", c.CharWrapper.Base.Key, c.arkhe)
+		return action.Info{}, fmt.Errorf("%v: character is in unknown arkhe: %v", c.Base.Key, c.arkhe)
 	}
 }
 

@@ -33,7 +33,7 @@ func (c *char) c2() {
 		if c.sproutShouldExtend {
 			return false
 		}
-		if !(c.StatusIsActive(sproutKey) || c.StatusIsActive(skillKey)) {
+		if !c.StatusIsActive(sproutKey) && !c.StatusIsActive(skillKey) {
 			return false
 		}
 		c.sproutShouldExtend = true

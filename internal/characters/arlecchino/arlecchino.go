@@ -48,7 +48,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
-	lastAction := c.Character.Core.Player.LastAction
+	lastAction := c.Core.Player.LastAction
 	if k != c.Base.Key && a != action.ActionSwap {
 		return fmt.Errorf("%v: Tried to execute %v when not on field", c.Base.Key, a)
 	}

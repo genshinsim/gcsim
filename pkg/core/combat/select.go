@@ -38,7 +38,7 @@ func gadgetsWithinAreaFiltered(a info.AttackPattern, filter func(t info.Gadget) 
 			continue
 		}
 		// check if info.Gadget is enemy camp, abilities don't target allied gadgets
-		if !(v.GadgetTyp() > info.StartGadgetTypEnemy && v.GadgetTyp() < info.EndGadgetTypEnemy) {
+		if v.GadgetTyp() <= info.StartGadgetTypEnemy || v.GadgetTyp() >= info.EndGadgetTypEnemy {
 			continue
 		}
 		if hasFilter && !filter(v) {
@@ -196,7 +196,7 @@ func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t info.Gadget) bo
 			continue
 		}
 		// check if info.Gadget is enemy camp, abilities don't target allied gadgets
-		if !(v.GadgetTyp() > info.StartGadgetTypEnemy && v.GadgetTyp() < info.EndGadgetTypEnemy) {
+		if v.GadgetTyp() <= info.StartGadgetTypEnemy || v.GadgetTyp() >= info.EndGadgetTypEnemy {
 			continue
 		}
 		if hasFilter && !filter(v) {

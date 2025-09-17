@@ -34,7 +34,7 @@ func (c *char) newGuoba(ai info.AttackInfo) *panda {
 		player.Direction(),
 	)
 	p.Gadget = gadget.New(c.Core, pos, 0.2, info.GadgetTypGuoba)
-	p.Gadget.Duration = 438
+	p.Duration = 438
 	p.Reactable = hacks.NewReactable(p, c.Core)
 
 	return p

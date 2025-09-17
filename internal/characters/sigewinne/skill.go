@@ -74,11 +74,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		hold = 0
 	}
-	if hold == 1 {
+	switch hold {
+	case 1:
 		skillHitmark = skillShortHoldHitmark
 		skillCDStart = skillShortHoldCDStart
 		c.currentBubbleTier = 1
-	} else if hold == 2 {
+	case 2:
 		skillHitmark = skillHoldHitmark
 		skillCDStart = skillHoldCDStart
 		c.currentBubbleTier = 2

@@ -29,7 +29,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 			n++
 			continue
 		}
-		if !(m.Expiry() > *c.f || m.Expiry() == -1) {
+		if m.Expiry() <= *c.f && m.Expiry() != -1 {
 			continue
 		}
 

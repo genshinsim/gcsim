@@ -118,9 +118,10 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	// TODO: assume NAs always hit. since it is not possible to know if the next CA is CA0 or CA1/CAF when deciding what CA frames to return.
 	// Add superlative strength stacks on damage
 	n := c.NormalCounter
-	if n == 1 {
+	switch n {
+	case 1:
 		c.addStrStack("attack", 1)
-	} else if n == 3 {
+	case 3:
 		c.addStrStack("attack", 2)
 	}
 	if c.StatModIsActive(burstBuffKey) && (n == 0 || n == 2) {

@@ -54,7 +54,7 @@ func (c *char) a1Extension() {
 			return false
 		}
 		active := c.Core.Player.ActiveChar()
-		if !(active.Index() == c.Index() && active.StatusIsActive(a1Key)) {
+		if active.Index() != c.Index() || !active.StatusIsActive(a1Key) {
 			return false
 		}
 		c.ExtendStatus(a1Key, 17)

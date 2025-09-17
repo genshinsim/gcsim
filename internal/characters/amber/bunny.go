@@ -36,7 +36,7 @@ func (b *Bunny) HandleAttack(atk *info.AttackEvent) float64 {
 	if atk.Info.Durability > 0 {
 		atk.Info.Durability *= info.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
-			existing := b.Reactable.ActiveAuraString()
+			existing := b.ActiveAuraString()
 			applied := atk.Info.Durability
 			b.React(atk)
 			if b.Core.Flags.LogDebug && atk.Reacted {
@@ -51,7 +51,7 @@ func (b *Bunny) HandleAttack(atk *info.AttackEvent) float64 {
 					Write("abil", atk.Info.Abil).
 					Write("target", "Bunny").
 					Write("existing", existing).
-					Write("after", b.Reactable.ActiveAuraString())
+					Write("after", b.ActiveAuraString())
 			}
 		}
 	}
@@ -76,7 +76,7 @@ func (b *Bunny) HandleAttack(atk *info.AttackEvent) float64 {
 
 func (b *Bunny) attachEle(atk *info.AttackEvent) {
 	// check for ICD first
-	existing := b.Reactable.ActiveAuraString()
+	existing := b.ActiveAuraString()
 	applied := atk.Info.Durability
 	b.AttachOrRefill(atk)
 	if b.Core.Flags.LogDebug {
@@ -91,7 +91,7 @@ func (b *Bunny) attachEle(atk *info.AttackEvent) {
 			Write("abil", atk.Info.Abil).
 			Write("target", "Bunny").
 			Write("existing", existing).
-			Write("after", b.Reactable.ActiveAuraString())
+			Write("after", b.ActiveAuraString())
 	}
 }
 
@@ -138,7 +138,7 @@ func (c *char) makeBunny() *Bunny {
 	b.Gadget = gadget.New(c.Core, bunnyPos, 1, info.GadgetTypBaronBunny)
 	b.Reactable = hacks.NewReactable(b, c.Core)
 
-	b.Gadget.Duration = 484
+	b.Duration = 484
 
 	b.char = c
 
@@ -163,8 +163,8 @@ func (c *char) makeBunny() *Bunny {
 	}
 	b.ae.Callbacks = append(b.ae.Callbacks, c.makeParticleCB())
 	c.bunnies = append(c.bunnies, b)
-	b.Gadget.OnKill = b.explode
-	b.Gadget.OnExpiry = b.explode
+	b.OnKill = b.explode
+	b.OnExpiry = b.explode
 	c.Core.Combat.AddGadget(b)
 	return b
 }
@@ -172,7 +172,7 @@ func (c *char) makeBunny() *Bunny {
 func (b *Bunny) explode() {
 	// Explode
 	b.char.Core.Log.NewEvent("amber exploding bunny", glog.LogCharacterEvent, b.char.Index()).
-		Write("src", b.Gadget.Src())
+		Write("src", b.Src())
 	b.char.Core.QueueAttackEvent(b.ae, 1)
 
 	// remove self from list of bunnies
