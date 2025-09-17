@@ -263,7 +263,7 @@ func (r *Reactable) GetAuraDecayRate(mod attributes.Element) info.Durability {
 	return 0
 }
 
-func (r *Reactable) SetAuraDurability(mod attributes.Element, dur info.Durability, decay info.Durability) {
+func (r *Reactable) SetAuraDurability(mod attributes.Element, dur, decay info.Durability) {
 	if m, ok := elementToModifier[mod]; ok {
 		r.Durability[m] = dur
 		if decay > info.ZeroDur {

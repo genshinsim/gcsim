@@ -48,14 +48,14 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 		return 0, fmt.Errorf("bad element condition: %w", err)
 	}
 
-	eleKey := attributes.UnknownElement
+	var eleKey attributes.Element
 	switch ele {
 	case "burning":
 		result := info.Durability(0)
 		if e.IsBurning() {
-			//TODO: this really should be a min of Burning and BurningFuel, but leaving it as is to avoid
-			//breaking existing sims that may be relying on this behavior in the current set of changes
-			//this should be fixed
+			// TODO: this really should be a min of Burning and BurningFuel, but leaving it as is to avoid
+			// breaking existing sims that may be relying on this behavior in the current set of changes
+			// this should be fixed
 			result = e.GetAuraDurability(attributes.Burning)
 		}
 		return float64(result), nil
