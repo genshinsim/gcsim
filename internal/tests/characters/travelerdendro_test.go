@@ -12,7 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestTravelerDendroBurstAttach(t *testing.T) {
@@ -59,8 +58,8 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 		t.FailNow()
 	}
 	log.Println("initial aura string: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.Dendro] != 10 {
-		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
+	if gr.GetAuraDurability(info.ReactionModKeyDendro) != 10 {
+		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyDendro))
 	}
 
 	// pattern only hit gadet
@@ -78,11 +77,11 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	advanceCoreFrame(c)
 
 	log.Println("after applying 100 cyro: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.Cryo] != 80 {
-		t.Errorf("expecting 80 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Cryo])
+	if gr.GetAuraDurability(info.ReactionModKeyCryo) != 80 {
+		t.Errorf("expecting 80 cryo on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyCryo))
 	}
-	if gr.Durability[reactable.Dendro] != 10 {
-		t.Errorf("expecting 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
+	if gr.GetAuraDurability(info.ReactionModKeyDendro) != 10 {
+		t.Errorf("expecting 10 dendro on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyDendro))
 	}
 }
 
@@ -139,8 +138,8 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 		t.FailNow()
 	}
 	log.Println("initial aura string: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.Dendro] != 10 {
-		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
+	if gr.GetAuraDurability(info.ReactionModKeyDendro) != 10 {
+		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyDendro))
 	}
 
 	// pattern only hit gadet
@@ -158,8 +157,8 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	advanceCoreFrame(c)
 
 	log.Printf("at f %v after applying 100 pyro: %v\n", c.F, gr.ActiveAuraString())
-	if gr.Durability[reactable.Pyro] != 0 {
-		t.Errorf("expecting 0 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Pyro])
+	if gr.GetAuraDurability(info.ReactionModKeyPyro) != 0 {
+		t.Errorf("expecting 0 dendro on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyPyro))
 	}
 
 	// should get an explosion 60 frfames later

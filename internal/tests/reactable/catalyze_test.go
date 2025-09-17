@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestQuicken(t *testing.T) {
@@ -36,11 +35,11 @@ func TestQuicken(t *testing.T) {
 	advanceCoreFrame(c)
 
 	trg := c.Combat.Enemies()[0].(*enemy.Enemy)
-	if math.Abs(float64(trg.Durability[reactable.Quicken])-19.966666) > 0.000001 {
+	if math.Abs(float64(trg.GetAuraDurability(info.ReactionModKeyQuicken))-19.966666) > 0.000001 {
 		t.Errorf(
 			"expected quicken=%v, got quicken=%v",
 			19.666666,
-			trg.Durability[reactable.Quicken],
+			trg.GetAuraDurability(info.ReactionModKeyQuicken),
 		)
 	}
 	if trg.AuraContains(attributes.Dendro, attributes.Electro) {
@@ -81,14 +80,14 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 	advanceCoreFrame(c)
 
 	trg := c.Combat.Enemies()[0].(*enemy.Enemy)
-	if math.Abs(float64(trg.Durability[reactable.Quicken])-19.933333) > 0.000001 { // 2f decay
+	if math.Abs(float64(trg.GetAuraDurability(info.ReactionModKeyQuicken))-19.933333) > 0.000001 { // 2f decay
 		t.Errorf(
 			"expected electro attack to not consume quicken aura, got quicken=%v",
-			trg.Durability[reactable.Quicken],
+			trg.GetAuraDurability(info.ReactionModKeyQuicken),
 		)
 	}
-	if trg.Durability[reactable.Electro] != 20 {
+	if trg.GetAuraDurability(info.ReactionModKeyElectro) != 20 {
 		t.Errorf(
-			"expected electro attack to not reduce, got electro=%v", trg.Durability[reactable.Electro])
+			"expected electro attack to not reduce, got electro=%v", trg.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 }

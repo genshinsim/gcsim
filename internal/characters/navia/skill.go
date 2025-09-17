@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/crystallize"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -14,7 +15,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var (
@@ -321,7 +321,7 @@ func (c *char) surgingBlade(count int) {
 func (c *char) pullCrystals(firingTimeF, i int) {
 	c.Core.Tasks.Add(func() {
 		for _, g := range c.Core.Combat.Gadgets() {
-			cs, ok := g.(*reactable.CrystallizeShard)
+			cs, ok := g.(*crystallize.Shard)
 			// skip if not a shard
 			if !ok {
 				continue

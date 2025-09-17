@@ -7,21 +7,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
 type Player struct {
 	*target.Target
-	*reactable.Reactable
+	info.Reactable
 }
 
 func New(core *core.Core, pos info.Point, r float64) *Player {
 	p := &Player{}
 	p.Target = target.New(core, pos, r)
-	p.Reactable = &reactable.Reactable{}
-	p.Reactable.Init(p, core)
+	p.Reactable = hacks.NewReactable(p, core)
 	return p
 }
 
@@ -236,31 +235,37 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur info.Durability, 
 	if ele == attributes.Frozen {
 		return
 	}
-	var mod reactable.Modifier
+	var reactionKey info.ReactionModKey
 	switch ele {
 	case attributes.Electro:
-		mod = reactable.Electro
+		reactionKey = info.ReactionModKeyElectro
 	case attributes.Hydro:
-		mod = reactable.Hydro
+		reactionKey = info.ReactionModKeyHydro
 	case attributes.Pyro:
-		mod = reactable.Pyro
+		reactionKey = info.ReactionModKeyPyro
 	case attributes.Cryo:
-		mod = reactable.Cryo
+		reactionKey = info.ReactionModKeyCryo
 	case attributes.Dendro:
-		mod = reactable.Dendro
+		reactionKey = info.ReactionModKeyDendro
+	default:
+		// catch all case to make sure we don't infuse with invalid element
+		p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "invalid self infusion element: "+ele.String())
+		return
 	}
 
+	active := p.GetAuraDurability(reactionKey)
 	// we're assuming refill maintains the same decay rate?
-	if p.Durability[mod] > reactable.ZeroDur {
+	if active > info.ZeroDur {
 		// make sure we're not adding more than incoming
-		if p.Durability[mod] < dur {
-			p.Durability[mod] = dur
+		if active < dur {
+			p.SetAuraDurability(reactionKey, dur)
 		}
 		return
 	}
 	// otherwise calculate decay based on specified f (in frames)
-	p.Durability[mod] = dur
-	p.DecayRate[mod] = dur / info.Durability(f)
+	decay := dur / info.Durability(f)
+	p.SetAuraDurability(reactionKey, dur)
+	p.SetAuraDecayRate(reactionKey, decay)
 }
 
 func (p *Player) ReactWithSelf(atk *info.AttackEvent) {

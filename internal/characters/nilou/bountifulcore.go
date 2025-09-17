@@ -1,6 +1,7 @@
 package nilou
 
 import (
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -8,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type BountifulCore struct {
@@ -27,7 +27,7 @@ func newBountifulCore(c *core.Core, p info.Point, a *info.AttackEvent) *Bountifu
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
 		c.Tasks.Add(func() {
-			ai, snap := reactable.NewBloomAttack(char, b, func(atk *info.AttackInfo) {
+			ai, snap := dendrocore.NewBloomAttack(char, b, func(atk *info.AttackInfo) {
 				// atk.Abil += " (bountiful core)"
 				// FIXME: some external code only match against AttackTagBloom. fix A4 if you uncomment this
 				// atk.AttackTag = attacks.AttackTagBountifulCore

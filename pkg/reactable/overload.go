@@ -9,14 +9,14 @@ import (
 )
 
 func (r *Reactable) TryOverload(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
 		// must have pyro; pyro cant coexist (for now) so ok to ignore count?
-		if r.Durability[Pyro] < ZeroDur && r.Durability[Burning] < ZeroDur {
+		if r.Durability[info.ReactionModKeyPyro] < info.ZeroDur && r.Durability[info.ReactionModKeyBurning] < info.ZeroDur {
 			return false
 		}
 		// reduce; either gone or left; don't care how much actually reacted
@@ -24,7 +24,7 @@ func (r *Reactable) TryOverload(a *info.AttackEvent) bool {
 		r.burningCheck()
 	case attributes.Pyro:
 		// must have electro; gotta be careful with ec?
-		if r.Durability[Electro] < ZeroDur {
+		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
@@ -57,7 +57,7 @@ func (r *Reactable) TryOverload(a *info.AttackEvent) bool {
 		}
 		char := r.core.Player.ByIndex(a.Info.ActorIndex)
 		em := char.Stat(attributes.EM)
-		flatdmg, snap := calcReactionDmg(char, atk, em)
+		flatdmg, snap := combat.CalcReactionDmg(char.Base.Level, char, atk, em)
 		atk.FlatDmg = 2.75 * flatdmg
 		r.core.QueueAttackWithSnap(atk, snap, combat.NewCircleHitOnTarget(r.self, nil, 3), 1)
 	}

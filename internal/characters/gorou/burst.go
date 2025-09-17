@@ -4,12 +4,12 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/crystallize"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var burstFrames []int
@@ -131,7 +131,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 
 		// suck in 1 crystallize shard
 		for _, g := range c.Core.Combat.Gadgets() {
-			cs, ok := g.(*reactable.CrystallizeShard)
+			cs, ok := g.(*crystallize.Shard)
 			// skip if no shard
 			if !ok {
 				continue

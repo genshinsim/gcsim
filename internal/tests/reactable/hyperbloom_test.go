@@ -3,11 +3,11 @@ package reactable_test
 import (
 	"testing"
 
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestHyperbloom(t *testing.T) {
@@ -47,7 +47,7 @@ func TestHyperbloom(t *testing.T) {
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for i := 0; i < dendrocore.Delay+1; i++ {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 1 {
@@ -126,7 +126,7 @@ func TestECHyperbloom(t *testing.T) {
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for i := 0; i < dendrocore.Delay+1; i++ {
 		advanceCoreFrame(c)
 	}
 

@@ -1,6 +1,7 @@
 package nilou
 
 import (
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -8,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 const (
@@ -42,7 +42,7 @@ func (c *char) a1() {
 		if !char.StatusIsActive(a1Status) {
 			return false
 		}
-		g, ok := args[0].(*reactable.DendroCore)
+		g, ok := args[0].(*dendrocore.Gadget)
 		if !ok {
 			return false
 		}

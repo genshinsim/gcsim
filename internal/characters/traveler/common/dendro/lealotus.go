@@ -8,14 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type LeaLotus struct {
 	*gadget.Gadget
-	*reactable.Reactable
+	info.Reactable
 	burstAtk     *info.AttackEvent
 	char         *Traveler
 	hitboxRadius float64
@@ -30,9 +30,8 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 		player.Direction(),
 	)
 	s.Gadget = gadget.New(c.Core, c.burstPos, 1, info.GadgetTypLeaLotus)
-	s.Reactable = &reactable.Reactable{}
-	s.Reactable.Init(s, c.Core)
-	s.Durability[reactable.Dendro] = 10
+	s.Reactable = hacks.NewReactable(s, c.Core)
+	s.SetAuraDurability(info.ReactionModKeyDendro, 10)
 
 	s.Duration = 12 * 60
 	if c.Base.Cons >= 2 {
@@ -118,7 +117,7 @@ func (s *LeaLotus) HandleAttack(atk *info.AttackEvent) float64 {
 	if atk.Info.Element != attributes.Cryo {
 		return 0
 	}
-	if atk.Info.Durability < reactable.ZeroDur {
+	if atk.Info.Durability < info.ZeroDur {
 		return 0
 	}
 	if atk.Reacted {

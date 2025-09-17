@@ -1,104 +1,32 @@
 package reactable
 
 import (
-	"encoding/json"
-	"errors"
 	"strconv"
-	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-type Modifier int
-
-const (
-	Invalid Modifier = iota
-	Electro
-	Pyro
-	Cryo
-	Hydro
-	BurningFuel
-	SpecialDecayDelim
-	Dendro
-	Quicken
-	Frozen
-	Anemo
-	Geo
-	Burning
-	EndModifier
-)
-
-var modifierElement = []attributes.Element{
-	attributes.UnknownElement,
-	attributes.Electro,
-	attributes.Pyro,
-	attributes.Cryo,
-	attributes.Hydro,
-	attributes.Dendro,
-	attributes.UnknownElement,
-	attributes.Dendro,
-	attributes.Quicken,
-	attributes.Frozen,
-	attributes.Anemo,
-	attributes.Geo,
-	attributes.Pyro,
-	attributes.UnknownElement,
-}
-
-var ModifierString = []string{
-	"",
-	"electro",
-	"pyro",
-	"cryo",
-	"hydro",
-	"dendro-fuel",
-	"",
-	"dendro",
-	"quicken",
-	"frozen",
-	"anemo",
-	"geo",
-	"burning",
-	"",
-}
-
-var elementToModifier = map[attributes.Element]Modifier{
-	attributes.Electro: Electro,
-	attributes.Pyro:    Pyro,
-	attributes.Cryo:    Cryo,
-	attributes.Hydro:   Hydro,
-	attributes.Dendro:  Dendro,
-}
-
-func (r Modifier) Element() attributes.Element { return modifierElement[r] }
-func (r Modifier) String() string              { return ModifierString[r] }
-
-func (r Modifier) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ModifierString[r])
-}
-
-func (r *Modifier) UnmarshalJSON(b []byte) error {
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-	s = strings.ToLower(s)
-	for i, v := range ModifierString {
-		if v == s {
-			*r = Modifier(i)
-			return nil
-		}
-	}
-	return errors.New("unrecognized ReactableModifier")
+var elementToModifier = map[attributes.Element]info.ReactionModKey{
+	attributes.Electro: info.ReactionModKeyElectro,
+	attributes.Pyro:    info.ReactionModKeyPyro,
+	attributes.Cryo:    info.ReactionModKeyCryo,
+	attributes.Hydro:   info.ReactionModKeyHydro,
+	attributes.Dendro:  info.ReactionModKeyDendro,
+	attributes.Quicken: info.ReactionModKeyQuicken,
+	attributes.Frozen:  info.ReactionModKeyFrozen,
+	attributes.Geo:     info.ReactionModKeyGeo,
+	// TODO: these aren't real attributes and should not be here
+	attributes.Burning:     info.ReactionModKeyBurning,
+	attributes.BurningFuel: info.ReactionModKeyBurningFuel,
 }
 
 type Reactable struct {
-	Durability [EndModifier]info.Durability
-	DecayRate  [EndModifier]info.Durability
+	Durability [info.ReactionModKeyEnd]info.Durability
+	DecayRate  [info.ReactionModKeyEnd]info.Durability
 	// Source     []int //source frame of the aura
 	self info.Target
 	core *core.Core
@@ -130,12 +58,10 @@ type Enemy interface {
 const frzDelta info.Durability = 2.5 / (60 * 60) // 2 * 1.25
 const frzDecayCap info.Durability = 10.0 / 60.0
 
-const ZeroDur info.Durability = 0.00000000001
-
 func (r *Reactable) Init(self info.Target, c *core.Core) *Reactable {
 	r.self = self
 	r.core = c
-	r.DecayRate[Frozen] = frzDecayCap
+	r.DecayRate[info.ReactionModKeyFrozen] = frzDecayCap
 	r.ecTickSrc = -1
 	r.burningTickSrc = -1
 	r.overloadGCD = -1
@@ -152,8 +78,8 @@ func (r *Reactable) Init(self info.Target, c *core.Core) *Reactable {
 func (r *Reactable) ActiveAuraString() []string {
 	var result []string
 	for i, v := range r.Durability {
-		if v > ZeroDur {
-			result = append(result, Modifier(i).String()+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
+		if v > info.ZeroDur {
+			result = append(result, info.ReactionModKey(i).String()+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
 		}
 	}
 	return result
@@ -162,7 +88,7 @@ func (r *Reactable) ActiveAuraString() []string {
 func (r *Reactable) AuraCount() int {
 	count := 0
 	for _, v := range r.Durability {
-		if v > ZeroDur {
+		if v > info.ZeroDur {
 			count++
 		}
 	}
@@ -222,7 +148,7 @@ func (r *Reactable) React(a *info.AttackEvent) {
 // and will either create a new modifier if non exist, or update according to the rules of
 // each modifier
 func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	if a.Reacted {
@@ -237,32 +163,60 @@ func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
 	return false
 }
 
+func (r *Reactable) GetAuraDurability(mod info.ReactionModKey) info.Durability {
+	return r.Durability[mod]
+}
+
+func (r *Reactable) GetDurability() []info.Durability {
+	result := make([]info.Durability, info.ReactionModKeyEnd)
+	for i := info.ReactionModKeyInvalid; i < info.ReactionModKeyEnd; i++ {
+		result[i] = r.Durability[i]
+	}
+	return result
+}
+
+func (r *Reactable) GetAuraDecayRate(mod info.ReactionModKey) info.Durability {
+	return r.DecayRate[mod]
+}
+
+func (r *Reactable) SetAuraDurability(mod info.ReactionModKey, dur info.Durability) {
+	r.Durability[mod] = dur
+}
+
+func (r *Reactable) SetAuraDecayRate(mod info.ReactionModKey, decay info.Durability) {
+	r.DecayRate[mod] = decay
+}
+
+func (r *Reactable) SetFreezeResist(fr float64) {
+	r.FreezeResist = fr
+}
+
 // attachOrRefillNormalEle is used for pyro, electro, hydro, cryo, and dendro which don't have special attachment
 // rules
-func (r *Reactable) attachOrRefillNormalEle(mod Modifier, dur info.Durability) {
+func (r *Reactable) attachOrRefillNormalEle(mod info.ReactionModKey, dur info.Durability) {
 	amt := 0.8 * dur
-	if mod == Pyro {
-		r.attachOverlapRefreshDuration(Pyro, amt, 6*dur+420)
+	if mod == info.ReactionModKeyPyro {
+		r.attachOverlapRefreshDuration(info.ReactionModKeyPyro, amt, 6*dur+420)
 	} else {
 		r.attachOverlap(mod, amt, 6*dur+420)
 	}
 }
 
-func (r *Reactable) attachOverlap(mod Modifier, amt, length info.Durability) {
-	if r.Durability[mod] > ZeroDur {
+func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Durability) {
+	if r.Durability[mod] > info.ZeroDur {
 		add := max(amt-r.Durability[mod], 0)
 		if add > 0 {
 			r.addDurability(mod, add)
 		}
 	} else {
 		r.Durability[mod] = amt
-		if length > ZeroDur {
+		if length > info.ZeroDur {
 			r.DecayRate[mod] = amt / length
 		}
 	}
 }
 
-func (r *Reactable) attachOverlapRefreshDuration(mod Modifier, amt, length info.Durability) {
+func (r *Reactable) attachOverlapRefreshDuration(mod info.ReactionModKey, amt, length info.Durability) {
 	if amt < r.Durability[mod] {
 		return
 	}
@@ -271,11 +225,11 @@ func (r *Reactable) attachOverlapRefreshDuration(mod Modifier, amt, length info.
 }
 
 func (r *Reactable) attachBurning() {
-	r.Durability[Burning] = 50
-	r.DecayRate[Burning] = 0
+	r.Durability[info.ReactionModKeyBurning] = 50
+	r.DecayRate[info.ReactionModKeyBurning] = 0
 }
 
-func (r *Reactable) addDurability(mod Modifier, amt info.Durability) {
+func (r *Reactable) addDurability(mod info.ReactionModKey, amt info.Durability) {
 	r.Durability[mod] += amt
 	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
@@ -283,13 +237,13 @@ func (r *Reactable) addDurability(mod Modifier, amt info.Durability) {
 // AuraCountains returns true if any element e is active on the target
 func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 	for _, v := range e {
-		for i := Invalid; i < EndModifier; i++ {
-			if i.Element() == v && r.Durability[i] > ZeroDur {
+		for i := info.ReactionModKeyInvalid; i < info.ReactionModKeyEnd; i++ {
+			if i.Element() == v && r.Durability[i] > info.ZeroDur {
 				return true
 			}
 		}
 		//TODO: not sure if this is best way to go about it? perhaps supplying frozen element is better?
-		if v == attributes.Cryo && r.Durability[Frozen] > ZeroDur {
+		if v == attributes.Cryo && r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
 			return true
 		}
 	}
@@ -297,7 +251,7 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 }
 
 func (r *Reactable) IsBurning() bool {
-	if r.Durability[BurningFuel] > ZeroDur && r.Durability[Burning] > ZeroDur {
+	if r.Durability[info.ReactionModKeyBurningFuel] > info.ZeroDur && r.Durability[info.ReactionModKeyBurning] > info.ZeroDur {
 		return true
 	}
 	return false
@@ -310,11 +264,11 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 	m := dur * factor // maximum amount reduceable
 	var reduced info.Durability
 
-	for i := Invalid; i < EndModifier; i++ {
+	for i := info.ReactionModKeyInvalid; i < info.ReactionModKeyEnd; i++ {
 		if i.Element() != e {
 			continue
 		}
-		if r.Durability[i] < ZeroDur {
+		if r.Durability[i] < info.ZeroDur {
 			// also skip if durability already 0
 			// this allows us to safely call reduce even if an element doesn't exist
 			continue
@@ -338,8 +292,8 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 	return reduced / factor
 }
 
-func (r *Reactable) deplete(m Modifier) {
-	if r.Durability[m] <= ZeroDur {
+func (r *Reactable) deplete(m info.ReactionModKey) {
+	if r.Durability[m] <= info.ZeroDur {
 		r.Durability[m] = 0
 		r.DecayRate[m] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
@@ -356,40 +310,40 @@ func (r *Reactable) Tick() {
 	// per frame then we have decay * (1 + 0.25 * (x/60))
 
 	// anything after the delim is special decay so we ignore
-	for i := Invalid; i < SpecialDecayDelim; i++ {
+	for i := info.ReactionModKeyInvalid; i < info.ReactionModKeySpecialDecayDelim; i++ {
 		// skip zero decay rates i.e. modifiers that don't decay (i.e. burning)
 		if r.DecayRate[i] == 0 {
 			continue
 		}
-		if r.Durability[i] > ZeroDur {
+		if r.Durability[i] > info.ZeroDur {
 			r.Durability[i] -= r.DecayRate[i]
 			r.deplete(i)
 		}
 	}
 
 	// check burning first since that affects dendro/quicken decay
-	if r.burningTickSrc > -1 && r.Durability[BurningFuel] < ZeroDur {
+	if r.burningTickSrc > -1 && r.Durability[info.ReactionModKeyBurningFuel] < info.ZeroDur {
 		// reset src when burning fuel is gone
 		r.burningTickSrc = -1
 		// remove burning
-		r.Durability[Burning] = 0
+		r.Durability[info.ReactionModKeyBurning] = 0
 		// remove existing dendro and quicken
-		r.Durability[Dendro] = 0
-		r.DecayRate[Dendro] = 0
-		r.Durability[Quicken] = 0
-		r.DecayRate[Quicken] = 0
+		r.Durability[info.ReactionModKeyDendro] = 0
+		r.DecayRate[info.ReactionModKeyDendro] = 0
+		r.Durability[info.ReactionModKeyQuicken] = 0
+		r.DecayRate[info.ReactionModKeyQuicken] = 0
 	}
 
 	// if burning fuel is present, dendro and quicken uses burning fuel decay rate
 	// otherwise it uses it's own
-	for i := Dendro; i <= Quicken; i++ {
-		if r.Durability[i] < ZeroDur {
+	for i := info.ReactionModKeyDendro; i <= info.ReactionModKeyQuicken; i++ {
+		if r.Durability[i] < info.ZeroDur {
 			continue
 		}
 		rate := r.DecayRate[i]
-		if r.Durability[BurningFuel] > ZeroDur {
-			rate = r.DecayRate[BurningFuel]
-			if i == Dendro {
+		if r.Durability[info.ReactionModKeyBurningFuel] > info.ZeroDur {
+			rate = r.DecayRate[info.ReactionModKeyBurningFuel]
+			if i == info.ReactionModKeyDendro {
 				rate = max(rate, r.DecayRate[i]*2)
 			}
 		}
@@ -399,145 +353,30 @@ func (r *Reactable) Tick() {
 
 	// for freeze, durability can be calculated as:
 	// d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
-	if r.Durability[Frozen] > ZeroDur {
+	if r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
 		// ramp up decay rate first
-		r.DecayRate[Frozen] += frzDelta
-		r.Durability[Frozen] -= r.DecayRate[Frozen] / info.Durability(1.0-r.FreezeResist)
+		r.DecayRate[info.ReactionModKeyFrozen] += frzDelta
+		r.Durability[info.ReactionModKeyFrozen] -= r.DecayRate[info.ReactionModKeyFrozen] / info.Durability(1.0-r.FreezeResist)
 
 		r.checkFreeze()
-	} else if r.DecayRate[Frozen] > frzDecayCap { // otherwise ramp down decay rate
-		r.DecayRate[Frozen] -= frzDelta * 2
+	} else if r.DecayRate[info.ReactionModKeyFrozen] > frzDecayCap { // otherwise ramp down decay rate
+		r.DecayRate[info.ReactionModKeyFrozen] -= frzDelta * 2
 
 		// cap decay
-		if r.DecayRate[Frozen] < frzDecayCap {
-			r.DecayRate[Frozen] = frzDecayCap
+		if r.DecayRate[info.ReactionModKeyFrozen] < frzDecayCap {
+			r.DecayRate[info.ReactionModKeyFrozen] = frzDecayCap
 		}
 	}
 
 	// for ec we need to reset src if ec is gone
 	if r.ecTickSrc > -1 {
-		if r.Durability[Electro] < ZeroDur || r.Durability[Hydro] < ZeroDur {
+		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur || r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
 			r.ecTickSrc = -1
 		}
 	}
 }
 
-func calcReactionDmg(char *character.CharWrapper, atk info.AttackInfo, em float64) (float64, info.Snapshot) {
-	lvl := char.Base.Level - 1
-	if lvl > 89 {
-		lvl = 89
-	}
-	if lvl < 0 {
-		lvl = 0
-	}
-	snap := info.Snapshot{
-		CharLvl: char.Base.Level,
-	}
-	snap.Stats[attributes.EM] = em
-	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl], snap
-}
-
 func (r *Reactable) calcCatalyzeDmg(atk info.AttackInfo, em float64) float64 {
 	char := r.core.Player.ByIndex(atk.ActorIndex)
-	lvl := char.Base.Level - 1
-	if lvl > 89 {
-		lvl = 89
-	}
-	if lvl < 0 {
-		lvl = 0
-	}
-	return (1 + ((5 * em) / (1200 + em)) + r.core.Player.ByIndex(atk.ActorIndex).ReactBonus(atk)) * reactionLvlBase[lvl]
-}
-
-var reactionLvlBase = []float64{
-	17.1656055450439,
-	18.5350475311279,
-	19.9048538208007,
-	21.27490234375,
-	22.6453990936279,
-	24.6496124267578,
-	26.6406421661376,
-	28.8685874938964,
-	31.3676795959472,
-	34.1433448791503,
-	37.201000213623,
-	40.6599998474121,
-	44.4466667175292,
-	48.5635185241699,
-	53.7484817504882,
-	59.0818977355957,
-	64.4200439453125,
-	69.7244567871093,
-	75.1231384277343,
-	80.5847778320312,
-	86.1120300292968,
-	91.703742980957,
-	97.24462890625,
-	102.812644958496,
-	108.409561157226,
-	113.201690673828,
-	118.102905273437,
-	122.979316711425,
-	129.727325439453,
-	136.292907714843,
-	142.670852661132,
-	149.029022216796,
-	155.4169921875,
-	161.825500488281,
-	169.106307983398,
-	176.518081665039,
-	184.07273864746,
-	191.709518432617,
-	199.556915283203,
-	207.382049560546,
-	215.398895263671,
-	224.165664672851,
-	233.502166748046,
-	243.35057067871,
-	256.063079833984,
-	268.543487548828,
-	281.526062011718,
-	295.013641357421,
-	309.067199707031,
-	323.601593017578,
-	336.757537841796,
-	350.530303955078,
-	364.482696533203,
-	378.619171142578,
-	398.600402832031,
-	416.398254394531,
-	434.386993408203,
-	452.951049804687,
-	472.606231689453,
-	492.884887695312,
-	513.568542480468,
-	539.103210449218,
-	565.510559082031,
-	592.538757324218,
-	624.443420410156,
-	651.470153808593,
-	679.496826171875,
-	707.794067382812,
-	736.671447753906,
-	765.640258789062,
-	794.773376464843,
-	824.677368164062,
-	851.157775878906,
-	877.742065429687,
-	914.229125976562,
-	946.746765136718,
-	979.411376953125,
-	1011.22302246093,
-	1044.79174804687,
-	1077.44372558593,
-	1109.99755859375,
-	1142.9765625,
-	1176.36950683593,
-	1210.18444824218,
-	1253.83569335937,
-	1288.95275878906,
-	1325.48413085937,
-	1363.45690917968,
-	1405.09741210937,
-	1446.853515625,
+	return combat.CalcCatalyzeDmg(char.Base.Level, char, atk, em)
 }

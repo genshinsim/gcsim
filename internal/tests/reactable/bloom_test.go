@@ -4,10 +4,10 @@ import (
 	"math"
 	"testing"
 
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestHydroBloom(t *testing.T) {
@@ -36,7 +36,7 @@ func TestHydroBloom(t *testing.T) {
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for i := 0; i < dendrocore.Delay+1; i++ {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 1 {
@@ -73,7 +73,7 @@ func TestDendroBloom(t *testing.T) {
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for i := 0; i < dendrocore.Delay+1; i++ {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 1 {
@@ -118,7 +118,7 @@ func TestECBloom(t *testing.T) {
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for i := 0; i < dendrocore.Delay+1; i++ {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 2 {
@@ -154,7 +154,7 @@ func TestBloomSeedLimit(t *testing.T) {
 	}, 0)
 	advanceCoreFrame(c)
 
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for i := 0; i < dendrocore.Delay+1; i++ {
 		advanceCoreFrame(c)
 	}
 
@@ -191,7 +191,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for i := 0; i < dendrocore.Delay+1; i++ {
 		advanceCoreFrame(c)
 	}
 
@@ -212,7 +212,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 		}
 	}
 	og := c.Combat.Gadget(oldest)
-	if og.Src() != 3+reactable.DendroCoreDelay {
-		t.Errorf("expecting oldest gadget to be from frame %v, got %v", reactable.DendroCoreDelay+3, og.Src())
+	if og.Src() != 3+dendrocore.Delay {
+		t.Errorf("expecting oldest gadget to be from frame %v, got %v", dendrocore.Delay+3, og.Src())
 	}
 }

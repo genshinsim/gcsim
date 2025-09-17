@@ -6,15 +6,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type panda struct {
 	*gadget.Gadget
-	*reactable.Reactable
+	info.Reactable
 	c     *char
 	ai    info.AttackInfo
 	snap  info.Snapshot
@@ -35,8 +35,7 @@ func (c *char) newGuoba(ai info.AttackInfo) *panda {
 	)
 	p.Gadget = gadget.New(c.Core, pos, 0.2, info.GadgetTypGuoba)
 	p.Gadget.Duration = 438
-	p.Reactable = &reactable.Reactable{}
-	p.Reactable.Init(p, c.Core)
+	p.Reactable = hacks.NewReactable(p, c.Core)
 
 	return p
 }
@@ -54,9 +53,9 @@ func (p *panda) Tick() {
 	case 103, 203, 303, 403: // swirl window
 		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index).
 			SetEnded(p.c.Core.F + infuseWindow + 1)
-		p.Durability[reactable.Pyro] = infuseDurability
+		p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
 		p.Core.Tasks.Add(func() {
-			p.Durability[reactable.Pyro] = 0
+			p.SetAuraDurability(info.ReactionModKeyPyro, 0)
 		}, infuseWindow+1) // +1 since infuse window is inclusive
 		p.SetDirectionToClosestEnemy()
 		// queue this in advance because that's how it is on live
@@ -89,7 +88,7 @@ func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		return 0, false
 	}
 	// check pyro window
-	if p.Durability[reactable.Pyro] <= reactable.ZeroDur {
+	if p.GetAuraDurability(info.ReactionModKeyPyro) <= info.ZeroDur {
 		return 0, false
 	}
 
@@ -109,11 +108,11 @@ func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	atk.Info.Durability = 50
 
 	// cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
-	oldDur := p.Durability[reactable.Pyro]
-	p.Durability[reactable.Pyro] = infuseDurability
+	oldDur := p.GetAuraDurability(info.ReactionModKeyPyro)
+	p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
 	p.React(atk)
 	// restore the durability after
-	p.Durability[reactable.Pyro] = oldDur
+	p.SetAuraDurability(info.ReactionModKeyPyro, oldDur)
 
 	return 0, false
 }
