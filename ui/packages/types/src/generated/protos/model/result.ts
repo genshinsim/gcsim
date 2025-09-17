@@ -36,11 +36,7 @@ export interface SimulationResult {
     | string
     | undefined;
   /** if set to -1 then should result in perm */
-  created_date?:
-    | number
-    | undefined;
-  /** --- optional dev debug data; not useful for anything else --- */
-  dev_debug?: DevDebugData | undefined;
+  created_date?: number | undefined;
 }
 
 export interface SimulationStatistics {
@@ -103,7 +99,11 @@ export interface SimulationStatistics {
     | SourceStats[]
     | undefined;
   /** misc statistics at the end of each sim */
-  end_stats?: EndStats[] | undefined;
+  end_stats?:
+    | EndStats[]
+    | undefined;
+  /** --- optional dev debug data; not useful for anything else --- */
+  dev_debug?: DevDebugData | undefined;
 }
 
 export interface SimulationStatistics_ElementDpsEntry {
@@ -349,7 +349,6 @@ function createBaseSimulationResult(): SimulationResult {
     mode: 0,
     key_type: "",
     created_date: 0,
-    dev_debug: undefined,
   };
 }
 
@@ -411,9 +410,6 @@ export const SimulationResult = {
     }
     if (message.created_date !== undefined && message.created_date !== 0) {
       writer.uint32(120).int64(message.created_date);
-    }
-    if (message.dev_debug !== undefined) {
-      DevDebugData.encode(message.dev_debug, writer.uint32(802).fork()).ldelim();
     }
     return writer;
   },
@@ -544,13 +540,6 @@ export const SimulationResult = {
 
           message.created_date = longToNumber(reader.int64() as Long);
           continue;
-        case 100:
-          if (tag !== 802) {
-            break;
-          }
-
-          message.dev_debug = DevDebugData.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -587,7 +576,6 @@ export const SimulationResult = {
       mode: isSet(object.mode) ? simModeFromJSON(object.mode) : 0,
       key_type: isSet(object.key_type) ? globalThis.String(object.key_type) : "",
       created_date: isSet(object.created_date) ? globalThis.Number(object.created_date) : 0,
-      dev_debug: isSet(object.dev_debug) ? DevDebugData.fromJSON(object.dev_debug) : undefined,
     };
   },
 
@@ -644,9 +632,6 @@ export const SimulationResult = {
     if (message.created_date !== undefined && message.created_date !== 0) {
       obj.created_date = Math.round(message.created_date);
     }
-    if (message.dev_debug !== undefined) {
-      obj.dev_debug = DevDebugData.toJSON(message.dev_debug);
-    }
     return obj;
   },
 
@@ -682,9 +667,6 @@ export const SimulationResult = {
     message.mode = object.mode ?? 0;
     message.key_type = object.key_type ?? "";
     message.created_date = object.created_date ?? 0;
-    message.dev_debug = (object.dev_debug !== undefined && object.dev_debug !== null)
-      ? DevDebugData.fromPartial(object.dev_debug)
-      : undefined;
     return message;
   },
 };
@@ -723,6 +705,7 @@ function createBaseSimulationStatistics(): SimulationStatistics {
     character_actions: [],
     target_aura_uptime: [],
     end_stats: [],
+    dev_debug: undefined,
   };
 }
 
@@ -847,6 +830,9 @@ export const SimulationStatistics = {
       for (const v of message.end_stats) {
         EndStats.encode(v!, writer.uint32(258).fork()).ldelim();
       }
+    }
+    if (message.dev_debug !== undefined) {
+      DevDebugData.encode(message.dev_debug, writer.uint32(802).fork()).ldelim();
     }
     return writer;
   },
@@ -1091,6 +1077,13 @@ export const SimulationStatistics = {
 
           message.end_stats!.push(EndStats.decode(reader, reader.uint32()));
           continue;
+        case 100:
+          if (tag !== 802) {
+            break;
+          }
+
+          message.dev_debug = DevDebugData.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1175,6 +1168,7 @@ export const SimulationStatistics = {
       end_stats: globalThis.Array.isArray(object?.end_stats)
         ? object.end_stats.map((e: any) => EndStats.fromJSON(e))
         : [],
+      dev_debug: isSet(object.dev_debug) ? DevDebugData.fromJSON(object.dev_debug) : undefined,
     };
   },
 
@@ -1294,6 +1288,9 @@ export const SimulationStatistics = {
     if (message.end_stats?.length) {
       obj.end_stats = message.end_stats.map((e) => EndStats.toJSON(e));
     }
+    if (message.dev_debug !== undefined) {
+      obj.dev_debug = DevDebugData.toJSON(message.dev_debug);
+    }
     return obj;
   },
 
@@ -1370,6 +1367,9 @@ export const SimulationStatistics = {
     message.character_actions = object.character_actions?.map((e) => SourceStats.fromPartial(e)) || [];
     message.target_aura_uptime = object.target_aura_uptime?.map((e) => SourceStats.fromPartial(e)) || [];
     message.end_stats = object.end_stats?.map((e) => EndStats.fromPartial(e)) || [];
+    message.dev_debug = (object.dev_debug !== undefined && object.dev_debug !== null)
+      ? DevDebugData.fromPartial(object.dev_debug)
+      : undefined;
     return message;
   },
 };

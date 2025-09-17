@@ -65,8 +65,6 @@ message SimulationResult {
   string key_type = 14 [json_name="key_type"];
   int64 created_date = 15 [json_name="created_date"]; //if set to -1 then should result in perm
 
-  // --- optional dev debug data; not useful for anything else ---
-  DevDebugData dev_debug = 100 [json_name="dev_debug"];
 }
 
 message SimulationStatistics {
@@ -123,6 +121,9 @@ message SimulationStatistics {
 
   //misc statistics at the end of each sim
   repeated EndStats end_stats = 32 [json_name="end_stats"];
+
+  // --- optional dev debug data; not useful for anything else ---
+  DevDebugData dev_debug = 100 [json_name="dev_debug"];
 }
 
 message SignedSimulationStatistics {

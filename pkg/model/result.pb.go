@@ -92,11 +92,9 @@ type SimulationResult struct {
 	// All data that changes per iteration goes here
 	Statistics *SimulationStatistics `protobuf:"bytes,12,opt,name=statistics,proto3" json:"statistics,omitempty" bson:"statistics,omitempty"`
 	// --- optional metadata fields below ---
-	Mode        SimMode `protobuf:"varint,13,opt,name=mode,proto3,enum=model.SimMode" json:"mode,omitempty" bson:"mode,omitempty"`
-	KeyType     string  `protobuf:"bytes,14,opt,name=key_type,proto3" json:"key_type,omitempty" bson:"key_type,omitempty"`
-	CreatedDate int64   `protobuf:"varint,15,opt,name=created_date,proto3" json:"created_date,omitempty" bson:"created_date,omitempty"` //if set to -1 then should result in perm
-	// --- optional dev debug data; not useful for anything else ---
-	DevDebug      *DevDebugData `protobuf:"bytes,100,opt,name=dev_debug,proto3" json:"dev_debug,omitempty" bson:"dev_debug,omitempty"`
+	Mode          SimMode `protobuf:"varint,13,opt,name=mode,proto3,enum=model.SimMode" json:"mode,omitempty" bson:"mode,omitempty"`
+	KeyType       string  `protobuf:"bytes,14,opt,name=key_type,proto3" json:"key_type,omitempty" bson:"key_type,omitempty"`
+	CreatedDate   int64   `protobuf:"varint,15,opt,name=created_date,proto3" json:"created_date,omitempty" bson:"created_date,omitempty"` //if set to -1 then should result in perm
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -250,13 +248,6 @@ func (x *SimulationResult) GetCreatedDate() int64 {
 	return 0
 }
 
-func (x *SimulationResult) GetDevDebug() *DevDebugData {
-	if x != nil {
-		return x.DevDebug
-	}
-	return nil
-}
-
 type SimulationStatistics struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// metadata
@@ -300,7 +291,9 @@ type SimulationStatistics struct {
 	// target aura uptime
 	TargetAuraUptime []*SourceStats `protobuf:"bytes,29,rep,name=target_aura_uptime,proto3" json:"target_aura_uptime,omitempty" bson:"target_aura_uptime,omitempty"`
 	// misc statistics at the end of each sim
-	EndStats      []*EndStats `protobuf:"bytes,32,rep,name=end_stats,proto3" json:"end_stats,omitempty" bson:"end_stats,omitempty"`
+	EndStats []*EndStats `protobuf:"bytes,32,rep,name=end_stats,proto3" json:"end_stats,omitempty" bson:"end_stats,omitempty"`
+	// --- optional dev debug data; not useful for anything else ---
+	DevDebug      *DevDebugData `protobuf:"bytes,100,opt,name=dev_debug,proto3" json:"dev_debug,omitempty" bson:"dev_debug,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -555,6 +548,13 @@ func (x *SimulationStatistics) GetTargetAuraUptime() []*SourceStats {
 func (x *SimulationStatistics) GetEndStats() []*EndStats {
 	if x != nil {
 		return x.EndStats
+	}
+	return nil
+}
+
+func (x *SimulationStatistics) GetDevDebug() *DevDebugData {
+	if x != nil {
+		return x.DevDebug
 	}
 	return nil
 }
@@ -1618,7 +1618,7 @@ const file_protos_model_result_proto_rawDesc = "" +
 	"\x19protos/model/result.proto\x12\x05model\x1a\x16protos/model/sim.proto\x1a\x18protos/model/enums.proto\"5\n" +
 	"\aVersion\x12\x14\n" +
 	"\x05major\x18\x01 \x01(\tR\x05major\x12\x14\n" +
-	"\x05minor\x18\x02 \x01(\tR\x05minor\"\xff\x06\n" +
+	"\x05minor\x18\x02 \x01(\tR\x05minor\"\xcc\x06\n" +
 	"\x10SimulationResult\x126\n" +
 	"\x0eschema_version\x18\x01 \x01(\v2\x0e.model.VersionR\x0eschema_version\x12%\n" +
 	"\vsim_version\x18\x02 \x01(\tH\x00R\vsim_version\x88\x01\x01\x12\x1f\n" +
@@ -1641,10 +1641,9 @@ const file_protos_model_result_proto_rawDesc = "" +
 	"statistics\x12\"\n" +
 	"\x04mode\x18\r \x01(\x0e2\x0e.model.SimModeR\x04mode\x12\x1a\n" +
 	"\bkey_type\x18\x0e \x01(\tR\bkey_type\x12\"\n" +
-	"\fcreated_date\x18\x0f \x01(\x03R\fcreated_date\x121\n" +
-	"\tdev_debug\x18d \x01(\v2\x13.model.DevDebugDataR\tdev_debugB\x0e\n" +
+	"\fcreated_date\x18\x0f \x01(\x03R\fcreated_dateB\x0e\n" +
 	"\f_sim_versionB\v\n" +
-	"\t_modified\"\xd9\x0f\n" +
+	"\t_modified\"\x8c\x10\n" +
 	"\x14SimulationStatistics\x12\x1a\n" +
 	"\bmin_seed\x18\x01 \x01(\tR\bmin_seed\x12\x1a\n" +
 	"\bmax_seed\x18\x02 \x01(\tR\bmax_seed\x12\x1a\n" +
@@ -1686,7 +1685,8 @@ const file_protos_model_result_proto_rawDesc = "" +
 	"\x10source_reactions\x18\x1b \x03(\v2\x12.model.SourceStatsR\x10source_reactions\x12@\n" +
 	"\x11character_actions\x18\x1c \x03(\v2\x12.model.SourceStatsR\x11character_actions\x12B\n" +
 	"\x12target_aura_uptime\x18\x1d \x03(\v2\x12.model.SourceStatsR\x12target_aura_uptime\x12-\n" +
-	"\tend_stats\x18  \x03(\v2\x0f.model.EndStatsR\tend_stats\x1aV\n" +
+	"\tend_stats\x18  \x03(\v2\x0f.model.EndStatsR\tend_stats\x121\n" +
+	"\tdev_debug\x18d \x01(\v2\x13.model.DevDebugDataR\tdev_debug\x1aV\n" +
 	"\x0fElementDpsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12-\n" +
 	"\x05value\x18\x02 \x01(\v2\x17.model.DescriptiveStatsR\x05value:\x028\x01\x1aU\n" +
@@ -1855,33 +1855,33 @@ var file_protos_model_result_proto_depIdxs = []int32{
 	33, // 5: model.SimulationResult.player_position:type_name -> model.Coord
 	2,  // 6: model.SimulationResult.statistics:type_name -> model.SimulationStatistics
 	34, // 7: model.SimulationResult.mode:type_name -> model.SimMode
-	4,  // 8: model.SimulationResult.dev_debug:type_name -> model.DevDebugData
-	6,  // 9: model.SimulationStatistics.duration:type_name -> model.OverviewStats
-	6,  // 10: model.SimulationStatistics.DPS:type_name -> model.OverviewStats
-	6,  // 11: model.SimulationStatistics.RPS:type_name -> model.OverviewStats
-	6,  // 12: model.SimulationStatistics.EPS:type_name -> model.OverviewStats
-	6,  // 13: model.SimulationStatistics.HPS:type_name -> model.OverviewStats
-	6,  // 14: model.SimulationStatistics.SHP:type_name -> model.OverviewStats
-	7,  // 15: model.SimulationStatistics.total_damage:type_name -> model.DescriptiveStats
-	17, // 16: model.SimulationStatistics.warnings:type_name -> model.Warnings
-	18, // 17: model.SimulationStatistics.failed_actions:type_name -> model.FailedActions
-	21, // 18: model.SimulationStatistics.element_dps:type_name -> model.SimulationStatistics.ElementDpsEntry
-	22, // 19: model.SimulationStatistics.target_dps:type_name -> model.SimulationStatistics.TargetDpsEntry
-	7,  // 20: model.SimulationStatistics.character_dps:type_name -> model.DescriptiveStats
-	8,  // 21: model.SimulationStatistics.breakdown_by_element_dps:type_name -> model.ElementStats
-	9,  // 22: model.SimulationStatistics.breakdown_by_target_dps:type_name -> model.TargetStats
-	10, // 23: model.SimulationStatistics.source_dps:type_name -> model.SourceStats
-	10, // 24: model.SimulationStatistics.source_damage_instances:type_name -> model.SourceStats
-	11, // 25: model.SimulationStatistics.damage_buckets:type_name -> model.BucketStats
-	12, // 26: model.SimulationStatistics.cumulative_damage_contribution:type_name -> model.CharacterBucketStats
-	14, // 27: model.SimulationStatistics.cumulative_damage:type_name -> model.TargetBucketStats
-	23, // 28: model.SimulationStatistics.shields:type_name -> model.SimulationStatistics.ShieldsEntry
-	7,  // 29: model.SimulationStatistics.field_time:type_name -> model.DescriptiveStats
-	10, // 30: model.SimulationStatistics.total_source_energy:type_name -> model.SourceStats
-	10, // 31: model.SimulationStatistics.source_reactions:type_name -> model.SourceStats
-	10, // 32: model.SimulationStatistics.character_actions:type_name -> model.SourceStats
-	10, // 33: model.SimulationStatistics.target_aura_uptime:type_name -> model.SourceStats
-	20, // 34: model.SimulationStatistics.end_stats:type_name -> model.EndStats
+	6,  // 8: model.SimulationStatistics.duration:type_name -> model.OverviewStats
+	6,  // 9: model.SimulationStatistics.DPS:type_name -> model.OverviewStats
+	6,  // 10: model.SimulationStatistics.RPS:type_name -> model.OverviewStats
+	6,  // 11: model.SimulationStatistics.EPS:type_name -> model.OverviewStats
+	6,  // 12: model.SimulationStatistics.HPS:type_name -> model.OverviewStats
+	6,  // 13: model.SimulationStatistics.SHP:type_name -> model.OverviewStats
+	7,  // 14: model.SimulationStatistics.total_damage:type_name -> model.DescriptiveStats
+	17, // 15: model.SimulationStatistics.warnings:type_name -> model.Warnings
+	18, // 16: model.SimulationStatistics.failed_actions:type_name -> model.FailedActions
+	21, // 17: model.SimulationStatistics.element_dps:type_name -> model.SimulationStatistics.ElementDpsEntry
+	22, // 18: model.SimulationStatistics.target_dps:type_name -> model.SimulationStatistics.TargetDpsEntry
+	7,  // 19: model.SimulationStatistics.character_dps:type_name -> model.DescriptiveStats
+	8,  // 20: model.SimulationStatistics.breakdown_by_element_dps:type_name -> model.ElementStats
+	9,  // 21: model.SimulationStatistics.breakdown_by_target_dps:type_name -> model.TargetStats
+	10, // 22: model.SimulationStatistics.source_dps:type_name -> model.SourceStats
+	10, // 23: model.SimulationStatistics.source_damage_instances:type_name -> model.SourceStats
+	11, // 24: model.SimulationStatistics.damage_buckets:type_name -> model.BucketStats
+	12, // 25: model.SimulationStatistics.cumulative_damage_contribution:type_name -> model.CharacterBucketStats
+	14, // 26: model.SimulationStatistics.cumulative_damage:type_name -> model.TargetBucketStats
+	23, // 27: model.SimulationStatistics.shields:type_name -> model.SimulationStatistics.ShieldsEntry
+	7,  // 28: model.SimulationStatistics.field_time:type_name -> model.DescriptiveStats
+	10, // 29: model.SimulationStatistics.total_source_energy:type_name -> model.SourceStats
+	10, // 30: model.SimulationStatistics.source_reactions:type_name -> model.SourceStats
+	10, // 31: model.SimulationStatistics.character_actions:type_name -> model.SourceStats
+	10, // 32: model.SimulationStatistics.target_aura_uptime:type_name -> model.SourceStats
+	20, // 33: model.SimulationStatistics.end_stats:type_name -> model.EndStats
+	4,  // 34: model.SimulationStatistics.dev_debug:type_name -> model.DevDebugData
 	2,  // 35: model.SignedSimulationStatistics.stats:type_name -> model.SimulationStatistics
 	5,  // 36: model.DevDebugData.seeded_dps:type_name -> model.DevDebugSeededDPSResult
 	24, // 37: model.ElementStats.elements:type_name -> model.ElementStats.ElementsEntry
