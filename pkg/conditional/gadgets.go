@@ -3,6 +3,7 @@ package conditional
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -30,7 +31,7 @@ func evalDendroCore(c *core.Core, key string) (int, error) {
 	case countField:
 		count := 0
 		for _, g := range c.Combat.Gadgets() {
-			if _, ok := g.(*reactable.DendroCore); ok {
+			if _, ok := g.(*dendrocore.Gadget); ok {
 				count++
 			}
 		}

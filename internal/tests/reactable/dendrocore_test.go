@@ -4,13 +4,13 @@ import (
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 // test modifying dendro core to something else
@@ -31,7 +31,7 @@ func TestModifyDendroCore(t *testing.T) {
 		return false
 	}, "bloom")
 	c.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
-		if g, ok := args[0].(*reactable.DendroCore); ok {
+		if g, ok := args[0].(*dendrocore.Gadget); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
 				Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0.2, info.GadgetTypDendroCore),
@@ -62,7 +62,7 @@ func TestModifyDendroCore(t *testing.T) {
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for i := 0; i < dendrocore.Delay+1; i++ {
 		advanceCoreFrame(c)
 	}
 

@@ -2,12 +2,12 @@ package kaveh
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var skillFrames []int
@@ -60,7 +60,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) ruptureDendroCores(ap info.AttackPattern) {
 	for _, g := range c.Core.Combat.Gadgets() {
-		seed, ok := g.(*reactable.DendroCore)
+		seed, ok := g.(*dendrocore.Gadget)
 		if !ok {
 			continue
 		}
