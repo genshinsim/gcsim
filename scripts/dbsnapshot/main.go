@@ -90,12 +90,12 @@ func compareFromSnapshot(from string, saveTo string) error {
 		for _, v := range res.Statistics.DevDebug.SeededDps {
 			orig, ok := seedRes[v.Seed]
 			if !ok {
-				warnings = append(warnings, fmt.Sprintf("ERROR: unexpected seed %v not found in original result; id %v", v.Seed, id))
+				warnings = append(warnings, fmt.Sprintf("id %v has unexpected seed %v not found in original result", id, v.Seed))
 				continue
 			}
 			diff := v.Dps - orig
 			if diff > 0.01 || diff < -0.01 {
-				warnings = append(warnings, fmt.Sprintf("WARNING: seed %v has different dps: original %v, new %v, diff %v; id %v", v.Seed, orig, v.Dps, diff, id))
+				warnings = append(warnings, fmt.Sprintf("id %v seed %v has different dps: original %v, new %v, diff %v", id, v.Seed, orig, v.Dps, diff))
 			}
 		}
 
@@ -122,7 +122,6 @@ func createSnapshot(filename string, iters int) error {
 
 	bar := progressbar.Default(int64(len(entries)), "running sims")
 	for _, v := range entries {
-		// log.Printf("running sim for id %v, done %v out of %v", v.Id, len(s.results)+1, len(entries))
 		simResult, err := runSim(ctx, v.Config, iters)
 		if err != nil {
 			return err
