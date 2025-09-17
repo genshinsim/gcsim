@@ -44,6 +44,17 @@ func (b buffer) Flush(result *model.SimulationStatistics) {
 	iterations := len(b.runs)
 	result.Iterations = uint32(iterations)
 
+	count := min(len(b.runs), 10)
+	result.DevDebug = &model.DevDebugData{
+		SeededDps: make([]*model.DevDebugSeededDPSResult, 0, count),
+	}
+	for _, v := range b.runs[:count] {
+		result.DevDebug.SeededDps = append(result.DevDebug.SeededDps, &model.DevDebugSeededDPSResult{
+			Seed: strconv.FormatUint(v.seed, 10),
+			Dps:  v.dps,
+		})
+	}
+
 	slices.SortStableFunc(b.runs, func(k, j run) int {
 		if math.Abs(k.dps-j.dps) < agg.FloatEqDelta {
 			return 0
