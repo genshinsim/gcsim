@@ -67,7 +67,7 @@ func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...inte
 		}
 
 		ae := args[1].(*info.AttackEvent)
-		if ae.Info.ActorIndex != s.char.Index {
+		if ae.Info.ActorIndex != s.char.Index() {
 			return false
 		}
 

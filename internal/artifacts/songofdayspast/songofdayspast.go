@@ -67,7 +67,7 @@ func (s *Set) OnHeal() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		src := args[0].(*info.HealInfo)
 		healAmt := args[4].(float64)
-		if src.Caller != s.char.Index {
+		if src.Caller != s.char.Index() {
 			return false
 		}
 		s.core.Flags.Custom[healStacksKey] += healAmt

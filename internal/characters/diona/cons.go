@@ -45,7 +45,7 @@ func (c *char) c6() {
 					Base: modifier.NewBaseWithHitlag("diona-c6-healbonus", 120),
 					Amount: func() (float64, bool) {
 						// is this log even needed?
-						c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", glog.LogCharacterEvent, c.Index)
+						c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", glog.LogCharacterEvent, c.Index())
 						return 0.3, false
 					},
 				})

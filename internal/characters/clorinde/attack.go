@@ -75,7 +75,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -118,7 +118,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           fmt.Sprintf("Swift Hunt (Piercing Shot) %d", c.normalSCounter),
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagNormalAttack,
@@ -171,7 +171,7 @@ func (c *char) arkheAttack() {
 		return
 	}
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Surging Blade",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,

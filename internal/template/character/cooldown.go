@@ -46,7 +46,7 @@ func (c *Character) SetCD(a action.Action, dur int) {
 	if c.AvailableCDCharge[a] < 0 {
 		panic("unexpected charges less than 0")
 	}
-	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown triggered").
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown triggered").
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
 		Write("original_cd", dur).
@@ -109,7 +109,7 @@ func (c *Character) ResetActionCooldown(a action.Action) {
 	// reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
 	c.cdCurrentQueueWorker[a] = nil
-	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown forcefully reset").
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown forcefully reset").
 		Write("type", a.String()).
 		Write("charges_remain", c.AvailableCDCharge[a]).
 		Write("cooldown_queue", c.cdQueueString(a))
@@ -133,7 +133,7 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 	}
 	// otherwise reduce remain and restart queue
 	c.cdQueue[a][0] = remain - v
-	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown forcefully reduced").
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown forcefully reduced").
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
 		Write("charges_remain", c.AvailableCDCharge).
@@ -165,7 +165,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action) {
 			// this should never happen
 			panic(fmt.Sprintf(
 				"queue is empty? index :%v, frame : %v, worker src: %v, started: %v",
-				c.Index,
+				c.Index(),
 				c.Core.F,
 				src,
 				c.cdQueueWorkerStartedAt[a],
@@ -181,10 +181,10 @@ func (c *Character) startCooldownQueueWorker(a action.Action) {
 
 		if c.AvailableCDCharge[a] > 1+c.additionalCDCharge[a] {
 			// sanity check, this should never happen
-			panic(fmt.Sprintf("charges > max? index :%v, frame : %v", c.Index, c.Core.F))
+			panic(fmt.Sprintf("charges > max? index :%v, frame : %v", c.Index(), c.Core.F))
 		}
 
-		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown ready").
+		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown ready").
 			Write("type", a.String()).
 			Write("charges_remain", c.AvailableCDCharge[a]).
 			Write("cooldown_queue", c.cdQueueString(a))

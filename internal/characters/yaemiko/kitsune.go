@@ -88,7 +88,7 @@ func (c *char) kitsuneBurst(ai info.AttackInfo, pattern info.AttackPattern) {
 			}, burstThunderbolt1Hitmark+i*24)
 		}
 		c.a1()
-		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index()).
 			Write("src", c.kitsunes[i].src).
 			Write("delay", burstThunderbolt1Hitmark+i*24)
 	}
@@ -111,7 +111,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 
 		ai := info.AttackInfo{
 			Abil:       "Sesshou Sakura Tick",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagElementalArt,
 			Mult:       skill[lvl][c.TalentLvlSkill()],
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -121,7 +121,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			Durability: 25,
 		}
 
-		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index()).
 			Write("sakura level", lvl+1)
 
 		var c4cb info.AttackCBFunc

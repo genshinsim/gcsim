@@ -29,7 +29,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	e := 3.5 + float64(r)*0.5
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
@@ -45,8 +45,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			for i := 120; i <= 360; i += 120 {
 				this.QueueCharTask(func() {
 					c.Player.Heal(info.HealInfo{
-						Caller:  char.Index,
-						Target:  this.Index,
+						Caller:  char.Index(),
+						Target:  this.Index(),
 						Type:    info.HealTypePercent,
 						Message: "Prototype Amber",
 						Src:     e / 100.0,

@@ -67,7 +67,7 @@ func (c *Core) SetupOnNormalHitEnergy() {
 		// add energy
 		char.AddEnergy("na-ca-on-hit", 1)
 		// Add this log in sim if necessary to see as AddEnergy already generates a log
-		c.Log.NewEvent("random energy on normal", glog.LogDebugEvent, char.Index).
+		c.Log.NewEvent("random energy on normal", glog.LogDebugEvent, char.Index()).
 			Write("char", atk.Info.ActorIndex).
 			Write("chance", current[atk.Info.ActorIndex][char.Weapon.Class])
 		// set icd

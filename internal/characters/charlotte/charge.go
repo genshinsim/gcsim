@@ -31,7 +31,7 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNone,
@@ -82,7 +82,7 @@ func (c *char) arkhe(pos info.Point) func() {
 		}
 		c.AddStatus(arkheIcdKeys, 6*60, true)
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Spiritbreath Thorn" + " (" + c.Base.Key.Pretty() + ")",
 			AttackTag:      attacks.AttackTagExtra,
 			ICDTag:         attacks.ICDTagNone,

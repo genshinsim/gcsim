@@ -50,10 +50,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			ae := args[1].(*info.AttackEvent)
 
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
-			if ae.Info.ActorIndex != char.Index {
+			if ae.Info.ActorIndex != char.Index() {
 				return false
 			}
 
@@ -86,7 +86,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				char.AddStatus(fmt.Sprintf(icdKey, ele), 60, true)
 			}
 			if len(w.elementICD) > 0 {
-				c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index).
+				c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index()).
 					Write("trigger", key).
 					Write("expiring (without hitlag)", c.F+6*60)
 			}

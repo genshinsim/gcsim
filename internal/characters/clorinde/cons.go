@@ -51,12 +51,12 @@ func (c *char) c1() {
 		if atk.Info.Element != attributes.Electro {
 			return false
 		}
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		c.AddStatus(c1IcdKey, c1Icd, false)
 		c1AI := info.AttackInfo{
-			ActorIndex:       c.Index,
+			ActorIndex:       c.Index(),
 			Abil:             "Nightwatch Shade (C1)",
 			AttackTag:        attacks.AttackTagNormal,
 			ICDTag:           attacks.ICDTagClorindeCons,
@@ -153,7 +153,7 @@ func (c *char) c6() {
 	c.AddStatus(c6GlimbrightIcdKey, 1*60, true)
 
 	c6AI := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Glimbright Shade (C6)",
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagClorindeCons,

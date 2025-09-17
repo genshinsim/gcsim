@@ -27,7 +27,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Ocelotlicue Point!",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -74,7 +74,7 @@ func (c *char) burstHeal(ai info.AttackInfo) {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), burstDamageHitmarks[0], burstDamageHitmarks[0])
 
 	hi := info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Message: "Ebullient Rhythm",
 	}
 	for _, hitmark := range burstHealHitmarks {

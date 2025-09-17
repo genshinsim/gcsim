@@ -22,7 +22,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Gyoei Narukami Kariyama Rite",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,

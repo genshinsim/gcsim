@@ -60,7 +60,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	done := false
 	cb := func(_ info.AttackCB) {
 		// doesn't gain jades off-field
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if done {
@@ -73,7 +73,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			if count > 3 {
 				count = 3
 			} else {
-				c.Core.Log.NewEvent("adding star jade", glog.LogCharacterEvent, c.Index).
+				c.Core.Log.NewEvent("adding star jade", glog.LogCharacterEvent, c.Index()).
 					Write("count", count)
 			}
 			c.jadeCount = count
@@ -92,7 +92,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal (%s)", nextAttack),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,

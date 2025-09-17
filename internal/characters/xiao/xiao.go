@@ -88,7 +88,7 @@ func (c *char) Snapshot(a *info.AttackInfo) info.Snapshot {
 		a.Element = attributes.Anemo
 		bonus := burstBonus[c.TalentLvlBurst()]
 		ds.Stats[attributes.DmgP] += bonus
-		c.Core.Log.NewEvent("xiao burst damage bonus", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("xiao burst damage bonus", glog.LogCharacterEvent, c.Index()).
 			Write("bonus", bonus).
 			Write("final", ds.Stats[attributes.DmgP])
 	}

@@ -40,7 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.skillAI = info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Enigmatic Feint",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -53,7 +53,7 @@ func (c *char) Init() error {
 		CanBeDefenseHalted: true,
 	}
 	c.skillAlignedAI = info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Surging Blade (" + c.Base.Key.Pretty() + ")",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,

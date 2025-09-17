@@ -39,7 +39,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.skillRadishAI = info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Radish (Skill)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -53,7 +53,7 @@ func (c *char) Init() error {
 	}
 
 	c.burstRadishAI = info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Radish (Burst)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,

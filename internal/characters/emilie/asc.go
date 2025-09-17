@@ -23,7 +23,7 @@ func (c *char) a1() {
 	c.SetTag(lumidouceScent, c.Tag(lumidouceScent)-2)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Cleardew Cologne (A1)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,

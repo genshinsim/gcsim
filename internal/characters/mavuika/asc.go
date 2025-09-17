@@ -42,7 +42,7 @@ func (c *char) a4Init() {
 			Base: modifier.NewBase(a4BufKey, -1),
 			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				// char must be active
-				if c.Core.Player.Active() != char.Index {
+				if c.Core.Player.Active() != char.Index() {
 					return nil, false
 				}
 				if !c.StatusIsActive(a4Key) {

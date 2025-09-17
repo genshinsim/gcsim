@@ -136,7 +136,7 @@ func (c *char) addStrStack(src string, inc int) {
 	}
 	c.Tags[strStackKey] = v
 
-	c.Core.Log.NewEvent(fmt.Sprintf("itto %v SSS stacks from %v", s, src), glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent(fmt.Sprintf("itto %v SSS stacks from %v", s, src), glog.LogCharacterEvent, c.Index()).
 		Write("old_stacks", old).
 		Write("inc", inc).
 		Write("cur_stacks", v)

@@ -32,7 +32,7 @@ func (s *Set) Init() error {
 	atkCount := 0
 
 	for _, this := range s.c.Player.Chars() {
-		if s.char.Index == this.Index {
+		if s.char.Index() == this.Index() {
 			continue
 		}
 		if this.Base.Element != s.char.Base.Element {
@@ -84,7 +84,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		const icdKey = "gd-4pc-icd"
 		add := func(args ...interface{}) bool {
 			atk := args[1].(*info.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 			if char.StatusIsActive(icdKey) {
@@ -99,7 +99,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return s.buff, true
 				},
 			})
-			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index()).
 				Write("em", s.buff[attributes.EM]).
 				Write("atk", s.buff[attributes.ATKP])
 			return false

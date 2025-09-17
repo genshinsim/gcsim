@@ -35,7 +35,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
@@ -80,7 +80,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 6 && c.StatusIsActive(skillKey) && c.Core.Rand.Float64() < 0.5 {
 		// trigger attack
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter),
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagNormalAttack,

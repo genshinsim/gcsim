@@ -54,13 +54,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			c.sealCount = c.maxTags
 		}
 		c.AddStatus(sealBuffKey, 600, true)
-		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index()).
 			Write("current_seals", c.sealCount)
 		done = true
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Done Deal",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
@@ -108,7 +108,7 @@ func (c *char) burstAddSealHook() func() {
 		}
 		c.AddStatus(sealBuffKey, 600, true)
 
-		c.Core.Log.NewEvent("yanfei gained seal from burst", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yanfei gained seal from burst", glog.LogCharacterEvent, c.Index()).
 			Write("current_seals", c.sealCount)
 
 		c.Core.Tasks.Add(c.burstAddSealHook(), 60)

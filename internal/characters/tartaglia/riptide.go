@@ -47,7 +47,7 @@ func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 	c.Core.Log.NewEvent(
 		fmt.Sprintf("riptide applied (%v)", src),
 		glog.LogCharacterEvent,
-		c.Index,
+		c.Index(),
 	).
 		Write("target", t.Key()).
 		Write("expiry", t.StatusExpiry(riptideKey))
@@ -58,7 +58,7 @@ func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 	return func() {
 		if c.c4Src != src {
-			c.Core.Log.NewEvent("tartaglia c4 src check ignored, src diff", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("tartaglia c4 src check ignored, src diff", glog.LogCharacterEvent, c.Index()).
 				Write("src", src).
 				Write("new src", c.c4Src)
 			return
@@ -74,7 +74,7 @@ func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 		}
 
 		t.QueueEnemyTask(c.rtC4Tick(src, t), 60*3.9)
-		c.Core.Log.NewEvent("tartaglia c4 applied", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("tartaglia c4 applied", glog.LogCharacterEvent, c.Index()).
 			Write("src", src).
 			Write("target", t.Key())
 	}
@@ -110,7 +110,7 @@ func (c *char) rtFlashCallback(a info.AttackCB) {
 func (c *char) rtFlashTick(t *enemy.Enemy) {
 	// queue damage
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Riptide Flash",
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagTartagliaRiptideFlash,
@@ -129,7 +129,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 	c.Core.Log.NewEvent(
 		"riptide flash triggered",
 		glog.LogCharacterEvent,
-		c.Index,
+		c.Index(),
 	).
 		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Key()).
@@ -167,7 +167,7 @@ func (c *char) rtSlashCallback(a info.AttackCB) {
 func (c *char) rtSlashTick(t *enemy.Enemy) {
 	// trigger attack
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Riptide Slash",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -183,7 +183,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 	c.Core.Log.NewEvent(
 		"riptide slash ticked",
 		glog.LogCharacterEvent,
-		c.Index,
+		c.Index(),
 	).
 		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Key()).
@@ -209,7 +209,7 @@ func (c *char) rtBlastCallback(a info.AttackCB) {
 	}
 	// queue damage
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Riptide Blast",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -225,7 +225,7 @@ func (c *char) rtBlastCallback(a info.AttackCB) {
 	c.Core.Log.NewEvent(
 		"riptide blast triggered",
 		glog.LogCharacterEvent,
-		c.Index,
+		c.Index(),
 	).
 		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Key()).
@@ -251,7 +251,7 @@ func (c *char) onDefeatTargets() {
 		}
 		c.Core.Tasks.Add(func() {
 			ai := info.AttackInfo{
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				Abil:       "Riptide Burst",
 				AttackTag:  attacks.AttackTagNormal,
 				ICDTag:     attacks.ICDTagNone,

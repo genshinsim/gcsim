@@ -39,7 +39,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 
 	// initial hit
 	initialAI := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Magic Trick: Astonishing Shift",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -53,7 +53,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 
 	// bogglecat ticks
 	bogglecatAI := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Bogglecat Box",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -72,7 +72,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	b.OnThinkInterval = b.absorbCheck
 	b.ThinkInterval = 0.3 * 60
 
-	b.Core.Log.NewEvent("Lynette Bogglecat Box added", glog.LogCharacterEvent, c.Index).Write("src", b.Src())
+	b.Core.Log.NewEvent("Lynette Bogglecat Box added", glog.LogCharacterEvent, c.Index()).Write("src", b.Src())
 
 	return b
 }
@@ -80,7 +80,7 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 func (b *BogglecatBox) HandleAttack(atk *info.AttackEvent) float64 {
 	b.Core.Events.Emit(event.OnGadgetHit, b, atk)
 
-	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box hit by %s", atk.Info.Abil), glog.LogCharacterEvent, b.char.Index)
+	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box hit by %s", atk.Info.Abil), glog.LogCharacterEvent, b.char.Index())
 
 	if atk.Info.Durability <= 0 {
 		return 0
@@ -106,11 +106,11 @@ func (b *BogglecatBox) HandleAttack(atk *info.AttackEvent) float64 {
 }
 
 func (b *BogglecatBox) absorbRoutine(absorbedElement attributes.Element) {
-	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box came into contact with %s", absorbedElement.String()), glog.LogCharacterEvent, b.char.Index)
+	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box came into contact with %s", absorbedElement.String()), glog.LogCharacterEvent, b.char.Index())
 
 	// vivid shots
 	vividShotAI := info.AttackInfo{
-		ActorIndex: b.char.Index,
+		ActorIndex: b.char.Index(),
 		Abil:       "Vivid Shot",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		// should be ElementalBurstMix, but it just needs to be different from all the other icd tags used by the char so no need to add extra icd tag
@@ -142,7 +142,7 @@ func (b *BogglecatBox) absorbRoutine(absorbedElement attributes.Element) {
 }
 
 func (b *BogglecatBox) absorbCheck() {
-	absorbedElement := b.Core.Combat.AbsorbCheck(b.char.Index, combat.NewCircleHitOnTarget(b.pos, nil, 0.48), attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+	absorbedElement := b.Core.Combat.AbsorbCheck(b.char.Index(), combat.NewCircleHitOnTarget(b.pos, nil, 0.48), attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 	if absorbedElement == attributes.NoElement {
 		return
 	}

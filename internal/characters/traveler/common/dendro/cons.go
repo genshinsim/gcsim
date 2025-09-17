@@ -27,7 +27,7 @@ func (c *Traveler) c4() {
 	if c.burstOverflowingLotuslight > 10 {
 		c.burstOverflowingLotuslight = 10
 	}
-	c.Core.Log.NewEvent("dmc-c4-triggered", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("dmc-c4-triggered", glog.LogCharacterEvent, c.Index())
 }
 
 // Gets removed on swap - from Kolibri

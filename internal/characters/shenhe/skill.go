@@ -57,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) skillPress() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Spring Spirit Summoning (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -117,7 +117,7 @@ func (c *char) makePressParticleCB() info.AttackCBFunc {
 
 func (c *char) skillHold() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Spring Spirit Summoning (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

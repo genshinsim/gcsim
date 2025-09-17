@@ -66,7 +66,7 @@ func (c *char) c4c6() {
 		}
 
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 
@@ -95,7 +95,7 @@ func (c *char) c4c6() {
 			},
 		})
 
-		c.Core.Log.NewEvent("freminet c4 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("freminet c4 proc", glog.LogCharacterEvent, c.Index())
 
 		if c.Base.Cons < 6 {
 			return false
@@ -122,7 +122,7 @@ func (c *char) c4c6() {
 			},
 		})
 
-		c.Core.Log.NewEvent("freminet c6 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("freminet c6 proc", glog.LogCharacterEvent, c.Index())
 
 		return false
 	}

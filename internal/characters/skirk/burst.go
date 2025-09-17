@@ -51,7 +51,7 @@ func (c *char) BurstRuin(p map[string]int) (action.Info, error) {
 	bonusSerpentsSubtlety = max(min(bonusSerpentsSubtlety, 12+c.c2OnBurstRuin()), 0)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Havoc: Ruin (DoT)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,

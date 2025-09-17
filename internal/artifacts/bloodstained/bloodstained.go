@@ -60,11 +60,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 		atk := args[1].(*info.AttackEvent)
 		// don't proc if someone else defeated the enemy
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		// don't proc if off-field
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 

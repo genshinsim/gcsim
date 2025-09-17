@@ -59,7 +59,7 @@ func (c *char) burstCast() {
 	// initial heal
 	c.QueueCharTask(func() {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Stars Gather at Dusk (Initial)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,
@@ -74,7 +74,7 @@ func (c *char) burstCast() {
 		c.Core.QueueAttack(ai, burstArea, 0, 0)
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Stars Gather at Dusk Heal (Initial)",
 			Src:     healInstantP[c.TalentLvlBurst()]*c.TotalAtk() + healInstantFlat[c.TalentLvlBurst()],
@@ -122,7 +122,7 @@ func (c *char) burstPlungeDoTTrigger() {
 		}
 
 		active := c.Core.Player.ActiveChar()
-		if active.Index != atk.Info.ActorIndex {
+		if active.Index() != atk.Info.ActorIndex {
 			return false
 		}
 		if !active.StatusIsActive(player.XianyunAirborneBuff) {
@@ -140,7 +140,7 @@ func (c *char) burstPlungeDoTTrigger() {
 
 		aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstDoTRadius)
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Starwicker",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -173,7 +173,7 @@ func (c *char) burstPlungeDoTTrigger() {
 
 func (c *char) burstHealDoT() {
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  -1,
 		Message: "Starwicker Heal",
 		Src:     healDotP[c.TalentLvlBurst()]*c.TotalAtk() + healDotFlat[c.TalentLvlBurst()],

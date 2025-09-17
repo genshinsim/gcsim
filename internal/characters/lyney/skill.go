@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Bewildering Lights",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -62,14 +62,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skill[c.TalentLvlSkill()] + skillBonus[c.TalentLvlSkill()]*float64(c.propSurplusStacks),
 	}
 	skillHeal := info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  c.Core.Player.Active(),
 		Message: "Bewildering Lights",
 		Src:     0.2 * c.MaxHP() * float64(c.propSurplusStacks),
 		Bonus:   c.Stat(attributes.Heal),
 	}
 	c.propSurplusStacks = 0
-	c.Core.Log.NewEvent("Lyney Prop Surplus stacks removed", glog.LogCharacterEvent, c.Index).Write("prop_surplus_stacks", c.propSurplusStacks)
+	c.Core.Log.NewEvent("Lyney Prop Surplus stacks removed", glog.LogCharacterEvent, c.Index()).Write("prop_surplus_stacks", c.propSurplusStacks)
 
 	player := c.Core.Combat.Player()
 	skillPos := combat.NewCircleHitOnTarget(info.CalcOffsetPoint(player.Pos(), info.Point{Y: 5.5}, player.Direction()), nil, 5.5)

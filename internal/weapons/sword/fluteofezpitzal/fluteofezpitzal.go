@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DEFP] = def
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 

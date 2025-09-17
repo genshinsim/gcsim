@@ -15,7 +15,7 @@ func (c *Traveler) a1() {
 		return
 	}
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Slitting Wind (A1)",
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
@@ -53,7 +53,7 @@ func (c *Traveler) a4() {
 			return false
 		}
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -68,8 +68,8 @@ func (c *Traveler) a4() {
 		for i := 0; i < 5; i++ {
 			c.QueueCharTask(func() {
 				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
-					Target:  c.Index,
+					Caller:  c.Index(),
+					Target:  c.Index(),
 					Message: "Second Wind",
 					Type:    info.HealTypePercent,
 					Src:     0.02,

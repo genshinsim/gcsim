@@ -38,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stamReduction := .12 + float64(r)*.02
 	key := fmt.Sprintf("wineandsong-%v", char.Base.Key.String())
 	c.Events.Subscribe(event.OnDash, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		char.AddStatMod(character.StatMod{
@@ -53,10 +53,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*info.AttackEvent)
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		if ae.Info.ActorIndex != char.Index {
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal {

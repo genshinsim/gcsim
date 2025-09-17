@@ -70,7 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if wavespikeStacks > maxWavespikeStacks {
 			wavespikeStacks = maxWavespikeStacks
 		}
-		c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index).Write("stack", wavespikeStacks)
+		c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index()).Write("stack", wavespikeStacks)
 		char.AddStatus(icdKey, 18, true)
 	}
 
@@ -92,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	//TODO: this used to be on post. make sure nothing broke here
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			nonActiveFn()
 			return false
 		}

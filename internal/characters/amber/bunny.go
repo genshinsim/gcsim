@@ -26,7 +26,7 @@ type Bunny struct {
 func (b *Bunny) HandleAttack(atk *info.AttackEvent) float64 {
 	b.Core.Events.Emit(event.OnGadgetHit, b, atk)
 
-	b.Core.Log.NewEvent(fmt.Sprintf("baron bunny hit by %s", atk.Info.Abil), glog.LogCharacterEvent, b.char.Index)
+	b.Core.Log.NewEvent(fmt.Sprintf("baron bunny hit by %s", atk.Info.Abil), glog.LogCharacterEvent, b.char.Index())
 
 	b.PoiseDMGCheck(atk)
 	b.ShatterCheck(atk)
@@ -144,7 +144,7 @@ func (c *char) makeBunny() *Bunny {
 
 	ai := info.AttackInfo{
 		Abil:       "Baron Bunny",
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -171,7 +171,7 @@ func (c *char) makeBunny() *Bunny {
 
 func (b *Bunny) explode() {
 	// Explode
-	b.char.Core.Log.NewEvent("amber exploding bunny", glog.LogCharacterEvent, b.char.Index).
+	b.char.Core.Log.NewEvent("amber exploding bunny", glog.LogCharacterEvent, b.char.Index()).
 		Write("src", b.Gadget.Src())
 	b.char.Core.QueueAttackEvent(b.ae, 1)
 
@@ -200,7 +200,7 @@ func (c *char) makeParticleCB() info.AttackCBFunc {
 func (c *char) manualExplode() {
 	// do nothing if there are no bunnies
 	if len(c.bunnies) == 0 {
-		c.Core.Log.NewEvent("Did not find any Bunnies", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("Did not find any Bunnies", glog.LogCharacterEvent, c.Index())
 		return
 	}
 	// only explode the first bunny
@@ -217,7 +217,7 @@ func (c *char) overloadExplode() {
 			return false
 		}
 		//TODO: only amber trigger?
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 

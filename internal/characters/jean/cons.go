@@ -14,7 +14,7 @@ import (
 func (c *char) c1(snap *info.Snapshot) {
 	// add 40% dmg
 	snap.Stats[attributes.DmgP] += .4
-	c.Core.Log.NewEvent("jean c1 adding 40% dmg", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("jean c1 adding 40% dmg", glog.LogCharacterEvent, c.Index()).
 		Write("final dmg%", snap.Stats[attributes.DmgP])
 }
 
@@ -25,7 +25,7 @@ func (c *char) c2() {
 	c.c2buff[attributes.AtkSpd] = 0.15
 	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
 		// only trigger if Jean catches the particle
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
 		// apply C2 to all characters
@@ -61,5 +61,5 @@ func (c *char) c4() {
 // Incoming DMG is decreased by 35% within the Field created by Dandelion Breeze.
 // Upon leaving the Dandelion Field, this effect lasts for 3 attacks or 10s.
 func (c *char) c6() {
-	c.Core.Log.NewEvent("jean-c6 not implemented", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("jean-c6 not implemented", glog.LogCharacterEvent, c.Index())
 }

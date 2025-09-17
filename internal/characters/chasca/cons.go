@@ -46,7 +46,7 @@ func (c *char) c2cb(src int) info.AttackCBFunc {
 		c.c2Src = src
 
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Shining Shadowhunt Shell (C2)",
 			AttackTag:      attacks.AttackTagExtra,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -74,7 +74,7 @@ func (c *char) c4cb(src int) info.AttackCBFunc {
 		c.c4Src = src
 
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Radiant Shadowhunt Shell (C4)",
 			AttackTag:      attacks.AttackTagExtra,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -135,7 +135,7 @@ func (c *char) c6buff() func(*info.Snapshot) {
 	return func(snap *info.Snapshot) {
 		old := snap.Stats[attributes.CD]
 		snap.Stats[attributes.CD] += 1.20
-		c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("c6 adding crit dmg", glog.LogCharacterEvent, c.Index()).
 			Write("old", old).
 			Write("new", snap.Stats[attributes.CD])
 	}

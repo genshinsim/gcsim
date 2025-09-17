@@ -42,7 +42,7 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 			return
 		}
 
-		c.Core.Log.NewEvent("wanderer-a4 available", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("wanderer-a4 available", glog.LogCharacterEvent, c.Index()).
 			Write("probability", c.a4Prob)
 
 		c.a4Prob = 0.16
@@ -69,7 +69,7 @@ func (c *char) a4() bool {
 	c.DeleteStatus(a4Key)
 	c.AddStatus(a4Prevent, 20, true) // prevent a4 proccing again for 20f, should be enough to prevent 2 procs in single dash
 
-	c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index())
 
 	a4Mult := 0.35
 
@@ -78,7 +78,7 @@ func (c *char) a4() bool {
 	}
 
 	a4Info := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Gales of Reverie",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagWandererA4,
@@ -104,14 +104,14 @@ func (c *char) absorbCheckA1() {
 	a1Proc := false // for C4
 	// max 2 A1 elements from absorb check
 	for i := 0; i < 2; i++ {
-		absorbCheck := c.Core.Combat.AbsorbCheck(c.Index, a1AbsorbCheckLocation, c.a1ValidBuffs...)
+		absorbCheck := c.Core.Combat.AbsorbCheck(c.Index(), a1AbsorbCheckLocation, c.a1ValidBuffs...)
 		if absorbCheck == attributes.NoElement {
 			continue
 		}
 		a1Proc = true
 		c.addA1Buff(absorbCheck)
 		c.deleteFromValidBuffs(absorbCheck)
-		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 			"wanderer a1 absorbed ", absorbCheck.String(),
 		)
 	}
@@ -120,7 +120,7 @@ func (c *char) absorbCheckA1() {
 		chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
 		c.addA1Buff(chosenElement)
 		c.deleteFromValidBuffs(chosenElement)
-		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 			"wanderer c4 applied a1 ", chosenElement.String(),
 		)
 	}

@@ -52,7 +52,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Musou Shinsetsu",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.stacksConsumed = c.stacks
 		c.stacks = 0
 		ai.Mult += resolveBaseBonus[c.TalentLvlBurst()] * c.stacksConsumed
-		c.Core.Log.NewEvent("resolve stacks", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("resolve stacks", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", c.stacksConsumed)
 		c.Core.QueueAttack(
 			ai,
@@ -113,7 +113,7 @@ func (c *char) onSwapClearBurst() {
 		}
 		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.DeleteStatus(BurstKey)
 			if c.applyC4 {
 				c.applyC4 = false
@@ -127,7 +127,7 @@ func (c *char) onSwapClearBurst() {
 func (c *char) onBurstStackCount() {
 	// TODO: this used to be on PostBurst; need to check if it works correctly still
 	c.Core.Events.Subscribe(event.OnEnergyBurst, func(args ...interface{}) bool {
-		if c.Core.Player.Active() == c.Index {
+		if c.Core.Player.Active() == c.Index() {
 			return false
 		}
 		char := args[0].(*character.CharWrapper)
@@ -146,7 +146,7 @@ func (c *char) onBurstStackCount() {
 		if c.stacks > 60 {
 			c.stacks = 60
 		}
-		c.Core.Log.NewEvent("resolve stacks gained", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("resolve stacks gained", glog.LogCharacterEvent, c.Index()).
 			Write("previous", previous).
 			Write("amount", stacks).
 			Write("final", c.stacks)

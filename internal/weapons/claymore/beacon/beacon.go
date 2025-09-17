@@ -45,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		Base:         modifier.NewBase("beacon-of-the-reed-sea-hp", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
-			if c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
+			if c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
 				return nil, false
 			}
 			return mHP, true
@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mATK[attributes.ATKP] = stackAtk
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(*info.DrainInfo)
-		if di.ActorIndex != char.Index {
+		if di.ActorIndex != char.Index() {
 			return false
 		}
 		if di.Amount <= 0 {

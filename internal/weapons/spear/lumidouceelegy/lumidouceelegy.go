@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if !ok {
 			return false
 		}
-		if atk.Info.ActorIndex != w.char.Index {
+		if atk.Info.ActorIndex != w.char.Index() {
 			return false
 		}
 		w.bonusCB()
@@ -78,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.Element != attributes.Dendro {
 			return false
 		}
-		if atk.Info.ActorIndex != w.char.Index {
+		if atk.Info.ActorIndex != w.char.Index() {
 			return false
 		}
 		w.bonusCB()

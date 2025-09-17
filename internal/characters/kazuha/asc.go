@@ -19,10 +19,10 @@ func (c *char) absorbCheckA1(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.Index, c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.Index(), c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.a1Absorb != attributes.NoElement {
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 				"kazuha a1 absorbed ", c.a1Absorb.String(),
 			)
 			return
@@ -50,7 +50,7 @@ func (c *char) a4() {
 			}
 
 			atk := args[1].(*info.AttackEvent)
-			if atk.Info.ActorIndex != c.Index {
+			if atk.Info.ActorIndex != c.Index() {
 				return false
 			}
 			// do not overwrite mod if same frame
@@ -75,7 +75,7 @@ func (c *char) a4() {
 				})
 			}
 
-			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index()).
 				Write("reaction", ele.String())
 
 			return false

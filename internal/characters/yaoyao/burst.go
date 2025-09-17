@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.ConsumeEnergy(7)
 
 	burstAI := info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             "Moonjade Descent",
 		AttackTag:        attacks.AttackTagElementalBurst,
 		ICDTag:           attacks.ICDTagNone,
@@ -73,7 +73,7 @@ func (c *char) getBurstHealInfo(snap *info.Snapshot) info.HealInfo {
 	maxhp := snap.Stats.MaxHP()
 	heal := burstRadishHealing[0][c.TalentLvlBurst()]*maxhp + burstRadishHealing[1][c.TalentLvlBurst()]
 	return info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  -1,
 		Message: "Yuegui Burst Heal",
 		Src:     heal,

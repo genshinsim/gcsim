@@ -46,7 +46,7 @@ func (c *char) c1(ai *info.AttackInfo, snap *info.Snapshot) (info.AttackCBFunc, 
 	// 200% increased DMG
 	dmg := 2.0
 	snap.Stats[attributes.DmgP] += dmg
-	c.Core.Log.NewEvent("adding c1", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
+	c.Core.Log.NewEvent("adding c1", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 
 	// add c6 if applicable
 	c.addC6Buff(snap)
@@ -68,13 +68,13 @@ func (c *char) c1(ai *info.AttackInfo, snap *info.Snapshot) (info.AttackCBFunc, 
 		if !c.c1SkillExtensionProc && c.StatusIsActive(skillKey) {
 			c.ExtendStatus(skillKey, c1SkillExtension)
 			c.c1SkillExtensionProc = true
-			c.Core.Log.NewEvent("c1: skill duration is extended", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("c1: skill duration is extended", glog.LogCharacterEvent, c.Index())
 		}
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "There Shall Be a Plea for Justice",
 			Src:     c.caHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
@@ -99,7 +99,7 @@ func (c *char) makeC1N5CB() info.AttackCBFunc {
 			return
 		}
 		c.c1N5Proc = true
-		c.Core.Log.NewEvent("gained Gracious Rebuke from C1 N5", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("gained Gracious Rebuke from C1 N5", glog.LogCharacterEvent, c.Index())
 	}
 }
 
@@ -126,7 +126,7 @@ func (c *char) c2(snap *info.Snapshot) {
 
 	dmg := 0.4 * float64(c.a4Stack)
 	snap.Stats[attributes.DmgP] += dmg
-	c.Core.Log.NewEvent("adding c2", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
+	c.Core.Log.NewEvent("adding c2", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 }
 
 // The HP restored to Wriothesley through Rebuke: Vaulting Fist will be increased to 50%
@@ -146,7 +146,7 @@ func (c *char) c4() {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if index != c.Index {
+		if index != c.Index() {
 			return false
 		}
 		if amount <= 0 {
@@ -164,7 +164,7 @@ func (c *char) c4() {
 			char.DeleteStatus(c4Status)
 		}
 
-		if c.Core.Player.Active() == c.Index {
+		if c.Core.Player.Active() == c.Index() {
 			m[attributes.AtkSpd] = 0.2
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(c4Status, 4*60),
@@ -199,5 +199,5 @@ func (c *char) addC6Buff(snap *info.Snapshot) {
 	cd := 0.8
 	snap.Stats[attributes.CR] += cr
 	snap.Stats[attributes.CD] += cd
-	c.Core.Log.NewEvent("adding c6", glog.LogCharacterEvent, c.Index).Write("cr", cr).Write("cd", cd)
+	c.Core.Log.NewEvent("adding c6", glog.LogCharacterEvent, c.Index()).Write("cr", cr).Write("cd", cd)
 }

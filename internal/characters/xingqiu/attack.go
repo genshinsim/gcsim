@@ -42,7 +42,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,

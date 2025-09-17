@@ -39,7 +39,7 @@ func (c *char) skillActivate() action.Info {
 
 	// Initial Skill Damage
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Hanega: Song of the Wind",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -119,7 +119,7 @@ func (c *char) skillEndRoutine() int {
 	}
 
 	// Delay due to falling
-	c.Core.Log.NewEvent("adding delay due to falling", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("adding delay due to falling", glog.LogCharacterEvent, c.Index())
 
 	c.AddStatus(plungeAvailableKey, 26, true)
 

@@ -29,7 +29,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Dance of Abzendegi: Distant Dreams, Listening Spring",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -68,7 +68,7 @@ func (c *char) LingeringAeon(a info.AttackCB) {
 
 	t.QueueEnemyTask(func() {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Lingering Aeon",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,

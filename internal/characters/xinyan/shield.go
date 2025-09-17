@@ -13,7 +13,7 @@ type xinyanShield struct {
 func (c *char) newShield(base float64, t shield.Type, dur int) *xinyanShield {
 	n := &xinyanShield{}
 	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.ActorIndex = c.Index
+	n.Tmpl.ActorIndex = c.Index()
 	n.Tmpl.Target = -1
 	n.Tmpl.Src = c.Core.F
 	n.Tmpl.ShieldType = t

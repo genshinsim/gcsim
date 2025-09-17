@@ -47,13 +47,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
 		crit := args[3].(bool)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		if crit {
 			c.Player.Heal(info.HealInfo{
-				Caller:  char.Index,
+				Caller:  char.Index(),
 				Target:  c.Player.Active(),
 				Message: "The Black Sword",
 				Src:     heal * atk.Snapshot.Stats.TotalATK(),

@@ -62,7 +62,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	c.burstOverflowingLotuslight = 0
 
 	procAI := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Lea Lotus Lamp",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -83,7 +83,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 func (s *LeaLotus) HandleAttack(atk *info.AttackEvent) float64 {
 	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
 
-	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", atk.Info.Abil), glog.LogCharacterEvent, s.char.Index)
+	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", atk.Info.Abil), glog.LogCharacterEvent, s.char.Index())
 
 	s.PoiseDMGCheck(atk)
 	s.ShatterCheck(atk)
@@ -240,7 +240,7 @@ func (s *LeaLotus) TryBurning(a *info.AttackEvent) {
 }
 
 func (s *LeaLotus) transfig(ele attributes.Element) {
-	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index)
+	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index())
 	s.char.burstTransfig = ele
 	if s.char.Base.Cons >= 4 {
 		s.char.c4()

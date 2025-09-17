@@ -147,7 +147,7 @@ func (c *char) c6onHypersense() {
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(c6Key, 9*60),
 			Amount: func() ([]float64, bool) {
-				if c.Core.Player.Active() != char.Index {
+				if c.Core.Player.Active() != char.Index() {
 					return nil, false
 				}
 				c.c6bonus[attributes.ATKP] = float64(c.c6stacks.Count()) * 0.1

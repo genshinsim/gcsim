@@ -27,7 +27,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	s := Set{Count: count}
 
 	if count >= 2 {
-		c.Log.NewEvent("lavawalker 2 pc not implemented", glog.LogArtifactEvent, char.Index)
+		c.Log.NewEvent("lavawalker 2 pc not implemented", glog.LogArtifactEvent, char.Index())
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)

@@ -41,7 +41,7 @@ func (c *char) c4() {
 
 		//TODO:frames for this and ICD tag
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Thundergrass Mark",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,

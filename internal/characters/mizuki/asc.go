@@ -39,7 +39,7 @@ func (c *char) a1() {
 		atk := args[1].(*info.AttackEvent)
 
 		// Mizuki should trigger the swirl
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 
@@ -90,7 +90,7 @@ func (c *char) a4() {
 
 		// Only when others attack
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex == c.Index {
+		if atk.Info.ActorIndex == c.Index() {
 			return false
 		}
 

@@ -19,13 +19,13 @@ func (c *char) makeC1CB() info.AttackCBFunc {
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !a.IsCrit {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 
@@ -66,7 +66,7 @@ func (c *char) makeC4CB() info.AttackCBFunc {
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !a.IsCrit {

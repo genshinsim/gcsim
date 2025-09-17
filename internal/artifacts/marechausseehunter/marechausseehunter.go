@@ -82,10 +82,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(*info.DrainInfo)
-		if di.ActorIndex != char.Index {
+		if di.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if di.Amount <= 0 {
@@ -100,10 +100,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		if index != char.Index {
+		if index != char.Index() {
 			return false
 		}
 		if amount <= 0 {

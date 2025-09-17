@@ -86,7 +86,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.BikeCharge(p)
 	}
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Charge",
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagNormalAttack,
@@ -338,7 +338,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 	src := c.caState.srcFrame
 	c.QueueCharTask(func() {
 		// char must be active
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 
@@ -353,7 +353,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex:       c.Index,
+			ActorIndex:       c.Index(),
 			Abil:             "Flamestrider Charged Attack (Final)",
 			AttackTag:        attacks.AttackTagExtra,
 			AdditionalTags:   []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -417,7 +417,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 
 func (c *char) GetBikeChargeAttackAttackInfo() info.AttackInfo {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Flamestrider Charged Attack (Cyclic)",
 		AttackTag:      attacks.AttackTagExtra,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

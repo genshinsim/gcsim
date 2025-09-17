@@ -41,10 +41,10 @@ func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.W
 		if !crit {
 			return false
 		}
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -53,7 +53,7 @@ func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.W
 		if c.Rand.Float64() > prob {
 			return false
 		}
-		c.Log.NewEvent("favonius proc'd", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("favonius proc'd", glog.LogWeaponEvent, char.Index())
 
 		//TODO: used to be 80
 		c.QueueParticle("favonius-"+char.Base.Key.String(), 3, attributes.NoElement, char.ParticleDelay)

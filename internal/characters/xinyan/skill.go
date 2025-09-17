@@ -29,7 +29,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Sweeping Fervor",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -123,7 +123,7 @@ func (c *char) shieldDot(src int) func() {
 
 func (c *char) getAttackInfoShieldDoT() info.AttackInfo {
 	return info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Sweeping Fervor (DoT)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -152,7 +152,7 @@ func (c *char) updateShield(level int, defFactor float64) {
 	}
 	shd := c.newShield(shieldhp, shield.XinyanSkill, 12*60)
 	c.Core.Player.Shields.Add(shd)
-	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index()).
 		Write("previousLevel", previousLevel).
 		Write("level", c.shieldLevel).
 		Write("expiry", shd.Expiry())

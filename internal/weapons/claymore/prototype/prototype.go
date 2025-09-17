@@ -33,10 +33,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*info.AttackEvent)
-		if ae.Info.ActorIndex != char.Index {
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if c.Rand.Float64() < 0.5 {
 			char.AddStatus(icdKey, 15*60, true)
 			ai := info.AttackInfo{
-				ActorIndex: char.Index,
+				ActorIndex: char.Index(),
 				Abil:       "Prototype Archaic Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
 				ICDTag:     attacks.ICDTagNone,

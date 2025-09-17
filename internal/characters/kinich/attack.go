@@ -77,7 +77,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
@@ -113,7 +113,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 func (c *char) skillAttack(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           fmt.Sprintf("Loop Shot %d", c.normalSCounter),
 		AttackTag:      attacks.AttackTagElementalArt,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -149,7 +149,7 @@ func (c *char) skillAttack(p map[string]int) (action.Info, error) {
 	if cross {
 		time := math.Abs(NormalizeAngle180(boundary-c.characterAngularPosition)) / angularVelocity
 		c.QueueCharTask(func() {
-			c.Core.Log.NewEvent("blind spot entered", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("blind spot entered", glog.LogCharacterEvent, c.Index())
 			c.nightsoulState.GeneratePoints(4)
 			c.blindSpotAngularPosition = -1
 		}, int(time))

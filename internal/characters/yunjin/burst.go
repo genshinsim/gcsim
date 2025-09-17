@@ -29,7 +29,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// AoE Geo damage
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Cliffbreaker's Banner",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,

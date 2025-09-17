@@ -73,7 +73,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	//TODO: this used to be post. need to check
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
@@ -108,7 +108,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.stacks++
 		char.AddStatus(icdKey, icd, true)
 		s.updateBuff()
-		c.Log.NewEvent("Vermillion stack gained", glog.LogArtifactEvent, char.Index).Write("stacks", s.stacks)
+		c.Log.NewEvent("Vermillion stack gained", glog.LogArtifactEvent, char.Index()).Write("stacks", s.stacks)
 
 		return false
 	}, "Stack-on-hurt")

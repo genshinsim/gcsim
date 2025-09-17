@@ -80,7 +80,7 @@ func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt info.Rea
 	r.core.Tasks.Add(func() {
 		// grab current snapshot for shield
 		ai := info.AttackInfo{
-			ActorIndex: char.Index,
+			ActorIndex: char.Index(),
 			DamageSrc:  r.self.Key(),
 			Abil:       string(rt),
 		}
@@ -89,7 +89,7 @@ func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt info.Rea
 		// shield snapshots em on shard spawn
 		em := snap.Stats[attributes.EM]
 		// expiry will get set properly later
-		shd := crystallize.NewShield(char.Index, typ, src, lvl, em, -1)
+		shd := crystallize.NewShield(char.Index(), typ, src, lvl, em, -1)
 		cs := crystallize.NewShard(r.core, r.self.Shape(), shd)
 		r.core.Combat.AddGadget(cs)
 		r.core.Log.NewEvent(

@@ -41,7 +41,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	player := c.Core.Combat.Player()
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Lumidouce Case (Summon)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -81,7 +81,7 @@ func (c *char) arkheAttack() {
 	c.AddStatus(lumidouceArkheCD, int(skillArkeCD[c.TalentLvlSkill()]*60), true)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Spiritbreath Thorn",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

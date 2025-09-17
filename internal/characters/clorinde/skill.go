@@ -84,7 +84,7 @@ func (c *char) gainBOLOnAttack() {
 
 func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Impale the Night (0% BoL)",
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagNormalAttack,
@@ -111,7 +111,7 @@ func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
 func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 	for i := 0; i < 3; i++ {
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Impale the Night (100%+ BoL)",
 			AttackTag:      attacks.AttackTagNormal,
 			ICDTag:         attacks.ICDTagNormalAttack,
@@ -150,7 +150,7 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 
 func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Impale the Night (<100% BoL)",
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagNormalAttack,
@@ -181,8 +181,8 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 func (c *char) skillHeal(bolMult float64, msg string) {
 	amt := c.CurrentHPDebt() * bolMult
 	c.Heal(&info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: msg,
 		Src:     amt,
 		Bonus:   c.Stat(attributes.Heal), // TODO: confirms that it scales with healing %

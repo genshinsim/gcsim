@@ -40,7 +40,7 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 		if dmg == 0 {
 			return false
 		}
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if crit {
@@ -51,7 +51,7 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 				stacks = 5
 			}
 			char.AddStatus(icdKey, 18, true)
-			c.Log.NewEvent("royal stacked", glog.LogWeaponEvent, char.Index).
+			c.Log.NewEvent("royal stacked", glog.LogWeaponEvent, char.Index()).
 				Write("stacks", stacks)
 		}
 		return false

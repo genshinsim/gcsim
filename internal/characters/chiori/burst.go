@@ -28,7 +28,7 @@ func init() {
 // of a master tailor, dealing AoE Geo DMG based on her ATK and DEF.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Hiyoku: Twin Blades",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

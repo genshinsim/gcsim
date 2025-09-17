@@ -44,7 +44,7 @@ func (c *char) c6() {
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
-		if atk.Info.ActorIndex == c.Index {
+		if atk.Info.ActorIndex == c.Index() {
 			return false
 		}
 		if !c.StatusIsActive(burstKey) {
@@ -58,7 +58,7 @@ func (c *char) c6() {
 		}
 		c.AddStatus(c6ICDKey, 138, true)
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               "The Overflow (C6)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNone,

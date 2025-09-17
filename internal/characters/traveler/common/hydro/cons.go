@@ -20,15 +20,15 @@ func (c *Traveler) c4() {
 		// update hp
 		shd, _ := existingShield.(*shield.Tmpl)
 		shd.HP = 0.1 * c.MaxHP()
-		c.Core.Log.NewEvent("update shield hp", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("update shield hp", glog.LogCharacterEvent, c.Index()).
 			Write("hp", shd.HP)
 		return
 	}
 
 	// add shield
 	c.Core.Player.Shields.Add(&shield.Tmpl{
-		ActorIndex: c.Index,
-		Target:     c.Index,
+		ActorIndex: c.Index(),
+		Target:     c.Index(),
 		Src:        c.Core.F,
 		ShieldType: shield.TravelerHydroC4,
 		Name:       "Traveler (Hydro) C4",
@@ -71,7 +71,7 @@ func (c *Traveler) c4Remove() {
 // When the Traveler picks up a Sourcewater Droplet, they will restore HP to a nearby party member with the lowest
 // remaining HP percentage based on 6% of said member's Max HP.
 func (c *Traveler) c6() {
-	lowest := c.Index
+	lowest := c.Index()
 	chars := c.Core.Player.Chars()
 	for i, char := range chars {
 		if char.CurrentHPRatio() < chars[lowest].CurrentHPRatio() {
@@ -80,7 +80,7 @@ func (c *Traveler) c6() {
 	}
 
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  lowest,
 		Type:    info.HealTypePercent,
 		Message: "Tides of Justice",

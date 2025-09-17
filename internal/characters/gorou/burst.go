@@ -29,7 +29,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// A1/C6/Q duration all start on Initial Hit
 	c.Core.Tasks.Add(func() {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Juuga: Forward Unto Victory",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,
@@ -110,7 +110,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		}
 		// trigger damage
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Crystal Collapse",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -171,7 +171,7 @@ func (c *char) gorouBurstHealField(src int) func() {
 		// When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
 		// within its AoE by 50% of Gorou's own DEF every 1.5s.
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Lapping Hound: Warm as Water",
 			Src:     c.healFieldStats.TotalDEF() * 0.5,

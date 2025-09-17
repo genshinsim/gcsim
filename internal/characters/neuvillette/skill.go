@@ -40,7 +40,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.chargeEarlyCancelled = false
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "O Tears, I Shall Repay",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -63,7 +63,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	aiThorn := info.AttackInfo{
 		// TODO: Apply Pneuma
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -147,6 +147,6 @@ func (c *char) makeDropletCB() info.AttackCBFunc {
 				info.GadgetTypSourcewaterDropletNeuv,
 			)
 		}
-		c.Core.Combat.Log.NewEvent("Skill: Spawned 3 droplets", glog.LogCharacterEvent, c.Index)
+		c.Core.Combat.Log.NewEvent("Skill: Spawned 3 droplets", glog.LogCharacterEvent, c.Index())
 	}
 }

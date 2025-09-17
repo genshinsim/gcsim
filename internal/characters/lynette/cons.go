@@ -35,7 +35,7 @@ func (c *char) c6() {
 
 	// add anemo infusion
 	c.Core.Player.AddWeaponInfuse(
-		c.Index,
+		c.Index(),
 		"lynette-c6-infusion",
 		attributes.Anemo,
 		duration,

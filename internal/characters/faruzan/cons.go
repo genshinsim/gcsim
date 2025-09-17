@@ -60,7 +60,7 @@ func (c *char) c6Collapse() {
 		}
 		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ActiveChar()
-		if char.Index != atk.Info.ActorIndex {
+		if char.Index() != atk.Info.ActorIndex {
 			return false
 		}
 		if !char.StatusIsActive(burstBuffKey) {

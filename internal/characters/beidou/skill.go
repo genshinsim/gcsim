@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Tidecaller (E)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -62,8 +62,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// add shield
 	c.Core.Player.Shields.Add(&shield.Tmpl{
-		ActorIndex: c.Index,
-		Target:     c.Index,
+		ActorIndex: c.Index(),
+		Target:     c.Index(),
 		Src:        c.Core.F,
 		ShieldType: shield.BeidouThunderShield,
 		Name:       "Beidou Skill",

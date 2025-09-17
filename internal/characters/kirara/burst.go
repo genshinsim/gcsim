@@ -29,7 +29,7 @@ func init() {
 // Has one parameter, "hits" determines the number of cardamoms that hit the enemy
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	boxAi := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Secret Art: Surprise Dispatch",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -63,7 +63,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		minehits = c.cardamoms
 	}
 	mineAi := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Cat Grass Cardamom Explosion",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,

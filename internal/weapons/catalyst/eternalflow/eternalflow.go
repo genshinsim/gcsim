@@ -62,10 +62,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(*info.DrainInfo)
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		if di.ActorIndex != char.Index {
+		if di.ActorIndex != char.Index() {
 			return false
 		}
 		if di.Amount <= 0 {
@@ -80,10 +80,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		if index != char.Index {
+		if index != char.Index() {
 			return false
 		}
 		if amount <= 0 {

@@ -30,7 +30,7 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 
 // Initiate off-field stacking if off-field at start of the sim
 func (w *Weapon) Init() error {
-	w.active = w.core.Player.Active() == w.char.Index
+	w.active = w.core.Player.Active() == w.char.Index()
 	if !w.active {
 		w.core.Tasks.Add(w.incStack(w.char, w.core.F), 1)
 	}
@@ -69,11 +69,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 		next := args[1].(int)
-		if next == char.Index {
+		if next == char.Index() {
 			w.active = true
 			w.lastActiveChange = c.F
 			w.char.QueueCharTask(w.decStack(char, c.F), 240) // on field for more than 4s, start decreasing stacks
-		} else if prev == char.Index {
+		} else if prev == char.Index() {
 			w.active = false
 			w.lastActiveChange = c.F
 			c.Tasks.Add(w.incStack(char, c.F), 60)
@@ -91,7 +91,7 @@ func (w *Weapon) decStack(c *character.CharWrapper, src int) func() {
 			if w.stacks < 0 {
 				w.stacks = 0
 			}
-			w.core.Log.NewEvent("Alley lost stack", glog.LogWeaponEvent, w.char.Index).
+			w.core.Log.NewEvent("Alley lost stack", glog.LogWeaponEvent, w.char.Index()).
 				Write("stacks:", w.stacks).
 				Write("last_swap", w.lastActiveChange).
 				Write("source", src)
@@ -104,7 +104,7 @@ func (w *Weapon) incStack(c *character.CharWrapper, src int) func() {
 	return func() {
 		if !w.active && w.stacks < 10 && src == w.lastActiveChange {
 			w.stacks++
-			w.core.Log.NewEvent("Alley gained stack", glog.LogWeaponEvent, w.char.Index).
+			w.core.Log.NewEvent("Alley gained stack", glog.LogWeaponEvent, w.char.Index()).
 				Write("stacks:", w.stacks).
 				Write("last_swap", w.lastActiveChange).
 				Write("source", src)

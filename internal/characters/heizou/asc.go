@@ -24,10 +24,10 @@ func (c *char) a1() {
 				return false
 			}
 			atk := args[1].(*info.AttackEvent)
-			if atk.Info.ActorIndex != c.Index {
+			if atk.Info.ActorIndex != c.Index() {
 				return false
 			}
-			if c.Core.Player.Active() != c.Index {
+			if c.Core.Player.Active() != c.Index() {
 				return false
 			}
 			switch atk.Info.AttackTag {
@@ -57,7 +57,7 @@ func (c *char) a4() {
 
 	dur := 60 * 10
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue // nothing for heizou
 		}
 		char.AddStatMod(character.StatMod{
@@ -68,5 +68,5 @@ func (c *char) a4() {
 			},
 		})
 	}
-	c.Core.Log.NewEvent("heizou a4 triggered", glog.LogCharacterEvent, c.Index).Write("em snapshot", c.a4Buff[attributes.EM]).Write("expiry", c.Core.F+dur)
+	c.Core.Log.NewEvent("heizou a4 triggered", glog.LogCharacterEvent, c.Index()).Write("em snapshot", c.a4Buff[attributes.EM]).Write("expiry", c.Core.F+dur)
 }

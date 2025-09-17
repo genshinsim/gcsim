@@ -53,10 +53,10 @@ func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
 		ai.Element = attributes.Pyro
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
-		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index()).
 			Write("prev", ai.Mult).
 			Write("next", skill[c.TalentLvlSkill()]*ai.Mult).
-			Write("char", c.Index)
+			Write("char", c.Index())
 	}
 
 	return ds

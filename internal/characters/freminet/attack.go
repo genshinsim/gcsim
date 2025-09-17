@@ -48,7 +48,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -86,7 +86,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Pressurized Floe: Pers Time Frost",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -114,7 +114,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		if c.skillStacks > 4 {
 			c.skillStacks = 4
 		}
-		c.Core.Log.NewEvent("freminet skill stacks gained", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("freminet skill stacks gained", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", c.skillStacks)
 	}
 

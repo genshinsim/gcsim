@@ -21,7 +21,7 @@ func (c *Traveler) a4() {
 		return
 	}
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Frenzied Rockslide (A4)",
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,

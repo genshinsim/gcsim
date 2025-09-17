@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	mNA := make([]float64, attributes.EndStatType)
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -91,10 +91,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
@@ -114,7 +114,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}, .5*60)
 		}
 
-		c.Log.NewEvent("Surf's Up gained stack", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("Surf's Up gained stack", glog.LogWeaponEvent, char.Index())
 		char.AddStatus(gainStackIcd, 1.5*60, true)
 
 		return false
@@ -127,14 +127,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
@@ -149,7 +149,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			w.stacks--
 		}
 
-		c.Log.NewEvent("Surf's Up lost stack", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("Surf's Up lost stack", glog.LogWeaponEvent, char.Index())
 		char.AddStatus(loseStackIcd, 1.5*60, true)
 
 		return false

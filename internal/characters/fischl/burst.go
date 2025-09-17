@@ -29,7 +29,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// initial damage; part of the burst tag
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Midnight Phantasmagoria",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	var c4HealFunc func()
 	if c.Base.Cons >= 4 {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Her Pilgrimage of Bleak (C4)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -67,8 +67,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// heal
 		c4HealFunc = func() {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
-				Target:  c.Index,
+				Caller:  c.Index(),
+				Target:  c.Index(),
 				Message: "Her Pilgrimage of Bleak (C4)",
 				Src:     0.2 * c.MaxHP(),
 				Bonus:   c.Stat(attributes.Heal),

@@ -45,7 +45,7 @@ func (c *char) c2() info.AttackCBFunc {
 		}
 		c.AddStatus(c2IcdKey, 0.25*60, true)
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "The President's Pursuit of Victory",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,

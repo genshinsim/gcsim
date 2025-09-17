@@ -29,7 +29,7 @@ const (
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Explosive Grenade",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -42,7 +42,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	mineAi := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Secondary Explosive Shell",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,

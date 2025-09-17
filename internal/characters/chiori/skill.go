@@ -97,13 +97,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) skillRecast() (action.Info, error) {
 	c.a1Tapestry()
 	// find next char
-	next := c.Index + 1
+	next := c.Index() + 1
 	if next >= len(c.Core.Player.Chars()) {
 		next = 0
 	}
 	k := c.Core.Player.ByIndex(next).Base.Key
 	c.Core.Tasks.Add(func() {
-		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, "forcing swap to ", k.String())
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), "forcing swap to ", k.String())
 		c.Core.Player.Exec(action.ActionSwap, k, nil)
 	}, 1)
 	// TODO: doesn't seem like this duration actually matters because of the forced swap, it just needs to cover the 1f until the swap is executed
@@ -120,7 +120,7 @@ func (c *char) handleSkill(hold int) {
 	c.Core.Tasks.Add(func() {
 		ai := info.AttackInfo{
 			Abil:       "Fluttering Hasode (Upward Sweep)",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagChioriSkill,
 			ICDGroup:   attacks.ICDGroupChioriSkill,
@@ -154,7 +154,7 @@ func (c *char) handleSkill(hold int) {
 		}
 
 		// create rock doll from c1 and trigger a4
-		c.Core.Log.NewEvent("c1 spawning rock doll", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("c1 spawning rock doll", glog.LogCharacterEvent, c.Index())
 		c.createRockDoll()
 		c.applyA4Buff()
 	}, skillCDStarts[hold])
@@ -172,7 +172,7 @@ func (c *char) createDoll() {
 		player.Direction(),
 	)
 
-	c.Core.Log.NewEvent("spawning doll", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("spawning doll", glog.LogCharacterEvent, c.Index())
 
 	// spawn new doll
 	doll := newTicker(c.Core, skillDollDuration, nil)
@@ -199,7 +199,7 @@ func (c *char) skillDollAttack(src int, abil string, pos info.Point) func() {
 		c.Core.Tasks.Add(func() {
 			ai := info.AttackInfo{
 				Abil:       abil,
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagChioriSkill,
 				ICDGroup:   attacks.ICDGroupChioriSkill,
@@ -221,7 +221,7 @@ func (c *char) skillDollAttack(src int, abil string, pos info.Point) func() {
 				return
 			}
 
-			c.Core.Log.NewEvent("doll attacking", glog.LogCharacterEvent, c.Index).Write("src", src)
+			c.Core.Log.NewEvent("doll attacking", glog.LogCharacterEvent, c.Index()).Write("src", src)
 
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(t, nil, skillDollAoE), 0, c.particleCB)
 		}, skillDollAttackDelay)
@@ -240,7 +240,7 @@ func (c *char) skillDollConstructCheck() {
 		return
 	}
 
-	c.Core.Log.NewEvent("construct spawning rock doll", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("construct spawning rock doll", glog.LogCharacterEvent, c.Index())
 	c.createRockDoll()
 
 	// make sure this check doesn't happen again

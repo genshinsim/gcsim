@@ -72,7 +72,7 @@ func (c *char) c4() {
 
 func (yg *yuegui) c6(target info.Point) {
 	ai := info.AttackInfo{
-		ActorIndex:         yg.c.Index,
+		ActorIndex:         yg.c.Index(),
 		Abil:               "Mega Radish",
 		AttackTag:          attacks.AttackTagNone,
 		ICDTag:             attacks.ICDTagNone,
@@ -85,7 +85,7 @@ func (yg *yuegui) c6(target info.Point) {
 		IsDeployable:       true,
 	}
 	hi := info.HealInfo{
-		Caller:  yg.c.Index,
+		Caller:  yg.c.Index(),
 		Message: c6HealMsg,
 		Src:     yg.c.MaxHP() * 0.075,
 		Bonus:   yg.c.Stat(attributes.Heal),

@@ -150,7 +150,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) enterBike() {
-	c.Core.Log.NewEvent("switching to bike state", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("switching to bike state", glog.LogCharacterEvent, c.Index())
 	c.armamentState = bike
 	c.NormalHitNum = bikeHitNum
 	c.NormalCounter = 0
@@ -158,7 +158,7 @@ func (c *char) enterBike() {
 }
 
 func (c *char) exitBike() {
-	c.Core.Log.NewEvent("switching to ring state", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("switching to ring state", glog.LogCharacterEvent, c.Index())
 	c.armamentState = ring
 	c.NormalHitNum = normalHitNum
 	c.ringSrc = c.Core.F
@@ -192,7 +192,7 @@ func (c *char) skillRecast() action.Info {
 
 func (c *char) skillHold() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment (Flamestrider)",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
@@ -222,7 +222,7 @@ func (c *char) skillHold() action.Info {
 
 func (c *char) skillPress() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
@@ -248,7 +248,7 @@ func (c *char) skillPress() action.Info {
 // Recasting E while on bike, occurs with Sac or Burst allowing E to come off of cd
 func (c *char) skillBikeRefresh() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment (Flamestrider)",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
@@ -306,7 +306,7 @@ func (c *char) skillRingTask(src int) {
 			return
 		}
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Rings of Searing Radiance",
 			AttackTag:      attacks.AttackTagElementalArt,
 			ICDTag:         attacks.ICDTagNone,

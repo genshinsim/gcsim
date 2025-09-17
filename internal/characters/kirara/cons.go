@@ -47,7 +47,7 @@ func (c *char) c4() {
 
 		// TODO: snapshot? damage delay?
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               "Steed of Skanda",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagElementalBurst,

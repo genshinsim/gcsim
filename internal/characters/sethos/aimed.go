@@ -71,7 +71,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	c.QueueCharTask(func() {
 		ai := info.AttackInfo{
-			ActorIndex:           c.Index,
+			ActorIndex:           c.Index(),
 			Abil:                 "Fully-Charged Aimed Shot",
 			AttackTag:            attacks.AttackTagExtra,
 			ICDTag:               attacks.ICDTagNone,
@@ -134,7 +134,7 @@ func (c *char) ShadowPierce(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		em := c.Stat(attributes.EM)
 		ai := info.AttackInfo{
-			ActorIndex:           c.Index,
+			ActorIndex:           c.Index(),
 			Abil:                 shadowPierceShotAil,
 			AttackTag:            attacks.AttackTagExtra,
 			ICDTag:               attacks.ICDTagNone,
@@ -153,7 +153,7 @@ func (c *char) ShadowPierce(p map[string]int) (action.Info, error) {
 
 		if c.StatusIsActive(a4Key) {
 			ai.FlatDmg += 7 * em
-			c.Core.Log.NewEvent("Sethos A4 proc dmg add", glog.LogPreDamageMod, c.Index).
+			c.Core.Log.NewEvent("Sethos A4 proc dmg add", glog.LogPreDamageMod, c.Index()).
 				Write("em", em).
 				Write("ratio", 7.0).
 				Write("addition", 7*em)

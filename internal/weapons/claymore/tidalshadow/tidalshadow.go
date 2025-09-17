@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val[attributes.ATKP] = atk
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		index := args[1].(int)
-		if index != char.Index {
+		if index != char.Index() {
 			return false
 		}
 		char.AddStatMod(character.StatMod{

@@ -80,7 +80,7 @@ func (c *char) c4() {
 		}
 		for i, char := range c.Core.Player.Chars() {
 			// does not affect hutao
-			if c.Index == i {
+			if c.Index() == i {
 				continue
 			}
 			char.AddStatMod(character.StatMod{

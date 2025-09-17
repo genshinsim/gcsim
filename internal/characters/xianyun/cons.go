@@ -69,7 +69,7 @@ func (c *char) c4cb() func(a info.AttackCB) {
 		}
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Mystery Millet Gourmet (C4)",
 			Src:     c4Ratio[c.skillCounter] * c.TotalAtk(),
@@ -94,7 +94,7 @@ func (c *char) c6mod(snap *info.Snapshot) {
 	}
 	old := snap.Stats[attributes.CD]
 	snap.Stats[attributes.CD] += c6Buff[c.skillCounter]
-	c.Core.Log.NewEvent("c6 adding crit DMG", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("c6 adding crit DMG", glog.LogCharacterEvent, c.Index()).
 		Write("old", old).
 		Write("new", snap.Stats[attributes.CD])
 }

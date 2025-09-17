@@ -67,7 +67,7 @@ func (c *char) c2() {
 		return
 	}
 
-	c.Core.Log.NewEvent("c2 activated", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("c2 activated", glog.LogCharacterEvent, c.Index())
 
 	// kill existing c2 ticker
 	c.kill(c.c2Ticker)
@@ -101,7 +101,7 @@ func (c *char) c4Activation() {
 		return
 	}
 
-	c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index())
 
 	c.AddStatus(c4Lockout, c4LockoutDuration, true) // applied to chiori
 
@@ -143,7 +143,7 @@ func (c *char) c4() {
 		// apply icd
 		c.AddStatus(c4ICDKey, c4ICD, true) // applied to chiori
 
-		c.Core.Log.NewEvent("c4 spawning kinu", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("c4 spawning kinu", glog.LogCharacterEvent, c.Index())
 
 		// spawn kinu
 		c.createKinu(c.Core.F, c4CenterOffset, c4MinRandom, c4MaxRandom)()

@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("calamityofeshu", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			if !c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
+			if !c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
 				return nil, false
 			}
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {

@@ -64,7 +64,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	skillActive := c.Base.Ascension >= 1 && c.Core.Status.Duration(coverKey) > 0
 
 	ai := info.AttackInfo{
-		ActorIndex:           c.Index,
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -119,7 +119,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
 	if skillActive && hold == attacks.AimParamLv1 {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Tengu Juurai: Ambush",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,

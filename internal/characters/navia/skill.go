@@ -135,7 +135,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.SetCDWithDelay(action.ActionSkill, 9*60, firingTime)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Rosula Shardshot",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -151,7 +151,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			if c.shrapnel >= 3 {
 				shrapnelIndex = 1
 			}
-			c.Core.Log.NewEvent(fmt.Sprintf("firing %v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent(fmt.Sprintf("firing %v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index())
 
 			// snap and add buffs
 			snap := c.Snapshot(&ai)
@@ -177,7 +177,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 						hits++
 					}
 				}
-				c.Core.Log.NewEvent(fmt.Sprintf("target %v hit %v times", t.Key(), hits), glog.LogCharacterEvent, c.Index)
+				c.Core.Log.NewEvent(fmt.Sprintf("target %v hit %v times", t.Key(), hits), glog.LogCharacterEvent, c.Index())
 				// Applies damage based on the hits
 				ai.Mult = skillshotgun[c.TalentLvlSkill()] * skillMultiplier[hits]
 				c.Core.QueueAttackWithSnap(
@@ -249,7 +249,7 @@ func (c *char) addShrapnelBuffs(snap *info.Snapshot, count int) {
 	snap.Stats[attributes.DmgP] += dmg
 	snap.Stats[attributes.CR] += cr
 	snap.Stats[attributes.CD] += cd
-	c.Core.Log.NewEvent("adding shrapnel buffs", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg).Write("cr", cr).Write("cd", cd)
+	c.Core.Log.NewEvent("adding shrapnel buffs", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg).Write("cr", cr).Write("cd", cd)
 }
 
 // shrapnelGain adds Shrapnel Stacks when a Crystallise Shield is picked up.
@@ -267,7 +267,7 @@ func (c *char) shrapnelGain() {
 
 		if c.shrapnel < 6 {
 			c.shrapnel++
-			c.Core.Log.NewEvent("Crystal Shrapnel gained from Crystallise", glog.LogCharacterEvent, c.Index).Write("shrapnel", c.shrapnel)
+			c.Core.Log.NewEvent("Crystal Shrapnel gained from Crystallise", glog.LogCharacterEvent, c.Index()).Write("shrapnel", c.shrapnel)
 		}
 		return false
 	}, "shrapnel-gain")
@@ -278,7 +278,7 @@ func (c *char) surgingBlade(count int) {
 		return
 	}
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Surging Blade",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

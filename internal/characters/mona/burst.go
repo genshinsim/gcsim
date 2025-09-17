@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// apply first non damage after 1.7 seconds
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Illusory Bubble (Initial)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -52,14 +52,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// bubble is applied to each target on a per target basis
 		// lasts 8 seconds if not popped normally
 		t.AddStatus(bubbleKey, 481, true) // 1 frame extra so we don't run into problems breaking
-		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index).
-			Write("char", c.Index)
+		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index()).
+			Write("char", c.Index())
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), -1, burstHitmark, cb)
 
 	// queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
 	aiBreak := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Illusory Bubble (Break)",
 		AttackTag:  attacks.AttackTagMonaBubbleBreak,
 		ICDTag:     attacks.ICDTagNone,
@@ -145,7 +145,7 @@ func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	t.AddStatus(omenKey, dur, true)
 	// trigger dmg
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Illusory Bubble (Explosion)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,

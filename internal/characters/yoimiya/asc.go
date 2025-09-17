@@ -20,7 +20,7 @@ func (c *char) makeA1CB() info.AttackCBFunc {
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !c.StatusIsActive(skillKey) {
@@ -54,7 +54,7 @@ func (c *char) makeA1CB() info.AttackCBFunc {
 func (c *char) a4() {
 	c.a4Bonus[attributes.ATKP] = 0.1 + float64(c.a1Stacks)*0.01
 	for _, x := range c.Core.Player.Chars() {
-		if x.Index == c.Index {
+		if x.Index() == c.Index() {
 			continue
 		}
 		x.AddStatMod(character.StatMod{

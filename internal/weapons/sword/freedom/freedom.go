@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	stackFunc := func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(cdKey) {
@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddStatus(icdKey, icd, true)
 		stacks++
-		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index()).
 			Write("sigil", stacks)
 		if stacks == 2 {
 			stacks = 0

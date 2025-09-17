@@ -109,7 +109,7 @@ func (c *Traveler) SkillHold(p map[string]int) (action.Info, error) {
 	}, 48)
 	c.SetCDWithDelay(action.ActionSkill, 18*60, holdCdStart)
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Flowfire Blade (Hold DMG)",
 		AttackTag:      attacks.AttackTagElementalArt,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -168,7 +168,7 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 			return
 		}
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Blazing Threshold DMG",
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -213,7 +213,7 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Scorching Threshold",
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

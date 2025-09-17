@@ -36,7 +36,7 @@ func (c *char) c4() float64 {
 		return 0
 	}
 	dmgBonus := 0.05 * float64(c.c4count)
-	c.Core.Log.NewEvent("shenhe-c4 adding dmg bonus", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("shenhe-c4 adding dmg bonus", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.c4count).
 		Write("dmg_bonus", dmgBonus)
 	c.c4count = 0
@@ -53,7 +53,7 @@ func (c *char) c4CB(a info.AttackCB) {
 	}
 	if c.c4count < 50 {
 		c.c4count++
-		c.Core.Log.NewEvent("shenhe-c4 stack gained", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("shenhe-c4 stack gained", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", c.c4count)
 	}
 	c.AddStatus(c4BuffKey, 3600, true) // 60 s

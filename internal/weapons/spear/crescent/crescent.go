@@ -34,10 +34,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffDuration := 300 // 5s * 60
 
 	c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		c.Log.NewEvent("crescent pike active", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("crescent pike active", glog.LogWeaponEvent, char.Index()).
 			Write("expiry (without hitlag)", c.F+300)
 		char.AddStatus(buffKey, buffDuration, true)
 
@@ -47,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
-		if ae.Info.ActorIndex != char.Index {
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		if char.StatusIsActive(buffKey) {
 			ai := info.AttackInfo{
-				ActorIndex: char.Index,
+				ActorIndex: char.Index(),
 				Abil:       "Crescent Pike Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
 				ICDTag:     attacks.ICDTagNone,

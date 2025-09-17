@@ -45,7 +45,7 @@ func (c *char) c1() {
 					Base: modifier.NewBase("mona-c1", 8*60),
 					Amount: func(ai info.AttackInfo) (float64, bool) {
 						// doesn't work off-field
-						if c.Core.Player.Active() != char.Index {
+						if c.Core.Player.Active() != char.Index() {
 							return 0, false
 						}
 						// Electro-Charged DMG increases by 15%.
@@ -89,7 +89,7 @@ func (c *char) c2(a info.AttackCB) {
 	}
 	c.c2icd = c.Core.F + 300 // every 5 seconds
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNone,
@@ -134,13 +134,13 @@ func (c *char) c4() {
 func (c *char) c6(src int) func() {
 	return func() {
 		if c.c6Src != src {
-			c.Core.Log.NewEvent(fmt.Sprintf("%v stack gain check ignored, src diff", c6Key), glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent(fmt.Sprintf("%v stack gain check ignored, src diff", c6Key), glog.LogCharacterEvent, c.Index()).
 				Write("src", src).
 				Write("new src", c.c6Src)
 			return
 		}
 		// do nothing if not Mona
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		// do nothing if we aren't dashing anymore
@@ -152,7 +152,7 @@ func (c *char) c6(src int) func() {
 		if c.c6Stacks > 3 {
 			c.c6Stacks = 3
 		}
-		c.Core.Log.NewEvent(fmt.Sprintf("%v stack gained", c6Key), glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent(fmt.Sprintf("%v stack gained", c6Key), glog.LogCharacterEvent, c.Index()).
 			Write("c6Stacks", c.c6Stacks)
 
 		m := make([]float64, attributes.EndStatType)
@@ -187,7 +187,7 @@ func (c *char) makeC6CAResetCB() info.AttackCBFunc {
 		}
 		c.DeleteStatus(c6Key)
 		c.c6Stacks = 0
-		c.Core.Log.NewEvent(fmt.Sprintf("%v stacks reset via charge attack", c6Key), glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent(fmt.Sprintf("%v stacks reset via charge attack", c6Key), glog.LogCharacterEvent, c.Index())
 	}
 }
 
@@ -195,6 +195,6 @@ func (c *char) c6TimerReset() {
 	// handle C6 stack reset if CA not used before c6 buff expires
 	if c.c6Stacks > 0 && !c.StatusIsActive(c6Key) {
 		c.c6Stacks = 0
-		c.Core.Log.NewEvent(fmt.Sprintf("%v stacks reset via timer", c6Key), glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent(fmt.Sprintf("%v stacks reset via timer", c6Key), glog.LogCharacterEvent, c.Index())
 	}
 }

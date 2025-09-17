@@ -28,7 +28,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// assume it does skill dmg at end of it's animation
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Aurous Blaze",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -107,7 +107,7 @@ func (c *char) burstHook() {
 			return false
 		}
 		// ignore for self
-		if ae.Info.ActorIndex == c.Index {
+		if ae.Info.ActorIndex == c.Index() {
 			return false
 		}
 		// ignore if on icd
@@ -127,7 +127,7 @@ func (c *char) burstHook() {
 		}
 		// do explosion, set icd
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Aurous Blaze (Explode)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,

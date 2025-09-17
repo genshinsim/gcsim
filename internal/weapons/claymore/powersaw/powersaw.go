@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 		amount := args[2].(float64)
-		if source.Caller != char.Index && index != char.Index { // heal others and get healed including wielder
+		if source.Caller != char.Index() && index != char.Index() { // heal others and get healed including wielder
 			return false
 		}
 		if amount <= 0 {
@@ -62,7 +62,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.stacks < 3 {
 			w.stacks++
 		}
-		c.Log.NewEvent("portable-power-saw adding stack", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("portable-power-saw adding stack", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 		char.AddStatus(symbolKey, symbolDuration, true)
 		return false
@@ -82,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		// check for active before deleting symbol
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		// add icd

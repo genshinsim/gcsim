@@ -35,10 +35,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	buff := func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		char.AddStatMod(character.StatMod{

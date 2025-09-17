@@ -49,7 +49,7 @@ func init() {
 // Standard attack function with seal handling
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,
@@ -70,7 +70,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		// check for healing
 		if c.Core.Status.Duration(barbSkillKey) > 0 {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  -1,
 				Message: "Melody Loop (Normal Attack)",
 				Src:     prochpp[c.TalentLvlSkill()]*c.MaxHP() + prochp[c.TalentLvlSkill()],

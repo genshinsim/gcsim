@@ -43,7 +43,7 @@ func (c *char) lowPlungeC() action.Info {
 	c.tryTriggerA1TailoringNA()
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Low Plunge Attack",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,

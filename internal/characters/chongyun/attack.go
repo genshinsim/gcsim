@@ -35,7 +35,7 @@ func init() {
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -68,7 +68,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 1 && c.NormalCounter == 3 {
 		ai := info.AttackInfo{
 			Abil:       "Chongyun C1",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,

@@ -88,7 +88,7 @@ func (c *char) c6cb(a info.AttackCB) {
 		for _, char := range c.Core.Player.Chars() {
 			hpDrain := char.CurrentHP() * 0.01
 			c.Core.Player.Drain(info.DrainInfo{
-				ActorIndex: char.Index,
+				ActorIndex: char.Index(),
 				Abil:       "Furina C6 Pneuma Drain",
 				Amount:     hpDrain,
 			})
@@ -109,8 +109,8 @@ func (c *char) c6heal(char *character.CharWrapper, src int) func() {
 			return
 		}
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  char.Index,
+			Caller:  c.Index(),
+			Target:  char.Index(),
 			Message: "Furina C6 Ousia Heal",
 			Src:     0.04 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),

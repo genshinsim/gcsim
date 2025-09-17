@@ -18,11 +18,11 @@ func (c *char) c4Init() {
 		if !di.External {
 			return false
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
 		c.AddStatus(c4Key, 10*60, true)
-		c.Core.Log.NewEvent("c4 triggered on damage", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("c4 triggered on damage", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.StatusExpiry(c4Key))
 		return false
 	}, c4Key)
@@ -43,10 +43,10 @@ func (c *char) makeC4Callback() info.AttackCBFunc {
 			return
 		}
 
-		c.Core.Log.NewEvent("c4 proc'd on attack", glog.LogCharacterEvent, c.Index).
-			Write("char", c.Index)
+		c.Core.Log.NewEvent("c4 proc'd on attack", glog.LogCharacterEvent, c.Index()).
+			Write("char", c.Index())
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Beidou C4",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagElementalBurst,

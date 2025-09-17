@@ -87,7 +87,7 @@ func (s *State) SetNightsoulExitTimer(duration int, cb func()) {
 		s.char.AddStatus(NightsoulBlessingStatus, -1, false)
 		s.c.Log.NewEvent("Action extending timed Nightsoul Blessing",
 			glog.LogActionEvent,
-			s.char.Index)
+			s.char.Index())
 	}, duration)
 }
 
@@ -104,7 +104,7 @@ func (s *State) EnterTimedBlessing(amount float64, duration int, cb func()) {
 	if duration > 0 {
 		s.SetNightsoulExitTimer(duration, cb)
 	}
-	s.c.Log.NewEvent("enter nightsoul blessing", glog.LogCharacterEvent, s.char.Index).
+	s.c.Log.NewEvent("enter nightsoul blessing", glog.LogCharacterEvent, s.char.Index()).
 		Write("points", s.nightsoulPoints).
 		Write("duration", duration)
 }
@@ -116,7 +116,7 @@ func (s *State) EnterBlessing(amount float64) {
 func (s *State) ExitBlessing() {
 	s.ExitStateF = -1
 	s.char.DeleteStatus(NightsoulBlessingStatus)
-	s.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, s.char.Index)
+	s.c.Log.NewEvent("exit nightsoul blessing", glog.LogCharacterEvent, s.char.Index())
 }
 
 func (s *State) HasBlessing() bool {
@@ -127,8 +127,8 @@ func (s *State) GeneratePoints(amount float64) {
 	prevPoints := s.nightsoulPoints
 	s.nightsoulPoints += amount
 	s.clampPoints()
-	s.c.Events.Emit(event.OnNightsoulGenerate, s.char.Index, amount)
-	s.c.Log.NewEvent("generate nightsoul points", glog.LogCharacterEvent, s.char.Index).
+	s.c.Events.Emit(event.OnNightsoulGenerate, s.char.Index(), amount)
+	s.c.Log.NewEvent("generate nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", prevPoints).
 		Write("amount", amount).
 		Write("final", s.nightsoulPoints)
@@ -138,8 +138,8 @@ func (s *State) ConsumePoints(amount float64) {
 	prevPoints := s.nightsoulPoints
 	s.nightsoulPoints -= amount
 	s.clampPoints()
-	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index, amount)
-	s.c.Log.NewEvent("consume nightsoul points", glog.LogCharacterEvent, s.char.Index).
+	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index(), amount)
+	s.c.Log.NewEvent("consume nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", prevPoints).
 		Write("amount", amount).
 		Write("final", s.nightsoulPoints)
@@ -148,8 +148,8 @@ func (s *State) ConsumePoints(amount float64) {
 func (s *State) ClearPoints() {
 	amt := s.nightsoulPoints
 	s.nightsoulPoints = 0
-	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index, amt)
-	s.c.Log.NewEvent("clear nightsoul points", glog.LogCharacterEvent, s.char.Index).
+	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index(), amt)
+	s.c.Log.NewEvent("clear nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", amt)
 }
 

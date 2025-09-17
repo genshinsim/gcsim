@@ -45,7 +45,7 @@ func (c *char) c2(done bool) info.AttackCBFunc {
 func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 	return func() {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Oil Meets Fire (C2)",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNone,
@@ -58,7 +58,7 @@ func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2), 0, 0)
 
-		c.Core.Log.NewEvent("Triggered Xiangling C2 explosion", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Triggered Xiangling C2 explosion", glog.LogCharacterEvent, c.Index()).
 			Write("src", src)
 	}
 }

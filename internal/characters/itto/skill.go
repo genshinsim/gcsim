@@ -64,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// deal damage when created
 	ai := info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             "Masatsu Zetsugi: Akaushi Burst!",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagElementalArt,

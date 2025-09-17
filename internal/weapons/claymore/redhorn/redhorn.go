@@ -44,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	nacaBoost := .3 + .1*float64(r)
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if !(atk.Info.AttackTag == attacks.AttackTagNormal || atk.Info.AttackTag == attacks.AttackTagExtra) {
@@ -52,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		baseDmgAdd := char.TotalDef(false) * nacaBoost
 		atk.Info.FlatDmg += baseDmgAdd
-		c.Log.NewEvent("Redhorn proc dmg add", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("Redhorn proc dmg add", glog.LogPreDamageMod, char.Index()).
 			Write("base_added_dmg", baseDmgAdd)
 		return false
 	}, fmt.Sprintf("redhorn-%v", char.Base.Key.String()))

@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	icd := 420
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 
@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, icd, true)
 		cycle++
 		cycle %= 3
-		c.Log.NewEvent("fading twillight cycle changed", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("fading twillight cycle changed", glog.LogWeaponEvent, char.Index()).
 			Write("cycle", cycle).
 			Write("next cycle (without hitlag)", c.F+icd)
 

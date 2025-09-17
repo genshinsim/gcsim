@@ -97,7 +97,7 @@ func (c *char) skillPress() action.Info {
 
 	// Fuufuu Windwheel DMG
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Fuufuu Windwheel (DoT Press)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagElementalArtAnemo,
@@ -117,7 +117,7 @@ func (c *char) skillPress() action.Info {
 
 	// Fuufuu Whirlwind Kick Press DMG
 	ai = info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             "Fuufuu Whirlwind (Kick Press)",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -167,14 +167,14 @@ func (c *char) skillShortHold() action.Info {
 
 		if c.Base.Cons >= 2 && c.c2Bonus < 0.66 {
 			c.c2Bonus += 0.033
-			c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index()).
 				Write("dmg bonus%", c.c2Bonus)
 		}
 	}, 18)
 
 	// Fuufuu Whirlwind Kick Hold DMG
 	ai := info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -226,7 +226,7 @@ func (c *char) skillHold(duration int) action.Info {
 
 			if c.Base.Cons >= 2 && c.c2Bonus < 0.66 {
 				c.c2Bonus += 0.033
-				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index).
+				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index()).
 					Write("dmg bonus%", c.c2Bonus)
 			}
 		}, 18+i)
@@ -234,7 +234,7 @@ func (c *char) skillHold(duration int) action.Info {
 
 	// Fuufuu Whirlwind Kick Hold DMG
 	ai := info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -269,7 +269,7 @@ func (c *char) skillHold(duration int) action.Info {
 // TODO: is this helper needed?
 func (c *char) createSkillHoldSnapshot() *info.AttackEvent {
 	ai := info.AttackInfo{
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		Abil:             "Fuufuu Windwheel (DoT Hold)",
 		AttackTag:        attacks.AttackTagElementalArtHold,
 		ICDTag:           attacks.ICDTagElementalArtAnemo,
@@ -299,7 +299,7 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 			return
 		}
 
-		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 		if c.eAbsorb != attributes.NoElement {
 			switch c.eAbsorb {
 			case attributes.Pyro:
@@ -311,7 +311,7 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 			case attributes.Cryo:
 				c.eAbsorbTag = attacks.ICDTagElementalArtCryo
 			}
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 				"sayu absorbed ", c.eAbsorb.String(),
 			)
 			return
@@ -327,7 +327,7 @@ func (c *char) rollAbsorb() {
 		if !ok {
 			return false
 		}
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -345,7 +345,7 @@ func (c *char) rollAbsorb() {
 		case attacks.AttackTagElementalArtHold:
 			// DoT Elemental DMG
 			ai := info.AttackInfo{
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				Abil:       "Fuufuu Windwheel Elemental (Elemental DoT Hold)",
 				AttackTag:  attacks.AttackTagElementalArtHold,
 				ICDTag:     c.eAbsorbTag,
@@ -360,7 +360,7 @@ func (c *char) rollAbsorb() {
 		case attacks.AttackTagElementalArt:
 			// Kick Elemental DMG
 			ai := info.AttackInfo{
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				Abil:       "Fuufuu Whirlwind Elemental (Elemental Kick Hold)",
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagNone,

@@ -40,7 +40,7 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 		if trg.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !a.IsCrit {
@@ -52,7 +52,7 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 		done = true
 
 		ai := info.AttackInfo{
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			Abil:               "Blazing Eye (A4)",
 			AttackTag:          attacks.AttackTagExtra,
 			ICDTag:             attacks.ICDTagNone,

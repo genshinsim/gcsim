@@ -66,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		addBuff()
@@ -74,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("jadefall-onburst-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
 		shd := args[0].(shield.Shield)
-		if shd.ShieldOwner() != char.Index {
+		if shd.ShieldOwner() != char.Index() {
 			return false
 		}
 		addBuff()

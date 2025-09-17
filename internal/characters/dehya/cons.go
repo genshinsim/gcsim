@@ -71,7 +71,7 @@ func (c *char) c2() {
 		if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
 			return false
 		}
-		c.Core.Log.NewEvent("dehya-sanctum-c2-damage activated", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("dehya-sanctum-c2-damage activated", glog.LogCharacterEvent, c.Index())
 		c.hasC2DamageBuff = true
 		return false
 	}, "dehya-c2")
@@ -97,8 +97,8 @@ func (c *char) c4CB() info.AttackCBFunc {
 
 		c.AddEnergy(c4Key, 1.5)
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "An Oath Abiding (C4)",
 			Src:     0.025 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),

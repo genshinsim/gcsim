@@ -49,7 +49,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagExtraAttack,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -84,7 +84,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 func (c *char) ChargeAttackSkill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		AttackTag:      attacks.AttackTagExtra,
 		ICDTag:         attacks.ICDTagExtraAttack,
 		ICDGroup:       attacks.ICDGroupDefault,

@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	debt := 0.0
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		index := args[1].(int)
-		if index != char.Index {
+		if index != char.Index() {
 			return false
 		}
 		if char.CurrentHPDebt() > 0 {

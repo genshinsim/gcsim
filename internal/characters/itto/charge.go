@@ -186,7 +186,7 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -207,7 +207,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	// handle hitlag and talent%
 	ai.Abil = c.slashState.String(true)
-	c.Core.Log.NewEvent("performing CA", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("performing CA", glog.LogCharacterEvent, c.Index()).
 		Write("slash", c.slashState.String(false)).
 		Write("stacks", stacks)
 

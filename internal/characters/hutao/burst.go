@@ -30,8 +30,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	c.burstHealCount = 0
 	c.burstHealAmount = info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: "Spirit Soother",
 		Src:     c.MaxHP() * regen,
 		Bonus:   c.Stat(attributes.Heal),
@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// [2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
 	// if burstHitmark > c.Core.Status.Duration("paramita") && c.Core.Status.Duration("paramita") > 0 {
 	// 	c.Core.Status.Add("paramita", burstHitmark) //extend this to barely cover the burst
-	// 	c.Core.Log.NewEvent("Paramita status extension for burst", glog.LogCharacterEvent, c.Index).
+	// 	c.Core.Log.NewEvent("Paramita status extension for burst", glog.LogCharacterEvent, c.Index()).
 	// 		Write("new_duration", c.Core.Status.Duration("paramita"))
 	// }
 
@@ -53,7 +53,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	//TODO: currently snapshotting at cast but apparently damage is based on stats on contact, not at cast??
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Spirit Soother",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

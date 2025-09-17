@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		// do nothing if holder is off-field
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		// do nothing if flowrider is on icd
@@ -63,11 +63,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
 		// do nothing if holder is off-field
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		// do nothing if attack not from holder
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		// do nothing if flowrider is not active
@@ -80,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		// queue up flowrider proc
 		ai := info.AttackInfo{
-			ActorIndex: char.Index,
+			ActorIndex: char.Index(),
 			Abil:       "End of the Line Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -94,7 +94,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2.5), 0, 1)
 
 		w.procCount++
-		c.Log.NewEvent("endoftheline proc", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("endoftheline proc", glog.LogWeaponEvent, char.Index()).
 			Write("procCount", w.procCount)
 		if w.procCount == 3 {
 			char.DeleteStatus(effectKey)

@@ -44,7 +44,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		f := func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 			// Applies to all characters, so no filters needed
@@ -57,7 +57,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					},
 				})
 			}
-			c.Log.NewEvent("maiden 4pc proc", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("maiden 4pc proc", glog.LogArtifactEvent, char.Index()).
 				Write("expiry (without hitlag)", c.F+600)
 			return false
 		}

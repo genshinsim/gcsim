@@ -93,7 +93,7 @@ func (c *char) a1TapestrySetup() {
 		// deal dmg
 		ai := info.AttackInfo{
 			Abil:       "Fluttering Hasode (Seize the Moment)",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagChioriSkill,
 			ICDGroup:   attacks.ICDGroupChioriSkill,
@@ -149,7 +149,7 @@ func (c *char) commonA1Trigger() {
 func (c *char) a1Tapestry() {
 	c.commonA1Trigger()
 
-	c.Core.Log.NewEvent("a1 tapestry triggered", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("a1 tapestry triggered", glog.LogCharacterEvent, c.Index())
 	c.AddStatus(a1SeizeTheMomentKey, a1SeizeTheMomentDuration, true)
 	c.a1AttackCount = 0
 }
@@ -157,9 +157,9 @@ func (c *char) a1Tapestry() {
 func (c *char) a1Tailoring() {
 	c.commonA1Trigger()
 
-	c.Core.Log.NewEvent("a1 tailoring triggered", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("a1 tailoring triggered", glog.LogCharacterEvent, c.Index())
 	c.Core.Player.AddWeaponInfuse(
-		c.Index,
+		c.Index(),
 		a1GeoInfusionKey,
 		attributes.Geo,
 		a1GeoInfusionDuration,

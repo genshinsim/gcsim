@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*info.AttackEvent)
-		if ae.Info.ActorIndex != char.Index {
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if ae.Info.AttackTag != attacks.AttackTagPlunge {

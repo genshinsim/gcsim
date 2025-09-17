@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index,
+		ActorIndex:     c.Index(),
 		Abil:           "Hail to the Almighty Dragonlord (Skill DMG)",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -80,7 +80,7 @@ func (c *char) QueueLaser(step, src int) func() {
 			return
 		}
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Hail to the Almighty Dragonlord (Dragon Breath DMG)",
 			AttackTag:      attacks.AttackTagElementalBurst,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

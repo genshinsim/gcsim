@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.a4extendCount = 0
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Let the Show Begin♪ (Droplet)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -108,11 +108,11 @@ func (c *char) barbaraSelfTick(healAmt, hpplus float64, skillInitF int) func() {
 			return
 		}
 
-		c.Core.Log.NewEvent("barbara heal and wet ticking", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("barbara heal and wet ticking", glog.LogCharacterEvent, c.Index())
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Melody Loop (Tick)",
 			Src:     healAmt,
@@ -142,7 +142,7 @@ func (c *char) barbaraMelodyTick(ai info.AttackInfo, skillInitF int) func() {
 			return
 		}
 
-		c.Core.Log.NewEvent("barbara melody loop ticking", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("barbara melody loop ticking", glog.LogCharacterEvent, c.Index())
 
 		// 0 DMG attack that causes hitlag on enemy only
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), -1, 0)

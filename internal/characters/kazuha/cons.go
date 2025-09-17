@@ -19,7 +19,7 @@ func (c *char) c2(src int) func() {
 	return func() {
 		// don't tick if src changed
 		if c.qFieldSrc != src {
-			c.Core.Log.NewEvent("kazuha q src check ignored, src diff", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("kazuha q src check ignored, src diff", glog.LogCharacterEvent, c.Index()).
 				Write("src", src).
 				Write("new src", c.qFieldSrc)
 			return
@@ -71,7 +71,7 @@ func (c *char) c2(src int) func() {
 func (c *char) c6() {
 	// add anemo infusion
 	c.Core.Player.AddWeaponInfuse(
-		c.Index,
+		c.Index(),
 		"kazuha-c6-infusion",
 		attributes.Anemo,
 		60*5,

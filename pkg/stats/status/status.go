@@ -95,7 +95,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		bucket := core.F / bucketSize
 		active := core.Player.ActiveChar()
 
-		out.activeTime[active.Index] += 1
+		out.activeTime[active.Index()] += 1
 		out.damageMitigation = avgUpdate(
 			out.damageMitigation, bucket, damageMod(active, out.maxEnemyLvl))
 

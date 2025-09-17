@@ -33,8 +33,8 @@ func (c *char) a1Heal() {
 		return
 	}
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: "Dance of Amity (A1)",
 		Type:    info.HealTypePercent,
 		Src:     0.015,

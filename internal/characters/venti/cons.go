@@ -63,7 +63,7 @@ func (c *char) c4() {
 	c.c4bonus[attributes.AnemoP] = 0.25
 	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
 		// only trigger if Venti catches the particle
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
 		// apply C4 to Venti

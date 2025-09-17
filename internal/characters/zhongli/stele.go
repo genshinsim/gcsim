@@ -15,7 +15,7 @@ func (c *char) newStele(dur int) {
 	flat := c.a4Skill()
 	// deal damage when created
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Stone Stele (Initial)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -49,7 +49,7 @@ func (c *char) newStele(dur int) {
 	c.Core.Log.NewEvent(
 		"Stele added",
 		glog.LogCharacterEvent,
-		c.Index,
+		c.Index(),
 	).
 		Write("orig_count", num).
 		Write("cur_count", c.steleCount).
@@ -57,7 +57,7 @@ func (c *char) newStele(dur int) {
 
 	// Snapshot buffs for resonance ticks
 	aiSnap := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Stone Stele (Tick)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -81,16 +81,16 @@ func (c *char) newStele(dur int) {
 
 func (c *char) resonance(src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index()).
 			Write("src", src).
-			Write("char", c.Index)
+			Write("char", c.Index())
 		if !c.Core.Constructs.Has(src) {
 			return
 		}
-		c.Core.Log.NewEvent("Stele ticked", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Stele ticked", glog.LogCharacterEvent, c.Index()).
 			Write("next expected", c.Core.F+120).
 			Write("src", src).
-			Write("char", c.Index)
+			Write("char", c.Index())
 
 		// Use snapshot for damage
 		ae := c.steleSnapshot

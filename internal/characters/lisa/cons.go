@@ -10,7 +10,7 @@ func (c *char) c6() {
 		if c.Core.F < c.c6icd && c.c6icd != 0 {
 			return false
 		}
-		if c.Core.Player.Active() == c.Index {
+		if c.Core.Player.Active() == c.Index() {
 			// swapped to lisa
 			enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), nil)
 			for _, e := range enemies {

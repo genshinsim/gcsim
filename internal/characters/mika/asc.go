@@ -19,7 +19,7 @@ func (c *char) addDetectorStack() {
 
 	if stacks < c.maxDetectorStacks {
 		stacks++
-		c.Core.Log.NewEvent("add detector stack", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("add detector stack", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", stacks).
 			Write("maxstacks", c.maxDetectorStacks)
 	}
@@ -40,7 +40,7 @@ func (c *char) a1(char *character.CharWrapper) {
 		AffectedStat: attributes.PhyP,
 		Amount: func() ([]float64, bool) {
 			m[attributes.PhyP] = 0.1 * float64(c.Tag(a1Stacks))
-			return m, c.Core.Player.Active() == char.Index
+			return m, c.Core.Player.Active() == char.Index()
 		},
 	})
 }
@@ -58,7 +58,7 @@ func (c *char) a4() {
 
 		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
-		if char.Index != c.Core.Player.Active() {
+		if char.Index() != c.Core.Player.Active() {
 			return false
 		}
 

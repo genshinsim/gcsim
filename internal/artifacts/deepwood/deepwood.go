@@ -52,7 +52,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if !ok {
 				return false
 			}
-			if atk.Info.ActorIndex != char.Index {
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 
@@ -65,7 +65,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Ele:   attributes.Dendro,
 				Value: -0.3,
 			})
-			c.Log.NewEvent("dm 4pc proc", glog.LogArtifactEvent, char.Index).Write("char", char.Index)
+			c.Log.NewEvent("dm 4pc proc", glog.LogArtifactEvent, char.Index()).Write("char", char.Index())
 
 			return false
 		}, fmt.Sprintf("dm-4pc-%v", char.Base.Key.String()))

@@ -19,7 +19,7 @@ func (c *char) c1() {
 	}
 	c.AddStatus(c1ICDKey, 180, true)
 	c.ReduceActionCooldown(action.ActionSkill, 60)
-	c.Core.Log.NewEvent("c1 reducing skill cooldown", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("c1 reducing skill cooldown", glog.LogCharacterEvent, c.Index()).
 		Write("new_cooldown", c.Cooldown(action.ActionSkill))
 }
 

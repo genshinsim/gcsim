@@ -19,7 +19,7 @@ func (c *char) a1() {
 	dur := 5*60 + 20
 	c.AddStatus("keqinginfuse", dur, true)
 	c.Core.Player.AddWeaponInfuse(
-		c.Index,
+		c.Index(),
 		"keqing-a1",
 		attributes.Electro,
 		dur,

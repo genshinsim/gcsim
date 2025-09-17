@@ -40,7 +40,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Snapshot timing is not yet known. Assume it's dynamic for now
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Nereid's Ascension",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -134,12 +134,12 @@ func (c *char) makeBurstHealCB() info.AttackCBFunc {
 			if c.Base.Cons >= 2 && char.CurrentHPRatio() <= 0.5 {
 				bonus := 0.006 * c.MaxHP()
 				src += bonus
-				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, char.Index).
+				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, char.Index()).
 					Write("bonus", bonus)
 			}
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
-				Target:  char.Index,
+				Caller:  c.Index(),
+				Target:  char.Index(),
 				Message: "Ceremonial Garment",
 				Src:     src,
 				Bonus:   c.Stat(attributes.Heal),
@@ -157,7 +157,7 @@ func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 		// update jellyfish flat damage. regardless if burst is active or not
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.swapEarlyF = c.Core.F
 			c.skillFlatDmg = c.burstDmgBonus(attacks.AttackTagElementalArt)
 		}

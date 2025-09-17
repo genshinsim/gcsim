@@ -9,7 +9,7 @@ import (
 
 func (c *char) c6Wave() {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Fischl C6",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,

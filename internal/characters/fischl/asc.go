@@ -40,7 +40,7 @@ func (c *char) a4() {
 		active.AddStatus(a4IcdKey, 0.5*60, true)
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Fischl A4",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,

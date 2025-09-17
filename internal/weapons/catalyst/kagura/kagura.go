@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	//TODO: this used to be on postskill. make sure nothing broke here
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if !char.StatusIsActive(stackKey) {
@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("kaguras-verity", stackDuration),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-				if atk.Info.ActorIndex != char.Index {
+				if atk.Info.ActorIndex != char.Index() {
 					return nil, false
 				}
 				if atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold {

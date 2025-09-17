@@ -51,7 +51,7 @@ func (c *char) c2() {
 // will be further increased by 60. This latter case will also refresh the buff state's duration.
 func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
 
@@ -76,7 +76,7 @@ func (c *char) c4() {
 		}
 
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalBurst {

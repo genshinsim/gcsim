@@ -30,7 +30,7 @@ func init() {
 // Standard charge attack
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNormalAttack,
 		ICDGroup:   attacks.ICDGroupDefault,

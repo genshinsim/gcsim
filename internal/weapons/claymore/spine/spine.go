@@ -31,7 +31,7 @@ func (w *Weapon) Init() error      { return nil }
 func (w *Weapon) stackCheck() func() {
 	return func() {
 		// if on field and stack < 5, add a stack
-		if w.char.Index == w.c.Player.Active() {
+		if w.char.Index() == w.c.Player.Active() {
 			if w.stacks < 5 {
 				w.stacks++
 				w.updateBuff()
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// set initial
 	w.stacks = p.Params["stacks"]
 	c.Log.NewEvent(
-		"serpent spine stack check", glog.LogWeaponEvent, char.Index,
+		"serpent spine stack check", glog.LogWeaponEvent, char.Index(),
 	).
 		Write("params", p.Params)
 
@@ -89,7 +89,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if di.Amount <= 0 {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {

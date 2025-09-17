@@ -85,7 +85,7 @@ func (c *char) a4Init() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
 		charElem := c.Core.Player.Chars()[atk.Info.ActorIndex].Base.Element
-		if atk.Info.ActorIndex == c.Index {
+		if atk.Info.ActorIndex == c.Index() {
 			return false
 		}
 		if atk.Info.Element != charElem {

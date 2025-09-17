@@ -51,7 +51,7 @@ func (c *char) addGrimheartStack() {
 	}
 	if c.grimheartStacks < 2 {
 		c.grimheartStacks++
-		c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index()).
 			Write("current count", c.grimheartStacks)
 	}
 	// refresh grimheart duration regardless
@@ -83,7 +83,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) pressSkill() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Icetide Vortex",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -150,7 +150,7 @@ func (c *char) holdSkill() action.Info {
 	// 60 fps = 108 frames cast, cd starts 62 frames in so need to + 62 frames to cd
 	lvl := c.TalentLvlSkill()
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Icetide Vortex (Hold)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -200,7 +200,7 @@ func (c *char) holdSkill() action.Info {
 		// multiple brand hits
 		//TODO: need to double check if this is affected by hitlag; might be a deployable
 		icewhirlAI := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Icetide Vortex (Icewhirl)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,

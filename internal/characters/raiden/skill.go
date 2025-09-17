@@ -34,7 +34,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Eye of Stormy Judgement",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -121,7 +121,7 @@ func (c *char) eyeOnDamage() {
 			return false
 		}
 		// ignore self dmg
-		if ae.Info.ActorIndex == c.Index &&
+		if ae.Info.ActorIndex == c.Index() &&
 			ae.Info.AttackTag == attacks.AttackTagElementalArt &&
 			ae.Info.StrikeType == attacks.StrikeTypeSlash {
 			return false
@@ -134,7 +134,7 @@ func (c *char) eyeOnDamage() {
 		// hit mark 857, eye land 862
 		// electro appears to be applied right away
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Eye of Stormy Judgement (Strike)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,

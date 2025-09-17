@@ -39,7 +39,7 @@ When her rapid movement ends, the Lifeline will explode, dealing Hydro DMG to th
 */
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Lingering Lifeline",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -60,7 +60,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	if !c.StatusIsActive("yelanc4") {
 		c.c4count = 0
-		c.Core.Log.NewEvent("c4 stacks set to 0", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("c4 stacks set to 0", glog.LogCharacterEvent, c.Index())
 	}
 
 	// add a task to loop through targets and mark them
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				continue
 			}
 			e.SetTag(skillMarkedTag, 1)
-			c.Core.Log.NewEvent("marked by Lifeline", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("marked by Lifeline", glog.LogCharacterEvent, c.Index()).
 				Write("target", e.Key())
 			marked--
 			c.c4count++
@@ -98,12 +98,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		// check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
 			c.breakthrough = true
-			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index())
 		}
 		//TODO: icd on this??
 		if c.StatusIsActive(burstKey) {
 			c.summonExquisiteThrow()
-			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index())
 		}
 	}
 
@@ -118,7 +118,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				continue
 			}
 			e.SetTag(skillMarkedTag, 0)
-			c.Core.Log.NewEvent("damaging marked target", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("damaging marked target", glog.LogCharacterEvent, c.Index()).
 				Write("target", e.Key())
 			marked--
 			// queueing attack one frame later
@@ -134,7 +134,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			if m[attributes.HPP] > 0.4 {
 				m[attributes.HPP] = 0.4
 			}
-			c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index()).
 				Write("enemies count", c.c4count)
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{

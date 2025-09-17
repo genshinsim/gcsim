@@ -66,7 +66,7 @@ func (c *char) particleCB(a info.AttackCB) {
 // Helper function since this needs to be created both on skill use and burst use
 func (c *char) createSkillSnapshot() *info.AttackEvent {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Bake-Kurage",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -113,13 +113,13 @@ func (c *char) skillTick(d *info.AttackEvent) {
 			if active.CurrentHPRatio() <= 0.5 {
 				bonus := 0.045 * maxhp
 				src += bonus
-				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index).
+				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index()).
 					Write("bonus", bonus)
 			}
 		}
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Bake-Kurage",
 			Src:     src,
@@ -132,7 +132,7 @@ func (c *char) skillTick(d *info.AttackEvent) {
 // Skill snapshots, so inputs into the function are the originating snapshot
 func (c *char) skillTickTask(originalSnapshot *info.AttackEvent, src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Skill Tick Debug", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Skill Tick Debug", glog.LogCharacterEvent, c.Index()).
 			Write("current dur", c.Core.Status.Duration("kokomiskill")).
 			Write("skilllastused", c.skillLastUsed).
 			Write("src", src)

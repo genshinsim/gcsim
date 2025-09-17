@@ -38,7 +38,7 @@ func (s *Set) GetCount() int    { return s.Count }
 
 // Initiate off-field stacking if off-field at start of the sim
 func (s *Set) Init() error {
-	if s.core.Player.Active() != s.char.Index {
+	if s.core.Player.Active() != s.char.Index() {
 		s.core.Tasks.Add(s.gainStackOfffield(s.lastSwap), 180)
 	}
 	return nil
@@ -90,7 +90,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
-		if prev != char.Index {
+		if prev != char.Index() {
 			return false
 		}
 		s.lastSwap = c.F
@@ -101,10 +101,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
 		// Only triggers when onfield
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 
@@ -119,7 +119,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			s.stacks++
 		}
 
-		c.Log.NewEvent("Husk gained on-field stack", glog.LogArtifactEvent, char.Index).
+		c.Log.NewEvent("Husk gained on-field stack", glog.LogArtifactEvent, char.Index()).
 			Write("stacks", s.stacks).
 			Write("last_swap", s.lastSwap).
 			Write("last_stack_change", s.lastStackGain)
@@ -150,13 +150,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 func (s *Set) checkStackLoss(src int) func() {
 	return func() {
 		if s.lastStackGain != src {
-			s.core.Log.NewEvent("husk stack loss check ignored, src diff", glog.LogCharacterEvent, s.char.Index).
+			s.core.Log.NewEvent("husk stack loss check ignored, src diff", glog.LogCharacterEvent, s.char.Index()).
 				Write("src", src).
 				Write("new src", s.lastStackGain)
 			return
 		}
 		s.stacks--
-		s.core.Log.NewEvent("Husk lost stack", glog.LogArtifactEvent, s.char.Index).
+		s.core.Log.NewEvent("Husk lost stack", glog.LogArtifactEvent, s.char.Index()).
 			Write("stacks", s.stacks).
 			Write("last_swap", s.lastSwap).
 			Write("last_stack_change", s.lastStackGain)
@@ -170,13 +170,13 @@ func (s *Set) checkStackLoss(src int) func() {
 
 func (s *Set) gainStackOfffield(src int) func() {
 	return func() {
-		s.core.Log.NewEvent("Husk check for off-field stack", glog.LogArtifactEvent, s.char.Index).
+		s.core.Log.NewEvent("Husk check for off-field stack", glog.LogArtifactEvent, s.char.Index()).
 			Write("stacks", s.stacks).
 			Write("last_swap", s.lastSwap).
 			Write("last_stack_change", s.lastStackGain).
 			Write("source", src)
 
-		if s.core.Player.Active() == s.char.Index {
+		if s.core.Player.Active() == s.char.Index() {
 			return
 		}
 		// Ignore if the last source was not not the most recent swap
@@ -188,7 +188,7 @@ func (s *Set) gainStackOfffield(src int) func() {
 			s.stacks++
 		}
 
-		s.core.Log.NewEvent("Husk gained off-field stack", glog.LogArtifactEvent, s.char.Index).
+		s.core.Log.NewEvent("Husk gained off-field stack", glog.LogArtifactEvent, s.char.Index()).
 			Write("stacks", s.stacks).
 			Write("last_swap", s.lastSwap).
 			Write("last_stack_change", s.lastStackGain)

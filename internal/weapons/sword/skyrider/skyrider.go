@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	//TODO: this used to be on post. make sure nothing broke here
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		char.AddStatMod(character.StatMod{

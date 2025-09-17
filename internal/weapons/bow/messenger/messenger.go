@@ -37,11 +37,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		atk := args[1].(*info.AttackEvent)
 		trg := args[0].(info.Target)
 		// don't proc if dmg not from weapon holder
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		// don't proc if off-field
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		// don't proc if not hitting weakspot
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		// queue single target proc
 		ai := info.AttackInfo{
-			ActorIndex:   char.Index,
+			ActorIndex:   char.Index(),
 			Abil:         "Messenger Proc",
 			AttackTag:    attacks.AttackTagNone,
 			ICDTag:       attacks.ICDTagNone,

@@ -108,11 +108,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.eCast = c.Core.F
 	c.AddStatus(meleeKey, 30*60, true)
-	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index()).
 		Write("rtexpiry", c.Core.F+30*60)
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Foul Legacy: Raging Tide",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,

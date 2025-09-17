@@ -29,7 +29,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Glacial Waltz",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -89,7 +89,7 @@ func (c *char) burstTickerFunc(ai info.AttackInfo, snap info.Snapshot, src int) 
 		}
 		// check if it's still the same burst
 		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("kaeya burst tick ignored, src diff", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("kaeya burst tick ignored, src diff", glog.LogCharacterEvent, c.Index()).
 				Write("src", src).
 				Write("new src", c.burstTickSrc)
 			return

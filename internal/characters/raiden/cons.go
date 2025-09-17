@@ -16,7 +16,7 @@ func (c *char) c4() {
 	m[attributes.ATKP] = 0.3
 
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
@@ -41,11 +41,11 @@ func (c *char) c6(ac info.AttackCB) {
 	}
 	c.c6ICD = c.Core.F + 60
 	c.c6Count++
-	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("next_icd", c.c6ICD).
 		Write("count", c.c6Count)
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.ReduceActionCooldown(action.ActionBurst, 60)

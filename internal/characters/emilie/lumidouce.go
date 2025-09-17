@@ -59,7 +59,7 @@ func (c *char) lumidouceAttack(src int) func() {
 
 		level := c.Tag(lumidouceLevel)
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("Lumidouce Case (Level %v)", level),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagEmilieLumidouce,
@@ -129,7 +129,7 @@ func (c *char) lumidouceScentCollect(src int) func() {
 		if !c.StatusIsActive(lumidouceScentResetKey) && c.Tag(lumidouceLevel) > 1 {
 			c.SetTag(lumidouceLevel, 1)
 			c.SetTag(lumidouceScent, 0)
-			c.Core.Log.NewEvent("scent reset", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("scent reset", glog.LogCharacterEvent, c.Index())
 		}
 
 		if c.Tag(lumidouceScent) >= 2 {
@@ -148,7 +148,7 @@ func (c *char) lumidouceScentCollect(src int) func() {
 func (c *char) generateScent() {
 	c.SetTag(lumidouceScent, c.Tag(lumidouceScent)+1)
 
-	c.Core.Log.NewEvent("scent generated", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("scent generated", glog.LogCharacterEvent, c.Index()).
 		Write("level", c.Tag(lumidouceLevel)).
 		Write("scent", c.Tag(lumidouceScent))
 }

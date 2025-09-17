@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	skillPos := c.Core.Combat.Player()
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Low-Temperature Cooking",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 		aiBlade := info.AttackInfo{
 			// TODO: Apply Arkhe
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Surging Blade (" + c.Base.Key.Pretty() + ")",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
@@ -123,7 +123,7 @@ func (c *char) skillTick(src int) func() {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Frosty Parfait",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,

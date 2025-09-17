@@ -64,13 +64,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		// if the active char is not the equipped char then ignore
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
 		// If attack does not belong to the equipped character then ignore
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		// If this is not a normal attack then ignore
@@ -83,7 +83,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		if c.F < s.procExpireF {
 			dmgAdded = snATK * 0.7
 			atk.Info.FlatDmg += dmgAdded
-			c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index()).
 				Write("dmg_added", dmgAdded).
 				Write("buff_expiry", s.procExpireF).
 				Write("icd_up", s.icd)
@@ -93,7 +93,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		// If Artifact set effect is still on CD then ignore
 		if c.F < s.icd {
-			c.Log.NewEvent("echoes 4pc failed to proc due icd", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("echoes 4pc failed to proc due icd", glog.LogArtifactEvent, char.Index()).
 				Write("icd_up", s.icd)
 			return false
 		}
@@ -101,7 +101,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		if c.Rand.Float64() > s.prob {
 			s.icd = c.F + 12 // 0.2s
 			s.prob += 0.2
-			c.Log.NewEvent("echoes 4pc failed to proc due to chance", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("echoes 4pc failed to proc due to chance", glog.LogArtifactEvent, char.Index()).
 				Write("probability_now", s.prob).
 				Write("icd_up", s.icd)
 			return false
@@ -115,7 +115,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		s.prob = 0.36
 
-		c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
+		c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index()).
 			Write("dmg_added", dmgAdded).
 			Write("buff_expiry", s.procExpireF).
 			Write("icd_up", s.icd)

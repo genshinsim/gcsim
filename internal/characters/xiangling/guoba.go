@@ -51,7 +51,7 @@ func (p *panda) Tick() {
 	// TODO: kids.. don't do this
 	switch p.timer {
 	case 103, 203, 303, 403: // swirl window
-		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index).
+		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index()).
 			SetEnded(p.c.Core.F + infuseWindow + 1)
 		p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
 		p.Core.Tasks.Add(func() {
@@ -95,12 +95,12 @@ func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	// don't take damage, trigger swirl reaction only on sucrose E or faruzan E
 	switch p.Core.Player.Chars()[atk.Info.ActorIndex].Base.Key {
 	case keys.Sucrose:
-		p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index)
+		p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index())
 	case keys.Faruzan:
 		if atk.Info.Abil != faruzan.VortexAbilName {
 			return 0, false
 		}
-		p.Core.Log.NewEvent("guoba hit by faruzan pressurized collapse", glog.LogCharacterEvent, p.c.Index)
+		p.Core.Log.NewEvent("guoba hit by faruzan pressurized collapse", glog.LogCharacterEvent, p.c.Index())
 	default:
 		return 0, false
 	}

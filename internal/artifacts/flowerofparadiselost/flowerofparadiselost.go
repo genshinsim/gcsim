@@ -76,7 +76,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 		f := func(args ...interface{}) bool {
 			atk := args[1].(*info.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 			if char.StatusIsActive(icdKey) {
@@ -91,7 +91,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks++
 			}
 
-			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index()).
 				Write("stacks", s.stacks)
 
 			char.AddReactBonusMod(character.ReactBonusMod{

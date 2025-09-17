@@ -35,7 +35,7 @@ func (c *char) a4() {
 		}
 
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 
@@ -52,7 +52,7 @@ func (c *char) a4() {
 			},
 		})
 
-		c.Core.Log.NewEvent("freminet a4 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("freminet a4 proc", glog.LogCharacterEvent, c.Index())
 
 		return false
 	}

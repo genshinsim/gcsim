@@ -42,7 +42,7 @@ func init() {
 // characters when it is unleashed, granting them Anemo DMG Bonus.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "The Wind's Secret Ways (Q)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

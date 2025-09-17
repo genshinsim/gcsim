@@ -42,7 +42,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstStacks = c.fightingSpirit
-	c.Core.Log.NewEvent("fighting spirit consumed", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("fighting spirit consumed", glog.LogCharacterEvent, c.Index()).
 		Write("amount", c.fightingSpirit)
 	c.fightingSpirit = 0
 	c.enterBike()
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.a4()
 
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index,
+			ActorIndex:     c.Index(),
 			Abil:           "Sunfell Slice",
 			AttackTag:      attacks.AttackTagElementalBurst,
 			ICDTag:         attacks.ICDTagNone,

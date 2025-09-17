@@ -18,7 +18,7 @@ func (c *char) c2() {
 		Base:         modifier.NewBase("xiao-c2", -1),
 		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Player.Active() != c.Index {
+			if c.Core.Player.Active() != c.Index() {
 				return m, true
 			}
 			return nil, false
@@ -70,7 +70,7 @@ func (c *char) c6cb() info.AttackCBFunc {
 			c.ResetActionCooldown(action.ActionSkill)
 			// 1.2s to cover 3 consecutive skills
 			c.AddStatus(c6BuffKey, 72, true)
-			c.Core.Log.NewEvent("Xiao C6 activated", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("Xiao C6 activated", glog.LogCharacterEvent, c.Index()).
 				Write("new E charges", c.Tags["eCharge"]).
 				Write("expiry", c.Core.F+60)
 

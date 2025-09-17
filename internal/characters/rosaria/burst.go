@@ -27,7 +27,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// hit 1 is technically only on surrounding enemies, hits 2 and dot are on the lance
 	// For now assume that everything hits all targets
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Rites of Termination (Hit 1)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
@@ -84,7 +84,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		// Burst is snapshot when the lance lands (when the 2nd damage proc hits)
 		ai = info.AttackInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Rites of Termination (DoT)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,

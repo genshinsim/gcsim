@@ -40,7 +40,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	// check for particles
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Charge Attack",
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagExtraAttack,
@@ -79,7 +79,7 @@ func (c *char) ppChargeAttack() action.Info {
 
 	//TODO: currently assuming snapshot is on cast since it's a bullet and nothing implemented re "pp slide"
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Charge Attack",
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagExtraAttack,
@@ -108,7 +108,7 @@ func (c *char) ppChargeAttack() action.Info {
 
 	// frames changes if previous action is normal
 	prevState := -1
-	if c.Core.Player.LastAction.Char == c.Index && c.Core.Player.LastAction.Type == action.ActionAttack {
+	if c.Core.Player.LastAction.Char == c.Index() && c.Core.Player.LastAction.Type == action.ActionAttack {
 		prevState = c.NormalCounter - 1
 		if prevState < 0 {
 			prevState = c.NormalHitNum - 1

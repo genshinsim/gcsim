@@ -46,7 +46,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			return
 		}
 		// doesn't gain seals off-field
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if done {
@@ -56,13 +56,13 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			c.sealCount++
 		}
 		c.AddStatus(sealBuffKey, 600, true)
-		c.Core.Log.NewEvent("yanfei gained a seal from normal attack", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yanfei gained a seal from normal attack", glog.LogCharacterEvent, c.Index()).
 			Write("current_seals", c.sealCount)
 		done = true
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,

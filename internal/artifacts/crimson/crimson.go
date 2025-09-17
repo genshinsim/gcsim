@@ -50,7 +50,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		mStacks := make([]float64, attributes.EndStatType)
 		// post snap shot to increase stacks
 		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 
@@ -62,7 +62,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks++
 			}
 
-			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index()).
 				Write("current stacks", s.stacks)
 
 			mStacks[attributes.PyroP] = 0.15 * 0.5 * float64(s.stacks)

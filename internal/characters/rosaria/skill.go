@@ -29,7 +29,7 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// No ICD to the 2 hits
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Ravaging Confession (Hit 1)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -64,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Rosaria E is dynamic, so requires a second snapshot
 	//TODO: check snapshot timing here
 	ai = info.AttackInfo{
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Ravaging Confession (Hit 2)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,

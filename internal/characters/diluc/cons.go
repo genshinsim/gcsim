@@ -41,7 +41,7 @@ func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
 		char := args[0].(int)
 		// don't trigger if diluc was not hit
-		if char != c.Index {
+		if char != c.Index() {
 			return false
 		}
 		if c.StatusIsActive(c2ICDKey) {

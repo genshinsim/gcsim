@@ -62,11 +62,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		// ignore if character not on field
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		// Ignore if neither a charged nor normal attack
@@ -87,7 +87,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, 600, true)
 
 		ai := info.AttackInfo{
-			ActorIndex: char.Index,
+			ActorIndex: char.Index(),
 			Abil:       "Sword of Descension Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,

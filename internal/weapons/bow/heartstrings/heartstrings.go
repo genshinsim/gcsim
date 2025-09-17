@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	// Using skill
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 
@@ -86,7 +86,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		index := args[0].(int)
 		amount := args[1].(float64)
 
-		if char.Index != index || amount > 0 {
+		if char.Index() != index || amount > 0 {
 			return false
 		}
 
@@ -98,7 +98,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		src := args[0].(*info.HealInfo)
 
-		if src.Caller != char.Index {
+		if src.Caller != char.Index() {
 			return false
 		}
 
@@ -151,7 +151,7 @@ func (w *Weapon) Stacks() int {
 
 func (w *Weapon) OnUpdateStack() {
 	stacks := w.Stacks()
-	w.core.Log.NewEvent("heartstrings update stacks", glog.LogWeaponEvent, w.char.Index).
+	w.core.Log.NewEvent("heartstrings update stacks", glog.LogWeaponEvent, w.char.Index()).
 		Write("stacks", stacks).
 		Write("bol-stack", w.char.StatusIsActive(bondKey)).
 		Write("skill-stack", w.char.StatusIsActive(skillKey)).

@@ -25,7 +25,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Darkgold Wolfbite",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.AddStatus(burstOusiaICDKey, 10*60, true)
 
 		aiOusia := info.AttackInfo{
-			ActorIndex:       c.Index,
+			ActorIndex:       c.Index(),
 			Abil:             "Surging Blade",
 			AttackTag:        attacks.AttackTagElementalBurst,
 			ICDTag:           attacks.ICDTagNone,
