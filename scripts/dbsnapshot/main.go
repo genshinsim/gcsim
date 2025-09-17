@@ -97,7 +97,6 @@ func compareFromSnapshot(from, saveTo string) error {
 				warnings = append(warnings, fmt.Sprintf("id %v seed %v has different dps: original %v, new %v, diff %v", id, v.Seed, orig, v.Dps, diff))
 			}
 		}
-
 	}
 	if len(warnings) == 0 {
 		log.Printf("no differences found")
