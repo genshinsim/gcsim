@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func TestParseCharConfigs(t *testing.T) {

@@ -24,7 +24,6 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/tinylib/msgp v1.1.9
-	github.com/ysmood/gson v0.7.3
 	go.mongodb.org/mongo-driver v1.12.1
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.26.0
@@ -32,7 +31,6 @@ require (
 	golang.org/x/text v0.17.0
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.34.2
-	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -104,6 +102,7 @@ require (
 	github.com/ysmood/fetchup v0.2.3 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
 	github.com/ysmood/got v0.34.1 // indirect
+	github.com/ysmood/gson v0.7.3 // indirect
 	github.com/ysmood/leakless v0.8.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
@@ -115,4 +114,5 @@ require (
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240814211410-ddb44dafa142 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
