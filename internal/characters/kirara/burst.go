@@ -44,10 +44,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 1 {
 		// Every 8,000 Max HP Kirara possesses will cause her to create 1 extra Cat Grass Cardamom when she uses Secret Art: Surprise Dispatch.
 		// A maximum of 4 extra can be created this way.
-		bonus := int(c.MaxHP() / 8000)
-		if bonus > 4 {
-			bonus = 4
-		}
+		bonus := min(int(c.MaxHP()/8000), 4)
 		c.cardamoms += bonus
 	}
 

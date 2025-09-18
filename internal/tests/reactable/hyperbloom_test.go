@@ -20,7 +20,7 @@ func TestHyperbloom(t *testing.T) {
 		t.FailNow()
 	}
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
@@ -47,7 +47,7 @@ func TestHyperbloom(t *testing.T) {
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < dendrocore.Delay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 1 {
@@ -65,7 +65,7 @@ func TestHyperbloom(t *testing.T) {
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 10),
 	}, 0)
 
-	for i := 0; i < 70; i++ {
+	for range 70 {
 		advanceCoreFrame(c)
 	}
 
@@ -88,7 +88,7 @@ func TestECHyperbloom(t *testing.T) {
 	}
 
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
@@ -114,7 +114,7 @@ func TestECHyperbloom(t *testing.T) {
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 0)
 	// reduce aura a bit
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		advanceCoreFrame(c)
 	}
 
@@ -126,7 +126,7 @@ func TestECHyperbloom(t *testing.T) {
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
-	for i := 0; i < dendrocore.Delay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 
@@ -142,7 +142,7 @@ func TestECHyperbloom(t *testing.T) {
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
-	for i := 0; i < 70; i++ {
+	for range 70 {
 		advanceCoreFrame(c)
 	}
 

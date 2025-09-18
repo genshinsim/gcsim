@@ -63,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// normal attack dmg part
 	incDmg := 0.036 + float64(r)*0.012
 	mDmg := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -90,7 +90,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("tulaytullahsremembrance-%v", char.Base.Key.String()))
 
 	// gain 2 stacks on normal attack dmg, 0.3s icd
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false
@@ -121,7 +121,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("tulaytullahsremembrance-ondmg-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 		if prev != char.Index() {
 			return false

@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstHitmarks = []int{96, 94}
-var burstFrames [][]int
+var (
+	burstHitmarks = []int{96, 94}
+	burstFrames   [][]int
+)
 
 func init() {
 	burstFrames = make([][]int, 2)
@@ -75,7 +77,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		cb = c6cb(attributes.Anemo)
 	}
 
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		c.Core.QueueAttackWithSnap(ai, snap, ap, 94+30*i, cb)
 
 		c.Core.Tasks.Add(func() {

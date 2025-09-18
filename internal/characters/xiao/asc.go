@@ -22,10 +22,7 @@ func (c *char) a1() {
 		Base:         modifier.NewBaseWithHitlag(a1Key, 900+burstStart),
 		AffectedStat: attributes.DmgP,
 		Amount: func() ([]float64, bool) {
-			stacks := 1 + (c.Core.F-c.qStarted)/180
-			if stacks > 5 {
-				stacks = 5
-			}
+			stacks := min(1+(c.Core.F-c.qStarted)/180, 5)
 			m[attributes.DmgP] = float64(stacks) * 0.05
 			return m, true
 		},

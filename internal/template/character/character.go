@@ -60,7 +60,7 @@ func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot {
 	}
 
 	var evt glog.Event
-	var debug []interface{}
+	var debug []any
 
 	if c.Core.Flags.LogDebug {
 		evt = c.Core.Log.NewEvent(a.Abil, glog.LogSnapshotEvent, c.Index()).
@@ -112,25 +112,31 @@ func (c *Character) NextNormalCounter() int {
 }
 
 func (c *Character) Attack(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action attack not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action attack not implemented", c.Base.Key)
 }
+
 func (c *Character) Aimed(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action aimed not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action aimed not implemented", c.Base.Key)
 }
+
 func (c *Character) ChargeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action charge not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action charge not implemented", c.Base.Key)
 }
+
 func (c *Character) HighPlungeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action high_plunge not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action high_plunge not implemented", c.Base.Key)
 }
+
 func (c *Character) LowPlungeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.Base.Key)
 }
+
 func (c *Character) Skill(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action skill not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action skill not implemented", c.Base.Key)
 }
+
 func (c *Character) Burst(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.Base.Key)
 }
 
 func (c *Character) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]int) error {

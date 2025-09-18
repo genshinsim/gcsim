@@ -62,8 +62,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.nob4buff = make([]float64, attributes.EndStatType)
 		s.nob4buff[attributes.ATKP] = 0.2
 
-		//TODO: this used to be post. need to check
-		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+		// TODO: this used to be post. need to check
+		c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
 			if c.Player.Active() != char.Index() {
 				return false

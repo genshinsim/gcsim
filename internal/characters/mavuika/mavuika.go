@@ -102,7 +102,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		c.DeleteStatus(burstKey)
 		if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 			c.exitBike()

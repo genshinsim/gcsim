@@ -70,7 +70,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			Durability: 50,
 			Mult:       skillCA[c.TalentLvlSkill()],
 		}
-		for i := 0; i < 2; i++ {
+		for i := range 2 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),

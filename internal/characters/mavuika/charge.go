@@ -13,31 +13,41 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var bikeChargeFrames []int
-var bikeChargeFinalFrames []int
-var bikeHittableEntityList []HittableEntity
+var (
+	chargeFrames           []int
+	bikeChargeFrames       []int
+	bikeChargeFinalFrames  []int
+	bikeHittableEntityList []HittableEntity
+)
 
 // Minimum CA time before CAF anim is 50f
-var bikeChargeAttackMinimumDuration = 50
-var bikeChargeAttackStartupHitmark = 35
+var (
+	bikeChargeAttackMinimumDuration = 50
+	bikeChargeAttackStartupHitmark  = 35
+)
 
 // Maximum CA time before CAF anim is 375f
-var bikeChargeAttackMaximumDuration = 375
-var bikeChargeFinalHitmark = 45
+var (
+	bikeChargeAttackMaximumDuration = 375
+	bikeChargeFinalHitmark          = 45
+)
 
 // TODO: Replicate frames 35-46 of the CA more accurately
 // var bikeSpinInitialFrames = 11
 // var bikeSpinInitialAngularVelocity = float64(-180 / 11)
 // spin velocity varies by current angle
-var bikeSpinQuadrantAngularVelocity = []float64{-90 / 9, -90 / 7, -90 / 15, -90 / 14} // Quadrant 4, 3, 2, 1
-var bikeSpinQuadrantFrames = []int{9, 7, 15, 14}                                      // Quadrant 4, 3, 2, 1
+var (
+	bikeSpinQuadrantAngularVelocity = []float64{-90 / 9, -90 / 7, -90 / 15, -90 / 14} // Quadrant 4, 3, 2, 1
+	bikeSpinQuadrantFrames          = []int{9, 7, 15, 14}                             // Quadrant 4, 3, 2, 1
+)
 
-const chargeHitmark = 40
-const bikeChargeAttackICD = 42         // Minimum time between CA hits
-const bikeChargeAttackSpinFrames = 45  // One revolution every ~45f
-const bikeChargeAttackHitboxRadius = 3 // Placeholder
-const bikeChargeAttackSpinOffset = 4.0 // Estimated center of hitbox from Mav origin
+const (
+	chargeHitmark                = 40
+	bikeChargeAttackICD          = 42  // Minimum time between CA hits
+	bikeChargeAttackSpinFrames   = 45  // One revolution every ~45f
+	bikeChargeAttackHitboxRadius = 3   // Placeholder
+	bikeChargeAttackSpinOffset   = 4.0 // Estimated center of hitbox from Mav origin
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(48)
@@ -225,7 +235,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 
 // For given CA length, calculate hits on each target in hittable list
 func (c *char) HoldBikeChargeAttack(cAtkFrames, skippedWindupFrames int, hittableEntities []HittableEntity) {
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
@@ -259,7 +269,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 	dur := min(nsDur+skippedWindupFrames, bikeChargeAttackMaximumDuration-c.caState.cAtkFrames)
 	hitCounter := 0
 
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		if t.Entity != c.Core.Combat.PrimaryTarget() {
 			continue
@@ -289,7 +299,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 		}
 	}
 
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
@@ -328,7 +338,6 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 	caFrames += newMinSpinDuration
 	adjustedBikeChargeFinalHitmark := bikeChargeFinalHitmark + caFrames
 	bikeHittableEntities, err := c.BuildBikeChargeAttackHittableTargetList()
-
 	if err != nil {
 		return action.Info{}, err
 	}
@@ -524,7 +533,6 @@ func (c *char) buildValidTargetList() ([]HittableEntity, error) {
 			facingDirection = c.caState.FacingDirection
 		}
 		isIntersecting, err := c.BikeHitboxIntersectionAngles(v, collisionFrames[:], facingDirection)
-
 		if err != nil {
 			return hittableEnemies, err
 		}
@@ -608,7 +616,7 @@ func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) (bool,
 
 // Currently used for dendro cores spawning, other movements/additions should not happen mid-CA anim
 func (c *char) bikeChargeAttackHook() {
-	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) bool {
 		// Ignore if not in bike state
 		if c.armamentState != bike && !c.nightsoulState.HasBlessing() {
 			return false
@@ -768,7 +776,7 @@ func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle 
 }
 
 func (c *char) DirectionOffsetToPrimaryTarget() float64 {
-	var enemyDirection = info.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
+	enemyDirection := info.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
 	if enemyDirection == info.DefaultDirection() {
 		return 0
 	}

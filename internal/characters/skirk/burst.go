@@ -11,9 +11,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
-var burstSkillFrames []int
-var burstHitmarks = []int{109, 109 + 2, 109 + 2 + 3, 109 + 2 + 3 + 11, 109 + 2 + 3 + 11 + 10}
+var (
+	burstFrames      []int
+	burstSkillFrames []int
+	burstHitmarks    = []int{109, 109 + 2, 109 + 2 + 3, 109 + 2 + 3 + 11, 109 + 2 + 3 + 11 + 10}
+)
 
 const (
 	burstHitmarkFinal      = 109 + 2 + 3 + 11 + 10 + 23
@@ -39,6 +41,7 @@ func init() {
 	burstSkillFrames[action.ActionJump] = 40   // Q -> J
 	burstSkillFrames[action.ActionSwap] = 39   // Q -> Swap
 }
+
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
 		return c.BurstExtinction(p)

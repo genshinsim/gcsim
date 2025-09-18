@@ -37,7 +37,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		shields: make(map[string][]stats.ShieldInterval),
 	}
 
-	core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnShielded, func(args ...any) bool {
 		shield := args[0].(shield.Shield)
 		name := shield.Desc()
 		bonus := core.Player.Shields.ShieldBonus()
@@ -86,7 +86,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	}, "stats-shield-log")
 
 	// TODO: Should be replaced with targeted events (IE on shield stats changes + char swap)
-	core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnTick, func(args ...any) bool {
 		bonus := core.Player.Shields.ShieldBonus()
 
 		for _, shield := range core.Player.Shields.List() {

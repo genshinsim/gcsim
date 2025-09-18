@@ -79,7 +79,6 @@ func TestMain(m *testing.M) {
 		}
 		return s.client.Ping(context.TODO(), nil)
 	})
-
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}

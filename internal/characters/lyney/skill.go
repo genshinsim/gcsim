@@ -78,7 +78,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.QueueAttack(ai, skillPos, 0, 0, c.particleCB)
 		// explode hats
 		hatCount := len(c.hats)
-		for i := 0; i < hatCount; i++ {
+		for range hatCount {
 			c.hats[0].skillExplode()
 		}
 		// heal self

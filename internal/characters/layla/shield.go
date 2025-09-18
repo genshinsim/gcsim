@@ -36,14 +36,14 @@ func (c *char) removeShield() {
 func (c *char) newShield(base float64, dur int) *shd {
 	n := &shd{}
 	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.ActorIndex = c.Index()
-	n.Tmpl.Target = -1
-	n.Tmpl.Src = c.Core.F
-	n.Tmpl.ShieldType = shield.LaylaSkill
-	n.Tmpl.Ele = attributes.Cryo
-	n.Tmpl.HP = base
-	n.Tmpl.Name = "Layla Skill"
-	n.Tmpl.Expires = c.Core.F + dur
+	n.ActorIndex = c.Index()
+	n.Target = -1
+	n.Src = c.Core.F
+	n.ShieldType = shield.LaylaSkill
+	n.Ele = attributes.Cryo
+	n.HP = base
+	n.Name = "Layla Skill"
+	n.Expires = c.Core.F + dur
 	n.c = c
 	return n
 }
@@ -70,10 +70,7 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 		c.a1Stack++
 	}
 
-	stars := count + c.Tag(nightStars)
-	if stars > 4 {
-		stars = 4
-	}
+	stars := min(count+c.Tag(nightStars), 4)
 	c.SetTag(nightStars, stars)
 	c.Core.Log.NewEvent("adding stars", glog.LogCharacterEvent, c.Index()).
 		Write("stars", stars)

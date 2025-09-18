@@ -12,22 +12,32 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var lowPlungeFrames []int
-var highPlungeFrames []int
-var skillHighPlungeFrames []int
+var (
+	lowPlungeFrames       []int
+	highPlungeFrames      []int
+	skillHighPlungeFrames []int
+)
 
-const lowPlungeHitmark = 47
-const highPlungeHitmark = 50
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark  = 47
+	highPlungeHitmark = 50
+	collisionHitmark  = lowPlungeHitmark - 6
+)
 
-const skillHighPlungeHitmark = 39
-const skillCollisionHitmark = skillHighPlungeHitmark - 6
+const (
+	skillHighPlungeHitmark = 39
+	skillCollisionHitmark  = skillHighPlungeHitmark - 6
+)
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 150.0
+	highPlungeRadius   = 5.0
+)
 
 func init() {
 	// low_plunge -> x

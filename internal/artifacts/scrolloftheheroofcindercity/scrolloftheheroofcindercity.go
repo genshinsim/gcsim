@@ -56,8 +56,8 @@ func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error      { return nil }
 
-func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...any) bool {
+	return func(args ...any) bool {
 		trg := args[0].(info.Target)
 		if gadgetEmit && trg.Type() != info.TargettableGadget {
 			return false
@@ -115,7 +115,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// 2 Piece: When a nearby party member triggers a Nightsoul Burst, the equipping
 	// character regenerates 6 Elemental Energy.
 	if count >= 2 {
-		c.Combat.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+		c.Combat.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 			char.AddEnergy("scroll-2pc", 6)
 			return false
 		}, fmt.Sprintf("scroll-2pc-%v", char.Base.Key.String()))

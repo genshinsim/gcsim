@@ -53,7 +53,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.2
 
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index() {
 				return false
@@ -76,7 +76,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				})
 			}
 
-			//TODO: this needs to be affected by hitlag as well
+			// TODO: this needs to be affected by hitlag as well
 			s.core.Player.Shields.AddShieldBonusMod("tom-4pc", 180, func() (float64, bool) {
 				return 0.30, false
 			})

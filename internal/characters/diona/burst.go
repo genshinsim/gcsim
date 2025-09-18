@@ -52,7 +52,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// add burst status for C4 check
 		c.Core.Status.Add("diona-q", 750)
 		// ticks every 2s, first tick at t=2s (relative to field start), then t=4,6,8,10,12; lasts for 12.5s from field start
-		for i := 0; i < 6; i++ {
+		for i := range 6 {
 			c.Core.Tasks.Add(func() {
 				// attack
 				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)

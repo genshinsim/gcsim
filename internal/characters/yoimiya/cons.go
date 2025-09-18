@@ -12,7 +12,7 @@ import (
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		trg, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {

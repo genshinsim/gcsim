@@ -11,9 +11,7 @@ import (
 
 const burstHitmarks = 108 // adjusted to swap frame
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 func init() {
 	burstFrames = frames.InitAbilSlice(180) // charge

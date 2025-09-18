@@ -10,8 +10,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1BuffKey = "nahida-a1"
-const a4BuffKey = "nahida-a4"
+const (
+	a1BuffKey = "nahida-a1"
+	a4BuffKey = "nahida-a4"
+)
 
 // When unleashing Illusory Heart, the Shrine of Maya will gain the following effects:
 // The Elemental Mastery of the active character within the field will be increased by 25% of the Elemental Mastery of the party member with the highest Elemental Mastery.

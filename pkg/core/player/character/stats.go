@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
 
-func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
+func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []any) {
 	var sb strings.Builder
-	var debugDetails []interface{}
+	var debugDetails []any
 
 	// grab char stats
 
@@ -18,7 +18,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	copy(stats[:], c.BaseStats[:attributes.EndStatType])
 
 	if c.debug {
-		debugDetails = make([]interface{}, 0, 2*len(c.mods))
+		debugDetails = make([]any, 0, 2*len(c.mods))
 	}
 
 	n := 0
@@ -29,7 +29,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 			n++
 			continue
 		}
-		if !(m.Expiry() > *c.f || m.Expiry() == -1) {
+		if m.Expiry() <= *c.f && m.Expiry() != -1 {
 			continue
 		}
 

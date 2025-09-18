@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bonus := attributes.EleToDmgP(char.Base.Element)
 
 	// normal dealing dmg
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false
@@ -70,7 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 
 	// using burst
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}

@@ -15,7 +15,6 @@ func TestUserStoreCRUD(t *testing.T) {
 	store, err := New(Config{
 		DBPath: "./testdb",
 	})
-
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

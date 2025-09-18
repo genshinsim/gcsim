@@ -42,9 +42,9 @@ func (c *char) a4() {
 
 	m := make([]float64, attributes.EndStatType)
 
-	swirlfunc := func(ele attributes.Stat, key string) func(args ...interface{}) bool {
+	swirlfunc := func(ele attributes.Stat, key string) func(args ...any) bool {
 		icd := -1
-		return func(args ...interface{}) bool {
+		return func(args ...any) bool {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
 				return false
 			}

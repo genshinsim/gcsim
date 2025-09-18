@@ -1,6 +1,8 @@
 package target
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -94,10 +96,8 @@ func (t *Target) AttackWillLand(a info.AttackPattern) (bool, string) {
 	// 	return false, "wrong type"
 	// }
 	// swirl aoe shouldn't hit the src of the aoe
-	for _, v := range a.IgnoredKeys {
-		if t.Key() == v {
-			return false, "no self harm"
-		}
+	if slices.Contains(a.IgnoredKeys, t.Key()) {
+		return false, "no self harm"
 	}
 
 	// check if shape matches
@@ -130,6 +130,7 @@ func (t *Target) SetDirection(trg info.Point) {
 		Write("trgY", trg.Y).
 		Write("direction", t.direction)
 }
+
 func (t *Target) SetDirectionToClosestEnemy() {
 	src := t.Pos()
 	// calculate direction towards closest enemy, or forward direction if none
@@ -143,6 +144,7 @@ func (t *Target) SetDirectionToClosestEnemy() {
 		Write("enemy key", enemy.Key()).
 		Write("direction", t.direction)
 }
+
 func (t *Target) CalcTempDirection(trg info.Point) info.Point {
 	src := t.Pos()
 	direction := info.CalcDirection(src, trg)

@@ -57,10 +57,10 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 	}
 	// recharge amount - particles: same = 3, non-ele = 2, diff = 1
 	// recharge amount - orbs: same = 9, non-ele = 6, diff = 3 (3x particles)
-	switch {
-	case p.Ele == c.Base.Element:
+	switch p.Ele {
+	case c.Base.Element:
 		amt = 3
-	case p.Ele == attributes.NoElement:
+	case attributes.NoElement:
 		amt = 2
 	default:
 		amt = 1

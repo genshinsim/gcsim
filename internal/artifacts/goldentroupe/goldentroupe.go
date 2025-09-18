@@ -68,7 +68,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.buff = make([]float64, attributes.EndStatType)
 		s.buff[attributes.DmgP] = 0.25
 
-		c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 			prev := args[0].(int)
 			next := args[1].(int)
 			if prev == char.Index() {

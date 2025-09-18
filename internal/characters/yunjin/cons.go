@@ -51,7 +51,7 @@ func (c *char) c4() {
 	}
 	c.c4bonus = make([]float64, attributes.EndStatType)
 	c.c4bonus[attributes.DEFP] = .2
-	charModFunc := func(args ...interface{}) bool {
+	charModFunc := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -88,7 +88,7 @@ func (c *char) c6() {
 			Base:         modifier.NewBaseWithHitlag(c6Key, 12*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
-				//TODO: i assume this buff should go away if stacks are gone?
+				// TODO: i assume this buff should go away if stacks are gone?
 				if this.Tags[burstBuffKey] == 0 {
 					return nil, false
 				}

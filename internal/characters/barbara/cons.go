@@ -33,7 +33,7 @@ func (c *char) c2() {
 // inspired from hutao c6
 // TODO: does this even work?
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false

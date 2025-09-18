@@ -81,7 +81,7 @@ func (s *Set) pc4() {
 		return
 	}
 
-	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != s.char.Index() {
 			return false

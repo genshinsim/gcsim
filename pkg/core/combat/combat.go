@@ -20,7 +20,7 @@ type CharHandler interface {
 }
 
 type Character interface {
-	ApplyAttackMods(a *info.AttackEvent, t info.Target) []interface{}
+	ApplyAttackMods(a *info.AttackEvent, t info.Target) []any
 }
 
 type Handler struct {
@@ -90,7 +90,7 @@ func (h *Handler) Tick() {
 			v.Tick()
 		}
 	}
-	//TODO: clean up every 100 tick reasonable?
+	// TODO: clean up every 100 tick reasonable?
 	h.gccount++
 	if h.gccount > 100 {
 		n := 0

@@ -25,11 +25,13 @@ type RoleChecker interface {
 	UserHasDBTagRole(userid string, tag model.DBTag) bool
 }
 
-var ErrUserAlreadyExists = errors.New("user already exist")
-var ErrUserNotFound = errors.New("user not found")
-var ErrAccessDenied = errors.New("access denied")
-var ErrInvalidRequest = errors.New("invalid request")
-var ErrServerError = errors.New("unexpected server error")
+var (
+	ErrUserAlreadyExists = errors.New("user already exist")
+	ErrUserNotFound      = errors.New("user not found")
+	ErrAccessDenied      = errors.New("access denied")
+	ErrInvalidRequest    = errors.New("invalid request")
+	ErrServerError       = errors.New("unexpected server error")
+)
 
 type discordUser struct {
 	ID            string `json:"id"`
@@ -57,7 +59,7 @@ func (s *Server) tokenCheck(next http.Handler) http.Handler {
 		}
 		s.Log.Infow("parsing token", "token", c.Value)
 		var cl claim
-		token, err := jwt.ParseWithClaims(c.Value, &cl, func(t *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(c.Value, &cl, func(t *jwt.Token) (any, error) {
 			return []byte(s.cfg.Discord.JWTKey), nil
 		})
 		if err != nil {
@@ -137,7 +139,6 @@ func (s *Server) Login() http.HandlerFunc {
 		var du discordUser
 
 		err = json.NewDecoder(res.Body).Decode(&du)
-
 		if err != nil {
 			s.Log.Errorw("unexpected error decoding user json", "err", err)
 			w.WriteHeader(http.StatusInternalServerError)

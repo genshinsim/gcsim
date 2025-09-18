@@ -29,7 +29,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 			return false
 		}
 		// add to hydro durability (can't add if the atk already reacted)
-		//TODO: this shouldn't happen here
+		// TODO: this shouldn't happen here
 		if !a.Reacted {
 			r.attachOrRefillNormalEle(info.ReactionModKeyHydro, a.Info.Durability)
 		}
@@ -71,7 +71,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 
 	// if this is a new ec then trigger tick immediately and queue up ticks
 	// otherwise do nothing
-	//TODO: need to check if refresh ec triggers new tick immediately or not
+	// TODO: need to check if refresh ec triggers new tick immediately or not
 	if r.ecTickSrc == -1 {
 		r.ecTickSrc = r.core.F
 		r.core.QueueAttackWithSnap(
@@ -83,12 +83,12 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 
 		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
 		// subscribe to wane ticks
-		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 			// target should be first, then snapshot
 			n := args[0].(info.Target)
 			a := args[1].(*info.AttackEvent)
 			dmg := args[2].(float64)
-			//TODO: there's no target index
+			// TODO: there's no target index
 			if n.Key() != r.self.Key() {
 				return false
 			}

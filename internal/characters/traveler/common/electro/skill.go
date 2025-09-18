@@ -70,11 +70,11 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 
 	// Counting from the frame E is pressed, it takes an average of 1.79 seconds for a character to be able to pick one up
 	// https://library.keqingmains.com/evidence/characters/electro/traveler-electro#amulets-delay
-	amuletDelay := p["amulet_delay"]
-	// make it so that it can't be faster than 1.79s
-	if amuletDelay < 107 {
-		amuletDelay = 107 // ~1.79s
-	}
+	amuletDelay := max(
+		// make it so that it can't be faster than 1.79s
+		p["amulet_delay"],
+		// ~1.79s
+		107)
 
 	amuletCB := func(a info.AttackCB) {
 		// generate amulet if generated amulets < limit

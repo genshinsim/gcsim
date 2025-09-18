@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	mATK := make([]float64, attributes.EndStatType)
 	mATK[attributes.ATKP] = stackAtk
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false
@@ -74,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("beacon-of-the-reed-sea-enemy-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.ActorIndex != char.Index() {
 			return false

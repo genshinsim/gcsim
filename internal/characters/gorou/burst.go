@@ -82,7 +82,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}, burstHitmark)
 
-	//TODO:  If Gorou falls, the effects of General's Glory will be cleared.
+	// TODO:  If Gorou falls, the effects of General's Glory will be cleared.
 
 	c.c2Extension = 0
 
@@ -125,7 +125,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		collapseArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
 		enemy := c.Core.Combat.ClosestEnemyWithinArea(collapseArea, nil)
 		if enemy != nil {
-			//TODO: skill damage frames
+			// TODO: skill damage frames
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(enemy, nil, 3.5), 0, 1)
 		}
 

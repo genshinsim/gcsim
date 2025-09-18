@@ -38,7 +38,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstExplosion[c.TalentLvlBurst()],
 	}
 	c.burstPos = c.Core.Combat.Player().Pos()
-	//TODO: this should have its own position
+	// TODO: this should have its own position
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.burstPos, nil, 5.5),

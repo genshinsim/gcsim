@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	duration := 8 * 60
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = dmg
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		if index != char.Index() {
 			return false

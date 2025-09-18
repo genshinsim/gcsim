@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	dmg := 0.75 + float64(r)*0.25
 	const icdKey = "messenger-icd"
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		trg := args[0].(info.Target)
 		// don't proc if dmg not from weapon holder

@@ -109,7 +109,7 @@ func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		ai := info.AttackInfo{
 			ActorIndex:     c.Index(),
 			Abil:           "Impale the Night (100%+ BoL)",

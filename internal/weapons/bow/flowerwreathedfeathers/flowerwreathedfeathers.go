@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnAimShoot, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnAimShoot, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -80,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("flower-wreathed-aim-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnStateChange, func(args ...any) bool {
 		prev := args[0].(action.AnimationState)
 		next := args[1].(action.AnimationState)
 
@@ -99,7 +99,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("flower-wreathed-state-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 
 		if prev != char.Index() {

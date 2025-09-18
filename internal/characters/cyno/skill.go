@@ -124,7 +124,7 @@ func (c *char) skillB() (action.Info, error) {
 		ai.HitlagHaltFrames = 0
 
 		// 3 instances
-		for i := 0; i < 3; i++ {
+		for range 3 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHit(

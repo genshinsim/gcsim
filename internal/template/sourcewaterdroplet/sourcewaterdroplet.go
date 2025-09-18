@@ -14,7 +14,7 @@ type Gadget struct {
 func New(core *core.Core, pos info.Point, typ info.GadgetTyp) *Gadget {
 	p := &Gadget{}
 	p.Gadget = gadget.New(core, pos, 1, typ)
-	p.Gadget.Duration = 878
+	p.Duration = 878
 	core.Combat.AddGadget(p)
 	return p
 }

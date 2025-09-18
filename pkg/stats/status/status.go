@@ -91,7 +91,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 	}
 
-	core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnTick, func(args ...any) bool {
 		bucket := core.F / bucketSize
 		active := core.Player.ActiveChar()
 
@@ -116,7 +116,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 				if v <= info.ZeroDur {
 					continue
 				}
-				var key = info.ReactionModKey(r)
+				key := info.ReactionModKey(r)
 				out.reactionUptime[i][key.String()] += 1
 
 				if start, ok := out.activeReactions[i][key]; ok {
@@ -158,7 +158,7 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	bucket := core.F / bucketSize
 
 	// for averages, last bucket is inaccurate. Fill to fix
-	for i := 0; i < fill; i++ {
+	for range fill {
 		b.damageMitigation = avgUpdate(
 			b.damageMitigation, bucket, damageMod(core.Player.ActiveChar(), b.maxEnemyLvl))
 	}
@@ -166,7 +166,7 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	result.DamageMitigation = b.damageMitigation
 
 	for c := 0; c < len(core.Player.Chars()); c++ {
-		for i := 0; i < fill; i++ {
+		for range fill {
 			b.charHealth[c] = avgUpdate(b.charHealth[c], bucket, core.Player.Chars()[c].CurrentHP())
 		}
 

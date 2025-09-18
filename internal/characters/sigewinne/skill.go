@@ -74,11 +74,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		hold = 0
 	}
-	if hold == 1 {
+	switch hold {
+	case 1:
 		skillHitmark = skillShortHoldHitmark
 		skillCDStart = skillShortHoldCDStart
 		c.currentBubbleTier = 1
-	} else if hold == 2 {
+	case 2:
 		skillHitmark = skillHoldHitmark
 		skillCDStart = skillHoldCDStart
 		c.currentBubbleTier = 2
@@ -153,7 +154,7 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 
 func (c *char) spawnDroplets() {
 	player := c.Core.Combat.Player()
-	for j := 0; j < 2; j++ {
+	for range 2 {
 		pos := info.CalcRandomPointFromCenter(
 			info.CalcOffsetPoint(
 				player.Pos(),
@@ -257,7 +258,7 @@ func (c *char) bubbleTierDamageMod() {
 
 func (c *char) energyBondClearMod() {
 	// TODO: override healing functions?
-	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
 		index := args[0].(int)
 		if index != c.Index() {
 			return false

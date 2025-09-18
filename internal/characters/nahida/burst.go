@@ -61,10 +61,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 		if c.Base.Cons >= 6 {
 			// lasts 10s
-			//TODO: should this be delayed until animation end?
+			// TODO: should this be delayed until animation end?
 			c.AddStatus(c6ActiveKey, 600, true)
 			c.c6Count = 0
-			c.DeleteStatus(c6ICDKey) //TODO: check if this resets icd?
+			c.DeleteStatus(c6ICDKey) // TODO: check if this resets icd?
 		}
 	}, 66)
 

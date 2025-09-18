@@ -234,7 +234,6 @@ func (p *Parser) parseAssign() (ast.Stmt, error) {
 	}
 
 	expr, err := p.parseExpr(ast.Lowest)
-
 	if err != nil {
 		return nil, err
 	}
@@ -609,6 +608,7 @@ func (p *Parser) parseBlock() (*ast.BlockStmt, error) {
 		block.Append(node)
 	}
 }
+
 func (p *Parser) parseExpr(pre ast.Precedence) (ast.Expr, error) {
 	t := p.next()
 	prefix := p.prefixParseFns[t.Typ]

@@ -119,7 +119,7 @@ func (c *char) wolfBurst(normalCounter int) func(info.AttackCB) {
 }
 
 func (c *char) onSwapClearBurst() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		if !c.StatusIsActive(burstBuffKey) {
 			return false
 		}

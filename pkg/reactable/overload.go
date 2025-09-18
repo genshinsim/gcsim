@@ -40,7 +40,7 @@ func (r *Reactable) TryOverload(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnOverload, r.self, a)
 
 	// 0.1s gcd on overload attack
-	if !(r.overloadGCD != -1 && r.core.F < r.overloadGCD) {
+	if r.overloadGCD == -1 || r.core.F >= r.overloadGCD {
 		r.overloadGCD = r.core.F + 0.1*60
 		// trigger an overload attack
 		atk := info.AttackInfo{

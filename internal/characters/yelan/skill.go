@@ -87,7 +87,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				c.AddStatus("yelanc4", 25*60, true)
 			}
 		}
-	}, skillHitmark) //TODO: frames for hold e
+	}, skillHitmark) // TODO: frames for hold e
 
 	// hold := p["hold"]
 
@@ -100,7 +100,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.breakthrough = true
 			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index())
 		}
-		//TODO: icd on this??
+		// TODO: icd on this??
 		if c.StatusIsActive(burstKey) {
 			c.summonExquisiteThrow()
 			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index())
@@ -122,12 +122,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				Write("target", e.Key())
 			marked--
 			// queueing attack one frame later
-			//TODO: does hold have different attack size? don't think so?
+			// TODO: does hold have different attack size? don't think so?
 			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, c.particleCB, cb)
 		}
 
 		// activate c4 if relevant
-		//TODO: check if this is accurate
+		// TODO: check if this is accurate
 		if c.Base.Cons >= 4 && c.c4count > 0 {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.HPP] = float64(c.c4count) * 0.1
@@ -146,7 +146,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				})
 			}
 		}
-	}, skillHitmark) //TODO: frames for e dmg? possibly 5 second after attaching?
+	}, skillHitmark) // TODO: frames for e dmg? possibly 5 second after attaching?
 
 	c.SetCDWithDelay(action.ActionSkill, 600, skillHitmark-2)
 

@@ -36,7 +36,7 @@ func (c *char) a1() {
 	c.a4()
 
 	// Bountiful Cores
-	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if !char.StatusIsActive(a1Status) {
@@ -47,17 +47,17 @@ func (c *char) a1() {
 			return false
 		}
 
-		b := newBountifulCore(c.Core, g.Gadget.Pos(), atk)
-		b.Gadget.SetKey(g.Gadget.Key())
+		b := newBountifulCore(c.Core, g.Pos(), atk)
+		b.SetKey(g.Key())
 		c.Core.Combat.ReplaceGadget(g.Key(), b)
 		// prevent blowing up
-		g.Gadget.OnExpiry = nil
-		g.Gadget.OnKill = nil
+		g.OnExpiry = nil
+		g.OnKill = nil
 
 		return false
 	}, "nilou-a1-cores")
 
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
 		charIndex := args[0].(int)
 		char := c.Core.Player.ByIndex(charIndex)
 		if !char.StatusIsActive(a1Status) {

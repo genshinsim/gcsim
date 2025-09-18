@@ -29,9 +29,11 @@ func (c *char) a1Consume(energy float64, holdLevel int) {
 	c.c2AddStack(c2ConsumingKey)
 }
 
-const a4Key = "sethos-a4"
-const a4IcdKey = "sethos-a4-icd"
-const a4Icd = 15 * 60
+const (
+	a4Key    = "sethos-a4"
+	a4IcdKey = "sethos-a4-icd"
+	a4Icd    = 15 * 60
+)
 
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {

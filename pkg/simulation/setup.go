@@ -128,7 +128,7 @@ func SetupResonance(s *core.Core) {
 				})
 			}
 		case attributes.Hydro:
-			//TODO: reduce pyro duration not implemented; may affect bennett Q?
+			// TODO: reduce pyro duration not implemented; may affect bennett Q?
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.HPP] = 0.25
 			for _, c := range chars {
@@ -162,7 +162,7 @@ func SetupResonance(s *core.Core) {
 		case attributes.Electro:
 			last := 0
 			//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-			recoverParticle := func(_ ...interface{}) bool {
+			recoverParticle := func(_ ...any) bool {
 				if s.F-last < 300 && last != 0 { // every 5 seconds
 					return false
 				}
@@ -175,7 +175,7 @@ func SetupResonance(s *core.Core) {
 				return false
 			}
 
-			recoverNoGadget := func(args ...interface{}) bool {
+			recoverNoGadget := func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
@@ -196,7 +196,7 @@ func SetupResonance(s *core.Core) {
 			s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 			// shred geo res of target
-			s.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+			s.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 				t, ok := args[0].(*enemy.Enemy)
 				if !ok {
 					return false
@@ -253,7 +253,7 @@ func SetupResonance(s *core.Core) {
 
 			twoBuff := make([]float64, attributes.EndStatType)
 			twoBuff[attributes.EM] = 30
-			twoEl := func(args ...interface{}) bool {
+			twoEl := func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
@@ -274,7 +274,7 @@ func SetupResonance(s *core.Core) {
 
 			threeBuff := make([]float64, attributes.EndStatType)
 			threeBuff[attributes.EM] = 20
-			threeEl := func(_ ...interface{}) bool {
+			threeEl := func(_ ...any) bool {
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
 						Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
@@ -286,7 +286,7 @@ func SetupResonance(s *core.Core) {
 				}
 				return false
 			}
-			threeElNoGadget := func(args ...interface{}) bool {
+			threeElNoGadget := func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
@@ -301,7 +301,7 @@ func SetupResonance(s *core.Core) {
 }
 
 func SetupMisc(c *core.Core) {
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		// dmg tag is superconduct, target is enemy
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
@@ -334,7 +334,7 @@ func setupNightsoulBurst(core *core.Core) {
 	}
 
 	triggerCD := nightsoulBurstICD[count]
-	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if core.Status.Duration(nightsoulBurstICDStatus) > 0 {
 			return false
 		}

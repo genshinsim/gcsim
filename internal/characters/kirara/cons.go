@@ -26,7 +26,7 @@ const (
 // Kirara will perform a coordinated attack with them using Small Cat Grass Cardamoms, dealing 200% of her ATK as Dendro DMG. DMG dealt this way is
 // considered Elemental Burst DMG. This effect can be triggered once every 3.8s. This CD is shared between all party members.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if c.StatusIsActive(c4IcdStatus) {
 			return false
 		}

@@ -45,9 +45,11 @@ type opts struct {
 	update           bool
 }
 
-const resultServeFile = "serve_data.json"
-const sampleServeFile = "serve_sample.json"
-const address = ":8381"
+const (
+	resultServeFile = "serve_data.json"
+	sampleServeFile = "serve_sample.json"
+	address         = ":8381"
+)
 
 // command line tool; following options are available:
 func main() {
@@ -133,7 +135,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	}
 
 	var secondOutput string
-	var secondOutputGZ = false
+	secondOutputGZ := false
 
 	if opt.serve {
 		// save output information in case -s and -out were both used in the same command
@@ -225,7 +227,6 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 			opt.gz,
 			simopt,
 		)
-
 		if err != nil {
 			return err
 		}
@@ -239,7 +240,6 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 			opt.gz,
 			simopt,
 		)
-
 		if err != nil {
 			return err
 		}
@@ -313,7 +313,6 @@ func openWSL(url string) error {
 
 func parseStrSeedAndWriteSample(seedStr, outputPath, config string, gz bool, simopt simulator.Options) error {
 	seed, err := strconv.ParseUint(seedStr, 10, 64)
-
 	if err != nil {
 		return err
 	}

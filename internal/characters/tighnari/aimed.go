@@ -11,9 +11,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var aimedFrames [][]int
-var aimedHitmarks = []int{14, 86}
-var aimedWreathFrames []int
+var (
+	aimedFrames       [][]int
+	aimedHitmarks     = []int{14, 86}
+	aimedWreathFrames []int
+)
 
 const aimedWreathHitmark = 175
 
@@ -174,7 +176,7 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 	}
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
-		for i := 0; i < 4; i++ {
+		for range 4 {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,

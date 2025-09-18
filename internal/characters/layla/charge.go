@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{16, 16 + 11}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{16, 16 + 11}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(49) // CA -> N1/W

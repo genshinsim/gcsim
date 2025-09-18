@@ -18,8 +18,8 @@ func (c *char) a1() {
 		return
 	}
 	const a1IcdKey = "heizou-a1-icd"
-	swirlCB := func() func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	swirlCB := func() func(args ...any) bool {
+		return func(args ...any) bool {
 			if c.StatusIsActive(a1IcdKey) {
 				return false
 			}

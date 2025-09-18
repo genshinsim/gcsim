@@ -250,7 +250,7 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 	c := p.chars[p.currentCharKey]
 
 	// each line will be parsed separately into the map
-	var line = make([]float64, attributes.EndStatType)
+	line := make([]float64, attributes.EndStatType)
 	var key string
 
 	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {

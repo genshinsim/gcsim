@@ -10,8 +10,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillFrames []int
-var skillCancelFrames []int
+var (
+	skillFrames       []int
+	skillCancelFrames []int
+)
 
 const (
 	skillHitmarks      = 3
@@ -77,6 +79,7 @@ func (c *char) enterNightsoul() {
 func (c *char) nigthsoulFallingMsg() {
 	c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index())
 }
+
 func (c *char) exitNightsoul() {
 	if !c.nightsoulState.HasBlessing() {
 		return

@@ -72,13 +72,7 @@ func AvatarAsc(maxLvl int, data *model.AvatarData) int {
 func AvatarBaseStat(char info.CharacterBase, data *model.AvatarData) ([]float64, error) {
 	res := make([]float64, attributes.EndStatType)
 
-	lvl := char.Level - 1
-	if lvl < 0 {
-		lvl = 0
-	}
-	if lvl > 89 {
-		lvl = 89
-	}
+	lvl := min(max(char.Level-1, 0), 89)
 	res[attributes.BaseHP] = data.Stats.BaseHp * model.AvatarGrowCurveByLvl[lvl][data.Stats.HpCurve]
 	res[attributes.BaseATK] = data.Stats.BaseAtk * model.AvatarGrowCurveByLvl[lvl][data.Stats.AtkCurve]
 	res[attributes.BaseDEF] = data.Stats.BaseDef * model.AvatarGrowCurveByLvl[lvl][data.Stats.DefCruve]
@@ -106,17 +100,11 @@ func AvatarBaseStat(char info.CharacterBase, data *model.AvatarData) ([]float64,
 
 func WeaponBaseStat(weap info.WeaponProfile, data *model.WeaponData) ([]float64, error) {
 	res := make([]float64, attributes.EndStatType)
-	lvl := weap.Level - 1
-	if lvl < 0 {
-		lvl = 0
-	}
-	if lvl > 89 {
-		lvl = 89
-	}
+	lvl := min(max(weap.Level-1, 0), 89)
 	// base props
 	for _, v := range data.BaseStats.BaseProps {
 		s := info.ConvertProtoStat(v.PropType)
-		//TODO: should this be cumulative?
+		// TODO: should this be cumulative?
 		res[s] = v.InitialValue * model.WeaponGrowCurveByLvl[lvl][v.Curve]
 	}
 

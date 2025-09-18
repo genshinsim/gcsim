@@ -57,7 +57,7 @@ func (c *char) c2() {
 			return val, true
 		},
 	})
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
 		char := args[0].(int)
 		// don't trigger if active char not hit
 		if char != c.Core.Player.Active() {
@@ -79,8 +79,10 @@ func (c *char) c2() {
 
 // When Flame-Mane's Fist and Incineration Drive attacks unleashed during Leonine Bite hit opponents,
 // they will restore 1.5 Energy for Dehya and 2.5% of her Max HP. This effect can be triggered once every 0.2s.
-const c4Key = "dehya-c4"
-const c4ICDKey = "dehya-c4-icd"
+const (
+	c4Key    = "dehya-c4"
+	c4ICDKey = "dehya-c4-icd"
+)
 
 func (c *char) c4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {

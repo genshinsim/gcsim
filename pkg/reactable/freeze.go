@@ -70,7 +70,7 @@ func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnShatter, r.self, a)
 
 	// 0.2s gcd on shatter attack
-	if !(r.shatterGCD != -1 && r.core.F < r.shatterGCD) {
+	if r.shatterGCD == -1 || r.core.F >= r.shatterGCD {
 		r.shatterGCD = r.core.F + 0.2*60
 		// trigger shatter attack
 		ai := info.AttackInfo{
@@ -128,7 +128,7 @@ func (r *Reactable) checkFreeze() {
 			SourceIsSim: true,
 			DoNotLog:    true,
 		}
-		//TODO: delay attack by 1 frame ok?
+		// TODO: delay attack by 1 frame ok?
 		r.core.QueueAttack(ai, combat.NewSingleTargetHit(r.self.Key()), -1, 0)
 	}
 }

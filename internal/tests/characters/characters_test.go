@@ -26,7 +26,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 	c.Combat.SetPlayer(a)
 	var trgs []*enemy.Enemy
 
-	for i := 0; i < trgCount; i++ {
+	for range trgCount {
 		e := enemy.New(c, info.EnemyProfile{
 			Level:  100,
 			Resist: make(map[attributes.Element]float64),

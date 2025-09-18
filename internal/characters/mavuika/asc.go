@@ -21,7 +21,7 @@ func (c *char) a1() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.3
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(a1Key, 10*60),
 			Amount: func() ([]float64, bool) {

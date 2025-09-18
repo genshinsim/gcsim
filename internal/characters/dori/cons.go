@@ -68,8 +68,10 @@ func (c *char) c4() {
 	}
 }
 
-const c6ICD = "dori-c6-heal-icd"
-const c6Key = "dori-c6"
+const (
+	c6ICD = "dori-c6-heal-icd"
+	c6Key = "dori-c6"
+)
 
 // Dori gains the following effects for 3s after using Spirit-Warding Lamp: Troubleshooter Cannon:
 // - Electro Infusion.

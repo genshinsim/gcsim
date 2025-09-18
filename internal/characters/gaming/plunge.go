@@ -12,25 +12,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
-var specialPlungeFrames []int
+var (
+	highPlungeFrames    []int
+	lowPlungeFrames     []int
+	specialPlungeFrames []int
+)
 
-const lowPlungeHitmark = 43
-const highPlungeHitmark = 46
-const collisionHitmark = lowPlungeHitmark - 6
-const specialPlungeHitmark = 32
+const (
+	lowPlungeHitmark     = 43
+	highPlungeHitmark    = 46
+	collisionHitmark     = lowPlungeHitmark - 6
+	specialPlungeHitmark = 32
+)
 
-const lowPlungePoiseDMG = 150.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 150.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 200.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 200.0
+	highPlungeRadius   = 5.0
+)
 
-const hpDrainThreshold = 0.1
-const specialPlungeKey = "Charmed Cloudstrider"
-const particleICD = 3 * 60
-const particleICDKey = "gaming-particle-icd"
+const (
+	hpDrainThreshold = 0.1
+	specialPlungeKey = "Charmed Cloudstrider"
+	particleICD      = 3 * 60
+	particleICDKey   = "gaming-particle-icd"
+)
 
 func init() {
 	// low_plunge -> x

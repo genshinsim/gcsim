@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{20, 20} // CA-1 and CA-2 hit at the same time
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{20, 20} // CA-1 and CA-2 hit at the same time
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(56)                                 // CA -> N1

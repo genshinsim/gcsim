@@ -15,9 +15,7 @@ const (
 	burstHitmark = 40
 )
 
-var (
-	nightsoulGainDelays = []int{42, 52, 59, 59}
-)
+var nightsoulGainDelays = []int{42, 52, 59, 59}
 
 func init() {
 	burstFrames = make([][]int, 2)

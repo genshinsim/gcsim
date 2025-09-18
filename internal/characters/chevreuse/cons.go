@@ -30,7 +30,7 @@ func (c *char) c1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnOverload, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnOverload, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		// does not include chevreuse
 		if atk.Info.ActorIndex == c.Index() {

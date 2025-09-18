@@ -19,9 +19,7 @@ const (
 	burstHitmark   = 106
 )
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 func (c *char) nightsoulConsumptionMul() float64 {
 	if c.StatusIsActive(burstKey) {
@@ -119,7 +117,7 @@ func (c *char) gainFightingSpirit(val float64) {
 
 func (c *char) burstInit() {
 	c.fightingSpirit = 200
-	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) bool {
 		amount := args[1].(float64)
 		if amount < 0.0000001 {
 			return false
@@ -128,7 +126,7 @@ func (c *char) burstInit() {
 		return false
 	}, "mavuika-fighting-spirit-ns")
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {

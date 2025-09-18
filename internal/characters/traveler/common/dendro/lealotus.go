@@ -48,10 +48,10 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 		}
 		s.QueueAttack(0)
 		// repeat attack every 90
-		s.Gadget.OnThinkInterval = func() {
+		s.OnThinkInterval = func() {
 			s.QueueAttack(0)
 		}
-		s.Gadget.ThinkInterval = 90
+		s.ThinkInterval = 90
 	}, burstHitmark-leaLotusAppear)
 
 	c.burstTransfig = attributes.NoElement
@@ -91,7 +91,7 @@ func (s *LeaLotus) HandleAttack(atk *info.AttackEvent) float64 {
 	if atk.Info.Durability > 0 {
 		atk.Info.Durability *= info.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
-			existing := s.Reactable.ActiveAuraString()
+			existing := s.ActiveAuraString()
 			applied := atk.Info.Durability
 			s.React(atk)
 			if s.Core.Flags.LogDebug && atk.Reacted {
@@ -106,7 +106,7 @@ func (s *LeaLotus) HandleAttack(atk *info.AttackEvent) float64 {
 					Write("abil", atk.Info.Abil).
 					Write("target", s.Key()).
 					Write("existing", existing).
-					Write("after", s.Reactable.ActiveAuraString())
+					Write("after", s.ActiveAuraString())
 			}
 		}
 	}
@@ -131,7 +131,7 @@ func (s *LeaLotus) HandleAttack(atk *info.AttackEvent) float64 {
 
 func (s *LeaLotus) attachEle(atk *info.AttackEvent) {
 	// check for ICD first
-	existing := s.Reactable.ActiveAuraString()
+	existing := s.ActiveAuraString()
 	applied := atk.Info.Durability
 	s.AttachOrRefill(atk)
 	if s.Core.Flags.LogDebug {
@@ -146,7 +146,7 @@ func (s *LeaLotus) attachEle(atk *info.AttackEvent) {
 			Write("abil", atk.Info.Abil).
 			Write("target", s.Key()).
 			Write("existing", existing).
-			Write("after", s.Reactable.ActiveAuraString())
+			Write("after", s.ActiveAuraString())
 	}
 }
 

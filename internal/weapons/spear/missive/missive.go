@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = atk
 	m[attributes.EM] = em
 
-	f := func(args ...interface{}) bool {
+	f := func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false

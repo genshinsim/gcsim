@@ -39,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const effectIcdKey = "endoftheline-effect-icd"
 	const dmgIcdKey = "endoftheline-dmg-icd"
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		// do nothing if holder is off-field
 		if c.Player.Active() != char.Index() {
 			return false
@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("endoftheline-effect-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		// do nothing if holder is off-field
 		if c.Player.Active() != char.Index() {

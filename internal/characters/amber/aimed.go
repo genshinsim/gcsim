@@ -13,8 +13,10 @@ import (
 
 var aimedFrames [][]int
 
-var aimedHitmarks = []int{15, 86}
-var c1Delay = 9 // C1 arrow comes out 9f after the normal one, still comes out even if you cancel at aimedHitmark
+var (
+	aimedHitmarks = []int{15, 86}
+	c1Delay       = 9 // C1 arrow comes out 9f after the normal one, still comes out even if you cancel at aimedHitmark
+)
 
 func init() {
 	aimedFrames = make([][]int, 2)

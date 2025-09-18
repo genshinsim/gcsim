@@ -17,11 +17,13 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-const id = "test"
-const testKey = "8B0D20CB790418B3CBE3A8B7B0A0A7F114BFFBD2179DF015A7EF086845B15C46"
+const (
+	id      = "test"
+	testKey = "8B0D20CB790418B3CBE3A8B7B0A0A7F114BFFBD2179DF015A7EF086845B15C46"
+)
 
 func TestValidation(t *testing.T) {
-	var res map[string]interface{}
+	var res map[string]any
 	json.Unmarshal([]byte(randomJSON), &res)
 	data, err := json.Marshal(res)
 	if err != nil {

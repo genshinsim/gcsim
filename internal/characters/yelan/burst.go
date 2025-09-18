@@ -10,12 +10,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
-var burstTravel = 20
+var (
+	burstFrames []int
+	burstTravel = 20
+)
 
 // initial hit
-const burstHitmark = 76
-const c2Hitmark = 17
+const (
+	burstHitmark = 76
+	c2Hitmark    = 17
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(93) // Q -> N1/CA/D
@@ -57,10 +61,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		burstHitmark,
 	)
 
-	//TODO: check if we need to add f to this
+	// TODO: check if we need to add f to this
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(burstKey, 15*60, false)
-		c.a4() //TODO: does this call need to be delayed?
+		c.a4() // TODO: does this call need to be delayed?
 	}, burstHitmark)
 	if c.Base.Cons >= 6 { // C6 passive, lasts 20 seconds
 		c.Core.Status.Add(c6Status, 20*60)
@@ -100,7 +104,7 @@ func (c *char) summonExquisiteThrow() {
 		FlatDmg:    burstDice[c.TalentLvlBurst()] * hp,
 	}
 	snap := c.Snapshot(&ai)
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
@@ -119,7 +123,7 @@ func (c *char) summonExquisiteThrow() {
 		ai.ICDGroup = attacks.ICDGroupDefault
 		ai.FlatDmg = 14.0 / 100 * hp
 		c.c2icd = c.Core.F + 1.8*60
-		//TODO: frames timing on this?
+		// TODO: frames timing on this?
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(

@@ -60,7 +60,7 @@ func (c *char) c4c6() {
 	c4M := make([]float64, attributes.EndStatType)
 	c6M := make([]float64, attributes.EndStatType)
 
-	c4c6Buff := func(args ...interface{}) bool {
+	c4c6Buff := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

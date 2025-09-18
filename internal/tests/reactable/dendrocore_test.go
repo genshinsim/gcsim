@@ -22,7 +22,7 @@ func TestModifyDendroCore(t *testing.T) {
 		t.FailNow()
 	}
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "bloom" {
@@ -30,7 +30,7 @@ func TestModifyDendroCore(t *testing.T) {
 		}
 		return false
 	}, "bloom")
-	c.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDendroCore, func(args ...any) bool {
 		if g, ok := args[0].(*dendrocore.Gadget); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
@@ -62,7 +62,7 @@ func TestModifyDendroCore(t *testing.T) {
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < dendrocore.Delay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 
@@ -75,7 +75,7 @@ func TestModifyDendroCore(t *testing.T) {
 	}
 
 	// make sure no blow up
-	for i := 0; i < 600; i++ {
+	for range 600 {
 		advanceCoreFrame(c)
 	}
 

@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	mNA := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("surfs-up-skill-%v", char.Base.Key.String()))
 
 	// Gain stack on vape
-	c.Events.Subscribe(event.OnVaporize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnVaporize, func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -121,7 +121,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("surfs-up-vape-%v", char.Base.Key.String()))
 
 	// Lose stack on NA
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

@@ -38,7 +38,7 @@ func (c *char) c1() {
 // C2:
 // Every time Glacial Waltz defeats an opponent during its duration, its duration is increased by 2.5s, up to a maximum of 15s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
@@ -76,7 +76,7 @@ func (c *char) c2() {
 // This shield absorbs Cryo DMG with 250% efficiency.
 // Can only occur once every 60s.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false

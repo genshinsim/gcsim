@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnStateChange, func(args ...any) bool {
 		next := args[1].(action.AnimationState)
 		if next == action.PlungeAttackState {
 			char.AddStatus(plungeBuff, 15*60, true)
@@ -73,17 +73,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("vividnotions-plunge-%s", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		char.AddStatus(skillBurstBuff, 15*60, true)
 		return false
 	}, fmt.Sprintf("vividnotions-skill-%s", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
 		char.AddStatus(skillBurstBuff, 15*60, true)
 		return false
 	}, fmt.Sprintf("vividnotions-burst-%s", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != char.Index() {
 			return false

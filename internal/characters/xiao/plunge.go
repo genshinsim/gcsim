@@ -12,26 +12,38 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var lowPlungeFramesX []int
-var highPlungeFramesX []int
+var (
+	lowPlungeFramesX  []int
+	highPlungeFramesX []int
+)
 
-var lowPlungeFramesXY []int
-var highPlungeFramesXY []int
+var (
+	lowPlungeFramesXY  []int
+	highPlungeFramesXY []int
+)
 
-var lowPlungeFramesXYX []int
-var highPlungeFramesXYX []int
+var (
+	lowPlungeFramesXYX  []int
+	highPlungeFramesXYX []int
+)
 
-const lowPlungeHitmarkX = 44
-const highPlungeHitmarkX = 46
-const collisionHitmarkX = lowPlungeHitmarkX - 6
+const (
+	lowPlungeHitmarkX  = 44
+	highPlungeHitmarkX = 46
+	collisionHitmarkX  = lowPlungeHitmarkX - 6
+)
 
-const lowPlungeHitmarkXY = 42 + 3
-const highPlungeHitmarkXY = 43 + 3
-const collisionHitmarkXY = lowPlungeHitmarkXY - 6
+const (
+	lowPlungeHitmarkXY  = 42 + 3
+	highPlungeHitmarkXY = 43 + 3
+	collisionHitmarkXY  = lowPlungeHitmarkXY - 6
+)
 
-const lowPlungeHitmarkXYX = 43 + 3
-const highPlungeHitmarkXYX = 44 + 3
-const collisionHitmarkXYX = lowPlungeHitmarkXYX - 6
+const (
+	lowPlungeHitmarkXYX  = 43 + 3
+	highPlungeHitmarkXYX = 44 + 3
+	collisionHitmarkXYX  = lowPlungeHitmarkXYX - 6
+)
 
 func init() {
 	// from xiao

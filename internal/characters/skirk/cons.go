@@ -11,8 +11,10 @@ import (
 
 var c4Atkp = []float64{0.0, 0.1, 0.2, 0.4}
 
-const c2Key = "skirk-c2"
-const c6Dur = 15 * 60
+const (
+	c2Key = "skirk-c2"
+	c6Dur = 15 * 60
+)
 
 func (c *char) c1() {
 	if c.Base.Cons < 1 {

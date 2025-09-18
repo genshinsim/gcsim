@@ -8,9 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2Key = "gaming-c2"
-const c4Key = "gaming-c4"
-const c6Key = "gaming-c6"
+const (
+	c2Key = "gaming-c2"
+	c4Key = "gaming-c4"
+	c6Key = "gaming-c6"
+)
 
 // When the Suanni Man Chai from Suanni's Gilded Dance meets back up with Gaming,
 // it will heal 15% of Gaming's HP.
@@ -38,7 +40,7 @@ func (c *char) c2() {
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 

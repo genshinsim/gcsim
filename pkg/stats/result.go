@@ -6,8 +6,10 @@ package stats
 //   any string type aliasing must be defined in this module or msgp will not know that the type
 //   is a string
 
-type FieldStatus string
-type ReactionModifier string
+type (
+	FieldStatus      string
+	ReactionModifier string
+)
 
 const (
 	OnField  FieldStatus = "on_field"

@@ -38,7 +38,7 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.a4Stacks = min(c.a4Stacks+1, 3)
 		return false
 	}, "maulani-a4-nightsoul")

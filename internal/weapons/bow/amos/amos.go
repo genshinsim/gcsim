@@ -39,10 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			m[attributes.DmgP] = flat
 			travel := float64(c.F-atk.Snapshot.SourceFrame) / 60
-			stacks := int(travel / 0.1)
-			if stacks > 5 {
-				stacks = 5
-			}
+			stacks := min(int(travel/0.1), 5)
 			m[attributes.DmgP] += dmgpers * float64(stacks)
 			return m, true
 		},

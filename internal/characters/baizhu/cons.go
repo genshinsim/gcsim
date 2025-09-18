@@ -23,7 +23,7 @@ func (c *char) c1() {
 // DMG dealt this way is considered Elemental Skill DMG.
 // This effect can be triggered once every 5s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		t := args[0].(info.Target)
 		// only trigger with the active character

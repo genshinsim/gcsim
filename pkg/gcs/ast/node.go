@@ -68,7 +68,7 @@ type (
 	// IfStmt represents an if block
 	IfStmt struct {
 		Pos
-		Condition Expr       //TODO: this should be an expr?
+		Condition Expr       // TODO: this should be an expr?
 		IfBlock   *BlockStmt // What to execute if true
 		ElseBlock Stmt       // What to execute if false
 	}
@@ -99,7 +99,7 @@ type (
 	// WhileStmt represents a while block
 	WhileStmt struct {
 		Pos
-		Condition  Expr       //TODO: this should be an expr?
+		Condition  Expr       // TODO: this should be an expr?
 		WhileBlock *BlockStmt // What to execute if true
 	}
 
@@ -139,6 +139,7 @@ func (*ForStmt) stmtNode()    {}
 func NewBlockStmt(pos Pos) *BlockStmt {
 	return &BlockStmt{Pos: pos}
 }
+
 func (b *BlockStmt) Append(n Node) {
 	b.List = append(b.List, n)
 }

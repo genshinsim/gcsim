@@ -214,7 +214,7 @@ func (c *char) skillHoldBuff() {
 }
 
 func (c *char) quillDamageMod() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		consumeStack := true
 		if atk.Info.Element != attributes.Cryo {

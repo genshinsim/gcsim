@@ -68,8 +68,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	//TODO: does heizou burst snapshot?
-	//TODO: heizou burst travel time parameter
+	// TODO: does heizou burst snapshot?
+	// TODO: heizou burst travel time parameter
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
@@ -77,7 +77,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		burstHitmark,
 	)
 
-	//TODO: Check CD with or without delay, check energy consume frame
+	// TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(action.ActionBurst, 12*60)
 	c.ConsumeEnergy(3)
 	return action.Info{
@@ -95,10 +95,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 func (c *char) irisDmg(t info.Target) {
 	x, ok := t.(info.TargetWithAura)
 	if !ok {
-		//TODO: check if this is correct? should we be doing nothing here?
+		// TODO: check if this is correct? should we be doing nothing here?
 		return
 	}
-	//TODO: does burst iris snapshot
+	// TODO: does burst iris snapshot
 	aiAbs := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Windmuster Iris",

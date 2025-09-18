@@ -142,7 +142,7 @@ func (c *char) c4() {
 	}
 	c.caHeal = 0.5
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)

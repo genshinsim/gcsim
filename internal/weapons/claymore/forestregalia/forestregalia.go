@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.EM] = float64(45 + r*15)
 
 	//nolint:unparam // why events have a return value...
-	handleProc := func(args ...interface{}) bool {
+	handleProc := func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false
@@ -94,7 +94,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Events.Subscribe(e, handleProc, key)
 		default:
-			c.Events.Subscribe(e, func(args ...interface{}) bool {
+			c.Events.Subscribe(e, func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}

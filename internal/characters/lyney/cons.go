@@ -58,7 +58,7 @@ func (c *char) c2Setup() {
 	}
 
 	// listen for swap to clear/apply C2
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		// swapping off lyney means clearing C2
 		prev := args[0].(int)
 		if prev == c.Index() {

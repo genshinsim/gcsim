@@ -23,7 +23,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		targetOverlap: overlaps(core.Combat.Enemies()),
 	}
 
-	core.Events.Subscribe(event.OnTargetMoved, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnTargetMoved, func(args ...any) bool {
 		target := args[0].(info.Target)
 
 		for _, enemy := range core.Combat.Enemies() {
@@ -42,7 +42,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 }
 
 func overlaps(targets []info.Target) bool {
-	for i := 0; i < len(targets); i++ {
+	for i := range targets {
 		for j := i + 1; j < len(targets); j++ {
 			if targets[i].WillCollide(targets[j].Shape()) {
 				return true

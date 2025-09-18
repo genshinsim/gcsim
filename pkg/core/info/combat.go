@@ -66,8 +66,8 @@ type Snapshot struct {
 	Stats   attributes.Stats // total character stats including from artifact, bonuses, etc...
 	CharLvl int
 
-	SourceFrame int           // frame snapshot was generated at
-	Logs        []interface{} // logs for the snapshot
+	SourceFrame int   // frame snapshot was generated at
+	Logs        []any // logs for the snapshot
 }
 
 type Target interface {

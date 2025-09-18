@@ -36,13 +36,13 @@ func (c *char) newYueguiThrow() *yuegui {
 	pos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: 2}, player.Direction())
 	yg.Gadget = gadget.New(c.Core, pos, 0.5, info.GadgetTypYueguiThrowing)
 
-	yg.Gadget.Duration = 600
-	yg.Gadget.OnThinkInterval = yg.throw
+	yg.Duration = 600
+	yg.OnThinkInterval = yg.throw
 
 	// they start throwing 29f after being spawned
-	yg.Gadget.ThinkInterval = 29
+	yg.ThinkInterval = 29
 
-	yg.Gadget.OnKill = func() {
+	yg.OnKill = func() {
 		yg.Core.Log.NewEvent("Yuegui (Throwing) removed", glog.LogCharacterEvent, yg.c.Index())
 	}
 	yg.Core.Log.NewEvent("Yuegui (Throwing) summoned", glog.LogCharacterEvent, yg.c.Index())
@@ -65,13 +65,13 @@ func (c *char) newYueguiJump() {
 	player := c.Core.Combat.Player()
 	pos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: -2}, player.Direction())
 	yg.Gadget = gadget.New(c.Core, pos, 0.5, info.GadgetTypYueguiJumping)
-	yg.Gadget.Duration = -1 // They last until they get deleted by the burst
-	yg.Gadget.OnThinkInterval = yg.throw
+	yg.Duration = -1 // They last until they get deleted by the burst
+	yg.OnThinkInterval = yg.throw
 
 	// they start throwing 29f after being spawned
-	yg.Gadget.ThinkInterval = 29
+	yg.ThinkInterval = 29
 
-	yg.Gadget.OnKill = func() {
+	yg.OnKill = func() {
 		yg.Core.Log.NewEvent("Yuegui (Jumping) removed", glog.LogCharacterEvent, yg.c.Index())
 	}
 	yg.Core.Log.NewEvent("Yuegui (Jumping) summoned", glog.LogCharacterEvent, yg.c.Index())
@@ -120,7 +120,7 @@ func (yg *yuegui) makeParticleCB() info.AttackCBFunc {
 }
 
 func (yg *yuegui) throw() {
-	yg.Gadget.ThinkInterval = 60
+	yg.ThinkInterval = 60
 	currHPPerc := yg.Core.Player.ActiveChar().CurrentHPRatio()
 	enemy := yg.Core.Combat.RandomEnemyWithinArea(yg.aoe, nil)
 

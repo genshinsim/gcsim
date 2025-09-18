@@ -237,6 +237,7 @@ func (c *CharWrapper) TalentLvlAttack() int {
 	}
 	return c.Talents.Attack + add
 }
+
 func (c *CharWrapper) TalentLvlSkill() int {
 	c.consCheck()
 	add := -1
@@ -251,6 +252,7 @@ func (c *CharWrapper) TalentLvlSkill() int {
 	}
 	return c.Talents.Skill + add
 }
+
 func (c *CharWrapper) TalentLvlBurst() int {
 	c.consCheck()
 	add := -1

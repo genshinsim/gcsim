@@ -43,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	bonus := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
 		index := args[0].(int)
 		amount := args[1].(float64)
 		if char.Index() != index || amount >= 0 {

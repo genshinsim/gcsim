@@ -21,8 +21,10 @@ var (
 	attackOffsets         = []float64{0.6, 0.8, 0.3, -0.2, 0.6}
 )
 
-const normalHitNum = 5
-const shunsuikenHitmark = 5
+const (
+	normalHitNum      = 5
+	shunsuikenHitmark = 5
+)
 
 func init() {
 	// NA cancels

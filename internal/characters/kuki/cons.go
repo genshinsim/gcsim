@@ -17,9 +17,9 @@ import (
 //
 // This effect can occur once every 5s.
 func (c *char) c4() {
-	//TODO: idk if the damage is instant or not
+	// TODO: idk if the damage is instant or not
 	const c4IcdKey = "kuki-c4-icd"
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		trg := args[0].(info.Target)
 		// ignore if C4 on icd
@@ -39,7 +39,7 @@ func (c *char) c4() {
 		}
 		c.AddStatus(c4IcdKey, 300, true) // 5s * 60
 
-		//TODO:frames for this and ICD tag
+		// TODO:frames for this and ICD tag
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
 			Abil:       "Thundergrass Mark",
@@ -66,7 +66,7 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 150
 	const c6IcdKey = "kuki-c6-icd"
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false

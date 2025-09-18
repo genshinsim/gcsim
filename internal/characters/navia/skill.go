@@ -166,7 +166,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			) {
 				// Tallies up the hits
 				hits := 0
-				for i := 0; i < shots; i++ {
+				for i := range shots {
 					if ok, _ := t.AttackWillLand(
 						combat.NewBoxHitOnTarget(
 							c.Core.Combat.Player(),
@@ -258,7 +258,7 @@ func (c *char) addShrapnelBuffs(snap *info.Snapshot, count int) {
 // Navia will gain 1 Crystal Shrapnel charge. Navia can hold up to 6 charges of Crystal Shrapnel at once.
 // Each time Crystal Shrapnel gain is triggered, the duration of the Shards you have already will be reset.
 func (c *char) shrapnelGain() {
-	c.Core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) bool {
 		// Check shield
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {

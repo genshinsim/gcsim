@@ -117,7 +117,7 @@ func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		// c4 status not active
 		if !c.StatusIsActive(c4Key) {
 			return false

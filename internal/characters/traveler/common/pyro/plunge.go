@@ -13,18 +13,26 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames [][]int
-var lowPlungeFrames [][]int
+var (
+	highPlungeFrames [][]int
+	lowPlungeFrames  [][]int
+)
 
-const lowPlungeHitmark = 47
-const highPlungeHitmark = 48
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark  = 47
+	highPlungeHitmark = 48
+	collisionHitmark  = lowPlungeHitmark - 6
+)
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 150.0
+	highPlungeRadius   = 5.0
+)
 
 func init() {
 	// low_plunge -> x
@@ -58,7 +66,7 @@ func init() {
 func (c *Traveler) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.gender == 0 {
 		// aether not implemented
-		return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.CharWrapper.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.Base.Key)
 	}
 	defer c.Core.Player.SetAirborne(player.Grounded)
 	switch c.Core.Player.Airborne() {
@@ -117,7 +125,7 @@ func (c *Traveler) lowPlungeXY(p map[string]int) action.Info {
 func (c *Traveler) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.gender == 0 {
 		// aether not implemented
-		return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.CharWrapper.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.Base.Key)
 	}
 
 	defer c.Core.Player.SetAirborne(player.Grounded)

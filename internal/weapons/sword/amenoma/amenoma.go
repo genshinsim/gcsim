@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const icdKey = "amenoma-icd"
 
 	// TODO: this used to be on postskill. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("amenoma-skill-%v", char.Base.Key.String()))
 
 	// TODO: this used to be on postburst. make sure nothing broke here
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}

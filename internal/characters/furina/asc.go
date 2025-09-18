@@ -21,7 +21,7 @@ func (c *char) a1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 

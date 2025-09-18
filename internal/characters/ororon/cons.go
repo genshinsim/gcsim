@@ -9,10 +9,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c1Key = "ororon-c1"
-const c2Key = "ororon-c2"
-const c4Key = "ororon-c4"
-const c6Key = "ororon-c6"
+const (
+	c1Key = "ororon-c1"
+	c2Key = "ororon-c2"
+	c4Key = "ororon-c4"
+	c6Key = "ororon-c6"
+)
 
 func (c *char) c1Init() {
 	if c.Base.Cons < 1 {

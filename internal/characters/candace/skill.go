@@ -36,10 +36,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	chargeLevel := p["hold"]
-	if chargeLevel > 1 {
-		chargeLevel = 1
-	}
+	chargeLevel := min(p["hold"], 1)
 	windup := 0
 	if p["perfect"] != 0 {
 		chargeLevel = 1

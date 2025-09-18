@@ -31,7 +31,7 @@ func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.W
 	prob := 0.50 + float64(p.Refine)*0.1
 	cd := 810 - p.Refine*90
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		crit := args[3].(bool)
@@ -55,7 +55,7 @@ func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.W
 		}
 		c.Log.NewEvent("favonius proc'd", glog.LogWeaponEvent, char.Index())
 
-		//TODO: used to be 80
+		// TODO: used to be 80
 		c.QueueParticle("favonius-"+char.Base.Key.String(), 3, attributes.NoElement, char.ParticleDelay)
 
 		// adds a modifier to track icd; this should be fine since it's per char and not global

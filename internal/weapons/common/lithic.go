@@ -32,7 +32,7 @@ func (l *Lithic) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Wea
 	stacks := 0
 	val := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) bool {
 		for _, char := range c.Player.Chars() {
 			if char.CharZone == info.ZoneLiyue {
 				stacks++

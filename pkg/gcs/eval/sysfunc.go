@@ -413,7 +413,7 @@ func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	fn := objs[0].(*funcval)
 
-	e.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+	e.Core.Events.Subscribe(event.OnTick, func(args ...any) bool {
 		_, err := e.evalNode(fn.Body, env)
 		if err != nil {
 			// handle the error

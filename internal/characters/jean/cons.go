@@ -23,7 +23,7 @@ func (c *char) c1(snap *info.Snapshot) {
 func (c *char) c2() {
 	c.c2buff = make([]float64, attributes.EndStatType)
 	c.c2buff[attributes.AtkSpd] = 0.15
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...any) bool {
 		// only trigger if Jean catches the particle
 		if c.Core.Player.Active() != c.Index() {
 			return false

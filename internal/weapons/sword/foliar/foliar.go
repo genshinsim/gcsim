@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	caBoost := 0.9 + 0.3*float64(r)
 	procCount := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if c.Player.Active() != char.Index() {
 			return false
@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if !(atk.Info.AttackTag == attacks.AttackTagNormal || atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold) {
+		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't

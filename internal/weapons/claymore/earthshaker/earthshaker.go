@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = amt
 
-	buffSkill := func(...interface{}) bool {
+	buffSkill := func(...any) bool {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("earth-shaker", 8*60),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}
 
-	buffSkillNoGadget := func(args ...interface{}) bool {
+	buffSkillNoGadget := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

@@ -17,11 +17,11 @@ import (
 )
 
 type dbGetOpt struct {
-	Query   map[string]interface{} `json:"query,omitempty"`
-	Sort    map[string]interface{} `json:"sort,omitempty"`
-	Project map[string]interface{} `json:"project,omitempty"`
-	Skip    int64                  `json:"skip,omitempty"`
-	Limit   int64                  `json:"limit,omitempty"`
+	Query   map[string]any `json:"query,omitempty"`
+	Sort    map[string]any `json:"sort,omitempty"`
+	Project map[string]any `json:"project,omitempty"`
+	Skip    int64          `json:"skip,omitempty"`
+	Limit   int64          `json:"limit,omitempty"`
 }
 
 type dbData struct {

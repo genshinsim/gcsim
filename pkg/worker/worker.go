@@ -32,7 +32,7 @@ func New(maxWorker int, respCh chan stats.Result, errCh chan error) *Pool {
 		StopCh:  make(chan bool),
 	}
 	// create workers
-	for i := 0; i < maxWorker; i++ {
+	for range maxWorker {
 		go p.worker()
 	}
 	return p

@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{71, 95, 119}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{71, 95, 119}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(87)
@@ -32,7 +34,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames: 0.01 * 60,
 	}
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		ai.Mult = charge[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
 		c.Core.QueueAttack(

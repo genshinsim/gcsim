@@ -14,8 +14,10 @@ import (
 
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 41
-const lowPlungeCollisionHitmark = 36
+const (
+	lowPlungeHitmark          = 41
+	lowPlungeCollisionHitmark = 36
+)
 
 func init() {
 	lowPlungeFrames = frames.InitAbilSlice(72)

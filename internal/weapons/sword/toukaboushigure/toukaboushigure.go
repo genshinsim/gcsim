@@ -52,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
@@ -70,7 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("toukaboushigure-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		e, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false

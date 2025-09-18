@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		bbcb = c.applyBB
 	}
 
-	//TODO: currently snapshotting at cast but apparently damage is based on stats on contact, not at cast??
+	// TODO: currently snapshotting at cast but apparently damage is based on stats on contact, not at cast??
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Spirit Soother",

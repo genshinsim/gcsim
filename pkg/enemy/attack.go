@@ -115,7 +115,7 @@ func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		atk.Info.Durability *= info.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		checkBurningICD()
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
-			existing := e.Reactable.ActiveAuraString()
+			existing := e.ActiveAuraString()
 			applied := atk.Info.Durability
 			e.React(atk)
 			if e.Core.Flags.LogDebug && atk.Reacted {
@@ -130,7 +130,7 @@ func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 					Write("abil", atk.Info.Abil).
 					Write("target", e.Key()).
 					Write("existing", existing).
-					Write("after", e.Reactable.ActiveAuraString())
+					Write("after", e.ActiveAuraString())
 			}
 		}
 	}
@@ -218,7 +218,7 @@ func (e *Enemy) applyDamage(atk *info.AttackEvent, damage float64) float64 {
 	// do not let hp become negative because this function can be called multiple times in same frame
 	actualDmg := min(damage, e.hp) // do not let dmg be greater than remaining enemy hp
 	e.hp -= actualDmg
-	e.damageTaken += actualDmg //TODO: do we actually need this?
+	e.damageTaken += actualDmg // TODO: do we actually need this?
 
 	// check if target is dead
 	if e.Core.Flags.DamageMode && e.hp <= 0 {
@@ -230,7 +230,7 @@ func (e *Enemy) applyDamage(atk *info.AttackEvent, damage float64) float64 {
 	// apply auras
 	if atk.Info.Durability > 0 && !atk.Reacted && atk.Info.Element != attributes.Physical {
 		// check for ICD first
-		existing := e.Reactable.ActiveAuraString()
+		existing := e.ActiveAuraString()
 		applied := atk.Info.Durability
 		e.AttachOrRefill(atk)
 		if e.Core.Flags.LogDebug {
@@ -245,7 +245,7 @@ func (e *Enemy) applyDamage(atk *info.AttackEvent, damage float64) float64 {
 				Write("abil", atk.Info.Abil).
 				Write("target", e.Key()).
 				Write("existing", existing).
-				Write("after", e.Reactable.ActiveAuraString())
+				Write("after", e.ActiveAuraString())
 		}
 	}
 	// just return damage without considering enemy hp here for both:

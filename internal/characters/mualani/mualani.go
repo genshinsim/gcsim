@@ -123,7 +123,7 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.nightsoulState.HasBlessing() {
 			c.cancelNightsoul()
 		}

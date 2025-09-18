@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{14, 10, 27, 26, 26}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{14, 10, 27, 26, 26}
+)
 
 const normalHitNum = 5
 

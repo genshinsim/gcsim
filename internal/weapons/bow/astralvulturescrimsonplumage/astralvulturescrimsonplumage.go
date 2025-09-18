@@ -69,7 +69,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkp[attributes.ATKP] = 0.06*float64(p.Refine) + 0.18
 
 	for i := event.OnSwirlHydro; i <= event.OnSwirlPyro; i++ {
-		c.Events.Subscribe(i, func(args ...interface{}) bool {
+		c.Events.Subscribe(i, func(args ...any) bool {
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index() {
 				return false

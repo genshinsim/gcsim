@@ -44,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	const icdKey = "black-sword-icd"
 	heal := 0.5 + .1*float64(r)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		crit := args[3].(bool)
 		if atk.Info.ActorIndex != char.Index() {

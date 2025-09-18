@@ -92,7 +92,10 @@ func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element
 	n := 0
 	for _, v := range h.shields {
 		target := v.ShieldTarget()
-		if !((target == -1 && char == active) || target == char) {
+		if target == -1 && char != active {
+			continue
+		}
+		if target != -1 && char != target {
 			continue
 		}
 		preHp := v.CurrentHP()

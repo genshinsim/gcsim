@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillFrames []int
-var skillCancelFrames []int
+var (
+	skillFrames       []int
+	skillCancelFrames []int
+)
 
 const (
 	particleICDKey  = "mualani-particle-icd"
@@ -104,7 +106,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	canQueueAfter := skillFrames[action.ActionAttack] // earliest cancel
 	// press skill "while" walking
-	isWalking := c.Core.Player.AnimationHandler.CurrentState() == action.WalkState
+	isWalking := c.Core.Player.CurrentState() == action.WalkState
 	if isWalking {
 		canQueueAfter = skillDelay
 	}
@@ -141,7 +143,7 @@ func (c *char) particleCB(a info.AttackCB) {
 
 func (c *char) surfingTick() {
 	// TODO: create a gadget?
-	c.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTick, func(args ...any) bool {
 		if c.Core.Player.Active() != c.Index() {
 			return false
 		}

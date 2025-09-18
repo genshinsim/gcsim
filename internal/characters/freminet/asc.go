@@ -29,7 +29,7 @@ func (c *char) a4() {
 		return
 	}
 
-	a4BuffFunc := func(args ...interface{}) bool {
+	a4BuffFunc := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

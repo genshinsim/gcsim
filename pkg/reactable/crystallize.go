@@ -59,7 +59,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *info.AttackEvent, ele attributes.El
 	r.addCrystallizeShard(char, rt, ele, r.core.F)
 	// reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
-	//TODO: confirm u can only crystallize once
+	// TODO: confirm u can only crystallize once
 	a.Info.Durability = 0
 	a.Reacted = true
 	// event

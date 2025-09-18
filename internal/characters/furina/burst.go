@@ -85,7 +85,7 @@ func (c *char) burstInit() {
 	}
 	c.burstBuff = make([]float64, attributes.EndStatType)
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
@@ -103,7 +103,7 @@ func (c *char) burstInit() {
 		return false
 	}, "furina-fanfare-on-hp-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}

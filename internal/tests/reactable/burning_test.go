@@ -21,7 +21,7 @@ func TestBurningTicks(t *testing.T) {
 	}
 	// expecting 8 ticks: https://www.youtube.com/watch?v=PdZ6Qxo7pSY
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
@@ -60,21 +60,21 @@ func TestBurningTicks(t *testing.T) {
 	}
 	// burning got queued at f = 200 but first tick actually happens at beginning of
 	// 216; so we advanced 1 extra here??
-	//TODO: does this need to be adjusted somehow? i think this has to do with the fact
+	// TODO: does this need to be adjusted somehow? i think this has to do with the fact
 	// that the task got added AFTER the run at f 200 so that's why it doesn't get
 	// executed until 201, then delay 15 so we end up at 216 first tick instead of 215
 	advanceCoreFrame(c)
 
 	// log.Printf("count should be 0 right now, got %v", count)
-	for i := 0; i < 8; i++ {
-		for j := 0; j < 15; j++ {
+	for range 8 {
+		for range 15 {
 			advanceCoreFrame(c)
 		}
 		// log.Printf("count should be %v right now, got %v", i+1, count)
 	}
 
 	// extra 200 frames to make sure it doesn't go past 8
-	for i := 0; i < 200; i++ {
+	for range 200 {
 		advanceCoreFrame(c)
 	}
 
@@ -90,10 +90,10 @@ func TestBurningQuickenFuel(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	//https://www.youtube.com/watch?v=En3Ki_vVgR0
+	// https://www.youtube.com/watch?v=En3Ki_vVgR0
 	count := 0
 	countByActor := []int{0, 0}
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
@@ -142,8 +142,8 @@ func TestBurningQuickenFuel(t *testing.T) {
 	}, 536)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -200,7 +200,7 @@ func TestPyroDendroCoexist(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	//https://www.youtube.com/watch?v=dXzQTNCYfeU&list=PL10DrkffqpyuwG8i0JOq-TgcqPES6bsja&index=16
+	// https://www.youtube.com/watch?v=dXzQTNCYfeU&list=PL10DrkffqpyuwG8i0JOq-TgcqPES6bsja&index=16
 	c.QueueAttackEvent(&info.AttackEvent{
 		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
@@ -253,8 +253,8 @@ func TestPyroDendroCoexist(t *testing.T) {
 	// pyro ended 546, dendro ended 689
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -307,8 +307,8 @@ func TestDendroDecayTry1(t *testing.T) {
 	}, 263)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -357,8 +357,8 @@ func TestDendroDecayTry2(t *testing.T) {
 	}, 453)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -414,8 +414,8 @@ func TestQuickenBurningDecay(t *testing.T) {
 	}, 206)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}

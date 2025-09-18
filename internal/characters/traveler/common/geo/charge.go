@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames [][]int
-var chargeHitmarks = [][]int{{9, 20}, {14, 25}}
+var (
+	chargeFrames   [][]int
+	chargeHitmarks = [][]int{{9, 20}, {14, 25}}
+)
 
 func init() {
 	chargeFrames = make([][]int, 2)

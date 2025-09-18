@@ -48,7 +48,7 @@ func (s *Server) listen() {
 				s.logger.Info("work done", "id", res.id, "err", res.err, "set_err", status.Err(), "publish_err", pubstatus.Err())
 			}
 		}
-		//TODO: more than 1 worker?
+		// TODO: more than 1 worker?
 		if !busy && len(queue) > 0 {
 			busy = true
 			next := queue[0]
@@ -117,7 +117,6 @@ func (s *Server) generateSnapshot(url string) ([]byte, error) {
 		}
 		return fmt.Errorf("generate preview failed: %v", *str)
 	}).Do()
-
 	if err != nil {
 		return nil, err
 	}

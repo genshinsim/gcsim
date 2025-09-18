@@ -9,17 +9,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2Key = "xianyun-c2"
-const c4Icd = "xianyun-c4-icd"
-const c6Key = "xianyun-c6"
+const (
+	c2Key = "xianyun-c2"
+	c4Icd = "xianyun-c4-icd"
+	c6Key = "xianyun-c6"
+)
 
-const c2Dur = 15 * 60
-const c4IcdDur = 5 * 60
-const c6Dur = 16 * 60
+const (
+	c2Dur    = 15 * 60
+	c4IcdDur = 5 * 60
+	c6Dur    = 16 * 60
+)
 
-var c4Ratio = []float64{0, 0.5, 0.8, 1.5}
-var c6Buff = []float64{0, 0.15, 0.35, 0.7}
-var c2BuffMod []float64
+var (
+	c4Ratio   = []float64{0, 0.5, 0.8, 1.5}
+	c6Buff    = []float64{0, 0.15, 0.35, 0.7}
+	c2BuffMod []float64
+)
 
 func (c *char) c1() {
 	if c.Base.Cons < 1 {

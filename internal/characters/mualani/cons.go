@@ -39,13 +39,14 @@ func (c *char) c2puffer() {
 
 	c.momentumStacks = min(c.momentumStacks+1, 3)
 	if c.a1Count == 2 {
-		for i := 0; i < 12; i++ {
+		for i := range 12 {
 			c.QueueCharTask(func() {
 				c.nightsoulState.GeneratePoints(1)
 			}, i*10+10)
 		}
 	}
 }
+
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return

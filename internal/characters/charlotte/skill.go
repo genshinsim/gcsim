@@ -98,16 +98,13 @@ func (c *char) skillPress() (action.Info, error) {
 }
 
 func (c *char) skillHold(p map[string]int) (action.Info, error) {
-	hold := p["hold"]
-	// earliest hold hitmark is ~111f
-	// latest hold hitmark is ~919f
-	// hold=1 gives 111f and hold=809 gives a 919f delay until hitmark.
-	if hold < 1 {
-		hold = 1
-	}
-	if hold > 809 {
-		hold = 809
-	}
+	hold := min(
+		// earliest hold hitmark is ~111f
+		// latest hold hitmark is ~919f
+		// hold=1 gives 111f and hold=809 gives a 919f delay until hitmark.
+		max(
+
+			p["hold"], 1), 809)
 	hitmark := hold + skillHoldHitmark
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),

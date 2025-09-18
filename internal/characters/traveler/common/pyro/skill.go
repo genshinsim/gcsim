@@ -13,8 +13,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillFrames [][]int
-var skillHoldFrames [][]int
+var (
+	skillFrames     [][]int
+	skillHoldFrames [][]int
+)
 
 const (
 	skillTapHitmark                = 24
@@ -189,7 +191,7 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 }
 
 func (c *Traveler) scorchingThresholdOnDamage() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		_, ok := args[0].(*enemy.Enemy)
 		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)

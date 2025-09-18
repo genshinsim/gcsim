@@ -33,7 +33,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 	c.Combat.SetPlayer(a)
 	var trgs []*enemy.Enemy
 
-	for i := 0; i < trgCount; i++ {
+	for range trgCount {
 		e := enemy.New(c, info.EnemyProfile{
 			Level:  100,
 			Resist: make(map[attributes.Element]float64),
@@ -47,7 +47,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		c.Combat.AddEnemy(e)
 	}
 
-	for i := 0; i < 4; i++ {
+	for range 4 {
 		p := info.CharacterProfile{}
 		p.Base.Key = keys.TestCharDoNotUse
 		p.Stats = make([]float64, attributes.EndStatType)
@@ -88,20 +88,20 @@ func TestMain(m *testing.M) {
 func TestSingleTarget(t *testing.T) {
 	c, trgs := makeCore(rand.Intn(10))
 	count := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
 
-	for i := 0; i < len(trgs); i++ {
+	for i := range trgs {
 		count = 0
 
 		c.QueueAttackEvent(&info.AttackEvent{
@@ -161,15 +161,15 @@ func (t *testGadget) HandleAttack(atk *info.AttackEvent) float64 {
 func TestDefaultHitGadget(t *testing.T) {
 	c, trgs := makeCore(rand.Intn(10))
 	count := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
@@ -180,7 +180,7 @@ func TestDefaultHitGadget(t *testing.T) {
 
 	c.Combat.AddGadget(g)
 
-	for i := 0; i < len(trgs); i++ {
+	for i := range trgs {
 		count = 0
 
 		c.QueueAttackEvent(&info.AttackEvent{
@@ -197,15 +197,15 @@ func TestDefaultHitGadget(t *testing.T) {
 func TestSkipTargets(t *testing.T) {
 	c, trgs := makeCore(rand.Intn(10))
 	count := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
@@ -216,7 +216,7 @@ func TestSkipTargets(t *testing.T) {
 
 	c.Combat.AddGadget(g)
 
-	for i := 0; i < len(trgs); i++ {
+	for i := range trgs {
 		count = 0
 		ae := &info.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
@@ -231,7 +231,7 @@ func TestSkipTargets(t *testing.T) {
 		}
 	}
 
-	for i := 0; i < len(trgs); i++ {
+	for i := range trgs {
 		count = 0
 		ae := &info.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
@@ -294,7 +294,7 @@ func circleAttackCollision(attackRadius float64, attackOffset info.Point, fanAng
 	player := c.Combat.Player()
 	count := 0
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")
@@ -346,7 +346,7 @@ func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset in
 	player := c.Combat.Player()
 	count := 0
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		count++
 		return false
 	}, "dmg-count")

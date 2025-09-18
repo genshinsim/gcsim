@@ -6,7 +6,7 @@ import (
 )
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.Core.F < c.c6icd && c.c6icd != 0 {
 			return false
 		}

@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{27, 33, 39}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{27, 33, 39}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(71)
@@ -54,7 +56,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	charge := func(target info.Target) {
-		for j := 0; j < 3; j++ {
+		for j := range 3 {
 			// queue up ca hits because target could move
 			c.Core.Tasks.Add(func() {
 				singleCharge(target.Pos(), 0)

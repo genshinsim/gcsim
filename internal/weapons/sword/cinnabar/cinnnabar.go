@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	defPer := .3 + float64(r)*.1
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false
@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		// otherwise if this is first time proc'ing, set the duration and queue
 		// task to set icd
 		if !char.StatusIsActive(durationKey) {
-			//TODO: we're assuming icd starts after the effect
+			// TODO: we're assuming icd starts after the effect
 			char.QueueCharTask(func() {
 				char.AddStatus(icdKey, 90, false) // icd lasts for 1.5s
 			}, 6) // icd starts 6 frames after

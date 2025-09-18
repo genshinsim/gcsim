@@ -49,7 +49,7 @@ func (c *char) a4() {
 		return
 	}
 	// TODO: should also check once every 1s but this is good enough...
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false

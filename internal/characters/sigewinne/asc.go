@@ -21,7 +21,7 @@ const (
 )
 
 func (c *char) a1() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalArt:

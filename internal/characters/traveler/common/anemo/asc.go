@@ -48,7 +48,7 @@ func (c *Traveler) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -65,7 +65,7 @@ func (c *Traveler) a4() {
 
 		c.AddStatus(a4ICDKey, 300, true)
 
-		for i := 0; i < 5; i++ {
+		for i := range 5 {
 			c.QueueCharTask(func() {
 				c.Core.Player.Heal(info.HealInfo{
 					Caller:  c.Index(),

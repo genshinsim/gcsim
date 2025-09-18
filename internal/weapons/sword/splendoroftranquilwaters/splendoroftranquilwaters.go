@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		buffHp:    make([]float64, attributes.EndStatType),
 	}
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.ActorIndex != char.Index() {
 			return false
@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("splendoroftranquilwaters-equip-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
@@ -77,7 +77,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("splendoroftranquilwaters-equip-heal-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.ActorIndex == char.Index() {
 			return false
@@ -89,7 +89,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("splendoroftranquilwaters-other-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)

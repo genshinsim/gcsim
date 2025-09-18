@@ -104,7 +104,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.TalentLvlAttack()],
 	}
 
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(

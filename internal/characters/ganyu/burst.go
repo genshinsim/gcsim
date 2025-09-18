@@ -89,10 +89,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				for _, e := range enemies {
 					e.AddStatus(c4Key, c4Dur, true)
 					if increase {
-						c4Stacks := e.GetTag(c4Key) + 1
-						if c4Stacks > 5 {
-							c4Stacks = 5
-						}
+						c4Stacks := min(e.GetTag(c4Key)+1, 5)
 						e.SetTag(c4Key, c4Stacks)
 						c.Core.Log.NewEvent(c4Key+" tick on enemy", glog.LogCharacterEvent, c.Index()).
 							Write("stacks", c4Stacks).

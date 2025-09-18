@@ -34,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkp := 0.18 + 0.06*float64(refine)
 	cd := 0.30 + 0.10*float64(refine)
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		// don't proc if someone else used a skill
 		if c.Player.Active() != char.Index() {
 			return false

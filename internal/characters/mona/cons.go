@@ -25,7 +25,7 @@ const c6Key = "mona-c6"
 // - Frozen duration is extended by 15%.
 func (c *char) c1() {
 	// TODO: "Frozen duration is extended by 15%." is bugged
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		// ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

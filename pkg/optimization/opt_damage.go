@@ -60,9 +60,8 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 
 	// start from max liquid in all relevant substats
 	for _, substat := range relevantSubstats {
-		stats.charProfilesCopy[idxChar].Stats[substat] +=
-			float64(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat]) *
-				stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+		stats.charProfilesCopy[idxChar].Stats[substat] += float64(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat]) *
+			stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 		stats.charSubstatFinal[idxChar][substat] = stats.charSubstatLimits[idxChar][substat]
 	}
 

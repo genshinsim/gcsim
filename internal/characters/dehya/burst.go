@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.burstPunchFunc(c.burstHitSrc)()
 	}, burstPunch1Hitmark)
 
-	c.ConsumeEnergy(15) //TODO: If this is ping related, this could be closer to 1 at 0 ping
+	c.ConsumeEnergy(15) // TODO: If this is ping related, this could be closer to 1 at 0 ping
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
 
 	return action.Info{

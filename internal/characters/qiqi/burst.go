@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) talismanHealHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
@@ -104,7 +104,7 @@ func (c *char) talismanHealHook() {
 // Handles C2, A4, and skill NA/CA on hit hooks
 // Additionally handles burst Talisman hook - can't be done another way since Talisman is applied before the burst damage is dealt
 func (c *char) onNACAHitHook() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {

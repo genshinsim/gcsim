@@ -9,11 +9,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFramesNormal []int
-var chargeFramesE []int
+var (
+	chargeFramesNormal []int
+	chargeFramesE      []int
+)
 
-const chargeHitmarkNormal = 34
-const chargeHitmarkE = 36
+const (
+	chargeHitmarkNormal = 34
+	chargeHitmarkE      = 36
+)
 
 func init() {
 	chargeFramesNormal = frames.InitAbilSlice(69)

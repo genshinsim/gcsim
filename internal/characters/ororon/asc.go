@@ -11,29 +11,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-const a1NSBurstKey = "ororon-a1-ns-burst"
-const a1ElectroHydroKey = "ororon-a1-electro-hydro"
-const a1ECTriggerKey = "ororon-a1-ec"
-const a1NSTriggerKey = "ororon-a1-ns"
+const (
+	a1NSBurstKey      = "ororon-a1-ns-burst"
+	a1ElectroHydroKey = "ororon-a1-electro-hydro"
+	a1ECTriggerKey    = "ororon-a1-ec"
+	a1NSTriggerKey    = "ororon-a1-ns"
+)
 
-const a1OnSkillKey = "ororon-a1"
-const a1GainIcdKey = "ororon-a1-gain-icd"
-const a1DamageIcdKey = "ororon-a1-dmg-icd"
-const a1Abil = "Hypersense"
+const (
+	a1OnSkillKey   = "ororon-a1"
+	a1GainIcdKey   = "ororon-a1-gain-icd"
+	a1DamageIcdKey = "ororon-a1-dmg-icd"
+	a1Abil         = "Hypersense"
+)
 
-const a4Key = "ororon-a4"
-const a4IcdKey = "ororon-a4-icd"
+const (
+	a4Key    = "ororon-a4"
+	a4IcdKey = "ororon-a4-icd"
+)
 
 func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.nightsoulState.GeneratePoints(40)
 		return false
 	}, a1NSBurstKey)
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 
 		// ignores ororon himself
@@ -64,7 +70,7 @@ func (c *char) a1Init() {
 		return false
 	}, a1ElectroHydroKey)
 
-	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
@@ -73,7 +79,7 @@ func (c *char) a1Init() {
 		return false
 	}, a1ECTriggerKey)
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.ActorIndex == c.Index() {
@@ -154,7 +160,7 @@ func (c *char) a4Init() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		active := c.Core.Player.ActiveChar()
 		if atk.Info.ActorIndex != active.Index() {

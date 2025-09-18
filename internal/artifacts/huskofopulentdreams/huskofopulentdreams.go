@@ -61,10 +61,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		Count: count,
 	}
 	s.lastSwap = -1
-	s.stacks = param["stacks"]
-	if s.stacks > 4 {
-		s.stacks = 4
-	}
+	s.stacks = min(param["stacks"], 4)
 
 	s.stackGainICDKey = "husk-4pc-stack-gain-icd"
 	s.stackGainICD = 18 // 0.3s * 60
@@ -88,7 +85,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	m := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 		if prev != char.Index() {
 			return false
@@ -98,7 +95,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		return false
 	}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		// Only triggers when onfield
 		if c.Player.Active() != char.Index() {

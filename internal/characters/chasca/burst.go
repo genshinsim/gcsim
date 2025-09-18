@@ -12,9 +12,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFramesGrounded []int
-var burstFramesNS []int
-var burstSecondaryHitmark = []int{103, 139, 147, 153, 157, 160}
+var (
+	burstFramesGrounded   []int
+	burstFramesNS         []int
+	burstSecondaryHitmark = []int{103, 139, 147, 153, 157, 160}
+)
 
 const (
 	burstHitmark = 96
@@ -71,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		burstBullets[i], burstBullets[j] = burstBullets[j], burstBullets[i]
 	})
 	burstFrame := c.Core.F
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		switch {
 		case i < len(burstBullets):
 			ele := burstBullets[i]

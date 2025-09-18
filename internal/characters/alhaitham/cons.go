@@ -34,7 +34,7 @@ func (c *char) c1(a info.AttackCB) {
 func (c *char) c2(generated int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 50
-	for i := 0; i < generated; i++ {
+	for range generated {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c2ModName(c.c2Counter+1), 480), // 8s
 			AffectedStat: attributes.EM,
@@ -104,7 +104,7 @@ func (c *char) c6(generated int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.1
 	m[attributes.CD] = 0.7
-	for i := 0; i < generated; i++ {
+	for range generated {
 		if c.StatModIsActive(c6key) {
 			c.ExtendStatus(c6key, 360)
 			c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index()).Write("c6 expiry on", c.StatusExpiry(c6key))

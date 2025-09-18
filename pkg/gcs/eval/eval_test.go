@@ -58,7 +58,7 @@ func TestForceTerminate(t *testing.T) {
 		res, err := eval.Run()
 		fmt.Printf("done with result: %v, err: %v\n", res, err)
 	}()
-	for i := 0; i < 4; i++ {
+	for range 4 {
 		eval.Continue()
 		a, err := eval.NextAction()
 		if err != nil {
@@ -80,7 +80,7 @@ func TestForceTerminate(t *testing.T) {
 		t.Error(err)
 	}
 	// confirm that NextAction now returns nil
-	for i := 0; i < 4; i++ {
+	for range 4 {
 		eval.Continue()
 		a, err := eval.NextAction()
 		if err != nil {
@@ -160,7 +160,7 @@ func TestDoneCheck(t *testing.T) {
 		t.Errorf("expecting NextAction to be called 4 times, got %v", count)
 	}
 	// confirm that NextAction continues to return nil
-	for i := 0; i < 4; i++ {
+	for range 4 {
 		a, err := eval.NextAction()
 		if err != nil {
 			t.Errorf("unexpected error when checking for NextAction() should be nil: %v", err)

@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillPressFrames [][]int
-var skillHoldFrames [][]int
+var (
+	skillPressFrames [][]int
+	skillHoldFrames  [][]int
+)
 
 const (
 	skillPressHitmark = 10
@@ -49,13 +51,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
-	glide := p["glide_cancel"]
-	if glide < 0 {
-		glide = 0
-	}
-	if glide > 1 {
-		glide = 1
-	}
+	glide := min(max(p["glide_cancel"], 0), 1)
 
 	c.a1Absorb = attributes.NoElement
 

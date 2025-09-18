@@ -23,7 +23,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		events: make([][]stats.EnergyEvent, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnEnergyChange, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnergyChange, func(args ...any) bool {
 		character := args[0].(*character.CharWrapper)
 		preEnergy := args[1].(float64)
 		amount := args[2].(float64)

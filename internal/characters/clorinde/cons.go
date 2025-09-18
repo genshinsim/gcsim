@@ -37,7 +37,7 @@ func (c *char) c1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if !c.StatusIsActive(skillStateKey) {
 			return false
 		}

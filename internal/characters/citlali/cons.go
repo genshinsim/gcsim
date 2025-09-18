@@ -24,7 +24,7 @@ func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if c.Index() == atk.Info.ActorIndex {
 			return false

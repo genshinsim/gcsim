@@ -23,7 +23,7 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) bool {
 		if c.Core.Status.Duration(barbSkillKey) == 0 {
 			return false
 		}

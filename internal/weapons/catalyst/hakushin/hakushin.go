@@ -39,8 +39,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	dmg := .075 + float64(r)*.025
 
-	hrfunc := func(otherEle attributes.Element, key string, gadgetEmit bool) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	hrfunc := func(otherEle attributes.Element, key string, gadgetEmit bool) func(args ...any) bool {
+		return func(args ...any) bool {
 			trg := args[0].(info.Target)
 			if gadgetEmit && trg.Type() != info.TargettableGadget {
 				return false

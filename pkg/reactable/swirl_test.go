@@ -142,7 +142,7 @@ func TestSwirl25to10(t *testing.T) {
 	// apply 25 pyro first
 	c.QueueAttackEvent(makeSTAttack(attributes.Pyro, 25, 1), 0)
 	// tick 285
-	for i := 0; i < 285; i++ {
+	for range 285 {
 		advanceCoreFrame(c)
 	}
 	// check durability after 1 tick
@@ -175,7 +175,7 @@ func TestSwirl50to10(t *testing.T) {
 	// apply 25 pyro first
 	c.QueueAttackEvent(makeSTAttack(attributes.Pyro, 25, 1), 0)
 	// tick 285
-	for i := 0; i < 285; i++ {
+	for range 285 {
 		advanceCoreFrame(c)
 	}
 	// check durability after 1 tick

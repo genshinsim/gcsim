@@ -52,7 +52,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.50
-		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 			if c.Player.Active() != char.Index() {
 				return false
 			}

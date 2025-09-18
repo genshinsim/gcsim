@@ -24,7 +24,7 @@ func (c *char) a1() {
 		return
 	}
 	if c.samplersConverted >= 2 {
-		c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 			if c.StatusIsActive(activeSamplerKey) {
 				c.sampleSrc = c.Core.F
 				c.activeSamplers(c.sampleSrc)()
@@ -90,7 +90,7 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DEFP] = 0.20
 
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a4Key, 15*60),
 			AffectedStat: attributes.DEFP,

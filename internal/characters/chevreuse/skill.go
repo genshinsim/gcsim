@@ -26,8 +26,10 @@ const (
 	arkheICDKey       = "chev-arkhe-icd"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 func init() {
 	// skill (press) -> x
@@ -87,16 +89,10 @@ func (c *char) skillPress() action.Info {
 }
 
 func (c *char) skillHold(p map[string]int) action.Info {
-	hold := p["hold"]
 	// earliest hold hitmark is ~19f
 	// latest hold hitmark is ~319f
 	// hold=1 gives 19f and hold=301 gives a 319f delay until hitmark.
-	if hold < 1 {
-		hold = 1
-	}
-	if hold > 301 {
-		hold = 301
-	}
+	hold := min(max(p["hold"], 1), 301)
 	// subtract 1 to account for needing to supply > 0 to indicate hold
 	hold -= 1
 	hitmark := hold + skillHoldHitmark
@@ -244,7 +240,7 @@ func (c *char) particleCB(a info.AttackCB) {
 }
 
 func (c *char) overchargedBallEventSub() {
-	c.Core.Events.Subscribe(event.OnOverload, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnOverload, func(args ...any) bool {
 		// don't proc on gadgets
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false

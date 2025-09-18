@@ -46,7 +46,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	buffDuration := 360 // 6s * 60
 
 	if count >= 4 {
-		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
 			if c.Player.Active() != char.Index() {
 				return false
 			}

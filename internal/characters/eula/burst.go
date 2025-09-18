@@ -13,8 +13,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 100
-const lightfallHitmark = 35
+const (
+	burstHitmark     = 100
+	lightfallHitmark = 35
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(123) // Q -> E
@@ -139,7 +141,7 @@ func (c *char) burstStackCB(a info.AttackCB) {
 	if c.StatusIsActive(burstStackICDKey) {
 		return
 	}
-	//TODO: looks like the icd is dependent on gadget timer. need to double check
+	// TODO: looks like the icd is dependent on gadget timer. need to double check
 	c.AddStatus(burstStackICDKey, 0.1*60, false)
 
 	// add to counter
@@ -155,7 +157,7 @@ func (c *char) burstStackCB(a info.AttackCB) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}

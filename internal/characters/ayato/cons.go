@@ -85,7 +85,7 @@ func (c *char) makeC6CB() info.AttackCBFunc {
 			CanBeDefenseHalted: false,
 			IsDeployable:       true,
 		}
-		for i := 0; i < 2; i++ {
+		for i := range 2 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 8, 7),

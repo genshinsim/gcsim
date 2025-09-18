@@ -12,8 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillFrames []int
-var skillHoldFrames []int
+var (
+	skillFrames     []int
+	skillHoldFrames []int
+)
 
 const (
 	maxSerpentsSubtlety    = 100
@@ -127,7 +129,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) particleInit() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {

@@ -12,8 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var a1DMGBuff = []float64{0.0, 0.15, 0.35, 0.65, 0.65} // has an extra 0.65 for c2 stack
-var a1ConversionChance = []float64{0.0, 0.333, 0.667, 1.0}
+var (
+	a1DMGBuff          = []float64{0.0, 0.15, 0.35, 0.65, 0.65} // has an extra 0.65 for c2 stack
+	a1ConversionChance = []float64{0.0, 0.333, 0.667, 1.0}
+)
 
 func (c *char) a1DMGBuff() {
 	if c.Base.Ascension < 1 {
@@ -66,7 +68,7 @@ func (c *char) a4() {
 		Mult:           1.5 * skillShadowhunt[c.TalentLvlSkill()],
 		IsDeployable:   true,
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...any) bool {
 		bulletElem := attributes.Anemo
 		if len(c.partyPHECTypesUnique) > 0 {
 			bulletElem = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]

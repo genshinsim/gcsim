@@ -13,8 +13,10 @@ import (
 
 var burstFrames [][]int
 
-const burstStart = 35   // lines up with cooldown start
-const burstHitmark = 51 // Initial Shockwave 1
+const (
+	burstStart   = 35 // lines up with cooldown start
+	burstHitmark = 51 // Initial Shockwave 1
+)
 
 func init() {
 	burstFrames = make([][]int, 2)

@@ -101,7 +101,7 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 }
 
 func (c *char) burstSwap() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}

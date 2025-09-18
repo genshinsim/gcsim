@@ -56,9 +56,11 @@ var (
 	attackFanAngles = [][]float64{{360}, {300}, {360}, {360, 360}, {360}, {360}}
 )
 
-const naBuffKey = "masque-of-the-red-death"
-const bondConsumeICDKey = "bond-consume-icd"
-const normalHitNum = 6
+const (
+	naBuffKey         = "masque-of-the-red-death"
+	bondConsumeICDKey = "bond-consume-icd"
+	normalHitNum      = 6
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -89,7 +91,7 @@ func init() {
 }
 
 func (c *char) naBuff() {
-	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
 		target := args[0].(int)
 		if target != c.Index() {
 			return false

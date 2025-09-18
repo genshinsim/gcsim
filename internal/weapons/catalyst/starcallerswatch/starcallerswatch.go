@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bonus := make([]float64, attributes.EndStatType)
 	bonus[attributes.DmgP] = 0.21 + 0.07*r
 
-	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnShielded, func(args ...any) bool {
 		shd := args[0].(shield.Shield)
 		if shd.ShieldOwner() != char.Index() {
 			return false

@@ -9,12 +9,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
-var c2PulseHitmarks = []int{65, 83}
+var (
+	burstFrames     []int
+	c2PulseHitmarks = []int{65, 83}
+)
 
-const burstInitialHitmark = 22
-const burstShieldStart = 43
-const burstDoT1Hitmark = 57
+const (
+	burstInitialHitmark = 22
+	burstShieldStart    = 43
+	burstDoT1Hitmark    = 57
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(87) // Q -> E/D/J
@@ -69,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ai.CanBeDefenseHalted = false // only the first DoT has hitlag
 		// 2nd DoT onwards
 		c.QueueCharTask(func() {
-			for i := 0; i < 6; i++ {
+			for i := range 6 {
 				c.Core.QueueAttack(
 					ai,
 					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 4),
@@ -92,7 +96,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// Can vary with fps, frame video has 2 pulses
 		// See https://library.keqingmains.com/evidence/characters/pyro/xinyan#xinyan-c2-shield-formation-pulses-extra-times
 		ai := c.getAttackInfoShieldDoT()
-		for i := 0; i < 2; i++ {
+		for i := range 2 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),

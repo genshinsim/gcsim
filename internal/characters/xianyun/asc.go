@@ -10,10 +10,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a4ICDKey = "xianyun-a4-icd"
-const a4WindowKey = "xianyun-a4-window"
-const a1Key = "xianyun-a1"
-const a1Dur = 20 * 60
+const (
+	a4ICDKey    = "xianyun-a4-icd"
+	a4WindowKey = "xianyun-a4-window"
+	a1Key       = "xianyun-a1"
+	a1Dur       = 20 * 60
+)
 
 var a1Crit = []float64{0.0, 0.04, 0.06, 0.08, 0.10}
 
@@ -96,7 +98,7 @@ func (c *char) a4() {
 	c.a4Max = 9000
 	c.a4Ratio = 2.0
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag != attacks.AttackTagPlunge {
 			return false

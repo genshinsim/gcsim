@@ -120,7 +120,7 @@ func (c *char) bellTick(src int) func() {
 			FlatDmg:    c.a4Damage(),
 		}
 		// trigger damage
-		//TODO: Check for snapshots
+		// TODO: Check for snapshots
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 2, 2, c.particleCB)
 
 		// A4 is considered here

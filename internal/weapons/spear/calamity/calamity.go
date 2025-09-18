@@ -40,6 +40,7 @@ func (w *Weapon) incStacks() func() {
 			Write("stacks", w.stacks)
 	}
 }
+
 func (w *Weapon) checkBuffExpiry(src int) func() {
 	return func() {
 		if w.lastBuffGain != src {
@@ -92,7 +93,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// double bonus if not on field
 	atkbonus := .024 + float64(r)*.008
 	skillPressBonus := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}

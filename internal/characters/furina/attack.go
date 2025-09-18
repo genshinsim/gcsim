@@ -82,6 +82,7 @@ func (c *char) arkheCB(a info.AttackCB) {
 		c.Core.QueueAttack(ai, ap, 0, 0)
 	}, 30)
 }
+
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),

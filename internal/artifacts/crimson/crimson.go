@@ -49,7 +49,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		mStacks := make([]float64, attributes.EndStatType)
 		// post snap shot to increase stacks
-		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 			if c.Player.Active() != char.Index() {
 				return false
 			}

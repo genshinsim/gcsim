@@ -64,11 +64,10 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats() {
 	stats.optimizer.logger.Info("Initial Calculated ER Liquid Substats by character:")
 	output := ""
 	for i := range stats.charProfilesInitial {
-		output +=
-			fmt.Sprintf("%v: %.4g, ",
-				stats.charProfilesInitial[i].Base.Key.String(),
-				float64(stats.charSubstatFinal[i][attributes.ER])*stats.substatValues[attributes.ER]*stats.charSubstatRarityMod[i],
-			)
+		output += fmt.Sprintf("%v: %.4g, ",
+			stats.charProfilesInitial[i].Base.Key.String(),
+			float64(stats.charSubstatFinal[i][attributes.ER])*stats.substatValues[attributes.ER]*stats.charSubstatRarityMod[i],
+		)
 	}
 	stats.optimizer.logger.Info(output)
 }

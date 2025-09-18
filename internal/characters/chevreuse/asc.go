@@ -34,7 +34,7 @@ func (c *char) a1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		// don't trigger if no overload dmg
 		if atk.Info.AttackTag != attacks.AttackTagOverloadDamage {

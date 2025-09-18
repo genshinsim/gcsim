@@ -90,8 +90,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}
 
-	//TODO: this used to be on post. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	// TODO: this used to be on post. make sure nothing broke here
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			nonActiveFn()
 			return false

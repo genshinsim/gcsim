@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const buffKey = "mappa-mare"
 	buffDuration := 600 // 10s * 60
 
-	addStack := func(args ...interface{}) bool {
+	addStack := func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false

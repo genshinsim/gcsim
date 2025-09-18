@@ -53,7 +53,7 @@ type ShareStore interface {
 }
 
 type NotifyService interface {
-	Notify(topic string, msg interface{}) error
+	Notify(topic string, msg any) error
 }
 
 type Config struct {

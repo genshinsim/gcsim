@@ -17,7 +17,7 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	swirlfunc := func(args ...interface{}) bool {
+	swirlfunc := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}

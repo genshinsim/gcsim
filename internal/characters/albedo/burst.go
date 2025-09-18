@@ -11,8 +11,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 75                        // Initial Hit
-const fatalBlossomHitmark = 145 - burstHitmark // Fatal Blossom, accounting for task queuing
+const (
+	burstHitmark        = 75                 // Initial Hit
+	fatalBlossomHitmark = 145 - burstHitmark // Fatal Blossom, accounting for task queuing
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(96) // Q -> N1/E
@@ -77,7 +79,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		enemies := c.Core.Combat.RandomEnemiesWithinArea(c.skillArea, nil, maxBlossoms)
 		tracking := len(enemies)
 		var center info.Point
-		for i := 0; i < maxBlossoms; i++ {
+		for i := range maxBlossoms {
 			if i < tracking {
 				// each blossom targets a separate enemy if possible
 				center = enemies[i].Pos()

@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	energyRestore := 6 + float64(r)*2
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		src := args[0].(*info.HealInfo)
 
 		if src.Caller != char.Index() {

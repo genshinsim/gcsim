@@ -12,25 +12,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
-var lowBikePlungeFrames []int
-var highBikePlungeFrames []int
+var (
+	highPlungeFrames     []int
+	lowPlungeFrames      []int
+	lowBikePlungeFrames  []int
+	highBikePlungeFrames []int
+)
 
-const lowPlungeHitmark = 37
-const highPlungeHitmark = 41
-const lowBikePungeHitmark = 41
-const highBikePungeHitmark = 45
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark     = 37
+	highPlungeHitmark    = 41
+	lowBikePungeHitmark  = 41
+	highBikePungeHitmark = 45
+	collisionHitmark     = lowPlungeHitmark - 6
+)
 
-const lowPlungePoiseDMG = 150.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 150.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 200.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 200.0
+	highPlungeRadius   = 5.0
+)
 
-const bikePlungePoiseDMG = 150.0
-const bikePlungeRadius = 5.0
+const (
+	bikePlungePoiseDMG = 150.0
+	bikePlungeRadius   = 5.0
+)
 
 func init() {
 	// low_plunge -> x

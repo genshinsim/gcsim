@@ -89,7 +89,7 @@ func (c *char) a4() bool {
 		Mult:       a4Mult,
 	}
 
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1),
 			a4Release[i], a4Release[i]+a4Hitmark)
 	}
@@ -103,7 +103,7 @@ func (c *char) absorbCheckA1() {
 	a1AbsorbCheckLocation := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 	a1Proc := false // for C4
 	// max 2 A1 elements from absorb check
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		absorbCheck := c.Core.Combat.AbsorbCheck(c.Index(), a1AbsorbCheckLocation, c.a1ValidBuffs...)
 		if absorbCheck == attributes.NoElement {
 			continue

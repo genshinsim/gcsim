@@ -40,6 +40,7 @@ func (w *Weapon) stackCheck() func() {
 		w.char.QueueCharTask(w.stackCheck(), 240) // check again in 4s
 	}
 }
+
 func (w *Weapon) updateBuff() {
 	w.buff[attributes.DmgP] = float64(w.stacks) * w.dmg
 }
@@ -78,10 +79,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.QueueCharTask(w.stackCheck(), 240)
 
 	// add event hook to check for dmg, subject to 1s icd
-	//TODO: taking 3% more damage not implemented
+	// TODO: taking 3% more damage not implemented
 	const icdKey = "spine-dmgtaken-icd"
 	icd := 60
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if !di.External {
 			return false

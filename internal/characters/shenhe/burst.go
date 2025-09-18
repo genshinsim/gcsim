@@ -11,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
-var burstTickOffset = []int{0, 2, 4, 0, 2, 4, 0, 2, 4}
+var (
+	burstFrames     []int
+	burstTickOffset = []int{0, 2, 4, 0, 2, 4, 0, 2, 4}
+)
 
 const (
 	burstStart   = 47
@@ -79,7 +81,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		snap := c.Snapshot(&ai)
 		for i := 0; i < count; i++ {
 			hitmark := 82 + i*117
-			for j := 0; j < 2; j++ {
+			for j := range 2 {
 				c.Core.QueueAttackWithSnap(ai, snap, ap, hitmark+j*(30+burstTickOffset[i]))
 			}
 		}

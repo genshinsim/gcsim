@@ -187,17 +187,17 @@ func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMo
 
 // Amount.
 
-func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []interface{} {
+func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []any {
 	// skip if this is reaction damage
 	if a.Info.AttackTag >= attacks.AttackTagNoneStat {
 		return nil
 	}
 
 	var sb strings.Builder
-	var logDetails []interface{}
+	var logDetails []any
 
 	if c.debug {
-		logDetails = make([]interface{}, 0, len(c.mods))
+		logDetails = make([]any, 0, len(c.mods))
 	}
 
 	n := 0
@@ -208,7 +208,7 @@ func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []inte
 			n++
 			continue
 		}
-		if !(m.Expiry() > *c.f || m.Expiry() == -1) {
+		if m.Expiry() <= *c.f && m.Expiry() != -1 {
 			continue
 		}
 

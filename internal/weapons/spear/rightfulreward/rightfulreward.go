@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	icd := 10 * 60
 	const icdKey = "rightfulreward-icd"
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		if index != char.Index() {
 			return false

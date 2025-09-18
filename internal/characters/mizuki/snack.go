@@ -55,15 +55,15 @@ func newSnack(c *char, pos info.Point) *snack {
 	// because mizuki's pickup range is increased while in this state.
 	// https://docs.google.com/spreadsheets/d/1UU0EVPBatEndl4GRZyIs8Ix8O3kcZUDAwOHqM8_jQJw/edit?gid=339012102#gid=339012102
 	p.Gadget = gadget.New(c.Core, pos, snackSize*snackSizeMizukiMultiplier, info.GadgetTypYumemiSnack)
-	p.Gadget.Duration = snackDuration
+	p.Duration = snackDuration
 	c.Core.Combat.AddGadget(p)
 
-	p.Gadget.CollidableTypes[info.TargettablePlayer] = true
-	p.Gadget.OnExpiry = func() {
+	p.CollidableTypes[info.TargettablePlayer] = true
+	p.OnExpiry = func() {
 		p.explode()
 		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index())
 	}
-	p.Gadget.OnCollision = func(target info.Target) {
+	p.OnCollision = func(target info.Target) {
 		if _, ok := target.(*avatar.Player); !ok {
 			return
 		}

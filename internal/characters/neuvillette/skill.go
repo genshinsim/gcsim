@@ -11,10 +11,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillFrames []int
-var skillHitmarks = [2]int{23, 60}
-var skillDropletOffsets = [][][]float64{{{-1, 3}, {0, 3.8}, {1, 3}}, {{-2, 7}, {0, 8}, {2, 7}}, {{-3, 10}, {0, 11}, {3, 10}}}
-var skillDropletRandomRanges = [][][]float64{{{0.5, 1.5}, {0.5, 1.5}, {0.5, 1.5}}, {{1, 2.5}, {3.5, 4}, {1, 2.5}}, {{2, 3}, {2, 4}, {2, 3}}}
+var (
+	skillFrames              []int
+	skillHitmarks            = [2]int{23, 60}
+	skillDropletOffsets      = [][][]float64{{{-1, 3}, {0, 3.8}, {1, 3}}, {{-2, 7}, {0, 8}, {2, 7}}, {{-3, 10}, {0, 11}, {3, 10}}}
+	skillDropletRandomRanges = [][][]float64{{{0.5, 1.5}, {0.5, 1.5}, {0.5, 1.5}}, {{1, 2.5}, {3.5, 4}, {1, 2.5}}, {{2, 3}, {2, 4}, {2, 3}}}
+)
 
 const (
 	skillAlignedICD    = 10 * 60
@@ -55,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(skillPos, nil, 6),
-		skillHitmarks[0], //TODO: snapshot delay?
+		skillHitmarks[0], // TODO: snapshot delay?
 		skillHitmarks[0],
 		c.makeDropletCB(),
 		c.particleCB,
@@ -131,7 +133,7 @@ func (c *char) makeDropletCB() info.AttackCBFunc {
 			i = 1
 		}
 
-		for j := 0; j < 3; j++ {
+		for j := range 3 {
 			sourcewaterdroplet.New(
 				c.Core,
 				info.CalcRandomPointFromCenter(

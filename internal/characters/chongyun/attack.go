@@ -78,7 +78,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			Mult:       .5,
 		}
 		// 3 blades
-		for i := 0; i < 3; i++ {
+		for i := range 3 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHit(

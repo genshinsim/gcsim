@@ -46,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// After a Plunging Attack hits an opponent, Normal, Charged, and Plunging Attack DMG increased for 10s
 	mDMG := make([]float64, attributes.EndStatType)
 	mDMG[attributes.DmgP] = 0.12 + 0.04*float64(r)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false

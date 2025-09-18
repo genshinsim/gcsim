@@ -22,21 +22,23 @@ import (
 
 const DefaultBufferLength = 1024 * 10
 
-// assigned by compiler
-var shareKey string
+var (
+	// assigned by compiler
+	shareKey string
 
-// shared variables
-var cfg string
-var simcfg *info.ActionList
-var gcsl ast.Node
-var buffer []byte
+	// shared variables
+	cfg    string
+	simcfg *info.ActionList
+	gcsl   ast.Node
+	buffer []byte
 
-// Aggregator variables
-var aggregators []agg.Aggregator
-var cachedResult *model.SimulationResult
+	// Aggregator variables
+	aggregators  []agg.Aggregator
+	cachedResult *model.SimulationResult
+)
 
 func main() {
-	//GOOS=js GOARCH=wasm go build -o main.wasm
+	// GOOS=js GOARCH=wasm go build -o main.wasm
 	ch := make(chan struct{}, 0)
 
 	// Helper Functions (stateless, no init call needed)

@@ -22,7 +22,7 @@ func newBountifulCore(c *core.Core, p info.Point, a *info.AttackEvent) *Bountifu
 	}
 
 	b.Gadget = gadget.New(c, p, 2, info.GadgetTypDendroCore)
-	b.Gadget.Duration = 0.4 * 60
+	b.Duration = 0.4 * 60
 
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
@@ -45,8 +45,8 @@ func newBountifulCore(c *core.Core, p info.Point, a *info.AttackEvent) *Bountifu
 			c.QueueAttackWithSnap(ai, snap, ap, 0)
 		}, 1)
 	}
-	b.Gadget.OnExpiry = explode
-	b.Gadget.OnKill = explode
+	b.OnExpiry = explode
+	b.OnKill = explode
 
 	return b
 }

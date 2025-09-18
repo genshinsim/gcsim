@@ -12,12 +12,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
+var (
+	highPlungeFrames []int
+	lowPlungeFrames  []int
+)
 
-const lowPlungeHitmark = 46
-const highPlungeHitmark = 49
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark  = 46
+	highPlungeHitmark = 49
+	collisionHitmark  = lowPlungeHitmark - 6
+)
 
 const lowPlungeRadius = 3.0
 
