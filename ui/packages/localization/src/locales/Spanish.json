@@ -394,7 +394,7 @@
         "ignore_burst_energy_title": "Se Ha Habilitado el Modo \"Ignorar Costos de Energía de la Habilidad Definitiva\"",
         "ignore_burst_energy_body": "La simulación está ignorando los requisitos de energía de la Habilidad Definitiva. Esto puede resultar en simulaciones inexactas.",
         "gcsim_risk_title": "¡El futuro de gcsim está en riesgo!",
-        "gcsim_risk_body": "<p><b>Estamos buscando voluntarios para trabajar en las actualizaciones.</b></p> <p>Necesitamos usuarios dispuestos a aprender la base de código para implementar y revisar nuevos personajes/mecánicas, con el fin de lanzar actualizaciones a tiempo. También buscamos desarrolladores activos de interfaz (UI).</p> <p>Si estás interesado, por favor contáctanos en nuestro <discordlink>Discord</discordlink>.</p>"
+        "gcsim_risk_body": "<p><b>gcsim es un <githublink>proyecto de código abierto</githublink>.</b></p> <p>Para poder publicar actualizaciones de manera oportuna, necesitamos voluntarios dispuestos a aprender la base de código con el fin de implementar y revisar nuevas unidades/mecánicas. Los desarrolladores de interfaces de usuario (UI) también son bienvenidos.</p> <p>Visita nuestro <discordlink>Discord</discordlink> o <issueslink>GitHub Issues</issueslink> para ver las funciones importantes que necesitan colaboradores.</p>"
     },
     "states": {
         "true": "verdadero",

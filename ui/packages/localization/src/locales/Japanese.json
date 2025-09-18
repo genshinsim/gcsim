@@ -381,7 +381,7 @@
         "ignore_burst_energy_title": "「元素爆発のエネルギーコストを無視する」モードが有効になっている。",
         "ignore_burst_energy_body": "シミュレーションは元素爆発のエネルギー要件を無視している。その結果、シミュレーションが不正確になる可能性がある。",
         "gcsim_risk_title": "gcsim の未来が危機にあります！",
-        "gcsim_risk_body": "<p><b>アップデート作業に協力してくれるボランティアを募集しています。</b></p> <p>新キャラクターや新しい仕組みを実装・レビューするためにコードベースを学び、タイムリーにアップデートをリリースできるよう手伝っていただける方を探しています。また、UI 開発に積極的に参加していただける方も歓迎します。</p> <p>興味のある方は <discordlink>Discord</discordlink> までご連絡ください。</p>"
+        "gcsim_risk_body": "<p><b>gcsim は<githublink>オープンソースプロジェクトです</githublink>。</b></p> <p>アップデートをタイムリーに公開するためには、コードベースを学び、新しいユニットやメカニクスを実装・レビューしてくださるボランティアが必要です。UI 開発者の参加も歓迎します。</p> <p>重要な機能や協力者を必要としている箇所については、<discordlink>Discord</discordlink> または <issueslink>GitHub Issues</issueslink> をご覧ください。</p>"
     },
     "states": {
         "true": "真",
