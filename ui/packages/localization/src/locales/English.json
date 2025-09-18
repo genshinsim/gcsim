@@ -394,7 +394,7 @@
     "ignore_burst_energy_title": "\"Ignore Elemental Burst Energy Costs\" Mode Is Enabled",
     "ignore_burst_energy_body": "The simulation is ignoring Elemental Burst energy requirements. This may result in inaccurate simulations.",
     "gcsim_risk_title": "gcsim's future is at risk!",
-    "gcsim_risk_body": "<p><b>We are looking for volunteers to work on updates.</b></p> <p>Users willing to learn the codebase to implement and review newer units/mechanics are needed to release updates in a timely manner. We are also looking for active UI developers.</p> <p>Please message on our <discordlink>Discord</discordlink> with potential interest.</p>"
+    "gcsim_risk_body": "<p><b>gcsim is <githublink>open source</githublink>.</b></p> <p>In order for updates to be released in a timely manner, we need volunteers willing to learn the codebase to implement and review newer units/mechanics. UI developers are also welcome.</p> <p>View our <discordlink>Discord</discordlink> or <issueslink>GitHub Issues</issueslink> to see important features needing contributors.</p>"
   },
   "states": {
     "true": "true",

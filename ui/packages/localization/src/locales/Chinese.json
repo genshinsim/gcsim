@@ -381,7 +381,7 @@
         "ignore_burst_energy_title": "\"忽略元素爆发能量成本 \"模式已启用",
         "ignore_burst_energy_body": "模拟忽略了元素爆发的能量需求。这可能导致模拟不准确。",
         "gcsim_risk_title": "gcsim 的未来正面临风险！",
-        "gcsim_risk_body": "<p><b>我们正在寻找志愿者来协助更新。</b></p> <p>我们需要愿意学习代码库的用户，来实现和审核新的角色/机制，以便及时发布更新。同时，我们也在寻找积极参与的 UI 开发者。</p> <p>如果有兴趣，请通过 <discordlink>Discord</discordlink> 联系我们。</p>"
+        "gcsim_risk_body": "<p><b>gcsim <githublink>是一个开源项目</githublink>。</b></p> <p>为了能够及时发布更新，我们需要愿意学习代码库的志愿者，来实现并审查新的角色/机制。同时也欢迎 UI 开发者加入。</p> <p>请查看我们的 <discordlink>Discord</discordlink> 或 <issueslink>GitHub Issues</issueslink>，了解需要贡献者的重要功能。</p>"
     },
     "states": {
         "true": "真",

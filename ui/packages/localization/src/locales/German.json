@@ -394,7 +394,7 @@
         "ignore_burst_energy_title": "\"Spezialfähigkeit-Energiekosten ignorieren\"-Modus ist aktiviert",
         "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen.",
         "gcsim_risk_title": "Die Zukunft von gcsim ist in Gefahr!",
-        "gcsim_risk_body": "<p><b>Wir suchen Freiwillige, die an Updates mitarbeiten möchten.</b></p> <p>Wir brauchen Nutzer, die bereit sind, sich in den Code einzuarbeiten, um neue Charaktere und Mechaniken zu implementieren und zu überprüfen, damit Updates rechtzeitig veröffentlicht werden können. Außerdem suchen wir aktive UI-Entwickler.</p> <p>Bei Interesse schreibt uns bitte auf <discordlink>Discord</discordlink>.</p>"
+        "gcsim_risk_body": "<p><b>gcsim ist ein <githublink>Open-Source-Projekt</githublink>.</b></p> <p>Damit Updates rechtzeitig veröffentlicht werden können, benötigen wir Freiwillige, die bereit sind, den Code zu erlernen, um neue Einheiten/Mechaniken zu implementieren und zu überprüfen. Auch UI-Entwickler sind willkommen.</p> <p>Schauen Sie auf unserem <discordlink>Discord</discordlink> oder in den <issueslink>GitHub Issues</issueslink> vorbei, um wichtige Funktionen zu sehen, für die Mitwirkende benötigt werden.</p>"
     },
     "states": {
         "true": "wahr",
