@@ -10,20 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var elementToModifier = map[attributes.Element]info.ReactionModKey{
-	attributes.Electro: info.ReactionModKeyElectro,
-	attributes.Pyro:    info.ReactionModKeyPyro,
-	attributes.Cryo:    info.ReactionModKeyCryo,
-	attributes.Hydro:   info.ReactionModKeyHydro,
-	attributes.Dendro:  info.ReactionModKeyDendro,
-	attributes.Quicken: info.ReactionModKeyQuicken,
-	attributes.Frozen:  info.ReactionModKeyFrozen,
-	attributes.Geo:     info.ReactionModKeyGeo,
-	// TODO: these aren't real attributes and should not be here
-	attributes.Burning:     info.ReactionModKeyBurning,
-	attributes.BurningFuel: info.ReactionModKeyBurningFuel,
-}
-
 type Reactable struct {
 	Durability [info.ReactionModKeyEnd]info.Durability
 	DecayRate  [info.ReactionModKeyEnd]info.Durability
@@ -158,11 +144,23 @@ func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
 	}
 	// handle pyro, electro, hydro, cryo, dendro
 	// special attachment of dendro (burning fuel) is handled in tryBurning
-	if mod, ok := elementToModifier[a.Info.Element]; ok {
-		r.attachOrRefillNormalEle(mod, a.Info.Durability)
-		return true
+	var mod info.ReactionModKey
+	switch a.Info.Element {
+	case attributes.Pyro:
+		mod = info.ReactionModKeyPyro
+	case attributes.Electro:
+		mod = info.ReactionModKeyElectro
+	case attributes.Hydro:
+		mod = info.ReactionModKeyHydro
+	case attributes.Cryo:
+		mod = info.ReactionModKeyCryo
+	case attributes.Dendro:
+		mod = info.ReactionModKeyDendro
+	default:
+		return false
 	}
-	return false
+	r.attachOrRefillNormalEle(mod, a.Info.Durability)
+	return true
 }
 
 func (r *Reactable) GetAuraDurability(mod info.ReactionModKey) info.Durability {
