@@ -15,6 +15,11 @@ var (
 	// {Tap E, Short Hold E}
 	skillHitmark = []int{62, 29}
 	skillCDStart = []int{23, 25}
+
+	skillCanQueueAfter = [][]int{
+		{24, 23}, // normal hold
+		{31, 31}, // short hold
+	}
 )
 
 func init() {
@@ -107,7 +112,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[shortHold][c.gender]),
 		AnimationLength: skillFrames[shortHold][c.gender][action.InvalidAction],
-		CanQueueAfter:   skillFrames[shortHold][c.gender][action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillCanQueueAfter[shortHold][c.gender], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

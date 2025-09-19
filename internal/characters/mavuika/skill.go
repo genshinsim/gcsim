@@ -217,7 +217,7 @@ func (c *char) skillHold() action.Info {
 		c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	}, 24)
 
-	return c.getSkillCastActionInfo(skillFramesHold)
+	return c.getSkillCastActionInfo(skillFramesHold, action.ActionSwap)
 }
 
 func (c *char) skillPress() action.Info {
@@ -242,7 +242,7 @@ func (c *char) skillPress() action.Info {
 	c.exitBike()
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
-	return c.getSkillCastActionInfo(skillFrames)
+	return c.getSkillCastActionInfo(skillFrames, action.ActionAttack)
 }
 
 // Recasting E while on bike, occurs with Sac or Burst allowing E to come off of cd
@@ -269,11 +269,11 @@ func (c *char) skillBikeRefresh() action.Info {
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
-	return c.getSkillCastActionInfo(skillBikeRefreshFrames)
+	return c.getSkillCastActionInfo(skillBikeRefreshFrames, action.ActionSwap)
 }
 
 // Recast can occur earlier out of Plunge, this extends a normal skill use to match total frames
-func (c *char) getSkillCastActionInfo(f []int) action.Info {
+func (c *char) getSkillCastActionInfo(f []int, canQueueAfter action.Action) action.Info {
 	plungeFrames := 0
 
 	// If using skill out of plunge, extend animation for non-recast skill
@@ -289,7 +289,7 @@ func (c *char) getSkillCastActionInfo(f []int) action.Info {
 	return action.Info{
 		Frames:          func(next action.Action) int { return f[next] + plungeFrames },
 		AnimationLength: f[action.InvalidAction] + plungeFrames,
-		CanQueueAfter:   f[action.ActionSwap] + plungeFrames,
+		CanQueueAfter:   f[canQueueAfter] + plungeFrames,
 		State:           action.SkillState,
 	}
 }

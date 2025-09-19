@@ -13,7 +13,7 @@ import (
 
 var aimedFrames [][]int
 
-var aimedHitmarks = []int{15, 86}
+var aimedHitmarks = []int{15, 84}
 
 func init() {
 	aimedFrames = make([][]int, 3)
