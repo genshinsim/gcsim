@@ -406,7 +406,7 @@
         "ignore_burst_energy_title": "\"원소 폭발 에너지 요구량 무시\" 모드 활성화",
         "ignore_burst_energy_body": "시뮬레이션이 원소 폭발 에너지 요구량을 무시합니다. 이는 부정확한 시뮬레이션을 초래할 수 있습니다.",
         "gcsim_risk_title": "gcsim의 미래가 위험합니다!",
-        "gcsim_risk_body": "<p><b>gcsim은 <githublink>오픈 소스 프로젝트</githublink>.</b></p> <p>제 때에 업데이트를 출시하기 위해서는 최신 캐릭터 및 메커니즘을 구현하고 피어 리뷰하기 위해 코드 베이스를 배울 의향이 있는 지원자들이 필요합니다. UI 개발자도 환영입니다.</p> <p>저희 <discordlink>Discord</discordlink> 또는 <issueslink>GitHub Issues</issueslink>를 통해 기여자가 필요한 중요 기능들을 보실 수 있습니다.</p>"
+        "gcsim_risk_body": "<p><b>gcsim은 <githublink>오픈 소스 프로젝트</githublink>입니다.</b></p> <p>제 때에 업데이트를 출시하기 위해서는 최신 캐릭터 및 메커니즘을 구현하고 피어 리뷰하기 위해 코드 베이스를 배울 의향이 있는 지원자들이 필요합니다. UI 개발자도 환영입니다.</p> <p>저희 <discordlink>Discord</discordlink> 또는 <issueslink>GitHub Issues</issueslink>를 통해 기여자가 필요한 중요 기능들을 보실 수 있습니다.</p>"
     },
     "states": {
         "true": "참",
