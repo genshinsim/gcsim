@@ -2,8 +2,6 @@ module github.com/genshinsim/gcsim
 
 go 1.22.0
 
-replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16
-
 require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
 	github.com/caarlos0/env/v10 v10.0.0
@@ -116,3 +114,7 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240814211410-ddb44dafa142 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
+
+tool github.com/tinylib/msgp
+
+replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16

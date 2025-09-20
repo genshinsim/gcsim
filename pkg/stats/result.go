@@ -1,6 +1,6 @@
 package stats
 
-//go:generate msgp
+//go:generate go tool github.com/tinylib/msgp
 
 // NOTE: all maps MUST use a string key. This is a requirement of the MessagePack spec
 //   any string type aliasing must be defined in this module or msgp will not know that the type
