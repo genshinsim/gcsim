@@ -8,6 +8,9 @@
     "golang.go",
     "visualstudioexptteam.vscodeintellicode",
     "eriklynd.json-tools",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "bbenoist.Nix",
+    "mkhl.direnv",
+    "ms-vscode-remote.remote-wsl"
   ]
 }
