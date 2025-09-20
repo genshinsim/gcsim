@@ -3,7 +3,16 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -13,11 +22,20 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-
   "go.lintTool": "golangci-lint",
-  "go.lintFlags": ["--fast", "--fix"],
+  "go.lintFlags": [
+    "--path-mode=abs",
+    "--fast-only"
+  ],
   "go.lintOnSave": "package",
-
+  "go.formatTool": "custom",
+  "go.alternateTools": {
+    "customFormatter": "golangci-lint"
+  },
+  "go.formatFlags": [
+    "fmt",
+    "--stdin"
+  ],
   "search.exclude": {
     "**/.yarn": true,
     "**/.pnp.*": true
