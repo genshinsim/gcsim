@@ -193,6 +193,7 @@ var weaponMap = map[string]string{
 	"keyofkhajnisut":                  "UI_EquipIcon_Sword_Deshret",
 	"lionsroar":                       "UI_EquipIcon_Sword_Rockkiller",
 	"mistsplitterreforged":            "UI_EquipIcon_Sword_Narukami",
+	"moonweaversdawn":                 "UI_EquipIcon_Sword_Miekka",
 	"peakpatrolsong":                  "UI_EquipIcon_Sword_XochitlsTube",
 	"primordialjadecutter":            "UI_EquipIcon_Sword_Morax",
 	"prototyperancour":                "UI_EquipIcon_Sword_Proto",
