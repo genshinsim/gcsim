@@ -23,7 +23,7 @@ func (c *char) c1(delay int) {
 
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Sparkly Explosion (C1)",
+		Abil:               "Sparks'n'Splash (C1)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,
 		ICDGroup:           attacks.ICDGroupDefault,
