@@ -90,7 +90,7 @@ func (c *char) attackBuff(a info.AttackPattern, delay int) {
 		buff := atkBuff[c.TalentLvlSkill()] * c.Stat(attributes.BaseATK)
 
 		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index()).
-			Write("char", active.Index).
+			Write("char", active.Index()).
 			Write("buff", buff).
 			Write("expiry", c.Core.F+360)
 
