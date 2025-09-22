@@ -5,13 +5,12 @@ import (
 	_ "embed"
 
 	"fmt"
-	"slices"
-
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
+	"slices"
 )
 
 //go:embed data_gen.textproto
@@ -19,6 +18,8 @@ var pbData []byte
 var base *model.AvatarData
 var paramKeysValidation = map[action.Action][]string{
 	1: {"hold", "perfect"},
+	5: {"collision"},
+	6: {"collision"},
 }
 
 func init() {
@@ -166,7 +167,7 @@ var (
 		3.14792,
 		3.3212,
 	}
-	// attack: collision = [8]
+	// attack: collision = [7]
 	collision = []float64{
 		0.639324,
 		0.691362,
@@ -184,7 +185,7 @@ var (
 		1.620612,
 		1.70982,
 	}
-	// attack: highPlunge = [10]
+	// attack: highPlunge = [9]
 	highPlunge = []float64{
 		1.596762,
 		1.726731,
@@ -202,7 +203,7 @@ var (
 		4.047606,
 		4.27041,
 	}
-	// attack: lowPlunge = [9]
+	// attack: lowPlunge = [8]
 	lowPlunge = []float64{
 		1.278377,
 		1.382431,

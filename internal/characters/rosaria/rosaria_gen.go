@@ -5,13 +5,12 @@ import (
 	_ "embed"
 
 	"fmt"
-	"slices"
-
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
+	"slices"
 )
 
 //go:embed data_gen.textproto
@@ -19,6 +18,8 @@ var pbData []byte
 var base *model.AvatarData
 var paramKeysValidation = map[action.Action][]string{
 	1: {"nobehind"},
+	5: {"collision"},
+	6: {"collision"},
 }
 
 func init() {
@@ -186,24 +187,6 @@ var (
 			1.15,
 		},
 	}
-	// attack: nc = [6]
-	nc = []float64{
-		1.3674,
-		1.4787,
-		1.59,
-		1.749,
-		1.8603,
-		1.9875,
-		2.1624,
-		2.3373,
-		2.5122,
-		2.703,
-		2.8938,
-		3.0846,
-		3.2754,
-		3.4662,
-		3.657,
-	}
 	// attack: collision = [8]
 	collision = []float64{
 		0.639324,
@@ -257,6 +240,24 @@ var (
 		3.062159,
 		3.240537,
 		3.418915,
+	}
+	// attack: nc = [6]
+	nc = []float64{
+		1.3674,
+		1.4787,
+		1.59,
+		1.749,
+		1.8603,
+		1.9875,
+		2.1624,
+		2.3373,
+		2.5122,
+		2.703,
+		2.8938,
+		3.0846,
+		3.2754,
+		3.4662,
+		3.657,
 	}
 	// skill: skill = [0 1]
 	skill = [][]float64{
