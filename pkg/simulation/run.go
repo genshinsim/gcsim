@@ -316,7 +316,7 @@ func (s *Simulation) stopCheck() bool {
 
 // TODO: remove defer in favour of every function actually returning error
 //
-//nolint:nonamedreturns,nakedret // not possible to perform the res, err modification without named return
+//nolint:nonamedreturns // not possible to perform the res, err modification without named return
 func (s *Simulation) Run() (res stats.Result, err error) {
 	defer func() {
 		// recover from panic if one occured. Set err to nil otherwise.
@@ -326,5 +326,5 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 		}
 	}()
 	res, err = s.run()
-	return
+	return res, err
 }

@@ -106,7 +106,7 @@ func (e *Eval) Err() error {
 // via NextAction()
 // TODO: remove defer in favour of every function actually returning error
 //
-//nolint:nonamedreturns,nakedret // not possible to perform the res, err modification without named return
+//nolint:nonamedreturns // not possible to perform the res, err modification without named return
 func (e *Eval) Run() (res Obj, err error) {
 	defer func() {
 		// this defer ensures that e.err is set correctly; this has to be the first defer
@@ -138,14 +138,14 @@ func (e *Eval) Run() (res Obj, err error) {
 	// start running once we get the signal to go
 	err = e.waitForNext()
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	// this should run until it hits an Action
 	// it will then pass the action on a resp channel
 	// it will then wait for Next before running again
 	res, err = e.evalNode(e.AST, global)
-	return
+	return res, err
 }
 
 func (e *Eval) waitForNext() error {
