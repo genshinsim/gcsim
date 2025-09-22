@@ -18,7 +18,7 @@ func (c *char) addShield() {
 			ActorIndex: c.Index(),
 			Target:     -1,
 			Src:        c.Core.F,
-			Name:       "Citalali Skill Shield",
+			Name:       "Dawnfrost Darkstar (Shield)",
 			ShieldType: shield.CitlaliSkill,
 			HP:         shieldHP,
 			Ele:        attributes.Cryo,

@@ -35,7 +35,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Painted Dome (Q)",
+		Abil:       "Painted Dome",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

@@ -157,7 +157,7 @@ func (c *char) lowPlungeBXY(p map[string]int) action.Info {
 
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
-		Abil:           "Low Plunge (Q)",
+		Abil:           "Low Plunge (Burst)",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
@@ -248,7 +248,7 @@ func (c *char) highPlungeBXY(p map[string]int) action.Info {
 
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
-		Abil:           "High Plunge (Q)",
+		Abil:           "High Plunge (Burst)",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,

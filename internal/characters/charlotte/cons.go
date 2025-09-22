@@ -16,7 +16,7 @@ const (
 	c1StatusKey     = "charlotte-c1"
 	c1HealMsg       = "Verification"
 	c6HealMsg       = "charlotte-c6-heal"
-	c6CoordinateAtk = "charlotte-c6-coordinate-atk"
+	c6CoordinateAtk = "A Summation of Interest (C6)"
 	c6IcdKey        = "charlotte-c6-icd"
 	c6AttackRadius  = 3.5
 	c6HealRadius    = 5

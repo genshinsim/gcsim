@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Sacred Rite: Heron's Sanctum (E)",
+		Abil:               "Sacred Rite: Heron's Sanctum",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		particleCount = 2
 	case 1:
 		ai.PoiseDMG = 300
-		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
+		ai.Abil = "Sacred Rite: Heron's Sanctum (Charged)"
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			info.Point{Y: skillOffsets[chargeLevel]},
@@ -100,7 +100,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ActorIndex: c.Index(),
 		Target:     c.Index(),
 		Src:        c.Core.F,
-		Name:       "Candace Skill",
+		Name:       "Sacred Rite: Heron's Sanctum (Shield)",
 		ShieldType: shield.CandaceSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Hydro,

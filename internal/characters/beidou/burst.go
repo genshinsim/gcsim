@@ -32,7 +32,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Stormbreaker (Q)",
+		Abil:               "Stormbreaker Initial",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -57,7 +57,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	procAI := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Stormbreak Proc (Q)",
+		Abil:       "Stormbreaker Bounce",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -79,7 +79,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			Target:     -1,
 			Src:        c.Core.F,
 			ShieldType: shield.BeidouC1,
-			Name:       "Beidou C1",
+			Name:       "Sea Beast's Scourge (Shield)",
 			HP:         .16 * c.MaxHP(),
 			Ele:        attributes.Electro,
 			Expires:    c.Core.F + dur,

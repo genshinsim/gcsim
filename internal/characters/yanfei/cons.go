@@ -48,7 +48,7 @@ func (c *char) c4() {
 		Target:     -1,
 		Src:        c.Core.F,
 		ShieldType: shield.YanfeiC4,
-		Name:       "Yanfei C4",
+		Name:       "Supreme Amnesty (Shield)",
 		HP:         c.MaxHP() * .45,
 		Ele:        attributes.Pyro,
 		Expires:    c.Core.F + 15*60,

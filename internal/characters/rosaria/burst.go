@@ -28,7 +28,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// For now assume that everything hits all targets
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Rites of Termination (Hit 1)",
+		Abil:               "Rites of Termination (Initial 1)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c6CB,
 	)
 
-	ai.Abil = "Rites of Termination (Hit 2)"
+	ai.Abil = "Rites of Termination (Initial 2)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burst[1][c.TalentLvlBurst()]
 	// no more hitlag after first hit

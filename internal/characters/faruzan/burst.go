@@ -43,7 +43,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "The Wind's Secret Ways (Q)",
+		Abil:       "The Wind's Secret Ways",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

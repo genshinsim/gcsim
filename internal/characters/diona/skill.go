@@ -122,7 +122,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 					Target:     -1,
 					Src:        c.Core.F,
 					ShieldType: shield.DionaSkill,
-					Name:       "Diona Skill",
+					Name:       "Icy Paws (Shield)",
 					HP:         shdHp,
 					Ele:        attributes.Cryo,
 					Expires:    c.Core.F + dur, // 15 sec

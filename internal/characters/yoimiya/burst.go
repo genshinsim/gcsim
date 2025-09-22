@@ -31,7 +31,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// assume it does skill dmg at end of it's animation
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Aurous Blaze",
+		Abil:       "Aurous Blaze (Initial)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,

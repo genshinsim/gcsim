@@ -61,7 +61,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Status.Add("travelerelectroburst", 720) // 12s, starts on cast
 	procAI := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Falling Thunder Proc (Q)",
+		Abil:       "Falling Thunder",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,

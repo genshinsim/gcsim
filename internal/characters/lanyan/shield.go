@@ -11,7 +11,7 @@ func (c *char) genShield(ele attributes.Element) {
 		Target:     -1,
 		Src:        c.Core.F,
 		ShieldType: shield.LanyanShield,
-		Name:       "Lanyan Skill",
+		Name:       "Swallow-Wisp Pinion Dance (Shield)",
 		HP:         c.shieldHP(),
 		Ele:        ele,
 		Expires:    c.Core.F + 12.5*60,

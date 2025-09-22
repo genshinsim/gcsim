@@ -134,7 +134,7 @@ func (c *char) onExitField() {
 			// blow up
 			ai := info.AttackInfo{
 				ActorIndex:         c.Index(),
-				Abil:               "Sparks'n'Splash C4",
+				Abil:               "Sparks'n'Splash (C4)",
 				AttackTag:          attacks.AttackTagNone,
 				ICDTag:             attacks.ICDTagNone,
 				ICDGroup:           attacks.ICDGroupDefault,

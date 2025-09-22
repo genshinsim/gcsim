@@ -139,7 +139,7 @@ func (c *char) c6(c6Travel int) {
 	}
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Pyrotechnic Strike: Reprised",
+		Abil:       "Pyrotechnic Strike: Reprised (C6)",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagLyneyEndBoom,
 		ICDGroup:   attacks.ICDGroupLyneyExtra,

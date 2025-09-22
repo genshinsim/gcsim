@@ -30,7 +30,7 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Sweeping Fervor",
+		Abil:               "Sweeping Fervor (Initial)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,

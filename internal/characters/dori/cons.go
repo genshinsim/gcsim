@@ -19,7 +19,7 @@ func (c *char) c1() {
 func (c *char) c2(travel int) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Special Franchise",
+		Abil:       "Special Franchise (C2)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagDoriC2,
 		ICDGroup:   attacks.ICDGroupDefault,

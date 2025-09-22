@@ -44,7 +44,7 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Wind Realm of Nasamjnin (E)",
+		Abil:       "Wind Realm of Nasamjnin",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

@@ -54,7 +54,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 2 {
 		aiC2 = ai
 		aiC2.Mult = burstBloom[c.TalentLvlBurst()] * .2
-		aiC2.Abil = "C2 Mini-Frostflake Seki no To (Bloom)"
+		aiC2.Abil = "Mini-Frostflake Seki no To (Bloom) (C2)"
 		// TODO: Not sure about the positioning/size...
 		for range 2 {
 			c.Core.QueueAttack(
@@ -93,7 +93,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		if c.Base.Cons >= 2 {
 			aiC2.Mult = burstCut[c.TalentLvlBurst()] * .2
 			aiC2.StrikeType = attacks.StrikeTypeSlash
-			aiC2.Abil = "C2 Mini-Frostflake Seki no To (Cutting)"
+			aiC2.Abil = "Mini-Frostflake Seki no To (Cutting) (C2)"
 			// TODO: Not sure about the positioning/size...
 			for range 2 {
 				c.Core.QueueAttack(

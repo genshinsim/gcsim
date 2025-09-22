@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Tidecaller (E)",
+		Abil:               "Tidecaller",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -66,7 +66,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Target:     c.Index(),
 		Src:        c.Core.F,
 		ShieldType: shield.BeidouThunderShield,
-		Name:       "Beidou Skill",
+		Name:       "Tidecaller (Shield)",
 		HP:         shieldPer[c.TalentLvlSkill()]*c.MaxHP() + shieldBase[c.TalentLvlSkill()],
 		Ele:        attributes.Electro,
 		Expires:    c.Core.F + skillHitmark, // last until hitmark

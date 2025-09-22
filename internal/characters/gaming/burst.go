@@ -44,7 +44,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index(),
 			Target:  c.Index(),
-			Message: "Suanni's Gilded Dance (Q)",
+			Message: "Suanni's Gilded Dance",
 			Type:    info.HealTypePercent,
 			Src:     0.3,
 			Bonus:   c.Stat(attributes.Heal),
@@ -55,7 +55,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Suanni's Gilded Dance (Q)",
+		Abil:       "Suanni's Gilded Dance",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
