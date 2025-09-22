@@ -24,16 +24,16 @@ func init() {
 }
 
 const (
-	skillICDKey    = "albedo-skill-icd"
-	particleICDKey = "albedo-particle-icd"
-	skillAbil      = "Abiogenesis: Solar Isotoma"
-	skillAbilTick  = "Abiogenesis: Solar Isotoma (Tick)"
+	skillICDKey      = "albedo-skill-icd"
+	particleICDKey   = "albedo-particle-icd"
+	skillAbilInitial = "Abiogenesis: Solar Isotoma (Initial)"
+	skillAbilTick    = "Abiogenesis: Solar Isotoma (Tick)"
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       skillAbil,
+		Abil:       skillAbilInitial,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -114,7 +114,7 @@ func (c *char) skillHook() {
 			return false
 		}
 		// Can't be triggered by itself when refreshing
-		if atk.Info.Abil == skillAbil {
+		if atk.Info.Abil == skillAbilInitial {
 			return false
 		}
 		if dmg == 0 {

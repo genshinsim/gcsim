@@ -32,7 +32,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Stormbreaker Initial",
+		Abil:               "Stormbreaker (Initial)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -57,7 +57,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	procAI := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Stormbreaker Bounce",
+		Abil:       "Stormbreaker (Bounce)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
