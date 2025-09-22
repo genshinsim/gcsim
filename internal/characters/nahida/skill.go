@@ -43,6 +43,7 @@ const (
 	skillMarkKey        = "nahida-e"
 	skillICDKey         = "nahida-e-icd"
 	triKarmaParticleICD = "nahida-e-particle-icd"
+	triKarmaAbil        = "Tri-Karma Purification"
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -214,7 +215,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Tri-Karma Purification",
+			Abil:       triKarmaAbil,
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNahidaSkill,
 			ICDGroup:   attacks.ICDGroupNahidaSkill,

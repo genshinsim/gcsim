@@ -15,7 +15,7 @@ func (c *char) c4() {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("eula-c4", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-				if atk.Info.Abil != "Glacial Illumination (Lightfall)" {
+				if atk.Info.Abil != burstInitialAbil {
 					return nil, false
 				}
 				if !c.Core.Combat.DamageMode {

@@ -46,7 +46,7 @@ func TestBeidouBounce(t *testing.T) {
 		if !ok {
 			return false
 		}
-		if ae.Info.Abil == "Stormbreaker (Bounce)" {
+		if ae.Info.Abil == burstBounceAbil {
 			dmgCount[t.Key()]++
 		}
 

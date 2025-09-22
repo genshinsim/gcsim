@@ -10,10 +10,11 @@ import (
 )
 
 const (
-	nightStars    = "nightstars"
-	starSkillIcd  = "nightstar-skill-icd"
-	starBurstIcd  = "nightstar-burst-icd"
-	shootingStars = "shooting-stars"
+	nightStars        = "nightstars"
+	starSkillIcd      = "nightstar-skill-icd"
+	starBurstIcd      = "nightstar-burst-icd"
+	shootingStars     = "shooting-stars"
+	shootingStarsAbil = "Shooting Star"
 )
 
 var starsTravel = []int{35, 33, 30, 28}
@@ -42,7 +43,7 @@ func (c *char) newShield(base float64, dur int) *shd {
 	n.ShieldType = shield.LaylaSkill
 	n.Ele = attributes.Cryo
 	n.HP = base
-	n.Name = "Layla Skill"
+	n.Name = "Curtain of Slumber (Shield)"
 	n.Expires = c.Core.F + dur
 	n.c = c
 	return n
@@ -117,7 +118,7 @@ func (c *char) shootStars(src int, last info.Enemy, particleCB info.AttackCBFunc
 
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Shooting Star",
+			Abil:       shootingStarsAbil,
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   attacks.ICDGroupLayla,

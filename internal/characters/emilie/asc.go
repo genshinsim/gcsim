@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	a1Abil   = "Cleardew Cologne (A1)"
 	a4ModKey = "emilie-a4"
 
 	a1Hitmark = 18
@@ -24,7 +25,7 @@ func (c *char) a1() {
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Cleardew Cologne (A1)",
+		Abil:       a1Abil,
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

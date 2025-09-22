@@ -14,8 +14,10 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark     = 100
-	lightfallHitmark = 35
+	burstHitmark       = 100
+	lightfallHitmark   = 35
+	burstInitialAbil   = "Glacial Illumination (Initial)"
+	burstLightfallAbil = "Glacial Illumination (Lightfall)"
 )
 
 func init() {
@@ -43,7 +45,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// add initial damage
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Glacial Illumination",
+		Abil:       burstInitialAbil,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -98,7 +100,7 @@ func (c *char) triggerBurst() {
 	}
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Glacial Illumination (Lightfall)",
+		Abil:       burstLightfallAbil,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

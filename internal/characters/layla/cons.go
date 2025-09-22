@@ -48,7 +48,7 @@ func (c *char) c6() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("layla-c6", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagElementalBurst && atk.Info.Abil != "Shooting Star" {
+			if atk.Info.AttackTag != attacks.AttackTagElementalBurst && atk.Info.Abil != shootingStarsAbil {
 				return nil, false
 			}
 			return m, true

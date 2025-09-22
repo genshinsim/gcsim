@@ -22,6 +22,8 @@ const (
 	skillPressHitmark = 22
 	skillHoldHitmark  = 117
 	particleICDKey    = "lisa-particle-icd"
+	skillPressAbil    = "Violet Arc (Press)"
+	skillHoldAbil     = "Violet Arc (Hold)"
 )
 
 func init() {
@@ -66,7 +68,7 @@ func (c *char) particleCB(a info.AttackCB) {
 func (c *char) skillPress() action.Info {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Violet Arc",
+		Abil:       skillPressAbil,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagLisaElectro,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -115,7 +117,7 @@ func (c *char) skillHold() action.Info {
 	// no multiplier as that's target dependent
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Violet Arc (Hold)",
+		Abil:       skillHoldAbil,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -179,7 +181,7 @@ func (c *char) skillHoldMult() {
 		if !ok {
 			return false
 		}
-		if atk.Info.Abil != "Violet Arc (Hold)" {
+		if atk.Info.Abil != skillHoldAbil {
 			return false
 		}
 		stacks := t.GetTag(conductiveTag)
