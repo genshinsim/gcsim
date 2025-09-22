@@ -109,7 +109,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	dmgCount := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.Abil == burstExplosionAbil {
+		if atk.Info.Abil == "Lea Lotus Lamp (Explosion)" {
 			dmgCount++
 			log.Println("big boom at: ", c.F)
 		}
@@ -193,7 +193,7 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	dmgCount := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.Abil == burstAbil {
+		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
 			log.Println("boom at (adjusted): ", c.F-54-1)
 		}
@@ -239,7 +239,7 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	dmgCount := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.Abil == burstAbil {
+		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
 			log.Println("boom at (adjusted): ", c.F-54-1)
 		}

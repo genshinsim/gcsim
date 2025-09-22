@@ -16,11 +16,9 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark     = 28
-	burstKey         = "beidouburst"
-	burstICDKey      = "beidou-burst-icd"
-	burstInitialAbil = "Stormbreaker (Initial)"
-	burstBounceAbil  = "Stormbreaker (Bounce)"
+	burstHitmark = 28
+	burstKey     = "beidouburst"
+	burstICDKey  = "beidou-burst-icd"
 )
 
 func init() {
@@ -34,7 +32,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               burstInitialAbil,
+		Abil:               "Stormbreaker (Initial)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -59,7 +57,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	procAI := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       burstBounceAbil,
+		Abil:       "Stormbreaker (Bounce)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,

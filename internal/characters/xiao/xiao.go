@@ -73,7 +73,7 @@ func (c *char) Snapshot(a *info.AttackInfo) info.Snapshot {
 		switch a.AttackTag {
 		case attacks.AttackTagNormal:
 			// QN1-1 has different hitlag from N1-1
-			if a.Abil == "Normal 0" {
+			if a.Abil == "Normal 0" { // TODO: replace this with something that isn't reliant on abil name
 				// this also overwrites N1-2 HitlagHaltFrames but they have the same value so it's fine
 				a.HitlagHaltFrames = 0.01 * 60
 			}
