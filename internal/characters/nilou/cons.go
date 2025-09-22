@@ -20,7 +20,7 @@ func (c *char) c1() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("nilou-c1", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			if atk.Info.Abil != "Luminous Illusion" {
+			if atk.Info.Abil != skillIllusionAbil {
 				return nil, false
 			}
 			return m, true

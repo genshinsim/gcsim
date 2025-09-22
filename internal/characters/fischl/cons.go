@@ -10,7 +10,7 @@ import (
 func (c *char) c6Wave() {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Fischl C6",
+		Abil:       "Evernight Raven (C6)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   attacks.ICDGroupFischl,

@@ -35,7 +35,7 @@ func (c *char) c2() {
 		}
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Gossamer Sprite: Splice. (Baizhu's C2)",
+			Abil:       "Gossamer Sprite: Splice. (C2)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   attacks.ICDGroupBaizhuC2,

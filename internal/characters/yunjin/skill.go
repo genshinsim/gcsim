@@ -57,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Opening Flourish Press (E)",
+		Abil:               "Opening Flourish (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -84,13 +84,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		} else {
 			count = 3
 		}
-		ai.Abil = "Opening Flourish Level 1 (E)"
+		ai.Abil = "Opening Flourish (Level 1)"
 		ai.HitlagHaltFrames = 0.09 * 60
 		radius = 6
 	case 2:
 		count = 3
 		ai.Durability = 100
-		ai.Abil = "Opening Flourish Level 2 (E)"
+		ai.Abil = "Opening Flourish (Level 2)"
 		ai.HitlagHaltFrames = 0.12 * 60
 		radius = 8
 	}
@@ -108,7 +108,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ActorIndex: c.Index(),
 		Target:     c.Index(),
 		Src:        c.Core.F,
-		Name:       "Yun Jin Skill",
+		Name:       "Opening Flourish (Shield)",
 		ShieldType: shield.YunjinSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Geo,

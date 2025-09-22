@@ -21,7 +21,7 @@ func (c *char) addC2Shield() {
 			ActorIndex: c.Index(),
 			Target:     c.Index(),
 			Src:        c.Core.F,
-			Name:       "Sigewinne C2 shield",
+			Name:       "Bubbly Shield (C2)",
 			ShieldType: shield.SigewinneC2,
 			HP:         shieldHP,
 			Ele:        attributes.Hydro,

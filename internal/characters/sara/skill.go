@@ -42,7 +42,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 2 {
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Tengu Juurai: Ambush C2",
+			Abil:       "Tengu Juurai: Ambush (C2)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -108,7 +108,7 @@ func (c *char) attackBuff(a info.AttackPattern, delay int) {
 		// TODO: change this to a ST attack later
 		c.Core.Player.Drain(info.DrainInfo{
 			ActorIndex: active.Index(),
-			Abil:       "Tengu Juurai: Ambush",
+			Abil:       "Tengu Juurai: Ambush (C2)",
 			Amount:     0,
 			External:   true,
 		})

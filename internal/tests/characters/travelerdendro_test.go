@@ -109,7 +109,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	dmgCount := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
-		if atk.Info.Abil == "Lea Lotus Lamp Explosion" {
+		if atk.Info.Abil == "Lea Lotus Lamp (Explosion)" {
 			dmgCount++
 			log.Println("big boom at: ", c.F)
 		}

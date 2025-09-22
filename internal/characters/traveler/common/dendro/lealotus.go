@@ -13,6 +13,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
+const (
+	burstAbil          = "Lea Lotus Lamp"
+	burstExplosionAbil = "Lea Lotus Lamp (Explosion)"
+)
+
 type LeaLotus struct {
 	*gadget.Gadget
 	info.Reactable
@@ -63,7 +68,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 
 	procAI := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Lea Lotus Lamp",
+		Abil:       burstAbil,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -223,7 +228,7 @@ func (s *LeaLotus) TryBurning(a *info.AttackEvent) {
 	if !s.Reactable.TryBurning(a) {
 		return
 	}
-	s.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion"
+	s.burstAtk.Info.Abil = burstExplosionAbil
 	s.burstAtk.Info.Durability = 50
 	s.burstAtk.Info.ICDTag = attacks.ICDTagNone
 	s.burstAtk.Info.Mult = burstExplode[s.char.TalentLvlBurst()]

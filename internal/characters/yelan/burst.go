@@ -118,7 +118,7 @@ func (c *char) summonExquisiteThrow() {
 		)
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
-		ai.Abil = "Yelan C2 Proc"
+		ai.Abil = "Exquisite Throw (C2)"
 		ai.ICDTag = attacks.ICDTagNone
 		ai.ICDGroup = attacks.ICDGroupDefault
 		ai.FlatDmg = 14.0 / 100 * hp

@@ -13,13 +13,12 @@ import (
 )
 
 const (
-	c1StatusKey     = "charlotte-c1"
-	c1HealMsg       = "Verification"
-	c6HealMsg       = "charlotte-c6-heal"
-	c6CoordinateAtk = "charlotte-c6-coordinate-atk"
-	c6IcdKey        = "charlotte-c6-icd"
-	c6AttackRadius  = 3.5
-	c6HealRadius    = 5
+	c1StatusKey    = "charlotte-c1"
+	c1HealMsg      = "Verification"
+	c6HealMsg      = "charlotte-c6-heal"
+	c6IcdKey       = "charlotte-c6-icd"
+	c6AttackRadius = 3.5
+	c6HealRadius   = 5
 )
 
 func (c *char) c1Heal(char *character.CharWrapper) func() {
@@ -136,7 +135,7 @@ func (c *char) c6() {
 		c.AddStatus(c6IcdKey, 6*60, true)
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
-			Abil:               c6CoordinateAtk,
+			Abil:               "A Summation of Interest (C6)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNone,
 			ICDGroup:           attacks.ICDGroupDefault,

@@ -32,7 +32,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Stormbreaker (Q)",
+		Abil:               "Stormbreaker (Initial)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -57,7 +57,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	procAI := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Stormbreak Proc (Q)",
+		Abil:       "Stormbreaker (Bounce)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -79,7 +79,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			Target:     -1,
 			Src:        c.Core.F,
 			ShieldType: shield.BeidouC1,
-			Name:       "Beidou C1",
+			Name:       "Sea Beast's Scourge (Shield)",
 			HP:         .16 * c.MaxHP(),
 			Ele:        attributes.Electro,
 			Expires:    c.Core.F + dur,
@@ -128,7 +128,7 @@ func (c *char) burstProc() {
 			return false
 		}
 		if c.StatusIsActive(burstICDKey) {
-			c.Core.Log.NewEvent("beidou Q (active) on icd", glog.LogCharacterEvent, c.Index())
+			c.Core.Log.NewEvent("Stormbreaker (active) on icd", glog.LogCharacterEvent, c.Index())
 			return false
 		}
 
@@ -142,7 +142,7 @@ func (c *char) burstProc() {
 		}
 		c.Core.QueueAttackEvent(&atk, 1)
 
-		c.Core.Log.NewEvent("beidou Q proc'd", glog.LogCharacterEvent, c.Index()).
+		c.Core.Log.NewEvent("Stormbreaker bounce triggered", glog.LogCharacterEvent, c.Index()).
 			Write("char", ae.Info.ActorIndex).
 			Write("attack tag", ae.Info.AttackTag)
 

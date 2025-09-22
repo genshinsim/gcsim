@@ -44,6 +44,8 @@ const (
 	initialParticleICDKey   = "nilou-initial-particle-icd"
 	pirouetteParticleICDKey = "nilou-pirouette-particle-icd"
 
+	skillIllusionAbil = "Lumnious Illusion"
+
 	delayDance = 30 // Lunar Prayer (8s) / Tranquility (12/18s) / A1 (30s) timers all start here
 	delaySteps = 40
 )
@@ -213,7 +215,7 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 	}
 	centerTarget := c.Core.Combat.Player()
 	if s == 2 {
-		ai.Abil = "Luminous Illusion"
+		ai.Abil = skillIllusionAbil
 		ai.StrikeType = attacks.StrikeTypePierce
 		centerTarget = c.Core.Combat.PrimaryTarget()
 

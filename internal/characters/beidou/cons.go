@@ -47,7 +47,7 @@ func (c *char) makeC4Callback() info.AttackCBFunc {
 			Write("char", c.Index())
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Beidou C4",
+			Abil:       "Stunning Revenge (C4)",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagElementalBurst,
 			ICDGroup:   attacks.ICDGroupDefault,

@@ -218,7 +218,7 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 	if c.a1Absorb != attributes.NoElement {
 		ai := info.AttackInfo{
 			ActorIndex:     c.Index(),
-			Abil:           "Kazuha A1",
+			Abil:           "Soumon Swordsmanship (A1)",
 			AttackTag:      attacks.AttackTagPlunge,
 			ICDTag:         attacks.ICDTagNone,
 			ICDGroup:       attacks.ICDGroupDefault,

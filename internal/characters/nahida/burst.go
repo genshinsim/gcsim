@@ -52,7 +52,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					c.AddAttackMod(character.AttackMod{
 						Base: modifier.NewBaseWithHitlag(burstKey, 60),
 						Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-							return c.pyroBurstBuff, atk.Info.Abil == "Tri-Karma Purification"
+							return c.pyroBurstBuff, atk.Info.Abil == triKarmaAbil
 						},
 					})
 				}

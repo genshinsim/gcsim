@@ -24,14 +24,16 @@ func init() {
 }
 
 const (
-	skillICDKey    = "albedo-skill-icd"
-	particleICDKey = "albedo-particle-icd"
+	skillICDKey      = "albedo-skill-icd"
+	particleICDKey   = "albedo-particle-icd"
+	skillAbilInitial = "Abiogenesis: Solar Isotoma (Initial)"
+	skillAbilTick    = "Abiogenesis: Solar Isotoma (Tick)"
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Abiogenesis: Solar Isotoma",
+		Abil:       skillAbilInitial,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -53,7 +55,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
 	// snapshot for ticks
-	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
+	ai.Abil = skillAbilTick
 	ai.ICDTag = attacks.ICDTagElementalArt
 	ai.Mult = skillTick[c.TalentLvlSkill()]
 	ai.UseDef = true
@@ -112,7 +114,7 @@ func (c *char) skillHook() {
 			return false
 		}
 		// Can't be triggered by itself when refreshing
-		if atk.Info.Abil == "Abiogenesis: Solar Isotoma" {
+		if atk.Info.Abil == skillAbilInitial {
 			return false
 		}
 		if dmg == 0 {

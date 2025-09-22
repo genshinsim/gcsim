@@ -63,7 +63,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 1 && !c.StatusIsActive(ozActiveKey) {
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Fischl C1",
+			Abil:       "Gaze of the Deep (C1)",
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,

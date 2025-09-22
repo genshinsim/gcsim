@@ -50,7 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
 	// apply dot and check for absorb
-	ai.Abil = "Kazuha Slash (Dot)"
+	ai.Abil = "Kazuha Slash (DoT)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	ai.Durability = 25
@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.HitlagHaltFrames = 0
 
 	aiAbsorb := ai
-	aiAbsorb.Abil = "Kazuha Slash (Absorb Dot)"
+	aiAbsorb.Abil = "Kazuha Slash (Absorb DoT)"
 	aiAbsorb.Mult = burstEleDot[c.TalentLvlBurst()]
 	aiAbsorb.Element = attributes.NoElement
 

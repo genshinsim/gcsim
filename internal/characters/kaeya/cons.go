@@ -92,7 +92,7 @@ func (c *char) c4() {
 				Target:     c.Index(),
 				Src:        c.Core.F,
 				ShieldType: shield.KaeyaC4,
-				Name:       "Kaeya C4",
+				Name:       "Frozen Kiss (Shield)",
 				HP:         .3 * maxhp,
 				Ele:        attributes.Cryo,
 				Expires:    c.Core.F + 1200,

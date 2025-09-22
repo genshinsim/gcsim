@@ -27,7 +27,7 @@ func (c *char) a1() {
 				return nil, false
 			}
 			// Can't be triggered by itself when refreshing
-			if atk.Info.Abil == "Abiogenesis: Solar Isotoma" {
+			if atk.Info.Abil == skillAbilInitial {
 				return nil, false
 			}
 			if e, ok := t.(*enemy.Enemy); !(ok && e.HP()/e.MaxHP() < .5) {

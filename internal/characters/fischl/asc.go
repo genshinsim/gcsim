@@ -41,7 +41,7 @@ func (c *char) a4() {
 
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Fischl A4",
+			Abil:       "Thundering Retribution (A4)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupFischl,

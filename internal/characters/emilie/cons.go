@@ -67,7 +67,7 @@ func (c *char) c1A1() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1ModKey, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.Abil != "Cleardew Cologne (A1)" {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.Abil != a1Abil {
 				return nil, false
 			}
 			return m, true

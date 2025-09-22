@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.waveCount = 0
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Sacred Rite: Wagtail's Tide (Q)",
+		Abil:               "Sacred Rite: Wagtail's Tide (Initial)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,

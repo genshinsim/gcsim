@@ -22,7 +22,7 @@ func (c *char) c1() {
 	}
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Far to Fall",
+		Abil:               "Far to Fall (C1)",
 		Mult:               5,
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagSkirkCons,
