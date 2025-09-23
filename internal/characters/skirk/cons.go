@@ -12,8 +12,10 @@ import (
 var c4Atkp = []float64{0.0, 0.1, 0.2, 0.4}
 
 const (
-	c2Key = "skirk-c2"
-	c6Dur = 15 * 60
+	c2Key    = "skirk-c2"
+	c6Dur    = 15 * 60
+	c6Icd    = 0.2 * 60
+	c6IcdKey = "skirk-c6-icd"
 )
 
 func (c *char) c1() {
@@ -166,6 +168,11 @@ func (c *char) c6OnAttackCB() func(a info.AttackCB) {
 		if !hasStack {
 			return
 		}
+
+		if c.StatusIsActive(c6IcdKey) {
+			return
+		}
+		c.AddStatus(c6IcdKey, c6Icd, true)
 
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
