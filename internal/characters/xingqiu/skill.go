@@ -28,12 +28,13 @@ func init() {
 const (
 	orbitalKey     = "xingqiu-orbital"
 	particleICDKey = "xingqiu-particle-icd"
+	skillAbilName = "Guhua Sword: Fatal Rainscreen"
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Guhua Sword: Fatal Rainscreen",
+		Abil:               skillAbilName,
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -46,7 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	for i, v := range rainscreen {
-		ai.Abil = fmt.Sprintf(ai.Abil + " %v", i)
+		ai.Abil = fmt.Sprintf(skillAbilName + " %v", i)
 		ax := ai
 		ax.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {

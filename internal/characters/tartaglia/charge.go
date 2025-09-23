@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	for i, mult := range eCharge {
 		ai.Mult = mult[c.TalentLvlSkill()]
-		ai.Abil += fmt.Sprintf(" %v", i)
+		ai.Abil = fmt.Sprintf("Charged Attack %v", i)
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.2),
