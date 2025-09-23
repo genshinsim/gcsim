@@ -13,9 +13,26 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
       perSystem =
-        { pkgs, ... }:
+        {
+          lib,
+          pkgs,
+          self',
+          ...
+        }:
         {
           formatter = pkgs.nixfmt-tree;
+
+          packages.golangci-lint-v2 =
+            with pkgs;
+            stdenv.mkDerivation {
+              name = "golangci-lint-v2";
+              buildInputs = [ golangci-lint ];
+              phases = [ "installPhase" ];
+              installPhase = ''
+                mkdir -p $out/bin
+                cp ${lib.getExe golangci-lint} $out/bin/$name
+              '';
+            };
 
           devShells.default = pkgs.mkShell {
             nativeBuildInputs =
@@ -34,6 +51,7 @@
                 go-task
                 gofumpt
                 golangci-lint
+                self'.packages.golangci-lint-v2
                 gopls
                 gotools
 
