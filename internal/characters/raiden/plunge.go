@@ -292,7 +292,7 @@ func (c *char) plungeCollision(delay int) {
 func (c *char) plungeCollisionB(delay int) {
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
-		Abil:           "Plunge Collision",
+		Abil:           "Plunge Collision (Musou Isshin)",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,

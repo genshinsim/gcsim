@@ -1,6 +1,8 @@
 package freminet
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -138,7 +140,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		}
 		ai := info.AttackInfo{
 			ActorIndex:       c.Index(),
-			Abil:             pressureBaseName + " (Cryo)",
+			Abil:             fmt.Sprintf(pressureBaseName + " (Cryo Lvl %v)", c.skillStacks),
 			AttackTag:        attacks.AttackTagElementalArt,
 			ICDTag:           attacks.ICDTagElementalArt,
 			ICDGroup:         attacks.ICDGroupDefault,
@@ -166,7 +168,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		}
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       pressureBaseName + " (Physical)",
+			Abil:       fmt.Sprintf(pressureBaseName + " (Physical Lvl %v)", c.skillStacks),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,

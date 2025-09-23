@@ -1,6 +1,8 @@
 package raiden
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -72,7 +74,7 @@ func (c *char) swordCharge() action.Info {
 	for i, mult := range chargeSword {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
-			Abil:               "Musou Isshin (Charge Attack)",
+			Abil:               fmt.Sprintf("Musou Isshin (Charge Attack %v)", i),
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,

@@ -78,6 +78,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				skillIndex = 1
 				particleCB = c.particleCB
 				chillingPenalty = c.chillingPenalty
+				ai.Abil = fmt.Sprintf("Normal %v (Enhanced)", c.NormalCounter)
 			}
 			c.Core.QueueAttack(
 				ai,

@@ -101,6 +101,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 1 {
 		ai.Mult = .2 * ai.Mult
+		ai.Abil = "Aimed Shot (C1)"
 		c.Core.QueueAttack(
 			ai,
 			combat.NewBoxHit(

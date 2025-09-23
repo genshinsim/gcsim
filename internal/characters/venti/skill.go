@@ -32,7 +32,7 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:   c.Index(),
-		Abil:         "Skyward Sonnett",
+		Abil:         "Skyward Sonnett (Press)",
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagNone,
 		ICDGroup:     attacks.ICDGroupDefault,
@@ -64,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		trg = c.Core.Combat.Player()
 		count = 4
 		ai.Mult = skillHold[c.TalentLvlSkill()]
-
+		ai.Abil = "Skyward Sonnett (Hold)"
 		act = action.Info{
 			Frames:          frames.NewAbilFunc(skillHoldFrames),
 			AnimationLength: skillHoldFrames[action.InvalidAction],

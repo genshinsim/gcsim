@@ -24,7 +24,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	low := c.CurrentHPRatio() <= 0.5
 	mult := burst[c.TalentLvlBurst()]
 	regen := regen[c.TalentLvlBurst()]
+	burstAbilName := "Spirit Soother"
 	if low {
+		burstAbilName = "Spirit Soother (Low HP)"
 		mult = burstLow[c.TalentLvlBurst()]
 		regen = regenLow[c.TalentLvlBurst()]
 	}
@@ -32,7 +34,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstHealAmount = info.HealInfo{
 		Caller:  c.Index(),
 		Target:  c.Index(),
-		Message: "Spirit Soother",
+		Message: burstAbilName,
 		Src:     c.MaxHP() * regen,
 		Bonus:   c.Stat(attributes.Heal),
 	}
@@ -54,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: currently snapshotting at cast but apparently damage is based on stats on contact, not at cast??
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Spirit Soother",
+		Abil:       burstAbilName,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

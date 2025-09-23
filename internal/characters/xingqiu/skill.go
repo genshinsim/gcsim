@@ -1,6 +1,8 @@
 package xingqiu
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -44,6 +46,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	for i, v := range rainscreen {
+		ai.Abil = fmt.Sprintf(ai.Abil + " %v", i)
 		ax := ai
 		ax.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {

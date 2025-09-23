@@ -108,7 +108,7 @@ func (c *char) attackBuff(a info.AttackPattern, delay int) {
 		// TODO: change this to a ST attack later
 		c.Core.Player.Drain(info.DrainInfo{
 			ActorIndex: active.Index(),
-			Abil:       "Tengu Juurai: Ambush (C2)",
+			Abil:       "Tengu Juurai: Ambush",
 			Amount:     0,
 			External:   true,
 		})

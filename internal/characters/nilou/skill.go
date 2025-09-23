@@ -44,7 +44,7 @@ const (
 	initialParticleICDKey   = "nilou-initial-particle-icd"
 	pirouetteParticleICDKey = "nilou-pirouette-particle-icd"
 
-	skillIllusionAbil = "Lumnious Illusion"
+	skillIllusionAbil = "Luminous Illusion"
 
 	delayDance = 30 // Lunar Prayer (8s) / Tranquility (12/18s) / A1 (30s) timers all start here
 	delaySteps = 40
