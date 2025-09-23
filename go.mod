@@ -1,6 +1,6 @@
 module github.com/genshinsim/gcsim
 
-go 1.22.0
+go 1.24.0
 
 require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
