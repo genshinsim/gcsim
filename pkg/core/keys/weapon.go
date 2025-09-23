@@ -138,6 +138,7 @@ var weaponNames = []string{
 	"mistsplitterreforged",
 	"mitternachtswaltz",
 	"moonpiercer",
+	"moonweaversdawn",
 	"mountainbracingbolt",
 	"mouunsmoon",
 	"oathsworneye",
@@ -352,6 +353,7 @@ const (
 	MistsplitterReforged
 	MitternachtsWaltz
 	Moonpiercer
+	MoonweaversDawn
 	MountainBracingBolt
 	MouunsMoon
 	OathswornEye
