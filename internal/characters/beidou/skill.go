@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Tidecaller" + []string{"", " (1 Hit)", " (2 Hits)"}[counter],
+		Abil:               "Tidecaller" + []string{"", " (Level 1)", " (Level 2)"}[counter],
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
