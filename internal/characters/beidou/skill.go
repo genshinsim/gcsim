@@ -39,15 +39,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.a4()
 	}
 
-	abilSuffix := ""
-
-	if counter < 0 {
-		abilSuffix = fmt.Sprintf(" (Level %v)", counter)
-	}
-
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Tidecaller" + abilSuffix,
+		Abil:               "Tidecaller",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -59,6 +53,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		HitlagFactor:       0.01,
 		HitlagHaltFrames:   skillHitlagStages[counter] * 60,
 		CanBeDefenseHalted: true,
+	}
+	if counter > 0 {
+		ai.Abil += fmt.Sprintf(" (Level %v)", counter)
 	}
 	c.Core.QueueAttack(
 		ai,

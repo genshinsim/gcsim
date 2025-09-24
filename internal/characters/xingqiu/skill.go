@@ -28,7 +28,7 @@ func init() {
 const (
 	orbitalKey     = "xingqiu-orbital"
 	particleICDKey = "xingqiu-particle-icd"
-	skillAbilName = "Guhua Sword: Fatal Rainscreen"
+	skillAbilName  = "Guhua Sword: Fatal Rainscreen"
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
