@@ -1,6 +1,8 @@
 package beidou
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -51,6 +53,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		HitlagFactor:       0.01,
 		HitlagHaltFrames:   skillHitlagStages[counter] * 60,
 		CanBeDefenseHalted: true,
+	}
+	if counter > 0 {
+		ai.Abil += fmt.Sprintf(" (Level %v)", counter)
 	}
 	c.Core.QueueAttack(
 		ai,

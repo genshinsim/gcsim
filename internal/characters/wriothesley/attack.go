@@ -69,6 +69,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			CanBeDefenseHalted: true,
 		}
 		c1N5CB := c.makeC1N5CB() // here so that the normalcounter check is correct
+		n := c.NormalCounter
 		c.QueueCharTask(func() {
 			// TODO: when should this check happen?
 			skillIndex := 0
@@ -78,6 +79,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				skillIndex = 1
 				particleCB = c.particleCB
 				chillingPenalty = c.chillingPenalty
+				ai.Abil = fmt.Sprintf("Normal %v (Enhanced)", n)
 			}
 			c.Core.QueueAttack(
 				ai,

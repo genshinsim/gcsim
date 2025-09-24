@@ -78,7 +78,7 @@ func (c *char) skillPress(glide int) action.Info {
 	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillPressRadius)
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Chihayaburu",
+		Abil:       "Chihayaburu (Press)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -128,7 +128,7 @@ func (c *char) skillHold(glide int) action.Info {
 	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillHoldRadius)
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Chihayaburu",
+		Abil:       "Chihayaburu (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
