@@ -1,6 +1,8 @@
 package beidou
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -37,9 +39,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.a4()
 	}
 
+	abilSuffix := ""
+
+	if counter < 0 {
+		abilSuffix = fmt.Sprintf(" (Level %v)", counter)
+	}
+
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Tidecaller" + []string{"", " (Level 1)", " (Level 2)"}[counter],
+		Abil:               "Tidecaller" + abilSuffix,
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,

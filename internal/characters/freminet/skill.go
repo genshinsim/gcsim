@@ -140,7 +140,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		}
 		ai := info.AttackInfo{
 			ActorIndex:       c.Index(),
-			Abil:             fmt.Sprintf(pressureBaseName + " (Cryo Lvl %v)", c.skillStacks),
+			Abil:             fmt.Sprintf("%v (Cryo Lvl %v)", pressureBaseName, c.skillStacks),
 			AttackTag:        attacks.AttackTagElementalArt,
 			ICDTag:           attacks.ICDTagElementalArt,
 			ICDGroup:         attacks.ICDGroupDefault,
@@ -168,7 +168,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		}
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       fmt.Sprintf(pressureBaseName + " (Physical Lvl %v)", c.skillStacks),
+			Abil:       fmt.Sprintf("%v (Physical Lvl %v)", pressureBaseName, c.skillStacks),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,

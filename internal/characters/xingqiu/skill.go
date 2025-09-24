@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	for i, v := range rainscreen {
-		ai.Abil = fmt.Sprintf(skillAbilName + " %v", i)
+		ai.Abil = fmt.Sprintf("%v %v", skillAbilName, i)
 		ax := ai
 		ax.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {
