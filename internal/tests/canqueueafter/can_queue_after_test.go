@@ -149,7 +149,8 @@ func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[str
 				break
 			}
 			if evt.Frames(act) < evt.CanQueueAfter {
-				t.Errorf("character %s action %s params: %v CanQueueAfter (%d) is larger than the output of evt.Frames[%s] (%d)", c.Player.ActiveChar().Base.Key.String(), a, p, evt.CanQueueAfter, act.String(), evt.Frames(act))
+				t.Errorf("character %s action %s params: %v CanQueueAfter (%d) is larger than the output of evt.Frames[%s] (%d). Action sequence: %s", c.Player.ActiveChar().Base.Key.String(), a, p, evt.CanQueueAfter, act.String(), evt.Frames(act), acts)
+				break;
 			}
 		}
 		for !c.Player.CanQueueNextAction() {
@@ -198,7 +199,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 	c.Combat.SetPlayer(a)
 	var trgs []*enemy.Enemy
 
-	for i := 0; i < trgCount; i++ {
+	for range trgCount {
 		e := enemy.New(c, info.EnemyProfile{
 			Level:  100,
 			Resist: make(map[attributes.Element]float64),
