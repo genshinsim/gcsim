@@ -108,13 +108,15 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		)
 	}
 	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter]-windup, attackHitmarks[c.NormalCounter]-windup)
-
+	
+	normalCounter := c.NormalCounter
+	
 	defer c.AdvanceNormalIndex()
-
+	
 	return action.Info{
-		Frames:          func(next action.Action) int { return attackFrames[c.NormalCounter][next] - windup },
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction] - windup,
-		CanQueueAfter:   attackHitmarks[c.NormalCounter] - windup,
+		Frames:          func(next action.Action) int { return attackFrames[normalCounter][next] - windup },
+		AnimationLength: attackFrames[normalCounter][action.InvalidAction] - windup,
+		CanQueueAfter:   attackHitmarks[normalCounter] - windup,
 		State:           action.NormalAttackState,
 	}, nil
 }
@@ -165,12 +167,14 @@ func (c *char) fieryAttack() action.Info {
 	}
 	c.Core.QueueAttack(ai, ap, fieryAttackHitmarks[c.NormalCounter]-windup, fieryAttackHitmarks[c.NormalCounter]-windup)
 
+	normalCounter := c.NormalCounter
+
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return fieryAttackFrames[c.NormalCounter][next] - windup },
-		AnimationLength: fieryAttackFrames[c.NormalCounter][action.InvalidAction] - windup,
-		CanQueueAfter:   fieryAttackHitmarks[c.NormalCounter] - windup,
+		Frames:          func(next action.Action) int { return fieryAttackFrames[normalCounter][next] - windup },
+		AnimationLength: fieryAttackFrames[normalCounter][action.InvalidAction] - windup,
+		CanQueueAfter:   fieryAttackHitmarks[normalCounter] - windup,
 		State:           action.NormalAttackState,
 	}
 }
