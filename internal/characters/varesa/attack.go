@@ -108,11 +108,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		)
 	}
 	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter]-windup, attackHitmarks[c.NormalCounter]-windup)
-	
+
 	normalCounter := c.NormalCounter
-	
+
 	defer c.AdvanceNormalIndex()
-	
+
 	return action.Info{
 		Frames:          func(next action.Action) int { return attackFrames[normalCounter][next] - windup },
 		AnimationLength: attackFrames[normalCounter][action.InvalidAction] - windup,
