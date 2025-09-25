@@ -59,7 +59,7 @@ func (w *Weapon) updateStats() {
 	valTeam := make([]float64, attributes.EndStatType)
 	valTeam[attributes.ATK] = val[attributes.ATK] * 0.3
 	for _, this := range w.core.Player.Chars() {
-		if this.Index == w.char.Index {
+		if this.Index() == w.char.Index() {
 			continue
 		}
 

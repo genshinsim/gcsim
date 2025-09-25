@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -25,7 +26,7 @@ const (
 // Kirara will perform a coordinated attack with them using Small Cat Grass Cardamoms, dealing 200% of her ATK as Dendro DMG. DMG dealt this way is
 // considered Elemental Burst DMG. This effect can be triggered once every 3.8s. This CD is shared between all party members.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if c.StatusIsActive(c4IcdStatus) {
 			return false
 		}
@@ -34,7 +35,7 @@ func (c *char) c4() {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal,
 			attacks.AttackTagExtra,
@@ -42,11 +43,11 @@ func (c *char) c4() {
 		default:
 			return false
 		}
-		t := args[0].(combat.Target)
+		t := args[0].(info.Target)
 
 		// TODO: snapshot? damage delay?
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Steed of Skanda",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagElementalBurst,

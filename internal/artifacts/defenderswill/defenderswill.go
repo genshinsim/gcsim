@@ -41,7 +41,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// TODO: player dmg isn't correct so no point in implementing this for now
 	// 4 Piece: For each different element present in your own party, the wearer's Elemental RES to that corresponding element is increased by 30%.
 	if count >= 4 {
-		c.Log.NewEvent("defenderswill-4pc not implemented", glog.LogArtifactEvent, char.Index)
+		c.Log.NewEvent("defenderswill-4pc not implemented", glog.LogArtifactEvent, char.Index())
 	}
 
 	return &s, nil

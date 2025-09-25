@@ -90,7 +90,6 @@ func main() {
 	}
 	// run simulatin
 	_, err = sim.Run()
-
 	if err != nil {
 		panic(err)
 	}

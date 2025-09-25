@@ -5,8 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -32,22 +31,22 @@ func (c *char) c1(shrapnel int) {
 // As the Sunlit Sky's Singing Salute will strike near the location of the hit.
 // Up to one instance of Cannon Fire Support can be triggered each time Ceremonial Crystalshot is used,
 // and DMG dealt by said Cannon Fire Support this way is considered Elemental Burst DMG.
-func (c *char) c2() combat.AttackCBFunc {
+func (c *char) c2() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e := a.Target.(*enemy.Enemy)
-		if e.Type() != targets.TargettableEnemy {
+		if e.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c2IcdKey) {
 			return
 		}
 		c.AddStatus(c2IcdKey, 0.25*60, true)
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "The President's Pursuit of Victory",
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Cannon Fire Support (C2)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
 			ICDGroup:   attacks.ICDGroupNaviaBurst,
@@ -59,7 +58,7 @@ func (c *char) c2() combat.AttackCBFunc {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(geometry.CalcRandomPointFromCenter(e.Pos(), 0, 1.2, c.Core.Rand), nil, 3),
+			combat.NewCircleHitOnTarget(info.CalcRandomPointFromCenter(e.Pos(), 0, 1.2, c.Core.Rand), nil, 3),
 			0,
 			30, // somewhere between 28-31
 			c.burstCB(),
@@ -70,16 +69,16 @@ func (c *char) c2() combat.AttackCBFunc {
 
 // When As the Sunlit Sky's Singing Salute hits an opponent,
 // that opponent's Geo RES will be decreased by 20% for 8s.
-func (c *char) c4() combat.AttackCBFunc {
+func (c *char) c4() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e := a.Target.(*enemy.Enemy)
-		if e.Type() != targets.TargettableEnemy {
+		if e.Type() != info.TargettableEnemy {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("navia-c4-shred", 8*60),
 			Ele:   attributes.Geo,
 			Value: -0.2,

@@ -9,8 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -99,9 +98,9 @@ func (c *char) nightsoulPointReduceTask(src int) {
 	}, 60*tickInterval)
 }
 
-func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy) {
+func (c *char) applySamplerShred(ele attributes.Element, enemies []info.Enemy) {
 	for _, e := range enemies {
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag(fmt.Sprintf("%v-%v", samplerShredKey, ele.String()), 60),
 			Ele:   ele,
 			Value: -skillShred[c.TalentLvlSkill()],
@@ -169,8 +168,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Yohual's Scratch",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -187,7 +186,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		0.8,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmarks, skillHitmarks, c.particleCB)
@@ -211,8 +210,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

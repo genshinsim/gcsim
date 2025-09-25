@@ -3,10 +3,9 @@ package nilou
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -20,8 +19,8 @@ func (c *char) c1() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("nilou-c1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.Abil != "Luminous Illusion" {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			if atk.Info.Abil != skillIllusionAbil {
 				return nil, false
 			}
 			return m, true
@@ -33,8 +32,8 @@ func (c *char) c1() {
 // After a triggered Bloom reaction deals DMG to opponents, their Dendro RES will be decreased by 35% for 10s.
 // You need to have unlocked the “Court of Dancing Petals” Talent.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
@@ -50,13 +49,13 @@ func (c *char) c2() {
 		}
 
 		if atk.Info.Element == attributes.Hydro {
-			t.AddResistMod(combat.ResistMod{
+			t.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-hydro", 10*60),
 				Ele:   attributes.Hydro,
 				Value: -0.35,
 			})
 		} else if atk.Info.AttackTag == attacks.AttackTagBloom {
-			t.AddResistMod(combat.ResistMod{
+			t.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-dendro", 10*60),
 				Ele:   attributes.Dendro,
 				Value: -0.35,
@@ -76,7 +75,7 @@ func (c *char) c4() {
 	m[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("nilou-c4", 8*60),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
@@ -85,7 +84,7 @@ func (c *char) c4() {
 	})
 }
 
-func (c *char) c4cb() combat.AttackCBFunc {
+func (c *char) c4cb() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
@@ -94,8 +93,8 @@ func (c *char) c4cb() combat.AttackCBFunc {
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -39,7 +40,7 @@ func (c *char) burstFindDroplets() {
 		c.consumeDroplet(g)
 		orbs += 1
 	}
-	c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", orbs, " droplets"), glog.LogCharacterEvent, c.Index)
+	c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", orbs, " droplets"), glog.LogCharacterEvent, c.Index())
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -140,8 +141,8 @@ func (c *char) burstWave() {
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 10)
 
 	// TODO: is deployable?
-	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:   c.Index(),
 		Abil:         "Super Saturated Syringing",
 		AttackTag:    attacks.AttackTagElementalBurst,
 		ICDTag:       attacks.ICDTagElementalBurst,

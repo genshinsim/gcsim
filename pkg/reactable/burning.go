@@ -5,29 +5,28 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 
-	dendroDur := r.Durability[Dendro]
+	dendroDur := r.Durability[info.ReactionModKeyDendro]
 
 	// adding pyro or dendro just adds to durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		// if there's no existing pyro/burning or dendro/quicken then do nothing
-		if r.Durability[Dendro] < ZeroDur && r.Durability[Quicken] < ZeroDur {
+		if r.Durability[info.ReactionModKeyDendro] < info.ZeroDur && r.Durability[info.ReactionModKeyQuicken] < info.ZeroDur {
 			return false
 		}
 		// add to pyro durability
 		// r.attachOrRefillNormalEle(ModifierPyro, a.Info.Durability)
 	case attributes.Dendro:
 		// if there's no existing pyro/burning or dendro/quicken then do nothing
-		if r.Durability[Pyro] < ZeroDur && r.Durability[Burning] < ZeroDur {
+		if r.Durability[info.ReactionModKeyPyro] < info.ZeroDur && r.Durability[info.ReactionModKeyBurning] < info.ZeroDur {
 			return false
 		}
 		dendroDur = max(dendroDur, a.Info.Durability*0.8)
@@ -38,8 +37,8 @@ func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
 	}
 	// a.Reacted = true
 
-	if r.Durability[BurningFuel] < ZeroDur {
-		r.attachBurningFuel(max(dendroDur, r.Durability[Quicken]), 1)
+	if r.Durability[info.ReactionModKeyBurningFuel] < info.ZeroDur {
+		r.attachBurningFuel(max(dendroDur, r.Durability[info.ReactionModKeyQuicken]), 1)
 		r.attachBurning()
 
 		r.core.Events.Emit(event.OnBurning, r.self, a)
@@ -63,21 +62,21 @@ func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
 	return false
 }
 
-func (r *Reactable) attachBurningFuel(dur, mult reactions.Durability) {
+func (r *Reactable) attachBurningFuel(dur, mult info.Durability) {
 	// burning fuel always overwrites
-	r.Durability[BurningFuel] = mult * dur
+	r.Durability[info.ReactionModKeyBurningFuel] = mult * dur
 	decayRate := mult * dur / (6*dur + 420)
 	if decayRate < 10.0/60.0 {
 		decayRate = 10.0 / 60.0
 	}
-	r.DecayRate[BurningFuel] = decayRate
+	r.DecayRate[info.ReactionModKeyBurningFuel] = decayRate
 }
 
-func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
-	atk := combat.AttackInfo{
+func (r *Reactable) calcBurningDmg(a *info.AttackEvent) {
+	atk := info.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(reactions.Burning),
+		Abil:             string(info.ReactionTypeBurning),
 		AttackTag:        attacks.AttackTagBurningDamage,
 		ICDTag:           attacks.ICDTagBurningDamage,
 		ICDGroup:         attacks.ICDGroupBurning,
@@ -88,7 +87,7 @@ func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	flatdmg, snap := calcReactionDmg(char, atk, em)
+	flatdmg, snap := combat.CalcReactionDmg(char.Base.Level, char, atk, em)
 	atk.FlatDmg = 0.25 * flatdmg
 	r.burningAtk = atk
 	r.burningSnapshot = snap
@@ -102,7 +101,7 @@ func (r *Reactable) nextBurningTick(src, counter int, t Enemy) func() {
 		}
 		// burning SHOULD be active still, since if not we would have
 		// called cleanup and set source to -1
-		if r.Durability[BurningFuel] < ZeroDur || r.Durability[Burning] < ZeroDur {
+		if r.Durability[info.ReactionModKeyBurningFuel] < info.ZeroDur || r.Durability[info.ReactionModKeyBurning] < info.ZeroDur {
 			return
 		}
 		// so burning is active, which means both auras must still have value > 0, so we can do dmg
@@ -117,10 +116,10 @@ func (r *Reactable) nextBurningTick(src, counter int, t Enemy) func() {
 				0,
 			)
 			// self damage
-			ai.Abil += reactions.SelfDamageSuffix
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
+			ai.Abil += info.SelfDamageSuffix
+			ap.SkipTargets[info.TargettablePlayer] = false
+			ap.SkipTargets[info.TargettableEnemy] = true
+			ap.SkipTargets[info.TargettableGadget] = true
 			r.core.QueueAttackWithSnap(
 				ai,
 				r.burningSnapshot,
@@ -136,11 +135,11 @@ func (r *Reactable) nextBurningTick(src, counter int, t Enemy) func() {
 
 // burningCheck purges modifiers if burning no longer active
 func (r *Reactable) burningCheck() {
-	if r.Durability[Burning] < ZeroDur && r.Durability[BurningFuel] > ZeroDur {
+	if r.Durability[info.ReactionModKeyBurning] < info.ZeroDur && r.Durability[info.ReactionModKeyBurningFuel] > info.ZeroDur {
 		// no more burning ticks
 		r.burningTickSrc = -1
 		// remove burning fuel
-		r.Durability[BurningFuel] = 0
-		r.DecayRate[BurningFuel] = 0
+		r.Durability[info.ReactionModKeyBurningFuel] = 0
+		r.DecayRate[info.ReactionModKeyBurningFuel] = 0
 	}
 }

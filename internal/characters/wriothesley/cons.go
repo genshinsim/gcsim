@@ -2,12 +2,10 @@ package wriothesley
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -31,7 +29,7 @@ func (c *char) c1Ready() bool {
 // - The DMG Bonus gained will be further increased to 200%.
 // - When it hits while Wriothesley is in the Chilling Penalty state, that state's duration is extended by 4s. 1 such extension can occur per 1 Chilling Penalty duration.
 // You must first unlock the Passive Talent "There Shall Be a Plea for Justice."
-func (c *char) c1(ai *combat.AttackInfo, snap *combat.Snapshot) (combat.AttackCBFunc, bool) {
+func (c *char) c1(ai *info.AttackInfo, snap *info.Snapshot) (info.AttackCBFunc, bool) {
 	if !c.c1Ready() {
 		return nil, false
 	}
@@ -48,14 +46,14 @@ func (c *char) c1(ai *combat.AttackInfo, snap *combat.Snapshot) (combat.AttackCB
 	// 200% increased DMG
 	dmg := 2.0
 	snap.Stats[attributes.DmgP] += dmg
-	c.Core.Log.NewEvent("adding c1", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
+	c.Core.Log.NewEvent("adding c1", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 
 	// add c6 if applicable
 	c.addC6Buff(snap)
 
 	// return callback to heal, extend E, remove C1 and apply 2.5s cd
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		// do not proc if C1 not active
@@ -70,13 +68,13 @@ func (c *char) c1(ai *combat.AttackInfo, snap *combat.Snapshot) (combat.AttackCB
 		if !c.c1SkillExtensionProc && c.StatusIsActive(skillKey) {
 			c.ExtendStatus(skillKey, c1SkillExtension)
 			c.c1SkillExtensionProc = true
-			c.Core.Log.NewEvent("c1: skill duration is extended", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("c1: skill duration is extended", glog.LogCharacterEvent, c.Index())
 		}
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "There Shall Be a Plea for Justice",
 			Src:     c.caHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
@@ -84,12 +82,12 @@ func (c *char) c1(ai *combat.AttackInfo, snap *combat.Snapshot) (combat.AttackCB
 	}, c.Base.Cons >= 6
 }
 
-func (c *char) makeC1N5CB() combat.AttackCBFunc {
+func (c *char) makeC1N5CB() info.AttackCBFunc {
 	if c.Base.Cons < 1 || c.NormalCounter != 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		// check if E active
@@ -101,7 +99,7 @@ func (c *char) makeC1N5CB() combat.AttackCBFunc {
 			return
 		}
 		c.c1N5Proc = true
-		c.Core.Log.NewEvent("gained Gracious Rebuke from C1 N5", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("gained Gracious Rebuke from C1 N5", glog.LogCharacterEvent, c.Index())
 	}
 }
 
@@ -115,7 +113,7 @@ func (c *char) resetC1SkillExtension() {
 // When using Darkgold Wolfbite, each Prosecution Edict stack from the Passive Talent
 // "There Shall Be a Reckoning for Sin" will increase said ability's DMG dealt by 40%.
 // You must first unlock the Passive Talent "There Shall Be a Reckoning for Sin."
-func (c *char) c2(snap *combat.Snapshot) {
+func (c *char) c2(snap *info.Snapshot) {
 	if c.Base.Ascension < 4 {
 		return
 	}
@@ -128,7 +126,7 @@ func (c *char) c2(snap *combat.Snapshot) {
 
 	dmg := 0.4 * float64(c.a4Stack)
 	snap.Stats[attributes.DmgP] += dmg
-	c.Core.Log.NewEvent("adding c2", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
+	c.Core.Log.NewEvent("adding c2", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 }
 
 // The HP restored to Wriothesley through Rebuke: Vaulting Fist will be increased to 50%
@@ -144,11 +142,11 @@ func (c *char) c4() {
 	}
 	c.caHeal = 0.5
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if index != c.Index {
+		if index != c.Index() {
 			return false
 		}
 		if amount <= 0 {
@@ -166,7 +164,7 @@ func (c *char) c4() {
 			char.DeleteStatus(c4Status)
 		}
 
-		if c.Core.Player.Active() == c.Index {
+		if c.Core.Player.Active() == c.Index() {
 			m[attributes.AtkSpd] = 0.2
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(c4Status, 4*60),
@@ -193,7 +191,7 @@ func (c *char) c4() {
 }
 
 // The CRIT Rate of Rebuke: Vaulting Fist will be increased by 10%, and its CRIT DMG by 80%.
-func (c *char) addC6Buff(snap *combat.Snapshot) {
+func (c *char) addC6Buff(snap *info.Snapshot) {
 	if c.Base.Cons < 6 {
 		return
 	}
@@ -201,5 +199,5 @@ func (c *char) addC6Buff(snap *combat.Snapshot) {
 	cd := 0.8
 	snap.Stats[attributes.CR] += cr
 	snap.Stats[attributes.CD] += cd
-	c.Core.Log.NewEvent("adding c6", glog.LogCharacterEvent, c.Index).Write("cr", cr).Write("cd", cd)
+	c.Core.Log.NewEvent("adding c6", glog.LogCharacterEvent, c.Index()).Write("cr", cr).Write("cd", cd)
 }

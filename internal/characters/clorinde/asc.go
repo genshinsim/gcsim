@@ -5,9 +5,9 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -43,7 +43,7 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, c.a1CB, "clorinde-a1-crystallize-electro")
 }
 
-func (c *char) a1CB(args ...interface{}) bool {
+func (c *char) a1CB(args ...any) bool {
 	// no requirement who triggers other than that it must be against an enemy
 	if _, ok := args[0].(*enemy.Enemy); !ok {
 		return false
@@ -51,7 +51,7 @@ func (c *char) a1CB(args ...interface{}) bool {
 	return c.a1CBGadget(args...)
 }
 
-func (c *char) a1CBGadget(...interface{}) bool {
+func (c *char) a1CBGadget(...any) bool {
 	// add a stack and refresh the mod for 15s
 	c.a1stacks.Add(clordineA1BuffDuration)
 	c.AddAttackMod(character.AttackMod{
@@ -61,7 +61,7 @@ func (c *char) a1CBGadget(...interface{}) bool {
 	return false
 }
 
-func (c *char) a1Amount(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+func (c *char) a1Amount(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 	var amt float64
 	switch atk.Info.AttackTag {
 	case attacks.AttackTagNormal:
@@ -76,7 +76,7 @@ func (c *char) a1Amount(atk *combat.AttackEvent, t combat.Target) ([]float64, bo
 	totalAtk := atk.Snapshot.Stats.TotalATK()
 	amt = min(totalAtk*c.a1BuffPercent*float64(c.a1stacks.Count()), c.a1Cap)
 	atk.Info.FlatDmg += amt
-	c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index()).
 		Write("amt", amt).
 		Write("c2_applied", c.Base.Cons >= 2)
 	// we don't actually change any stats here..
@@ -91,10 +91,10 @@ func (c *char) a4Init() {
 	c.a4bonus = make([]float64, attributes.EndStatType)
 	c.prevHpDebt = c.CurrentHPDebtRatio()
 
-	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
 		index := args[0].(int)
 		amount := -args[1].(float64)
-		if c.Index != index {
+		if c.Index() != index {
 			return false
 		}
 		c.a4(amount)
@@ -119,7 +119,7 @@ func (c *char) a4(change float64) {
 		Base:   modifier.NewBaseWithHitlag(clorindeA4BuffKey, clordineA4BuffDuration),
 		Amount: c.a4Amount,
 	})
-	c.Core.Log.NewEvent("a4 triggered", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("a4 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.a4stacks.Count())
 }
 

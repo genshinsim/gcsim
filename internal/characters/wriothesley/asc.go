@@ -4,12 +4,10 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -27,7 +25,7 @@ func (c *char) a1Ready() bool {
 // Normal Attack: Forceful Fists of Frost will be enhanced to become Rebuke: Vaulting Fist. It will not consume
 // Stamina, deal 50% increased DMG, and will restore HP for Wriothesley after hitting equal to 30% of his Max HP.
 // You can gain a Gracious Rebuke this way once every 5s.
-func (c *char) a1(ai *combat.AttackInfo, snap *combat.Snapshot) combat.AttackCBFunc {
+func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 	if !c.a1Ready() {
 		return nil
 	}
@@ -43,11 +41,11 @@ func (c *char) a1(ai *combat.AttackInfo, snap *combat.Snapshot) combat.AttackCBF
 	// 50% increased DMG
 	dmg := 0.5
 	snap.Stats[attributes.DmgP] += dmg
-	c.Core.Log.NewEvent("adding a1", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
+	c.Core.Log.NewEvent("adding a1", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 
 	// return callback to heal, remove A1 and apply 5s cd
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		// do not proc if a1 not active
@@ -60,8 +58,8 @@ func (c *char) a1(ai *combat.AttackInfo, snap *combat.Snapshot) combat.AttackCBF
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "There Shall Be a Plea for Justice",
 			Src:     c.caHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
@@ -76,12 +74,12 @@ func (c *char) a4() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
-		if di.ActorIndex != c.Index {
+		if di.ActorIndex != c.Index() {
 			return false
 		}
 		if di.Amount <= 0 {
@@ -90,19 +88,19 @@ func (c *char) a4() {
 
 		if c.StatusIsActive(skillKey) && c.a4Stack < 5 {
 			c.a4Stack++
-			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index).Write("stacks", c.a4Stack)
+			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index()).Write("stacks", c.a4Stack)
 		}
 		return false
 	}, "wriothesley-a4-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
-		if index != c.Index {
+		if index != c.Index() {
 			return false
 		}
 		if amount <= 0 {
@@ -115,7 +113,7 @@ func (c *char) a4() {
 
 		if c.StatusIsActive(skillKey) && c.a4Stack < 5 {
 			c.a4Stack++
-			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index).Write("stacks", c.a4Stack)
+			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index()).Write("stacks", c.a4Stack)
 		}
 		return false
 	}, "wriothesley-a4-heal")

@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -123,8 +121,8 @@ func (c *Traveler) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [
 }
 
 func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
-	aiHold := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiHold := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Dewdrop (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagTravelerDewdrop,
@@ -143,7 +141,7 @@ func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 		c.skillLosingHP(&aiHold)
 		c.Core.QueueAttack(
 			aiHold,
-			combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
+			combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.4}, 0.3, 1.3),
 			0,
 			1,
 			c.makeA1CB(),
@@ -164,8 +162,8 @@ func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 }
 
 func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
-	aiHold := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiHold := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Dewdrop (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagTravelerDewdrop,
@@ -188,7 +186,7 @@ func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
 			c.skillLosingHP(&aiHold)
 			c.Core.QueueAttack(
 				aiHold,
-				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
+				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.4}, 0.3, 1.3),
 				0,
 				1,
 				a1cb,
@@ -255,8 +253,8 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}
 }
 
-func (c *Traveler) skillParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *Traveler) skillParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -272,8 +270,8 @@ func (c *Traveler) skillParticleCB(a combat.AttackCB) {
 }
 
 func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Torrent Surge",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -293,8 +291,8 @@ func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 	c.Core.QueueAttack(ai, hitbox, hitmark, hitmark, c.skillParticleCB)
 
 	if !c.StatusIsActive(spiritbreathThornICDKey) {
-		ai = combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai = info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Spiritbreath Thorn",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagNone,
@@ -311,7 +309,7 @@ func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 	}
 }
 
-func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
+func (c *Traveler) skillLosingHP(ai *info.AttackInfo) {
 	if c.StatusIsActive(skillLosingHPICDKey) {
 		return
 	}
@@ -322,7 +320,7 @@ func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
 
 	drainHP := 0.04 * c.CurrentHP()
 	c.Core.Player.Drain(info.DrainInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Suffusion",
 		Amount:     drainHP,
 	})
@@ -336,7 +334,7 @@ func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
 			c.a4Bonus = 5000
 		}
 
-		c.Core.Log.NewEvent("travelerhydro a4 adding dmg bonus", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("travelerhydro a4 adding dmg bonus", glog.LogCharacterEvent, c.Index()).
 			Write("dmg bonus", c.a4Bonus)
 	}
 	c.AddStatus(skillLosingHPICDKey, 0.9*60, true)

@@ -7,11 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -32,8 +30,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Spirit Blade: Chonghua's Layered Frost",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -59,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	// handle field damage / skill area
-	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 8)
+	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.5}, 8)
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 2.5),
@@ -102,8 +100,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -114,13 +112,13 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 func (c *char) onSwapHook() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.Core.Status.Duration("chongyunfield") == 0 {
 			return false
 		}
 		// add infusion on swap
 		dur := int(infuseDur[c.TalentLvlSkill()] * 60)
-		c.Core.Log.NewEvent("chongyun adding infusion on swap", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("chongyun adding infusion on swap", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.Core.F+dur)
 		active := c.Core.Player.ActiveChar()
 		c.infuse(active)
@@ -147,14 +145,14 @@ func (c *char) infuse(active *character.CharWrapper) {
 	switch active.Weapon.Class {
 	case info.WeaponClassClaymore, info.WeaponClassSpear, info.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
-			active.Index,
+			active.Index(),
 			"chongyun-ice-weapon",
 			attributes.Cryo,
 			dur,
 			true,
 			attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 		)
-		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.Core.F+dur)
 		// A1:
 		// Sword, Claymore, or Polearm-wielding characters within the field created by

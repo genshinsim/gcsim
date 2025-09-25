@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -38,8 +38,8 @@ When her rapid movement ends, the Lifeline will explode, dealing Hydro DMG to th
 *
 */
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Lingering Lifeline",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -60,7 +60,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	if !c.StatusIsActive("yelanc4") {
 		c.c4count = 0
-		c.Core.Log.NewEvent("c4 stacks set to 0", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("c4 stacks set to 0", glog.LogCharacterEvent, c.Index())
 	}
 
 	// add a task to loop through targets and mark them
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				continue
 			}
 			e.SetTag(skillMarkedTag, 1)
-			c.Core.Log.NewEvent("marked by Lifeline", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("marked by Lifeline", glog.LogCharacterEvent, c.Index()).
 				Write("target", e.Key())
 			marked--
 			c.c4count++
@@ -87,23 +87,23 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				c.AddStatus("yelanc4", 25*60, true)
 			}
 		}
-	}, skillHitmark) //TODO: frames for hold e
+	}, skillHitmark) // TODO: frames for hold e
 
 	// hold := p["hold"]
 
-	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	cb := func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		// check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
 			c.breakthrough = true
-			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index())
 		}
-		//TODO: icd on this??
+		// TODO: icd on this??
 		if c.StatusIsActive(burstKey) {
 			c.summonExquisiteThrow()
-			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index())
 		}
 	}
 
@@ -118,23 +118,23 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				continue
 			}
 			e.SetTag(skillMarkedTag, 0)
-			c.Core.Log.NewEvent("damaging marked target", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("damaging marked target", glog.LogCharacterEvent, c.Index()).
 				Write("target", e.Key())
 			marked--
 			// queueing attack one frame later
-			//TODO: does hold have different attack size? don't think so?
+			// TODO: does hold have different attack size? don't think so?
 			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, c.particleCB, cb)
 		}
 
 		// activate c4 if relevant
-		//TODO: check if this is accurate
+		// TODO: check if this is accurate
 		if c.Base.Cons >= 4 && c.c4count > 0 {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.HPP] = float64(c.c4count) * 0.1
 			if m[attributes.HPP] > 0.4 {
 				m[attributes.HPP] = 0.4
 			}
-			c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index()).
 				Write("enemies count", c.c4count)
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
@@ -146,7 +146,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				})
 			}
 		}
-	}, skillHitmark) //TODO: frames for e dmg? possibly 5 second after attaching?
+	}, skillHitmark) // TODO: frames for e dmg? possibly 5 second after attaching?
 
 	c.SetCDWithDelay(action.ActionSkill, 600, skillHitmark-2)
 
@@ -158,8 +158,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

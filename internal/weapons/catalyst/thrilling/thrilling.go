@@ -35,21 +35,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	isActive := false
 	key := fmt.Sprintf("ttds-%v", char.Base.Key.String())
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
-		isActive = c.Player.Active() == char.Index
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) bool {
+		isActive = c.Player.Active() == char.Index()
 		return true
 	}, key)
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .18 + float64(r)*0.06
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if !isActive && c.Player.Active() == char.Index {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+		if !isActive && c.Player.Active() == char.Index() {
 			isActive = true
 			return false
 		}
 
-		if isActive && c.Player.Active() != char.Index {
+		if isActive && c.Player.Active() != char.Index() {
 			isActive = false
 			if char.StatusIsActive(icdKey) {
 				return false

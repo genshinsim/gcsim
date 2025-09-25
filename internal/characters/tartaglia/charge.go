@@ -2,12 +2,14 @@ package tartaglia
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -37,8 +39,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		hitWeakPoint = 0
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:   c.Index(),
 		Abil:         "Charged Attack",
 		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       attacks.ICDTagExtraAttack,
@@ -51,6 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	for i, mult := range eCharge {
 		ai.Mult = mult[c.TalentLvlSkill()]
+		ai.Abil = fmt.Sprintf("Charged Attack %v", i)
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.2),

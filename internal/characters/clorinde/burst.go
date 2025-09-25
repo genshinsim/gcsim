@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -32,9 +32,9 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
-		Abil:             "Burst",
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
+		Abil:             "Last Lightfall",
 		AttackTag:        attacks.AttackTagElementalBurst,
 		ICDTag:           attacks.ICDTagElementalBurst,
 		ICDGroup:         attacks.ICDGroupDefault,
@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	for _, v := range burstHitmarks {
 		// TODO: what's the size of this??
-		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 11.2, 9)
+		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1}, 11.2, 9)
 		c.Core.QueueAttack(ai, ap, v, v)
 	}
 

@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -38,8 +38,8 @@ func (c *char) skillActivate() action.Info {
 	c.Core.Tasks.Add(c.depleteSkydwellerPoints, 6)
 
 	// Initial Skill Damage
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Hanega: Song of the Wind",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -119,7 +119,7 @@ func (c *char) skillEndRoutine() int {
 	}
 
 	// Delay due to falling
-	c.Core.Log.NewEvent("adding delay due to falling", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("adding delay due to falling", glog.LogCharacterEvent, c.Index())
 
 	c.AddStatus(plungeAvailableKey, 26, true)
 
@@ -141,8 +141,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillDeactivate(), nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if !c.StatusIsActive(skillKey) {

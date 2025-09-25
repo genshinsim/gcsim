@@ -59,10 +59,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	return &s, nil
 }
 
-func (s *Set) OnShielded() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnShielded() func(args ...any) bool {
+	return func(args ...any) bool {
 		shd := args[0].(shield.Shield)
-		if s.core.Player.Active() != s.char.Index {
+		if s.core.Player.Active() != s.char.Index() {
 			return false
 		}
 		if shd.Type() == shield.Crystallize {
@@ -73,13 +73,13 @@ func (s *Set) OnShielded() func(args ...interface{}) bool {
 	}
 }
 
-func (s *Set) OnShieldBreak() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnShieldBreak() func(args ...any) bool {
+	return func(args ...any) bool {
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {
 			return false
 		}
-		if s.core.Player.Active() != s.char.Index {
+		if s.core.Player.Active() != s.char.Index() {
 			return false
 		}
 		s.lastF = s.core.F + 60
@@ -87,19 +87,19 @@ func (s *Set) OnShieldBreak() func(args ...interface{}) bool {
 	}
 }
 
-func (s *Set) OnCharacterSwap() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnCharacterSwap() func(args ...any) bool {
+	return func(args ...any) bool {
 		prev := args[0].(int)
 		active := args[1].(int)
 		shd := s.core.Player.Shields.Get(shield.Crystallize)
 		if shd == nil {
 			return false
 		}
-		if active == s.char.Index {
+		if active == s.char.Index() {
 			s.lastF = shd.Expiry()
 			return false
 		}
-		if prev == s.char.Index {
+		if prev == s.char.Index() {
 			s.lastF = s.core.F + 60
 			return false
 		}
@@ -107,9 +107,9 @@ func (s *Set) OnCharacterSwap() func(args ...interface{}) bool {
 	}
 }
 
-func (s *Set) OnSkill() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
-		if s.core.Player.Active() != s.char.Index {
+func (s *Set) OnSkill() func(args ...any) bool {
+	return func(args ...any) bool {
+		if s.core.Player.Active() != s.char.Index() {
 			return false
 		}
 		m := make([]float64, attributes.EndStatType)

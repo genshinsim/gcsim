@@ -5,12 +5,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func (c *char) c1(a combat.AttackCB) {
+func (c *char) c1(a info.AttackCB) {
 	if c.Base.Cons < 1 {
 		return
 	}
@@ -18,15 +19,15 @@ func (c *char) c1(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("xiangling-c1", 6*60),
 		Ele:   attributes.Pyro,
 		Value: -0.15,
 	})
 }
 
-func (c *char) c2(done bool) combat.AttackCBFunc {
-	return func(atk combat.AttackCB) {
+func (c *char) c2(done bool) info.AttackCBFunc {
+	return func(atk info.AttackCB) {
 		if done {
 			return
 		}
@@ -41,10 +42,11 @@ func (c *char) c2(done bool) combat.AttackCBFunc {
 		done = true
 	}
 }
+
 func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 	return func() {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Oil Meets Fire (C2)",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNone,
@@ -57,7 +59,7 @@ func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2), 0, 0)
 
-		c.Core.Log.NewEvent("Triggered Xiangling C2 explosion", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Triggered Xiangling C2 explosion", glog.LogCharacterEvent, c.Index()).
 			Write("src", src)
 	}
 }

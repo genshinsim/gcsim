@@ -17,7 +17,7 @@ func (c *char) c6() {
 	c.c6buff = make([]float64, attributes.EndStatType)
 	c.c6buff[attributes.CR] = 1
 	// check for C6 proc on hurt
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false
@@ -69,7 +69,7 @@ func (c *char) checkc6(check1HP bool) {
 func (c *char) c4() {
 	c.c4buff = make([]float64, attributes.EndStatType)
 	c.c4buff[attributes.CR] = 0.12
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		// do nothing if not an enemy
 		if !ok {
@@ -80,7 +80,7 @@ func (c *char) c4() {
 		}
 		for i, char := range c.Core.Player.Chars() {
 			// does not affect hutao
-			if c.Index == i {
+			if c.Index() == i {
 				continue
 			}
 			char.AddStatMod(character.StatMod{

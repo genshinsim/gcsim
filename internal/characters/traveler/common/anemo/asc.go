@@ -14,8 +14,8 @@ func (c *Traveler) a1() {
 	if c.Base.Ascension < 1 || c.NormalCounter != c.NormalHitNum-1 {
 		return
 	}
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Slitting Wind (A1)",
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
@@ -48,12 +48,12 @@ func (c *Traveler) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -65,11 +65,11 @@ func (c *Traveler) a4() {
 
 		c.AddStatus(a4ICDKey, 300, true)
 
-		for i := 0; i < 5; i++ {
+		for i := range 5 {
 			c.QueueCharTask(func() {
 				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
-					Target:  c.Index,
+					Caller:  c.Index(),
+					Target:  c.Index(),
 					Message: "Second Wind",
 					Type:    info.HealTypePercent,
 					Src:     0.02,

@@ -3,58 +3,29 @@ package combat
 import (
 	"math"
 
-	"github.com/genshinsim/gcsim/pkg/core/targets"
-)
-
-type GadgetTyp int
-
-const (
-	GadgetTypUnknown GadgetTyp = iota
-	StartGadgetTypEnemy
-	GadgetTypDendroCore
-	GadgetTypLeaLotus
-	GadgetTypBogglecatBox
-	EndGadgetTypEnemy
-	GadgetTypGuoba
-	GadgetTypYueguiThrowing
-	GadgetTypYueguiJumping
-	GadgetTypBaronBunny
-	GadgetTypGrinMalkinHat
-	GadgetTypSourcewaterDropletHydroTrav
-	GadgetTypSourcewaterDropletNeuv
-	GadgetTypSourcewaterDropletSigewinne
-	GadgetTypCrystallizeShard
-	GadgetTypYumemiSnack
-	GadgetTypTest
-	EndGadgetTyp
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var gadgetLimits []int
 
 func init() {
-	gadgetLimits = make([]int, EndGadgetTyp)
-	gadgetLimits[GadgetTypDendroCore] = 5
-	gadgetLimits[GadgetTypTest] = 2
-	gadgetLimits[GadgetTypLeaLotus] = 1
-	gadgetLimits[GadgetTypYueguiThrowing] = 2
-	gadgetLimits[GadgetTypYueguiJumping] = 3
-	gadgetLimits[GadgetTypSourcewaterDropletHydroTrav] = 12
-	gadgetLimits[GadgetTypSourcewaterDropletNeuv] = 12
-	gadgetLimits[GadgetTypSourcewaterDropletSigewinne] = 12
-	gadgetLimits[GadgetTypCrystallizeShard] = 3
+	gadgetLimits = make([]int, info.EndGadgetTyp)
+	gadgetLimits[info.GadgetTypDendroCore] = 5
+	gadgetLimits[info.GadgetTypTest] = 2
+	gadgetLimits[info.GadgetTypLeaLotus] = 1
+	gadgetLimits[info.GadgetTypYueguiThrowing] = 2
+	gadgetLimits[info.GadgetTypYueguiJumping] = 3
+	gadgetLimits[info.GadgetTypSourcewaterDropletHydroTrav] = 12
+	gadgetLimits[info.GadgetTypSourcewaterDropletNeuv] = 12
+	gadgetLimits[info.GadgetTypSourcewaterDropletSigewinne] = 12
+	gadgetLimits[info.GadgetTypCrystallizeShard] = 3
 }
 
-type Gadget interface {
-	Target
-	Src() int
-	GadgetTyp() GadgetTyp
-}
-
-func (h *Handler) RemoveGadget(key targets.TargetKey) {
+func (h *Handler) RemoveGadget(key info.TargetKey) {
 	h.ReplaceGadget(key, nil)
 }
 
-func (h *Handler) AddGadget(t Gadget) {
+func (h *Handler) AddGadget(t info.Gadget) {
 	// check for hard coded limit
 	if gadgetLimits[t.GadgetTyp()] > 0 {
 		// should kill oldest one if > limit
@@ -79,7 +50,7 @@ func (h *Handler) AddGadget(t Gadget) {
 	t.SetKey(h.nextkey())
 }
 
-func (h *Handler) ReplaceGadget(key targets.TargetKey, t Gadget) {
+func (h *Handler) ReplaceGadget(key info.TargetKey, t info.Gadget) {
 	// do nothing if not found
 	for i, v := range h.gadgets {
 		if v != nil && v.Key() == key {
@@ -88,11 +59,11 @@ func (h *Handler) ReplaceGadget(key targets.TargetKey, t Gadget) {
 	}
 }
 
-func (h *Handler) Gadget(i int) Gadget {
+func (h *Handler) Gadget(i int) info.Gadget {
 	return h.gadgets[i]
 }
 
-func (h *Handler) Gadgets() []Gadget {
+func (h *Handler) Gadgets() []info.Gadget {
 	return h.gadgets
 }
 

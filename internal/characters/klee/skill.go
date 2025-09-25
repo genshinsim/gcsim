@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -37,8 +37,8 @@ func init() {
 // "mine" determines the number of mines that hit the enemy
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	type attackData struct {
-		ai   combat.AttackInfo
-		snap combat.Snapshot
+		ai   info.AttackInfo
+		snap info.Snapshot
 	}
 
 	bounce, ok := p["bounce"]
@@ -47,9 +47,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	bounceAttacks := make([]attackData, bounce)
 	for i := range bounceAttacks {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Jumpy Dumpty",
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Jumpy Dumpty (Bounce)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagKleeFireDamage,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -78,9 +78,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		mineHitmark = 240
 	}
 	mineAttacks := make([]attackData, minehits)
-	mineAi := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Jumpy Dumpty Mine Hit",
+	mineAi := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Jumpy Dumpty (Mine)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagKleeFireDamage,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -151,10 +151,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return actionInfo, nil
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

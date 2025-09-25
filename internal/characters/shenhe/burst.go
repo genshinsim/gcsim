@@ -6,13 +6,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
-var burstTickOffset = []int{0, 2, 4, 0, 2, 4, 0, 2, 4}
+var (
+	burstFrames     []int
+	burstTickOffset = []int{0, 2, 4, 0, 2, 4, 0, 2, 4}
+)
 
 const (
 	burstStart   = 47
@@ -31,8 +33,8 @@ func init() {
 
 // Burst attack damage queue generator
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Divine Maiden's Deliverance (Initial)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -43,7 +45,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 8)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 8)
 	burstPos := burstArea.Shape.Pos()
 	c.Core.QueueAttack(
 		ai,
@@ -61,8 +63,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	c.AddStatus(burstKey, burstDuration, false)
 
-	ai = combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai = info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Divine Maiden's Deliverance (DoT)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -79,7 +81,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		snap := c.Snapshot(&ai)
 		for i := 0; i < count; i++ {
 			hitmark := 82 + i*117
-			for j := 0; j < 2; j++ {
+			for j := range 2 {
 				c.Core.QueueAttackWithSnap(ai, snap, ap, hitmark+j*(30+burstTickOffset[i]))
 			}
 		}
@@ -108,12 +110,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			}
 			// Q debuff tick
 			for _, e := range c.Core.Combat.EnemiesWithinArea(burstArea, nil) {
-				e.AddResistMod(combat.ResistMod{
+				e.AddResistMod(info.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-cryo", buffDuration),
 					Ele:   attributes.Cryo,
 					Value: -burstrespp[c.TalentLvlBurst()],
 				})
-				e.AddResistMod(combat.ResistMod{
+				e.AddResistMod(info.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-phys", buffDuration),
 					Ele:   attributes.Physical,
 					Value: -burstrespp[c.TalentLvlBurst()],

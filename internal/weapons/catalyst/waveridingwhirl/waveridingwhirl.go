@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stacks := 0
 	val := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) bool {
 		for _, char := range c.Player.Chars() {
 			if char.Base.Element == attributes.Hydro {
 				stacks++
@@ -50,8 +50,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return true
 	}, fmt.Sprintf("waveridingwhirl-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(buffICD) {

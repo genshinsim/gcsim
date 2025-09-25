@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -72,8 +72,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	// Activation DMG
-	activationAttack := combat.AttackInfo{
-		ActorIndex:   c.Index,
+	activationAttack := info.AttackInfo{
+		ActorIndex:   c.Index(),
 		Abil:         skillActivateDmgName,
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagNone,
@@ -136,7 +136,7 @@ func (c *char) skillInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, -1),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) (float64, bool) {
 				if !c.StatusIsActive(dreamDrifterStateKey) {
 					return 0, false
 				}
@@ -161,10 +161,10 @@ func (c *char) skillInit() {
 	}
 
 	// Remove the dreamDrifter state when she leaves the field
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 
-		if prev == c.Index && c.StatusIsActive(dreamDrifterStateKey) {
+		if prev == c.Index() && c.StatusIsActive(dreamDrifterStateKey) {
 			c.cancelDreamDrifterState()
 		}
 
@@ -174,8 +174,8 @@ func (c *char) skillInit() {
 
 func (c *char) startCloudAttacks(travel int) {
 	// clouds DMG snapshots on activation
-	c.cloudAttack = combat.AttackInfo{
-		ActorIndex:   c.Index,
+	c.cloudAttack = info.AttackInfo{
+		ActorIndex:   c.Index(),
 		Abil:         cloudDmgName,
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagElementalArt,
@@ -195,8 +195,8 @@ func (c *char) startCloudAttacks(travel int) {
 }
 
 // Generates up to 4 particles on each E DMG either on activation or cloud.
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 
@@ -215,7 +215,7 @@ func (c *char) cancelDreamDrifterState() {
 	c.DeleteStatus(dreamDrifterStateKey)
 	c.cloudSrc = -1
 
-	c.Core.Log.NewEvent("DreamDrifter effect cancelled", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("DreamDrifter effect cancelled", glog.LogCharacterEvent, c.Index())
 }
 
 func (c *char) cloudTask(travel, src, hitmark int) {

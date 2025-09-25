@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
@@ -28,8 +29,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Nights of Formal Focus",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -77,7 +78,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) starsSkill() {
-	c.Core.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnSkill, func(args ...any) bool {
 		exist := c.Core.Player.Shields.Get(shield.LaylaSkill)
 		if exist != nil {
 			c.addNightStars(2, ICDNightStarSkill)

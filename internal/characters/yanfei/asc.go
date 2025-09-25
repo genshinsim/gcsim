@@ -4,8 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,17 +30,17 @@ func (c *char) a1(stacks int) {
 // When Yanfei's Charged Attack deals a CRIT Hit to opponents,
 // she will deal an additional instance of AoE Pyro DMG equal to 80% of her ATK.
 // This DMG counts as Charged Attack DMG.
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		trg := a.Target
-		if trg.Type() != targets.TargettableEnemy {
+		if trg.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !a.IsCrit {
@@ -51,8 +51,8 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		}
 		done = true
 
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Blazing Eye (A4)",
 			AttackTag:          attacks.AttackTagExtra,
 			ICDTag:             attacks.ICDTagNone,

@@ -4,29 +4,28 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // When Rosaria deals a CRIT Hit, her ATK Speed increase by 10% and her Normal Attack DMG increases by 10% for 4s (can trigger vs shielded enemies)
-func (c *char) makeC1CB() combat.AttackCBFunc {
+func (c *char) makeC1CB() info.AttackCBFunc {
 	if c.Base.Cons < 1 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !a.IsCrit {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 
@@ -34,7 +33,7 @@ func (c *char) makeC1CB() combat.AttackCBFunc {
 		m[attributes.DmgP] = 0.1
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("rosaria-c1-dmg", 240), // 4s
-			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
@@ -58,16 +57,16 @@ func (c *char) makeC1CB() combat.AttackCBFunc {
 }
 
 // Ravaging Confession's CRIT Hits regenerate 5 Energy for Rosaria. Can only be triggered once each time Ravaging Confession is cast.
-func (c *char) makeC4CB() combat.AttackCBFunc {
+func (c *char) makeC4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !a.IsCrit {
@@ -82,16 +81,16 @@ func (c *char) makeC4CB() combat.AttackCBFunc {
 }
 
 // Rites of Termination's attack decreases opponent's Physical RES by 20% for 10s.
-func (c *char) makeC6CB() combat.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("rosaria-c6", 600),
 			Ele:   attributes.Physical,
 			Value: -0.2,

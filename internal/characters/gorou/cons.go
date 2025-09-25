@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -16,7 +17,7 @@ import (
 // is decreased by 2s. This effect can occur once every 10s.
 func (c *char) c1() {
 	icd := -1
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		eActive := c.Core.Status.Duration(generalWarBannerKey) > 0
 		qActive := c.Core.Status.Duration(generalGloryKey) > 0
 		if !eActive && !qActive {
@@ -26,9 +27,9 @@ func (c *char) c1() {
 			return false
 		}
 
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		// need to check if target hit is inside the field
-		var area combat.AttackPattern
+		var area info.AttackPattern
 		if eActive {
 			area = c.eFieldArea
 		} else {
@@ -40,8 +41,8 @@ func (c *char) c1() {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex == c.Index {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex == c.Index() {
 			return false
 		}
 		if atk.Info.Element != attributes.Geo {
@@ -64,7 +65,7 @@ func (c *char) c1() {
 // active character obtains an Elemental Shard from a Crystallize reaction.
 // This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) bool {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
 			return false
 		}
@@ -93,7 +94,7 @@ func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c6key, 720),
-			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Geo {
 					return nil, false
 				}

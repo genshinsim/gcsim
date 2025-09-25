@@ -10,9 +10,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 // Watcher watches state change and triggers accordingly
@@ -28,9 +28,9 @@ type Watcher struct {
 	tickerFreq  int
 
 	// other fields including optional overrides
-	state        action.AnimationState   // the state change we are watching for
-	delayKey     model.AnimationDelayKey // delay key used to check delay func
-	shouldDelay  func() bool             // function to be called to see if delayed should be applied
+	state        action.AnimationState  // the state change we are watching for
+	delayKey     info.AnimationDelayKey // delay key used to check delay func
+	shouldDelay  func() bool            // function to be called to see if delayed should be applied
 	tickOnActive bool
 
 	tickSrc int
@@ -41,7 +41,7 @@ type Config func(w *Watcher) error
 func New(cfg ...Config) (*Watcher, error) {
 	w := &Watcher{
 		// defaults
-		delayKey: model.InvalidAnimationDelayKey,
+		delayKey: info.InvalidAnimationDelayKey,
 		state:    action.NormalAttackState,
 	}
 	for _, f := range cfg {
@@ -83,7 +83,7 @@ func WithMandatory(key keys.Char, abil, statusKey, icdKey string, tickerFreq int
 	}
 }
 
-func WithAnimationDelayCheck(key model.AnimationDelayKey, shouldDelay func() bool) Config {
+func WithAnimationDelayCheck(key info.AnimationDelayKey, shouldDelay func() bool) Config {
 	return func(w *Watcher) error {
 		w.delayKey = key
 		w.shouldDelay = shouldDelay
@@ -110,7 +110,7 @@ func (w *Watcher) Kill() {
 }
 
 func (w *Watcher) stateChangeHook() {
-	w.core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	w.core.Events.Subscribe(event.OnStateChange, func(args ...any) bool {
 		next := args[1].(action.AnimationState)
 		// ignore if it's not the state we are looking for
 		if next != w.state {
@@ -122,11 +122,11 @@ func (w *Watcher) stateChangeHook() {
 		// note that this is less performant because we don't actually need to do this check
 		// if say the status is not active at all
 		// however this just simpler to read so... performance hit shouldn't be that big
-		if w.shouldDelay != nil { //TODO: to maintain old implementation equivalent; should be removed
+		if w.shouldDelay != nil { // TODO: to maintain old implementation equivalent; should be removed
 			// if w.shouldDelay() {
 			if delay := w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey); delay > 0 {
 				c := w.caster
-				w.core.Log.NewEventBuildMsg(glog.LogDebugEvent, c.Index, w.abil, " delay on state change").
+				w.core.Log.NewEventBuildMsg(glog.LogDebugEvent, c.Index(), w.abil, " delay on state change").
 					Write("delay", delay)
 				w.core.Tasks.Add(w.onStateChange(next), delay)
 				return false
@@ -145,13 +145,13 @@ func (w *Watcher) onStateChange(next action.AnimationState) func() {
 			return
 		}
 		if w.icdKey != "" && c.StatusIsActive(w.icdKey) {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " not triggered on state change; on icd").
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered on state change; on icd").
 				Write("icd", c.StatusExpiry(w.icdKey)).
 				Write("icd_key", w.icdKey)
 			return
 		}
 		w.triggerFunc()
-		w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " triggered on state change").
+		w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " triggered on state change").
 			Write("state", next).
 			Write("icd", c.StatusExpiry(w.icdKey)).
 			Write("icd_key", w.icdKey)
@@ -179,13 +179,13 @@ func (w *Watcher) tickerFunc(src int) func() {
 		c := w.caster
 		// check if buff is up
 		if !c.StatusIsActive(w.statusKey) {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " not triggered on tick; on icd").
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered on tick; on icd").
 				Write("icd", c.StatusExpiry(w.icdKey)).
 				Write("icd_key", w.icdKey)
 			return
 		}
 		if w.tickSrc != src {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " tick check ignored, src diff").
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " tick check ignored, src diff").
 				Write("src", src).
 				Write("new src", w.tickSrc)
 			return
@@ -193,7 +193,7 @@ func (w *Watcher) tickerFunc(src int) func() {
 		// stop if we are no longer in the right animation state
 		state := w.core.Player.CurrentState()
 		if state != w.state {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " tick check stopped, wrong state").
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " tick check stopped, wrong state").
 				Write("src", src).
 				Write("state", state)
 			return
@@ -202,14 +202,14 @@ func (w *Watcher) tickerFunc(src int) func() {
 			// only nesting the if so it's easier to read...
 			s := w.core.Player.CurrentStateStart()
 			if w.core.F-s < w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey) {
-				w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " not triggered; not enough time since normal state start").
+				w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered; not enough time since normal state start").
 					Write("current_state", state).
 					Write("state_start", s)
 				return
 			}
 		}
 		// if there is a delay check then make sure current frame count is passed the delay
-		w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, w.abil, " triggered from ticker").
+		w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " triggered from ticker").
 			Write("src", src).
 			Write("state", state).
 			Write("icd", c.StatusExpiry(w.statusKey))

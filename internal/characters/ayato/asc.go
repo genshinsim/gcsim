@@ -12,7 +12,7 @@ func (c *char) a1OnSkill() {
 		return
 	}
 	c.stacks = 2
-	c.Core.Log.NewEvent("ayato a1 proc'd", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("ayato a1 proc'd", glog.LogCharacterEvent, c.Index())
 }
 
 // Kamisato Art: Kyouka has the following properties:
@@ -23,7 +23,7 @@ func (c *char) a1OnExplosion() {
 		return
 	}
 	c.stacks = c.stacksMax
-	c.Core.Log.NewEvent("ayato a1 set namisen stacks to max", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("ayato a1 set namisen stacks to max", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.stacks)
 }
 
@@ -32,7 +32,7 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	if c.Core.Player.Active() == c.Index {
+	if c.Core.Player.Active() == c.Index() {
 		return
 	}
 	if c.Energy >= 40 {

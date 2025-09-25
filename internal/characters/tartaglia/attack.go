@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const normalHitNum = 6
@@ -53,8 +53,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
@@ -69,7 +69,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
+			info.Point{Y: -0.5},
 			0.1,
 			1,
 		),
@@ -135,8 +135,8 @@ func init() {
 // Perform up to 6 consecutive Hydro strikes.
 func (c *char) meleeAttack() action.Info {
 	for i, mult := range attackE[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -151,7 +151,7 @@ func (c *char) meleeAttack() action.Info {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: meleeOffsets[c.NormalCounter][i]},
+			info.Point{Y: meleeOffsets[c.NormalCounter][i]},
 			meleeHitboxes[c.NormalCounter][i][0],
 			meleeFanAngles[c.NormalCounter],
 		)
@@ -159,7 +159,7 @@ func (c *char) meleeAttack() action.Info {
 			ai.StrikeType = attacks.StrikeTypeSpear
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: meleeOffsets[c.NormalCounter][i]},
+				info.Point{Y: meleeOffsets[c.NormalCounter][i]},
 				meleeHitboxes[c.NormalCounter][i][0],
 				meleeHitboxes[c.NormalCounter][i][1],
 			)

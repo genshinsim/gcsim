@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -24,9 +24,9 @@ const burstHitmark = 34
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstTaggedCount = 0
-	burstCB := func(a combat.AttackCB) {
+	burstCB := func(a info.AttackCB) {
 		// check if enemy
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		// max 4 tagged
@@ -40,8 +40,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 		c.irisDmg(a.Target)
 	}
-	auraCheck := combat.AttackInfo{
-		ActorIndex: c.Index,
+	auraCheck := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Windmuster Iris (Aura check)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
@@ -54,11 +54,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	// should only hit enemies
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
-	ap.SkipTargets[targets.TargettableGadget] = true
+	ap.SkipTargets[info.TargettableGadget] = true
 	c.Core.QueueAttack(auraCheck, ap, burstHitmark, burstHitmark, burstCB)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Fudou Style Vacuum Slugger",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -68,8 +68,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	//TODO: does heizou burst snapshot?
-	//TODO: heizou burst travel time parameter
+	// TODO: does heizou burst snapshot?
+	// TODO: heizou burst travel time parameter
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
@@ -77,7 +77,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		burstHitmark,
 	)
 
-	//TODO: Check CD with or without delay, check energy consume frame
+	// TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(action.ActionBurst, 12*60)
 	c.ConsumeEnergy(3)
 	return action.Info{
@@ -92,15 +92,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 // these opponents will be afflicted with Windmuster Iris.
 // This Windmuster Iris will explode after a moment and dissipate,
 // dealing AoE DMG of the corresponding aforementioned elemental type.
-func (c *char) irisDmg(t combat.Target) {
-	x, ok := t.(combat.TargetWithAura)
+func (c *char) irisDmg(t info.Target) {
+	x, ok := t.(info.TargetWithAura)
 	if !ok {
-		//TODO: check if this is correct? should we be doing nothing here?
+		// TODO: check if this is correct? should we be doing nothing here?
 		return
 	}
-	//TODO: does burst iris snapshot
-	aiAbs := combat.AttackInfo{
-		ActorIndex: c.Index,
+	// TODO: does burst iris snapshot
+	aiAbs := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Windmuster Iris",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -121,7 +121,7 @@ func (c *char) irisDmg(t combat.Target) {
 		c.Core.Log.NewEvent(
 			"No valid aura detected, omiting iris",
 			glog.LogCharacterEvent,
-			c.Index,
+			c.Index(),
 		).Write("target", t.Key())
 		return
 	}

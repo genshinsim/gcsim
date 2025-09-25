@@ -7,9 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -25,14 +24,16 @@ func init() {
 }
 
 const (
-	skillICDKey    = "albedo-skill-icd"
-	particleICDKey = "albedo-particle-icd"
+	skillICDKey      = "albedo-skill-icd"
+	particleICDKey   = "albedo-particle-icd"
+	skillAbilInitial = "Abiogenesis: Solar Isotoma (Initial)"
+	skillAbilTick    = "Abiogenesis: Solar Isotoma (Tick)"
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Abiogenesis: Solar Isotoma",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       skillAbilInitial,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -48,13 +49,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	player := c.Core.Combat.Player()
 	skillDir := player.Direction()
 	// assuming tap e for hitbox offset
-	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, player.Direction())
+	skillPos := info.CalcOffsetPoint(c.Core.Combat.Player().Pos(), info.Point{Y: 3}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 
 	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
 	// snapshot for ticks
-	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
+	ai.Abil = skillAbilTick
 	ai.ICDTag = attacks.ICDTagElementalArt
 	ai.Mult = skillTick[c.TalentLvlSkill()]
 	ai.UseDef = true
@@ -88,8 +89,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -102,9 +103,9 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 func (c *char) skillHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		trg := args[0].(info.Target)
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if !c.skillActive {
 			return false
@@ -113,7 +114,7 @@ func (c *char) skillHook() {
 			return false
 		}
 		// Can't be triggered by itself when refreshing
-		if atk.Info.Abil == "Abiogenesis: Solar Isotoma" {
+		if atk.Info.Abil == skillAbilInitial {
 			return false
 		}
 		if dmg == 0 {
@@ -138,7 +139,7 @@ func (c *char) skillHook() {
 		// c1: skill tick regen 1.2 energy
 		if c.Base.Cons >= 1 {
 			c.AddEnergy("albedo-c1", 1.2)
-			c.Core.Log.NewEvent("c1 restoring energy", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("c1 restoring energy", glog.LogCharacterEvent, c.Index())
 		}
 
 		// c2: skill tick grant stacks, lasts 30s; each stack increase burst dmg by 30% of def, stack up to 4 times

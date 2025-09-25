@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -42,12 +41,12 @@ type Character interface {
 	ReduceActionCooldown(a action.Action, v int)
 	Charges(a action.Action) int
 
-	Snapshot(a *combat.AttackInfo) combat.Snapshot
+	Snapshot(a *info.AttackInfo) info.Snapshot
 
 	AddEnergy(src string, amt float64)
 
 	ApplyHitlag(factor, dur float64)
-	AnimationStartDelay(model.AnimationDelayKey) int
+	AnimationStartDelay(info.AnimationDelayKey) int
 
 	Condition([]string) (any, error)
 
@@ -82,7 +81,7 @@ type HP interface {
 }
 
 type CharWrapper struct {
-	Index int
+	index int
 	f     *int // current frame
 	debug bool // debug mode?
 	Character
@@ -181,7 +180,11 @@ func New(
 }
 
 func (c *CharWrapper) SetIndex(index int) {
-	c.Index = index
+	c.index = index
+}
+
+func (c *CharWrapper) Index() int {
+	return c.index
 }
 
 func (c *CharWrapper) SetWeapon(w info.Weapon) {
@@ -234,9 +237,13 @@ func (c *CharWrapper) TalentLvlAttack() int {
 	}
 	return c.Talents.Attack + add
 }
+
 func (c *CharWrapper) TalentLvlSkill() int {
 	c.consCheck()
 	add := -1
+	if c.Tags[keys.SkirkPassive] > 0 {
+		add++
+	}
 	if c.SkillCon > 0 && c.Base.Cons >= c.SkillCon {
 		add += 3
 	}
@@ -245,6 +252,7 @@ func (c *CharWrapper) TalentLvlSkill() int {
 	}
 	return c.Talents.Skill + add
 }
+
 func (c *CharWrapper) TalentLvlBurst() int {
 	c.consCheck()
 	add := -1

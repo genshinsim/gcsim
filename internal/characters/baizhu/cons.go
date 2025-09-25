@@ -23,9 +23,9 @@ func (c *char) c1() {
 // DMG dealt this way is considered Elemental Skill DMG.
 // This effect can be triggered once every 5s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		t := args[0].(combat.Target)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
+		t := args[0].(info.Target)
 		// only trigger with the active character
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
@@ -33,9 +33,9 @@ func (c *char) c2() {
 		if c.StatusIsActive(c2ICDKey) {
 			return false
 		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Gossamer Sprite: Splice. (Baizhu's C2)",
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Gossamer Sprite: Splice. (C2)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   attacks.ICDGroupBaizhuC2,
@@ -45,7 +45,7 @@ func (c *char) c2() {
 			Mult:       2.5,
 		}
 		c.c6done = false
-		var c6cb combat.AttackCBFunc
+		var c6cb info.AttackCBFunc
 		if c.Base.Cons >= 6 {
 			c6cb = c.makeC6CB()
 		}
@@ -61,7 +61,7 @@ func (c *char) c2() {
 		// C2 healing
 		c.Core.Tasks.Add(func() {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  c.Core.Player.Active(),
 				Message: "Baizhu's C2: Healing",
 				Src:     (skillHealPP[c.TalentLvlSkill()]*c.MaxHP() + skillHealFlat[c.TalentLvlSkill()]) * 0.2,
@@ -92,9 +92,9 @@ func (c *char) c4() {
 // Increases the DMG dealt by Holistic Revivification's Spiritveins by 8% of Baizhu's Max HP.
 // Additionally, when Gossamer Sprite or Gossamer Sprite: Splice hit opponents, there is a 100% chance of generating one of Healing Holism's
 // Seamless Shields. This effect can only be triggered once by a Gossamer Sprite or Gossamer Sprite: Splice.
-func (c *char) makeC6CB() combat.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if done {
 			return
 		}

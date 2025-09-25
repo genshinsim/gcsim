@@ -3,8 +3,8 @@ package diona
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -14,7 +14,7 @@ func (c *char) c2() {
 	m[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("diona-c2", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			return m, atk.Info.AttackTag == attacks.AttackTagElementalArt
 		},
 	})
@@ -45,7 +45,7 @@ func (c *char) c6() {
 					Base: modifier.NewBaseWithHitlag("diona-c6-healbonus", 120),
 					Amount: func() (float64, bool) {
 						// is this log even needed?
-						c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", glog.LogCharacterEvent, c.Index)
+						c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", glog.LogCharacterEvent, c.Index())
 						return 0.3, false
 					},
 				})

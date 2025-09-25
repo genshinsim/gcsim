@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -25,12 +26,12 @@ func (c *char) c1() {
 //     CRIT Rate and CRIT DMG are fixed at 20% and 100% respectively.
 //   - Within 8s of being affected by Quicken, Aggravate, Spread, DEF is decreased by 30%.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
 		}
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 
 		switch ae.Info.AttackTag {
 		case attacks.AttackTagBurningDamage:
@@ -45,7 +46,7 @@ func (c *char) c2() {
 			return false
 		}
 
-		//TODO: should this really be +=??
+		// TODO: should this really be +=??
 		ae.Snapshot.Stats[attributes.CR] += 0.2
 		ae.Snapshot.Stats[attributes.CD] += 1
 
@@ -56,7 +57,7 @@ func (c *char) c2() {
 	}, "nahida-c2-reaction-dmg-buff")
 
 	cb := func(rx event.Event) event.Hook {
-		return func(args ...interface{}) bool {
+		return func(args ...any) bool {
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
 				return false
@@ -64,7 +65,7 @@ func (c *char) c2() {
 			if !t.StatusIsActive(skillMarkKey) {
 				return false
 			}
-			t.AddDefMod(combat.DefMod{
+			t.AddDefMod(info.DefMod{
 				Base:  modifier.NewBaseWithHitlag("nahida-c2", 480),
 				Value: -0.3,
 			})
@@ -87,14 +88,11 @@ func (c *char) c4() {
 		Amount: func() ([]float64, bool) {
 			enemies := c.Core.Combat.EnemiesWithinArea(
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 30),
-				func(t combat.Enemy) bool {
+				func(t info.Enemy) bool {
 					return t.StatusIsActive(skillMarkKey)
 				},
 			)
-			count := len(enemies)
-			if count > 4 {
-				count = 4
-			}
+			count := min(len(enemies), 4)
 			if count == 0 {
 				return nil, false
 			}
@@ -117,11 +115,11 @@ const (
 // is considered Elemental Skill DMG and can be triggered once every 0.2s. This
 // effect can last up to 10s and will be removed after Nahida has unleashed 6
 // instances of Tri-Karma Purification: Karmic Oblivion.
-func (c *char) makeC6CB() combat.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -140,8 +138,8 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		}
 		c.AddStatus(c6ICDKey, 0.2*60, true)
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Tri-Karma Purification: Karmic Oblivion",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNahidaC6,

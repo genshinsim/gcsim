@@ -3,9 +3,9 @@ package layla
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -16,8 +16,8 @@ const c4Key = "layla-c4"
 // causing their Normal and Charged Attack DMG to increase based on 5% of Layla's Max HP.
 // Dawn Star can last up to 3s and will be removed 0.05s after dealing Normal or Charged Attack DMG.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
@@ -47,8 +47,8 @@ func (c *char) c6() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("layla-c6", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagElementalBurst && atk.Info.Abil != "Shooting Star" {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != attacks.AttackTagElementalBurst && atk.Info.Abil != shootingStarsAbil {
 				return nil, false
 			}
 			return m, true

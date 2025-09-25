@@ -1384,6 +1384,29 @@
         "radius": 0.8
       }
     ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
     "skill": [
       {
         "ability": "E-Tap",
@@ -1935,6 +1958,29 @@
         "center": "Player",
         "radius": 3.5,
         "notes": "not implemented yet"
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
       }
     ],
     "skill": [
@@ -4611,6 +4657,29 @@
         "radius": 2.2
       }
     ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
     "skill": [
       {
         "ability": "E-Skill",
@@ -5669,6 +5738,26 @@
         "offsetY": 0.5,
         "radius": 2.4,
         "fanAngle": 240
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 1.5
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3.5
       }
     ],
     "skill": [
@@ -7954,6 +8043,29 @@
         "notes": "not implemented yet"
       }
     ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
     "skill": [
       {
         "ability": "E-Tap",
@@ -8047,6 +8159,29 @@
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 0.8
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
       }
     ],
     "skill": [
@@ -8587,6 +8722,150 @@
         "boxX": 4,
         "boxY": 10,
         "notes": "This is an approximation because we do not actually know the real AoE. The hitbox was taken from Neuvillette's CA and was made slightly wider."
+      }
+    ]
+  },
+  "skirk": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.1,
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.1,
+        "radius": 2.2
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.5,
+        "boxX": 2.5,
+        "boxY": 3.2
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.5,
+        "boxX": 2.5,
+        "boxY": 3.2
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.1,
+        "boxX": 2.5,
+        "boxY": 2.4
+      },
+      {
+        "ability": "N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": -0.1,
+        "radius": 3.2
+      },
+      {
+        "ability": "E-N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.9,
+        "boxX": 7,
+        "boxY": 2.4
+      },
+      {
+        "ability": "E-N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.4,
+        "boxX": 7,
+        "boxY": 3
+      },
+      {
+        "ability": "E-N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 6,
+        "boxY": 3.6
+      },
+      {
+        "ability": "E-N3-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 6,
+        "boxY": 3.6
+      },
+      {
+        "ability": "E-N4-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 5,
+        "boxY": 3.6
+      },
+      {
+        "ability": "E-N4-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 5,
+        "boxY": 3.6
+      },
+      {
+        "ability": "E-N5",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1.7,
+        "boxX": 11,
+        "boxY": 3.6
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.8
+      },
+      {
+        "ability": "E-CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.3
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 2.5,
+        "boxX": 14,
+        "boxY": 9
+      }
+    ],
+    "cons": [
+      {
+        "ability": "Far to Fall (C1)",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 4,
+        "boxY": 4
+      },
+      {
+        "ability": "Havoc: Sever (C6)",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5
       }
     ]
   },
@@ -9891,6 +10170,282 @@
       }
     ]
   },
+  "travelerpyro": {
+    "normal": [
+      {
+        "ability": "Aether-N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.4,
+        "boxY": 2.2
+      },
+      {
+        "ability": "Aether-N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 1.7,
+        "fanAngle": 180
+      },
+      {
+        "ability": "Aether-N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.4,
+        "boxX": 1.5,
+        "boxY": 2.2
+      },
+      {
+        "ability": "Aether-N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 1.7
+      },
+      {
+        "ability": "Aether-N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 1.75,
+        "fanAngle": 240
+      },
+      {
+        "ability": "Lumine-N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1.6
+      },
+      {
+        "ability": "Lumine-N2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.4,
+        "boxY": 2.2
+      },
+      {
+        "ability": "Lumine-N3",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.7,
+        "radius": 1.5
+      },
+      {
+        "ability": "Lumine-N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.7,
+        "radius": 1.5
+      },
+      {
+        "ability": "Lumine-N5",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1.6
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-1",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 2.2
+      },
+      {
+        "ability": "CA-2",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 2.2
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E Hold DMG",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.0
+      },
+      {
+        "ability": "E Scorching Threshold",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.5
+      },
+      {
+        "ability": "E Blazing Threshold",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.5
+      },
+      {
+        "ability": "E Scorching Threshold (A1)",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4.0
+      },
+      {
+        "ability": "E Blazing Threshold (A1)",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.0
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4.5
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ]
+  },
+  "varesa": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.2,
+        "boxX": 2.5,
+        "boxY": 2.5
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.2,
+        "boxX": 2.8,
+        "boxY": 3.5
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0,
+        "radius": 2.5
+      },
+      {
+        "ability": "Fiery-N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 2.5
+      },
+      {
+        "ability": "Fiery-N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 4,
+        "boxY": 4
+      },
+      {
+        "ability": "Fiery-N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 4,
+        "boxY": 4.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 1,
+        "radius": 7.5
+      },
+      {
+        "ability": "Fiery-Q",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 1,
+        "radius": 7.5
+      },
+      {
+        "ability": "Q-Volcano-Kablam",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 1,
+        "radius": 7.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.7,
+        "radius": 3.5
+      },
+      {
+        "ability": "Fiery-CA",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.7,
+        "radius": 3.5
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 1
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 0.1,
+        "boxY": 2,
+        "notes": "This is an approximation because we do not actually know the real AoE."
+      },
+      {
+        "ability": "Fiery-E",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 0.1,
+        "boxY": 2,
+        "notes": "This is an approximation because we do not actually know the real AoE."
+      }
+    ]
+  },
   "venti": {
     "cons": [
       {
@@ -11054,6 +11609,29 @@
         "center": "Player",
         "radius": 3.5,
         "notes": "not implemented yet"
+      }
+    ],
+    "plunge": [
+      {
+        "ability": "Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 1
+      },
+      {
+        "ability": "Low_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 3
+      },
+      {
+        "ability": "High_Plunge",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
       }
     ],
     "skill": [

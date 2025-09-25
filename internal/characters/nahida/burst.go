@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -29,7 +29,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	f := int(dur * 60)
 
 	withinTimer := 60
-	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 20)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 20)
 	c.Core.Tasks.Add(func() {
 		c.burstSrc = c.Core.F
 		src := c.Core.F
@@ -51,8 +51,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				if c.pyroCount > 0 {
 					c.AddAttackMod(character.AttackMod{
 						Base: modifier.NewBaseWithHitlag(burstKey, 60),
-						Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-							return c.pyroBurstBuff, atk.Info.Abil == "Tri-Karma Purification"
+						Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+							return c.pyroBurstBuff, atk.Info.Abil == triKarmaAbil
 						},
 					})
 				}
@@ -61,10 +61,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 		if c.Base.Cons >= 6 {
 			// lasts 10s
-			//TODO: should this be delayed until animation end?
+			// TODO: should this be delayed until animation end?
 			c.AddStatus(c6ActiveKey, 600, true)
 			c.c6Count = 0
-			c.DeleteStatus(c6ICDKey) //TODO: check if this resets icd?
+			c.DeleteStatus(c6ICDKey) // TODO: check if this resets icd?
 		}
 	}, 66)
 

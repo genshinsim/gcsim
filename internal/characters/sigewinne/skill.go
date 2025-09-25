@@ -10,11 +10,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -76,11 +74,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		hold = 0
 	}
-	if hold == 1 {
+	switch hold {
+	case 1:
 		skillHitmark = skillShortHoldHitmark
 		skillCDStart = skillShortHoldCDStart
 		c.currentBubbleTier = 1
-	} else if hold == 2 {
+	case 2:
 		skillHitmark = skillHoldHitmark
 		skillCDStart = skillHoldCDStart
 		c.currentBubbleTier = 2
@@ -137,7 +136,7 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 
 		if c.Base.Cons >= 1 {
 			c.SetTag(convalescenceKey, c.Tag(convalescenceKey)+1)
-			c.Core.Log.NewEvent("bounce: adding a1 stack from c1", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("bounce: adding a1 stack from c1", glog.LogCharacterEvent, c.Index()).
 				Write("current count", c.Tag(convalescenceKey))
 		}
 
@@ -155,29 +154,29 @@ func (c *char) bolsteringBubblebalm(src, tick int) func() {
 
 func (c *char) spawnDroplets() {
 	player := c.Core.Combat.Player()
-	for j := 0; j < 2; j++ {
-		pos := geometry.CalcRandomPointFromCenter(
-			geometry.CalcOffsetPoint(
+	for range 2 {
+		pos := info.CalcRandomPointFromCenter(
+			info.CalcOffsetPoint(
 				player.Pos(),
-				geometry.Point{Y: 1.5},
+				info.Point{Y: 1.5},
 				player.Direction(),
 			),
 			0.3,
 			1,
 			c.Core.Rand,
 		)
-		sourcewaterdroplet.New(c.Core, pos, combat.GadgetTypSourcewaterDropletSigewinne)
+		sourcewaterdroplet.New(c.Core, pos, info.GadgetTypSourcewaterDropletSigewinne)
 	}
 }
 
-func (c *char) surgingBladeTask(target combat.Target) {
+func (c *char) surgingBladeTask(target info.Target) {
 	if c.StatusIsActive(skillAlignedICDKey) {
 		return
 	}
 	c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
-	aiThorn := combat.AttackInfo{
-		ActorIndex:   c.Index,
+	aiThorn := info.AttackInfo{
+		ActorIndex:   c.Index(),
 		Abil:         "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagNone,
@@ -203,13 +202,13 @@ func (c *char) bubbleHealing() {
 
 	// heal everyone except Sigewinne
 	for _, other := range c.Core.Player.Chars() {
-		if other.Index == c.Index {
+		if other.Index() == c.Index() {
 			continue
 		}
 		skillBonus := float64(c.currentBubbleTier) * bubbleTierBuff
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  other.Index,
+			Caller:  c.Index(),
+			Target:  other.Index(),
 			Message: "Bolstering Bubblebalm Healing",
 			Src:     bolsteringBubblebalmHealingPct[c.TalentLvlSkill()]*c.MaxHP() + bolsteringBubblebalmHealingFlat[c.TalentLvlSkill()],
 			Bonus:   c.Stat(attributes.Heal) + skillBonus,
@@ -225,8 +224,8 @@ func (c *char) bubbleFinalHealing() {
 	// heal only Sigewinne
 	skillBonus := float64(c.currentBubbleTier) * bubbleTierBuff
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: "Bolstering Bubblebalm Healing",
 		Src:     finalBounceHealing[c.TalentLvlSkill()] * c.MaxHP(),
 		Bonus:   c.Stat(attributes.Heal) + skillBonus,
@@ -238,7 +237,7 @@ func (c *char) bubbleTierDamageMod() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("sigewinne-bubble-tier", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:
@@ -259,9 +258,9 @@ func (c *char) bubbleTierDamageMod() {
 
 func (c *char) energyBondClearMod() {
 	// TODO: override healing functions?
-	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
 		index := args[0].(int)
-		if index != c.Index {
+		if index != c.Index() {
 			return false
 		}
 		debtChange := args[1].(float64)
@@ -289,8 +288,8 @@ func (c *char) bubbleTierLoseTask(tick int) {
 	}
 }
 
-func (c *char) particleCB(ac combat.AttackCB) {
-	if ac.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(ac info.AttackCB) {
+	if ac.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.particleGenerated {
@@ -303,8 +302,8 @@ func (c *char) particleCB(ac combat.AttackCB) {
 }
 
 func (c *char) generateSkillSnapshot() {
-	c.skillAttackInfo = combat.AttackInfo{
-		ActorIndex:   c.Index,
+	c.skillAttackInfo = info.AttackInfo{
+		ActorIndex:   c.Index(),
 		Abil:         "Rebound Hydrotherapy",
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagElementalArt,

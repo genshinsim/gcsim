@@ -6,15 +6,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
 
-const burstStart = 47           // lines up with cd start
-const burstInitialHitmark = 51  // Initial Hit
-const burstClusterHitmark = 100 // First Cluster Hit
+const (
+	burstStart          = 47  // lines up with cd start
+	burstInitialHitmark = 51  // Initial Hit
+	burstClusterHitmark = 100 // First Cluster Hit
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(80) // Q -> CA
@@ -34,8 +35,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// No ICD should not functionally matter as this only hits once
 
 	// titanbreaker
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Tengu Juurai: Titanbreaker",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -46,10 +47,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstMain[c.TalentLvlBurst()],
 	}
 
-	var c1cb combat.AttackCBFunc
+	var c1cb info.AttackCBFunc
 	if c.Base.Cons >= 1 {
-		c1cb = func(a combat.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+		c1cb = func(a info.AttackCB) {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			c.c1()
@@ -80,11 +81,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	for i := 0.0; i < stormClusterCount; i++ {
 		// every stormcluster has its own direction
-		direction := geometry.DegreesToDirection(i * stepSize).Rotate(burstInitialDirection)
+		direction := info.DegreesToDirection(i * stepSize).Rotate(burstInitialDirection)
 		// 6 ticks per stormcluster
-		for j := 0; j < 6; j++ {
+		for j := range 6 {
 			// start at 3.6 m offset, move 1.35m per tick
-			stormClusterPos := geometry.CalcOffsetPoint(burstInitialPos, geometry.Point{Y: 3.6 + 1.35*float64(j)}, direction)
+			stormClusterPos := info.CalcOffsetPoint(burstInitialPos, info.Point{Y: 3.6 + 1.35*float64(j)}, direction)
 			stormClusterAp := combat.NewCircleHitOnTarget(stormClusterPos, nil, stormClusterRadius)
 
 			c.Core.QueueAttack(ai, stormClusterAp, burstStart, burstClusterHitmark+18*j, c1cb)

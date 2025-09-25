@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -37,26 +37,26 @@ func (c *char) c1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if !c.StatusIsActive(skillStateKey) {
 			return false
 		}
 		if c.StatusIsActive(c1IcdKey) {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		if atk.Info.Element != attributes.Electro {
 			return false
 		}
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		c.AddStatus(c1IcdKey, c1Icd, false)
-		c1AI := combat.AttackInfo{
-			ActorIndex:       c.Index,
+		c1AI := info.AttackInfo{
+			ActorIndex:       c.Index(),
 			Abil:             "Nightwatch Shade (C1)",
 			AttackTag:        attacks.AttackTagNormal,
 			ICDTag:           attacks.ICDTagClorindeCons,
@@ -71,7 +71,7 @@ func (c *char) c1() {
 		for _, hitmark := range c1Hitmarks {
 			c.Core.QueueAttack(
 				c1AI,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -3}, 4),
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -3}, 4),
 				hitmark,
 				hitmark,
 				c.particleCB,
@@ -94,7 +94,7 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("clorinde-c4-burst-bonus", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
@@ -152,8 +152,8 @@ func (c *char) c6() {
 	c.c6Stacks--
 	c.AddStatus(c6GlimbrightIcdKey, 1*60, true)
 
-	c6AI := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	c6AI := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Glimbright Shade (C6)",
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagClorindeCons,

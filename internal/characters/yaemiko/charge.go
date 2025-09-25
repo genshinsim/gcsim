@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFrames []int
@@ -22,8 +22,8 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagExtraAttack,
@@ -45,8 +45,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// gets gated by special damage sequence (once every 0.5s)
 	initialPos := c.Core.Combat.Player().Pos()
 	initialDirection := c.Core.Combat.Player().Direction()
-	for i := 0; i < 5; i++ {
-		nextPos := geometry.CalcOffsetPoint(initialPos, geometry.Point{Y: 1.65 * float64(i+1)}, initialDirection)
+	for i := range 5 {
+		nextPos := info.CalcOffsetPoint(initialPos, info.Point{Y: 1.65 * float64(i+1)}, initialDirection)
 		c.Core.QueueAttack(
 			ai,
 			// direction should stay the same because primary target pos can't change during this loop

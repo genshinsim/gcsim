@@ -3,8 +3,8 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -16,7 +16,7 @@ func (c *char) c4() {
 	m[attributes.ATKP] = 0.3
 
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
@@ -29,7 +29,7 @@ func (c *char) c4() {
 	}
 }
 
-func (c *char) c6(ac combat.AttackCB) {
+func (c *char) c6(ac info.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
@@ -41,11 +41,11 @@ func (c *char) c6(ac combat.AttackCB) {
 	}
 	c.c6ICD = c.Core.F + 60
 	c.c6Count++
-	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("next_icd", c.c6ICD).
 		Write("count", c.c6Count)
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.ReduceActionCooldown(action.ActionBurst, 60)

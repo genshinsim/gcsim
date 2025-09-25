@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -27,8 +28,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Glacial Waltz",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -80,7 +81,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstTickerFunc(ai combat.AttackInfo, snap combat.Snapshot, src int) func() {
+func (c *char) burstTickerFunc(ai info.AttackInfo, snap info.Snapshot, src int) func() {
 	return func() {
 		// check if burst is up
 		if c.Core.Status.Duration(burstKey) == 0 {
@@ -88,7 +89,7 @@ func (c *char) burstTickerFunc(ai combat.AttackInfo, snap combat.Snapshot, src i
 		}
 		// check if it's still the same burst
 		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("kaeya burst tick ignored, src diff", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("kaeya burst tick ignored, src diff", glog.LogCharacterEvent, c.Index()).
 				Write("src", src).
 				Write("new src", c.burstTickSrc)
 			return

@@ -6,11 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstHitmarks = []int{96, 94}
-var burstFrames [][]int
+var (
+	burstHitmarks = []int{96, 94}
+	burstFrames   [][]int
+)
 
 func init() {
 	burstFrames = make([][]int, 2)
@@ -39,10 +41,10 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 
 	c.qAbsorb = attributes.NoElement
 	c.qICDTag = attacks.ICDTagNone
-	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.5}, 2.5, 2.5)
+	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 2.5, 2.5)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Gust Surge",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalArtAnemo,
@@ -52,11 +54,11 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -1.5}, 3, 3)
+	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -1.5}, 3, 3)
 	snap := c.Snapshot(&ai)
 
-	aiAbs := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiAbs := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Gust Surge (Absorbed)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -66,22 +68,22 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       burstAbsorbDot[c.TalentLvlBurst()],
 	}
-	apAbs := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -1}, 2.5, 2.5)
+	apAbs := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -1}, 2.5, 2.5)
 
 	snapAbs := c.Snapshot(&aiAbs)
 
-	var cb combat.AttackCBFunc
+	var cb info.AttackCBFunc
 	if c.Base.Cons >= 6 {
 		cb = c6cb(attributes.Anemo)
 	}
 
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		c.Core.QueueAttackWithSnap(ai, snap, ap, 94+30*i, cb)
 
 		c.Core.Tasks.Add(func() {
 			if c.qAbsorb != attributes.NoElement {
 				aiAbs.Element = c.qAbsorb
-				var cbAbs combat.AttackCBFunc
+				var cbAbs info.AttackCBFunc
 				if c.Base.Cons >= 6 {
 					cbAbs = c6cb(c.qAbsorb)
 				}
@@ -110,7 +112,7 @@ func (c *Traveler) absorbCheckQ(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.qAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.qAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.qAbsorb {
 		case attributes.Cryo:
 			c.qICDTag = attacks.ICDTagElementalBurstCryo

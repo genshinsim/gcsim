@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -31,7 +30,7 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 
 // Initiate off-field stacking if off-field at start of the sim
 func (w *Weapon) Init() error {
-	w.active = w.core.Player.Active() == w.char.Index
+	w.active = w.core.Player.Active() == w.char.Index()
 	if !w.active {
 		w.core.Tasks.Add(w.incStack(w.char, w.core.F), 1)
 	}
@@ -50,16 +49,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		core: c,
 		char: char,
 	}
-	w.stacks = p.Params["stacks"]
-	if w.stacks > 10 {
-		w.stacks = 10
-	}
+	w.stacks = min(p.Params["stacks"], 10)
 	dmg := 0.015 + float64(r)*0.005
 
 	m := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("alley-hunter", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			m[attributes.DmgP] = dmg * float64(w.stacks)
 			return m, true
 		},
@@ -67,14 +63,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	key := fmt.Sprintf("alley-hunter-%v", char.Base.Key.String())
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 		next := args[1].(int)
-		if next == char.Index {
+		if next == char.Index() {
 			w.active = true
 			w.lastActiveChange = c.F
 			w.char.QueueCharTask(w.decStack(char, c.F), 240) // on field for more than 4s, start decreasing stacks
-		} else if prev == char.Index {
+		} else if prev == char.Index() {
 			w.active = false
 			w.lastActiveChange = c.F
 			c.Tasks.Add(w.incStack(char, c.F), 60)
@@ -92,7 +88,7 @@ func (w *Weapon) decStack(c *character.CharWrapper, src int) func() {
 			if w.stacks < 0 {
 				w.stacks = 0
 			}
-			w.core.Log.NewEvent("Alley lost stack", glog.LogWeaponEvent, w.char.Index).
+			w.core.Log.NewEvent("Alley lost stack", glog.LogWeaponEvent, w.char.Index()).
 				Write("stacks:", w.stacks).
 				Write("last_swap", w.lastActiveChange).
 				Write("source", src)
@@ -105,7 +101,7 @@ func (w *Weapon) incStack(c *character.CharWrapper, src int) func() {
 	return func() {
 		if !w.active && w.stacks < 10 && src == w.lastActiveChange {
 			w.stacks++
-			w.core.Log.NewEvent("Alley gained stack", glog.LogWeaponEvent, w.char.Index).
+			w.core.Log.NewEvent("Alley gained stack", glog.LogWeaponEvent, w.char.Index()).
 				Write("stacks:", w.stacks).
 				Write("last_swap", w.lastActiveChange).
 				Write("source", src)

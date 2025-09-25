@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -62,7 +61,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("flower-4pc", -1),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
 				case attacks.AttackTagBloom:
 				case attacks.AttackTagHyperbloom:
@@ -75,9 +74,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 
 		//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-		f := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
+		f := func(args ...any) bool {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 			if char.StatusIsActive(icdKey) {
@@ -92,12 +91,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks++
 			}
 
-			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index()).
 				Write("stacks", s.stacks)
 
 			char.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBaseWithHitlag(buffKey, 10*60),
-				Amount: func(ai combat.AttackInfo) (float64, bool) {
+				Amount: func(ai info.AttackInfo) (float64, bool) {
 					switch ai.AttackTag {
 					case attacks.AttackTagBloom:
 					case attacks.AttackTagHyperbloom:
@@ -111,7 +110,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			return false
 		}
-		noGadget := func(args ...interface{}) bool {
+		noGadget := func(args ...any) bool {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
 				return false
 			}

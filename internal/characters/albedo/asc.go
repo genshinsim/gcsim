@@ -3,7 +3,7 @@ package albedo
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -22,12 +22,12 @@ func (c *char) a1() {
 	m[attributes.DmgP] = 0.25
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("albedo-a1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
 			// Can't be triggered by itself when refreshing
-			if atk.Info.Abil == "Abiogenesis: Solar Isotoma" {
+			if atk.Info.Abil == skillAbilInitial {
 				return nil, false
 			}
 			if e, ok := t.(*enemy.Enemy); !(ok && e.HP()/e.MaxHP() < .5) {

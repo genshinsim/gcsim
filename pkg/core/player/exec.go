@@ -33,7 +33,7 @@ func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 	}
 	char := h.chars[h.active]
 	// check for energy, cd, etc..
-	//TODO: make sure there is a default check for charge attack/dash stams in char implementation
+	// TODO: make sure there is a default check for charge attack/dash stams in char implementation
 	// this should deal with Ayaka/Mona's drain vs straight up consumption
 	if ok, reason := char.ActionReady(t, param); !ok {
 		h.Events.Emit(event.OnActionFailed, h.active, t, param, reason)
@@ -41,7 +41,7 @@ func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 	}
 
 	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
-		req := h.AbilStamCost(char.Index, t, param)
+		req := h.AbilStamCost(char.Index(), t, param)
 		return req, h.Stam >= req
 	}
 
@@ -104,11 +104,11 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	var err error
 	switch t {
 	case action.ActionCharge: // require special calc for stam
-		req := h.AbilStamCost(char.Index, t, param)
+		req := h.AbilStamCost(char.Index(), t, param)
 		h.UseStam(req, t)
-		err = h.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
+		err = h.useAbility(t, param, char.ChargeAttack) // TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash:
-		err = h.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
+		err = h.useAbility(t, param, char.Dash) // TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
 		err = h.useAbility(t, param, char.Jump)
 	case action.ActionWalk:

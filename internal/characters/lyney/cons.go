@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -57,20 +58,20 @@ func (c *char) c2Setup() {
 	}
 
 	// listen for swap to clear/apply C2
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		// swapping off lyney means clearing C2
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.c2Src = -1
 			c.c2Stacks = 0
 			return false
 		}
 		// swapping to lyney means applying C2
 		next := args[1].(int)
-		if next == c.Index {
+		if next == c.Index() {
 			c.c2Src = c.Core.F
 			c.QueueCharTask(c.c2StackCheck(c.Core.F), c2Interval)
-			c.Core.Log.NewEvent("Lyney C2 started", glog.LogCharacterEvent, c.Index).Write("c2_stacks", c.c2Stacks)
+			c.Core.Log.NewEvent("Lyney C2 started", glog.LogCharacterEvent, c.Index()).Write("c2_stacks", c.c2Stacks)
 			return false
 		}
 		return false
@@ -96,7 +97,7 @@ func (c *char) c2StackCheck(src int) func() {
 		}
 		// don't add stack if no longer on-field
 		// sanity check, should be guaranteed via previous check + event subscription
-		if c.Index != c.Core.Player.Active() {
+		if c.Index() != c.Core.Player.Active() {
 			return
 		}
 		// don't add stack if already at max
@@ -106,23 +107,23 @@ func (c *char) c2StackCheck(src int) func() {
 		}
 		// add stack
 		c.c2Stacks++
-		c.Core.Log.NewEvent("Lyney C2 stack added", glog.LogCharacterEvent, c.Index).Write("c2_stacks", c.c2Stacks)
+		c.Core.Log.NewEvent("Lyney C2 stack added", glog.LogCharacterEvent, c.Index()).Write("c2_stacks", c.c2Stacks)
 		// queue up stack check
 		c.QueueCharTask(c.c2StackCheck(src), c2Interval)
 	}
 }
 
 // After an opponent is hit by Lyney's Pyro Charged Attack, this opponent's Pyro RES will be decreased by 20% for 6s.
-func (c *char) makeC4CB() combat.AttackCBFunc {
+func (c *char) makeC4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("lyney-c4", 6*60),
 			Ele:   attributes.Pyro,
 			Value: -0.20,
@@ -136,9 +137,9 @@ func (c *char) c6(c6Travel int) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Pyrotechnic Strike: Reprised",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Pyrotechnic Strike: Reprised (C6)",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagLyneyEndBoom,
 		ICDGroup:   attacks.ICDGroupLyneyExtra,

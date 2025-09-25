@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -25,7 +26,7 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kinich-c1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
 			default:
@@ -41,7 +42,7 @@ func (c *char) c1() {
 	})
 }
 
-func (c *char) c2ResShredCB(a combat.AttackCB) {
+func (c *char) c2ResShredCB(a info.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -53,7 +54,7 @@ func (c *char) c2ResShredCB(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(combat.ResistMod{
+	e.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("kinich-c2", 6*60),
 		Ele:   attributes.Dendro,
 		Value: -0.3,
@@ -73,7 +74,7 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kinich-c4-dmgp", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
@@ -83,13 +84,13 @@ func (c *char) c4() {
 	})
 }
 
-func (c *char) c6(ai combat.AttackInfo, s *combat.Snapshot, radius float64, target combat.Target, travel int) {
+func (c *char) c6(ai info.AttackInfo, s *info.Snapshot, radius float64, target info.Target, travel int) {
 	if c.Base.Cons < 6 {
 		return
 	}
 	ai.Abil = c6Abil
 	ai.Mult = 7
-	var next combat.Target = c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, radius), func(t combat.Enemy) bool {
+	var next info.Target = c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, radius), func(t info.Enemy) bool {
 		return target.Key() != t.Key()
 	})
 	if next == nil {

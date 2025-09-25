@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -108,11 +108,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.eCast = c.Core.F
 	c.AddStatus(meleeKey, 30*60, true)
-	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index()).
 		Write("rtexpiry", c.Core.F+30*60)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Foul Legacy: Raging Tide",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -166,8 +166,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -179,7 +179,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // Hook to end Tartaglia's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.StatusIsActive(meleeKey) {
 			// TODO: need to verify if this is correct
 			// but if childe is currently in melee stance and skill is on CD that means that

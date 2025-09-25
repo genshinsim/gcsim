@@ -9,9 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 var burstFrames []int
@@ -29,8 +27,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -42,11 +40,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	snap := c.Snapshot(&ai)
 
-	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 10)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 5}, 10)
 	burstPos := burstArea.Shape.Pos()
 	icdSrc := []int{math.MinInt32, math.MinInt32, math.MinInt32, math.MinInt32}
 	// 32 damage ticks
-	for i := 0; i < 32; i++ {
+	for i := range 32 {
 		c.Core.Tasks.Add(func() {
 			p, ok := c.Core.Combat.Player().(*avatar.Player)
 			if !ok {
@@ -61,13 +59,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewBoxHit(p, burstPos, geometry.Point{Y: -distance}, 1, distance),
+				combat.NewBoxHit(p, burstPos, info.Point{Y: -distance}, 1, distance),
 				0,
 			)
 
 			// dori self application
 			// TODO: change this to a ST attack later when self reactions need to be implemented
-			idx := c.Core.Player.ActiveChar().Index
+			idx := c.Core.Player.ActiveChar().Index()
 			c.Core.Player.Drain(info.DrainInfo{
 				ActorIndex: idx,
 				Abil:       ai.Abil,
@@ -75,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				External:   true,
 			})
 			if c.Core.F > icdSrc[idx]+attacks.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
-				dur := reactions.Durability(25)
+				dur := info.Durability(25)
 				if p.AuraCount() == 0 {
 					dur = 20
 				}
@@ -95,7 +93,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c2Travel = 10
 	}
 
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		c.Core.Tasks.Add(func() {
 			if !c.Core.Combat.Player().IsWithinArea(burstArea) {
 				return
@@ -105,7 +103,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			}
 			// Heals
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  c.Core.Player.Active(),
 				Message: "Alcazarzaray's Exactitude: Healing",
 				Src:     bursthealpp[c.TalentLvlBurst()]*c.MaxHP() + bursthealflat[c.TalentLvlBurst()],

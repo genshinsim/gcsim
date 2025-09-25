@@ -4,9 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -43,8 +43,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
-	aiSnapshot := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiSnapshot := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Royal Descent: Behold, Itto the Evil! (Stat Snapshot)",
 	}
 	c.Snapshot(&aiSnapshot)
@@ -78,7 +78,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		},
 	})
 
-	c.Core.Log.NewEvent("itto burst", glog.LogSnapshotEvent, c.Index).
+	c.Core.Log.NewEvent("itto burst", glog.LogSnapshotEvent, c.Index()).
 		Write("total def", burstDefSnapshot).
 		Write("atk added", mATK[attributes.ATK]).
 		Write("mult", mult)
@@ -121,9 +121,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
-		if prev == c.Index && c.StatModIsActive(burstBuffKey) {
+		if prev == c.Index() && c.StatModIsActive(burstBuffKey) {
 			c.DeleteStatMod(burstBuffKey)
 			c.DeleteStatMod(burstAtkSpdKey)
 			c.c4()

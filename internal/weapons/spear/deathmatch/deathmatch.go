@@ -42,8 +42,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.QueueCharTask(w.enemyCheck(char, c, c.F), 60)
 
 	// need to requeue enemy checks once swapping back to the char
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Player.Active() == char.Index {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+		if c.Player.Active() == char.Index() {
 			w.src = c.F
 			char.QueueCharTask(w.enemyCheck(char, c, c.F), 60)
 		}
@@ -69,12 +69,12 @@ func (w *Weapon) enemyCheck(char *character.CharWrapper, c *core.Core, src int) 
 		if w.src != src {
 			return
 		}
-		if c.Player.Active() == char.Index {
+		if c.Player.Active() == char.Index() {
 			enemies := c.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
 			change := len(enemies) >= 2
 			// apply changes in 0.8s
 			char.QueueCharTask(func() {
-				if c.Player.Active() != char.Index {
+				if c.Player.Active() != char.Index() {
 					return
 				}
 				w.useMultiple = change

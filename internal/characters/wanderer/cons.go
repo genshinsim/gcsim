@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -46,14 +47,14 @@ func (c *char) c2() {
 	})
 }
 
-func (c *char) makeC6Callback() func(cb combat.AttackCB) {
+func (c *char) makeC6Callback() func(cb info.AttackCB) {
 	if c.Base.Cons < 6 {
 		return nil
 	}
 
 	done := false
 
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if done || !c.StatusIsActive(skillKey) || c.skydwellerPoints <= 0 {
 			return
 		}
@@ -65,7 +66,7 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 			c.c6Count++
 			c.skydwellerPoints += 4
 
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 				"wanderer c6 added 4 skydweller points",
 			)
 		}
@@ -73,8 +74,8 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 		// a gets passed into the callback as param by core
 		trg := a.Target
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Shugen: The Curtains’ Melancholic Sway",
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagWandererC6,

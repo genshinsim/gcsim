@@ -7,9 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -71,8 +70,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(), nil
 }
 
-func (c *char) kickParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) kickParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(kickParticleICDKey) {
@@ -82,8 +81,8 @@ func (c *char) kickParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle("sayu-kick", 2, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) rollParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) rollParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(rollParticleICDKey) {
@@ -97,8 +96,8 @@ func (c *char) skillPress() action.Info {
 	c.c2Bonus = 0.033
 
 	// Fuufuu Windwheel DMG
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Fuufuu Windwheel (DoT Press)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagElementalArtAnemo,
@@ -117,8 +116,8 @@ func (c *char) skillPress() action.Info {
 	)
 
 	// Fuufuu Whirlwind Kick Press DMG
-	ai = combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai = info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Fuufuu Whirlwind (Kick Press)",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -134,7 +133,7 @@ func (c *char) skillPress() action.Info {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 2.5),
 		skillPressKickHitmark,
 		c.kickParticleCB,
 	)
@@ -168,14 +167,14 @@ func (c *char) skillShortHold() action.Info {
 
 		if c.Base.Cons >= 2 && c.c2Bonus < 0.66 {
 			c.c2Bonus += 0.033
-			c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index()).
 				Write("dmg bonus%", c.c2Bonus)
 		}
 	}, 18)
 
 	// Fuufuu Whirlwind Kick Hold DMG
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -191,7 +190,7 @@ func (c *char) skillShortHold() action.Info {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 3),
 		skillShortHoldKickHitmark,
 		c.kickParticleCB,
 	)
@@ -227,15 +226,15 @@ func (c *char) skillHold(duration int) action.Info {
 
 			if c.Base.Cons >= 2 && c.c2Bonus < 0.66 {
 				c.c2Bonus += 0.033
-				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index).
+				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index()).
 					Write("dmg bonus%", c.c2Bonus)
 			}
 		}, 18+i)
 	}
 
 	// Fuufuu Whirlwind Kick Hold DMG
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -251,7 +250,7 @@ func (c *char) skillHold(duration int) action.Info {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 3),
 		(skillHoldKickHitmark-600)+duration,
 		c.kickParticleCB,
 	)
@@ -268,9 +267,9 @@ func (c *char) skillHold(duration int) action.Info {
 }
 
 // TODO: is this helper needed?
-func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+func (c *char) createSkillHoldSnapshot() *info.AttackEvent {
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Fuufuu Windwheel (DoT Hold)",
 		AttackTag:        attacks.AttackTagElementalArtHold,
 		ICDTag:           attacks.ICDTagElementalArtAnemo,
@@ -285,7 +284,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	}
 	snap := c.Snapshot(&ai)
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
-	ae := combat.AttackEvent{
+	ae := info.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
@@ -300,7 +299,7 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 			return
 		}
 
-		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 		if c.eAbsorb != attributes.NoElement {
 			switch c.eAbsorb {
 			case attributes.Pyro:
@@ -312,7 +311,7 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 			case attributes.Cryo:
 				c.eAbsorbTag = attacks.ICDTagElementalArtCryo
 			}
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 				"sayu absorbed ", c.eAbsorb.String(),
 			)
 			return
@@ -322,13 +321,13 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 }
 
 func (c *char) rollAbsorb() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if !ok {
 			return false
 		}
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -345,8 +344,8 @@ func (c *char) rollAbsorb() {
 		// DoT always has ElementalArtHold tag
 		case attacks.AttackTagElementalArtHold:
 			// DoT Elemental DMG
-			ai := combat.AttackInfo{
-				ActorIndex: c.Index,
+			ai := info.AttackInfo{
+				ActorIndex: c.Index(),
 				Abil:       "Fuufuu Windwheel Elemental (Elemental DoT Hold)",
 				AttackTag:  attacks.AttackTagElementalArtHold,
 				ICDTag:     c.eAbsorbTag,
@@ -360,8 +359,8 @@ func (c *char) rollAbsorb() {
 		// Kick always has ElementalArt tag
 		case attacks.AttackTagElementalArt:
 			// Kick Elemental DMG
-			ai := combat.AttackInfo{
-				ActorIndex: c.Index,
+			ai := info.AttackInfo{
+				ActorIndex: c.Index(),
 				Abil:       "Fuufuu Whirlwind Elemental (Elemental Kick Hold)",
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagNone,

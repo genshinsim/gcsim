@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -27,8 +28,8 @@ func init() {
 // Burst - The main buff effects are handled in a separate function
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// AoE Geo damage
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Cliffbreaker's Banner",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -70,8 +71,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 func (c *char) burstProc() {
 	// Add Flying Cloud Flag Formation as a pre-damage hook
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
 
 		if ae.Info.AttackTag != attacks.AttackTagNormal {
 			return false

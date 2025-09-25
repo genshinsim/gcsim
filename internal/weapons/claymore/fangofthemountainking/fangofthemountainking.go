@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -52,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	onReact := func(...interface{}) bool {
+	onReact := func(...any) bool {
 		if char.StatusIsActive(reactIcdKey) {
 			return false
 		}
@@ -61,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		w.addStacks(3)
 		return false
 	}
-	c.Events.Subscribe(event.OnBurning, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurning, func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -69,16 +68,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("fangofthemountainking-burning-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnBurgeon, onReact, fmt.Sprintf("fangofthemountainking-burgeon-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != w.char.Index {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != w.char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -98,13 +97,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 }
 
 func (w *Weapon) addStacks(num int) {
-	for i := 0; i < num; i++ {
+	for range num {
 		w.stackTracker.Add(stackDuration)
 	}
 
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(canopyFavorKey, stackDuration),
-		Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch a.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:

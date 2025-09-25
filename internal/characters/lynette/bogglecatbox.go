@@ -7,16 +7,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
 type BogglecatBox struct {
 	*gadget.Gadget
 	char        *char
-	pos         geometry.Point
+	pos         info.Point
 	vividTravel int
 }
 
@@ -24,14 +23,14 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	b := &BogglecatBox{}
 
 	player := c.Core.Combat.Player()
-	b.pos = geometry.CalcOffsetPoint(
+	b.pos = info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{Y: 1.8},
+		info.Point{Y: 1.8},
 		player.Direction(),
 	)
 
 	// TODO: double check estimation of hitbox
-	b.Gadget = gadget.New(c.Core, b.pos, 1, combat.GadgetTypBogglecatBox)
+	b.Gadget = gadget.New(c.Core, b.pos, 1, info.GadgetTypBogglecatBox)
 	b.char = c
 	b.vividTravel = vividTravel
 
@@ -39,8 +38,8 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	b.char.AddStatus(burstKey, b.Duration, false)
 
 	// initial hit
-	initialAI := combat.AttackInfo{
-		ActorIndex: c.Index,
+	initialAI := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Magic Trick: Astonishing Shift",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -50,11 +49,11 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(initialAI, combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1.5}, 4.5), burstHitmark-burstSpawn, burstHitmark-burstSpawn)
+	c.Core.QueueAttack(initialAI, combat.NewCircleHitOnTarget(player, info.Point{Y: 1.5}, 4.5), burstHitmark-burstSpawn, burstHitmark-burstSpawn)
 
 	// bogglecat ticks
-	bogglecatAI := combat.AttackInfo{
-		ActorIndex: c.Index,
+	bogglecatAI := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Bogglecat Box",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -73,20 +72,20 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	b.OnThinkInterval = b.absorbCheck
 	b.ThinkInterval = 0.3 * 60
 
-	b.Core.Log.NewEvent("Lynette Bogglecat Box added", glog.LogCharacterEvent, c.Index).Write("src", b.Src())
+	b.Core.Log.NewEvent("Lynette Bogglecat Box added", glog.LogCharacterEvent, c.Index()).Write("src", b.Src())
 
 	return b
 }
 
-func (b *BogglecatBox) HandleAttack(atk *combat.AttackEvent) float64 {
+func (b *BogglecatBox) HandleAttack(atk *info.AttackEvent) float64 {
 	b.Core.Events.Emit(event.OnGadgetHit, b, atk)
 
-	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box hit by %s", atk.Info.Abil), glog.LogCharacterEvent, b.char.Index)
+	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box hit by %s", atk.Info.Abil), glog.LogCharacterEvent, b.char.Index())
 
 	if atk.Info.Durability <= 0 {
 		return 0
 	}
-	atk.Info.Durability *= reactions.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+	atk.Info.Durability *= info.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 	if atk.Info.Durability <= 0 {
 		return 0
 	}
@@ -107,11 +106,11 @@ func (b *BogglecatBox) HandleAttack(atk *combat.AttackEvent) float64 {
 }
 
 func (b *BogglecatBox) absorbRoutine(absorbedElement attributes.Element) {
-	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box came into contact with %s", absorbedElement.String()), glog.LogCharacterEvent, b.char.Index)
+	b.Core.Log.NewEvent(fmt.Sprintf("lynette bogglecat box came into contact with %s", absorbedElement.String()), glog.LogCharacterEvent, b.char.Index())
 
 	// vivid shots
-	vividShotAI := combat.AttackInfo{
-		ActorIndex: b.char.Index,
+	vividShotAI := info.AttackInfo{
+		ActorIndex: b.char.Index(),
 		Abil:       "Vivid Shot",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		// should be ElementalBurstMix, but it just needs to be different from all the other icd tags used by the char so no need to add extra icd tag
@@ -143,15 +142,15 @@ func (b *BogglecatBox) absorbRoutine(absorbedElement attributes.Element) {
 }
 
 func (b *BogglecatBox) absorbCheck() {
-	absorbedElement := b.Core.Combat.AbsorbCheck(b.char.Index, combat.NewCircleHitOnTarget(b.pos, nil, 0.48), attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+	absorbedElement := b.Core.Combat.AbsorbCheck(b.char.Index(), combat.NewCircleHitOnTarget(b.pos, nil, 0.48), attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 	if absorbedElement == attributes.NoElement {
 		return
 	}
 	b.absorbRoutine(absorbedElement)
 }
 
-func (b *BogglecatBox) SetDirection(trg geometry.Point) {}
-func (b *BogglecatBox) SetDirectionToClosestEnemy()     {}
-func (b *BogglecatBox) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (b *BogglecatBox) SetDirection(trg info.Point) {}
+func (b *BogglecatBox) SetDirectionToClosestEnemy() {}
+func (b *BogglecatBox) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -52,8 +52,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Snapshot occurs late in the animation when it is released from the claymore
 	// For our purposes, snapshot upon damage proc
 	c.Core.Tasks.Add(func() {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Dawn (Strike)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagElementalBurst,
@@ -70,7 +70,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 16, 6),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1}, 16, 6),
 			0,
 			1,
 		)
@@ -90,11 +90,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// - 1.7s / (0.2 s/attack) ~= 8 attacks total before explosion
 		initialPos := c.Core.Combat.Player().Pos()
 		initialDirection := c.Core.Combat.Player().Direction()
-		for i := 0; i < 8; i++ {
-			nextPos := geometry.CalcOffsetPoint(initialPos, geometry.Point{Y: 1 + 2.8*float64(i)}, initialDirection)
+		for i := range 8 {
+			nextPos := info.CalcOffsetPoint(initialPos, info.Point{Y: 1 + 2.8*float64(i)}, initialDirection)
 			c.Core.QueueAttack(
 				ai,
-				combat.NewBoxHit(c.Core.Combat.Player(), nextPos, geometry.Point{Y: -5}, 16, 8),
+				combat.NewBoxHit(c.Core.Combat.Player(), nextPos, info.Point{Y: -5}, 16, 8),
 				0,
 				(i+1)*12,
 			)
@@ -103,10 +103,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ai.Abil = "Dawn (Explode)"
 		ai.Mult = burstExplode[c.TalentLvlBurst()]
 		// 1m + 14 m/s * 1.7s
-		finalPos := geometry.CalcOffsetPoint(initialPos, geometry.Point{Y: 1 + 14*1.7}, initialDirection)
+		finalPos := info.CalcOffsetPoint(initialPos, info.Point{Y: 1 + 14*1.7}, initialDirection)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHit(c.Core.Combat.Player(), finalPos, geometry.Point{Y: -6}, 16, 10),
+			combat.NewBoxHit(c.Core.Combat.Player(), finalPos, info.Point{Y: -6}, 16, 10),
 			0,
 			1.7*60,
 		)

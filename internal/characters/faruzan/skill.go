@@ -6,8 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -43,9 +42,9 @@ func init() {
 // vortex that deals AoE Anemo DMG and pulls nearby objects and opponents in.
 // The vortex DMG is considered Elemental Skill DMG.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Wind Realm of Nasamjnin (E)",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Wind Realm of Nasamjnin",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -56,7 +55,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 3}, 3),
 		skillHitmark,
 		skillHitmark,
 	)
@@ -82,8 +81,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -93,9 +92,9 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) pressurizedCollapse(pos geometry.Point) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+func (c *char) pressurizedCollapse(pos info.Point) {
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       VortexAbilName,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -110,7 +109,7 @@ func (c *char) pressurizedCollapse(pos geometry.Point) {
 	// A1:
 	// She can apply The Wind's Secret Ways' Perfidious Wind's Bale to opponents
 	// who are hit by the vortex created by Pressurized Collapse.
-	var shredCb combat.AttackCBFunc
+	var shredCb info.AttackCBFunc
 	if c.Base.Ascension >= 1 {
 		shredCb = applyBurstShredCb
 	}

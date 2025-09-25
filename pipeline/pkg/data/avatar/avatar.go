@@ -85,7 +85,6 @@ func (a *DataSource) parseChar(id, sub int32) (*model.AvatarData, error) {
 	err = a.parseBaseStats(c, err)
 	err = a.parseStatCurves(c, err)
 	err = a.parsePromoData(c, err)
-
 	if err != nil {
 		return nil, err
 	}
@@ -152,7 +151,7 @@ func (a *DataSource) parseIconName(c *model.AvatarData, err error) error {
 }
 
 func (a *DataSource) parseSkillIDs(c *model.AvatarData, err error) error {
-	//steps:
+	// steps:
 	// 1. find skill depot id
 	// 1a. if character has sub_id, use that for skill depot id instead
 	// 2. energySkill gives the burst id

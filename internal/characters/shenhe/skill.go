@@ -7,10 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -57,8 +56,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Spring Spirit Summoning (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -102,10 +101,10 @@ func (c *char) skillPress() action.Info {
 	}
 }
 
-func (c *char) makePressParticleCB() combat.AttackCBFunc {
+func (c *char) makePressParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -117,8 +116,8 @@ func (c *char) makePressParticleCB() combat.AttackCBFunc {
 }
 
 func (c *char) skillHold() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Spring Spirit Summoning (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -135,7 +134,7 @@ func (c *char) skillHold() action.Info {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 4),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.5}, 4),
 			0,
 			c.holdParticleCB,
 		)
@@ -154,8 +153,8 @@ func (c *char) skillHold() action.Info {
 	}
 }
 
-func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) holdParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {
@@ -176,7 +175,7 @@ func (c *char) skillPressBuff() {
 		char.SetTag(quillKey, 5)              // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 10*60),
-			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				switch a.Info.AttackTag {
 				case attacks.AttackTagElementalArt:
 				case attacks.AttackTagElementalArtHold:
@@ -200,7 +199,7 @@ func (c *char) skillHoldBuff() {
 		char.SetTag(quillKey, 7)              // 5 quill on hold
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
-			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				switch a.Info.AttackTag {
 				case attacks.AttackTagNormal:
 				case attacks.AttackTagExtra:
@@ -215,8 +214,8 @@ func (c *char) skillHoldBuff() {
 }
 
 func (c *char) quillDamageMod() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
 		consumeStack := true
 		if atk.Info.Element != attributes.Cryo {
 			return false
@@ -251,8 +250,8 @@ func (c *char) quillDamageMod() {
 				c.Core.Log.NewEvent("Shenhe Quill proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 					Write("before", atk.Info.FlatDmg).
 					Write("addition", amt).
-					Write("effect_ends_at", c.StatusExpiry(quillKey)).
-					Write("quill_left", c.Tags[quillKey])
+					Write("effect_ends_at", char.StatusExpiry(quillKey)).
+					Write("quill_left", char.Tags[quillKey])
 			}
 
 			atk.Info.FlatDmg += amt

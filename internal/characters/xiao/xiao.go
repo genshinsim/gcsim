@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -65,7 +64,7 @@ func (c *char) Init() error {
 // Implements burst anemo attack damage conversion and DMG bonus
 // Also implements A1:
 // While under the effects of Bane of All Evil, all DMG dealt by Xiao is increased by 5%. DMG is increased by an additional 5% for every 3s the ability persists. The maximum DMG Bonus is 25%
-func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(a *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(a)
 
 	if c.StatusIsActive("xiaoburst") {
@@ -74,7 +73,7 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		switch a.AttackTag {
 		case attacks.AttackTagNormal:
 			// QN1-1 has different hitlag from N1-1
-			if a.Abil == "Normal 0" {
+			if a.Abil == "Normal 0" { // TODO: replace this with something that isn't reliant on abil name
 				// this also overwrites N1-2 HitlagHaltFrames but they have the same value so it's fine
 				a.HitlagHaltFrames = 0.01 * 60
 			}
@@ -89,7 +88,7 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		a.Element = attributes.Anemo
 		bonus := burstBonus[c.TalentLvlBurst()]
 		ds.Stats[attributes.DmgP] += bonus
-		c.Core.Log.NewEvent("xiao burst damage bonus", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("xiao burst damage bonus", glog.LogCharacterEvent, c.Index()).
 			Write("bonus", bonus).
 			Write("final", ds.Stats[attributes.DmgP])
 	}

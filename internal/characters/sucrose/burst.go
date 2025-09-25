@@ -6,8 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -36,11 +35,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// there's no collision logic for the gadget thrown by Sucrose
 	// from tests in abyss it looks like the gadget lands around 2 abyss tiles away from Sucrose which is about 5m
 	// at that pos there's an offset of Y: -1, which is why it's Y: 4 here
-	c.absorbCheckLocation = combat.NewBoxHitOnTarget(player, geometry.Point{Y: 4}, 2.5, 2.5)
+	c.absorbCheckLocation = combat.NewBoxHitOnTarget(player, info.Point{Y: 4}, 2.5, 2.5)
 
 	c.Core.Status.Add("sucroseburst", duration)
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Forbidden Creation-Isomer 75/Type II",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -50,13 +49,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 5}, 8)
+	ap := combat.NewCircleHitOnTarget(player, info.Point{Y: 5}, 8)
 
-	//TODO: does sucrose burst snapshot?
+	// TODO: does sucrose burst snapshot?
 	snap := c.Snapshot(&ai)
-	//TODO: does burst absorb snapshot
-	aiAbs := combat.AttackInfo{
-		ActorIndex: c.Index,
+	// TODO: does burst absorb snapshot
+	aiAbs := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Forbidden Creation-Isomer 75/Type II (Absorb)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -68,15 +67,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	snapAbs := c.Snapshot(&aiAbs)
 
-	done := false
-	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	cb := func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if done {
-			return
-		}
-		done = true
 		c.a4()
 	}
 
@@ -110,7 +104,7 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.qAbsorb != attributes.NoElement {
 			if c.Base.Cons >= 6 {

@@ -109,7 +109,7 @@ func (p *Parser) parseFnType() (ast.ExprType, error) {
 	if err != nil {
 		return nil, err
 	}
-	//TODO: this is only here for compatability reasons; to be removed??
+	// TODO: this is only here for compatability reasons; to be removed??
 	if res.ResultType == nil {
 		res.ResultType = &ast.NumberType{Pos: n.Pos}
 	}

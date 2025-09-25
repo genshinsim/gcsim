@@ -7,12 +7,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
-var waveHitmarks = []int{186, 294, 401, 503, 610, 718}
+var (
+	burstFrames  []int
+	waveHitmarks = []int{186, 294, 401, 503, 610, 718}
+)
 
 const burstStart = 146
 
@@ -25,8 +28,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Sparks'n'Splash",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,
@@ -45,7 +48,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// every 1.8 second +on added shoots between 3 to 5, ignore the queue thing.. space it out .2 between each wave i guess
 
 	// snapshot at end of animation?
-	var snap combat.Snapshot
+	var snap info.Snapshot
 	c.Core.Tasks.Add(func() {
 		snap = c.Snapshot(&ai)
 	}, 100)
@@ -73,7 +76,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// every 3 seconds add energy if c6
 	if c.Base.Cons >= 6 {
-		//TODO: this should eventually use hitlag affected queue and duration
+		// TODO: this should eventually use hitlag affected queue and duration
 		// but is not big deal right now b/c klee cant experience hitlag without getting hit
 		for i := burstStart + 180; i < burstStart+600; i += 180 {
 			c.Core.Tasks.Add(func() {
@@ -83,7 +86,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				}
 
 				for i, x := range c.Core.Player.Chars() {
-					if i == c.Index {
+					if i == c.Index() {
 						continue
 					}
 					x.AddEnergy("klee-c6", 3)
@@ -120,7 +123,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 // clear klee burst when she leaves the field and handle c4
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		// check if burst is active
 		if c.Core.Status.Duration("kleeq") <= 0 {
 			return false
@@ -129,9 +132,9 @@ func (c *char) onExitField() {
 
 		if c.Base.Cons >= 4 {
 			// blow up
-			ai := combat.AttackInfo{
-				ActorIndex:         c.Index,
-				Abil:               "Sparks'n'Splash C4",
+			ai := info.AttackInfo{
+				ActorIndex:         c.Index(),
+				Abil:               "Sparkly Explosion (C4)",
 				AttackTag:          attacks.AttackTagNone,
 				ICDTag:             attacks.ICDTagNone,
 				ICDGroup:           attacks.ICDGroupDefault,

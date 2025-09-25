@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -28,8 +28,10 @@ var (
 	bikeAttackOffsets         = []float64{1.5, 1.85, 0.5, -0.8, 1}
 )
 
-const normalHitNum = 4
-const bikeHitNum = 5
+const (
+	normalHitNum = 4
+	bikeHitNum   = 5
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -77,8 +79,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		return c.bikeAttack(), nil
 	}
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
@@ -93,19 +95,19 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 	}
 
-	var ap combat.AttackPattern
+	var ap info.AttackPattern
 	switch {
 	case len(attackHitboxes[c.NormalCounter]) == 2: // box
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 			attackHitboxes[c.NormalCounter][1],
 		)
 	default: // circle
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 		)
 	}
@@ -127,8 +129,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 // Mavuika's bike normals do not immediately reset after sprinting and will carry the counter upon losing NS Blessing (Handled in Dash)
 func (c *char) bikeAttack() action.Info {
 	delay := bikeAttackHitmarks[c.NormalCounter]
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             fmt.Sprintf("Flamestrider Normal %v", c.NormalCounter),
 		AttackTag:        attacks.AttackTagNormal,
 		AdditionalTags:   []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -149,19 +151,19 @@ func (c *char) bikeAttack() action.Info {
 		hitboxes = bikeAttackBurstHitboxes
 	}
 
-	var ap combat.AttackPattern
+	var ap info.AttackPattern
 	switch {
 	case len(hitboxes[c.NormalCounter]) == 2: // box
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: bikeAttackOffsets[c.NormalCounter]},
+			info.Point{Y: bikeAttackOffsets[c.NormalCounter]},
 			hitboxes[c.NormalCounter][0],
 			hitboxes[c.NormalCounter][1],
 		)
 	default: // circle
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: bikeAttackOffsets[c.NormalCounter]},
+			info.Point{Y: bikeAttackOffsets[c.NormalCounter]},
 			hitboxes[c.NormalCounter][0],
 		)
 	}

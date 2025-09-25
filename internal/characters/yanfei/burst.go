@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -35,7 +36,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagExtra {
 				return c.burstBuff, true
 			}
@@ -44,7 +45,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	})
 
 	done := false
-	addSeal := func(_ combat.AttackCB) {
+	addSeal := func(_ info.AttackCB) {
 		if done {
 			return
 		}
@@ -53,13 +54,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			c.sealCount = c.maxTags
 		}
 		c.AddStatus(sealBuffKey, 600, true)
-		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index()).
 			Write("current_seals", c.sealCount)
 		done = true
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Done Deal",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
@@ -107,7 +108,7 @@ func (c *char) burstAddSealHook() func() {
 		}
 		c.AddStatus(sealBuffKey, 600, true)
 
-		c.Core.Log.NewEvent("yanfei gained seal from burst", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yanfei gained seal from burst", glog.LogCharacterEvent, c.Index()).
 			Write("current_seals", c.sealCount)
 
 		c.Core.Tasks.Add(c.burstAddSealHook(), 60)

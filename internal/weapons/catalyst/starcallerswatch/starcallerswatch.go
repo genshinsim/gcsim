@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -50,13 +49,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bonus := make([]float64, attributes.EndStatType)
 	bonus[attributes.DmgP] = 0.21 + 0.07*r
 
-	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnShielded, func(args ...any) bool {
 		shd := args[0].(shield.Shield)
-		if shd.ShieldOwner() != char.Index {
+		if shd.ShieldOwner() != char.Index() {
 			return false
 		}
 		// TODO: Not sure if the character needs to be on the field
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(ICDKey) {
@@ -81,8 +80,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			this := x
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase(buffKey, -1),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					if c.Player.Active() != this.Index {
+				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+					if c.Player.Active() != this.Index() {
 						return nil, false
 					}
 					return bonus, true

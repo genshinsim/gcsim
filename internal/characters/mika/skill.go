@@ -6,14 +6,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 const (
 	skillPressCDStart = 16
@@ -54,8 +55,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Flowfrost Arrow",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -68,11 +69,11 @@ func (c *char) skillPress() action.Info {
 		CanBeDefenseHalted: true,
 	}
 
-	var a1CB combat.AttackCBFunc
+	var a1CB info.AttackCBFunc
 	if c.Base.Ascension >= 1 {
 		gen := false
-		a1CB = func(a combat.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+		a1CB = func(a info.AttackCB) {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			if !gen { // ignore a first enemy
@@ -85,7 +86,7 @@ func (c *char) skillPress() action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.4}, 2.5, 10),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.4}, 2.5, 10),
 		skillPressHitmark,
 		skillPressHitmark+skillPressTravel,
 		c.makeParticleCB(),
@@ -105,8 +106,8 @@ func (c *char) skillPress() action.Info {
 }
 
 func (c *char) skillHold() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Rimestar Flare",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -138,10 +139,10 @@ func (c *char) skillHold() action.Info {
 	}
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -152,10 +153,10 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
+func (c *char) makeRimestarShardsCB() func(info.AttackCB) {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -163,8 +164,8 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 		}
 		done = true
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Rimestar Shard",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -177,15 +178,15 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 
 		enemies := c.Core.Combat.RandomEnemiesWithinArea(
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10),
-			func(t combat.Enemy) bool { return a.Target.Key() != t.Key() },
+			func(t info.Enemy) bool { return a.Target.Key() != t.Key() },
 			3,
 		)
-		for i := 0; i < len(enemies); i++ {
-			var a1CB combat.AttackCBFunc
+		for i := range enemies {
+			var a1CB info.AttackCBFunc
 			if c.Base.Ascension >= 1 {
 				done := false
-				a1CB = func(a combat.AttackCB) {
-					if a.Target.Type() != targets.TargettableEnemy {
+				a1CB = func(a info.AttackCB) {
+					if a.Target.Type() != info.TargettableEnemy {
 						return
 					}
 					if done {

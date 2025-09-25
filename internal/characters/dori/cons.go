@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -18,9 +17,9 @@ func (c *char) c1() {
 // When you are in combat and the Jinni heals the character it is connected to,
 // it will fire a Jinni Toop from that character's position that deals 50% of Dori's ATK DMG.
 func (c *char) c2(travel int) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Special Franchise",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Special Franchise (C2)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagDoriC2,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -69,25 +68,27 @@ func (c *char) c4() {
 	}
 }
 
-const c6ICD = "dori-c6-heal-icd"
-const c6Key = "dori-c6"
+const (
+	c6ICD = "dori-c6-heal-icd"
+	c6Key = "dori-c6"
+)
 
 // Dori gains the following effects for 3s after using Spirit-Warding Lamp: Troubleshooter Cannon:
 // - Electro Infusion.
 // - When Normal Attacks hit opponents, all nearby party members will heal HP equivalent to 4% of Dori's Max HP.
 // This type of healing can occur once every 0.1s.
-func (c *char) makeC6CB() combat.AttackCBFunc {
-	if c.Base.Cons < 6 || !c.Core.Player.WeaponInfuseIsActive(c.Index, c6Key) {
+func (c *char) makeC6CB() info.AttackCBFunc {
+	if c.Base.Cons < 6 || !c.Core.Player.WeaponInfuseIsActive(c.Index(), c6Key) {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
-		if !c.Core.Player.WeaponInfuseIsActive(c.Index, c6Key) {
+		if !c.Core.Player.WeaponInfuseIsActive(c.Index(), c6Key) {
 			return
 		}
 		if c.StatusIsActive(c6ICD) {
@@ -97,7 +98,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 
 		// heal party members
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "dori-c6-heal",
 			Src:     0.04 * c.MaxHP(),

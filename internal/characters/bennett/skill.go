@@ -8,8 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -81,8 +80,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Passion Overload (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -100,7 +99,7 @@ func (c *char) skillPress() (action.Info, error) {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 0.8},
+			info.Point{Y: 0.8},
 			2.5,
 			270,
 		),
@@ -119,8 +118,8 @@ func (c *char) skillPress() (action.Info, error) {
 	}, nil
 }
 
-func (c *char) pressParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) pressParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -136,8 +135,8 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) skillHold(level int, c4Active bool) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Passion Overload (Level %v)", level),
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -155,13 +154,13 @@ func (c *char) skillHold(level int, c4Active bool) (action.Info, error) {
 		ax.HitlagHaltFrames = 0.09 * 60
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: skillHoldOffsets[i]},
+			info.Point{Y: skillHoldOffsets[i]},
 			skillHoldHitboxes[i][0],
 		)
 		if i == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: skillHoldOffsets[i]},
+				info.Point{Y: skillHoldOffsets[i]},
 				skillHoldHitboxes[i][0],
 				skillHoldHitboxes[i][1],
 			)
@@ -176,7 +175,7 @@ func (c *char) skillHold(level int, c4Active bool) (action.Info, error) {
 		ai.HitlagHaltFrames = 0
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 3.5),
 			166,
 			166,
 			c.holdParticleCB,
@@ -190,7 +189,7 @@ func (c *char) skillHold(level int, c4Active bool) (action.Info, error) {
 		ai.HitlagHaltFrames = 0.12 * 60
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 3, 4),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1}, 3, 4),
 			94,
 			94,
 			c.holdParticleCB,
@@ -232,8 +231,8 @@ func (c *char) skillHold(level int, c4Active bool) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) holdParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {

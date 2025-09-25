@@ -2,11 +2,11 @@ package enemy
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (e *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	var isCrit bool
 
 	st := attributes.EleToDmgP(atk.Info.Element)

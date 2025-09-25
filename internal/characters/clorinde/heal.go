@@ -14,7 +14,7 @@ func (c *char) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
 	}
 
 	// keep heal by clorinde by default
-	if hi.Caller == c.Index && strings.HasPrefix(hi.Message, "Impale the Night") {
+	if hi.Caller == c.Index() && strings.HasPrefix(hi.Message, "Impale the Night") {
 		return c.Character.ReceiveHeal(hi, healAmt)
 	}
 
@@ -25,7 +25,7 @@ func (c *char) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
 	}
 
 	amt := healAmt * factor
-	c.Core.Log.NewEvent("clorinde healing surpressed", glog.LogHealEvent, c.Index).
+	c.Core.Log.NewEvent("clorinde healing surpressed", glog.LogHealEvent, c.Index()).
 		Write("bol_amount", amt)
 	c.ModifyHPDebtByAmount(amt)
 

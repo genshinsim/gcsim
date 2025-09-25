@@ -5,12 +5,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -48,24 +46,24 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	// infusion to normal attack only
 	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
 		ai.Element = attributes.Pyro
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
-		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index()).
 			Write("prev", ai.Mult).
 			Write("next", skill[c.TalentLvlSkill()]*ai.Mult).
-			Write("char", c.Index)
+			Write("char", c.Index())
 	}
 
 	return ds
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 17
 	}
 	return c.Character.AnimationStartDelay(k)

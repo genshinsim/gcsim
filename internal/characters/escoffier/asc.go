@@ -2,19 +2,19 @@ package escoffier
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1Scaling = 1.3824
-const a1key = "escoffier-a1"
-const a1Count = 9
-const a1FirstTick = 157
-const a1Interval = 58.5
-const a4Dur = 12 * 60
+const (
+	a1Scaling   = 1.3824
+	a1key       = "escoffier-a1"
+	a1Count     = 9
+	a1FirstTick = 157
+	a1Interval  = 58.5
+	a4Dur       = 12 * 60
+)
 
 var a4Shred = []float64{0.0, 0.05, 0.10, 0.15, 0.55}
 
@@ -24,7 +24,7 @@ func (c *char) a1() {
 	}
 	c.a1Src = c.Core.F
 	ticks := a1Count + c.c4ExtraCount()
-	for i := 0; i < ticks; i++ {
+	for i := range ticks {
 		c.QueueCharTask(c.a1Tick(c.a1Src), a1FirstTick+ceil(a1Interval*float64(i)))
 	}
 	// this status is purely cosmetic and doesn't do anything right now
@@ -39,7 +39,7 @@ func (c *char) a1Tick(src int) func() {
 		scale := a1Scaling + c.c4ExtraHeal()
 		heal := scale * c.TotalAtk()
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Rehab Diet",
 			Src:     heal,
@@ -59,12 +59,12 @@ func (c *char) a4Init() {
 	}
 }
 
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		e, ok := a.Target.(*enemy.Enemy)
@@ -72,12 +72,12 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 			return
 		}
 		shred := a4Shred[c.a4HydroCryoCount]
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("escoffier-a4-shred-cryo", a4Dur),
 			Ele:   attributes.Cryo,
 			Value: -shred,
 		})
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("escoffier-a4-shred-hydro", a4Dur),
 			Ele:   attributes.Hydro,
 			Value: -shred,

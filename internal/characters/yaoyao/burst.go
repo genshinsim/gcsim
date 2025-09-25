@@ -33,8 +33,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// use up energy
 	c.ConsumeEnergy(7)
 
-	burstAI := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	burstAI := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Moonjade Descent",
 		AttackTag:        attacks.AttackTagElementalBurst,
 		ICDTag:           attacks.ICDTagNone,
@@ -69,11 +69,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) getBurstHealInfo(snap *combat.Snapshot) info.HealInfo {
+func (c *char) getBurstHealInfo(snap *info.Snapshot) info.HealInfo {
 	maxhp := snap.Stats.MaxHP()
 	heal := burstRadishHealing[0][c.TalentLvlBurst()]*maxhp + burstRadishHealing[1][c.TalentLvlBurst()]
 	return info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  -1,
 		Message: "Yuegui Burst Heal",
 		Src:     heal,
@@ -82,7 +82,7 @@ func (c *char) getBurstHealInfo(snap *combat.Snapshot) info.HealInfo {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.StatusIsActive(burstKey) {
 			c.removeBurst()
 		}

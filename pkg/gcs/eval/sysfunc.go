@@ -6,14 +6,14 @@ import (
 	"math"
 	"strings"
 
+	"github.com/genshinsim/gcsim/internal/template/crystallize"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -173,7 +173,7 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	x := ntof(objs[0].(*number))
 	y := ntof(objs[1].(*number))
 
-	e.Core.Combat.SetPlayerPos(geometry.Point{X: x, Y: y})
+	e.Core.Combat.SetPlayerPos(info.Point{X: x, Y: y})
 	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return bton(true), nil
@@ -254,7 +254,7 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
-	e.Core.Combat.SetEnemyPos(idx-1, geometry.Point{X: x, Y: y})
+	e.Core.Combat.SetEnemyPos(idx-1, info.Point{X: x, Y: y})
 	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return &null{}, nil
@@ -318,7 +318,7 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	var count int64
 	for _, g := range e.Core.Combat.Gadgets() {
-		shard, ok := g.(*reactable.CrystallizeShard)
+		shard, ok := g.(*crystallize.Shard)
 		// skip if no shard
 		if !ok {
 			continue
@@ -413,7 +413,7 @@ func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	fn := objs[0].(*funcval)
 
-	e.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+	e.Core.Events.Subscribe(event.OnTick, func(args ...any) bool {
 		_, err := e.evalNode(fn.Body, env)
 		if err != nil {
 			// handle the error

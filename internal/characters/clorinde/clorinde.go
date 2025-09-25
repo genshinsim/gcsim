@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -81,12 +80,12 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 	return c.Character.ActionReady(a, p)
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if c.StatusIsActive(skillStateKey) {
 		switch k {
-		case model.AnimationXingqiuN0StartDelay:
+		case info.AnimationXingqiuN0StartDelay:
 			return 10
-		case model.AnimationYelanN0StartDelay:
+		case info.AnimationYelanN0StartDelay:
 			return 5
 		default:
 			return c.Character.AnimationStartDelay(k)
@@ -94,9 +93,9 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	}
 
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 14
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 4
 	default:
 		return c.Character.AnimationStartDelay(k)

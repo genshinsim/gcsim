@@ -8,15 +8,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c4ICDKey = "neuvillette-c4-icd"
-const c6ICDKey = "neuvillette-c6-icd"
+const (
+	c4ICDKey = "neuvillette-c4-icd"
+	c6ICDKey = "neuvillette-c6-icd"
+)
 
 func (c *char) c1() {
 	if c.Base.Ascension < 1 {
@@ -32,7 +33,7 @@ func (c *char) c2() {
 	c2Buff := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("neuvillette-c2", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if strings.Contains(atk.Info.Abil, chargeJudgementName) {
 				c2Buff[attributes.CD] = 0.14 * float64(c.countA1())
 				return c2Buff, true
@@ -43,13 +44,13 @@ func (c *char) c2() {
 }
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		target := args[1].(int)
 
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
-		if c.Index != target {
+		if c.Index() != target {
 			return false
 		}
 		if c.StatusIsActive(c4ICDKey) {
@@ -61,19 +62,19 @@ func (c *char) c4() {
 		player := c.Core.Combat.Player()
 		sourcewaterdroplet.New(
 			c.Core,
-			geometry.CalcRandomPointFromCenter(
-				geometry.CalcOffsetPoint(
+			info.CalcRandomPointFromCenter(
+				info.CalcOffsetPoint(
 					player.Pos(),
-					geometry.Point{Y: 8},
+					info.Point{Y: 8},
 					player.Direction(),
 				),
 				1.3,
 				3,
 				c.Core.Rand,
 			),
-			combat.GadgetTypSourcewaterDropletNeuv,
+			info.GadgetTypSourcewaterDropletNeuv,
 		)
-		c.Core.Combat.Log.NewEvent("C4: Spawned 1 droplet", glog.LogCharacterEvent, c.Index)
+		c.Core.Combat.Log.NewEvent("C4: Spawned 1 droplet", glog.LogCharacterEvent, c.Index())
 
 		return false
 	}, "neuvillette-c4")
@@ -94,7 +95,7 @@ func (c *char) c6DropletCheck(src int) func() {
 
 			// c6 only absorbs one droplet at a time
 			if len(droplets) > 0 {
-				c.Core.Combat.Log.NewEvent("C6: Picked up 1 droplet", glog.LogCharacterEvent, c.Index).
+				c.Core.Combat.Log.NewEvent("C6: Picked up 1 droplet", glog.LogCharacterEvent, c.Index()).
 					Write("prev-charge-duration", c.chargeJudgeDur).
 					Write("curr-charge-duration", c.chargeJudgeDur+60)
 
@@ -108,16 +109,16 @@ func (c *char) c6DropletCheck(src int) func() {
 	}
 }
 
-func (c *char) c6cb(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) c6cb(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(c6ICDKey) {
 		return
 	}
 	c.AddStatus(c6ICDKey, 2*60, true)
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       chargeJudgementName + " (C6)",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNeuvilletteC6,

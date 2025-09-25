@@ -3,25 +3,29 @@ package xianyun
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2Key = "xianyun-c2"
-const c4Icd = "xianyun-c4-icd"
-const c6Key = "xianyun-c6"
+const (
+	c2Key = "xianyun-c2"
+	c4Icd = "xianyun-c4-icd"
+	c6Key = "xianyun-c6"
+)
 
-const c2Dur = 15 * 60
-const c4IcdDur = 5 * 60
-const c6Dur = 16 * 60
+const (
+	c2Dur    = 15 * 60
+	c4IcdDur = 5 * 60
+	c6Dur    = 16 * 60
+)
 
-var c4Ratio = []float64{0, 0.5, 0.8, 1.5}
-var c6Buff = []float64{0, 0.15, 0.35, 0.7}
-var c2BuffMod []float64
+var (
+	c4Ratio   = []float64{0, 0.5, 0.8, 1.5}
+	c6Buff    = []float64{0, 0.15, 0.35, 0.7}
+	c2BuffMod []float64
+)
 
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
@@ -56,13 +60,13 @@ func (c *char) c2buff() {
 	})
 }
 
-func (c *char) c4cb() func(a combat.AttackCB) {
+func (c *char) c4cb() func(a info.AttackCB) {
 	if c.Base.Cons < 4 {
 		return nil
 	}
 
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 
@@ -71,7 +75,7 @@ func (c *char) c4cb() func(a combat.AttackCB) {
 		}
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Mystery Millet Gourmet (C4)",
 			Src:     c4Ratio[c.skillCounter] * c.TotalAtk(),
@@ -90,13 +94,13 @@ func (c *char) c6() {
 	c.SetTag(c6Key, 8)
 }
 
-func (c *char) c6mod(snap *combat.Snapshot) {
+func (c *char) c6mod(snap *info.Snapshot) {
 	if c.Base.Cons < 6 {
 		return
 	}
 	old := snap.Stats[attributes.CD]
 	snap.Stats[attributes.CD] += c6Buff[c.skillCounter]
-	c.Core.Log.NewEvent("c6 adding crit DMG", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("c6 adding crit DMG", glog.LogCharacterEvent, c.Index()).
 		Write("old", old).
 		Write("new", snap.Stats[attributes.CD])
 }

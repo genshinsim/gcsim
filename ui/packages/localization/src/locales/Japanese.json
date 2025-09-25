@@ -71,7 +71,8 @@
         "users_submitted": "ユーザーの投稿をご覧ください:",
         "visit_teams_db": "編成データベースを見る",
         "latest_release": "最新リリース: ",
-        "view_releases": "GitHubでリリースを見る"
+        "view_releases": "GitHubでリリースを見る",
+        "new_characters": "新キャラクター"
     },
     "db": {
         "author": "作成者: ",
@@ -378,7 +379,9 @@
         "dash_body": "クールタイムの関係で、一部の反復では1つ以上のダッシュの実行が遅れた。これにより、ダッシュのクールタイムが切れるまで、アクティブキャラクターはアイドル状態になる。以下のダウンタイムが望ましくない場合は、設定の更新を検討してください。",
         "dash_data_header": "反復ごとのクールダウンによるダッシュディレイの合計",
         "ignore_burst_energy_title": "「元素爆発のエネルギーコストを無視する」モードが有効になっている。",
-        "ignore_burst_energy_body": "シミュレーションは元素爆発のエネルギー要件を無視している。その結果、シミュレーションが不正確になる可能性がある。"
+        "ignore_burst_energy_body": "シミュレーションは元素爆発のエネルギー要件を無視している。その結果、シミュレーションが不正確になる可能性がある。",
+        "gcsim_risk_title": "gcsim の未来が危機にあります！",
+        "gcsim_risk_body": "<p><b>gcsim は<githublink>オープンソースプロジェクトです</githublink>。</b></p> <p>アップデートをタイムリーに公開するためには、コードベースを学び、新しいユニットやメカニクスを実装・レビューしてくださるボランティアが必要です。UI 開発者の参加も歓迎します。</p> <p>重要な機能や協力者を必要としている箇所については、<discordlink>Discord</discordlink> または <issueslink>GitHub Issues</issueslink> をご覧ください。</p>"
     },
     "states": {
         "true": "真",

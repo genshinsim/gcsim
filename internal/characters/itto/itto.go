@@ -8,13 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -89,7 +87,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 // Itto Geo infusion can't be overridden, so it must be a snapshot modification rather than a weapon infuse
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 	ds := c.Character.Snapshot(ai)
 	if c.StatModIsActive(burstBuffKey) {
 		// apply infusion to attacks only
@@ -106,7 +104,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 }
 
 func (c *char) resetChargeState() {
-	c.Core.Events.Subscribe(event.OnActionExec, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnActionExec, func(args ...any) bool {
 		act := args[1].(action.Action)
 
 		if act != action.ActionCharge {
@@ -138,7 +136,7 @@ func (c *char) addStrStack(src string, inc int) {
 	}
 	c.Tags[strStackKey] = v
 
-	c.Core.Log.NewEvent(fmt.Sprintf("itto %v SSS stacks from %v", s, src), glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent(fmt.Sprintf("itto %v SSS stacks from %v", s, src), glog.LogCharacterEvent, c.Index()).
 		Write("old_stacks", old).
 		Write("inc", inc).
 		Write("cur_stacks", v)
@@ -178,8 +176,8 @@ func (c *char) Condition(fields []string) (any, error) {
 	return c.Character.Condition(fields)
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 27
 	}
 	return c.Character.AnimationStartDelay(k)

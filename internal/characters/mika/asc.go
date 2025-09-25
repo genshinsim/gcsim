@@ -2,9 +2,9 @@ package mika
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -19,7 +19,7 @@ func (c *char) addDetectorStack() {
 
 	if stacks < c.maxDetectorStacks {
 		stacks++
-		c.Core.Log.NewEvent("add detector stack", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("add detector stack", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", stacks).
 			Write("maxstacks", c.maxDetectorStacks)
 	}
@@ -40,7 +40,7 @@ func (c *char) a1(char *character.CharWrapper) {
 		AffectedStat: attributes.PhyP,
 		Amount: func() ([]float64, bool) {
 			m[attributes.PhyP] = 0.1 * float64(c.Tag(a1Stacks))
-			return m, c.Core.Player.Active() == char.Index
+			return m, c.Core.Player.Active() == char.Index()
 		},
 	})
 }
@@ -51,14 +51,14 @@ func (c *char) a1(char *character.CharWrapper) {
 // Additionally, the maximum number of stacks that can be gained through Soulwind alone is increased by 1.
 // Requires Suppressive Barrage to be unlocked first.
 func (c *char) a4() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if c.a4Stack {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
-		if char.Index != c.Core.Player.Active() {
+		if char.Index() != c.Core.Player.Active() {
 			return false
 		}
 

@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -40,8 +39,8 @@ func init() {
 // These effects will be cleared once Sangonomiya Kokomi leaves the field.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Snapshot timing is not yet known. Assume it's dynamic for now
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Nereid's Ascension",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -111,10 +110,10 @@ func (c *char) burstDmgBonus(a attacks.AttackTag) float64 {
 // When her Normal and Charged Attacks hit opponents,
 // Kokomi will restore HP for all nearby party members,
 // and the amount restored is based on her Max HP.
-func (c *char) makeBurstHealCB() combat.AttackCBFunc {
+func (c *char) makeBurstHealCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.Core.Status.Duration("kokomiburst") == 0 {
@@ -135,12 +134,12 @@ func (c *char) makeBurstHealCB() combat.AttackCBFunc {
 			if c.Base.Cons >= 2 && char.CurrentHPRatio() <= 0.5 {
 				bonus := 0.006 * c.MaxHP()
 				src += bonus
-				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, char.Index).
+				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, char.Index()).
 					Write("bonus", bonus)
 			}
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
-				Target:  char.Index,
+				Caller:  c.Index(),
+				Target:  char.Index(),
 				Message: "Ceremonial Garment",
 				Src:     src,
 				Bonus:   c.Stat(attributes.Heal),
@@ -155,10 +154,10 @@ func (c *char) makeBurstHealCB() combat.AttackCBFunc {
 
 // Clears Kokomi burst when she leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 		// update jellyfish flat damage. regardless if burst is active or not
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.swapEarlyF = c.Core.F
 			c.skillFlatDmg = c.burstDmgBonus(attacks.AttackTagElementalArt)
 		}

@@ -9,12 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/target"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
@@ -32,10 +29,10 @@ func testCore() *core.Core {
 	})
 	// add player (first target)
 	trg := &testTarget{}
-	trg.Target = target.New(c, geometry.Point{X: 0, Y: 0}, 1)
+	trg.Target = target.New(c, info.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
-	trg.typ = targets.TargettablePlayer
-	trg.Reactable.Init(trg, c)
+	trg.typ = info.TargettablePlayer
+	trg.Init(trg, c)
 	c.Combat.SetPlayer(trg)
 
 	// add default character
@@ -67,26 +64,26 @@ func testCore() *core.Core {
 func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 	c := testCore()
 	var r []*testTarget
-	for i := 0; i < count; i++ {
+	for range count {
 		r = append(r, addTargetToCore(c))
 	}
 	return c, r
 }
 
 //nolint:unparam // dur is always 25 atm but that might change
-func makeAOEAttack(ele attributes.Element, dur reactions.Durability) *combat.AttackEvent {
-	return &combat.AttackEvent{
-		Info: combat.AttackInfo{
+func makeAOEAttack(ele attributes.Element, dur info.Durability) *info.AttackEvent {
+	return &info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur reactions.Durability, trg targets.TargetKey) *combat.AttackEvent {
-	return &combat.AttackEvent{
-		Info: combat.AttackInfo{
+func makeSTAttack(ele attributes.Element, dur info.Durability, trg info.TargetKey) *info.AttackEvent {
+	return &info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
@@ -98,13 +95,13 @@ type testTarget struct {
 	*Reactable
 	*target.Target
 	src  int
-	typ  targets.TargettableType
-	last combat.AttackEvent
+	typ  info.TargettableType
+	last info.AttackEvent
 }
 
-func (target *testTarget) Type() targets.TargettableType { return target.typ }
+func (target *testTarget) Type() info.TargettableType { return target.typ }
 
-func (target *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
+func (target *testTarget) HandleAttack(atk *info.AttackEvent) float64 {
 	target.Attack(atk, nil)
 	// delay damage event to end of the frame
 	target.Core.Combat.Tasks.Add(func() {
@@ -115,7 +112,7 @@ func (target *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 1
 }
 
-func (target *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (target *testTarget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	target.last = *atk
 	target.ShatterCheck(atk)
 	if atk.Info.Durability > 0 {
@@ -125,17 +122,17 @@ func (target *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float
 	return 0, false
 }
 
-func (target *testTarget) applyDamage(atk *combat.AttackEvent) {
+func (target *testTarget) applyDamage(atk *info.AttackEvent) {
 	if !atk.Reacted {
-		target.Reactable.AttachOrRefill(atk)
+		target.AttachOrRefill(atk)
 	}
 }
 
 func addTargetToCore(c *core.Core) *testTarget {
 	trg := &testTarget{}
-	trg.Target = target.New(c, geometry.Point{X: 0, Y: 0}, 1)
+	trg.Target = target.New(c, info.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
-	trg.Reactable.Init(trg, c)
+	trg.Init(trg, c)
 	c.Combat.AddEnemy(trg)
 	return trg
 }
@@ -151,36 +148,36 @@ func TestMain(m *testing.M) {
 
 func TestReduce(t *testing.T) {
 	r := &Reactable{}
-	r.Durability[Electro] = 20
+	r.Durability[info.ReactionModKeyElectro] = 20
 	r.reduce(attributes.Electro, 20, 1)
-	if r.Durability[Electro] != 0 {
-		t.Errorf("expecting nil electro balance, got %v", r.Durability[Electro])
+	if r.Durability[info.ReactionModKeyElectro] != 0 {
+		t.Errorf("expecting nil electro balance, got %v", r.Durability[info.ReactionModKeyElectro])
 	}
 
 	// straight up consumption
-	r.Durability[Pyro] = 20
-	r.Durability[Burning] = 50
+	r.Durability[info.ReactionModKeyPyro] = 20
+	r.Durability[info.ReactionModKeyBurning] = 50
 	consumed := r.reduce(attributes.Pyro, 30, 1)
 	if consumed != 30 {
 		t.Errorf("expecting consumed to be 30, got %v", consumed)
 	}
 
 	// 2x multiplier, i.e. 1 incoming reduces 2
-	r.Durability[Pyro] = 50
+	r.Durability[info.ReactionModKeyPyro] = 50
 	consumed = r.reduce(attributes.Pyro, 20, 2)
 	if consumed != 20 {
 		t.Errorf("expecting consumed to be 20, got %v", consumed)
 	}
-	if r.Durability[Pyro] != 10 {
+	if r.Durability[info.ReactionModKeyPyro] != 10 {
 		t.Errorf("expecting 10 remaining ModifierPyro, got %v", 10)
 	}
 
-	r.Durability[Pyro] = 50
+	r.Durability[info.ReactionModKeyPyro] = 50
 	consumed = r.reduce(attributes.Pyro, 50, 0.5)
 	if consumed != 50 {
 		t.Errorf("expecting consumed to be 50, got %v", consumed)
 	}
-	if r.Durability[Pyro] != 25 {
+	if r.Durability[info.ReactionModKeyPyro] != 25 {
 		t.Errorf("expecting 25 remaining ModifierPyro, got %v", 25)
 	}
 }
@@ -192,22 +189,22 @@ func TestTick(t *testing.T) {
 	trg.src = 1
 
 	// test electro
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
 	})
 
-	if trg.Durability[Electro] != 0.8*25 {
-		t.Errorf("expecting 20 electro, got %v", trg.Durability[Electro])
+	if trg.Durability[info.ReactionModKeyElectro] != 0.8*25 {
+		t.Errorf("expecting 20 electro, got %v", trg.Durability[info.ReactionModKeyElectro])
 	}
-	if trg.DecayRate[Electro] != 20.0/(6*25+420) {
-		t.Errorf("expecting %v decay rate, got %v", 1.0/(6*25+420), trg.DecayRate[Electro])
+	if trg.DecayRate[info.ReactionModKeyElectro] != 20.0/(6*25+420) {
+		t.Errorf("expecting %v decay rate, got %v", 1.0/(6*25+420), trg.DecayRate[info.ReactionModKeyElectro])
 	}
 
 	// should deplete fully in 570 ticks
-	for i := 0; i < 6*50+420; i++ {
+	for range 6*50 + 420 {
 		trg.Tick()
 		// log.Println(target.Durability)
 	}
@@ -218,33 +215,33 @@ func TestTick(t *testing.T) {
 	}
 
 	// test multiple aura
-	trg.Durability[Electro] = 0 // reset from previous test
-	trg.DecayRate[Electro] = 0
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.Durability[info.ReactionModKeyElectro] = 0 // reset from previous test
+	trg.DecayRate[info.ReactionModKeyElectro] = 0
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 50,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 	})
-	for i := 0; i < 6*50+420; i++ {
+	for range 6*50 + 420 {
 		trg.Tick()
 	}
 	ok = trg.allNil(t)
@@ -253,23 +250,23 @@ func TestTick(t *testing.T) {
 	}
 
 	// test refilling
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
 	})
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		trg.Tick()
 	}
 	// calculate expected duration
-	decay := reactions.Durability(20.0 / (6*25 + 420))
+	decay := info.Durability(20.0 / (6*25 + 420))
 	left := 20 - 100*decay
 	life := int((left + 40) / decay)
 	// log.Println(decay, left, life)
 
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 50,
 		},
@@ -278,8 +275,8 @@ func TestTick(t *testing.T) {
 		trg.Tick()
 	}
 	// make sure > 0
-	if trg.Durability[Electro] < 0 {
-		t.Errorf("expecting electro not to be 0 yet, got %v", trg.Durability[Electro])
+	if trg.Durability[info.ReactionModKeyElectro] < 0 {
+		t.Errorf("expecting electro not to be 0 yet, got %v", trg.Durability[info.ReactionModKeyElectro])
 	}
 	// 1 more tick and should be gone
 	trg.Tick()
@@ -290,44 +287,44 @@ func TestTick(t *testing.T) {
 
 	// test frozen
 	// 50 frozen should last just over 208 frames (i.e. 0 by 209)
-	trg.Durability[Frozen] = 50
-	for i := 0; i < 208; i++ {
+	trg.Durability[info.ReactionModKeyFrozen] = 50
+	for range 208 {
 		trg.Tick()
 		// log.Println(trg.Durability)
 		// log.Println(trg.DecayRate)
 		// log.Println("------------------------")
 	}
 	// should be > 0 still
-	if trg.Durability[Frozen] < 0 {
-		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[Frozen])
+	if trg.Durability[info.ReactionModKeyFrozen] < 0 {
+		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[info.ReactionModKeyFrozen])
 	}
 	// 1 more tick and should be gone
 	trg.Tick()
-	if trg.Durability[Frozen] > 0 {
-		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[Frozen])
+	if trg.Durability[info.ReactionModKeyFrozen] > 0 {
+		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[info.ReactionModKeyFrozen])
 	}
 	// 105 more frames to full recover
-	for i := 0; i < 104; i++ {
+	for range 104 {
 		trg.Tick()
 		// log.Println(trg.Durability)
 		// log.Println(trg.DecayRate)
 		// log.Println("------------------------")
 	}
 	// decay should be > 0 still
-	if trg.DecayRate[Frozen] < frzDecayCap {
-		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[Frozen])
+	if trg.DecayRate[info.ReactionModKeyFrozen] < frzDecayCap {
+		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[info.ReactionModKeyFrozen])
 	}
 	// 1 more tick to reset decay
 	trg.Tick()
-	if trg.DecayRate[Frozen] > frzDecayCap {
-		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[Frozen])
+	if trg.DecayRate[info.ReactionModKeyFrozen] > frzDecayCap {
+		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[info.ReactionModKeyFrozen])
 	}
 }
 
 func (target *testTarget) allNil(t *testing.T) bool {
 	ok := true
 	for i, v := range target.Durability {
-		ele := Modifier(i).Element()
+		ele := info.ReactionModKey(i).Element()
 		if !durApproxEqual(0, v, 0.00001) {
 			t.Errorf("ele %v expected 0 durability got %v", ele, v)
 			ok = false
@@ -343,7 +340,7 @@ func (target *testTarget) allNil(t *testing.T) bool {
 	return ok
 }
 
-func durApproxEqual(expect, result, tol reactions.Durability) bool {
+func durApproxEqual(expect, result, tol info.Durability) bool {
 	if expect > result {
 		return expect-result < tol
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -23,9 +24,9 @@ func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if c.Index == atk.Info.ActorIndex {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if c.Index() == atk.Info.ActorIndex {
 			return false
 		}
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
@@ -79,7 +80,7 @@ func (c *char) c2() {
 
 	chars := c.Core.Player.Chars()
 	for _, char := range chars {
-		if c.Index == char.Index {
+		if c.Index() == char.Index() {
 			continue
 		}
 		this := char
@@ -88,7 +89,7 @@ func (c *char) c2() {
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				// character should be followed by Itzpapa, i.e. the character is active
-				if c.Core.Player.Active() != this.Index {
+				if c.Core.Player.Active() != this.Index() {
 					return nil, false
 				}
 				if c.Core.Player.Shields.Get(shield.CitlaliSkill) == nil && !c.nightsoulState.HasBlessing() {
@@ -100,7 +101,7 @@ func (c *char) c2() {
 	}
 }
 
-func (c *char) c4SkullCB(a combat.AttackCB) {
+func (c *char) c4SkullCB(a info.AttackCB) {
 	if c.Base.Cons < 4 {
 		return
 	}
@@ -111,8 +112,8 @@ func (c *char) c4SkullCB(a combat.AttackCB) {
 
 	c.generateNightsoulPoints(16)
 	c.AddEnergy("citlali-c4", 8)
-	aiSpiritVesselSkull := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	aiSpiritVesselSkull := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Spiritvessel Skull DMG (C4)",
 		AttackTag:      attacks.AttackTagNone,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -143,7 +144,7 @@ func (c *char) c6() {
 
 	chars := c.Core.Player.Chars()
 	for _, char := range chars {
-		if c.Index == char.Index {
+		if c.Index() == char.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
@@ -157,7 +158,7 @@ func (c *char) c6() {
 	}
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("citlali-c6", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			buffSelf[attributes.DmgP] = 0.025 * c.numC6Stacks
 			return buffSelf, true
 		},

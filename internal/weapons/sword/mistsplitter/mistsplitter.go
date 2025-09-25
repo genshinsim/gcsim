@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -55,9 +54,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bonus := attributes.EleToDmgP(char.Base.Element)
 
 	// normal dealing dmg
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
@@ -71,8 +70,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 
 	// using burst
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		char.AddStatus(burstBuffKey, 600, true)
@@ -83,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			count := 0
-			if char.Energy < char.EnergyMax {
+			if char.Energy < char.EnergyMax || char.EnergyMax == 0 {
 				count++
 			}
 			if char.StatusIsActive(normalBuffKey) {

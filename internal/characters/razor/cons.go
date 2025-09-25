@@ -5,9 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -17,9 +16,9 @@ func (c *char) c1() {
 	c.c1bonus = make([]float64, attributes.EndStatType)
 	c.c1bonus[attributes.DmgP] = 0.1
 
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) bool {
 		// ignore if character not on field
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
@@ -41,7 +40,7 @@ func (c *char) c2() {
 
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("razor-c2", -1),
-			Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
@@ -56,12 +55,12 @@ func (c *char) c2() {
 }
 
 // When casting Claw and Thunder (Press), opponents hit will have their DEF decreased by 15% for 7s.
-func (c *char) c4cb(a combat.AttackCB) {
+func (c *char) c4cb(a info.AttackCB) {
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	e.AddDefMod(combat.DefMod{
+	e.AddDefMod(info.DefMod{
 		Base:  modifier.NewBaseWithHitlag("razor-c4", 7*60),
 		Value: -0.15,
 	})
@@ -71,8 +70,8 @@ const c6ICDKey = "razor-c6-icd"
 
 // Every 10s, Razor's sword charges up, causing the next Normal Attack to release lightning that deals 100% of Razor's ATK as Electro DMG.
 // When Razor is not using Lightning Fang, a lightning strike on an opponent will grant Razor an Electro Sigil for Claw and Thunder.
-func (c *char) c6cb(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) c6cb(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	// effect can only happen every 10s
@@ -82,8 +81,8 @@ func (c *char) c6cb(a combat.AttackCB) {
 
 	c.AddStatus(c6ICDKey, 600, true)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Lupus Fulguris",
 		AttackTag:  attacks.AttackTagNone, // TODO: it has another tag?
 		ICDTag:     attacks.ICDTagNone,
@@ -94,7 +93,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 		Mult:       1,
 	}
 
-	sigilcb := func(a combat.AttackCB) {
+	sigilcb := func(a info.AttackCB) {
 		// add sigil only outside burst
 		if c.StatusIsActive(burstBuffKey) {
 			return
@@ -104,7 +103,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), a.Target, geometry.Point{Y: 0.7}, 1.5),
+		combat.NewCircleHit(c.Core.Combat.Player(), a.Target, info.Point{Y: 0.7}, 1.5),
 		1,
 		1,
 		sigilcb,

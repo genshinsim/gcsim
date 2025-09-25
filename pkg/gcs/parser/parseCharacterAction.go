@@ -83,8 +83,8 @@ Loop:
 				return nil, err
 			}
 			// add to array
-			for i := 0; i < count; i++ {
-				//TODO: all the repeated action will access the same map
+			for range count {
+				// TODO: all the repeated action will access the same map
 				// ability implement should avoid modifying the maps
 				actions = append(actions, expr)
 			}
@@ -95,7 +95,7 @@ Loop:
 				break Loop
 			}
 		default:
-			//TODO: fix invalid key error
+			// TODO: fix invalid key error
 			return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.Line, char.Val, n.Val)
 		}
 	}

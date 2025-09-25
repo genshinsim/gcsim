@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const swirlAbil = "swirl-pyro (aoe)"
@@ -25,7 +25,7 @@ func TestSwirl50to25(t *testing.T) {
 	// 1 tick
 	advanceCoreFrame(c)
 	// check durability after 1 tick
-	dur := trg[0].Durability[Pyro]
+	dur := trg[0].Durability[info.ReactionModKeyPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 50, 1), 0)
 	// dmg should trigger next tick
@@ -37,7 +37,7 @@ func TestSwirl50to25(t *testing.T) {
 		t.FailNow()
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -56,18 +56,18 @@ func TestSwirl25to25(t *testing.T) {
 	// 1 tick
 	advanceCoreFrame(c)
 	// check durability after 1 tick
-	dur := trg[0].Durability[Pyro]
+	dur := trg[0].Durability[info.ReactionModKeyPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 25, 0), 0)
 	// dmg should trigger next tick
 	// i'm expecting an aoe swirl with durability = dur * 1.25 + 23.75
-	expected := reactions.Durability(25)*1.25 + 23.75
+	expected := info.Durability(25)*1.25 + 23.75
 	advanceCoreFrame(c)
 	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -86,18 +86,18 @@ func TestSwirl25to50(t *testing.T) {
 	// 1 tick
 	advanceCoreFrame(c)
 	// check durability after 1 tick
-	dur := trg[0].Durability[Pyro]
+	dur := trg[0].Durability[info.ReactionModKeyPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 25, 0), 0)
 	// dmg should trigger next tick
 	// i'm expecting an aoe swirl with durability = dur * 1.25 + 23.75
-	expected := reactions.Durability(25)*1.25 + 23.75
+	expected := info.Durability(25)*1.25 + 23.75
 	advanceCoreFrame(c)
 	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -117,19 +117,19 @@ func TestSwirl50to50(t *testing.T) {
 	// 1 tick
 	advanceCoreFrame(c)
 	// check durability after 1 tick
-	dur := trg[0].Durability[Pyro]
+	dur := trg[0].Durability[info.ReactionModKeyPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 50, 0), 0)
 	// dmg should trigger next tick
 	// i'm expecting an aoe swirl with durability = dur * 1.25 + 23.75
-	expected := reactions.Durability(50)*1.25 + 23.75
+	expected := info.Durability(50)*1.25 + 23.75
 
 	advanceCoreFrame(c)
 	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -142,11 +142,11 @@ func TestSwirl25to10(t *testing.T) {
 	// apply 25 pyro first
 	c.QueueAttackEvent(makeSTAttack(attributes.Pyro, 25, 1), 0)
 	// tick 285
-	for i := 0; i < 285; i++ {
+	for range 285 {
 		advanceCoreFrame(c)
 	}
 	// check durability after 1 tick
-	dur := trg[0].Durability[Pyro]
+	dur := trg[0].Durability[info.ReactionModKeyPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 25, 1), 0)
 	// dmg should trigger next tick
@@ -157,7 +157,7 @@ func TestSwirl25to10(t *testing.T) {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }
@@ -175,11 +175,11 @@ func TestSwirl50to10(t *testing.T) {
 	// apply 25 pyro first
 	c.QueueAttackEvent(makeSTAttack(attributes.Pyro, 25, 1), 0)
 	// tick 285
-	for i := 0; i < 285; i++ {
+	for range 285 {
 		advanceCoreFrame(c)
 	}
 	// check durability after 1 tick
-	dur := trg[0].Durability[Pyro]
+	dur := trg[0].Durability[info.ReactionModKeyPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 25, 1), 0)
 	// dmg should trigger next tick
@@ -190,7 +190,7 @@ func TestSwirl50to10(t *testing.T) {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
-	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(ZeroDur) {
+	if math.Abs(float64(trg[1].last.Info.Durability-expected)) > float64(info.ZeroDur) {
 		t.Errorf("expected durability to be %v, got %v", expected, trg[1].last.Info.Durability)
 	}
 }

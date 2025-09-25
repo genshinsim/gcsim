@@ -3,9 +3,9 @@ package heizou
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -18,16 +18,16 @@ func (c *char) a1() {
 		return
 	}
 	const a1IcdKey = "heizou-a1-icd"
-	swirlCB := func() func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	swirlCB := func() func(args ...any) bool {
+		return func(args ...any) bool {
 			if c.StatusIsActive(a1IcdKey) {
 				return false
 			}
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != c.Index {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != c.Index() {
 				return false
 			}
-			if c.Core.Player.Active() != c.Index {
+			if c.Core.Player.Active() != c.Index() {
 				return false
 			}
 			switch atk.Info.AttackTag {
@@ -57,7 +57,7 @@ func (c *char) a4() {
 
 	dur := 60 * 10
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue // nothing for heizou
 		}
 		char.AddStatMod(character.StatMod{
@@ -68,5 +68,5 @@ func (c *char) a4() {
 			},
 		})
 	}
-	c.Core.Log.NewEvent("heizou a4 triggered", glog.LogCharacterEvent, c.Index).Write("em snapshot", c.a4Buff[attributes.EM]).Write("expiry", c.Core.F+dur)
+	c.Core.Log.NewEvent("heizou a4 triggered", glog.LogCharacterEvent, c.Index()).Write("em snapshot", c.a4Buff[attributes.EM]).Write("expiry", c.Core.F+dur)
 }

@@ -67,7 +67,7 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 	duration := c.StatusDuration(burstKey)
 	if 0 < duration && duration < hitmark {
 		c.ExtendStatus(burstKey, hitmark-duration+1)
-		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.StatusExpiry(burstKey))
 		src := c.burstSrc
 		c.QueueCharTask(func() {
@@ -77,12 +77,12 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.DeleteStatus(burstKey)
 			c.onBurstExpiry(c.burstSrc)
 		}

@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -74,8 +74,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -91,13 +91,13 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][i][0],
 		)
 		if c.NormalCounter == 3 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				info.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
 			)
@@ -117,8 +117,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           fmt.Sprintf("Swift Hunt (Piercing Shot) %d", c.normalSCounter),
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagNormalAttack,
@@ -132,7 +132,7 @@ func (c *char) skillAttack(_ map[string]int) (action.Info, error) {
 
 	t := c.Core.Combat.PrimaryTarget()
 	gainBOL := true
-	var ap combat.AttackPattern
+	var ap info.AttackPattern
 	if c.CurrentHPDebtRatio() < 1 {
 		// TODO: assume this is just a big rectangle center on target
 		ap = combat.NewBoxHitOnTarget(t, nil, 2, 14)
@@ -170,8 +170,8 @@ func (c *char) arkheAttack() {
 	if c.StatusIsActive(arkheICDKey) {
 		return
 	}
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Surging Blade",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,

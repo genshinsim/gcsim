@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -32,8 +33,8 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
-	aiSnapshot := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiSnapshot := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Sweeping Time (Stat Snapshot)",
 	}
 	c.Snapshot(&aiSnapshot)
@@ -65,7 +66,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		ext := getExt()
 		dur += ext * 60
-		c.Core.Log.NewEvent("noelle c6 extension applied", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("noelle c6 extension applied", glog.LogCharacterEvent, c.Index()).
 			Write("total_dur", dur).
 			Write("ext", ext)
 	}
@@ -78,13 +79,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			return c.burstBuff, true
 		},
 	})
-	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index).
+	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index()).
 		Write("total def", burstDefSnapshot).
 		Write("atk added", c.burstBuff[attributes.ATK]).
 		Write("mult", mult)
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Sweeping Time (Burst)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,

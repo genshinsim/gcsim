@@ -6,12 +6,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
 
-const burstHitmark = 100
-const burstThunderbolt1Hitmark = 154
+const (
+	burstHitmark             = 100
+	burstThunderbolt1Hitmark = 154
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(114) // Q -> CA
@@ -23,8 +26,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Great Secret Art: Tenko Kenshin",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

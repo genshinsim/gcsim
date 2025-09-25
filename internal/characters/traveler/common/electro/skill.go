@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -34,8 +34,8 @@ func init() {
 }
 
 func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Lightning Blade",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -70,18 +70,18 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 
 	// Counting from the frame E is pressed, it takes an average of 1.79 seconds for a character to be able to pick one up
 	// https://library.keqingmains.com/evidence/characters/electro/traveler-electro#amulets-delay
-	amuletDelay := p["amulet_delay"]
-	// make it so that it can't be faster than 1.79s
-	if amuletDelay < 107 {
-		amuletDelay = 107 // ~1.79s
-	}
+	amuletDelay := max(
+		// make it so that it can't be faster than 1.79s
+		p["amulet_delay"],
+		// ~1.79s
+		107)
 
-	amuletCB := func(a combat.AttackCB) {
+	amuletCB := func(a info.AttackCB) {
 		// generate amulet if generated amulets < limit
 		if c.abundanceAmulets >= maxAmulets {
 			return
 		}
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 
@@ -89,7 +89,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 		c.abundanceAmulets++
 		c.SetTag("generated", c.abundanceAmulets)
 
-		c.Core.Log.NewEvent("travelerelectro abundance amulet generated", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("travelerelectro abundance amulet generated", glog.LogCharacterEvent, c.Index()).
 			Write("amulets", c.abundanceAmulets)
 	}
 
@@ -126,10 +126,10 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *Traveler) makeParticleCB() combat.AttackCBFunc {
+func (c *Traveler) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -175,7 +175,7 @@ func (c *Traveler) collectAmulets(collector *character.CharWrapper) bool {
 	// A1:
 	// When another nearby character in the party obtains an Abundance Amulet created by Lightning Blade,
 	// Lightning Blade's CD is decreased by 1.5s.
-	if c.Base.Ascension >= 1 && collector.Index != c.Index {
+	if c.Base.Ascension >= 1 && collector.Index() != c.Index() {
 		c.ReduceActionCooldown(action.ActionSkill, 90*c.abundanceAmulets)
 	}
 

@@ -6,14 +6,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 const (
 	burstHitmark  = 104
@@ -36,8 +33,8 @@ func init() {
 // Unleashes a massive cannon bombardment on opponents in front of her, dealing AoE Geo DMG and
 // providing Cannon Fire Support for a duration afterward, periodically dealing Geo DMG to nearby opponents.
 func (c *char) Burst(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "As the Sunlit Sky's Singing Salute",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -104,9 +101,9 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 
 // When cannon attacks hit opponents, Navia will gain 1 stack of Crystal Shrapnel.
 // This effect can be triggered up to once every 2.4s.
-func (c *char) burstCB() combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) burstCB() info.AttackCBFunc {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(burstICDKey) {
@@ -115,13 +112,13 @@ func (c *char) burstCB() combat.AttackCBFunc {
 		c.AddStatus(burstICDKey, 2.4*60, true)
 		if c.shrapnel < 6 {
 			c.shrapnel++
-			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index).Write("shrapnel", c.shrapnel)
+			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index()).Write("shrapnel", c.shrapnel)
 		}
 	}
 }
 
 // Targets a random enemy if there is an enemy present, if not, it targets a random spot
-func (c *char) calcCannonPos() geometry.Point {
+func (c *char) calcCannonPos() info.Point {
 	player := c.Core.Combat.Player() // gadget is attached to player
 
 	// look for random enemy within 10m radius from player pos
@@ -132,14 +129,14 @@ func (c *char) calcCannonPos() geometry.Point {
 
 	// enemy found: choose random point between 0 and 1.2m from their pos
 	if enemy != nil {
-		return geometry.CalcRandomPointFromCenter(enemy.Pos(), 0, 1.2, c.Core.Rand)
+		return info.CalcRandomPointFromCenter(enemy.Pos(), 0, 1.2, c.Core.Rand)
 	}
 
 	// no enemy: targeting is randomly between 1m and 6m from player pos + Y: 4
-	return geometry.CalcRandomPointFromCenter(
-		geometry.CalcOffsetPoint(
+	return info.CalcRandomPointFromCenter(
+		info.CalcOffsetPoint(
 			player.Pos(),
-			geometry.Point{Y: 4},
+			info.Point{Y: 4},
 			player.Direction(),
 		),
 		1,

@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -18,9 +18,7 @@ const (
 	frostFallAbil             = "Frostfall Storm DMG"
 )
 
-var (
-	skillFrames []int
-)
+var skillFrames []int
 
 func init() {
 	skillFrames = frames.InitAbilSlice(50) // E -> Walk
@@ -34,8 +32,8 @@ func init() {
 
 func (c *char) Skill(_ map[string]int) (action.Info, error) {
 	// do initial attack
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Obsidian Tzitzimitl DMG",
 		AttackTag:      attacks.AttackTagElementalArt,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -158,8 +156,8 @@ func (c *char) itzpapaHitTask(src int) {
 		if !c.StatusIsActive(opalFireStateKey) {
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           frostFallAbil,
 			AttackTag:      attacks.AttackTagElementalArt,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -177,8 +175,8 @@ func (c *char) itzpapaHitTask(src int) {
 	}, itzpapaInterval)
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

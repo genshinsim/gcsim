@@ -17,11 +17,11 @@ import (
 )
 
 type dbGetOpt struct {
-	Query   map[string]interface{} `json:"query,omitempty"`
-	Sort    map[string]interface{} `json:"sort,omitempty"`
-	Project map[string]interface{} `json:"project,omitempty"`
-	Skip    int64                  `json:"skip,omitempty"`
-	Limit   int64                  `json:"limit,omitempty"`
+	Query   map[string]any `json:"query,omitempty"`
+	Sort    map[string]any `json:"sort,omitempty"`
+	Project map[string]any `json:"project,omitempty"`
+	Skip    int64          `json:"skip,omitempty"`
+	Limit   int64          `json:"limit,omitempty"`
 }
 
 type dbData struct {
@@ -37,14 +37,16 @@ type dbEntry struct {
 }
 
 type opts struct {
-	mustHaveChar string
-	iters        int
-	workers      int
+	mustHaveChar      string
+	iters             int
+	workers           int
+	warnPerThreshhold float64
 }
 
 func main() {
 	var opt opts
 	flag.StringVar(&opt.mustHaveChar, "must", "", "comma separated character names that must be present, otherwise skip. default blank")
+	flag.Float64Var(&opt.warnPerThreshhold, "warn", 0.05, "percent difference threshold to warn on")
 	flag.IntVar(&opt.iters, "iters", 1000, "iterations to run each comparison")
 	flag.IntVar(&opt.workers, "workers", 30, "number of workers to use")
 	flag.Parse()
@@ -53,7 +55,7 @@ func main() {
 		panic(err)
 	}
 	filters := strings.Split(opt.mustHaveChar, ",")
-	fmt.Println("chars,id,original,next,diff,abs_diff,per_diff,err")
+	fmt.Println("diff_ok,chars,id,original,next,diff,abs_diff,per_diff,err")
 	for _, v := range res {
 		simcfg, gcsl, err := simulator.Parse(v.Config)
 		if err != nil {
@@ -86,7 +88,11 @@ func main() {
 		diff := dps - v.Summary.MeanDpsPerTarget
 		absDiff := math.Abs(diff)
 		percentDiff := absDiff / v.Summary.MeanDpsPerTarget
-		fmt.Printf("%v,%v,%v,%v,%v,%v,%v,%v\n", team, v.Id, v.Summary.MeanDpsPerTarget, dps, diff, absDiff, percentDiff, err)
+		warn := "ok"
+		if percentDiff > opt.warnPerThreshhold {
+			warn = "WARNING"
+		}
+		fmt.Printf("%v,%v,%v,%v,%v,%v,%v,%v,%v\n", warn, team, v.Id, v.Summary.MeanDpsPerTarget, dps, diff, absDiff, percentDiff, err)
 	}
 }
 

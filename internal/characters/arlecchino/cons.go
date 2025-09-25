@@ -5,16 +5,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2IcdKey = "arlecchino-c2-icd"
-const c4IcdKey = "arlecchino-c4-icd"
-const c6IcdKey = "arlecchino-c6-icd"
-const c6Key = "arlecchino-c6"
+const (
+	c2IcdKey = "arlecchino-c2-icd"
+	c4IcdKey = "arlecchino-c4-icd"
+	c6IcdKey = "arlecchino-c6-icd"
+	c6Key    = "arlecchino-c6"
+)
 
 func (c *char) c2() {
 	c.initialDirectiveLevel = 1
@@ -36,8 +38,8 @@ func (c *char) c2OnAbsorbDue() {
 	}
 
 	c.AddStatus(c2IcdKey, 10*60, true)
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Balemoon Bloodfire (C2)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
@@ -53,7 +55,7 @@ func (c *char) c2OnAbsorbDue() {
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: 3},
+			info.Point{Y: 3},
 			6.5,
 		),
 		50,
@@ -81,7 +83,7 @@ func (c *char) c6Amount() float64 {
 	}
 
 	amt := c.TotalAtk() * 7.0 * c.CurrentHPDebt() / c.MaxHP()
-	c.Core.Log.NewEvent("Arlecchino C6 dmg add", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("Arlecchino C6 dmg add", glog.LogCharacterEvent, c.Index()).
 		Write("amt", amt)
 	return amt
 }
@@ -101,7 +103,7 @@ func (c *char) c6skill() {
 	m[attributes.CD] = 0.7
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6Key, 20*60),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalBurst, attacks.AttackTagNormal:
 				return m, true

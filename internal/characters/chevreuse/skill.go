@@ -7,9 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -28,8 +26,10 @@ const (
 	arkheICDKey       = "chev-arkhe-icd"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 func init() {
 	// skill (press) -> x
@@ -56,8 +56,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Short-Range Rapid Interdiction Fire",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -70,7 +70,7 @@ func (c *char) skillPress() action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.5}, 2, 6),
+		combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.5}, 2, 6),
 		skillPressHitmark,
 		skillPressHitmark,
 		c.particleCB,
@@ -89,27 +89,21 @@ func (c *char) skillPress() action.Info {
 }
 
 func (c *char) skillHold(p map[string]int) action.Info {
-	hold := p["hold"]
 	// earliest hold hitmark is ~19f
 	// latest hold hitmark is ~319f
 	// hold=1 gives 19f and hold=301 gives a 319f delay until hitmark.
-	if hold < 1 {
-		hold = 1
-	}
-	if hold > 301 {
-		hold = 301
-	}
+	hold := min(max(p["hold"], 1), 301)
 	// subtract 1 to account for needing to supply > 0 to indicate hold
 	hold -= 1
 	hitmark := hold + skillHoldHitmark
 	cdStart := hold + skillHoldCDStart
 
-	var ai combat.AttackInfo
-	var ap combat.AttackPattern
+	var ai info.AttackInfo
+	var ap info.AttackPattern
 
 	if c.overChargedBall {
-		ai = combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai = info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Short-Range Rapid Interdiction Fire [Overcharged]",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
@@ -126,8 +120,8 @@ func (c *char) skillHold(p map[string]int) action.Info {
 		c.overChargedBall = false
 		c.Core.Tasks.Add(c.a4, cdStart)
 	} else {
-		ai = combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai = info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Short-Range Rapid Interdiction Fire [Hold]",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
@@ -137,7 +131,7 @@ func (c *char) skillHold(p map[string]int) action.Info {
 			Durability: 25,
 			Mult:       skillHold[c.TalentLvlSkill()],
 		}
-		ap = combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.5}, 3, 7)
+		ap = combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.5}, 3, 7)
 	}
 
 	// c4
@@ -170,16 +164,16 @@ func (c *char) skillHold(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) arkhe(delay int) combat.AttackCBFunc {
+func (c *char) arkhe(delay int) info.AttackCBFunc {
 	// triggers on hitting anything, not just enemy
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if c.StatusIsActive(arkheICDKey) {
 			return
 		}
 		c.AddStatus(arkheICDKey, 10*60, true)
 
-		aiArkhe := combat.AttackInfo{
-			ActorIndex: c.Index,
+		aiArkhe := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Surging Blade (" + c.Base.Key.Pretty() + ")",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
@@ -224,7 +218,7 @@ func (c *char) startSkillHealing() {
 	}
 
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  c.Core.Player.Active(),
 		Message: "Short-Range Rapid Interdiction Fire Healing",
 		Src:     skillHpRegen[c.TalentLvlSkill()]*c.MaxHP() + skillHpFlat[c.TalentLvlSkill()],
@@ -234,8 +228,8 @@ func (c *char) startSkillHealing() {
 	c.Core.Tasks.Add(c.startSkillHealing, skillHealInterval)
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -246,7 +240,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 func (c *char) overchargedBallEventSub() {
-	c.Core.Events.Subscribe(event.OnOverload, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnOverload, func(args ...any) bool {
 		// don't proc on gadgets
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false

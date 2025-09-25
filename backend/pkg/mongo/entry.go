@@ -68,7 +68,7 @@ func (s *Server) Delete(ctx context.Context, id string) error {
 func (s *Server) get(
 	ctx context.Context,
 	col *mongo.Collection,
-	filter interface{},
+	filter any,
 	opts ...*options.FindOptions,
 ) ([]*db.Entry, error) {
 	s.Log.Infow("db get request", "filter", filter, "opts", opts)
@@ -103,7 +103,7 @@ func (s *Server) get(
 	return result, nil
 }
 
-func (s *Server) aggregate(ctx context.Context, col *mongo.Collection, pipeline interface{}, opts ...*options.AggregateOptions) ([]*db.Entry, error) {
+func (s *Server) aggregate(ctx context.Context, col *mongo.Collection, pipeline any, opts ...*options.AggregateOptions) ([]*db.Entry, error) {
 	cursor, err := col.Aggregate(ctx, pipeline, opts...)
 	if err != nil {
 		s.Log.Infow("error aggregating", "err", err)
@@ -138,7 +138,7 @@ func (s *Server) aggregate(ctx context.Context, col *mongo.Collection, pipeline 
 func (s *Server) getOne(
 	ctx context.Context,
 	col *mongo.Collection,
-	filter interface{},
+	filter any,
 	opts ...*options.FindOneOptions,
 ) (*db.Entry, error) {
 	res := col.FindOne(ctx, filter, opts...)

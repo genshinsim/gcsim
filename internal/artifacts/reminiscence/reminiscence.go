@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -53,8 +52,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.50
-		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
+		c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 			if char.Energy < 15 {
@@ -72,7 +71,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("shim-4pc", 60*10),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagNormal:
 					case attacks.AttackTagExtra:

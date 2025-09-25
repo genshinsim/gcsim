@@ -2,11 +2,11 @@ package wolffang
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mFirst[attributes.DmgP] = 0.12 + 0.04*float64(p.Refine)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("wolf-fang", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:
@@ -66,12 +66,12 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 	m := make([]float64, attributes.EndStatType)
 	icd := name + "-icd"
 
-	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != w.char.Index {
+	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != w.char.Index() {
 			return false
 		}
-		if w.c.Player.Active() != w.char.Index {
+		if w.c.Player.Active() != w.char.Index() {
 			return false
 		}
 		if !requiredTag(atk.Info.AttackTag, tags...) {
@@ -91,7 +91,7 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 
 		w.char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(name, 10*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if !requiredTag(atk.Info.AttackTag, tags...) {
 					return nil, false
 				}
@@ -104,10 +104,5 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 }
 
 func requiredTag(tag attacks.AttackTag, list ...attacks.AttackTag) bool {
-	for _, value := range list {
-		if tag == value {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(list, tag)
 }

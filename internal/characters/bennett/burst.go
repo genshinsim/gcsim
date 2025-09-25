@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -36,8 +35,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Status.Add(burstKey, 720+burstStartFrame)
 	// hook for buffs; active right away after cast
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Fantastic Voyage",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -48,7 +47,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	const radius = 6.0
-	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, radius)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, radius)
 	c.Core.QueueAttack(ai, burstArea, 37, 37)
 
 	// add 13 ticks starting from t=0s to t=12s
@@ -110,8 +109,8 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64, firstTic
 		// heal if not first tick and under 70%
 		if !firstTick && active.CurrentHPRatio() < 0.7 {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
-				Target:  active.Index,
+				Caller:  c.Index(),
+				Target:  active.Index(),
 				Message: "Inspiration Field",
 				Src:     heal,
 				Bonus:   hpplus,
@@ -134,7 +133,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64, firstTic
 					fallthrough
 				case info.WeaponClassSword:
 					c.Core.Player.AddWeaponInfuse(
-						active.Index,
+						active.Index(),
 						"bennett-fire-weapon",
 						attributes.Pyro,
 						burstBuffDuration,
@@ -153,7 +152,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64, firstTic
 				},
 			})
 
-			c.Core.Log.NewEvent("bennett field - adding attack", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("bennett field - adding attack", glog.LogCharacterEvent, c.Index()).
 				Write("threshold", threshold)
 		}
 	}

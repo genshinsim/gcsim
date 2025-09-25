@@ -2,9 +2,9 @@ package kazuha
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -19,10 +19,10 @@ func (c *char) absorbCheckA1(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.Index, c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.Index(), c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.a1Absorb != attributes.NoElement {
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 				"kazuha a1 absorbed ", c.a1Absorb.String(),
 			)
 			return
@@ -42,15 +42,15 @@ func (c *char) a4() {
 
 	m := make([]float64, attributes.EndStatType)
 
-	swirlfunc := func(ele attributes.Stat, key string) func(args ...interface{}) bool {
+	swirlfunc := func(ele attributes.Stat, key string) func(args ...any) bool {
 		icd := -1
-		return func(args ...interface{}) bool {
+		return func(args ...any) bool {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
 				return false
 			}
 
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != c.Index {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != c.Index() {
 				return false
 			}
 			// do not overwrite mod if same frame
@@ -75,7 +75,7 @@ func (c *char) a4() {
 				})
 			}
 
-			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index()).
 				Write("reaction", ele.String())
 
 			return false

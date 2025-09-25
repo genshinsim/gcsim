@@ -6,9 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -70,13 +69,7 @@ func init() {
 // will be summoned next to Chiori. Only 1 additional Tamoto can be summoned in
 // this manner, and its duration is independently counted.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	hold := p["hold"]
-	if hold < 0 {
-		hold = 0
-	}
-	if hold > 1 {
-		hold = 1
-	}
+	hold := min(max(p["hold"], 0), 1)
 
 	// if this is second press, swap and activate a1
 	if c.StatusIsActive(a1WindowKey) {
@@ -98,13 +91,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) skillRecast() (action.Info, error) {
 	c.a1Tapestry()
 	// find next char
-	next := c.Index + 1
+	next := c.Index() + 1
 	if next >= len(c.Core.Player.Chars()) {
 		next = 0
 	}
 	k := c.Core.Player.ByIndex(next).Base.Key
 	c.Core.Tasks.Add(func() {
-		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index, "forcing swap to ", k.String())
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), "forcing swap to ", k.String())
 		c.Core.Player.Exec(action.ActionSwap, k, nil)
 	}, 1)
 	// TODO: doesn't seem like this duration actually matters because of the forced swap, it just needs to cover the 1f until the swap is executed
@@ -119,9 +112,9 @@ func (c *char) skillRecast() (action.Info, error) {
 func (c *char) handleSkill(hold int) {
 	// handle upward sweep
 	c.Core.Tasks.Add(func() {
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Fluttering Hasode (Upward Sweep)",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagChioriSkill,
 			ICDGroup:   attacks.ICDGroupChioriSkill,
@@ -155,7 +148,7 @@ func (c *char) handleSkill(hold int) {
 		}
 
 		// create rock doll from c1 and trigger a4
-		c.Core.Log.NewEvent("c1 spawning rock doll", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("c1 spawning rock doll", glog.LogCharacterEvent, c.Index())
 		c.createRockDoll()
 		c.applyA4Buff()
 	}, skillCDStarts[hold])
@@ -167,13 +160,13 @@ func (c *char) createDoll() {
 
 	// determine doll pos
 	player := c.Core.Combat.Player()
-	dollPos := geometry.CalcOffsetPoint(
+	dollPos := info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{X: skillDollXOffset, Y: skillDollYOffset},
+		info.Point{X: skillDollXOffset, Y: skillDollYOffset},
 		player.Direction(),
 	)
 
-	c.Core.Log.NewEvent("spawning doll", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("spawning doll", glog.LogCharacterEvent, c.Index())
 
 	// spawn new doll
 	doll := newTicker(c.Core, skillDollDuration, nil)
@@ -195,12 +188,12 @@ func (c *char) createDollConstructChecker() {
 	c.constructChecker = cc
 }
 
-func (c *char) skillDollAttack(src int, abil string, pos geometry.Point) func() {
+func (c *char) skillDollAttack(src int, abil string, pos info.Point) func() {
 	return func() {
 		c.Core.Tasks.Add(func() {
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				Abil:       abil,
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagChioriSkill,
 				ICDGroup:   attacks.ICDGroupChioriSkill,
@@ -222,7 +215,7 @@ func (c *char) skillDollAttack(src int, abil string, pos geometry.Point) func() 
 				return
 			}
 
-			c.Core.Log.NewEvent("doll attacking", glog.LogCharacterEvent, c.Index).Write("src", src)
+			c.Core.Log.NewEvent("doll attacking", glog.LogCharacterEvent, c.Index()).Write("src", src)
 
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(t, nil, skillDollAoE), 0, c.particleCB)
 		}, skillDollAttackDelay)
@@ -241,7 +234,7 @@ func (c *char) skillDollConstructCheck() {
 		return
 	}
 
-	c.Core.Log.NewEvent("construct spawning rock doll", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("construct spawning rock doll", glog.LogCharacterEvent, c.Index())
 	c.createRockDoll()
 
 	// make sure this check doesn't happen again
@@ -254,9 +247,9 @@ func (c *char) createRockDoll() {
 
 	// determine doll pos
 	player := c.Core.Combat.Player()
-	dollPos := geometry.CalcOffsetPoint(
+	dollPos := info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{X: skillDollXOffset, Y: skillDollYOffset},
+		info.Point{X: skillDollXOffset, Y: skillDollYOffset},
 		player.Direction(),
 	)
 
@@ -268,8 +261,8 @@ func (c *char) createRockDoll() {
 	c.rockDoll = rd
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

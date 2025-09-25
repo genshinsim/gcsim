@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -30,7 +30,7 @@ func (c *char) c1() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1Key, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if !strings.HasPrefix(atk.Info.Abil, pressureBaseName) {
 				return nil, false
 			}
@@ -60,13 +60,13 @@ func (c *char) c4c6() {
 	c4M := make([]float64, attributes.EndStatType)
 	c6M := make([]float64, attributes.EndStatType)
 
-	c4c6Buff := func(args ...interface{}) bool {
+	c4c6Buff := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 
@@ -95,7 +95,7 @@ func (c *char) c4c6() {
 			},
 		})
 
-		c.Core.Log.NewEvent("freminet c4 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("freminet c4 proc", glog.LogCharacterEvent, c.Index())
 
 		if c.Base.Cons < 6 {
 			return false
@@ -122,7 +122,7 @@ func (c *char) c4c6() {
 			},
 		})
 
-		c.Core.Log.NewEvent("freminet c6 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("freminet c6 proc", glog.LogCharacterEvent, c.Index())
 
 		return false
 	}

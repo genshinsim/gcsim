@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -30,7 +29,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		heal := burstHealFirstF[c.TalentLvlBurst()] + burstHealFirstP[c.TalentLvlBurst()]*c.MaxHP()
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Skyfeather Song",
 			Src:     heal,
@@ -55,12 +54,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) onBurstHeal() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if !c.StatusIsActive(healKey) {
 			return false
 		}
 
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
@@ -72,8 +71,8 @@ func (c *char) onBurstHeal() {
 
 		heal := burstHealF[c.TalentLvlBurst()] + burstHealP[c.TalentLvlBurst()]*c.MaxHP()
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  active.Index,
+			Caller:  c.Index(),
+			Target:  active.Index(),
 			Message: "Eagleplume",
 			Src:     heal,
 			Bonus:   c.Stat(attributes.Heal),

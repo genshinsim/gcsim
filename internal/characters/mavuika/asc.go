@@ -2,8 +2,8 @@ package mavuika
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -21,7 +21,7 @@ func (c *char) a1() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.3
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(a1Key, 10*60),
 			Amount: func() ([]float64, bool) {
@@ -40,9 +40,9 @@ func (c *char) a4Init() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(a4BufKey, -1),
-			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				// char must be active
-				if c.Core.Player.Active() != char.Index {
+				if c.Core.Player.Active() != char.Index() {
 					return nil, false
 				}
 				if !c.StatusIsActive(a4Key) {

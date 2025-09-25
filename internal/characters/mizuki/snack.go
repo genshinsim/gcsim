@@ -5,10 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -27,17 +25,17 @@ const (
 type snack struct {
 	*gadget.Gadget
 	char         *char
-	attackInfo   combat.AttackInfo
-	snapshot     combat.Snapshot
-	pattern      combat.AttackPattern
+	attackInfo   info.AttackInfo
+	snapshot     info.Snapshot
+	pattern      info.AttackPattern
 	allowPickupF int
 }
 
-func newSnack(c *char, pos geometry.Point) *snack {
+func newSnack(c *char, pos info.Point) *snack {
 	p := &snack{
 		char: c,
-		attackInfo: combat.AttackInfo{
-			ActorIndex:   c.Index,
+		attackInfo: info.AttackInfo{
+			ActorIndex:   c.Index(),
 			Abil:         snackDmgName,
 			AttackTag:    attacks.AttackTagElementalBurst,
 			ICDTag:       attacks.ICDTagElementalBurst,
@@ -56,16 +54,16 @@ func newSnack(c *char, pos geometry.Point) *snack {
 	// we increase snack size to make sure we get it when mizuki is in dreamdrifter state
 	// because mizuki's pickup range is increased while in this state.
 	// https://docs.google.com/spreadsheets/d/1UU0EVPBatEndl4GRZyIs8Ix8O3kcZUDAwOHqM8_jQJw/edit?gid=339012102#gid=339012102
-	p.Gadget = gadget.New(c.Core, pos, snackSize*snackSizeMizukiMultiplier, combat.GadgetTypYumemiSnack)
-	p.Gadget.Duration = snackDuration
+	p.Gadget = gadget.New(c.Core, pos, snackSize*snackSizeMizukiMultiplier, info.GadgetTypYumemiSnack)
+	p.Duration = snackDuration
 	c.Core.Combat.AddGadget(p)
 
-	p.Gadget.CollidableTypes[targets.TargettablePlayer] = true
-	p.Gadget.OnExpiry = func() {
+	p.CollidableTypes[info.TargettablePlayer] = true
+	p.OnExpiry = func() {
 		p.explode()
-		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index)
+		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index())
 	}
-	p.Gadget.OnCollision = func(target combat.Target) {
+	p.OnCollision = func(target info.Target) {
 		if _, ok := target.(*avatar.Player); !ok {
 			return
 		}
@@ -81,7 +79,7 @@ func newSnack(c *char, pos geometry.Point) *snack {
 		p.onPickedUp()
 	}
 
-	p.Core.Log.NewEvent("Snack spawned", glog.LogCharacterEvent, c.Index).
+	p.Core.Log.NewEvent("Snack spawned", glog.LogCharacterEvent, c.Index()).
 		Write("x", pos.X).
 		Write("y", pos.Y)
 	return p
@@ -109,7 +107,7 @@ func (p *snack) onPickedUp() {
 		heal = !dmg
 	}
 
-	p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index).
+	p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index()).
 		Write("heal", heal).
 		Write("dmg", dmg)
 
@@ -120,12 +118,12 @@ func (p *snack) onPickedUp() {
 	if heal {
 		// Heals double the amount on Mizuki
 		healMultiplier := 1.0
-		if activeChar.Index == mizuki.Index {
+		if activeChar.Index() == mizuki.Index() {
 			healMultiplier = 2.0
 		}
 		mizuki.Core.Player.Heal(info.HealInfo{
-			Caller:  mizuki.Index,
-			Target:  activeChar.Index,
+			Caller:  mizuki.Index(),
+			Target:  activeChar.Index(),
 			Message: snackHealName,
 			Src:     ((mizuki.Stat(attributes.EM) * snackHealEM[mizuki.TalentLvlBurst()]) + snackHealFlat[mizuki.TalentLvlBurst()]) * healMultiplier,
 			Bonus:   mizuki.Stat(attributes.Heal),
@@ -142,13 +140,13 @@ func (p *snack) explode() {
 	p.Core.QueueAttackWithSnap(p.attackInfo, p.snapshot, p.pattern, 0)
 }
 
-func (p *snack) HandleAttack(atk *combat.AttackEvent) float64 {
+func (p *snack) HandleAttack(atk *info.AttackEvent) float64 {
 	// only collisions with the player can affect this or if it expires
 	return 0
 }
 
-func (p *snack) SetDirection(trg geometry.Point) {}
-func (p *snack) SetDirectionToClosestEnemy()     {}
-func (p *snack) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (p *snack) SetDirection(trg info.Point) {}
+func (p *snack) SetDirectionToClosestEnemy() {}
+func (p *snack) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -39,9 +38,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const stackKey = "kaguras-verity-stacks"
 	stackDuration := 960 // 16s * 60
 
-	//TODO: this used to be on postskill. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+	// TODO: this used to be on postskill. make sure nothing broke here
+	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if !char.StatusIsActive(stackKey) {
@@ -76,8 +75,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		// add mod for duration, override last
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("kaguras-verity", stackDuration),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.ActorIndex != char.Index {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				if atk.Info.ActorIndex != char.Index() {
 					return nil, false
 				}
 				if atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold {

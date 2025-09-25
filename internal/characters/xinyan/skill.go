@@ -6,10 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -29,9 +28,9 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Sweeping Fervor",
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Sweeping Fervor (Initial)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -49,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	defFactor := snap.Stats.TotalDEF()
 
 	hitOpponents := 0
-	cb := func(_ combat.AttackCB) {
+	cb := func(_ info.AttackCB) {
 		hitOpponents++
 		c.QueueCharTask(func() {
 			if hitOpponents >= c.shieldLevel3Requirement && c.shieldLevel < 3 {
@@ -67,7 +66,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 3),
 		skillHitmark,
 		skillHitmark,
 		cb,
@@ -86,8 +85,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -122,9 +121,9 @@ func (c *char) shieldDot(src int) func() {
 	}
 }
 
-func (c *char) getAttackInfoShieldDoT() combat.AttackInfo {
-	return combat.AttackInfo{
-		ActorIndex: c.Index,
+func (c *char) getAttackInfoShieldDoT() info.AttackInfo {
+	return info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Sweeping Fervor (DoT)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -153,7 +152,7 @@ func (c *char) updateShield(level int, defFactor float64) {
 	}
 	shd := c.newShield(shieldhp, shield.XinyanSkill, 12*60)
 	c.Core.Player.Shields.Add(shd)
-	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index()).
 		Write("previousLevel", previousLevel).
 		Write("level", c.shieldLevel).
 		Write("expiry", shd.Expiry())

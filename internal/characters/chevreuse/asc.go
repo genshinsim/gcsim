@@ -3,8 +3,8 @@ package chevreuse
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -34,8 +34,8 @@ func (c *char) a1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
 		// don't trigger if no overload dmg
 		if atk.Info.AttackTag != attacks.AttackTagOverloadDamage {
 			return false
@@ -45,12 +45,12 @@ func (c *char) a1() {
 		if !ok {
 			return false
 		}
-		t.AddResistMod(combat.ResistMod{
+		t.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("chev-a1-pyro", 6*60),
 			Ele:   attributes.Pyro,
 			Value: -0.40,
 		})
-		t.AddResistMod(combat.ResistMod{
+		t.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("chev-a1-electro", 6*60),
 			Ele:   attributes.Electro,
 			Value: -0.40,

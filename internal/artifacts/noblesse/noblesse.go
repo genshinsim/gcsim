@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/hacks"
@@ -49,7 +48,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.nob2buff[attributes.DmgP] = 0.20
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("nob-2pc", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false
 				}
@@ -63,10 +62,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.nob4buff = make([]float64, attributes.EndStatType)
 		s.nob4buff[attributes.ATKP] = 0.2
 
-		//TODO: this used to be post. need to check
-		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+		// TODO: this used to be post. need to check
+		c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 
@@ -90,7 +89,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					})
 				}, delay)
 			}
-			c.Log.NewEvent("noblesse 4pc proc", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("noblesse 4pc proc", glog.LogArtifactEvent, char.Index()).
 				Write("expiry (without hitlag)", c.F+buffDuration)
 			return false
 		}, fmt.Sprintf("nob-4pc-%v", char.Base.Key.String()))

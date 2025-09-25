@@ -15,7 +15,7 @@ func (c *char) genShield(src string, shieldamt float64) {
 	// add shield
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Shields.Add(&shield.Tmpl{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Target:     -1,
 			Src:        c.Core.F,
 			ShieldType: shield.KiraraSkill,

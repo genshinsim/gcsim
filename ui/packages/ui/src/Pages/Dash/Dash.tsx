@@ -1,12 +1,10 @@
 import {AnchorButton, Card} from '@blueprintjs/core';
-import {Button, DBCard} from '@gcsim/components';
+import {Button, DBCard, LatestVersion} from '@gcsim/components';
 import {db} from '@gcsim/types';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import ReactMarkdown from 'react-markdown';
 import {Link} from 'react-router-dom';
-import remarkGfm from 'remark-gfm';
 
 const randQuery = {
   query: {
@@ -22,22 +20,10 @@ const randQuery = {
 export function Dash() {
   const {t} = useTranslation();
 
-  const [{isLoaded, text, tag}, setState] = useState({
-    isLoaded: false,
-    text: '',
-    tag: '',
-  });
   const [data, setData] = useState<db.Entry[]>([]);
   const [dataIsLoaded, setDataIsLoaded] = useState(false);
 
   useEffect(() => {
-    axios('https://api.github.com/repos/genshinsim/gcsim/releases/latest')
-      .then((resp: {data}) => {
-        setState({isLoaded: true, text: resp.data.body, tag: resp.data.name});
-      })
-      .catch((err) =>
-        console.log(t<string>('viewer.error_encountered') + err.message),
-      );
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(randQuery))}`)
       .then((resp: {data: db.Entries}) => {
         if (resp.data && resp.data.data) {
@@ -99,37 +85,7 @@ export function Dash() {
             </span>
           </AnchorButton>
         </Card>
-        <Card className="flex flex-col items-center gap-4 overflow-x-auto">
-          {isLoaded ? (
-            <>
-              <div className="flex flex-col gap-4">
-                <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
-                  <b>{t<string>('dash.latest_release')}</b>
-                  <a
-                    href={`https://github.com/genshinsim/gcsim/releases/tag/${tag}`}>
-                    {tag}
-                  </a>
-                </h1>
-              </div>
-              <div className="self-start">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {text}
-                </ReactMarkdown>
-              </div>
-              <AnchorButton
-                href="https://github.com/genshinsim/gcsim/releases"
-                intent="primary"
-                target="_blank"
-                className="!p-3 !rounded-md">
-                <span className="text-xl md:text-2xl font-semibold">
-                  {t<string>('dash.view_releases')}
-                </span>
-              </AnchorButton>
-            </>
-          ) : (
-            t<string>('sim.loading')
-          )}
-        </Card>
+        <LatestVersion />
       </div>
     </main>
   );

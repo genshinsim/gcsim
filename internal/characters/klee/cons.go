@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -20,9 +21,9 @@ func (c *char) c1(delay int) {
 	}
 	c.c1Chance = 0.1
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Sparks'n'Splash C1",
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Sparks'n'Splash (C1)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -37,7 +38,7 @@ func (c *char) c1(delay int) {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 0, delay)
 }
 
-func (c *char) c2(a combat.AttackCB) {
+func (c *char) c2(a info.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -45,7 +46,7 @@ func (c *char) c2(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(combat.DefMod{
+	e.AddDefMod(info.DefMod{
 		Base:  modifier.NewBaseWithHitlag("kleec2", 10*60),
 		Value: -0.233,
 	})

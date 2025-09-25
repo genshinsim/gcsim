@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -57,18 +56,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = 0.12 + float64(r)*0.04
 
 	//nolint:unparam // why events have a return value...
-	handleProc := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+	handleProc := func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		char.AddStatus(icdKey, 1200, true)
-		c.Log.NewEvent("moonpiercer proc'd", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("moonpiercer proc'd", glog.LogWeaponEvent, char.Index())
 		if pickupDelay <= 0 {
-			c.Log.NewEvent("moonpiercer leaf ignored", glog.LogWeaponEvent, char.Index)
+			c.Log.NewEvent("moonpiercer leaf ignored", glog.LogWeaponEvent, char.Index())
 			return false
 		}
 		c.Tasks.Add(func() {
@@ -83,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			c.Log.NewEvent(
 				fmt.Sprintf("moonpiercer leaf picked up by %v", active.Base.Key.String()),
 				glog.LogWeaponEvent,
-				char.Index,
+				char.Index(),
 			)
 		}, pickupDelay)
 		return false
@@ -95,7 +94,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Events.Subscribe(e, handleProc, key)
 		default:
-			c.Events.Subscribe(e, func(args ...interface{}) bool {
+			c.Events.Subscribe(e, func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}

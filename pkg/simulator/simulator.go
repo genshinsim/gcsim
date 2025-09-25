@@ -102,6 +102,22 @@ func Run(ctx context.Context, opts Options) (*model.SimulationResult, error) {
 // TODO: cfg string should be in the action list instead
 // TODO: need to add a context here to avoid infinite looping
 func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time) (*model.SimulationResult, error) {
+	return run(ctx, cfg, simcfg, gcsl, CryptoRandSeed)
+}
+
+func RunWithSeededConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcsl ast.Node, seeds []int64) (*model.SimulationResult, error) {
+	if len(seeds) != simcfg.Settings.Iterations {
+		return &model.SimulationResult{}, fmt.Errorf("number of seeds %v must match number of iterations %v", len(seeds), simcfg.Settings.Iterations)
+	}
+	i := 0
+	seedFunc := func() int64 {
+		i++
+		return seeds[i-1]
+	}
+	return run(ctx, cfg, simcfg, gcsl, seedFunc)
+}
+
+func run(ctx context.Context, cfg string, simcfg *info.ActionList, gcsl ast.Node, seedFunc func() int64) (*model.SimulationResult, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
@@ -131,7 +147,7 @@ func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcs
 			pool.QueueCh <- worker.Job{
 				Cfg:     simcfg.Copy(),
 				Actions: gcsl.Copy(),
-				Seed:    CryptoRandSeed(),
+				Seed:    seedFunc(),
 			}
 			wip++
 		}

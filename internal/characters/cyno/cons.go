@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -38,18 +38,20 @@ func (c *char) c1() {
 	})
 }
 
-const c2Key = "cyno-c2"
-const c2ICD = "cyno-c2-icd"
+const (
+	c2Key = "cyno-c2"
+	c2ICD = "cyno-c2-icd"
+)
 
 // When Cyno's Normal Attacks hit opponents, his Electro DMG Bonus will
 // increase by 10% for 4s. This effect can be triggered once every 0.1s. Max 5
 // stacks.
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c2ICD) {
@@ -85,9 +87,9 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 // This effect can occur 5 times within one use of Sacred Rite: Wolf’s Swiftness.
 func (c *char) c4() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	restore := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+	restore := func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
 		if c.c4Counter > 4 { // counting from 0 to 4, 5 instances max
@@ -96,7 +98,7 @@ func (c *char) c4() {
 		c.c4Counter++
 		for _, this := range c.Core.Player.Chars() {
 			// not for cyno
-			if this.Index != c.Index {
+			if this.Index() != c.Index() {
 				this.AddEnergy("cyno-c4", 3)
 			}
 		}
@@ -104,7 +106,7 @@ func (c *char) c4() {
 		return false
 	}
 
-	restoreNoGadget := func(args ...interface{}) bool {
+	restoreNoGadget := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
@@ -136,12 +138,12 @@ func (c *char) c6Init() {
 // "Day of the Jackal" lasts for 8s. Max 8 stacks. It will be canceled once Pactsworn Pathclearer ends.
 // A maximum of 1 Duststalker Bolt can be unleashed this way every 0.4s.
 // You must first unlock the Passive Talent "Featherfall Judgment."
-func (c *char) makeC6CB() combat.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	if c.Base.Cons < 6 || c.c6Stacks == 0 || !c.StatusIsActive(c6Key) {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.c6Stacks == 0 {
@@ -157,8 +159,8 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		c.c6Stacks--
 
 		// technically should use ICDGroupCynoC6, but it's just reskinned standard ICD
-		ai := combat.AttackInfo{
-			ActorIndex:   c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:   c.Index(),
 			Abil:         "Raiment: Just Scales (C6)",
 			AttackTag:    attacks.AttackTagElementalArtHold,
 			ICDTag:       attacks.ICDTagElementalArt,

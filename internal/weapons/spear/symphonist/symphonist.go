@@ -12,8 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const bufDur = 3 * 60
-const buffKey = "symphonist-chanson-de-baies"
+const (
+	bufDur  = 3 * 60
+	buffKey = "symphonist-chanson-de-baies"
+)
 
 func init() {
 	core.RegisterWeaponFunc(keys.SymphonistOfScents, NewWeapon)
@@ -46,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			m[attributes.ATKP] = selfAtkP
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				m[attributes.ATKP] += selfAtkP
 			}
 			return m, true
@@ -56,11 +58,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffOnHeal := make([]float64, attributes.EndStatType)
 	buffOnHeal[attributes.ATKP] = 0.24 + float64(r)*0.08
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 
-		if source.Caller != char.Index {
+		if source.Caller != char.Index() {
 			return false
 		}
 
@@ -72,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
-		if index != char.Index {
+		if index != char.Index() {
 			otherChar := c.Player.ByIndex(index)
 			otherChar.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(buffKey, bufDur),

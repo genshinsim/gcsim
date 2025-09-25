@@ -71,7 +71,8 @@
         "users_submitted": "Schau was Nutzer eingereicht haben:",
         "visit_teams_db": "Teamdatenbank besuchen",
         "latest_release": "Neuester Release: ",
-        "view_releases": "Releases auf GitHub anschauen"
+        "view_releases": "Releases auf GitHub anschauen",
+        "new_characters": "Neue Charaktere"
     },
     "db": {
         "author": "Autor: ",
@@ -391,7 +392,9 @@
         "dash_body": "Einige Iterationen verzögerten die Ausführung einer oder mehrerer Rennen aufgrund von ihrer Abklingzeit. Dies führt dazu, dass die aktive Figur im Leerlauf ist, bis die Abklingzeit von Rennen abgelaufen ist. Erwägen Sie, die Konfiguration zu aktualisieren, wenn die untenstehende Ausfallzeit unerwünscht ist.",
         "dash_data_header": "Gesamtverzögerung des Rennens aufgrund der Abklingzeit pro Iteration",
         "ignore_burst_energy_title": "\"Spezialfähigkeit-Energiekosten ignorieren\"-Modus ist aktiviert",
-        "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen."
+        "ignore_burst_energy_body": "Die Simulation ignoriert den Energiebedarf für Spezialfähigkeiten. Dies kann zu ungenauen Simulationen führen.",
+        "gcsim_risk_title": "Die Zukunft von gcsim ist in Gefahr!",
+        "gcsim_risk_body": "<p><b>gcsim ist ein <githublink>Open-Source-Projekt</githublink>.</b></p> <p>Damit Updates rechtzeitig veröffentlicht werden können, benötigen wir Freiwillige, die bereit sind, den Code zu erlernen, um neue Einheiten/Mechaniken zu implementieren und zu überprüfen. Auch UI-Entwickler sind willkommen.</p> <p>Schauen Sie auf unserem <discordlink>Discord</discordlink> oder in den <issueslink>GitHub Issues</issueslink> vorbei, um wichtige Funktionen zu sehen, für die Mitwirkende benötigt werden.</p>"
     },
     "states": {
         "true": "wahr",

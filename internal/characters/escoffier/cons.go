@@ -6,25 +6,28 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c1Dur = 15 * 60
-const c1Key = "escoffier-c1"
-const c2Key = "escoffier-c2"
-const c2Per = 2.4
-const c2Dur = 15 * 60
-const c4Extra = 6
-const c4ExtraScaling = 1
-const c4Limit = 7
-const c4Key = "escoffier-c4"
-const c4Regen = 2.0
-const c6Key = "escoffier-c6"
-const c6Limit = 6
-const c6Scaling = 5
-const c6ICD = 0.5 * 60
-const c6ICDKey = "escoffier-c6-icd"
+const (
+	c1Dur          = 15 * 60
+	c1Key          = "escoffier-c1"
+	c2Key          = "escoffier-c2"
+	c2Per          = 2.4
+	c2Dur          = 15 * 60
+	c4Extra        = 6
+	c4ExtraScaling = 1
+	c4Limit        = 7
+	c4Key          = "escoffier-c4"
+	c4Regen        = 2.0
+	c6Key          = "escoffier-c6"
+	c6Limit        = 6
+	c6Scaling      = 5
+	c6ICD          = 0.5 * 60
+	c6ICDKey       = "escoffier-c6-icd"
+)
 
 func (c *char) c1Init() {
 	if c.Base.Cons < 1 {
@@ -61,7 +64,7 @@ func (c *char) c1() {
 		// Currently assuming affected by hitlag on characters
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c1Key, c1Dur),
-			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Cryo {
 					return nil, false
 				}
@@ -75,9 +78,9 @@ func (c *char) c2Init() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if c.Index == atk.Info.ActorIndex {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if c.Index() == atk.Info.ActorIndex {
 			return false
 		}
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
@@ -160,8 +163,8 @@ func (c *char) c6Init() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
 			return false
 		}
@@ -181,8 +184,8 @@ func (c *char) c6Init() {
 		}
 
 		c.AddStatus(c6ICDKey, c6ICD, true)
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Special-Grade Frozen Parfait (C6)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,

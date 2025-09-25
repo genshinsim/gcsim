@@ -1,12 +1,14 @@
 package raiden
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFrames []int
@@ -26,8 +28,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.swordCharge(), nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Charge Attack",
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagExtraAttack,
@@ -43,7 +45,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 2.8, 4.8),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.1}, 2.8, 4.8),
 		chargeHitmark,
 		chargeHitmark,
 	)
@@ -56,8 +58,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-var swordCAFrames []int
-var swordCAHitmarks = []int{24, 32}
+var (
+	swordCAFrames   []int
+	swordCAHitmarks = []int{24, 32}
+)
 
 func init() {
 	// charge (burst) -> x
@@ -68,9 +72,9 @@ func init() {
 
 func (c *char) swordCharge() action.Info {
 	for i, mult := range chargeSword {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               "Musou Isshin (Charge Attack)",
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
+			Abil:               fmt.Sprintf("Musou Isshin (Charge Attack %v)", i),
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
@@ -93,7 +97,7 @@ func (c *char) swordCharge() action.Info {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 7.5, 8),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.1}, 7.5, 8),
 				0,
 				0,
 				c.burstRestorefunc,

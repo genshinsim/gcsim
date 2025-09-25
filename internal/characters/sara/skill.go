@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,9 +40,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// C2 handling
 	if c.Base.Cons >= 2 {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Tengu Juurai: Ambush C2",
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Tengu Juurai: Ambush (C2)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -68,8 +67,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -81,7 +80,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // Handles attack boost from Sara's skills
 // Checks for the onfield character at the delay frame, then applies buff to that character
-func (c *char) attackBuff(a combat.AttackPattern, delay int) {
+func (c *char) attackBuff(a info.AttackPattern, delay int) {
 	c.Core.Tasks.Add(func() {
 		if collision, _ := c.Core.Combat.Player().AttackWillLand(a); !collision {
 			return
@@ -90,8 +89,8 @@ func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 		active := c.Core.Player.ActiveChar()
 		buff := atkBuff[c.TalentLvlSkill()] * c.Stat(attributes.BaseATK)
 
-		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index).
-			Write("char", active.Index).
+		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index()).
+			Write("char", active.Index()).
 			Write("buff", buff).
 			Write("expiry", c.Core.F+360)
 
@@ -108,7 +107,7 @@ func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 
 		// TODO: change this to a ST attack later
 		c.Core.Player.Drain(info.DrainInfo{
-			ActorIndex: active.Index,
+			ActorIndex: active.Index(),
 			Abil:       "Tengu Juurai: Ambush",
 			Amount:     0,
 			External:   true,

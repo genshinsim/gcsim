@@ -2,9 +2,9 @@ package arlecchino
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -25,7 +25,7 @@ func (c *char) passive() {
 }
 
 func (c *char) a1OnKill() {
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		e, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
@@ -52,7 +52,7 @@ func (c *char) a1OnKill() {
 	}, "arlechinno-a1-onkill")
 }
 
-func (c *char) a1Upgrade(e combat.Enemy, src int) {
+func (c *char) a1Upgrade(e info.Enemy, src int) {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -68,7 +68,7 @@ func (c *char) a1Upgrade(e combat.Enemy, src int) {
 			return
 		}
 		e.SetTag(directiveKey, level+1)
-		c.Core.Log.NewEvent("Directive upgraded", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Directive upgraded", glog.LogCharacterEvent, c.Index()).
 			Write("new_level", level+1).
 			Write("src", src)
 	}, 5*60)

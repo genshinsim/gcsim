@@ -11,12 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -26,7 +24,7 @@ const nightsoulBurstICDStatus = "nightsoul-burst-icd"
 // first is 0 because you can't proc it without the natlan character
 var nightsoulBurstICD = []int{0, 18 * 60, 12 * 60, 9 * 60, 9 * 60}
 
-func SetupTargetsInCore(core *core.Core, p geometry.Point, r float64, targets []info.EnemyProfile) error {
+func SetupTargetsInCore(core *core.Core, p info.Point, r float64, targets []info.EnemyProfile) error {
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
 
@@ -130,7 +128,7 @@ func SetupResonance(s *core.Core) {
 				})
 			}
 		case attributes.Hydro:
-			//TODO: reduce pyro duration not implemented; may affect bennett Q?
+			// TODO: reduce pyro duration not implemented; may affect bennett Q?
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.HPP] = 0.25
 			for _, c := range chars {
@@ -145,7 +143,7 @@ func SetupResonance(s *core.Core) {
 		case attributes.Cryo:
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.CR] = .15
-			f := func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			f := func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
 				r, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
@@ -164,7 +162,7 @@ func SetupResonance(s *core.Core) {
 		case attributes.Electro:
 			last := 0
 			//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-			recoverParticle := func(_ ...interface{}) bool {
+			recoverParticle := func(_ ...any) bool {
 				if s.F-last < 300 && last != 0 { // every 5 seconds
 					return false
 				}
@@ -177,7 +175,7 @@ func SetupResonance(s *core.Core) {
 				return false
 			}
 
-			recoverNoGadget := func(args ...interface{}) bool {
+			recoverNoGadget := func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
@@ -198,14 +196,14 @@ func SetupResonance(s *core.Core) {
 			s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 			// shred geo res of target
-			s.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+			s.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 				t, ok := args[0].(*enemy.Enemy)
 				if !ok {
 					return false
 				}
-				atk := args[1].(*combat.AttackEvent)
+				atk := args[1].(*info.AttackEvent)
 				if s.Player.Shields.CharacterIsShielded(atk.Info.ActorIndex, s.Player.Active()) {
-					t.AddResistMod(combat.ResistMod{
+					t.AddResistMod(info.ResistMod{
 						Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
 						Ele:   attributes.Geo,
 						Value: -0.2,
@@ -216,7 +214,7 @@ func SetupResonance(s *core.Core) {
 
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.DmgP] = .15
-			atkf := func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			atkf := func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if s.Player.Shields.CharacterIsShielded(ae.Info.ActorIndex, s.Player.Active()) {
 					return val, true
 				}
@@ -255,7 +253,7 @@ func SetupResonance(s *core.Core) {
 
 			twoBuff := make([]float64, attributes.EndStatType)
 			twoBuff[attributes.EM] = 30
-			twoEl := func(args ...interface{}) bool {
+			twoEl := func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
@@ -276,7 +274,7 @@ func SetupResonance(s *core.Core) {
 
 			threeBuff := make([]float64, attributes.EndStatType)
 			threeBuff[attributes.EM] = 20
-			threeEl := func(_ ...interface{}) bool {
+			threeEl := func(_ ...any) bool {
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
 						Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
@@ -288,7 +286,7 @@ func SetupResonance(s *core.Core) {
 				}
 				return false
 			}
-			threeElNoGadget := func(args ...interface{}) bool {
+			threeElNoGadget := func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
@@ -303,18 +301,18 @@ func SetupResonance(s *core.Core) {
 }
 
 func SetupMisc(c *core.Core) {
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		// dmg tag is superconduct, target is enemy
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagSuperconductDamage {
 			return false
 		}
 		// add shred
-		t.AddResistMod(combat.ResistMod{
+		t.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
 			Ele:   attributes.Physical,
 			Value: -0.4,
@@ -336,7 +334,7 @@ func setupNightsoulBurst(core *core.Core) {
 	}
 
 	triggerCD := nightsoulBurstICD[count]
-	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		if core.Status.Duration(nightsoulBurstICDStatus) > 0 {
 			return false
 		}
@@ -345,7 +343,7 @@ func setupNightsoulBurst(core *core.Core) {
 		if !ok {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.Element {
 		case attributes.Electro:
 		case attributes.Pyro:
@@ -409,7 +407,7 @@ func (s *Simulation) handleHurt() {
 		s.cfg.HurtSettings.Active = false
 
 		s.C.Tasks.Add(func() {
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex:       s.C.Player.Active(),
 				Abil:             "Hurt",
 				AttackTag:        attacks.AttackTagNone,
@@ -422,9 +420,9 @@ func (s *Simulation) handleHurt() {
 				IgnoreDefPercent: 1,
 			}
 			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
+			ap.SkipTargets[info.TargettablePlayer] = false
+			ap.SkipTargets[info.TargettableEnemy] = true
+			ap.SkipTargets[info.TargettableGadget] = true
 			s.C.QueueAttack(ai, ap, -1, 0) // -1 to avoid snapshot
 		}, f)
 
@@ -441,7 +439,7 @@ func (s *Simulation) handleHurt() {
 		s.cfg.HurtSettings.LastHurt = s.C.F + f
 
 		s.C.Tasks.Add(func() {
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				ActorIndex:       s.C.Player.Active(),
 				Abil:             "Hurt",
 				AttackTag:        attacks.AttackTagNone,
@@ -454,9 +452,9 @@ func (s *Simulation) handleHurt() {
 				IgnoreDefPercent: 1,
 			}
 			ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
-			ap.SkipTargets[targets.TargettablePlayer] = false
-			ap.SkipTargets[targets.TargettableEnemy] = true
-			ap.SkipTargets[targets.TargettableGadget] = true
+			ap.SkipTargets[info.TargettablePlayer] = false
+			ap.SkipTargets[info.TargettableEnemy] = true
+			ap.SkipTargets[info.TargettableGadget] = true
 			s.C.QueueAttack(ai, ap, -1, 0) // -1 to avoid snapshot
 		}, f)
 

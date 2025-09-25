@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func TestBurning(t *testing.T) {
@@ -13,22 +13,22 @@ func TestBurning(t *testing.T) {
 
 	c.Init()
 
-	//TODO: write tests for burning (this is copypasted from quicken for now)
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	// TODO: write tests for burning (this is copypasted from quicken for now)
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 	})
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
 	})
 	// dendro electro gone; 20 quicken
-	if !durApproxEqual(20, trg.Durability[Quicken], 0.00001) {
-		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[Quicken])
+	if !durApproxEqual(20, trg.Durability[info.ReactionModKeyQuicken], 0.00001) {
+		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[info.ReactionModKeyQuicken])
 	}
 	if trg.AuraContains(attributes.Dendro, attributes.Electro) {
 		t.Error("expecting target to not contain any remaining dendro or electro aura")

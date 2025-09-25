@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -34,14 +33,14 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 
 	stacks := 0
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		crit := args[3].(bool)
 		if dmg == 0 {
 			return false
 		}
-		if atk.Info.ActorIndex != char.Index {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if crit {
@@ -52,7 +51,7 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 				stacks = 5
 			}
 			char.AddStatus(icdKey, 18, true)
-			c.Log.NewEvent("royal stacked", glog.LogWeaponEvent, char.Index).
+			c.Log.NewEvent("royal stacked", glog.LogWeaponEvent, char.Index()).
 				Write("stacks", stacks)
 		}
 		return false

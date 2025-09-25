@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -65,8 +64,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := float64(p.Refine)
 
 	m := make([]float64, attributes.EndStatType)
-	scorchingBrilliance := func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+	scorchingBrilliance := func(args ...any) bool {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(BuffICDKey) {
@@ -94,12 +93,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnSkill, scorchingBrilliance, fmt.Sprintf("%v-athousandblazingsuns-skill", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnBurst, scorchingBrilliance, fmt.Sprintf("%v-athousandblazingsuns-burst", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
@@ -125,13 +124,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("%v-athousandblazingsuns-damage", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev, next := args[0].(int), args[1].(int)
-		if prev == char.Index && char.StatModIsActive(BuffKey) {
+		if prev == char.Index() && char.StatModIsActive(BuffKey) {
 			// swapping out
 			w.tickSrc = c.F
 			w.extendOffField(w.tickSrc)()
-		} else if next == char.Index {
+		} else if next == char.Index() {
 			// swapping in
 			w.tickSrc = -1
 		}

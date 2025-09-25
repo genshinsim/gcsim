@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -29,7 +28,7 @@ type char struct {
 	a1BaseStackCount       int
 	a1Statuses             []NeuvA1Keys
 	a4Buff                 []float64
-	chargeAi               combat.AttackInfo
+	chargeAi               info.AttackInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -88,7 +87,7 @@ func (c *char) getSourcewaterDroplets() []*sourcewaterdroplet.Gadget {
 	// TODO: this is an approximation based on an ongoing KQM ticket (faster-neuvi-balls)
 	// The fan is bigger than the 60 degrees in the ticket to account for the 10 degree camera tilt.
 	segment := combat.NewCircleHitOnTargetFanAngle(player, nil, 14, 80)
-	rect := combat.NewBoxHitOnTarget(player, geometry.Point{Y: -7}, 8, 18)
+	rect := combat.NewBoxHitOnTarget(player, info.Point{Y: -7}, 8, 18)
 
 	droplets := make([]*sourcewaterdroplet.Gadget, 0)
 	for _, g := range c.Core.Combat.Gadgets() {
@@ -138,10 +137,10 @@ func (c *char) Condition(fields []string) (any, error) {
 
 // used for early CA cancel swap cd calculation
 func (c *char) onSwap() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		// do nothing if next char isn't neuvillette
 		next := args[1].(int)
-		if next != c.Index {
+		if next != c.Index() {
 			return false
 		}
 		c.lastSwap = c.Core.F

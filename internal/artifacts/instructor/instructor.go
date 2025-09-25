@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -48,14 +47,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.EM] = 120
 
 		// TODO: does multiple instructor holders extend the duration?
-		add := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
+		add := func(args ...any) bool {
+			atk := args[1].(*info.AttackEvent)
 			// Character must be on field to proc bonus
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 			// Source of elemental reaction must be the character with instructor
-			if atk.Info.ActorIndex != char.Index {
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 

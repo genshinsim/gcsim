@@ -5,13 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,21 +39,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	dmg := .075 + float64(r)*.025
 
-	hrfunc := func(otherEle attributes.Element, key string, gadgetEmit bool) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
-			trg := args[0].(combat.Target)
-			if gadgetEmit && trg.Type() != targets.TargettableGadget {
+	hrfunc := func(otherEle attributes.Element, key string, gadgetEmit bool) func(args ...any) bool {
+		return func(args ...any) bool {
+			trg := args[0].(info.Target)
+			if gadgetEmit && trg.Type() != info.TargettableGadget {
 				return false
 			}
-			if !gadgetEmit && trg.Type() != targets.TargettableEnemy {
+			if !gadgetEmit && trg.Type() != info.TargettableEnemy {
 				return false
 			}
-			ae := args[1].(*combat.AttackEvent)
+			ae := args[1].(*info.AttackEvent)
 
-			if c.Player.Active() != char.Index {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
-			if ae.Info.ActorIndex != char.Index {
+			if ae.Info.ActorIndex != char.Index() {
 				return false
 			}
 
@@ -88,7 +86,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				char.AddStatus(fmt.Sprintf(icdKey, ele), 60, true)
 			}
 			if len(w.elementICD) > 0 {
-				c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index).
+				c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index()).
 					Write("trigger", key).
 					Write("expiring (without hitlag)", c.F+6*60)
 			}

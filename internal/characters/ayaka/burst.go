@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -22,9 +22,9 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Soumetsu",
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -50,13 +50,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	)
 
 	// C2 mini-frostflake bloom
-	var aiC2 combat.AttackInfo
+	var aiC2 info.AttackInfo
 	if c.Base.Cons >= 2 {
 		aiC2 = ai
 		aiC2.Mult = burstBloom[c.TalentLvlBurst()] * .2
-		aiC2.Abil = "C2 Mini-Frostflake Seki no To (Bloom)"
+		aiC2.Abil = "Mini-Frostflake Seki no To (Bloom) (C2)"
 		// TODO: Not sure about the positioning/size...
-		for i := 0; i < 2; i++ {
+		for range 2 {
 			c.Core.QueueAttack(
 				aiC2,
 				combat.NewCircleHit(
@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}
 
-	for i := 0; i < 19; i++ {
+	for i := range 19 {
 		ai.Mult = burstCut[c.TalentLvlBurst()]
 		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.Abil = "Soumetsu (Cutting)"
@@ -81,7 +81,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				geometry.Point{Y: 0.3},
+				info.Point{Y: 0.3},
 				3,
 			),
 			burstHitmark,
@@ -93,15 +93,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		if c.Base.Cons >= 2 {
 			aiC2.Mult = burstCut[c.TalentLvlBurst()] * .2
 			aiC2.StrikeType = attacks.StrikeTypeSlash
-			aiC2.Abil = "C2 Mini-Frostflake Seki no To (Cutting)"
+			aiC2.Abil = "Mini-Frostflake Seki no To (Cutting) (C2)"
 			// TODO: Not sure about the positioning/size...
-			for j := 0; j < 2; j++ {
+			for range 2 {
 				c.Core.QueueAttack(
 					aiC2,
 					combat.NewCircleHit(
 						c.Core.Combat.Player(),
 						c.Core.Combat.PrimaryTarget(),
-						geometry.Point{Y: 0.3},
+						info.Point{Y: 0.3},
 						1.5,
 					),
 					burstHitmark,

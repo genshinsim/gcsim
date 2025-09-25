@@ -41,12 +41,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		travel = 10
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != char.Index {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal {
@@ -58,10 +58,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if c.Rand.Float64() < 0.5 {
 			return false
 		}
-		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index())
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Skyward Atlas Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,

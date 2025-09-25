@@ -4,11 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const a1IcdKey = "noelle-a1-icd"
@@ -22,7 +20,7 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
 			return false
@@ -35,20 +33,20 @@ func (c *char) a1() {
 			return false
 		}
 		c.AddStatus(a1IcdKey, 3600, false)
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "A1 Shield",
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Devotion (A1)",
 			AttackTag:  attacks.AttackTagNone,
 		}
 		snap := c.Snapshot(&ai)
 
 		// add shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
-			ActorIndex: c.Index,
-			Target:     active.Index,
+			ActorIndex: c.Index(),
+			Target:     active.Index(),
 			Src:        c.Core.F,
 			ShieldType: shield.NoelleA1,
-			Name:       "Noelle A1",
+			Name:       "Devotion (Shield)",
 			HP:         snap.Stats.TotalDEF() * 4,
 			Ele:        attributes.Cryo,
 			Expires:    c.Core.F + 1200, // 20 sec
@@ -59,13 +57,13 @@ func (c *char) a1() {
 
 // Noelle will decrease the CD of Breastplate by 1s for every 4 Normal or Charged Attack hits she scores on opponents.
 // One hit may be counted every 0.1s.
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

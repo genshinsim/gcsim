@@ -31,9 +31,9 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.waveCount = 0
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Sacred Rite: Wagtail's Tide (Q)",
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Sacred Rite: Wagtail's Tide (Initial)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -78,7 +78,7 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 	if src != c.burstSrc {
 		return
 	}
-	if c.Core.Player.Active() != char.Index {
+	if c.Core.Player.Active() != char.Index() {
 		return
 	}
 	if !c.StatusIsActive(burstKey) {
@@ -89,7 +89,7 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 		info.WeaponClassSpear,
 		info.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
-			char.Index,
+			char.Index(),
 			"candace-q-infuse",
 			attributes.Hydro,
 			60,
@@ -101,7 +101,7 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 }
 
 func (c *char) burstSwap() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
@@ -111,8 +111,8 @@ func (c *char) burstSwap() {
 		if c.waveCount > 2 {
 			return false
 		}
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Sacred Rite: Wagtail's Tide (Wave)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNone,
@@ -140,7 +140,7 @@ func (c *char) burstInit(char *character.CharWrapper) {
 	m[attributes.DmgP] = 0.2
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(burstDmgKey, -1),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if !c.StatusIsActive(burstKey) {
 				return nil, false
 			}

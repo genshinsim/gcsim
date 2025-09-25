@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -18,7 +19,7 @@ func (c *char) c1() {
 		Base:         modifier.NewBase("collei-c1", -1),
 		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Player.Active() != c.Index {
+			if c.Core.Player.Active() != c.Index() {
 				return m, true
 			}
 			return nil, false
@@ -28,18 +29,18 @@ func (c *char) c1() {
 
 func (c *char) c2() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	f := func(args ...interface{}) bool {
+	f := func(args ...any) bool {
 		if c.sproutShouldExtend {
 			return false
 		}
-		if !(c.StatusIsActive(sproutKey) || c.StatusIsActive(skillKey)) {
+		if !c.StatusIsActive(sproutKey) && !c.StatusIsActive(skillKey) {
 			return false
 		}
 		c.sproutShouldExtend = true
 		if c.StatusIsActive(sproutKey) {
 			c.ExtendStatus(sproutKey, 180)
 		}
-		c.Core.Log.NewEvent("collei c2 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("collei c2 proc", glog.LogCharacterEvent, c.Index())
 		return false
 	}
 
@@ -48,7 +49,7 @@ func (c *char) c2() {
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Core.Events.Subscribe(evt, f, "collei-c2")
 		default:
-			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
+			c.Core.Events.Subscribe(evt, func(args ...any) bool {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
 					return false
 				}
@@ -61,7 +62,7 @@ func (c *char) c2() {
 func (c *char) c4() {
 	for i, char := range c.Core.Player.Chars() {
 		// does not affect collei
-		if c.Index == i {
+		if c.Index() == i {
 			continue
 		}
 		amts := make([]float64, attributes.EndStatType)
@@ -76,9 +77,9 @@ func (c *char) c4() {
 	}
 }
 
-func (c *char) c6(t combat.Target) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+func (c *char) c6(t info.Target) {
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Forest of Falling Arrows (C6)",
 		AttackTag:  attacks.AttackTagNone, // in game has this as AttackTagColleiC6
 		ICDTag:     attacks.ICDTagNone,

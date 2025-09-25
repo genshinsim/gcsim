@@ -3,22 +3,21 @@ package lyney
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // If Lyney consumes HP when firing off a Prop Arrow,
 // the Grin-Malkin hat summoned by the arrow will, upon hitting an opponent,
 // restore 3 Energy to Lyney and increase DMG dealt by 80% of his ATK.
-func (c *char) makeA1CB(hpDrained bool) combat.AttackCBFunc {
+func (c *char) makeA1CB(hpDrained bool) info.AttackCBFunc {
 	if c.Base.Ascension < 1 || !hpDrained {
 		return nil
 	}
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -29,7 +28,7 @@ func (c *char) makeA1CB(hpDrained bool) combat.AttackCBFunc {
 	}
 }
 
-func (c *char) addA1(ai *combat.AttackInfo, hpDrained bool) {
+func (c *char) addA1(ai *info.AttackInfo, hpDrained bool) {
 	if c.Base.Ascension < 1 || !hpDrained {
 		return
 	}
@@ -63,7 +62,7 @@ func (c *char) a4() {
 	m[attributes.DmgP] = a4Dmg
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("lyney-a4", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			r, ok := t.(core.Reactable)
 			if !ok {
 				return nil, false

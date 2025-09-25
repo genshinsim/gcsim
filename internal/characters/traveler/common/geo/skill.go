@@ -7,8 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -69,8 +68,8 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 
 	noMeteorite := p["no_meteorite"] == 1
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Starfell Sword",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -118,10 +117,10 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *Traveler) makeParticleCB() combat.AttackCBFunc {
+func (c *Traveler) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -141,11 +140,11 @@ type stone struct {
 	src    int
 	expiry int
 	char   *Traveler
-	dir    geometry.Point
-	pos    geometry.Point
+	dir    info.Point
+	pos    info.Point
 }
 
-func (c *Traveler) newStone(dur int, dir, pos geometry.Point) *stone {
+func (c *Traveler) newStone(dur int, dir, pos info.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -157,8 +156,8 @@ func (c *Traveler) newStone(dur int, dir, pos geometry.Point) *stone {
 
 func (s *stone) OnDestruct() {
 	if s.char.Base.Cons >= 2 {
-		ai := combat.AttackInfo{
-			ActorIndex:         s.char.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         s.char.Index(),
 			Abil:               "Rockcore Meltdown",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagElementalArt,
@@ -187,5 +186,5 @@ func (s *stone) Type() construct.GeoConstructType { return construct.GeoConstruc
 func (s *stone) Expiry() int                      { return s.expiry }
 func (s *stone) IsLimited() bool                  { return true }
 func (s *stone) Count() int                       { return 1 }
-func (s *stone) Direction() geometry.Point        { return s.dir }
-func (s *stone) Pos() geometry.Point              { return s.pos }
+func (s *stone) Direction() info.Point            { return s.dir }
+func (s *stone) Pos() info.Point                  { return s.pos }

@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -57,8 +57,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		delay = 0
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Freeze Bomb",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -78,8 +78,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	)
 
 	// Bomblets snapshot on cast
-	ai = combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai = info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Chillwater Bomblets",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -113,10 +113,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -128,8 +128,8 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 }
 
 // Handles coil stacking and associated effects, including triggering rushing ice
-func (c *char) coilStacks(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) coilStacks(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.coilICDExpiry > c.Core.F {
@@ -142,7 +142,7 @@ func (c *char) coilStacks(a combat.AttackCB) {
 	c.coils++
 	c.coilICDExpiry = c.Core.F + 6
 
-	c.Core.Log.NewEvent("coil stack gained", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("coil stack gained", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.coils)
 
 	c.a1()
@@ -156,14 +156,14 @@ func (c *char) coilStacks(a combat.AttackCB) {
 // Handles rushing ice state
 func (c *char) rushingIce() {
 	c.AddStatus(rushingIceKey, rushingIceDuration, true)
-	c.Core.Player.AddWeaponInfuse(c.Index, "aloy-rushing-ice", attributes.Cryo, 600, true, attacks.AttackTagNormal)
+	c.Core.Player.AddWeaponInfuse(c.Index(), "aloy-rushing-ice", attributes.Cryo, 600, true, attacks.AttackTagNormal)
 
 	// Rushing ice NA bonus
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", rushingIceDuration),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagNormal {
 				return val, true
 			}
@@ -180,7 +180,7 @@ func (c *char) coilMod() {
 	val := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("aloy-coil-stacks", -1),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagNormal && c.coils > 0 {
 				val[attributes.DmgP] = skillCoilNABonus[c.coils-1][c.TalentLvlSkill()]
 				return val, true
@@ -192,9 +192,9 @@ func (c *char) coilMod() {
 
 // Exit Field Hook to start timer to clear coil stacks
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
-		if prev != c.Index {
+		if prev != c.Index() {
 			return false
 		}
 		c.lastFieldExit = c.Core.F

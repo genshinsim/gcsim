@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func TestEC(t *testing.T) {
@@ -17,8 +17,8 @@ func TestEC(t *testing.T) {
 	}
 
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		if ae, ok := args[1].(*combat.AttackEvent); ok {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		if ae, ok := args[1].(*info.AttackEvent); ok {
 			if ae.Info.Abil == "electrocharged" {
 				count++
 			}
@@ -30,7 +30,7 @@ func TestEC(t *testing.T) {
 	c.Tick()
 	c.QueueAttackEvent(makeAOEAttack(attributes.Electro, 25), 0)
 	// tick once every 60 second. we should get 2 ticks total
-	for i := 0; i < 121; i++ {
+	for range 121 {
 		advanceCoreFrame(c)
 	}
 	if count != 2 {

@@ -23,7 +23,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		events: make([][]stats.HealEvent, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		info := args[0].(*info.HealInfo)
 		target := args[1].(int)
 		amount := args[2].(float64)

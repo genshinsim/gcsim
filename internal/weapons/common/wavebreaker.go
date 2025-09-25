@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -36,7 +35,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 
 	var amt float64
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) bool {
 		var energy float64
 
 		for _, x := range c.Player.Chars() {
@@ -47,7 +46,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		if amt > maxBonus {
 			amt = maxBonus
 		}
-		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index()).
 			Write("total", energy).
 			Write("per", per).
 			Write("max", maxBonus).
@@ -56,7 +55,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		m[attributes.DmgP] = amt
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("wavebreaker", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
 					return m, true
 				}

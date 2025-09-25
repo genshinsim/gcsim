@@ -25,7 +25,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		activeCharStart: 0,
 	}
 
-	core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		active := args[1].(int)
 
 		interval := stats.ActiveCharacterInterval{

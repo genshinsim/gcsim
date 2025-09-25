@@ -1,0 +1,76 @@
+package_name: skirk
+genshin_id: 10000114
+key: skirk
+icd_tags:
+  - ICDTagSkirkCons
+action_param_keys:
+  skill:
+    - param: "hold"
+skill_data_mapping:
+  attack: # Havoc: Sunder
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+    attack_4:
+      - 4 # 4-Hit DMG|{param4:F1P}
+    attack_5:
+      - 5 # 5-Hit DMG|{param5:F1P}
+    charge:
+      - 6 # Charged Attack DMG|{param6:F1P}×2
+      - 6 # Charged Attack DMG|{param6:F1P}×2
+    collision:
+      - 8 # Plunge DMG|{param8:F1P}
+    lowPlunge:
+      - 9 # Low/High Plunge DMG|{param9:P}/{param10:P}
+    highPlunge:
+      - 10 # Low/High Plunge DMG|{param9:P}/{param10:P}
+  skill: # Havoc: Warp
+    skillAttack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    skillAttack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    skillAttack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+    skillAttack_4:
+      - 4 # 4-Hit DMG|{param4:F1P}+{param5:F1P}
+      - 5 # 4-Hit DMG|{param4:F1P}+{param5:F1P}
+    skillAttack_5:
+      - 6 # 5-Hit DMG|{param6:F1P}
+    skillCharge:
+      - 7 # Charged Attack DMG|{param7:F1P}×3
+      - 7 # Charged Attack DMG|{param7:F1P}×3
+      - 7 # Charged Attack DMG|{param7:F1P}×3
+    skillCollision:
+      - 9 # Plunge DMG|{param9:F1P}
+    skillLowPlunge:
+      - 10 # Low/High Plunge DMG|{param10:P}/{param11:P}
+    skillHighPlunge:
+      - 11 # Low/High Plunge DMG|{param10:P}/{param11:P}
+  burst: # Havoc: Ruin
+    burstDoT:
+      - 0 # Skill DMG|{param0:F1P}×5
+    burstFinal:
+      - 1 # Skill Final Attack DMG|{param1:F1P}
+    burstBonus:
+      - 2 # Serpent's Subtlety Bonus|{param2:F2P} ATK Per Point
+    burstDMG:
+      - 3 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
+      - 4 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
+      - 5 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
+      - 6 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
+
+documentation:
+  fields_data:
+    - fields: [.skirk.serpents_subtlety]
+      desc: Amount of Serpent's Subtlety.
+    - fields: [.skirk.void_rifts]
+      desc: Number of Void Rifts on the field.
+    - fields: [.skirk.a4_stacks]
+      desc: Number of A4 stacks.
+    - fields: [.skirk.c6_stacks]
+      desc: Number of C6 stacks.

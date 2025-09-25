@@ -5,33 +5,28 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
 type Player struct {
 	*target.Target
-	*reactable.Reactable
+	info.Reactable
 }
 
-func New(core *core.Core, pos geometry.Point, r float64) *Player {
+func New(core *core.Core, pos info.Point, r float64) *Player {
 	p := &Player{}
 	p.Target = target.New(core, pos, r)
-	p.Reactable = &reactable.Reactable{}
-	p.Reactable.Init(p, core)
+	p.Reactable = hacks.NewReactable(p, core)
 	return p
 }
 
-func (p *Player) Type() targets.TargettableType { return targets.TargettablePlayer }
+func (p *Player) Type() info.TargettableType { return info.TargettablePlayer }
 
-func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
+func (p *Player) HandleAttack(atk *info.AttackEvent) float64 {
 	activeChar := p.Core.Player.Active()
 	p.Core.Combat.Events.Emit(event.OnPlayerHit, activeChar, atk)
 
@@ -79,7 +74,8 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	// towards the sim's TotalDamage and DPS statistic
 	return 0
 }
-func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
+
+func (p *Player) calc(atk *info.AttackEvent) (float64, bool) {
 	var isCrit bool
 
 	st := attributes.EleToDmgP(atk.Info.Element)
@@ -231,7 +227,7 @@ func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
 	return damage, isCrit
 }
 
-func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durability, f int) {
+func (p *Player) ApplySelfInfusion(ele attributes.Element, dur info.Durability, f int) {
 	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).
 		Write("durability", dur).
 		Write("duration", f)
@@ -240,40 +236,46 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durabil
 	if ele == attributes.Frozen {
 		return
 	}
-	var mod reactable.Modifier
+	var reactionKey info.ReactionModKey
 	switch ele {
 	case attributes.Electro:
-		mod = reactable.Electro
+		reactionKey = info.ReactionModKeyElectro
 	case attributes.Hydro:
-		mod = reactable.Hydro
+		reactionKey = info.ReactionModKeyHydro
 	case attributes.Pyro:
-		mod = reactable.Pyro
+		reactionKey = info.ReactionModKeyPyro
 	case attributes.Cryo:
-		mod = reactable.Cryo
+		reactionKey = info.ReactionModKeyCryo
 	case attributes.Dendro:
-		mod = reactable.Dendro
+		reactionKey = info.ReactionModKeyDendro
+	default:
+		// catch all case to make sure we don't infuse with invalid element
+		p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "invalid self infusion element: "+ele.String())
+		return
 	}
 
+	active := p.GetAuraDurability(reactionKey)
 	// we're assuming refill maintains the same decay rate?
-	if p.Durability[mod] > reactable.ZeroDur {
+	if active > info.ZeroDur {
 		// make sure we're not adding more than incoming
-		if p.Durability[mod] < dur {
-			p.Durability[mod] = dur
+		if active < dur {
+			p.SetAuraDurability(reactionKey, dur)
 		}
 		return
 	}
 	// otherwise calculate decay based on specified f (in frames)
-	p.Durability[mod] = dur
-	p.DecayRate[mod] = dur / reactions.Durability(f)
+	decay := dur / info.Durability(f)
+	p.SetAuraDurability(reactionKey, dur)
+	p.SetAuraDecayRate(reactionKey, decay)
 }
 
-func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
+func (p *Player) ReactWithSelf(atk *info.AttackEvent) {
 	// check if have an element
 	if p.AuraCount() == 0 {
 		return
 	}
 	// otherwise react
-	existing := p.Reactable.ActiveAuraString()
+	existing := p.ActiveAuraString()
 	applied := atk.Info.Durability
 	p.React(atk)
 	p.Core.Log.NewEvent("self reaction occured", glog.LogElementEvent, atk.Info.ActorIndex).
@@ -283,5 +285,5 @@ func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
 		Write("abil", atk.Info.Abil).
 		Write("target", 0).
 		Write("existing", existing).
-		Write("after", p.Reactable.ActiveAuraString())
+		Write("after", p.ActiveAuraString())
 }

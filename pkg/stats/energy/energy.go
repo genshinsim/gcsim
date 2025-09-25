@@ -23,7 +23,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		events: make([][]stats.EnergyEvent, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnEnergyChange, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnergyChange, func(args ...any) bool {
 		character := args[0].(*character.CharWrapper)
 		preEnergy := args[1].(float64)
 		amount := args[2].(float64)
@@ -37,13 +37,13 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 			Current: character.Energy,
 		}
 
-		if core.Player.Active() == character.Index {
+		if core.Player.Active() == character.Index() {
 			event.FieldStatus = stats.OnField
 		} else {
 			event.FieldStatus = stats.OffField
 		}
 
-		out.events[character.Index] = append(out.events[character.Index], event)
+		out.events[character.Index()] = append(out.events[character.Index()], event)
 		return false
 	}, "stats-energy-log")
 

@@ -8,13 +8,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
 
-const burstHitmark = 100
-const lightfallHitmark = 35
+const (
+	burstHitmark       = 100
+	lightfallHitmark   = 35
+	burstInitialAbil   = "Glacial Illumination (Initial)"
+	burstLightfallAbil = "Glacial Illumination (Lightfall)"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(123) // Q -> E
@@ -39,9 +43,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// add initial damage
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Glacial Illumination",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       burstInitialAbil,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -64,7 +68,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// deployable; not affected by hitlag
 	c.Core.Tasks.Add(func() {
 		c.Core.Status.Add(burstKey, 600-lightfallHitmark-burstFrames[action.ActionWalk]+1)
-		c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", c.burstCounter).
 			Write("expiry", c.Core.F+600-lightfallHitmark-burstFrames[action.ActionWalk]+1)
 	}, burstFrames[action.ActionWalk]) // start Q status at earliest point
@@ -94,9 +98,9 @@ func (c *char) triggerBurst() {
 	if c.burstCounter > 30 {
 		c.burstCounter = 30
 	}
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Glacial Illumination (Lightfall)",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       burstLightfallAbil,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -107,7 +111,7 @@ func (c *char) triggerBurst() {
 		Mult:       burstExplodeBase[c.TalentLvlBurst()] + burstExplodeStack[c.TalentLvlBurst()]*float64(c.burstCounter),
 	}
 
-	c.Core.Log.NewEvent("eula burst triggering", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("eula burst triggering", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.burstCounter).
 		Write("mult", ai.Mult)
 
@@ -123,11 +127,11 @@ func (c *char) triggerBurst() {
 
 // When Eula's own Normal Attack, Elemental Skill, and Elemental Burst deal DMG to opponents,
 // they will charge the Lightfall Sword, which can gain an energy stack once every 0.1s.
-func (c *char) burstStackCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) burstStackCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
-	if c.Core.Player.Active() != c.Index {
+	if c.Core.Player.Active() != c.Index() {
 		return
 	}
 	if c.Core.Status.Duration(burstKey) == 0 {
@@ -139,23 +143,23 @@ func (c *char) burstStackCB(a combat.AttackCB) {
 	if c.StatusIsActive(burstStackICDKey) {
 		return
 	}
-	//TODO: looks like the icd is dependent on gadget timer. need to double check
+	// TODO: looks like the icd is dependent on gadget timer. need to double check
 	c.AddStatus(burstStackICDKey, 0.1*60, false)
 
 	// add to counter
 	c.burstCounter++
-	c.Core.Log.NewEvent("eula burst add stack", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("eula burst add stack", glog.LogCharacterEvent, c.Index()).
 		Write("stack count", c.burstCounter)
 	// check for c6
 	if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 		c.burstCounter++
-		c.Core.Log.NewEvent("eula c6 add additional stack", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("eula c6 add additional stack", glog.LogCharacterEvent, c.Index()).
 			Write("stack count", c.burstCounter)
 	}
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}

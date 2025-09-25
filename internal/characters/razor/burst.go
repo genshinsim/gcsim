@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -48,8 +48,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		})
 	}, burstHitmark)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Lightning Fang",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -80,15 +80,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
+func (c *char) wolfBurst(normalCounter int) func(info.AttackCB) {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if done {
 			return
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("The Wolf Within %v", normalCounter),
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -101,13 +101,13 @@ func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
 
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: burstAttackOffsets[normalCounter]},
+			info.Point{Y: burstAttackOffsets[normalCounter]},
 			burstAttackHitboxes[normalCounter][0],
 		)
 		if normalCounter == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: burstAttackOffsets[normalCounter]},
+				info.Point{Y: burstAttackOffsets[normalCounter]},
 				burstAttackHitboxes[normalCounter][0],
 				burstAttackHitboxes[normalCounter][1],
 			)
@@ -119,13 +119,13 @@ func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
 }
 
 func (c *char) onSwapClearBurst() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		if !c.StatusIsActive(burstBuffKey) {
 			return false
 		}
 		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.DeleteStatus(burstBuffKey)
 		}
 		return false

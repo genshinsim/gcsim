@@ -43,7 +43,7 @@ func (c *char) addFanfareFunc(amt float64) func() {
 		}
 		prevFanfare := c.curFanfare
 		c.curFanfare = min(c.maxC2Fanfare, c.curFanfare+amt)
-		c.Core.Log.NewEvent("Gained Fanfare", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Gained Fanfare", glog.LogCharacterEvent, c.Index()).
 			Write("previous fanfare", prevFanfare).
 			Write("current fanfare", c.curFanfare)
 	}
@@ -85,7 +85,7 @@ func (c *char) burstInit() {
 	}
 	c.burstBuff = make([]float64, attributes.EndStatType)
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
@@ -103,7 +103,7 @@ func (c *char) burstInit() {
 		return false
 	}, "furina-fanfare-on-hp-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
@@ -133,7 +133,7 @@ func (c *char) burstInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("furina-burst-damage-buff", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if !c.StatusIsActive(burstKey) {
 					return nil, false
 				}
@@ -155,8 +155,8 @@ func (c *char) burstInit() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Let the People Rejoice",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

@@ -3,7 +3,7 @@ package xiao
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -22,10 +22,7 @@ func (c *char) a1() {
 		Base:         modifier.NewBaseWithHitlag(a1Key, 900+burstStart),
 		AffectedStat: attributes.DmgP,
 		Amount: func() ([]float64, bool) {
-			stacks := 1 + (c.Core.F-c.qStarted)/180
-			if stacks > 5 {
-				stacks = 5
-			}
+			stacks := min(1+(c.Core.F-c.qStarted)/180, 5)
 			m[attributes.DmgP] = float64(stacks) * 0.05
 			return m, true
 		},
@@ -49,7 +46,7 @@ func (c *char) a4() {
 	c.a4buff[attributes.DmgP] = float64(c.a4stacks) * 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(a4BuffKey, 420),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			return c.a4buff, atk.Info.AttackTag == attacks.AttackTagElementalArt
 		},
 	})

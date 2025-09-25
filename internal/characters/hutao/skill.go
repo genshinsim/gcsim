@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -46,20 +45,20 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			return c.ppbuff, true
 		},
 	})
-	//TODO: this applies a1 at the end of paramita without checking for "pp extend" (if that's real)
+	// TODO: this applies a1 at the end of paramita without checking for "pp extend" (if that's real)
 	c.applyA1 = true
 	c.QueueCharTask(c.a1, 540+skillStart)
 
 	// remove some hp
 	c.Core.Player.Drain(info.DrainInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Paramita Papilio",
 		Amount:     0.30 * c.CurrentHP(),
 	})
 
 	// trigger 0 damage attack; matters because this breaks freeze
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Paramita (0 dmg)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
@@ -79,8 +78,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if !c.StatModIsActive(paramitaBuff) {
@@ -98,7 +97,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay) // TODO: this used to be 80
 }
 
-func (c *char) applyBB(a combat.AttackCB) {
+func (c *char) applyBB(a info.AttackCB) {
 	trg, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
@@ -121,12 +120,12 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 		if !trg.StatusIsActive(bbDebuff) {
 			return
 		}
-		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index()).
 			Write("src", src)
 
 		// queue up one damage instance
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Blood Blossom",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
@@ -143,7 +142,7 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 0)
 
 		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index()).
 				Write("next expected tick", c.Core.F+240).
 				Write("dur", trg.StatusExpiry(bbDebuff)).
 				Write("src", src)

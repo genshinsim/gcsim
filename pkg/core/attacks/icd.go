@@ -22,6 +22,9 @@ const (
 	ICDTagDash
 	ICDTagTravelerWakeOfEarth
 	ICDTagTravelerDewdrop
+	ICDTagTravelerScorchingThreshold
+	ICDTagTravelerBlazingThreshold
+	ICDTagTravelerHoldDMG
 
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
@@ -55,9 +58,11 @@ const (
 	EndDefaultICDGroups
 )
 
-var ICDGroupResetTimer []int
-var ICDGroupEleApplicationSequence [][]float64
-var ICDGroupDamageSequence [][]float64
+var (
+	ICDGroupResetTimer             []int
+	ICDGroupEleApplicationSequence [][]float64
+	ICDGroupDamageSequence         [][]float64
+)
 
 func init() {
 	ICDGroupResetTimer = make([]int, ICDGroupLength)

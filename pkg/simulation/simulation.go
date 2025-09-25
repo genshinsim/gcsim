@@ -6,7 +6,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -44,7 +43,7 @@ func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation
 	// fmt.Printf("cfg: %+v\n", cfg)
 	s.C = c
 
-	err = SetupTargetsInCore(c, geometry.Point{X: cfg.InitialPlayerPos.X, Y: cfg.InitialPlayerPos.Y}, cfg.InitialPlayerPos.R, cfg.Targets)
+	err = SetupTargetsInCore(c, info.Point{X: cfg.InitialPlayerPos.X, Y: cfg.InitialPlayerPos.Y}, cfg.InitialPlayerPos.R, cfg.Targets)
 	if err != nil {
 		return nil, err
 	}

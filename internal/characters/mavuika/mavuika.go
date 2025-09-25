@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type SkillState int
@@ -103,7 +102,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		c.DeleteStatus(burstKey)
 		if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 			c.exitBike()
@@ -123,12 +122,12 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		switch k {
-		case model.AnimationXingqiuN0StartDelay:
+		case info.AnimationXingqiuN0StartDelay:
 			return 0
-		case model.AnimationYelanN0StartDelay:
+		case info.AnimationYelanN0StartDelay:
 			return 0
 		default:
 			return c.Character.AnimationStartDelay(k)
@@ -136,9 +135,9 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	}
 
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 22
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 22
 	default:
 		return c.Character.AnimationStartDelay(k)

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -78,7 +77,7 @@ func (s *Set) pc4() {
 
 	s.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("deep-galleries-4pc", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if s.char.Energy != 0 {
 				return nil, false
 			}
@@ -95,10 +94,10 @@ func (s *Set) pc4() {
 		},
 	})
 
-	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	s.c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		// If attack does not belong to the equipped character then ignore
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != s.char.Index {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != s.char.Index() {
 			return false
 		}
 		// If this is not a normal attack or elemental burst then ignore
@@ -108,11 +107,11 @@ func (s *Set) pc4() {
 
 		if atk.Info.AttackTag == attacks.AttackTagNormal {
 			s.char.AddStatus(burstDebuffKey, procDurBurst, true)
-			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index).
+			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index()).
 				Write("burst_buff_stop_expiry", s.c.F+procDurBurst)
 		} else {
 			s.char.AddStatus(normalDebuffKey, procDurNormal, true)
-			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index).
+			s.c.Log.NewEvent("deep galleries 4pc stop playing", glog.LogArtifactEvent, s.char.Index()).
 				Write("normal_buff_stop_expiry", s.c.F+procDurNormal)
 		}
 		return false

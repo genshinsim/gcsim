@@ -2,9 +2,9 @@ package cyno
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -35,7 +35,7 @@ func (c *char) a1Buff() {
 	// game also implements dmg buff with 1s modifier
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("cyno-a1-dmg", 60),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			// actual game uses AttackTagElementalArtExtra for a1, this is a decent
 			// workaround
 			if atk.Info.Abil != skillBName {
@@ -49,17 +49,17 @@ func (c *char) a1Buff() {
 // If Cyno dashes with the a1 modifier, he will increase the modifier's
 // durability by 20. This translates to a 0.28s extension.
 func (c *char) a1Extension() {
-	c.Core.Events.Subscribe(event.OnDash, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDash, func(_ ...any) bool {
 		if c.a1Extended {
 			return false
 		}
 		active := c.Core.Player.ActiveChar()
-		if !(active.Index == c.Index && active.StatusIsActive(a1Key)) {
+		if active.Index() != c.Index() || !active.StatusIsActive(a1Key) {
 			return false
 		}
 		c.ExtendStatus(a1Key, 17)
 		c.a1Extended = true
-		c.Core.Log.NewEvent("a1 dash pp slide", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("a1 dash pp slide", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.StatusExpiry(a1Key))
 		return false
 	}, "cyno-a1-dash")

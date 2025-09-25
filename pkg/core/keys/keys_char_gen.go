@@ -81,10 +81,12 @@ const (
 	Sethos
 	Shenhe
 	Sigewinne
+	Skirk
 	Sucrose
 	Tartaglia
 	Thoma
 	Tighnari
+	Varesa
 	Venti
 	Wanderer
 	Wriothesley
@@ -401,6 +403,10 @@ func init() {
 	charPrettyName[Sigewinne] = "Sigewinne"
 	CharKeyToEle[Sigewinne] = attributes.Hydro
 
+	charNames[Skirk] = "skirk"
+	charPrettyName[Skirk] = "Skirk"
+	CharKeyToEle[Skirk] = attributes.Cryo
+
 	charNames[Sucrose] = "sucrose"
 	charPrettyName[Sucrose] = "Sucrose"
 	CharKeyToEle[Sucrose] = attributes.Anemo
@@ -416,6 +422,10 @@ func init() {
 	charNames[Tighnari] = "tighnari"
 	charPrettyName[Tighnari] = "Tighnari"
 	CharKeyToEle[Tighnari] = attributes.Dendro
+
+	charNames[Varesa] = "varesa"
+	charPrettyName[Varesa] = "Varesa"
+	CharKeyToEle[Varesa] = attributes.Electro
 
 	charNames[Venti] = "venti"
 	charPrettyName[Venti] = "Venti"

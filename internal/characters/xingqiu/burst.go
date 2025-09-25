@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -71,8 +71,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) summonSwordWave() {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Guhua Sword: Raincutter",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -84,11 +84,11 @@ func (c *char) summonSwordWave() {
 	}
 
 	// only if c.nextRegen is true and first sword
-	var c2cb, c6cb func(a combat.AttackCB)
+	var c2cb, c6cb func(a info.AttackCB)
 	if c.nextRegen {
 		done := false
-		c6cb = func(a combat.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+		c6cb = func(a info.AttackCB) {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			if done {
@@ -100,7 +100,7 @@ func (c *char) summonSwordWave() {
 	}
 	if c.Base.Cons >= 2 {
 		icd := -1
-		c2cb = func(a combat.AttackCB) {
+		c2cb = func(a info.AttackCB) {
 			if c.Core.F < icd {
 				return
 			}
@@ -112,7 +112,7 @@ func (c *char) summonSwordWave() {
 
 			icd = c.Core.F + 1
 			c.Core.Tasks.Add(func() {
-				e.AddResistMod(combat.ResistMod{
+				e.AddResistMod(info.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("xingqiu-c2", 4*60),
 					Ele:   attributes.Hydro,
 					Value: -0.15,

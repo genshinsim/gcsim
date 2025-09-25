@@ -7,11 +7,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillFrames []int
-var skillCancelFrames []int
+var (
+	skillFrames       []int
+	skillCancelFrames []int
+)
 
 const (
 	skillHitmarks      = 3
@@ -75,8 +77,9 @@ func (c *char) enterNightsoul() {
 }
 
 func (c *char) nigthsoulFallingMsg() {
-	c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index())
 }
+
 func (c *char) exitNightsoul() {
 	if !c.nightsoulState.HasBlessing() {
 		return
@@ -125,8 +128,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Spirit Reins, Shadow Hunt",
 		AttackTag:      attacks.AttackTagElementalArt,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -152,8 +155,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.skillParticleICD {

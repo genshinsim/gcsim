@@ -15,7 +15,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func errorRecover(r interface{}) error {
+func errorRecover(r any) error {
 	var err error
 	switch x := r.(type) {
 	case string:
@@ -30,7 +30,7 @@ func errorRecover(r interface{}) error {
 
 // isRunning checks if an id is running
 func (s *Server) isRunning(id string) bool {
-	//WARNING: READ ONLY HERE NOT SAFE FOR WRITE
+	// WARNING: READ ONLY HERE NOT SAFE FOR WRITE
 	_, ok := s.pool[id]
 	return ok
 }

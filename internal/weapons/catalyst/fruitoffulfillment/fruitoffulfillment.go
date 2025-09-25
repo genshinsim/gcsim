@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -61,9 +60,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	f := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != w.char.Index {
+	f := func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != w.char.Index() {
 			return false
 		}
 		if w.char.StatusIsActive(icdKey) {
@@ -79,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		w.lastStackGain = c.F
 		w.char.QueueCharTask(w.checkStackLoss(c.F), w.stackLossTimer)
 
-		w.core.Log.NewEvent("fruitoffulfillment gained stack", glog.LogWeaponEvent, w.char.Index).
+		w.core.Log.NewEvent("fruitoffulfillment gained stack", glog.LogWeaponEvent, w.char.Index()).
 			Write("stacks", w.stacks)
 
 		return false
@@ -97,13 +96,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 func (w *Weapon) checkStackLoss(src int) func() {
 	return func() {
 		if w.lastStackGain != src {
-			w.core.Log.NewEvent("fruitoffulfillment stack loss check ignored, src diff", glog.LogWeaponEvent, w.char.Index).
+			w.core.Log.NewEvent("fruitoffulfillment stack loss check ignored, src diff", glog.LogWeaponEvent, w.char.Index()).
 				Write("src", src).
 				Write("new src", w.lastStackGain)
 			return
 		}
 		w.stacks--
-		w.core.Log.NewEvent("fruitoffulfillment lost stack", glog.LogWeaponEvent, w.char.Index).
+		w.core.Log.NewEvent("fruitoffulfillment lost stack", glog.LogWeaponEvent, w.char.Index()).
 			Write("stacks", w.stacks).
 			Write("last_stack_change", w.lastStackGain)
 

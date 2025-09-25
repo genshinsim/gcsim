@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var dashFrames []int
@@ -23,8 +23,8 @@ func init() {
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           "Flamestrider Sprint",
 			AttackTag:      attacks.AttackTagNone,
 			ICDTag:         attacks.ICDTagMavuikaFlamestrider,
@@ -40,7 +40,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1.0},
+			info.Point{Y: 1.0},
 			1.2,
 		)
 		c.Core.QueueAttack(ai, ap, 6, 6)

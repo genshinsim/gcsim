@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -40,7 +40,7 @@ func init() {
 	attackFrames[3][action.ActionAttack] = 22
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 66)
-	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[4][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -51,9 +51,9 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			icdGroup = attacks.ICDGroupPoleExtraAttack   // N5 has a different ICDGroup
 			centerTarget = c.Core.Combat.PrimaryTarget() // N5 is a bullet
 		}
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           icdGroup,
@@ -68,7 +68,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ap := combat.NewCircleHitFanAngle(
 			c.Core.Combat.Player(),
 			centerTarget,
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackRadius[c.NormalCounter],
 			attackFanAngles[c.NormalCounter],
 		)

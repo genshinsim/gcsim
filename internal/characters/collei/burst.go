@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -25,8 +26,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Trump-Card Kitty (Explosion)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -37,7 +38,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstExplosion[c.TalentLvlBurst()],
 	}
 	c.burstPos = c.Core.Combat.Player().Pos()
-	//TODO: this should have its own position
+	// TODO: this should have its own position
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.burstPos, nil, 5.5),
@@ -69,12 +70,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstTicks(snap combat.Snapshot) {
+func (c *char) burstTicks(snap info.Snapshot) {
 	if !c.StatusIsActive(burstKey) {
 		return
 	}
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Trump-Card Kitty (Leap)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,

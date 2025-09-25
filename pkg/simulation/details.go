@@ -6,8 +6,8 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
@@ -45,7 +45,7 @@ func (s *Simulation) CharacterDetails() []*model.Character {
 
 	// grab a snapshot for each char
 	for i, c := range s.C.Player.Chars() {
-		snap := c.Snapshot(&combat.AttackInfo{
+		snap := c.Snapshot(&info.AttackInfo{
 			Abil:      "stats-check",
 			AttackTag: attacks.AttackTagNone,
 		})

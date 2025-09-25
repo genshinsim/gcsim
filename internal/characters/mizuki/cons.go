@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -37,9 +38,9 @@ func (c *char) c1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if !ok {
 			return false
 		}
@@ -113,7 +114,7 @@ func (c *char) c2() {
 	c.c2UpdateTask()
 
 	for _, char := range c.Core.Player.Chars() {
-		if char.Index == c.Index {
+		if char.Index() == c.Index() {
 			continue
 		}
 		// TODO: Test whether this is indeed a static buff once we have C2
@@ -166,13 +167,13 @@ func (c *char) c6() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
 		}
 
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 
 		// Only on swirls. The swirl source does not matter, it can be either mizuki or other anemo char.
 		switch ae.Info.AttackTag {

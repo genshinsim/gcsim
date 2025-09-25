@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			er := max(char.NonExtraStat(attributes.ER)-1, 0)
-			c.Log.NewEvent("engulfing lightning snapshot", glog.LogWeaponEvent, char.Index).
+			c.Log.NewEvent("engulfing lightning snapshot", glog.LogWeaponEvent, char.Index()).
 				Write("er", er)
 			bonus := atk * er
 			if bonus > maxBonus {
@@ -54,8 +54,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	erval := make([]float64, attributes.EndStatType)
 	erval[attributes.ER] = .25 + .05*float64(r)
 
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		char.AddStatMod(character.StatMod{

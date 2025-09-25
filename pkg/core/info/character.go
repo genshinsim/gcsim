@@ -28,7 +28,7 @@ type RandomSubstats struct {
 }
 
 func (r RandomSubstats) Validate() error {
-	//TODO: support more than just 5 stars
+	// TODO: support more than just 5 stars
 	if r.Rarity != 5 {
 		return fmt.Errorf("unsupported rarity: %v", r.Rarity)
 	}

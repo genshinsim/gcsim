@@ -8,9 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -151,7 +150,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) enterBike() {
-	c.Core.Log.NewEvent("switching to bike state", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("switching to bike state", glog.LogCharacterEvent, c.Index())
 	c.armamentState = bike
 	c.NormalHitNum = bikeHitNum
 	c.NormalCounter = 0
@@ -159,7 +158,7 @@ func (c *char) enterBike() {
 }
 
 func (c *char) exitBike() {
-	c.Core.Log.NewEvent("switching to ring state", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("switching to ring state", glog.LogCharacterEvent, c.Index())
 	c.armamentState = ring
 	c.NormalHitNum = normalHitNum
 	c.ringSrc = c.Core.F
@@ -192,8 +191,8 @@ func (c *char) skillRecast() action.Info {
 }
 
 func (c *char) skillHold() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment (Flamestrider)",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
@@ -208,7 +207,7 @@ func (c *char) skillHold() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		6,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
@@ -222,8 +221,8 @@ func (c *char) skillHold() action.Info {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
@@ -236,7 +235,7 @@ func (c *char) skillPress() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 0.5},
+		info.Point{Y: 0.5},
 		5,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
@@ -248,8 +247,8 @@ func (c *char) skillPress() action.Info {
 
 // Recasting E while on bike, occurs with Sac or Burst allowing E to come off of cd
 func (c *char) skillBikeRefresh() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment (Flamestrider)",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
@@ -264,7 +263,7 @@ func (c *char) skillBikeRefresh() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		6,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
@@ -306,8 +305,8 @@ func (c *char) skillRingTask(src int) {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           "Rings of Searing Radiance",
 			AttackTag:      attacks.AttackTagElementalArt,
 			ICDTag:         attacks.ICDTagNone,
@@ -320,7 +319,7 @@ func (c *char) skillRingTask(src int) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1.0},
+			info.Point{Y: 1.0},
 			6,
 		)
 		c.Core.QueueAttack(ai, ap, 0, 0, c.c6RingCB())
@@ -329,8 +328,8 @@ func (c *char) skillRingTask(src int) {
 	}, 2*60)
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

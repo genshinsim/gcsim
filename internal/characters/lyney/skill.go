@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -52,8 +50,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillBurst(), nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Bewildering Lights",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -64,23 +62,23 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skill[c.TalentLvlSkill()] + skillBonus[c.TalentLvlSkill()]*float64(c.propSurplusStacks),
 	}
 	skillHeal := info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  c.Core.Player.Active(),
 		Message: "Bewildering Lights",
 		Src:     0.2 * c.MaxHP() * float64(c.propSurplusStacks),
 		Bonus:   c.Stat(attributes.Heal),
 	}
 	c.propSurplusStacks = 0
-	c.Core.Log.NewEvent("Lyney Prop Surplus stacks removed", glog.LogCharacterEvent, c.Index).Write("prop_surplus_stacks", c.propSurplusStacks)
+	c.Core.Log.NewEvent("Lyney Prop Surplus stacks removed", glog.LogCharacterEvent, c.Index()).Write("prop_surplus_stacks", c.propSurplusStacks)
 
 	player := c.Core.Combat.Player()
-	skillPos := combat.NewCircleHitOnTarget(geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 5.5}, player.Direction()), nil, 5.5)
+	skillPos := combat.NewCircleHitOnTarget(info.CalcOffsetPoint(player.Pos(), info.Point{Y: 5.5}, player.Direction()), nil, 5.5)
 	c.QueueCharTask(func() {
 		// trigger skill dmg
 		c.Core.QueueAttack(ai, skillPos, 0, 0, c.particleCB)
 		// explode hats
 		hatCount := len(c.hats)
-		for i := 0; i < hatCount; i++ {
+		for range hatCount {
 			c.hats[0].skillExplode()
 		}
 		// heal self
@@ -108,8 +106,8 @@ func (c *char) skillBurst() action.Info {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

@@ -2,17 +2,16 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+func (r *Reactable) TryAggravate(a *info.AttackEvent) bool {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 
-	if r.Durability[Quicken] < ZeroDur {
+	if r.Durability[info.ReactionModKeyQuicken] < info.ZeroDur {
 		return false
 	}
 
@@ -21,17 +20,17 @@ func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
 	// em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
-	a.Info.CatalyzedType = reactions.Aggravate
+	a.Info.CatalyzedType = info.ReactionTypeAggravate
 	a.Info.FlatDmg += 1.15 * r.calcCatalyzeDmg(a.Info, em)
 	return true
 }
 
-func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+func (r *Reactable) TrySpread(a *info.AttackEvent) bool {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 
-	if r.Durability[Quicken] < ZeroDur {
+	if r.Durability[info.ReactionModKeyQuicken] < info.ZeroDur {
 		return false
 	}
 
@@ -40,25 +39,25 @@ func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
 	// em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
-	a.Info.CatalyzedType = reactions.Spread
+	a.Info.CatalyzedType = info.ReactionTypeSpread
 	a.Info.FlatDmg += 1.25 * r.calcCatalyzeDmg(a.Info, em)
 	return true
 }
 
-func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
-	if a.Info.Durability < ZeroDur {
+func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
+	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 
-	var consumed reactions.Durability
+	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Dendro:
-		if r.Durability[Electro] < ZeroDur {
+		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	case attributes.Electro:
-		if r.Durability[Dendro] < ZeroDur {
+		if r.Durability[info.ReactionModKeyDendro] < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Dendro, a.Info.Durability, 1)
@@ -73,7 +72,7 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	// attach quicken aura; special amount
 	r.attachQuicken(consumed)
 
-	if r.Durability[Hydro] >= ZeroDur {
+	if r.Durability[info.ReactionModKeyHydro] >= info.ZeroDur {
 		r.core.Tasks.Add(func() {
 			r.tryQuickenBloom(a)
 		}, 0)
@@ -82,6 +81,6 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) attachQuicken(dur reactions.Durability) {
-	r.attachOverlapRefreshDuration(Quicken, dur, 12*dur+360)
+func (r *Reactable) attachQuicken(dur info.Durability) {
+	r.attachOverlapRefreshDuration(info.ReactionModKeyQuicken, dur, 12*dur+360)
 }

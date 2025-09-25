@@ -7,13 +7,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillFrames []int
-var skillCancelFrames []int
+var (
+	skillFrames       []int
+	skillCancelFrames []int
+)
 
 const (
 	particleICDKey  = "mualani-particle-icd"
@@ -105,7 +106,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	canQueueAfter := skillFrames[action.ActionAttack] // earliest cancel
 	// press skill "while" walking
-	isWalking := c.Core.Player.AnimationHandler.CurrentState() == action.WalkState
+	isWalking := c.Core.Player.CurrentState() == action.WalkState
 	if isWalking {
 		canQueueAfter = skillDelay
 	}
@@ -124,8 +125,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -142,8 +143,8 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 func (c *char) surfingTick() {
 	// TODO: create a gadget?
-	c.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
-		if c.Core.Player.Active() != c.Index {
+	c.Core.Events.Subscribe(event.OnTick, func(args ...any) bool {
+		if c.Core.Player.Active() != c.Index() {
 			return false
 		}
 		if !c.nightsoulState.HasBlessing() {
@@ -161,9 +162,9 @@ func (c *char) surfingTick() {
 
 		// to avoid spamming Surfing Hit logs
 		useAttack := false
-		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.9}, 0, 1)
+		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.9}, 0, 1)
 		for _, e := range c.Core.Combat.Enemies() {
-			enemy, ok := e.(combat.Enemy)
+			enemy, ok := e.(info.Enemy)
 			if !ok {
 				continue
 			}
@@ -178,8 +179,8 @@ func (c *char) surfingTick() {
 			return false
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Surfing Hit",
 			AttackTag:          attacks.AttackTagNone,
 			ICDTag:             attacks.ICDTagNone,
@@ -197,7 +198,7 @@ func (c *char) surfingTick() {
 	}, "mualani-surfing")
 }
 
-func (c *char) surfingCB(a combat.AttackCB) {
+func (c *char) surfingCB(a info.AttackCB) {
 	enemy, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return

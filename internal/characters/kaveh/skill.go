@@ -2,12 +2,12 @@ package kaveh
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/reactable"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -28,9 +28,9 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		Abil:       "Artistic Ingenuity (E)",
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		Abil:       "Artistic Ingenuity",
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -58,9 +58,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) ruptureDendroCores(ap combat.AttackPattern) {
+func (c *char) ruptureDendroCores(ap info.AttackPattern) {
 	for _, g := range c.Core.Combat.Gadgets() {
-		seed, ok := g.(*reactable.DendroCore)
+		seed, ok := g.(*dendrocore.Gadget)
 		if !ok {
 			continue
 		}
@@ -71,8 +71,8 @@ func (c *char) ruptureDendroCores(ap combat.AttackPattern) {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

@@ -90,6 +90,24 @@
       },
       "name_text_hash_map ": "1533656818"
     },
+    "aetherpyro": {
+      "id": 10000005,
+      "sub_id": 502,
+      "key": "aetherpyro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Fire",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
+      "skill_details": {
+        "skill": 10097,
+        "burst": 10098,
+        "attack": 100541,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "1533656818"
+    },
     "albedo": {
       "id": 10000038,
       "key": "albedo",
@@ -1047,6 +1065,24 @@
       },
       "name_text_hash_map ": "3816664530"
     },
+    "luminepyro": {
+      "id": 10000007,
+      "sub_id": 702,
+      "key": "luminepyro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Fire",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10097,
+        "burst": 10098,
+        "attack": 100551,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "3816664530"
+    },
     "lynette": {
       "id": 10000083,
       "key": "lynette",
@@ -1437,6 +1473,22 @@
       },
       "name_text_hash_map ": "781488962"
     },
+    "skirk": {
+      "id": 10000114,
+      "key": "skirk",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": 11,
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_SkirkNew",
+      "skill_details": {
+        "skill": 11142,
+        "burst": 11145,
+        "attack": 11141
+      },
+      "name_text_hash_map ": "123650890"
+    },
     "sucrose": {
       "id": 10000043,
       "key": "sucrose",
@@ -1504,6 +1556,23 @@
         "burst_energy_cost": 40
       },
       "name_text_hash_map ": "2506955778"
+    },
+    "varesa": {
+      "id": 10000111,
+      "key": "varesa",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Electric",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Varesa",
+      "skill_details": {
+        "skill": 11112,
+        "burst": 11115,
+        "attack": 11111,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "283438874"
     },
     "venti": {
       "id": 10000022,

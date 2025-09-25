@@ -8,9 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -67,7 +66,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		m[attributes.DmgP] = 0.3
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("diluc-c6-dmg", 360),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
@@ -102,8 +101,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// times out after 4 seconds of not using
 	// every hit applies pyro
 	// apply attack speed
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Searing Onslaught %v", c.eCounter),
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -119,14 +118,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTargetFanAngle(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: skillOffsets[c.eCounter]},
+		info.Point{Y: skillOffsets[c.eCounter]},
 		skillHitboxes[c.eCounter][0],
 		skillFanAngles[c.eCounter],
 	)
 	if c.eCounter == 0 || c.eCounter == 2 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: skillOffsets[c.eCounter]},
+			info.Point{Y: skillOffsets[c.eCounter]},
 			skillHitboxes[c.eCounter][0],
 			skillHitboxes[c.eCounter][1],
 		)
@@ -165,8 +164,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

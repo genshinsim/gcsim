@@ -23,6 +23,8 @@ const (
 	NoElement
 	Physical
 	UnknownElement
+	Burning     // not an element; placeholder to work with old reactable code
+	BurningFuel // not an element; placeholder to work with old reactable code
 	EndEleType
 )
 
@@ -62,10 +64,12 @@ var ElementString = [...]string{
 	"",
 	"physical",
 	"unknown",
+	"burning",
+	"burning-fuel",
 }
 
 func StringToEle(s string) Element {
-	for i, v := range ElementString {
+	for i, v := range ElementString[0:UnknownElement] {
 		if v == s {
 			return Element(i)
 		}

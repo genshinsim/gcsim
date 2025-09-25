@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -69,8 +68,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.hasRecastSkill = false
 	c.hasC2DamageBuff = false
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Molten Inferno",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -87,7 +86,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// do initial attack
 	player := c.Core.Combat.Player()
-	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.8}, player.Direction())
+	skillPos := info.CalcOffsetPoint(c.Core.Combat.Player().Pos(), info.Point{Y: 0.8}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
@@ -109,9 +108,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDmgHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		// atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		trg := args[0].(info.Target)
+		// atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if !c.StatusIsActive(dehyaFieldKey) {
 			return false
@@ -149,8 +148,8 @@ func (c *char) skillDmgHook() {
 }
 
 func (c *char) skillRecast() (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Ranging Flame",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -177,7 +176,7 @@ func (c *char) skillRecast() (action.Info, error) {
 
 	player := c.Core.Combat.Player()
 	// assuming tap e for hitbox offset
-	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.5}, player.Direction())
+	skillPos := info.CalcOffsetPoint(c.Core.Combat.Player().Pos(), info.Point{Y: 0.5}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 6), skillRecastHitmark)
 
@@ -200,7 +199,7 @@ func (c *char) pickUpField() {
 	c.a1Reduction()
 	c.sanctumICD = c.StatusDuration(skillICDKey)
 	c.sanctumSavedDur = c.StatusDuration(dehyaFieldKey) + sanctumPickupExtension // dur gets extended on field recast by a low margin, apparently
-	c.Core.Log.NewEvent("sanctum picked up", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("sanctum picked up", glog.LogCharacterEvent, c.Index()).
 		Write("Duration Remaining", c.sanctumSavedDur).
 		Write("DoT tick CD", c.sanctumICD)
 	c.Core.Tasks.Add(func() {
@@ -211,14 +210,14 @@ func (c *char) pickUpField() {
 func (c *char) addField(dur int) {
 	// places field
 	c.AddStatus(dehyaFieldKey, dur, false)
-	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index()).
 		Write("Duration Remaining", dur).
 		Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
 		Write("DoT tick CD", c.StatusDuration(skillICDKey))
 
 	// snapshot for ticks
-	c.skillAttackInfo = combat.AttackInfo{
-		ActorIndex:       c.Index,
+	c.skillAttackInfo = info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             skillDoTAbil,
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -242,7 +241,7 @@ func (c *char) addField(dur int) {
 func (c *char) skillHurtHook() {
 	// mitigates true dmg
 	// should not mitigate corrosion (probably will never be added to sim...)
-	c.Core.Events.Subscribe(event.OnPlayerPreHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerPreHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
 		// only mitigate external damage
 		if !di.External {
@@ -276,7 +275,7 @@ func (c *char) skillHurtHook() {
 		// modify hp drain
 		di.Amount = max(di.Amount-mitigation, 0)
 		// log mitigation
-		c.Core.Log.NewEvent("dehya mitigating dmg", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("dehya mitigating dmg", glog.LogCharacterEvent, c.Index()).
 			Write("hurt_before", beforeAmount).
 			Write("mitigation", mitigation).
 			Write("hurt", di.Amount)
@@ -304,7 +303,7 @@ func (c *char) skillSelfDoT() {
 	c.QueueCharTask(c.skillSelfDoT, skillSelfDoTInterval)
 
 	// do not do self DoT if in burst iframes
-	if c.Core.Player.Active() == c.Index && c.Core.Player.CurrentState() == action.BurstState {
+	if c.Core.Player.Active() == c.Index() && c.Core.Player.CurrentState() == action.BurstState {
 		return
 	}
 
@@ -318,7 +317,7 @@ func (c *char) skillSelfDoT() {
 	if c.StatusIsActive(a1ReductionKey) {
 		dmgBefore := dmg
 		dmg *= 1 - a1ReductionMult
-		c.Core.Log.NewEvent("dehya a1 reducing redmane's blood dmg", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("dehya a1 reducing redmane's blood dmg", glog.LogCharacterEvent, c.Index()).
 			Write("dmg_before", dmgBefore).
 			Write("dmg", dmg)
 	}
@@ -326,8 +325,8 @@ func (c *char) skillSelfDoT() {
 	// do self DoT
 	// TODO: hack because system is not designed to hit a character directly which is off-field
 	// this is true physical dmg so dmg formula/element resist does not matter
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       skillSelfDoTAbil,
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
@@ -339,18 +338,18 @@ func (c *char) skillSelfDoT() {
 	}
 	ap := combat.NewSingleTargetHit(c.Core.Combat.Player().Key())
 	snap := c.Snapshot(&ai)
-	ae := &combat.AttackEvent{
+	ae := &info.AttackEvent{
 		Info:        ai,
 		Pattern:     ap,
 		Snapshot:    snap,
 		SourceFrame: c.Core.F,
 	}
 
-	c.Core.Combat.Events.Emit(event.OnPlayerHit, c.Index, ae)
-	dmgLeft := c.Core.Player.Shields.OnDamage(c.Index, c.Core.Player.Active(), dmg, ae.Info.Element)
+	c.Core.Combat.Events.Emit(event.OnPlayerHit, c.Index(), ae)
+	dmgLeft := c.Core.Player.Shields.OnDamage(c.Index(), c.Core.Player.Active(), dmg, ae.Info.Element)
 	if dmgLeft > 0 {
 		c.Core.Player.Drain(info.DrainInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       ae.Info.Abil,
 			Amount:     dmgLeft,
 			External:   true,

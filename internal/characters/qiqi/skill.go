@@ -33,8 +33,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Initial damage
 	// Both healing and damage are snapshot
 	c.Core.Tasks.Add(func() {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Herald of Frost: Initial Damage",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagElementalArt,
@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 		// One healing proc happens immediately on cast
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Herald of Frost (Tick)",
 			Src:     c.healSnapshot(&snap, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()),
@@ -83,7 +83,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		aiTick.IsDeployable = true // ticks still apply hitlag but is a deployable so doesnt affect qiqi
 
 		snapTick := c.Snapshot(&aiTick)
-		tickAE := &combat.AttackEvent{
+		tickAE := &info.AttackEvent{
 			Info:        aiTick,
 			Snapshot:    snapTick,
 			SourceFrame: c.Core.F,
@@ -110,7 +110,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 // Handles skill damage swipe instances
 // Also handles C1:
 // When the Herald of Frost hits an opponent marked by a Fortune-Preserving Talisman, Qiqi regenerates 2 Energy.
-func (c *char) skillDmgTickTask(src int, ae *combat.AttackEvent, lastTickDuration int) func() {
+func (c *char) skillDmgTickTask(src int, ae *info.AttackEvent, lastTickDuration int) func() {
 	return func() {
 		if !c.StatusIsActive(skillBuffKey) {
 			return
@@ -153,7 +153,7 @@ func (c *char) skillHealTickTask(src int) func() {
 		}
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Herald of Frost (Tick)",
 			Src:     c.healSnapshot(&c.skillHealSnapshot, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()),

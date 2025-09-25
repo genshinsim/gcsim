@@ -8,14 +8,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var aimedFrames [][]int
 
-var aimedHitmarks = []int{16, 74, 368}
-var startCharge = aimedHitmarks[0]
+var (
+	aimedHitmarks = []int{16, 74, 368}
+	startCharge   = aimedHitmarks[0]
+)
 
 const shadowPierceShotAil = "Shadowpiercing Shot"
 
@@ -70,8 +72,8 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	weakspot := p["weakspot"]
 
 	c.QueueCharTask(func() {
-		ai := combat.AttackInfo{
-			ActorIndex:           c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:           c.Index(),
 			Abil:                 "Fully-Charged Aimed Shot",
 			AttackTag:            attacks.AttackTagExtra,
 			ICDTag:               attacks.ICDTagNone,
@@ -97,7 +99,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				geometry.Point{Y: -0.5},
+				info.Point{Y: -0.5},
 				0.1,
 				1,
 			),
@@ -133,8 +135,8 @@ func (c *char) ShadowPierce(p map[string]int) (action.Info, error) {
 
 	c.QueueCharTask(func() {
 		em := c.Stat(attributes.EM)
-		ai := combat.AttackInfo{
-			ActorIndex:           c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:           c.Index(),
 			Abil:                 shadowPierceShotAil,
 			AttackTag:            attacks.AttackTagExtra,
 			ICDTag:               attacks.ICDTagNone,
@@ -153,7 +155,7 @@ func (c *char) ShadowPierce(p map[string]int) (action.Info, error) {
 
 		if c.StatusIsActive(a4Key) {
 			ai.FlatDmg += 7 * em
-			c.Core.Log.NewEvent("Sethos A4 proc dmg add", glog.LogPreDamageMod, c.Index).
+			c.Core.Log.NewEvent("Sethos A4 proc dmg add", glog.LogPreDamageMod, c.Index()).
 				Write("em", em).
 				Write("ratio", 7.0).
 				Write("addition", 7*em)
@@ -166,7 +168,7 @@ func (c *char) ShadowPierce(p map[string]int) (action.Info, error) {
 		ap := combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -dist},
+			info.Point{Y: -dist},
 			0.1,
 			15,
 		)

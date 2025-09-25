@@ -6,10 +6,8 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func evalDebuff(c *core.Core, fields []string) (bool, error) {
@@ -49,25 +47,42 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 		return 0, fmt.Errorf("bad element condition: %w", err)
 	}
 
-	if ele == "burning" {
-		result := reactions.Durability(0)
+	var eleKey info.ReactionModKey
+	switch ele {
+	case "burning":
+		result := info.Durability(0)
 		if e.IsBurning() {
-			result = e.Durability[reactable.Burning]
+			// TODO: this really should be a min of Burning and BurningFuel, but leaving it as is to avoid
+			// breaking existing sims that may be relying on this behavior in the current set of changes
+			// this should be fixed
+			result = e.GetAuraDurability(info.ReactionModKeyBurning)
 		}
 		return float64(result), nil
-	}
-
-	elekey := attributes.StringToEle(ele)
-	if elekey == attributes.UnknownElement {
+	case "electro":
+		eleKey = info.ReactionModKeyElectro
+	case "pyro":
+		eleKey = info.ReactionModKeyPyro
+	case "cryo":
+		eleKey = info.ReactionModKeyCryo
+	case "hydro":
+		eleKey = info.ReactionModKeyHydro
+	case "dendro":
+		eleKey = info.ReactionModKeyDendro
+	case "quicken":
+		eleKey = info.ReactionModKeyQuicken
+	case "frozen":
+		eleKey = info.ReactionModKeyFrozen
+	case "geo":
+		eleKey = info.ReactionModKeyGeo
+	default:
 		return 0, fmt.Errorf("bad element condition: invalid element %s", ele)
 	}
-	result := reactions.Durability(0)
-	for i := reactable.Invalid; i < reactable.EndModifier; i++ {
-		if i.Element() == elekey && e.Durability[i] > reactable.ZeroDur && e.Durability[i] > result {
-			result = e.Durability[i]
-		}
+
+	dur := e.GetAuraDurability(eleKey)
+	if dur < info.ZeroDur {
+		return 0, nil
 	}
-	return float64(result), nil
+	return float64(dur), nil
 }
 
 func parseTarget(c *core.Core, trg string) (*enemy.Enemy, error) {

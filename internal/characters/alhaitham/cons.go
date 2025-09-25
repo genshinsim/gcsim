@@ -5,8 +5,8 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -18,7 +18,7 @@ const (
 
 // When a Projection Attack hits an opponent, Universality: An Elaboration on Form's CD is decreased by 1.2s.
 // This effect can be triggered once every 1s.
-func (c *char) c1(a combat.AttackCB) {
+func (c *char) c1(a info.AttackCB) {
 	// ignore if c1 on icd
 	if c.StatusIsActive(c1IcdKey) {
 		return
@@ -34,7 +34,7 @@ func (c *char) c1(a combat.AttackCB) {
 func (c *char) c2(generated int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 50
-	for i := 0; i < generated; i++ {
+	for range generated {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c2ModName(c.c2Counter+1), 480), // 8s
 			AffectedStat: attributes.EM,
@@ -63,7 +63,7 @@ func (c *char) c4Loss(consumed int) {
 	m[attributes.EM] = 30.0 * float64(consumed)
 	for i, char := range c.Core.Player.Chars() {
 		// skip Alhaitham
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
@@ -104,10 +104,10 @@ func (c *char) c6(generated int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.1
 	m[attributes.CD] = 0.7
-	for i := 0; i < generated; i++ {
+	for range generated {
 		if c.StatModIsActive(c6key) {
 			c.ExtendStatus(c6key, 360)
-			c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index).Write("c6 expiry on", c.StatusExpiry(c6key))
+			c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index()).Write("c6 expiry on", c.StatusExpiry(c6key))
 		} else {
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag((c6key), 360), // 6s

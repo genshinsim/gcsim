@@ -5,39 +5,37 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type panda struct {
 	*gadget.Gadget
-	*reactable.Reactable
+	info.Reactable
 	c     *char
-	ai    combat.AttackInfo
-	snap  combat.Snapshot
+	ai    info.AttackInfo
+	snap  info.Snapshot
 	timer int
 }
 
-func (c *char) newGuoba(ai combat.AttackInfo) *panda {
+func (c *char) newGuoba(ai info.AttackInfo) *panda {
 	p := &panda{
 		ai:   ai,
 		snap: c.Snapshot(&ai),
 		c:    c,
 	}
 	player := c.Core.Combat.Player()
-	pos := geometry.CalcOffsetPoint(
+	pos := info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{Y: 1.3},
+		info.Point{Y: 1.3},
 		player.Direction(),
 	)
-	p.Gadget = gadget.New(c.Core, pos, 0.2, combat.GadgetTypGuoba)
-	p.Gadget.Duration = 438
-	p.Reactable = &reactable.Reactable{}
-	p.Reactable.Init(p, c.Core)
+	p.Gadget = gadget.New(c.Core, pos, 0.2, info.GadgetTypGuoba)
+	p.Duration = 438
+	p.Reactable = hacks.NewReactable(p, c.Core)
 
 	return p
 }
@@ -53,11 +51,11 @@ func (p *panda) Tick() {
 	// TODO: kids.. don't do this
 	switch p.timer {
 	case 103, 203, 303, 403: // swirl window
-		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index).
+		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index()).
 			SetEnded(p.c.Core.F + infuseWindow + 1)
-		p.Durability[reactable.Pyro] = infuseDurability
+		p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
 		p.Core.Tasks.Add(func() {
-			p.Durability[reactable.Pyro] = 0
+			p.SetAuraDurability(info.ReactionModKeyPyro, 0)
 		}, infuseWindow+1) // +1 since infuse window is inclusive
 		p.SetDirectionToClosestEnemy()
 		// queue this in advance because that's how it is on live
@@ -77,32 +75,32 @@ func (p *panda) breath() {
 	)
 }
 
-func (p *panda) Type() targets.TargettableType { return targets.TargettableGadget }
+func (p *panda) Type() info.TargettableType { return info.TargettableGadget }
 
-func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
+func (p *panda) HandleAttack(atk *info.AttackEvent) float64 {
 	p.Core.Events.Emit(event.OnGadgetHit, p, atk)
 	p.Attack(atk, nil)
 	return 0
 }
 
-func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 		return 0, false
 	}
 	// check pyro window
-	if p.Durability[reactable.Pyro] <= reactable.ZeroDur {
+	if p.GetAuraDurability(info.ReactionModKeyPyro) <= info.ZeroDur {
 		return 0, false
 	}
 
 	// don't take damage, trigger swirl reaction only on sucrose E or faruzan E
 	switch p.Core.Player.Chars()[atk.Info.ActorIndex].Base.Key {
 	case keys.Sucrose:
-		p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index)
+		p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index())
 	case keys.Faruzan:
 		if atk.Info.Abil != faruzan.VortexAbilName {
 			return 0, false
 		}
-		p.Core.Log.NewEvent("guoba hit by faruzan pressurized collapse", glog.LogCharacterEvent, p.c.Index)
+		p.Core.Log.NewEvent("guoba hit by faruzan pressurized collapse", glog.LogCharacterEvent, p.c.Index())
 	default:
 		return 0, false
 	}
@@ -110,11 +108,11 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	atk.Info.Durability = 50
 
 	// cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
-	oldDur := p.Durability[reactable.Pyro]
-	p.Durability[reactable.Pyro] = infuseDurability
+	oldDur := p.GetAuraDurability(info.ReactionModKeyPyro)
+	p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
 	p.React(atk)
 	// restore the durability after
-	p.Durability[reactable.Pyro] = oldDur
+	p.SetAuraDurability(info.ReactionModKeyPyro, oldDur)
 
 	return 0, false
 }

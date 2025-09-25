@@ -3,8 +3,8 @@ package itto
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -42,7 +42,7 @@ func (c *char) a1Update(curSlash SlashType) {
 	case SaichiSlash:
 		// reset a1 stacks if we are doing a CA0
 		c.a1Stacks = 0
-		c.Core.Log.NewEvent("itto-a1 reset atkspd stacks", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("itto-a1 reset atkspd stacks", glog.LogCharacterEvent, c.Index()).
 			Write("a1Stacks", c.a1Stacks).
 			Write("slash", curSlash.String(false))
 	case LeftSlash, RightSlash:
@@ -52,7 +52,7 @@ func (c *char) a1Update(curSlash SlashType) {
 		if c.a1Stacks > 3 {
 			c.a1Stacks = 3
 		}
-		c.Core.Log.NewEvent("itto-a1 atkspd stacks increased", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("itto-a1 atkspd stacks increased", glog.LogCharacterEvent, c.Index()).
 			Write("a1Stacks", c.a1Stacks).
 			Write("slash", curSlash.String(false))
 	}
@@ -60,10 +60,10 @@ func (c *char) a1Update(curSlash SlashType) {
 }
 
 // Arataki Kesagiri DMG is increased by 35% of Arataki Itto's DEF.
-func (c *char) a4(ai *combat.AttackInfo) {
+func (c *char) a4(ai *info.AttackInfo) {
 	if c.Base.Ascension < 4 {
 		return
 	}
 	ai.FlatDmg = c.TotalDef(false) * 0.35
-	c.Core.Log.NewEvent("itto-a4 applied", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("itto-a4 applied", glog.LogCharacterEvent, c.Index())
 }

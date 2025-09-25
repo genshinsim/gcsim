@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -50,8 +49,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		mStacks := make([]float64, attributes.EndStatType)
 		// post snap shot to increase stacks
-		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
+		c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 
@@ -63,7 +62,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks++
 			}
 
-			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index()).
 				Write("current stacks", s.stacks)
 
 			mStacks[attributes.PyroP] = 0.15 * 0.5 * float64(s.stacks)
@@ -80,7 +79,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("crimson-4pc", -1),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
 				case attacks.AttackTagOverloadDamage,
 					attacks.AttackTagBurningDamage,

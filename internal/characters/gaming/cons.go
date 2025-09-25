@@ -2,17 +2,17 @@ package gaming
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c2Key = "gaming-c2"
-const c4Key = "gaming-c4"
-const c6Key = "gaming-c6"
+const (
+	c2Key = "gaming-c2"
+	c4Key = "gaming-c4"
+	c6Key = "gaming-c6"
+)
 
 // When the Suanni Man Chai from Suanni's Gilded Dance meets back up with Gaming,
 // it will heal 15% of Gaming's HP.
@@ -22,8 +22,8 @@ func (c *char) c1() {
 	}
 
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: "Bringer of Blessing (C1)",
 		Type:    info.HealTypePercent,
 		Src:     0.15,
@@ -40,7 +40,7 @@ func (c *char) c2() {
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
 		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 
@@ -48,7 +48,7 @@ func (c *char) c2() {
 			return false
 		}
 
-		if hi.Target != c.Index {
+		if hi.Target != c.Index() {
 			return false
 		}
 
@@ -66,12 +66,12 @@ func (c *char) c2() {
 
 // When Bestial Ascent's Plunging Attack: Charmed Cloudstrider hits an opponent,
 // it will restore 2 Energy to Gaming. This effect can be triggered once every 0.2s.
-func (c *char) makeC4CB() combat.AttackCBFunc {
+func (c *char) makeC4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c4Key) {
@@ -96,7 +96,7 @@ func (c *char) c6() {
 	m[attributes.CD] = 0.4
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c6Key, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.Abil != specialPlungeKey {
 				return nil, false
 			}

@@ -71,7 +71,8 @@
     "users_submitted": "Take a look at what users submitted:",
     "visit_teams_db": "Visit the Teams DB",
     "latest_release": "Latest Release: ",
-    "view_releases": "View Releases on GitHub"
+    "view_releases": "View Releases on GitHub",
+    "new_characters": "New Characters"
   },
   "db": {
     "author": "Author: ",
@@ -391,7 +392,9 @@
     "dash_body": "Some iterations delayed executing one or more Sprints due to its cooldown. This causes the active character to idle until Sprint is off cooldown. Consider updating the config if the downtime below is undesired.",
     "dash_data_header": "Total Sprint Delay Due To Cooldown Per Iteration",
     "ignore_burst_energy_title": "\"Ignore Elemental Burst Energy Costs\" Mode Is Enabled",
-    "ignore_burst_energy_body": "The simulation is ignoring Elemental Burst energy requirements. This may result in inaccurate simulations."
+    "ignore_burst_energy_body": "The simulation is ignoring Elemental Burst energy requirements. This may result in inaccurate simulations.",
+    "gcsim_risk_title": "gcsim's future is at risk!",
+    "gcsim_risk_body": "<p><b>gcsim is <githublink>open source</githublink>.</b></p> <p>In order for updates to be released in a timely manner, we need volunteers willing to learn the codebase to implement and review newer units/mechanics. UI developers are also welcome.</p> <p>View our <discordlink>Discord</discordlink> or <issueslink>GitHub Issues</issueslink> to see important features needing contributors.</p>"
   },
   "states": {
     "true": "true",

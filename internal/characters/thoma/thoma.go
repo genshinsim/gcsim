@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -47,7 +46,7 @@ func (c *char) Init() error {
 
 	w, err := minazuki.New(
 		minazuki.WithMandatory(keys.Thoma, "thoma burst", burstKey, burstICDKey, 60, c.summonFieryCollapse, c.Core),
-		minazuki.WithAnimationDelayCheck(model.AnimationXingqiuN0StartDelay, c.shouldDelay),
+		minazuki.WithAnimationDelayCheck(info.AnimationXingqiuN0StartDelay, c.shouldDelay),
 	)
 	if err != nil {
 		return err
@@ -61,8 +60,8 @@ func (c *char) maxShieldHP() float64 {
 	return shieldppmax[c.TalentLvlSkill()]*c.MaxHP() + shieldflatmax[c.TalentLvlSkill()]
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 11
 	}
 	return c.Character.AnimationStartDelay(k)

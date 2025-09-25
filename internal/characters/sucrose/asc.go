@@ -2,9 +2,9 @@ package sucrose
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -19,15 +19,15 @@ func (c *char) a1() {
 
 	c.a1Buff = make([]float64, attributes.EndStatType)
 	c.a1Buff[attributes.EM] = 50
-	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
+	swirlfunc := func(ele attributes.Element) func(args ...any) bool {
 		icd := -1
-		return func(args ...interface{}) bool {
+		return func(args ...any) bool {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
 				return false
 			}
 
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != c.Index {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != c.Index() {
 				return false
 			}
 			// do not overwrite mod if same frame
@@ -50,7 +50,7 @@ func (c *char) a1() {
 				})
 			}
 
-			c.Core.Log.NewEvent("sucrose a1 triggered", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("sucrose a1 triggered", glog.LogCharacterEvent, c.Index()).
 				Write("reaction", "swirl-"+ele.String()).
 				Write("expiry", c.Core.F+480)
 			return false
@@ -75,7 +75,7 @@ func (c *char) a4() {
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.EM] = c.NonExtraStat(attributes.EM) * .20
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue // nothing for sucrose
 		}
 		char.AddStatMod(character.StatMod{
@@ -88,7 +88,7 @@ func (c *char) a4() {
 		})
 	}
 
-	c.Core.Log.NewEvent("sucrose a4 triggered", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("sucrose a4 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("em snapshot", c.a4Buff[attributes.EM]).
 		Write("expiry", c.Core.F+480)
 }

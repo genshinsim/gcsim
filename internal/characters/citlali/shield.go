@@ -15,10 +15,10 @@ func (c *char) addShield() {
 	shieldHP := shieldEM[c.TalentLvlSkill()]*em + shieldFlat[c.TalentLvlSkill()]
 	c.skillShield = &shd{
 		Tmpl: &shield.Tmpl{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Target:     -1,
 			Src:        c.Core.F,
-			Name:       "Citalali Skill Shield",
+			Name:       "Dawnfrost Darkstar (Shield)",
 			ShieldType: shield.CitlaliSkill,
 			HP:         shieldHP,
 			Ele:        attributes.Cryo,

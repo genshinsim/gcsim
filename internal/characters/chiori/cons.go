@@ -4,9 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -67,7 +67,7 @@ func (c *char) c2() {
 		return
 	}
 
-	c.Core.Log.NewEvent("c2 activated", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("c2 activated", glog.LogCharacterEvent, c.Index())
 
 	// kill existing c2 ticker
 	c.kill(c.c2Ticker)
@@ -101,7 +101,7 @@ func (c *char) c4Activation() {
 		return
 	}
 
-	c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index())
 
 	c.AddStatus(c4Lockout, c4LockoutDuration, true) // applied to chiori
 
@@ -117,7 +117,7 @@ func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		// c4 status not active
 		if !c.StatusIsActive(c4Key) {
 			return false
@@ -127,7 +127,7 @@ func (c *char) c4() {
 			return false
 		}
 		// attack not na/ca/plunge
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
@@ -143,7 +143,7 @@ func (c *char) c4() {
 		// apply icd
 		c.AddStatus(c4ICDKey, c4ICD, true) // applied to chiori
 
-		c.Core.Log.NewEvent("c4 spawning kinu", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("c4 spawning kinu", glog.LogCharacterEvent, c.Index())
 
 		// spawn kinu
 		c.createKinu(c.Core.F, c4CenterOffset, c4MinRandom, c4MaxRandom)()
@@ -173,7 +173,7 @@ func (c *char) c6CooldownReduction() {
 
 // In addition, the DMG dealt by Chiori's own Normal Attacks is increased by an
 // amount equal to 235% of her own DEF.
-func (c *char) c6NAIncrease(ai *combat.AttackInfo, snap *combat.Snapshot) {
+func (c *char) c6NAIncrease(ai *info.AttackInfo, snap *info.Snapshot) {
 	if c.Base.Ascension < 1 {
 		return
 	}

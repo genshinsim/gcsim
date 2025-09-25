@@ -6,17 +6,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
-var icewhirlHitmarks = []int{79, 92}
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+	icewhirlHitmarks = []int{79, 92}
+)
 
 const (
 	skillPressHitmark   = 20
@@ -52,7 +53,7 @@ func (c *char) addGrimheartStack() {
 	}
 	if c.grimheartStacks < 2 {
 		c.grimheartStacks++
-		c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index()).
 			Write("current count", c.grimheartStacks)
 	}
 	// refresh grimheart duration regardless
@@ -83,8 +84,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) pressSkill() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Icetide Vortex",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -99,8 +100,8 @@ func (c *char) pressSkill() action.Info {
 		CanBeDefenseHalted: true,
 	}
 	// add 1 to grim heart if not capped by icd
-	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	cb := func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(grimheartICD) {
@@ -111,7 +112,7 @@ func (c *char) pressSkill() action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 3.5),
 		skillPressHitmark,
 		skillPressHitmark,
 		cb,
@@ -129,8 +130,8 @@ func (c *char) pressSkill() action.Info {
 	}
 }
 
-func (c *char) pressParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) pressParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -150,8 +151,8 @@ func (c *char) holdSkill() action.Info {
 	// 296 to 341, but cd starts at 322
 	// 60 fps = 108 frames cast, cd starts 62 frames in so need to + 62 frames to cd
 	lvl := c.TalentLvlSkill()
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Icetide Vortex (Hold)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -167,7 +168,7 @@ func (c *char) holdSkill() action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 5.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 5.5),
 		skillHoldHitmark,
 		skillHoldHitmark,
 		c.holdParticleCB,
@@ -177,19 +178,19 @@ func (c *char) holdSkill() action.Info {
 	v := c.currentGrimheartStacks()
 
 	// shred
-	var shredCB combat.AttackCBFunc
+	var shredCB info.AttackCBFunc
 	if v > 0 {
-		shredCB = func(a combat.AttackCB) {
+		shredCB = func(a info.AttackCB) {
 			e, ok := a.Target.(*enemy.Enemy)
 			if !ok {
 				return
 			}
-			e.AddResistMod(combat.ResistMod{
+			e.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("eula-icewhirl-shred-cryo", 7*v*60),
 				Ele:   attributes.Cryo,
 				Value: -resRed[lvl],
 			})
-			e.AddResistMod(combat.ResistMod{
+			e.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("eula-icewhirl-shred-phys", 7*v*60),
 				Ele:   attributes.Physical,
 				Value: -resRed[lvl],
@@ -197,11 +198,11 @@ func (c *char) holdSkill() action.Info {
 		}
 	}
 
-	for i := 0; i < v; i++ {
+	for i := range v {
 		// multiple brand hits
-		//TODO: need to double check if this is affected by hitlag; might be a deployable
-		icewhirlAI := combat.AttackInfo{
-			ActorIndex: c.Index,
+		// TODO: need to double check if this is affected by hitlag; might be a deployable
+		icewhirlAI := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Icetide Vortex (Icewhirl)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -241,7 +242,7 @@ func (c *char) holdSkill() action.Info {
 
 	// c1 add debuff
 	if c.Base.Cons >= 1 && v > 0 {
-		//TODO: check if the duration is right
+		// TODO: check if the duration is right
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("eula-c1", (6*v+6)*60),
 			AffectedStat: attributes.PhyP,
@@ -266,8 +267,8 @@ func (c *char) holdSkill() action.Info {
 	}
 }
 
-func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) holdParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {

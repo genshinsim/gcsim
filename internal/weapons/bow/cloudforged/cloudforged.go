@@ -31,11 +31,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	refine := p.Refine
 
 	m := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnEnergyChange, func(args ...interface{}) bool {
-		index := args[0].(*character.CharWrapper).Index
+	c.Events.Subscribe(event.OnEnergyChange, func(args ...any) bool {
+		index := args[0].(*character.CharWrapper).Index()
 		amount := args[2].(float64)
 
-		if char.Index != index || amount >= 0 {
+		if char.Index() != index || amount >= 0 {
 			return false
 		}
 		if !char.StatModIsActive(buffKey) {

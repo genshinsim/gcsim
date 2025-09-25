@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -54,9 +53,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.2
 
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
@@ -77,12 +76,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				})
 			}
 
-			//TODO: this needs to be affected by hitlag as well
+			// TODO: this needs to be affected by hitlag as well
 			s.core.Player.Shields.AddShieldBonusMod("tom-4pc", 180, func() (float64, bool) {
 				return 0.30, false
 			})
 
-			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index).Write("expiry (without hitlag)", c.F+180).Write("icd (without hitlag)", c.F+s.icd)
+			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index()).Write("expiry (without hitlag)", c.F+180).Write("icd (without hitlag)", c.F+s.icd)
 			return false
 		}, fmt.Sprintf("tom4-%v", char.Base.Key.String()))
 	}

@@ -45,8 +45,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		const icdKey = "scholar-4pc-icd"
 		icd := 180
 		// TODO: test lmao
-		c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
+		c.Events.Subscribe(event.OnParticleReceived, func(args ...any) bool {
+			if c.Player.Active() != char.Index() {
 				return false
 			}
 			if char.StatusIsActive(icdKey) {

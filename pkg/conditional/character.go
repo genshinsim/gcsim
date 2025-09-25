@@ -51,7 +51,7 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 	case "normal":
 		return char.NextNormalCounter(), nil
 	case "onfield":
-		return c.Player.Active() == char.Index, nil
+		return c.Player.Active() == char.Index(), nil
 	case "weapon":
 		return int(char.Weapon.Key), nil
 	case "status":
@@ -68,7 +68,7 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err
 		}
-		return c.Player.WeaponInfuseIsActive(char.Index, fields[2]), nil
+		return c.Player.WeaponInfuseIsActive(char.Index(), fields[2]), nil
 	case "tags":
 		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err
@@ -120,10 +120,10 @@ func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Act
 			return c.Player.SwapCD, nil
 		}
 		if act == action.ActionDash {
-			if c.Player.Active() == char.Index && c.Player.DashLockout {
+			if c.Player.Active() == char.Index() && c.Player.DashLockout {
 				return c.Player.DashCDExpirationFrame - c.F, nil
 			}
-			if c.Player.Active() != char.Index && char.DashLockout {
+			if c.Player.Active() != char.Index() && char.DashLockout {
 				return char.RemainingDashCD, nil
 			}
 			return 0, nil
@@ -133,7 +133,7 @@ func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Act
 		return char.Charges(act), nil
 	case "ready":
 		if act == action.ActionSwap {
-			return c.Player.SwapCD == 0 || c.Player.Active() == char.Index, nil
+			return c.Player.SwapCD == 0 || c.Player.Active() == char.Index(), nil
 		}
 		// TODO: nil map may cause problems here??
 		ok, _ := char.ActionReady(act, nil)

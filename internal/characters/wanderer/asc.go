@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -25,11 +26,11 @@ const (
 // For each Kuugo: Fushoudan and Kuugo: Toufukai that does not produce this effect, the next attack
 // of those types will have a 12% increased chance of producing it.
 // The calculation of the effect production is done once every 0.1s.
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
 			return
 		}
@@ -41,7 +42,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 			return
 		}
 
-		c.Core.Log.NewEvent("wanderer-a4 available", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("wanderer-a4 available", glog.LogCharacterEvent, c.Index()).
 			Write("probability", c.a4Prob)
 
 		c.a4Prob = 0.16
@@ -68,7 +69,7 @@ func (c *char) a4() bool {
 	c.DeleteStatus(a4Key)
 	c.AddStatus(a4Prevent, 20, true) // prevent a4 proccing again for 20f, should be enough to prevent 2 procs in single dash
 
-	c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index())
 
 	a4Mult := 0.35
 
@@ -76,8 +77,8 @@ func (c *char) a4() bool {
 		a4Mult = 0.6
 	}
 
-	a4Info := combat.AttackInfo{
-		ActorIndex: c.Index,
+	a4Info := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Gales of Reverie",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagWandererA4,
@@ -88,7 +89,7 @@ func (c *char) a4() bool {
 		Mult:       a4Mult,
 	}
 
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1),
 			a4Release[i], a4Release[i]+a4Hitmark)
 	}
@@ -102,15 +103,15 @@ func (c *char) absorbCheckA1() {
 	a1AbsorbCheckLocation := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 	a1Proc := false // for C4
 	// max 2 A1 elements from absorb check
-	for i := 0; i < 2; i++ {
-		absorbCheck := c.Core.Combat.AbsorbCheck(c.Index, a1AbsorbCheckLocation, c.a1ValidBuffs...)
+	for range 2 {
+		absorbCheck := c.Core.Combat.AbsorbCheck(c.Index(), a1AbsorbCheckLocation, c.a1ValidBuffs...)
 		if absorbCheck == attributes.NoElement {
 			continue
 		}
 		a1Proc = true
 		c.addA1Buff(absorbCheck)
 		c.deleteFromValidBuffs(absorbCheck)
-		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 			"wanderer a1 absorbed ", absorbCheck.String(),
 		)
 	}
@@ -119,7 +120,7 @@ func (c *char) absorbCheckA1() {
 		chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
 		c.addA1Buff(chosenElement)
 		c.deleteFromValidBuffs(chosenElement)
-		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 			"wanderer c4 applied a1 ", chosenElement.String(),
 		)
 	}
@@ -169,11 +170,11 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 }
 
 // When Normal and Charged Attacks hit an opponent, 0.8 Energy will be restored. Energy can be restored this way once every 0.2s.
-func (c *char) makeA1ElectroCB() combat.AttackCBFunc {
+func (c *char) makeA1ElectroCB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if !c.StatusIsActive(a1ElectroKey) {
 			return
 		}

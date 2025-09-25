@@ -5,17 +5,16 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/crystallize"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var (
@@ -135,8 +134,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.SetCDWithDelay(action.ActionSkill, 9*60, firingTime)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Rosula Shardshot",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -152,7 +151,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			if c.shrapnel >= 3 {
 				shrapnelIndex = 1
 			}
-			c.Core.Log.NewEvent(fmt.Sprintf("firing %v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent(fmt.Sprintf("firing %v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index())
 
 			// snap and add buffs
 			snap := c.Snapshot(&ai)
@@ -162,23 +161,23 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			// Initially trims enemies to check by scanning only the hit zone
 			shots := 5 + min(c.shrapnel, 3)*2
 			for _, t := range c.Core.Combat.EnemiesWithinArea(
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: -0.20568, Y: -0.043841}, 4.0722, 11.5461),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{X: -0.20568, Y: -0.043841}, 4.0722, 11.5461),
 				nil,
 			) {
 				// Tallies up the hits
 				hits := 0
-				for i := 0; i < shots; i++ {
+				for i := range shots {
 					if ok, _ := t.AttackWillLand(
 						combat.NewBoxHitOnTarget(
 							c.Core.Combat.Player(),
-							geometry.Point{X: hitscans[i][2], Y: hitscans[i][3]}.Rotate(geometry.DegreesToDirection(hitscans[i][1])),
+							info.Point{X: hitscans[i][2], Y: hitscans[i][3]}.Rotate(info.DegreesToDirection(hitscans[i][1])),
 							hitscans[i][0],
 							bulletBoxLength,
 						)); ok {
 						hits++
 					}
 				}
-				c.Core.Log.NewEvent(fmt.Sprintf("target %v hit %v times", t.Key(), hits), glog.LogCharacterEvent, c.Index)
+				c.Core.Log.NewEvent(fmt.Sprintf("target %v hit %v times", t.Key(), hits), glog.LogCharacterEvent, c.Index())
 				// Applies damage based on the hits
 				ai.Mult = skillshotgun[c.TalentLvlSkill()] * skillMultiplier[hits]
 				c.Core.QueueAttackWithSnap(
@@ -214,9 +213,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCB(a info.AttackCB) {
 	e := a.Target.(*enemy.Enemy)
-	if e.Type() != targets.TargettableEnemy {
+	if e.Type() != info.TargettableEnemy {
 		return
 	}
 
@@ -234,7 +233,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // add the buffs by modifying snap
 // needs to be done this way so that excess calculated during firing is also used for that firing's surgingBlade
-func (c *char) addShrapnelBuffs(snap *combat.Snapshot, count int) {
+func (c *char) addShrapnelBuffs(snap *info.Snapshot, count int) {
 	// Calculate buffs based on excess shrapnel
 	excess := float64(max(count-3, 0))
 
@@ -250,7 +249,7 @@ func (c *char) addShrapnelBuffs(snap *combat.Snapshot, count int) {
 	snap.Stats[attributes.DmgP] += dmg
 	snap.Stats[attributes.CR] += cr
 	snap.Stats[attributes.CD] += cd
-	c.Core.Log.NewEvent("adding shrapnel buffs", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg).Write("cr", cr).Write("cd", cd)
+	c.Core.Log.NewEvent("adding shrapnel buffs", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg).Write("cr", cr).Write("cd", cd)
 }
 
 // shrapnelGain adds Shrapnel Stacks when a Crystallise Shield is picked up.
@@ -259,7 +258,7 @@ func (c *char) addShrapnelBuffs(snap *combat.Snapshot, count int) {
 // Navia will gain 1 Crystal Shrapnel charge. Navia can hold up to 6 charges of Crystal Shrapnel at once.
 // Each time Crystal Shrapnel gain is triggered, the duration of the Shards you have already will be reset.
 func (c *char) shrapnelGain() {
-	c.Core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) bool {
 		// Check shield
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {
@@ -268,7 +267,7 @@ func (c *char) shrapnelGain() {
 
 		if c.shrapnel < 6 {
 			c.shrapnel++
-			c.Core.Log.NewEvent("Crystal Shrapnel gained from Crystallise", glog.LogCharacterEvent, c.Index).Write("shrapnel", c.shrapnel)
+			c.Core.Log.NewEvent("Crystal Shrapnel gained from Crystallise", glog.LogCharacterEvent, c.Index()).Write("shrapnel", c.shrapnel)
 		}
 		return false
 	}, "shrapnel-gain")
@@ -278,8 +277,8 @@ func (c *char) surgingBlade(count int) {
 	if c.StatusIsActive(arkheICDKey) {
 		return
 	}
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Surging Blade",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -293,9 +292,9 @@ func (c *char) surgingBlade(count int) {
 	// determine attack pos
 	player := c.Core.Combat.Player()
 	// shotgun area
-	e := c.Core.Combat.ClosestEnemyWithinArea(combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: -0.20568, Y: -0.043841}, 4.0722, 11.5461), nil)
+	e := c.Core.Combat.ClosestEnemyWithinArea(combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{X: -0.20568, Y: -0.043841}, 4.0722, 11.5461), nil)
 	// pos is at player + Y: 3.6 by default
-	pos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3.6}, player.Direction())
+	pos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: 3.6}, player.Direction())
 	if e != nil {
 		// enemy in shotgun area: use their pos
 		pos = e.Pos()
@@ -322,7 +321,7 @@ func (c *char) surgingBlade(count int) {
 func (c *char) pullCrystals(firingTimeF, i int) {
 	c.Core.Tasks.Add(func() {
 		for _, g := range c.Core.Combat.Gadgets() {
-			cs, ok := g.(*reactable.CrystallizeShard)
+			cs, ok := g.(*crystallize.Shard)
 			// skip if not a shard
 			if !ok {
 				continue

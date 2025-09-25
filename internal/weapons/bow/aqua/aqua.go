@@ -50,7 +50,7 @@ func (w *Weapon) enemyCheck(char *character.CharWrapper, c *core.Core) func() {
 		if enemies != nil {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("aquasimulacra-dmg", 72),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					return w.dmgBuff, true
 				},
 			})

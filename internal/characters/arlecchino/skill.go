@@ -6,9 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -34,8 +33,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "All is Ash (Spike)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -48,8 +47,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 0.5)
 	c.Core.QueueAttack(ai, skillArea, spikeHitmark, spikeHitmark)
 
-	ai = combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai = info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "All is Ash (Cleave)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -61,7 +60,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:               skillFinal[c.TalentLvlSkill()],
 	}
 
-	skillCleaveArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 4.5}, 6)
+	skillCleaveArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 4.5}, 6)
 	c.Core.QueueAttack(ai, skillCleaveArea, finalHitmark, finalHitmark, c.particleCB, c.bloodDebtDirective)
 	c.QueueCharTask(c.debtLimit, finalHitmark+1)
 
@@ -75,8 +74,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -86,8 +85,8 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Pyro, c.ParticleDelay)
 }
 
-func (c *char) bloodDebtDirective(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) bloodDebtDirective(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 
@@ -111,12 +110,12 @@ func (c *char) directiveTickFunc(src, count int, trg *enemy.Enemy) func() {
 		if !trg.StatusIsActive(directiveKey) {
 			return
 		}
-		c.Core.Log.NewEvent("Blood Debt Directive checking for tick", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Blood Debt Directive checking for tick", glog.LogCharacterEvent, c.Index()).
 			Write("src", src)
 
 		// queue up one damage instance
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Blood Debt Directive",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -142,7 +141,7 @@ func (c *char) debtLimit() {
 }
 
 func (c *char) absorbDirectives() {
-	area := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3.0}, 6.5)
+	area := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 3.0}, 6.5)
 	enemies := c.Core.Combat.EnemiesWithinArea(area, nil)
 	for _, e := range enemies {
 		if !e.StatusIsActive(directiveKey) {

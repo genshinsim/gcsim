@@ -16,7 +16,7 @@ func (c *char) a1() {
 	}
 
 	count := 0
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -45,7 +45,7 @@ func (c *char) a4() {
 	heal := 0
 	cryop := 0
 	for _, this := range c.Core.Player.Chars() {
-		if c.Index == this.Index {
+		if c.Index() == this.Index() {
 			continue
 		}
 		if this.CharZone == info.ZoneFontaine {

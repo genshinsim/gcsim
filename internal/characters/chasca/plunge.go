@@ -8,12 +8,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 50
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark = 50
+	collisionHitmark = lowPlungeHitmark - 6
+)
 
 func init() {
 	lowPlungeFrames = frames.InitAbilSlice(80)
@@ -41,8 +44,8 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Low Plunge Attack",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -66,8 +69,8 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) plungeCollision(fullDelay int) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,

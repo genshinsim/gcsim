@@ -2,9 +2,8 @@ package yoimiya
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -13,15 +12,15 @@ const a1Key = "yoimiya-a1"
 // During Niwabi Fire-Dance, shots from Yoimiya's Normal Attack will increase
 // her Pyro DMG Bonus by 2% on hit. This effect lasts for 3s and can have a
 // maximum of 10 stacks.
-func (c *char) makeA1CB() combat.AttackCBFunc {
+func (c *char) makeA1CB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if !c.StatusIsActive(skillKey) {
@@ -55,7 +54,7 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 func (c *char) a4() {
 	c.a4Bonus[attributes.ATKP] = 0.1 + float64(c.a1Stacks)*0.01
 	for _, x := range c.Core.Player.Chars() {
-		if x.Index == c.Index {
+		if x.Index() == c.Index() {
 			continue
 		}
 		x.AddStatMod(character.StatMod{

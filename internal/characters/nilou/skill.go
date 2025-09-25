@@ -9,8 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -44,6 +43,8 @@ const (
 	skillHitmark            = 16 // init
 	initialParticleICDKey   = "nilou-initial-particle-icd"
 	pirouetteParticleICDKey = "nilou-pirouette-particle-icd"
+
+	skillIllusionAbil = "Luminous Illusion"
 
 	delayDance = 30 // Lunar Prayer (8s) / Tranquility (12/18s) / A1 (30s) timers all start here
 	delaySteps = 40
@@ -92,8 +93,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.Pirouette(p, NilouSkillTypeSteps), nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Dance of Haftkarsvar",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -127,8 +128,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) initialParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) initialParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(initialParticleICDKey) {
@@ -170,7 +171,7 @@ func (c *char) Pirouette(p map[string]int, srcType nilouSkillType) action.Info {
 				}
 				c.AddStatus(tranquilityAuraStatus, dur, true)
 				c.auraSrc = c.Core.F
-				c.QueueCharTask(c.TranquilityAura(c.auraSrc), 30) // every 0.5 sec
+				c.TranquilityAura(c.auraSrc)()
 			}
 		}, delay)
 	}
@@ -178,8 +179,8 @@ func (c *char) Pirouette(p map[string]int, srcType nilouSkillType) action.Info {
 	return actionInfo
 }
 
-func (c *char) pirouetteParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) pirouetteParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pirouetteParticleICDKey) {
@@ -201,8 +202,8 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 	s := c.Tag(skillStep)
 	travel := 0
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Sword Dance %v", s),
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -214,7 +215,7 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 	}
 	centerTarget := c.Core.Combat.Player()
 	if s == 2 {
-		ai.Abil = "Luminous Illusion"
+		ai.Abil = skillIllusionAbil
 		ai.StrikeType = attacks.StrikeTypePierce
 		centerTarget = c.Core.Combat.PrimaryTarget()
 
@@ -225,20 +226,20 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 	ap := combat.NewCircleHit(
 		c.Core.Combat.Player(),
 		centerTarget,
-		geometry.Point{Y: swordDanceOffsets[s]},
+		info.Point{Y: swordDanceOffsets[s]},
 		swordDanceHitboxes[s][0],
 	)
 	if s == 0 {
 		ap = combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			centerTarget,
-			geometry.Point{Y: swordDanceOffsets[s]},
+			info.Point{Y: swordDanceOffsets[s]},
 			swordDanceHitboxes[s][0],
 			swordDanceHitboxes[s][1],
 		)
 	}
 
-	var particleCB func(combat.AttackCB)
+	var particleCB func(info.AttackCB)
 	if c.StatusIsActive(pirouetteStatus) {
 		particleCB = c.pirouetteParticleCB
 	}
@@ -260,8 +261,8 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 func (c *char) WhirlingSteps(p map[string]int) action.Info {
 	s := c.Tag(skillStep)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Whirling Steps %v", s),
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -273,20 +274,20 @@ func (c *char) WhirlingSteps(p map[string]int) action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+		info.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
 		whirlingStepsHitboxes[s][0],
 	)
 	if s == 2 {
 		ai.Abil = "Water Wheel"
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+			info.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
 			whirlingStepsHitboxes[s][0],
 			whirlingStepsHitboxes[s][1],
 		)
 	}
 
-	var particleCB func(combat.AttackCB)
+	var particleCB func(info.AttackCB)
 	if c.StatusIsActive(pirouetteStatus) {
 		particleCB = c.pirouetteParticleCB
 	}
@@ -314,8 +315,8 @@ func (c *char) TranquilityAura(src int) func() {
 			return
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Tranquility Aura",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNilouTranquilityAura,
@@ -326,13 +327,13 @@ func (c *char) TranquilityAura(src int) func() {
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5), -1, 1)
 
-		c.QueueCharTask(c.TranquilityAura(src), 30)
+		c.QueueCharTask(c.TranquilityAura(src), 30) // every 0.5 sec
 	}
 }
 
 // Clears Nilou skill when she leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		c.DeleteStatus(pirouetteStatus)
 		c.DeleteStatus(lunarPrayerStatus)
 		c.SetTag(skillStep, 0)

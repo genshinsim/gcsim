@@ -6,8 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -41,8 +40,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	player := c.Core.Combat.Player()
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Lumidouce Case (Summon)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -54,14 +53,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(player, geometry.Point{Y: 2.6}, 4.5),
+		combat.NewCircleHitOnTarget(player, info.Point{Y: 2.6}, 4.5),
 		lumidouceSummonHitmark,
 		lumidouceSummonHitmark,
 		c.c2,
 	)
 
 	c.QueueCharTask(func() {
-		c.spawnLumidouceCase(1, geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2.6}, player.Direction()), false)
+		c.spawnLumidouceCase(1, info.CalcOffsetPoint(player.Pos(), info.Point{Y: 2.6}, player.Direction()), false)
 		c.c6()
 	}, lumidouceSpawn)
 	c.arkheAttack()
@@ -81,8 +80,8 @@ func (c *char) arkheAttack() {
 	}
 	c.AddStatus(lumidouceArkheCD, int(skillArkeCD[c.TalentLvlSkill()]*60), true)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Spiritbreath Thorn",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -94,15 +93,15 @@ func (c *char) arkheAttack() {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 2.6}, 4.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 2.6}, 4.5),
 		lumidouceArkheHitmark,
 		lumidouceArkheHitmark,
 		c.c2,
 	)
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -56,8 +57,8 @@ func (c *char) burstTick() {
 		return
 	}
 
-	tickAI := combat.AttackInfo{
-		ActorIndex: c.Index,
+	tickAI := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Wondrous Trick: Miracle Parade",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -68,7 +69,7 @@ func (c *char) burstTick() {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), func(e combat.Enemy) bool {
+	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), func(e info.Enemy) bool {
 		return !e.StatusIsActive(burstMarkKey)
 	})
 	for _, enemy := range enemies {
@@ -95,8 +96,8 @@ func (c *char) explosiveFirework() {
 		e.DeleteStatus(burstMarkKey)
 	}
 
-	explodeAI := combat.AttackInfo{
-		ActorIndex: c.Index,
+	explodeAI := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Wondrous Trick: Miracle Parade (Explosive Firework)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

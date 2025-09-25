@@ -30,7 +30,7 @@ func (w *Weapon) Init() error {
 	sameCount := 0
 	diffCount := 0
 	for i, char := range w.c.Player.Chars() {
-		if i == w.self.Index {
+		if i == w.self.Index() {
 			continue
 		}
 		if char.Base.Element == w.self.Base.Element {

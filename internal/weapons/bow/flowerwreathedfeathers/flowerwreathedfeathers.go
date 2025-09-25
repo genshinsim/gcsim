@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -53,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buff := 0.045 + 0.015*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(buffStatus, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}
@@ -62,8 +61,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnAimShoot, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+	c.Events.Subscribe(event.OnAimShoot, func(args ...any) bool {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(icdStatus) {
@@ -75,17 +74,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.stacks < 6 {
 			w.stacks++
 		}
-		c.Log.NewEvent("flower-wreathed feathers proc'd", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("flower-wreathed feathers proc'd", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 
 		return false
 	}, fmt.Sprintf("flower-wreathed-aim-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnStateChange, func(args ...any) bool {
 		prev := args[0].(action.AnimationState)
 		next := args[1].(action.AnimationState)
 
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
 		if prev != action.AimState || next == action.AimState {
@@ -100,10 +99,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("flower-wreathed-state-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
 		prev := args[0].(int)
 
-		if prev != char.Index {
+		if prev != char.Index() {
 			return false
 		}
 		if w.leaveSrc != -1 {
@@ -123,12 +122,12 @@ func (w *Weapon) clearBuff(src int) func() {
 		if w.leaveSrc != src {
 			return
 		}
-		if w.c.Player.Active() == w.char.Index && w.c.Player.CurrentState() == action.AimState {
+		if w.c.Player.Active() == w.char.Index() && w.c.Player.CurrentState() == action.AimState {
 			return
 		}
 
 		w.stacks = 0
-		w.c.Log.NewEvent("flower-wreathed feathers cleared", glog.LogWeaponEvent, w.char.Index).
+		w.c.Log.NewEvent("flower-wreathed feathers cleared", glog.LogWeaponEvent, w.char.Index()).
 			Write("stacks", w.stacks)
 	}
 }

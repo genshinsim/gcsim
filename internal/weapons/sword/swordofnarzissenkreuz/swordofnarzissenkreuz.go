@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	if arkhe > 1 {
 		arkhe = 1
 	}
-	c.Log.NewEvent("swordofnarzissenkreuz arkhe", glog.LogWeaponEvent, char.Index).
+	c.Log.NewEvent("swordofnarzissenkreuz arkhe", glog.LogWeaponEvent, char.Index()).
 		Write("arkhe", arkhe)
 
 	// no event sub if char has arkhe
@@ -60,15 +60,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	mult := 1.2 + float64(r)*0.4
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 
 		// only proc on normal, charge and plunging dmg
 		switch atk.Info.AttackTag {
@@ -84,8 +84,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(icdKey, icd, true)
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Sword of Narzissenkreuz",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,

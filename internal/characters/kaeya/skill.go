@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -29,8 +27,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Frostgnaw",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -40,8 +38,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	cb := func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 
@@ -49,7 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		// Every hit with Frostgnaw regenerates HP for Kaeya equal to 15% of his ATK.
 		if c.Base.Ascension >= 1 {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  c.Core.Player.Active(),
 				Message: "Cold-Blooded Strike",
 				Src:     a.AttackEvent.Snapshot.Stats.TotalATK() * .15,
@@ -59,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.2}, 4, 8),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.2}, 4, 8),
 		0,
 		skillHitmark,
 		cb,
@@ -77,8 +75,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -95,12 +93,12 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // Opponents Frozen by Frostgnaw will drop additional Elemental Particles.
 // Frostgnaw may only produce a maximum of 2 additional Elemental Particles per use.
-func (c *char) makeA4ParticleCB() combat.AttackCBFunc {
+func (c *char) makeA4ParticleCB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 	a4Count := 0
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -111,7 +109,7 @@ func (c *char) makeA4ParticleCB() combat.AttackCBFunc {
 		if !e.AuraContains(attributes.Frozen) {
 			return
 		}
-		c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index())
 		a4Count++
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
 	}

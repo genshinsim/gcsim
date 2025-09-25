@@ -157,8 +157,7 @@ type WeaponExcel struct {
 	// GadgetID                   int32           `json:"gadgetId"`
 }
 
-type WeaponCurve struct {
-}
+type WeaponCurve struct{}
 
 //nolint:tagliatelle // need to match datamine
 type WeaponPromote struct {

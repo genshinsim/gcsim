@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -41,9 +41,9 @@ func init() {
 // - The Whirlwind Pulse will also apply Prayerful Wind's Gift to all nearby
 // characters when it is unleashed, granting them Anemo DMG Bonus.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "The Wind's Secret Ways (Q)",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "The Wind's Secret Ways",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -55,7 +55,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 6.3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.5}, 6.3),
 		burstHitmark,
 		burstHitmark,
 		applyBurstShredCb,
@@ -74,10 +74,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	player := c.Core.Combat.Player()
 	playerPos := player.Pos()
 	direction := player.Direction()
-	gadgetPositions := []geometry.Point{
-		geometry.CalcOffsetPoint(playerPos, geometry.Point{X: 5.19, Y: 10.5}, direction),
-		geometry.CalcOffsetPoint(playerPos, geometry.Point{X: -5.19, Y: 10.5}, direction),
-		geometry.CalcOffsetPoint(playerPos, geometry.Point{Y: 1.5}, direction),
+	gadgetPositions := []info.Point{
+		info.CalcOffsetPoint(playerPos, info.Point{X: 5.19, Y: 10.5}, direction),
+		info.CalcOffsetPoint(playerPos, info.Point{X: -5.19, Y: 10.5}, direction),
+		info.CalcOffsetPoint(playerPos, info.Point{Y: 1.5}, direction),
 	}
 	count := 0
 	for i := 137; i <= duration; i += 120 {
@@ -141,16 +141,16 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 	}
 }
 
-func applyBurstShredCb(a combat.AttackCB) {
+func applyBurstShredCb(a info.AttackCB) {
 	applyBurstShred(a.Target)
 }
 
-func applyBurstShred(trg combat.Target) {
+func applyBurstShred(trg info.Target) {
 	t, ok := trg.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	t.AddResistMod(combat.ResistMod{
+	t.AddResistMod(info.ResistMod{
 		Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
 		Ele:   attributes.Anemo,
 		Value: -0.3,

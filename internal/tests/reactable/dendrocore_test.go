@@ -4,14 +4,13 @@ import (
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 // test modifying dendro core to something else
@@ -23,19 +22,19 @@ func TestModifyDendroCore(t *testing.T) {
 		t.FailNow()
 	}
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		ae := args[1].(*combat.AttackEvent)
-		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "bloom" {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		trg := args[0].(info.Target)
+		ae := args[1].(*info.AttackEvent)
+		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "bloom" {
 			count++
 		}
 		return false
 	}, "bloom")
-	c.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
-		if g, ok := args[0].(*reactable.DendroCore); ok {
+	c.Events.Subscribe(event.OnDendroCore, func(args ...any) bool {
+		if g, ok := args[0].(*dendrocore.Gadget); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
-				Gadget: gadget.New(c, geometry.Point{X: 0, Y: 0}, 0.2, combat.GadgetTypDendroCore),
+				Gadget: gadget.New(c, info.Point{X: 0, Y: 0}, 0.2, info.GadgetTypDendroCore),
 			})
 			// prevent blowing up
 			g.OnKill = nil
@@ -45,25 +44,25 @@ func TestModifyDendroCore(t *testing.T) {
 		return false
 	}, "modify-core")
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 
@@ -76,7 +75,7 @@ func TestModifyDendroCore(t *testing.T) {
 	}
 
 	// make sure no blow up
-	for i := 0; i < 600; i++ {
+	for range 600 {
 		advanceCoreFrame(c)
 	}
 
@@ -89,11 +88,11 @@ type fakeCore struct {
 	*gadget.Gadget
 }
 
-func (f *fakeCore) Tick()                                                  {}
-func (f *fakeCore) HandleAttack(*combat.AttackEvent) float64               { return 0 }
-func (f *fakeCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (f *fakeCore) SetDirection(trg geometry.Point)                        {}
-func (f *fakeCore) SetDirectionToClosestEnemy()                            {}
-func (f *fakeCore) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (f *fakeCore) Tick()                                                {}
+func (f *fakeCore) HandleAttack(*info.AttackEvent) float64               { return 0 }
+func (f *fakeCore) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (f *fakeCore) SetDirection(trg info.Point)                          {}
+func (f *fakeCore) SetDirectionToClosestEnemy()                          {}
+func (f *fakeCore) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

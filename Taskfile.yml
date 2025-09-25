@@ -8,6 +8,7 @@ tasks:
       - task: pipeline
   protos:
     cmds:
+      - cd ui && yarn install
       - |
         protoc --experimental_allow_proto3_optional \
                --go_out=module=github.com/genshinsim/gcsim:. \

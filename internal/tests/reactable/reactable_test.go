@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 
@@ -24,11 +23,11 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		Seed:  time.Now().Unix(),
 		Debug: true,
 	})
-	a := avatar.New(c, geometry.Point{X: 0, Y: 0}, 1)
+	a := avatar.New(c, info.Point{X: 0, Y: 0}, 1)
 	c.Combat.SetPlayer(a)
 	var trgs []*enemy.Enemy
 
-	for i := 0; i < trgCount; i++ {
+	for range trgCount {
 		e := enemy.New(c, info.EnemyProfile{
 			Level:  100,
 			Resist: make(map[attributes.Element]float64),
@@ -42,7 +41,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		c.Combat.AddEnemy(e)
 	}
 
-	for i := 0; i < 4; i++ {
+	for range 4 {
 		p := info.CharacterProfile{}
 		p.Base.Key = keys.TestCharDoNotUse
 		p.Stats = make([]float64, attributes.EndStatType)

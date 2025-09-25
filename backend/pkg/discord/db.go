@@ -229,7 +229,7 @@ func (b *Bot) cmdApprove(ctx context.Context, data cmdroute.CommandData) *api.In
 		}
 	}
 
-	_, err = b.s.Client.SendMessage(
+	_, err = b.s.SendMessage(
 		discord.ChannelID(b.AnnounceChan),
 		fmt.Sprintf(
 			"<@%v>: your entry with id %v (<%v>) has been added to %v.",
@@ -291,7 +291,7 @@ func (b *Bot) cmdReject(ctx context.Context, data cmdroute.CommandData) *api.Int
 			}
 		}
 
-		_, err = b.s.Client.SendMessage(
+		_, err = b.s.SendMessage(
 			discord.ChannelID(b.AnnounceChan),
 			fmt.Sprintf(
 				"<@%v>: your entry with id %v (<%v>) has been rejected by %v. Reason given: %v",

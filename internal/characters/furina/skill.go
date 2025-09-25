@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames [][]int
@@ -78,6 +77,7 @@ func init() {
 	skillFrames[pneuma][action.ActionWalk] = 41   // E -> W
 	skillFrames[pneuma][action.ActionSwap] = 56   // E -> Swap
 }
+
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 6 {
 		c.c6Count = 0
@@ -89,7 +89,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	case pneuma:
 		return c.skillPneuma(p)
 	default:
-		return action.Info{}, fmt.Errorf("%v: character is in unknown arkhe: %v", c.CharWrapper.Base.Key, c.arkhe)
+		return action.Info{}, fmt.Errorf("%v: character is in unknown arkhe: %v", c.Base.Key, c.arkhe)
 	}
 }
 
@@ -104,9 +104,10 @@ func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
 		State:           action.SkillState,
 	}, nil
 }
+
 func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Salon Solitaire: Ousia Bubble",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -135,7 +136,7 @@ func (c *char) summonSalonMembers(delay int) {
 	c.Core.Tasks.Add(func() {
 		src := c.Core.F
 		c.lastSummonSrc = src
-		c.Core.Log.NewEvent("Summoned Salon Solitaire", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("Summoned Salon Solitaire", glog.LogCharacterEvent, c.Index())
 		c.Core.Tasks.Add(
 			c.surintendanteChevalmarin(src, 0),
 			c.calcSalonTick(0, chevalmarinInitialTick, chevalmarinIntervalMean),
@@ -155,12 +156,12 @@ func (c *char) summonSinger(delay int) {
 	c.Core.Tasks.Add(func() {
 		src := c.Core.F
 		c.lastSummonSrc = src
-		c.Core.Log.NewEvent("Summoned Singer of Many Waters", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("Summoned Singer of Many Waters", glog.LogCharacterEvent, c.Index())
 		c.Core.Tasks.Add(c.singerOfManyWaters(src), singerInitialTick)
 	}, delay)
 }
 
-func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackPattern, delay int) {
+func (c *char) queueSalonAttack(src int, ai info.AttackInfo, ap info.AttackPattern, delay int) {
 	// This implementation is to make attack be cancelled if the pets are desummoned to CA or new skill used
 	// TODO: Test if Chevalmarin or Usher projectile disappear on CA/Skill/Timing out, and if Crab body slam is cancelled by CA/Skill/Timing out
 	c.Core.Tasks.Add(func() {
@@ -171,7 +172,7 @@ func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackP
 		if !c.StatusIsActive(skillKey) {
 			return
 		}
-		var c4cb combat.AttackCBFunc
+		var c4cb info.AttackCBFunc
 		if c.Base.Cons >= 4 {
 			c4cb = c.c4cb
 		}
@@ -196,8 +197,8 @@ func (c *char) surintendanteChevalmarin(src, tick int) func() {
 		alliesWithDrainedHPCounter := c.consumeAlliesHealth(0.016)
 		damageMultiplier := 1 + 0.1*float64(alliesWithDrainedHPCounter)
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("%v: Surintendante Chevalmarin", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagFurinaChevalmarin,
@@ -231,8 +232,8 @@ func (c *char) gentilhommeUsher(src, tick int) func() {
 		alliesWithDrainedHPCounter := c.consumeAlliesHealth(0.024)
 		damageMultiplier := 1 + 0.1*float64(alliesWithDrainedHPCounter)
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("%v: Gentilhomme Usher", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagFurinaUsher,
@@ -267,8 +268,8 @@ func (c *char) mademoiselleCrabaletta(src, tick int) func() {
 		alliesWithDrainedHPCounter := c.consumeAlliesHealth(0.036)
 		damageMultiplier := 1 + 0.1*float64(alliesWithDrainedHPCounter)
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("%v: Mademoiselle Crabaletta", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
@@ -302,7 +303,7 @@ func (c *char) singerOfManyWaters(src int) func() {
 		}
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Singer of Many Waters",
 			Src:     skillSingerHealFlat[c.TalentLvlSkill()] + skillSingerHealScale[c.TalentLvlSkill()]*c.MaxHP(),
@@ -315,8 +316,8 @@ func (c *char) singerOfManyWaters(src int) func() {
 	}
 }
 
-func (c *char) particleCB(ac combat.AttackCB) {
-	if ac.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(ac info.AttackCB) {
+	if ac.Target.Type() != info.TargettableEnemy {
 		return
 	}
 
@@ -329,7 +330,7 @@ func (c *char) particleCB(ac combat.AttackCB) {
 }
 
 func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
-	var alliesWithDrainedHPCounter = 0
+	alliesWithDrainedHPCounter := 0
 
 	for i, char := range c.Core.Player.Chars() {
 		currentHPRatio := char.CurrentHPRatio()
@@ -347,7 +348,7 @@ func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
 		hpDrain := char.MaxHP() * hpDrainRatio
 
 		c.Core.Player.Drain(info.DrainInfo{
-			ActorIndex: char.Index,
+			ActorIndex: char.Index(),
 			Abil:       "Salon Solitaire",
 			Amount:     hpDrain,
 		})

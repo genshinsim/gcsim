@@ -15,7 +15,7 @@ func (c *char) a1() {
 	for _, char := range c.Core.Player.Chars() {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = .08
-		if char.Index == c.Index {
+		if char.Index() == c.Index() {
 			m[attributes.ATKP] = .16
 		}
 		char.AddStatMod(character.StatMod{
@@ -48,7 +48,7 @@ func (c *char) a4() {
 		},
 	})
 
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		// every 1s, aloy can't experience hitlag so this way is fine
 		c.Core.Tasks.Add(func() { stacks++ }, 60*(1+i))
 	}

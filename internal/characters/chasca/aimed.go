@@ -9,15 +9,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 // Aim keeps charging
-const skillAimChargeDelay = 10
-const skillAimFallDelay = 29
+const (
+	skillAimChargeDelay = 10
+	skillAimFallDelay   = 29
+)
 
-var aimedFrames [][]int
-var skillAimFrames []int
+var (
+	aimedFrames    [][]int
+	skillAimFrames []int
+)
 
 var aimedHitmarks = []int{14, 86}
 
@@ -27,8 +31,10 @@ var skillAimHitmarks = []int{4, 7, 10, 13, 16, 19}
 var cumuSkillAimLoadFrames = []int{21, 38, 56, 70, 91, 108}
 
 // TODO: Get C6 load frames. Using 11f windup and 0.23s per bullet
-var cumuSkillAimLoadFramesC6 = []int{14, 28, 42, 55, 69, 83}
-var cumuSkillAimLoadFramesC6Instant = []int{1, 2, 2, 3, 3, 4}
+var (
+	cumuSkillAimLoadFramesC6        = []int{14, 28, 42, 55, 69, 83}
+	cumuSkillAimLoadFramesC6Instant = []int{1, 2, 2, 3, 3, 4}
+)
 
 func init() {
 	aimedFrames = make([][]int, 2)
@@ -70,8 +76,8 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	ai := combat.AttackInfo{
-		ActorIndex:           c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -96,7 +102,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
+			info.Point{Y: -0.5},
 			0.1,
 			1,
 		),
@@ -182,8 +188,8 @@ func (c *char) fireBullets() {
 		return
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Shadowhunt Shell",
 		AttackTag:      attacks.AttackTagExtra,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -196,7 +202,7 @@ func (c *char) fireBullets() {
 		HitlagFactor:   0.01,
 	}
 
-	var c2cb combat.AttackCBFunc
+	var c2cb info.AttackCBFunc
 	applyC6buff := c.c6buff()
 
 	bulletFireFrame := c.Core.F

@@ -1,13 +1,14 @@
 package freminet
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -62,8 +63,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.skillStacks = 0
 	c.AddStatus(persTimeKey, 10*60, true)
 
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Pressurized Floe: Upward Thrust",
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagElementalArt,
@@ -79,7 +80,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 2.5),
 		0,
 		skillThrustHitmark,
 		c.particleCBThrust,
@@ -107,8 +108,8 @@ func (c *char) skillAligned() {
 	}
 	c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
-	aiSpiritbreath := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiSpiritbreath := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Pressurized Floe: Spiritbreath Thorn",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -120,7 +121,7 @@ func (c *char) skillAligned() {
 	}
 	c.Core.QueueAttack(
 		aiSpiritbreath,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 2.5),
 		62,
 		62,
 	)
@@ -137,9 +138,9 @@ func (c *char) detonateSkill() (action.Info, error) {
 		if c.skillStacks > 0 {
 			poiseDMG = 70.0
 		}
-		ai := combat.AttackInfo{
-			ActorIndex:       c.Index,
-			Abil:             pressureBaseName + " (Cryo)",
+		ai := info.AttackInfo{
+			ActorIndex:       c.Index(),
+			Abil:             fmt.Sprintf("%v (Cryo Lvl %v)", pressureBaseName, c.skillStacks),
 			AttackTag:        attacks.AttackTagElementalArt,
 			ICDTag:           attacks.ICDTagElementalArt,
 			ICDGroup:         attacks.ICDGroupDefault,
@@ -154,7 +155,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 2.5),
 			0,
 			skillPressureHitmarks[pressureFrameIndex],
 		)
@@ -165,9 +166,9 @@ func (c *char) detonateSkill() (action.Info, error) {
 		if c.skillStacks < 4 {
 			poiseDMG = 70.0
 		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       pressureBaseName + " (Physical)",
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       fmt.Sprintf("%v (Physical Lvl %v)", pressureBaseName, c.skillStacks),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -182,10 +183,10 @@ func (c *char) detonateSkill() (action.Info, error) {
 			ai.HitlagHaltFrames = 0.09 * 60
 		}
 
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5)
-		var particleCB combat.AttackCBFunc
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 2.5)
+		var particleCB info.AttackCBFunc
 		if c.skillStacks == 4 {
-			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: 0.5, Y: 0.5}, 3, 7)
+			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{X: 0.5, Y: 0.5}, 3, 7)
 			particleCB = c.particleCBLv4
 		}
 
@@ -215,8 +216,8 @@ func (c *char) detonateSkill() (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCBThrust(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCBThrust(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKeyThrust) {
@@ -231,8 +232,8 @@ func (c *char) particleCBThrust(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), particles, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) particleCBLv4(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCBLv4(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKeyLv4) {

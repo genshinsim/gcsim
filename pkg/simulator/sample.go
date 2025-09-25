@@ -43,7 +43,7 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 	}
 
 	// TODO: Log.Dump() should not marshal the data. Embedding json as a string in json is just bad
-	var events []map[string]interface{}
+	var events []map[string]any
 	if err := json.Unmarshal(logs, &events); err != nil {
 		return &model.Sample{}, err
 	}

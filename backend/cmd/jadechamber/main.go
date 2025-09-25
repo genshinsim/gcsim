@@ -17,9 +17,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var (
-	sha1ver string
-)
+var sha1ver string
 
 func main() {
 	setHash()
@@ -56,7 +54,6 @@ func main() {
 		s.Log = sugar
 		return nil
 	})
-
 	if err != nil {
 		panic(err)
 	}
@@ -78,7 +75,6 @@ func makeShareStore() api.ShareStore {
 	shareStore, err := share.NewClient(share.ClientCfg{
 		Addr: os.Getenv("SHARE_STORE_URL"),
 	})
-
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +88,6 @@ func makeUserStore(sugar *zap.SugaredLogger) api.UserStore {
 		s.Log = sugar
 		return nil
 	})
-
 	if err != nil {
 		panic(err)
 	}

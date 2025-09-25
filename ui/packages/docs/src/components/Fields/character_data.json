@@ -263,6 +263,32 @@
       "desc": "Number of Star Jades."
     }
   ],
+  "skirk": [
+    {
+      "fields": [
+        ".skirk.serpents_subtlety"
+      ],
+      "desc": "Amount of Serpent's Subtlety."
+    },
+    {
+      "fields": [
+        ".skirk.void_rifts"
+      ],
+      "desc": "Number of Void Rifts on the field."
+    },
+    {
+      "fields": [
+        ".skirk.a4_stacks"
+      ],
+      "desc": "Number of A4 stacks."
+    },
+    {
+      "fields": [
+        ".skirk.c6_stacks"
+      ],
+      "desc": "Number of C6 stacks."
+    }
+  ],
   "wanderer": [
     {
       "fields": [

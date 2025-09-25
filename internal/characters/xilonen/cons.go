@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -70,7 +69,7 @@ func (c *char) c2() {
 		}
 		ch.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c2BuffKey, -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				return c2Buffs[attributes.Geo], true
 			},
 		})
@@ -129,8 +128,8 @@ func (c *char) c4Init() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
 
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
@@ -164,8 +163,8 @@ func (c *char) c6() {
 		return
 	}
 
-	onAction := func(...interface{}) bool {
-		if c.Core.Player.Active() == c.Index && c.nightsoulState.HasBlessing() {
+	onAction := func(...any) bool {
+		if c.Core.Player.Active() == c.Index() && c.nightsoulState.HasBlessing() {
 			c.applyC6()
 		}
 		return false
@@ -195,7 +194,7 @@ func (c *char) applyC6() {
 			hpplus := c.Stat(attributes.Heal)
 			heal := c.TotalDef(false) * 1.2
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  -1,
 				Message: "Imperishable Night Carnival",
 				Src:     heal,
@@ -208,7 +207,7 @@ func (c *char) applyC6() {
 func (c *char) c6FlatDmg() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6key, c6Duration),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagNormal, attacks.AttackTagPlunge:
 			default:
@@ -219,7 +218,7 @@ func (c *char) c6FlatDmg() {
 			}
 
 			amt := c.TotalDef(false) * 3.0
-			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index).
+			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index()).
 				Write("amt", amt)
 
 			atk.Info.FlatDmg += amt

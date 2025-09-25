@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -63,9 +62,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const cdKey = "freedom-sworn-cooldown"
 	cd := 20 * 60
 
-	stackFunc := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
+	stackFunc := func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if char.StatusIsActive(cdKey) {
@@ -77,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddStatus(icdKey, icd, true)
 		stacks++
-		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index()).
 			Write("sigil", stacks)
 		if stacks == 2 {
 			stacks = 0
@@ -93,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				})
 				char.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBaseWithHitlag("freedomsworn", buffDuration),
-					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 						switch atk.Info.AttackTag {
 						case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
 							return uniqueVal, true

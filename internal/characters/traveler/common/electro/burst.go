@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames [][]int
@@ -38,8 +39,8 @@ func init() {
 *
 */
 func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Bellowing Thunder",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -58,10 +59,9 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 
 	// emc burst is not hitlag extendable
 	c.Core.Status.Add("travelerelectroburst", 720) // 12s, starts on cast
-
-	procAI := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Falling Thunder Proc (Q)",
+	procAI := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Falling Thunder",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -71,7 +71,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstTick[c.TalentLvlBurst()],
 	}
 	c.burstSnap = c.Snapshot(&procAI)
-	c.burstAtk = &combat.AttackEvent{
+	c.burstAtk = &info.AttackEvent{
 		Info:     procAI,
 		Snapshot: c.burstSnap,
 	}
@@ -92,9 +92,9 @@ func (c *Traveler) burstProc() {
 	//  When your active character's Normal or Charged Attacks hit opponents, they will call Falling Thunder forth, dealing Electro DMG.
 	//  When Falling Thunder hits opponents, it will regenerate Energy for that character.
 	//  One instance of Falling Thunder can be generated every 0.5s.
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		t := args[0].(combat.Target)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
+		t := args[0].(info.Target)
 
 		// only apply on na/ca
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
@@ -110,7 +110,7 @@ func (c *Traveler) burstProc() {
 		}
 		// One instance of Falling Thunder can be generated every 0.5s.
 		if icd > c.Core.F {
-			c.Core.Log.NewEvent("travelerelectro Q (active) on icd", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("travelerelectro Q (active) on icd", glog.LogCharacterEvent, c.Index())
 			return false
 		}
 
@@ -130,7 +130,7 @@ func (c *Traveler) burstProc() {
 		//  dealt by the next Falling Thunder, which will deal 200% of its original DMG and will restore
 		//  an additional 1 Energy to the current character.
 		c.c6Damage(&atk)
-		for _, cb := range []combat.AttackCBFunc{c.fallingThunderEnergy(), c.c2(), c.c6Energy()} {
+		for _, cb := range []info.AttackCBFunc{c.fallingThunderEnergy(), c.c2(), c.c6Energy()} {
 			if cb != nil {
 				atk.Callbacks = append(atk.Callbacks, cb)
 			}
@@ -138,7 +138,7 @@ func (c *Traveler) burstProc() {
 
 		c.Core.QueueAttackEvent(&atk, 1)
 
-		c.Core.Log.NewEvent("travelerelectro Q proc'd", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("travelerelectro Q proc'd", glog.LogCharacterEvent, c.Index()).
 			Write("char", ae.Info.ActorIndex).
 			Write("attack tag", ae.Info.AttackTag)
 
@@ -147,8 +147,8 @@ func (c *Traveler) burstProc() {
 	}, "travelerelectro-bellowingthunder")
 }
 
-func (c *Traveler) fallingThunderEnergy() combat.AttackCBFunc {
-	return func(_ combat.AttackCB) {
+func (c *Traveler) fallingThunderEnergy() info.AttackCBFunc {
+	return func(_ info.AttackCB) {
 		// Regenerate 1 flat energy for the active character
 		active := c.Core.Player.ActiveChar()
 		active.AddEnergy("travelerelectro-fallingthunder", burstRegen[c.TalentLvlBurst()])

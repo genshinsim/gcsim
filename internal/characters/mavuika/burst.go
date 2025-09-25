@@ -7,7 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -18,9 +19,7 @@ const (
 	burstHitmark   = 106
 )
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 func (c *char) nightsoulConsumptionMul() float64 {
 	if c.StatusIsActive(burstKey) {
@@ -41,6 +40,8 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstStacks = c.fightingSpirit
+	c.Core.Log.NewEvent("fighting spirit consumed", glog.LogCharacterEvent, c.Index()).
+		Write("amount", c.fightingSpirit)
 	c.fightingSpirit = 0
 	c.enterBike()
 	c.QueueCharTask(func() {
@@ -52,8 +53,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		c.a4()
 
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           "Sunfell Slice",
 			AttackTag:      attacks.AttackTagElementalBurst,
 			ICDTag:         attacks.ICDTagNone,
@@ -69,7 +70,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 2.5},
+			info.Point{Y: 2.5},
 			7,
 		)
 		c.Core.QueueAttack(ai, ap, 0, 0)
@@ -116,7 +117,7 @@ func (c *char) gainFightingSpirit(val float64) {
 
 func (c *char) burstInit() {
 	c.fightingSpirit = 200
-	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) bool {
 		amount := args[1].(float64)
 		if amount < 0.0000001 {
 			return false
@@ -125,8 +126,8 @@ func (c *char) burstInit() {
 		return false
 	}, "mavuika-fighting-spirit-ns")
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false

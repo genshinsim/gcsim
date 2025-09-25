@@ -6,8 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -44,8 +43,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillB()
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Secret Rite: Chasmic Soulfarer",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -80,8 +79,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillB() (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             skillBName,
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
@@ -97,7 +96,7 @@ func (c *char) skillB() (action.Info, error) {
 
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.5},
+		info.Point{Y: 1.5},
 		6,
 	)
 	particleCB := c.makeParticleCB(true)
@@ -125,7 +124,7 @@ func (c *char) skillB() (action.Info, error) {
 		ai.HitlagHaltFrames = 0
 
 		// 3 instances
-		for i := 0; i < 3; i++ {
+		for range 3 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHit(
@@ -163,9 +162,9 @@ func (c *char) triggerSkillCD() {
 	c.SetCD(action.ActionLowPlunge, skillBCD)
 }
 
-func (c *char) makeParticleCB(burst bool) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) makeParticleCB(burst bool) info.AttackCBFunc {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

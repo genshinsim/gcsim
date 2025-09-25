@@ -33,21 +33,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const buffKey = "crescent-pike-buff"
 	buffDuration := 300 // 5s * 60
 
-	c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+	c.Events.Subscribe(event.OnParticleReceived, func(args ...any) bool {
+		if c.Player.Active() != char.Index() {
 			return false
 		}
-		c.Log.NewEvent("crescent pike active", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("crescent pike active", glog.LogWeaponEvent, char.Index()).
 			Write("expiry (without hitlag)", c.F+300)
 		char.AddStatus(buffKey, buffDuration, true)
 
 		return false
 	}, fmt.Sprintf("cp-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
-		if ae.Info.ActorIndex != char.Index {
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
@@ -57,8 +57,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		if char.StatusIsActive(buffKey) {
-			ai := combat.AttackInfo{
-				ActorIndex: char.Index,
+			ai := info.AttackInfo{
+				ActorIndex: char.Index(),
 				Abil:       "Crescent Pike Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
 				ICDTag:     attacks.ICDTagNone,
@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				Durability: 100,
 				Mult:       atk,
 			}
-			trg := args[0].(combat.Target)
+			trg := args[0].(info.Target)
 			c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
 		}
 		return false

@@ -40,7 +40,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				// TODO: not sure if this is affected by hitlag
 				hpICD = c.Core.F + 60
 				c.Core.Player.Drain(info.DrainInfo{
-					ActorIndex: c.Index,
+					ActorIndex: c.Index(),
 					Abil:       "Bane of All Evil",
 					Amount:     burstDrain[c.TalentLvlBurst()] * c.CurrentHP(),
 				})
@@ -61,7 +61,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 // Hook to end Xiao's burst prematurely if he leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
 		c.DeleteStatus(burstBuffKey)
 		c.DeleteStatus(a1Key)
 		return false

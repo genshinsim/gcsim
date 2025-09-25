@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFrames []int
@@ -24,8 +24,8 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Charge Attack",
 		AttackTag:        attacks.AttackTagExtra,
 		ICDTag:           attacks.ICDTagNone,
@@ -41,9 +41,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	// TODO: snapshot timing
 	snap := c.Snapshot(&ai)
-	var ap combat.AttackPattern
-	var rebukeCB combat.AttackCBFunc
-	var particleCB combat.AttackCBFunc
+	var ap info.AttackPattern
+	var rebukeCB info.AttackCBFunc
+	var particleCB info.AttackCBFunc
 	var c6Attack bool
 	if c.Base.Ascension >= 1 {
 		if c.Base.Cons >= 1 {
@@ -54,9 +54,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 		if rebukeCB != nil {
 			particleCB = c.particleCB
-			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.8}, 4, 5)
+			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.8}, 4, 5)
 		} else {
-			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.2}, 2.8, 3.6)
+			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.2}, 2.8, 3.6)
 		}
 	}
 

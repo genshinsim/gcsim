@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -84,8 +83,8 @@ func (c *char) gainBOLOnAttack() {
 }
 
 func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Impale the Night (0% BoL)",
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagNormalAttack,
@@ -110,9 +109,9 @@ func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
-	for i := 0; i < 3; i++ {
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+	for range 3 {
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           "Impale the Night (100%+ BoL)",
 			AttackTag:      attacks.AttackTagNormal,
 			ICDTag:         attacks.ICDTagNormalAttack,
@@ -150,8 +149,8 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Impale the Night (<100% BoL)",
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagNormalAttack,
@@ -182,16 +181,16 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 func (c *char) skillHeal(bolMult float64, msg string) {
 	amt := c.CurrentHPDebt() * bolMult
 	c.Heal(&info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: msg,
 		Src:     amt,
 		Bonus:   c.Stat(attributes.Heal), // TODO: confirms that it scales with healing %
 	})
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

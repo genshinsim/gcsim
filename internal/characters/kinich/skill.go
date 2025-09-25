@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -28,8 +28,10 @@ var (
 	scalespikerFrames []int
 )
 
-var blindSpotAppearanceDelays = []int{5, 30} // tap, hold (both tap and hold for entering nightsoul)
-var scalespikerReleases = []int{35, 17}      // tap, hold
+var (
+	blindSpotAppearanceDelays = []int{5, 30}  // tap, hold (both tap and hold for entering nightsoul)
+	scalespikerReleases       = []int{35, 17} // tap, hold
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42) // E -> D/J
@@ -119,8 +121,8 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 		blindSpotDelay = blindSpotAppearanceDelays[1]
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Scalespiker Cannon",
 		AttackTag:      attacks.AttackTagElementalArt,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul, attacks.AdditionalTagKinichCannon},
@@ -136,7 +138,7 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 	target := c.Core.Combat.PrimaryTarget()
 	radius := 3.0
 
-	var snap combat.Snapshot
+	var snap info.Snapshot
 	c.QueueCharTask(func() {
 		// Nightsoul points are drained before snapshot
 		c.nightsoulState.ClearPoints()
@@ -147,7 +149,7 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 				c.c2AoeIncreased = true
 				radius = 5.0
 				snap.Stats[attributes.DmgP] += 1.0
-				c.Core.Log.NewEvent("C2 bonus dmg% applied", glog.LogCharacterEvent, c.Index).
+				c.Core.Log.NewEvent("C2 bonus dmg% applied", glog.LogCharacterEvent, c.Index()).
 					Write("final", snap.Stats[attributes.DmgP])
 			}
 			ap := combat.NewCircleHitOnTarget(target, nil, radius)
@@ -204,8 +206,8 @@ func (c *char) cancelNightsoul() {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.particlesGenerated {

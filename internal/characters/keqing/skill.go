@@ -6,12 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillFrames []int
-var skillRecastFrames []int
+var (
+	skillFrames       []int
+	skillRecastFrames []int
+)
 
 const (
 	skillHitmark       = 25
@@ -46,9 +47,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillFirst() action.Info {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Stellar Restoration",
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -85,9 +86,9 @@ func (c *char) skillFirst() action.Info {
 func (c *char) skillRecast() action.Info {
 	// C1 DMG happens before Recast DMG
 	if c.Base.Cons >= 1 {
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Stellar Restoration (C1)",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagElementalArtHold,
 			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -105,15 +106,15 @@ func (c *char) skillRecast() action.Info {
 		)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1.5}, 2),
+			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: 1.5}, 2),
 			skillRecastHitmark,
 			skillRecastHitmark,
 		)
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:             "Stellar Restoration (Slashing)",
-		ActorIndex:       c.Index,
+		ActorIndex:       c.Index(),
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagElementalArt,
 		ICDGroup:         attacks.ICDGroupDefault,
@@ -127,7 +128,7 @@ func (c *char) skillRecast() action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 3),
 		skillRecastHitmark,
 		skillRecastHitmark,
 		c.particleCB,
@@ -147,8 +148,8 @@ func (c *char) skillRecast() action.Info {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

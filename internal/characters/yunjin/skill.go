@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -48,19 +48,16 @@ func init() {
 // hold = 1 or 2 for regular charging up to level 1 or 2
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Hold parameter gets used in action frames to get earliest possible release frame
-	chargeLevel := p["hold"]
-	if chargeLevel > 2 {
-		chargeLevel = 2
-	}
+	chargeLevel := min(p["hold"], 2)
 	animIdx := chargeLevel
 	if p["perfect"] == 1 {
 		animIdx = 0
 		chargeLevel = 2
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Opening Flourish Press (E)",
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Opening Flourish (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -87,13 +84,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		} else {
 			count = 3
 		}
-		ai.Abil = "Opening Flourish Level 1 (E)"
+		ai.Abil = "Opening Flourish (Level 1)"
 		ai.HitlagHaltFrames = 0.09 * 60
 		radius = 6
 	case 2:
 		count = 3
 		ai.Durability = 100
-		ai.Abil = "Opening Flourish Level 2 (E)"
+		ai.Abil = "Opening Flourish (Level 2)"
 		ai.HitlagHaltFrames = 0.12 * 60
 		radius = 8
 	}
@@ -108,10 +105,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
-		ActorIndex: c.Index,
-		Target:     c.Index,
+		ActorIndex: c.Index(),
+		Target:     c.Index(),
 		Src:        c.Core.F,
-		Name:       "Yun Jin Skill",
+		Name:       "Opening Flourish (Shield)",
 		ShieldType: shield.YunjinSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Geo,
@@ -133,9 +130,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) makeParticleCB(count float64) info.AttackCBFunc {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

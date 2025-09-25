@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/reactable"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func TestBurningTicks(t *testing.T) {
@@ -21,8 +21,8 @@ func TestBurningTicks(t *testing.T) {
 	}
 	// expecting 8 ticks: https://www.youtube.com/watch?v=PdZ6Qxo7pSY
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 		}
@@ -30,24 +30,24 @@ func TestBurningTicks(t *testing.T) {
 	}, "burning-ticks")
 
 	// yanfei auto at 80
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 70)
 	// tighnari skill at 200
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 200)
 	// lisa 250
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -60,21 +60,21 @@ func TestBurningTicks(t *testing.T) {
 	}
 	// burning got queued at f = 200 but first tick actually happens at beginning of
 	// 216; so we advanced 1 extra here??
-	//TODO: does this need to be adjusted somehow? i think this has to do with the fact
+	// TODO: does this need to be adjusted somehow? i think this has to do with the fact
 	// that the task got added AFTER the run at f 200 so that's why it doesn't get
 	// executed until 201, then delay 15 so we end up at 216 first tick instead of 215
 	advanceCoreFrame(c)
 
 	// log.Printf("count should be 0 right now, got %v", count)
-	for i := 0; i < 8; i++ {
-		for j := 0; j < 15; j++ {
+	for range 8 {
+		for range 15 {
 			advanceCoreFrame(c)
 		}
 		// log.Printf("count should be %v right now, got %v", i+1, count)
 	}
 
 	// extra 200 frames to make sure it doesn't go past 8
-	for i := 0; i < 200; i++ {
+	for range 200 {
 		advanceCoreFrame(c)
 	}
 
@@ -90,11 +90,11 @@ func TestBurningQuickenFuel(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	//https://www.youtube.com/watch?v=En3Ki_vVgR0
+	// https://www.youtube.com/watch?v=En3Ki_vVgR0
 	count := 0
 	countByActor := []int{0, 0}
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 			countByActor[ae.Info.ActorIndex]++
@@ -102,39 +102,39 @@ func TestBurningQuickenFuel(t *testing.T) {
 		return false
 	}, "burning-ticks")
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 290)
 	// beidou e should apply hitlag here
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 327)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 			ActorIndex: 0,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 396)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 			ActorIndex: 1,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 462)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 100,
 		},
@@ -142,8 +142,8 @@ func TestBurningQuickenFuel(t *testing.T) {
 	}, 536)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -186,7 +186,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 	// dendro or quicken last frame 796
 	for ; i < 2000; i++ {
 		advanceCoreFrame(c)
-		if trg[0].Durability[reactable.Quicken] == 0 {
+		if trg[0].GetAuraDurability(info.ReactionModKeyQuicken) == 0 {
 			log.Printf("quicken gone at f: %v\n", c.F)
 			break
 		}
@@ -200,51 +200,51 @@ func TestPyroDendroCoexist(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	//https://www.youtube.com/watch?v=dXzQTNCYfeU&list=PL10DrkffqpyuwG8i0JOq-TgcqPES6bsja&index=16
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	// https://www.youtube.com/watch?v=dXzQTNCYfeU&list=PL10DrkffqpyuwG8i0JOq-TgcqPES6bsja&index=16
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 121)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 133)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 195)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 202)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 249)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 327)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
@@ -253,8 +253,8 @@ func TestPyroDendroCoexist(t *testing.T) {
 	// pyro ended 546, dendro ended 689
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -277,29 +277,29 @@ func TestDendroDecayTry1(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 155)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 168)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 230)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
@@ -307,8 +307,8 @@ func TestDendroDecayTry1(t *testing.T) {
 	}, 263)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -334,22 +334,22 @@ func TestDendroDecayTry2(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 80)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 440)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
@@ -357,8 +357,8 @@ func TestDendroDecayTry2(t *testing.T) {
 	}, 453)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}
@@ -384,29 +384,29 @@ func TestQuickenBurningDecay(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 61)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 128)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 188)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
@@ -414,8 +414,8 @@ func TestQuickenBurningDecay(t *testing.T) {
 	}, 206)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	cb := func(evt event.Event) func(args ...any) bool {
+		return func(args ...any) bool {
 			f[evt] = c.F
 			return false
 		}

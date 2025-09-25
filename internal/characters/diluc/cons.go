@@ -3,8 +3,8 @@ package diluc
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -16,7 +16,7 @@ func (c *char) c1() {
 		m[attributes.DmgP] = 0.15
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("diluc-c1", -1),
-			Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
@@ -38,10 +38,10 @@ const (
 func (c *char) c2() {
 	c.c2buff = make([]float64, attributes.EndStatType)
 	// we use OnPlayerHit here because he just has to get hit but triggers even if shielded
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
 		char := args[0].(int)
 		// don't trigger if diluc was not hit
-		if char != c.Index {
+		if char != c.Index() {
 			return false
 		}
 		if c.StatusIsActive(c2ICDKey) {
@@ -73,7 +73,7 @@ const c4BuffKey = "diluc-c4"
 func (c *char) c4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c4BuffKey, 120),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			// should only affect skill dmg
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false

@@ -8,19 +8,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{71, 95, 119}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{71, 95, 119}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(87)
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		AttackTag:        attacks.AttackTagExtra,
 		PoiseDMG:         40,
 		ICDTag:           attacks.ICDTagNormalAttack,
@@ -32,12 +34,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames: 0.01 * 60,
 	}
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		ai.Mult = charge[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.45}, 3.0, 5.0),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player().Pos(), info.Point{Y: 0.45}, 3.0, 5.0),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 		)

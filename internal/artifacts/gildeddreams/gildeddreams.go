@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -33,7 +32,7 @@ func (s *Set) Init() error {
 	atkCount := 0
 
 	for _, this := range s.c.Player.Chars() {
-		if s.char.Index == this.Index {
+		if s.char.Index() == this.Index() {
 			continue
 		}
 		if this.Base.Element != s.char.Base.Element {
@@ -83,9 +82,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		const icdKey = "gd-4pc-icd"
-		add := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
+		add := func(args ...any) bool {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != char.Index() {
 				return false
 			}
 			if char.StatusIsActive(icdKey) {
@@ -100,7 +99,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return s.buff, true
 				},
 			})
-			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index()).
 				Write("em", s.buff[attributes.EM]).
 				Write("atk", s.buff[attributes.ATKP])
 			return false

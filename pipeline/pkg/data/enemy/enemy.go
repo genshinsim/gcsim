@@ -84,7 +84,6 @@ func (a *DataSource) ParseMonsterData(monsterInfo *dm.MonsterExcel) (*model.Mons
 	err = a.parseBaseHP(m, monsterInfo, err)
 	err = a.parseHPDrop(m, monsterInfo, err)
 	err = a.parseResist(m, monsterInfo, err)
-
 	if err != nil {
 		return nil, err
 	}

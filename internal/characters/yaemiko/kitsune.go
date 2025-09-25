@@ -6,15 +6,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 type kitsune struct {
 	src         int
 	deleted     bool
-	kitsuneArea combat.AttackPattern
+	kitsuneArea info.AttackPattern
 }
 
 func (c *char) makeKitsune() {
@@ -80,7 +79,7 @@ func (c *char) popOldestKitsune() {
 	c.SetTag(yaeTotemCount, len(c.kitsunes))
 }
 
-func (c *char) kitsuneBurst(ai combat.AttackInfo, pattern combat.AttackPattern) {
+func (c *char) kitsuneBurst(ai info.AttackInfo, pattern info.AttackPattern) {
 	for i := 0; i < c.sakuraLevelCheck(); i++ {
 		c.Core.QueueAttack(ai, pattern, burstThunderbolt1Hitmark+i*24, burstThunderbolt1Hitmark+i*24)
 		if c.Base.Cons >= 1 {
@@ -89,7 +88,7 @@ func (c *char) kitsuneBurst(ai combat.AttackInfo, pattern combat.AttackPattern) 
 			}, burstThunderbolt1Hitmark+i*24)
 		}
 		c.a1()
-		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index()).
 			Write("src", c.kitsunes[i].src).
 			Write("delay", burstThunderbolt1Hitmark+i*24)
 	}
@@ -110,9 +109,9 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			lvl += 1
 		}
 
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Sesshou Sakura Tick",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagElementalArt,
 			Mult:       skill[lvl][c.TalentLvlSkill()],
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -122,14 +121,14 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			Durability: 25,
 		}
 
-		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index()).
 			Write("sakura level", lvl+1)
 
-		var c4cb combat.AttackCBFunc
+		var c4cb info.AttackCBFunc
 		if c.Base.Cons >= 4 {
 			done := false
-			c4cb = func(a combat.AttackCB) {
-				if a.Target.Type() != targets.TargettableEnemy {
+			c4cb = func(a info.AttackCB) {
+				if a.Target.Type() != info.TargettableEnemy {
 					return
 				}
 				if done {
@@ -145,7 +144,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 
 		// spawn 1 attack
 		// priority: enemy > gadget
-		tick := func(pos geometry.Point) {
+		tick := func(pos info.Point) {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHitOnTarget(pos, nil, 0.5),

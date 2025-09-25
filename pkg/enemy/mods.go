@@ -4,14 +4,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Add.
 func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
-	mod := combat.Status{
+	mod := info.Status{
 		Base: modifier.Base{
 			ModKey: key,
 			Dur:    dur,
@@ -27,13 +27,13 @@ func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
 	modifier.LogAdd("status", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
-func (e *Enemy) AddResistMod(mod combat.ResistMod) {
+func (e *Enemy) AddResistMod(mod info.ResistMod) {
 	mod.SetExpiry(e.Core.F)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
 	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
-func (e *Enemy) AddDefMod(mod combat.DefMod) {
+func (e *Enemy) AddDefMod(mod info.DefMod) {
 	mod.SetExpiry(e.Core.F)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
 	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
@@ -76,17 +76,17 @@ func (e *Enemy) StatusExpiry(key string) int { return e.getModExpiry(key) }
 // Amount.
 
 // TODO: this needs to purge if done?
-func (e *Enemy) resist(ai *combat.AttackInfo, evt glog.Event) float64 {
-	var logDetails []interface{}
+func (e *Enemy) resist(ai *info.AttackInfo, evt glog.Event) float64 {
+	var logDetails []any
 	var sb strings.Builder
 
 	if e.Core.Flags.LogDebug {
-		logDetails = make([]interface{}, 0, 5*len(e.mods))
+		logDetails = make([]any, 0, 5*len(e.mods))
 	}
 
 	r := e.resists[ai.Element]
 	for _, v := range e.mods {
-		m, ok := v.(*combat.ResistMod)
+		m, ok := v.(*info.ResistMod)
 		if !ok {
 			continue
 		}
@@ -114,16 +114,16 @@ func (e *Enemy) resist(ai *combat.AttackInfo, evt glog.Event) float64 {
 }
 
 func (e *Enemy) defAdj(evt glog.Event) float64 {
-	var logDetails []interface{}
+	var logDetails []any
 	var sb strings.Builder
 
 	if e.Core.Flags.LogDebug {
-		logDetails = make([]interface{}, 0, 3*len(e.mods))
+		logDetails = make([]any, 0, 3*len(e.mods))
 	}
 
 	var r float64
 	for _, v := range e.mods {
-		m, ok := v.(*combat.DefMod)
+		m, ok := v.(*info.DefMod)
 		if !ok {
 			continue
 		}

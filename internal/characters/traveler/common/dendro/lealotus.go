@@ -7,17 +7,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/hacks"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
-	"github.com/genshinsim/gcsim/pkg/reactable"
+)
+
+const (
+	burstAbil          = "Lea Lotus Lamp"
+	burstExplosionAbil = "Lea Lotus Lamp (Explosion)"
 )
 
 type LeaLotus struct {
 	*gadget.Gadget
-	*reactable.Reactable
-	burstAtk     *combat.AttackEvent
+	info.Reactable
+	burstAtk     *info.AttackEvent
 	char         *Traveler
 	hitboxRadius float64
 }
@@ -25,15 +29,14 @@ type LeaLotus struct {
 func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	player := c.Core.Combat.Player()
-	c.burstPos = geometry.CalcOffsetPoint(
+	c.burstPos = info.CalcOffsetPoint(
 		player.Pos(),
-		geometry.Point{Y: 1},
+		info.Point{Y: 1},
 		player.Direction(),
 	)
-	s.Gadget = gadget.New(c.Core, c.burstPos, 1, combat.GadgetTypLeaLotus)
-	s.Reactable = &reactable.Reactable{}
-	s.Reactable.Init(s, c.Core)
-	s.Durability[reactable.Dendro] = 10
+	s.Gadget = gadget.New(c.Core, c.burstPos, 1, info.GadgetTypLeaLotus)
+	s.Reactable = hacks.NewReactable(s, c.Core)
+	s.SetAuraDurability(info.ReactionModKeyDendro, 10)
 
 	s.Duration = 12 * 60
 	if c.Base.Cons >= 2 {
@@ -50,10 +53,10 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 		}
 		s.QueueAttack(0)
 		// repeat attack every 90
-		s.Gadget.OnThinkInterval = func() {
+		s.OnThinkInterval = func() {
 			s.QueueAttack(0)
 		}
-		s.Gadget.ThinkInterval = 90
+		s.ThinkInterval = 90
 	}, burstHitmark-leaLotusAppear)
 
 	c.burstTransfig = attributes.NoElement
@@ -63,9 +66,9 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	s.hitboxRadius = 2
 	c.burstOverflowingLotuslight = 0
 
-	procAI := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Lea Lotus Lamp",
+	procAI := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       burstAbil,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -74,7 +77,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],
 	}
-	s.burstAtk = &combat.AttackEvent{
+	s.burstAtk = &info.AttackEvent{
 		Info:     procAI,
 		Snapshot: c.Snapshot(&procAI),
 	}
@@ -82,18 +85,18 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	return s
 }
 
-func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
+func (s *LeaLotus) HandleAttack(atk *info.AttackEvent) float64 {
 	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
 
-	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", atk.Info.Abil), glog.LogCharacterEvent, s.char.Index)
+	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", atk.Info.Abil), glog.LogCharacterEvent, s.char.Index())
 
 	s.PoiseDMGCheck(atk)
 	s.ShatterCheck(atk)
 
 	if atk.Info.Durability > 0 {
-		atk.Info.Durability *= reactions.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+		atk.Info.Durability *= info.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
-			existing := s.Reactable.ActiveAuraString()
+			existing := s.ActiveAuraString()
 			applied := atk.Info.Durability
 			s.React(atk)
 			if s.Core.Flags.LogDebug && atk.Reacted {
@@ -108,7 +111,7 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 					Write("abil", atk.Info.Abil).
 					Write("target", s.Key()).
 					Write("existing", existing).
-					Write("after", s.Reactable.ActiveAuraString())
+					Write("after", s.ActiveAuraString())
 			}
 		}
 	}
@@ -119,7 +122,7 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 	if atk.Info.Element != attributes.Cryo {
 		return 0
 	}
-	if atk.Info.Durability < reactable.ZeroDur {
+	if atk.Info.Durability < info.ZeroDur {
 		return 0
 	}
 	if atk.Reacted {
@@ -131,9 +134,9 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 0
 }
 
-func (s *LeaLotus) attachEle(atk *combat.AttackEvent) {
+func (s *LeaLotus) attachEle(atk *info.AttackEvent) {
 	// check for ICD first
-	existing := s.Reactable.ActiveAuraString()
+	existing := s.ActiveAuraString()
 	applied := atk.Info.Durability
 	s.AttachOrRefill(atk)
 	if s.Core.Flags.LogDebug {
@@ -148,7 +151,7 @@ func (s *LeaLotus) attachEle(atk *combat.AttackEvent) {
 			Write("abil", atk.Info.Abil).
 			Write("target", s.Key()).
 			Write("existing", existing).
-			Write("after", s.Reactable.ActiveAuraString())
+			Write("after", s.ActiveAuraString())
 	}
 }
 
@@ -171,7 +174,7 @@ func (s *LeaLotus) QueueAttack(delay int) {
 	)
 }
 
-func (s *LeaLotus) React(a *combat.AttackEvent) {
+func (s *LeaLotus) React(a *info.AttackEvent) {
 	// only check the ones possible
 	switch a.Info.Element {
 	case attributes.Electro:
@@ -199,7 +202,7 @@ func (s *LeaLotus) React(a *combat.AttackEvent) {
 	}
 }
 
-func (s *LeaLotus) TryQuicken(a *combat.AttackEvent) {
+func (s *LeaLotus) TryQuicken(a *info.AttackEvent) {
 	if !s.Reactable.TryQuicken(a) {
 		return
 	}
@@ -209,7 +212,7 @@ func (s *LeaLotus) TryQuicken(a *combat.AttackEvent) {
 	s.transfig(attributes.Electro)
 }
 
-func (s *LeaLotus) TryBloom(a *combat.AttackEvent) {
+func (s *LeaLotus) TryBloom(a *info.AttackEvent) {
 	if !s.Reactable.TryBloom(a) {
 		return
 	}
@@ -221,11 +224,11 @@ func (s *LeaLotus) TryBloom(a *combat.AttackEvent) {
 	s.transfig(attributes.Hydro)
 }
 
-func (s *LeaLotus) TryBurning(a *combat.AttackEvent) {
+func (s *LeaLotus) TryBurning(a *info.AttackEvent) {
 	if !s.Reactable.TryBurning(a) {
 		return
 	}
-	s.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion"
+	s.burstAtk.Info.Abil = burstExplosionAbil
 	s.burstAtk.Info.Durability = 50
 	s.burstAtk.Info.ICDTag = attacks.ICDTagNone
 	s.burstAtk.Info.Mult = burstExplode[s.char.TalentLvlBurst()]
@@ -242,7 +245,7 @@ func (s *LeaLotus) TryBurning(a *combat.AttackEvent) {
 }
 
 func (s *LeaLotus) transfig(ele attributes.Element) {
-	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index)
+	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index())
 	s.char.burstTransfig = ele
 	if s.char.Base.Cons >= 4 {
 		s.char.c4()
@@ -250,8 +253,8 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	s.Kill()
 }
 
-func (s *LeaLotus) SetDirection(trg geometry.Point) {}
-func (s *LeaLotus) SetDirectionToClosestEnemy()     {}
-func (s *LeaLotus) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (s *LeaLotus) SetDirection(trg info.Point) {}
+func (s *LeaLotus) SetDirectionToClosestEnemy() {}
+func (s *LeaLotus) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }
