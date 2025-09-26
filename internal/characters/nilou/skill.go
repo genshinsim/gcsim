@@ -294,11 +294,14 @@ func (c *char) WhirlingSteps(p map[string]int) action.Info {
 	c.Core.QueueAttack(ai, ap, whirlingStepsHitMarks[s], whirlingStepsHitMarks[s], c.c4cb(), particleCB)
 
 	defer c.AdvanceSkillIndex()
-
+	canQueueAfter := whirlingStepsFrames[s][action.ActionDash]
+	if s == 1 {
+		canQueueAfter = whirlingStepsFrames[s][action.ActionSkill]
+	}
 	return action.Info{
 		Frames:          frames.NewAbilFunc(whirlingStepsFrames[s]),
 		AnimationLength: whirlingStepsFrames[s][action.InvalidAction],
-		CanQueueAfter:   whirlingStepsFrames[s][action.ActionJump], // earliest cancel
+		CanQueueAfter:   canQueueAfter, // earliest cancel
 		State:           action.SkillState,
 	}
 }

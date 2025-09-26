@@ -123,7 +123,7 @@ func (c *char) reathermoonRings() action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(ringsFrames),
 		AnimationLength: ringsFrames[action.InvalidAction],
-		CanQueueAfter:   ringsFrames[action.ActionDash],
+		CanQueueAfter:   ringsFrames[action.ActionAttack],
 		State:           action.SkillState,
 	}
 }

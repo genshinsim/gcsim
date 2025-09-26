@@ -80,7 +80,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),
 		AnimationLength: burstFrames[c.gender][action.InvalidAction],
-		CanQueueAfter:   burstFrames[c.gender][action.ActionJump], // earliest cancel
+		CanQueueAfter:   burstFrames[c.gender][action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }

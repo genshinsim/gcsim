@@ -104,22 +104,21 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.AddStatus(plungeAvailableKey, 26, true)
 	}, burstNSFall)
 
-	frames := frames.NewAbilFunc(burstFramesGrounded)
 	if c.nightsoulState.HasBlessing() {
 		// if we Q while in the air, we need to add the frames of fall down
 		// TODO: set fall down animation to be "idle/skill" instead of burst?
 		return action.Info{
-			Frames:          c.skillNextFrames(frames, 0),
+			Frames:          c.skillNextFrames(frames.NewAbilFunc(burstFramesNS), 0),
 			AnimationLength: burstFramesNS[action.InvalidAction],
-			CanQueueAfter:   burstNSFall, // can't start falling until frame 102
+			CanQueueAfter:   burstNSFall,
 			State:           action.BurstState,
 		}, nil
 	}
 
 	return action.Info{
-		Frames:          frames,
+		Frames:          frames.NewAbilFunc(burstFramesGrounded),
 		AnimationLength: burstFramesGrounded[action.InvalidAction],
-		CanQueueAfter:   burstFramesGrounded[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFramesGrounded[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
