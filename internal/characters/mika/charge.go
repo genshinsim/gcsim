@@ -19,8 +19,8 @@ func init() {
 	chargeFrames[action.ActionAttack] = 63
 	chargeFrames[action.ActionSkill] = 62
 	chargeFrames[action.ActionBurst] = 62
-	chargeFrames[action.ActionDash] = 20
-	chargeFrames[action.ActionJump] = 20
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 61
 }
 
@@ -50,7 +50,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeFrames[action.ActionDash],
+		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
 	}, nil
 }
