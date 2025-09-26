@@ -17,7 +17,15 @@ var (
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(87)
+	// TODO: sheet is missing counts for CA -> x
+	chargeFrames = frames.InitAbilSlice(87) // Walk
+	// chargeFrames[action.ActionAttack] = ??
+	// chargeFrames[action.ActionCharge] = ??
+	// chargeFrames[action.ActionSkill] = ??
+	// chargeFrames[action.ActionBurst] = ??
+	chargeFrames[action.ActionDash] = chargeHitmarks[0]
+	chargeFrames[action.ActionJump] = chargeHitmarks[0]
+	chargeFrames[action.ActionSwap] = chargeHitmarks[0]
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -48,7 +56,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeFrames[action.ActionWalk],
+		CanQueueAfter:   chargeFrames[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}, nil
 }

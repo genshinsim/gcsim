@@ -33,7 +33,7 @@ func init() {
 	skillHoldFrames[action.ActionBurst] = 37              // Hold E -> Q
 	skillHoldFrames[action.ActionDash] = 31               // Hold E -> D
 	skillHoldFrames[action.ActionJump] = 31               // Hold E -> J
-	skillHoldFrames[action.ActionSwap] = skillHoldHitmark // Hold E -> Swap
+	skillHoldFrames[action.ActionSwap] = skillHoldHitmark // Hold E -> Swap (actual: 23)
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -82,7 +82,7 @@ func (c *char) skillHold(travel int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldFrames[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   skillHoldHitmark, // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

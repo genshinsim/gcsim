@@ -86,12 +86,8 @@ func (c *char) skillPress() action.Info {
 }
 
 func (c *char) skillHold(p map[string]int) (action.Info, error) {
-	hold := max(
-		// earliest hold can be let go is roughly 16.5, max is 317
-		// adds the value in hold onto the minimum length of 16, so hold=1 gives 17f and hold=5 gives a 22f delay until hitmark.
-		min(
-
-			p["hold"], 300), 1)
+	hold := max(min(p["hold"], 300), 1)
+	hold -= 1
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -109,16 +105,15 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 25),
 		0, // TODO: snapshot timing
-		hold+3+16,
+		hold+3+30,
 		c.skillMarkTargets,
 	)
-
-	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold-17+30)
+	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold+30)
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return hold - 17 + 30 + skillHoldFrames[next] },
-		AnimationLength: hold - 17 + 30 + skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   hold - 17 + 30 + skillHoldFrames[action.ActionSwap], // earliest cancel
+		Frames:          func(next action.Action) int { return hold + skillHoldFrames[next] },
+		AnimationLength: hold + skillHoldFrames[action.InvalidAction],
+		CanQueueAfter:   hold + skillHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

@@ -22,7 +22,7 @@ const (
 
 func init() {
 	skillFrames = frames.InitAbilSlice(27) // E -> E
-	skillFrames[action.ActionAttack] = 5
+	skillFrames[action.ActionAttack] = 6
 	skillFrames[action.ActionAim] = 17
 	skillFrames[action.ActionBurst] = 6
 	skillFrames[action.ActionDash] = 6
