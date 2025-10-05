@@ -2,7 +2,7 @@ id: 10000114
 key: "skirk"
 rarity: QUALITY_ORANGE
 body: BODY_GIRL
-region: 11
+region: ASSOC_TYPE_OMNI_SCOURGE
 element: Ice
 weapon_class: WEAPON_SWORD_ONE_HAND
 icon_name: "UI_AvatarIcon_SkirkNew"
