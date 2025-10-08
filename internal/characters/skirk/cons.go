@@ -36,9 +36,9 @@ func (c *char) c1() {
 	}
 	ap := combat.NewBoxHitOnTarget(
 		c.Core.Combat.Player(),
-		nil,
+		info.Point{Y: -3},
 		4,
-		4,
+		8,
 	)
 	// TODO: Attack Delay on C1?
 	c.Core.QueueAttack(ai, ap, 3, 3)

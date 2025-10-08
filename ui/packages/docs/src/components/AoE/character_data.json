@@ -8731,102 +8731,102 @@
         "ability": "N1",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -0.1,
+        "offsetY": 0.3,
         "radius": 2
       },
       {
         "ability": "N2",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -0.1,
+        "offsetY": -0.3,
         "radius": 2.2
       },
       {
         "ability": "N3-1",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.5,
+        "offsetY": -1.8,
         "boxX": 2.5,
-        "boxY": 3.2
+        "boxY": 3.5
       },
       {
         "ability": "N3-2",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.5,
+        "offsetY": -1.8,
         "boxX": 2.5,
-        "boxY": 3.2
+        "boxY": 3.5
       },
       {
         "ability": "N4",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.1,
+        "offsetY": -1,
         "boxX": 2.5,
-        "boxY": 2.4
+        "boxY": 6
       },
       {
         "ability": "N5",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -0.1,
+        "offsetY": -0.3,
         "radius": 3.2
       },
       {
         "ability": "E-N1",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 0.9,
+        "offsetY": -0.4,
         "boxX": 7,
-        "boxY": 2.4
+        "boxY": 5
       },
       {
         "ability": "E-N2",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.4,
+        "offsetY": -0.4,
         "boxX": 7,
-        "boxY": 3
+        "boxY": 3.5
       },
       {
         "ability": "E-N3-1",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.7,
+        "offsetY": -0.4,
         "boxX": 6,
-        "boxY": 3.6
+        "boxY": 3.5
       },
       {
         "ability": "E-N3-2",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.7,
+        "offsetY": -0.2,
         "boxX": 6,
-        "boxY": 3.6
+        "boxY": 3.5
       },
       {
         "ability": "E-N4-1",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.7,
+        "offsetY": -0.5,
         "boxX": 5,
-        "boxY": 3.6
+        "boxY": 6
       },
       {
         "ability": "E-N4-2",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.7,
+        "offsetY": -0.5,
         "boxX": 5,
-        "boxY": 3.6
+        "boxY": 6
       },
       {
         "ability": "E-N5",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.7,
+        "offsetY": -0.4,
         "boxX": 11,
-        "boxY": 3.6
+        "boxY": 6
       }
     ],
     "charge": [
@@ -8848,9 +8848,9 @@
         "ability": "Q",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 2.5,
+        "offsetY": -5,
         "boxX": 14,
-        "boxY": 9
+        "boxY": 12
       }
     ],
     "cons": [
@@ -8858,8 +8858,9 @@
         "ability": "Far to Fall (C1)",
         "shape": "Box",
         "center": "Player",
+        "offsetY": -3,
         "boxX": 4,
-        "boxY": 4
+        "boxY": 8
       },
       {
         "ability": "Havoc: Sever (C6)",

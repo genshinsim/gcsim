@@ -20,15 +20,15 @@ var (
 	attackHitmarks        = [][]int{{11 + windup}, {7}, {8, 8 + 14}, {11}, {35}}
 	attackHitlagHaltFrame = [][]float64{{0.02}, {0.03}, {0.03, 0.00}, {0.05}, {0.06}}
 	attackHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.01, 0.00}, {0.01}, {0.01}}
-	attackHitboxes        = [][][]float64{{{2}}, {{2.2}}, {{2.5, 3.2}, {2.5, 3.2}}, {{2.5, 2.4}}, {{3.2}}}
-	attackOffsets         = [][]float64{{-0.1}, {-0.1}, {1.5, 1.5}, {1.1}, {-0.1}}
+	attackHitboxes        = [][][]float64{{{2}}, {{2.2}}, {{2.5, 3.5}, {2.5, 3.5}}, {{2.5, 6}}, {{3.2}}}
+	attackOffsets         = [][]float64{{0.3}, {-0.3}, {-1.8, -1.8}, {-1}, {-0.3}}
 
 	attackSkillFrames          [][]int
 	attackSkillHitmarks        = [][]int{{10 + windup}, {11}, {11, 11 + 12}, {11, 11 + 16}, {25}}
 	attackSkillHitlagHaltFrame = [][]float64{{0.02}, {0.03}, {0.03, 0.00}, {0.03, 0.00}, {0.06}}
 	attackSkillHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.01, 0.00}, {0.01, 0.00}, {0.01}}
-	attackSkillHitboxes        = [][][]float64{{{7, 2.4}}, {{7, 3}}, {{6, 3.6}, {6, 3.6}}, {{5, 3.6}, {5, 3.6}}, {{11, 3.6}}}
-	attackSkillOffsets         = [][]float64{{0.9}, {1.4}, {1.7, 1.7}, {1.7, 1.7}, {1.7}}
+	attackSkillHitboxes        = [][][]float64{{{7, 5}}, {{7, 3.5}}, {{6, 3.5}, {6, 3.5}}, {{5, 6}, {5, 6}}, {{11, 6}}}
+	attackSkillOffsets         = [][]float64{{-0.4}, {-0.4}, {-0.4, -0.2}, {-0.5, -0.5}, {-0.4}}
 )
 
 const normalHitNum = 5

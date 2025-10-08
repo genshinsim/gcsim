@@ -67,9 +67,9 @@ func (c *char) BurstRuin(p map[string]int) (action.Info, error) {
 
 	ap := combat.NewBoxHitOnTarget(
 		c.Core.Combat.Player(),
-		info.Point{Y: 2.5},
+		info.Point{Y: -5},
 		14,
-		9,
+		12,
 	)
 	for _, delay := range burstHitmarks {
 		c.Core.QueueAttack(ai, ap, delay, delay)
