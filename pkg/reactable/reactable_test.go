@@ -74,6 +74,7 @@ func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 func makeAOEAttack(ele attributes.Element, dur info.Durability) *info.AttackEvent {
 	return &info.AttackEvent{
 		Info: info.AttackInfo{
+			Abil:       "Test AoE Attack",
 			Element:    ele,
 			Durability: dur,
 		},
@@ -84,10 +85,12 @@ func makeAOEAttack(ele attributes.Element, dur info.Durability) *info.AttackEven
 func makeSTAttack(ele attributes.Element, dur info.Durability, trg info.TargetKey) *info.AttackEvent {
 	return &info.AttackEvent{
 		Info: info.AttackInfo{
+			Abil:       "Test ST Attack",
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewSingleTargetHit(trg),
+		// add one to account for the player being target 0
+		Pattern: combat.NewSingleTargetHit(trg + 1),
 	}
 }
 
@@ -117,6 +120,7 @@ func (target *testTarget) Attack(atk *info.AttackEvent, evt glog.Event) (float64
 	target.ShatterCheck(atk)
 	if atk.Info.Durability > 0 {
 		// don't care about icd
+
 		target.React(atk)
 	}
 	return 0, false
@@ -140,6 +144,12 @@ func addTargetToCore(c *core.Core) *testTarget {
 func advanceCoreFrame(c *core.Core) {
 	c.F++
 	c.Tick()
+}
+
+func advanceCoreFrameMultiple(c *core.Core, count int) {
+	for range count {
+		advanceCoreFrame(c)
+	}
 }
 
 func TestMain(m *testing.M) {
@@ -196,7 +206,7 @@ func TestTick(t *testing.T) {
 		},
 	})
 
-	if trg.Durability[info.ReactionModKeyElectro] != 0.8*25 {
+	if trg.GetAuraDurability(info.ReactionModKeyElectro) != 0.8*25 {
 		t.Errorf("expecting 20 electro, got %v", trg.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 	if trg.DecayRate[info.ReactionModKeyElectro] != 20.0/(6*25+420) {

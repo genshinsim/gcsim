@@ -61,7 +61,7 @@ func (r *Reactable) tryQuickenBloom(a *info.AttackEvent) {
 	}
 	avail := r.GetAuraDurability(info.ReactionModKeyQuicken)
 	consumed := r.reduce(attributes.Hydro, avail, 2)
-	r.Durability[info.ReactionModKeyQuicken] -= consumed
+	r.reduceMod(info.ReactionModKeyQuicken, consumed)
 
 	r.addBloomGadget(a)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
