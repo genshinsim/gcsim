@@ -75,7 +75,7 @@ func (r *Reactable) ActiveAuraString() []string {
 	for i := range info.ReactionModKeyEnd {
 		v := r.GetAuraDurability(i)
 		if v > info.ZeroDur {
-			result = append(result, info.ReactionModKey(i).String()+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
+			result = append(result, i.String()+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
 		}
 	}
 	return result
