@@ -42,8 +42,8 @@ func TestCrystallizeCryo(t *testing.T) {
 		t.Errorf("expecting player to be shielded")
 	}
 
-	if !durApproxEqual(7.5, trg.Durability[info.ReactionModKeyCryo], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[info.ReactionModKeyCryo])
+	if !durApproxEqual(7.5, trg.GetAuraDurability(info.ReactionModKeyCryo), 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.GetAuraDurability(info.ReactionModKeyCryo))
 	}
 }
 
@@ -83,10 +83,10 @@ func TestCrystallizePyro(t *testing.T) {
 	if trg.core.Player.Shields.Count() == 0 {
 		t.Errorf("expecting player to be shielded")
 	}
-	if !durApproxEqual(7.5, trg.Durability[info.ReactionModKeyPyro], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[info.ReactionModKeyPyro])
+	if !durApproxEqual(7.5, trg.GetAuraDurability(info.ReactionModKeyPyro), 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.GetAuraDurability(info.ReactionModKeyPyro))
 	}
-	if !durApproxEqual(37.5, trg.Durability[info.ReactionModKeyBurning], 0.0001) {
-		t.Errorf("expecting 37.5 burning left, got %v", trg.Durability[info.ReactionModKeyBurning])
+	if !durApproxEqual(37.5, trg.GetAuraDurability(info.ReactionModKeyBurning), 0.0001) {
+		t.Errorf("expecting 37.5 burning left, got %v", trg.GetAuraDurability(info.ReactionModKeyBurning))
 	}
 }

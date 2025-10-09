@@ -19,19 +19,19 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
-		if r.Durability[info.ReactionModKeyCryo] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyCryo) < info.ZeroDur {
 			return false
 		}
-		consumed = r.triggerFreeze(r.Durability[info.ReactionModKeyCryo], a.Info.Durability)
+		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability)
 		r.Durability[info.ReactionModKeyCryo] -= consumed
-		r.Durability[info.ReactionModKeyCryo] = max(r.Durability[info.ReactionModKeyCryo], 0)
+		r.Durability[info.ReactionModKeyCryo] = max(r.GetAuraDurability(info.ReactionModKeyCryo), 0)
 	case attributes.Cryo:
-		if r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
-		consumed := r.triggerFreeze(r.Durability[info.ReactionModKeyHydro], a.Info.Durability)
+		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability)
 		r.Durability[info.ReactionModKeyHydro] -= consumed
-		r.Durability[info.ReactionModKeyHydro] = max(r.Durability[info.ReactionModKeyHydro], 0)
+		r.Durability[info.ReactionModKeyHydro] = max(r.GetAuraDurability(info.ReactionModKeyHydro), 0)
 	default:
 		// should be here
 		return false
@@ -44,7 +44,7 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) PoiseDMGCheck(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyFrozen] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) < info.ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt {
@@ -57,7 +57,7 @@ func (r *Reactable) PoiseDMGCheck(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyFrozen] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) < info.ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
@@ -112,7 +112,7 @@ func (r *Reactable) triggerFreeze(a, b info.Durability) info.Durability {
 }
 
 func (r *Reactable) checkFreeze() {
-	if r.Durability[info.ReactionModKeyFrozen] <= info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) <= info.ZeroDur {
 		r.Durability[info.ReactionModKeyFrozen] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
 		// trigger another attack here, purely for the purpose of breaking bubbles >.>

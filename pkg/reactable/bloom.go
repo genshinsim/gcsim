@@ -19,9 +19,9 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 		// this part is annoying. bloom will happen if any of the dendro like aura is present
 		// so we gotta check for all 3...
 		switch {
-		case r.Durability[info.ReactionModKeyDendro] > info.ZeroDur:
-		case r.Durability[info.ReactionModKeyQuicken] > info.ZeroDur:
-		case r.Durability[info.ReactionModKeyBurningFuel] > info.ZeroDur:
+		case r.GetAuraDurability(info.ReactionModKeyDendro) > info.ZeroDur:
+		case r.GetAuraDurability(info.ReactionModKeyQuicken) > info.ZeroDur:
+		case r.GetAuraDurability(info.ReactionModKeyBurningFuel) > info.ZeroDur:
 		default:
 			return false
 		}
@@ -32,7 +32,7 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 			consumed = f
 		}
 	case attributes.Dendro:
-		if r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, 2)
@@ -51,15 +51,15 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
 // this reaction will check if any hydro exists and if so trigger a bloom reaction
 func (r *Reactable) tryQuickenBloom(a *info.AttackEvent) {
-	if r.Durability[info.ReactionModKeyQuicken] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyQuicken) < info.ZeroDur {
 		// this should be a sanity check; should not happen realistically unless something wipes off
 		// the quicken immediately (same frame) after catalyze
 		return
 	}
-	if r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 		return
 	}
-	avail := r.Durability[info.ReactionModKeyQuicken]
+	avail := r.GetAuraDurability(info.ReactionModKeyQuicken)
 	consumed := r.reduce(attributes.Hydro, avail, 2)
 	r.Durability[info.ReactionModKeyQuicken] -= consumed
 

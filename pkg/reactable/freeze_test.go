@@ -25,8 +25,8 @@ func TestFreezePlusCryoHydro(t *testing.T) {
 		},
 	})
 	// without ticking, we should have 50 frozen here
-	if !durApproxEqual(40, trg.Durability[info.ReactionModKeyFrozen], 0.00001) {
-		t.Errorf("frozen expected to be 40, got %v", trg.Durability[info.ReactionModKeyFrozen])
+	if !durApproxEqual(40, trg.GetAuraDurability(info.ReactionModKeyFrozen), 0.00001) {
+		t.Errorf("frozen expected to be 40, got %v", trg.GetAuraDurability(info.ReactionModKeyFrozen))
 		t.FailNow()
 	}
 
@@ -38,8 +38,8 @@ func TestFreezePlusCryoHydro(t *testing.T) {
 	})
 
 	// should have frozen + cryo here
-	if !durApproxEqual(20, trg.Durability[info.ReactionModKeyCryo], 0.00001) {
-		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[info.ReactionModKeyCryo])
+	if !durApproxEqual(20, trg.GetAuraDurability(info.ReactionModKeyCryo), 0.00001) {
+		t.Errorf("expecting 20 cryo attached, got %v", trg.GetAuraDurability(info.ReactionModKeyCryo))
 	}
 }
 
@@ -61,8 +61,8 @@ func TestFreezePlusAddFreeze(t *testing.T) {
 		},
 	})
 	// without ticking, we should have 50 frozen here
-	if !durApproxEqual(40, trg.Durability[info.ReactionModKeyFrozen], 0.00001) {
-		t.Errorf("frozen expected to be 40, got %v", trg.Durability[info.ReactionModKeyFrozen])
+	if !durApproxEqual(40, trg.GetAuraDurability(info.ReactionModKeyFrozen), 0.00001) {
+		t.Errorf("frozen expected to be 40, got %v", trg.GetAuraDurability(info.ReactionModKeyFrozen))
 		t.FailNow()
 	}
 
@@ -80,7 +80,7 @@ func TestFreezePlusAddFreeze(t *testing.T) {
 	})
 
 	// should have frozen + cryo here
-	if !durApproxEqual(80, trg.Durability[info.ReactionModKeyFrozen], 0.00001) {
-		t.Errorf("expecting 80 frozen attached, got %v", trg.Durability[info.ReactionModKeyFrozen])
+	if !durApproxEqual(80, trg.GetAuraDurability(info.ReactionModKeyFrozen), 0.00001) {
+		t.Errorf("expecting 80 frozen attached, got %v", trg.GetAuraDurability(info.ReactionModKeyFrozen))
 	}
 }
