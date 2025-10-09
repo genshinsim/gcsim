@@ -34,6 +34,11 @@ func TestCrystallizeCryo(t *testing.T) {
 			Durability: 25,
 		},
 	})
+
+	if !durApproxEqual(7.5, trg.GetAuraDurability(info.ReactionModKeyCryo), 0.0001) {
+		t.Errorf("expecting 7.5 cryo left, got %v", trg.GetAuraDurability(info.ReactionModKeyCryo))
+	}
+
 	advanceCoreFrameMultiple(c, 53)
 	count := pickUpCrystallize(c, attributes.Cryo)
 	if count > 0 {
@@ -51,10 +56,6 @@ func TestCrystallizeCryo(t *testing.T) {
 	}
 	if trg.core.Player.Shields.Count() == 0 {
 		t.Errorf("expecting player to be shielded")
-	}
-
-	if !durApproxEqual(7.5-0.03508771929824561*54, trg.GetAuraDurability(info.ReactionModKeyCryo), 0.0001) {
-		t.Errorf("expecting 7.5 cryo left, got %v", trg.GetAuraDurability(info.ReactionModKeyCryo))
 	}
 }
 
@@ -86,6 +87,13 @@ func TestCrystallizePyro(t *testing.T) {
 		},
 	})
 
+	if !durApproxEqual(7.5, trg.GetAuraDurability(info.ReactionModKeyPyro), 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.GetAuraDurability(info.ReactionModKeyPyro))
+	}
+	if !durApproxEqual(37.5, trg.GetAuraDurability(info.ReactionModKeyBurning), 0.0001) {
+		t.Errorf("expecting 37.5 burning left, got %v", trg.GetAuraDurability(info.ReactionModKeyBurning))
+	}
+
 	advanceCoreFrameMultiple(c, 53)
 	count := pickUpCrystallize(c, attributes.Pyro)
 	if count > 0 {
@@ -103,12 +111,6 @@ func TestCrystallizePyro(t *testing.T) {
 	}
 	if trg.core.Player.Shields.Count() == 0 {
 		t.Errorf("expecting player to be shielded")
-	}
-	if !durApproxEqual(7.5-0.03508771929824561*54, trg.GetAuraDurability(info.ReactionModKeyPyro), 0.0001) {
-		t.Errorf("expecting 5.605263157894737 pyro left, got %v", trg.GetAuraDurability(info.ReactionModKeyPyro))
-	}
-	if !durApproxEqual(37.5, trg.GetAuraDurability(info.ReactionModKeyBurning), 0.0001) {
-		t.Errorf("expecting 37.5 burning left, got %v", trg.GetAuraDurability(info.ReactionModKeyBurning))
 	}
 }
 
