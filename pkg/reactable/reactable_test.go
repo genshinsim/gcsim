@@ -151,7 +151,7 @@ func TestReduce(t *testing.T) {
 	r.Durability[info.ReactionModKeyElectro] = 20
 	r.reduce(attributes.Electro, 20, 1)
 	if r.Durability[info.ReactionModKeyElectro] != 0 {
-		t.Errorf("expecting nil electro balance, got %v", r.Durability[info.ReactionModKeyElectro])
+		t.Errorf("expecting nil electro balance, got %v", r.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 
 	// straight up consumption
@@ -197,7 +197,7 @@ func TestTick(t *testing.T) {
 	})
 
 	if trg.Durability[info.ReactionModKeyElectro] != 0.8*25 {
-		t.Errorf("expecting 20 electro, got %v", trg.Durability[info.ReactionModKeyElectro])
+		t.Errorf("expecting 20 electro, got %v", trg.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 	if trg.DecayRate[info.ReactionModKeyElectro] != 20.0/(6*25+420) {
 		t.Errorf("expecting %v decay rate, got %v", 1.0/(6*25+420), trg.DecayRate[info.ReactionModKeyElectro])
@@ -275,8 +275,8 @@ func TestTick(t *testing.T) {
 		trg.Tick()
 	}
 	// make sure > 0
-	if trg.Durability[info.ReactionModKeyElectro] < 0 {
-		t.Errorf("expecting electro not to be 0 yet, got %v", trg.Durability[info.ReactionModKeyElectro])
+	if trg.GetAuraDurability(info.ReactionModKeyElectro) < 0 {
+		t.Errorf("expecting electro not to be 0 yet, got %v", trg.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 	// 1 more tick and should be gone
 	trg.Tick()
@@ -295,13 +295,13 @@ func TestTick(t *testing.T) {
 		// log.Println("------------------------")
 	}
 	// should be > 0 still
-	if trg.Durability[info.ReactionModKeyFrozen] < 0 {
-		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[info.ReactionModKeyFrozen])
+	if trg.GetAuraDurability(info.ReactionModKeyFrozen) < 0 {
+		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.GetAuraDurability(info.ReactionModKeyFrozen))
 	}
 	// 1 more tick and should be gone
 	trg.Tick()
-	if trg.Durability[info.ReactionModKeyFrozen] > 0 {
-		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[info.ReactionModKeyFrozen])
+	if trg.GetAuraDurability(info.ReactionModKeyFrozen) > 0 {
+		t.Errorf("expecting frozen to be gone, got %v", trg.GetAuraDurability(info.ReactionModKeyFrozen))
 	}
 	// 105 more frames to full recover
 	for range 104 {
@@ -312,12 +312,12 @@ func TestTick(t *testing.T) {
 	}
 	// decay should be > 0 still
 	if trg.DecayRate[info.ReactionModKeyFrozen] < frzDecayCap {
-		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[info.ReactionModKeyFrozen])
+		t.Errorf("expecting frozen decay to > cap, got %v", trg.GetAuraDurability(info.ReactionModKeyFrozen))
 	}
 	// 1 more tick to reset decay
 	trg.Tick()
 	if trg.DecayRate[info.ReactionModKeyFrozen] > frzDecayCap {
-		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[info.ReactionModKeyFrozen])
+		t.Errorf("expecting frozen decay to reset, got %v", trg.GetAuraDurability(info.ReactionModKeyFrozen))
 	}
 }
 

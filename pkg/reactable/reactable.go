@@ -65,9 +65,11 @@ func (r *Reactable) Init(self info.Target, c *core.Core) *Reactable {
 
 func (r *Reactable) ActiveAuraString() []string {
 	var result []string
-	for i, v := range r.Durability {
+	for i := range info.ReactionModKeyEnd {
+		v := r.GetAuraDurability(i)
 		if v > info.ZeroDur {
 			result = append(result, info.ReactionModKey(i).String()+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
+			break
 		}
 	}
 	return result
@@ -75,8 +77,8 @@ func (r *Reactable) ActiveAuraString() []string {
 
 func (r *Reactable) AuraCount() int {
 	count := 0
-	for _, v := range r.Durability {
-		if v > info.ZeroDur {
+	for i := range info.ReactionModKeyEnd {
+		if r.GetAuraDurability(i) > info.ZeroDur {
 			count++
 		}
 	}
@@ -170,7 +172,7 @@ func (r *Reactable) GetAuraDurability(mod info.ReactionModKey) info.Durability {
 func (r *Reactable) GetDurability() []info.Durability {
 	result := make([]info.Durability, info.ReactionModKeyEnd)
 	for i := range info.ReactionModKeyEnd {
-		result[i] = r.Durability[i]
+		result[i] = r.GetAuraDurability(i)
 	}
 	return result
 }
@@ -203,8 +205,8 @@ func (r *Reactable) attachOrRefillNormalEle(mod info.ReactionModKey, dur info.Du
 }
 
 func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Durability) {
-	if r.Durability[mod] > info.ZeroDur {
-		add := max(amt-r.Durability[mod], 0)
+	if r.GetAuraDurability(mod) > info.ZeroDur {
+		add := max(amt-r.GetAuraDurability(mod), 0)
 		if add > 0 {
 			r.addDurability(mod, add)
 		}
@@ -221,6 +223,11 @@ func (r *Reactable) attachOverlapRefreshDuration(mod info.ReactionModKey, amt, l
 		return
 	}
 	r.Durability[mod] = amt
+
+	// only update decay rate is amt is greater or equal to the current durability
+	if amt < r.GetAuraDurability(mod) {
+		return
+	}
 	r.DecayRate[mod] = amt / length
 }
 
@@ -238,12 +245,12 @@ func (r *Reactable) addDurability(mod info.ReactionModKey, amt info.Durability) 
 func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 	for _, v := range e {
 		for i := range info.ReactionModKeyEnd {
-			if i.Element() == v && r.Durability[i] > info.ZeroDur {
+			if i.Element() == v && r.GetAuraDurability(i) > info.ZeroDur {
 				return true
 			}
 		}
 		// TODO: not sure if this is best way to go about it? perhaps supplying frozen element is better?
-		if v == attributes.Cryo && r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
+		if v == attributes.Cryo && r.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
 			return true
 		}
 	}
@@ -251,7 +258,7 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 }
 
 func (r *Reactable) IsBurning() bool {
-	if r.Durability[info.ReactionModKeyBurningFuel] > info.ZeroDur && r.Durability[info.ReactionModKeyBurning] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyBurningFuel) > info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyBurning) > info.ZeroDur {
 		return true
 	}
 	return false
@@ -268,19 +275,14 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 		if i.Element() != e {
 			continue
 		}
-		if r.Durability[i] < info.ZeroDur {
+		if r.GetAuraDurability(i) < info.ZeroDur {
 			// also skip if durability already 0
 			// this allows us to safely call reduce even if an element doesn't exist
 			continue
 		}
 		// reduce by lesser of remaining and m
 
-		red := m
-
-		if red > r.Durability[i] {
-			red = r.Durability[i]
-			// reset decay rate to 0
-		}
+		red := min(m, r.GetAuraDurability(i))
 
 		r.Durability[i] -= red
 
@@ -293,7 +295,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 }
 
 func (r *Reactable) deplete(m info.ReactionModKey) {
-	if r.Durability[m] <= info.ZeroDur {
+	if r.GetAuraDurability(m) <= info.ZeroDur {
 		r.Durability[m] = 0
 		r.DecayRate[m] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
@@ -315,14 +317,15 @@ func (r *Reactable) Tick() {
 		if r.DecayRate[i] == 0 {
 			continue
 		}
-		if r.Durability[i] > info.ZeroDur {
+		if r.GetAuraDurability(i) > info.ZeroDur {
 			r.Durability[i] -= r.DecayRate[i]
 			r.deplete(i)
 		}
 	}
 
 	// check burning first since that affects dendro/quicken decay
-	if r.burningTickSrc > -1 && r.Durability[info.ReactionModKeyBurningFuel] < info.ZeroDur {
+
+	if r.burningTickSrc > -1 && r.GetAuraDurability(info.ReactionModKeyBurningFuel) < info.ZeroDur {
 		// reset src when burning fuel is gone
 		r.burningTickSrc = -1
 		// remove burning
@@ -337,11 +340,11 @@ func (r *Reactable) Tick() {
 	// if burning fuel is present, dendro and quicken uses burning fuel decay rate
 	// otherwise it uses it's own
 	for i := info.ReactionModKeyDendro; i <= info.ReactionModKeyQuicken; i++ {
-		if r.Durability[i] < info.ZeroDur {
+		if r.GetAuraDurability(i) < info.ZeroDur {
 			continue
 		}
 		rate := r.DecayRate[i]
-		if r.Durability[info.ReactionModKeyBurningFuel] > info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyBurningFuel) > info.ZeroDur {
 			rate = r.DecayRate[info.ReactionModKeyBurningFuel]
 			if i == info.ReactionModKeyDendro {
 				rate = max(rate, r.DecayRate[i]*2)
@@ -353,7 +356,7 @@ func (r *Reactable) Tick() {
 
 	// for freeze, durability can be calculated as:
 	// d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
-	if r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
 		// ramp up decay rate first
 		r.DecayRate[info.ReactionModKeyFrozen] += frzDelta
 		r.Durability[info.ReactionModKeyFrozen] -= r.DecayRate[info.ReactionModKeyFrozen] / info.Durability(1.0-r.FreezeResist)
@@ -370,7 +373,7 @@ func (r *Reactable) Tick() {
 
 	// for ec we need to reset src if ec is gone
 	if r.ecTickSrc > -1 {
-		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur || r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur || r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			r.ecTickSrc = -1
 		}
 	}

@@ -13,20 +13,20 @@ func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
 		return false
 	}
 
-	dendroDur := r.Durability[info.ReactionModKeyDendro]
+	dendroDur := r.GetAuraDurability(info.ReactionModKeyDendro)
 
 	// adding pyro or dendro just adds to durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		// if there's no existing pyro/burning or dendro/quicken then do nothing
-		if r.Durability[info.ReactionModKeyDendro] < info.ZeroDur && r.Durability[info.ReactionModKeyQuicken] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyDendro) < info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyQuicken) < info.ZeroDur {
 			return false
 		}
 		// add to pyro durability
 		// r.attachOrRefillNormalEle(ModifierPyro, a.Info.Durability)
 	case attributes.Dendro:
 		// if there's no existing pyro/burning or dendro/quicken then do nothing
-		if r.Durability[info.ReactionModKeyPyro] < info.ZeroDur && r.Durability[info.ReactionModKeyBurning] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyPyro) < info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyBurning) < info.ZeroDur {
 			return false
 		}
 		dendroDur = max(dendroDur, a.Info.Durability*0.8)
@@ -37,8 +37,8 @@ func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
 	}
 	// a.Reacted = true
 
-	if r.Durability[info.ReactionModKeyBurningFuel] < info.ZeroDur {
-		r.attachBurningFuel(max(dendroDur, r.Durability[info.ReactionModKeyQuicken]), 1)
+	if r.GetAuraDurability(info.ReactionModKeyBurningFuel) < info.ZeroDur {
+		r.attachBurningFuel(max(dendroDur, r.GetAuraDurability(info.ReactionModKeyQuicken)), 1)
 		r.attachBurning()
 
 		r.core.Events.Emit(event.OnBurning, r.self, a)
@@ -101,7 +101,7 @@ func (r *Reactable) nextBurningTick(src, counter int, t Enemy) func() {
 		}
 		// burning SHOULD be active still, since if not we would have
 		// called cleanup and set source to -1
-		if r.Durability[info.ReactionModKeyBurningFuel] < info.ZeroDur || r.Durability[info.ReactionModKeyBurning] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyBurningFuel) < info.ZeroDur || r.GetAuraDurability(info.ReactionModKeyBurning) < info.ZeroDur {
 			return
 		}
 		// so burning is active, which means both auras must still have value > 0, so we can do dmg
@@ -135,7 +135,7 @@ func (r *Reactable) nextBurningTick(src, counter int, t Enemy) func() {
 
 // burningCheck purges modifiers if burning no longer active
 func (r *Reactable) burningCheck() {
-	if r.Durability[info.ReactionModKeyBurning] < info.ZeroDur && r.Durability[info.ReactionModKeyBurningFuel] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyBurning) < info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyBurningFuel) > info.ZeroDur {
 		// no more burning ticks
 		r.burningTickSrc = -1
 		// remove burning fuel

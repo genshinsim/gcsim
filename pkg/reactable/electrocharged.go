@@ -17,7 +17,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 	}
 	// if there's still frozen left don't try to ec
 	// game actively rejects ec reaction if frozen is present
-	if r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
 		return false
 	}
 
@@ -25,7 +25,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if there's no existing hydro or electro then do nothing
-		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur {
 			return false
 		}
 		// add to hydro durability (can't add if the atk already reacted)
@@ -35,7 +35,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 		}
 	case attributes.Electro:
 		// if there's no existing hydro or electro then do nothing
-		if r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
 		// add to electro durability (can't add if the atk already reacted)
@@ -100,7 +100,8 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 				return false
 			}
 			// ignore if we no longer have both electro and hydro
-			if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur || r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+			if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur ||
+				r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 				return true
 			}
 
@@ -119,24 +120,24 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 
 func (r *Reactable) waneEC() {
 	r.Durability[info.ReactionModKeyElectro] -= 10
-	r.Durability[info.ReactionModKeyElectro] = max(0, r.Durability[info.ReactionModKeyElectro])
+	r.Durability[info.ReactionModKeyElectro] = max(0, r.GetAuraDurability(info.ReactionModKeyElectro))
 	r.Durability[info.ReactionModKeyHydro] -= 10
-	r.Durability[info.ReactionModKeyHydro] = max(0, r.Durability[info.ReactionModKeyHydro])
+	r.Durability[info.ReactionModKeyHydro] = max(0, r.GetAuraDurability(info.ReactionModKeyHydro))
 	r.core.Log.NewEvent("ec wane",
 		glog.LogElementEvent,
 		-1,
 	).
 		Write("aura", "ec").
 		Write("target", r.self.Key()).
-		Write("hydro", r.Durability[info.ReactionModKeyHydro]).
-		Write("electro", r.Durability[info.ReactionModKeyElectro])
+		Write("hydro", r.GetAuraDurability(info.ReactionModKeyHydro)).
+		Write("electro", r.GetAuraDurability(info.ReactionModKeyElectro))
 
 	// ec is gone
 	r.checkEC()
 }
 
 func (r *Reactable) checkEC() {
-	if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur || r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur || r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 		r.ecTickSrc = -1
 		r.core.Events.Unsubscribe(event.OnEnemyDamage, fmt.Sprintf("ec-%v", r.self.Key()))
 		r.core.Log.NewEvent("ec expired",
@@ -145,8 +146,8 @@ func (r *Reactable) checkEC() {
 		).
 			Write("aura", "ec").
 			Write("target", r.self.Key()).
-			Write("hydro", r.Durability[info.ReactionModKeyHydro]).
-			Write("electro", r.Durability[info.ReactionModKeyElectro])
+			Write("hydro", r.GetAuraDurability(info.ReactionModKeyHydro)).
+			Write("electro", r.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 }
 
@@ -158,7 +159,7 @@ func (r *Reactable) nextTick(src int) func() {
 		}
 		// ec SHOULD be active still, since if not we would have
 		// called cleanup and set source to -1
-		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur || r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur || r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return
 		}
 
