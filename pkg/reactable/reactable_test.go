@@ -161,22 +161,22 @@ func TestReduce(t *testing.T) {
 	// for i := range r.Durability {
 	// 	r.Durability[i] = make([]info.Durability, 1)
 	// }
-	r.SetAuraDurability(info.ReactionModKeyElectro, 20, 0)
+	r.SetAuraDurability(info.ReactionModKeyElectro, 20, 2)
 	r.reduce(attributes.Electro, 20, 1)
 	if r.GetAuraDurability(info.ReactionModKeyElectro) != 0 {
 		t.Errorf("expecting nil electro balance, got %v", r.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 
 	// straight up consumption
-	r.SetAuraDurability(info.ReactionModKeyPyro, 20, 0)
-	r.SetAuraDurability(info.ReactionModKeyBurning, 50, 0)
+	r.SetAuraDurability(info.ReactionModKeyPyro, 20, 1)
+	r.SetAuraDurability(info.ReactionModKeyBurning, 50, 3)
 	consumed := r.reduce(attributes.Pyro, 30, 1)
 	if consumed != 30 {
 		t.Errorf("expecting consumed to be 30, got %v", consumed)
 	}
 
 	// 2x multiplier, i.e. 1 incoming reduces 2
-	r.SetAuraDurability(info.ReactionModKeyPyro, 50, 0)
+	r.SetAuraDurability(info.ReactionModKeyPyro, 50, 2)
 	consumed = r.reduce(attributes.Pyro, 20, 2)
 	if consumed != 20 {
 		t.Errorf("expecting consumed to be 20, got %v", consumed)

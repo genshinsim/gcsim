@@ -70,7 +70,7 @@ func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnQuicken, r.self, a)
 
 	// attach quicken aura; special amount
-	r.attachQuicken(consumed, 0)
+	r.attachQuicken(consumed, a.Info.ActorIndex)
 
 	if r.GetAuraDurability(info.ReactionModKeyHydro) >= info.ZeroDur {
 		r.core.Tasks.Add(func() {
