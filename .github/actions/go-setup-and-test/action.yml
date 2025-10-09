@@ -9,6 +9,6 @@ runs:
     - name: Run Tests
       working-directory: ./
       shell: bash
-      run: "go test ./internal/... ./pkg/gcs/..."
+      run: "go test ./internal/... ./pkg/gcs/... ./pkg/reactable/..."
       # should run below, need to fix existing tests
       # run: "go test ./backend/... ./internal/... ./pkg/..."
