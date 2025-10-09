@@ -22,14 +22,14 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 		if r.GetAuraDurability(info.ReactionModKeyCryo) < info.ZeroDur {
 			return false
 		}
-		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability, 0)
+		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability, a.Info.ActorIndex)
 		r.reduceMod(info.ReactionModKeyCryo, consumed)
 
 	case attributes.Cryo:
 		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
-		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability, 0)
+		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability, a.Info.ActorIndex)
 		r.reduceMod(info.ReactionModKeyHydro, consumed)
 	default:
 		// should be here

@@ -38,8 +38,8 @@ func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
 	// a.Reacted = true
 
 	if r.GetAuraDurability(info.ReactionModKeyBurningFuel) < info.ZeroDur {
-		r.attachBurningFuel(max(dendroDur, r.GetAuraDurability(info.ReactionModKeyQuicken)), 1, 0)
-		r.attachBurning(0)
+		r.attachBurningFuel(max(dendroDur, r.GetAuraDurability(info.ReactionModKeyQuicken)), 1, a.Info.ActorIndex)
+		r.attachBurning(a.Info.ActorIndex)
 
 		r.core.Events.Emit(event.OnBurning, r.self, a)
 		r.calcBurningDmg(a)
@@ -55,7 +55,7 @@ func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
 	}
 	// overwrite burning fuel and recalc burning dmg
 	if a.Info.Element == attributes.Dendro {
-		r.attachBurningFuel(a.Info.Durability, 0.8, 0)
+		r.attachBurningFuel(a.Info.Durability, 0.8, a.Info.ActorIndex)
 	}
 	r.calcBurningDmg(a)
 
@@ -64,6 +64,7 @@ func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
 
 func (r *Reactable) attachBurningFuel(dur, mult info.Durability, src int) {
 	// burning fuel always overwrites
+	r.removeMod(info.ReactionModKeyBurningFuel)
 	r.SetAuraDurability(info.ReactionModKeyBurningFuel, mult*dur, src)
 	decayRate := mult * dur / (6*dur + 420)
 	if decayRate < 10.0/60.0 {
