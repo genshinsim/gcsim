@@ -259,13 +259,13 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur info.Durability, 
 	if active > info.ZeroDur {
 		// make sure we're not adding more than incoming
 		if active < dur {
-			p.SetAuraDurability(reactionKey, dur)
+			p.SetAuraDurability(reactionKey, dur, p.Core.Player.Active())
 		}
 		return
 	}
 	// otherwise calculate decay based on specified f (in frames)
 	decay := dur / info.Durability(f)
-	p.SetAuraDurability(reactionKey, dur)
+	p.SetAuraDurability(reactionKey, dur, p.Core.Player.Active())
 	p.SetAuraDecayRate(reactionKey, decay)
 }
 

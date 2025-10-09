@@ -158,36 +158,39 @@ func TestMain(m *testing.M) {
 
 func TestReduce(t *testing.T) {
 	r := &Reactable{}
-	r.SetAuraDurability(info.ReactionModKeyElectro, 20)
+	// for i := range r.Durability {
+	// 	r.Durability[i] = make([]info.Durability, 1)
+	// }
+	r.SetAuraDurability(info.ReactionModKeyElectro, 20, 0)
 	r.reduce(attributes.Electro, 20, 1)
-	if r.Durability[info.ReactionModKeyElectro] != 0 {
+	if r.GetAuraDurability(info.ReactionModKeyElectro) != 0 {
 		t.Errorf("expecting nil electro balance, got %v", r.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 
 	// straight up consumption
-	r.SetAuraDurability(info.ReactionModKeyPyro, 20)
-	r.SetAuraDurability(info.ReactionModKeyBurning, 50)
+	r.SetAuraDurability(info.ReactionModKeyPyro, 20, 0)
+	r.SetAuraDurability(info.ReactionModKeyBurning, 50, 0)
 	consumed := r.reduce(attributes.Pyro, 30, 1)
 	if consumed != 30 {
 		t.Errorf("expecting consumed to be 30, got %v", consumed)
 	}
 
 	// 2x multiplier, i.e. 1 incoming reduces 2
-	r.SetAuraDurability(info.ReactionModKeyPyro, 50)
+	r.SetAuraDurability(info.ReactionModKeyPyro, 50, 0)
 	consumed = r.reduce(attributes.Pyro, 20, 2)
 	if consumed != 20 {
 		t.Errorf("expecting consumed to be 20, got %v", consumed)
 	}
-	if r.Durability[info.ReactionModKeyPyro] != 10 {
+	if r.GetAuraDurability(info.ReactionModKeyPyro) != 10 {
 		t.Errorf("expecting 10 remaining ModifierPyro, got %v", 10)
 	}
 
-	r.SetAuraDurability(info.ReactionModKeyPyro, 50)
+	r.SetAuraDurability(info.ReactionModKeyPyro, 50, 0)
 	consumed = r.reduce(attributes.Pyro, 50, 0.5)
 	if consumed != 50 {
 		t.Errorf("expecting consumed to be 50, got %v", consumed)
 	}
-	if r.Durability[info.ReactionModKeyPyro] != 25 {
+	if r.GetAuraDurability(info.ReactionModKeyPyro) != 25 {
 		t.Errorf("expecting 25 remaining ModifierPyro, got %v", 25)
 	}
 }
@@ -296,7 +299,7 @@ func TestTick(t *testing.T) {
 
 	// test frozen
 	// 50 frozen should last just over 208 frames (i.e. 0 by 209)
-	trg.SetAuraDurability(info.ReactionModKeyFrozen, 50)
+	trg.SetAuraDurability(info.ReactionModKeyFrozen, 50, 0)
 	for range 208 {
 		trg.Tick()
 		// log.Println(trg.Durability)
@@ -332,7 +335,7 @@ func TestTick(t *testing.T) {
 
 func (target *testTarget) allNil(t *testing.T) bool {
 	ok := true
-	for i, v := range target.Durability {
+	for i, v := range target.GetDurability() {
 		ele := info.ReactionModKey(i).Element()
 		if !durApproxEqual(0, v, 0.00001) {
 			t.Errorf("ele %v expected 0 durability got %v", ele, v)

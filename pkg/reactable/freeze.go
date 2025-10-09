@@ -22,14 +22,14 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 		if r.GetAuraDurability(info.ReactionModKeyCryo) < info.ZeroDur {
 			return false
 		}
-		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability)
+		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability, 0)
 		r.reduceMod(info.ReactionModKeyCryo, consumed)
 
 	case attributes.Cryo:
 		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
-		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability)
+		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability, 0)
 		r.reduceMod(info.ReactionModKeyHydro, consumed)
 	default:
 		// should be here
@@ -100,13 +100,13 @@ func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
 }
 
 // add to freeze durability and return amount of durability consumed
-func (r *Reactable) triggerFreeze(a, b info.Durability) info.Durability {
+func (r *Reactable) triggerFreeze(a, b info.Durability, src int) info.Durability {
 	d := min(a, b)
 	if r.FreezeResist >= 1 {
 		return d
 	}
 	// trigger freeze should only addDurability and should not touch decay rate
-	r.attachOverlap(info.ReactionModKeyFrozen, 2*d, info.ZeroDur)
+	r.attachOverlap(info.ReactionModKeyFrozen, 2*d, info.ZeroDur, src)
 	return d
 }
 

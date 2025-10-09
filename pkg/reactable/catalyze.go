@@ -70,7 +70,7 @@ func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnQuicken, r.self, a)
 
 	// attach quicken aura; special amount
-	r.attachQuicken(consumed)
+	r.attachQuicken(consumed, 0)
 
 	if r.GetAuraDurability(info.ReactionModKeyHydro) >= info.ZeroDur {
 		r.core.Tasks.Add(func() {
@@ -81,6 +81,6 @@ func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) attachQuicken(dur info.Durability) {
-	r.attachOverlapRefreshDuration(info.ReactionModKeyQuicken, dur, 12*dur+360)
+func (r *Reactable) attachQuicken(dur info.Durability, src int) {
+	r.attachOverlapRefreshDuration(info.ReactionModKeyQuicken, dur, 12*dur+360, src)
 }

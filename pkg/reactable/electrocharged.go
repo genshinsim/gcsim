@@ -31,7 +31,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 		// add to hydro durability (can't add if the atk already reacted)
 		// TODO: this shouldn't happen here
 		if !a.Reacted {
-			r.attachOrRefillNormalEle(info.ReactionModKeyHydro, a.Info.Durability)
+			r.attachOrRefillNormalEle(info.ReactionModKeyHydro, a.Info.Durability, 0)
 		}
 	case attributes.Electro:
 		// if there's no existing hydro or electro then do nothing
@@ -40,7 +40,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 		}
 		// add to electro durability (can't add if the atk already reacted)
 		if !a.Reacted {
-			r.attachOrRefillNormalEle(info.ReactionModKeyElectro, a.Info.Durability)
+			r.attachOrRefillNormalEle(info.ReactionModKeyElectro, a.Info.Durability, 0)
 		}
 	default:
 		return false
