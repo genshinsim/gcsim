@@ -1,6 +1,7 @@
 package reactable
 
 import (
+	"slices"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -10,8 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const maxChars = 4
+
 type Reactable struct {
-	Durability [info.ReactionModKeyEnd]info.Durability
+	Durability [info.ReactionModKeyEnd][4]info.Durability
 	DecayRate  [info.ReactionModKeyEnd]info.Durability
 	// Source     []int //source frame of the aura
 	self info.Target
@@ -49,6 +52,10 @@ const (
 func (r *Reactable) Init(self info.Target, c *core.Core) *Reactable {
 	r.self = self
 	r.core = c
+	// TODO: change this to be initialized after the characters are added
+	// for i := range r.Durability {
+	// 	r.Durability[i] = make([]info.Durability, len(c.Player.Chars()))
+	// }
 	r.DecayRate[info.ReactionModKeyFrozen] = frzDecayCap
 	r.ecTickSrc = -1
 	r.burningTickSrc = -1
@@ -161,12 +168,12 @@ func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
 	default:
 		return false
 	}
-	r.attachOrRefillNormalEle(mod, a.Info.Durability)
+	r.attachOrRefillNormalEle(mod, a.Info.Durability, 0)
 	return true
 }
 
 func (r *Reactable) GetAuraDurability(mod info.ReactionModKey) info.Durability {
-	return r.Durability[mod]
+	return slices.Max(r.Durability[mod][:])
 }
 
 func (r *Reactable) GetDurability() []info.Durability {
@@ -181,8 +188,8 @@ func (r *Reactable) GetAuraDecayRate(mod info.ReactionModKey) info.Durability {
 	return r.DecayRate[mod]
 }
 
-func (r *Reactable) SetAuraDurability(mod info.ReactionModKey, dur info.Durability) {
-	r.Durability[mod] = dur
+func (r *Reactable) SetAuraDurability(mod info.ReactionModKey, dur info.Durability, src int) {
+	r.Durability[mod][src] = dur
 }
 
 func (r *Reactable) SetAuraDecayRate(mod info.ReactionModKey, decay info.Durability) {
@@ -195,34 +202,34 @@ func (r *Reactable) SetFreezeResist(fr float64) {
 
 // attachOrRefillNormalEle is used for pyro, electro, hydro, cryo, and dendro which don't have special attachment
 // rules
-func (r *Reactable) attachOrRefillNormalEle(mod info.ReactionModKey, dur info.Durability) {
+func (r *Reactable) attachOrRefillNormalEle(mod info.ReactionModKey, dur info.Durability, src int) {
 	amt := 0.8 * dur
 	if mod == info.ReactionModKeyPyro {
-		r.attachOverlapRefreshDuration(info.ReactionModKeyPyro, amt, 6*dur+420)
+		r.attachOverlapRefreshDuration(info.ReactionModKeyPyro, amt, 6*dur+420, src)
 	} else {
-		r.attachOverlap(mod, amt, 6*dur+420)
+		r.attachOverlap(mod, amt, 6*dur+420, src)
 	}
 }
 
-func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Durability) {
+func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Durability, src int) {
 	if r.GetAuraDurability(mod) > info.ZeroDur {
 		add := max(amt-r.GetAuraDurability(mod), 0)
 		if add > 0 {
-			r.addDurability(mod, add)
+			r.addDurability(mod, add, src)
 		}
 	} else {
-		r.SetAuraDurability(mod, amt)
+		r.SetAuraDurability(mod, amt, src)
 		if length > info.ZeroDur {
 			r.DecayRate[mod] = amt / length
 		}
 	}
 }
 
-func (r *Reactable) attachOverlapRefreshDuration(mod info.ReactionModKey, amt, length info.Durability) {
+func (r *Reactable) attachOverlapRefreshDuration(mod info.ReactionModKey, amt, length info.Durability, src int) {
 	if amt < r.GetAuraDurability(mod) {
 		return
 	}
-	r.SetAuraDurability(mod, amt)
+	r.SetAuraDurability(mod, amt, src)
 
 	// only update decay rate is amt is greater or equal to the current durability
 	if amt < r.GetAuraDurability(mod) {
@@ -231,13 +238,13 @@ func (r *Reactable) attachOverlapRefreshDuration(mod info.ReactionModKey, amt, l
 	r.DecayRate[mod] = amt / length
 }
 
-func (r *Reactable) attachBurning() {
-	r.Durability[info.ReactionModKeyBurning] = 50
+func (r *Reactable) attachBurning(src int) {
+	r.Durability[info.ReactionModKeyBurning][src] = 50
 	r.DecayRate[info.ReactionModKeyBurning] = 0
 }
 
-func (r *Reactable) addDurability(mod info.ReactionModKey, amt info.Durability) {
-	r.Durability[mod] += amt
+func (r *Reactable) addDurability(mod info.ReactionModKey, amt info.Durability, src int) {
+	r.Durability[mod][src] += amt
 	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
 
@@ -265,11 +272,15 @@ func (r *Reactable) IsBurning() bool {
 }
 
 func (r *Reactable) reduceMod(mod info.ReactionModKey, amt info.Durability) {
-	r.Durability[mod] -= min(amt, r.Durability[mod])
+	for i := range r.Durability[mod] {
+		r.Durability[mod][i] -= min(amt, r.Durability[mod][i])
+	}
 }
 
 func (r *Reactable) removeMod(mod info.ReactionModKey) {
-	r.Durability[mod] = 0
+	for i := range r.Durability[mod] {
+		r.Durability[mod][i] = 0
+	}
 	r.DecayRate[mod] = 0
 }
 
