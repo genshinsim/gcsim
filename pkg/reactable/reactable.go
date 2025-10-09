@@ -14,7 +14,7 @@ import (
 const maxChars = 4
 
 type Reactable struct {
-	durability [info.ReactionModKeyEnd][4]info.Durability
+	Durability [info.ReactionModKeyEnd][4]info.Durability
 	DecayRate  [info.ReactionModKeyEnd]info.Durability
 	// Source     []int //source frame of the aura
 	self info.Target
@@ -174,7 +174,7 @@ func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) GetAuraDurability(mod info.ReactionModKey) info.Durability {
-	return slices.Max(r.durability[mod][:])
+	return slices.Max(r.Durability[mod][:])
 }
 
 func (r *Reactable) GetDurability() []info.Durability {
@@ -190,7 +190,7 @@ func (r *Reactable) GetAuraDecayRate(mod info.ReactionModKey) info.Durability {
 }
 
 func (r *Reactable) SetAuraDurability(mod info.ReactionModKey, dur info.Durability, src int) {
-	r.durability[mod][src] = dur
+	r.Durability[mod][src] = dur
 }
 
 func (r *Reactable) SetAuraDecayRate(mod info.ReactionModKey, decay info.Durability) {
@@ -214,7 +214,7 @@ func (r *Reactable) attachOrRefillNormalEle(mod info.ReactionModKey, dur info.Du
 
 func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Durability, src int) {
 	if r.GetAuraDurability(mod) > info.ZeroDur {
-		add := max(amt-r.durability[mod][src], 0)
+		add := max(amt-r.Durability[mod][src], 0)
 		if add > 0 {
 			r.addDurability(mod, add, src)
 		}
@@ -245,7 +245,7 @@ func (r *Reactable) attachBurning(src int) {
 }
 
 func (r *Reactable) addDurability(mod info.ReactionModKey, amt info.Durability, src int) {
-	r.durability[mod][src] += amt
+	r.Durability[mod][src] += amt
 	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
 
@@ -273,14 +273,14 @@ func (r *Reactable) IsBurning() bool {
 }
 
 func (r *Reactable) reduceMod(mod info.ReactionModKey, amt info.Durability) {
-	for i := range r.durability[mod] {
-		r.durability[mod][i] -= min(amt, r.durability[mod][i])
+	for i := range r.Durability[mod] {
+		r.Durability[mod][i] -= min(amt, r.Durability[mod][i])
 	}
 }
 
 func (r *Reactable) removeMod(mod info.ReactionModKey) {
-	for i := range r.durability[mod] {
-		r.durability[mod][i] = 0
+	for i := range r.Durability[mod] {
+		r.Durability[mod][i] = 0
 	}
 	r.DecayRate[mod] = 0
 }
