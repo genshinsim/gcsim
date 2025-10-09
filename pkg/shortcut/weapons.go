@@ -83,6 +83,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"endoftheline":                    keys.EndOfTheLine,
 	"engulfinglightning":              keys.EngulfingLightning,
 	"engulfing":                       keys.EngulfingLightning,
+	"etherlightspindlelute":           keys.EtherlightSpindlelute,
+	"etherlight":                      keys.EtherlightSpindlelute,
 	"everlastingmoonglow":             keys.EverlastingMoonglow,
 	"moonglow":                        keys.EverlastingMoonglow,
 	"donut":                           keys.EverlastingMoonglow,
