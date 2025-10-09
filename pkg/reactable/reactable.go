@@ -264,6 +264,10 @@ func (r *Reactable) IsBurning() bool {
 	return false
 }
 
+func (r *Reactable) reduceMod(mod info.ReactionModKey, amt info.Durability) {
+	r.Durability[mod] -= min(amt, r.Durability[mod])
+}
+
 // reduce the requested element by dur * factor, return the amount of dur consumed
 // if multiple modifier with same element are present, all of them are reduced
 // the max on reduced is used for consumption purpose
@@ -284,7 +288,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 
 		red := min(m, r.GetAuraDurability(i))
 
-		r.Durability[i] -= red
+		r.reduceMod(i, red)
 
 		if red > reduced {
 			reduced = red
@@ -318,7 +322,7 @@ func (r *Reactable) Tick() {
 			continue
 		}
 		if r.GetAuraDurability(i) > info.ZeroDur {
-			r.Durability[i] -= r.DecayRate[i]
+			r.reduceMod(i, r.DecayRate[i])
 			r.deplete(i)
 		}
 	}
@@ -350,7 +354,7 @@ func (r *Reactable) Tick() {
 				rate = max(rate, r.DecayRate[i]*2)
 			}
 		}
-		r.Durability[i] -= rate
+		r.reduceMod(i, rate)
 		r.deplete(i)
 	}
 
@@ -359,7 +363,7 @@ func (r *Reactable) Tick() {
 	if r.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
 		// ramp up decay rate first
 		r.DecayRate[info.ReactionModKeyFrozen] += frzDelta
-		r.Durability[info.ReactionModKeyFrozen] -= r.DecayRate[info.ReactionModKeyFrozen] / info.Durability(1.0-r.FreezeResist)
+		r.reduceMod(info.ReactionModKeyFrozen, r.DecayRate[info.ReactionModKeyFrozen]/info.Durability(1.0-r.FreezeResist))
 
 		r.checkFreeze()
 	} else if r.DecayRate[info.ReactionModKeyFrozen] > frzDecayCap { // otherwise ramp down decay rate

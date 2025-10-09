@@ -23,15 +23,14 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 			return false
 		}
 		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability)
-		r.Durability[info.ReactionModKeyCryo] -= consumed
-		r.Durability[info.ReactionModKeyCryo] = max(r.GetAuraDurability(info.ReactionModKeyCryo), 0)
+		r.reduceMod(info.ReactionModKeyCryo, consumed)
+
 	case attributes.Cryo:
 		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
 		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability)
-		r.Durability[info.ReactionModKeyHydro] -= consumed
-		r.Durability[info.ReactionModKeyHydro] = max(r.GetAuraDurability(info.ReactionModKeyHydro), 0)
+		r.reduceMod(info.ReactionModKeyHydro, consumed)
 	default:
 		// should be here
 		return false
@@ -51,7 +50,7 @@ func (r *Reactable) PoiseDMGCheck(a *info.AttackEvent) bool {
 		return false
 	}
 	// remove frozen durability according to poise dmg
-	r.Durability[info.ReactionModKeyFrozen] -= info.Durability(0.15 * a.Info.PoiseDMG)
+	r.reduceMod(info.ReactionModKeyFrozen, info.Durability(0.15*a.Info.PoiseDMG))
 	r.checkFreeze()
 	return true
 }
@@ -64,7 +63,7 @@ func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
 		return false
 	}
 	// remove 200 freeze gauge if available
-	r.Durability[info.ReactionModKeyFrozen] -= 200
+	r.reduceMod(info.ReactionModKeyFrozen, 200)
 	r.checkFreeze()
 
 	r.core.Events.Emit(event.OnShatter, r.self, a)
