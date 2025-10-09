@@ -64,7 +64,7 @@ func (r *Reactable) TryBurning(a *info.AttackEvent) bool {
 
 func (r *Reactable) attachBurningFuel(dur, mult info.Durability) {
 	// burning fuel always overwrites
-	r.Durability[info.ReactionModKeyBurningFuel] = mult * dur
+	r.SetAuraDurability(info.ReactionModKeyBurningFuel, mult*dur)
 	decayRate := mult * dur / (6*dur + 420)
 	if decayRate < 10.0/60.0 {
 		decayRate = 10.0 / 60.0
@@ -139,7 +139,6 @@ func (r *Reactable) burningCheck() {
 		// no more burning ticks
 		r.burningTickSrc = -1
 		// remove burning fuel
-		r.Durability[info.ReactionModKeyBurningFuel] = 0
-		r.DecayRate[info.ReactionModKeyBurningFuel] = 0
+		r.removeMod(info.ReactionModKeyBurningFuel)
 	}
 }

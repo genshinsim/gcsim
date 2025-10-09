@@ -112,7 +112,6 @@ func (r *Reactable) triggerFreeze(a, b info.Durability) info.Durability {
 
 func (r *Reactable) checkFreeze() {
 	if r.GetAuraDurability(info.ReactionModKeyFrozen) <= info.ZeroDur {
-		r.Durability[info.ReactionModKeyFrozen] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
 		// trigger another attack here, purely for the purpose of breaking bubbles >.>
 		ai := info.AttackInfo{
