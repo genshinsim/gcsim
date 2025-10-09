@@ -14,7 +14,7 @@ import (
 const maxChars = 4
 
 type Reactable struct {
-	Durability [info.ReactionModKeyEnd][4]info.Durability
+	Durability [info.ReactionModKeyEnd][maxChars]info.Durability
 	DecayRate  [info.ReactionModKeyEnd]info.Durability
 	// Source     []int //source frame of the aura
 	self info.Target
