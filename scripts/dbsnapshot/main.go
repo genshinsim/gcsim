@@ -20,6 +20,7 @@ type opts struct {
 	iters       int
 	saveTo      string
 	compareFrom string
+	earlyExit   bool
 }
 
 var workers = 5
@@ -30,6 +31,7 @@ func main() {
 	flag.IntVar(&opt.iters, "iters", 10, "number of iterations to run per config")
 	flag.StringVar(&opt.saveTo, "save", "", "file to save snapshot to; if blank will use time stamp")
 	flag.StringVar(&opt.compareFrom, "compare", "", "file to compare snapshot from")
+	flag.BoolVar(&opt.earlyExit, "early_exit", false, "exit immediately when a difference is found")
 	flag.Parse()
 
 	if opt.saveTo == "" {
@@ -47,19 +49,20 @@ func main() {
 	}
 
 	log.Printf("comparing from %v", opt.compareFrom)
-	err := compareFromSnapshot(opt.compareFrom, opt.saveTo)
+	err := compareFromSnapshot(opt.compareFrom, opt.saveTo, opt.earlyExit)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func compareFromSnapshot(from, saveTo string) error {
+func compareFromSnapshot(from, saveTo string, earlyExit bool) error {
 	prev, err := load(from)
 	if err != nil {
 		return err
 	}
 	current := &snapshot{}
 	var warnings []string
+	start := time.Now()
 	bar := progressbar.Default(int64(len(prev.results)), "running sims")
 	for i, v := range prev.results {
 		id := prev.ids[i]
@@ -95,6 +98,12 @@ func compareFromSnapshot(from, saveTo string) error {
 			diff := v.Dps - orig
 			if diff > 0.01 || diff < -0.01 {
 				warnings = append(warnings, fmt.Sprintf("id %v seed %v has different dps: original %v, new %v, diff %v", id, v.Seed, orig, v.Dps, diff))
+				if earlyExit {
+					for _, v := range warnings {
+						log.Println(v)
+					}
+					return current.save(saveTo)
+				}
 			}
 		}
 	}
@@ -105,6 +114,7 @@ func compareFromSnapshot(from, saveTo string) error {
 			log.Println(v)
 		}
 	}
+	log.Printf("finished in %v\n", time.Since(start))
 	return current.save(saveTo)
 }
 
