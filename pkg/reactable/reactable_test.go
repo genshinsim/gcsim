@@ -158,22 +158,22 @@ func TestMain(m *testing.M) {
 
 func TestReduce(t *testing.T) {
 	r := &Reactable{}
-	r.Durability[info.ReactionModKeyElectro] = 20
+	r.SetAuraDurability(info.ReactionModKeyElectro, 20)
 	r.reduce(attributes.Electro, 20, 1)
 	if r.Durability[info.ReactionModKeyElectro] != 0 {
 		t.Errorf("expecting nil electro balance, got %v", r.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 
 	// straight up consumption
-	r.Durability[info.ReactionModKeyPyro] = 20
-	r.Durability[info.ReactionModKeyBurning] = 50
+	r.SetAuraDurability(info.ReactionModKeyPyro, 20)
+	r.SetAuraDurability(info.ReactionModKeyBurning, 50)
 	consumed := r.reduce(attributes.Pyro, 30, 1)
 	if consumed != 30 {
 		t.Errorf("expecting consumed to be 30, got %v", consumed)
 	}
 
 	// 2x multiplier, i.e. 1 incoming reduces 2
-	r.Durability[info.ReactionModKeyPyro] = 50
+	r.SetAuraDurability(info.ReactionModKeyPyro, 50)
 	consumed = r.reduce(attributes.Pyro, 20, 2)
 	if consumed != 20 {
 		t.Errorf("expecting consumed to be 20, got %v", consumed)
@@ -182,7 +182,7 @@ func TestReduce(t *testing.T) {
 		t.Errorf("expecting 10 remaining ModifierPyro, got %v", 10)
 	}
 
-	r.Durability[info.ReactionModKeyPyro] = 50
+	r.SetAuraDurability(info.ReactionModKeyPyro, 50)
 	consumed = r.reduce(attributes.Pyro, 50, 0.5)
 	if consumed != 50 {
 		t.Errorf("expecting consumed to be 50, got %v", consumed)
@@ -225,8 +225,7 @@ func TestTick(t *testing.T) {
 	}
 
 	// test multiple aura
-	trg.Durability[info.ReactionModKeyElectro] = 0 // reset from previous test
-	trg.DecayRate[info.ReactionModKeyElectro] = 0
+	trg.removeMod(info.ReactionModKeyElectro) // reset from previous test
 	trg.AttachOrRefill(&info.AttackEvent{
 		Info: info.AttackInfo{
 			Element:    attributes.Electro,
@@ -297,7 +296,7 @@ func TestTick(t *testing.T) {
 
 	// test frozen
 	// 50 frozen should last just over 208 frames (i.e. 0 by 209)
-	trg.Durability[info.ReactionModKeyFrozen] = 50
+	trg.SetAuraDurability(info.ReactionModKeyFrozen, 50)
 	for range 208 {
 		trg.Tick()
 		// log.Println(trg.Durability)

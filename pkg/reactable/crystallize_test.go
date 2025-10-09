@@ -77,7 +77,7 @@ func TestCrystallizePyro(t *testing.T) {
 		},
 	})
 	// force on burning
-	trg.Durability[info.ReactionModKeyBurning] = 50
+	trg.SetAuraDurability(info.ReactionModKeyBurning, 50)
 
 	trg.React(&info.AttackEvent{
 		Info: info.AttackInfo{

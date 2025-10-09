@@ -211,7 +211,7 @@ func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Dura
 			r.addDurability(mod, add)
 		}
 	} else {
-		r.Durability[mod] = amt
+		r.SetAuraDurability(mod, amt)
 		if length > info.ZeroDur {
 			r.DecayRate[mod] = amt / length
 		}
@@ -219,10 +219,10 @@ func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Dura
 }
 
 func (r *Reactable) attachOverlapRefreshDuration(mod info.ReactionModKey, amt, length info.Durability) {
-	if amt < r.Durability[mod] {
+	if amt < r.GetAuraDurability(mod) {
 		return
 	}
-	r.Durability[mod] = amt
+	r.SetAuraDurability(mod, amt)
 
 	// only update decay rate is amt is greater or equal to the current durability
 	if amt < r.GetAuraDurability(mod) {
@@ -268,6 +268,11 @@ func (r *Reactable) reduceMod(mod info.ReactionModKey, amt info.Durability) {
 	r.Durability[mod] -= min(amt, r.Durability[mod])
 }
 
+func (r *Reactable) removeMod(mod info.ReactionModKey) {
+	r.Durability[mod] = 0
+	r.DecayRate[mod] = 0
+}
+
 // reduce the requested element by dur * factor, return the amount of dur consumed
 // if multiple modifier with same element are present, all of them are reduced
 // the max on reduced is used for consumption purpose
@@ -300,8 +305,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 
 func (r *Reactable) deplete(m info.ReactionModKey) {
 	if r.GetAuraDurability(m) <= info.ZeroDur {
-		r.Durability[m] = 0
-		r.DecayRate[m] = 0
+		r.SetAuraDecayRate(m, 0)
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
 	}
 }
@@ -333,12 +337,10 @@ func (r *Reactable) Tick() {
 		// reset src when burning fuel is gone
 		r.burningTickSrc = -1
 		// remove burning
-		r.Durability[info.ReactionModKeyBurning] = 0
+		r.removeMod(info.ReactionModKeyBurning)
 		// remove existing dendro and quicken
-		r.Durability[info.ReactionModKeyDendro] = 0
-		r.DecayRate[info.ReactionModKeyDendro] = 0
-		r.Durability[info.ReactionModKeyQuicken] = 0
-		r.DecayRate[info.ReactionModKeyQuicken] = 0
+		r.removeMod(info.ReactionModKeyDendro)
+		r.removeMod(info.ReactionModKeyQuicken)
 	}
 
 	// if burning fuel is present, dendro and quicken uses burning fuel decay rate
