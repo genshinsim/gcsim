@@ -23,6 +23,7 @@ func (c *char) a1() {
 		{event.OnBloom, "neuvillette-a1-bloom"},
 		{event.OnCrystallizeHydro, "neuvillette-a1-crystallize-hydro"},
 		{event.OnElectroCharged, "neuvillette-a1-electro-charged"},
+		{event.OnLunarCharged, "neuvillette-a1-electro-charged"},
 		{event.OnFrozen, "neuvillette-a1-frozen"},
 		{event.OnSwirlHydro, "neuvillette-a1-swirl-hydro"},
 		{event.OnVaporize, "neuvillette-a1-vaporize"},

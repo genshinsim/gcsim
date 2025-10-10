@@ -9,6 +9,13 @@ type reactionBonusSrc interface {
 	ReactBonus(atk info.AttackInfo) float64
 }
 
+func CalcLunarChargedDmg(lvl int, src reactionBonusSrc, atk info.AttackInfo, em float64) float64 {
+	idx := lvl - 1
+	idx = min(idx, 89)
+	idx = max(idx, 0)
+	return (1 + ((6 * em) / (2000 + em)) + src.ReactBonus(atk)) * reactionLvlBase[idx]
+}
+
 func CalcReactionDmg(lvl int, src reactionBonusSrc, atk info.AttackInfo, em float64) (float64, info.Snapshot) {
 	idx := lvl - 1
 	idx = min(idx, 89)

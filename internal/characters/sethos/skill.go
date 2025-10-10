@@ -52,6 +52,7 @@ func (c *char) skillRefundHook() {
 
 	c.Core.Events.Subscribe(event.OnOverload, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnElectroCharged, refundCB, "sethos-e-refund")
+	c.Core.Events.Subscribe(event.OnLunarCharged, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnSuperconduct, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnHyperbloom, refundCB, "sethos-e-refund")
