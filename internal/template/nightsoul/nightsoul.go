@@ -129,7 +129,8 @@ func (s *State) GeneratePoints(amount float64) {
 	prevPoints := s.nightsoulPoints
 	s.nightsoulPoints += amount
 	s.clampPoints()
-	s.c.Events.Emit(event.OnNightsoulGenerate, s.char.Index(), amount)
+	added := s.nightsoulPoints - prevPoints
+	s.c.Events.Emit(event.OnNightsoulGenerate, s.char.Index(), added)
 	s.c.Log.NewEvent("generate nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", prevPoints).
 		Write("amount", amount).
@@ -140,7 +141,8 @@ func (s *State) ConsumePoints(amount float64) {
 	prevPoints := s.nightsoulPoints
 	s.nightsoulPoints -= amount
 	s.clampPoints()
-	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index(), amount)
+	used := prevPoints - s.nightsoulPoints
+	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index(), used)
 	s.c.Log.NewEvent("consume nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", prevPoints).
 		Write("amount", amount).
