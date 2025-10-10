@@ -27,6 +27,7 @@ const (
 	AttackTagBountifulCore // special tag for nilou
 	AttackTagBurgeon
 	AttackTagHyperbloom
+	AttackTagLCDamage
 	AttackTagLength
 )
 

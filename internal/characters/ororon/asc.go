@@ -15,6 +15,7 @@ const (
 	a1NSBurstKey      = "ororon-a1-ns-burst"
 	a1ElectroHydroKey = "ororon-a1-electro-hydro"
 	a1ECTriggerKey    = "ororon-a1-ec"
+	a1LCTriggerKey    = "ororon-a1-lc"
 	a1NSTriggerKey    = "ororon-a1-ns"
 )
 
@@ -78,6 +79,15 @@ func (c *char) a1Init() {
 		c.a1NightSoulAttack(atk)
 		return false
 	}, a1ECTriggerKey)
+
+	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return false
+		}
+		c.a1NightSoulAttack(atk)
+		return false
+	}, a1LCTriggerKey)
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
