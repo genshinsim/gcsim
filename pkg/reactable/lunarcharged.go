@@ -1,12 +1,14 @@
 package reactable
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -65,13 +67,17 @@ func (r *Reactable) TryAddLC(a *info.AttackEvent) bool {
 	return true
 }
 
+type lcContribution = struct {
+	dmg     float64
+	isCrit  bool
+	charInd int
+	cr      float64
+	cd      float64
+	em      float64
+}
+
 func (r *Reactable) doLCAttack() {
-	type contribution = struct {
-		dmg     float64
-		isCrit  bool
-		charInd int
-	}
-	contributions := []contribution{}
+	contributions := []lcContribution{}
 
 	ap := combat.NewSingleTargetHit(r.self.Key())
 
@@ -105,22 +111,26 @@ func (r *Reactable) doLCAttack() {
 		// Emit even so PreDamageMods can be applied to the individual LC contributions
 		r.core.Events.Emit(event.OnLunarChargedAttack, r.self, &ae)
 
-		flatdmg := 1.8 * combat.CalcLunarChargedDmg(char.Base.Level, char, ae.Info, ae.Snapshot.Stats[attributes.EM])
+		em := ae.Snapshot.Stats[attributes.EM]
+		cr := ae.Snapshot.Stats[attributes.CR]
+		cd := ae.Snapshot.Stats[attributes.CD]
 
+		flatdmg := 1.8 * combat.CalcLunarChargedDmg(char.Base.Level, char, ae.Info, em)
 		isCrit := false
-		if r.core.Rand.Float64() <= ae.Snapshot.Stats[attributes.CR] {
-			flatdmg *= (1 + ae.Snapshot.Stats[attributes.CD])
+
+		if r.core.Rand.Float64() <= cr {
+			flatdmg *= (1 + cd)
 			isCrit = true
 		}
 
-		contributions = append(contributions, contribution{flatdmg, isCrit, charInd})
+		contributions = append(contributions, lcContribution{flatdmg, isCrit, charInd, cr, cd, em})
 	}
 
 	if len(contributions) == 0 {
 		return
 	}
 
-	slices.SortStableFunc(contributions, func(i, j contribution) int {
+	slices.SortStableFunc(contributions, func(i, j lcContribution) int {
 		diff := j.dmg - i.dmg
 		switch {
 		case diff < 0:
@@ -133,6 +143,15 @@ func (r *Reactable) doLCAttack() {
 	})
 
 	for i, contr := range contributions {
+		r.core.Combat.Log.NewEvent(fmt.Sprint("lunarcharged contributor ", (i+1)), glog.LogElementEvent, contr.charInd).
+			Write("target", r.self.Key()).
+			Write("damage", &contr.dmg).
+			Write("crit", &contr.isCrit).
+			Write("mult", lcContributorMult[i]).
+			Write("cr", &contr.cr).
+			Write("cd", &contr.cd).
+			Write("em", &contr.em)
+
 		ai.FlatDmg += contr.dmg * lcContributorMult[i]
 	}
 
