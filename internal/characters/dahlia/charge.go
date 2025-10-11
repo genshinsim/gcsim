@@ -41,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ai.Abil = fmt.Sprintf("Charge %v", i)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.2), // TO-DO: copied from Bennett
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.2),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 		)
