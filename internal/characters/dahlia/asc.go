@@ -90,7 +90,7 @@ func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
 	attackSpeedBuff[attributes.AtkSpd] = attackSpeedInc
 
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(attackSpeedKey, favonianFavorExpiry-c.Core.F),
+		Base:         modifier.NewBaseWithHitlag(attackSpeedKey, c.favonianFavorExpiry-c.Core.F),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
 			return attackSpeedBuff, true

@@ -26,15 +26,15 @@ func (c *char) newShield(base float64, expiry int) *shd {
 }
 
 func (c *char) genShield() {
-	c.Core.Player.Shields.Add(c.newShield(c.shieldHP(), favonianFavorExpiry))
+	c.Core.Player.Shields.Add(c.newShield(c.shieldHP(), c.favonianFavorExpiry))
 }
 
 // If shield is broken and there are Benison stacks, create shield (after some delay)
 func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) {
 	taken, ok := s.Tmpl.OnDamage(dmg, ele, bonus)
 
-	if !ok && currentBenisonStacks > 0 && favonianFavorExpiry > s.c.Core.F+burstShieldRegenerated {
-		currentBenisonStacks--
+	if !ok && s.c.currentBenisonStacks > 0 && s.c.favonianFavorExpiry > s.c.Core.F+burstShieldRegenerated {
+		s.c.currentBenisonStacks--
 
 		s.c.QueueCharTask(func() {
 			s.c.genShield()
@@ -49,5 +49,5 @@ func (c *char) hasShield() bool {
 }
 
 func (c *char) shieldHP() float64 {
-	return burstShieldPP[c.TalentLvlSkill()]*c.MaxHP() + burstShieldFlat[c.TalentLvlSkill()]
+	return burstShieldPP[c.TalentLvlBurst()]*c.MaxHP() + burstShieldFlat[c.TalentLvlBurst()]
 }

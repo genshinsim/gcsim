@@ -14,8 +14,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+
 	maxBenisonStacks int
 	burstAttackSpeed float64
+
+	currentBenisonStacks int
+	normalAttackCount    int
+	favonianFavorExpiry  int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -33,8 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.maxBenisonStacks = 4
-
 	c.burstAttackSpeed = c.MaxHP() * 0.5 // unlocked by A4 only so maybe not here
 	if c.Base.Cons >= 6 {
 		c.burstAttackSpeed += 10
