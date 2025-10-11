@@ -109,7 +109,7 @@ func (r *Reactable) doLCAttack() {
 		}
 
 		// Emit even so PreDamageMods can be applied to the individual LC contributions
-		r.core.Events.Emit(event.OnLunarChargedAttack, r.self, &ae)
+		r.core.Events.Emit(event.OnLunarChargedReactionAttack, r.self, &ae)
 
 		em := ae.Snapshot.Stats[attributes.EM]
 		cr := ae.Snapshot.Stats[attributes.CR]
@@ -170,9 +170,28 @@ func (r *Reactable) doLCAttack() {
 	)
 }
 
-func (r *Reactable) reduceLCAuraCB(_ info.AttackCB) {
+func (r *Reactable) reduceLCAuraCB(a info.AttackCB) {
+	var existing []string
+	if r.core.Flags.LogDebug {
+		existing = r.ActiveAuraString()
+	}
+
 	r.reduceMod(info.ReactionModKeyElectro, 10)
 	r.reduceMod(info.ReactionModKeyHydro, 10)
+
+	if r.core.Flags.LogDebug {
+		r.core.Log.NewEvent(
+			"application",
+			glog.LogElementEvent,
+			a.AttackEvent.Info.ActorIndex,
+		).
+			Write("attack_tag", a.AttackEvent.Info.AttackTag).
+			Write("applied_ele", string(info.ReactionTypeLunarCharged)).
+			Write("abil", a.AttackEvent.Info.Abil).
+			Write("target", r.self.Key()).
+			Write("existing", existing).
+			Write("after", r.ActiveAuraString())
+	}
 }
 
 func (r *Reactable) nextLCTick(src int) func() {
