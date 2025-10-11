@@ -61,7 +61,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5), // TO-DO: Fix when data becomes available
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		0, // TO-DO: Should this be skillHitmarks[hold] instead?
 		skillHitmarks[hold],
 		c.particleCB,
@@ -84,7 +84,7 @@ func (c *char) particleCB(a info.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 0.3*60, true) // TO-DO: Fix when data becomes available
+	c.AddStatus(particleICDKey, 0.5*60, true)
 
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Hydro, c.ParticleDelay)
 }
