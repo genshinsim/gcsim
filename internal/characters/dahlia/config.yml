@@ -1,0 +1,39 @@
+package_name: dahlia
+genshin_id: 10000115
+key: dahlia
+action_param_keys:
+  low_plunge:
+    - param: "collision"
+  high_plunge:
+    - param: "collision"
+skill_data_mapping:
+  attack:
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+    attack_4:
+      - 4 # 4-Hit DMG|{param4:F1P}
+    charge:
+      - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+      - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
+    collision:
+      - 8 # Plunge DMG|{param7:F1P}
+    lowPlunge:
+      - 9 # Low/High Plunge DMG|{param8:P}/{param9:P}
+    highPlunge:
+      - 10 # Low/High Plunge DMG|{param8:P}/{param9:P}
+
+  skill:
+    skill:
+      - 0 # Skill DMG|{param0:P}
+  burst:
+    burst:
+      - 0 # Burst DMG|{param0:P}
+    burstShieldPP:
+      - 2 # Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
+    burstShieldFlat:
+      - 1 # Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}

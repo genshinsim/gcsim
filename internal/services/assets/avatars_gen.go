@@ -23,6 +23,7 @@ var avatarMap = map[string]string{
 	"clorinde":      "UI_AvatarIcon_Clorinde",
 	"collei":        "UI_AvatarIcon_Collei",
 	"cyno":          "UI_AvatarIcon_Cyno",
+	"dahlia":        "UI_AvatarIcon_Dahlia",
 	"dehya":         "UI_AvatarIcon_Dehya",
 	"diluc":         "UI_AvatarIcon_Diluc",
 	"diona":         "UI_AvatarIcon_Diona",
