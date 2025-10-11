@@ -187,7 +187,9 @@ func (r *Reactable) nextLCTick(src int) func() {
 			return
 		}
 
-		r.doLCAttack()
+		if r.GetAuraDurability(info.ReactionModKeyElectro) > info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyHydro) > info.ZeroDur {
+			r.doLCAttack()
+		}
 
 		// queue up next tick
 		r.core.Tasks.Add(r.nextLCTick(src), 120)
