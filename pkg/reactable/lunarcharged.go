@@ -187,11 +187,11 @@ func (r *Reactable) nextLCTick(src int) func() {
 			return
 		}
 
-		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyHydro) > info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyElectro) > info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyHydro) > info.ZeroDur {
 			r.doLCAttack()
 		} else {
 			r.core.Combat.Log.NewEvent("lunar charged tick skipped", glog.LogSimEvent, -1).
-				Write("reason", "not hydro and electro on target")
+				Write("reason", "target doesn't have both hydro and electro")
 		}
 
 		// queue up next tick
