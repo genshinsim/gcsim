@@ -132,6 +132,7 @@ var weaponMap = map[string]string{
 	"beginnersprotector":              "UI_EquipIcon_Pole_Gewalt",
 	"blackcliffpole":                  "UI_EquipIcon_Pole_Blackrock",
 	"blacktassel":                     "UI_EquipIcon_Pole_Noire",
+	"bloodsoakedruins":                "UI_EquipIcon_Pole_TummaLyhty",
 	"calamityqueller":                 "UI_EquipIcon_Pole_Santika",
 	"thecatch":                        "UI_EquipIcon_Pole_Mori",
 	"crescentpike":                    "UI_EquipIcon_Pole_Exotic",
