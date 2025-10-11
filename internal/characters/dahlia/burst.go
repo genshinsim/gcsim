@@ -150,7 +150,7 @@ func (c *char) setupBurst() {
 	}, burstBenisonStacksKey)
 }
 
-func (c *char) addBenisonStack(stacks int, charIndex int) {
+func (c *char) addBenisonStack(stacks, charIndex int) {
 	if c.isMaxBenisonStacks() { // TO-DO: Regarding setupBurst(), this is technically never true, but it's used elsewhere
 		return
 	}
