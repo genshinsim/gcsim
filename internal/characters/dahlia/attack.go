@@ -14,11 +14,9 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{15}, {13}, {14, 15}, {21}}
-	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06, 0}, {0}}          // TO-DO: copied from Lynette
-	attackDefHalt         = [][]bool{{true}, {true}, {true, false}, {false}}     // TO-DO: copied from Lynette
-	attackHitboxes        = [][]float64{{2}, {1.8, 2.8}, {1.5, 2.5}, {2.2, 2.5}} // TO-DO: copied from Lynette
-	attackOffsets         = []float64{0.3, -0.3, 0, 0}                           // TO-DO: copied from Lynette
-	attackFanAngles       = []float64{40, 360, 40, 360}                          // TO-DO: I'm just making it up :(
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06, 0.06}, {0.09}}
+	attackHitboxes        = [][]float64{{1.5}, {1.7}, {1.7, 1.5}, {2.2}}
+	attackOffsets         = [][]float64{{0.5}, {0.5}, {0.3, 0.4}, {0.6}}
 )
 
 const normalHitNum = 4
@@ -55,15 +53,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
-			HitlagFactor:       0.01, // TO-DO: copied from Lynette
+			HitlagFactor:       0.01, 
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
-			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
+			CanBeDefenseHalted: true,
 		}
-		ap := combat.NewCircleHitOnTargetFanAngle(
+		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			info.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][0],
-			attackFanAngles[c.NormalCounter],
+			info.Point{Y: attackOffsets[c.NormalCounter][i]},
+			attackHitboxes[c.NormalCounter][i],
 		)
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ai, ap, 0, 0)
