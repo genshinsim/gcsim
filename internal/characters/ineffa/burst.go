@@ -33,11 +33,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 7), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 7), 0, 0, c.c2MakeCB())
 	}, hitmark)
 
 	c.a4OnBurst()
+	c.c2OnBurst()
 	c.SetCD(action.ActionBurst, 15*60)
 
 	c.QueueCharTask(c.summonBirgitta, 110)
