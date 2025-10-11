@@ -74,7 +74,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		if c.Base.Cons >= 4 {
 			favonianFavorDuration = 15 * 60
 		}
-		c.favonianFavorExpiry = c.Core.F + favonianFavorDuration*60
+		c.favonianFavorExpiry = c.Core.F + favonianFavorDuration
 
 		// Add "Favonian Favor" status for all party members
 		for _, char := range c.Core.Player.Chars() {
@@ -128,7 +128,7 @@ func (c *char) setupBurst() {
 			c.addBenisonStack(1, ae.Info.ActorIndex)
 			c.normalAttackCount = 0
 		}
-		c.AddStatus(normalAttackStackIcd, 0.3*60, true)
+		c.AddStatus(normalAttackStackIcd, 0.05*60, true)
 
 		return false
 	}, burstBenisonStacksKey)
