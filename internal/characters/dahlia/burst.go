@@ -41,7 +41,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	c.maxBenisonStacks = benisonMaxGenerate
+	c.benisonGenStackLimit = benisonMaxGenerate
 	c.currentBenisonStacks = 0
 	c.normalAttackCount = 0
 
@@ -118,7 +118,7 @@ func (c *char) setupBurst() {
 		}
 
 		// If already generated a total of 4 Benison stacks, do nothing
-		if c.maxBenisonStacks == 0 {
+		if c.benisonGenStackLimit == 0 {
 			return false
 		}
 
@@ -135,11 +135,11 @@ func (c *char) setupBurst() {
 }
 
 func (c *char) addBenisonStack(stacks, charIndex int) {
-	if c.maxBenisonStacks <= 0 {
+	if c.benisonGenStackLimit <= 0 {
 		return
 	}
-	stacks = min(stacks, c.maxBenisonStacks)
-	c.maxBenisonStacks -= stacks
+	stacks = min(stacks, c.benisonGenStackLimit)
+	c.benisonGenStackLimit -= stacks
 	c.currentBenisonStacks += stacks
 
 	// If C1, Dahlia restores 2.5 Energy per stack gained
@@ -149,7 +149,7 @@ func (c *char) addBenisonStack(stacks, charIndex int) {
 
 	c.Core.Log.NewEvent(strconv.Itoa(stacks)+" "+burstBenisonStacksKey+" added", glog.LogShieldEvent, charIndex).
 		Write("benison_stacks_remaining", c.currentBenisonStacks).
-		Write("benison_stacks_generated", benisonMaxGenerate-c.maxBenisonStacks)
+		Write("benison_stacks_generated", benisonMaxGenerate-c.benisonGenStackLimit)
 
 	// If shield is already gone but new stacks got generated, create shield (after some delay)
 	if !c.hasShield() && c.favonianFavorExpiry > c.Core.F+burstShieldAfterBenisonStack {
