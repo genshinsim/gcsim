@@ -359,7 +359,7 @@ func setupNightsoulBurst(core *core.Core) {
 		core.Events.Emit(event.OnNightsoulBurst, t, atk)
 		core.Status.Add(nightsoulBurstICDStatus, triggerCD)
 		return false
-	}, "nigthsoul-burst")
+	}, "nightsoul-burst")
 }
 
 func (s *Simulation) handleEnergy() {
