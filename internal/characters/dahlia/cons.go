@@ -5,12 +5,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var c6ReviveICD int
-
 const (
 	c1Key = "dahlia-c1"
 	c2Key = "dahlia-c2"
 	c6Key = "dahlia-c6"
+	c6Icd = "dahlia-c6-icd"
 )
 
 // C1
@@ -32,9 +31,9 @@ func (c *char) c2() {
 
 	c.Core.Player.Shields.AddShieldBonusMod(c2Key, 12*60, func() (float64, bool) {
 		if c.hasShield() { // TO-DO: does this do what the 3rd bullet point is saying?
-			return 0.25, false // TO-DO: uh should it be true or false idk
+			return 0.25, false
 		}
-		return 0, false // TO-DO: uh should it be true or false idk
+		return 0, false
 	})
 }
 
@@ -55,7 +54,6 @@ func (c *char) c6() {
 		return
 	}
 
-	c6ReviveICD = 0
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		char := c.Core.Player.ActiveChar()
 
@@ -69,7 +67,7 @@ func (c *char) c6() {
 		}
 
 		// If Revive is still on CD, do nothing
-		if c.Core.F < c6ReviveICD && c6ReviveICD != 0 {
+		if c.StatusIsActive(c6Icd) {
 			return false
 		}
 
@@ -77,7 +75,7 @@ func (c *char) c6() {
 		if char.CurrentHPRatio() <= 0 {
 			char.SetHPByRatio(1)
 		}
-		c6ReviveICD = c.Core.F + 15*60*60
+		c.AddStatus(c6Icd, 15*60*60, true)
 
 		return false
 	}, c6Key)
