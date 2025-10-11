@@ -13,7 +13,8 @@ const (
 	AttackTagWeaponSkill
 	AttackTagMonaBubbleBreak
 	AttackTagNoneStat
-	ReactionAttackDelim
+
+	ReactionAttackStartDelim
 	AttackTagOverloadDamage
 	AttackTagSuperconductDamage
 	AttackTagECDamage
@@ -27,7 +28,11 @@ const (
 	AttackTagBountifulCore // special tag for nilou
 	AttackTagBurgeon
 	AttackTagHyperbloom
+	ReactionAttackEndDelim
+
+	LunarReactionStartDelim
 	AttackTagReactionLunarCharge
+	LunarReactionEndDelim
 
 	DirectLunarReactionStartDelim
 	AttackTagDirectLunarCharged

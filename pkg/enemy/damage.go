@@ -15,8 +15,7 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	st := attributes.EleToDmgP(atk.Info.Element)
 
 	// skip DMG% for reaction damage
-	if atk.Info.AttackTag < attacks.ReactionAttackDelim {
-
+	if atk.Info.AttackTag < attacks.AttackTagNoneStat {
 		// if st < 0 {
 		// 	log.Println(atk)
 		// }
