@@ -83,7 +83,7 @@ func (c *char) Snapshot(a *info.AttackInfo) info.Snapshot {
 
 func (c *char) Init() error {
 	c.a4Init()
-
+	c.lunarchargeInit()
 	return nil
 }
 
