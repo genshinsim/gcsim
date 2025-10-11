@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	lcKey    = "lunarcharged-cloud"
+	LcKey    = "lunarcharged-cloud"
 	lcSrcKey = "lunarcharged-cloud-src"
 )
 
@@ -58,12 +58,12 @@ func (r *Reactable) TryAddLC(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnLunarCharged, r.self, a)
 
 	// at this point lc is refereshed
-	if r.core.Status.Duration(lcKey) == 0 {
+	if r.core.Status.Duration(LcKey) == 0 {
 		r.core.Flags.Custom[lcSrcKey] = float64(r.core.F)
 		r.core.Tasks.Add(r.doLCAttack, 9)
 		r.core.Tasks.Add(r.nextLCTick(r.core.F), 120+9)
 	}
-	r.core.Status.Add(lcKey, 240)
+	r.core.Status.Add(LcKey, 240)
 	return true
 }
 
@@ -85,7 +85,7 @@ func (r *Reactable) doLCAttack() {
 	ai := info.AttackInfo{
 		DamageSrc:        r.self.Key(),
 		Abil:             string(info.ReactionTypeLunarCharged),
-		AttackTag:        attacks.AttackTagLCDamage,
+		AttackTag:        attacks.AttackTagReactionLunarCharge,
 		ICDTag:           attacks.ICDTagLCDamage,
 		ICDGroup:         attacks.ICDGroupReactionB,
 		StrikeType:       attacks.StrikeTypeDefault,
@@ -201,7 +201,7 @@ func (r *Reactable) nextLCTick(src int) func() {
 			return
 		}
 
-		if r.core.Status.Duration(lcKey) == 0 {
+		if r.core.Status.Duration(LcKey) == 0 {
 			// lunarcharge cloud expired
 			return
 		}
