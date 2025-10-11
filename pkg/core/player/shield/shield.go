@@ -29,6 +29,7 @@ const (
 	SigewinneC2
 	LanyanShield
 	CitlaliSkill
+	IneffaSkill
 	EndType
 )
 

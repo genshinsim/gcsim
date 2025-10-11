@@ -23,13 +23,12 @@ skill_data_mapping:
     skill: # Cleaning Mode: Carrier Frequency
         skillInitial:
             - 0 # Skill DMG|{param0:F1P}
-        skillShieldAtk:
+        shieldAtk:
             - 1 # Shield DMG Absorption|{param1:F1P} ATK+{param2:I}
-        skillShieldSFat:
+        shieldFlat:
             - 2 # Shield DMG Absorption|{param1:F1P} ATK+{param2:I}
-            - 5 # Shield Duration|{param5:F1}s
         skillDoT:
             - 3 # Birgitta Discharge DMG|{param3:F1P}
     burst: # Supreme Instruction: Cyclonic Exterminator
-        burstDMG:
+        burst:
             - 0 # Skill DMG|{param0:F1P}
