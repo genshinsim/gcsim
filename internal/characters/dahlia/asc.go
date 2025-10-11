@@ -27,7 +27,8 @@ func (c *char) a1() {
 }
 
 func (c *char) a1Hook(args ...any) bool {
-	char := c.Core.Player.ActiveChar()
+	ae := args[1].(*info.AttackEvent)
+	char := c.Core.Player.ByIndex(ae.Info.ActorIndex)
 	if !char.StatusIsActive(burstFavonianFavor) {
 		return false
 	}
@@ -36,7 +37,6 @@ func (c *char) a1Hook(args ...any) bool {
 	if !ok {
 		return false
 	}
-	ae := args[1].(*info.AttackEvent)
 
 	if !c.StatusIsActive(benisonStackGenerationIcd) {
 		c.AddStatus(benisonStackGenerationIcd, 8*60, true)
@@ -53,6 +53,10 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
+
+	c.attackSpeedBuff = make([]float64, attributes.EndStatType)
+	c.a4Src = c.Core.F
+	c.updateSpeedBuff(c.a4Src)()
 
 	c.Core.Events.Subscribe(event.OnCharacterSwap, c.a4Hook, attackSpeedKey)
 }
@@ -78,22 +82,34 @@ func (c *char) a4Hook(args ...any) bool {
 }
 
 func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
-	attackSpeedInc := 0.005 * (c.MaxHP() / 1000)
-	if attackSpeedInc > 0.2 {
-		attackSpeedInc = 0.2
-	}
-	// If C6, add another 10% Attack Speed
-	if c.Base.Cons >= 6 {
-		attackSpeedInc += 0.1
-	}
-	attackSpeedBuff := make([]float64, attributes.EndStatType)
-	attackSpeedBuff[attributes.AtkSpd] = attackSpeedInc
-
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(attackSpeedKey, c.favonianFavorExpiry-c.Core.F),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
-			return attackSpeedBuff, true
+			return c.attackSpeedBuff, true
 		},
 	})
+}
+
+func (c *char) updateSpeedBuff(src int) func() {
+	return func() {
+		if c.a4Src != src {
+			return
+		}
+
+		burstAttackSpeed := c.MaxHP() * 0.001 * 0.005
+		if burstAttackSpeed < 0 {
+			burstAttackSpeed = 0
+		} else if burstAttackSpeed > 0.2 {
+			burstAttackSpeed = 0.2
+		}
+
+		// If C6, add another 10% Attack Speed
+		if c.Base.Cons >= 6 {
+			burstAttackSpeed += 0.1
+		}
+
+		c.attackSpeedBuff[attributes.AtkSpd] = burstAttackSpeed
+		c.QueueCharTask(c.updateSpeedBuff(src), 0.5*60)
+	}
 }

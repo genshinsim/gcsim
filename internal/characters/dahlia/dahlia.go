@@ -15,8 +15,9 @@ func init() {
 type char struct {
 	*tmpl.Character
 
-	maxBenisonStacks int
-	burstAttackSpeed float64
+	benisonGenStackLimit int
+	attackSpeedBuff      []float64
+	a4Src                int
 
 	currentBenisonStacks int
 	normalAttackCount    int
@@ -38,11 +39,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.burstAttackSpeed = c.MaxHP() * 0.5 // unlocked by A4 only so maybe not here
-	if c.Base.Cons >= 6 {
-		c.burstAttackSpeed += 10
-	}
-
 	c.setupBurst()
 	c.a1()
 	c.a4()
