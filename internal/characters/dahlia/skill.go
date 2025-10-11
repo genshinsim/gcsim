@@ -43,7 +43,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := 0
-	if p["hold"] != 0 {
+	if p["short_hold"] != 0 {
 		hold = 1
 	}
 
