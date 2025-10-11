@@ -45,6 +45,9 @@ func (c *char) a1OnDischarge() {
 }
 
 func (c *char) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	m := make([]float64, attributes.EndStatType)
 	// TODO: Is this buff hitlag affected on Ineffa only? Or is it hitlag affected per character?
 	for _, char := range c.Core.Player.Chars() {
@@ -93,7 +96,11 @@ func (c *char) lunarchargeInit() {
 			return false
 		}
 		bonus := min(c.TotalAtk()/100.0*0.007, 0.14)
-		c.Core.Log.NewEvent("ineffa adding lunarcharged base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("ineffa adding lunarcharged base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+		}
+
 		atk.Info.BaseDmgBonus += bonus
 		return false
 	}, lunarchageBonusKey)
