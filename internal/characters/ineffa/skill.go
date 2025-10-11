@@ -71,7 +71,7 @@ func (c *char) birgittaDischarge(src int) func() {
 			ActorIndex: c.Index(),
 			Abil:       "Birgitta",
 			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
