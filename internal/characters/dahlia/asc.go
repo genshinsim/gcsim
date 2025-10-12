@@ -71,7 +71,7 @@ func (c *char) a4Hook(args ...any) bool {
 	// Remove buff from swapped out character and give it to swapped in character
 	for _, char := range c.Core.Player.Chars() {
 		if char.Index() == prev && char.StatusIsActive(attackSpeedKey) {
-			char.DeleteStatus(attackSpeedKey)
+			char.DeleteStatMod(attackSpeedKey)
 		}
 		if char.Index() == next && !char.StatusIsActive(attackSpeedKey) {
 			c.addAttackSpeedbuff(char)
