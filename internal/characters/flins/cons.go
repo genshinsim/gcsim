@@ -92,7 +92,7 @@ func (c *char) c2GleamInit() {
 		return
 	}
 
-	if c.getAscendeantGleamLevel() < 2 {
+	if c.getMoonsignLevel() < 2 {
 		return
 	}
 
@@ -151,7 +151,7 @@ func (c *char) c6Init() {
 	flins_mult := 1.35
 	other_mult := 1.0
 
-	if c.getAscendeantGleamLevel() >= 2 {
+	if c.getMoonsignLevel() >= 2 {
 		flins_mult += 0.1
 		other_mult += 0.1
 	}
@@ -172,7 +172,7 @@ func (c *char) c6Init() {
 			return false
 		}
 
-		if c.getAscendeantGleamLevel() < 2 {
+		if c.getMoonsignLevel() < 2 {
 			return false
 		}
 
