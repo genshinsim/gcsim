@@ -62,8 +62,9 @@ func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation
 		return nil, err
 	}
 
-	// nightsoul require char stats to be initialized
+	// nightsoul and ascendant gleam require char stats to be initialized
 	setupNightsoulBurst(c)
+	setupAscendantGleam(c)
 
 	for _, collector := range stats.Collectors() {
 		enabled := cfg.Settings.CollectStats
