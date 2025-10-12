@@ -25,7 +25,7 @@ func (c *char) a1Init() {
 	c.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase(a1Key, -1),
 		Amount: func(ai info.AttackInfo) (float64, bool) {
-			if c.getAscendeantGleamLevel() < 2 {
+			if c.getMoonsignLevel() < 2 {
 				return 0, false
 			}
 
@@ -44,7 +44,7 @@ func (c *char) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	scale, max := c.c4A4()
+	scale, maxBuff := c.c4A4()
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
@@ -53,7 +53,7 @@ func (c *char) a4Init() {
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 			stats := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
-			m[attributes.EM] = min(stats.TotalATK()*scale, max)
+			m[attributes.EM] = min(stats.TotalATK()*scale, maxBuff)
 			return m, true
 		},
 	})

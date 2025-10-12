@@ -26,6 +26,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.SkillCon = 5
 	c.BurstCon = 3
+	c.Moonsign = 1
 
 	w.Character = &c
 
@@ -81,4 +82,12 @@ func (c *char) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]i
 	}
 
 	return nil
+}
+
+func (c *char) getMoonsignLevel() int {
+	count := 0
+	for _, c := range c.Core.Player.Chars() {
+		count += c.Moonsign
+	}
+	return count
 }
