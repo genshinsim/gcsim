@@ -15,19 +15,29 @@ var (
 )
 
 const (
-	skillHitmark          = 26
+	skillHitmark          = 19
 	particleICDKey        = "flins-particle-icd"
 	skillKey              = "manifest-flame"
+	spearStormHitmark     = 23
 	spearStormCDKey       = "spearstorm-cd"
 	thunderousSymphonyKey = "thunderous-symphony"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(32)
-	skillFrames[action.ActionSwap] = 31
+	skillFrames = frames.InitAbilSlice(44)
+	skillFrames[action.ActionAttack] = 19
+	skillFrames[action.ActionSkill] = 22
+	skillFrames[action.ActionBurst] = 19
+	skillFrames[action.ActionDash] = 17
+	skillFrames[action.ActionJump] = 18
+	skillFrames[action.ActionSwap] = 17
 
-	spearStormFrames = frames.InitAbilSlice(32)
-	spearStormFrames[action.ActionSwap] = 31
+	spearStormFrames = frames.InitAbilSlice(42)
+	spearStormFrames[action.ActionAttack] = 28
+	spearStormFrames[action.ActionBurst] = 28
+	spearStormFrames[action.ActionDash] = 26
+	spearStormFrames[action.ActionJump] = 26
+	spearStormFrames[action.ActionWalk] = 32
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -35,8 +45,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.spearStorm()
 	}
 
-	c.AddStatus(skillKey, 10*60, true)
-	c.SetCDWithDelay(action.ActionSkill, 16*60, 1)
+	c.AddStatus(skillKey, 10*60+skillHitmark, true)
+	c.SetCDWithDelay(action.ActionSkill, 16*60, skillHitmark)
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return skillFrames[next] },
@@ -59,9 +69,9 @@ func (c *char) spearStorm() (action.Info, error) {
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 	ap := combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 5, 60)
-	c.Core.QueueAttack(ai, ap, 10, 10)
-	c.AddStatus(thunderousSymphonyKey, c.c1SkillCD(), true)
-
+	c.Core.QueueAttack(ai, ap, spearStormHitmark, spearStormHitmark)
+	c.AddStatus(spearStormCDKey, c.c1SkillCD(), false)
+	c.AddStatus(thunderousSymphonyKey, 6*60, true)
 	c.c2OnSkill()
 	return action.Info{
 		Frames:          func(next action.Action) int { return spearStormFrames[next] },
