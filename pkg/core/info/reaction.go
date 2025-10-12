@@ -66,6 +66,7 @@ type Reactable interface {
 	ReactableSuperconduct
 	ReactableSwirl
 	ReactableVaporize
+	ReactableLunarCharged
 }
 
 type ReactableBloom interface {
@@ -125,4 +126,9 @@ type ReactableSwirl interface {
 
 type ReactableVaporize interface {
 	TryVaporize(a *AttackEvent) bool
+}
+
+type ReactableLunarCharged interface {
+	TryAddLC(a *AttackEvent) bool
+	DoLCAttack()
 }
