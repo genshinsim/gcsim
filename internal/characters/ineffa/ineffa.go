@@ -8,10 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-const (
-	strStackKey = "strStack"
-)
-
 func init() {
 	core.RegisterCharFunc(keys.Ineffa, NewChar)
 }
