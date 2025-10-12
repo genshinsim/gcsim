@@ -38,7 +38,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 7), 0, 0, c.c2MakeCB())
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), 0, 0, c.c2MakeCB())
 	}, hitmark)
 
 	c.a4OnBurst()
