@@ -74,7 +74,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 
 		midHits := 2
-		if c.getMoonsignLevel() == 2 {
+		if c.getMoonsignLevel() >= 2 {
 			midHits += 2
 		}
 
@@ -115,7 +115,7 @@ func (c *char) thunderousSymphony() (action.Info, error) {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 7)
 	c.Core.QueueAttack(ai, ap, symphonyHitmark, symphonyHitmark)
 
-	if c.getMoonsignLevel() == 2 && c.Core.Status.Duration(reactable.LcKey) > 0 {
+	if c.getMoonsignLevel() >= 2 && c.Core.Status.Duration(reactable.LcKey) > 0 {
 		ai.Mult = symphonyExtra[c.TalentLvlBurst()]
 		c.Core.QueueAttack(ai, ap, symphonyHitmark, symphonyExtraHitmark)
 	}
