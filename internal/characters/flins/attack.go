@@ -131,7 +131,7 @@ func (c *char) skillAttack() (action.Info, error) {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0, c.c2MakeAtkCB())
+			c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB, c.c2MakeAtkCB())
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
