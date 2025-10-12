@@ -1,7 +1,7 @@
 package dahlia
 
 import (
-	"strconv"
+	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -147,7 +147,7 @@ func (c *char) addBenisonStack(stacks, charIndex int) {
 	// If C1, Dahlia restores 2.5 Energy per stack gained
 	c.c1OnBenisonEnergy(stacks)
 
-	c.Core.Log.NewEvent(strconv.Itoa(stacks)+" "+burstBenisonStacksKey+" added", glog.LogShieldEvent, charIndex).
+	c.Core.Log.NewEvent(fmt.Sprintf("%v %v added", stacks, burstBenisonStacksKey), glog.LogShieldEvent, charIndex).
 		Write("benison_stacks_remaining", c.currentBenisonStacks).
 		Write("benison_stacks_generated", benisonMaxGenerate-c.benisonGenStackLimit)
 
