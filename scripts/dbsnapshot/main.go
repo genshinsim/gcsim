@@ -104,7 +104,6 @@ func compareFromSnapshot(from, saveTo string, earlyExit bool) error {
 					}
 					return current.save(saveTo)
 				}
-
 			}
 		}
 	}
