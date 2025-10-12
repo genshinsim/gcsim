@@ -47,7 +47,7 @@ func (c *char) Init() error {
 
 func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if k == info.AnimationXingqiuN0StartDelay {
-		return 12
+		return 15
 	}
 	return c.Character.AnimationStartDelay(k)
 }
