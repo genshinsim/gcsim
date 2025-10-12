@@ -80,3 +80,16 @@ func (c *char) spearStorm() (action.Info, error) {
 		State:           action.SkillState,
 	}, nil
 }
+
+func (c *char) particleCB(ac info.AttackCB) {
+	if ac.Target.Type() != info.TargettableEnemy {
+		return
+	}
+
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+
+	c.AddStatus(particleICDKey, 2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay)
+}
