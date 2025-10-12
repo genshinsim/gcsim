@@ -76,7 +76,7 @@ func (c *char) exitNightsoul() {
 		return
 	}
 	c.nightsoulState.ExitBlessing()
-	c.nightsoulState.ClearPoints()
+	// c.nightsoulState.ClearPoints() // TODO: add a method to clear points without a consume event
 	c.nightsoulSrc = -1
 	c.exitStateSrc = -1
 	c.SetCD(action.ActionSkill, 7*60)
