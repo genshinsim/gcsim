@@ -38,10 +38,10 @@ func (c *char) a1OnDischarge() {
 			Mult:             0.65,
 			IgnoreDefPercent: 1,
 		}
-		c.Core.QueueAttack(ai, combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4, 4.1), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4), 0, 0)
 	}
 
-	c.Core.Tasks.Add(a1Atk, 30)
+	c.Core.Tasks.Add(a1Atk, 38)
 }
 
 func (c *char) a4Init() {
