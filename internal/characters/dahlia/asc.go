@@ -97,12 +97,7 @@ func (c *char) updateSpeedBuff(src int) func() {
 			return
 		}
 
-		burstAttackSpeed := c.MaxHP() * 0.001 * 0.005
-		if burstAttackSpeed < 0 {
-			burstAttackSpeed = 0
-		} else if burstAttackSpeed > 0.2 {
-			burstAttackSpeed = 0.2
-		}
+		burstAttackSpeed := min(c.MaxHP()*0.001*0.005, 0.2)
 
 		// If C6, add another 10% Attack Speed
 		if c.Base.Cons >= 6 {
