@@ -74,9 +74,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		favonianFavorDuration := 12*60 + c.c4FavonianFavorBonusDur()
 		c.favonianFavorExpiry = c.Core.F + favonianFavorDuration
 
-		// Add "Favonian Favor" status for all party members
+		// Add "Favonian Favor" status for all party members (affected by Dahlia's hitlag)
 		for _, char := range c.Core.Player.Chars() {
-			char.AddStatus(burstFavonianFavor, favonianFavorDuration, true)
+			hitlag := false
+			if char.Index() == c.Index() {
+				hitlag = true
+			}
+			char.AddStatus(burstFavonianFavor, favonianFavorDuration, hitlag)
 		}
 
 		// Create shield
