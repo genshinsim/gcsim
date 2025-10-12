@@ -12,16 +12,14 @@ import (
 var skillFrames []int
 
 const (
-	skillHitmark   = 21
+	skillHitmark   = 26
 	particleICDKey = "ineffa-particle-icd"
 	birgittaKey    = "birgitta"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(46)
-	skillFrames[action.ActionDash] = 28
-	skillFrames[action.ActionJump] = 28
-	skillFrames[action.ActionSwap] = 45
+	skillFrames = frames.InitAbilSlice(32)
+	skillFrames[action.ActionSwap] = 31
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -38,14 +36,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	c.Core.QueueAttack(ai, combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 4.1), skillHitmark, skillHitmark, c.baseParticleCB)
-	c.QueueCharTask(c.addShield, 37)
+	c.QueueCharTask(c.addShield, 4)
+	c.QueueCharTask(c.summonBirgitta, skillHitmark+42)
 
-	c.SetCDWithDelay(action.ActionSkill, 16*60, 0)
+	c.SetCDWithDelay(action.ActionSkill, 16*60, 1)
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return skillFrames[next] },
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
@@ -53,7 +52,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) summonBirgitta() {
 	c.birgittaSrc = c.Core.F
 	c.AddStatus(birgittaKey, 20*60, false)
-	c.Core.Tasks.Add(c.birgittaDischarge(c.birgittaSrc), 3)
+	c.Core.Tasks.Add(c.birgittaDischarge(c.birgittaSrc), 42)
 }
 
 func (c *char) birgittaDischarge(src int) func() {
@@ -81,7 +80,7 @@ func (c *char) birgittaDischarge(src int) func() {
 
 		c.Core.QueueAttack(ai, combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4, 4.1), 0, 0)
 		c.a1OnDischarge()
-		c.Core.Tasks.Add(c.birgittaDischarge(src), 60)
+		c.Core.Tasks.Add(c.birgittaDischarge(src), 119)
 	}
 }
 
