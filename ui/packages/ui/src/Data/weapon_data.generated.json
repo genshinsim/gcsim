@@ -384,6 +384,14 @@
       "image_name": "UI_EquipIcon_Pole_Narukami",
       "name_text_hash_map ": "3717849275"
     },
+    "etherlightspindlelute": {
+      "id": 14432,
+      "key": "etherlightspindlelute",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_SeeliesLute",
+      "name_text_hash_map ": "21074019"
+    },
     "everlastingmoonglow": {
       "id": 14506,
       "key": "everlastingmoonglow",
