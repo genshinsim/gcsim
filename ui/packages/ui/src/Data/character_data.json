@@ -144,6 +144,11 @@
     "element": "pyro",
     "weapon_class": "polearm"
   },
+  "ineffa": {
+    "rarity": 5,
+    "element": "electro",
+    "weapon_class": "polearm"
+  },
   "itto": {
     "rarity": 5,
     "element": "geo",
