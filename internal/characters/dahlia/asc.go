@@ -97,12 +97,9 @@ func (c *char) updateSpeedBuff(src int) func() {
 			return
 		}
 
-		burstAttackSpeed := min(c.MaxHP()*0.001*0.005, 0.2)
-
+		// Calcuate Attack Speed buff (max 20%)
 		// If C6, add another 10% Attack Speed
-		if c.Base.Cons >= 6 {
-			burstAttackSpeed += 0.1
-		}
+		burstAttackSpeed := min(c.MaxHP()*0.001*0.005, 0.2) + c.c6AtkSpd()
 
 		c.attackSpeedBuff[attributes.AtkSpd] = burstAttackSpeed
 		c.QueueCharTask(c.updateSpeedBuff(src), 0.5*60)

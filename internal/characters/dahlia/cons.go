@@ -80,3 +80,10 @@ func (c *char) c6() {
 		return false
 	}, c6Key)
 }
+
+func (c *char) c6AtkSpd() float64 {
+	if c.Base.Cons < 6 {
+		return 0.0
+	}
+	return 0.1
+}
