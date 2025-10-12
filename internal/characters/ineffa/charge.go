@@ -36,19 +36,17 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
-		HitlagHaltFrames:   0.10,
+		HitlagHaltFrames:   0.06,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHit(
+		combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			c.Core.Combat.PrimaryTarget(),
-			info.Point{Y: 1.5},
-			3.3,
-			3,
+			info.Point{Y: 0.5},
+			2.35,
 		),
 		chargeHitmark,
 		chargeHitmark,
