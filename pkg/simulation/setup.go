@@ -393,24 +393,24 @@ func setupAscendantGleam(core *core.Core) {
 		default:
 			return false
 		}
+		for _, c := range core.Player.Chars() {
+			c.AddReactBonusMod(character.ReactBonusMod{
+				Base: modifier.NewBase("ascendant-gleam", 20*60),
+				Amount: func(ai info.AttackInfo) (float64, bool) {
+					lunarReact := (attacks.LunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.LunarReactionEndDelim)
+					directLunar := (attacks.DirectLunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.DirectLunarReactionEndDelim)
+					if !lunarReact && !directLunar {
+						return 0, false
+					}
+					return buff, true
+				},
+			})
+		}
+
 		return false
 	}
 	core.Events.Subscribe(event.OnSkill, hook, "ascendant-gleam-on-skill")
 	core.Events.Subscribe(event.OnBurst, hook, "ascendant-gleam-on-burst")
-
-	for _, c := range core.Player.Chars() {
-		c.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase("ascendant-gleam", -1),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
-				lunarReact := (attacks.LunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.LunarReactionEndDelim)
-				directLunar := (attacks.DirectLunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.DirectLunarReactionEndDelim)
-				if !lunarReact && !directLunar {
-					return 0, false
-				}
-				return buff, true
-			},
-		})
-	}
 }
 
 func (s *Simulation) handleEnergy() {
