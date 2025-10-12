@@ -618,6 +618,23 @@
       },
       "name_text_hash_map ": "3277782506"
     },
+    "flins": {
+      "id": 10000120,
+      "key": "flins",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Flins",
+      "skill_details": {
+        "skill": 11202,
+        "burst": 11205,
+        "attack": 11201,
+        "burst_energy_cost": 80
+      },
+      "name_text_hash_map ": "1804674810"
+    },
     "freminet": {
       "id": 10000085,
       "key": "freminet",

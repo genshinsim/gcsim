@@ -37,6 +37,7 @@ const (
 	Eula
 	Faruzan
 	Fischl
+	Flins
 	Freminet
 	Furina
 	Gaming
@@ -226,6 +227,10 @@ func init() {
 	charNames[Fischl] = "fischl"
 	charPrettyName[Fischl] = "Fischl"
 	CharKeyToEle[Fischl] = attributes.Electro
+
+	charNames[Flins] = "flins"
+	charPrettyName[Flins] = "Flins"
+	CharKeyToEle[Flins] = attributes.Electro
 
 	charNames[Freminet] = "freminet"
 	charPrettyName[Freminet] = "Freminet"
