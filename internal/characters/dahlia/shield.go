@@ -34,9 +34,8 @@ func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (floa
 	taken, ok := s.Tmpl.OnDamage(dmg, ele, bonus)
 
 	if !ok && s.c.currentBenisonStacks > 0 && s.c.favonianFavorExpiry > s.c.Core.F+burstShieldRegenerated {
-		s.c.currentBenisonStacks--
-
 		s.c.QueueCharTask(func() {
+			s.c.currentBenisonStacks--
 			s.c.genShield()
 			s.c.c2()
 		}, burstShieldRegenerated)

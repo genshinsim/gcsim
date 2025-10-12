@@ -154,6 +154,7 @@ func (c *char) addBenisonStack(stacks, charIndex int) {
 	// If shield is already gone but new stacks got generated, create shield (after some delay)
 	if !c.hasShield() && c.favonianFavorExpiry > c.Core.F+burstShieldAfterBenisonStack {
 		c.QueueCharTask(func() {
+			c.currentBenisonStacks--
 			c.genShield()
 			c.c2()
 		}, burstShieldAfterBenisonStack)
