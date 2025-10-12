@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
-		0, // TO-DO: Should this be skillHitmarks[hold] instead?
+		skillHitmarks[hold], // TODO: assumed snapshot at skillHitmark, check if true
 		skillHitmarks[hold],
 		c.particleCB,
 	)
