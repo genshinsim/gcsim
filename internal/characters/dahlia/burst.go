@@ -60,7 +60,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.8}, 5.5),
-		0, // TODO: snapshot?
+		burstHitmark, // TODO: assumed snapshot at burstHitmark, check if true
 		burstHitmark,
 	)
 
