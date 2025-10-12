@@ -35,7 +35,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skillInitial[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 4.1), skillHitmark, skillHitmark, c.baseParticleCB)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5), skillHitmark, skillHitmark)
 	c.QueueCharTask(c.addShield, 4)
 	c.QueueCharTask(c.summonBirgitta, skillHitmark+42)
 
@@ -78,7 +78,7 @@ func (c *char) birgittaDischarge(src int) func() {
 			Mult:       skillDoT[c.TalentLvlSkill()],
 		}
 
-		c.Core.QueueAttack(ai, combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4, 4.1), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4), 0, 0, c.baseParticleCB)
 		c.a1OnDischarge()
 		c.Core.Tasks.Add(c.birgittaDischarge(src), 119)
 	}
