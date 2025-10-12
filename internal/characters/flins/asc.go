@@ -62,8 +62,6 @@ func (c *char) a4Init() {
 func (c *char) lunarchargeInit() {
 	c.Core.Flags.Custom[reactable.LunarChargeEnableKey] = 1
 
-	// TODO: moonsign?
-
 	// TODO: every 100 ATK that Ineffa has increasing Lunar-Charged's Base DMG by 0.7%, up to a maximum of 14%.
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
