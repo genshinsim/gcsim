@@ -105,7 +105,7 @@ func (c *char) c2MakeCB() func(info.AttackCB) {
 				return
 			}
 			c2AtkDone = true
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 4), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 6), 0, 0)
 		}
 
 		// TODO: What is C2's delay?
@@ -170,7 +170,7 @@ func (c *char) c6Init() {
 
 		c.AddStatus(c6IcdKey, 3.5*60, true)
 		// TODO: damage and snapshot delay?
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 10, 10)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), 10, 10)
 		return false
 	}, c6Key)
 }

@@ -14,10 +14,10 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{9}, {17}, {10, 10 + 11}, {27}}
-	attackHitlagHaltFrame = [][]float64{{0.06}, {0.06}, {0.00, 0.06}, {0.06}}
+	attackHitlagHaltFrame = [][]float64{{0.06}, {0.06}, {0.00, 0.06}, {0.1}}
 	attackDefHalt         = [][]bool{{true}, {true}, {false, true}, {true}}
-	attackHitboxes        = [][][]float64{{{1.6, 2}}, {{2}}, {{2.5}, {2.5}}, {{2}}}
-	attackOffsets         = [][]float64{{1}, {-0.2}, {-0.2, -0.2}, {-0.2}}
+	attackHitboxes        = [][][]float64{{{1.6}}, {{1.6}}, {{2.8, 2}, {2.8, 2}}, {{2.4, 4}}}
+	attackOffsets         = [][]float64{{0.3}, {0.5}, {0.2, -0.2}, {0.5}}
 )
 
 const normalHitNum = 4
@@ -65,8 +65,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			info.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackHitboxes[c.NormalCounter][i][0],
 		)
-		if c.NormalCounter == 0 {
-			ai.StrikeType = attacks.StrikeTypeSpear
+		if c.NormalCounter > 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
 				info.Point{Y: attackOffsets[c.NormalCounter][i]},
@@ -74,6 +73,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				attackHitboxes[c.NormalCounter][i][1],
 			)
 		}
+
+		if c.NormalCounter == 3 {
+			ai.StrikeType = attacks.StrikeTypeSpear
+		}
+
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ai, ap, 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
