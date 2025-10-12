@@ -14,7 +14,12 @@ const (
 
 // C1
 // Each time Dahlia gains 1 of his Elemental Burst Radiant Psalter's Benison stacks, he will regain 2.5 Elemental Energy.
-// NOTE: This is implemented with the Burst
+func (c *char) c1OnBenisonEnergy(stacks int) {
+	if c.Base.Cons < 1 {
+		return
+	}
+	c.AddEnergy(c1Key, 2.5*float64(stacks))
+}
 
 // C2
 // After Dahlia consumes his Elemental Burst Radiant Psalter's Benison stacks to summon a Shield of Sacred Favor,

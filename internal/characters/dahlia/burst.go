@@ -145,9 +145,7 @@ func (c *char) addBenisonStack(stacks, charIndex int) {
 	c.currentBenisonStacks += stacks
 
 	// If C1, Dahlia restores 2.5 Energy per stack gained
-	if c.Base.Cons >= 1 {
-		c.AddEnergy(c1Key, 2.5*float64(stacks))
-	}
+	c.c1OnBenisonEnergy(stacks)
 
 	c.Core.Log.NewEvent(strconv.Itoa(stacks)+" "+burstBenisonStacksKey+" added", glog.LogShieldEvent, charIndex).
 		Write("benison_stacks_remaining", c.currentBenisonStacks).
