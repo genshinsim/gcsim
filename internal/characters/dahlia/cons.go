@@ -39,7 +39,12 @@ func (c *char) c2() {
 
 // C4
 // The Favonian Favor from Dahlia's Elemental Burst Radiant Psalter lasts 3 more seconds.
-// NOTE: This is implemented with the Burst
+func (c *char) c4FavonianFavorBonusDur() int {
+	if c.Base.Cons < 4 {
+		return 0
+	}
+	return 3 * 60
+}
 
 // C6
 // The current active character affected by the Elemental Burst Radiant Psalter's Favonian Favor has their
@@ -48,7 +53,6 @@ func (c *char) c2() {
 // - Revive them.
 // - Restore their HP to 100%.
 // This effect can trigger once every 15 minutes.
-// NOTE: ATK SPD is implemented with the A4
 func (c *char) c6() {
 	if c.Base.Cons < 6 {
 		return

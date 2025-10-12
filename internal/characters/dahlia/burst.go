@@ -69,11 +69,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// After a short delay, add the "Favonian Favor" status and all its effects
 	c.Core.Tasks.Add(func() {
-		// Increasing shield duration if C4+ (it lasts for exactly 15s, so shield remains after Q CD is over)
-		favonianFavorDuration := 12 * 60
-		if c.Base.Cons >= 4 {
-			favonianFavorDuration = 15 * 60
-		}
+		// Increasing Favonisn Favor duration if C4+
+		// It lasts for exactly 15s (pre-hitlag), so shield + attackspeed remain after Q CD is over
+		favonianFavorDuration := 12*60 + c.c4FavonianFavorBonusDur()
 		c.favonianFavorExpiry = c.Core.F + favonianFavorDuration
 
 		// Add "Favonian Favor" status for all party members
