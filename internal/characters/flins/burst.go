@@ -95,7 +95,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
@@ -126,7 +126,7 @@ func (c *char) thunderousSymphony() (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(symphonyFrames),
 		AnimationLength: symphonyFrames[action.InvalidAction],
-		CanQueueAfter:   symphonyFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   symphonyFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
