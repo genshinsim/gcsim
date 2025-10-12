@@ -11,33 +11,34 @@ import (
 )
 
 var (
-	burstFrames     []int
-	symphonyFrames  []int
-	burstHitmarkMid = []int{12, 12 + 11, 12 + 11 + 13, 12 + 11 + 13 + 12}
+	burstFrames    []int
+	symphonyFrames []int
 )
 
-const (
-	burstHitmarkInitial = 111
-	burstHitmarkFinal   = 50
+var burstHitmarkMid = []int{17, 17 + 9, 17 + 9 + 9, 17 + 9 + 9 + 9}
 
-	symphonyHitmark      = 39
-	symphonyExtraHitmark = 59
+const (
+	burstHitmarkInitial  = 93
+	burstHitmarkFinal    = 17 + 9 + 9 + 9 + 27
+	symphonyHitmark      = 44
+	symphonyExtraHitmark = 44 + 18
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(127)
-	burstFrames[action.ActionSkill] = 127
-	burstFrames[action.ActionDash] = 105
-	burstFrames[action.ActionJump] = 106
+	burstFrames = frames.InitAbilSlice(130)
+	burstFrames[action.ActionAttack] = 102
+	burstFrames[action.ActionSkill] = 103
+	burstFrames[action.ActionDash] = 103
+	burstFrames[action.ActionJump] = 103
 	burstFrames[action.ActionWalk] = 130
-	burstFrames[action.ActionSwap] = 126
+	burstFrames[action.ActionSwap] = 91
 
-	symphonyFrames = frames.InitAbilSlice(40)
-	symphonyFrames[action.ActionSkill] = 40
-	symphonyFrames[action.ActionDash] = 40
-	symphonyFrames[action.ActionJump] = 40
-	symphonyFrames[action.ActionWalk] = 40
-	symphonyFrames[action.ActionSwap] = 40
+	symphonyFrames = frames.InitAbilSlice(81)
+	symphonyFrames[action.ActionAttack] = 53
+	symphonyFrames[action.ActionSkill] = 53
+	symphonyFrames[action.ActionDash] = 51
+	symphonyFrames[action.ActionJump] = 50
+	symphonyFrames[action.ActionWalk] = 58
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
