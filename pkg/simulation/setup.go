@@ -399,8 +399,12 @@ func setupAscendantGleam(core *core.Core) {
 				Amount: func(ai info.AttackInfo) (float64, bool) {
 					lunarReact := (attacks.LunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.LunarReactionEndDelim)
 					directLunar := (attacks.DirectLunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.DirectLunarReactionEndDelim)
+
 					if !lunarReact && !directLunar {
 						return 0, false
+					}
+					if core.Flags.LogDebug {
+						core.Log.NewEvent("Adding ascendant gleam react bonus", glog.LogPreDamageMod, char.Index()).Write("amt", buff)
 					}
 					return buff, true
 				},
