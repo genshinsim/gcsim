@@ -15,6 +15,7 @@ import (
 const (
 	LcKey    = "lunarcharged-cloud"
 	lcSrcKey = "lunarcharged-cloud-src"
+	lcIcdKey = "lunarcharged-cloud-icd"
 )
 
 var lcContributorMult = []float64{1.0, 1.0 / 2.0, 1.0 / 12.0, 1.0 / 12.0}
@@ -57,13 +58,13 @@ func (r *Reactable) TryAddLC(a *info.AttackEvent) bool {
 	a.Reacted = true
 	r.core.Events.Emit(event.OnLunarCharged, r.self, a)
 
-	// at this point lc is refereshed
+	// if not LC cloud exists, create a new cloud and start ticking
 	if r.core.Status.Duration(LcKey) == 0 {
 		r.core.Flags.Custom[lcSrcKey] = float64(r.core.F)
-		r.core.Tasks.Add(r.doLCAttack, 9)
-		r.core.Tasks.Add(r.nextLCTick(r.core.F), 120+9)
+		r.core.Tasks.Add(r.nextLCTick(r.core.F), 9)
 	}
-	r.core.Status.Add(LcKey, 240)
+	// the LC cloud lasts 5.5s, or lifetime is extended to last another 5.5s
+	r.core.Status.Add(LcKey, 5.5*60)
 	return true
 }
 
@@ -76,7 +77,7 @@ type lcContribution = struct {
 	em      float64
 }
 
-func (r *Reactable) doLCAttack() {
+func (r *Reactable) DoLCAttack() {
 	contributions := []lcContribution{}
 
 	ap := combat.NewSingleTargetHit(r.self.Key())
@@ -86,8 +87,8 @@ func (r *Reactable) doLCAttack() {
 		DamageSrc:        r.self.Key(),
 		Abil:             string(info.ReactionTypeLunarCharged),
 		AttackTag:        attacks.AttackTagReactionLunarCharge,
-		ICDTag:           attacks.ICDTagLCDamage,
-		ICDGroup:         attacks.ICDGroupReactionB,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Electro,
 		IgnoreDefPercent: 1,
@@ -207,14 +208,24 @@ func (r *Reactable) nextLCTick(src int) func() {
 			return
 		}
 
-		if r.GetAuraDurability(info.ReactionModKeyElectro) > info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyHydro) > info.ZeroDur {
-			r.doLCAttack()
-		} else {
-			r.core.Combat.Log.NewEvent("lunar charged tick skipped", glog.LogSimEvent, -1).
-				Write("reason", "target doesn't have both hydro and electro")
-		}
+		// check all enemies in area
+		// TODO: should be save the area when the cloud is generated or update when the player moves?
+		for _, e := range r.core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(r.core.Combat.Player(), nil, 8), nil) {
+			enemy, ok := e.(info.Reactable)
+			if !ok {
+				continue
+			}
+			if e.StatusIsActive(lcIcdKey) {
+				continue
+			}
 
+			if enemy.GetAuraDurability(info.ReactionModKeyElectro) <= info.ZeroDur || enemy.GetAuraDurability(info.ReactionModKeyHydro) <= info.ZeroDur {
+				continue
+			}
+			e.AddStatus(lcIcdKey, 2*60, true)
+			enemy.DoLCAttack()
+		}
 		// queue up next tick
-		r.core.Tasks.Add(r.nextLCTick(src), 120)
+		r.core.Tasks.Add(r.nextLCTick(src), 6)
 	}
 }
