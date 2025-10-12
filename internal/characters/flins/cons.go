@@ -148,12 +148,12 @@ func (c *char) c4A4() (float64, float64) {
 }
 
 func (c *char) c6Init() {
-	flins_mult := 1.35
-	other_mult := 1.0
+	flinsMult := 1.35
+	otherMult := 1.0
 
 	if c.getMoonsignLevel() >= 2 {
-		flins_mult += 0.1
-		other_mult += 0.1
+		flinsMult += 0.1
+		otherMult += 0.1
 	}
 
 	// TODO: How to do elevate?
@@ -167,8 +167,8 @@ func (c *char) c6Init() {
 		}
 
 		if atk.Info.ActorIndex == c.Index() {
-			atk.Info.Mult *= flins_mult
-			atk.Info.FlatDmg *= flins_mult
+			atk.Info.Mult *= flinsMult
+			atk.Info.FlatDmg *= flinsMult
 			return false
 		}
 
@@ -176,8 +176,8 @@ func (c *char) c6Init() {
 			return false
 		}
 
-		atk.Info.Mult *= other_mult
-		atk.Info.FlatDmg *= other_mult
+		atk.Info.Mult *= otherMult
+		atk.Info.FlatDmg *= otherMult
 
 		return false
 	}, c6Key)
