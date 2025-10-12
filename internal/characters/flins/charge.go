@@ -11,15 +11,15 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 23
+const chargeHitmark = 28
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(60)
-	chargeFrames[action.ActionAttack] = 45
-	chargeFrames[action.ActionSkill] = 45
-	chargeFrames[action.ActionBurst] = 45
+	chargeFrames[action.ActionSkill] = chargeHitmark
+	chargeFrames[action.ActionBurst] = chargeHitmark
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionWalk] = 52
 	chargeFrames[action.ActionSwap] = 43
 }
 
