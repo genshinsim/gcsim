@@ -12,13 +12,16 @@ import (
 var burstFrames []int
 
 const (
-	hitmark = 92
+	hitmark = 111
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(110)
-	burstFrames[action.ActionSkill] = 109
-	burstFrames[action.ActionSwap] = 108
+	burstFrames = frames.InitAbilSlice(127)
+	burstFrames[action.ActionSkill] = 127
+	burstFrames[action.ActionDash] = 105
+	burstFrames[action.ActionJump] = 106
+	burstFrames[action.ActionWalk] = 130
+	burstFrames[action.ActionSwap] = 126
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -42,14 +45,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.c2OnBurst()
 	c.SetCD(action.ActionBurst, 15*60)
 
-	c.QueueCharTask(c.summonBirgitta, 110)
+	c.QueueCharTask(c.summonBirgitta, hitmark)
 
-	c.ConsumeEnergy(5)
+	c.ConsumeEnergy(4)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
