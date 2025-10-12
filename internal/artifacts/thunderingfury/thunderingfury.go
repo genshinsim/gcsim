@@ -31,8 +31,9 @@ func (s *Set) Init() error      { return nil }
 
 // 2pc - Electro DMG Bonus +15%
 // 4pc - Increases DMG caused by Overloaded, Electro-Charged, Superconduct, and Hyperbloom by 40%,
-// and the DMG Bonus conferred by Aggravate is increased by 20%. When Quicken or the aforementioned
-// Elemental Reactions are triggered, Elemental Skill CD is decreased by 1s. Can only occur once every 0.8s.
+// and the DMG Bonus conferred by Aggravate is increased by 20%, and the DMG caused by Lunar-Charged by 20%.
+// When Quicken or the aforementioned Elemental Reactions are triggered, Elemental Skill CD is decreased by
+// 1s. Can only occur once every 0.8s.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{Count: count}
 
@@ -67,6 +68,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				attacks.AttackTagSuperconductDamage,
 				attacks.AttackTagHyperbloom:
 				return 0.4, false
+			case attacks.AttackTagDirectLunarCharged, attacks.AttackTagReactionLunarCharge:
+				return 0.2, false
 			}
 			return 0, false
 		},

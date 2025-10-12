@@ -51,19 +51,21 @@ func (c *char) c1() {
 						if c.Core.Player.Active() != char.Index() {
 							return 0, false
 						}
+
+						switch ai.AttackTag {
+						// Hydro Swirl DMG increases by 15%.
 						// Electro-Charged DMG increases by 15%.
-						if ai.AttackTag == attacks.AttackTagECDamage {
+						// Lunar-Charged DMG increases by 15%.
+						case attacks.AttackTagSwirlHydro, attacks.AttackTagECDamage, attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged:
 							return 0.15, false
 						}
+
 						// Vaporize DMG increases by 15%.
 						// the only way Hydro Swirl can vape is via an AoE Hydro Swirl which doesn't do damage anyways, so this is fine
 						if ai.Amped {
 							return 0.15, false
 						}
-						// Hydro Swirl DMG increases by 15%.
-						if ai.AttackTag == attacks.AttackTagSwirlHydro {
-							return 0.15, false
-						}
+
 						return 0, false
 					},
 				})
