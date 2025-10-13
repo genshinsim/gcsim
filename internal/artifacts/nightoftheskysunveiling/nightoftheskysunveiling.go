@@ -82,6 +82,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}
 
+		if c.Player.Active() != char.Index() {
+			return false
+		}
+
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(gleamingMoonIntentCRKey, 4*60),
 			AffectedStat: attributes.CR,
