@@ -10,31 +10,41 @@ type shd struct {
 	c *char
 }
 
-func (c *char) newShield(base float64, expiry int) *shd {
-	n := &shd{}
-	n.Tmpl = &shield.Tmpl{}
-	n.ActorIndex = c.Index()
-	n.Target = -1
-	n.Src = c.Core.F
-	n.Name = "Radiant Psalter (Shield)"
-	n.ShieldType = shield.DahliaBurst
-	n.HP = base
-	n.Ele = attributes.Hydro
-	n.Expires = expiry
-	n.c = c
-	return n
-}
+var dahliaShield *shd
 
 func (c *char) genShield() {
-	c.Core.Player.Shields.Add(c.newShield(c.shieldHP(), c.favonianFavorExpiry))
+	dahliaShield = &shd{
+		Tmpl: &shield.Tmpl{
+			ActorIndex: c.Index(),
+			Target:     -1,
+			Src:        c.Core.F,
+			Name:       "Radiant Psalter (Shield)",
+			ShieldType: shield.DahliaBurst,
+			HP:         c.shieldHP(),
+			Ele:        attributes.Hydro,
+			Expires:    c.favonianFavorMaxExpiry, // TO-DO: Shields don't support hitlag so this field's value is wrong
+		},
+		c: c,
+	}
+
+	c.Core.Player.Shields.Add(dahliaShield)
+}
+
+func (c *char) removeShield() {
+	if !c.hasShield() || dahliaShield == nil {
+		return
+	}
+
+	dahliaShield.Expires = c.Core.F + 1 // +1f to be sure
+	dahliaShield = nil
 }
 
 // If shield is broken and there are Benison stacks, create shield (after some delay)
 func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) {
 	taken, ok := s.Tmpl.OnDamage(dmg, ele, bonus)
 
-	if !ok && s.c.currentBenisonStacks > 0 && s.c.favonianFavorExpiry > s.c.Core.F+burstShieldRegenerated {
-		s.c.QueueCharTask(func() {
+	if !ok && s.Tmpl.ShieldType == shield.DahliaBurst && s.c.currentBenisonStacks > 0 && s.c.StatusExpiry(burstFavonianFavor) > s.c.Core.F+burstShieldRegenerated {
+		s.c.Core.Tasks.Add(func() {
 			s.c.currentBenisonStacks--
 			s.c.genShield()
 			s.c.c2()

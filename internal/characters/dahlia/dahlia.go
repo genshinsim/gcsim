@@ -16,12 +16,12 @@ type char struct {
 	*tmpl.Character
 
 	benisonGenStackLimit int
-	attackSpeedBuff      []float64
-	a4Src                int
-
 	currentBenisonStacks int
 	normalAttackCount    int
-	favonianFavorExpiry  int
+
+	attackSpeedBuff []float64
+
+	favonianFavorMaxExpiry int // TO-DO: used for shield since they don't support hitlag, but the value is wrong
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -43,6 +43,9 @@ func (c *char) Init() error {
 	c.a1()
 	c.a4()
 	c.c6()
+	for _, char := range c.Core.Player.Chars() {
+		c.addAttackSpeedbuff(char)
+	}
 
 	return nil
 }

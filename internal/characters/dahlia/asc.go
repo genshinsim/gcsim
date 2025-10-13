@@ -24,9 +24,7 @@ func (c *char) a1() {
 	}
 
 	c.Core.Events.Subscribe(event.OnFrozen, func(args ...any) bool {
-		ae := args[1].(*info.AttackEvent)
-		char := c.Core.Player.ByIndex(ae.Info.ActorIndex)
-		if !char.StatusIsActive(burstFavonianFavor) {
+		if !c.StatusIsActive(burstFavonianFavor) {
 			return false
 		}
 
@@ -35,6 +33,7 @@ func (c *char) a1() {
 			return false
 		}
 
+		ae := args[1].(*info.AttackEvent)
 		if !c.StatusIsActive(benisonStackGenerationIcd) {
 			c.AddStatus(benisonStackGenerationIcd, 8*60, true)
 			c.addBenisonStack(2, ae.Info.ActorIndex)
@@ -53,25 +52,10 @@ func (c *char) a4() {
 	}
 
 	c.attackSpeedBuff = make([]float64, attributes.EndStatType)
-	c.a4Src = c.Core.F
-	c.updateSpeedBuff(c.a4Src)()
 
+	// Swaps update Attack Speed buff and provide a new 0.5s timer for the on-fielder
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
-		prev, next := args[0].(int), args[1].(int)
-
-		if !c.StatusIsActive(burstFavonianFavor) {
-			return false
-		}
-
-		// Remove buff from swapped out character and give it to swapped in character
-		for _, char := range c.Core.Player.Chars() {
-			if char.Index() == prev && char.StatusIsActive(attackSpeedKey) {
-				char.DeleteStatMod(attackSpeedKey)
-			}
-			if char.Index() == next && !char.StatusIsActive(attackSpeedKey) {
-				c.addAttackSpeedbuff(char)
-			}
-		}
+		c.updateSpeedBuff(args[1].(int))() // ID of swapped in character
 
 		return false
 	}, attackSpeedKey)
@@ -79,9 +63,17 @@ func (c *char) a4() {
 
 func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(attackSpeedKey, c.favonianFavorExpiry-c.Core.F),
+		Base:         modifier.NewBase(attackSpeedKey, -1),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
+			// No Attack Speed buff if Favonian Favor from Dahlia's Burst is not active
+			if !c.StatusIsActive(burstFavonianFavor) {
+				return nil, false
+			}
+			// No Attack Speed buff to off-field characters
+			if c.Core.Player.Active() != char.Index() {
+				return nil, false
+			}
 			return c.attackSpeedBuff, true
 		},
 	})
@@ -89,15 +81,17 @@ func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
 
 func (c *char) updateSpeedBuff(src int) func() {
 	return func() {
-		if c.a4Src != src {
+		// If no longer on-field, stop updating the Attack Speed buff based on that character's hitlag
+		if c.Core.Player.Active() != src {
 			return
 		}
 
 		// Calcuate Attack Speed buff (max 20%)
 		// If C6, add another 10% Attack Speed
 		burstAttackSpeed := min(c.MaxHP()*0.001*0.005, 0.2) + c.c6AtkSpd()
-
 		c.attackSpeedBuff[attributes.AtkSpd] = burstAttackSpeed
-		c.QueueCharTask(c.updateSpeedBuff(src), 0.5*60)
+
+		// Update Attack Speed buff after 0.5s (affected by on-fielder hitlag)
+		c.Core.Player.ByIndex(src).QueueCharTask(c.updateSpeedBuff(src), 0.5*60)
 	}
 }

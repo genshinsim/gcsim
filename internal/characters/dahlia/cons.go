@@ -64,9 +64,7 @@ func (c *char) c6() {
 	}
 
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
-		char := c.Core.Player.ActiveChar()
-
-		if !char.StatusIsActive(burstFavonianFavor) {
+		if !c.StatusIsActive(burstFavonianFavor) {
 			return false
 		}
 
@@ -81,6 +79,7 @@ func (c *char) c6() {
 		}
 
 		// Revive the active char (even Dahlia himself) back to 100% HP if dead
+		char := c.Core.Player.ActiveChar()
 		if char.CurrentHPRatio() <= 0 {
 			char.SetHPByRatio(1)
 		}

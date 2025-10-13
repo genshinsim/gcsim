@@ -23,7 +23,8 @@ const (
 	burstEnergyDrain             = 8
 	burstCDStart                 = 0
 
-	benisonMaxGenerate = 4
+	benisonMaxGenerate  = 4
+	maxFavonianFavorExt = 5 * 60 // Checked using AS buffs and on-field Dahlia full NA string
 
 	burstFavonianFavor    = "dahlia-favonian-favor"
 	burstBenisonStacksKey = "dahlia-benison-stacks"
@@ -70,24 +71,22 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// After a short delay, add the "Favonian Favor" status and all its effects
 	c.Core.Tasks.Add(func() {
 		// Increasing Favonisn Favor duration if C4+
-		// It lasts for exactly 15s (pre-hitlag), so shield + attackspeed remain after Q CD is over
+		// It lasts for exactly 15s (pre-hitlag), so shield + Attack Speed remain after Q CD is over
 		favonianFavorDuration := 12*60 + c.c4FavonianFavorBonusDur()
-		c.favonianFavorExpiry = c.Core.F + favonianFavorDuration
+		c.favonianFavorMaxExpiry = c.Core.F + favonianFavorDuration + maxFavonianFavorExt
 
-		// Add "Favonian Favor" status for all party members (affected by Dahlia's hitlag)
-		for _, char := range c.Core.Player.Chars() {
-			hitlag := false
-			if char.Index() == c.Index() {
-				hitlag = true
-			}
-			char.AddStatus(burstFavonianFavor, favonianFavorDuration, hitlag)
-		}
+		// Add "Favonian Favor" status to Dahlia
+		// (team members should technically get it but only he can extend it with hitlag)
+		c.AddStatus(burstFavonianFavor, favonianFavorDuration, true)
+		c.QueueCharTask(func() {
+			c.removeShield()
+		}, favonianFavorDuration)
 
 		// Create shield
 		c.genShield()
 
-		// Apply Attack Speed buff to Dahlia
-		c.addAttackSpeedbuff(c.Core.Player.ActiveChar())
+		// Start calculating Attack Speed buff
+		c.updateSpeedBuff(c.Core.Player.Active())()
 	}, burstShieldInitial)
 
 	return action.Info{
@@ -102,11 +101,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 func (c *char) setupBurst() {
 	// Add Benison stack when 4 hits from NAs occur
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
-		char := c.Core.Player.ActiveChar()
-		if !char.StatusIsActive(burstFavonianFavor) {
+		if !c.StatusIsActive(burstFavonianFavor) {
 			return false
 		}
 
+		char := c.Core.Player.ActiveChar()
 		ae := args[1].(*info.AttackEvent)
 		if char.Index() != ae.Info.ActorIndex {
 			return false
@@ -152,8 +151,8 @@ func (c *char) addBenisonStack(stacks, charIndex int) {
 		Write("benison_stacks_generated", benisonMaxGenerate-c.benisonGenStackLimit)
 
 	// If shield is already gone but new stacks got generated, create shield (after some delay)
-	if !c.hasShield() && c.favonianFavorExpiry > c.Core.F+burstShieldAfterBenisonStack {
-		c.QueueCharTask(func() {
+	if !c.hasShield() && c.StatusExpiry(burstFavonianFavor) > c.Core.F+burstShieldAfterBenisonStack {
+		c.Core.Tasks.Add(func() {
 			c.currentBenisonStacks--
 			c.genShield()
 			c.c2()
