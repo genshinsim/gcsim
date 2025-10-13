@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -40,12 +42,35 @@ func init() {
 	spearStormFrames[action.ActionWalk] = 32
 }
 
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+		// do nothing if previous char wasn't gaming
+		prev := args[0].(int)
+		if prev != c.Index() {
+			return false
+		}
+		if !c.StatusIsActive(skillKey) {
+			return false
+		}
+
+		c.DeleteStatus(skillKey)
+		c.DeleteStatus(spearStormCDKey)
+		c.DeleteStatus(thunderousSymphonyKey)
+
+		return false
+	}, "gaming-exit")
+}
+
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatModIsActive(skillKey) {
 		return c.spearStorm()
 	}
 
 	c.AddStatus(skillKey, 10*60+skillHitmark, true)
+
+	// delete the spearStorm CD when the skill state ends
+	c.QueueCharTask(func() { c.DeleteStatus(spearStormCDKey) }, 10*60+skillHitmark)
+
 	c.SetCDWithDelay(action.ActionSkill, 16*60, skillHitmark)
 
 	return action.Info{
@@ -71,6 +96,18 @@ func (c *char) spearStorm() (action.Info, error) {
 	ap := combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 5, 60)
 	c.Core.QueueAttack(ai, ap, spearStormHitmark, spearStormHitmark)
 	c.AddStatus(spearStormCDKey, c.c1SkillCD(), false)
+	if c.Core.Flags.LogDebug {
+		actionStr := action.ActionSkill.String()
+		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), actionStr, " cooldown triggered").
+			Write("type", actionStr).
+			Write("expiry", c.Core.F+c.c1SkillCD()).
+			Write("original_cd", c.Core.F+c.c1SkillCD())
+		c.Core.Tasks.Add(func() {
+			c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), actionStr, " cooldown ready").
+				Write("type", actionStr)
+		}, c.c1SkillCD())
+	}
+
 	c.AddStatus(thunderousSymphonyKey, 6*60, true)
 	c.c2OnSkill()
 	return action.Info{

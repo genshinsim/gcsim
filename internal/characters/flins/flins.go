@@ -34,6 +34,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
+	c.onExitField()
 	c.a1Init()
 	c.a4Init()
 	c.lunarchargeInit()
