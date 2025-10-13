@@ -43,7 +43,7 @@ func (c *char) removeShield() {
 func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) {
 	taken, ok := s.Tmpl.OnDamage(dmg, ele, bonus)
 
-	if !ok && s.Tmpl.ShieldType == shield.DahliaBurst && s.c.currentBenisonStacks > 0 && s.c.StatusExpiry(burstFavonianFavor) > s.c.Core.F+burstShieldRegenerated {
+	if !ok && s.ShieldType == shield.DahliaBurst && s.c.currentBenisonStacks > 0 && s.c.StatusExpiry(burstFavonianFavor) > s.c.Core.F+burstShieldRegenerated {
 		s.c.Core.Tasks.Add(func() {
 			s.c.currentBenisonStacks--
 			s.c.genShield()
