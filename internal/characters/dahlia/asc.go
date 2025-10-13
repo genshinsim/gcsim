@@ -1,6 +1,7 @@
 package dahlia
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -72,6 +73,10 @@ func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
 			}
 			// No Attack Speed buff to off-field characters
 			if c.Core.Player.Active() != char.Index() {
+				return nil, false
+			}
+			// No Attack Speed for Charged Attacks
+			if c.Core.Player.CurrentState() != action.NormalAttackState {
 				return nil, false
 			}
 			return c.attackSpeedBuff, true
