@@ -43,9 +43,6 @@ func (c *char) Init() error {
 	c.a1()
 	c.a4()
 	c.c6()
-	for _, char := range c.Core.Player.Chars() {
-		c.addAttackSpeedbuff(char)
-	}
 
 	return nil
 }

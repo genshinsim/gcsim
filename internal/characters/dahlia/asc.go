@@ -60,7 +60,19 @@ func (c *char) a4() {
 			return false
 		}
 
-		c.updateSpeedBuff(args[1].(int))() // ID of swapped in character
+		prev, next := args[0].(int), args[1].(int)
+
+		// Remove Attack Speed buff from swapped out character and give it to swapped in character
+		for _, char := range c.Core.Player.Chars() {
+			if char.Index() == prev && char.StatusIsActive(attackSpeedKey) {
+				char.DeleteStatMod(attackSpeedKey)
+			}
+			if char.Index() == next && !char.StatusIsActive(attackSpeedKey) {
+				c.addAttackSpeedbuff(char)
+			}
+		}
+
+		c.updateSpeedBuff(next)() // ID of swapped in character
 
 		return false
 	}, attackSpeedKey)
@@ -73,10 +85,6 @@ func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
 		Amount: func() ([]float64, bool) {
 			// No Attack Speed buff if Favonian Favor from Dahlia's Burst is not active
 			if !c.StatusIsActive(burstFavonianFavor) {
-				return nil, false
-			}
-			// No Attack Speed buff to off-field characters
-			if c.Core.Player.Active() != char.Index() {
 				return nil, false
 			}
 			// No Attack Speed for Charged Attacks
