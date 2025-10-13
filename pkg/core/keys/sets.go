@@ -61,6 +61,7 @@ var setNames = []string{
 	"maidenbeloved",
 	"marechausseehunter",
 	"martialartist",
+	"nightoftheskysunveiling",
 	"nighttimewhispersintheechoingwoods",
 	"noblesseoblige",
 	"nymphsdream",
@@ -120,6 +121,7 @@ const (
 	MaidenBeloved
 	MarechausseeHunter
 	MartialArtist
+	NightOfTheSkysUnveiling
 	NighttimeWhispersInTheEchoingWoods
 	NoblesseOblige
 	NymphsDream
