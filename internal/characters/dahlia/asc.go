@@ -23,27 +23,25 @@ func (c *char) a1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnFrozen, c.a1Hook, onFrozenReaction)
-}
+	c.Core.Events.Subscribe(event.OnFrozen, func(args ...any) bool {
+		ae := args[1].(*info.AttackEvent)
+		char := c.Core.Player.ByIndex(ae.Info.ActorIndex)
+		if !char.StatusIsActive(burstFavonianFavor) {
+			return false
+		}
 
-func (c *char) a1Hook(args ...any) bool {
-	ae := args[1].(*info.AttackEvent)
-	char := c.Core.Player.ByIndex(ae.Info.ActorIndex)
-	if !char.StatusIsActive(burstFavonianFavor) {
+		_, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+
+		if !c.StatusIsActive(benisonStackGenerationIcd) {
+			c.AddStatus(benisonStackGenerationIcd, 8*60, true)
+			c.addBenisonStack(2, ae.Info.ActorIndex)
+		}
+
 		return false
-	}
-
-	_, ok := args[0].(*enemy.Enemy)
-	if !ok {
-		return false
-	}
-
-	if !c.StatusIsActive(benisonStackGenerationIcd) {
-		c.AddStatus(benisonStackGenerationIcd, 8*60, true)
-		c.addBenisonStack(2, ae.Info.ActorIndex)
-	}
-
-	return false
+	}, onFrozenReaction)
 }
 
 // A4
@@ -58,27 +56,25 @@ func (c *char) a4() {
 	c.a4Src = c.Core.F
 	c.updateSpeedBuff(c.a4Src)()
 
-	c.Core.Events.Subscribe(event.OnCharacterSwap, c.a4Hook, attackSpeedKey)
-}
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+		prev, next := args[0].(int), args[1].(int)
 
-func (c *char) a4Hook(args ...any) bool {
-	prev, next := args[0].(int), args[1].(int)
+		if !c.StatusIsActive(burstFavonianFavor) {
+			return false
+		}
 
-	if !c.StatusIsActive(burstFavonianFavor) {
+		// Remove buff from swapped out character and give it to swapped in character
+		for _, char := range c.Core.Player.Chars() {
+			if char.Index() == prev && char.StatusIsActive(attackSpeedKey) {
+				char.DeleteStatMod(attackSpeedKey)
+			}
+			if char.Index() == next && !char.StatusIsActive(attackSpeedKey) {
+				c.addAttackSpeedbuff(char)
+			}
+		}
+
 		return false
-	}
-
-	// Remove buff from swapped out character and give it to swapped in character
-	for _, char := range c.Core.Player.Chars() {
-		if char.Index() == prev && char.StatusIsActive(attackSpeedKey) {
-			char.DeleteStatMod(attackSpeedKey)
-		}
-		if char.Index() == next && !char.StatusIsActive(attackSpeedKey) {
-			c.addAttackSpeedbuff(char)
-		}
-	}
-
-	return false
+	}, attackSpeedKey)
 }
 
 func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
