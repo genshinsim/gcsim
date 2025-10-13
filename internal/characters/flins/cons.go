@@ -27,6 +27,10 @@ func (c *char) c1Init() {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
+		if c.StatusIsActive(c1IcdKey) {
+			return false
+		}
+
 		c.AddEnergy(c1Key, 8)
 		c.AddStatus(c1IcdKey, 5.5*60, true)
 		return false
@@ -149,7 +153,7 @@ func (c *char) c4A4() (float64, float64) {
 
 func (c *char) c6Init() {
 	if c.Base.Cons < 6 {
-		return 
+		return
 	}
 	flinsMult := 1.35
 	otherMult := 1.0
