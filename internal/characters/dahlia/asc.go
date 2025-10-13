@@ -56,6 +56,10 @@ func (c *char) a4() {
 
 	// Swaps update Attack Speed buff and provide a new 0.5s timer for the on-fielder
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+		if !c.StatusIsActive(burstFavonianFavor) {
+			return false
+		}
+
 		c.updateSpeedBuff(args[1].(int))() // ID of swapped in character
 
 		return false
