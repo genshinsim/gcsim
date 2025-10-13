@@ -148,6 +148,9 @@ func (c *char) c4A4() (float64, float64) {
 }
 
 func (c *char) c6Init() {
+	if c.Base.Cons < 6 {
+		return 
+	}
 	flinsMult := 1.35
 	otherMult := 1.0
 
