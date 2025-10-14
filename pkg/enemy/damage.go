@@ -48,7 +48,8 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		a = atk.Snapshot.Stats.TotalATK()
 	}
 
-	base := atk.Info.Mult*(1+atk.Info.BaseDmgBonus)*a + atk.Info.FlatDmg
+	// BaseDmgBonus affects flat attack for EM scaling based attacks and flatdmg from reactions
+	base := (atk.Info.Mult*a + atk.Info.FlatDmg) * (1 + atk.Info.BaseDmgBonus)
 	damage := base * (1 + dmgBonus)
 
 	// make sure 0 <= cr <= 1
