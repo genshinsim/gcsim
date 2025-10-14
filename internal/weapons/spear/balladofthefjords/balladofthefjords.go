@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -36,7 +36,7 @@ func (w *Weapon) Init() error {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = em
 	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("balladofthefjords", -1),
+		Base:         gmod.NewBase("balladofthefjords", -1),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 			return m, true

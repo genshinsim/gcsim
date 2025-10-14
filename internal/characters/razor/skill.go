@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -213,7 +213,7 @@ func (c *char) addSigil(done bool) info.AttackCBFunc {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ER] = float64(c.sigils) * 0.2
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(skillSigilKey, 18*60),
+			Base:         gmod.NewBase(skillSigilKey, 18*60),
 			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
 				return m, true

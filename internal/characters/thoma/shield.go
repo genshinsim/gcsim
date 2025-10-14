@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) genShield(src string, shieldamt float64, shouldStack bool) {
@@ -41,7 +41,7 @@ func (c *char) genShield(src string, shieldamt float64, shouldStack bool) {
 	if c.Base.Cons >= 6 {
 		for _, char := range c.Core.Player.Chars() {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("thoma-c6", 360),
+				Base: gmod.NewBaseWithHitlag("thoma-c6", 360),
 				Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 					switch ae.Info.AttackTag {
 					case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:

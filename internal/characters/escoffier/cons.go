@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -63,7 +63,7 @@ func (c *char) c1() {
 		// TODO: check if this buff is affected by hitlag on characters or hitlag on escoffier
 		// Currently assuming affected by hitlag on characters
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(c1Key, c1Dur),
+			Base: gmod.NewBaseWithHitlag(c1Key, c1Dur),
 			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Cryo {
 					return nil, false

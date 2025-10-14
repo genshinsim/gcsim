@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 type NeuvA1Keys struct {
@@ -61,7 +61,7 @@ func (c *char) countA1() int {
 
 func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("neuvillette-a4", -1),
+		Base:         gmod.NewBase("neuvillette-a4", -1),
 		AffectedStat: attributes.HydroP,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {

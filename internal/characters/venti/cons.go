@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C1:
@@ -45,12 +45,12 @@ func (c *char) c2(a info.AttackCB) {
 	}
 
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("venti-c2-anemo", 600),
+		Base:  gmod.NewBaseWithHitlag("venti-c2-anemo", 600),
 		Ele:   attributes.Anemo,
 		Value: -0.12,
 	})
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("venti-c2-phys", 600),
+		Base:  gmod.NewBaseWithHitlag("venti-c2-phys", 600),
 		Ele:   attributes.Physical,
 		Value: -0.12,
 	})
@@ -68,7 +68,7 @@ func (c *char) c4() {
 		}
 		// apply C4 to Venti
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("venti-c4", 600),
+			Base:         gmod.NewBaseWithHitlag("venti-c4", 600),
 			AffectedStat: attributes.AnemoP,
 			Amount: func() ([]float64, bool) {
 				return c.c4bonus, true
@@ -88,7 +88,7 @@ func (c *char) c6(ele attributes.Element) func(a info.AttackCB) {
 			return
 		}
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("venti-c6-"+ele.String(), 600),
+			Base:  gmod.NewBaseWithHitlag("venti-c6-"+ele.String(), 600),
 			Ele:   ele,
 			Value: -0.20,
 		})

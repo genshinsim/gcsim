@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -73,7 +73,7 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.1 * float64(c.c2Hits)
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("charlotte-c2", 12*60),
+			Base:         gmod.NewBaseWithHitlag("charlotte-c2", 12*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true

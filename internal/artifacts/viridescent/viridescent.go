@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -35,7 +35,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AnemoP] = 0.15
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("vv-2pc", -1),
+			Base:         gmod.NewBase("vv-2pc", -1),
 			AffectedStat: attributes.AnemoP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -49,7 +49,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	// add +0.6 reaction damage
 	char.AddReactBonusMod(character.ReactBonusMod{
-		Base: modifier.NewBase("vv-4pc", -1),
+		Base: gmod.NewBase("vv-4pc", -1),
 		Amount: func(ai info.AttackInfo) (float64, bool) {
 			// check to make sure this is not an amped swirl
 			if ai.Amped || ai.Catalyzed {
@@ -84,7 +84,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			t.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag(key, 10*60),
+				Base:  gmod.NewBaseWithHitlag(key, 10*60),
 				Ele:   ele,
 				Value: -0.4,
 			})
@@ -128,7 +128,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 
 		t.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag(key, 10*60),
+			Base:  gmod.NewBaseWithHitlag(key, 10*60),
 			Ele:   ele,
 			Value: -0.4,
 		})

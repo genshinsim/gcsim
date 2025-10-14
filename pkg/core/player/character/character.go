@@ -10,8 +10,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/task"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Character interface {
@@ -122,7 +122,7 @@ type CharWrapper struct {
 	BaseStats [attributes.EndStatType]float64
 
 	// mods
-	mods []modifier.Mod
+	mods []gmod.Mod
 
 	// dash cd: keeps track of remaining cd frames for off-field chars
 	RemainingDashCD int
@@ -151,7 +151,7 @@ func New(
 		events:        events,
 		tasks:         tasker,
 		Tags:          make(map[string]int),
-		mods:          make([]modifier.Mod, 0, 20),
+		mods:          make([]gmod.Mod, 0, 20),
 		f:             f,
 		debug:         debug,
 	}

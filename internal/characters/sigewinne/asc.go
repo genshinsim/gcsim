@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -73,7 +73,7 @@ func (c *char) a1Self() {
 	buff := make([]float64, attributes.EndStatType)
 	buff[attributes.HydroP] = a1DmgBuff
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("sigewinne-a1", skillCD*60),
+		Base: gmod.NewBaseWithHitlag("sigewinne-a1", skillCD*60),
 		Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			return buff, true
 		},
@@ -83,7 +83,7 @@ func (c *char) a1Self() {
 func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("sigewinne-a4", -1),
+		Base:         gmod.NewBase("sigewinne-a4", -1),
 		AffectedStat: attributes.Heal,
 		Amount: func() ([]float64, bool) {
 			totalHpDebt := 0.

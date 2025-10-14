@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -38,7 +38,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PyroP] = 0.15
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("crimson-2pc", -1),
+			Base:         gmod.NewBase("crimson-2pc", -1),
 			AffectedStat: attributes.PyroP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -67,7 +67,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			mStacks[attributes.PyroP] = 0.15 * 0.5 * float64(s.stacks)
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(cw4pc, 10*60),
+				Base:         gmod.NewBaseWithHitlag(cw4pc, 10*60),
 				AffectedStat: attributes.PyroP,
 				Amount: func() ([]float64, bool) {
 					return mStacks, true
@@ -78,7 +78,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}, fmt.Sprintf("%v-cw-4pc", char.Base.Key.String()))
 
 		char.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase("crimson-4pc", -1),
+			Base: gmod.NewBase("crimson-4pc", -1),
 			Amount: func(ai info.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
 				case attacks.AttackTagOverloadDamage,

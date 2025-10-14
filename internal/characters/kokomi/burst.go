@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -68,7 +68,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.1
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("kokomi-c4", 10*60),
+			Base:         gmod.NewBase("kokomi-c4", 10*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				return m, true

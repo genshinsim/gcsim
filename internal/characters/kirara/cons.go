@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -68,7 +68,7 @@ func (c *char) c4() {
 func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(c6Status, 15*60),
+			Base: gmod.NewBaseWithHitlag(c6Status, 15*60),
 			Amount: func() ([]float64, bool) {
 				return c.c6Buff, true
 			},

@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var reactToElements = map[info.ReactionType][]attributes.Element{
@@ -77,7 +77,7 @@ func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...any)
 			for _, ele := range elements {
 				stat := attributes.EleToDmgP(ele)
 				other.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%v", ele), 15*60),
+					Base:         gmod.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%v", ele), 15*60),
 					AffectedStat: stat,
 					Amount: func() ([]float64, bool) {
 						clear(s.buff)
@@ -90,7 +90,7 @@ func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...any)
 					continue
 				}
 				other.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%v", ele), 20*60),
+					Base:         gmod.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%v", ele), 20*60),
 					AffectedStat: stat,
 					Amount: func() ([]float64, bool) {
 						clear(s.nightsoulBuff)

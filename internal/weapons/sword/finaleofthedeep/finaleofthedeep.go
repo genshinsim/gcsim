@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, icd, true)
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("finaleofthedeep-atk-boost", duration),
+			Base:         gmod.NewBaseWithHitlag("finaleofthedeep-atk-boost", duration),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -92,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		w.collectedDebt = 0
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("finaleofthedeep-bond-flatatk-boost", duration),
+			Base:         gmod.NewBaseWithHitlag("finaleofthedeep-bond-flatatk-boost", duration),
 			AffectedStat: attributes.ATK,
 			Amount: func() ([]float64, bool) {
 				return bond, true

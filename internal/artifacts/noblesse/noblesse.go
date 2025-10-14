@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -47,7 +47,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.nob2buff = make([]float64, attributes.EndStatType)
 		s.nob2buff[attributes.DmgP] = 0.20
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("nob-2pc", -1),
+			Base: gmod.NewBase("nob-2pc", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false
@@ -81,7 +81,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				}
 				this.QueueCharTask(func() {
 					this.AddStatMod(character.StatMod{
-						Base:         modifier.NewBaseWithHitlag(buffKey, buffDuration),
+						Base:         gmod.NewBaseWithHitlag(buffKey, buffDuration),
 						AffectedStat: attributes.ATKP,
 						Amount: func() ([]float64, bool) {
 							return s.nob4buff, true

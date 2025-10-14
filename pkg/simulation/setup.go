@@ -16,7 +16,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const nightsoulBurstICDStatus = "nightsoul-burst-icd"
@@ -122,7 +122,7 @@ func SetupResonance(s *core.Core) {
 			}
 			for _, c := range chars {
 				c.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("pyro-res", -1),
+					Base:         gmod.NewBase("pyro-res", -1),
 					AffectedStat: attributes.NoStat,
 					Amount:       f,
 				})
@@ -133,7 +133,7 @@ func SetupResonance(s *core.Core) {
 			val[attributes.HPP] = 0.25
 			for _, c := range chars {
 				c.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("hydro-res-hpp", -1),
+					Base:         gmod.NewBase("hydro-res-hpp", -1),
 					AffectedStat: attributes.HPP,
 					Amount: func() ([]float64, bool) {
 						return val, true
@@ -155,7 +155,7 @@ func SetupResonance(s *core.Core) {
 			}
 			for _, c := range chars {
 				c.AddAttackMod(character.AttackMod{
-					Base:   modifier.NewBase("cryo-res", -1),
+					Base:   gmod.NewBase("cryo-res", -1),
 					Amount: f,
 				})
 			}
@@ -204,7 +204,7 @@ func SetupResonance(s *core.Core) {
 				atk := args[1].(*info.AttackEvent)
 				if s.Player.Shields.CharacterIsShielded(atk.Info.ActorIndex, s.Player.Active()) {
 					t.AddResistMod(info.ResistMod{
-						Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
+						Base:  gmod.NewBaseWithHitlag("geo-res", 15*60),
 						Ele:   attributes.Geo,
 						Value: -0.2,
 					})
@@ -222,7 +222,7 @@ func SetupResonance(s *core.Core) {
 			}
 			for _, c := range chars {
 				c.AddAttackMod(character.AttackMod{
-					Base:   modifier.NewBase("geo-res", -1),
+					Base:   gmod.NewBase("geo-res", -1),
 					Amount: atkf,
 				})
 			}
@@ -234,7 +234,7 @@ func SetupResonance(s *core.Core) {
 			// TODO: movement spd increase?
 			for _, c := range chars {
 				c.AddCooldownMod(character.CooldownMod{
-					Base:   modifier.NewBase("anemo-res-cd", -1),
+					Base:   gmod.NewBase("anemo-res-cd", -1),
 					Amount: func(a action.Action) float64 { return -0.05 },
 				})
 			}
@@ -243,7 +243,7 @@ func SetupResonance(s *core.Core) {
 			val[attributes.EM] = 50
 			for _, c := range chars {
 				c.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("dendro-res-50", -1),
+					Base:         gmod.NewBase("dendro-res-50", -1),
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
 						return val, true
@@ -259,7 +259,7 @@ func SetupResonance(s *core.Core) {
 				}
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
-						Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
+						Base:         gmod.NewBaseWithHitlag("dendro-res-30", 6*60),
 						AffectedStat: attributes.EM,
 						Amount: func() ([]float64, bool) {
 							return twoBuff, true
@@ -277,7 +277,7 @@ func SetupResonance(s *core.Core) {
 			threeEl := func(_ ...any) bool {
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
-						Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
+						Base:         gmod.NewBaseWithHitlag("dendro-res-20", 6*60),
 						AffectedStat: attributes.EM,
 						Amount: func() ([]float64, bool) {
 							return threeBuff, true
@@ -313,7 +313,7 @@ func SetupMisc(c *core.Core) {
 		}
 		// add shred
 		t.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
+			Base:  gmod.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
 			Ele:   attributes.Physical,
 			Value: -0.4,
 		})

@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 		for _, char := range c.Core.Player.Chars() {
 			char.AddReactBonusMod(character.ReactBonusMod{
-				Base: modifier.NewBaseWithHitlag(burstDmgBonusKey, burstDuration),
+				Base: gmod.NewBaseWithHitlag(burstDmgBonusKey, burstDuration),
 				Amount: func(ai info.AttackInfo) (float64, bool) {
 					if ai.AttackTag == attacks.AttackTagBloom {
 						return burstDmgBonus[c.TalentLvlBurst()], false

@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const a1Key = "xiao-a1"
@@ -19,7 +19,7 @@ func (c *char) a1() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(a1Key, 900+burstStart),
+		Base:         gmod.NewBaseWithHitlag(a1Key, 900+burstStart),
 		AffectedStat: attributes.DmgP,
 		Amount: func() ([]float64, bool) {
 			stacks := min(1+(c.Core.F-c.qStarted)/180, 5)
@@ -45,7 +45,7 @@ func (c *char) a4() {
 	}
 	c.a4buff[attributes.DmgP] = float64(c.a4stacks) * 0.15
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(a4BuffKey, 420),
+		Base: gmod.NewBaseWithHitlag(a4BuffKey, 420),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			return c.a4buff, atk.Info.AttackTag == attacks.AttackTagElementalArt
 		},

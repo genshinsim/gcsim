@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -36,7 +36,7 @@ func (c *char) addDetectorStack() {
 func (c *char) a1(char *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(a1Buff, skillBuffDuration),
+		Base:         gmod.NewBaseWithHitlag(a1Buff, skillBuffDuration),
 		AffectedStat: attributes.PhyP,
 		Amount: func() ([]float64, bool) {
 			m[attributes.PhyP] = 0.1 * float64(c.Tag(a1Stacks))

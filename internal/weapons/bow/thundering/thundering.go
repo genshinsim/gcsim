@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, key)
 
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("thundering-pulse", -1),
+		Base: gmod.NewBase("thundering-pulse", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			m[attributes.DmgP] = 0
 			if atk.Info.AttackTag != attacks.AttackTagNormal {

@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	if char.Base.Key == keys.Aloy {
 		mATK[attributes.ATK] = 66
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("predator-atk", -1),
+			Base:         gmod.NewBase("predator-atk", -1),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return mATK, true
@@ -83,7 +83,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(stackKey, stackDuration, true)
 
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("predator-dmg", stackDuration),
+			Base: gmod.NewBaseWithHitlag("predator-dmg", stackDuration),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if (atk.Info.AttackTag == attacks.AttackTagNormal) || (atk.Info.AttackTag == attacks.AttackTagExtra) {
 					mDMG[attributes.DmgP] = buffDmgP * float64(stacks)

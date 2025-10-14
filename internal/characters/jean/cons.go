@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C1:
@@ -31,7 +31,7 @@ func (c *char) c2() {
 		// apply C2 to all characters
 		for _, this := range c.Core.Player.Chars() {
 			this.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("jean-c2", 900),
+				Base:         gmod.NewBaseWithHitlag("jean-c2", 900),
 				AffectedStat: attributes.AtkSpd,
 				Amount: func() ([]float64, bool) {
 					return c.c2buff, true
@@ -50,7 +50,7 @@ func (c *char) c4() {
 	enemies := c.Core.Combat.EnemiesWithinArea(c.burstArea, nil)
 	for _, e := range enemies {
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("jean-c4", 72), // 1.2s
+			Base:  gmod.NewBaseWithHitlag("jean-c4", 72), // 1.2s
 			Ele:   attributes.Anemo,
 			Value: -0.4,
 		})

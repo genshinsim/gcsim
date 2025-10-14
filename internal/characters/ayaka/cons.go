@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -52,7 +52,7 @@ func (c *char) c4(a info.AttackCB) {
 		return
 	}
 	e.AddDefMod(info.DefMod{
-		Base:  modifier.NewBaseWithHitlag("ayaka-c4", 60*6),
+		Base:  gmod.NewBaseWithHitlag("ayaka-c4", 60*6),
 		Value: -0.3,
 	})
 }
@@ -85,7 +85,7 @@ func (c *char) c6AddBuff() {
 	m[attributes.DmgP] = 2.98
 
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("ayaka-c6", -1),
+		Base: gmod.NewBase("ayaka-c6", -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false

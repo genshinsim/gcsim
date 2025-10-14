@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -34,7 +34,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.15
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBase("obsidiancodex-2pc", -1),
+			Base: gmod.NewBase("obsidiancodex-2pc", -1),
 			Amount: func() ([]float64, bool) {
 				if !char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
 					return nil, false
@@ -68,7 +68,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.consumeCount = 0
 				char.AddStatus(icdKey, 60, true)
 				char.AddStatMod(character.StatMod{
-					Base: modifier.NewBaseWithHitlag("obsidiancodex-4pc", 6*60),
+					Base: gmod.NewBaseWithHitlag("obsidiancodex-4pc", 6*60),
 					Amount: func() ([]float64, bool) {
 						return m, true
 					},

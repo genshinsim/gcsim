@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -29,7 +29,7 @@ func (c *char) c1() {
 	buff[attributes.CR] = 0.15
 
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(c1Key, -1),
+		Base: gmod.NewBase(c1Key, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if !strings.HasPrefix(atk.Info.Abil, pressureBaseName) {
 				return nil, false
@@ -87,7 +87,7 @@ func (c *char) c4c6() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c4Key, 6*60),
+			Base:         gmod.NewBaseWithHitlag(c4Key, 6*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				c4M[attributes.ATKP] = float64(c.c4Stacks) * 0.09
@@ -114,7 +114,7 @@ func (c *char) c4c6() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c6Key, 6*60),
+			Base:         gmod.NewBaseWithHitlag(c6Key, 6*60),
 			AffectedStat: attributes.CD,
 			Amount: func() ([]float64, bool) {
 				c6M[attributes.CD] = float64(c.c6Stacks) * 0.12

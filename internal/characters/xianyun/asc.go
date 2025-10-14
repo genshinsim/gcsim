@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -28,7 +28,7 @@ func (c *char) a1() {
 	for i, char := range c.Core.Player.Chars() {
 		mCR := make([]float64, attributes.EndStatType)
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("xianyun-a1-buff", -1),
+			Base: gmod.NewBase("xianyun-a1-buff", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagPlunge {
 					return nil, false

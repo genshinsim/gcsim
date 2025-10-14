@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -50,7 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				c.AddStatus(withinBurstKey, withinTimer, true)
 				if c.pyroCount > 0 {
 					c.AddAttackMod(character.AttackMod{
-						Base: modifier.NewBaseWithHitlag(burstKey, 60),
+						Base: gmod.NewBaseWithHitlag(burstKey, 60),
 						Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 							return c.pyroBurstBuff, atk.Info.Abil == triKarmaAbil
 						},

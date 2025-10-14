@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -116,7 +116,7 @@ func (c *char) a4() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a4Key, a4Duration), // 4s
+			Base:         gmod.NewBaseWithHitlag(a4Key, a4Duration), // 4s
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return c.a4Buff, true

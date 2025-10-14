@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // The number of After-Sales Service Rounds created by Troubleshooter Shots is increased by 1.
@@ -48,7 +48,7 @@ func (c *char) c4() {
 	active := c.Core.Player.ActiveChar()
 	if active.CurrentHPRatio() < 0.5 {
 		active.AddHealBonusMod(character.HealBonusMod{
-			Base: modifier.NewBaseWithHitlag("dori-c4-healbonus", 48),
+			Base: gmod.NewBaseWithHitlag("dori-c4-healbonus", 48),
 			Amount: func() (float64, bool) {
 				return 0.5, false
 			},
@@ -59,7 +59,7 @@ func (c *char) c4() {
 		erMod := make([]float64, attributes.EndStatType)
 		erMod[attributes.ER] = 0.3
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("dori-c4-er-bonus", 48),
+			Base:         gmod.NewBaseWithHitlag("dori-c4-er-bonus", 48),
 			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
 				return erMod, true

@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -72,7 +72,7 @@ func (c *char) a1() {
 		m[attributes.EM] = 100
 		for _, this := range c.Core.Player.Chars() {
 			this.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("nilou-a1-em", 10*60),
+				Base:         gmod.NewBaseWithHitlag("nilou-a1-em", 10*60),
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return m, true
@@ -94,7 +94,7 @@ func (c *char) a4() {
 	for _, this := range c.Core.Player.Chars() {
 		// TODO: a4 should be an extra buff
 		this.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
+			Base: gmod.NewBaseWithHitlag(a4Mod, 30*60),
 			Amount: func(ai info.AttackInfo) (float64, bool) {
 				if ai.AttackTag != attacks.AttackTagBloom {
 					return 0, false

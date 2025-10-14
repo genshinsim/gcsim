@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -35,7 +35,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.GeoP] = 0.15
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("archaic-2pc", -1),
+			Base:         gmod.NewBase("archaic-2pc", -1),
 			AffectedStat: attributes.GeoP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -75,7 +75,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			// Apply mod to all characters
 			for _, c := range core.Player.Chars() {
 				c.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("archaic-4pc", 10*60),
+					Base:         gmod.NewBaseWithHitlag("archaic-4pc", 10*60),
 					AffectedStat: attributes.NoStat,
 					Amount: func() ([]float64, bool) {
 						return m, true

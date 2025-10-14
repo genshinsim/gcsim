@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C2:
@@ -43,7 +43,7 @@ func (c *char) c2(src int) func() {
 		// apply C2 buff to active char for 1s
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
+			Base:         gmod.NewBaseWithHitlag("kazuha-c2", 60), // 1s
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return c.c2buff, true
@@ -53,7 +53,7 @@ func (c *char) c2(src int) func() {
 		// apply C2 buff to Kazuha (even if off-field) for 1s
 		if active.Base.Key != c.Base.Key {
 			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
+				Base:         gmod.NewBaseWithHitlag("kazuha-c2", 60), // 1s
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return c.c2buff, true
@@ -81,7 +81,7 @@ func (c *char) c6() {
 	// add em based buff
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("kazuha-c6-dmgup", 60*5), // 5s
+		Base: gmod.NewBaseWithHitlag("kazuha-c6-dmgup", 60*5), // 5s
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			// skip if not normal/charged/plunge
 			if atk.Info.AttackTag != attacks.AttackTagNormal &&

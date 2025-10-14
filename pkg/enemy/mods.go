@@ -6,13 +6,13 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Add.
 func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
 	mod := info.Status{
-		Base: modifier.Base{
+		Base: gmod.Base{
 			ModKey: key,
 			Dur:    dur,
 			Hitlag: hitlag,
@@ -23,26 +23,26 @@ func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
 	} else {
 		mod.ModExpiry = e.Core.F + mod.Dur
 	}
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("status", -1, &mod, e.Core.Log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&e.mods, &mod, e.Core.F)
+	gmod.LogAdd("status", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
 func (e *Enemy) AddResistMod(mod info.ResistMod) {
 	mod.SetExpiry(e.Core.F)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&e.mods, &mod, e.Core.F)
+	gmod.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
 func (e *Enemy) AddDefMod(mod info.DefMod) {
 	mod.SetExpiry(e.Core.F)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&e.mods, &mod, e.Core.F)
+	gmod.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
 // Delete.
 
 func (e *Enemy) deleteMod(key string) {
-	m := modifier.Delete(&e.mods, key)
+	m := gmod.Delete(&e.mods, key)
 	if m != nil && (m.Expiry() > e.Core.F || m.Expiry() == -1) {
 		m.Event().SetEnded(e.Core.F)
 	}
@@ -54,7 +54,7 @@ func (e *Enemy) DeleteDefMod(key string)    { e.deleteMod(key) }
 
 // Active.
 func (e *Enemy) modIsActive(key string) bool {
-	_, ok := modifier.FindCheckExpiry(&e.mods, key, e.Core.F)
+	_, ok := gmod.FindCheckExpiry(&e.mods, key, e.Core.F)
 	return ok
 }
 func (e *Enemy) StatusIsActive(key string) bool    { return e.modIsActive(key) }
@@ -64,7 +64,7 @@ func (e *Enemy) DefModIsActive(key string) bool    { return e.modIsActive(key) }
 // Expiry
 
 func (e *Enemy) getModExpiry(key string) int {
-	m := modifier.Find(&e.mods, key)
+	m := gmod.Find(&e.mods, key)
 	if m != -1 {
 		return e.mods[m].Expiry()
 	}

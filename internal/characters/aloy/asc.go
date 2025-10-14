@@ -3,7 +3,7 @@ package aloy
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When Aloy receives the Coil effect from Frozen Wilds, her ATK is increased by 16%, while nearby party members' ATK is increased by 8%.
@@ -19,7 +19,7 @@ func (c *char) a1() {
 			m[attributes.ATKP] = .16
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("aloy-a1", rushingIceDuration),
+			Base:         gmod.NewBaseWithHitlag("aloy-a1", rushingIceDuration),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -37,7 +37,7 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	stacks := 1
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("aloy-strong-strike", rushingIceDuration),
+		Base:         gmod.NewBaseWithHitlag("aloy-strong-strike", rushingIceDuration),
 		AffectedStat: attributes.CryoP,
 		Amount: func() ([]float64, bool) {
 			if stacks > 10 {

@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When Sucrose triggers a Swirl reaction, all characters in the party with the matching element (excluding Sucrose)
@@ -42,7 +42,7 @@ func (c *char) a1() {
 					continue
 				}
 				this.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("sucrose-a1", 480), // 8s
+					Base:         gmod.NewBaseWithHitlag("sucrose-a1", 480), // 8s
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
 						return c.a1Buff, true
@@ -79,7 +79,7 @@ func (c *char) a4() {
 			continue // nothing for sucrose
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("sucrose-a4", 480), // 8 s
+			Base:         gmod.NewBaseWithHitlag("sucrose-a4", 480), // 8 s
 			AffectedStat: attributes.EM,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {

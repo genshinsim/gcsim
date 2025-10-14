@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c2() {
@@ -17,7 +17,7 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("noelle-c2-dmg", -1),
+		Base: gmod.NewBase("noelle-c2-dmg", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			return m, atk.Info.AttackTag == attacks.AttackTagExtra
 		},

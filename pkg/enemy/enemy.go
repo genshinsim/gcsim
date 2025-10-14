@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/task"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
@@ -27,7 +27,7 @@ type Enemy struct {
 	particleDropIndex int // for custom HP drops
 
 	// mods
-	mods []modifier.Mod
+	mods []gmod.Mod
 
 	// hitlag stuff
 	timePassed   int
@@ -47,7 +47,7 @@ func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	// TODO: should pass in a info.Reactable instead
 	e.Reactable = hacks.NewReactable(e, core)
 	e.SetFreezeResist(e.prof.FreezeResist)
-	e.mods = make([]modifier.Mod, 0, 10)
+	e.mods = make([]gmod.Mod, 0, 10)
 	if core.Combat.DamageMode {
 		e.hp = p.HP
 		e.maxhp = p.HP
