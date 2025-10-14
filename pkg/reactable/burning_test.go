@@ -27,8 +27,8 @@ func TestBurning(t *testing.T) {
 		},
 	})
 	// dendro electro gone; 20 quicken
-	if !durApproxEqual(20, trg.Durability[info.ReactionModKeyQuicken], 0.00001) {
-		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[info.ReactionModKeyQuicken])
+	if !durApproxEqual(20, trg.GetAuraDurability(info.ReactionModKeyQuicken), 0.00001) {
+		t.Errorf("expecting 20 cryo attached, got %v", trg.GetAuraDurability(info.ReactionModKeyQuicken))
 	}
 	if trg.AuraContains(attributes.Dendro, attributes.Electro) {
 		t.Error("expecting target to not contain any remaining dendro or electro aura")
