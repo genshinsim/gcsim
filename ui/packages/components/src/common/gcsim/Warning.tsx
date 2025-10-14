@@ -86,7 +86,7 @@ export const RiskWarning = () => (
     bodyComponents={{
       b: <b />,
       p: <p className="text-gray-200" />,
-      discordlink: <a href="https://discord.com/channels/845087716541595668/983391844631212112/1413229755687505951" target="_blank" rel="noreferrer" />,
+      discordlink: <a href="https://discord.com/invite/m7jvjdxx7q" target="_blank" rel="noreferrer" />,
       githublink: <a href="https://github.com/genshinsim/gcsim" target="_blank" rel="noreferrer" />,
       issueslink: <a href="https://github.com/genshinsim/gcsim/issues" target="_blank" rel="noreferrer" />,
     }}
