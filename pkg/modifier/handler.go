@@ -51,7 +51,7 @@ func (h *handler) add(m *info.Modifier, s info.StackingType) (bool, error) {
 	if m.Duration > 0 {
 		m.DecayRate = m.Durability / info.Durability(m.Duration)
 	}
-	added := false
+	var added bool
 	switch s {
 	case info.Refresh:
 		added = h.refresh(m)
