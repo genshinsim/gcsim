@@ -9,11 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-type handler struct {
+type Handler struct {
 	modifiers []*info.Modifier
 }
 
-func (h *handler) tick() {
+func (h *Handler) Tick() {
 	// reduce durability
 	n := 0
 	for i, mod := range h.modifiers {
@@ -40,8 +40,8 @@ func (h *handler) tick() {
 	h.modifiers = h.modifiers[:n]
 }
 
-// add returns true if this is a new modifier or error on unsupported stacking type
-func (h *handler) add(m *info.Modifier, s info.StackingType) (bool, error) {
+// Add returns true if this is a new modifier or error on unsupported stacking type
+func (h *Handler) Add(m *info.Modifier) (bool, error) {
 	if m.Durability <= 0 {
 		return false, fmt.Errorf("modifier %v has non-positive durability: %v", m.Name, m.Durability)
 	}
@@ -52,7 +52,7 @@ func (h *handler) add(m *info.Modifier, s info.StackingType) (bool, error) {
 		m.DecayRate = m.Durability / info.Durability(m.Duration)
 	}
 	var added bool
-	switch s {
+	switch m.Stacking {
 	case info.Refresh:
 		added = h.refresh(m)
 	case info.Unique:
@@ -62,7 +62,7 @@ func (h *handler) add(m *info.Modifier, s info.StackingType) (bool, error) {
 	case info.OverlapRefreshDuration:
 		added = h.overlapRefreshDuration(m)
 	default:
-		return false, fmt.Errorf("unsupported stacking type: %v", s)
+		return false, fmt.Errorf("unsupported stacking type: %v", m.Stacking)
 	}
 	if added && m.OnAdd != nil {
 		m.OnAdd(m)
@@ -71,7 +71,7 @@ func (h *handler) add(m *info.Modifier, s info.StackingType) (bool, error) {
 }
 
 // single instance; can't be re-applied unless expired
-func (h *handler) unique(m *info.Modifier) bool {
+func (h *Handler) unique(m *info.Modifier) bool {
 	for _, mod := range h.modifiers {
 		if mod.Name == m.Name {
 			return false
@@ -83,7 +83,7 @@ func (h *handler) unique(m *info.Modifier) bool {
 
 // single instance. re-apply resets durability and doesn't trigger onAdded/onRemoved
 // or reset onThinkInterval
-func (h *handler) refresh(m *info.Modifier) bool {
+func (h *Handler) refresh(m *info.Modifier) bool {
 	for _, mod := range h.modifiers {
 		if mod.Name == m.Name {
 			// TODO: this will overwrite everything in the dest mod, including the src
@@ -97,13 +97,13 @@ func (h *handler) refresh(m *info.Modifier) bool {
 }
 
 // multiple instances can co-exist at the same time
-func (h *handler) overlap(m *info.Modifier) bool {
+func (h *Handler) overlap(m *info.Modifier) bool {
 	h.modifiers = append(h.modifiers, m)
 	return true
 }
 
 // refresh any existing with lower durability; update decay rate and duration
-func (h *handler) overlapRefreshDuration(m *info.Modifier) bool {
+func (h *Handler) overlapRefreshDuration(m *info.Modifier) bool {
 	for _, mod := range h.modifiers {
 		if mod.Name == m.Name && mod.Durability < m.Durability {
 			mod.Durability = m.Durability

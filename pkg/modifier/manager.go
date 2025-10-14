@@ -6,13 +6,13 @@ import (
 )
 
 type Manager struct {
-	handlers []*handler
+	handlers []*Handler
 }
 
 func NewManager(size int) *Manager {
-	h := make([]*handler, size)
+	h := make([]*Handler, size)
 	for i := range h {
-		h[i] = &handler{}
+		h[i] = &Handler{}
 	}
 	return &Manager{
 		handlers: h,
@@ -21,9 +21,9 @@ func NewManager(size int) *Manager {
 
 func (m *Manager) Tick(id keys.TargetID) {
 	// the assumption here is that id is index of handlers
-	m.handlers[id].tick()
+	m.handlers[id].Tick()
 }
 
-func (m *Manager) AddModifier(mod *info.Modifier, s info.StackingType) (bool, error) {
-	return m.handlers[mod.Source].add(mod, s)
+func (m *Manager) AddModifier(mod *info.Modifier) (bool, error) {
+	return m.handlers[mod.Source].Add(mod)
 }
