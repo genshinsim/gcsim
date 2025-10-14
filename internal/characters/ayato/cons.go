@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -20,7 +20,7 @@ func (c *char) c1() {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.4
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("ayato-c1", -1),
+			Base: gmod.NewBase("ayato-c1", -1),
 			Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
@@ -39,7 +39,7 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = 0.5
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("ayato-c2", -1),
+		Base:         gmod.NewBase("ayato-c2", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			if c.stacks >= 3 {

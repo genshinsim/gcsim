@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -68,7 +68,7 @@ func (c *char) c2() {
 	buffOther[attributes.EM] = 250
 
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("citlali-c2-em", -1),
+		Base:         gmod.NewBase("citlali-c2-em", -1),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 			if c.Core.Player.Shields.Get(shield.CitlaliSkill) == nil {
@@ -85,7 +85,7 @@ func (c *char) c2() {
 		}
 		this := char
 		this.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("citlali-c2-em", -1),
+			Base:         gmod.NewBase("citlali-c2-em", -1),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				// character should be followed by Itzpapa, i.e. the character is active
@@ -148,7 +148,7 @@ func (c *char) c6() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("citlali-c6", -1),
+			Base: gmod.NewBaseWithHitlag("citlali-c6", -1),
 			Amount: func() ([]float64, bool) {
 				buffOther[attributes.PyroP] = 0.015 * c.numC6Stacks
 				buffOther[attributes.HydroP] = 0.015 * c.numC6Stacks
@@ -157,7 +157,7 @@ func (c *char) c6() {
 		})
 	}
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("citlali-c6", -1),
+		Base: gmod.NewBaseWithHitlag("citlali-c6", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			buffSelf[attributes.DmgP] = 0.025 * c.numC6Stacks
 			return buffSelf, true

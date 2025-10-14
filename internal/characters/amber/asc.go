@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Increases the CRIT Rate of Fiery Rain by 10% and widens its AoE by 30%.
@@ -17,7 +17,7 @@ func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = .1
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("amber-a1", -1),
+		Base: gmod.NewBase("amber-a1", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			return m, atk.Info.AttackTag == attacks.AttackTagElementalBurst
 		},
@@ -47,7 +47,7 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.15
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("amber-a4", 600),
+			Base:         gmod.NewBaseWithHitlag("amber-a4", 600),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true

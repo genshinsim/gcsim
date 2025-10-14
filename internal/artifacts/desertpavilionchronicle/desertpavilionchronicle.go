@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -38,7 +38,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AnemoP] = 0.15
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("desert-2pc", -1),
+			Base:         gmod.NewBase("desert-2pc", -1),
 			AffectedStat: attributes.AnemoP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -59,7 +59,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			mSpd := make([]float64, attributes.EndStatType)
 			mSpd[attributes.AtkSpd] = 0.1
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("desert-4pc-spd", 15*60),
+				Base:         gmod.NewBaseWithHitlag("desert-4pc-spd", 15*60),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					if c.Player.CurrentState() != action.NormalAttackState {
@@ -72,7 +72,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			mDmg := make([]float64, attributes.EndStatType)
 			mDmg[attributes.DmgP] = 0.4
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("desert-4pc-dmg", 15*60),
+				Base: gmod.NewBaseWithHitlag("desert-4pc-dmg", 15*60),
 				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagNormal:

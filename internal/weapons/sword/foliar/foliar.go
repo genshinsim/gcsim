@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.03 + float64(r)*0.01
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("foliar-crit-rate", -1),
+		Base:         gmod.NewBase("foliar-crit-rate", -1),
 		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
 			return m, true

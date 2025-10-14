@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT Rate increases by 12% for 5s.
@@ -27,7 +27,7 @@ func (c *char) makeA1CB() info.AttackCBFunc {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CR] = 0.12
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("rosaria-a1", 300),
+			Base:         gmod.NewBaseWithHitlag("rosaria-a1", 300),
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -59,7 +59,7 @@ func (c *char) a4() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("rosaria-a4", 600),
+			Base:         gmod.NewBaseWithHitlag("rosaria-a4", 600),
 			AffectedStat: attributes.CR,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {

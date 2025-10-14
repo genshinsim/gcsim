@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -130,7 +130,7 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AnemoP] = burstBuff[c.TalentLvlBurst()]
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(burstBuffKey, 240),
+		Base:         gmod.NewBaseWithHitlag(burstBuffKey, 240),
 		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -151,7 +151,7 @@ func applyBurstShred(trg info.Target) {
 		return
 	}
 	t.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
+		Base:  gmod.NewBaseWithHitlag(burstShredKey, 240),
 		Ele:   attributes.Anemo,
 		Value: -0.3,
 	})

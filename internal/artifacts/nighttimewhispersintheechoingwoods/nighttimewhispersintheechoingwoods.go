@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -41,7 +41,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.18
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("nighttimewhispers-2pc", -1),
+			Base:         gmod.NewBase("nighttimewhispers-2pc", -1),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -114,7 +114,7 @@ func (s *Set) OnSkill() func(args ...any) bool {
 		}
 		m := make([]float64, attributes.EndStatType)
 		s.char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("nighttimewhispers-4pc", 10*60),
+			Base:         gmod.NewBaseWithHitlag("nighttimewhispers-4pc", 10*60),
 			AffectedStat: attributes.GeoP,
 			Amount: func() ([]float64, bool) {
 				if s.core.F <= s.lastF {

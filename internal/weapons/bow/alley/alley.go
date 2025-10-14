@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	m := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("alley-hunter", -1),
+		Base: gmod.NewBase("alley-hunter", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			m[attributes.DmgP] = dmg * float64(w.stacks)
 			return m, true

@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.075 + float64(r)*0.025
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("freedom-dmg", -1),
+		Base:         gmod.NewBase("freedom-dmg", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -84,14 +84,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			for _, char := range c.Player.Chars() {
 				// Attack buff snapshots so it needs to be in a separate mod
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
+					Base:         gmod.NewBaseWithHitlag(common.MillennialKey, buffDuration),
 					AffectedStat: attributes.ATKP,
 					Amount: func() ([]float64, bool) {
 						return sharedVal, true
 					},
 				})
 				char.AddAttackMod(character.AttackMod{
-					Base: modifier.NewBaseWithHitlag("freedomsworn", buffDuration),
+					Base: gmod.NewBaseWithHitlag("freedomsworn", buffDuration),
 					Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 						switch atk.Info.AttackTag {
 						case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:

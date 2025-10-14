@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -43,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.12 + float64(r)*0.04
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("pines-atk", -1),
+		Base:         gmod.NewBase("pines-atk", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -88,7 +88,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddStatus(cdKey, cd, true)
 			for _, char := range c.Player.Chars() {
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("pines-proc", buffDuration),
+					Base:         gmod.NewBaseWithHitlag("pines-proc", buffDuration),
 					AffectedStat: attributes.AtkSpd,
 					Amount: func() ([]float64, bool) {
 						if c.Player.CurrentState() != action.NormalAttackState {
@@ -98,7 +98,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					},
 				})
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
+					Base:         gmod.NewBaseWithHitlag(common.MillennialKey, buffDuration),
 					AffectedStat: attributes.ATKP,
 					Amount: func() ([]float64, bool) {
 						return sharedVal, true

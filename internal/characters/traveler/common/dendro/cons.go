@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *Traveler) c1cb() func(a info.AttackCB) {
@@ -63,7 +63,7 @@ func (c *Traveler) c6Buff(delay int) {
 		}
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("dmc-c6", 60),
+			Base: gmod.NewBaseWithHitlag("dmc-c6", 60),
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

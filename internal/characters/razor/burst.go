@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -40,7 +40,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		val := make([]float64, attributes.EndStatType)
 		val[attributes.AtkSpd] = burstATKSpeed[c.TalentLvlBurst()]
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
+			Base:         gmod.NewBaseWithHitlag(burstBuffKey, 15*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				return val, true

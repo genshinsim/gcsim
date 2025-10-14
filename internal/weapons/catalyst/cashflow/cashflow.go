@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val[attributes.ATKP] = atkp
 
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("cashflow-supervision-atkp", -1),
+		Base:         gmod.NewBase("cashflow-supervision-atkp", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return val, true
@@ -125,7 +125,7 @@ func (w *Weapon) onChangeHP() {
 
 	w.char.AddStatus(buffIcd, 0.3*60, true)
 	w.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(buffKey, 4*60),
+		Base: gmod.NewBaseWithHitlag(buffKey, 4*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			w.buffNA[attributes.DmgP] = (0.12 + 0.04*float64(w.refine)) * float64(w.stacks)
 			w.buffCA[attributes.DmgP] = (0.105 + 0.035*float64(w.refine)) * float64(w.stacks)
@@ -141,7 +141,7 @@ func (w *Weapon) onChangeHP() {
 	})
 	if w.stacks == 3 {
 		w.char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(atkSpdKey, 4*60),
+			Base:         gmod.NewBaseWithHitlag(atkSpdKey, 4*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				if w.core.Player.CurrentState() != action.NormalAttackState {

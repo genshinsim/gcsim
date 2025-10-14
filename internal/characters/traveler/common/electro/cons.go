@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C2 - Violet Vehemence
@@ -19,7 +19,7 @@ func (c *Traveler) c2() info.AttackCBFunc {
 			return
 		}
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("travelerelectro-c2", 480),
+			Base:  gmod.NewBaseWithHitlag("travelerelectro-c2", 480),
 			Ele:   attributes.Electro,
 			Value: -0.15,
 		})

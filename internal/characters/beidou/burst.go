@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -93,7 +93,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), nil)
 				for _, v := range enemies {
 					v.AddResistMod(info.ResistMod{
-						Base:  modifier.NewBaseWithHitlag("beidouc6", 90),
+						Base:  gmod.NewBaseWithHitlag("beidouc6", 90),
 						Ele:   attributes.Electro,
 						Value: -0.15,
 					})

@@ -13,7 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -40,7 +40,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ElectroP] = 0.15
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("tf-2pc", -1),
+			Base:         gmod.NewBase("tf-2pc", -1),
 			AffectedStat: attributes.ElectroP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -56,7 +56,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	icd := 48 // 0.8s * 60
 
 	char.AddReactBonusMod(character.ReactBonusMod{
-		Base: modifier.NewBase("tf-4pc", -1),
+		Base: gmod.NewBase("tf-4pc", -1),
 		Amount: func(ai info.AttackInfo) (float64, bool) {
 			if ai.Catalyzed && ai.CatalyzedType == info.ReactionTypeAggravate {
 				return 0.2, false

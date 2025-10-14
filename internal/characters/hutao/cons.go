@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -53,7 +53,7 @@ func (c *char) checkc6(check1HP bool) {
 
 	// increase crit rate to 100%
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("hutao-c6", 600),
+		Base:         gmod.NewBaseWithHitlag("hutao-c6", 600),
 		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
 			return c.c6buff, true
@@ -84,7 +84,7 @@ func (c *char) c4() {
 				continue
 			}
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("hutao-c4", 900),
+				Base:         gmod.NewBaseWithHitlag("hutao-c4", 900),
 				AffectedStat: attributes.CR,
 				Amount: func() ([]float64, bool) {
 					return c.c4buff, true

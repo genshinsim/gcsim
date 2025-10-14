@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c1ICDKey = "xinyan-c1-icd"
@@ -36,7 +36,7 @@ func (c *char) makeC1CB() info.AttackCBFunc {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.12
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("xinyan-c1", 5*60),
+			Base:         gmod.NewBaseWithHitlag("xinyan-c1", 5*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				if c.Core.Player.CurrentState() != action.NormalAttackState && c.Core.Player.CurrentState() != action.ChargeAttackState {
@@ -54,7 +54,7 @@ func (c *char) c2() {
 	c.c2Buff[attributes.CR] = 1
 
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("xinyan-c2", -1),
+		Base: gmod.NewBase("xinyan-c2", -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
@@ -78,7 +78,7 @@ func (c *char) makeC4CB() info.AttackCBFunc {
 			return
 		}
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("xinyan-c4", 12*60),
+			Base:  gmod.NewBaseWithHitlag("xinyan-c4", 12*60),
 			Ele:   attributes.Physical,
 			Value: -0.15,
 		})

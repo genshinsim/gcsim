@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -26,7 +26,7 @@ func (c *char) a1() {
 	// add Damage Bonus
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(a1Key, 60*4), // 4s
+		Base: gmod.NewBaseWithHitlag(a1Key, 60*4), // 4s
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			// skip if not normal/charged/plunge
 			if atk.Info.AttackTag != attacks.AttackTagNormal &&
@@ -62,7 +62,7 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2 * float64(ele)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("navia-a4", -1),
+		Base:         gmod.NewBase("navia-a4", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return m, true

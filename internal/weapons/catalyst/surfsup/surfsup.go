@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mHP := make([]float64, attributes.EndStatType)
 	mHP[attributes.HPP] = 0.15 + float64(r)*0.05
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("surfs-up-hp%", -1),
+		Base:         gmod.NewBase("surfs-up-hp%", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return mHP, true
@@ -71,7 +71,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		w.stacks = 4
 
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(buffKey, 14*60),
+			Base: gmod.NewBaseWithHitlag(buffKey, 14*60),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag == attacks.AttackTagNormal {
 					mNA[attributes.DmgP] = dmgPerStack * float64(min(w.stacks, 4))

@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C1:
@@ -38,7 +38,7 @@ func (c *Traveler) c1(ticks int) func() {
 
 			active := c.Core.Player.ActiveChar()
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("geo-traveler-c1", 120), // 2s
+				Base:         gmod.NewBaseWithHitlag("geo-traveler-c1", 120), // 2s
 				AffectedStat: attributes.CR,
 				Amount: func() ([]float64, bool) {
 					return m, true

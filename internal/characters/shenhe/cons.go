@@ -5,14 +5,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c4BuffKey = "shenhe-c4"
 
 func (c *char) c2(active *character.CharWrapper, dur int) {
 	active.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("shenhe-c2", dur),
+		Base: gmod.NewBaseWithHitlag("shenhe-c2", dur),
 		Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if ae.Info.Element != attributes.Cryo {
 				return nil, false

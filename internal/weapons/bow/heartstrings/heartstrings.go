@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// Max HP increase
 	mHP := make([]float64, attributes.EndStatType)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("heartstrings", -1),
+		Base:         gmod.NewBase("heartstrings", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			stacks := w.Stacks()
@@ -110,7 +110,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR := make([]float64, attributes.EndStatType)
 	mCR[attributes.CR] = 0.21 + float64(r)*0.07
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(burstCRKey, -1),
+		Base: gmod.NewBase(burstCRKey, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false

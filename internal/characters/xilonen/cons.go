@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -68,7 +68,7 @@ func (c *char) c2() {
 			continue
 		}
 		ch.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(c2BuffKey, -1),
+			Base: gmod.NewBase(c2BuffKey, -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				return c2Buffs[attributes.Geo], true
 			},
@@ -85,7 +85,7 @@ func (c *char) applyC2Buff(src int, other *character.CharWrapper) func() {
 			return
 		}
 		other.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(c2BuffKey, 60),
+			Base: gmod.NewBaseWithHitlag(c2BuffKey, 60),
 			Amount: func() ([]float64, bool) {
 				return c2Buffs[other.Base.Element], true
 			},
@@ -206,7 +206,7 @@ func (c *char) applyC6() {
 
 func (c *char) c6FlatDmg() {
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(c6key, c6Duration),
+		Base: gmod.NewBaseWithHitlag(c6key, c6Duration),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagNormal, attacks.AttackTagPlunge:

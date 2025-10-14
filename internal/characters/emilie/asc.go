@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -51,7 +51,7 @@ func (c *char) a4() {
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(a4ModKey, -1),
+		Base: gmod.NewBase(a4ModKey, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			x, ok := t.(*enemy.Enemy)
 			if !ok {

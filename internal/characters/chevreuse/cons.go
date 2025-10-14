@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -155,7 +155,7 @@ func (c *char) c6(char *character.CharWrapper) {
 	m[attributes.ElectroP] = 0.20
 
 	char.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("chev-c6-%v-stack", c.c6StackCounts[char.Index()]+1), 8*60),
+		Base: gmod.NewBaseWithHitlag(fmt.Sprintf("chev-c6-%v-stack", c.c6StackCounts[char.Index()]+1), 8*60),
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},

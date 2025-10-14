@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -56,7 +56,7 @@ func (s *Set) pc2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CryoP] = 0.15
 	s.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("deep-galleries-2pc", -1),
+		Base:         gmod.NewBase("deep-galleries-2pc", -1),
 		AffectedStat: attributes.CryoP,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -76,7 +76,7 @@ func (s *Set) pc4() {
 	m[attributes.DmgP] = 0.6
 
 	s.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("deep-galleries-4pc", -1),
+		Base: gmod.NewBase("deep-galleries-4pc", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if s.char.Energy != 0 {
 				return nil, false

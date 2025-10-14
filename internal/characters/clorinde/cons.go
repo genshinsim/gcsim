@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -93,7 +93,7 @@ func (c *char) c4() {
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("clorinde-c4-burst-bonus", -1),
+		Base: gmod.NewBase("clorinde-c4-burst-bonus", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
@@ -122,7 +122,7 @@ func (c *char) c6skill() {
 	mCR := make([]float64, attributes.EndStatType)
 	mCR[attributes.CR] = 0.1
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("clorinde-c6-cr-bonus", c6Icd),
+		Base:         gmod.NewBase("clorinde-c6-cr-bonus", c6Icd),
 		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
 			return mCR, true
@@ -132,7 +132,7 @@ func (c *char) c6skill() {
 	mCD := make([]float64, attributes.EndStatType)
 	mCD[attributes.CD] = 0.7
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("clorinde-c6-cd-bonus", c6Icd),
+		Base:         gmod.NewBase("clorinde-c6-cd-bonus", c6Icd),
 		AffectedStat: attributes.CD,
 		Amount: func() ([]float64, bool) {
 			return mCD, true

@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Dance of Haftkarsvar will be enhanced as follows:
@@ -18,7 +18,7 @@ func (c *char) c1() {
 	m[attributes.DmgP] = 0.65
 
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("nilou-c1", -1),
+		Base: gmod.NewBase("nilou-c1", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.Abil != skillIllusionAbil {
 				return nil, false
@@ -50,13 +50,13 @@ func (c *char) c2() {
 
 		if atk.Info.Element == attributes.Hydro {
 			t.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("nilou-c2-hydro", 10*60),
+				Base:  gmod.NewBaseWithHitlag("nilou-c2-hydro", 10*60),
 				Ele:   attributes.Hydro,
 				Value: -0.35,
 			})
 		} else if atk.Info.AttackTag == attacks.AttackTagBloom {
 			t.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("nilou-c2-dendro", 10*60),
+				Base:  gmod.NewBaseWithHitlag("nilou-c2-dendro", 10*60),
 				Ele:   attributes.Dendro,
 				Value: -0.35,
 			})
@@ -74,7 +74,7 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("nilou-c4", 8*60),
+		Base: gmod.NewBaseWithHitlag("nilou-c4", 8*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
@@ -111,7 +111,7 @@ func (c *char) c6() {
 	// cr and cd separately to avoid stack overflow due to NoStat attribute
 	mCR := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("nilou-c6-cr", -1),
+		Base:         gmod.NewBase("nilou-c6-cr", -1),
 		AffectedStat: attributes.CR,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {
@@ -126,7 +126,7 @@ func (c *char) c6() {
 
 	mCD := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("nilou-c6-cd", -1),
+		Base:         gmod.NewBase("nilou-c6-cd", -1),
 		AffectedStat: attributes.CD,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {

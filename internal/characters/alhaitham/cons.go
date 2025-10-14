@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -36,7 +36,7 @@ func (c *char) c2(generated int) {
 	m[attributes.EM] = 50
 	for range generated {
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c2ModName(c.c2Counter+1), 480), // 8s
+			Base:         gmod.NewBaseWithHitlag(c2ModName(c.c2Counter+1), 480), // 8s
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -67,7 +67,7 @@ func (c *char) c4Loss(consumed int) {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("alhaitham-c4-loss", 900),
+			Base:         gmod.NewBaseWithHitlag("alhaitham-c4-loss", 900),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -83,7 +83,7 @@ func (c *char) c4Gain(generated int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DendroP] = 0.1 * float64(generated)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("alhaitham-c4-gain", 900),
+		Base:         gmod.NewBaseWithHitlag("alhaitham-c4-gain", 900),
 		AffectedStat: attributes.DendroP,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -110,7 +110,7 @@ func (c *char) c6(generated int) {
 			c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index()).Write("c6 expiry on", c.StatusExpiry(c6key))
 		} else {
 			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag((c6key), 360), // 6s
+				Base:         gmod.NewBaseWithHitlag((c6key), 360), // 6s
 				AffectedStat: attributes.CR,
 				Amount: func() ([]float64, bool) {
 					return m, true

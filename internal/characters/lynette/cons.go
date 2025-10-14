@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // TODO: C1 is not implemented, because vortex/pulling mechanics are not implemented
@@ -47,7 +47,7 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AnemoP] = 0.2
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag("lynette-c6-buff", duration),
+		Base: gmod.NewBaseWithHitlag("lynette-c6-buff", duration),
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},

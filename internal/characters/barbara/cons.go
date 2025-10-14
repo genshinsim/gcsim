@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c1(delay int) {
@@ -21,7 +21,7 @@ func (c *char) c2() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("barbara-c2", skillDuration),
+			Base:         gmod.NewBase("barbara-c2", skillDuration),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return c.c2buff, true

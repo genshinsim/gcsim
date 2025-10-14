@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const icdKey = "royal-icd"
@@ -60,7 +60,7 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 	rate := 0.06 + float64(refine)*0.02
 	m := make([]float64, attributes.EndStatType)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("royal", -1),
+		Base:         gmod.NewBase("royal", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			m[attributes.CR] = float64(stacks) * rate

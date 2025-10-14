@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -186,12 +186,12 @@ func (c *char) holdSkill() action.Info {
 				return
 			}
 			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("eula-icewhirl-shred-cryo", 7*v*60),
+				Base:  gmod.NewBaseWithHitlag("eula-icewhirl-shred-cryo", 7*v*60),
 				Ele:   attributes.Cryo,
 				Value: -resRed[lvl],
 			})
 			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("eula-icewhirl-shred-phys", 7*v*60),
+				Base:  gmod.NewBaseWithHitlag("eula-icewhirl-shred-phys", 7*v*60),
 				Ele:   attributes.Physical,
 				Value: -resRed[lvl],
 			})
@@ -244,7 +244,7 @@ func (c *char) holdSkill() action.Info {
 	if c.Base.Cons >= 1 && v > 0 {
 		// TODO: check if the duration is right
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("eula-c1", (6*v+6)*60),
+			Base:         gmod.NewBaseWithHitlag("eula-c1", (6*v+6)*60),
 			AffectedStat: attributes.PhyP,
 			Amount: func() ([]float64, bool) {
 				return c.c1buff, true

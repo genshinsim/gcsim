@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var skillFrames []int
@@ -162,7 +162,7 @@ func (c *char) rushingIce() {
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", rushingIceDuration),
+		Base: gmod.NewBaseWithHitlag("aloy-rushing-ice", rushingIceDuration),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagNormal {
 				return val, true
@@ -179,7 +179,7 @@ func (c *char) rushingIce() {
 func (c *char) coilMod() {
 	val := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("aloy-coil-stacks", -1),
+		Base: gmod.NewBase("aloy-coil-stacks", -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagNormal && c.coils > 0 {
 				val[attributes.DmgP] = skillCoilNABonus[c.coils-1][c.TalentLvlSkill()]

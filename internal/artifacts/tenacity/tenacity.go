@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -39,7 +39,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.HPP] = 0.20
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("tom-2pc", -1),
+			Base:         gmod.NewBase("tom-2pc", -1),
 			AffectedStat: attributes.HPP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -68,7 +68,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			for _, this := range s.core.Player.Chars() {
 				this.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("tom-4pc", 180), // 3s duration
+					Base:         gmod.NewBaseWithHitlag("tom-4pc", 180), // 3s duration
 					AffectedStat: attributes.ATKP,
 					Amount: func() ([]float64, bool) {
 						return m, true

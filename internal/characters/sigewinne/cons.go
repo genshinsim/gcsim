@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -32,7 +32,7 @@ func (c *char) c2CB(a info.AttackCB) {
 		return
 	}
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("sigewinne-c2", 8*60),
+		Base:  gmod.NewBaseWithHitlag("sigewinne-c2", 8*60),
 		Ele:   attributes.Hydro,
 		Value: -0.35,
 	})
@@ -45,7 +45,7 @@ func (c *char) c6CritMode() {
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("sigewinne-c6", 15*60),
+		Base: gmod.NewBaseWithHitlag("sigewinne-c6", 15*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false

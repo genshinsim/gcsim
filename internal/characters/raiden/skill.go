@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 /**
@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		// starts 1s after cd delay
 		c.Core.Tasks.Add(func() {
 			this.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
+				Base: gmod.NewBaseWithHitlag(skillKey, 1500),
 				Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 						return nil, false

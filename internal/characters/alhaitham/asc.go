@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const a1IcdKey = "alhaitham-a1-icd"
@@ -39,7 +39,7 @@ func (c *char) a4() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("alhaitham-a4", -1),
+		Base: gmod.NewBase("alhaitham-a4", -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			// only trigger on projection attack and burst damage
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst &&

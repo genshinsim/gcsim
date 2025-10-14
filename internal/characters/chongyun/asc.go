@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When the field created by Spirit Blade: Chonghua's Layered Frost disappears,
@@ -59,7 +59,7 @@ func (c *char) a4CB(a info.AttackCB) {
 		return
 	}
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("chongyun-a4", 480),
+		Base:  gmod.NewBaseWithHitlag("chongyun-a4", 480),
 		Ele:   attributes.Cryo,
 		Value: -0.10,
 	})

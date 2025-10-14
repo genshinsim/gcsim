@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -132,7 +132,7 @@ func (c *char) skillHold() action.Info {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DEFP] = 0.25
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("lisa-c2", 126),
+			Base:         gmod.NewBase("lisa-c2", 126),
 			AffectedStat: attributes.DEFP,
 			Amount: func() ([]float64, bool) {
 				return m, true

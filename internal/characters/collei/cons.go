@@ -9,14 +9,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ER] = 0.2
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("collei-c1", -1),
+		Base:         gmod.NewBase("collei-c1", -1),
 		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
 			if c.Core.Player.Active() != c.Index() {
@@ -68,7 +68,7 @@ func (c *char) c4() {
 		amts := make([]float64, attributes.EndStatType)
 		amts[attributes.EM] = 60
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("collei-c4", 720),
+			Base:         gmod.NewBaseWithHitlag("collei-c4", 720),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return amts, true

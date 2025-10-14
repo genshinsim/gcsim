@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C4:
@@ -86,7 +86,7 @@ func (c *char) c6() {
 
 		// increase EM by 150 for 15s
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("kuki-c6", 900),
+			Base:         gmod.NewBaseWithHitlag("kuki-c6", 900),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true

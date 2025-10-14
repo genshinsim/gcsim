@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c1(f, travel int) {
@@ -75,7 +75,7 @@ func (c *char) c6() {
 			continue
 		}
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("kokomi-c6", 480),
+			Base:         gmod.NewBase("kokomi-c6", 480),
 			AffectedStat: attributes.HydroP,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {

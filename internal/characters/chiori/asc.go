@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -195,7 +195,7 @@ func (c *char) a4() {
 // needs to be callable separately because of c1 rock doll activating a4
 func (c *char) applyA4Buff() {
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(a4BuffKey, a4Duration),
+		Base:         gmod.NewBaseWithHitlag(a4BuffKey, a4Duration),
 		AffectedStat: attributes.GeoP,
 		Amount: func() ([]float64, bool) {
 			return c.a4Buff, true

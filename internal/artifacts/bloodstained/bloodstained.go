@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -36,7 +36,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PhyP] = 0.25
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("bloodstained-2pc", -1),
+			Base:         gmod.NewBase("bloodstained-2pc", -1),
 			AffectedStat: attributes.PhyP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -70,7 +70,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		// charged attack dmg% part
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("bloodstained-4pc-dmg%", 600),
+			Base: gmod.NewBaseWithHitlag("bloodstained-4pc-dmg%", 600),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false

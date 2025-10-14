@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkBuff := 0.39 + 0.13*float64(r)
 	atkSkillBuff := 0.21 + 0.07*float64(r)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("scarletsands", -1),
+		Base:         gmod.NewBase("scarletsands", -1),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {
@@ -87,7 +87,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(skillBuff, 10*60),
+			Base:         gmod.NewBaseWithHitlag(skillBuff, 10*60),
 			AffectedStat: attributes.ATK,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {

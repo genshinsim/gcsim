@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -41,7 +41,7 @@ func (w *Weapon) Init() error {
 	}
 
 	w.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("astralvulturescrimsonplumage-dmg", -1),
+		Base: gmod.NewBase("astralvulturescrimsonplumage-dmg", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagExtra:
@@ -78,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return false
 			}
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("astralvulturescrimsonplumage-atkp", 12*60),
+				Base:         gmod.NewBaseWithHitlag("astralvulturescrimsonplumage-atkp", 12*60),
 				AffectedStat: attributes.ATKP,
 				Amount: func() ([]float64, bool) {
 					return atkp, true

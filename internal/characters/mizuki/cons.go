@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -119,7 +119,7 @@ func (c *char) c2() {
 		}
 		// TODO: Test whether this is indeed a static buff once we have C2
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBase(c2Key, -1),
+			Base: gmod.NewBase(c2Key, -1),
 			Amount: func() ([]float64, bool) {
 				if !c.StatusIsActive(dreamDrifterStateKey) {
 					return nil, false

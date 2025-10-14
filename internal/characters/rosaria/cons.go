@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When Rosaria deals a CRIT Hit, her ATK Speed increase by 10% and her Normal Attack DMG increases by 10% for 4s (can trigger vs shielded enemies)
@@ -32,7 +32,7 @@ func (c *char) makeC1CB() info.AttackCBFunc {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.1
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("rosaria-c1-dmg", 240), // 4s
+			Base: gmod.NewBaseWithHitlag("rosaria-c1-dmg", 240), // 4s
 			Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
@@ -44,7 +44,7 @@ func (c *char) makeC1CB() info.AttackCBFunc {
 		mAtkSpd := make([]float64, attributes.EndStatType)
 		mAtkSpd[attributes.AtkSpd] = 0.1
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("rosaria-c1-speed", 240), // 4s
+			Base:         gmod.NewBaseWithHitlag("rosaria-c1-speed", 240), // 4s
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				if c.Core.Player.CurrentState() != action.NormalAttackState {
@@ -91,7 +91,7 @@ func (c *char) makeC6CB() info.AttackCBFunc {
 			return
 		}
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("rosaria-c6", 600),
+			Base:  gmod.NewBaseWithHitlag("rosaria-c6", 600),
 			Ele:   attributes.Physical,
 			Value: -0.2,
 		})

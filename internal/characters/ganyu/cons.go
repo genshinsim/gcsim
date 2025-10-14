@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -29,7 +29,7 @@ func (c *char) c1() info.AttackCBFunc {
 			return
 		}
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag(c1Key, 300),
+			Base:  gmod.NewBaseWithHitlag(c1Key, 300),
 			Ele:   attributes.Cryo,
 			Value: -0.15,
 		})
@@ -45,7 +45,7 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(c4Key, -1),
+			Base: gmod.NewBase(c4Key, -1),
 			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {

@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c2Icd = "lanyan-c2-icd"
@@ -50,7 +50,7 @@ func (c *char) c4() {
 	m[attributes.EM] = 60
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("lanyan-c4", 12*60),
+			Base: gmod.NewBaseWithHitlag("lanyan-c4", 12*60),
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

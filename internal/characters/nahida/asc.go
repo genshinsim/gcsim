@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -46,7 +46,7 @@ func (c *char) applyA1(dur int) {
 	for i, char := range c.Core.Player.Chars() {
 		idx := i
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(a1BuffKey, dur),
+			Base:         gmod.NewBase(a1BuffKey, dur),
 			AffectedStat: attributes.EM,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {
@@ -63,7 +63,7 @@ func (c *char) a4() {
 		return
 	}
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(a4BuffKey, -1),
+		Base: gmod.NewBase(a4BuffKey, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false

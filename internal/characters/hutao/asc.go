@@ -3,7 +3,7 @@ package hutao
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -24,7 +24,7 @@ func (c *char) a1() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a1BuffKey, 480),
+			Base:         gmod.NewBaseWithHitlag(a1BuffKey, 480),
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
 				return c.a1buff, true
@@ -43,7 +43,7 @@ func (c *char) a4() {
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a4buff[attributes.PyroP] = 0.33
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("hutao-a4", -1),
+		Base:         gmod.NewBase("hutao-a4", -1),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
 			if c.CurrentHPRatio() <= 0.5 {

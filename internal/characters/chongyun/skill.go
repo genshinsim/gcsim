@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var skillFrames []int
@@ -131,7 +131,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 	// c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
 		active.AddCooldownMod(character.CooldownMod{
-			Base: modifier.NewBaseWithHitlag("chongyun-c2", dur),
+			Base: gmod.NewBaseWithHitlag("chongyun-c2", dur),
 			Amount: func(a action.Action) float64 {
 				if a == action.ActionSkill || a == action.ActionBurst {
 					return -0.15
@@ -161,7 +161,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.AtkSpd] = 0.08
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("chongyun-field", dur),
+				Base:         gmod.NewBaseWithHitlag("chongyun-field", dur),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return m, true

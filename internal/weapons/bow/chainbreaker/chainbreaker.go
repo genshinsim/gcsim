@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -39,7 +39,7 @@ func (w *Weapon) Init() error {
 	mAtk := make([]float64, attributes.EndStatType)
 	mAtk[attributes.ATKP] = w.atkStack * float64(stacks)
 	w.self.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("chain-breaker-atk", -1),
+		Base:         gmod.NewBase("chain-breaker-atk", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return mAtk, true
@@ -50,7 +50,7 @@ func (w *Weapon) Init() error {
 		mEm := make([]float64, attributes.EndStatType)
 		mEm[attributes.EM] = float64(w.emBuff)
 		w.self.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("chain-breaker-em", -1),
+			Base:         gmod.NewBase("chain-breaker-em", -1),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return mEm, true

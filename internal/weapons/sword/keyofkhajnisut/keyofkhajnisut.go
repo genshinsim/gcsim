@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -47,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = hp
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("khaj-nisut", -1),
+		Base:         gmod.NewBase("khaj-nisut", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -79,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		val := make([]float64, attributes.EndStatType)
 		val[attributes.EM] = char.MaxHP() * em * float64(w.stacks)
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(buffKey, duration),
+			Base:         gmod.NewBaseWithHitlag(buffKey, duration),
 			AffectedStat: attributes.EM,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {
@@ -92,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			val[attributes.EM] = char.MaxHP() * emTeam
 			for _, this := range c.Player.Chars() {
 				this.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(teamBuffKey, duration),
+					Base:         gmod.NewBaseWithHitlag(teamBuffKey, duration),
 					AffectedStat: attributes.EM,
 					Extra:        true,
 					Amount: func() ([]float64, bool) {

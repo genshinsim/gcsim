@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When Arataki Itto uses consecutive Arataki Kesagiri, he obtains the following effects:
@@ -22,7 +22,7 @@ func (c *char) a1() {
 	}
 	mAtkSpd := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("itto-a1", -1),
+		Base:         gmod.NewBase("itto-a1", -1),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
 			if c.a1Stacks == 0 || c.Core.Player.CurrentState() != action.ChargeAttackState {

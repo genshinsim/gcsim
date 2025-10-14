@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 45 + float64(r)*15
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("elegy-em", -1),
+		Base:         gmod.NewBase("elegy-em", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -87,14 +87,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddStatus(cdKey, cd, true)
 			for _, char := range c.Player.Chars() {
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("elegy-proc", buffDuration),
+					Base:         gmod.NewBaseWithHitlag("elegy-proc", buffDuration),
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
 						return uniqueVal, true
 					},
 				})
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
+					Base:         gmod.NewBaseWithHitlag(common.MillennialKey, buffDuration),
 					AffectedStat: attributes.ATKP,
 					Amount: func() ([]float64, bool) {
 						return sharedVal, true

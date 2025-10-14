@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // A1 ascension level check happens once inside of burst.go
@@ -42,7 +42,7 @@ func (c *Traveler) a1Buff(delay int) {
 		m[attributes.EM] = float64(6 * c.burstOverflowingLotuslight)
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a1Key, 60),
+			Base:         gmod.NewBaseWithHitlag(a1Key, 60),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -68,7 +68,7 @@ func (c *Traveler) a4Init() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("dmc-a4", -1),
+		Base: gmod.NewBase("dmc-a4", -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:

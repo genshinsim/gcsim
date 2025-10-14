@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -29,7 +29,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CryoP] = 0.15
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("bs-2pc", -1),
+			Base:         gmod.NewBase("bs-2pc", -1),
 			AffectedStat: attributes.CryoP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -39,7 +39,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("bs-4pc", -1),
+			Base: gmod.NewBase("bs-4pc", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				r, ok := t.(core.Reactable)
 				if !ok {

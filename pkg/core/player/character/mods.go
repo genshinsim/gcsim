@@ -9,41 +9,41 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 type (
 	// Status is basic mod for keeping track Status; usually affected by hitlag
 	Status struct {
-		modifier.Base
+		gmod.Base
 	}
 	AttackMod struct {
 		Amount AttackModFunc
-		modifier.Base
+		gmod.Base
 	}
 	AttackModFunc func(atk *info.AttackEvent, t info.Target) ([]float64, bool)
 
 	CooldownMod struct {
 		Amount CooldownModFunc
-		modifier.Base
+		gmod.Base
 	}
 	CooldownModFunc func(a action.Action) float64
 
 	DamageReductionMod struct {
 		Amount DamageReductionModFunc
-		modifier.Base
+		gmod.Base
 	}
 	DamageReductionModFunc func() (float64, bool)
 
 	HealBonusMod struct {
 		Amount HealBonusModFunc
-		modifier.Base
+		gmod.Base
 	}
 	HealBonusModFunc func() (float64, bool)
 
 	ReactBonusMod struct {
 		Amount ReactBonusModFunc
-		modifier.Base
+		gmod.Base
 	}
 	ReactBonusModFunc func(info.AttackInfo) (float64, bool)
 
@@ -51,7 +51,7 @@ type (
 		AffectedStat attributes.Stat
 		Extra        bool
 		Amount       StatModFunc
-		modifier.Base
+		gmod.Base
 	}
 	StatModFunc func() ([]float64, bool)
 )
@@ -60,7 +60,7 @@ type (
 
 func (c *CharWrapper) AddStatus(key string, dur int, hitlag bool) {
 	mod := Status{
-		Base: modifier.Base{
+		Base: gmod.Base{
 			ModKey: key,
 			Dur:    dur,
 			Hitlag: hitlag,
@@ -71,50 +71,50 @@ func (c *CharWrapper) AddStatus(key string, dur int, hitlag bool) {
 	} else {
 		mod.ModExpiry = *c.f + mod.Dur
 	}
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("status", c.Index(), &mod, c.log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&c.mods, &mod, *c.f)
+	gmod.LogAdd("status", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddAttackMod(mod AttackMod) {
 	mod.SetExpiry(*c.f)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("attack", c.Index(), &mod, c.log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&c.mods, &mod, *c.f)
+	gmod.LogAdd("attack", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddCooldownMod(mod CooldownMod) {
 	mod.SetExpiry(*c.f)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("cd", c.Index(), &mod, c.log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&c.mods, &mod, *c.f)
+	gmod.LogAdd("cd", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddDamageReductionMod(mod DamageReductionMod) {
 	mod.SetExpiry(*c.f)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("dr", c.Index(), &mod, c.log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&c.mods, &mod, *c.f)
+	gmod.LogAdd("dr", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddHealBonusMod(mod HealBonusMod) {
 	mod.SetExpiry(*c.f)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("heal bonus", c.Index(), &mod, c.log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&c.mods, &mod, *c.f)
+	gmod.LogAdd("heal bonus", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddReactBonusMod(mod ReactBonusMod) {
 	mod.SetExpiry(*c.f)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("react bonus", c.Index(), &mod, c.log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&c.mods, &mod, *c.f)
+	gmod.LogAdd("react bonus", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddStatMod(mod StatMod) {
 	mod.SetExpiry(*c.f)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("stat", c.Index(), &mod, c.log, overwrote, oldEvt)
+	overwrote, oldEvt := gmod.Add[gmod.Mod](&c.mods, &mod, *c.f)
+	gmod.LogAdd("stat", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
 // Delete.
 
 func (c *CharWrapper) deleteMod(key string) {
-	m := modifier.Delete(&c.mods, key)
+	m := gmod.Delete(&c.mods, key)
 	if m != nil && (m.Expiry() > *c.f || m.Expiry() == -1) {
 		m.Event().SetEnded(*c.f)
 	}
@@ -130,7 +130,7 @@ func (c *CharWrapper) DeleteStatMod(key string)            { c.deleteMod(key) }
 // Active.
 
 func (c *CharWrapper) modIsActive(key string) bool {
-	_, ok := modifier.FindCheckExpiry(&c.mods, key, *c.f)
+	_, ok := gmod.FindCheckExpiry(&c.mods, key, *c.f)
 	return ok
 }
 func (c *CharWrapper) StatusIsActive(key string) bool             { return c.modIsActive(key) }
@@ -143,7 +143,7 @@ func (c *CharWrapper) StatModIsActive(key string) bool            { return c.mod
 // Expiry.
 
 func (c *CharWrapper) getModExpiry(key string) int {
-	m := modifier.Find(&c.mods, key)
+	m := gmod.Find(&c.mods, key)
 	if m != -1 {
 		return c.mods[m].Expiry()
 	}
@@ -155,7 +155,7 @@ func (c *CharWrapper) StatusExpiry(key string) int { return c.getModExpiry(key) 
 // Duration.
 
 func (c *CharWrapper) getModDuration(key string) int {
-	m := modifier.Find(&c.mods, key)
+	m := gmod.Find(&c.mods, key)
 	if m == -1 {
 		return 0
 	}
@@ -170,7 +170,7 @@ func (c *CharWrapper) StatusDuration(key string) int { return c.getModDuration(k
 
 // extendMod returns true if mod is active and is extended
 func (c *CharWrapper) extendMod(key string, ext int) bool {
-	m, active := modifier.FindCheckExpiry(&c.mods, key, *c.f)
+	m, active := gmod.FindCheckExpiry(&c.mods, key, *c.f)
 	if m == -1 {
 		return false
 	}

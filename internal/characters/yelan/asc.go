@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When the party has 1/2/3/4 Elemental Types, Yelan's Max HP is increased by 6%/12%/18%/30%.
@@ -25,7 +25,7 @@ func (c *char) a1() {
 	}
 
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("yelan-a1", -1),
+		Base:         gmod.NewBase("yelan-a1", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -44,7 +44,7 @@ func (c *char) a4() {
 	for _, char := range c.Core.Player.Chars() {
 		this := char
 		this.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("yelan-a4", 15*60),
+			Base: gmod.NewBase("yelan-a4", 15*60),
 			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				// char must be active
 				if c.Core.Player.Active() != this.Index() {

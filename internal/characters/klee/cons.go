@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c1(delay int) {
@@ -47,7 +47,7 @@ func (c *char) c2(a info.AttackCB) {
 		return
 	}
 	e.AddDefMod(info.DefMod{
-		Base:  modifier.NewBaseWithHitlag("kleec2", 10*60),
+		Base:  gmod.NewBaseWithHitlag("kleec2", 10*60),
 		Value: -0.233,
 	})
 }

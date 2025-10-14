@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -65,7 +65,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.3
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("diluc-c6-dmg", 360),
+			Base: gmod.NewBaseWithHitlag("diluc-c6-dmg", 360),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
@@ -81,7 +81,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		mAtkSpd := make([]float64, attributes.EndStatType)
 		mAtkSpd[attributes.AtkSpd] = 0.3
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("diluc-c6-speed", 360),
+			Base:         gmod.NewBaseWithHitlag("diluc-c6-speed", 360),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				if c.Core.Player.CurrentState() != action.NormalAttackState {

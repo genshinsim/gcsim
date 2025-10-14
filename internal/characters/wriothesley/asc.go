@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -125,7 +125,7 @@ func (c *char) applyA4(dur int) {
 	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("wriothesley-a4", dur),
+		Base:         gmod.NewBaseWithHitlag("wriothesley-a4", dur),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			m[attributes.ATKP] = float64(c.a4Stack) * 0.06

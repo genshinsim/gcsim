@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -39,7 +39,7 @@ func (w *Weapon) Init() error {
 			diffCount++
 		}
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBase(fmt.Sprintf("a-thousand-floating-dreams-party-%v", w.self.Base.Key.String()), -1),
+			Base: gmod.NewBase(fmt.Sprintf("a-thousand-floating-dreams-party-%v", w.self.Base.Key.String()), -1),
 			Amount: func() ([]float64, bool) {
 				return w.teamBuff, true
 			},
@@ -66,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w.teamBuff[attributes.EM] = 38 + float64(r)*2
 
 	char.AddStatMod(character.StatMod{
-		Base: modifier.NewBase("a-thousand-floating-dreams", -1),
+		Base: gmod.NewBase("a-thousand-floating-dreams", -1),
 		Amount: func() ([]float64, bool) {
 			return w.buff, true
 		},
