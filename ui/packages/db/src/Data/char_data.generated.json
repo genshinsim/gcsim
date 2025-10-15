@@ -737,6 +737,23 @@
       },
       "name_text_hash_map ": "1940919994"
     },
+    "ineffa": {
+      "id": 10000116,
+      "key": "ineffa",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Ineffa",
+      "skill_details": {
+        "skill": 11162,
+        "burst": 11165,
+        "attack": 11161,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2759230658"
+    },
     "itto": {
       "id": 10000057,
       "key": "itto",
