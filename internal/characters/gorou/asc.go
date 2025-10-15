@@ -3,7 +3,7 @@ package gorou
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // After using Juuga: Forward Unto Victory, all nearby party members' DEF is increased by 25% for 12s.
@@ -13,7 +13,7 @@ func (c *char) a1() {
 	}
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a1Key, 720),
+			Base:         gmod.NewBaseWithHitlag(a1Key, 720),
 			AffectedStat: attributes.DEFP,
 			Amount: func() ([]float64, bool) {
 				return c.a1Buff, true

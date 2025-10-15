@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -34,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR := make([]float64, attributes.EndStatType)
 	mCR[attributes.CR] = 0.12 + 0.04*float64(r)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("fruitful-hook-cr", -1),
+		Base: gmod.NewBase("fruitful-hook-cr", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagPlunge {
 				return mCR, true
@@ -55,7 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("fruitful-hook-dmg%", 10*60),
+			Base: gmod.NewBaseWithHitlag("fruitful-hook-dmg%", 10*60),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				switch atk.Info.AttackTag {
 				case attacks.AttackTagNormal:

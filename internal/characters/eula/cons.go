@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c4() {
@@ -13,7 +13,7 @@ func (c *char) c4() {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.25
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("eula-c4", -1),
+			Base: gmod.NewBase("eula-c4", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.Abil != burstInitialAbil {
 					return nil, false

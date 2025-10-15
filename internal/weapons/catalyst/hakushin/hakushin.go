@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 				stat := attributes.EleToDmgP(charEle)
 				other.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf(buffKey, charEle), 6*60),
+					Base:         gmod.NewBaseWithHitlag(fmt.Sprintf(buffKey, charEle), 6*60),
 					AffectedStat: stat,
 					Amount: func() ([]float64, bool) {
 						clear(m)

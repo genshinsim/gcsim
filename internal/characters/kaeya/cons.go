@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C1:
@@ -17,7 +17,7 @@ import (
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("kaeya-c1", -1),
+		Base: gmod.NewBase("kaeya-c1", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {

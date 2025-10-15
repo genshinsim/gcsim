@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			}
 			active := c.Core.Player.ActiveChar()
 			active.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("ayato-burst", 90),
+				Base: gmod.NewBaseWithHitlag("ayato-burst", 90),
 				Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
 					return m, a.Info.AttackTag == attacks.AttackTagNormal
 				},
@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		m[attributes.AtkSpd] = 0.15
 		for _, char := range c.Core.Player.Chars() {
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("ayato-c4", 15*60),
+				Base:         gmod.NewBaseWithHitlag("ayato-c4", 15*60),
 				AffectedStat: attributes.AtkSpd,
 				Amount: func() ([]float64, bool) {
 					return m, true

@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -36,7 +36,7 @@ func (c *char) c4(lastConstruct int) func() {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.DmgP] = 0.3
 			active.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("albedo-c4", 60), // 1s
+				Base: gmod.NewBaseWithHitlag("albedo-c4", 60), // 1s
 				Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != attacks.AttackTagPlunge {
 						return nil, false
@@ -72,7 +72,7 @@ func (c *char) c6(lastConstruct int) func() {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.DmgP] = 0.17
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("albedo-c6", 60), // 1s
+				Base:         gmod.NewBase("albedo-c6", 60), // 1s
 				AffectedStat: attributes.DmgP,
 				Amount: func() ([]float64, bool) {
 					return m, true

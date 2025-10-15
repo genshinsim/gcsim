@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c6ICDKey = "candace-c6-icd"
@@ -18,7 +18,7 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = 0.2
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("candace-c2", 15*60),
+		Base:         gmod.NewBaseWithHitlag("candace-c2", 15*60),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return m, true

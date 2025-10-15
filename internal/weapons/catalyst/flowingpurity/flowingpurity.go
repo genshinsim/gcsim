@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, icd, true)
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("flowingpurity-eledmg-boost", duration),
+			Base:         gmod.NewBaseWithHitlag("flowingpurity-eledmg-boost", duration),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -97,7 +97,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.DeleteStatus(bondKey)
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("flowingpurity-bond-eledmg-boost", duration),
+			Base:         gmod.NewBaseWithHitlag("flowingpurity-bond-eledmg-boost", duration),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return bond, true

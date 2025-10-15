@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -102,7 +102,7 @@ func (c *char) c6skill() {
 	m[attributes.CR] = 0.1
 	m[attributes.CD] = 0.7
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(c6Key, 20*60),
+		Base: gmod.NewBaseWithHitlag(c6Key, 20*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalBurst, attacks.AttackTagNormal:

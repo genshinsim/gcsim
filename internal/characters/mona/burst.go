@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -87,7 +87,7 @@ func (c *char) burstDamageBonus() {
 	m[attributes.DmgP] = dmgBonus[c.TalentLvlBurst()]
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("mona-omen", -1),
+			Base: gmod.NewBase("mona-omen", -1),
 			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {

@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("tamayuratei", 10*60),
+			Base: gmod.NewBaseWithHitlag("tamayuratei", 10*60),
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

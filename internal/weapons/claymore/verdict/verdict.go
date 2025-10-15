@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -46,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.15 + float64(r)*0.05
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("verdict-atk", -1),
+		Base:         gmod.NewBase("verdict-atk", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return m, true

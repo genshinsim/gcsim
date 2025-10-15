@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var skillFrames []int
@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.ppbuff[attributes.ATK] = bonus
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(paramitaBuff, 540+skillStart),
+		Base:         gmod.NewBaseWithHitlag(paramitaBuff, 540+skillStart),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {

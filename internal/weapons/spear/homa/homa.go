@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -27,7 +27,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mHP := make([]float64, attributes.EndStatType)
 	mHP[attributes.HPP] = 0.15 + float64(r)*0.05
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("homa-hp", -1),
+		Base:         gmod.NewBase("homa-hp", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return mHP, true
@@ -38,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkp := 0.006 + float64(r)*0.002
 	lowhp := 0.008 + float64(r)*0.002
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("homa-atk-buff", -1),
+		Base:         gmod.NewBase("homa-atk-buff", -1),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {

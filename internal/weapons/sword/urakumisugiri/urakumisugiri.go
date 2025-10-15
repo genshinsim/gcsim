@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	mNormal := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("urakumisugiri-na", -1),
+		Base: gmod.NewBase("urakumisugiri-na", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil, false
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	mSkill := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("urakumisugiri-skill", -1),
+		Base: gmod.NewBase("urakumisugiri-skill", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 				return nil, false
@@ -74,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mDef := make([]float64, attributes.EndStatType)
 	mDef[attributes.DEFP] = defIncrease
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("urakumisugiri-def", -1),
+		Base:         gmod.NewBase("urakumisugiri-def", -1),
 		AffectedStat: attributes.DEFP,
 		Amount: func() ([]float64, bool) {
 			return mDef, true

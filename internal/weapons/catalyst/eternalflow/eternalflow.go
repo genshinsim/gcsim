@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -53,7 +53,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.HPP] = hpp
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("eternalflow-hpp", -1),
+		Base:         gmod.NewBase("eternalflow-hpp", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return val, true
@@ -113,7 +113,7 @@ func (w *Weapon) onChangeHP() {
 
 	w.char.AddStatus(buffIcd, 0.3*60, true)
 	w.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(buffKey, 4*60),
+		Base: gmod.NewBaseWithHitlag(buffKey, 4*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			w.buffCA[attributes.DmgP] = (0.10 + 0.04*float64(w.refine)) * float64(w.stacks)
 			switch atk.Info.AttackTag {

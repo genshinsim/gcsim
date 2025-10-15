@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func TravelerStoryBuffs(c *character.CharWrapper, p info.CharacterProfile) {
@@ -37,7 +37,7 @@ func TravelerStoryBuffs(c *character.CharWrapper, p info.CharacterProfile) {
 		m[attributes.BaseHP] += 50
 	}
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBase("traveler-story-quest-buffs", -1),
+		Base: gmod.NewBase("traveler-story-quest-buffs", -1),
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},

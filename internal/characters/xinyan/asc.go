@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Decreases the number of opponents Sweeping Fervor must hit to trigger each level of shielding.
@@ -31,7 +31,7 @@ func (c *char) a4() {
 	for i, char := range c.Core.Player.Chars() {
 		idx := i
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("xinyan-a4", -1),
+			Base: gmod.NewBase("xinyan-a4", -1),
 			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				shd := c.Core.Player.Shields.Get(shield.XinyanSkill)
 				if shd == nil {

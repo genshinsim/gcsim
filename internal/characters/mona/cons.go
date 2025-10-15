@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c6Key = "mona-c6"
@@ -42,7 +42,7 @@ func (c *char) c1() {
 				// TODO: "Vaporize DMG increases by 15%." should be getting snapshot, see https://library.keqingmains.com/evidence/characters/hydro/mona#mona-c1-snapshot-for-vape
 				// requires ReactBonusMod refactor
 				char.AddReactBonusMod(character.ReactBonusMod{
-					Base: modifier.NewBase("mona-c1", 8*60),
+					Base: gmod.NewBase("mona-c1", 8*60),
 					Amount: func(ai info.AttackInfo) (float64, bool) {
 						// doesn't work off-field
 						if c.Core.Player.Active() != char.Index() {
@@ -111,7 +111,7 @@ func (c *char) c4() {
 
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("mona-c4", -1),
+			Base: gmod.NewBase("mona-c4", -1),
 			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
@@ -157,7 +157,7 @@ func (c *char) c6(src int) func() {
 
 		m := make([]float64, attributes.EndStatType)
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(c6Key, 8*60),
+			Base: gmod.NewBase(c6Key, 8*60),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false

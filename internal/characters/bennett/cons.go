@@ -3,7 +3,7 @@ package bennett
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c2() {
@@ -11,7 +11,7 @@ func (c *char) c2() {
 	m[attributes.ER] = .3
 
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("bennett-c2", -1),
+		Base:         gmod.NewBase("bennett-c2", -1),
 		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
 			return m, c.CurrentHPRatio() < 0.7

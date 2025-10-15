@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When nearby party members gain Elemental Orbs or Particles, Chakra Desiderata gains 2 Resolve stacks.
@@ -59,7 +59,7 @@ func (c *char) a4() {
 	if c.a4Stats == nil {
 		c.a4Stats = make([]float64, attributes.EndStatType)
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("raiden-a4", -1),
+			Base:         gmod.NewBase("raiden-a4", -1),
 			AffectedStat: attributes.ElectroP,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {

@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var skillFrames []int
@@ -97,7 +97,7 @@ func (c *char) attackBuff(a info.AttackPattern, delay int) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATK] = buff
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("sara-attack-buff", 360),
+			Base:         gmod.NewBaseWithHitlag("sara-attack-buff", 360),
 			AffectedStat: attributes.ATK,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {

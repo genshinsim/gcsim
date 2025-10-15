@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // A1 is not implemented:
@@ -21,7 +21,7 @@ func (c *char) a4(char *character.CharWrapper) {
 	}
 	m := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(a4Key, -1),
+		Base: gmod.NewBase(a4Key, -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if !c.StatusIsActive(burstKey) {
 				return nil, false

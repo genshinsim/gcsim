@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -36,7 +36,7 @@ func (c *char) c1OnFightingSpirit() {
 		return
 	}
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag(c1Key, 10*60),
+		Base: gmod.NewBaseWithHitlag(c1Key, 10*60),
 		Amount: func() ([]float64, bool) {
 			return c.c1buff, true
 		},
@@ -50,7 +50,7 @@ func (c *char) c2Init() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.BaseATK] = 200
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBase("mavuika-c2-base-atk", -1),
+		Base: gmod.NewBase("mavuika-c2-base-atk", -1),
 		Amount: func() ([]float64, bool) {
 			if c.nightsoulState.HasBlessing() {
 				return m, true
@@ -74,7 +74,7 @@ func (c *char) c2Ring() {
 	)
 	for _, e := range c.Core.Combat.EnemiesWithinArea(ap, nil) {
 		e.AddDefMod(info.DefMod{
-			Base:  modifier.NewBaseWithHitlag("mavuika-c2", 30),
+			Base:  gmod.NewBaseWithHitlag("mavuika-c2", 30),
 			Value: -0.2,
 		})
 	}

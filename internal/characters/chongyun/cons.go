@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c4ICDKey = "chongyun-c4-icd"
@@ -44,7 +44,7 @@ func (c *char) c6() {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.15
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("chongyun-c6", -1),
+			Base: gmod.NewBase("chongyun-c6", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false

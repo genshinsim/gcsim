@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c1() {
@@ -15,7 +15,7 @@ func (c *char) c1() {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.15
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("diluc-c1", -1),
+			Base: gmod.NewBase("diluc-c1", -1),
 			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
@@ -58,7 +58,7 @@ func (c *char) c2() {
 		c.c2buff[attributes.ATKP] = 0.1 * float64(c.c2stack)
 		c.c2buff[attributes.AtkSpd] = 0.05 * float64(c.c2stack)
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c2BuffKey, 600),
+			Base:         gmod.NewBaseWithHitlag(c2BuffKey, 600),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return c.c2buff, true
@@ -72,7 +72,7 @@ const c4BuffKey = "diluc-c4"
 
 func (c *char) c4() {
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(c4BuffKey, 120),
+		Base: gmod.NewBaseWithHitlag(c4BuffKey, 120),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			// should only affect skill dmg
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {

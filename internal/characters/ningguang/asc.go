@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // A1 is implemented in ningguang.go:
@@ -28,7 +28,7 @@ func (c *char) a4() {
 		}
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("ning-screen", 600),
+			Base:         gmod.NewBaseWithHitlag("ning-screen", 600),
 			AffectedStat: attributes.GeoP,
 			Amount: func() ([]float64, bool) {
 				return m, true

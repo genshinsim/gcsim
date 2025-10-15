@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const a1Status = "rainbow-crash"
@@ -62,7 +62,7 @@ func (c *char) a4() {
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBase("varesa-a4", -1),
+		Base: gmod.NewBase("varesa-a4", -1),
 		Amount: func() ([]float64, bool) {
 			m[attributes.ATKP] = 0.35 * float64(c.a4Stacks.Count())
 			return m, true

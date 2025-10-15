@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Picking up an Elemental Orb or Particle increases Razor's DMG by 10% for 8s.
@@ -22,7 +22,7 @@ func (c *char) c1() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("razor-c1", 8*60),
+			Base:         gmod.NewBaseWithHitlag("razor-c1", 8*60),
 			AffectedStat: attributes.DmgP,
 			Amount: func() ([]float64, bool) {
 				return c.c1bonus, true
@@ -39,7 +39,7 @@ func (c *char) c2() {
 		c.c2bonus[attributes.CR] = 0.1
 
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("razor-c2", -1),
+			Base: gmod.NewBase("razor-c2", -1),
 			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
@@ -61,7 +61,7 @@ func (c *char) c4cb(a info.AttackCB) {
 		return
 	}
 	e.AddDefMod(info.DefMod{
-		Base:  modifier.NewBaseWithHitlag("razor-c4", 7*60),
+		Base:  gmod.NewBaseWithHitlag("razor-c4", 7*60),
 		Value: -0.15,
 	})
 }

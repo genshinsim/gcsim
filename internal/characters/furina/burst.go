@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -132,7 +132,7 @@ func (c *char) burstInit() {
 	burstHealRatio := burstFanfareHBRatio[c.TalentLvlBurst()]
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("furina-burst-damage-buff", -1),
+			Base: gmod.NewBase("furina-burst-damage-buff", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if !c.StatusIsActive(burstKey) {
 					return nil, false
@@ -143,7 +143,7 @@ func (c *char) burstInit() {
 		})
 
 		char.AddHealBonusMod(character.HealBonusMod{
-			Base: modifier.NewBase("furina-burst-heal-buff", -1),
+			Base: gmod.NewBase("furina-burst-heal-buff", -1),
 			Amount: func() (float64, bool) {
 				if c.StatusIsActive(burstKey) {
 					return min(c.curFanfare, c.maxQFanfare) * burstHealRatio, false

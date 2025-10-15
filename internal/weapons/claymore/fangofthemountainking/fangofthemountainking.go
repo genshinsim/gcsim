@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -102,7 +102,7 @@ func (w *Weapon) addStacks(num int) {
 	}
 
 	w.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(canopyFavorKey, stackDuration),
+		Base: gmod.NewBaseWithHitlag(canopyFavorKey, stackDuration),
 		Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch a.Info.AttackTag {
 			case attacks.AttackTagElementalArt:

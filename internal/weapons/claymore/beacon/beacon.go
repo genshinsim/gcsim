@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mHP := make([]float64, attributes.EndStatType)
 	mHP[attributes.HPP] = 0.24 + float64(r)*.08
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("beacon-of-the-reed-sea-hp", -1),
+		Base:         gmod.NewBase("beacon-of-the-reed-sea-hp", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			if c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(skillKey, stackDuration),
+			Base:         gmod.NewBaseWithHitlag(skillKey, stackDuration),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return mATK, true
@@ -87,7 +87,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(damagedKey, stackDuration),
+			Base:         gmod.NewBaseWithHitlag(damagedKey, stackDuration),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return mATK, true

@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When all party members are Pyro and Electro characters and there is at least
@@ -46,12 +46,12 @@ func (c *char) a1() {
 			return false
 		}
 		t.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("chev-a1-pyro", 6*60),
+			Base:  gmod.NewBaseWithHitlag("chev-a1-pyro", 6*60),
 			Ele:   attributes.Pyro,
 			Value: -0.40,
 		})
 		t.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("chev-a1-electro", 6*60),
+			Base:  gmod.NewBaseWithHitlag("chev-a1-electro", 6*60),
 			Ele:   attributes.Electro,
 			Value: -0.40,
 		})
@@ -75,7 +75,7 @@ func (c *char) a4() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("chev-a4", 30*60),
+			Base:         gmod.NewBaseWithHitlag("chev-a4", 30*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true

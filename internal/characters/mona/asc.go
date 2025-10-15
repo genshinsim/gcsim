@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // After she has used Illusory Torrent for 2s, if there are any opponents nearby,
@@ -60,7 +60,7 @@ func (c *char) a4() {
 	if c.a4Stats == nil {
 		c.a4Stats = make([]float64, attributes.EndStatType)
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("mona-a4", -1),
+			Base:         gmod.NewBase("mona-a4", -1),
 			AffectedStat: attributes.HydroP,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {

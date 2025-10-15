@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -52,7 +52,7 @@ func (c *char) c2buff() {
 	}
 
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(c2Key, c2Dur),
+		Base:         gmod.NewBaseWithHitlag(c2Key, c2Dur),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return c2BuffMod, true

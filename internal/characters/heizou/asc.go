@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When Shikanoin Heizou activates a Swirl reaction while on the field,
@@ -61,7 +61,7 @@ func (c *char) a4() {
 			continue // nothing for heizou
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("heizou-a4", dur),
+			Base:         gmod.NewBaseWithHitlag("heizou-a4", dur),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return c.a4Buff, true

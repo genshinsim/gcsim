@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When Yanfei consumes Scarlet Seals by using a Charged Attack,
@@ -19,7 +19,7 @@ func (c *char) a1(stacks int) {
 	}
 	c.a1Buff[attributes.PyroP] = float64(stacks) * 0.05
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("yanfei-a1", 360),
+		Base:         gmod.NewBaseWithHitlag("yanfei-a1", 360),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
 			return c.a1Buff, true

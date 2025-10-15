@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	hpCheck := 0.65 + float64(r)*0.05
 
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("ferrousshadow", -1),
+		Base: gmod.NewBase("ferrousshadow", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			// don't apply buff if not Charged Attack
 			if atk.Info.AttackTag != attacks.AttackTagExtra {

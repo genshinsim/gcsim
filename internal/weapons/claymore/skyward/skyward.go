@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.06 + float64(r)*0.02
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("skyward pride", -1),
+		Base:         gmod.NewBase("skyward pride", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true

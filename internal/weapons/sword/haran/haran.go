@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.GeoP] = base
 	m[attributes.DendroP] = base
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("haran-ele-bonus", -1),
+		Base:         gmod.NewBase("haran-ele-bonus", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -78,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	activeFn := func() bool {
 		val[attributes.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("ripping-upheaval", 480),
+			Base: gmod.NewBaseWithHitlag("ripping-upheaval", 480),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false

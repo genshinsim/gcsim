@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -49,7 +49,7 @@ func (c *char) a1() {
 func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(a4Key, burstDuration),
+		Base:         gmod.NewBaseWithHitlag(a4Key, burstDuration),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 			m[attributes.EM] = float64(25 * c.a4Stacks)

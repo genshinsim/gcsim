@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -73,12 +73,12 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 		}
 		shred := a4Shred[c.a4HydroCryoCount]
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("escoffier-a4-shred-cryo", a4Dur),
+			Base:  gmod.NewBaseWithHitlag("escoffier-a4-shred-cryo", a4Dur),
 			Ele:   attributes.Cryo,
 			Value: -shred,
 		})
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("escoffier-a4-shred-hydro", a4Dur),
+			Base:  gmod.NewBaseWithHitlag("escoffier-a4-shred-hydro", a4Dur),
 			Ele:   attributes.Hydro,
 			Value: -shred,
 		})

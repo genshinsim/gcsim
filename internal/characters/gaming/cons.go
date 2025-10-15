@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -53,7 +53,7 @@ func (c *char) c2() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c2Key, 5*60),
+			Base:         gmod.NewBaseWithHitlag(c2Key, 5*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -95,7 +95,7 @@ func (c *char) c6() {
 	m[attributes.CR] = 0.2
 	m[attributes.CD] = 0.4
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(c6Key, -1),
+		Base: gmod.NewBase(c6Key, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.Abil != specialPlungeKey {
 				return nil, false

@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) a1Setup() {
@@ -34,7 +34,7 @@ func (c *char) a1() {
 	}
 	for _, this := range c.Core.Player.Chars() {
 		this.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("lynette-a1", 10*60),
+			Base:         gmod.NewBaseWithHitlag("lynette-a1", 10*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return c.a1Buff, true
@@ -53,7 +53,7 @@ func (c *char) a4(duration int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.15
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("lynette-a4", duration),
+		Base: gmod.NewBase("lynette-a4", duration),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false

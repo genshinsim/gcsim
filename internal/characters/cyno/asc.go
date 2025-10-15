@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const a1Key = "cyno-a1"
@@ -34,7 +34,7 @@ func (c *char) a1Buff() {
 	m[attributes.DmgP] = 0.35
 	// game also implements dmg buff with 1s modifier
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("cyno-a1-dmg", 60),
+		Base: gmod.NewBaseWithHitlag("cyno-a1-dmg", 60),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			// actual game uses AttackTagElementalArtExtra for a1, this is a decent
 			// workaround

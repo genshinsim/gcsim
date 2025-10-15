@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -80,7 +80,7 @@ func (c *char) c2Setup() {
 	// add buff
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("lyney-c2", -1),
+		Base:         gmod.NewBase("lyney-c2", -1),
 		AffectedStat: attributes.CD,
 		Amount: func() ([]float64, bool) {
 			m[attributes.CD] = float64(c.c2Stacks) * 0.2
@@ -124,7 +124,7 @@ func (c *char) makeC4CB() info.AttackCBFunc {
 			return
 		}
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("lyney-c4", 6*60),
+			Base:  gmod.NewBaseWithHitlag("lyney-c4", 6*60),
 			Ele:   attributes.Pyro,
 			Value: -0.20,
 		})

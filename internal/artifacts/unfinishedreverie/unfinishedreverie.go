@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -51,7 +51,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.18
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(unfinishedreverie2pc, -1),
+			Base:         gmod.NewBase(unfinishedreverie2pc, -1),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -63,7 +63,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.QueueCharTask(s.enemyCheck, checkInterval)
 		m := make([]float64, attributes.EndStatType)
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBase(unfinishedreverie4pc, -1),
+			Base: gmod.NewBase(unfinishedreverie4pc, -1),
 			Amount: func() ([]float64, bool) {
 				m[attributes.DmgP] = 0.1 * float64(s.stacks)
 				return m, true

@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const a1Key = "gaming-a1"
@@ -53,7 +53,7 @@ func (c *char) a4() {
 	mHeal := make([]float64, attributes.EndStatType)
 	mHeal[attributes.Heal] = 0.2
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("gaming-a4-heal-bonus", -1),
+		Base:         gmod.NewBase("gaming-a4-heal-bonus", -1),
 		AffectedStat: attributes.Heal,
 		Amount: func() ([]float64, bool) {
 			if c.CurrentHPRatio() >= 0.5 {
@@ -66,7 +66,7 @@ func (c *char) a4() {
 	mDmg := make([]float64, attributes.EndStatType)
 	mDmg[attributes.DmgP] = 0.2
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("gaming-a4-dmg-bonus", -1),
+		Base: gmod.NewBase("gaming-a4-dmg-bonus", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if c.CurrentHPRatio() < 0.5 {
 				return nil, false

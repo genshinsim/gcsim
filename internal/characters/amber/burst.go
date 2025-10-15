@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -73,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		m[attributes.ATKP] = 0.15
 		for _, active := range c.Core.Player.Chars() {
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("amber-c6", 900),
+				Base:         gmod.NewBaseWithHitlag("amber-c6", 900),
 				AffectedStat: attributes.ATKP,
 				Amount: func() ([]float64, bool) {
 					return m, true

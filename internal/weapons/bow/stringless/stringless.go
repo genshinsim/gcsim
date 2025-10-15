@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -28,7 +28,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.18 + float64(r)*0.06
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("stringless", -1),
+		Base: gmod.NewBase("stringless", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:

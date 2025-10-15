@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	mATK := make([]float64, attributes.EndStatType)
 	mATK[attributes.ATK] = mult * burstDefSnapshot
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(burstBuffKey, burstDuration),
+		Base:         gmod.NewBaseWithHitlag(burstBuffKey, burstDuration),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {
@@ -68,7 +68,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	mAtkSpd := make([]float64, attributes.EndStatType)
 	mAtkSpd[attributes.AtkSpd] = 0.10
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(burstAtkSpdKey, burstDuration),
+		Base:         gmod.NewBaseWithHitlag(burstAtkSpdKey, burstDuration),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
 			if c.Core.Player.CurrentState() != action.NormalAttackState {
