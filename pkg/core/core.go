@@ -21,6 +21,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/status"
 	"github.com/genshinsim/gcsim/pkg/core/task"
+	"github.com/genshinsim/gcsim/pkg/engine"
 )
 
 type Core struct {
@@ -36,6 +37,10 @@ type Core struct {
 	Combat     *combat.Handler
 	Constructs *construct.Handler
 	Player     *player.Handler
+
+	// abstracted core functionalities
+	Modifiers     engine.ModifierMgr
+	EntityIndexer info.EntityIndexRegistry
 }
 
 type Flags struct {
@@ -133,6 +138,24 @@ func (c *Core) Init() error {
 	if err != nil {
 		return err
 	}
+
+	// TODO: someone please get rid of this block of hacky ass code for targetid....
+
+	// player is 0... and targetid will always be 1
+	c.EntityIndexer.Register(0)
+	// register chars next, but negatives
+	for _, char := range c.Player.Chars() {
+		c.EntityIndexer.Register(-1 * char.Index())
+	}
+	// then enemies
+	for _, e := range c.Combat.Enemies() {
+		c.EntityIndexer.Register(int(e.Key()))
+	}
+	// TODO: we should register gadgets at some point ??
+	// for _, g := range c.Combat.Gadgets() {
+	// 	c.EntityIndexer.Register(int(g.Key()))
+	// }
+
 	c.Events.Emit(event.OnInitialize)
 	return nil
 }

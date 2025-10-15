@@ -43,6 +43,7 @@ func SetupTargetsInCore(core *core.Core, p info.Point, r float64, targets []info
 		e := enemy.New(core, *v)
 		core.Combat.AddEnemy(e)
 		// s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
+		core.EntityIndexer.Register(int(e.Key()))
 	}
 
 	// default target is closest to player?

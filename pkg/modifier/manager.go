@@ -2,7 +2,7 @@ package modifier
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/engine"
 )
 
 type Manager struct {
@@ -19,11 +19,10 @@ func NewManager(size int) *Manager {
 	}
 }
 
-func (m *Manager) Tick(id keys.TargetID) {
-	// the assumption here is that id is index of handlers
-	m.handlers[id].Tick()
+func (m *Manager) Handler(id info.EntityIndex) engine.ModifierHandler {
+	return m.handlers[id]
 }
 
-func (m *Manager) AddModifier(mod *info.Modifier) (bool, error) {
-	return m.handlers[mod.Source].Add(mod)
+func (m *Manager) Add(mod *info.Modifier) (bool, error) {
+	return m.handlers[mod.Target].Add(mod)
 }
