@@ -23,6 +23,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/clorinde"
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
 	_ "github.com/genshinsim/gcsim/internal/characters/cyno"
+	_ "github.com/genshinsim/gcsim/internal/characters/dahlia"
 	_ "github.com/genshinsim/gcsim/internal/characters/dehya"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"

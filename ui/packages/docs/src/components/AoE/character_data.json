@@ -2479,6 +2479,76 @@
       }
     ]
   },
+  "dahlia": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 1.5
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 1.7
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.3,
+        "radius": 1.7
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.4,
+        "radius": 1.5
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 2.2
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-1",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 2.2
+      },
+      {
+        "ability": "CA-2",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 2.2
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 5.5
+      }
+    ]
+  },
   "dehya": {
     "normal": [
       {
