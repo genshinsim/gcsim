@@ -3063,29 +3063,28 @@
         "ability": "N1",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1,
         "boxX": 1.6,
-        "boxY": 2
+        "boxY": 3
       },
       {
         "ability": "N2",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -0.2,
+        "offsetY": 0.7,
         "radius": 2
       },
       {
         "ability": "N3-1",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -0.2,
+        "offsetY": 0.8,
         "radius": 2.5
       },
       {
         "ability": "N3-2",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -0.2,
+        "offsetY": 0.4,
         "radius": 2.5
       }
     ],
@@ -3094,9 +3093,9 @@
         "ability": "CA",
         "shape": "Box",
         "center": "Player",
-        "offsetY": 1.5,
+        "offsetY": -1.2,
         "boxX": 3.3,
-        "boxY": 3
+        "boxY": 3.5
       }
     ],
     "plunge": [
@@ -3110,14 +3109,14 @@
         "ability": "Low_Plunge",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -0.5,
+        "offsetY": 1,
         "radius": 3
       },
       {
         "ability": "High_Plunge",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -0.5,
+        "offsetY": 1,
         "radius": 5
       }
     ],
@@ -3126,7 +3125,6 @@
         "ability": "E",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -1.5,
         "radius": 5
       },
       {
@@ -3147,7 +3145,7 @@
         "ability": "Q",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": -1.5,
+        "offsetY": 1,
         "radius": 7
       }
     ],
