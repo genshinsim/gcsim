@@ -34,8 +34,8 @@ type Modifier struct {
 
 	DecayRate Durability // always calculated on Add, but exposed so it can be modified
 
-	Source   keys.TargetID
-	Target   keys.TargetID
+	Source   EntityIndex
+	Target   EntityIndex
 	Stacking StackingType
 }
 
