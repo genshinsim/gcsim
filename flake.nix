@@ -22,17 +22,10 @@
         {
           formatter = pkgs.nixfmt-tree;
 
-          packages.golangci-lint-v2 =
-            with pkgs;
-            stdenv.mkDerivation {
-              name = "golangci-lint-v2";
-              buildInputs = [ golangci-lint ];
-              phases = [ "installPhase" ];
-              installPhase = ''
-                mkdir -p $out/bin
-                cp ${lib.getExe golangci-lint} $out/bin/$name
-              '';
-            };
+          packages.golangci-lint-v2 = pkgs.runCommandLocal "golangci-lint-v2" { } ''
+            mkdir -p $out/bin
+            cp ${lib.getExe pkgs.golangci-lint} $out/bin/$name
+          '';
 
           devShells.default = pkgs.mkShell {
             nativeBuildInputs =

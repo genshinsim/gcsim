@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 tasks:
   build:
@@ -56,13 +56,22 @@ tasks:
     env:
       GOOS: js
       GOARCH: wasm
+
   lint:
-    cmd: golangci-lint run --fast --fix --print-issued-lines=false --out-format=colored-line-number --issues-exit-code=0
+    desc: Run golangci-lint
+    cmds:
+      - golangci-lint run
+
+  lint-fix:
+    desc: Run golangci-lint and fix issues
+    cmds:
+      - golangci-lint run --fix
+
   dev-server-mode:
     desc: watches for change and launches server mode
     watch: true
     sources:
-      - "**/*.go"
+      - '**/*.go'
     vars:
       WIN_CMD: Get-CimInstance -ClassName Win32_PRocess -Filter "CommandLine LIKE '%GCSIM_SERVER%'" | ForEach-Object -Process {taskkill /F /PID $_.ProcessId}
     cmds:
