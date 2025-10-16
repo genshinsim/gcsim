@@ -44,7 +44,7 @@ func init() {
 
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
-		// do nothing if previous char wasn't gaming
+		// do nothing if previous char wasn't flins
 		prev := args[0].(int)
 		if prev != c.Index() {
 			return false
@@ -58,13 +58,25 @@ func (c *char) onExitField() {
 		c.DeleteStatus(thunderousSymphonyKey)
 
 		return false
-	}, "gaming-exit")
+	}, "flins-exit")
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatModIsActive(skillKey) {
 		return c.spearStorm()
 	}
+
+	// trigger 0 damage attack; matters because this stacks PJWS
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Arcane Light (0 dmg)",
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Physical,
+	}
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), skillHitmark, skillHitmark)
 
 	c.AddStatus(skillKey, 10*60+skillHitmark, true)
 
