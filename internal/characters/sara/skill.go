@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -53,8 +54,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
 
-		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.makeA4CB())
-		c.attackBuff(ap, c2Hitmark)
+		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.makeA4CB(), c.attackBuffCB())
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 7)
@@ -80,9 +80,13 @@ func (c *char) particleCB(a info.AttackCB) {
 
 // Handles attack boost from Sara's skills
 // Checks for the onfield character at the delay frame, then applies buff to that character
-func (c *char) attackBuff(a info.AttackPattern, delay int) {
-	c.Core.Tasks.Add(func() {
-		if collision, _ := c.Core.Combat.Player().AttackWillLand(a); !collision {
+func (c *char) attackBuffCB() info.AttackCBFunc {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
+			return
+		}
+		_, ok := a.Target.(*enemy.Enemy)
+		if !ok {
 			return
 		}
 
@@ -113,11 +117,7 @@ func (c *char) attackBuff(a info.AttackPattern, delay int) {
 			External:   true,
 		})
 
-		if c.Base.Cons >= 1 {
-			c.c1()
-		}
-		if c.Base.Cons >= 6 {
-			c.c6(active)
-		}
-	}, delay)
+		c.c1()
+		c.c6(active)
+	}
 }

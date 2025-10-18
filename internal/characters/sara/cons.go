@@ -14,6 +14,9 @@ const c1ICDKey = "sara-c1-icd"
 // Implements C1 CD reduction. Waits until delay (when it hits the enemy), then procs the effect
 // Triggers on her E and Q
 func (c *char) c1() {
+	if c.Base.Cons < 1 {
+		return
+	}
 	if c.StatusIsActive(c1ICDKey) {
 		return
 	}
@@ -25,6 +28,9 @@ func (c *char) c1() {
 
 // The Electro DMG of characters who have had their ATK increased by Tengu Juurai has its Crit DMG increased by 60%.
 func (c *char) c6(char *character.CharWrapper) {
+	if c.Base.Cons < 6 {
+		return
+	}
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("sara-c6", 360),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {

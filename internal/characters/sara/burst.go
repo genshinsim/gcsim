@@ -47,22 +47,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstMain[c.TalentLvlBurst()],
 	}
 
-	var c1cb info.AttackCBFunc
-	if c.Base.Cons >= 1 {
-		c1cb = func(a info.AttackCB) {
-			if a.Target.Type() != info.TargettableEnemy {
-				return
-			}
-			c.c1()
-		}
-	}
-
 	burstInitialDirection := c.Core.Combat.Player().Direction()
 	burstInitialPos := c.Core.Combat.PrimaryTarget().Pos()
 	initialAp := combat.NewCircleHitOnTarget(burstInitialPos, nil, 6)
 
-	c.Core.QueueAttack(ai, initialAp, burstStart, burstInitialHitmark, c1cb)
-	c.attackBuff(initialAp, burstInitialHitmark)
+	c.Core.QueueAttack(ai, initialAp, burstStart, burstInitialHitmark, c.attackBuffCB())
 
 	// stormcluster
 	ai.Abil = "Tengu Juurai: Stormcluster"
@@ -88,8 +77,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			stormClusterPos := info.CalcOffsetPoint(burstInitialPos, info.Point{Y: 3.6 + 1.35*float64(j)}, direction)
 			stormClusterAp := combat.NewCircleHitOnTarget(stormClusterPos, nil, stormClusterRadius)
 
-			c.Core.QueueAttack(ai, stormClusterAp, burstStart, burstClusterHitmark+18*j, c1cb)
-			c.attackBuff(stormClusterAp, burstClusterHitmark+18*j)
+			c.Core.QueueAttack(ai, stormClusterAp, burstStart, burstClusterHitmark+18*j, c.attackBuffCB())
 		}
 	}
 
