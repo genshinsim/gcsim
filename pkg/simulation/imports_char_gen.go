@@ -32,6 +32,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/eula"
 	_ "github.com/genshinsim/gcsim/internal/characters/faruzan"
 	_ "github.com/genshinsim/gcsim/internal/characters/fischl"
+	_ "github.com/genshinsim/gcsim/internal/characters/flins"
 	_ "github.com/genshinsim/gcsim/internal/characters/freminet"
 	_ "github.com/genshinsim/gcsim/internal/characters/furina"
 	_ "github.com/genshinsim/gcsim/internal/characters/gaming"
