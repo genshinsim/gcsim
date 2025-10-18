@@ -62,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	initialAp := combat.NewCircleHitOnTarget(burstInitialPos, nil, 6)
 
 	c.Core.QueueAttack(ai, initialAp, burstStart, burstInitialHitmark, c1cb)
-	c.attackBuff(initialAp, burstInitialHitmark)
+	c.attackBuff(initialAp, burstInitialHitmark+1)
 
 	// stormcluster
 	ai.Abil = "Tengu Juurai: Stormcluster"
@@ -89,7 +89,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			stormClusterAp := combat.NewCircleHitOnTarget(stormClusterPos, nil, stormClusterRadius)
 
 			c.Core.QueueAttack(ai, stormClusterAp, burstStart, burstClusterHitmark+18*j, c1cb)
-			c.attackBuff(stormClusterAp, burstClusterHitmark+18*j)
+			c.attackBuff(stormClusterAp, burstClusterHitmark+18*j+1)
 		}
 	}
 

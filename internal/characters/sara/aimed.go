@@ -136,7 +136,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		// TODO: snapshot?
 		// Particles are emitted after the ambush thing hits
 		c.Core.QueueAttack(ai, ap, aimedA1Hitmark, aimedA1Hitmark+travel+90, c.makeA4CB(), c.particleCB)
-		c.attackBuff(ap, aimedA1Hitmark+travel+90)
+		c.attackBuff(ap, aimedA1Hitmark+travel+90+1)
 
 		c.Core.Status.Delete(coverKey)
 	}
