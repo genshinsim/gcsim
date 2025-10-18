@@ -11,13 +11,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const LunarChargeEnableKey = "lunarcharge-enabled"
+
 func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
+	if _, ok := r.core.Flags.Custom[LunarChargeEnableKey]; ok {
+		return r.TryAddLC(a)
+	}
+
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
 	// if there's still frozen left don't try to ec
 	// game actively rejects ec reaction if frozen is present
-	if r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
 		return false
 	}
 
@@ -25,22 +31,22 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if there's no existing hydro or electro then do nothing
-		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur {
 			return false
 		}
 		// add to hydro durability (can't add if the atk already reacted)
 		// TODO: this shouldn't happen here
 		if !a.Reacted {
-			r.attachOrRefillNormalEle(info.ReactionModKeyHydro, a.Info.Durability)
+			r.attachOrRefillNormalEle(info.ReactionModKeyHydro, a.Info.Durability, a.Info.ActorIndex)
 		}
 	case attributes.Electro:
 		// if there's no existing hydro or electro then do nothing
-		if r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
 		// add to electro durability (can't add if the atk already reacted)
 		if !a.Reacted {
-			r.attachOrRefillNormalEle(info.ReactionModKeyElectro, a.Info.Durability)
+			r.attachOrRefillNormalEle(info.ReactionModKeyElectro, a.Info.Durability, a.Info.ActorIndex)
 		}
 	default:
 		return false
@@ -81,7 +87,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 			10,
 		)
 
-		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
+		r.core.Tasks.Add(r.nextECTick(r.core.F), 60+10)
 		// subscribe to wane ticks
 		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 			// target should be first, then snapshot
@@ -100,7 +106,8 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 				return false
 			}
 			// ignore if we no longer have both electro and hydro
-			if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur || r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+			if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur ||
+				r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 				return true
 			}
 
@@ -118,25 +125,23 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) waneEC() {
-	r.Durability[info.ReactionModKeyElectro] -= 10
-	r.Durability[info.ReactionModKeyElectro] = max(0, r.Durability[info.ReactionModKeyElectro])
-	r.Durability[info.ReactionModKeyHydro] -= 10
-	r.Durability[info.ReactionModKeyHydro] = max(0, r.Durability[info.ReactionModKeyHydro])
+	r.reduceMod(info.ReactionModKeyElectro, 10)
+	r.reduceMod(info.ReactionModKeyHydro, 10)
 	r.core.Log.NewEvent("ec wane",
 		glog.LogElementEvent,
 		-1,
 	).
 		Write("aura", "ec").
 		Write("target", r.self.Key()).
-		Write("hydro", r.Durability[info.ReactionModKeyHydro]).
-		Write("electro", r.Durability[info.ReactionModKeyElectro])
+		Write("hydro", r.GetAuraDurability(info.ReactionModKeyHydro)).
+		Write("electro", r.GetAuraDurability(info.ReactionModKeyElectro))
 
 	// ec is gone
 	r.checkEC()
 }
 
 func (r *Reactable) checkEC() {
-	if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur || r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur || r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 		r.ecTickSrc = -1
 		r.core.Events.Unsubscribe(event.OnEnemyDamage, fmt.Sprintf("ec-%v", r.self.Key()))
 		r.core.Log.NewEvent("ec expired",
@@ -145,12 +150,12 @@ func (r *Reactable) checkEC() {
 		).
 			Write("aura", "ec").
 			Write("target", r.self.Key()).
-			Write("hydro", r.Durability[info.ReactionModKeyHydro]).
-			Write("electro", r.Durability[info.ReactionModKeyElectro])
+			Write("hydro", r.GetAuraDurability(info.ReactionModKeyHydro)).
+			Write("electro", r.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 }
 
-func (r *Reactable) nextTick(src int) func() {
+func (r *Reactable) nextECTick(src int) func() {
 	return func() {
 		if r.ecTickSrc != src {
 			// source changed, do nothing
@@ -158,7 +163,7 @@ func (r *Reactable) nextTick(src int) func() {
 		}
 		// ec SHOULD be active still, since if not we would have
 		// called cleanup and set source to -1
-		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur || r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur || r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return
 		}
 
@@ -171,6 +176,6 @@ func (r *Reactable) nextTick(src int) func() {
 		)
 
 		// queue up next tick
-		r.core.Tasks.Add(r.nextTick(src), 60)
+		r.core.Tasks.Add(r.nextECTick(src), 60)
 	}
 }

@@ -67,6 +67,7 @@ func (c *char) c4() {
 	}
 	c.Core.Events.Subscribe(event.OnOverload, cbNoGadget, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnElectroCharged, cbNoGadget, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnLunarCharged, cbNoGadget, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnSuperconduct, cbNoGadget, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, cbNoGadget, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cbNoGadget, "keqing-c4")

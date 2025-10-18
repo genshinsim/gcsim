@@ -11,28 +11,28 @@ import (
 )
 
 func (r *Reactable) TryCrystallizeElectro(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyElectro] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyElectro) > info.ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Electro, info.ReactionTypeCrystallizeElectro, event.OnCrystallizeElectro)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizeHydro(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyHydro] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyHydro) > info.ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Hydro, info.ReactionTypeCrystallizeHydro, event.OnCrystallizeHydro)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizeCryo(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyCryo] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyCryo) > info.ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Cryo, info.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
 }
 
 func (r *Reactable) TryCrystallizePyro(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyPyro] > info.ZeroDur || r.Durability[info.ReactionModKeyBurning] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyPyro) > info.ZeroDur || r.GetAuraDurability(info.ReactionModKeyBurning) > info.ZeroDur {
 		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, info.ReactionTypeCrystallizePyro, event.OnCrystallizePyro)
 		r.burningCheck()
 		return reacted
@@ -41,7 +41,7 @@ func (r *Reactable) TryCrystallizePyro(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) TryCrystallizeFrozen(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
 		return r.tryCrystallizeWithEle(a, attributes.Frozen, info.ReactionTypeCrystallizeCryo, event.OnCrystallizeCryo)
 	}
 	return false
@@ -66,7 +66,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *info.AttackEvent, ele attributes.El
 	r.core.Events.Emit(evt, r.self, a)
 	// check freeze + ec
 	switch {
-	case ele == attributes.Electro && r.Durability[info.ReactionModKeyHydro] > info.ZeroDur:
+	case ele == attributes.Electro && r.GetAuraDurability(info.ReactionModKeyHydro) > info.ZeroDur:
 		r.checkEC()
 	case ele == attributes.Frozen:
 		r.checkFreeze()
