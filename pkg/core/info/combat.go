@@ -37,6 +37,7 @@ type AttackInfo struct {
 	Durability       Durability         // durability of aura, 0 if nothing applied
 	NoImpulse        bool
 	HitWeakPoint     bool
+	BaseDmgBonus     float64
 	Mult             float64 // ability multiplier. could set to 0 from initial Mona dmg
 	StrikeType       attacks.StrikeType
 	UseDef           bool    // we use this instead of flatdmg to make sure stat snapshotting works properly
