@@ -25,6 +25,7 @@ func init() {
 
 type Set struct {
 	char  *character.CharWrapper
+	core  *core.Core
 	count int
 	Index int
 	Count int
@@ -32,30 +33,14 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) GetCount() int    { return s.Count }
-func (s *Set) Init() error      { return nil }
-
-func (s *Set) getMoonsignLevel(core *core.Core) int {
-	count := 0
-	for _, c := range core.Player.Chars() {
-		count += c.Moonsign
-	}
-	return count
-}
-
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
-	s := Set{
-		char:  char,
-		count: count,
-		Count: count,
-	}
-
-	if count < 2 {
-		return &s, nil
+func (s *Set) Init() error {
+	if s.count < 2 {
+		return nil
 	}
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 80
-	char.AddStatMod(character.StatMod{
+	s.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase(setKey2, -1),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
@@ -63,39 +48,41 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		},
 	})
 
-	if count < 4 {
-		return &s, nil
+	if s.count < 4 {
+		return nil
 	}
 
 	m2 := make([]float64, attributes.EndStatType)
+	switch s.getMoonsignLevel() {
+	case 0:
+	case 1:
+		m2[attributes.CR] = 0.15
+	default:
+		m2[attributes.CR] = 0.30
+	}
 
 	lunarReactHook := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return false
 		}
 
-		if c.Player.Active() != char.Index() {
+		if s.core.Player.Active() != s.char.Index() {
 			return false
 		}
 
-		char.AddStatMod(character.StatMod{
+		s.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(gleamingMoonIntentCRKey, 4*60),
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
-				moonsign := s.getMoonsignLevel(c)
-				if moonsign == 0 {
-					return nil, false
-				}
-				m2[attributes.CR] = float64(min(moonsign, 2)) * 0.15
 				return m2, true
 			},
 		})
 
 		return false
 	}
-	c.Events.Subscribe(event.OnLunarCharged, lunarReactHook, setKey4+"-lc-"+char.Base.Key.String())
+	s.core.Events.Subscribe(event.OnLunarCharged, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())
 
-	for _, char := range c.Player.Chars() {
+	for _, char := range s.core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase(gleamingMoonIntentReactKey, -1),
 			Amount: func(ai info.AttackInfo) (float64, bool) {
@@ -107,7 +94,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				}
 
 				hasGleamingMoonIntent := false
-				for _, char1 := range c.Player.Chars() {
+				for _, char1 := range s.core.Player.Chars() {
 					if char1.StatModIsActive(gleamingMoonIntentCRKey) {
 						hasGleamingMoonIntent = true
 						break
@@ -122,5 +109,23 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 
+	return nil
+}
+
+func (s *Set) getMoonsignLevel() int {
+	count := 0
+	for _, c := range s.core.Player.Chars() {
+		count += c.Moonsign
+	}
+	return count
+}
+
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
+	s := Set{
+		char:  char,
+		core:  c,
+		count: count,
+		Count: count,
+	}
 	return &s, nil
 }
