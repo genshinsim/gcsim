@@ -11,7 +11,7 @@ import (
 
 const particleICDKey = "zhongli-particle-icd"
 
-func (c *char) newStele(dur int, missRate int) {
+func (c *char) newStele(dur, missRate int) {
 	flat := c.a4Skill()
 	// deal damage when created
 	ai := info.AttackInfo{
@@ -79,7 +79,7 @@ func (c *char) newStele(dur int, missRate int) {
 	c.Core.Tasks.Add(c.resonance(c.Core.F, missRate), 120)
 }
 
-func (c *char) resonance(src int, missRate int) func() {
+func (c *char) resonance(src, missRate int) func() {
 	return func() {
 		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index()).
 			Write("src", src).
