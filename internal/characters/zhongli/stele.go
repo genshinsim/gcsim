@@ -11,7 +11,7 @@ import (
 
 const particleICDKey = "zhongli-particle-icd"
 
-func (c *char) newStele(dur int) {
+func (c *char) newStele(dur int, missRate int) {
 	flat := c.a4Skill()
 	// deal damage when created
 	ai := info.AttackInfo{
@@ -76,10 +76,10 @@ func (c *char) newStele(dur int) {
 		SourceFrame: c.Core.F,
 	}
 
-	c.Core.Tasks.Add(c.resonance(c.Core.F), 120)
+	c.Core.Tasks.Add(c.resonance(c.Core.F, missRate), 120)
 }
 
-func (c *char) resonance(src int) func() {
+func (c *char) resonance(src int, missRate int) func() {
 	return func() {
 		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index()).
 			Write("src", src).
@@ -87,6 +87,16 @@ func (c *char) resonance(src int) func() {
 		if !c.Core.Constructs.Has(src) {
 			return
 		}
+		// stele missed
+		if c.Core.Rand.Intn(100) < missRate {
+			c.Core.Log.NewEvent("Stele missed", glog.LogCharacterEvent, c.Index()).
+				Write("next expected", c.Core.F+120).
+				Write("src", src).
+				Write("char", c.Index())
+			c.Core.Tasks.Add(c.resonance(src, missRate), 120)
+			return
+		}
+
 		c.Core.Log.NewEvent("Stele ticked", glog.LogCharacterEvent, c.Index()).
 			Write("next expected", c.Core.F+120).
 			Write("src", src).
@@ -132,7 +142,7 @@ func (c *char) resonance(src int) func() {
 				c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(resonanceAttackPos, nil, boxSize, boxSize), 0, particleCB)
 			}
 		}
-		c.Core.Tasks.Add(c.resonance(src), 120)
+		c.Core.Tasks.Add(c.resonance(src, missRate), 120)
 	}
 }
 

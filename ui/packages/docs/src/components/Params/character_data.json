@@ -1611,6 +1611,11 @@
       "ability": "skill",
       "param": "hold_nostele",
       "desc": "If 1, no Stone Stele will be created (i.e. shield only) and Hold will be performed. Default 0."
+    },
+    {
+      "ability": "skill",
+      "param": "miss",
+      "desc": "Value between 0 and 100. Default 0. Percent odds of Stone Stele missing on each tick."
     }
   ],
   "travelergeo": [

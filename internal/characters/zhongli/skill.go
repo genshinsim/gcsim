@@ -1,6 +1,8 @@
 package zhongli
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -35,17 +37,26 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	// Percent odds of Zhongli's stele missing enemies
+	m, ok := p["miss"]
+	if !ok {
+		m = 0
+	}
+	if m < 0 || m > 100 {
+		return action.Info{}, errors.New("odds of zhongli's stone stele missing must be between 0 and 100(%)")
+	}
+
 	h := p["hold"]
 	nostele := p["hold_nostele"] > 0
 	if h > 0 || nostele {
-		return c.skillHold(!nostele), nil
+		return c.skillHold(!nostele, m), nil
 	}
-	return c.skillPress(), nil
+	return c.skillPress(m), nil
 }
 
-func (c *char) skillPress() action.Info {
+func (c *char) skillPress(missRate int) action.Info {
 	c.Core.Tasks.Add(func() {
-		c.newStele(1860)
+		c.newStele(1860, missRate)
 	}, skillPressHimark)
 
 	c.SetCDWithDelay(action.ActionSkill, 240, 22)
@@ -58,7 +69,7 @@ func (c *char) skillPress() action.Info {
 	}
 }
 
-func (c *char) skillHold(createStele bool) action.Info {
+func (c *char) skillHold(createStele bool, missRate int) action.Info {
 	// hold does dmg
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -78,7 +89,7 @@ func (c *char) skillHold(createStele bool) action.Info {
 	// create a stele if less than zhongli's max stele count and desired by player
 	if (c.steleCount < c.maxStele) && createStele {
 		c.Core.Tasks.Add(func() {
-			c.newStele(1860) // 31 seconds
+			c.newStele(1860, missRate) // 31 seconds
 		}, skillHoldHitmark)
 	}
 
