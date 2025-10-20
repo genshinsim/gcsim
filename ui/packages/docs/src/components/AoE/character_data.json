@@ -4368,6 +4368,101 @@
       }
     ]
   },
+  "ineffa": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.3,
+        "radius": 1.6
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 1.6
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.2,
+        "boxX": 2.8,
+        "boxY": 2
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.2,
+        "boxX": 2.8,
+        "boxY": 2
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 0.5,
+        "boxX": 2.4,
+        "boxY": 4
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 0.5,
+        "radius": 2.35
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Summon",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3.5
+      },
+      {
+        "ability": "E-Discharge",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-ElementalBurst",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      }
+    ],
+    "asc": [
+      {
+        "ability": "A1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4
+      }
+    ],
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      },
+      {
+        "ability": "C6",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 3
+      }
+    ]
+  },
   "jean": {
     "normal": [
       {

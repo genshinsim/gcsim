@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("lionsroar", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			if atk.Info.AttackTag > attacks.ReactionAttackDelim {
+			if atk.Info.AttackTag > attacks.ReactionAttackStartDelim {
 				return nil, false
 			}
 			x, ok := t.(*enemy.Enemy)

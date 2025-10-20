@@ -14,19 +14,19 @@ func (r *Reactable) TryVaporize(a *info.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Pyro:
 		// make sure there's hydro
-		if r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
 		// if there's still frozen left don't try to vape
 		// game actively rejects vaporize reaction if frozen is present
-		if r.Durability[info.ReactionModKeyFrozen] > info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, .5)
 		a.Info.AmpMult = 1.5
 	case attributes.Hydro:
 		// make sure there's pyro to vape; no coexistance with pyro (yet)
-		if r.Durability[info.ReactionModKeyPyro] < info.ZeroDur && r.Durability[info.ReactionModKeyBurning] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyPyro) < info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyBurning) < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Pyro, a.Info.Durability, 2)
