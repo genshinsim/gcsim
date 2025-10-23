@@ -15,6 +15,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 
+	shield               *shd
 	benisonGenStackLimit int
 	currentBenisonStacks int
 	normalAttackCount    int

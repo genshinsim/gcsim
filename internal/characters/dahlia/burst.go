@@ -151,11 +151,7 @@ func (c *char) addBenisonStack(stacks, charIndex int) {
 		Write("benison_stacks_generated", benisonMaxGenerate-c.benisonGenStackLimit)
 
 	// If shield is already gone but new stacks got generated, create shield (after some delay)
-	if !c.hasShield() && c.StatusExpiry(burstFavonianFavor) > c.Core.F+burstShieldAfterBenisonStack {
-		c.Core.Tasks.Add(func() {
-			c.currentBenisonStacks--
-			c.genShield()
-			c.c2()
-		}, burstShieldAfterBenisonStack)
+	if !c.hasShield() {
+		c.tryRegenShield()
 	}
 }

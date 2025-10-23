@@ -10,10 +10,8 @@ type shd struct {
 	c *char
 }
 
-var dahliaShield *shd
-
 func (c *char) genShield() {
-	dahliaShield = &shd{
+	c.shield = &shd{
 		Tmpl: &shield.Tmpl{
 			ActorIndex: c.Index(),
 			Target:     -1,
@@ -22,33 +20,29 @@ func (c *char) genShield() {
 			ShieldType: shield.DahliaBurst,
 			HP:         c.shieldHP(),
 			Ele:        attributes.Hydro,
-			Expires:    c.favonianFavorMaxExpiry, // TO-DO: Shields don't support hitlag so this field's value is wrong
+			Expires:    -1, // QueueCharTask in Burst handles cuz hitlag affected
 		},
 		c: c,
 	}
 
-	c.Core.Player.Shields.Add(dahliaShield)
+	c.Core.Player.Shields.Add(c.shield)
 }
 
 func (c *char) removeShield() {
-	if !c.hasShield() || dahliaShield == nil {
+	if !c.hasShield() || c.shield == nil {
 		return
 	}
 
-	dahliaShield.Expires = c.Core.F + 1 // +1f to be sure
-	dahliaShield = nil
+	c.shield.Expires = c.Core.F + 1 // +1f to be sure
+	c.shield = nil
 }
 
 // If shield is broken and there are Benison stacks, create shield (after some delay)
 func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) {
 	taken, ok := s.Tmpl.OnDamage(dmg, ele, bonus)
 
-	if !ok && s.ShieldType == shield.DahliaBurst && s.c.currentBenisonStacks > 0 && s.c.StatusExpiry(burstFavonianFavor) > s.c.Core.F+burstShieldRegenerated {
-		s.c.Core.Tasks.Add(func() {
-			s.c.currentBenisonStacks--
-			s.c.genShield()
-			s.c.c2()
-		}, burstShieldRegenerated)
+	if !ok {
+		s.c.tryRegenShield()
 	}
 	return taken, ok
 }
@@ -59,4 +53,18 @@ func (c *char) hasShield() bool {
 
 func (c *char) shieldHP() float64 {
 	return burstShieldPP[c.TalentLvlBurst()]*c.MaxHP() + burstShieldFlat[c.TalentLvlBurst()]
+}
+
+func (c *char) tryRegenShield() {
+	if c.currentBenisonStacks <= 0 {
+		return
+	}
+	if c.StatusDuration(burstFavonianFavor) < burstShieldRegenerated {
+		return
+	}
+	c.Core.Tasks.Add(func() {
+		c.currentBenisonStacks--
+		c.genShield()
+		c.c2()
+	}, burstShieldRegenerated)
 }
