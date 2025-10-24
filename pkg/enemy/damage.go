@@ -1,6 +1,7 @@
 package enemy
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -9,26 +10,32 @@ import (
 func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	var isCrit bool
 
-	st := attributes.EleToDmgP(atk.Info.Element)
-	// if st < 0 {
-	// 	log.Println(atk)
-	// }
 	elePer := 0.0
-	if st > -1 {
-		elePer = atk.Snapshot.Stats[st]
-		// Generally not needed except for sim issues
-		// e.Core.Log.NewEvent("ele lookup ok",
-		// 	glog.LogCalc, atk.Info.ActorIndex,
-		// 	"attack_tag", atk.Info.AttackTag,
-		// 	"ele", atk.Info.Element,
-		// 	"st", st,
-		// 	"percent", atk.Snapshot.Stats[st],
-		// 	"abil", atk.Info.Abil,
-		// 	"stats", atk.Snapshot.Stats,
-		// 	"target", e.TargetIndex,
-		// )
+	dmgBonus := 0.0
+	st := attributes.EleToDmgP(atk.Info.Element)
+
+	// skip DMG% for reaction damage
+	if atk.Info.AttackTag < attacks.AttackTagNoneStat {
+		// if st < 0 {
+		// 	log.Println(atk)
+		// }
+
+		if st > -1 {
+			elePer = atk.Snapshot.Stats[st]
+			// Generally not needed except for sim issues
+			// e.Core.Log.NewEvent("ele lookup ok",
+			// 	glog.LogCalc, atk.Info.ActorIndex,
+			// 	"attack_tag", atk.Info.AttackTag,
+			// 	"ele", atk.Info.Element,
+			// 	"st", st,
+			// 	"percent", atk.Snapshot.Stats[st],
+			// 	"abil", atk.Info.Abil,
+			// 	"stats", atk.Snapshot.Stats,
+			// 	"target", e.TargetIndex,
+			// )
+		}
+		dmgBonus = elePer + atk.Snapshot.Stats[attributes.DmgP]
 	}
-	dmgBonus := elePer + atk.Snapshot.Stats[attributes.DmgP]
 
 	// calculate using attack or def
 	var a float64
@@ -41,7 +48,8 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		a = atk.Snapshot.Stats.TotalATK()
 	}
 
-	base := atk.Info.Mult*a + atk.Info.FlatDmg
+	// BaseDmgBonus affects flat attack for EM scaling based attacks and flatdmg from reactions
+	base := (atk.Info.Mult*a + atk.Info.FlatDmg) * (1 + atk.Info.BaseDmgBonus)
 	damage := base * (1 + dmgBonus)
 
 	// make sure 0 <= cr <= 1
@@ -86,13 +94,20 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 
 	// calculate em bonus
 	em := atk.Snapshot.Stats[attributes.EM]
-	emBonus := (2.78 * em) / (1400 + em)
+	emBonus := 0.0
 	var reactBonus float64
 	// check melt/vape
 	if atk.Info.Amped {
+		emBonus = (2.78 * em) / (1400 + em)
 		reactBonus = e.Core.Player.ByIndex(atk.Info.ActorIndex).ReactBonus(atk.Info)
 		// e.Core.Log.Debugw("debug", "frame", e.Core.F, core.LogPreDamageMod, "char", e.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
 		damage *= (atk.Info.AmpMult * (1 + emBonus + reactBonus))
+	}
+
+	if attacks.DirectLunarReactionStartDelim < atk.Info.AttackTag && atk.Info.AttackTag < attacks.DirectLunarReactionEndDelim {
+		emBonus = (6 * em) / (2000 + em)
+		reactBonus = e.Core.Player.ByIndex(atk.Info.ActorIndex).ReactBonus(atk.Info)
+		damage *= 1 + emBonus + reactBonus
 	}
 
 	// reduce damage by damage group

@@ -19,19 +19,18 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
-		if r.Durability[info.ReactionModKeyCryo] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyCryo) < info.ZeroDur {
 			return false
 		}
-		consumed = r.triggerFreeze(r.Durability[info.ReactionModKeyCryo], a.Info.Durability)
-		r.Durability[info.ReactionModKeyCryo] -= consumed
-		r.Durability[info.ReactionModKeyCryo] = max(r.Durability[info.ReactionModKeyCryo], 0)
+		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability, a.Info.ActorIndex)
+		r.reduceMod(info.ReactionModKeyCryo, consumed)
+
 	case attributes.Cryo:
-		if r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
-		consumed := r.triggerFreeze(r.Durability[info.ReactionModKeyHydro], a.Info.Durability)
-		r.Durability[info.ReactionModKeyHydro] -= consumed
-		r.Durability[info.ReactionModKeyHydro] = max(r.Durability[info.ReactionModKeyHydro], 0)
+		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability, a.Info.ActorIndex)
+		r.reduceMod(info.ReactionModKeyHydro, consumed)
 	default:
 		// should be here
 		return false
@@ -44,27 +43,27 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) PoiseDMGCheck(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyFrozen] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) < info.ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt {
 		return false
 	}
 	// remove frozen durability according to poise dmg
-	r.Durability[info.ReactionModKeyFrozen] -= info.Durability(0.15 * a.Info.PoiseDMG)
+	r.reduceMod(info.ReactionModKeyFrozen, info.Durability(0.15*a.Info.PoiseDMG))
 	r.checkFreeze()
 	return true
 }
 
 func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
-	if r.Durability[info.ReactionModKeyFrozen] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) < info.ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
 		return false
 	}
 	// remove 200 freeze gauge if available
-	r.Durability[info.ReactionModKeyFrozen] -= 200
+	r.reduceMod(info.ReactionModKeyFrozen, 200)
 	r.checkFreeze()
 
 	r.core.Events.Emit(event.OnShatter, r.self, a)
@@ -101,19 +100,18 @@ func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
 }
 
 // add to freeze durability and return amount of durability consumed
-func (r *Reactable) triggerFreeze(a, b info.Durability) info.Durability {
+func (r *Reactable) triggerFreeze(a, b info.Durability, src int) info.Durability {
 	d := min(a, b)
 	if r.FreezeResist >= 1 {
 		return d
 	}
 	// trigger freeze should only addDurability and should not touch decay rate
-	r.attachOverlap(info.ReactionModKeyFrozen, 2*d, info.ZeroDur)
+	r.attachOverlap(info.ReactionModKeyFrozen, 2*d, info.ZeroDur, src)
 	return d
 }
 
 func (r *Reactable) checkFreeze() {
-	if r.Durability[info.ReactionModKeyFrozen] <= info.ZeroDur {
-		r.Durability[info.ReactionModKeyFrozen] = 0
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) <= info.ZeroDur {
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
 		// trigger another attack here, purely for the purpose of breaking bubbles >.>
 		ai := info.AttackInfo{

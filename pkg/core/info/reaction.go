@@ -29,6 +29,7 @@ const (
 	ReactionTypeBloom              ReactionType = "bloom"
 	ReactionTypeBurgeon            ReactionType = "burgeon"
 	ReactionTypeHyperbloom         ReactionType = "hyperbloom"
+	ReactionTypeLunarCharged       ReactionType = "lunarcharged"
 	ReactionTypeNoReaction         ReactionType = ""
 	ReactionTypeFreezeExtend       ReactionType = "freeze-extend"
 )
@@ -44,7 +45,7 @@ type Reactable interface {
 
 	React(a *AttackEvent)
 	AttachOrRefill(a *AttackEvent) bool
-	SetAuraDurability(mod ReactionModKey, dur Durability)
+	SetAuraDurability(mod ReactionModKey, dur Durability, src int)
 	SetAuraDecayRate(mod ReactionModKey, decay Durability)
 	GetAuraDurability(mod ReactionModKey) Durability
 	GetAuraDecayRate(mod ReactionModKey) Durability
@@ -65,6 +66,7 @@ type Reactable interface {
 	ReactableSuperconduct
 	ReactableSwirl
 	ReactableVaporize
+	ReactableLunarCharged
 }
 
 type ReactableBloom interface {
@@ -124,4 +126,9 @@ type ReactableSwirl interface {
 
 type ReactableVaporize interface {
 	TryVaporize(a *AttackEvent) bool
+}
+
+type ReactableLunarCharged interface {
+	TryAddLC(a *AttackEvent) bool
+	DoLCAttack()
 }

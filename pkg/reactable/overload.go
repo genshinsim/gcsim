@@ -16,7 +16,7 @@ func (r *Reactable) TryOverload(a *info.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Electro:
 		// must have pyro; pyro cant coexist (for now) so ok to ignore count?
-		if r.Durability[info.ReactionModKeyPyro] < info.ZeroDur && r.Durability[info.ReactionModKeyBurning] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyPyro) < info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyBurning) < info.ZeroDur {
 			return false
 		}
 		// reduce; either gone or left; don't care how much actually reacted
@@ -24,7 +24,7 @@ func (r *Reactable) TryOverload(a *info.AttackEvent) bool {
 		r.burningCheck()
 	case attributes.Pyro:
 		// must have electro; gotta be careful with ec?
-		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
