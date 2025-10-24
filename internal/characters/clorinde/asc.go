@@ -34,6 +34,7 @@ func (c *char) a1() {
 	c.a1stacks = stacks.NewMultipleRefreshNoRemove(3, c.QueueCharTask, &c.Core.F)
 	// on electro reaction, add buff; 3 stacks independent
 	c.Core.Events.Subscribe(event.OnElectroCharged, c.a1CB, "clorinde-a1-ec")
+	c.Core.Events.Subscribe(event.OnLunarCharged, c.a1CB, "clorinde-a1-lc")
 	c.Core.Events.Subscribe(event.OnSuperconduct, c.a1CB, "clorinde-a1-superconduct")
 	c.Core.Events.Subscribe(event.OnAggravate, c.a1CB, "clorinde-a1-aggravate")
 	c.Core.Events.Subscribe(event.OnQuicken, c.a1CB, "clorinde-a1-quicken")
