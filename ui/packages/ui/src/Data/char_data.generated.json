@@ -465,6 +465,23 @@
       },
       "name_text_hash_map ": "1049891906"
     },
+    "dahlia": {
+      "id": 10000115,
+      "key": "dahlia",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Dahlia",
+      "skill_details": {
+        "skill": 11152,
+        "burst": 11155,
+        "attack": 11151,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2332664426"
+    },
     "dehya": {
       "id": 10000079,
       "key": "dehya",
