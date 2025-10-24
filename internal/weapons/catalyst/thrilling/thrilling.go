@@ -56,6 +56,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			char.AddStatus(icdKey, icd, true)
 			active := c.Player.ActiveChar()
+			// When TTDS mod is active, don't reapply
+			if active.StatModIsActive("ttds") {
+				return false
+			}
 			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("ttds", 600),
 				AffectedStat: attributes.NoStat,
