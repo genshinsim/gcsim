@@ -3,6 +3,8 @@ package reactable
 import (
 	"testing"
 
+	"github.com/genshinsim/gcsim/internal/template/crystallize"
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -33,6 +35,20 @@ func TestCrystallizeCryo(t *testing.T) {
 		},
 	})
 
+	if !durApproxEqual(7.5, trg.GetAuraDurability(info.ReactionModKeyCryo), 0.0001) {
+		t.Errorf("expecting 7.5 cryo left, got %v", trg.GetAuraDurability(info.ReactionModKeyCryo))
+	}
+
+	advanceCoreFrameMultiple(c, 53)
+	count := pickUpCrystallize(c, attributes.Cryo)
+	if count > 0 {
+		t.Errorf("crystallize shard pickup too early (before 54)")
+	}
+	advanceCoreFrame(c)
+	count = pickUpCrystallize(c, attributes.Cryo)
+	if count == 0 {
+		t.Errorf("Did not pick up crystallize shard (at 54)")
+	}
 	// check shield
 	if !ok {
 		t.Errorf("expecting crystallize to have occured")
@@ -40,10 +56,6 @@ func TestCrystallizeCryo(t *testing.T) {
 	}
 	if trg.core.Player.Shields.Count() == 0 {
 		t.Errorf("expecting player to be shielded")
-	}
-
-	if !durApproxEqual(7.5, trg.Durability[info.ReactionModKeyCryo], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[info.ReactionModKeyCryo])
 	}
 }
 
@@ -66,7 +78,7 @@ func TestCrystallizePyro(t *testing.T) {
 		},
 	})
 	// force on burning
-	trg.Durability[info.ReactionModKeyBurning] = 50
+	trg.SetAuraDurability(info.ReactionModKeyBurning, 50, 0)
 
 	trg.React(&info.AttackEvent{
 		Info: info.AttackInfo{
@@ -75,6 +87,23 @@ func TestCrystallizePyro(t *testing.T) {
 		},
 	})
 
+	if !durApproxEqual(7.5, trg.GetAuraDurability(info.ReactionModKeyPyro), 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.GetAuraDurability(info.ReactionModKeyPyro))
+	}
+	if !durApproxEqual(37.5, trg.GetAuraDurability(info.ReactionModKeyBurning), 0.0001) {
+		t.Errorf("expecting 37.5 burning left, got %v", trg.GetAuraDurability(info.ReactionModKeyBurning))
+	}
+
+	advanceCoreFrameMultiple(c, 53)
+	count := pickUpCrystallize(c, attributes.Pyro)
+	if count > 0 {
+		t.Errorf("crystallize shard pickup too early (before 54)")
+	}
+	advanceCoreFrame(c)
+	count = pickUpCrystallize(c, attributes.Pyro)
+	if count == 0 {
+		t.Errorf("Did not pick up crystallize shard (at 54)")
+	}
 	// check shield
 	if !ok {
 		t.Errorf("expecting crystallize to have occured")
@@ -83,10 +112,25 @@ func TestCrystallizePyro(t *testing.T) {
 	if trg.core.Player.Shields.Count() == 0 {
 		t.Errorf("expecting player to be shielded")
 	}
-	if !durApproxEqual(7.5, trg.Durability[info.ReactionModKeyPyro], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[info.ReactionModKeyPyro])
+}
+
+func pickUpCrystallize(c *core.Core, pickupEle attributes.Element) int {
+	var count int
+	for _, g := range c.Combat.Gadgets() {
+		shard, ok := g.(*crystallize.Shard)
+		// skip if no shard
+		if !ok {
+			continue
+		}
+		// skip if shard not specified element
+		if pickupEle != attributes.UnknownElement && shard.Shield.Ele != pickupEle {
+			continue
+		}
+		// try to pick up shard and stop if succeeded
+		if shard.AddShieldKillShard() {
+			count = 1
+			break
+		}
 	}
-	if !durApproxEqual(37.5, trg.Durability[info.ReactionModKeyBurning], 0.0001) {
-		t.Errorf("expecting 37.5 burning left, got %v", trg.Durability[info.ReactionModKeyBurning])
-	}
+	return count
 }

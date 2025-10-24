@@ -36,7 +36,7 @@ func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	)
 	s.Gadget = gadget.New(c.Core, c.burstPos, 1, info.GadgetTypLeaLotus)
 	s.Reactable = hacks.NewReactable(s, c.Core)
-	s.SetAuraDurability(info.ReactionModKeyDendro, 10)
+	s.SetAuraDurability(info.ReactionModKeyDendro, 10, 0)
 
 	s.Duration = 12 * 60
 	if c.Base.Cons >= 2 {
