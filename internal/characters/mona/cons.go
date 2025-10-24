@@ -15,7 +15,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c6Key = "mona-c6"
+const (
+	c4key = "mona-c4"
+	c6Key = "mona-c6"
+)
 
 // C1:
 // When any of your own party members hits an opponent affected by an Omen, the effects of Hydro-related Elemental Reactions are enhanced for 8s:
@@ -48,19 +51,21 @@ func (c *char) c1() {
 						if c.Core.Player.Active() != char.Index() {
 							return 0, false
 						}
+
+						switch ai.AttackTag {
+						// Hydro Swirl DMG increases by 15%.
 						// Electro-Charged DMG increases by 15%.
-						if ai.AttackTag == attacks.AttackTagECDamage {
+						// Lunar-Charged DMG increases by 15%.
+						case attacks.AttackTagSwirlHydro, attacks.AttackTagECDamage, attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged:
 							return 0.15, false
 						}
+
 						// Vaporize DMG increases by 15%.
 						// the only way Hydro Swirl can vape is via an AoE Hydro Swirl which doesn't do damage anyways, so this is fine
 						if ai.Amped {
 							return 0.15, false
 						}
-						// Hydro Swirl DMG increases by 15%.
-						if ai.AttackTag == attacks.AttackTagSwirlHydro {
-							return 0.15, false
-						}
+
 						return 0, false
 					},
 				})
@@ -111,7 +116,7 @@ func (c *char) c4() {
 
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("mona-c4", -1),
+			Base: modifier.NewBase(c4key, -1),
 			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
@@ -125,6 +130,32 @@ func (c *char) c4() {
 			},
 		})
 	}
+
+	// workaround for giving lunarcharge the 15% CR
+	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) bool {
+		x, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+
+		ae, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return false
+		}
+
+		if !x.StatusIsActive(bubbleKey) && !x.StatusIsActive(omenKey) {
+			return false
+		}
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("Mona C4 CR added to Lunarcharged", glog.LogPreDamageMod, ae.Info.ActorIndex).
+				Write("before", ae.Snapshot.Stats[attributes.CR]).
+				Write("addition", 0.15)
+		}
+
+		ae.Snapshot.Stats[attributes.CR] += 0.15
+		return false
+	}, c4key+"-lunarcharged")
 }
 
 // C6:
