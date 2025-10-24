@@ -194,6 +194,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/beginners"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/blacktassel"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/bloodsoakedruins"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/calamity"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/catch"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/crescent"

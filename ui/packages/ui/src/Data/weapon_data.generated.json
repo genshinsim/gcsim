@@ -184,6 +184,14 @@
       "image_name": "UI_EquipIcon_Pole_Noire",
       "name_text_hash_map ": "4103766499"
     },
+    "bloodsoakedruins": {
+      "id": 13516,
+      "key": "bloodsoakedruins",
+      "rarity": 5,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_TummaLyhty",
+      "name_text_hash_map ": "3584825427"
+    },
     "bloodtaintedgreatsword": {
       "id": 12302,
       "key": "bloodtaintedgreatsword",
