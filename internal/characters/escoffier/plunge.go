@@ -90,7 +90,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.5}, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmark,
 		lowPlungeHitmark,
 	)
@@ -140,7 +140,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.5}, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmark,
 		highPlungeHitmark,
 	)

@@ -57,7 +57,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skillInital[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(skillPos, info.Point{Y: -1.5}, 5), skillInitHitmark, skillInitHitmark, c.particleCB, c.makeA4CB())
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillInitHitmark, skillInitHitmark, c.particleCB, c.makeA4CB())
 
 	// E duration and ticks are not affected by hitlag
 	c.skillSrc = c.Core.F
