@@ -23,8 +23,7 @@ const (
 	burstEnergyDrain             = 8
 	burstCDStart                 = 0
 
-	benisonMaxGenerate  = 4
-	maxFavonianFavorExt = 5 * 60 // Checked using AS buffs and on-field Dahlia full NA string
+	benisonMaxGenerate = 4
 
 	burstFavonianFavor    = "dahlia-favonian-favor"
 	burstBenisonStacksKey = "dahlia-benison-stacks"
@@ -73,7 +72,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// Increasing Favonisn Favor duration if C4+
 		// It lasts for exactly 15s (pre-hitlag), so shield + Attack Speed remain after Q CD is over
 		favonianFavorDuration := 12*60 + c.c4FavonianFavorBonusDur()
-		c.favonianFavorMaxExpiry = c.Core.F + favonianFavorDuration + maxFavonianFavorExt
 
 		// Add "Favonian Favor" status to Dahlia
 		// (team members should technically get it but only he can extend it with hitlag)
@@ -152,6 +150,6 @@ func (c *char) addBenisonStack(stacks, charIndex int) {
 
 	// If shield is already gone but new stacks got generated, create shield (after some delay)
 	if !c.hasShield() {
-		c.tryRegenShield()
+		c.tryRegenShield(burstShieldAfterBenisonStack)
 	}
 }

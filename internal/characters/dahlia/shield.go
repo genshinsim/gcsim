@@ -42,7 +42,7 @@ func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (floa
 	taken, ok := s.Tmpl.OnDamage(dmg, ele, bonus)
 
 	if !ok {
-		s.c.tryRegenShield()
+		s.c.tryRegenShield(burstShieldRegenerated)
 	}
 	return taken, ok
 }
@@ -55,16 +55,16 @@ func (c *char) shieldHP() float64 {
 	return burstShieldPP[c.TalentLvlBurst()]*c.MaxHP() + burstShieldFlat[c.TalentLvlBurst()]
 }
 
-func (c *char) tryRegenShield() {
+func (c *char) tryRegenShield(delay int) {
 	if c.currentBenisonStacks <= 0 {
 		return
 	}
-	if c.StatusDuration(burstFavonianFavor) < burstShieldRegenerated {
+	if c.StatusDuration(burstFavonianFavor) < delay {
 		return
 	}
 	c.Core.Tasks.Add(func() {
 		c.currentBenisonStacks--
 		c.genShield()
 		c.c2()
-	}, burstShieldRegenerated)
+	}, delay)
 }

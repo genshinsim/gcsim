@@ -21,8 +21,6 @@ type char struct {
 	normalAttackCount    int
 
 	attackSpeedBuff []float64
-
-	favonianFavorMaxExpiry int // TO-DO: used for shield since they don't support hitlag, but the value is wrong
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
