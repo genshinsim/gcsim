@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -34,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DEFP] = defBoost
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("redhorn-stonethrasher-def-boost", -1),
+		Base:         gmod.NewBase("redhorn-stonethrasher-def-boost", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return val, true

@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		// add buff
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("twinnephrite", 900), // 15s
+			Base:         gmod.NewBaseWithHitlag("twinnephrite", 900), // 15s
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true

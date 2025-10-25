@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -23,7 +23,7 @@ func (c *char) a1() {
 	m[attributes.ATKP] = 0.3
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(a1Key, 10*60),
+			Base: gmod.NewBaseWithHitlag(a1Key, 10*60),
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
@@ -39,7 +39,7 @@ func (c *char) a4Init() {
 	c.a4buff = make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(a4BufKey, -1),
+			Base: gmod.NewBase(a4BufKey, -1),
 			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				// char must be active
 				if c.Core.Player.Active() != char.Index() {

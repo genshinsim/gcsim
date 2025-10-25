@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -30,7 +30,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ER] = 0.20
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("emblem-2pc", -1),
+			Base:         gmod.NewBase("emblem-2pc", -1),
 			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -47,7 +47,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = amt
 
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("emblem-4pc", -1),
+			Base: gmod.NewBase("emblem-4pc", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false

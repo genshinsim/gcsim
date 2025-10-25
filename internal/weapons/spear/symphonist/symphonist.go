@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -44,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	selfAtkP := 0.09 + float64(r)*0.03
 	m := make([]float64, attributes.EndStatType)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("symphonist-atkp", -1),
+		Base:         gmod.NewBase("symphonist-atkp", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			m[attributes.ATKP] = selfAtkP
@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(buffKey, bufDur),
+			Base:         gmod.NewBaseWithHitlag(buffKey, bufDur),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return buffOnHeal, true
@@ -77,7 +77,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if index != char.Index() {
 			otherChar := c.Player.ByIndex(index)
 			otherChar.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(buffKey, bufDur),
+				Base:         gmod.NewBaseWithHitlag(buffKey, bufDur),
 				AffectedStat: attributes.ATKP,
 				Amount: func() ([]float64, bool) {
 					return buffOnHeal, true

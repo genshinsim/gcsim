@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c4key = "mualani-c4"
@@ -54,7 +54,7 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.75
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(c4key, -1),
+		Base: gmod.NewBaseWithHitlag(c4key, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
 				return m, true

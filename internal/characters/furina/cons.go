@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c2BuffKey = "furina-c2-hp"
@@ -24,7 +24,7 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase(c2BuffKey, -1),
+		Base:         gmod.NewBase(c2BuffKey, -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			if !c.StatusIsActive(burstKey) {

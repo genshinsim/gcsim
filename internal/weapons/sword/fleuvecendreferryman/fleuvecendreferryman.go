@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR := make([]float64, attributes.EndStatType)
 	mCR[attributes.CR] = 0.06 + 0.02*float64(r)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("fleuvecendreferryman-cr", -1),
+		Base: gmod.NewBase("fleuvecendreferryman-cr", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold {
 				return mCR, true
@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("fleuvecendreferryman-er", 5*60),
+			Base:         gmod.NewBaseWithHitlag("fleuvecendreferryman-er", 5*60),
 			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
 				return mER, true

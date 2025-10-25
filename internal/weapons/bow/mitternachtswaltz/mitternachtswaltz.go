@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -52,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		if atk.Info.AttackTag == attacks.AttackTagNormal {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("mitternachtswaltz-ele", 300),
+				Base: gmod.NewBaseWithHitlag("mitternachtswaltz-ele", 300),
 				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					if (atk.Info.AttackTag == attacks.AttackTagElementalArt) || (atk.Info.AttackTag == attacks.AttackTagElementalArtHold) {
 						m[attributes.DmgP] = buffAmount
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		if (atk.Info.AttackTag == attacks.AttackTagElementalArt) || (atk.Info.AttackTag == attacks.AttackTagElementalArtHold) {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("mitternachtswaltz-na", 300),
+				Base: gmod.NewBaseWithHitlag("mitternachtswaltz-na", 300),
 				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					if atk.Info.AttackTag == attacks.AttackTagNormal {
 						m[attributes.DmgP] = buffAmount

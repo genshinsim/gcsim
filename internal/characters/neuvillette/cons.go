@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -32,7 +32,7 @@ func (c *char) c2() {
 	}
 	c2Buff := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("neuvillette-c2", -1),
+		Base: gmod.NewBase("neuvillette-c2", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if strings.Contains(atk.Info.Abil, chargeJudgementName) {
 				c2Buff[attributes.CD] = 0.14 * float64(c.countA1())

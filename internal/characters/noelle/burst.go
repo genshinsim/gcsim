@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("noelle-burst", dur),
+		Base:         gmod.NewBaseWithHitlag("noelle-burst", dur),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {

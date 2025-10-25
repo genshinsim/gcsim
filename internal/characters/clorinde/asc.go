@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -55,7 +55,7 @@ func (c *char) a1CBGadget(...any) bool {
 	// add a stack and refresh the mod for 15s
 	c.a1stacks.Add(clordineA1BuffDuration)
 	c.AddAttackMod(character.AttackMod{
-		Base:   modifier.NewBaseWithHitlag(clorindeA1BuffKey, clordineA1BuffDuration),
+		Base:   gmod.NewBaseWithHitlag(clorindeA1BuffKey, clordineA1BuffDuration),
 		Amount: c.a1Amount,
 	})
 	return false
@@ -116,7 +116,7 @@ func (c *char) a4(change float64) {
 	}
 	c.a4stacks.Add(clordineA4BuffDuration)
 	c.AddStatMod(character.StatMod{
-		Base:   modifier.NewBaseWithHitlag(clorindeA4BuffKey, clordineA4BuffDuration),
+		Base:   gmod.NewBaseWithHitlag(clorindeA4BuffKey, clordineA4BuffDuration),
 		Amount: c.a4Amount,
 	})
 	c.Core.Log.NewEvent("a4 triggered", glog.LogCharacterEvent, c.Index()).

@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -73,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			if c.Base.Ascension >= 4 && c.Core.Combat.Player().IsWithinArea(burstArea) {
 				active := c.Core.Player.ActiveChar()
 				active.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("ganyu-field", 60),
+					Base:         gmod.NewBaseWithHitlag("ganyu-field", 60),
 					AffectedStat: attributes.CryoP,
 					Amount: func() ([]float64, bool) {
 						return m, true

@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Decreases Claw and Thunder's CD by 18%.
@@ -31,7 +31,7 @@ func (c *char) a4() {
 	c.a4Bonus = make([]float64, attributes.EndStatType)
 	c.a4Bonus[attributes.ER] = 0.3
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("razor-a4", -1),
+		Base:         gmod.NewBase("razor-a4", -1),
 		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
 			if c.Energy/c.EnergyMax >= 0.5 {

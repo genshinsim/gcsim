@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c4Status = "diligent-refinement"
@@ -37,7 +37,7 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 1.0
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("varesa-c4", -1),
+		Base: gmod.NewBase("varesa-c4", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst && atk.Info.Abil != kablamAbil {
 				return nil, false
@@ -92,7 +92,7 @@ func (c *char) c6() {
 	m[attributes.CR] = 0.1
 	m[attributes.CD] = 1.0
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("varesa-c6", -1),
+		Base: gmod.NewBase("varesa-c6", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch {
 			case atk.Info.AttackTag == attacks.AttackTagElementalBurst:

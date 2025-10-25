@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var directiveScaling = []float64{0.0, 0.65, 1.3}
@@ -16,7 +16,7 @@ func (c *char) passive() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = 0.4
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("arlecchino-passive", -1),
+		Base:         gmod.NewBase("arlecchino-passive", -1),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
 			return m, true

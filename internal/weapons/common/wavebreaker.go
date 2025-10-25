@@ -10,8 +10,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Wavebreaker struct {
@@ -54,7 +54,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = amt
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("wavebreaker", -1),
+			Base: gmod.NewBase("wavebreaker", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
 					return m, true

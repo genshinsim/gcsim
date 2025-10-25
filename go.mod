@@ -28,6 +28,7 @@ require (
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/schollz/progressbar/v3 v3.18.0
+	github.com/stretchr/testify v1.9.0
 	github.com/tinylib/msgp v1.1.9
 	go.mongodb.org/mongo-driver v1.12.1
 	go.uber.org/multierr v1.11.0
@@ -93,6 +94,7 @@ require (
 	github.com/opencontainers/runc v1.1.9 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect

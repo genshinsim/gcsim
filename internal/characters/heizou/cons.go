@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // For 5s after Shikanoin Heizou takes the field, his Normal Attack SPD is increased by 15%.
@@ -22,7 +22,7 @@ func (c *char) c1() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("heizou-c1", 300), // 5s
+			Base:         gmod.NewBaseWithHitlag("heizou-c1", 300), // 5s
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				return c.c1buff, true

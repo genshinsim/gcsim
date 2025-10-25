@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -29,7 +29,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	v := make([]float64, attributes.EndStatType)
 	v[attributes.HPP] = 0.12 + float64(r)*0.04
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("aquasimulacra-hp", -1),
+		Base:         gmod.NewBase("aquasimulacra-hp", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return v, true
@@ -49,7 +49,7 @@ func (w *Weapon) enemyCheck(char *character.CharWrapper, c *core.Core) func() {
 		enemies := c.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
 		if enemies != nil {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("aquasimulacra-dmg", 72),
+				Base: gmod.NewBaseWithHitlag("aquasimulacra-dmg", 72),
 				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					return w.dmgBuff, true
 				},

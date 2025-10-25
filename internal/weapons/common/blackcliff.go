@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Blackcliff struct {
@@ -68,7 +68,7 @@ func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info
 		char.AddStatus(stackKey[index], 1800, true)
 		// update buff
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("blackcliff", 1800),
+			Base:         gmod.NewBaseWithHitlag("blackcliff", 1800),
 			AffectedStat: attributes.ATKP,
 			Amount:       amtfn,
 		})

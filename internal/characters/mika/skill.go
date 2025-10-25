@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -220,7 +220,7 @@ func (c *char) applyBuffs() {
 func (c *char) skillBuff() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(skillBuffKey, skillBuffDuration),
+			Base:         gmod.NewBaseWithHitlag(skillBuffKey, skillBuffDuration),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				return c.skillbuff, true

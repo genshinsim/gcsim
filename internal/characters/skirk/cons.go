@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var c4Atkp = []float64{0.0, 0.1, 0.2, 0.4}
@@ -73,7 +73,7 @@ func (c *char) c2OnBurstExtinction() {
 	// delay buff to the end of burst. c1 hits from burst don't benefit from c2
 	c.QueueCharTask(func() {
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(c2Key, 12.5*60),
+			Base:         gmod.NewBase(c2Key, 12.5*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				if !c.StatusIsActive(skillKey) {
@@ -92,7 +92,7 @@ func (c *char) c4Init() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("skirk-c4", -1),
+		Base:         gmod.NewBase("skirk-c4", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			m[attributes.ATKP] = c4Atkp[c.getA4Stacks()]

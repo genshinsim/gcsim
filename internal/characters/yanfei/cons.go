@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Hook for C2:
@@ -16,7 +16,7 @@ func (c *char) c2() {
 	if c.Core.Combat.DamageMode {
 		m := make([]float64, attributes.EndStatType)
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("yanfei-c2", -1),
+			Base: gmod.NewBase("yanfei-c2", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false

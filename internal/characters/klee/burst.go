@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -99,7 +99,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		m[attributes.PyroP] = .1
 		for _, x := range c.Core.Player.Chars() {
 			x.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("klee-c6", 1500),
+				Base:         gmod.NewBaseWithHitlag("klee-c6", 1500),
 				AffectedStat: attributes.PyroP,
 				Amount: func() ([]float64, bool) {
 					return m, true

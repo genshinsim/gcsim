@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -42,7 +42,7 @@ func (s *Set) onChangeHP() {
 	}
 
 	s.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(buffKey, 5*60),
+		Base:         gmod.NewBaseWithHitlag(buffKey, 5*60),
 		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
 			s.buff[attributes.CR] = 0.12 * float64(s.stacks)
@@ -63,7 +63,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.15
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("mh-2pc", -1),
+			Base: gmod.NewBase("mh-2pc", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false

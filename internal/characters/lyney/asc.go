@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // If Lyney consumes HP when firing off a Prop Arrow,
@@ -61,7 +61,7 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = a4Dmg
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("lyney-a4", -1),
+		Base: gmod.NewBase("lyney-a4", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			r, ok := t.(core.Reactable)
 			if !ok {

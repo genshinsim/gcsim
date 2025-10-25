@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -43,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = (0.09 + float64(r)*0.03) * (1 + additional)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("ultimateoverlordsmegamagicsword", -1),
+		Base:         gmod.NewBase("ultimateoverlordsmegamagicsword", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return m, true

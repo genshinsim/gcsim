@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -25,7 +25,7 @@ func (c *char) a1DMGBuff() {
 	// assuming we don't need to add and remove this buff constantly
 	// since it would be active for all E-CAs anyways
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("chasca-a1", -1),
+		Base: gmod.NewBase("chasca-a1", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.ICDTag != attacks.ICDTagChascaShining {
 				return nil, false

@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var skillFrames []int
@@ -138,7 +138,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				Write("enemies count", c.c4count)
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("yelan-c4", 25*60),
+					Base:         gmod.NewBaseWithHitlag("yelan-c4", 25*60),
 					AffectedStat: attributes.HPP,
 					Amount: func() ([]float64, bool) {
 						return m, true

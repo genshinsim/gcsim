@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return false
 			}
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("ttds", 600),
+				Base:         gmod.NewBaseWithHitlag("ttds", 600),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return m, true

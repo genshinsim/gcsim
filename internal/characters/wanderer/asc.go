@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -146,7 +146,7 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.3
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a1PyroKey, 1200),
+			Base:         gmod.NewBaseWithHitlag(a1PyroKey, 1200),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -157,7 +157,7 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CR] = 0.2
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a1CryoKey, 1200),
+			Base:         gmod.NewBaseWithHitlag(a1CryoKey, 1200),
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
 				return m, true

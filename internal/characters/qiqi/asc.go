@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When a character under the effects of Adeptus Art: Herald of Frost triggers an Elemental Reaction,
@@ -29,7 +29,7 @@ func (c *char) a1() {
 		}
 
 		active.AddHealBonusMod(character.HealBonusMod{
-			Base: modifier.NewBaseWithHitlag("qiqi-a1", 8*60),
+			Base: gmod.NewBaseWithHitlag("qiqi-a1", 8*60),
 			Amount: func() (float64, bool) {
 				return .2, false
 			},

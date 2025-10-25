@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const a1Key = "yoimiya-a1"
@@ -36,7 +36,7 @@ func (c *char) makeA1CB() info.AttackCBFunc {
 
 		m := make([]float64, attributes.EndStatType)
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(a1Key, 3*60),
+			Base:         gmod.NewBase(a1Key, 3*60),
 			AffectedStat: attributes.PyroP,
 			Amount: func() ([]float64, bool) {
 				m[attributes.PyroP] = float64(c.a1Stacks) * 0.02
@@ -58,7 +58,7 @@ func (c *char) a4() {
 			continue
 		}
 		x.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("yoimiya-a4", 900),
+			Base:         gmod.NewBaseWithHitlag("yoimiya-a4", 900),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return c.a4Bonus, true

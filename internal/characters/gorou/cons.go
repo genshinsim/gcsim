@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C1:
@@ -93,7 +93,7 @@ func (c *char) c2() {
 func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(c6key, 720),
+			Base: gmod.NewBaseWithHitlag(c6key, 720),
 			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Geo {
 					return nil, false

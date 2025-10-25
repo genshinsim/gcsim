@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		m := make([]float64, attributes.EndStatType)
 		m[stat] = finalDmg
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(buffKey, buffDuration),
+			Base:         gmod.NewBaseWithHitlag(buffKey, buffDuration),
 			AffectedStat: stat,
 			Amount: func() ([]float64, bool) {
 				return m, true

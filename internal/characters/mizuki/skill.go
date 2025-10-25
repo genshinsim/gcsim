@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var skillFrames []int
@@ -135,7 +135,7 @@ func (c *char) applyDreamDrifterEffect(travel int) {
 func (c *char) skillInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, -1),
+			Base: gmod.NewBase(dreamDrifterSwirlBuffKey, -1),
 			Amount: func(ai info.AttackInfo) (float64, bool) {
 				if !c.StatusIsActive(dreamDrifterStateKey) {
 					return 0, false

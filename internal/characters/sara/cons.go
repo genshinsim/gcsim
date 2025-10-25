@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c1ICDKey = "sara-c1-icd"
@@ -26,7 +26,7 @@ func (c *char) c1() {
 // The Electro DMG of characters who have had their ATK increased by Tengu Juurai has its Crit DMG increased by 60%.
 func (c *char) c6(char *character.CharWrapper) {
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("sara-c6", 360),
+		Base: gmod.NewBaseWithHitlag("sara-c6", 360),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.Element != attributes.Electro {
 				return nil, false

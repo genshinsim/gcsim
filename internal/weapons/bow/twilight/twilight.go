@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -34,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	m[attributes.DmgP] = base
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("twilight-bonus-dmg", -1),
+		Base: gmod.NewBase("twilight-bonus-dmg", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch cycle {
 			case 2:

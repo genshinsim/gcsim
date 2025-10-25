@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -36,7 +36,7 @@ func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.30
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(a1Key, -1),
+		Base: gmod.NewBase(a1Key, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge && atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil, false
@@ -92,7 +92,7 @@ func (c *char) a4() {
 
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a4Key, 15*60),
+			Base:         gmod.NewBaseWithHitlag(a4Key, 15*60),
 			AffectedStat: attributes.DEFP,
 			Amount: func() ([]float64, bool) {
 				return m, true
