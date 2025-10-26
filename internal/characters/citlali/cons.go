@@ -38,6 +38,7 @@ func (c *char) c1() {
 		case attacks.AttackTagElementalArt:
 		case attacks.AttackTagElementalArtHold:
 		case attacks.AttackTagElementalBurst:
+		case attacks.AttackTagPlunge:
 		default:
 			return false
 		}
