@@ -59,8 +59,8 @@ func SetupTargetsInCore(core *core.Core, p info.Point, r float64, targets []info
 }
 
 func SetupCharactersInCore(core *core.Core, chars []info.CharacterProfile, initial keys.Char) error {
-	if len(chars) > 4 {
-		return errors.New("cannot have more than 4 characters per team")
+	if len(chars) > info.MaxChars {
+		return fmt.Errorf("cannot have more than %v characters per team", info.MaxChars)
 	}
 	dup := make(map[keys.Char]bool)
 
