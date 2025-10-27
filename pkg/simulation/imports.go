@@ -113,6 +113,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/cashflow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/cranesechoingcall"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/dawningfrost"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/dodoco"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/emeraldorb"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/eternalflow"

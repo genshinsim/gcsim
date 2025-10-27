@@ -288,6 +288,14 @@
       "image_name": "UI_EquipIcon_Sword_Darker",
       "name_text_hash_map ": "160493219"
     },
+    "dawningfrost": {
+      "id": 14434,
+      "key": "dawningfrost",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Ziedas",
+      "name_text_hash_map ": "3497155131"
+    },
     "deathmatch": {
       "id": 13405,
       "key": "deathmatch",
