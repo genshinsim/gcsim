@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("dawning-frost-ca", 10*64),
+			Base: modifier.NewBaseWithHitlag("dawning-frost-ca", 10*60),
 			Amount: func() ([]float64, bool) {
 				return emBuffCa, true
 			},
