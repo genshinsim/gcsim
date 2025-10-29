@@ -71,9 +71,6 @@ func (c *char) c2() {
 		Base:         modifier.NewBase("citlali-c2-em", -1),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Player.Shields.Get(shield.CitlaliSkill) == nil {
-				return nil, false
-			}
 			return buffSelf, true
 		},
 	})
