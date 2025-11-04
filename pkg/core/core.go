@@ -62,8 +62,6 @@ type Reactable interface {
 // 	DefModIsActive(key string) bool
 // }
 
-const MaxTeamSize = 4
-
 type Opt struct {
 	Seed              int64
 	Debug             bool
