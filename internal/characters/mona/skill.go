@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(aiExplode, ap, 0, skillHitmarks[hold]+313, c.particleCB)
+	c.Core.QueueAttack(aiExplode, ap, 0, skillHitmarks[hold]+243, c.particleCB)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 24)
 
