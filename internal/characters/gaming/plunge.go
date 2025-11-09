@@ -235,7 +235,7 @@ func (c *char) specialPlunge(p map[string]int) action.Info {
 		if c.CurrentHPRatio() > hpDrainThreshold {
 			currentHP := c.CurrentHP()
 			maxHP := c.MaxHP()
-			hpdrain := 0.15 * currentHP
+			hpdrain := 0.15 * maxHP
 			// The HP consumption from using this skill can only bring him to 10% HP.
 			if (currentHP-hpdrain)/maxHP <= hpDrainThreshold {
 				hpdrain = currentHP - hpDrainThreshold*maxHP
