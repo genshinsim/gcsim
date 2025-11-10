@@ -56,17 +56,17 @@ func (c *char) c1() {
 		}
 		c.AddStatus(c1IcdKey, c1Icd, false)
 		c1AI := info.AttackInfo{
-			ActorIndex:       c.Index(),
-			Abil:             "Nightwatch Shade (C1)",
-			AttackTag:        attacks.AttackTagNormal,
-			ICDTag:           attacks.ICDTagClorindeCons,
-			ICDGroup:         attacks.ICDGroupClorindeElementalArt,
-			StrikeType:       attacks.StrikeTypeSlash,
-			Element:          attributes.Electro,
-			Durability:       25,
-			Mult:             c1AtkP,
-			HitlagHaltFrames: 0.01,
-			IgnoreInfusion:   true,
+			ActorIndex:     c.Index(),
+			Abil:           "Nightwatch Shade (C1)",
+			AttackTag:      attacks.AttackTagNormal,
+			ICDTag:         attacks.ICDTagNormalAttack,
+			ICDGroup:       attacks.ICDGroupClorindeElementalArt,
+			StrikeType:     attacks.StrikeTypeSlash,
+			Element:        attributes.Electro,
+			Durability:     25,
+			Mult:           c1AtkP,
+			HitlagFactor:   0.01,
+			IgnoreInfusion: true,
 		}
 		for _, hitmark := range c1Hitmarks {
 			c.Core.QueueAttack(
