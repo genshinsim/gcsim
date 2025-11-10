@@ -35,6 +35,7 @@ type char struct {
 	savedNormalCounter int
 	caState            ChargeState
 	canBikePlunge      bool
+	isDashFromCA       bool
 }
 
 func init() {

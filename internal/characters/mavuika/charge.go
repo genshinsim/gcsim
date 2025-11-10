@@ -136,9 +136,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	durationCA := p["hold"]
 	final := p["final"]
 	bufferedFrames, ok := p["buffered"]
-	if ok {
-		bufferedFrames = min(bufferedFrames, 15) // Number of frames the CA input is buffered, maximum of 15f
-	} else {
+	if !ok {
 		bufferedFrames = 15 // Assume max buffered frames by default
 	}
 
@@ -454,9 +452,12 @@ func (c *char) GetSkippedWindupFrames(bufferedFrames int) int {
 	// Subtracting this at the wrong time can cause hits to get out of sync
 	switch {
 	case x == action.DashState:
-		skippedWindupFrames = 15
-		// In rare instances this doesn't proc in-game, but with the sim frames it should always happen
-		c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
+		// CA can be buffered up to 13f before a dash, which skips a total of 28f from idle CA start
+		skippedWindupFrames = min(bufferedFrames, 28)
+		// If buffering for more than dash frames out of a previous CA, n0 will not proc
+		if skippedWindupFrames <= 15 || !c.isDashFromCA {
+			c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
+		}
 		return skippedWindupFrames
 	case x == action.NormalAttackState || x == action.ChargeAttackState && c.caState.StartFrame == c.Core.F:
 		skippedWindupFrames = 15
