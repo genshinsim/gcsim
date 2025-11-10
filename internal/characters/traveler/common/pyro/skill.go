@@ -26,7 +26,8 @@ const (
 	tapCdStart                     = 19
 	holdCdStart                    = 48
 	enterNightsoulDelay            = 19
-	nightsoulReduceDelay           = 8 // From wiki: consumption is 7.5 points per second -> 1 per 8f
+	nightsoulReduceVal             = 0.7
+	nightsoulReduceDelay           = 6 // consumption is 7 points per second -> 0.7 per 6f
 	scorchingThresholdICD          = 180
 	particleICDKey                 = "travelerpyro-particle-icd"
 	scoringThresholdKey            = "travelerpyro-e"
@@ -148,8 +149,7 @@ func (c *Traveler) nightsoulPointReduceFunc(src int) func() {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
-		val := 1.
-		c.reduceNightsoulPoints(val)
+		c.reduceNightsoulPoints(nightsoulReduceVal)
 		c.QueueCharTask(c.nightsoulPointReduceFunc(src), nightsoulReduceDelay)
 	}
 }
