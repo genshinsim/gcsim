@@ -156,7 +156,7 @@ func (c *char) c6() {
 		ActorIndex:     c.Index(),
 		Abil:           "Glimbright Shade (C6)",
 		AttackTag:      attacks.AttackTagNormal,
-		ICDTag:         attacks.ICDTagClorindeCons,
+		ICDTag:         attacks.ICDTagNormalAttack,
 		ICDGroup:       attacks.ICDGroupClorindeElementalArt,
 		StrikeType:     attacks.StrikeTypeSlash,
 		Element:        attributes.Electro,
