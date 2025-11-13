@@ -162,7 +162,7 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 				c.c6()
 			}
 			c.Core.Log.NewEvent("bullet loaded", glog.LogCharacterEvent, c.Index()).
-				Write("count", i).
+				Write("count", c.bulletsCharged).
 				Write("element", element)
 		}, delay)
 	}
