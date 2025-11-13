@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -139,10 +140,6 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 	c.aimSrc = aimSrc
 
 	c.c6AddBuff()
-	// activate c6 for next shot when a1 conversion happens (happens on bullet 1 due to c1)
-	if count >= 1 && c.bulletsToFire[1] != attributes.Anemo {
-		c.c6()
-	}
 
 	windup := 11
 	switch c.Core.Player.CurrentState() {
@@ -160,6 +157,13 @@ func (c *char) aimSkillHold(p map[string]int) (action.Info, error) {
 				return
 			}
 			c.bulletsCharged++
+			element := c.bulletsToFire[i-1]
+			if element != attributes.Anemo {
+				c.c6()
+			}
+			c.Core.Log.NewEvent("bullet loaded", glog.LogCharacterEvent, c.Index()).
+				Write("count", i).
+				Write("element", element)
 		}, delay)
 	}
 
