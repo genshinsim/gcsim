@@ -57,6 +57,7 @@ func (r *Reactable) TryAddLC(a *info.AttackEvent) bool {
 
 	a.Reacted = true
 	r.core.Events.Emit(event.OnLunarCharged, r.self, a)
+	r.lcAtkOwner = a.Info.ActorIndex
 
 	// if not LC cloud exists, create a new cloud and start ticking
 	if r.core.Status.Duration(LcKey) == 0 {
@@ -157,8 +158,8 @@ func (r *Reactable) DoLCAttack() {
 		ai.FlatDmg += contr.dmg * lcContributorMult[i]
 	}
 
-	// TODO: Make lunarcharged attack count as all contributor's attacks
-	ai.ActorIndex = contributions[0].charInd
+	// LC is owned by the character that last triggered Lunar Charged
+	ai.ActorIndex = r.lcAtkOwner
 	snap := info.Snapshot{}
 	if contributions[0].isCrit {
 		snap.Stats[attributes.CR] = 1.0
