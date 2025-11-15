@@ -1,18 +1,18 @@
-id: 13427
+id: 13434
 key: "sacrificersstaff"
 rarity: 4
 weapon_class: WEAPON_POLE
-image_name: "????"
+image_name: "UI_EquipIcon_Pole_Krivule"
 base_stats: {
    base_props: {
       prop_type: FIGHT_PROP_BASE_ATTACK
       initial_value: 45.0687
-      curve: GROW_CURVE_ATTACK_202
+      curve: GROW_CURVE_ATTACK_203
    }
    base_props: {
       prop_type: FIGHT_PROP_CRITICAL
       initial_value: 0.02
-      curve: ????
+      curve: GROW_CURVE_CRITICAL_201
    }
    promo_data: {
       max_level: 20
@@ -60,4 +60,4 @@ base_stats: {
       }
    }
 }
-name_text_hash_map: ????
+name_text_hash_map: 980370707

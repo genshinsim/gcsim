@@ -1,5 +1,5 @@
 ---
-title: Sacrificers Staff
+title: Sacrificer's Staff
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

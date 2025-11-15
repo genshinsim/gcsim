@@ -1109,8 +1109,8 @@
       "key": "sacrificersstaff",
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
-      "image_name": "?",
-      "name_text_hash_map ": "?"
+      "image_name": "UI_EquipIcon_Pole_Krivule",
+      "name_text_hash_map ": "980370707"
     },
     "sacrificialbow": {
       "id": 15403,
