@@ -53,9 +53,9 @@ func (p *panda) Tick() {
 	case 103, 203, 303, 403: // swirl window
 		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index()).
 			SetEnded(p.c.Core.F + infuseWindow + 1)
-		p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
+		p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability, 0)
 		p.Core.Tasks.Add(func() {
-			p.SetAuraDurability(info.ReactionModKeyPyro, 0)
+			p.SetAuraDurability(info.ReactionModKeyPyro, 0, 0)
 		}, infuseWindow+1) // +1 since infuse window is inclusive
 		p.SetDirectionToClosestEnemy()
 		// queue this in advance because that's how it is on live
@@ -109,10 +109,10 @@ func (p *panda) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 
 	// cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
 	oldDur := p.GetAuraDurability(info.ReactionModKeyPyro)
-	p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability)
+	p.SetAuraDurability(info.ReactionModKeyPyro, infuseDurability, 0)
 	p.React(atk)
 	// restore the durability after
-	p.SetAuraDurability(info.ReactionModKeyPyro, oldDur)
+	p.SetAuraDurability(info.ReactionModKeyPyro, oldDur, 0)
 
 	return 0, false
 }

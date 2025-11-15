@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 type WeaponInfusion struct {
@@ -16,13 +17,11 @@ type WeaponInfusion struct {
 	CanBeOverridden bool
 }
 
-const MaxTeamSize = 4
-
 type Handler struct {
 	f        *int
 	log      glog.Logger
 	debug    bool
-	infusion [MaxTeamSize]WeaponInfusion
+	infusion [info.MaxChars]WeaponInfusion
 }
 
 func New(f *int, log glog.Logger, debug bool) Handler {

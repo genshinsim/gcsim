@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
+const MaxChars = 4
+
 type CharacterProfile struct {
 	Base           CharacterBase               `json:"base"`
 	Weapon         WeaponProfile               `json:"weapon"`
