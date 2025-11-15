@@ -243,6 +243,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"royallongsword":                  keys.RoyalLongsword,
 	"royalspear":                      keys.RoyalSpear,
 	"rust":                            keys.Rust,
+	"sacrificersstaff":                keys.SacrificersStaff,
 	"sacrificialbow":                  keys.SacrificialBow,
 	"sacbow":                          keys.SacrificialBow,
 	"sacrificialfragments":            keys.SacrificialFragments,
