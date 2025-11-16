@@ -1,4 +1,4 @@
-package prototype
+package sacrificersstaff
 
 import (
 	"fmt"
@@ -31,11 +31,10 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
-	const buffKey = "sacrificersstaff"
 
 	w.buff = make([]float64, attributes.EndStatType)
-	atkbonus := 0.08 + 0.02*float64(r)
-	erbonus := 0.06 + 0.015*float64(r)
+	atkBuff := 0.08 + 0.02*float64(r)
+	erBuff := 0.06 + 0.015*float64(r)
 
 	// add on hit effect
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
@@ -49,12 +48,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		if w.stacks < 3 {
 			w.stacks++
-			w.buff[attributes.ATKP] = atkbonus * float64(w.stacks)
-			w.buff[attributes.ER] = erbonus * float64(w.stacks)
+			w.buff[attributes.ATKP] = atkBuff * float64(w.stacks)
+			w.buff[attributes.ER] = erBuff * float64(w.stacks)
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(buffKey, 300),
+			Base:         modifier.NewBaseWithHitlag("sacrificersstaff", 300),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return w.buff, true
