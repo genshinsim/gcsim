@@ -42,7 +42,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 	w.Character = &c
 
-	ss, ok := p.Params["start_serpents_subtlety"]
+	ss, ok := p.Params["start_energy"]
 	if !ok {
 		ss = maxSerpentsSubtlety
 	}

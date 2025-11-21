@@ -53,7 +53,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
-	fs, ok := p.Params["start_fighting_spirit"]
+	fs, ok := p.Params["start_energy"]
 	if !ok {
 		fs = maxFightingSpirit
 	}

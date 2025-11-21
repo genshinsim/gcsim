@@ -943,11 +943,6 @@
   ],
   "mavuika": [
     {
-      "ability": "-",
-      "param": "start_fighting_spirit",
-      "desc": "Set the starting amount of Fighting Spirit. Default is 200."
-    },
-    {
       "ability": "charge",
       "param": "hold",
       "desc": "Number of frames to extend Charge Attack by. Min 1, max 45, can only be used after a Charge attack has started."
@@ -1263,11 +1258,6 @@
     }
   ],
   "skirk": [
-    {
-      "ability": "-",
-      "param": "start_serpents_subtlety",
-      "desc": "Set the starting amount of Serpent's Subtlety stacks. Default 100."
-    },
     {
       "ability": "skill",
       "param": "hold",
