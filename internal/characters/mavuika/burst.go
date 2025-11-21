@@ -13,10 +13,11 @@ import (
 )
 
 const (
-	burstKey       = "mavuika-burst"
-	energyNAICDKey = "mavuika-fighting-spirit-na-icd"
-	burstDuration  = 7.0 * 60
-	burstHitmark   = 106
+	burstKey          = "mavuika-burst"
+	energyNAICDKey    = "mavuika-fighting-spirit-na-icd"
+	burstDuration     = 7.0 * 60
+	burstHitmark      = 106
+	maxFightingSpirit = 200
 )
 
 var burstFrames []int
@@ -109,14 +110,13 @@ func (c *char) burstBuffSunfell() float64 {
 
 func (c *char) gainFightingSpirit(val float64) {
 	c.fightingSpirit += val * c.c1FightingSpiritEff()
-	if c.fightingSpirit > 200 {
-		c.fightingSpirit = 200
+	if c.fightingSpirit > maxFightingSpirit {
+		c.fightingSpirit = maxFightingSpirit
 	}
 	c.c1OnFightingSpirit()
 }
 
 func (c *char) burstInit() {
-	c.fightingSpirit = 200
 	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) bool {
 		amount := args[1].(float64)
 		if amount < 0.0000001 {
