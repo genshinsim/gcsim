@@ -43,15 +43,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 	w.Character = &c
 
 	// Deprecated param, kept for backward compatibility
-	ss, ok_subtlety := p.Params["start_serpents_subtlety"]
+	ss, okSubtlety := p.Params["start_serpents_subtlety"]
 
-	ss2, ok_energy := p.Params["start_energy"]
+	ss2, okEnergy := p.Params["start_energy"]
 
-	if !ok_subtlety && !ok_energy {
+	if !okSubtlety && !okEnergy {
 		ss = maxSerpentsSubtlety
 	}
 
-	if ok_energy {
+	if okEnergy {
 		ss = ss2
 	}
 
