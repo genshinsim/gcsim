@@ -1259,6 +1259,11 @@
   ],
   "skirk": [
     {
+      "ability": "-",
+      "param": "start_serpents_subtlety",
+      "desc": "Set the starting amount of Serpent's Subtlety stacks. Default 100."
+    },
+    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), value between 1 and 184 for Hold. The number determines the hold E duration in frames."
