@@ -69,6 +69,7 @@ var weaponNames = []string{
 	"crescentpike",
 	"crimsonmoonssemblance",
 	"darkironsword",
+	"dawningfrost",
 	"deathmatch",
 	"debateclub",
 	"dialoguesofthedesertsages",
@@ -285,6 +286,7 @@ const (
 	CrescentPike
 	CrimsonMoonsSemblance
 	DarkIronSword
+	DawningFrost
 	Deathmatch
 	DebateClub
 	DialoguesOfTheDesertSages
