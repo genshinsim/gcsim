@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	emBuffSkill := make([]float64, attributes.EndStatType)
 	emBuffSkill[attributes.EM] = 36 + float64(r)*12
 
-	caFunc := func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false
@@ -44,43 +44,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if c.Player.Active() != char.Index() {
 			return false
 		}
-		if atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
-		}
-		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("dawning-frost-ca", 10*60),
-			Amount: func() ([]float64, bool) {
-				return emBuffCa, true
-			},
-		})
-		return false
-	}
 
-	skillFunc := func(args ...any) bool {
-		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index() {
-			return false
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagExtra:
+			char.AddStatMod(character.StatMod{
+				Base: modifier.NewBaseWithHitlag("dawning-frost-ca", 10*60),
+				Amount: func() ([]float64, bool) {
+					return emBuffCa, true
+				},
+			})
+		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
+			char.AddStatMod(character.StatMod{
+				Base: modifier.NewBaseWithHitlag("dawning-frost-skill", 10*60),
+				Amount: func() ([]float64, bool) {
+					return emBuffSkill, true
+				},
+			})
 		}
-		if c.Player.Active() != char.Index() {
-			return false
-		}
-		if atk.Info.AttackTag != attacks.AttackTagElementalArt &&
-			atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
-		}
-		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("dawning-frost-skill", 10*60),
-			Amount: func() ([]float64, bool) {
-				return emBuffSkill, true
-			},
-		})
-		return false
-	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, skillFunc,
-		fmt.Sprintf("dawning-frost-%v-skill-hit", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnEnemyDamage, caFunc,
-		fmt.Sprintf("dawning-frost-%v-ca-hit", char.Base.Key.String()))
+		return false
+	}, fmt.Sprintf("dawning-frost-%v-ondamage", char.Base.Key.String()))
 
 	return w, nil
 }
