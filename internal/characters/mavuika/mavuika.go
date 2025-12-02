@@ -41,7 +41,7 @@ func init() {
 	core.RegisterCharFunc(keys.Mavuika, NewChar)
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	t := tmpl.New(s)
 
@@ -52,6 +52,14 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
+
+	fs, ok := p.Params["start_energy"]
+	if !ok {
+		fs = maxFightingSpirit
+	}
+	fs = max(min(fs, maxFightingSpirit), 0)
+
+	c.fightingSpirit = float64(fs)
 
 	w.Character = &c
 	c.nightsoulState = nightsoul.New(c.Core, c.CharWrapper)

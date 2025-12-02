@@ -1261,7 +1261,7 @@
     {
       "ability": "-",
       "param": "start_serpents_subtlety",
-      "desc": "Set the starting amount of Serpent's Subtlety stacks. Default 100."
+      "desc": "deprecated; use start_energy instead."
     },
     {
       "ability": "skill",
