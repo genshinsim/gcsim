@@ -60,7 +60,7 @@ func (r *Reactable) TrySwirlElectro(a *info.AttackEvent) bool {
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
-	if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Electro, a.Info.Durability, 0.5)
@@ -85,7 +85,7 @@ func (r *Reactable) TrySwirlElectro(a *info.AttackEvent) bool {
 
 	// at this point if any durability left, we need to check for prescence of
 	// hydro in case of EC
-	if a.Info.Durability > info.ZeroDur && r.Durability[info.ReactionModKeyHydro] > info.ZeroDur {
+	if a.Info.Durability > info.ZeroDur && r.GetAuraDurability(info.ReactionModKeyHydro) > info.ZeroDur {
 		// trigger swirl hydro
 		r.TrySwirlHydro(a)
 		// check EC clean up
@@ -98,7 +98,7 @@ func (r *Reactable) TrySwirlHydro(a *info.AttackEvent) bool {
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
-	if r.Durability[info.ReactionModKeyHydro] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Hydro, a.Info.Durability, 0.5)
@@ -128,7 +128,7 @@ func (r *Reactable) TrySwirlCryo(a *info.AttackEvent) bool {
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
-	if r.Durability[info.ReactionModKeyCryo] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyCryo) < info.ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Cryo, a.Info.Durability, 0.5)
@@ -158,7 +158,7 @@ func (r *Reactable) TrySwirlPyro(a *info.AttackEvent) bool {
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
-	if r.Durability[info.ReactionModKeyPyro] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyPyro) < info.ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Pyro, a.Info.Durability, 0.5)
@@ -189,7 +189,7 @@ func (r *Reactable) TrySwirlFrozen(a *info.AttackEvent) bool {
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
-	if r.Durability[info.ReactionModKeyFrozen] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyFrozen) < info.ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Frozen, a.Info.Durability, 0.5)

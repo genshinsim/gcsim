@@ -28,7 +28,7 @@ func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, de
 }
 
 func (c *Core) SetupOnNormalHitEnergy() {
-	var current [MaxTeamSize][info.EndWeaponClass]float64
+	var current [info.MaxChars][info.EndWeaponClass]float64
 
 	// https://genshin-impact.fandom.com/wiki/Energy#Energy_Generated_by_Normal_Attacks
 	// Base Probability

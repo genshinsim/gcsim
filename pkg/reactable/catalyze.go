@@ -11,7 +11,7 @@ func (r *Reactable) TryAggravate(a *info.AttackEvent) bool {
 		return false
 	}
 
-	if r.Durability[info.ReactionModKeyQuicken] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyQuicken) < info.ZeroDur {
 		return false
 	}
 
@@ -30,7 +30,7 @@ func (r *Reactable) TrySpread(a *info.AttackEvent) bool {
 		return false
 	}
 
-	if r.Durability[info.ReactionModKeyQuicken] < info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyQuicken) < info.ZeroDur {
 		return false
 	}
 
@@ -52,12 +52,12 @@ func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
 	var consumed info.Durability
 	switch a.Info.Element {
 	case attributes.Dendro:
-		if r.Durability[info.ReactionModKeyElectro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	case attributes.Electro:
-		if r.Durability[info.ReactionModKeyDendro] < info.ZeroDur {
+		if r.GetAuraDurability(info.ReactionModKeyDendro) < info.ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Dendro, a.Info.Durability, 1)
@@ -70,9 +70,9 @@ func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
 	r.core.Events.Emit(event.OnQuicken, r.self, a)
 
 	// attach quicken aura; special amount
-	r.attachQuicken(consumed)
+	r.attachQuicken(consumed, a.Info.ActorIndex)
 
-	if r.Durability[info.ReactionModKeyHydro] >= info.ZeroDur {
+	if r.GetAuraDurability(info.ReactionModKeyHydro) >= info.ZeroDur {
 		r.core.Tasks.Add(func() {
 			r.tryQuickenBloom(a)
 		}, 0)
@@ -81,6 +81,6 @@ func (r *Reactable) TryQuicken(a *info.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) attachQuicken(dur info.Durability) {
-	r.attachOverlapRefreshDuration(info.ReactionModKeyQuicken, dur, 12*dur+360)
+func (r *Reactable) attachQuicken(dur info.Durability, src int) {
+	r.attachOverlapRefreshDuration(info.ReactionModKeyQuicken, dur, 12*dur+360, src)
 }

@@ -9,8 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-const MaxTeamSize = 4
-
 type Target struct {
 	Core            *core.Core
 	key             info.TargetKey
@@ -22,10 +20,10 @@ type Target struct {
 	Alive bool
 
 	// icd related
-	icdTagOnTimer       [MaxTeamSize][attacks.ICDTagLength]bool
-	icdTagCounter       [MaxTeamSize][attacks.ICDTagLength]int
-	icdDamageTagOnTimer [MaxTeamSize][attacks.ICDTagLength]bool
-	icdDamageTagCounter [MaxTeamSize][attacks.ICDTagLength]int
+	icdTagOnTimer       [info.MaxChars][attacks.ICDTagLength]bool
+	icdTagCounter       [info.MaxChars][attacks.ICDTagLength]int
+	icdDamageTagOnTimer [info.MaxChars][attacks.ICDTagLength]bool
+	icdDamageTagCounter [info.MaxChars][attacks.ICDTagLength]int
 
 	direction info.Point
 }
