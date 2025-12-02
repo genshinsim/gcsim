@@ -1,8 +1,6 @@
 package_name: clorinde
 genshin_id: 10000098
 key: clorinde
-icd_tags:
-  - ICDTagClorindeCons
 icd_groups:
   - group_name: ICDGroupClorindeElementalArt
     reset_timer: 60

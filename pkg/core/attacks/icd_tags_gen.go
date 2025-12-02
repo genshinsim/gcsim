@@ -12,7 +12,6 @@ const (
 	ICDTagChioriSkill
 	ICDTagCitlaliSpiritVessel
 	ICDTagCitlaliFrostfallStorm
-	ICDTagClorindeCons
 	ICDTagColleiSprout
 	ICDTagCynoBolt
 	ICDTagDoriC2
