@@ -220,6 +220,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/rightfulreward"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/royal"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/sacrificersstaff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/scarletsands"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/skyward"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/symphonist"

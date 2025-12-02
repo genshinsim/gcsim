@@ -1112,6 +1112,14 @@
       "image_name": "UI_EquipIcon_Bow_Recluse",
       "name_text_hash_map ": "3169209451"
     },
+    "sacrificersstaff": {
+      "id": 13434,
+      "key": "sacrificersstaff",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Krivule",
+      "name_text_hash_map ": "980370707"
+    },
     "sacrificialbow": {
       "id": 15403,
       "key": "sacrificialbow",

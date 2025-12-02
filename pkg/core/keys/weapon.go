@@ -172,6 +172,7 @@ var weaponNames = []string{
 	"royallongsword",
 	"royalspear",
 	"rust",
+	"sacrificersstaff",
 	"sacrificialbow",
 	"sacrificialfragments",
 	"sacrificialgreatsword",
@@ -389,6 +390,7 @@ const (
 	RoyalLongsword
 	RoyalSpear
 	Rust
+	SacrificersStaff
 	SacrificialBow
 	SacrificialFragments
 	SacrificialGreatsword
