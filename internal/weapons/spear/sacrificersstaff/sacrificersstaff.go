@@ -7,12 +7,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+const buffKey = "sacrificersstaff-buff"
 
 func init() {
 	core.RegisterWeaponFunc(keys.SacrificersStaff, NewWeapon)
@@ -37,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	erBuff := 0.06 + 0.015*float64(r)
 
 	// add on hit effect
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return false
@@ -46,21 +47,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		if w.stacks < 3 {
-			w.stacks++
-			w.buff[attributes.ATKP] = atkBuff * float64(w.stacks)
-			w.buff[attributes.ER] = erBuff * float64(w.stacks)
+		if !char.StatModIsActive(buffKey) {
+			w.stacks = 0
 		}
+		w.stacks = max(w.stacks+1, 3)
+		w.buff[attributes.ATKP] = atkBuff * float64(w.stacks)
+		w.buff[attributes.ER] = erBuff * float64(w.stacks)
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("sacrificersstaff", 300),
-			AffectedStat: attributes.NoStat,
+			Base: modifier.NewBaseWithHitlag(buffKey, 300),
 			Amount: func() ([]float64, bool) {
 				return w.buff, true
 			},
 		})
-
-		c.Log.NewEvent("sacrificersstaff adding stack", glog.LogWeaponEvent, char.Index()).Write("stacks", w.stacks)
 		return false
 	}, fmt.Sprintf("sacrificersstaff-%v", char.Base.Key.String()))
 
