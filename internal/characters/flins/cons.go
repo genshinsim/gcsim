@@ -80,7 +80,7 @@ func (c *char) c2MakeAtkCB() func(info.AttackCB) {
 			Abil:             "The Devil's Wall (C2)",
 			AttackTag:        attacks.AttackTagDirectLunarCharged,
 			ICDTag:           attacks.ICDTagNone,
-			ICDGroup:         attacks.ICDGroupDirectLunarCharged,
+			ICDGroup:         attacks.ICDGroupDefault,
 			StrikeType:       attacks.StrikeTypeDefault,
 			Element:          attributes.Electro,
 			Mult:             0.5,
