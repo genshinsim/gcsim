@@ -112,6 +112,8 @@ func ConvertRegion(z model.ZoneType) ZoneType {
 	case model.ZoneType_ASSOC_TYPE_MAINACTOR:
 		// traveler
 		return ZoneUnknown
+	case model.ZoneType_ASSOC_TYPE_NODKRAI:
+		return ZoneNodKrai
 	default:
 		return ZoneUnknown
 	}
