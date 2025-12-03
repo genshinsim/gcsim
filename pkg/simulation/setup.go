@@ -373,26 +373,52 @@ func setupAscendantGleam(core *core.Core) {
 		return
 	}
 	buff := 0.0
+	src := -1
+
+	var gleamBuffUpdateGen func(*character.CharWrapper, int) func()
+	gleamBuffUpdateGen = func(char *character.CharWrapper, s int) func() {
+		return func() {
+			if s != src {
+				return
+			}
+
+			if !char.ReactBonusModIsActive("ascendant-gleam") {
+				return
+			}
+
+			// Ascendant gleam uses nonExtraStats
+			switch char.Base.Element {
+			case attributes.Electro, attributes.Pyro, attributes.Cryo:
+				stats := char.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
+				atk := stats.TotalATK()
+				buff = min(atk*0.009/100, 0.36)
+			case attributes.Hydro:
+				stats := char.SelectStat(true, attributes.BaseHP, attributes.HPP, attributes.HP)
+				hp := stats.MaxHP()
+				buff = min(hp*0.006/1000, 0.36)
+			case attributes.Dendro, attributes.Anemo:
+				buff = min(char.NonExtraStat(attributes.EM)*0.0225/100, 0.36)
+			case attributes.Geo:
+				buff = min(char.TotalDef(true)*0.01/100, 0.36)
+			default:
+				return
+			}
+			if core.Flags.LogDebug {
+				core.Log.NewEvent("Updating ascendant gleam react bonus", glog.LogDebugEvent, char.Index()).Write("amt", buff)
+			}
+			core.Tasks.Add(gleamBuffUpdateGen(char, s), 60)
+		}
+	}
 
 	hook := func(args ...any) bool {
+		src = core.F
 		char := core.Player.ActiveChar()
 		if char.Moonsign != 0 {
 			return false
 		}
 
-		// TODO: Does ascendant gleam use NonExtra?
-		switch char.Base.Element {
-		case attributes.Electro, attributes.Pyro, attributes.Cryo:
-			buff = min(char.TotalAtk()*0.009/100, 0.36)
-		case attributes.Hydro:
-			buff = min(char.MaxHP()*0.006/1000, 0.36)
-		case attributes.Dendro, attributes.Anemo:
-			buff = min(char.Stat(attributes.EM)*0.0225/100, 0.36)
-		case attributes.Geo:
-			buff = min(char.TotalDef(false)*0.01/100, 0.36)
-		default:
-			return false
-		}
+		gleamBuffUpdateGen(char, src)()
+
 		for _, c := range core.Player.Chars() {
 			c.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBase("ascendant-gleam", 20*60),
