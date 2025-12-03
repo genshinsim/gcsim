@@ -11,7 +11,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const LunarChargeEnableKey = "lunarcharge-enabled"
+
 func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
+	if _, ok := r.core.Flags.Custom[LunarChargeEnableKey]; ok {
+		return r.TryAddLC(a)
+	}
+
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
@@ -81,7 +87,7 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 			10,
 		)
 
-		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
+		r.core.Tasks.Add(r.nextECTick(r.core.F), 60+10)
 		// subscribe to wane ticks
 		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
 			// target should be first, then snapshot
@@ -149,7 +155,7 @@ func (r *Reactable) checkEC() {
 	}
 }
 
-func (r *Reactable) nextTick(src int) func() {
+func (r *Reactable) nextECTick(src int) func() {
 	return func() {
 		if r.ecTickSrc != src {
 			// source changed, do nothing
@@ -170,6 +176,6 @@ func (r *Reactable) nextTick(src int) func() {
 		)
 
 		// queue up next tick
-		r.core.Tasks.Add(r.nextTick(src), 60)
+		r.core.Tasks.Add(r.nextECTick(src), 60)
 	}
 }

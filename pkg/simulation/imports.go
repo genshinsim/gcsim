@@ -42,6 +42,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/marechausseehunter"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/martialartist"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/nightoftheskysunveiling"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/nighttimewhispersintheechoingwoods"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/noblesse"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/nymphsdream"
