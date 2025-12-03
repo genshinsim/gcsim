@@ -55,7 +55,6 @@ const (
 	ICDGroupBurning
 	ICDGroupTravelerDewdrop
 	ICDGroupTravelerBurst
-	ICDGroupDirectLunarCharged
 	EndDefaultICDGroups
 )
 
@@ -74,7 +73,6 @@ func init() {
 	ICDGroupResetTimer[ICDGroupBurning] = 120
 	ICDGroupResetTimer[ICDGroupTravelerDewdrop] = 90
 	ICDGroupResetTimer[ICDGroupTravelerBurst] = 480
-	ICDGroupResetTimer[ICDGroupDirectLunarCharged] = 90
 
 	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
 	ICDGroupEleApplicationSequence[ICDGroupDefault] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
@@ -84,7 +82,6 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupBurning] = []float64{1, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupTravelerDewdrop] = []float64{1, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupTravelerBurst] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
-	ICDGroupEleApplicationSequence[ICDGroupDirectLunarCharged] = []float64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
 	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -96,5 +93,4 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupBurning] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupTravelerDewdrop] = []float64{1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupTravelerBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-	ICDGroupDamageSequence[ICDGroupDirectLunarCharged] = []float64{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
 }

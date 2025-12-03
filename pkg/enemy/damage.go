@@ -117,6 +117,12 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		damage *= x
 	}
 
+	// special 3x mult for direct lunarcharged
+	if atk.Info.AttackTag == attacks.AttackTagDirectLunarCharged {
+		damage *= 3.0
+		x *= 3.0
+	}
+
 	if e.Core.Flags.LogDebug {
 		e.Core.Log.NewEvent(
 			atk.Info.Abil,
