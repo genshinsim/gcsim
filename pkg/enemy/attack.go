@@ -101,7 +101,7 @@ func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 			return
 		}
 		// checks for ICD on all the other characters as well
-		for i := 0; i < len(e.Core.Player.Chars()); i++ {
+		for i := range e.Core.Player.Chars() {
 			if i == atk.Info.ActorIndex {
 				continue
 			}

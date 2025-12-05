@@ -70,6 +70,7 @@ func (c *char) a4() {
 
 	c.Core.Events.Subscribe(event.OnOverload, a4cbNoGadget, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnElectroCharged, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnLunarCharged, a4cbNoGadget, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnSuperconduct, a4cbNoGadget, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, a4cbNoGadget, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, a4cbNoGadget, "fischl-a4")

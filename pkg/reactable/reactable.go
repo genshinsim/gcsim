@@ -21,6 +21,7 @@ type Reactable struct {
 	ecAtk      info.AttackInfo // index of owner of next ec ticks
 	ecSnapshot info.Snapshot
 	ecTickSrc  int
+	lcAtkOwner int // index of owner of next LC tick
 	// burning specific
 	burningAtk      info.AttackInfo
 	burningSnapshot info.Snapshot

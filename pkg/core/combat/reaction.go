@@ -9,22 +9,27 @@ type reactionBonusSrc interface {
 	ReactBonus(atk info.AttackInfo) float64
 }
 
-func CalcReactionDmg(lvl int, src reactionBonusSrc, atk info.AttackInfo, em float64) (float64, info.Snapshot) {
+func CalcReactionBaseDmg(lvl int) float64 {
 	idx := lvl - 1
 	idx = min(idx, 89)
 	idx = max(idx, 0)
+	return reactionLvlBase[idx]
+}
+
+func CalcLunarChargedDmg(lvl int, src reactionBonusSrc, atk info.AttackInfo, em float64) float64 {
+	return (1 + ((6 * em) / (2000 + em)) + src.ReactBonus(atk)) * CalcReactionBaseDmg(lvl)
+}
+
+func CalcReactionDmg(lvl int, src reactionBonusSrc, atk info.AttackInfo, em float64) (float64, info.Snapshot) {
 	snap := info.Snapshot{
 		CharLvl: lvl,
 	}
 	snap.Stats[attributes.EM] = em
-	return (1 + ((16 * em) / (2000 + em)) + src.ReactBonus(atk)) * reactionLvlBase[idx], snap
+	return (1 + ((16 * em) / (2000 + em)) + src.ReactBonus(atk)) * CalcReactionBaseDmg(lvl), snap
 }
 
 func CalcCatalyzeDmg(lvl int, src reactionBonusSrc, atk info.AttackInfo, em float64) float64 {
-	idx := lvl - 1
-	idx = min(idx, 89)
-	idx = max(idx, 0)
-	return (1 + ((5 * em) / (1200 + em)) + src.ReactBonus(atk)) * reactionLvlBase[idx]
+	return (1 + ((5 * em) / (1200 + em)) + src.ReactBonus(atk)) * CalcReactionBaseDmg(lvl)
 }
 
 var reactionLvlBase = []float64{

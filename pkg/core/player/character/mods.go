@@ -188,8 +188,9 @@ func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMo
 // Amount.
 
 func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []any {
-	// skip if this is reaction damage
-	if a.Info.AttackTag >= attacks.AttackTagNoneStat {
+	// skip if this is normal reaction damage
+	// we still apply attack mods for direct lunar reaction damage
+	if attacks.AttackTagNoneStat <= a.Info.AttackTag && a.Info.AttackTag < attacks.LunarReactionEndDelim {
 		return nil
 	}
 
