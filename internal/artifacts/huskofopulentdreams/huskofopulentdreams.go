@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -72,7 +72,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DEFP] = 0.30
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("husk-2pc", -1),
+			Base:         gmod.NewBase("husk-2pc", -1),
 			AffectedStat: attributes.DEFP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -130,7 +130,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}, fmt.Sprintf("husk-4pc-%v", char.Base.Key.String()))
 
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("husk-4pc", -1),
+		Base:         gmod.NewBase("husk-4pc", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			m[attributes.DEFP] = 0.06 * float64(s.stacks)

@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -123,7 +123,7 @@ func (w *Weapon) onEquipChangeHP() {
 	w.char.AddStatus(skillBuffIcd, 0.2*60, true)
 	w.buffSkill[attributes.DmgP] = (0.06 + 0.02*float64(w.refine)) * float64(w.skillStacks)
 	w.char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(skillBuffKey, 6*60),
+		Base: gmod.NewBaseWithHitlag(skillBuffKey, 6*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
@@ -153,7 +153,7 @@ func (w *Weapon) onOtherChangeHP() {
 	val[attributes.HPP] = hpp
 	w.char.AddStatus(hpBuffIcd, 0.2*60, true)
 	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(hpBuffKey, 6*60),
+		Base:         gmod.NewBaseWithHitlag(hpBuffKey, 6*60),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return val, true

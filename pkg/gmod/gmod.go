@@ -1,6 +1,8 @@
-// package modifier provides a universal way of handling a slice
-// of modifiers
-package modifier
+// package gmod provides a universal way of handling a slice
+// of modifiers; note that this is gcsim's interpretation of
+// a modifier and does not mirror proper in-game behaviour,
+// thus is named gmod (originally named modifier)
+package gmod
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"

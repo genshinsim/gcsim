@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/model"
 
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 type Lithic struct {
@@ -43,7 +43,7 @@ func (l *Lithic) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Wea
 		return true
 	}, fmt.Sprintf("lithic-%v", char.Base.Key.String()))
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("lithic", -1),
+		Base:         gmod.NewBase("lithic", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return val, true

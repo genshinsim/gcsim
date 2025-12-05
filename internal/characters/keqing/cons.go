@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const c2ICDKey = "keqing-c2-icd"
@@ -49,7 +49,7 @@ func (c *char) c4() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("keqing-c4", 600),
+			Base:         gmod.NewBaseWithHitlag("keqing-c4", 600),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return c.c4buff, true
@@ -77,7 +77,7 @@ func (c *char) c4() {
 
 func (c *char) c6(src string) {
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("keqing-c6-"+src, 480),
+		Base:         gmod.NewBaseWithHitlag("keqing-c6-"+src, 480),
 		AffectedStat: attributes.ElectroP,
 		Amount: func() ([]float64, bool) {
 			return c.c6buff, true

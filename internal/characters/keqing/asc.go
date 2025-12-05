@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // After recasting Stellar Restoration while a Lightning Stiletto is present, Keqing's weapon gains an Electro Infusion for 5s.
@@ -34,7 +34,7 @@ func (c *char) a4() {
 		return
 	}
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("keqing-a4", 480),
+		Base:         gmod.NewBaseWithHitlag("keqing-a4", 480),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return c.a4buff, true

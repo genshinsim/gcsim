@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C4: The vortex created by Wind Realm of Nasamjnin will restore Energy to
@@ -41,7 +41,7 @@ func (c *char) c6Buff(char *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CD] = 0.4
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("faruzan-c6", 240),
+		Base: gmod.NewBaseWithHitlag("faruzan-c6", 240),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if atk.Info.Element != attributes.Anemo {
 				return nil, false

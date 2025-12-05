@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var skillFrames []int
@@ -116,7 +116,7 @@ func (c *char) gorouSkillBuffField(src int) func() {
 		// ok to overwrite existing mod
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(defenseBuffKey, 120), // looks like it lasts 2 seconds
+			Base:         gmod.NewBaseWithHitlag(defenseBuffKey, 120), // looks like it lasts 2 seconds
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return c.gorouBuff, true

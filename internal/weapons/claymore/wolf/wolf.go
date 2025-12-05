@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ATKP] = 0.15 + 0.05*float64(r)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("wolf-flat", -1),
+		Base:         gmod.NewBase("wolf-flat", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return val, true
@@ -74,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		for _, char := range c.Player.Chars() {
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("wolf-proc", 720),
+				Base:         gmod.NewBaseWithHitlag("wolf-proc", 720),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return bonus, true

@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c1(a info.AttackCB) {
@@ -20,7 +20,7 @@ func (c *char) c1(a info.AttackCB) {
 		return
 	}
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("xiangling-c1", 6*60),
+		Base:  gmod.NewBaseWithHitlag("xiangling-c1", 6*60),
 		Ele:   attributes.Pyro,
 		Value: -0.15,
 	})
@@ -72,7 +72,7 @@ func (c *char) c6(dur int) {
 
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("xiangling-c6", dur),
+			Base:         gmod.NewBaseWithHitlag("xiangling-c6", dur),
 			AffectedStat: attributes.PyroP,
 			Amount: func() ([]float64, bool) {
 				return m, true

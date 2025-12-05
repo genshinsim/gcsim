@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Tighnari's Charged Attack CRIT Rate is increased by 15%.
@@ -15,7 +15,7 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.15
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("tighnari-c1", -1),
+		Base: gmod.NewBase("tighnari-c1", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
@@ -36,7 +36,7 @@ func (c *char) c2() {
 				return
 			}
 			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("tighnari-c2", 6*60),
+				Base:         gmod.NewBase("tighnari-c2", 6*60),
 				AffectedStat: attributes.DendroP,
 				Amount: func() ([]float64, bool) {
 					return m, true
@@ -59,7 +59,7 @@ func (c *char) c4() {
 		m[attributes.EM] = 60
 		for _, char := range c.Core.Player.Chars() {
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("tighnari-c4", 8*60),
+				Base:         gmod.NewBaseWithHitlag("tighnari-c4", 8*60),
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return m, true
@@ -87,7 +87,7 @@ func (c *char) c4() {
 		m[attributes.EM] = 120
 		for _, char := range c.Core.Player.Chars() {
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("tighnari-c4", 8*60),
+				Base:         gmod.NewBaseWithHitlag("tighnari-c4", 8*60),
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return m, true

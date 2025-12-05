@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -174,7 +174,7 @@ func (c *char) skillPressBuff() {
 		char.AddStatus(quillKey, 10*60, true) // 10 sec duration
 		char.SetTag(quillKey, 5)              // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 10*60),
+			Base: gmod.NewBaseWithHitlag("shenhe-a4-press", 10*60),
 			Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				switch a.Info.AttackTag {
 				case attacks.AttackTagElementalArt:
@@ -198,7 +198,7 @@ func (c *char) skillHoldBuff() {
 		char.AddStatus(quillKey, 15*60, true) // 15 sec duration
 		char.SetTag(quillKey, 7)              // 5 quill on hold
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
+			Base: gmod.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
 			Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				switch a.Info.AttackTag {
 				case attacks.AttackTagNormal:

@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) a1() {
@@ -58,7 +58,7 @@ func (c *char) a4() {
 	m[attributes.Heal] = 0.05 * float64(heal)
 	m[attributes.CryoP] = 0.05 * float64(cryop)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("charlotte-a4", -1),
+		Base:         gmod.NewBase("charlotte-a4", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true

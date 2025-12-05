@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("solar-na-buff", 6*60),
+				Base: gmod.NewBaseWithHitlag("solar-na-buff", 6*60),
 				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					if atk.Info.AttackTag == attacks.AttackTagNormal {
 						return val, true
@@ -53,7 +53,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		case attacks.AttackTagNormal:
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("solar-skill-burst-buff", 6*60),
+				Base: gmod.NewBaseWithHitlag("solar-skill-burst-buff", 6*60),
 				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:

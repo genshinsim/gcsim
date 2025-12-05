@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mFirst := make([]float64, attributes.EndStatType)
 	mFirst[attributes.DmgP] = 0.12 + 0.04*float64(p.Refine)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("wolf-fang", -1),
+		Base: gmod.NewBase("wolf-fang", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
@@ -90,7 +90,7 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 		}
 
 		w.char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(name, 10*60),
+			Base: gmod.NewBaseWithHitlag(name, 10*60),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				if !requiredTag(atk.Info.AttackTag, tags...) {
 					return nil, false

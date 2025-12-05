@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When casting Great Secret Art: Tenko Kenshin, each Sesshou Sakura destroyed
@@ -25,7 +25,7 @@ func (c *char) a4() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("yaemiko-a4", -1),
+		Base: gmod.NewBase("yaemiko-a4", -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			// only trigger on elemental art damage
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {

@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -97,7 +97,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				// An active character within the field created by Divine Maiden's Deliverance gains 15% Cryo DMG Bonus.
 				if c.Base.Ascension >= 1 {
 					active.AddStatMod(character.StatMod{
-						Base:         modifier.NewBaseWithHitlag("shenhe-a1", buffDuration),
+						Base:         gmod.NewBaseWithHitlag("shenhe-a1", buffDuration),
 						AffectedStat: attributes.CryoP,
 						Amount: func() ([]float64, bool) {
 							return c.burstBuff, true
@@ -111,12 +111,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			// Q debuff tick
 			for _, e := range c.Core.Combat.EnemiesWithinArea(burstArea, nil) {
 				e.AddResistMod(info.ResistMod{
-					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-cryo", buffDuration),
+					Base:  gmod.NewBaseWithHitlag("shenhe-burst-shred-cryo", buffDuration),
 					Ele:   attributes.Cryo,
 					Value: -burstrespp[c.TalentLvlBurst()],
 				})
 				e.AddResistMod(info.ResistMod{
-					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-phys", buffDuration),
+					Base:  gmod.NewBaseWithHitlag("shenhe-burst-shred-phys", buffDuration),
 					Ele:   attributes.Physical,
 					Value: -burstrespp[c.TalentLvlBurst()],
 				})

@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var (
@@ -96,7 +96,7 @@ func (c *char) BurstRuin(p map[string]int) (action.Info, error) {
 func (c *char) BurstInit() {
 	mDmg := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(burstExtinctKey+"-dmg", -1),
+		Base: gmod.NewBase(burstExtinctKey+"-dmg", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if c.burstCount <= 0 {
 				return nil, false

@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -29,7 +29,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = 0.15 + 0.05*r
 	m[attributes.CR] = 0.06 + 0.02*r
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("calamityofeshu", -1),
+		Base: gmod.NewBase("calamityofeshu", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if !c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
 				return nil, false

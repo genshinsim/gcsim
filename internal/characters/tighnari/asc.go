@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // After Tighnari fires a Wreath Arrow, his Elemental Mastery is increased by 50 for 4s.
@@ -15,7 +15,7 @@ func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 50
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("tighnari-a1", 4*60),
+		Base:         gmod.NewBase("tighnari-a1", 4*60),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -31,7 +31,7 @@ func (c *char) a4() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("tighnari-a4", -1),
+		Base: gmod.NewBase("tighnari-a4", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false

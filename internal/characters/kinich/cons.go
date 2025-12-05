@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -25,7 +25,7 @@ func (c *char) c1() {
 	// his Movement SPD will increase by 30% for 6s." is not implemented
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("kinich-c1", -1),
+		Base: gmod.NewBase("kinich-c1", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
@@ -55,7 +55,7 @@ func (c *char) c2ResShredCB(a info.AttackCB) {
 		return
 	}
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("kinich-c2", 6*60),
+		Base:  gmod.NewBaseWithHitlag("kinich-c2", 6*60),
 		Ele:   attributes.Dendro,
 		Value: -0.3,
 	})
@@ -73,7 +73,7 @@ func (c *char) c4() {
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("kinich-c4-dmgp", -1),
+		Base: gmod.NewBase("kinich-c4-dmgp", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false

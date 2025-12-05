@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -167,7 +167,7 @@ func (c *char) c4() {
 		if c.Core.Player.Active() == c.Index() {
 			m[attributes.AtkSpd] = 0.2
 			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(c4Status, 4*60),
+				Base:         gmod.NewBaseWithHitlag(c4Status, 4*60),
 				AffectedStat: attributes.AtkSpd,
 				Amount: func() ([]float64, bool) {
 					return m, true
@@ -177,7 +177,7 @@ func (c *char) c4() {
 			m[attributes.AtkSpd] = 0.1
 			for _, char := range chars {
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(c4Status, 6*60),
+					Base:         gmod.NewBaseWithHitlag(c4Status, 6*60),
 					AffectedStat: attributes.AtkSpd,
 					Amount: func() ([]float64, bool) {
 						return m, true

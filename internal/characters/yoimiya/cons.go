@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c1() {
@@ -24,7 +24,7 @@ func (c *char) c1() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("yoimiya-c1", 1200),
+			Base:         gmod.NewBase("yoimiya-c1", 1200),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -55,7 +55,7 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PyroP] = 0.25
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("yoimiya-c2", 360),
+			Base:         gmod.NewBase("yoimiya-c2", 360),
 			AffectedStat: attributes.PyroP,
 			Amount: func() ([]float64, bool) {
 				return m, true

@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // After using Kamisato Art: Hyouka, Kamisato Ayaka's Normal and Charged Attacks deal 30% increased DMG for 6s.
@@ -16,7 +16,7 @@ func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.3
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("ayaka-a1", 360),
+		Base: gmod.NewBaseWithHitlag("ayaka-a1", 360),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			return m, atk.Info.AttackTag == attacks.AttackTagNormal || atk.Info.AttackTag == attacks.AttackTagExtra
 		},
@@ -47,7 +47,7 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CryoP] = 0.18
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("ayaka-a4", 600),
+			Base:         gmod.NewBaseWithHitlag("ayaka-a4", 600),
 			AffectedStat: attributes.CryoP,
 			Amount: func() ([]float64, bool) {
 				return m, true

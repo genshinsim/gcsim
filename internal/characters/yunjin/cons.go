@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -24,7 +24,7 @@ func (c *char) c2() {
 	m[attributes.DmgP] = .15
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(c2Key, 12*60),
+			Base: gmod.NewBaseWithHitlag(c2Key, 12*60),
 			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				if ae.Info.AttackTag == attacks.AttackTagNormal {
 					return m, true
@@ -62,7 +62,7 @@ func (c *char) c4() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("yunjin-c4", 12*60),
+			Base:         gmod.NewBaseWithHitlag("yunjin-c4", 12*60),
 			AffectedStat: attributes.DEFP,
 			Amount: func() ([]float64, bool) {
 				return c.c4bonus, true
@@ -85,7 +85,7 @@ func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		this := char
 		this.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c6Key, 12*60),
+			Base:         gmod.NewBaseWithHitlag(c6Key, 12*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				// TODO: i assume this buff should go away if stacks are gone?

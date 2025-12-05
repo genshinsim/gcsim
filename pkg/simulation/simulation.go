@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -61,6 +62,8 @@ func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation
 	if err != nil {
 		return nil, err
 	}
+
+	s.C.Modifiers = modifier.NewManager(c.EntityIndexer.Size())
 
 	// nightsoul require char stats to be initialized
 	setupNightsoulBurst(c)

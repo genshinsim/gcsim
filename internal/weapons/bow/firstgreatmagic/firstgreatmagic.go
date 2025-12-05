@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -45,7 +45,7 @@ func (w *Weapon) Init() error {
 	mAtk := make([]float64, attributes.EndStatType)
 	mAtk[attributes.ATKP] = w.atkStackVal * float64(w.sameElement)
 	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("thefirstgreatmagic-atk", -1),
+		Base:         gmod.NewBase("thefirstgreatmagic-atk", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return mAtk, true
@@ -74,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mDmg := make([]float64, attributes.EndStatType)
 	mDmg[attributes.DmgP] = (0.12 + float64(r)*0.04)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("thefirstgreatmagic-dmg%", -1),
+		Base: gmod.NewBase("thefirstgreatmagic-dmg%", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false

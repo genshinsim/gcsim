@@ -3,7 +3,7 @@ package lisa
 import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Hits by Charged Attacks apply Violet Arc's Conductive status to opponents.
@@ -34,7 +34,7 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 			return
 		}
 		t.AddDefMod(info.DefMod{
-			Base:  modifier.NewBaseWithHitlag("lisa-a4", 600),
+			Base:  gmod.NewBaseWithHitlag("lisa-a4", 600),
 			Value: -0.15,
 		})
 	}

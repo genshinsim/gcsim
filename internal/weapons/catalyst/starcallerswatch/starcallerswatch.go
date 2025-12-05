@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.EM] = 75.0 + 25.0*r
 
 	char.AddStatMod(character.StatMod{
-		Base: modifier.NewBase("starcallerswatch-em", -1),
+		Base: gmod.NewBase("starcallerswatch-em", -1),
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},
@@ -79,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		for _, x := range c.Player.Chars() {
 			this := x
 			this.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase(buffKey, -1),
+				Base: gmod.NewBase(buffKey, -1),
 				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 					if c.Player.Active() != this.Index() {
 						return nil, false

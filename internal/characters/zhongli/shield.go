@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) addJadeShield() {
@@ -31,7 +31,7 @@ func (c *char) addJadeShield() {
 				key := fmt.Sprintf("zhongli-%v", v.String())
 				for _, e := range enemies {
 					e.AddResistMod(info.ResistMod{
-						Base:  modifier.NewBaseWithHitlag(key, 60),
+						Base:  gmod.NewBaseWithHitlag(key, 60),
 						Ele:   v,
 						Value: -0.2,
 					})

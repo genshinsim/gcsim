@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -24,7 +24,7 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = 0.1
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag("wanderer-c1-atkspd", 1200),
+		Base: gmod.NewBaseWithHitlag("wanderer-c1-atkspd", 1200),
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},
@@ -40,7 +40,7 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = min(float64(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
+		Base: gmod.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},

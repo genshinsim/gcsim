@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -20,7 +20,7 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.Heal] = 0.25
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("kaveh-c1", 180),
+		Base:         gmod.NewBaseWithHitlag("kaveh-c1", 180),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -32,7 +32,7 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = 0.15
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(c2Key, burstDuration),
+		Base:         gmod.NewBaseWithHitlag(c2Key, burstDuration),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -42,7 +42,7 @@ func (c *char) c2() {
 
 func (c *char) c4() {
 	c.AddReactBonusMod(character.ReactBonusMod{
-		Base: modifier.NewBase("kaveh-c4", -1),
+		Base: gmod.NewBase("kaveh-c4", -1),
 		Amount: func(ai info.AttackInfo) (float64, bool) {
 			if ai.AttackTag == attacks.AttackTagBloom {
 				return 0.6, false

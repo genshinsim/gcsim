@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -65,7 +65,7 @@ func (c *char) c1A1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.2
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(c1ModKey, -1),
+		Base: gmod.NewBase(c1ModKey, -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.Abil != a1Abil {
 				return nil, false
@@ -98,7 +98,7 @@ func (c *char) c2(a info.AttackCB) {
 		return
 	}
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag(c2ModKey, c2Duration),
+		Base:  gmod.NewBaseWithHitlag(c2ModKey, c2Duration),
 		Ele:   attributes.Dendro,
 		Value: -0.3,
 	})

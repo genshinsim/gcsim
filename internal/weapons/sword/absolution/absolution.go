@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func init() {
@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	perm := make([]float64, attributes.EndStatType)
 	perm[attributes.CD] = 0.15 + 0.05*float64(refine)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase(cdKey, -1),
+		Base:         gmod.NewBase(cdKey, -1),
 		AffectedStat: attributes.CD,
 		Amount: func() ([]float64, bool) {
 			return perm, true
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		bonus[attributes.DmgP] = (0.12 + 0.04*float64(refine)) * float64(w.stacks)
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(dmgBonusKey, 6*60),
+			Base: gmod.NewBaseWithHitlag(dmgBonusKey, 6*60),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 				return bonus, true
 			},

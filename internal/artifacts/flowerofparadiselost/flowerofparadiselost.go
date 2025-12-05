@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -49,7 +49,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.EM] = 80
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("flower-2pc", -1),
+			Base:         gmod.NewBase("flower-2pc", -1),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -60,7 +60,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	//nolint:nestif // linter is stupid
 	if count >= 4 {
 		char.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase("flower-4pc", -1),
+			Base: gmod.NewBase("flower-4pc", -1),
 			Amount: func(ai info.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
 				case attacks.AttackTagBloom:
@@ -95,7 +95,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Write("stacks", s.stacks)
 
 			char.AddReactBonusMod(character.ReactBonusMod{
-				Base: modifier.NewBaseWithHitlag(buffKey, 10*60),
+				Base: gmod.NewBaseWithHitlag(buffKey, 10*60),
 				Amount: func(ai info.AttackInfo) (float64, bool) {
 					switch ai.AttackTag {
 					case attacks.AttackTagBloom:

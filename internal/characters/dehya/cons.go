@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Dehya's Max HP is increased by 20%, and she deals bonus DMG based on her Max HP when using the following attacks:
@@ -21,7 +21,7 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = 0.2
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("dehya-c1", -1),
+		Base:         gmod.NewBase("dehya-c1", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -49,7 +49,7 @@ func (c *char) c2() {
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("dehya-sanctum-dot-c2", -1),
+		Base: gmod.NewBase("dehya-sanctum-dot-c2", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.Abil != skillDoTAbil || !c.hasC2DamageBuff {
 				return nil, false
@@ -120,7 +120,7 @@ func (c *char) c6() {
 	val[attributes.CR] = 0.1
 
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("dehya-c6", -1),
+		Base: gmod.NewBase("dehya-c6", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false

@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // C1:
@@ -47,7 +47,7 @@ func (c *char) c4() {
 	m[attributes.DEFP] = 0.2
 	for _, x := range c.Core.Player.Chars() {
 		x.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("itto-c4", 10*60),
+			Base:         gmod.NewBaseWithHitlag("itto-c4", 10*60),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -62,7 +62,7 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CD] = 0.7
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("itto-c6", -1),
+		Base: gmod.NewBase("itto-c6", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false

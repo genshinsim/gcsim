@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -26,7 +26,7 @@ func (c *Traveler) c1Init() {
 	for _, char := range c.Core.Player.Chars() {
 		this := char
 		this.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(c1AttackModKey, -1),
+			Base: gmod.NewBase(c1AttackModKey, -1),
 			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 				// char must be active
 				if c.Core.Player.Active() != this.Index() {
@@ -86,7 +86,7 @@ func (c *Traveler) c4AddMod() {
 	mPyroDmg := make([]float64, attributes.EndStatType)
 	mPyroDmg[attributes.PyroP] = 0.2
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag("travelerpyro-c4", 9*60),
+		Base: gmod.NewBaseWithHitlag("travelerpyro-c4", 9*60),
 		Amount: func() ([]float64, bool) {
 			return mPyroDmg, true
 		},
@@ -100,7 +100,7 @@ func (c *Traveler) c6Init() {
 	mCD := make([]float64, attributes.EndStatType)
 	mCD[attributes.CD] = 0.4
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(c6AttackModKey, -1),
+		Base: gmod.NewBase(c6AttackModKey, -1),
 		Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			switch ae.Info.AttackTag {
 			case attacks.AttackTagNormal:

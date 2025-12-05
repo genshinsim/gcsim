@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When Starfrost Swirl's Flowfrost Arrow first hits an opponent, or its Rimestar Flare hits an opponent,
@@ -31,7 +31,7 @@ func (c *char) c2() func(info.AttackCB) {
 // Additionally, active characters affected by Soulwind will deal 60% more Physical CRIT DMG.
 func (c *char) c6(char *character.CharWrapper) {
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("mika-c6", skillBuffDuration),
+		Base: gmod.NewBaseWithHitlag("mika-c6", skillBuffDuration),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if c.Core.Player.Active() != char.Index() {
 				return nil, false

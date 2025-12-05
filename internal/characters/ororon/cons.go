@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -25,7 +25,7 @@ func (c *char) c1Init() {
 	m[attributes.DmgP] = 0.5
 
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(c1Key, -1),
+		Base: gmod.NewBase(c1Key, -1),
 		Amount: func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
 			trg, ok := t.(*enemy.Enemy)
 			if !ok {
@@ -81,7 +81,7 @@ func (c *char) c2OnBurst() {
 	}
 	c.SetTag(c2Key, 1)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(c2Key, 9*60),
+		Base:         gmod.NewBaseWithHitlag(c2Key, 9*60),
 		AffectedStat: attributes.ElectroP,
 		Amount: func() ([]float64, bool) {
 			c.c2Bonus[attributes.ElectroP] = min(0.08*float64(c.Tag(c2Key)), 0.32)
@@ -147,7 +147,7 @@ func (c *char) c6onHypersense() {
 	// TODO: Is this buff hitlag affected per character? Or is it hitlag affected on Ororon only?
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(c6Key, 9*60),
+			Base: gmod.NewBaseWithHitlag(c6Key, 9*60),
 			Amount: func() ([]float64, bool) {
 				if c.Core.Player.Active() != char.Index() {
 					return nil, false

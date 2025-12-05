@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 const (
@@ -80,7 +80,7 @@ func (c *char) a4() {
 
 func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase(attackSpeedKey, -1),
+		Base:         gmod.NewBase(attackSpeedKey, -1),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
 			// No Attack Speed buff if Favonian Favor from Dahlia's Burst is not active

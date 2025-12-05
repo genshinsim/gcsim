@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -139,7 +139,7 @@ func (c *char) burstInit(char *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.2
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(burstDmgKey, -1),
+		Base: gmod.NewBase(burstDmgKey, -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
 			if !c.StatusIsActive(burstKey) {
 				return nil, false

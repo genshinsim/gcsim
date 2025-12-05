@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // Passive 2 - permanently modify stats for +25% healing bonus and -100% CR
@@ -15,7 +15,7 @@ func (c *char) passive() {
 	m[attributes.Heal] = .25
 	m[attributes.CR] = -1
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("kokomi-passive", -1),
+		Base:         gmod.NewBase("kokomi-passive", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true

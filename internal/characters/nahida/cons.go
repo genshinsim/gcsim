@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 // When the Shrine of Maya is unleashed and the Elemental Types of the party
@@ -66,7 +66,7 @@ func (c *char) c2() {
 				return false
 			}
 			t.AddDefMod(info.DefMod{
-				Base:  modifier.NewBaseWithHitlag("nahida-c2", 480),
+				Base:  gmod.NewBaseWithHitlag("nahida-c2", 480),
 				Value: -0.3,
 			})
 			return false
@@ -83,7 +83,7 @@ func (c *char) c2() {
 // 100/120/140/160.
 func (c *char) c4() {
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("nahida-c4", -1),
+		Base:         gmod.NewBase("nahida-c4", -1),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 			enemies := c.Core.Combat.EnemiesWithinArea(

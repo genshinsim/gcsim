@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 var burstFrames []int
@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Additionally, Diluc gains 20% Pyro DMG Bonus during the duration of this effect.
 	if hasA4 {
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(burstBuffKey, duration),
+			Base:         gmod.NewBaseWithHitlag(burstBuffKey, duration),
 			AffectedStat: attributes.PyroP,
 			Amount: func() ([]float64, bool) {
 				return c.a4buff, true

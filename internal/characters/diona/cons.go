@@ -6,14 +6,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/gmod"
 )
 
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("diona-c2", -1),
+		Base: gmod.NewBase("diona-c2", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
 			return m, atk.Info.AttackTag == attacks.AttackTagElementalArt
 		},
@@ -32,7 +32,7 @@ func (c *char) c6() {
 			active := c.Core.Player.ActiveChar()
 			if active.CurrentHPRatio() > 0.5 {
 				active.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("diona-c6", 120),
+					Base:         gmod.NewBaseWithHitlag("diona-c6", 120),
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
 						return c.c6buff, true
@@ -42,7 +42,7 @@ func (c *char) c6() {
 				// add healing bonus if hp <= 0.5
 				// bonus only lasts for 120 frames
 				active.AddHealBonusMod(character.HealBonusMod{
-					Base: modifier.NewBaseWithHitlag("diona-c6-healbonus", 120),
+					Base: gmod.NewBaseWithHitlag("diona-c6-healbonus", 120),
 					Amount: func() (float64, bool) {
 						// is this log even needed?
 						c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", glog.LogCharacterEvent, c.Index())
