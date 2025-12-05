@@ -363,6 +363,86 @@ func setupNightsoulBurst(core *core.Core) {
 	}, "nightsoul-burst")
 }
 
+func setupAscendantGleam(core *core.Core) {
+	chars := core.Player.Chars()
+	count := 0
+	for _, char := range chars {
+		count += char.Moonsign
+	}
+	if count < 2 {
+		return
+	}
+	buff := 0.0
+	src := -1
+
+	var gleamBuffUpdateGen func(*character.CharWrapper, int) func()
+	gleamBuffUpdateGen = func(char *character.CharWrapper, s int) func() {
+		return func() {
+			if s != src {
+				return
+			}
+
+			if !char.ReactBonusModIsActive("ascendant-gleam") {
+				return
+			}
+
+			// Ascendant gleam uses nonExtraStats
+			switch char.Base.Element {
+			case attributes.Electro, attributes.Pyro, attributes.Cryo:
+				stats := char.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
+				atk := stats.TotalATK()
+				buff = min(atk*0.009/100, 0.36)
+			case attributes.Hydro:
+				stats := char.SelectStat(true, attributes.BaseHP, attributes.HPP, attributes.HP)
+				hp := stats.MaxHP()
+				buff = min(hp*0.006/1000, 0.36)
+			case attributes.Dendro, attributes.Anemo:
+				buff = min(char.NonExtraStat(attributes.EM)*0.0225/100, 0.36)
+			case attributes.Geo:
+				buff = min(char.TotalDef(true)*0.01/100, 0.36)
+			default:
+				return
+			}
+			if core.Flags.LogDebug {
+				core.Log.NewEvent("Updating ascendant gleam react bonus", glog.LogDebugEvent, char.Index()).Write("amt", buff)
+			}
+			core.Tasks.Add(gleamBuffUpdateGen(char, s), 60)
+		}
+	}
+
+	hook := func(args ...any) bool {
+		src = core.F
+		char := core.Player.ActiveChar()
+		if char.Moonsign != 0 {
+			return false
+		}
+
+		gleamBuffUpdateGen(char, src)()
+
+		for _, c := range core.Player.Chars() {
+			c.AddReactBonusMod(character.ReactBonusMod{
+				Base: modifier.NewBase("ascendant-gleam", 20*60),
+				Amount: func(ai info.AttackInfo) (float64, bool) {
+					lunarReact := (attacks.LunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.LunarReactionEndDelim)
+					directLunar := (attacks.DirectLunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.DirectLunarReactionEndDelim)
+
+					if !lunarReact && !directLunar {
+						return 0, false
+					}
+					if core.Flags.LogDebug {
+						core.Log.NewEvent("Adding ascendant gleam react bonus", glog.LogPreDamageMod, char.Index()).Write("amt", buff)
+					}
+					return buff, false
+				},
+			})
+		}
+
+		return false
+	}
+	core.Events.Subscribe(event.OnSkill, hook, "ascendant-gleam-on-skill")
+	core.Events.Subscribe(event.OnBurst, hook, "ascendant-gleam-on-burst")
+}
+
 func (s *Simulation) handleEnergy() {
 	// energy once interval=300 amount=1 #once at frame 300
 	if s.cfg.EnergySettings.Active && s.cfg.EnergySettings.Once {

@@ -78,6 +78,7 @@ enum ZoneType {
   ASSOC_TYPE_FONTAINE = 9;
   ASSOC_TYPE_NATLAN = 10;
   ASSOC_TYPE_OMNI_SCOURGE = 11;
+  ASSOC_TYPE_NODKRAI = 12;
 }
 
 enum Element {
