@@ -13,6 +13,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const energyIcdKey = "bloodsoakedruins-energy-icd"
+
 func init() {
 	core.RegisterWeaponFunc(keys.BloodsoakedRuins, NewWeapon)
 }
@@ -23,16 +25,6 @@ type Weapon struct {
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
-
-const (
-	LunarBuffKey      = "bloodstained-ruins"
-	LunarBuffDuration = int(3.5 * 60)
-	RequiemKey        = "reqium"
-	RequiemDuration   = 6 * 60
-	energySrc         = "ruins"
-	energyIcdKey      = "ruins-energy-icd"
-	energyIcd         = 14 * 60
-)
 
 // For 3.5s after using an Elemental Burst,
 // the equipping character's Lunar-Charged DMG dealt to opponents is increased by 36%/48%/60%/72%/84%.
@@ -45,51 +37,48 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 	energyRestore := 11 + float64(r)
 
-	// Burst-triggered Bonus ===
+	mDmg := make([]float64, attributes.EndStatType)
+	mDmg[attributes.DmgP] = 0.24 + float64(r)*0.12
+
+	mCrit := make([]float64, attributes.EndStatType)
+	mCrit[attributes.CD] = 0.21 + float64(r)*0.07
+
 	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
 
-		// Apply a DMG Bonus modifier for Lunar-Charged attacks
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(LunarBuffKey, LunarBuffDuration),
+			Base: modifier.NewBaseWithHitlag("bloodsoakedruins-dmg", 3.5*60),
 			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-				// Checking if the attack is Lunar-Charged
 				if atk.Info.AttackTag != attacks.AttackTagLunarCharged {
 					return nil, false
 				}
-
-				mDmg := make([]float64, attributes.EndStatType)
-				mDmg[attributes.DmgP] = 0.24 + float64(r)*0.12
 				return mDmg, true
 			},
 		})
+
 		return false
 	}, fmt.Sprintf("bloodsoakedruins-burst-%v", char.Base.Key.String()))
 
-	// Lunar-Charged Reaction trigger Bonuses (Requiem of Ruin + Energy) ===
 	c.Events.Subscribe(event.OnLunarCharged, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
 			return false
 		}
-		// Requiem of Ruin: +28% CRIT DMG for 6s
+
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(RequiemKey, RequiemDuration),
+			Base:         modifier.NewBaseWithHitlag("bloodsoakedruins-cd", 6*60),
 			AffectedStat: attributes.CD,
 			Amount: func() ([]float64, bool) {
-				m := make([]float64, attributes.EndStatType)
-				m[attributes.CD] = 0.21 + float64(r)*0.07
-				return m, true
+				return mCrit, true
 			},
 		})
 
-		// Restore 12 Energy, but only once every 14s
 		if char.StatusIsActive(energyIcdKey) {
 			return false
 		}
-		char.AddStatus(energyIcdKey, energyIcd, true)
-		char.AddEnergy(energySrc, energyRestore)
+		char.AddStatus(energyIcdKey, 14*60, true)
+		char.AddEnergy("bloodsoakedruins", energyRestore)
 
 		return false
 	}, fmt.Sprintf("bloodsoakedruins-lunarcharged-%v", char.Base.Key.String()))
