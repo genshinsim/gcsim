@@ -22,6 +22,10 @@ type Reactable struct {
 	ecSnapshot info.Snapshot
 	ecTickSrc  int
 	lcAtkOwner int // index of owner of next LC tick
+	// lunar bloom specific
+	dewCount     int
+	lastLBTick   int
+	nextDewFrame int
 	// burning specific
 	burningAtk      info.AttackInfo
 	burningSnapshot info.Snapshot
@@ -57,6 +61,9 @@ func (r *Reactable) Init(self info.Target, c *core.Core) *Reactable {
 	// }
 	r.DecayRate[info.ReactionModKeyFrozen] = frzDecayCap
 	r.ecTickSrc = -1
+	r.dewCount = 0
+	r.lastLBTick = -150
+	r.nextDewFrame = 150
 	r.burningTickSrc = -1
 	r.overloadGCD = -1
 	r.shatterGCD = -1

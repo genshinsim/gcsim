@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const LunarBloomEnableKey = "lunarbloom-enabled"
+
 func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 	// can be hydro bloom, dendro bloom, or quicken bloom
 	if a.Info.Durability < info.ZeroDur {
@@ -42,7 +44,9 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
-
+	if _, ok := r.core.Flags.Custom[LunarBloomEnableKey]; ok {
+		r.lunarBloom()
+	}
 	r.addBloomGadget(a)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
 	return true
@@ -63,6 +67,9 @@ func (r *Reactable) tryQuickenBloom(a *info.AttackEvent) {
 	consumed := r.reduce(attributes.Hydro, avail, 2)
 	r.reduceMod(info.ReactionModKeyQuicken, consumed)
 
+	if _, ok := r.core.Flags.Custom[LunarBloomEnableKey]; ok {
+		r.lunarBloom()
+	}
 	r.addBloomGadget(a)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
 }
