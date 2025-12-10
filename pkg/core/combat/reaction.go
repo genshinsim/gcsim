@@ -11,7 +11,7 @@ type reactionBonusSrc interface {
 
 func CalcReactionBaseDmg(lvl int) float64 {
 	idx := lvl - 1
-	idx = min(idx, 89)
+	idx = min(idx, 99)
 	idx = max(idx, 0)
 	return reactionLvlBase[idx]
 }

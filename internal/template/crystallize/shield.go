@@ -15,8 +15,8 @@ func NewShield(index int, typ attributes.Element, src, lvl int, em float64, expi
 	s.Tmpl = &shield.Tmpl{}
 
 	lvl--
-	if lvl > 89 {
-		lvl = 89
+	if lvl > 99 {
+		lvl = 99
 	}
 	if lvl < 0 {
 		lvl = 0
