@@ -32,7 +32,7 @@ func (c *char) a1OnDischarge() {
 			Abil:             "Birgitta (A1)",
 			AttackTag:        attacks.AttackTagDirectLunarCharged,
 			ICDTag:           attacks.ICDTagNone,
-			ICDGroup:         attacks.ICDGroupDirectLunarCharged,
+			ICDGroup:         attacks.ICDGroupDefault,
 			StrikeType:       attacks.StrikeTypeDefault,
 			Element:          attributes.Electro,
 			Mult:             0.65,
