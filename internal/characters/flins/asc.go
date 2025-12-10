@@ -25,7 +25,7 @@ func (c *char) a1Init() {
 	c.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase(a1Key, -1),
 		Amount: func(ai info.AttackInfo) (float64, bool) {
-			if c.getMoonsignLevel() < 2 {
+			if c.Core.Player.GetMoonsignLevel() < 2 {
 				return 0, false
 			}
 

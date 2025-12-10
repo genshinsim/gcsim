@@ -84,11 +84,3 @@ func (c *char) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]i
 
 	return nil
 }
-
-func (c *char) getMoonsignLevel() int {
-	count := 0
-	for _, c := range c.Core.Player.Chars() {
-		count += c.Moonsign
-	}
-	return count
-}

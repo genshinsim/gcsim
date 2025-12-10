@@ -96,7 +96,7 @@ func (c *char) c2GleamInit() {
 		return
 	}
 
-	if c.getMoonsignLevel() < 2 {
+	if c.Core.Player.GetMoonsignLevel() < 2 {
 		return
 	}
 
@@ -158,7 +158,7 @@ func (c *char) c6Init() {
 	flinsMult := 1.35
 	otherMult := 1.0
 
-	if c.getMoonsignLevel() >= 2 {
+	if c.Core.Player.GetMoonsignLevel() >= 2 {
 		flinsMult += 0.1
 		otherMult += 0.1
 	}
@@ -179,7 +179,7 @@ func (c *char) c6Init() {
 			return false
 		}
 
-		if c.getMoonsignLevel() < 2 {
+		if c.Core.Player.GetMoonsignLevel() < 2 {
 			return false
 		}
 
