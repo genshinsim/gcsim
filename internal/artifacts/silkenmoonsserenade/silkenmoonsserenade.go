@@ -60,8 +60,20 @@ func (s *Set) Init() error {
 	default:
 		m2[attributes.EM] = 120
 	}
-	lunarReactHook := func(args ...any) bool {
+	hook := func(args ...any) bool {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return false
+		}
+		atk := args[1].(*info.AttackEvent)
+		switch atk.Info.Element {
+		case attributes.Pyro:
+		case attributes.Hydro:
+		case attributes.Electro:
+		case attributes.Cryo:
+		case attributes.Anemo:
+		case attributes.Geo:
+		case attributes.Dendro:
+		default:
 			return false
 		}
 
@@ -78,7 +90,7 @@ func (s *Set) Init() error {
 
 		return false
 	}
-	s.core.Events.Subscribe(event.OnLunarCharged, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())
+	s.core.Events.Subscribe(event.OnEnemyDamage, hook, setKey4+"-dmg-"+s.char.Base.Key.String())
 
 	for _, char := range s.core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
