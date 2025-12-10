@@ -155,15 +155,14 @@ func (c *char) c6Init() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	flinsMult := 1.35
-	otherMult := 1.0
+	flins := 0.35
+	other := 0.0
 
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
-		flinsMult += 0.1
-		otherMult += 0.1
+		flins += 0.1
+		other += 0.1
 	}
 
-	// TODO: How to do elevate?
 	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) bool {
 		atk := args[0].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
@@ -174,8 +173,7 @@ func (c *char) c6Init() {
 		}
 
 		if atk.Info.ActorIndex == c.Index() {
-			atk.Info.Mult *= flinsMult
-			atk.Info.FlatDmg *= flinsMult
+			atk.Info.Elevation += flins
 			return false
 		}
 
@@ -183,9 +181,7 @@ func (c *char) c6Init() {
 			return false
 		}
 
-		atk.Info.Mult *= otherMult
-		atk.Info.FlatDmg *= otherMult
-
+		atk.Info.Elevation += other
 		return false
 	}, c6Key)
 }
