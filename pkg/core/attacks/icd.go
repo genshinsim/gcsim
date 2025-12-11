@@ -56,6 +56,7 @@ const (
 	ICDGroupTravelerDewdrop
 	ICDGroupTravelerBurst
 	EndDefaultICDGroups
+	ICDGroupDirectLunarBloom
 )
 
 var (
@@ -73,6 +74,7 @@ func init() {
 	ICDGroupResetTimer[ICDGroupBurning] = 120
 	ICDGroupResetTimer[ICDGroupTravelerDewdrop] = 90
 	ICDGroupResetTimer[ICDGroupTravelerBurst] = 480
+	ICDGroupResetTimer[ICDGroupDirectLunarBloom] = 90
 
 	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
 	ICDGroupEleApplicationSequence[ICDGroupDefault] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
@@ -82,12 +84,15 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupBurning] = []float64{1, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupTravelerDewdrop] = []float64{1, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupTravelerBurst] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupDirectLunarBloom] = []float64{0, 0, 0, 0, 0, 0, 0, 0}
 
 	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
 	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupPoleExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupReactionA] = []float64{1, 1, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupReactionB] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupDirectLunarBloom] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
 	// actual data: {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0}
 	// however there seems to be no limit to the amount of burning dmg a target can take
 	ICDGroupDamageSequence[ICDGroupBurning] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}

@@ -106,6 +106,8 @@ func (p *Player) calc(atk *info.AttackEvent) (float64, bool) {
 		a = atk.Snapshot.Stats.MaxHP()
 	case atk.Info.UseDef:
 		a = atk.Snapshot.Stats.TotalDEF()
+	case atk.Info.UseEM:
+		a = atk.Snapshot.Stats[attributes.EM]
 	default:
 		a = atk.Snapshot.Stats.TotalATK()
 	}

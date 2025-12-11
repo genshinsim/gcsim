@@ -42,6 +42,7 @@ type AttackInfo struct {
 	StrikeType       attacks.StrikeType
 	UseDef           bool    // we use this instead of flatdmg to make sure stat snapshotting works properly
 	UseHP            bool    // we use this instead of flatdmg to make sure stat snapshotting works properly
+	UseEM            bool    // we use this instead of flatdmg to make sure stat snapshotting works properly
 	FlatDmg          float64 // flat dmg;
 	IgnoreDefPercent float64 // by default this value is 0; if = 1 then the attack will ignore defense; raiden c2 should be set to 0.6 (i.e. ignore 60%)
 	IgnoreInfusion   bool

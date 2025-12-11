@@ -48,7 +48,13 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 		r.lunarBloom()
 	}
 	r.addBloomGadget(a)
-	r.core.Events.Emit(event.OnBloom, r.self, a)
+
+	bloomEvent := event.OnBloom
+	if _, ok := r.core.Flags.Custom[LunarBloomEnableKey]; ok {
+		bloomEvent = event.OnLunarBloom
+	}
+
+	r.core.Events.Emit(bloomEvent, r.self, a)
 	return true
 }
 
@@ -71,7 +77,13 @@ func (r *Reactable) tryQuickenBloom(a *info.AttackEvent) {
 		r.lunarBloom()
 	}
 	r.addBloomGadget(a)
-	r.core.Events.Emit(event.OnBloom, r.self, a)
+
+	bloomEvent := event.OnBloom
+	if _, ok := r.core.Flags.Custom[LunarBloomEnableKey]; ok {
+		bloomEvent = event.OnLunarBloom
+	}
+
+	r.core.Events.Emit(bloomEvent, r.self, a)
 }
 
 func (r *Reactable) addBloomGadget(a *info.AttackEvent) {

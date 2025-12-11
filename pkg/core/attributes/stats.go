@@ -38,6 +38,7 @@ const (
 	BaseHP
 	BaseATK
 	BaseDEF
+	Elevation
 	// delim
 	EndStatType
 )
@@ -107,6 +108,7 @@ var StatTypeString = [...]string{
 	"base_hp",
 	"base_atk",
 	"base_def",
+	"elevation",
 }
 
 func StrToStatType(s string) Stat {

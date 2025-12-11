@@ -11,40 +11,43 @@ const (
 	verdantDewStartFrame = 13
 	verdantDewEndFrame   = 140
 	nextDewFrameRefresh  = 150
+	verdantDewKey        = "verdant-dew"
+	nextDewFrameKey      = "verdant-dew-next"
+	lastLBTickKey        = "last-lb-frame"
 )
 
 func (r *Reactable) lunarBloom() bool {
-	if r.dewCount >= maxVerdantDew {
+	if r.core.Flags.Custom[verdantDewKey] >= maxVerdantDew {
 		return false
 	}
 	r.core.Tasks.Add(func() {
 		r.addDew(verdantDewEndFrame - verdantDewStartFrame)
 		r.core.Log.NewEvent("verdant dew generation extended", glog.LogElementEvent, -1).
-			Write("nextDewFrame", r.nextDewFrame)
+			Write("nextDewFrame", r.core.Flags.Custom[nextDewFrameKey])
 	}, verdantDewStartFrame)
 	return true
 }
 
 func (r *Reactable) addDew(amount int) {
-	if r.dewCount >= maxVerdantDew {
+	if r.core.Flags.Custom[verdantDewKey] >= maxVerdantDew {
 		return
 	}
 	currentFrame := r.core.F
-	r.nextDewFrame -= min(amount, currentFrame-r.lastLBTick)
-	if r.nextDewFrame <= 0 {
+	r.core.Flags.Custom[nextDewFrameKey] -= float64(min(amount, currentFrame-int(r.core.Flags.Custom[lastLBTickKey])))
+	if r.core.Flags.Custom[nextDewFrameKey] <= 0 {
 		r.core.Tasks.Add(func() {
-			r.dewCount++
-			if r.dewCount >= maxVerdantDew {
-				r.nextDewFrame = nextDewFrameRefresh
+			r.core.Flags.Custom[verdantDewKey]++
+			if r.core.Flags.Custom[verdantDewKey] >= maxVerdantDew {
+				r.core.Flags.Custom[nextDewFrameKey] = nextDewFrameRefresh
 			}
-			r.core.Log.NewEvent(fmt.Sprintf("lunar bloom dew gained: %v/%v", r.dewCount, maxVerdantDew), glog.LogElementEvent, -1)
-		}, amount+r.nextDewFrame)
-		r.nextDewFrame += nextDewFrameRefresh
+			r.core.Log.NewEvent(fmt.Sprintf("lunar bloom dew gained: %v/%v", r.core.Flags.Custom[verdantDewKey], maxVerdantDew), glog.LogElementEvent, -1)
+		}, amount+int(r.core.Flags.Custom[nextDewFrameKey]))
+		r.core.Flags.Custom[nextDewFrameKey] += nextDewFrameRefresh
 	}
 
-	r.lastLBTick = currentFrame
+	r.core.Flags.Custom[lastLBTickKey] = float64(currentFrame)
 
-	if r.nextDewFrame < 0 {
-		r.nextDewFrame = nextDewFrameRefresh
+	if r.core.Flags.Custom[nextDewFrameKey] < 0 {
+		r.core.Flags.Custom[nextDewFrameKey] = nextDewFrameRefresh
 	}
 }

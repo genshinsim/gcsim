@@ -150,6 +150,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			event.OnSpread:             info.ReactionTypeSpread,
 			event.OnQuicken:            info.ReactionTypeQuicken,
 			event.OnBloom:              info.ReactionTypeBloom,
+			event.OnLunarBloom:         info.ReactionTypeLunarBloom,
 			event.OnHyperbloom:         info.ReactionTypeHyperbloom,
 			event.OnBurgeon:            info.ReactionTypeBurgeon,
 			event.OnBurning:            info.ReactionTypeBurning,

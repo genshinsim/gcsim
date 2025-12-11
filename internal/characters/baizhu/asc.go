@@ -71,6 +71,8 @@ func (c *char) a4() {
 			case attacks.AttackTagHyperbloom:
 			case attacks.AttackTagBurgeon:
 			case attacks.AttackTagBurningDamage:
+			case attacks.AttackTagDirectLunarBloom:
+				return limitHP * 0.007, false
 			default:
 				return 0, false
 			}
