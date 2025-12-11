@@ -16,16 +16,15 @@ const (
 	lastLBTickKey        = "last-lb-frame"
 )
 
-func (r *Reactable) lunarBloom() bool {
+func (r *Reactable) lunarBloom() {
 	if r.core.Flags.Custom[verdantDewKey] >= maxVerdantDew {
-		return false
+		return
 	}
 	r.core.Tasks.Add(func() {
 		r.addDew(verdantDewEndFrame - verdantDewStartFrame)
 		r.core.Log.NewEvent("verdant dew generation extended", glog.LogElementEvent, -1).
 			Write("nextDewFrame", r.core.Flags.Custom[nextDewFrameKey])
 	}, verdantDewStartFrame)
-	return true
 }
 
 func (r *Reactable) addDew(amount int) {
