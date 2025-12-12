@@ -33,6 +33,7 @@ var reactToElements = map[info.ReactionType][]attributes.Element{
 	info.ReactionTypeSpread:             {attributes.Dendro},
 	info.ReactionTypeQuicken:            {attributes.Dendro, attributes.Electro},
 	info.ReactionTypeBloom:              {attributes.Dendro, attributes.Hydro},
+	info.ReactionTypeLunarBloom:         {attributes.Dendro, attributes.Hydro},
 	info.ReactionTypeHyperbloom:         {attributes.Dendro, attributes.Electro},
 	info.ReactionTypeBurgeon:            {attributes.Dendro, attributes.Pyro},
 	info.ReactionTypeBurning:            {attributes.Dendro, attributes.Pyro},

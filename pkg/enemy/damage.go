@@ -107,11 +107,9 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 	}
 
 	if attacks.DirectLunarReactionStartDelim < atk.Info.AttackTag && atk.Info.AttackTag < attacks.DirectLunarReactionEndDelim {
-		elevation := atk.Snapshot.Stats[attributes.Elevation]
 		emBonus = (6 * em) / (2000 + em)
 		reactBonus = e.Core.Player.ByIndex(atk.Info.ActorIndex).ReactBonus(atk.Info)
 		damage *= 1 + emBonus + reactBonus
-		damage *= 1 + elevation
 	}
 
 	// reduce damage by damage group
@@ -126,6 +124,9 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		damage *= 3.0
 		x *= 3.0
 	}
+
+	elevation := atk.Info.Elevation
+	damage *= 1 + elevation
 
 	if e.Core.Flags.LogDebug {
 		e.Core.Log.NewEvent(

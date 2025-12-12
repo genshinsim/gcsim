@@ -66,18 +66,19 @@ func (c *char) a4() {
 			if ai.Catalyzed && (ai.CatalyzedType == info.ReactionTypeAggravate || ai.CatalyzedType == info.ReactionTypeSpread) {
 				return limitHP * 0.008, false
 			}
+			mult := 0.02
 			switch ai.AttackTag {
 			case attacks.AttackTagBloom:
 			case attacks.AttackTagHyperbloom:
 			case attacks.AttackTagBurgeon:
 			case attacks.AttackTagBurningDamage:
 			case attacks.AttackTagDirectLunarBloom:
-				return limitHP * 0.007, false
+				mult = 0.007
 			default:
 				return 0, false
 			}
 
-			return limitHP * 0.02, false
+			return limitHP * mult, false
 		},
 	})
 }
