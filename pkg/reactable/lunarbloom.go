@@ -25,12 +25,16 @@ func (r *Reactable) lunarBloom() {
 		r.core.Tasks.Add(r.addDew(), verdantDewStartFrame)
 	}
 
-	r.core.Status.Add(LcKey, verdantDewEndFrame)
+	r.core.Status.Add(LbKey, verdantDewEndFrame)
 }
 
 func (r *Reactable) addDew() func() {
 	return func() {
 		if r.core.Flags.Custom[verdantDewKey] >= maxVerdantDew {
+			return
+		}
+
+		if r.core.Status.Duration(LbKey) == 0 {
 			return
 		}
 
