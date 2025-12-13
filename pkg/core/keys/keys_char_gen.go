@@ -57,6 +57,7 @@ const (
 	Kokomi
 	Kuki
 	Lanyan
+	Lauma
 	Layla
 	Lisa
 	Lynette
@@ -307,6 +308,10 @@ func init() {
 	charNames[Lanyan] = "lanyan"
 	charPrettyName[Lanyan] = "Lanyan"
 	CharKeyToEle[Lanyan] = attributes.Anemo
+
+	charNames[Lauma] = "lauma"
+	charPrettyName[Lauma] = "Lauma"
+	CharKeyToEle[Lauma] = attributes.Dendro
 
 	charNames[Layla] = "layla"
 	charPrettyName[Layla] = "Layla"
