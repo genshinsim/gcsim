@@ -36,6 +36,7 @@ const (
 
 	DirectLunarReactionStartDelim
 	AttackTagDirectLunarCharged
+	AttackTagDirectLunarBloom
 	DirectLunarReactionEndDelim
 
 	AttackTagLength

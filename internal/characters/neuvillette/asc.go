@@ -21,6 +21,7 @@ var a1Multipliers = [4]float64{1, 1.1, 1.25, 1.6}
 func (c *char) a1() {
 	a1 := []NeuvA1Keys{
 		{event.OnBloom, "neuvillette-a1-bloom"},
+		{event.OnLunarBloom, "neuvillette-a1-lunarbloom"},
 		{event.OnCrystallizeHydro, "neuvillette-a1-crystallize-hydro"},
 		{event.OnElectroCharged, "neuvillette-a1-electro-charged"},
 		{event.OnLunarCharged, "neuvillette-a1-lunar-charged"},
