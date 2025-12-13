@@ -39,11 +39,9 @@ func (r *Reactable) addDew() func() {
 		if r.core.Flags.Custom[nextDewFrameKey] <= 0 {
 			r.core.Flags.Custom[verdantDewKey] += 1
 			r.core.Log.NewEvent(fmt.Sprintf("lunar bloom dew gained: %v/%v", r.core.Flags.Custom[verdantDewKey], maxVerdantDew), glog.LogElementEvent, -1)
-		}
-
-		if r.core.Flags.Custom[nextDewFrameKey] < 0 {
 			r.core.Flags.Custom[nextDewFrameKey] = nextDewFrameRefresh
 		}
+
 		r.core.Tasks.Add(r.addDew(), 1)
 	}
 }
