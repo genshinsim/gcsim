@@ -94,7 +94,7 @@ func (c *char) skillPress() (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[0]),
 		AnimationLength: skillFrames[0][action.InvalidAction],
-		CanQueueAfter:   skillFrames[0][action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[0][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
@@ -165,7 +165,7 @@ func (c *char) skillHold() (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[1]),
 		AnimationLength: skillFrames[1][action.InvalidAction],
-		CanQueueAfter:   skillFrames[1][action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[1][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

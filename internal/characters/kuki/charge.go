@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
+		CanQueueAfter:   chargeFrames[action.ActionSwap],
 		State:           action.ChargeAttackState,
 	}, nil
 }
