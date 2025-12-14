@@ -18,6 +18,7 @@ type char struct {
 	ascendantGleam       bool
 	deerStateReady       bool
 	c6SkillPaleHymnCount int
+	paleHymnStacks       []paleHymnStack
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

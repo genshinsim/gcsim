@@ -175,7 +175,7 @@ func (c *char) moonSong(dewCount int) {
 		return
 	}
 
-	paleHymnStacks += dewCount * 6
+	c.addPaleHymn(dewCount*6, false)
 }
 
 func (c *char) applySkillShred(a info.AttackCB) {

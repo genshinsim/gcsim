@@ -50,6 +50,16 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
+	if c.Base.Cons >= 6 {
+		ai.Abil = "Normal C6 Pale Hymn"
+		ai.AttackTag = attacks.AttackTagDirectLunarBloom
+		ai.Durability = 25
+		ai.Mult = 1.5
+		ai.IgnoreDefPercent = 1
+
+		c.paleHymnStacks = c.paleHymnStacks[:1]
+	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHit(
@@ -62,37 +72,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)
-
-	if c.Base.Cons >= 6 {
-		aiC6 := info.AttackInfo{
-			ActorIndex:       c.Index(),
-			Abil:             "Normal C6 Pale Hymn",
-			AttackTag:        attacks.AttackTagDirectLunarBloom,
-			ICDTag:           attacks.ICDTagNormalAttack,
-			ICDGroup:         attacks.ICDGroupDefault,
-			StrikeType:       attacks.StrikeTypeDefault,
-			Element:          attributes.Dendro,
-			Durability:       25,
-			UseEM:            true,
-			Mult:             1.5,
-			IgnoreDefPercent: 1,
-		}
-
-		paleHymnStacks--
-
-		c.Core.QueueAttack(
-			aiC6,
-			combat.NewBoxHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				info.Point{Y: attackOffsets[c.NormalCounter]},
-				attackHitboxes[c.NormalCounter][0],
-				attackHitboxes[c.NormalCounter][1],
-			),
-			attackHitmarks[c.NormalCounter],
-			attackHitmarks[c.NormalCounter],
-		)
-	}
 
 	defer c.AdvanceNormalIndex()
 

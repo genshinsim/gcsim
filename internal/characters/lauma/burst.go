@@ -10,9 +10,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var paleHymnStacks = 0
-
 var burstFrames []int
+
+type paleHymnStack struct {
+	endFrame int
+	isC6     bool
+}
 
 func init() {
 	burstFrames = frames.InitAbilSlice(111) // Q -> walk
@@ -30,12 +33,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatus(c1Key, 20*60, true)
 
 	c.Core.Tasks.Add(func() {
-		paleHymnStacks += 18
+		c.addPaleHymn(18, false)
 		c.AddStatus(burstKey, 15*60, true)
-
-		c.Core.Tasks.Add(func() {
-			paleHymnStacks = 0
-		}, 15*60)
 	}, 96)
 
 	c.ConsumeEnergy(8)
@@ -54,7 +53,7 @@ func (c *char) setupPaleHymnBuff() {
 		if !ok {
 			return false
 		}
-		if paleHymnStacks <= 0 {
+		if len(c.paleHymnStacks) <= 0 {
 			return false
 		}
 
@@ -71,9 +70,6 @@ func (c *char) setupPaleHymnBuff() {
 		case attacks.AttackTagDirectLunarBloom:
 
 			// check if lauma c6 skill gets buffed despite not consuming hymn
-			if ae.Info.Abil == "Frostgrove Sanctuary C6" {
-				return false
-			}
 
 			ae.Info.FlatDmg += em * lunarBloomDmgIncrease[c.TalentLvlBurst()]
 
@@ -84,7 +80,11 @@ func (c *char) setupPaleHymnBuff() {
 			return false
 		}
 
-		paleHymnStacks--
+		if ae.Info.Abil == "Frostgrove Sanctuary C6" {
+			return false
+		}
+
+		c.paleHymnStacks = c.paleHymnStacks[:1]
 
 		return false
 	}, "lauma-pale-hymn-buff")
@@ -94,5 +94,56 @@ func (c *char) c6PaleHymn(a info.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	paleHymnStacks += 2
+
+	c.addPaleHymn(2, true)
+
+	for _, phs := range c.paleHymnStacks {
+		if phs.isC6 {
+			phs.endFrame = c.Core.F + 15*60
+		}
+	}
+}
+
+func (c *char) addPaleHymn(amount int, isC6 bool) {
+	if len(c.paleHymnStacks) == 0 {
+		c.Core.Tasks.Add(c.removePaleHymn(), 15*60)
+	}
+
+	for range amount {
+		phs := paleHymnStack{}
+		phs.endFrame = c.Core.F + 15*60
+		phs.isC6 = false
+		c.paleHymnStacks = append(c.paleHymnStacks, phs)
+	}
+
+	if isC6 {
+		for _, phs := range c.paleHymnStacks {
+			if phs.isC6 {
+				phs.endFrame = c.Core.F + 15*60
+			}
+		}
+	}
+}
+
+func (c *char) removePaleHymn() func() {
+	return func() {
+		currentFrame := c.Core.F
+		var tmpPaleHymnStacks []paleHymnStack
+		nextRemovePaleHymn := 0
+		for _, phs := range c.paleHymnStacks {
+			if currentFrame < phs.endFrame {
+				tmpPaleHymnStacks = append(tmpPaleHymnStacks, phs)
+			} else {
+				if phs.endFrame-currentFrame < nextRemovePaleHymn || nextRemovePaleHymn == 0 {
+					nextRemovePaleHymn = phs.endFrame - currentFrame
+				}
+			}
+		}
+
+		if nextRemovePaleHymn != 0 {
+			c.Core.Tasks.Add(c.removePaleHymn(), nextRemovePaleHymn)
+		}
+
+		c.paleHymnStacks = tmpPaleHymnStacks
+	}
 }

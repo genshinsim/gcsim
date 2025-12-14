@@ -15,6 +15,7 @@ import (
 const (
 	lunarbloomBonusKey = "lauma-lunarbloom-bonus"
 	a1Key              = "light-for-the-frosty-night"
+	nextDewFrameKey    = "verdant-dew-next"
 )
 
 func (c *char) a1() {
@@ -103,6 +104,8 @@ func (c *char) a4() {
 
 func (c *char) lunarbloomInit() {
 	c.Core.Flags.Custom[reactable.LunarBloomEnableKey] = 1
+
+	c.Core.Flags.Custom[nextDewFrameKey] = 150
 
 	// TODO: moonsign?
 
