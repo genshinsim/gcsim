@@ -31,18 +31,24 @@ func init() {
 	skillFrames = make([][]int, 2)
 
 	// skill (press) -> x
-	skillFrames[0] = frames.InitAbilSlice(38)
-	skillFrames[0][action.ActionSkill] = 42
+	skillFrames[0] = frames.InitAbilSlice(42)
+	skillFrames[0][action.ActionAttack] = 38
+	skillFrames[0][action.ActionCharge] = 38
+	skillFrames[0][action.ActionBurst] = 38
 	// skillFrames[0][action.ActionSkillHoldFramesOnly] = 40
 	skillFrames[0][action.ActionDash] = 37
+	skillFrames[0][action.ActionJump] = 38
+	skillFrames[0][action.ActionWalk] = 38
 	skillFrames[0][action.ActionSwap] = 36
 
 	// skill (hold=1) -> x
-	skillFrames[1] = frames.InitAbilSlice(58)
+	skillFrames[1] = frames.InitAbilSlice(64)
 	skillFrames[1][action.ActionAttack] = 57
-	skillFrames[1][action.ActionSkill] = 64
+	skillFrames[1][action.ActionCharge] = 57
 	skillFrames[1][action.ActionBurst] = 59
+	skillFrames[1][action.ActionBurst] = 58
 	skillFrames[1][action.ActionJump] = 57
+	skillFrames[1][action.ActionWalk] = 58
 	skillFrames[1][action.ActionSwap] = 56
 }
 

@@ -24,9 +24,9 @@ const normalHitNum = 3
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 26) // N1 -> Walk
-	attackFrames[0][action.ActionAttack] = 29
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 29) // N1 -> Walk
 	attackFrames[0][action.ActionCharge] = 17
+	attackFrames[0][action.ActionWalk] = 26
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 33) // N2 -> N3
 	attackFrames[1][action.ActionCharge] = 19
@@ -34,7 +34,6 @@ func init() {
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 38) // N3 -> N1
 	attackFrames[2][action.ActionCharge] = 33
-	attackFrames[2][action.ActionWalk] = 38
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -50,7 +49,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	if c.Base.Cons >= 6 {
+	if c.Base.Cons >= 6 && len(c.paleHymnStacks) != 0 {
 		ai.Abil = "Normal C6 Pale Hymn"
 		ai.AttackTag = attacks.AttackTagDirectLunarBloom
 		ai.Durability = 25
@@ -78,7 +77,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackFrames[0][action.ActionCharge],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
 }

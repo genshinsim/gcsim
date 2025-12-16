@@ -18,10 +18,11 @@ type paleHymnStack struct {
 }
 
 func init() {
-	burstFrames = frames.InitAbilSlice(111) // Q -> walk
+	burstFrames = frames.InitAbilSlice(112) // Q -> walk
 	burstFrames[action.ActionCharge] = 110
 	burstFrames[action.ActionSkill] = 110
-	burstFrames[action.ActionJump] = 112
+	burstFrames[action.ActionDash] = 111
+	burstFrames[action.ActionWalk] = 111
 	burstFrames[action.ActionSwap] = 109
 }
 
@@ -96,12 +97,6 @@ func (c *char) c6PaleHymn(a info.AttackCB) {
 	}
 
 	c.addPaleHymn(2, true)
-
-	for _, phs := range c.paleHymnStacks {
-		if phs.isC6 {
-			phs.endFrame = c.Core.F + 15*60
-		}
-	}
 }
 
 func (c *char) addPaleHymn(amount int, isC6 bool) {
@@ -117,11 +112,14 @@ func (c *char) addPaleHymn(amount int, isC6 bool) {
 	}
 
 	if isC6 {
+		var tmpPaleHymnStacks []paleHymnStack
 		for _, phs := range c.paleHymnStacks {
 			if phs.isC6 {
 				phs.endFrame = c.Core.F + 15*60
 			}
+			tmpPaleHymnStacks = append(tmpPaleHymnStacks, phs)
 		}
+		c.paleHymnStacks = tmpPaleHymnStacks
 	}
 }
 

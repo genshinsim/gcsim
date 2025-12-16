@@ -23,17 +23,17 @@ const (
 
 func init() {
 	// deer state frames
-	deerFrames = frames.InitAbilSlice(0) // swap
+	deerFrames = frames.InitAbilSlice(64) // skill
 	deerFrames[action.ActionAttack] = 61
 	deerFrames[action.ActionCharge] = 63
-	deerFrames[action.ActionSkill] = 64
 	// deerFrames[action.ActionSkillHoldFramesOnly] = 63
 	deerFrames[action.ActionBurst] = 63
+	deerFrames[action.ActionSkill] = 63
+	deerFrames[action.ActionSwap] = 0
 
 	// charge attack frames
-	chargeFrames = frames.InitAbilSlice(67) // CA -> swap
-	chargeFrames[action.ActionCharge] = 68
-	chargeFrames[action.ActionWalk] = 68
+	chargeFrames = frames.InitAbilSlice(68) // CA -> swap
+	chargeFrames[action.ActionAttack] = 67
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -69,9 +69,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	)
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return chargeFrames[next] },
+		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeFrames[action.ActionDash],
+		CanQueueAfter:   chargeFrames[action.ActionAttack],
 		State:           action.ChargeAttackState,
 	}, nil
 }
@@ -84,25 +84,24 @@ func (c *char) enterDeerState() (action.Info, error) {
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(deerFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeFrames[action.ActionDash],
+		AnimationLength: deerFrames[action.InvalidAction],
+		CanQueueAfter:   deerFrames[action.ActionSwap],
 		State:           action.ChargeAttackState,
 	}, nil
 }
 
 func (c *char) endDeerStateCondition() {
 	c.Core.Events.Subscribe(event.OnActionExec, func(args ...any) bool {
+		if !c.StatusIsActive(deerStatusKey) {
+			return true
+		}
+
 		a := args[1].(action.Action)
 		if a == action.ActionJump {
-			c.endDeerStateCondition()
+			return false
 		}
-		c.deerStateReady = true
-		c.DeleteStatus(deerStatusKey)
-		c.Core.Tasks.Add(func() {
-			c.deerStateReady = true
-			c.Core.Log.NewEvent("deer state ended", glog.LogCharacterEvent, c.Index())
-		}, 4*60)
-		return false
+		c.endDeerState()
+		return true
 	}, "lauma-exit-deer-state")
 }
 
@@ -111,6 +110,17 @@ func (c *char) deerStateStaminaBleed() {
 		return
 	}
 	staminaCost := 25.0 / 60.0
+	if c.Core.Player.Stam < staminaCost {
+		c.endDeerState()
+	}
 	c.Core.Player.RestoreStam(-staminaCost)
 	c.Core.Tasks.Add(c.deerStateStaminaBleed, 1)
+}
+
+func (c *char) endDeerState() {
+	c.DeleteStatus(deerStatusKey)
+	c.Core.Tasks.Add(func() {
+		c.deerStateReady = true
+		c.Core.Log.NewEvent("deer state refreshed", glog.LogCharacterEvent, c.Index())
+	}, 4*60)
 }
