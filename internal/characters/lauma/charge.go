@@ -17,8 +17,9 @@ var (
 )
 
 const (
-	chargeHitmark = 73
-	deerStatusKey = "lauma-deer-state"
+	chargeHitmark   = 73
+	chargeDeerFrame = 67
+	deerStatusKey   = "lauma-deer-state"
 )
 
 func init() {
@@ -69,7 +70,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(chargeFrames),
+		Frames: func(next action.Action) int {
+			if c.deerStateReady && next == action.ActionCharge {
+				return chargeDeerFrame
+			}
+			return chargeFrames[next]
+		},
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeFrames[action.ActionAttack],
 		State:           action.ChargeAttackState,
@@ -97,7 +103,7 @@ func (c *char) endDeerStateCondition() {
 		}
 
 		a := args[1].(action.Action)
-		if a == action.ActionJump {
+		if a == action.ActionJump || a == action.ActionWalk {
 			return false
 		}
 		c.endDeerState()

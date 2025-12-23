@@ -56,13 +56,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.AddStatus(c1Key, 20*60, true)
 	c.AddStatus(frostgroveSanctuaryKey, 15*60, true)
 	c.AddStatus(a1Key, 20*60, true)
-	c.c6SkillPaleHymnCount = 8
 
-	// this piece of code is causing it idk why
-	if p["hold"] == 0 {
-		if int(c.Core.Flags.Custom[verdantDewKey]) == 0 {
-			return c.skillPress()
-		}
+	if c.Base.Cons >= 6 {
+		c.c6SkillPaleHymnCount = 8
+		c.removeC6PaleHymn()
+	}
+
+	if p["hold"] == 0 || int(c.Core.Flags.Custom[verdantDewKey]) == 0 {
+		return c.skillPress()
 	}
 	return c.skillHold()
 }
@@ -259,7 +260,7 @@ func (c *char) frostgroveSantuary(a info.AttackCB) {
 			ICDGroup:         attacks.ICDGroupDefault,
 			StrikeType:       attacks.StrikeTypeDefault,
 			Element:          attributes.Dendro,
-			Durability:       25,
+			Durability:       0,
 			UseEM:            true,
 			Mult:             1.85,
 			IgnoreDefPercent: 1,

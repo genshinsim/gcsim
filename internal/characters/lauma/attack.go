@@ -14,6 +14,8 @@ import (
 var (
 	attackFrames [][]int
 
+	attackDeerFrames = []int{17, 19, 33}
+
 	attackHitmarks = []int{14, 11, 16}
 	attackOffsets  = []float64{0, 0, 0}
 	attackHitboxes = [][]float64{{2.5, 8}, {2.5, 8}, {4, 8}}
@@ -52,7 +54,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 6 && len(c.paleHymnStacks) != 0 {
 		ai.Abil = "Normal C6 Pale Hymn"
 		ai.AttackTag = attacks.AttackTagDirectLunarBloom
-		ai.Durability = 25
+		ai.Durability = 0
 		ai.Mult = 1.5
 		ai.IgnoreDefPercent = 1
 
@@ -75,7 +77,12 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		Frames: func(next action.Action) int {
+			if c.deerStateReady && next == action.ActionCharge {
+				return attackDeerFrames[c.NormalCounter]
+			}
+			return attackFrames[c.NormalCounter][next]
+		},
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,

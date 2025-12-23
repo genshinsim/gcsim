@@ -18,7 +18,8 @@ type paleHymnStack struct {
 }
 
 func init() {
-	burstFrames = frames.InitAbilSlice(112) // Q -> walk
+	burstFrames = frames.InitAbilSlice(115) // Q -> walk
+	burstFrames[action.ActionAttack] = 111
 	burstFrames[action.ActionCharge] = 110
 	burstFrames[action.ActionSkill] = 110
 	burstFrames[action.ActionDash] = 111
@@ -27,7 +28,9 @@ func init() {
 }
 
 const (
-	burstKey = "lauma-burst"
+	burstKey          = "lauma-burst"
+	burstDeerFrame    = 115
+	paleHymnGainFrame = 96
 )
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -35,13 +38,18 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(func() {
 		c.addPaleHymn(18, false)
-		c.AddStatus(burstKey, 15*60, true)
-	}, 96)
+		c.AddStatus(burstKey, 15*60, true) // should this be here?
+	}, paleHymnGainFrame)
 
 	c.ConsumeEnergy(8)
 	c.SetCD(action.ActionBurst, 15*60)
 	return action.Info{
-		Frames:          frames.NewAbilFunc(burstFrames),
+		Frames: func(next action.Action) int {
+			if c.deerStateReady && next == action.ActionCharge {
+				return burstDeerFrame
+			}
+			return burstFrames[next]
+		},
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
@@ -54,7 +62,7 @@ func (c *char) setupPaleHymnBuff() {
 		if !ok {
 			return false
 		}
-		if len(c.paleHymnStacks) <= 0 {
+		if len(c.paleHymnStacks) == 0 {
 			return false
 		}
 
@@ -140,6 +148,20 @@ func (c *char) removePaleHymn() func() {
 
 		if nextRemovePaleHymn != 0 {
 			c.Core.Tasks.Add(c.removePaleHymn(), nextRemovePaleHymn)
+		}
+
+		c.paleHymnStacks = tmpPaleHymnStacks
+	}
+}
+
+func (c *char) removeC6PaleHymn() func() {
+	return func() {
+		var tmpPaleHymnStacks []paleHymnStack
+
+		for _, phs := range c.paleHymnStacks {
+			if !phs.isC6 {
+				tmpPaleHymnStacks = append(tmpPaleHymnStacks, phs)
+			}
 		}
 
 		c.paleHymnStacks = tmpPaleHymnStacks
