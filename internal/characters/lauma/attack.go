@@ -14,8 +14,6 @@ import (
 var (
 	attackFrames [][]int
 
-	attackDeerFrames = []int{17, 19, 33}
-
 	attackHitmarks = []int{14, 11, 16}
 	attackOffsets  = []float64{0, 0, 0}
 	attackHitboxes = [][]float64{{2.5, 8}, {2.5, 8}, {4, 8}}
@@ -77,12 +75,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames: func(next action.Action) int {
-			if c.deerStateReady && next == action.ActionCharge {
-				return attackDeerFrames[c.NormalCounter]
-			}
-			return attackFrames[c.NormalCounter][next]
-		},
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
