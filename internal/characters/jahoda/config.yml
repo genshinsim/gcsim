@@ -1,0 +1,57 @@
+package_name: jahoda
+genshin_id: 10000124
+key: jahoda
+action_param_keys:
+  attack:
+    - param: "travel"
+  aim:
+    - param: "hold"
+    - param: "travel"
+    - param: "weakspot"
+  skill:
+    - param: "travel"
+icd_groups:
+  - group_name: ICDGroupJahodaBurst
+    reset_timer: 900
+    ele_app_sequence: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+  - group_name: ICDGroupJahodaCons
+    reset_timer: 900
+    ele_app_sequence: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+icd_tags:
+  - ICDTagJahodaCons
+skill_data_mapping:
+    attack:
+        attack_1:
+            - 0 # 1-Hit DMG|{param0:F1P}
+        attack_2:
+            - 1 # 2-Hit DMG|{param1:F1P}
+            - 1 # 2-Hit DMG|{param1:F1P}
+        attack_3:
+            - 2 # 3-Hit DMG|{param2:F1P}
+        aim:
+            - 3 # Aimed Shot|{param3:F1P}
+        fullaim:
+            - 4 # Fully-Charged Aimed Shot|{param4:P}
+    skill:
+        unfilledFlask:
+            - 1 # Unfilled Treasure Flask DMG|{param1:F1P}
+        filledFlask:
+            - 2 # Filled Treasure Flask DMG|{param2:F1P}
+        meowball:
+            - 4 # Meowball DMG|{param4:F1P}
+    burst:
+        burst:
+            - 0 # Skill DMG|{param0:F1P}
+        burstSkill:
+            - 1 # Purrsonal Coordinated Assistance Robot DMG|{param1:F1P}
+        burstHealPP:
+            - 3 # Purrsonal Coordinated Assistance Robot Healing|{param3:F1P} ATK+{param4:I}
+        burstHealFlat:
+            - 4 # Purrsonal Coordinated Assistance Robot Healing|{param3:F1P} ATK+{param4:I}
+        burstAdditionalHealPP:
+            - 5 # Lowest HP Character Additional Healing|{param5:F1P} ATK+{param6:I}
+        burstAdditionalHealFlat:
+            - 6 # Lowest HP Character Additional Healing|{param5:F1P} ATK+{param6:I}
+        
