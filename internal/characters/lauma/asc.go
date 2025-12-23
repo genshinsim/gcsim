@@ -23,63 +23,70 @@ func (c *char) a1() {
 		return
 	}
 
-	// when 1 nod krai character in team give 15% critrate and set critdmg to 100% for bloom reactions
-	if !c.ascendantGleam {
-		c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
-			if !c.StatusIsActive(a1Key) {
-				return false
-			}
-
-			_, ok := args[0].(*enemy.Enemy)
-			if !ok {
-				return false
-			}
-			ae := args[1].(*info.AttackEvent)
-
-			switch ae.Info.AttackTag {
-			case attacks.AttackTagBloom:
-			case attacks.AttackTagHyperbloom:
-			case attacks.AttackTagBurgeon:
-			default:
-				return false
-			}
-
-			// critrate stacks with nahida c2 while critdmg is overwritten
-			ae.Snapshot.Stats[attributes.CR] += 0.15
-			ae.Snapshot.Stats[attributes.CD] = 1
-
-			c.Core.Log.NewEvent("lauma a1 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
-				Write("final_crit", ae.Snapshot.Stats[attributes.CR])
-
-			return false
-		}, "lauma-a1-reaction-dmg-buff")
+	if c.ascendantGleam {
+		c.a1Ascendant()
 	} else {
-		c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
-			if !c.StatusIsActive(a1Key) {
-				return false
-			}
-
-			_, ok := args[0].(*enemy.Enemy)
-			if !ok {
-				return false
-			}
-			ae := args[1].(*info.AttackEvent)
-
-			switch ae.Info.AttackTag {
-			case attacks.AttackTagDirectLunarBloom:
-			default:
-				return false
-			}
-
-			ae.Snapshot.Stats[attributes.CR] += 0.1
-			ae.Snapshot.Stats[attributes.CD] += 0.2
-
-			c.Core.Log.NewEvent("lauma a1 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
-				Write("final_crit", ae.Snapshot.Stats[attributes.CR])
-
-			return false
-		}, "lauma-a1-reaction-dmg-buff")
+		c.a1Nascent()
 	}
+}
+
+func (c *char) a1Nascent() {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		if !c.StatusIsActive(a1Key) {
+			return false
+		}
+
+		_, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		ae := args[1].(*info.AttackEvent)
+
+		switch ae.Info.AttackTag {
+		case attacks.AttackTagBloom:
+		case attacks.AttackTagHyperbloom:
+		case attacks.AttackTagBurgeon:
+		default:
+			return false
+		}
+
+		// critrate stacks with nahida c2 while critdmg is overwritten
+		ae.Snapshot.Stats[attributes.CR] += 0.15
+		ae.Snapshot.Stats[attributes.CD] = 1
+
+		c.Core.Log.NewEvent("lauma a1 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
+			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
+
+		return false
+	}, "lauma-a1-reaction-dmg-buff")
+}
+
+func (c *char) a1Ascendant() {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		if !c.StatusIsActive(a1Key) {
+			return false
+		}
+
+		_, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		ae := args[1].(*info.AttackEvent)
+
+		switch ae.Info.AttackTag {
+		case attacks.AttackTagDirectLunarBloom:
+		default:
+			return false
+		}
+
+		ae.Snapshot.Stats[attributes.CR] += 0.1
+		ae.Snapshot.Stats[attributes.CD] += 0.2
+
+		c.Core.Log.NewEvent("lauma a1 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
+			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
+
+		return false
+	}, "lauma-a1-reaction-dmg-buff")
 }
 
 func (c *char) a4() {
