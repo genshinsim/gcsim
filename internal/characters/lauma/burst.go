@@ -139,10 +139,8 @@ func (c *char) removePaleHymn() func() {
 		for _, phs := range c.paleHymnStacks {
 			if currentFrame < phs.endFrame {
 				tmpPaleHymnStacks = append(tmpPaleHymnStacks, phs)
-			} else {
-				if phs.endFrame-currentFrame < nextRemovePaleHymn || nextRemovePaleHymn == 0 {
-					nextRemovePaleHymn = phs.endFrame - currentFrame
-				}
+			} else if phs.endFrame-currentFrame < nextRemovePaleHymn || nextRemovePaleHymn == 0 {
+				nextRemovePaleHymn = phs.endFrame - currentFrame
 			}
 		}
 
