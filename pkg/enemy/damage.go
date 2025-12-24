@@ -44,6 +44,8 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		a = atk.Snapshot.Stats.MaxHP()
 	case atk.Info.UseDef:
 		a = atk.Snapshot.Stats.TotalDEF()
+	case atk.Info.UseEM:
+		a = atk.Snapshot.Stats[attributes.EM]
 	default:
 		a = atk.Snapshot.Stats.TotalATK()
 	}
@@ -122,6 +124,9 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		damage *= 3.0
 		x *= 3.0
 	}
+
+	elevation := atk.Info.Elevation
+	damage *= 1 + elevation
 
 	if e.Core.Flags.LogDebug {
 		e.Core.Log.NewEvent(
