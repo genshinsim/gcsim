@@ -99,7 +99,7 @@ func (c *char) setupPaleHymnBuff() {
 	}, "lauma-pale-hymn-buff")
 }
 
-func (c *char) c6PaleHymn(a info.AttackCB) {
+func (c *char) addC6PaleHymn(a info.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}

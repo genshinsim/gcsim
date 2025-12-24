@@ -77,7 +77,6 @@ func (c *char) skillPress() (action.Info, error) {
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
-		PoiseDMG:   50,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
@@ -275,7 +274,7 @@ func (c *char) frostgroveSantuary(a info.AttackCB) {
 			),
 			frostgroveSanctuaryFirstHit,
 			frostgroveSanctuaryFirstHit,
-			c.c6PaleHymn,
+			c.addC6PaleHymn,
 		)
 	}
 }

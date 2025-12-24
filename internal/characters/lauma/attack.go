@@ -16,7 +16,7 @@ var (
 
 	attackHitmarks = []int{14, 11, 16}
 	attackOffsets  = []float64{0, 0, 0}
-	attackHitboxes = [][]float64{{2.5, 8}, {2.5, 8}, {4, 8}}
+	attackHitboxes = [][]float64{{2, 8}, {2, 8}, {2.8, 8}}
 )
 
 const normalHitNum = 3
