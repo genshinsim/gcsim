@@ -96,7 +96,7 @@ func (c *char) applyA1Buff(ele attributes.Element) {
 	case attributes.Electro:
 		c.robotCount += 1
 	case attributes.Cryo:
-		c.robotInterval *= 0.9
+		c.robotHitmarkInterval *= 0.9
 	}
 }
 

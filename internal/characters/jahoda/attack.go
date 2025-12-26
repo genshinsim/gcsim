@@ -13,7 +13,7 @@ import (
 
 var (
 	attackFrames   [][]int
-	attackHitmarks = [][]int{{10}, {10, 10}, {10}} // Frames needed
+	attackHitmarks = [][]int{{14}, {15, 29}, {40}}
 )
 
 const normalHitNum = 3
@@ -22,13 +22,31 @@ func init() {
 	// NA cancels
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 10) // Frames needed
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][1], 10) // Frames needed
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 10) // Frames needed
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 35) // N1 -> Walk
+	attackFrames[0][action.ActionAttack] = 30
+	attackFrames[0][action.ActionAim] = 30
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][1], 52) // N2 -> Walk
+	attackFrames[1][action.ActionAttack] = 48
+	attackFrames[1][action.ActionAim] = 47
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 99) // N3 -> Walk
+	attackFrames[2][action.ActionAttack] = 88
+	attackFrames[2][action.ActionAim] = 89
 
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(shadowPursuitKey) {
+		c.Core.Tasks.Add(c.drainFlask(c.skillSrc), 0)
+		return action.Info{
+			Frames:          frames.NewAbilFunc(skillCancelFrames),
+			AnimationLength: skillCancelFrames[action.InvalidAction],
+			CanQueueAfter:   skillCancelFrames[action.ActionDash], // earliest cancel
+			State:           action.SkillState,
+		}, nil
+	}
+
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
