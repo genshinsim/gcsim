@@ -771,6 +771,23 @@
       },
       "name_text_hash_map ": "3068316954"
     },
+    "jahoda": {
+      "id": 10000124,
+      "key": "jahoda",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Wind",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Jahoda",
+      "skill_details": {
+        "skill": 11242,
+        "burst": 11245,
+        "attack": 11241,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "1438964522"
+    },
     "jean": {
       "id": 10000003,
       "key": "jean",
