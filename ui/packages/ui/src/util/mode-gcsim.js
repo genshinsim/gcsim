@@ -148,6 +148,7 @@ ace.define(
         'ht',
         'hutao',
         'itto',
+        'jahoda',
         'jean',
         'kabukimono',
         'kaedeharakazuha',

@@ -27,6 +27,8 @@ const (
 	ICDGroupEscoffierSkill
 	ICDGroupFischl
 	ICDGroupFurinaSalonSolitaire
+	ICDGroupJahodaBurst
+	ICDGroupJahodaCons
 	ICDGroupKinichLoopShot
 	ICDGroupKinichScalespikerCannon
 	ICDGroupLanyanRingAttack
@@ -149,6 +151,14 @@ func init() {
 	ICDGroupResetTimer[ICDGroupFurinaSalonSolitaire] = 1800
 	ICDGroupEleApplicationSequence[ICDGroupFurinaSalonSolitaire] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
 	ICDGroupDamageSequence[ICDGroupFurinaSalonSolitaire] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupJahodaBurst] = 900
+	ICDGroupEleApplicationSequence[ICDGroupJahodaBurst] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupJahodaBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupJahodaCons] = 900
+	ICDGroupEleApplicationSequence[ICDGroupJahodaCons] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
+	ICDGroupDamageSequence[ICDGroupJahodaCons] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupKinichLoopShot] = 120
 	ICDGroupEleApplicationSequence[ICDGroupKinichLoopShot] = []float64{1, 0, 0, 0}

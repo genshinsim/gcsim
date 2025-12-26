@@ -1,6 +1,7 @@
 package jahoda
 
 import (
+	"errors"
 	"sort"
 
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -15,33 +16,39 @@ import (
 var burstFrames []int
 
 const (
-	robotDuration      = 12 * 60
-	healInterval       = 10 // Frames needed
-	absorptionInterval = 10 // Frames needed
-	tickTaskDelay      = 10 // Frames needed
-	robotHimarkDelay   = 0  // Between each robot attack. Frames needed
+	burstDuration      = 790
+	absorptionInterval = 41
+	firstrobotHitmark  = 45
+	robotDelay         = 94
+	healInterval       = 87
+	firsHealTickDelay  = 12
 	burstCD            = 18 * 60
 	burstKey           = "jahoda-burst-dot"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(10) // Q -> N1. Frames needed
-	burstFrames[action.ActionAim] = 10     // Q -> Aim. Frames needed
-	burstFrames[action.ActionDash] = 10    // Q -> D. Frames needed
-	burstFrames[action.ActionJump] = 10    // Q -> J. Frames needed
-	burstFrames[action.ActionWalk] = 10    // Q -> W. Frames needed
-	burstFrames[action.ActionSwap] = 10    // Q -> Swap. Frames needed
+	burstFrames = frames.InitAbilSlice(48) // Q -> N1
+	burstFrames[action.ActionSkill] = 53   // Q -> Skill
+	burstFrames[action.ActionAim] = 55     // Q -> Aim
+	burstFrames[action.ActionDash] = 54    // Q -> D
+	burstFrames[action.ActionJump] = 54    // Q -> J
+	burstFrames[action.ActionWalk] = 55    // Q -> W
+	burstFrames[action.ActionSwap] = 36    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(shadowPursuitKey) {
+		return action.Info{}, errors.New("burst called in skill state")
+	}
+
+	c.robotHitmarkInterval = 140
 	c.burstSrc = c.Core.F
 	src := c.burstSrc
-
 	c.burstAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2) // Couldn't find anywhere in dm, assume top be the same as Sayu
 
-	c.AddStatus(burstKey, robotDuration, false)
+	c.AddStatus(burstKey, burstDuration, false)
 
-	// dmg
+	// Initial hit damage
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Hidden Aces: Seven Tools of the Hunter",
@@ -83,14 +90,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.robotCount = 2
-	c.robotInterval = 120 // Frames needed
 
 	// Apply A1 buff
 	c.a1()
 
-	// heal ticks
+	// Heal ticks
 	c.QueueCharTask(func() {
-		for i := 0; i < robotDuration; i += healInterval {
+		for i := 0; i < burstDuration-firsHealTickDelay; i += healInterval {
 			c.Core.Tasks.Add(func() {
 				if src != c.burstSrc {
 					return
@@ -101,7 +107,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				if c.Core.Player.ActiveChar().CurrentHPRatio() > 0.7 {
 					c.a4()
 
-					low := c.lowestHPChar(false) // inlcude active, verified ingame (2 instances of healing on activ char with hp% > 70%)
+					low := c.lowestHPChar()
 					if low >= 0 {
 						healOffField := burstAdditionalHealFlat[c.TalentLvlBurst()] + burstAdditionalHealPP[c.TalentLvlBurst()]*c.TotalAtk()
 
@@ -119,16 +125,16 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			}, i)
 
 		}
-	}, tickTaskDelay)
+	}, firsHealTickDelay)
 
-	// dmg ticks
+	// Dmg ticks
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
-		c.Core.Tasks.Add(c.absorbCheck(src, 0, robotDuration/absorptionInterval), 10+absorptionInterval) // Frames needed
+		c.Core.Tasks.Add(c.absorbCheck(src, 0, burstDuration/absorptionInterval), 10+absorptionInterval) // Frames needed
 
 	}
 
-	c.SetCD(action.ActionBurst, burstCD)
-	c.ConsumeEnergy(10) // Energy consumption delay. Frames needed
+	c.SetCDWithDelay(action.ActionBurst, burstCD, 1)
+	c.ConsumeEnergy(13)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -138,16 +144,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) lowestHPChar(excludeActive bool) int {
-	active := c.Core.Player.Active()
+func (c *char) lowestHPChar() int {
 	lowestIdx := -1
 	lowestPct := 2.0 // > 1
 
 	for i := 0; i < len(c.Core.Player.Chars()); i++ {
-		if excludeActive && i == active {
-			continue
-		}
-
 		ch := c.Core.Player.Chars()[i]
 		if ch == nil {
 			continue
@@ -195,9 +196,8 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 
 			c.c4()
 
-			burstTicks := robotDuration / c.robotInterval
-			for i := 0.0; i < burstTicks; i++ {
-				c.Core.Tasks.Add(c.robotAtkTick(src), ceil(c.robotInterval*i))
+			for i := 0; i < burstDuration-firstrobotHitmark; i += int(c.robotHitmarkInterval) {
+				c.Core.Tasks.Add(c.robotAtkTick(src), i)
 			}
 
 			return
@@ -212,16 +212,16 @@ func (c *char) robotAtkTick(src int) func() {
 			return
 		}
 
-		// for each robot, trigger an instance of damage on 3 closest enemies
+		// For each robot, trigger an instance of damage on 3 closest enemies
 		for i := 0; i < c.robotCount; i++ {
-			c.queueOn3Closest(c.Core.Combat.Player().Pos(), c.robotAi, 0+robotHimarkDelay*i)
+			c.queueOn3Closest(c.Core.Combat.Player().Pos(), c.robotAi, robotDelay*i)
 		}
 
 	}
 }
 
 // Helper to sort 3 closest enemies and attack them simultaneously
-func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay int, cb ...func(info.AttackCB)) {
+func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay int) {
 	enemies := c.Core.Combat.Enemies()
 	type cand struct {
 		t info.Target
@@ -229,7 +229,7 @@ func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay i
 	}
 	cands := make([]cand, 0, len(enemies))
 
-	// compute distance
+	// Compute distance
 	for _, e := range enemies {
 		if e == nil {
 			continue
@@ -259,13 +259,7 @@ func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay i
 	}
 	for i := 0; i < n; i++ {
 		t := cands[i].t
-
 		ap := combat.NewCircleHitOnTarget(t, nil, 5)
-
-		if len(cb) > 0 {
-			c.Core.QueueAttack(ai, ap, hitDelay, 0, cb[0])
-		} else {
-			c.Core.QueueAttack(ai, ap, hitDelay, 0)
-		}
+		c.Core.QueueAttack(ai, ap, hitDelay, hitDelay)
 	}
 }

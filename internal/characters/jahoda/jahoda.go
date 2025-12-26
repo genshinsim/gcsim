@@ -17,9 +17,9 @@ type char struct {
 	*tmpl.Character
 	flaskAbsorbCheckLocation info.AttackPattern
 	flaskAbsorb              attributes.Element
-	flaskAbsorbDuration      int
 	flaskGauge               int
 	flaskGaugeMax            int
+	pursuitDuration          int
 	skillSrc                 int
 	skillTravel              int
 	burstAbsorbCheckLocation info.AttackPattern
@@ -28,7 +28,7 @@ type char struct {
 	robotAi                  info.AttackInfo
 	robotHi                  info.HealInfo
 	robotCount               int
-	robotInterval            float64
+	robotHitmarkInterval     float64
 	c2NextHighestEle         attributes.Element
 	a4Buff                   []float64
 	c6Buff                   []float64
@@ -42,10 +42,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
+
 	c.Moonsign = 1
+	c.HasArkhe = false
 
 	c.flaskAbsorb = attributes.NoElement
-	c.flaskAbsorbDuration = -1
 	c.flaskGauge = 0
 	c.flaskGaugeMax = 100
 
@@ -64,17 +65,15 @@ func (c *char) Init() error {
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.EM] = 100
 
-	c.c6()
-
 	return nil
 }
 
 func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if k == info.AnimationXingqiuN0StartDelay {
-		return 10 // Frames needed
+		return 13
 	}
 	if k == info.AnimationYelanN0StartDelay {
-		return 10 // Frames needed
+		return 11
 	}
 	return c.Character.AnimationStartDelay(k)
 }

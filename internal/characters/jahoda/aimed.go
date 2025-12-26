@@ -13,27 +13,35 @@ import (
 
 var aimedFrames [][]int
 
-var aimedHitmarks = []int{10, 10} // {Aim -> Dash, Aim -> Jump}. Frames needed
+var aimedHitmarks = []int{15, 85} // {Aim -> Dash, Aim -> Jump}
 
 func init() {
 	aimedFrames = make([][]int, 3)
 
 	// Aimed Shot
-	aimedFrames[0] = frames.InitAbilSlice(10) // Frames needed
-	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
-	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
+	aimedFrames[0] = frames.InitAbilSlice(aimedHitmarks[0])
 
 	// Fully-Charged Aimed Shot
-	aimedFrames[1] = frames.InitAbilSlice(10)
-	aimedFrames[1][action.ActionDash] = aimedHitmarks[1] // Frames needed
-	aimedFrames[1][action.ActionJump] = aimedHitmarks[1] // Frames needed
+	aimedFrames[1] = frames.InitAbilSlice(aimedHitmarks[1])
+
 }
 
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(shadowPursuitKey) {
+		c.Core.Tasks.Add(c.drainFlask(c.skillSrc), 0)
+		return action.Info{
+			Frames:          frames.NewAbilFunc(skillCancelFrames),
+			AnimationLength: skillCancelFrames[action.InvalidAction],
+			CanQueueAfter:   skillCancelFrames[action.ActionDash], // earliest cancel
+			State:           action.SkillState,
+		}, nil
+	}
+
 	hold, ok := p["hold"]
 	if !ok {
 		hold = attacks.AimParamLv1
 	}
+
 	switch hold {
 	case attacks.AimParamPhys:
 	case attacks.AimParamLv1:
