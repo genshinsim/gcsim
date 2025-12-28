@@ -53,7 +53,7 @@ func (s *Set) Init() error {
 	}
 
 	m2 := make([]float64, attributes.EndStatType)
-	switch s.getMoonsignLevel() {
+	switch s.core.Player.GetMoonsignLevel() {
 	case 0:
 	case 1:
 		m2[attributes.CR] = 0.15
@@ -86,10 +86,7 @@ func (s *Set) Init() error {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase(gleamingMoonIntentReactKey, -1),
 			Amount: func(ai info.AttackInfo) (float64, bool) {
-				switch ai.AttackTag {
-				case attacks.AttackTagDirectLunarCharged:
-				case attacks.AttackTagReactionLunarCharge:
-				default:
+				if !attacks.AttackTagIsLunar(ai.AttackTag) {
 					return 0, false
 				}
 
@@ -110,14 +107,6 @@ func (s *Set) Init() error {
 	}
 
 	return nil
-}
-
-func (s *Set) getMoonsignLevel() int {
-	count := 0
-	for _, c := range s.core.Player.Chars() {
-		count += c.Moonsign
-	}
-	return count
 }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
