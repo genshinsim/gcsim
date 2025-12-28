@@ -3634,7 +3634,7 @@ var EnemyMap = map[int]*MonsterData{
 	},
 	21030701: {
 		Id:              21030701,
-		Key:             "samachurlboss",
+		Key:             "mystifyingmegachurl",
 		NameTextHashMap: 4115780424,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  320,
@@ -4889,6 +4889,27 @@ var EnemyMap = map[int]*MonsterData{
 					HpPercent: 0,
 				},
 			},
+		},
+	},
+	24090301: {
+		Id:              24090301,
+		Key:             "primevalsourcedragonmech",
+		NameTextHashMap: 1465152336,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1426.32,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
 	24090501: {
@@ -6487,6 +6508,44 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	23090101: {
+		Id:              23090101,
+		Key:             "superheavylandrovermechanizedfortress",
+		NameTextHashMap: 537013992,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  298.848,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	25010101: {
 		Id:              25010101,
 		Key:             "treasurehoardersliuliu",
@@ -6724,6 +6783,44 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010020,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25010801: {
+		Id:              25010801,
+		Key:             "liam",
+		NameTextHashMap: 2133536752,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  828.624,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
 					HpPercent: 0,
 				},
 			},
@@ -7144,6 +7241,44 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010020,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25060201: {
+		Id:              25060201,
+		Key:             "rockyavildsen",
+		NameTextHashMap: 2178383936,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  869.376,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
 					HpPercent: 0,
 				},
 			},
@@ -12090,6 +12225,44 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010021,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26270401: {
+		Id:              26270401,
+		Key:             "infinitesimal",
+		NameTextHashMap: 2883184992,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  489.024,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
 					HpPercent: 0,
 				},
 			},
