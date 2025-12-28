@@ -37,7 +37,7 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(12) // E -> E
+	skillFrames = frames.InitAbilSlice(12 + skillWindup) // E -> E
 
 	skillCancelFrames = frames.InitAbilSlice(43) // E -> E -> N1
 	skillCancelFrames[action.ActionAim] = 42     // E -> E -> Aim
@@ -87,7 +87,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionAttack],
+		CanQueueAfter:   skillFrames[action.ActionSkill],
 		State:           action.SkillState,
 	}, nil
 }
