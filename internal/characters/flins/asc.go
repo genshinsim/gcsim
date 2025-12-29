@@ -47,7 +47,7 @@ func (c *char) a4Init() {
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(a4Key, -1),
+		Base:         modifier.NewBase(a4Key, -1),
 		Extra:        true,
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {

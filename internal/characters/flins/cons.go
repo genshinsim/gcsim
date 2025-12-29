@@ -87,7 +87,7 @@ func (c *char) c2MakeAtkCB() func(info.AttackCB) {
 			IgnoreDefPercent: 1,
 		}
 		// TODO: What is C2's delay?
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 4), 20, 20)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 2.5), 20, 20)
 	}
 }
 
