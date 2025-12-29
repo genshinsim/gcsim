@@ -10,7 +10,6 @@ action_param_keys:
     - param: "weakspot"
   skill:
     - param: "travel"
-    - param: "cancel"
 icd_groups:
   - group_name: ICDGroupJahodaBurst
     reset_timer: 900

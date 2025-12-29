@@ -155,7 +155,7 @@ func (c *char) fillFlask(src int) func() {
 func (c *char) changeFlaskGauge(amount int) func() {
 	return func() {
 		prevFlaskGauge := c.flaskGauge
-		c.flaskGauge = c.flaskGauge + amount
+		c.flaskGauge += amount
 		c.Core.Log.NewEvent("Flask Gauge Change", glog.LogCharacterEvent, c.Index()).
 			Write("previous flask gauge", prevFlaskGauge).
 			Write("current flask gauge", c.flaskGauge)
@@ -296,6 +296,5 @@ func (c *char) meowballTick(src int) func() {
 				)
 			}
 		}
-
 	}
 }

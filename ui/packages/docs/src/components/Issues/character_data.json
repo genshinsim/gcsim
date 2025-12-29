@@ -5,6 +5,9 @@
   "chasca": [
     "Cannot jump while in Nightsoul Blessing"
   ],
+  "jahoda": [
+    "Smoke Bomb skill is not implemented, since it only trigger when no enemies are nearby."
+  ],
   "kinich": [
     "The actual Kinich's circular movement is not simulated, so Loop Shots/Scalespiker Cannon will damage the Primary target, which does not depend on attack angle."
   ],

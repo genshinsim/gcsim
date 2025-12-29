@@ -5,19 +5,20 @@ import (
 	_ "embed"
 
 	"fmt"
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
-	"slices"
 )
 
 //go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
 var paramKeysValidation = map[action.Action][]string{
-	1: {"travel", "cancel"},
+	1: {"travel"},
 	3: {"travel"},
 	7: {"hold", "travel", "weakspot"},
 }

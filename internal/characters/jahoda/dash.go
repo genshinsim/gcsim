@@ -6,7 +6,6 @@ import (
 )
 
 func init() {
-
 }
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {
