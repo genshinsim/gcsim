@@ -76,6 +76,7 @@ var setNames = []string{
 	"scholar",
 	"scrolloftheheroofcindercity",
 	"shimenawasreminiscence",
+	"silkenmoonsserenade",
 	"songofdayspast",
 	"tenacityofthemillelith",
 	"theexile",
@@ -135,6 +136,7 @@ const (
 	Scholar
 	ScrollOfTheHeroOfCinderCity
 	ShimenawasReminiscence
+	SilkenMoonsSerenade
 	SongOfDaysPast
 	TenacityOfTheMillelith
 	TheExile
