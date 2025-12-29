@@ -1355,6 +1355,40 @@
       "legal": true
     }
   ],
+  "jahoda": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "notes": "Burst in Shadow Pursuit state is not legal."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "notes": "Swapping in Shadow Pursuit state is not legal."
+    }
+  ],
   "jean": [
     {
       "ability": "attack",

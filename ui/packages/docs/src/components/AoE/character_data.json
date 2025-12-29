@@ -4436,6 +4436,135 @@
       }
     ]
   },
+  "jahoda": {
+    "cons": [
+      {
+        "ability": "C1-Bounce",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2-1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2-2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1.0
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Unfill",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 2.5,
+        "radius": 5   
+      },
+      {
+        "ability": "E-Fill",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 2.5,
+        "radius": 5
+      },
+      {
+        "ability": "E-DoT",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4
+      },
+      {
+        "ability": "E-AbsorbCheck",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Cast",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1,
+        "radius": 5
+      },
+      {
+        "ability": "Q-DoT",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 1.2,
+        "notes": "Spawns on 3 closest enemies to the player. The detection area is not implemented. The exact radius of the hitbox is not known."
+      },
+      {
+        "ability": "Q-AbsorbCheck",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 1.2,
+        "notes": "The exact radius of the hitbox is not known."
+      }
+    ]
+  },
   "jean": {
     "normal": [
       {
