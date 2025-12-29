@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Physical,
+		Element:    attributes.Electro,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), skillHitmark, skillHitmark)
 
@@ -105,7 +105,7 @@ func (c *char) spearStorm() (action.Info, error) {
 		Durability: 25,
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
-	ap := combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 5, 60)
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 6)
 	c.Core.QueueAttack(ai, ap, spearStormHitmark, spearStormHitmark)
 	c.AddStatus(spearStormCDKey, c.c1SkillCD(), false)
 	if c.Core.Flags.LogDebug {

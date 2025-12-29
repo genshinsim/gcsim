@@ -31,18 +31,15 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index(),
-		Abil:               "Charge",
-		AttackTag:          attacks.AttackTagExtra,
-		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
-		StrikeType:         attacks.StrikeTypeSlash,
-		Element:            attributes.Physical,
-		Durability:         25,
-		Mult:               charge[c.TalentLvlAttack()],
-		HitlagHaltFrames:   0.10,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
+		ActorIndex: c.Index(),
+		Abil:       "Charge",
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupPoleExtraAttack,
+		StrikeType: attacks.StrikeTypeSlash,
+		Element:    attributes.Physical,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
 	}
 
 	c.Core.QueueAttack(
@@ -50,9 +47,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			info.Point{Y: 1.5},
-			3.3,
-			3,
+			nil,
+			4,
+			6,
 		),
 		chargeHitmark,
 		chargeHitmark,
@@ -70,19 +67,16 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 // Very standard - consistent with other characters like Xiangling
 func (c *char) skillChargeAttack() (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index(),
-		Abil:               "Charge",
-		AttackTag:          attacks.AttackTagExtra,
-		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
-		StrikeType:         attacks.StrikeTypeSlash,
-		Element:            attributes.Electro,
-		Durability:         25,
-		Mult:               skillCharge[c.TalentLvlAttack()],
-		HitlagHaltFrames:   0.10,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
-		IgnoreInfusion:     true,
+		ActorIndex:     c.Index(),
+		Abil:           "Charge",
+		AttackTag:      attacks.AttackTagExtra,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupPoleExtraAttack,
+		StrikeType:     attacks.StrikeTypeSlash,
+		Element:        attributes.Electro,
+		Durability:     25,
+		Mult:           skillCharge[c.TalentLvlAttack()],
+		IgnoreInfusion: true,
 	}
 
 	c.Core.QueueAttack(
@@ -90,9 +84,9 @@ func (c *char) skillChargeAttack() (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			info.Point{Y: 1.5},
-			3.3,
-			3,
+			nil,
+			4,
+			6,
 		),
 		chargeHitmark,
 		chargeHitmark,

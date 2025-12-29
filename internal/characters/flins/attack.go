@@ -13,11 +13,11 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = [][]int{{11}, {11}, {16}, {20, 9}, {29}}
-	attackHitlagHaltFrame = [][]float64{{0.06}, {0.06}, {0.06}, {0.00, 0.00}, {0.06}}
+	attackHitmarks        = [][]int{{11}, {11}, {16}, {20, 20 + 9}, {29}}
+	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.03}, {0.00, 0.00}, {0.06}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
-	attackHitboxes        = [][][]float64{{{1.6, 2}}, {{2}}, {{2}}, {{2.5}, {2.5}}, {{2}}}
-	attackOffsets         = [][]float64{{1}, {-0.2}, {-0.2}, {-0.2, -0.2}, {-0.2}}
+	attackHitboxes        = [][][]float64{{{1.3, 3.2}}, {{2, 3.8}}, {{2.8}}, {{2.8}, {2.8}}, {{2.8}}}
+	attackOffsets         = [][][]float64{{{0, -0.5}}, {{0.3, -1.6}}, {{0, 0.8}}, {{0, 1.2}, {0, 1.2}}, {{0, 0.6}}}
 )
 
 const normalHitNum = 5
@@ -66,17 +66,17 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-
+		offsets := attackOffsets[c.NormalCounter][i]
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			info.Point{Y: attackOffsets[c.NormalCounter][i]},
+			info.Point{X: offsets[0], Y: offsets[1]},
 			attackHitboxes[c.NormalCounter][i][0],
 		)
-		if c.NormalCounter == 0 {
+		if c.NormalCounter == 0 || c.NormalCounter == 1 {
 			ai.StrikeType = attacks.StrikeTypeSpear
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				info.Point{Y: attackOffsets[c.NormalCounter][i]},
+				info.Point{X: offsets[0], Y: offsets[1]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
 			)
@@ -116,20 +116,22 @@ func (c *char) skillAttack() (action.Info, error) {
 			IgnoreInfusion:     true,
 		}
 
+		offsets := attackOffsets[c.NormalCounter][i]
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			info.Point{Y: attackOffsets[c.NormalCounter][i]},
+			info.Point{X: offsets[0], Y: offsets[1]},
 			attackHitboxes[c.NormalCounter][i][0],
 		)
-		if c.NormalCounter == 0 {
+		if c.NormalCounter == 0 || c.NormalCounter == 1 {
 			ai.StrikeType = attacks.StrikeTypeSpear
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				info.Point{Y: attackOffsets[c.NormalCounter][i]},
+				info.Point{X: offsets[0], Y: offsets[1]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
 			)
 		}
+
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB, c.c2MakeAtkCB())
 		}, attackHitmarks[c.NormalCounter][i])

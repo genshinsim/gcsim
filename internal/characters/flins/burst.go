@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			Durability: 25,
 			Mult:       burstInit[c.TalentLvlBurst()],
 		}
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 7)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 		c.Core.QueueAttack(ai, ap, 0, 0)
 
 		ai = info.AttackInfo{
@@ -112,7 +112,7 @@ func (c *char) thunderousSymphony() (action.Info, error) {
 		IgnoreDefPercent: 1,
 		Mult:             symphony[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 7)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 	c.Core.QueueAttack(ai, ap, symphonyHitmark, symphonyHitmark)
 
 	if c.Core.Player.GetMoonsignLevel() >= 2 && c.Core.Status.Duration(reactable.LcKey) > 0 {

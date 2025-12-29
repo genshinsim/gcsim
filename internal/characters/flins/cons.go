@@ -136,7 +136,7 @@ func (c *char) c4Init() {
 	m[attributes.ATKP] = 0.2
 
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(c4Key, -1),
+		Base:         modifier.NewBase(c4Key, -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return m, true
