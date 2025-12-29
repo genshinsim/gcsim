@@ -23,7 +23,6 @@ func init() {
 
 	// Fully-Charged Aimed Shot
 	aimedFrames[1] = frames.InitAbilSlice(aimedHitmarks[1])
-
 }
 
 func (c *char) Aimed(p map[string]int) (action.Info, error) {

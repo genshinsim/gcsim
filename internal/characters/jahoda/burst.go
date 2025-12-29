@@ -16,14 +16,15 @@ import (
 var burstFrames []int
 
 const (
-	burstDuration      = 790
-	absorptionInterval = 41
-	firstrobotHitmark  = 45
-	robotDelay         = 94
-	healInterval       = 87
-	firsHealTickDelay  = 12
-	burstCD            = 18 * 60
-	burstKey           = "jahoda-burst-dot"
+	burstDuration        = 790
+	firstAbsorbtionDelay = 6
+	absorptionInterval   = 41
+	firstrobotHitmark    = 45
+	robotDelay           = 94
+	firsHealTickDelay    = 12
+	healInterval         = 87
+	burstCD              = 18 * 60
+	burstKey             = "jahoda-burst-dot"
 )
 
 func init() {
@@ -121,16 +122,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					}
 
 				}
-
 			}, i)
-
 		}
 	}, firsHealTickDelay)
 
 	// Dmg ticks
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
-		c.Core.Tasks.Add(c.absorbCheck(src, 0, burstDuration/absorptionInterval), 10+absorptionInterval) // Frames needed
-
+		c.Core.Tasks.Add(c.absorbCheck(src, 0, burstDuration/absorptionInterval), firstAbsorbtionDelay+firstrobotHitmark)
 	}
 
 	c.SetCDWithDelay(action.ActionBurst, burstCD, 1)
@@ -139,7 +137,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // Earliest cancel, need to check
+		CanQueueAfter:   burstFrames[action.ActionSwap], // Earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
@@ -216,7 +214,6 @@ func (c *char) robotAtkTick(src int) func() {
 		for i := 0; i < c.robotCount; i++ {
 			c.queueOn3Closest(c.Core.Combat.Player().Pos(), c.robotAi, robotDelay*i)
 		}
-
 	}
 }
 
@@ -259,7 +256,7 @@ func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay i
 	}
 	for i := 0; i < n; i++ {
 		t := cands[i].t
-		ap := combat.NewCircleHitOnTarget(t, nil, 5)
+		ap := combat.NewCircleHitOnTarget(t, nil, 1.2) // Couldn't find anywhere in dm
 		c.Core.QueueAttack(ai, ap, hitDelay, hitDelay)
 	}
 }
