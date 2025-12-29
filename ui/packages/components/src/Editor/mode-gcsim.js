@@ -136,6 +136,7 @@ ace.define(
         'faruzan',
         'fischl',
         'fish',
+        'flins',
         'freminet',
         'furina',
         'furinadefontaine',
