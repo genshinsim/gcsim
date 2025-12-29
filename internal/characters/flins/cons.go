@@ -165,10 +165,9 @@ func (c *char) c6Init() {
 
 	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) bool {
 		atk := args[0].(*info.AttackEvent)
-		switch atk.Info.AttackTag {
-		case attacks.AttackTagDirectLunarCharged:
-		case attacks.AttackTagReactionLunarCharge:
-		default:
+
+		// don't apply elevation to the reaction attack, since the subcomponent contributor attacks each got elevation applied already
+		if atk.Info.AttackTag != attacks.AttackTagDirectLunarCharged {
 			return false
 		}
 
@@ -184,4 +183,23 @@ func (c *char) c6Init() {
 		atk.Info.Elevation += other
 		return false
 	}, c6Key)
+
+	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) bool {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCharge {
+			return false
+		}
+
+		if atk.Info.ActorIndex == c.Index() {
+			atk.Info.Elevation += flins
+			return false
+		}
+
+		if c.Core.Player.GetMoonsignLevel() < 2 {
+			return false
+		}
+
+		atk.Info.Elevation += other
+		return false
+	}, c6Key+"-lc-atk")
 }
