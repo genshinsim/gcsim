@@ -1,0 +1,151 @@
+id: 10000120
+key: "flins"
+rarity: QUALITY_ORANGE
+body: BODY_MALE
+region: ASSOC_TYPE_NODKRAI
+element: Electric
+weapon_class: WEAPON_POLE
+icon_name: "UI_AvatarIcon_Flins"
+stats: {
+   base_hp: 972.3864
+   base_atk: 27.3714
+   base_def: 62.94116
+   hp_curve: GROW_CURVE_HP_S5
+   atk_curve: GROW_CURVE_ATTACK_S5
+   def_cruve: GROW_CURVE_HP_S5
+   promo_data: {
+      max_level: 20
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+      }
+   }
+   promo_data: {
+      max_level: 40
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 833.7334
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 53.9676
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 23.466785
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+      }
+   }
+   promo_data: {
+      max_level: 50
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 1426.1229
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 92.313
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 40.140556
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.096
+      }
+   }
+   promo_data: {
+      max_level: 60
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2215.9756
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 143.4402
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 62.372246
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.192
+      }
+   }
+   promo_data: {
+      max_level: 70
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 2808.3652
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 181.7856
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 79.04601
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.192
+      }
+   }
+   promo_data: {
+      max_level: 80
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 3400.7546
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 220.131
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 95.71979
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.288
+      }
+   }
+   promo_data: {
+      max_level: 90
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+         value: 3993.1443
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+         value: 258.4764
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 112.393555
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL_HURT
+         value: 0.384
+      }
+   }
+}
+skill_details: {
+   skill: 11202
+   burst: 11205
+   attack: 11201
+   burst_energy_cost: 80
+}
+name_text_hash_map: 1804674810
