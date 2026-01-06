@@ -43,7 +43,7 @@ func (c *char) a1() {
 		// add shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: c.Index(),
-			Target:     active.Index(),
+			Target:     -1,
 			Src:        c.Core.F,
 			ShieldType: shield.NoelleA1,
 			Name:       "Devotion (Shield)",
