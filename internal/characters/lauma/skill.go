@@ -1,6 +1,8 @@
 package lauma
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -9,22 +11,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var skillFrames [][]int
 
 const (
+	skillTicks                        = 8
+	skillFirstTickDelay               = 62
 	skillPressHitmark                 = 16
-	frostgroveSanctuaryFirstHitPress  = 31
-	frostgroveSanctuaryFirstHitHold   = 24
 	frostgroveSanctuaryInterval       = 117
 	skillHoldHitmark                  = 45
 	skillConsumeDew                   = 29
-	skillOffset                       = 0
 	frostgroveSanctuaryKey            = "lauma-frostgrove-sanctuary"
 	frostgroveSanctuaryParticleICDKey = "lauma-frostgrove-sanctuary-particle-icd"
 	laumaC4RefundKey                  = "lauma-c4-refund"
-	verdantDewKey                     = "verdant-dew"
+	c6SkillHitName                    = "Frostgrove Sanctuary C6"
+	moonSongAddedKey                  = "moon-song-added"
 )
 
 func init() {
@@ -52,17 +55,26 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 56
 }
 
+func ceil(x float64) int {
+	return int(math.Ceil(x))
+}
+
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.AddStatus(c1Key, 20*60, true)
 	c.AddStatus(frostgroveSanctuaryKey, 15*60, true)
 	c.AddStatus(a1Key, 20*60, true)
 
 	if c.Base.Cons >= 6 {
-		c.c6SkillPaleHymnCount = 8
-		c.removeC6PaleHymn()
+		c.c6SkillPaleHymnCount = 0
+		c.c6PaleHymnStacks.Clear()
 	}
 
-	if p["hold"] == 0 || int(c.Core.Flags.Custom[verdantDewKey]) == 0 {
+	c.skillSrc = c.Core.F
+	for i := 0.0; i < skillTicks; i++ {
+		c.Core.Tasks.Add(c.frostgroveSantuaryTick(c.skillSrc), skillFirstTickDelay+ceil(frostgroveSanctuaryInterval*i))
+	}
+
+	if p["hold"] == 0 || int(c.Core.Flags.Custom[reactable.VerdantDewKey]) == 0 {
 		return c.skillPress()
 	}
 	return c.skillHold()
@@ -85,14 +97,13 @@ func (c *char) skillPress() (action.Info, error) {
 		ai,
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
-			info.Point{Y: skillOffset},
-			info.Point{Y: skillOffset},
+			c.Core.Combat.Player().Pos(),
+			nil,
 			6,
 		),
 		skillPressHitmark,
 		skillPressHitmark,
-		c.frostgroveSantuary,
-		c.applySkillShred,
+		c.applySkillShredCB,
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
@@ -108,7 +119,7 @@ func (c *char) skillPress() (action.Info, error) {
 func (c *char) skillHold() (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Runo: Dawnless Rest of Karsikko (Hold Hit 1)",
+		Abil:       "Runo: Dawnless Rest of Karsikko",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -120,7 +131,7 @@ func (c *char) skillHold() (action.Info, error) {
 
 	aiDirectLB := info.AttackInfo{
 		ActorIndex:       c.Index(),
-		Abil:             "Runo: Dawnless Rest of Karsikko (Hold Hit 2)",
+		Abil:             "Runo: Dawnless Rest of Karsikko (Lunar-Bloom)",
 		AttackTag:        attacks.AttackTagDirectLunarBloom,
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
@@ -134,31 +145,30 @@ func (c *char) skillHold() (action.Info, error) {
 		ai,
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
-			info.Point{Y: skillOffset},
-			info.Point{Y: skillOffset},
+			c.Core.Combat.Player().Pos(),
+			nil,
 			6,
 		),
 		skillHoldHitmark,
 		skillHoldHitmark,
-		c.frostgroveSantuary,
-		c.applySkillShred,
+		c.applySkillShredCB,
 	)
 
-	c.Core.Tasks.Add(func() {
-		dewCount := c.Core.Flags.Custom[verdantDewKey]
+	c.QueueCharTask(func() {
+		dewCount := c.Core.Flags.Custom[reactable.VerdantDewKey]
 
 		aiDirectLB.Mult = skillHold2[c.TalentLvlSkill()] * dewCount
 
-		c.Core.Flags.Custom[verdantDewKey] -= dewCount
+		c.Core.Flags.Custom[reactable.VerdantDewKey] = 0.0
 
-		c.moonSong(int(dewCount))
+		c.handleMoonSong(int(dewCount))
 
 		c.Core.QueueAttack(
 			aiDirectLB,
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
-				info.Point{Y: skillOffset},
-				info.Point{Y: skillOffset},
+				c.Core.Combat.Player().Pos(),
+				nil,
 				6,
 			),
 			skillHoldHitmark-skillConsumeDew,
@@ -176,106 +186,73 @@ func (c *char) skillHold() (action.Info, error) {
 	}, nil
 }
 
-func (c *char) moonSong(dewCount int) {
-	if !c.StatusIsActive(burstKey) {
+func (c *char) handleMoonSong(dewCount int) {
+	if c.StatusIsActive(burstKey) && !c.StatusIsActive(moonSongAddedKey) {
+		c.addPaleHymn(dewCount * 6)
+		c.AddStatus(moonSongAddedKey, c.StatusDuration(burstKey), true)
 		return
 	}
 
-	c.addPaleHymn(dewCount*6, false)
+	if c.moonSong < dewCount {
+		c.moonSong = dewCount
+	}
 }
 
-func (c *char) applySkillShred(a info.AttackCB) {
+func (c *char) applySkillShredCB(a info.AttackCB) {
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
 	shredAmount := skillResShred[c.TalentLvlSkill()]
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("lauma-skill-shred", 10*60),
+		Base:  modifier.NewBaseWithHitlag("lauma-skill-shred-dendro", 10*60),
 		Ele:   attributes.Dendro,
 		Value: -shredAmount,
 	})
 	e.AddResistMod(info.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("lauma-skill-shred", 10*60),
+		Base:  modifier.NewBaseWithHitlag("lauma-skill-shred-hydro", 10*60),
 		Ele:   attributes.Hydro,
 		Value: -shredAmount,
 	})
 }
 
-func (c *char) frostgroveSantuary(a info.AttackCB) {
-	// TODO: check if frostgrove sanctuary gets overriden by skill while it's active
-
-	ai := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Frostgrove Sanctuary",
-		AttackTag:  attacks.AttackTagElementalArtHold,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       frostgroveSanctuaryAtk[c.TalentLvlSkill()],
-	}
-
-	frostgroveSanctuaryFirstHit := frostgroveSanctuaryFirstHitPress
-	if a.AttackEvent.Info.Abil == "Runo: Dawnless Rest of Karsikko (Hold Hit 1)" {
-		frostgroveSanctuaryFirstHit = frostgroveSanctuaryFirstHitHold
-	}
-
-	c.Core.Tasks.Add(func() {
-		c.frostgroveSantuary(a)
-	}, frostgroveSanctuaryInterval)
-
-	em := c.Stat(attributes.EM)
-	ai.FlatDmg = em * frostgroveSanctuaryEM[c.TalentLvlSkill()]
-
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			info.Point{Y: skillOffset},
-			info.Point{Y: skillOffset},
-			6,
-		),
-		frostgroveSanctuaryFirstHit,
-		frostgroveSanctuaryFirstHit,
-		c.particleCB,
-		c.applySkillShred,
-		c.c4Refund,
-	)
-
-	if c.Base.Cons >= 6 {
-		if c.c6SkillPaleHymnCount <= 0 {
+func (c *char) frostgroveSantuaryTick(src int) func() {
+	return func() {
+		if src != c.skillSrc {
 			return
 		}
 
-		c.c6SkillPaleHymnCount--
-
-		aiC6 := info.AttackInfo{
-			ActorIndex:       c.Index(),
-			Abil:             "Frostgrove Sanctuary C6",
-			AttackTag:        attacks.AttackTagDirectLunarBloom,
-			ICDTag:           attacks.ICDTagNone,
-			ICDGroup:         attacks.ICDGroupDefault,
-			StrikeType:       attacks.StrikeTypeDefault,
-			Element:          attributes.Dendro,
-			Durability:       0,
-			UseEM:            true,
-			Mult:             1.85,
-			IgnoreDefPercent: 1,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Frostgrove Sanctuary",
+			AttackTag:  attacks.AttackTagElementalArtHold,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
+			Element:    attributes.Dendro,
+			Durability: 25,
+			Mult:       frostgroveSanctuaryAtk[c.TalentLvlSkill()],
 		}
+
+		em := c.Stat(attributes.EM)
+		ai.FlatDmg = em * frostgroveSanctuaryEM[c.TalentLvlSkill()]
+
 		c.Core.QueueAttack(
-			aiC6,
+			ai,
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
-				info.Point{Y: skillOffset},
-				info.Point{Y: skillOffset},
+				c.Core.Combat.Player().Pos(),
+				nil,
 				6,
 			),
-			frostgroveSanctuaryFirstHit,
-			frostgroveSanctuaryFirstHit,
-			c.addC6PaleHymn,
+			0,
+			0,
+			c.particleCB,
+			c.applySkillShredCB,
+			c.c4RefundCB,
 		)
+
+		c.c6OnFrostgroveTick()
 	}
 }
 

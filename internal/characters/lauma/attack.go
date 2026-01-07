@@ -49,14 +49,16 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	if c.Base.Cons >= 6 && len(c.paleHymnStacks) != 0 {
+	if c.Base.Cons >= 6 && !(c.paleHymnStacks.Len() == 0 && c.c6PaleHymnStacks.Len() == 0) {
 		ai.Abil = "Normal C6 Pale Hymn"
 		ai.AttackTag = attacks.AttackTagDirectLunarBloom
 		ai.Durability = 0
 		ai.Mult = 1.5
 		ai.IgnoreDefPercent = 1
+		ai.UseEM = true
+		ai.ICDTag = attacks.ICDTagNone
 
-		c.paleHymnStacks = c.paleHymnStacks[:1]
+		c.consumePaleHymn()
 	}
 
 	c.Core.QueueAttack(

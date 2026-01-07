@@ -3,6 +3,7 @@ package lauma
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -12,11 +13,16 @@ import (
 )
 
 const (
-	c1Key     = "lauma-threads-of-life"
-	c1HitMark = 5
+	c1Key            = "lauma-threads-of-life"
+	c1HitMark        = 5
+	c6ElevationBonus = 0.25
 )
 
 func (c *char) c1() {
+	if c.Base.Cons < 1 {
+		return
+	}
+
 	// on lb proc heal
 	c.Core.Events.Subscribe(event.OnLunarBloom, func(args ...any) bool {
 		if !c.StatusIsActive(c1Key) {
@@ -37,29 +43,34 @@ func (c *char) c1() {
 			})
 		}, c1HitMark)
 
-		c.Core.Tasks.Add(func() {
+		c.QueueCharTask(func() {
 			c.c1()
-		}, 19*6)
+		}, 1.9*60)
 
 		return true
 	}, "lauma-c1")
 }
 
+func (c *char) c1OnBurst() {
+	if c.Base.Cons < 1 {
+		return
+	}
+
+	c.AddStatus(c1Key, 20*60, true)
+}
+
 func (c *char) c2() {
-	// if !c.ascendantGleam {
-	// 	return
-	// }
+	if c.Base.Cons < 2 {
+		return
+	}
+	if !c.ascendantGleam {
+		return
+	}
 
 	bonus := 0.4
 
 	for _, x := range c.Core.Player.Chars() {
-		this := x
-		// special case if applying 4 Noblesse to holder to fix this mess:
-		// https://library.keqingmains.com/evidence/general-mechanics/bugs#noblesse-oblige-4pc-bonus-not-applying-to-some-bursts
-		// https://docs.google.com/spreadsheets/d/1jhIP3C6B16nL1unX9DL_-LhSNaOy_wwhdr29pzikpcg/edit?usp=sharing
-		// TODO: Does the char snapshot 4 Noblesse if 4 Noblesse is already up and they're refreshing the duration? (rn they would snapshot it)
-
-		this.AddReactBonusMod(character.ReactBonusMod{
+		x.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("lauma-c2-lunarbloom-buff", -1),
 			Amount: func(atk info.AttackInfo) (float64, bool) {
 				if atk.AttackTag != attacks.AttackTagDirectLunarBloom {
@@ -71,7 +82,17 @@ func (c *char) c2() {
 	}
 }
 
-func (c *char) c4Refund(a info.AttackCB) {
+func (c *char) c2PaleHymnScaling(isLunar bool) float64 {
+	if c.Base.Cons < 2 {
+		return 0
+	}
+	if isLunar {
+		return 4
+	}
+	return 5
+}
+
+func (c *char) c4RefundCB(a info.AttackCB) {
 	if c.Base.Cons < 4 {
 		return
 	}
@@ -82,7 +103,19 @@ func (c *char) c4Refund(a info.AttackCB) {
 	c.AddStatus(laumaC4RefundKey, 5*60, true)
 }
 
+func (c *char) addC6PaleHymnCB(a info.AttackCB) {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	c.addC6PaleHymn(2)
+}
+
 func (c *char) c6Elevation() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
 	if !c.ascendantGleam {
 		return
 	}
@@ -90,19 +123,52 @@ func (c *char) c6Elevation() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 
-		switch atk.Info.AttackTag {
-		case attacks.AttackTagDirectLunarBloom:
-		default:
+		if atk.Info.AttackTag != attacks.AttackTagDirectLunarBloom {
 			return false
 		}
 
-		bonus := 0.25
-
 		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("lauma-c6-elevation", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+			c.Core.Log.NewEvent("lauma-c6-elevation", glog.LogCharacterEvent, c.Index()).Write("bonus", c6ElevationBonus)
 		}
 
-		atk.Info.Elevation += bonus
+		atk.Info.Elevation += c6ElevationBonus
 		return false
-	}, lunarbloomBonusKey)
+	}, lunarbloomBonusKey+"-c6")
+}
+
+func (c *char) c6OnFrostgroveTick() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	if c.c6SkillPaleHymnCount > 7 {
+		return
+	}
+
+	c.c6SkillPaleHymnCount++
+
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
+		Abil:             c6SkillHitName,
+		AttackTag:        attacks.AttackTagDirectLunarBloom,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Element:          attributes.Dendro,
+		Durability:       0,
+		UseEM:            true,
+		Mult:             1.85,
+		IgnoreDefPercent: 1,
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.Player().Pos(),
+			nil,
+			6,
+		),
+		0,
+		0,
+		c.addC6PaleHymnCB,
+	)
 }

@@ -88,7 +88,6 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupPoleExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupReactionA] = []float64{1, 1, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupReactionB] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
 	// actual data: {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0}
 	// however there seems to be no limit to the amount of burning dmg a target can take
 	ICDGroupDamageSequence[ICDGroupBurning] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}

@@ -1,6 +1,8 @@
 package lauma
 
 import (
+	"github.com/gammazero/deque"
+
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -17,8 +19,11 @@ type char struct {
 	*tmpl.Character
 	ascendantGleam       bool
 	deerStateReady       bool
+	skillSrc             int
+	moonSong             int
 	c6SkillPaleHymnCount int
-	paleHymnStacks       []paleHymnStack
+	paleHymnStacks       deque.Deque[int]
+	c6PaleHymnStacks     deque.Deque[int]
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -30,7 +35,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.SkillCon = 5
 	c.BurstCon = 3
 	c.deerStateReady = true
-	c.c6SkillPaleHymnCount = 8
 
 	w.Character = &c
 	w.Moonsign = 1
@@ -52,22 +56,16 @@ func (c *char) Init() error {
 		c.ascendantGleam = false
 	}
 
-	c.a1()
-	c.a4()
+	c.a1Init()
+	c.a4Init()
 
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
+	c.c1()
+	c.c2()
+	c.c6Elevation()
 
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
+	c.initBurst()
 
-	if c.Base.Cons >= 6 {
-		c.c6Elevation()
-	}
-
-	c.setupPaleHymnBuff()
+	c.chargeInit()
 
 	return nil
 }
@@ -85,4 +83,11 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
+}
+
+func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
+	if a == action.ActionCharge && c.deerStateReady {
+		return 0
+	}
+	return c.Character.ActionStam(a, p)
 }

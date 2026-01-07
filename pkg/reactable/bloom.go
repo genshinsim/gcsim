@@ -44,13 +44,14 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
-	if _, ok := r.core.Flags.Custom[LunarBloomEnableKey]; ok {
+	_, lunarBloomEnabled := r.core.Flags.Custom[LunarBloomEnableKey]
+	if lunarBloomEnabled {
 		r.lunarBloom()
 	}
 	r.addBloomGadget(a)
 
 	bloomEvent := event.OnBloom
-	if r.core.Flags.Custom[LunarBloomEnableKey] != 0 {
+	if lunarBloomEnabled {
 		bloomEvent = event.OnLunarBloom
 	}
 
@@ -73,13 +74,14 @@ func (r *Reactable) tryQuickenBloom(a *info.AttackEvent) {
 	consumed := r.reduce(attributes.Hydro, avail, 2)
 	r.reduceMod(info.ReactionModKeyQuicken, consumed)
 
-	if _, ok := r.core.Flags.Custom[LunarBloomEnableKey]; ok {
+	_, lunarBloomEnabled := r.core.Flags.Custom[LunarBloomEnableKey]
+	if lunarBloomEnabled {
 		r.lunarBloom()
 	}
 	r.addBloomGadget(a)
 
 	bloomEvent := event.OnBloom
-	if r.core.Flags.Custom[LunarBloomEnableKey] != 0 {
+	if lunarBloomEnabled {
 		bloomEvent = event.OnLunarBloom
 	}
 

@@ -15,10 +15,9 @@ import (
 const (
 	lunarbloomBonusKey = "lauma-lunarbloom-bonus"
 	a1Key              = "light-for-the-frosty-night"
-	nextDewFrameKey    = "verdant-dew-next"
 )
 
-func (c *char) a1() {
+func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -81,15 +80,17 @@ func (c *char) a1Ascendant() {
 
 		ae.Snapshot.Stats[attributes.CR] += 0.1
 		ae.Snapshot.Stats[attributes.CD] += 0.2
-
-		c.Core.Log.NewEvent("lauma a1 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
-			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("lauma a1 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
+				Write("final_critrate", ae.Snapshot.Stats[attributes.CR]).
+				Write("final_critdmg", ae.Snapshot.Stats[attributes.CD])
+		}
 
 		return false
 	}, "lauma-a1-reaction-dmg-buff")
 }
 
-func (c *char) a4() {
+func (c *char) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}
@@ -112,11 +113,6 @@ func (c *char) a4() {
 func (c *char) lunarbloomInit() {
 	c.Core.Flags.Custom[reactable.LunarBloomEnableKey] = 1
 
-	c.Core.Flags.Custom[nextDewFrameKey] = 150
-
-	// TODO: moonsign?
-
-	// TODO: every 1 EM that Lauma has increasing Lunar-Bloom's Base DMG by 0.0175%, up to a maximum of 14%.
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
 		atk := args[1].(*info.AttackEvent)
 
@@ -136,4 +132,13 @@ func (c *char) lunarbloomInit() {
 		atk.Info.BaseDmgBonus += bonus
 		return false
 	}, lunarbloomBonusKey)
+}
+
+func (c *char) a4SpiritEnvoyCooldownReduction() float64 {
+	if c.Base.Ascension < 4 {
+		return 1.0
+	}
+
+	em := c.Stat(attributes.EM)
+	return 1.0 - min(0.2, em*0.0002)
 }
