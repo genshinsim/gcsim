@@ -8,9 +8,8 @@ import (
 
 const (
 	maxVerdantDew        = 3
-	verdantDewStartFrame = 13
-	verdantDewEndFrame   = 140
-	nextDewFrameRefresh  = 150
+	dewFrameGainDuration = 150 // 2.5 seconds
+	nextDewFrameRefresh  = 156 // 2.6 seconds
 	LbKey                = "lunar-bloom"
 	VerdantDewKey        = "verdant-dew"
 	nextDewFrameKey      = "verdant-dew-next"
@@ -26,10 +25,10 @@ func (r *Reactable) lunarBloom() {
 	}
 
 	if r.core.Status.Duration(LbKey) == 0 {
-		r.core.Tasks.Add(r.addDew(), verdantDewStartFrame)
+		r.core.Tasks.Add(r.addDew(), 1)
 	}
 
-	r.core.Status.Add(LbKey, verdantDewEndFrame)
+	r.core.Status.Add(LbKey, dewFrameGainDuration)
 }
 
 func (r *Reactable) addDew() func() {
