@@ -44,6 +44,8 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		a = atk.Snapshot.Stats.MaxHP()
 	case atk.Info.UseDef:
 		a = atk.Snapshot.Stats.TotalDEF()
+	case atk.Info.UseEM:
+		a = atk.Snapshot.Stats[attributes.EM]
 	default:
 		a = atk.Snapshot.Stats.TotalATK()
 	}
@@ -123,6 +125,9 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		x *= 3.0
 	}
 
+	elevation := atk.Info.Elevation
+	damage *= 1 + elevation
+
 	if e.Core.Flags.LogDebug {
 		e.Core.Log.NewEvent(
 			atk.Info.Abil,
@@ -172,6 +177,8 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("em_bonus", emBonus).
 			Write("react_bonus", reactBonus).
 			Write("amp_mult_total", (atk.Info.AmpMult*(1+emBonus+reactBonus))).
+			Write("react_base_dmg_bonus", atk.Info.BaseDmgBonus).
+			Write("elevation_bonus", elevation).
 			Write("pre_crit_dmg_react", precritdmg*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("dmg_if_crit_react", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("avg_crit_dmg_react", ((1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]))*(atk.Info.AmpMult*(1+emBonus+reactBonus))).

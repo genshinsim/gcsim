@@ -17,6 +17,7 @@ var dendroEvents = []event.Event{
 	event.OnBloom,
 	event.OnHyperbloom,
 	event.OnBurgeon,
+	event.OnLunarBloom,
 }
 
 func init() {

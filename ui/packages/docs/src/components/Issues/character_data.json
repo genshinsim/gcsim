@@ -8,6 +8,9 @@
   "kinich": [
     "The actual Kinich's circular movement is not simulated, so Loop Shots/Scalespiker Cannon will damage the Primary target, which does not depend on attack angle."
   ],
+  "lauma": [
+    "Spirit envoy state jump is not implemented."
+  ],
   "xianyun": [
     "Not all characters can plunge after a Adeptal Assistance boosted jump"
   ]
