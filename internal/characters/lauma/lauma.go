@@ -17,13 +17,14 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	ascendantGleam       bool
-	deerStateReady       bool
-	skillSrc             int
-	moonSong             int
-	c6SkillPaleHymnCount int
-	paleHymnStacks       deque.Deque[int]
-	c6PaleHymnStacks     deque.Deque[int]
+	ascendantGleam   bool
+	deerStateReady   bool
+	skillSrc         int
+	moonSong         int
+	moonSongSrc      int
+	paleHymnStacks   deque.Deque[int]
+	c6PaleHymnCount  int
+	c6PaleHymnExpiry int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -35,6 +36,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.SkillCon = 5
 	c.BurstCon = 3
 	c.deerStateReady = true
+	c.moonSongSrc = -1
 
 	w.Character = &c
 	w.Moonsign = 1

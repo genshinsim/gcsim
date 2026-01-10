@@ -109,6 +109,10 @@ func (c *char) chargeInit() {
 			return false
 		}
 
+		if c.Core.Player.Active() != c.Index() {
+			return false
+		}
+
 		a := args[1].(action.Action)
 		if a == action.ActionJump || a == action.ActionWalk {
 			return false
@@ -129,7 +133,7 @@ func (c *char) chargeInit() {
 		c.endDeerState()
 
 		return false
-	}, "lauma-exit-deer-state")
+	}, "lauma-exit-deer-state-swap")
 }
 
 func (c *char) deerStateStaminaBleed() {
@@ -140,14 +144,25 @@ func (c *char) deerStateStaminaBleed() {
 	if c.Core.Player.Stam < staminaCost {
 		c.endDeerState()
 	}
-	c.Core.Player.UseStam(staminaCost, action.ActionWait)
+	c.Core.Player.UseStam(staminaCost, action.ActionCharge)
 	c.Core.Tasks.Add(c.deerStateStaminaBleed, 1)
 }
 
 func (c *char) endDeerState() {
 	c.DeleteStatus(deerStatusKey)
+	cd := int(4 * 60 * c.a4SpiritEnvoyCooldownReduction())
+	if c.Core.Flags.LogDebug {
+		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), "spirit envoy cooldown triggered").
+			Write("type", "charge").
+			Write("expiry", c.Core.F+cd).
+			Write("original_cd", c.Core.F+cd)
+	}
+
 	c.Core.Tasks.Add(func() {
 		c.deerStateReady = true
-		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), "spirit envoy cooldown ready")
-	}, int(4*60*c.a4SpiritEnvoyCooldownReduction()))
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), "spirit envoy cooldown ready").
+				Write("type", "charge")
+		}
+	}, cd)
 }

@@ -136,5 +136,5 @@ type ReactableLunarCharged interface {
 }
 
 type ReactableLunarBloom interface {
-	GetVerdantDew() int
+	LunarBloom()
 }

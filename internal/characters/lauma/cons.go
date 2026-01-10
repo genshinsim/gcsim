@@ -82,13 +82,19 @@ func (c *char) c2() {
 	}
 }
 
-func (c *char) c2PaleHymnScaling(isLunar bool) float64 {
+func (c *char) c2PaleHymnScalingLunar() float64 {
 	if c.Base.Cons < 2 {
 		return 0
 	}
-	if isLunar {
-		return 4
+
+	return 4
+}
+
+func (c *char) c2PaleHymnScalingNonLunar() float64 {
+	if c.Base.Cons < 2 {
+		return 0
 	}
+
 	return 5
 }
 
@@ -140,11 +146,11 @@ func (c *char) c6OnFrostgroveTick() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	if c.c6SkillPaleHymnCount > 7 {
+	if c.c6PaleHymnCount > 7 {
 		return
 	}
 
-	c.c6SkillPaleHymnCount++
+	c.c6PaleHymnCount++
 
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),

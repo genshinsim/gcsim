@@ -49,7 +49,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	if c.paleHymnStacks.Len() != 0 || c.c6PaleHymnStacks.Len() != 0 && c.Base.Cons >= 6 {
+	if c.Base.Cons >= 6 && c.paleHymnCount() > 0 {
 		ai.Abil = "Normal C6 Pale Hymn"
 		ai.AttackTag = attacks.AttackTagDirectLunarBloom
 		ai.Durability = 0

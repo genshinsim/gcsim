@@ -46,7 +46,7 @@ func (r *Reactable) TryBloom(a *info.AttackEvent) bool {
 	a.Reacted = true
 	_, lunarBloomEnabled := r.core.Flags.Custom[LunarBloomEnableKey]
 	if lunarBloomEnabled {
-		r.lunarBloom()
+		r.LunarBloom()
 	}
 	r.addBloomGadget(a)
 
@@ -76,7 +76,7 @@ func (r *Reactable) tryQuickenBloom(a *info.AttackEvent) {
 
 	_, lunarBloomEnabled := r.core.Flags.Custom[LunarBloomEnableKey]
 	if lunarBloomEnabled {
-		r.lunarBloom()
+		r.LunarBloom()
 	}
 	r.addBloomGadget(a)
 

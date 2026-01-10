@@ -25,6 +25,7 @@ func (c *char) a1Init() {
 	if c.ascendantGleam {
 		c.a1Ascendant()
 	} else {
+		// we must have nascent because lauma contributes one moonsign herself
 		c.a1Nascent()
 	}
 }
