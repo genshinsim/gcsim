@@ -24,9 +24,12 @@ import (
 )
 
 const (
-	MaxStam      = 240
-	StamCDFrames = 90
-	SwapCDFrames = 60
+	MaxStam            = 240
+	StamCDFrames       = 90
+	SwapCDFrames       = 60
+	MaxVerdantDew      = 3
+	verdantDewEndFrame = 150
+	maxPartialDew      = 156
 )
 
 type Handler struct {
@@ -64,6 +67,10 @@ type Handler struct {
 		Param  map[string]int
 		Char   int
 	}
+
+	verdantDewExpiryFrame int
+	verdantDew            int
+	partialDewCount       int
 }
 
 type Opt struct {
@@ -310,9 +317,40 @@ func (h *Handler) Tick() {
 	}
 	h.Shields.Tick()
 	h.AnimationHandler.Tick()
+
+	if h.verdantDewExpiryFrame <= *h.F {
+		h.partialDewCount++
+		if h.partialDewCount >= maxPartialDew {
+			h.AddVerdantDew()
+			h.partialDewCount -= maxPartialDew
+		}
+	}
+
 	for _, c := range h.chars {
 		c.Tick()
 	}
+}
+
+func (h *Handler) AddVerdantDew() {
+	if h.verdantDew >= MaxVerdantDew {
+		return
+	}
+	h.verdantDew++
+
+	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
+}
+
+func (h *Handler) OnLunarBloom() {
+	h.verdantDewExpiryFrame = *h.F + verdantDewEndFrame
+}
+
+func (h *Handler) VerdantDew() int {
+	return h.verdantDew
+}
+
+func (h *Handler) ConsumeVerdantDew(amt int) {
+	h.verdantDew = max(h.verdantDew-amt, 0)
+	h.Log.NewEvent(fmt.Sprintf("%v verdant dew consumed: %v", amt, h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 }
 
 type AirborneSource int
