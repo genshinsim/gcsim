@@ -59,3 +59,15 @@ const (
 	AdditionalTagNightsoul
 	AdditionalTagKinichCannon
 )
+
+func AttackTagIsLunar(tag AttackTag) bool {
+	return AttackTagIsDirectLunar(tag) || AttackTagIsLunar(tag)
+}
+
+func AttackTagIsReactionLunar(tag AttackTag) bool {
+	return LunarReactionStartDelim < tag && tag < LunarReactionEndDelim
+}
+
+func AttackTagIsDirectLunar(tag AttackTag) bool {
+	return DirectLunarReactionStartDelim < tag && tag < DirectLunarReactionEndDelim
+}

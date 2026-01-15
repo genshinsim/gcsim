@@ -350,6 +350,7 @@ func (h *Handler) AddVerdantDew() {
 	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 }
 
+// returns the number of verdant dew the player has
 func (h *Handler) VerdantDew() int {
 	return h.verdantDew
 }

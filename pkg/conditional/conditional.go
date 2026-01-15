@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -41,7 +40,7 @@ func Eval(c *core.Core, fields []string) (any, error) {
 	case "gadgets":
 		return evalGadgets(c, fields)
 	case "verdant-dew":
-		return int(c.Flags.Custom[reactable.VerdantDewKey]), nil
+		return c.Player.VerdantDew(), nil
 	case "keys":
 		return evalKeys(fields)
 	case "state":
