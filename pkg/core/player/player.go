@@ -28,8 +28,8 @@ const (
 	StamCDFrames       = 90
 	SwapCDFrames       = 60
 	MaxVerdantDew      = 3
-	verdantDewEndFrame = 150
-	maxPartialDew      = 156
+	verdantDewEndFrame = 149
+	maxPartialDew      = 146
 )
 
 type Handler struct {
@@ -318,17 +318,27 @@ func (h *Handler) Tick() {
 	h.Shields.Tick()
 	h.AnimationHandler.Tick()
 
-	if h.verdantDewExpiryFrame <= *h.F {
-		h.partialDewCount++
-		if h.partialDewCount >= maxPartialDew {
-			h.AddVerdantDew()
-			h.partialDewCount -= maxPartialDew
-		}
-	}
+	h.verdantDewTick()
 
 	for _, c := range h.chars {
 		c.Tick()
 	}
+}
+
+// this has to be checked after the animation handler, since the task is set by the handler
+func (h *Handler) verdantDewTick() {
+	if h.verdantDewExpiryFrame >= *h.F {
+		h.partialDewCount++
+		if h.partialDewCount >= maxPartialDew {
+			h.AddVerdantDew()
+			h.partialDewCount = 0
+		}
+	}
+}
+
+func (h *Handler) OnLunarBloom() {
+	verdantDewEnd := *h.F + verdantDewEndFrame
+	h.Tasks.Add(func() { h.verdantDewExpiryFrame = verdantDewEnd }, 1)
 }
 
 func (h *Handler) AddVerdantDew() {
@@ -338,10 +348,6 @@ func (h *Handler) AddVerdantDew() {
 	h.verdantDew++
 
 	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
-}
-
-func (h *Handler) OnLunarBloom() {
-	h.verdantDewExpiryFrame = *h.F + verdantDewEndFrame
 }
 
 func (h *Handler) VerdantDew() int {
