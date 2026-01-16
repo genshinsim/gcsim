@@ -38,7 +38,7 @@ func (c *char) c2() {
 		}
 
 		switch ae.Info.AttackTag {
-		case attacks.AttackTagBurningDamage | attacks.AttackTagBloom | attacks.AttackTagHyperbloom | attacks.AttackTagBurgeon:
+		case attacks.AttackTagBurningDamage, attacks.AttackTagBloom, attacks.AttackTagHyperbloom, attacks.AttackTagBurgeon, attacks.AttackTagBountifulCore:
 			// TODO: should this really be +=??
 			ae.Snapshot.Stats[attributes.CR] += 0.2
 			ae.Snapshot.Stats[attributes.CD] = 1
