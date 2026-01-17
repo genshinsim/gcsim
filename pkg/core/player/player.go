@@ -327,18 +327,29 @@ func (h *Handler) Tick() {
 
 // this has to be checked after the animation handler, since the task is set by the handler
 func (h *Handler) verdantDewTick() {
-	if h.verdantDewExpiryFrame >= *h.F {
-		h.partialDewCount++
-		if h.partialDewCount >= maxPartialDew {
-			h.AddVerdantDew()
-			h.partialDewCount = 0
-		}
+	if h.verdantDew >= 3 {
+		return
+	}
+
+	if h.verdantDewExpiryFrame < *h.F {
+		return
+	}
+
+	h.partialDewCount++
+	if h.partialDewCount >= maxPartialDew {
+		h.AddVerdantDew()
+		h.partialDewCount = 0
 	}
 }
 
 func (h *Handler) OnLunarBloom() {
 	verdantDewEnd := *h.F + verdantDewEndFrame
 	h.Tasks.Add(func() { h.verdantDewExpiryFrame = verdantDewEnd }, 1)
+}
+
+// sets verdant dew to an amt between 0 and 3, inclusive.
+func (h *Handler) SetVerdantDew(amt int) {
+	h.verdantDew = max(min(amt, 3), 0)
 }
 
 func (h *Handler) AddVerdantDew() {

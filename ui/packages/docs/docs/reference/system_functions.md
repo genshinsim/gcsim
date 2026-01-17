@@ -277,6 +277,27 @@ set_swap_icd(0);
 
 :::
 
+## set_starting_verdant_dew
+
+```
+set_starting_verdant_dew(arg1);
+```
+
+- `set_starting_verdant_dew` will set the starting verdant dew for the player to a number between 0 and 3, inclusive.
+- If `set_starting_verdant_dew` is called after frame 1, and error will be returned.
+- If `arg1` evaluates to a number that is not an integer between 0 and 3, an error will be returned.
+- `set_starting_verdant_dew` will always evaluate to 0.
+
+:::danger `arg1` must be a number or an expression that evaluates to a number. :::
+
+:::info Example:
+
+```
+set_starting_verdant_dew(3);
+```
+
+:::
+
 ## set_default_target
 
 ```
