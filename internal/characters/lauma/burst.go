@@ -139,10 +139,8 @@ func (c *char) consumePaleHymn() {
 func (c *char) removeExpiredPaleHymn() {
 	currentFrame := c.TimePassed
 
-	for c.paleHymnStacks.Len() > 0 {
-		if c.paleHymnStacks.Front() < currentFrame {
-			c.paleHymnStacks.PopFront()
-		}
+	for c.paleHymnStacks.Len() > 0 && c.paleHymnStacks.Front() < currentFrame {
+		c.paleHymnStacks.PopFront()
 	}
 
 	if c.c6PaleHymnExpiry < currentFrame {
