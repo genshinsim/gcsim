@@ -61,12 +61,7 @@ func ceil(x float64) int {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.AddStatus(c1Key, 20*60, true)
 	c.AddStatus(a1Key, 20*60, true)
-
-	if c.Base.Cons >= 6 {
-		c.c6PaleHymnCount = 0
-		c.c6PaleHymnExpiry = -1
-	}
-
+	c.c6OnSkill()
 	c.AddStatus(frostgroveSanctuaryKey, 15*60, true)
 	c.skillSrc = c.Core.F
 	for i := 0.0; i < skillTicks; i++ {

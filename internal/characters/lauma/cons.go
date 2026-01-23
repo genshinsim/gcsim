@@ -117,7 +117,7 @@ func (c *char) addC6PaleHymnCB(a info.AttackCB) {
 	c.addC6PaleHymn(2)
 }
 
-func (c *char) c6Elevation() {
+func (c *char) c6Init() {
 	if c.Base.Cons < 6 {
 		return
 	}
@@ -142,15 +142,26 @@ func (c *char) c6Elevation() {
 	}, lunarbloomBonusKey+"-c6")
 }
 
+func (c *char) c6OnSkill() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	// TODO: Does this clear immediately on skill use?
+	c.c6PaleHymnExpiry = -1
+	c.paleHymnStacksSrcC6.Clear()
+	c.c6Count = 0
+}
+
 func (c *char) c6OnFrostgroveTick() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	if c.c6PaleHymnCount > 7 {
+
+	if c.c6Count >= 8 {
 		return
 	}
 
-	c.c6PaleHymnCount++
+	c.c6Count++
 
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
