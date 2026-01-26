@@ -80,6 +80,14 @@
       "image_name": "UI_EquipIcon_Bow_Qoyllorsnova",
       "name_text_hash_map ": "1363661611"
     },
+    "athameartis": {
+      "id": 11518,
+      "key": "athameartis",
+      "rarity": 5,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Motsognir",
+      "name_text_hash_map ": "4099034547"
+    },
     "athousandblazingsuns": {
       "id": 12514,
       "key": "athousandblazingsuns",
@@ -288,14 +296,6 @@
       "image_name": "UI_EquipIcon_Sword_Darker",
       "name_text_hash_map ": "160493219"
     },
-    "dawningfrost": {
-      "id": 14434,
-      "key": "dawningfrost",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Ziedas",
-      "name_text_hash_map ": "3497155131"
-    },
     "deathmatch": {
       "id": 13405,
       "key": "deathmatch",
@@ -503,6 +503,14 @@
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Vorpal",
       "name_text_hash_map ": "800766043"
+    },
+    "flameforgedinsight": {
+      "id": 12432,
+      "key": "flameforgedinsight",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_LunaI",
+      "name_text_hash_map ": "2236302324"
     },
     "fleuvecendreferryman": {
       "id": 11426,
@@ -968,6 +976,14 @@
       "image_name": "UI_EquipIcon_Pole_Mechanic",
       "name_text_hash_map ": "882305891"
     },
+    "prospectorsshovel": {
+      "id": 13433,
+      "key": "prospectorsshovel",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Ilmarinen",
+      "name_text_hash_map ": "2225698043"
+    },
     "prototypeamber": {
       "id": 14406,
       "key": "prototypeamber",
@@ -1111,14 +1127,6 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Recluse",
       "name_text_hash_map ": "3169209451"
-    },
-    "sacrificersstaff": {
-      "id": 13434,
-      "key": "sacrificersstaff",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Krivule",
-      "name_text_hash_map ": "980370707"
     },
     "sacrificialbow": {
       "id": 15403,

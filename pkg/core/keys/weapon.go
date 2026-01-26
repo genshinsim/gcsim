@@ -43,6 +43,7 @@ var weaponNames = []string{
 	"aquilafavonia",
 	"ashgravendrinkinghorn",
 	"astralvulturescrimsonplumage",
+	"athameartis",
 	"athousandblazingsuns",
 	"athousandfloatingdreams",
 	"azurelight",
@@ -69,7 +70,6 @@ var weaponNames = []string{
 	"crescentpike",
 	"crimsonmoonssemblance",
 	"darkironsword",
-	"dawningfrost",
 	"deathmatch",
 	"debateclub",
 	"dialoguesofthedesertsages",
@@ -96,6 +96,7 @@ var weaponNames = []string{
 	"festeringdesire",
 	"filletblade",
 	"finaleofthedeep",
+	"flameforgedinsight",
 	"fleuvecendreferryman",
 	"flowerwreathedfeathers",
 	"fluteofezpitzal",
@@ -154,6 +155,7 @@ var weaponNames = []string{
 	"primordialjadecutter",
 	"primordialjadewingedspear",
 	"prospectorsdrill",
+	"prospectorsshovel",
 	"prototypeamber",
 	"prototypearchaic",
 	"prototypecrescent",
@@ -172,7 +174,6 @@ var weaponNames = []string{
 	"royallongsword",
 	"royalspear",
 	"rust",
-	"sacrificersstaff",
 	"sacrificialbow",
 	"sacrificialfragments",
 	"sacrificialgreatsword",
@@ -261,6 +262,7 @@ const (
 	AquilaFavonia
 	AshGravenDrinkingHorn
 	AstralVulturesCrimsonPlumage
+	AthameArtis
 	AThousandBlazingSuns
 	AThousandFloatingDreams
 	Azurelight
@@ -287,7 +289,6 @@ const (
 	CrescentPike
 	CrimsonMoonsSemblance
 	DarkIronSword
-	DawningFrost
 	Deathmatch
 	DebateClub
 	DialoguesOfTheDesertSages
@@ -314,6 +315,7 @@ const (
 	FesteringDesire
 	FilletBlade
 	FinaleOfTheDeep
+	FlameForgedInsight
 	FleuveCendreFerryman
 	FlowerWreathedFeathers
 	FluteOfEzpitzal
@@ -372,6 +374,7 @@ const (
 	PrimordialJadeCutter
 	PrimordialJadeWingedSpear
 	ProspectorsDrill
+	ProspectorsShovel
 	PrototypeAmber
 	PrototypeArchaic
 	PrototypeCrescent
@@ -390,7 +393,6 @@ const (
 	RoyalLongsword
 	RoyalSpear
 	Rust
-	SacrificersStaff
 	SacrificialBow
 	SacrificialFragments
 	SacrificialGreatsword
