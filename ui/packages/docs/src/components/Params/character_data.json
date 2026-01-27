@@ -858,6 +858,13 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "lauma": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold. Tap skill will be used when verdant dew is insufficient."
+    }
+  ],
   "layla": [
     {
       "ability": "burst",
