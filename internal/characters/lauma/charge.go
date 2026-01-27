@@ -144,7 +144,7 @@ func (c *char) deerStateStaminaBleed() {
 	if c.Core.Player.Stam < staminaCost {
 		c.endDeerState()
 	}
-	c.Core.Player.UseStam(staminaCost, action.ActionCharge)
+	c.Core.Player.UseStam(staminaCost, action.ActionWait)
 	c.Core.Tasks.Add(c.deerStateStaminaBleed, 1)
 }
 
