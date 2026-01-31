@@ -68,6 +68,7 @@ export interface AvatarStatsData {
   atk_curve?: AvatarCurveType | undefined;
   def_cruve?: AvatarCurveType | undefined;
   promo_data?: PromotionData[] | undefined;
+  element_mastery?: number | undefined;
 }
 
 export interface AvatarSkillsData {
@@ -594,7 +595,16 @@ export const AvatarData = {
 };
 
 function createBaseAvatarStatsData(): AvatarStatsData {
-  return { base_hp: 0, base_atk: 0, base_def: 0, hp_curve: 0, atk_curve: 0, def_cruve: 0, promo_data: [] };
+  return {
+    base_hp: 0,
+    base_atk: 0,
+    base_def: 0,
+    hp_curve: 0,
+    atk_curve: 0,
+    def_cruve: 0,
+    promo_data: [],
+    element_mastery: 0,
+  };
 }
 
 export const AvatarStatsData = {
@@ -621,6 +631,9 @@ export const AvatarStatsData = {
       for (const v of message.promo_data) {
         PromotionData.encode(v!, writer.uint32(58).fork()).ldelim();
       }
+    }
+    if (message.element_mastery !== undefined && message.element_mastery !== 0) {
+      writer.uint32(65).double(message.element_mastery);
     }
     return writer;
   },
@@ -681,6 +694,13 @@ export const AvatarStatsData = {
 
           message.promo_data!.push(PromotionData.decode(reader, reader.uint32()));
           continue;
+        case 8:
+          if (tag !== 65) {
+            break;
+          }
+
+          message.element_mastery = reader.double();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -701,6 +721,7 @@ export const AvatarStatsData = {
       promo_data: globalThis.Array.isArray(object?.promo_data)
         ? object.promo_data.map((e: any) => PromotionData.fromJSON(e))
         : [],
+      element_mastery: isSet(object.element_mastery) ? globalThis.Number(object.element_mastery) : 0,
     };
   },
 
@@ -727,6 +748,9 @@ export const AvatarStatsData = {
     if (message.promo_data?.length) {
       obj.promo_data = message.promo_data.map((e) => PromotionData.toJSON(e));
     }
+    if (message.element_mastery !== undefined && message.element_mastery !== 0) {
+      obj.element_mastery = message.element_mastery;
+    }
     return obj;
   },
 
@@ -742,6 +766,7 @@ export const AvatarStatsData = {
     message.atk_curve = object.atk_curve ?? 0;
     message.def_cruve = object.def_cruve ?? 0;
     message.promo_data = object.promo_data?.map((e) => PromotionData.fromPartial(e)) || [];
+    message.element_mastery = object.element_mastery ?? 0;
     return message;
   },
 };
