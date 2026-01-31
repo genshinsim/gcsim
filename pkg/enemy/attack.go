@@ -24,6 +24,16 @@ var particleIDToElement = []attributes.Element{
 }
 
 func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
+	grp_mult := 1.0
+
+	if !atk.Info.SourceIsSim {
+		grp_mult = e.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
+	}
+
+	if grp_mult > 0 {
+		e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
+	}
+
 	var amp string
 	var cata string
 	var dmg float64
@@ -41,20 +51,12 @@ func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 		Write("source_frame", atk.SourceFrame)
 	evt.WriteBuildMsg(atk.Snapshot.Logs...)
 
-	grp_mult := 1.0
 	if !atk.Info.SourceIsSim {
 		if atk.Info.ActorIndex < 0 {
 			log.Println(atk)
 		}
 		preDmgModDebug := e.Core.Combat.Team.CombatByIndex(atk.Info.ActorIndex).ApplyAttackMods(atk, e)
 		evt.Write("pre_damage_mods", preDmgModDebug)
-
-		grp_mult = e.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
-	}
-
-	// at this point attack will land and do damage
-	if grp_mult > 0 {
-		e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
 	}
 
 	dmg, crit = e.attack(atk, evt, grp_mult)
