@@ -24,9 +24,6 @@ var particleIDToElement = []attributes.Element{
 }
 
 func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
-	// at this point attack will land
-	e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
-
 	var amp string
 	var cata string
 	var dmg float64
@@ -44,15 +41,23 @@ func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 		Write("source_frame", atk.SourceFrame)
 	evt.WriteBuildMsg(atk.Snapshot.Logs...)
 
+	grp_mult := 1.0
 	if !atk.Info.SourceIsSim {
 		if atk.Info.ActorIndex < 0 {
 			log.Println(atk)
 		}
 		preDmgModDebug := e.Core.Combat.Team.CombatByIndex(atk.Info.ActorIndex).ApplyAttackMods(atk, e)
 		evt.Write("pre_damage_mods", preDmgModDebug)
+
+		grp_mult = e.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
 	}
 
-	dmg, crit = e.attack(atk, evt)
+	// at this point attack will land and do damage
+	if grp_mult > 0 {
+		e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
+	}
+
+	dmg, crit = e.attack(atk, evt, grp_mult)
 
 	// delay damage event to end of the frame
 	e.Core.Combat.Tasks.Add(func() {
@@ -84,7 +89,7 @@ func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 	return dmg
 }
 
-func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
+func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event, grp_mult float64) (float64, bool) {
 	// if target is frozen prior to attack landing, set impulse to 0
 	// let the break freeze attack to trigger actual impulse
 	if e.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
@@ -135,7 +140,7 @@ func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 		}
 	}
 
-	damage, isCrit := e.calc(atk, evt)
+	damage, isCrit := e.calc(atk, evt, grp_mult)
 
 	// check for hitlag
 	if e.Core.Combat.EnableHitlag {
