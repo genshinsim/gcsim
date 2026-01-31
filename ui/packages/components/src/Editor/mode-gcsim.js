@@ -173,6 +173,7 @@ ace.define(
         'kunikuzushi',
         'kusanali',
         'lanyan',
+        'lauma',
         'layla',
         'lesserlordkusanali',
         'lisa',
