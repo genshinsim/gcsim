@@ -133,6 +133,7 @@ func (c *char) skillHold() (action.Info, error) {
 		Element:          attributes.Dendro,
 		UseEM:            true,
 		IgnoreDefPercent: 1,
+		Mult:             skillHold2[c.TalentLvlSkill()],
 	}
 
 	c.Core.QueueAttack(

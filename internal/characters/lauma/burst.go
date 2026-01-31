@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -65,7 +66,6 @@ func (c *char) initBurst() {
 		if c.paleHymnCount() <= 0 {
 			return false
 		}
-		c.consumePaleHymn()
 
 		ae := args[1].(*info.AttackEvent)
 		em := c.Stat(attributes.EM)
@@ -83,6 +83,11 @@ func (c *char) initBurst() {
 
 		if ae.Info.Abil == c6SkillHitName {
 			return false
+		}
+
+		c.consumePaleHymn()
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("lauma pale hymn consumed", glog.LogCharacterEvent, c.Index()).Write("remaining", c.paleHymnCount())
 		}
 
 		return false
