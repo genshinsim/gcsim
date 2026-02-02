@@ -99,6 +99,7 @@ func (c *char) c4() {
 	}
 	c.Core.Events.Subscribe(event.OnBurning, f, "tighnari-c4-burning")
 	c.Core.Events.Subscribe(event.OnBloom, f, "tighnari-c4-bloom")
+	c.Core.Events.Subscribe(event.OnLunarBloom, f, "tighnari-c4-lunarbloom")
 	c.Core.Events.Subscribe(event.OnQuicken, f, "tighnari-c4-quicken")
 	c.Core.Events.Subscribe(event.OnSpread, f, "tighnari-c4-spread")
 }

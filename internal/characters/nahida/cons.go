@@ -33,26 +33,24 @@ func (c *char) c2() {
 		}
 		ae := args[1].(*info.AttackEvent)
 
-		switch ae.Info.AttackTag {
-		case attacks.AttackTagBurningDamage:
-		case attacks.AttackTagBloom:
-		case attacks.AttackTagHyperbloom:
-		case attacks.AttackTagBurgeon:
-		default:
-			return false
-		}
-
 		if !t.StatusIsActive(skillMarkKey) {
 			return false
 		}
 
-		// TODO: should this really be +=??
-		ae.Snapshot.Stats[attributes.CR] += 0.2
-		ae.Snapshot.Stats[attributes.CD] += 1
+		switch ae.Info.AttackTag {
+		case attacks.AttackTagBurningDamage, attacks.AttackTagBloom, attacks.AttackTagHyperbloom, attacks.AttackTagBurgeon, attacks.AttackTagBountifulCore:
+			// TODO: should this really be +=??
+			ae.Snapshot.Stats[attributes.CR] += 0.2
+			ae.Snapshot.Stats[attributes.CD] = 1
+		case attacks.AttackTagDirectLunarBloom:
+			ae.Snapshot.Stats[attributes.CR] += 0.1
+			ae.Snapshot.Stats[attributes.CD] += 0.2
+		default:
+			return false
+		}
 
 		c.Core.Log.NewEvent("nahida c2 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
 			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
-
 		return false
 	}, "nahida-c2-reaction-dmg-buff")
 

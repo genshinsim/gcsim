@@ -39,6 +39,8 @@ func Eval(c *core.Core, fields []string) (any, error) {
 		return evalConstruct(c, fields)
 	case "gadgets":
 		return evalGadgets(c, fields)
+	case "verdant-dew":
+		return c.Player.VerdantDew(), nil
 	case "keys":
 		return evalKeys(fields)
 	case "state":
