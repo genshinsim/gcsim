@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grp_mult float64) (float64, bool) {
+func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (float64, bool) {
 	var isCrit bool
 
 	if attacks.AttackTagIsDirectLunar(atk.Info.AttackTag) {
@@ -113,7 +113,7 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grp_mult float64) (f
 	elevation := atk.Info.Elevation
 	damage *= 1 + elevation
 
-	damage *= grp_mult
+	damage *= grpMult
 
 	if e.Core.Flags.LogDebug {
 		evt := e.Core.Log.NewEvent(
@@ -122,7 +122,7 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grp_mult float64) (f
 			atk.Info.ActorIndex,
 		).
 			Write("src_frame", atk.SourceFrame).
-			Write("damage_grp_mult", grp_mult).
+			Write("damage_grp_mult", grpMult).
 			Write("damage", damage).
 			Write("abil", atk.Info.Abil)
 		addScalingInfo(evt, atk).
