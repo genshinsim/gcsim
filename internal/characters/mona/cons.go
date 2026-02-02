@@ -16,8 +16,9 @@ import (
 )
 
 const (
-	c4key = "mona-c4"
-	c6Key = "mona-c6"
+	c2icdkey = "mona-c2-icd"
+	c4key    = "mona-c4"
+	c6Key    = "mona-c6"
 )
 
 // C1:
@@ -78,34 +79,49 @@ func (c *char) c1() {
 // C2:
 // When a Normal Attack hits, there is a 20% chance that it will be automatically followed by a Charged Attack.
 // This effect can only occur once every 5s.
-func (c *char) c2(a info.AttackCB) {
-	trg := a.Target
+func (c *char) c2() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	if a.Target.Type() != info.TargettableEnemy {
-		return
-	}
-	if c.Core.Rand.Float64() > .2 {
-		return
-	}
-	if c.c2icd > c.Core.F {
-		return
-	}
-	c.c2icd = c.Core.F + 300 // every 5 seconds
-	ai := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Charge Attack",
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Hydro,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
-	}
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		trg, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 0)
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != c.Index() {
+			return false
+		}
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
+			return false
+		}
+
+		if c.Core.Rand.Float64() > .2 {
+			return false
+		}
+		if c.StatusIsActive(c2icdkey) {
+			return false
+		}
+		c.AddStatus(c2icdkey, 5*60, true)
+
+		c.QueueCharTask(func() {
+			ai := info.AttackInfo{
+				ActorIndex: c.Index(),
+				Abil:       "Charge Attack",
+				AttackTag:  attacks.AttackTagExtra,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Element:    attributes.Hydro,
+				Durability: 25,
+				Mult:       charge[c.TalentLvlAttack()],
+			}
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 0)
+		}, .7*60)
+
+		return false
+	}, "mona-c2-followup")
 }
 
 // C4:

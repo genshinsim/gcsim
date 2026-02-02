@@ -25,11 +25,9 @@ var particleIDToElement = []attributes.Element{
 
 func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 	grpMult := 1.0
-
 	if !atk.Info.SourceIsSim {
 		grpMult = e.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
 	}
-
 	if grpMult > 0 {
 		e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
 	}
