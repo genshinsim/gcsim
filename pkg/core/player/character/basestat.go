@@ -76,6 +76,7 @@ func AvatarBaseStat(char info.CharacterBase, data *model.AvatarData) ([]float64,
 	res[attributes.BaseHP] = data.Stats.BaseHp * model.AvatarGrowCurveByLvl[lvl][data.Stats.HpCurve]
 	res[attributes.BaseATK] = data.Stats.BaseAtk * model.AvatarGrowCurveByLvl[lvl][data.Stats.AtkCurve]
 	res[attributes.BaseDEF] = data.Stats.BaseDef * model.AvatarGrowCurveByLvl[lvl][data.Stats.DefCruve]
+	res[attributes.EM] = data.Stats.ElementMastery
 	// default er/cr/cd
 	res[attributes.ER] += 1
 	res[attributes.CD] += 0.5
