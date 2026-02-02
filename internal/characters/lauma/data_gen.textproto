@@ -141,6 +141,7 @@ stats: {
          value: 115.2
       }
    }
+   element_mastery: 200
 }
 skill_details: {
    skill: 11192
