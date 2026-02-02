@@ -34,8 +34,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	w.buff = make([]float64, attributes.EndStatType)
-	atkBuff := 0.08 + 0.02*float64(r)
-	erBuff := 0.06 + 0.015*float64(r)
+	atkBuff := 0.06 + 0.02*float64(r)
+	erBuff := 0.045 + 0.015*float64(r)
 
 	// add on hit effect
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
 		}
-		w.stacks = max(w.stacks+1, 3)
+		w.stacks = min(w.stacks+1, 3)
 		w.buff[attributes.ATKP] = atkBuff * float64(w.stacks)
 		w.buff[attributes.ER] = erBuff * float64(w.stacks)
 
