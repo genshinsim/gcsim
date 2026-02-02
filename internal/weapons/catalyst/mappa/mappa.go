@@ -71,7 +71,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}
 
-	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, addStack, "mappa-mare-"+char.Base.Key.String())
 	}
 
