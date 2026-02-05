@@ -1024,6 +1024,14 @@
       "image_name": "UI_EquipIcon_Pole_Proto",
       "name_text_hash_map ": "1154009435"
     },
+    "rainbowserpentbow": {
+      "id": 15434,
+      "key": "rainbowserpentbow",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_ElegguaBow",
+      "name_text_hash_map ": "2320082227"
+    },
     "rainslasher": {
       "id": 12405,
       "key": "rainslasher",
