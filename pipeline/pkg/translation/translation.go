@@ -19,7 +19,7 @@ type GeneratorConfig struct {
 	Weapons    []*model.WeaponData
 	Artifacts  []*model.ArtifactData
 	Enemies    []*model.MonsterData
-	Languages  map[string]string // map of languages and their corresponding textmap
+	Languages  map[string][]string // map of languages and their corresponding textmap
 }
 
 func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
