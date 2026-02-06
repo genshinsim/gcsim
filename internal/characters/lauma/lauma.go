@@ -1,8 +1,6 @@
 package lauma
 
 import (
-	"github.com/gammazero/deque"
-
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -17,15 +15,15 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	ascendantGleam      bool
-	deerStateReady      bool
-	skillSrc            int
-	moonSong            int
-	moonSongSrc         int
-	c6Count             int
-	paleHymnStacksSrc   deque.Deque[int]
-	paleHymnStacksSrcC6 deque.Deque[int]
-	c6PaleHymnExpiry    int
+	ascendantGleam bool
+	deerStateReady bool
+	skillSrc       int
+	moonSong       int
+	moonSongSrc    int
+	c6Count        int
+
+	paleHymn    [3]int
+	paleHymnSrc [3]int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

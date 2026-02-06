@@ -146,9 +146,10 @@ func (c *char) c6OnSkill() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	// TODO: Does this clear immediately on skill use?
-	c.c6PaleHymnExpiry = -1
-	c.paleHymnStacksSrcC6.Clear()
+	// TODO: Does clearing on skill use have a delay?
+	c.DeleteStatus(paleHymnC6Key)
+	c.paleHymn[paleHymnC6] = 0
+	c.paleHymnSrc[paleHymnC6] = 0
 	c.c6Count = 0
 }
 
@@ -184,8 +185,8 @@ func (c *char) c6OnFrostgroveTick() {
 			nil,
 			6,
 		),
-		0,
-		0,
+		16, // 0.26s delay from DM
+		16,
 		c.addC6PaleHymnCB,
 	)
 }

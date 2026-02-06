@@ -15,6 +15,16 @@ var burstFrames []int
 
 const paleHymnDur = 15 * 60
 
+const (
+	paleHymnC6       = 0
+	paleHymnMoonsong = 1
+	paleHymnBurst    = 2
+
+	paleHymnC6Key       = "lauma-pale-hymn-c6"
+	paleHymnMoonsongKey = "lauma-pale-hymn-moonsong"
+	paleHymnBurstKey    = "lauma-pale-hymn-burst"
+)
+
 func init() {
 	burstFrames = frames.InitAbilSlice(115) // Q -> walk
 	burstFrames[action.ActionAttack] = 111
@@ -36,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.DeleteStatus(moonSongIcdKey)
 	c.Core.Tasks.Add(func() {
 		c.c1OnBurst()
-		c.addPaleHymn(18)
+		c.addPaleHymnBurst(18)
 
 		c.AddStatus(burstKey, paleHymnDur, true) // should this be here?
 		c.moonSongOnBurst()
@@ -95,66 +105,59 @@ func (c *char) initBurst() {
 }
 
 func (c *char) paleHymnCount() int {
-	c.removeExpiredPaleHymn()
-	return c.paleHymnStacksSrc.Len() + c.paleHymnStacksSrcC6.Len()
+	return c.paleHymn[paleHymnBurst] + c.paleHymn[paleHymnMoonsong] + c.paleHymn[paleHymnC6]
 }
 
-func (c *char) addPaleHymn(amount int) {
-	startFrame := c.TimePassed
+func (c *char) addPaleHymnBurst(amount int) {
+	ind := paleHymnBurst
+	c.paleHymn[ind] += amount
+	c.paleHymnSrc[ind] = c.Core.F
+	c.AddStatus(paleHymnBurstKey, paleHymnDur, true)
+	c.QueueCharTask(c.removeExpiredPaleHymn(c.paleHymnSrc[ind], ind), paleHymnDur)
+}
 
-	for range amount {
-		c.paleHymnStacksSrc.PushBack(startFrame)
-	}
-	c.QueueCharTask(c.removeExpiredPaleHymn, paleHymnDur+1)
+func (c *char) addPaleHymnMoonsong(amount int) {
+	ind := paleHymnMoonsong
+	c.paleHymn[ind] += amount
+	c.paleHymnSrc[ind] = c.Core.F
+	c.AddStatus(paleHymnMoonsongKey, paleHymnDur, true)
+	c.QueueCharTask(c.removeExpiredPaleHymn(c.paleHymnSrc[ind], ind), paleHymnDur)
 }
 
 func (c *char) addC6PaleHymn(amount int) {
-	startFrame := c.TimePassed
-	for range amount {
-		c.paleHymnStacksSrcC6.PushBack(startFrame)
-	}
-	c.c6PaleHymnExpiry = c.TimePassed + paleHymnDur
-	c.QueueCharTask(c.removeExpiredPaleHymn, paleHymnDur+1)
+	ind := paleHymnC6
+	c.paleHymn[ind] += amount
+	c.paleHymnSrc[ind] = c.Core.F
+	c.AddStatus(paleHymnC6Key, paleHymnDur, true)
+	c.QueueCharTask(c.removeExpiredPaleHymn(c.paleHymnSrc[ind], ind), paleHymnDur)
 }
 
 // attempts to consume a pale hymn.
 func (c *char) consumePaleHymn() {
-	c.removeExpiredPaleHymn()
-	if c.paleHymnStacksSrc.Len() == 0 && c.paleHymnStacksSrcC6.Len() == 0 {
-		// error?
-		// panic("consumePaleHymn() called on without Pale Hymn stacks")
+	if c.paleHymn[paleHymnC6] > 0 {
+		c.paleHymn[paleHymnC6]--
 		return
 	}
 
-	if c.paleHymnStacksSrc.Len() == 0 {
-		c.paleHymnStacksSrcC6.PopFront()
+	if c.paleHymn[paleHymnMoonsong] > 0 {
+		c.paleHymn[paleHymnMoonsong]--
 		return
 	}
 
-	if c.paleHymnStacksSrcC6.Len() == 0 {
-		c.paleHymnStacksSrc.PopFront()
+	if c.paleHymn[paleHymnBurst] > 0 {
+		c.paleHymn[paleHymnBurst]--
 		return
 	}
 
-	// pop whichever one is closer to expiry
-	paleHymnSrc := c.paleHymnStacksSrc.Front()
-	paleHymnSrcC6 := c.paleHymnStacksSrcC6.Front()
-
-	if paleHymnSrc < paleHymnSrcC6 {
-		c.paleHymnStacksSrc.PopFront()
-	} else {
-		c.paleHymnStacksSrcC6.PopFront()
-	}
+	// err or panic?
+	// panic("consumePaleHymn called when there are no pale hymn stacks")
 }
 
-func (c *char) removeExpiredPaleHymn() {
-	currentFrame := c.TimePassed
-
-	for c.paleHymnStacksSrc.Len() > 0 && c.paleHymnStacksSrc.Front()+paleHymnDur < currentFrame {
-		c.paleHymnStacksSrc.PopFront()
-	}
-
-	if c.c6PaleHymnExpiry < currentFrame {
-		c.paleHymnStacksSrcC6.Clear()
+func (c *char) removeExpiredPaleHymn(src, index int) func() {
+	return func() {
+		if c.paleHymnSrc[index] != src {
+			return
+		}
+		c.paleHymn[index] = 0
 	}
 }
