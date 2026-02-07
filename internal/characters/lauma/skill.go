@@ -185,7 +185,7 @@ func (c *char) addMoonSong(moonsong int) {
 	}
 
 	if c.StatusIsActive(burstKey) && !c.StatusIsActive(moonSongIcdKey) {
-		c.addPaleHymnMoonsong(moonsong * 6)
+		c.setPaleHymnMoonsong(moonsong * 6)
 		c.AddStatus(moonSongIcdKey, c.StatusDuration(burstKey), true)
 		c.moonSong = 0
 		c.moonSongSrc = -1
@@ -217,7 +217,7 @@ func (c *char) moonSongOnBurst() {
 		return
 	}
 
-	c.addPaleHymnMoonsong(c.moonSong * 6)
+	c.setPaleHymnMoonsong(c.moonSong * 6)
 	c.AddStatus(moonSongIcdKey, c.StatusDuration(burstKey), true)
 	c.moonSong = 0
 	c.moonSongSrc = -1

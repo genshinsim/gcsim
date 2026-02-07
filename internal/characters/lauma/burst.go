@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.DeleteStatus(moonSongIcdKey)
 	c.Core.Tasks.Add(func() {
 		c.c1OnBurst()
-		c.addPaleHymnBurst(18)
+		c.setPaleHymnBurst(18)
 
 		c.AddStatus(burstKey, paleHymnDur, true) // should this be here?
 		c.moonSongOnBurst()
@@ -108,17 +108,17 @@ func (c *char) paleHymnCount() int {
 	return c.paleHymn[paleHymnBurst] + c.paleHymn[paleHymnMoonsong] + c.paleHymn[paleHymnC6]
 }
 
-func (c *char) addPaleHymnBurst(amount int) {
+func (c *char) setPaleHymnBurst(amount int) {
 	ind := paleHymnBurst
-	c.paleHymn[ind] += amount
+	c.paleHymn[ind] = amount
 	c.paleHymnSrc[ind] = c.Core.F
 	c.AddStatus(paleHymnBurstKey, paleHymnDur, true)
 	c.QueueCharTask(c.removeExpiredPaleHymn(c.paleHymnSrc[ind], ind), paleHymnDur)
 }
 
-func (c *char) addPaleHymnMoonsong(amount int) {
+func (c *char) setPaleHymnMoonsong(amount int) {
 	ind := paleHymnMoonsong
-	c.paleHymn[ind] += amount
+	c.paleHymn[ind] = amount
 	c.paleHymnSrc[ind] = c.Core.F
 	c.AddStatus(paleHymnMoonsongKey, paleHymnDur, true)
 	c.QueueCharTask(c.removeExpiredPaleHymn(c.paleHymnSrc[ind], ind), paleHymnDur)
