@@ -68,7 +68,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			info.Point{Y: 0},
+			nil,
 			2.8,
 			8,
 		),

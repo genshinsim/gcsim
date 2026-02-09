@@ -1,7 +1,7 @@
 package lauma
 
 import (
-	"math"
+	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -54,23 +54,20 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 56
 }
 
-func ceil(x float64) int {
-	return int(math.Ceil(x))
-}
-
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.AddStatus(c1Key, 20*60, true)
 	c.AddStatus(a1Key, 20*60, true)
 	c.c6OnSkill()
 	c.AddStatus(frostgroveSanctuaryKey, 15*60, true)
 	c.skillSrc = c.Core.F
-	for i := 0.0; i < skillTicks; i++ {
-		c.QueueCharTask(c.frostgroveSantuaryTick(c.skillSrc), skillFirstTickDelay+ceil(frostgroveSanctuaryInterval*i))
+	for i := range skillTicks {
+		c.QueueCharTask(c.frostgroveSantuaryTick(c.skillSrc), skillFirstTickDelay+frostgroveSanctuaryInterval*i)
 	}
 
-	if p["hold"] == 0 || c.Core.Player.VerdantDew() > 0 {
+	if p["hold"] == 0 {
 		return c.skillPress()
 	}
+
 	return c.skillHold()
 }
 
@@ -111,6 +108,10 @@ func (c *char) skillPress() (action.Info, error) {
 }
 
 func (c *char) skillHold() (action.Info, error) {
+	if c.Core.Player.VerdantDew() <= 0 {
+		return action.Info{}, fmt.Errorf("%v: Cannot use Skill Hold without Verdant Dew", c.Base.Key)
+	}
+
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Hymn of Eternal Rest (Hold)",
@@ -150,7 +151,7 @@ func (c *char) skillHold() (action.Info, error) {
 	)
 
 	c.QueueCharTask(func() {
-		dewCount := c.Core.Player.VerdantDew()
+		dewCount := min(c.Core.Player.VerdantDew(), 3)
 		c.Core.Player.ConsumeVerdantDew(dewCount)
 
 		aiDirectLB.Mult = skillHold2[c.TalentLvlSkill()] * float64(dewCount)

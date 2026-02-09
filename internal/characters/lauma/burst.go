@@ -45,11 +45,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.DeleteStatus(burstKey)
 	c.DeleteStatus(moonSongIcdKey)
 	c.Core.Tasks.Add(func() {
-		c.c1OnBurst()
 		c.setPaleHymnBurst(18)
-
-		c.AddStatus(burstKey, paleHymnDur, true) // should this be here?
+		c.AddStatus(burstKey, paleHymnDur, true)
 		c.moonSongOnBurst()
+		c.c1OnBurst()
 	}, paleHymnGainFrame)
 
 	c.ConsumeEnergy(8)
@@ -81,7 +80,7 @@ func (c *char) initBurst() {
 		em := c.Stat(attributes.EM)
 
 		switch ae.Info.AttackTag {
-		case attacks.AttackTagBountifulCore | attacks.AttackTagBloom | attacks.AttackTagHyperbloom | attacks.AttackTagBurgeon:
+		case attacks.AttackTagBountifulCore, attacks.AttackTagBloom, attacks.AttackTagHyperbloom, attacks.AttackTagBurgeon:
 			ae.Info.FlatDmg += em * bloomDmgIncrease[c.TalentLvlBurst()]
 			ae.Info.FlatDmg += em * c.c2PaleHymnScalingNonLunar()
 		case attacks.AttackTagDirectLunarBloom:

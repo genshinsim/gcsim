@@ -15,7 +15,6 @@ var (
 	attackFrames [][]int
 
 	attackHitmarks = []int{14, 11, 16}
-	attackOffsets  = []float64{0, 0, 0}
 	attackHitboxes = [][]float64{{2, 8}, {2, 8}, {2.8, 8}}
 )
 
@@ -66,7 +65,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			info.Point{Y: attackOffsets[c.NormalCounter]},
+			nil,
 			attackHitboxes[c.NormalCounter][0],
 			attackHitboxes[c.NormalCounter][1],
 		),
