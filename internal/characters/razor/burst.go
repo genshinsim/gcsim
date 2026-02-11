@@ -99,6 +99,10 @@ func (c *char) wolfBurst(normalCounter int) func(info.AttackCB) {
 			Mult:       wolfDmg[c.TalentLvlBurst()] * a.AttackEvent.Info.Mult,
 		}
 
+		if c.Hexerei == 1 {
+			ai.FlatDmg += 0.7 * c.TotalAtk()
+		}
+
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			info.Point{Y: burstAttackOffsets[normalCounter]},

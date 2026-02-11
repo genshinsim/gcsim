@@ -11,6 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const hexereiC6BuffKey = "razor-hexerei-c6-buff"
+
 // Picking up an Elemental Orb or Particle increases Razor's DMG by 10% for 8s.
 func (c *char) c1() {
 	c.c1bonus = make([]float64, attributes.EndStatType)
@@ -98,6 +100,8 @@ func (c *char) c6cb(a info.AttackCB) {
 			return
 		}
 		c.addSigil(false)(a)
+		c.addSigilIfHexerei(false)(a)
+		c.addSigilIfHexerei(false)(a)
 	}
 
 	c.Core.QueueAttack(
@@ -107,4 +111,19 @@ func (c *char) c6cb(a info.AttackCB) {
 		1,
 		sigilcb,
 	)
+}
+
+func (c *char) c6HexereiMod() {
+	if c.Hexerei == 0 {
+		return
+	}
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.1
+	m[attributes.CD] = 0.5
+	c.AddStatMod(character.StatMod{
+		Base: modifier.NewBase(hexereiC6BuffKey, 15*60),
+		Amount: func() []float64 {
+			return m
+		},
+	})
 }
