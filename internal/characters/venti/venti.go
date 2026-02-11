@@ -23,7 +23,7 @@ type char struct {
 	c4bonus             []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -31,6 +31,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
+
+	isHexerei, ok := p.Params["is_hexerei"]
+	if ok && isHexerei != 0 {
+		c.Hexerei = 1
+	}
 
 	w.Character = &c
 
