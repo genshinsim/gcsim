@@ -148,6 +148,7 @@ ace.define(
         'herexcellencythealmightynarukamiogoshogodofthunder',
         'ht',
         'hutao',
+        'ineffa',
         'itto',
         'jean',
         'kabukimono',

@@ -30,6 +30,7 @@ const (
 	LanyanShield
 	CitlaliSkill
 	DahliaBurst
+	IneffaSkill
 	EndType
 )
 

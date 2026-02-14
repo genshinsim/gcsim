@@ -36,6 +36,7 @@ var procEvents = []event.Event{
 	event.OnAggravate,
 	event.OnSpread,
 	event.OnBloom,
+	event.OnLunarBloom,
 	event.OnHyperbloom,
 	event.OnBurgeon,
 }

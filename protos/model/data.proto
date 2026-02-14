@@ -34,6 +34,7 @@ message AvatarStatsData {
   AvatarCurveType atk_curve = 5 [ json_name = "atk_curve" ];
   AvatarCurveType def_cruve = 6 [ json_name = "def_cruve" ];
   repeated PromotionData promo_data = 7 [ json_name = "promo_data" ];
+  double element_mastery = 8 [ json_name = "element_mastery" ];
 }
 
 message AvatarSkillsData {

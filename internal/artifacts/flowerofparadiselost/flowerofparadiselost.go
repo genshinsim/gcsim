@@ -66,6 +66,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				case attacks.AttackTagBloom:
 				case attacks.AttackTagHyperbloom:
 				case attacks.AttackTagBurgeon:
+				case attacks.AttackTagDirectLunarBloom:
+					return 0.1, false
 				default:
 					return 0, false
 				}
@@ -101,6 +103,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					case attacks.AttackTagBloom:
 					case attacks.AttackTagHyperbloom:
 					case attacks.AttackTagBurgeon:
+					case attacks.AttackTagDirectLunarBloom:
+						return 0.1 * float64(s.stacks) * 0.25, false
 					default:
 						return 0, false
 					}
@@ -120,6 +124,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		c.Events.Subscribe(event.OnBloom, noGadget, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnHyperbloom, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnBurgeon, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnLunarBloom, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil
