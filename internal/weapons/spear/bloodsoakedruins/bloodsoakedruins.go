@@ -35,11 +35,9 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
+
 	energyRestore := 11 + float64(r)
-
-	mDmg := make([]float64, attributes.EndStatType)
-	mDmg[attributes.DmgP] = 0.24 + float64(r)*0.12
-
+	lcBonus := 0.24 + float64(r)*0.12
 	mCrit := make([]float64, attributes.EndStatType)
 	mCrit[attributes.CD] = 0.21 + float64(r)*0.07
 
@@ -48,13 +46,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("bloodsoakedruins-dmg", 3.5*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != attacks.AttackTagLunarCharged {
-					return nil, false
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBaseWithHitlag("bloodsoakedruins-lc", 3.5*60),
+			Amount: func(ai info.AttackInfo) (float64, bool) {
+				if ai.AttackTag != attacks.AttackTagReactionLunarCharge && ai.AttackTag != attacks.AttackTagDirectLunarCharged {
+					return 0, false
 				}
-				return mDmg, true
+				return lcBonus, false
 			},
 		})
 
@@ -63,6 +61,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnLunarCharged, func(args ...any) bool {
 		if c.Player.Active() != char.Index() {
+			return false
+		}
+
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
 
