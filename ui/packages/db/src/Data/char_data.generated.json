@@ -635,6 +635,23 @@
       },
       "name_text_hash_map ": "3277782506"
     },
+    "flins": {
+      "id": 10000120,
+      "key": "flins",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Flins",
+      "skill_details": {
+        "skill": 11202,
+        "burst": 11205,
+        "attack": 11201,
+        "burst_energy_cost": 80
+      },
+      "name_text_hash_map ": "1804674810"
+    },
     "freminet": {
       "id": 10000085,
       "key": "freminet",
@@ -753,6 +770,23 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "1940919994"
+    },
+    "ineffa": {
+      "id": 10000116,
+      "key": "ineffa",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Ineffa",
+      "skill_details": {
+        "skill": 11162,
+        "burst": 11165,
+        "attack": 11161,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2759230658"
     },
     "itto": {
       "id": 10000057,
@@ -957,6 +991,23 @@
         "burst_energy_cost": 60
       },
       "name_text_hash_map ": "1888132250"
+    },
+    "lauma": {
+      "id": 10000119,
+      "key": "lauma",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Grass",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Lauma",
+      "skill_details": {
+        "skill": 11192,
+        "burst": 11195,
+        "attack": 11191,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1776874018"
     },
     "layla": {
       "id": 10000074,

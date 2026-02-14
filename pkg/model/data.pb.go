@@ -202,15 +202,16 @@ type AvatarStatsData struct {
 	// TODO: base stat should be refactor to just an array of stats
 	// there is no requirement that base stat can only be 3 stats; in fact
 	// ER/cr/cd can be considered as base
-	BaseHp        float64          `protobuf:"fixed64,1,opt,name=base_hp,proto3" json:"base_hp,omitempty" bson:"base_hp,omitempty"`
-	BaseAtk       float64          `protobuf:"fixed64,2,opt,name=base_atk,proto3" json:"base_atk,omitempty" bson:"base_atk,omitempty"`
-	BaseDef       float64          `protobuf:"fixed64,3,opt,name=base_def,proto3" json:"base_def,omitempty" bson:"base_def,omitempty"`
-	HpCurve       AvatarCurveType  `protobuf:"varint,4,opt,name=hp_curve,proto3,enum=model.AvatarCurveType" json:"hp_curve,omitempty" bson:"hp_curve,omitempty"`
-	AtkCurve      AvatarCurveType  `protobuf:"varint,5,opt,name=atk_curve,proto3,enum=model.AvatarCurveType" json:"atk_curve,omitempty" bson:"atk_curve,omitempty"`
-	DefCruve      AvatarCurveType  `protobuf:"varint,6,opt,name=def_cruve,proto3,enum=model.AvatarCurveType" json:"def_cruve,omitempty" bson:"def_cruve,omitempty"`
-	PromoData     []*PromotionData `protobuf:"bytes,7,rep,name=promo_data,proto3" json:"promo_data,omitempty" bson:"promo_data,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	BaseHp         float64          `protobuf:"fixed64,1,opt,name=base_hp,proto3" json:"base_hp,omitempty" bson:"base_hp,omitempty"`
+	BaseAtk        float64          `protobuf:"fixed64,2,opt,name=base_atk,proto3" json:"base_atk,omitempty" bson:"base_atk,omitempty"`
+	BaseDef        float64          `protobuf:"fixed64,3,opt,name=base_def,proto3" json:"base_def,omitempty" bson:"base_def,omitempty"`
+	HpCurve        AvatarCurveType  `protobuf:"varint,4,opt,name=hp_curve,proto3,enum=model.AvatarCurveType" json:"hp_curve,omitempty" bson:"hp_curve,omitempty"`
+	AtkCurve       AvatarCurveType  `protobuf:"varint,5,opt,name=atk_curve,proto3,enum=model.AvatarCurveType" json:"atk_curve,omitempty" bson:"atk_curve,omitempty"`
+	DefCruve       AvatarCurveType  `protobuf:"varint,6,opt,name=def_cruve,proto3,enum=model.AvatarCurveType" json:"def_cruve,omitempty" bson:"def_cruve,omitempty"`
+	PromoData      []*PromotionData `protobuf:"bytes,7,rep,name=promo_data,proto3" json:"promo_data,omitempty" bson:"promo_data,omitempty"`
+	ElementMastery float64          `protobuf:"fixed64,8,opt,name=element_mastery,proto3" json:"element_mastery,omitempty" bson:"element_mastery,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *AvatarStatsData) Reset() {
@@ -290,6 +291,13 @@ func (x *AvatarStatsData) GetPromoData() []*PromotionData {
 		return x.PromoData
 	}
 	return nil
+}
+
+func (x *AvatarStatsData) GetElementMastery() float64 {
+	if x != nil {
+		return x.ElementMastery
+	}
+	return 0
 }
 
 type AvatarSkillsData struct {
@@ -1388,7 +1396,7 @@ const file_protos_model_data_proto_rawDesc = "" +
 	"\x05stats\x18\n" +
 	" \x01(\v2\x16.model.AvatarStatsDataR\x05stats\x12=\n" +
 	"\rskill_details\x18\v \x01(\v2\x17.model.AvatarSkillsDataR\rskill_details\x12/\n" +
-	"\x12name_text_hash_map\x18\f \x01(\x03R\x13name_text_hash_map \"\xb9\x02\n" +
+	"\x12name_text_hash_map\x18\f \x01(\x03R\x13name_text_hash_map \"\xe3\x02\n" +
 	"\x0fAvatarStatsData\x12\x18\n" +
 	"\abase_hp\x18\x01 \x01(\x01R\abase_hp\x12\x1a\n" +
 	"\bbase_atk\x18\x02 \x01(\x01R\bbase_atk\x12\x1a\n" +
@@ -1398,7 +1406,8 @@ const file_protos_model_data_proto_rawDesc = "" +
 	"\tdef_cruve\x18\x06 \x01(\x0e2\x16.model.AvatarCurveTypeR\tdef_cruve\x124\n" +
 	"\n" +
 	"promo_data\x18\a \x03(\v2\x14.model.PromotionDataR\n" +
-	"promo_data\"\x82\x04\n" +
+	"promo_data\x12(\n" +
+	"\x0felement_mastery\x18\b \x01(\x01R\x0felement_mastery\"\x82\x04\n" +
 	"\x10AvatarSkillsData\x12\x14\n" +
 	"\x05skill\x18\x01 \x01(\x05R\x05skill\x12\x14\n" +
 	"\x05burst\x18\x02 \x01(\x05R\x05burst\x12\x16\n" +

@@ -1,0 +1,44 @@
+package_name: lauma
+genshin_id: 10000119
+key: lauma
+action_param_keys:
+  skill:
+    - param: "hold"
+  low_plunge:
+    - param: "collision"
+  high_plunge:
+    - param: "collision"
+skill_data_mapping:
+  attack: # Peregrination of Linnunrata
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}
+    charge:
+      - 8 # Spiritcall Prayer DMG|{param8:F1P}
+    collision:
+      - 9 # Plunge DMG|{param9:F1P}
+    lowPlunge:
+      - 10 # Low/High Plunge DMG|{param10:P}/{param11:P}
+    highPlunge:
+      - 11 # Low/High Plunge DMG|{param10:P}/{param11:P}
+  skill: # Runo: Dawnless Rest of Karsikko
+    skillPress:
+      - 0 # #{LAYOUT_MOBILE#Tap}{LAYOUT_PC#Press}{LAYOUT_PS#Press} DMG|{param0:F1P}
+    skillHold1:
+      - 1 # 1-Hit Hold DMG|{param1:F1P}
+    skillHold2:
+      - 2 # 2-Hit Hold DMG|{param2:F1P} Elemental Mastery Per Verdant Dew
+    frostgroveSanctuaryAtk:
+      - 3 # Frostgrove Sanctuary Attack DMG|{param3:F1P} ATK+{param4:F1P} Elemental Mastery
+    frostgroveSanctuaryEM:
+      - 4 # Frostgrove Sanctuary Attack DMG|{param3:F1P} ATK+{param4:F1P} Elemental Mastery
+    skillResShred:
+      - 7 # Elemental RES Decrease|{param7:F1P}
+  burst: # Runo: All Hearts Become the Beating Moon
+    bloomDmgIncrease:
+      - 2 # Bloom, Hyperbloom, and Burgeon DMG Increase|{param2:F1P} Elemental Mastery
+    lunarBloomDmgIncrease:
+      - 3 # Lunar-Bloom DMG Increase|{param3:F1P} Elemental Mastery

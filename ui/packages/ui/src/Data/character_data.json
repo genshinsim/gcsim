@@ -124,6 +124,11 @@
     "element": "electro",
     "weapon_class": "bow"
   },
+  "flins": {
+    "rarity": 5,
+    "element": "electro",
+    "weapon_class": "polearm"
+  },
   "ganyu": {
     "rarity": 5,
     "element": "cryo",
@@ -142,6 +147,11 @@
   "hutao": {
     "rarity": 5,
     "element": "pyro",
+    "weapon_class": "polearm"
+  },
+  "ineffa": {
+    "rarity": 5,
+    "element": "electro",
     "weapon_class": "polearm"
   },
   "itto": {
