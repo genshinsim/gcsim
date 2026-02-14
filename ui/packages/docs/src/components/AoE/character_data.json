@@ -6066,6 +6066,72 @@
       }
     ]
   },
+  "lauma": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 2,
+        "boxY": 8
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 2,
+        "boxY": 8
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 2.8,
+        "boxY": 8
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 2.8,
+        "boxY": 8
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Press",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "E-Lunarbloom",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "E-Frostgrove",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "E-FrostgroveC6",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      }
+    ]
+  },
   "layla": {
     "normal": [
       {
