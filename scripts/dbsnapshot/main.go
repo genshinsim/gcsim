@@ -130,11 +130,12 @@ func createSnapshot(filename string, iters int) error {
 
 	bar := progressbar.Default(int64(len(entries)), "running sims")
 	for _, v := range entries {
+		bar.Add(1)
 		simResult, err := runSim(ctx, v.Config, iters)
 		if err != nil {
-			return err
+			log.Printf("Error occurred on %v: %v", v.Id, err)
+			continue
 		}
-		bar.Add(1)
 		s.results = append(s.results, simResult)
 		s.ids = append(s.ids, v.Id)
 	}

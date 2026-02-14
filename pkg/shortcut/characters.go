@@ -187,4 +187,6 @@ var CharNameToKey = map[string]keys.Char{
 	"escoffier":               keys.Escoffier,
 	"esco":                    keys.Escoffier,
 	"varesa":                  keys.Varesa,
+	"lauma":                   keys.Lauma,
+	"ineffa":                  keys.Ineffa,
 }

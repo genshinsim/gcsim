@@ -20,7 +20,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	a4Stats  []float64
-	c2icd    int
 	c6Src    int
 	c6Stacks int
 }
@@ -34,8 +33,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.c2icd = -1
-
 	w.Character = &c
 
 	return nil
@@ -47,6 +44,9 @@ func (c *char) Init() error {
 	c.a4()
 	if c.Base.Cons >= 1 {
 		c.c1()
+	}
+	if c.Base.Cons >= 2 {
+		c.c2()
 	}
 	if c.Base.Cons >= 4 {
 		c.c4()
