@@ -46,7 +46,6 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"blacktassel":                     keys.BlackTassel,
 	"bloodsoakedruins":                keys.BloodsoakedRuins,
 	"bloodsoaked":                     keys.BloodsoakedRuins,
-	"ruins":                           keys.BloodsoakedRuins,
 	"bloodtaintedgreatsword":          keys.BloodtaintedGreatsword,
 	"bloodtainted":                    keys.BloodtaintedGreatsword,
 	"calamityofeshu":                  keys.CalamityOfEshu,
