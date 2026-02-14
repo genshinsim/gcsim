@@ -862,7 +862,7 @@
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "0 for Tap (default), 1 for Hold. Tap skill will be used when verdant dew is insufficient."
+      "desc": "0 for Tap (default), 1 for Hold. Must have a verdant dew available."
     }
   ],
   "layla": [
