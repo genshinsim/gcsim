@@ -81,6 +81,7 @@ func (s *Set) Init() error {
 		return false
 	}
 	s.core.Events.Subscribe(event.OnLunarCharged, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())
+	s.core.Events.Subscribe(event.OnLunarBloom, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())
 
 	for _, char := range s.core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
