@@ -54,7 +54,7 @@ func (c *char) c2() {
 				Ele:   attributes.Hydro,
 				Value: -0.35,
 			})
-		} else if atk.Info.AttackTag == attacks.AttackTagBloom {
+		} else if atk.Info.AttackTag == attacks.AttackTagBloom || atk.Info.AttackTag == attacks.AttackTagDirectLunarBloom {
 			t.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-dendro", 10*60),
 				Ele:   attributes.Dendro,
