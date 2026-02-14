@@ -3740,10 +3740,16 @@
     ],
     "burst": [
       {
+        "ability": "Q-ComethTheNight",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 7
+      },
+      {
         "ability": "Q-FallingThunder",
         "shape": "Circle",
         "center": "Player",
-        "radius": 0.5
+        "radius": 7
       }
     ]
   },

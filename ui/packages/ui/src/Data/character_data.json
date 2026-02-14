@@ -124,6 +124,11 @@
     "element": "electro",
     "weapon_class": "bow"
   },
+  "flins": {
+    "rarity": 5,
+    "element": "electro",
+    "weapon_class": "polearm"
+  },
   "ganyu": {
     "rarity": 5,
     "element": "cryo",
