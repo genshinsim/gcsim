@@ -82,10 +82,10 @@ func (c *char) initBurst() {
 		switch ae.Info.AttackTag {
 		case attacks.AttackTagBountifulCore, attacks.AttackTagBloom, attacks.AttackTagHyperbloom, attacks.AttackTagBurgeon:
 			ae.Info.FlatDmg += em * bloomDmgIncrease[c.TalentLvlBurst()]
-			ae.Info.FlatDmg += em * c.c2PaleHymnScalingNonLunar()
+			ae.Info.FlatDmg += em * c.c2PaleHymnScalingBloom()
 		case attacks.AttackTagDirectLunarBloom:
 			ae.Info.FlatDmg += em * lunarBloomDmgIncrease[c.TalentLvlBurst()]
-			ae.Info.FlatDmg += em * c.c2PaleHymnScalingLunar()
+			ae.Info.FlatDmg += em * c.c2PaleHymnScalingLunarBloom()
 		default:
 			return false
 		}

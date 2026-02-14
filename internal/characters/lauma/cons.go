@@ -13,25 +13,36 @@ import (
 )
 
 const (
-	c1Key            = "lauma-threads-of-life"
+	c1Key            = "lauma-c1"
+	c1IcdKey         = "lauma-c1-icd"
 	c1HitMark        = 5
+	c4IcdKey         = "lauma-c4-icd"
 	c6ElevationBonus = 0.25
+	c6SkillHitName   = "Frostgrove Sanctuary C6"
 )
 
-func (c *char) c1() {
+func (c *char) c1Init() {
 	if c.Base.Cons < 1 {
 		return
 	}
 
 	// on lb proc heal
 	c.Core.Events.Subscribe(event.OnLunarBloom, func(args ...any) bool {
-		if !c.StatusIsActive(c1Key) {
-			return false
-		}
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
 		}
+
+		if !c.StatusIsActive(c1Key) {
+			return false
+		}
+
+		if c.StatusIsActive(c1IcdKey) {
+			return false
+		}
+
+		c.AddStatus(c1IcdKey, 1.9*60, true)
+
 		healAmt := 5.0 * c.Stat(attributes.EM)
 
 		// heal active character
@@ -42,10 +53,6 @@ func (c *char) c1() {
 				Src:     healAmt,
 			})
 		}, c1HitMark)
-
-		c.QueueCharTask(func() {
-			c.c1()
-		}, 1.9*60)
 
 		return true
 	}, "lauma-c1")
@@ -59,15 +66,27 @@ func (c *char) c1OnBurst() {
 	c.AddStatus(c1Key, 20*60, true)
 }
 
-func (c *char) c2() {
+func (c *char) c1DeerStamMod() float64 {
+	if c.Base.Cons < 1 {
+		return 1.0
+	}
+	return 0.6
+}
+
+func (c *char) c1DeerDurMod() int {
+	if c.Base.Cons < 1 {
+		return 0
+	}
+	return 5 * 60
+}
+
+func (c *char) c2Init() {
 	if c.Base.Cons < 2 {
 		return
 	}
 	if !c.ascendantGleam {
 		return
 	}
-
-	bonus := 0.4
 
 	for _, x := range c.Core.Player.Chars() {
 		x.AddReactBonusMod(character.ReactBonusMod{
@@ -76,21 +95,13 @@ func (c *char) c2() {
 				if atk.AttackTag != attacks.AttackTagDirectLunarBloom {
 					return 0, false
 				}
-				return bonus, false
+				return 0.4, false
 			},
 		})
 	}
 }
 
-func (c *char) c2PaleHymnScalingLunar() float64 {
-	if c.Base.Cons < 2 {
-		return 0
-	}
-
-	return 4
-}
-
-func (c *char) c2PaleHymnScalingNonLunar() float64 {
+func (c *char) c2PaleHymnScalingBloom() float64 {
 	if c.Base.Cons < 2 {
 		return 0
 	}
@@ -98,15 +109,23 @@ func (c *char) c2PaleHymnScalingNonLunar() float64 {
 	return 5
 }
 
+func (c *char) c2PaleHymnScalingLunarBloom() float64 {
+	if c.Base.Cons < 2 {
+		return 0
+	}
+
+	return 4
+}
+
 func (c *char) c4RefundCB(a info.AttackCB) {
 	if c.Base.Cons < 4 {
 		return
 	}
-	if c.StatusIsActive(laumaC4RefundKey) {
+	if c.StatusIsActive(c4IcdKey) {
 		return
 	}
-	c.AddEnergy("lauma-c4-refund", 5)
-	c.AddStatus(laumaC4RefundKey, 5*60, true)
+	c.AddEnergy("lauma-c4", 5)
+	c.AddStatus(c4IcdKey, 5*60, true)
 }
 
 func (c *char) addC6PaleHymnCB(a info.AttackCB) {

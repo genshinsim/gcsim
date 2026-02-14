@@ -21,6 +21,7 @@ const (
 	chargeReleaseFrame      = 67
 	deerTransformationFrame = 49
 	deerStatusKey           = "lauma-spirit-envoy"
+	deerDur                 = 10 * 60
 )
 
 func init() {
@@ -90,10 +91,22 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) enterDeerState() (action.Info, error) {
+	dur := deerDur + c.c1DeerDurMod()
+
+	c.deerSrc = c.Core.F
+	src := c.Core.F
+
 	c.QueueCharTask(func() {
-		c.deerStateStaminaBleed()
-		c.AddStatus(deerStatusKey, 10*60, true)
+		c.deerStateStaminaBleed(src)
+		c.AddStatus(deerStatusKey, dur, true)
 	}, deerTransformationFrame)
+
+	c.QueueCharTask(func() {
+		if c.deerSrc != src {
+			return
+		}
+		c.endDeerState()
+	}, deerTransformationFrame+dur)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(deerFrames),
@@ -136,16 +149,18 @@ func (c *char) chargeInit() {
 	}, "lauma-exit-deer-state-swap")
 }
 
-func (c *char) deerStateStaminaBleed() {
-	if !c.StatusIsActive(deerStatusKey) {
-		return
+func (c *char) deerStateStaminaBleed(src int) func() {
+	return func() {
+		if c.deerSrc != src {
+			return
+		}
+		staminaCost := 25.0 / 60.0 * c.c1DeerStamMod()
+		if c.Core.Player.Stam < staminaCost {
+			c.endDeerState()
+		}
+		c.Core.Player.UseStam(staminaCost, action.ActionWait)
+		c.Core.Tasks.Add(c.deerStateStaminaBleed(src), 1)
 	}
-	staminaCost := 25.0 / 60.0
-	if c.Core.Player.Stam < staminaCost {
-		c.endDeerState()
-	}
-	c.Core.Player.UseStam(staminaCost, action.ActionWait)
-	c.Core.Tasks.Add(c.deerStateStaminaBleed, 1)
 }
 
 func (c *char) endDeerState() {

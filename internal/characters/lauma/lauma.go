@@ -17,6 +17,7 @@ type char struct {
 	*tmpl.Character
 	ascendantGleam bool
 	deerStateReady bool
+	deerSrc        int
 	skillSrc       int
 	moonSong       int
 	moonSongSrc    int
@@ -60,8 +61,8 @@ func (c *char) Init() error {
 	c.a1Init()
 	c.a4Init()
 
-	c.c1()
-	c.c2()
+	c.c1Init()
+	c.c2Init()
 	c.c6Init()
 
 	c.initBurst()

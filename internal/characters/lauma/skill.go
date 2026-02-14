@@ -24,9 +24,8 @@ const (
 	skillConsumeDew                   = 29
 	frostgroveSanctuaryKey            = "lauma-frostgrove-sanctuary"
 	frostgroveSanctuaryParticleICDKey = "lauma-frostgrove-sanctuary-particle-icd"
-	laumaC4RefundKey                  = "lauma-c4-refund"
-	c6SkillHitName                    = "Frostgrove Sanctuary C6"
-	moonSongIcdKey                    = "moonsong-icd"
+
+	moonSongIcdKey = "moonsong-icd"
 )
 
 func init() {
