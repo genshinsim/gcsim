@@ -398,3 +398,11 @@ func (h *Handler) Airborne() AirborneSource {
 const (
 	XianyunAirborneBuff = "xianyun-airborne-buff"
 )
+
+func (h *Handler) GetMoonsignLevel() int {
+	count := 0
+	for _, c := range h.Chars() {
+		count += c.Moonsign
+	}
+	return count
+}

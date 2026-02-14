@@ -424,10 +424,7 @@ func setupAscendantGleam(core *core.Core) {
 			c.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBase("ascendant-gleam", 20*60),
 				Amount: func(ai info.AttackInfo) (float64, bool) {
-					lunarReact := (attacks.LunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.LunarReactionEndDelim)
-					directLunar := (attacks.DirectLunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.DirectLunarReactionEndDelim)
-
-					if !lunarReact && !directLunar {
+					if !attacks.AttackTagIsLunar(ai.AttackTag) {
 						return 0, false
 					}
 					if core.Flags.LogDebug {
