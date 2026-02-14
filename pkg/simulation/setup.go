@@ -271,6 +271,7 @@ func SetupResonance(s *core.Core) {
 			}
 			s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
 			s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
+			s.Events.Subscribe(event.OnLunarBloom, twoEl, "dendro-res")
 			s.Events.Subscribe(event.OnQuicken, twoEl, "dendro-res")
 
 			threeBuff := make([]float64, attributes.EndStatType)
@@ -423,10 +424,7 @@ func setupAscendantGleam(core *core.Core) {
 			c.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBase("ascendant-gleam", 20*60),
 				Amount: func(ai info.AttackInfo) (float64, bool) {
-					lunarReact := (attacks.LunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.LunarReactionEndDelim)
-					directLunar := (attacks.DirectLunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.DirectLunarReactionEndDelim)
-
-					if !lunarReact && !directLunar {
+					if !attacks.AttackTagIsLunar(ai.AttackTag) {
 						return 0, false
 					}
 					if core.Flags.LogDebug {
