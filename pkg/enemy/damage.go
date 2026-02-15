@@ -12,7 +12,7 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (fl
 
 	if atk.Info.AttackTag == attacks.AttackTagDirectLunarCharged ||
 		atk.Info.AttackTag == attacks.AttackTagDirectLunarBloom {
-		e.calcDirectLunar(atk, evt, grpMult)
+		return e.calcDirectLunar(atk, evt, grpMult)
 	}
 
 	elePer := 0.0
