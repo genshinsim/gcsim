@@ -122,6 +122,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"footprintoftherainbow":           keys.FootprintOfTheRainbow,
 	"footprint":                       keys.FootprintOfTheRainbow,
 	"fotr":                            keys.FootprintOfTheRainbow,
+	"fracturedhalo":                   keys.FracturedHalo,
 	"forestregalia":                   keys.ForestRegalia,
 	"regalia":                         keys.ForestRegalia,
 	"freedomsworn":                    keys.FreedomSworn,
