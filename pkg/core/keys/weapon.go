@@ -102,6 +102,7 @@ var weaponNames = []string{
 	"flowingpurity",
 	"footprintoftherainbow",
 	"forestregalia",
+	"fracturedhalo",
 	"freedomsworn",
 	"frostbearer",
 	"fruitfulhook",
