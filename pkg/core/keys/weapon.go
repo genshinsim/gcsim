@@ -320,6 +320,7 @@ const (
 	FlowingPurity
 	FootprintOfTheRainbow
 	ForestRegalia
+	FracturedHalo
 	FreedomSworn
 	Frostbearer
 	FruitfulHook

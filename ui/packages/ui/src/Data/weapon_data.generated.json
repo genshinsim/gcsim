@@ -552,6 +552,14 @@
       "image_name": "UI_EquipIcon_Claymore_Arakalari",
       "name_text_hash_map ": "902184579"
     },
+    "fracturedhalo": {
+      "id": 13515,
+      "key": "fracturedhalo",
+      "rarity": 5,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Perdix",
+      "name_text_hash_map ": "2878068027"
+    },
     "freedomsworn": {
       "id": 11503,
       "key": "freedomsworn",
