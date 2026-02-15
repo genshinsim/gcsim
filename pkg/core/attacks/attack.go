@@ -40,7 +40,6 @@ const (
 	DirectLunarReactionEndDelim
 
 	AttackTagLength
-	AttackTagLunarCharged
 )
 
 type StrikeType int
