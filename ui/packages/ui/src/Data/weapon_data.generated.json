@@ -176,6 +176,14 @@
       "image_name": "UI_EquipIcon_Bow_Blackrock",
       "name_text_hash_map ": "3447737235"
     },
+    "blackmarrowlantern": {
+      "id": 14433,
+      "key": "blackmarrowlantern",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Ilmarinen",
+      "name_text_hash_map ": "658627627"
+    },
     "blacktassel": {
       "id": 13303,
       "key": "blacktassel",

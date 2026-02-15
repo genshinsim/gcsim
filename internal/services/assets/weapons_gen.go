@@ -50,6 +50,7 @@ var weaponMap = map[string]string{
 	"athousandfloatingdreams":         "UI_EquipIcon_Catalyst_Ayus",
 	"balladoftheboundlessblue":        "UI_EquipIcon_Catalyst_DandelionPoem",
 	"blackcliffagate":                 "UI_EquipIcon_Catalyst_Blackrock",
+	"blackmarrowlantern":              "UI_EquipIcon_Catalyst_Ilmarinen",
 	"cashflowsupervision":             "UI_EquipIcon_Catalyst_Wheatley",
 	"cranesechoingcall":               "UI_EquipIcon_Catalyst_MountainGale",
 	"dawningfrost":                    "UI_EquipIcon_Catalyst_Ziedas",

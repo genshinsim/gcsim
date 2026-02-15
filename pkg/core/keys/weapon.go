@@ -55,6 +55,7 @@ var weaponNames = []string{
 	"blackcliffpole",
 	"blackcliffslasher",
 	"blackcliffwarbow",
+	"blackmarrowlantern",
 	"blacktassel",
 	"bloodsoakedruins",
 	"bloodtaintedgreatsword",
@@ -275,6 +276,7 @@ const (
 	BlackcliffPole
 	BlackcliffSlasher
 	BlackcliffWarbow
+	BlackmarrowLantern
 	BlackTassel
 	BloodsoakedRuins
 	BloodtaintedGreatsword
