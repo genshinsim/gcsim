@@ -205,6 +205,7 @@ var weaponMap = map[string]string{
 	"royallongsword":                  "UI_EquipIcon_Sword_Theocrat",
 	"sacrificialsword":                "UI_EquipIcon_Sword_Fossil",
 	"sapwoodblade":                    "UI_EquipIcon_Sword_Arakalari",
+	"serenityscall":                   "UI_EquipIcon_Sword_Ilmarinen",
 	"silversword":                     "UI_EquipIcon_Sword_Silver",
 	"skyridersword":                   "UI_EquipIcon_Sword_Mitsurugi",
 	"skywardblade":                    "UI_EquipIcon_Sword_Dvalin",
