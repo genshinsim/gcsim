@@ -146,6 +146,7 @@ var weaponMap = map[string]string{
 	"engulfinglightning":              "UI_EquipIcon_Pole_Narukami",
 	"favoniuslance":                   "UI_EquipIcon_Pole_Zephyrus",
 	"footprintoftherainbow":           "UI_EquipIcon_Pole_Isikhulu",
+	"fracturedhalo":                   "UI_EquipIcon_Pole_Perdix",
 	"halberd":                         "UI_EquipIcon_Pole_Halberd",
 	"staffofhoma":                     "UI_EquipIcon_Pole_Homa",
 	"ironpoint":                       "UI_EquipIcon_Pole_Rod",
