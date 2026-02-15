@@ -984,6 +984,14 @@
       "image_name": "UI_EquipIcon_Pole_Mechanic",
       "name_text_hash_map ": "882305891"
     },
+    "prospectorsshovel": {
+      "id": 13433,
+      "key": "prospectorsshovel",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Ilmarinen",
+      "name_text_hash_map ": "2225698043"
+    },
     "prototypeamber": {
       "id": 14406,
       "key": "prototypeamber",
