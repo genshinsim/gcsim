@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 	"github.com/schollz/progressbar/v3"
@@ -143,7 +144,8 @@ func createSnapshot(filename string, iters int) error {
 }
 
 func runSim(ctx context.Context, config string, iters int) (*model.SimulationResult, error) {
-	simcfg, gcsl, err := simulator.Parse(config)
+	file := ast.NewFile()
+	simcfg, gcsl, err := simulator.Parse(file, config)
 	if err != nil {
 		return nil, err
 	}
@@ -151,11 +153,12 @@ func runSim(ctx context.Context, config string, iters int) (*model.SimulationRes
 	simcfg.Settings.Iterations = iters
 	simcfg.Settings.NumberOfWorkers = workers
 
-	return simulator.RunWithConfig(ctx, config, simcfg, gcsl, simulator.Options{}, time.Now())
+	return simulator.RunWithConfig(ctx, file, config, simcfg, gcsl, simulator.Options{}, time.Now())
 }
 
 func runSeededSim(ctx context.Context, config string, iters int, seeds []int64) (*model.SimulationResult, error) {
-	simcfg, gcsl, err := simulator.Parse(config)
+	file := ast.NewFile()
+	simcfg, gcsl, err := simulator.Parse(file, config)
 	if err != nil {
 		return nil, err
 	}
@@ -163,5 +166,5 @@ func runSeededSim(ctx context.Context, config string, iters int, seeds []int64) 
 	simcfg.Settings.Iterations = iters
 	simcfg.Settings.NumberOfWorkers = workers
 
-	return simulator.RunWithSeededConfig(ctx, config, simcfg, gcsl, seeds)
+	return simulator.RunWithSeededConfig(ctx, file, config, simcfg, gcsl, seeds)
 }

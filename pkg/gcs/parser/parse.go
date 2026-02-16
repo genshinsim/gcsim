@@ -114,7 +114,7 @@ func parseRows(p *Parser) (parseFn, error) {
 		// next should be char then end line
 		char, err := p.consume(ast.ItemCharacterKey)
 		if err != nil {
-			return nil, ast.NewErrorf(p.file.Position(n.Pos), "setting active char: invalid char %v", char.Line, char.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "setting active char: invalid char %v", char.Val)
 		}
 		p.res.InitialChar = shortcut.CharNameToKey[char.Val]
 		n, err := p.consume(ast.ItemTerminateLine)
