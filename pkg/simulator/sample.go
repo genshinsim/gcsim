@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/gcs/eval"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
@@ -13,7 +14,8 @@ import (
 // GenerateSampleWithSeed will run one simulation with debug enabled using the given seed and output
 // the debug log. Used for generating debug for min/max runs
 func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sample, error) {
-	simcfg, gcsl, err := Parse(cfg)
+	file := ast.NewFile()
+	simcfg, gcsl, err := Parse(file, cfg)
 	if err != nil {
 		return &model.Sample{}, err
 	}
@@ -22,7 +24,7 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 	if err != nil {
 		return &model.Sample{}, err
 	}
-	eval, err := eval.NewEvaluator(gcsl, c)
+	eval, err := eval.NewEvaluator(file, gcsl, c)
 	if err != nil {
 		return nil, err
 	}

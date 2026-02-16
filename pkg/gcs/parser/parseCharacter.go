@@ -22,7 +22,7 @@ func parseCharacter(p *Parser) (parseFn, error) {
 	case ast.KeywordAdd:
 		return parseCharacterAdd, nil
 	default:
-		return nil, fmt.Errorf("ln%v: unexpected token after <character>: %v", n.Line, n)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "unexpected token after <character>: %v", n)
 	}
 }
 
@@ -89,13 +89,13 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 				// expecting =[
 				_, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemLeftSquareParen)
 				if err != nil {
-					return nil, fmt.Errorf("ln%v: invalid token after param;", n.Line)
+					return nil, ast.NewError(p.file.Position(n.Pos), "invalid token after param;")
 				}
 				p.backup()
 				// overriding here if it already exists
 				c.Params, err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
-				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.Line, n)
+				err = ast.NewErrorf(p.file.Position(n.Pos), "unexpected token after +: %v", n)
 			}
 		case ast.ItemTerminateLine:
 			return parseRows, nil
@@ -118,7 +118,7 @@ func parseCharacterAdd(p *Parser) (parseFn, error) {
 	case ast.KeywordStats:
 		return parseCharAddStats, nil
 	default:
-		return nil, fmt.Errorf("ln%v: unexpected token after <character> add: %v", n.Line, n)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "unexpected token after <character> add: %v", n)
 	}
 }
 
@@ -158,19 +158,19 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 				// expecting =[
 				_, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemLeftSquareParen)
 				if err != nil {
-					return nil, fmt.Errorf("ln%v: invalid token after param", n.Line)
+					return nil, ast.NewError(p.file.Position(n.Pos), "invalid token after param")
 				}
 				p.backup()
 				// overriding here if it already exists
 				c.SetParams[label], err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
-				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.Line, n)
+				err = ast.NewErrorf(p.file.Position(n.Pos), "unexpected token after +: %v", n)
 			}
 		case ast.ItemTerminateLine:
 			c.Sets[label] = count
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unexpected token after in parsing sets: %v", n.Line, n)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "unexpected token after in parsing sets: %v", n)
 		}
 		if err != nil {
 			return nil, err
@@ -219,24 +219,24 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 				// expecting =[
 				_, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemLeftSquareParen)
 				if err != nil {
-					return nil, fmt.Errorf("ln%v: invalid token after param", n.Line)
+					return nil, ast.NewError(p.file.Position(n.Pos), "invalid token after param")
 				}
 				p.backup()
 				// overriding here if it already exists
 				c.Weapon.Params, err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
-				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.Line, n)
+				err = ast.NewErrorf(p.file.Position(n.Pos), "unexpected token after +: %v", n)
 			}
 		case ast.ItemTerminateLine:
 			if !lvlOk {
-				return nil, fmt.Errorf("ln%v: weapon %v missing lvl", n.Line, s)
+				return nil, ast.NewErrorf(p.file.Position(n.Pos), "weapon %v missing lvl", s)
 			}
 			if !refineOk {
-				return nil, fmt.Errorf("ln%v: weapon %v missing refine", n.Line, s)
+				return nil, ast.NewErrorf(p.file.Position(n.Pos), "weapon %v missing refine", s)
 			}
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing add weapon: %v", n.Line, n)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "unrecognized token parsing add weapon: %v", n)
 		}
 		if err != nil {
 			return nil, err
@@ -290,7 +290,7 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 			}
 			fallthrough
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats: %v", n.Line, n)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "unrecognized token parsing add stats: %v", n)
 		}
 	}
 	return nil, errors.New("unexpected end of line while parsing character add stats")
@@ -304,13 +304,14 @@ func parseCharAddRandomStats(p *Parser) (parseFn, error) {
 		Rarity: 5, // default to 5 star
 	}
 
-	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
+	var n ast.Token
+	for n = p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
 		case ast.ItemTerminateLine:
 			// check to make sure all values are valid
 			err := rs.Validate()
 			if err != nil {
-				return nil, fmt.Errorf("ln%v: %w", n.Line, err)
+				return nil, ast.NewError(p.file.Position(n.Pos), err.Error())
 			}
 			c := p.chars[p.currentCharKey]
 			c.RandomSubstats = rs
@@ -345,13 +346,13 @@ func parseCharAddRandomStats(p *Parser) (parseFn, error) {
 				}
 				rs.Circlet = ast.StatKeys[x.Val]
 			default:
-				return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats random: %v", n.Line, n)
+				return nil, ast.NewErrorf(p.file.Position(n.Pos), "unrecognized token parsing add stats random: %v", n)
 			}
 		default:
-			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats random: %v", n.Line, n)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "unrecognized token parsing add stats random: %v", n)
 		}
 	}
-	return nil, errors.New("unexpected end of line while parsing character add stats (with random subs)")
+	return nil, ast.NewError(p.file.Position(n.Pos), "unexpected end of line while parsing character add stats (with random subs)")
 }
 
 func (p *Parser) acceptLevelReturnBaseMax() (int, int, error) {
@@ -362,30 +363,30 @@ func (p *Parser) acceptLevelReturnBaseMax() (int, int, error) {
 	var x ast.Token
 	x, err = p.consume(ast.ItemAssign)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.Line, x)
+		return base, maxlvl, ast.NewErrorf(p.file.Position(x.Pos), "unexpected token after lvl. expecting = got %v", x)
 	}
 	x, err = p.consume(ast.ItemNumber)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.Line, x)
+		return base, maxlvl, ast.NewErrorf(p.file.Position(x.Pos), "expecting a number for base lvl, got %v", x)
 	}
 	base, err = itemNumberToInt(x)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.Line, x)
+		return base, maxlvl, ast.NewErrorf(p.file.Position(x.Pos), "unexpected token for base lvl. got %v", x)
 	}
 	x, err = p.consume(ast.ItemForwardSlash)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.Line, x)
+		return base, maxlvl, ast.NewErrorf(p.file.Position(x.Pos), "expecting / separator for lvl, got %v", x)
 	}
 	x, err = p.consume(ast.ItemNumber)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.Line, x)
+		return base, maxlvl, ast.NewErrorf(p.file.Position(x.Pos), "expecting a number for max lvl, got %v", x)
 	}
 	maxlvl, err = itemNumberToInt(x)
 	if err != nil {
-		return base, maxlvl, fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.Line, x)
+		return base, maxlvl, ast.NewErrorf(p.file.Position(x.Pos), "unexpected token for lvl. got %v", x)
 	}
 	if maxlvl < base {
-		return base, maxlvl, fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.Line, maxlvl, base)
+		return base, maxlvl, ast.NewErrorf(p.file.Position(x.Pos), "max level %v cannot be less than base level %v", maxlvl, base)
 	}
 	return base, maxlvl, nil
 }

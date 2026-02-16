@@ -152,7 +152,7 @@ func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 	// type(var)
-	err := validateNumberParams(c, 1)
+	err := e.validateNumberParams(c, 1)
 	if err != nil {
 		return nil, err
 	}
@@ -191,11 +191,11 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 	// check name exists on team
 	ck, ok := shortcut.CharNameToKey[name.str]
 	if !ok {
-		return nil, fmt.Errorf("set_particle_delay first argument %v is not a valid character", name.str)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "set_particle_delay first argument %v is not a valid character", name.str)
 	}
 	char, ok := e.Core.Player.ByKey(ck)
 	if !ok {
-		return nil, fmt.Errorf("set_particle_delay: %v is not on this team", name.str)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "set_particle_delay: %v is not on this team", name.str)
 	}
 
 	char.ParticleDelay = int(delay)
@@ -213,7 +213,7 @@ func (e *Eval) setSwapICD(c *ast.CallExpr, env *Env) (Obj, error) {
 	f := ntoi(objs[0].(*number))
 
 	if f < 0 {
-		return nil, fmt.Errorf("invald value for set_swap_icd, expected non-negative integer, got %v", f)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "invald value for set_swap_icd, expected non-negative integer, got %v", f)
 	}
 
 	e.Core.Player.SetSwapICD(int(f))
@@ -230,7 +230,7 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	// check if index is in range
 	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
-		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
 	e.Core.Combat.DefaultTarget = e.Core.Combat.Enemy(idx - 1).Key()
@@ -251,7 +251,7 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	// check if index is in range
 	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
-		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
 	e.Core.Combat.SetEnemyPos(idx-1, info.Point{X: x, Y: y})
@@ -274,7 +274,7 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	// check if index is in range
 	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
-		return nil, fmt.Errorf("index for kill_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "index for kill_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
 	e.Core.Combat.KillEnemy(idx - 1)
@@ -296,7 +296,7 @@ func (e *Eval) isTargetDead(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	// check if index is in range
 	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
-		return nil, fmt.Errorf("index for is_target_dead is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "index for is_target_dead is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
 	return bton(!e.Core.Combat.Enemy(idx - 1).IsAlive()), nil
@@ -313,7 +313,7 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 	// check if element is vaild
 	pickupEle := attributes.StringToEle(name.str)
 	if pickupEle == attributes.UnknownElement && name.str != "any" {
-		return nil, fmt.Errorf("pick_up_crystallize argument element %v is not a valid element", name.str)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "pick_up_crystallize argument element %v is not a valid element", name.str)
 	}
 
 	var count int64
@@ -439,7 +439,7 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	params := make(map[string]int)
 	for k, v := range p.fields {
 		if v.Typ() != typNum {
-			return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
+			return nil, ast.NewErrorf(e.file.Position(c.Pos), "map params should evaluate to a number, got %v", v.Inspect())
 		}
 		params[k] = int(ntof(v.(*number)))
 	}
@@ -447,7 +447,7 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	charKey := keys.Char(char.ival)
 	actionKey := action.Action(ac.ival)
 	if _, ok := e.Core.Player.ByKey(charKey); !ok {
-		return nil, fmt.Errorf("can't execute action: %v is not on this team", charKey)
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "can't execute action: %v is not on this team", charKey)
 	}
 
 	// if char is not on field then we need to send an implicit swap

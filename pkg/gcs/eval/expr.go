@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/conditional"
@@ -62,7 +61,7 @@ func (e *Eval) evalIdent(n *ast.Ident, env *Env) (Obj, error) {
 	// TODO: this should be a variable
 	res, err := env.v(n.Value)
 	if err != nil {
-		return nil, err
+		return nil, ast.NewError(e.file.Position(n.Pos), err.Error())
 	}
 	return *res, nil
 }
@@ -76,7 +75,7 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	case *funcval:
 	case *bfuncval:
 	default:
-		return nil, fmt.Errorf("invalid function call %v", c.Fun.String())
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "invalid function call %v", c.Fun.String())
 	}
 
 	if bfn, ok := v.(*bfuncval); ok { // is built-in
@@ -86,7 +85,7 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	fn := v.(*funcval)
 	// check number of param matches
 	if len(c.Args) != len(fn.Args) {
-		return nil, fmt.Errorf("unmatched number of params for fn %v", c.Fun.String())
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "unmatched number of params for fn %v", c.Fun.String())
 	}
 	// params are just variables assigned to a local env
 	// created from the function's env
@@ -116,9 +115,9 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 			// force return to 0
 			return v, nil
 		}
-		return nil, fmt.Errorf("fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
 	default:
-		return nil, fmt.Errorf("fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
 	}
 }
 
@@ -130,11 +129,11 @@ func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
 
 	rconst := makeConstant(right)
 	if rconst == nil {
-		return nil, fmt.Errorf("unary expression does not evaluate to a comparable variable, got %v ", right.Inspect())
+		return nil, ast.NewErrorf(e.file.Position(b.Pos), "unary expression does not evaluate to a comparable variable, got %v ", right.Inspect())
 	}
 	result, err := constant.UnaryOp(b.Op, rconst)
 	if err != nil {
-		return nil, err
+		return nil, ast.NewError(e.file.Position(b.Pos), err.Error())
 	}
 	return fromConstant(result), nil
 }
@@ -152,15 +151,15 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 
 	lconst := makeConstant(left)
 	if lconst == nil {
-		return nil, fmt.Errorf("binary expression does not evaluate to a comparable variable, got %v ", left.Inspect())
+		return nil, ast.NewErrorf(e.file.Position(b.Pos), "binary expression does not evaluate to a comparable variable, got %v ", left.Inspect())
 	}
 	rconst := makeConstant(right)
 	if rconst == nil {
-		return nil, fmt.Errorf("binary expression does not evaluate to a comparable variable, got %v ", right.Inspect())
+		return nil, ast.NewErrorf(e.file.Position(b.Pos), "binary expression does not evaluate to a comparable variable, got %v ", right.Inspect())
 	}
 	result, err := constant.BinaryOp(b.Op, lconst, rconst)
 	if err != nil {
-		return nil, err
+		return nil, ast.NewError(e.file.Position(b.Pos), err.Error())
 	}
 	return fromConstant(result), nil
 }
@@ -183,7 +182,7 @@ func (e *Eval) evalField(n *ast.Field) (Obj, error) {
 		num.fval = v
 		num.isFloat = true
 	default:
-		return nil, fmt.Errorf("field condition '.%v' does not evaluate to a number, got %v", strings.Join(n.Value, "."), v)
+		return nil, ast.NewErrorf(e.file.Position(n.Pos), "field condition '.%v' does not evaluate to a number, got %v", strings.Join(n.Value, "."), v)
 	}
 	return num, nil
 }

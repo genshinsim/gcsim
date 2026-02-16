@@ -8,7 +8,8 @@ import (
 func TestFields(t *testing.T) {
 	input := `if .status.field > 0 { print("hi") };`
 
-	l := NewLexer(input)
+	file := NewFile()
+	l := NewLexer(file, input)
 	for n := l.NextItem(); n.Typ != ItemEOF; n = l.NextItem() {
 		fmt.Println(n)
 	}
@@ -166,7 +167,8 @@ func TestBasicToken(t *testing.T) {
 		{Typ: ItemIdentifier, Val: "a"},
 	}
 
-	l := NewLexer(input)
+	file := NewFile()
+	l := NewLexer(file, input)
 	i := 0
 	for n := l.NextItem(); n.Typ != ItemEOF; n = l.NextItem() {
 		if expected[i].Typ != n.Typ && expected[i].Val != n.Val {
@@ -196,7 +198,8 @@ func TestElseSpace(t *testing.T) {
 		{Typ: ItemRightBrace, Val: "}"},
 	}
 
-	l := NewLexer(input)
+	file := NewFile()
+	l := NewLexer(file, input)
 	i := 0
 	for n := l.NextItem(); n.Typ != ItemEOF; n = l.NextItem() {
 		if expected[i].Typ != n.Typ && expected[i].Val != n.Val {

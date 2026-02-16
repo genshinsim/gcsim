@@ -15,6 +15,7 @@ type stateFn func(*Lexer) stateFn
 
 // Lexer holds the state of the scanner.
 type Lexer struct {
+	file         *File
 	input        string     // the string being scanned
 	pos          Pos        // current position in the input
 	start        Pos        // start position of this item
@@ -38,6 +39,7 @@ func (l *Lexer) next() rune {
 	l.pos += l.width
 	if r == '\n' {
 		l.line++
+		l.file.AddLine(int(l.pos))
 	}
 	return r
 }
@@ -112,8 +114,10 @@ func (l *Lexer) NextItem() Token {
 }
 
 // lex creates a new scanner for the input string.
-func NewLexer(input string) *Lexer {
+func NewLexer(file *File, input string) *Lexer {
+	file.size = len(input)
 	l := &Lexer{
+		file:      file,
 		input:     input,
 		items:     make(chan Token),
 		line:      1,
@@ -424,7 +428,7 @@ func (l *Lexer) atTerminator() bool {
 		return true
 	}
 	switch r {
-	case eof, '.', ',', '|', ':', ')', '(', '+', '=', '>', '<', '&', '!', ';', '[', ']', '{', '}':
+	case eof, '.', ',', '|', ':', ')', '(', '+', '=', '>', '<', '&', '!', ';', '[', ']', '{', '}', '/', '*':
 		return true
 	}
 	return false

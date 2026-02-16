@@ -5,6 +5,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 )
 
@@ -20,14 +21,15 @@ func TestFib(t *testing.T) {
 	print(y);
 	return y;
 	`
-	p := parser.New(prog)
+	file := ast.NewFile()
+	p := parser.New(file, prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
 	fmt.Println("program:")
 	fmt.Println(gcsl.String())
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	resultChan := make(chan Obj)
 	go func() {
@@ -75,14 +77,15 @@ func TestFunctional(t *testing.T) {
 	print(x);
 	return x;
 	`
-	p := parser.New(prog)
+	file := ast.NewFile()
+	p := parser.New(file, prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
 	fmt.Println("program:")
 	fmt.Println(gcsl.String())
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	resultChan := make(chan Obj)
 	go func() {
@@ -125,12 +128,13 @@ func TestAnonFunc(t *testing.T) {
 	print(x);
 	return x;
 	`
-	p := parser.New(prog)
+	file := ast.NewFile()
+	p := parser.New(file, prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	resultChan := make(chan Obj)
 	go func() {
@@ -173,12 +177,13 @@ func TestStringFunc(t *testing.T) {
 	print(x);
 	return x;
 	`
-	p := parser.New(prog)
+	file := ast.NewFile()
+	p := parser.New(file, prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	resultChan := make(chan Obj)
 	go func() {
@@ -222,14 +227,15 @@ func TestNestedActions(t *testing.T) {
 	}
 	do();
 	`
-	p := parser.New(prog)
+	file := ast.NewFile()
+	p := parser.New(file, prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
 	fmt.Println("program:")
 	fmt.Println(gcsl.String())
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	resultChan := make(chan Obj)
 	go func() {
@@ -262,14 +268,15 @@ func TestNestedActions(t *testing.T) {
 
 func TestIsEven(t *testing.T) {
 	prog := `is_even(1);`
-	p := parser.New(prog)
+	file := ast.NewFile()
+	p := parser.New(file, prog)
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
 	fmt.Println("program:")
 	fmt.Println(gcsl.String())
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	resultChan := make(chan Obj)
 	go func() {
