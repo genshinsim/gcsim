@@ -52,6 +52,9 @@
   "blackcliffslasher": [],
   "blackcliffwarbow": [],
   "blacktassel": [],
+  "bloodsoakedruins": [
+    "bloodsoaked"
+  ],
   "bloodtaintedgreatsword": [
     "bloodtainted"
   ],
@@ -156,6 +159,7 @@
     "footprint",
     "fotr"
   ],
+  "fracturedhalo": [],
   "freedomsworn": [
     "freedom",
     "fs"

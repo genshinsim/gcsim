@@ -38,6 +38,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("kill_target", e.killTarget, env)
 	e.addSysFunc("is_target_dead", e.isTargetDead, env)
 	e.addSysFunc("pick_up_crystallize", e.pickUpCrystallize, env)
+	e.addSysFunc("set_starting_verdant_dew", e.setStartingVerdantDew, env)
 
 	// math
 	e.addSysFunc("sin", e.sin, env)
@@ -337,6 +338,26 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{
 		ival: count,
 	}, nil
+}
+
+// Set initial verdant dew to a value between 0 and 3.
+func (e *Eval) setStartingVerdantDew(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	f := ntoi(objs[0].(*number))
+
+	if f < 0 || f > 3 {
+		return nil, fmt.Errorf("invald value for set_starting_verdant_dew, expected integer between 0-3, got %v", f)
+	}
+
+	if e.Core.F > 1 {
+		return nil, fmt.Errorf("cannot call set_starting_verdant_dew after frame 1, got frame %v", e.Core.F)
+	}
+
+	e.Core.Player.SetVerdantDew(int(f))
+	return &null{}, nil
 }
 
 func (e *Eval) isEven(c *ast.CallExpr, env *Env) (Obj, error) {

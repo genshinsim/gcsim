@@ -56,6 +56,7 @@ var weaponNames = []string{
 	"blackcliffslasher",
 	"blackcliffwarbow",
 	"blacktassel",
+	"bloodsoakedruins",
 	"bloodtaintedgreatsword",
 	"calamityofeshu",
 	"calamityqueller",
@@ -102,6 +103,7 @@ var weaponNames = []string{
 	"flowingpurity",
 	"footprintoftherainbow",
 	"forestregalia",
+	"fracturedhalo",
 	"freedomsworn",
 	"frostbearer",
 	"fruitfulhook",
@@ -274,6 +276,7 @@ const (
 	BlackcliffSlasher
 	BlackcliffWarbow
 	BlackTassel
+	BloodsoakedRuins
 	BloodtaintedGreatsword
 	CalamityOfEshu
 	CalamityQueller
@@ -320,6 +323,7 @@ const (
 	FlowingPurity
 	FootprintOfTheRainbow
 	ForestRegalia
+	FracturedHalo
 	FreedomSworn
 	Frostbearer
 	FruitfulHook

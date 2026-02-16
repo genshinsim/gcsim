@@ -130,6 +130,11 @@
       "text_map_id": "2890909531",
       "key": "martialartist"
     },
+    "nightoftheskysunveiling": {
+      "id": "15041",
+      "text_map_id": "3690673363",
+      "key": "nightoftheskysunveiling"
+    },
     "nighttimewhispersintheechoingwoods": {
       "id": "15034",
       "text_map_id": "279470883",
@@ -184,6 +189,11 @@
       "id": "15019",
       "text_map_id": "4144069251",
       "key": "shimenawasreminiscence"
+    },
+    "silkenmoonsserenade": {
+      "id": "15042",
+      "text_map_id": "625305531",
+      "key": "silkenmoonsserenade"
     },
     "songofdayspast": {
       "id": "15033",

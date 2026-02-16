@@ -70,12 +70,15 @@ func (r *Reactable) TryAddLC(a *info.AttackEvent) bool {
 }
 
 type lcContribution = struct {
-	dmg     float64
-	isCrit  bool
-	charInd int
-	cr      float64
-	cd      float64
-	em      float64
+	dmg          float64
+	isCrit       bool
+	charInd      int
+	cr           float64
+	cd           float64
+	em           float64
+	react        float64
+	elev         float64
+	baseDmgBonus float64
 }
 
 func (r *Reactable) DoLCAttack() {
@@ -117,16 +120,16 @@ func (r *Reactable) DoLCAttack() {
 		em := ae.Snapshot.Stats[attributes.EM]
 		cr := ae.Snapshot.Stats[attributes.CR]
 		cd := ae.Snapshot.Stats[attributes.CD]
-
-		flatdmg := 1.8 * combat.CalcLunarChargedDmg(char.Base.Level, char, ae.Info, em)
+		react := char.ReactBonus(ae.Info)
+		totalDmg := 1.8 * combat.CalcLunarChargedDmg(char.Base.Level, react, ae.Info, em)
 		isCrit := false
 
 		if r.core.Rand.Float64() <= cr {
-			flatdmg *= (1 + cd)
+			totalDmg *= (1 + cd)
 			isCrit = true
 		}
 
-		contributions = append(contributions, lcContribution{flatdmg, isCrit, charInd, cr, cd, em})
+		contributions = append(contributions, lcContribution{totalDmg, isCrit, charInd, cr, cd, em, react, ae.Info.Elevation, ae.Info.BaseDmgBonus})
 	}
 
 	if len(contributions) == 0 {
@@ -153,7 +156,10 @@ func (r *Reactable) DoLCAttack() {
 			Write("mult", lcContributorMult[i]).
 			Write("cr", &contr.cr).
 			Write("cd", &contr.cd).
-			Write("em", &contr.em)
+			Write("em", &contr.em).
+			Write("react", &contr.react).
+			Write("elevation", &contr.elev).
+			Write("base damage bonus", &contr.baseDmgBonus)
 
 		ai.FlatDmg += contr.dmg * lcContributorMult[i]
 	}

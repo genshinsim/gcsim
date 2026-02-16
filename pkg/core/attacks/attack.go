@@ -36,6 +36,7 @@ const (
 
 	DirectLunarReactionStartDelim
 	AttackTagDirectLunarCharged
+	AttackTagDirectLunarBloom
 	DirectLunarReactionEndDelim
 
 	AttackTagLength
@@ -58,3 +59,9 @@ const (
 	AdditionalTagNightsoul
 	AdditionalTagKinichCannon
 )
+
+func AttackTagIsLunar(tag AttackTag) bool {
+	isReaction := LunarReactionStartDelim < tag && tag < LunarReactionEndDelim
+	isDirect := DirectLunarReactionStartDelim < tag && tag < DirectLunarReactionEndDelim
+	return isReaction || isDirect
+}

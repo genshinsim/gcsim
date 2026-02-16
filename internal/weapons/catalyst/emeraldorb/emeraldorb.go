@@ -64,6 +64,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnLunarCharged, addBuff, subKey)
 	c.Events.Subscribe(event.OnFrozen, addBuff, subKey)
 	c.Events.Subscribe(event.OnSwirlHydro, addBuff, subKey)
+	c.Events.Subscribe(event.OnBloom, addBuff, subKey)
+	c.Events.Subscribe(event.OnLunarBloom, addBuff, subKey)
 
 	return w, nil
 }

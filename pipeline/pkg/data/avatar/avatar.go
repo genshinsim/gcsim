@@ -291,6 +291,7 @@ func (a *DataSource) parseBaseStats(c *model.AvatarData, err error) error {
 	c.Stats.BaseAtk = ad.AttackBase
 	c.Stats.BaseDef = ad.DefenseBase
 	c.Stats.BaseHp = ad.HpBase
+	c.Stats.ElementMastery = ad.ElementMastery
 
 	return err
 }

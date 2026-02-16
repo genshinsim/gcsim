@@ -30,6 +30,7 @@ const (
 	ReactionTypeBurgeon            ReactionType = "burgeon"
 	ReactionTypeHyperbloom         ReactionType = "hyperbloom"
 	ReactionTypeLunarCharged       ReactionType = "lunarcharged"
+	ReactionTypeLunarBloom         ReactionType = "lunarbloom"
 	ReactionTypeNoReaction         ReactionType = ""
 	ReactionTypeFreezeExtend       ReactionType = "freeze-extend"
 )
@@ -67,6 +68,7 @@ type Reactable interface {
 	ReactableSwirl
 	ReactableVaporize
 	ReactableLunarCharged
+	ReactableLunarBloom
 }
 
 type ReactableBloom interface {
@@ -131,4 +133,8 @@ type ReactableVaporize interface {
 type ReactableLunarCharged interface {
 	TryAddLC(a *AttackEvent) bool
 	DoLCAttack()
+}
+
+type ReactableLunarBloom interface {
+	LunarBloom()
 }
