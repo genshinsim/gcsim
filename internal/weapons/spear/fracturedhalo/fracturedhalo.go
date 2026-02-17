@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(AtkpBuff, 20*60),
 			Amount: func() ([]float64, bool) {
-				return mAtk, false
+				return mAtk, true
 			},
 		})
 
