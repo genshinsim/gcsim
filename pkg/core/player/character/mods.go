@@ -50,7 +50,7 @@ type (
 	StatMod struct {
 		AffectedStat attributes.Stat
 		Extra        bool
-		Amount       StatModFunc
+		Amount       StatModFunc // return false to reject stat mod, true to use stat mod
 		modifier.Base
 	}
 	StatModFunc func() ([]float64, bool)
