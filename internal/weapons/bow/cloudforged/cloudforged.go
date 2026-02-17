@@ -31,12 +31,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	refine := p.Refine
 
 	m := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnEnergyChange, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnergyChange, func(args ...any) {
 		index := args[0].(*character.CharWrapper).Index()
 		amount := args[2].(float64)
 
 		if char.Index() != index || amount >= 0 {
-			return false
+			return
 		}
 		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
@@ -52,7 +52,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("cloudforged-%v", char.Base.Key))
 
 	return &w, nil

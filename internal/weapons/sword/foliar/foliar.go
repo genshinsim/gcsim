@@ -50,16 +50,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	caBoost := 0.9 + 0.3*float64(r)
 	procCount := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't
 		// have extra damage.
@@ -67,10 +67,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddStatus(buffKey, 720, true)
 			char.AddStatus(icdKey, 720, true)
 			procCount = 28
-			return false
+			return
 		}
 		if !char.StatusIsActive(buffKey) {
-			return false
+			return
 		}
 		baseDmgAdd := char.Stat(attributes.EM) * caBoost
 		atk.Info.FlatDmg += baseDmgAdd
@@ -81,7 +81,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Log.NewEvent("foliarincision proc dmg add", glog.LogPreDamageMod, char.Index()).
 			Write("base_added_dmg", baseDmgAdd).
 			Write("remaining_stacks", procCount)
-		return false
 	}, fmt.Sprintf("foliarincision-%v", char.Base.Key.String()))
 
 	return w, nil

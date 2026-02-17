@@ -72,13 +72,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		switch atk.Info.AttackTag {
@@ -91,8 +91,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case attacks.AttackTagElementalBurst:
 			char.AddStatus(burstKey, stackDuration, true)
 		}
-
-		return false
 	}, fmt.Sprintf("polar-star-%v", char.Base.Key.String()))
 
 	mDmg := make([]float64, attributes.EndStatType)

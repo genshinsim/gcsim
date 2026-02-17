@@ -37,18 +37,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	perStackBuff := float64(r)*0.007 + 0.025
 	dmgBuffAtMax := 0.09 + float64(r)*0.03
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		// check if char is correct?
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// check if spear is on icd
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// check if buff expired; if so reset the stacks
 		if !char.StatModIsActive(buffKey) {
@@ -75,8 +75,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return w.buff
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("primordial-%v", char.Base.Key.String()))
 	return w, nil
 }

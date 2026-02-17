@@ -47,10 +47,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.25
-		c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+		c.Events.Subscribe(event.OnSkill, func(args ...any) {
 			// don't proc if someone else used a skill
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 			// add buff
 			char.AddAttackMod(character.AttackMod{
@@ -62,7 +62,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return m
 				},
 			})
-			return false
 		}, fmt.Sprintf("martialartist-4pc-%v", char.Base.Key.String()))
 	}
 

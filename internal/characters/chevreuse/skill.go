@@ -240,12 +240,11 @@ func (c *char) particleCB(a info.AttackCB) {
 }
 
 func (c *char) overchargedBallEventSub() {
-	c.Core.Events.Subscribe(event.OnOverload, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnOverload, func(args ...any) {
 		// don't proc on gadgets
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		c.overChargedBall = true
-		return false
 	}, "chev-overcharged-ball")
 }

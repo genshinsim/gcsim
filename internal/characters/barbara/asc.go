@@ -23,19 +23,17 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) {
 		if c.Core.Status.Duration(barbSkillKey) == 0 {
-			return false
+			return
 		}
 		if c.a4extendCount == 5 {
-			return false
+			return
 		}
 
 		c.a4extendCount++
 		c.Core.Status.Extend(barbSkillKey, 60)
 
 		c.Core.Log.NewEvent("barbara skill extended from a4", glog.LogCharacterEvent, c.Index())
-
-		return false
 	}, "barbara-a4")
 }

@@ -117,29 +117,27 @@ func (c *char) gainFightingSpirit(val float64) {
 }
 
 func (c *char) burstInit() {
-	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) {
 		amount := args[1].(float64)
 		if amount < 0.0000001 {
-			return false
+			return
 		}
 		c.gainFightingSpirit(amount)
-		return false
 	}, "mavuika-fighting-spirit-ns")
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if c.StatusIsActive(energyNAICDKey) {
-			return false
+			return
 		}
 		c.AddStatus(energyNAICDKey, 0.1*60, true)
 		c.gainFightingSpirit(1.5)
-		return false
 	}, "mavuika-fighting-spirit-na")
 }

@@ -80,12 +80,11 @@ func (c *char) Init() error {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		if prev == c.Index() {
 			c.exitNightsoul()
 		}
-		return false
 	}, "xilonen-exit")
 }
 

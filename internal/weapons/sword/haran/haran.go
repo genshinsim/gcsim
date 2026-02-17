@@ -91,15 +91,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	// TODO: this used to be on post. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
 			nonActiveFn()
-			return false
+			return
 		}
 		if wavespikeStacks != 0 {
-			return activeFn()
+			activeFn()
 		}
-		return false
 	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))
 
 	return w, nil

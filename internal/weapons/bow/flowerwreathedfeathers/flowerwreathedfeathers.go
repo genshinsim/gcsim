@@ -61,12 +61,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnAimShoot, func(args ...any) bool {
+	c.Events.Subscribe(event.OnAimShoot, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdStatus) {
-			return false
+			return
 		}
 		char.AddStatus(icdStatus, 0.5*60, true)
 
@@ -76,42 +76,36 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		c.Log.NewEvent("flower-wreathed feathers proc'd", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
-
-		return false
 	}, fmt.Sprintf("flower-wreathed-aim-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnStateChange, func(args ...any) bool {
+	c.Events.Subscribe(event.OnStateChange, func(args ...any) {
 		prev := args[0].(action.AnimationState)
 		next := args[1].(action.AnimationState)
 
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if prev != action.AimState || next == action.AimState {
-			return false
+			return
 		}
 		if w.leaveSrc != -1 {
-			return false
+			return
 		}
 		w.leaveSrc = c.F
 		char.QueueCharTask(w.clearBuff(w.leaveSrc), 10*60)
-
-		return false
 	}, fmt.Sprintf("flower-wreathed-state-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 
 		if prev != char.Index() {
-			return false
+			return
 		}
 		if w.leaveSrc != -1 {
-			return false
+			return
 		}
 		w.leaveSrc = c.F
 		char.QueueCharTask(w.clearBuff(w.leaveSrc), 10*60)
-
-		return false
 	}, fmt.Sprintf("flower-wreathed-swap-%v", char.Base.Key.String()))
 
 	return w, nil

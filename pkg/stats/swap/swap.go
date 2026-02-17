@@ -25,7 +25,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		activeCharStart: 0,
 	}
 
-	core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		active := args[1].(int)
 
 		interval := stats.ActiveCharacterInterval{
@@ -36,8 +36,6 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		out.activeIntervals = append(out.activeIntervals, interval)
 		out.activeChar = active
 		out.activeCharStart = core.F
-
-		return false
 	}, "stats-swap-log")
 
 	return &out, nil

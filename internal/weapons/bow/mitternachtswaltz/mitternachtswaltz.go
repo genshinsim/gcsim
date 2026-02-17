@@ -33,19 +33,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffAmount := .15 + .05*float64(r)
 	buffIcd := 0
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		if c.F <= buffIcd {
-			return false
+			return
 		}
 
 		buffIcd = c.F + 1
@@ -75,8 +75,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				},
 			})
 		}
-
-		return false
 	}, fmt.Sprintf("mitternachtswaltz-%v", char.Base.Key.String()))
 
 	return w, nil

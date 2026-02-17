@@ -107,9 +107,9 @@ func (c *char) burstRestorefunc(a info.AttackCB) {
 }
 
 func (c *char) onSwapClearBurst() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(BurstKey) {
-			return false
+			return
 		}
 		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
@@ -120,15 +120,14 @@ func (c *char) onSwapClearBurst() {
 				c.c4()
 			}
 		}
-		return false
 	}, "raiden-burst-clear")
 }
 
 func (c *char) onBurstStackCount() {
 	// TODO: this used to be on PostBurst; need to check if it works correctly still
-	c.Core.Events.Subscribe(event.OnEnergyBurst, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnergyBurst, func(args ...any) {
 		if c.Core.Player.Active() == c.Index() {
-			return false
+			return
 		}
 		char := args[0].(*character.CharWrapper)
 		amount := args[2].(float64)
@@ -150,6 +149,5 @@ func (c *char) onBurstStackCount() {
 			Write("previous", previous).
 			Write("amount", stacks).
 			Write("final", c.stacks)
-		return false
 	}, "raiden-stacks")
 }

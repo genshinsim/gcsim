@@ -87,36 +87,38 @@ func (r *Reactable) TryAddEC(a *info.AttackEvent) bool {
 			10,
 		)
 
+		evtRemovalTyp := event.OnEnemyDamage
+		evtRemovalKey := fmt.Sprintf("ec-%v", r.self.Key())
 		r.core.Tasks.Add(r.nextECTick(r.core.F), 60+10)
 		// subscribe to wane ticks
-		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		r.core.Events.Subscribe(evtRemovalTyp, func(args ...any) {
 			// target should be first, then snapshot
 			n := args[0].(info.Target)
 			a := args[1].(*info.AttackEvent)
 			dmg := args[2].(float64)
 			// TODO: there's no target index
 			if n.Key() != r.self.Key() {
-				return false
+				return
 			}
 			if a.Info.AttackTag != attacks.AttackTagECDamage {
-				return false
+				return
 			}
 			// ignore if this dmg instance has been wiped out due to icd
 			if dmg == 0 {
-				return false
+				return
 			}
 			// ignore if we no longer have both electro and hydro
 			if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur ||
 				r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
-				return true
+				r.core.Events.Unsubscribe(evtRemovalTyp, evtRemovalKey)
+				return
 			}
 
 			// wane in 0.1 seconds
 			r.core.Tasks.Add(func() {
 				r.waneEC()
 			}, 6)
-			return false
-		}, fmt.Sprintf("ec-%v", r.self.Key()))
+		}, evtRemovalKey)
 	}
 
 	// ticks are 60 frames since last tick

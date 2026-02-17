@@ -104,7 +104,7 @@ func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
 }
 
 func (c *char) resetChargeState() {
-	c.Core.Events.Subscribe(event.OnActionExec, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnActionExec, func(args ...any) {
 		act := args[1].(action.Action)
 
 		if act != action.ActionCharge {
@@ -112,8 +112,6 @@ func (c *char) resetChargeState() {
 			c.a1Stacks = 0
 			c.stacksConsumed = 0
 		}
-
-		return false
 	}, "itto-ca-counter-reset")
 }
 

@@ -20,17 +20,17 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if c.StatusIsActive(a1IcdKey) {
-			return false
+			return
 		}
 		active := c.Core.Player.ActiveChar()
 		if active.CurrentHPRatio() >= 0.3 {
-			return false
+			return
 		}
 		c.AddStatus(a1IcdKey, 3600, false)
 		ai := info.AttackInfo{
@@ -51,7 +51,6 @@ func (c *char) a1() {
 			Ele:        attributes.Cryo,
 			Expires:    c.Core.F + 1200, // 20 sec
 		})
-		return false
 	}, "noelle-a1")
 }
 

@@ -13,7 +13,6 @@ import (
 
 const (
 	c1Key = "ineffa-c1"
-	c2Key = "ineffa-c2"
 
 	c4Key    = "ineffa-c4"
 	c4IcdKey = "ineffa-c4-icd"
@@ -111,20 +110,21 @@ func (c *char) c2MakeCB() func(info.AttackCB) {
 		// TODO: What is C2's delay?
 		c.QueueCharTask(c2Atk, 60)
 
-		c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+		evtRemovalTyp := event.OnEnemyHit
+		evtRemovalKey := "ineffa-c2-enemyhit"
+		c.Core.Events.Subscribe(evtRemovalTyp, func(args ...any) {
 			trg, ok := args[0].(*enemy.Enemy)
 			if !ok {
-				return false
+				return
 			}
 
 			if trg.Key() != e.Key() {
-				return false
+				return
 			}
 
 			c2Atk()
-			// unsubcribe from the event after
-			return true
-		}, c2Key)
+			c.Core.Events.Unsubscribe(evtRemovalTyp, evtRemovalKey)
+		}, evtRemovalKey)
 	}
 }
 
@@ -133,13 +133,12 @@ func (c *char) c4Init() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		c.AddEnergy(c4Key, 5)
 		c.AddStatus(c4IcdKey, 4*60, true)
-		return false
 	}, c4Key)
 }
 
@@ -160,17 +159,16 @@ func (c *char) c6Init() {
 		IgnoreDefPercent: 1,
 	}
 
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
 		if !c.StatusIsActive(c1Key) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6IcdKey) {
-			return false
+			return
 		}
 
 		c.AddStatus(c6IcdKey, 3.5*60, true)
 		// TODO: damage and snapshot delay?
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), 10, 10)
-		return false
 	}, c6Key)
 }

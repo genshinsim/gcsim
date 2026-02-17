@@ -30,16 +30,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.27 + float64(r)*0.09
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if !atk.Info.HitWeakPoint {
-			return false
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("prototype-crescent", 60*10),
@@ -48,7 +48,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("prototype-crescent-%v", char.Base.Key.String()))
 
 	return w, nil

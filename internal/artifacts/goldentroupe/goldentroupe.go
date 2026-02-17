@@ -68,7 +68,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.buff = make([]float64, attributes.EndStatType)
 		s.buff[attributes.DmgP] = 0.25
 
-		c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+		c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 			prev := args[0].(int)
 			next := args[1].(int)
 			if prev == char.Index() {
@@ -78,7 +78,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.lastSwap = c.F
 				c.Tasks.Add(s.clearBuff(c.F), 2*60)
 			}
-			return false
 		}, fmt.Sprintf("troupe-4pc-%v", char.Base.Key.String()))
 
 		char.AddAttackMod(character.AttackMod{

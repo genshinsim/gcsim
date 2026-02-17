@@ -31,19 +31,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atk := 1.8 + float64(r)*0.6
 	const icdKey = "prototype-archaic-icd"
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if c.Rand.Float64() < 0.5 {
 			char.AddStatus(icdKey, 15*60, true)
@@ -61,7 +61,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			trg := args[0].(info.Target)
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
 		}
-		return false
 	}, fmt.Sprintf("prototype-archaic-%v", char.Base.Key.String()))
 	return w, nil
 }

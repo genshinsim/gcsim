@@ -63,10 +63,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.nob4buff[attributes.ATKP] = 0.2
 
 		// TODO: this used to be post. need to check
-		c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+		c.Events.Subscribe(event.OnBurst, func(args ...any) {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 
 			for _, x := range s.core.Player.Chars() {
@@ -91,7 +91,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			c.Log.NewEvent("noblesse 4pc proc", glog.LogArtifactEvent, char.Index()).
 				Write("expiry (without hitlag)", c.F+buffDuration)
-			return false
 		}, fmt.Sprintf("nob-4pc-%v", char.Base.Key.String()))
 	}
 

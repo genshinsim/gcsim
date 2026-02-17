@@ -32,29 +32,29 @@ func (c *char) c2() {
 // AoE Hydro DMG equal to 15% of Candace's Max HP. This effect can trigger once
 // every 2.3s and is considered Elemental Burst DMG.
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex == c.Index() {
-			return false
+			return
 		}
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6ICDKey) {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		c.AddStatus(c6ICDKey, 138, true)
 		ai := info.AttackInfo{
@@ -75,6 +75,5 @@ func (c *char) c6() {
 			waveHitmark,
 			waveHitmark,
 		)
-		return false
 	}, "candace-c6")
 }

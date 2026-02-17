@@ -22,15 +22,14 @@ func TestModifyDendroCore(t *testing.T) {
 		t.FailNow()
 	}
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "bloom" {
 			count++
 		}
-		return false
 	}, "bloom")
-	c.Events.Subscribe(event.OnDendroCore, func(args ...any) bool {
+	c.Events.Subscribe(event.OnDendroCore, func(args ...any) {
 		if g, ok := args[0].(*dendrocore.Gadget); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
@@ -41,7 +40,6 @@ func TestModifyDendroCore(t *testing.T) {
 			g.OnExpiry = nil
 			g.OnCollision = nil
 		}
-		return false
 	}, "modify-core")
 
 	c.QueueAttackEvent(&info.AttackEvent{

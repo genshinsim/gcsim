@@ -50,9 +50,9 @@ func (c *char) c2() {
 // TODO: If the Fashioner's Tanglevine Shaft triggers a Burning, Bloom, Quicken, or Spread reaction, their Elemental Mastery
 // will be further increased by 60. This latter case will also refresh the buff state's duration.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnBurst, func(args ...any) {
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 
 		m := make([]float64, attributes.EndStatType)
@@ -66,21 +66,19 @@ func (c *char) c4() {
 				},
 			})
 		}
-
-		return false
 	}, "tighnari-c4")
 
-	f := func(args ...any) bool {
+	f := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-			return false
+			return
 		}
 
 		m := make([]float64, attributes.EndStatType)
@@ -94,8 +92,6 @@ func (c *char) c4() {
 				},
 			})
 		}
-
-		return false
 	}
 	c.Core.Events.Subscribe(event.OnBurning, f, "tighnari-c4-burning")
 	c.Core.Events.Subscribe(event.OnBloom, f, "tighnari-c4-bloom")

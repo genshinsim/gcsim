@@ -102,13 +102,12 @@ func (c *char) getSourcewaterDroplets() []*sourcewaterdroplet.Gadget {
 
 // used for early Burst cancel swap cd calculation
 func (c *char) onSwap() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		next := args[1].(int)
 		if next != c.Index() {
-			return false
+			return
 		}
 		c.lastSwap = c.Core.F
-		return false
 	}, "sigewinne-swap")
 }
 

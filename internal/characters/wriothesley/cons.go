@@ -142,18 +142,18 @@ func (c *char) c4() {
 	}
 	c.caHeal = 0.5
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
 		if index != c.Index() {
-			return false
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 		if overheal <= 0 {
-			return false
+			return
 		}
 
 		chars := c.Core.Player.Chars()
@@ -185,8 +185,6 @@ func (c *char) c4() {
 				})
 			}
 		}
-
-		return false
 	}, "wriothesley-c4-heal")
 }
 

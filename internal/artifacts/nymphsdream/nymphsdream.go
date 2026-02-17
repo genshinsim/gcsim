@@ -89,13 +89,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	const stackDuration = 480
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		switch atk.Info.AttackTag {
@@ -110,8 +110,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		case attacks.AttackTagElementalBurst:
 			char.AddStatus(burstKey, stackDuration, true)
 		}
-
-		return false
 	}, s.key)
 
 	return &s, nil

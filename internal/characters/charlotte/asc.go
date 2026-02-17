@@ -16,16 +16,16 @@ func (c *char) a1() {
 	}
 
 	count := 0
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if !t.StatusIsActive(skillHoldMarkKey) {
-			return false
+			return
 		}
 		if count == 4 {
-			return false
+			return
 		}
 		if count == 0 {
 			c.QueueCharTask(func() {
@@ -34,7 +34,6 @@ func (c *char) a1() {
 		}
 		count++
 		c.ReduceActionCooldown(action.ActionSkill, 120)
-		return false
 	}, "charlotte-a1")
 }
 

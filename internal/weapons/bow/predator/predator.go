@@ -56,20 +56,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const stackKey = "predator-stacks"
 	stackDuration := 360
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Cryo {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 
 		if !char.StatusIsActive(stackKey) {
@@ -92,8 +92,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return nil
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("predator-%v", char.Base.Key.String()))
 
 	return w, nil

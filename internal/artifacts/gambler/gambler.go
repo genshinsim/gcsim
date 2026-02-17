@@ -51,24 +51,24 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// 4 Piece: Defeating an opponent has 100% chance to remove Elemental Skill CD. Can only occur once every 15s.
 	if count >= 4 {
 		const icdKey = "gambler-4pc-icd"
-		c.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+		c.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 			// don't proc if on icd
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			_, ok := args[0].(*enemy.Enemy)
 			// ignore if not an enemy
 			if !ok {
-				return false
+				return
 			}
 			atk := args[1].(*info.AttackEvent)
 			// don't proc if someone else defeated the enemy
 			if atk.Info.ActorIndex != char.Index() {
-				return false
+				return
 			}
 			// don't proc if off-field
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 
 			// reset skill cd
@@ -77,8 +77,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			// set icd
 			char.AddStatus(icdKey, 900, true) // 15s
-
-			return false
 		}, fmt.Sprintf("gambler-4pc-%v", char.Base.Key.String()))
 	}
 

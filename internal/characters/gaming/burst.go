@@ -101,17 +101,15 @@ func (c *char) queueManChai() {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		// do nothing if previous char wasn't gaming
 		prev := args[0].(int)
 		if prev != c.Index() {
-			return false
+			return
 		}
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		c.DeleteStatus(burstKey)
-
-		return false
 	}, "gaming-exit")
 }

@@ -63,12 +63,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	return &s, nil
 }
 
-func (s *Set) OnHeal() func(args ...any) bool {
-	return func(args ...any) bool {
+func (s *Set) OnHeal() func(args ...any) {
+	return func(args ...any) {
 		src := args[0].(*info.HealInfo)
 		healAmt := args[4].(float64)
 		if src.Caller != s.char.Index() {
-			return false
+			return
 		}
 		s.core.Flags.Custom[healStacksKey] += healAmt
 		if s.core.Flags.Custom[healStacksKey] >= 15000 {
@@ -83,12 +83,11 @@ func (s *Set) OnHeal() func(args ...any) bool {
 				s.core.Flags.Custom[wavesOfDaysPastKey] = 5
 			}, 6*60)
 		}
-		return false
 	}
 }
 
-func (s *Set) OnEnemyHit() func(args ...any) bool {
-	return func(args ...any) bool {
+func (s *Set) OnEnemyHit() func(args ...any) {
+	return func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalBurst:
@@ -98,13 +97,13 @@ func (s *Set) OnEnemyHit() func(args ...any) bool {
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 		if s.core.Status.Duration(wavesOfDaysPastKey) == 0 {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != s.core.Player.Active() {
-			return false
+			return
 		}
 		if s.core.Flags.Custom[wavesOfDaysPastKey] > 0 {
 			s.core.Flags.Custom[wavesOfDaysPastKey]--
@@ -116,6 +115,5 @@ func (s *Set) OnEnemyHit() func(args ...any) bool {
 		if s.core.Flags.Custom[wavesOfDaysPastKey] == 0 {
 			s.core.Status.Delete(wavesOfDaysPastKey)
 		}
-		return false
 	}
 }

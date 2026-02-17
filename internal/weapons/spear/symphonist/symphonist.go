@@ -58,12 +58,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffOnHeal := make([]float64, attributes.EndStatType)
 	buffOnHeal[attributes.ATKP] = 0.24 + float64(r)*0.08
 
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 
 		if source.Caller != char.Index() {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -84,7 +84,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				},
 			})
 		}
-		return false
 	}, fmt.Sprintf("symphonist-of-scents-%v", char.Base.Key.String()))
 
 	return w, nil

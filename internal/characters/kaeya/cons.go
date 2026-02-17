@@ -38,19 +38,19 @@ func (c *char) c1() {
 // C2:
 // Every time Glacial Waltz defeats an opponent during its duration, its duration is increased by 2.5s, up to a maximum of 15s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		// ignore if burst isn't up
 		if c.Core.Status.Duration(burstKey) == 0 {
-			return false
+			return
 		}
 		// ignore if extension limit reached
 		if c.c2ProcCount > 2 {
-			return false
+			return
 		}
 		// burst duration steps
 		// 8s
@@ -66,7 +66,6 @@ func (c *char) c2() {
 		c.Core.Log.NewEvent("kaeya-c2 proc'd", glog.LogCharacterEvent, c.Index()).
 			Write("c2ProcCount", c.c2ProcCount).
 			Write("extension", extension)
-		return false
 	}, "kaeya-c2")
 }
 
@@ -76,13 +75,13 @@ func (c *char) c2() {
 // This shield absorbs Cryo DMG with 250% efficiency.
 // Can only occur once every 60s.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if c.Core.F < c.c4icd && c.c4icd != 0 {
-			return false
+			return
 		}
 		maxhp := c.MaxHP()
 		if c.CurrentHPRatio() < 0.2 {
@@ -98,6 +97,5 @@ func (c *char) c4() {
 				Expires:    c.Core.F + 1200,
 			})
 		}
-		return false
 	}, "kaeya-c4")
 }

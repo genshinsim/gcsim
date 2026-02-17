@@ -56,14 +56,14 @@ func (c *char) a1TapestrySetup() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		// seize the moment not active
 		if !c.StatusIsActive(a1SeizeTheMomentKey) {
-			return false
+			return
 		}
 		// seize the moment on icd
 		if c.StatusIsActive(a1SeizeTheMomentICDKey) {
-			return false
+			return
 		}
 		// attack not na/ca/plunge
 		atk := args[1].(*info.AttackEvent)
@@ -72,19 +72,19 @@ func (c *char) a1TapestrySetup() {
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 		// atk not by active char
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		// atk not within 30m of player
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if !t.IsWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 30)) {
-			return false
+			return
 		}
 
 		// apply icd
@@ -112,8 +112,6 @@ func (c *char) a1TapestrySetup() {
 		if c.a1AttackCount == a1SeizeTheMomentAttackLimit {
 			c.DeleteStatus(a1SeizeTheMomentKey)
 		}
-
-		return false
 	}, a1SeizeTheMomentKey)
 }
 
@@ -186,9 +184,8 @@ func (c *char) a4() {
 	}
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.GeoP] = 0.20
-	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...any) {
 		c.applyA4Buff()
-		return false
 	}, a4BuffKey)
 }
 

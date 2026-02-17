@@ -31,31 +31,31 @@ func (c *char) a1() {
 		return
 	}
 
-	swirlFunc := func(args ...any) bool {
+	swirlFunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 
 		// Mizuki should trigger the swirl
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 
 		// Only when dream drifter is active
 		if !c.StatusIsActive(dreamDrifterStateKey) {
-			return false
+			return
 		}
 
 		// Max 2 extensions per E
 		if c.dreamDrifterExtensionsRemaining <= 0 {
-			return false
+			return
 		}
 
 		// ICD
 		if c.StatusIsActive(a1ICDKey) {
-			return false
+			return
 		}
 
 		c.AddStatus(a1ICDKey, a1ICD, true)
@@ -63,8 +63,6 @@ func (c *char) a1() {
 		c.ExtendStatus(dreamDrifterStateKey, dreamDrifterDurationExtension)
 
 		c.dreamDrifterExtensionsRemaining--
-
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Pyro))
@@ -83,25 +81,25 @@ func (c *char) a4() {
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.EM] = a4EMBuff
 
-	hitFunc := func(args ...any) bool {
+	hitFunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		// Only when others attack
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex == c.Index() {
-			return false
+			return
 		}
 
 		// Only when dream drifter is active
 		if !c.StatusIsActive(dreamDrifterStateKey) {
-			return false
+			return
 		}
 
 		// ICD
 		if c.StatusIsActive(a4ICDKey) {
-			return false
+			return
 		}
 		c.AddStatus(a4ICDKey, a4ICD, true)
 
@@ -112,7 +110,7 @@ func (c *char) a4() {
 		case attributes.Pyro:
 		case attributes.Cryo:
 		default:
-			return false
+			return
 		}
 
 		c.AddStatMod(character.StatMod{
@@ -122,8 +120,6 @@ func (c *char) a4() {
 				return c.a4Buff
 			},
 		})
-
-		return false
 	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, hitFunc, a4Key)
 }

@@ -35,7 +35,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 
 	var amt float64
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...any) bool {
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) {
 		var energy float64
 
 		for _, x := range c.Player.Chars() {
@@ -62,7 +62,6 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 				return nil
 			},
 		})
-		return true
 	}, fmt.Sprintf("wavebreaker-%v", char.Base.Key.String()))
 
 	return w, nil

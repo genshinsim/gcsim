@@ -63,19 +63,19 @@ func (c *char) c6() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		if !c.StatusIsActive(burstFavonianFavor) {
-			return false
+			return
 		}
 
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
 		// If Revive is still on CD, do nothing
 		if c.StatusIsActive(c6Icd) {
-			return false
+			return
 		}
 
 		// Revive the active char (even Dahlia himself) back to 100% HP if dead
@@ -84,8 +84,6 @@ func (c *char) c6() {
 			char.SetHPByRatio(1)
 		}
 		c.AddStatus(c6Icd, 15*60*60, true)
-
-		return false
 	}, c6Key)
 }
 

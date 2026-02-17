@@ -47,28 +47,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bonus[attributes.ATKP] = 0.3 + 0.1*float64(r)
 	const icdKey = "wolf-gravestone-icd"
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if !c.Flags.DamageMode {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		if t.HP()/t.MaxHP() > 0.3 {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 1800, true)
 
@@ -81,7 +81,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				},
 			})
 		}
-		return false
 	}, fmt.Sprintf("wolf-%v", char.Base.Key.String()))
 	return w, nil
 }

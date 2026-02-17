@@ -92,26 +92,26 @@ func (c *Traveler) burstProc() {
 	//  When your active character's Normal or Charged Attacks hit opponents, they will call Falling Thunder forth, dealing Electro DMG.
 	//  When Falling Thunder hits opponents, it will regenerate Energy for that character.
 	//  One instance of Falling Thunder can be generated every 0.5s.
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		t := args[0].(info.Target)
 
 		// only apply on na/ca
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// make sure the person triggering the attack is on field still
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		// only apply if burst is active
 		if c.Core.Status.Duration("travelerelectroburst") == 0 {
-			return false
+			return
 		}
 		// One instance of Falling Thunder can be generated every 0.5s.
 		if icd > c.Core.F {
 			c.Core.Log.NewEvent("travelerelectro Q (active) on icd", glog.LogCharacterEvent, c.Index())
-			return false
+			return
 		}
 
 		// Use burst snapshot, update target & source frame
@@ -143,7 +143,6 @@ func (c *Traveler) burstProc() {
 			Write("attack tag", ae.Info.AttackTag)
 
 		icd = c.Core.F + 30 // 0.5s
-		return false
 	}, "travelerelectro-bellowingthunder")
 }
 

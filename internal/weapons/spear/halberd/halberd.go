@@ -33,20 +33,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const icdKey = "halberd-icd"
 	dmg := 1.20 + float64(r)*0.40
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		trg := args[0].(info.Target)
 		// don't proc if dmg not from weapon holder
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// don't proc if not Normal Attack
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		// don't proc if on icd
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// set icd
 		char.AddStatus(icdKey, 600, true) // 10s
@@ -64,8 +64,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Mult:       dmg,
 		}
 		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
-
-		return false
 	}, fmt.Sprintf("halberd-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -34,40 +34,39 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const icdKey = "debate-club-icd"
 	dmg := 0.45 + float64(r)*0.15
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		// don't activate if skill not from weapon holder
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// reset icd
 		char.DeleteStatus(icdKey)
 		// add debate club effect
 		char.AddStatus(effectKey, 900, true) // 15s
-		return false
 	}, fmt.Sprintf("debate-club-activation-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		trg := args[0].(info.Target)
 		// don't proc if dmg not from weapon holder
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// don't proc if off-field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// don't proc if debate club effect isn't active
 		if !char.StatusIsActive(effectKey) {
-			return false
+			return
 		}
 		// don't proc if not Normal/Charged Attack
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// don't proc if on icd
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// set icd
 		char.AddStatus(icdKey, 180, true) // 3s
@@ -85,8 +84,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Mult:       dmg,
 		}
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
-
-		return false
 	}, fmt.Sprintf("debate-club-proc-%v", char.Base.Key.String()))
 
 	return w, nil

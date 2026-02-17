@@ -60,42 +60,40 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if di.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
 		w.onChangeHP()
-		return false
 	}, fmt.Sprintf("eternalflow-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if index != char.Index() {
-			return false
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 		// do not trigger if at max hp already
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 
 		w.onChangeHP()
-		return false
 	}, fmt.Sprintf("eternalflow-heal-%v", char.Base.Key.String()))
 	return w, nil
 }

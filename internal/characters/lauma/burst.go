@@ -67,13 +67,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) initBurst() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if c.paleHymnCount() <= 0 {
-			return false
+			return
 		}
 
 		ae := args[1].(*info.AttackEvent)
@@ -87,19 +87,17 @@ func (c *char) initBurst() {
 			ae.Info.FlatDmg += em * lunarBloomDmgIncrease[c.TalentLvlBurst()]
 			ae.Info.FlatDmg += em * c.c2PaleHymnScalingLunarBloom()
 		default:
-			return false
+			return
 		}
 
 		if ae.Info.Abil == c6SkillHitName {
-			return false
+			return
 		}
 
 		c.consumePaleHymn()
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("lauma pale hymn consumed", glog.LogCharacterEvent, c.Index()).Write("remaining", c.paleHymnCount())
 		}
-
-		return false
 	}, "lauma-pale-hymn-buff")
 }
 

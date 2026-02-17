@@ -16,15 +16,15 @@ const c4Key = "layla-c4"
 // causing their Normal and Charged Attack DMG to increase based on 5% of Layla's Max HP.
 // Dawn Star can last up to 3s and will be removed 0.05s after dealing Normal or Charged Attack DMG.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 
 		char := c.Core.Player.ByIndex(ae.Info.ActorIndex)
 		if !char.StatusIsActive(c4Key) {
-			return false
+			return
 		}
 
 		dmgAdded := 0.05 * c.MaxHP()
@@ -34,8 +34,6 @@ func (c *char) c4() {
 
 		c.Core.Log.NewEvent("layla c4 adding damage", glog.LogPreDamageMod, ae.Info.ActorIndex).
 			Write("damage_added", dmgAdded)
-
-		return false
 	}, "layla-c4")
 }
 

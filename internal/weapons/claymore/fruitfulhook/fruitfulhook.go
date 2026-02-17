@@ -46,13 +46,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// After a Plunging Attack hits an opponent, Normal, Charged, and Plunging Attack DMG increased for 10s
 	mDMG := make([]float64, attributes.EndStatType)
 	mDMG[attributes.DmgP] = 0.12 + 0.04*float64(r)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagPlunge {
-			return false
+			return
 		}
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("fruitful-hook-dmg%", 10*60),
@@ -67,8 +67,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return mDMG
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("fruitful-hook-%v", char.Base.Key.String()))
 
 	return w, nil

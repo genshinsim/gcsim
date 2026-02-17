@@ -58,13 +58,13 @@ func (c *char) c2Setup() {
 	}
 
 	// listen for swap to clear/apply C2
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		// swapping off lyney means clearing C2
 		prev := args[0].(int)
 		if prev == c.Index() {
 			c.c2Src = -1
 			c.c2Stacks = 0
-			return false
+			return
 		}
 		// swapping to lyney means applying C2
 		next := args[1].(int)
@@ -72,9 +72,8 @@ func (c *char) c2Setup() {
 			c.c2Src = c.Core.F
 			c.QueueCharTask(c.c2StackCheck(c.Core.F), c2Interval)
 			c.Core.Log.NewEvent("Lyney C2 started", glog.LogCharacterEvent, c.Index()).Write("c2_stacks", c.c2Stacks)
-			return false
+			return
 		}
-		return false
 	}, "lyney-c2-swap")
 
 	// add buff

@@ -48,12 +48,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bondDMGPCap := 0.09 + float64(r)*0.03
 	debt := 0.0
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 
@@ -79,20 +79,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		for i := attributes.PyroP; i <= attributes.DendroP; i++ {
 			bond[i] = bondDMGP
 		}
-
-		return false
 	}, fmt.Sprintf("flowingpurity-eledmg%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		if index != char.Index() {
-			return false
+			return
 		}
 		if char.CurrentHPDebt() > 0 {
-			return false
+			return
 		}
 		if !char.StatusIsActive(bondKey) {
-			return false
+			return
 		}
 		char.DeleteStatus(bondKey)
 
@@ -103,7 +101,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return bond
 			},
 		})
-		return false
 	}, fmt.Sprintf("flowingpurity-bondeledmg%v", char.Base.Key.String()))
 	return w, nil
 }

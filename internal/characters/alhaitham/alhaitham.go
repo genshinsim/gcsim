@@ -44,19 +44,17 @@ func (c *char) Init() error {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		// do nothing if previous char wasn't alhaitham
 		prev := args[0].(int)
 		if prev != c.Index() {
-			return false
+			return
 		}
 		c.lastInfusionSrc = -1 // Might prevent undesired behaviour
 		if c.mirrorCount > 0 {
 			c.mirrorCount = 0
 			c.Core.Log.NewEvent("Alhaitham left the field, mirror lost", glog.LogCharacterEvent, c.Index())
 		}
-
-		return false
 	}, "alhaitham-exit")
 }
 

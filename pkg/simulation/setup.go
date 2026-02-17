@@ -159,10 +159,10 @@ func SetupResonance(s *core.Core) {
 			}
 		case attributes.Electro:
 			last := 0
-			//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-			recoverParticle := func(_ ...any) bool {
+
+			recoverParticle := func(_ ...any) {
 				if s.F-last < 300 && last != 0 { // every 5 seconds
-					return false
+					return
 				}
 				s.Player.DistributeParticle(character.Particle{
 					Source: "electro-res",
@@ -170,14 +170,12 @@ func SetupResonance(s *core.Core) {
 					Ele:    attributes.Electro,
 				})
 				last = s.F
-				return false
 			}
 
-			recoverNoGadget := func(args ...any) bool {
-				if _, ok := args[0].(*enemy.Enemy); !ok {
-					return false
+			recoverNoGadget := func(args ...any) {
+				if _, ok := args[0].(*enemy.Enemy); ok {
+					recoverParticle(args...)
 				}
-				return recoverParticle(args...)
 			}
 			s.Events.Subscribe(event.OnOverload, recoverNoGadget, "electro-res")
 			s.Events.Subscribe(event.OnSuperconduct, recoverNoGadget, "electro-res")
@@ -195,10 +193,10 @@ func SetupResonance(s *core.Core) {
 			s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 			// shred geo res of target
-			s.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+			s.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 				t, ok := args[0].(*enemy.Enemy)
 				if !ok {
-					return false
+					return
 				}
 				atk := args[1].(*info.AttackEvent)
 				if s.Player.Shields.CharacterIsShielded(atk.Info.ActorIndex, s.Player.Active()) {
@@ -208,7 +206,6 @@ func SetupResonance(s *core.Core) {
 						Value: -0.2,
 					})
 				}
-				return false
 			}, "geo res")
 
 			m := make([]float64, attributes.EndStatType)
@@ -251,9 +248,9 @@ func SetupResonance(s *core.Core) {
 
 			twoBuff := make([]float64, attributes.EndStatType)
 			twoBuff[attributes.EM] = 30
-			twoEl := func(args ...any) bool {
+			twoEl := func(args ...any) {
 				if _, ok := args[0].(*enemy.Enemy); !ok {
-					return false
+					return
 				}
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
@@ -264,7 +261,6 @@ func SetupResonance(s *core.Core) {
 						},
 					})
 				}
-				return false
 			}
 			s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
 			s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
@@ -273,7 +269,7 @@ func SetupResonance(s *core.Core) {
 
 			threeBuff := make([]float64, attributes.EndStatType)
 			threeBuff[attributes.EM] = 20
-			threeEl := func(_ ...any) bool {
+			threeEl := func(_ ...any) {
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
 						Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
@@ -283,13 +279,11 @@ func SetupResonance(s *core.Core) {
 						},
 					})
 				}
-				return false
 			}
-			threeElNoGadget := func(args ...any) bool {
-				if _, ok := args[0].(*enemy.Enemy); !ok {
-					return false
+			threeElNoGadget := func(args ...any) {
+				if _, ok := args[0].(*enemy.Enemy); ok {
+					threeEl(nil)
 				}
-				return threeEl(nil)
 			}
 			s.Events.Subscribe(event.OnAggravate, threeElNoGadget, "dendro-res")
 			s.Events.Subscribe(event.OnSpread, threeElNoGadget, "dendro-res")
@@ -300,15 +294,15 @@ func SetupResonance(s *core.Core) {
 }
 
 func SetupMisc(c *core.Core) {
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		// dmg tag is superconduct, target is enemy
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagSuperconductDamage {
-			return false
+			return
 		}
 		// add shred
 		t.AddResistMod(info.ResistMod{
@@ -316,7 +310,6 @@ func SetupMisc(c *core.Core) {
 			Ele:   attributes.Physical,
 			Value: -0.4,
 		})
-		return false
 	}, "superconduct")
 }
 
@@ -333,14 +326,14 @@ func setupNightsoulBurst(core *core.Core) {
 	}
 
 	triggerCD := nightsoulBurstICD[count]
-	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if core.Status.Duration(nightsoulBurstICDStatus) > 0 {
-			return false
+			return
 		}
 
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.Element {
@@ -352,12 +345,11 @@ func setupNightsoulBurst(core *core.Core) {
 		case attributes.Anemo:
 		case attributes.Geo:
 		default:
-			return false
+			return
 		}
 
 		core.Events.Emit(event.OnNightsoulBurst, t, atk)
 		core.Status.Add(nightsoulBurstICDStatus, triggerCD)
-		return false
 	}, "nightsoul-burst")
 }
 
@@ -408,11 +400,11 @@ func setupAscendantGleam(core *core.Core) {
 		}
 	}
 
-	hook := func(args ...any) bool {
+	hook := func(args ...any) {
 		src = core.F
 		char := core.Player.ActiveChar()
 		if char.Moonsign != 0 {
-			return false
+			return
 		}
 
 		gleamBuffUpdateGen(char, src)()
@@ -431,8 +423,6 @@ func setupAscendantGleam(core *core.Core) {
 				},
 			})
 		}
-
-		return false
 	}
 	core.Events.Subscribe(event.OnSkill, hook, "ascendant-gleam-on-skill")
 	core.Events.Subscribe(event.OnBurst, hook, "ascendant-gleam-on-burst")

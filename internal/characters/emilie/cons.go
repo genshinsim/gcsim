@@ -31,29 +31,27 @@ func (c *char) c1() {
 
 	c.c1A1()
 
-	c.Core.Events.Subscribe(event.OnBurning, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnBurning, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		c.c1Scent()
-		return false
 	}, "emilie-a1-on-burning")
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 		if !t.IsBurning() {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Dendro {
-			return false
+			return
 		}
 		c.c1Scent()
-		return false
 	}, "emilie-a1-on-damage")
 }
 

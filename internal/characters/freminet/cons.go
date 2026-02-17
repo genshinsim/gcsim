@@ -60,18 +60,18 @@ func (c *char) c4c6() {
 	c4M := make([]float64, attributes.EndStatType)
 	c6M := make([]float64, attributes.EndStatType)
 
-	c4c6Buff := func(args ...any) bool {
+	c4c6Buff := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(c4c6IcdKey) {
-			return false
+			return
 		}
 
 		c.AddStatus(c4c6IcdKey, 18, true)
@@ -98,7 +98,7 @@ func (c *char) c4c6() {
 		c.Core.Log.NewEvent("freminet c4 proc", glog.LogCharacterEvent, c.Index())
 
 		if c.Base.Cons < 6 {
-			return false
+			return
 		}
 
 		// C6
@@ -123,8 +123,6 @@ func (c *char) c4c6() {
 		})
 
 		c.Core.Log.NewEvent("freminet c6 proc", glog.LogCharacterEvent, c.Index())
-
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnShatter, c4c6Buff, "freminet-c4-c6-shatter")

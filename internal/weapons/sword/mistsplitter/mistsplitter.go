@@ -54,28 +54,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bonus := attributes.EleToDmgP(char.Base.Element)
 
 	// normal dealing dmg
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if atk.Info.Element == attributes.Physical {
-			return false
+			return
 		}
 		char.AddStatus(normalBuffKey, 300, true)
-		return false
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 
 	// using burst
-	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		char.AddStatus(burstBuffKey, 600, true)
-		return false
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("mistsplitter", -1),

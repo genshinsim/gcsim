@@ -61,10 +61,10 @@ func (c *char) c2(a info.AttackCB) {
 func (c *char) c4() {
 	c.c4bonus = make([]float64, attributes.EndStatType)
 	c.c4bonus[attributes.AnemoP] = 0.25
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...any) {
 		// only trigger if Venti catches the particle
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 		// apply C4 to Venti
 		c.AddStatMod(character.StatMod{
@@ -74,7 +74,6 @@ func (c *char) c4() {
 				return c.c4bonus
 			},
 		})
-		return false
 	}, "venti-c4")
 }
 

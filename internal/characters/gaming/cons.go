@@ -40,16 +40,16 @@ func (c *char) c2() {
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 
 		if overheal <= 0 {
-			return false
+			return
 		}
 
 		if hi.Target != c.Index() {
-			return false
+			return
 		}
 
 		c.AddStatMod(character.StatMod{
@@ -59,8 +59,6 @@ func (c *char) c2() {
 				return m
 			},
 		})
-
-		return false
 	}, c2Key+"-on-heal")
 }
 

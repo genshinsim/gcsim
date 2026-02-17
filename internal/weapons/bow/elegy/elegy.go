@@ -61,23 +61,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const cdKey = "elegy-cd"
 	cd := 20 * 60
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalArt:
 		case attacks.AttackTagElementalArtHold:
 		case attacks.AttackTagElementalBurst:
 		default:
-			return false
+			return
 		}
 		if char.StatusIsActive(cdKey) {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		char.AddStatus(icdKey, icd, true)
@@ -102,7 +102,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				})
 			}
 		}
-		return false
 	}, fmt.Sprintf("elegy-%v", char.Base.Key.String()))
 
 	return w, nil

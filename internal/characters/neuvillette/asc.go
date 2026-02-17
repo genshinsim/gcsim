@@ -35,12 +35,11 @@ func (c *char) a1() {
 	)
 
 	for _, val := range a1 {
-		c.Core.Events.Subscribe(val.Evt, func(args ...any) bool {
+		c.Core.Events.Subscribe(val.Evt, func(args ...any) {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
-				return false
+				return
 			}
 			c.AddStatus(val.Key, 30*60, true)
-			return false
 		}, val.Key)
 	}
 }
@@ -71,42 +70,38 @@ func (c *char) a4() {
 		},
 	})
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
 		if di.ActorIndex != c.Index() {
-			return false
+			return
 		}
 
 		c.updateA4()
-
-		return false
 	}, "neuv-a4-update-on-hp-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		target := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
 
 		if amount <= 0 {
-			return false
+			return
 		}
 
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 
 		if target != c.Index() {
-			return false
+			return
 		}
 
 		c.updateA4()
-
-		return false
 	}, "neuv-a4-update-on-heal")
 
 	c.updateA4()

@@ -21,20 +21,20 @@ func (c *char) a1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		hi := args[0].(*info.HealInfo)
 		overheal := args[3].(float64)
 
 		if hi.Caller == c.Index() {
-			return false
+			return
 		}
 
 		if overheal <= 0 {
-			return false
+			return
 		}
 
 		if hi.Target != c.Core.Player.Active() && hi.Target != -1 {
-			return false
+			return
 		}
 
 		if !c.StatusIsActive(a1HealKey) {
@@ -43,8 +43,6 @@ func (c *char) a1() {
 		}
 
 		c.AddStatus(a1HealKey, 4*60, true)
-
-		return false
 	}, "furina-a1")
 }
 

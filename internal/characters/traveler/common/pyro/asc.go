@@ -11,27 +11,25 @@ func (c *Traveler) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	fReactionHook := func(args ...any) bool {
+	fReactionHook := func(args ...any) {
 		// Attack must be from active character
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		if !c.nightsoulState.HasBlessing() {
-			return false
+			return
 		}
 		if c.StatusIsActive(a4OnReactICD) {
-			return false
+			return
 		}
 
 		c.AddStatus(a4OnReactICD, 12*60, true)
 		c.AddEnergy("travelerpyro-a4-energy", 5)
-		return false
 	}
 
-	fNSHook := func(args ...any) bool {
+	fNSHook := func(args ...any) {
 		c.AddEnergy("travelerpyro-a4-energy", 4)
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnBurning, fReactionHook, "travelerpyro-a4-onburning")

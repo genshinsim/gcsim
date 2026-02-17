@@ -27,18 +27,18 @@ func (c *char) c1Init() {
 	}
 
 	// on lb proc heal
-	c.Core.Events.Subscribe(event.OnLunarBloom, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnLunarBloom, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 
 		if !c.StatusIsActive(c1Key) {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(c1IcdKey) {
-			return false
+			return
 		}
 
 		c.AddStatus(c1IcdKey, 1.9*60, true)
@@ -53,8 +53,6 @@ func (c *char) c1Init() {
 				Src:     healAmt,
 			})
 		}, c1HitMark)
-
-		return true
 	}, "lauma-c1")
 }
 
@@ -145,11 +143,11 @@ func (c *char) c6Init() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.AttackTag != attacks.AttackTagDirectLunarBloom {
-			return false
+			return
 		}
 
 		if c.Core.Flags.LogDebug {
@@ -157,7 +155,6 @@ func (c *char) c6Init() {
 		}
 
 		atk.Info.Elevation += c6ElevationBonus
-		return false
 	}, lunarbloomBonusKey+"-c6")
 }
 

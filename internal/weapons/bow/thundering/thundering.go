@@ -40,28 +40,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	key := fmt.Sprintf("thundering-pulse-%v", char.Base.Key.String())
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		char.AddStatus(normalKey, normalDuration, true)
-		return false
 	}, key)
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		char.AddStatus(skillKey, skillDuration, true)
-		return false
 	}, key)
 
 	char.AddAttackMod(character.AttackMod{

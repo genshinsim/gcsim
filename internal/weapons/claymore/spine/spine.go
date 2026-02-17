@@ -82,26 +82,25 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// TODO: taking 3% more damage not implemented
 	const icdKey = "spine-dmgtaken-icd"
 	icd := 60
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if !di.External {
-			return false
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 		if w.stacks > 0 {
 			w.stacks--
 			w.updateBuff()
 		}
-		return false
 	}, fmt.Sprintf("spine-%v", char.Base.Key.String()))
 
 	char.AddStatMod(character.StatMod{

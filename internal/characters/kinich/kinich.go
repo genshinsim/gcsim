@@ -134,11 +134,10 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if c.nightsoulState.HasBlessing() {
 			c.cancelNightsoul()
 		}
-		return false
 	}, "kinich-exit")
 }
 

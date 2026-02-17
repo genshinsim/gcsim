@@ -49,17 +49,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bonus := make([]float64, attributes.EndStatType)
 	bonus[attributes.DmgP] = 0.21 + 0.07*r
 
-	c.Events.Subscribe(event.OnShielded, func(args ...any) bool {
+	c.Events.Subscribe(event.OnShielded, func(args ...any) {
 		shd := args[0].(shield.Shield)
 		if shd.ShieldOwner() != char.Index() {
-			return false
+			return
 		}
 		// TODO: Not sure if the character needs to be on the field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(ICDKey) {
-			return false
+			return
 		}
 
 		char.AddStatus(ICDKey, ICDDur, true)
@@ -88,8 +88,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				},
 			})
 		}
-
-		return false
 	}, fmt.Sprintf("starcallerswatch-onshielded-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -33,15 +33,14 @@ func (c *char) c2() {
 // inspired from hutao c6
 // TODO: does this even work?
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if c.Core.Player.Active() != c.Index() { // trigger only when not barbara
 			c.checkc6()
 		}
-		return false
 	}, "barbara-c6")
 }
 

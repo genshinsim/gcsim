@@ -53,26 +53,26 @@ func (c *char) c4() {
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal &&
 			atk.Info.AttackTag != attacks.AttackTagExtra &&
 			atk.Info.AttackTag != attacks.AttackTagPlunge {
-			return false
+			return
 		}
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6ICDKey) {
-			return false
+			return
 		}
 
 		c.AddStatus(c6ICDKey, 180, false)
@@ -94,7 +94,5 @@ func (c *char) c6() {
 		// delay is an estimate
 		c.Core.QueueAttack(ai, ap, 0, 0.3*60)
 		c.QueueCharTask(func() { c.ruptureDendroCores(ap) }, 0.3*60)
-
-		return false
 	}, "kaveh-c6")
 }

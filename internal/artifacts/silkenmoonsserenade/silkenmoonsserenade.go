@@ -61,9 +61,9 @@ func (s *Set) Init() error {
 		m2[attributes.EM] = 120
 	}
 
-	hook := func(args ...any) bool {
+	hook := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.Element {
@@ -75,7 +75,7 @@ func (s *Set) Init() error {
 		case attributes.Geo:
 		case attributes.Dendro:
 		default:
-			return false
+			return
 		}
 
 		for _, char := range s.core.Player.Chars() {
@@ -88,8 +88,6 @@ func (s *Set) Init() error {
 				},
 			})
 		}
-
-		return false
 	}
 	s.core.Events.Subscribe(event.OnEnemyDamage, hook, setKey4+"-dmg-"+s.char.Base.Key.String())
 

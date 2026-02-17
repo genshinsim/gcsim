@@ -33,20 +33,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	hp := 0.3 + float64(r)*0.1
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 15*60, true)
 		ai := info.AttackInfo{
@@ -61,7 +61,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			FlatDmg:    char.MaxHP() * hp,
 		}
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 0, 1)
-		return false
 	}, fmt.Sprintf("solitude-%v", char.Base.Key.String()))
 	return w, nil
 }

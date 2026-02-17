@@ -49,17 +49,15 @@ func (c *Traveler) c2Init() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	fReactionHook := func(args ...any) bool {
+	fReactionHook := func(args ...any) {
 		if !c.StatusIsActive(c2StatusKey) {
-			return false
+			return
 		}
 
 		if c.c2ActivationsPerSkill < 2 {
 			c.c2ActivationsPerSkill++
 			c.nightsoulState.GeneratePoints(14)
 		}
-
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnBurning, fReactionHook, "travelerpyro-c2-onburning")

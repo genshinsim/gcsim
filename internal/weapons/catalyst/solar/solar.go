@@ -31,13 +31,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.15 + float64(r)*0.05
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
@@ -64,9 +64,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			})
 
 		default:
-			return false
+			return
 		}
-		return false
 	}, fmt.Sprintf("solar-%v", char.Base.Key.String()))
 
 	return w, nil

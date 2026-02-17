@@ -36,19 +36,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	amt := 0.045 + float64(r)*0.015
 	const icdKey = "whiteblind-icd"
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if char.StatModIsActive(icdKey) {
-			return false
+			return
 		}
 		if !char.StatModIsActive("whiteblind") {
 			w.stacks = 0
@@ -71,8 +71,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return w.buff
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("whiteblind-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -21,9 +21,8 @@ func (c *char) a1() {
 		return float64(c.a1Stack) * 0.05, true
 	})
 
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		c.a1Stack = 0
-		return false
 	}, "thoma-a1-swap")
 }
 

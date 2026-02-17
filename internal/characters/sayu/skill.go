@@ -321,23 +321,23 @@ func (c *char) absorbCheck(src, count, maxcount int) func() {
 }
 
 func (c *char) rollAbsorb() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Anemo || c.eAbsorb == attributes.NoElement {
-			return false
+			return
 		}
 		if c.Core.F > c.eDuration {
-			return false
+			return
 		}
 
 		switch atk.Info.AttackTag {
@@ -377,7 +377,5 @@ func (c *char) rollAbsorb() {
 				1,
 			)
 		}
-
-		return false
 	}, "sayu-absorb-check")
 }

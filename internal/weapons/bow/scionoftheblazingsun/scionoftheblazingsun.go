@@ -60,23 +60,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 
 		ai := info.AttackInfo{
@@ -92,8 +92,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3.5), 0.25*60, 0.25*60, w.applyDebuff)
 		char.AddStatus(icdKey, 10*60, true)
-
-		return false
 	}, fmt.Sprintf("scion-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -37,7 +37,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		shields: make(map[string][]stats.ShieldInterval),
 	}
 
-	core.Events.Subscribe(event.OnShielded, func(args ...any) bool {
+	core.Events.Subscribe(event.OnShielded, func(args ...any) {
 		shield := args[0].(shield.Shield)
 		name := shield.Desc()
 		bonus := core.Player.Shields.ShieldBonus()
@@ -60,7 +60,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		if _, ok := out.shields[name]; !ok {
 			out.shields[name] = make([]stats.ShieldInterval, 0)
 			out.shields[name] = append(out.shields[name], interval)
-			return false
+			return
 		}
 
 		prevIndex := len(out.shields[name]) - 1
@@ -73,7 +73,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 				// TODO: max not necessary here?
 				prevInterval.End = max(prevInterval.End, interval.End)
 				out.shields[name][prevIndex] = prevInterval
-				return false
+				return
 			}
 
 			// diff, end prev interval early
@@ -82,11 +82,10 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 
 		out.shields[name] = append(out.shields[name], interval)
-		return false
 	}, "stats-shield-log")
 
 	// TODO: Should be replaced with targeted events (IE on shield stats changes + char swap)
-	core.Events.Subscribe(event.OnTick, func(args ...any) bool {
+	core.Events.Subscribe(event.OnTick, func(args ...any) {
 		bonus := core.Player.Shields.ShieldBonus()
 
 		for _, shield := range core.Player.Shields.List() {
@@ -117,7 +116,6 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 				}
 			}
 		}
-		return false
 	}, "stats-shield-tick-log")
 
 	return &out, nil

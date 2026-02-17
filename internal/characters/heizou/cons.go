@@ -13,13 +13,13 @@ import (
 func (c *char) c1() {
 	const c1Icd = "heizou-c1-icd"
 	// No log value saved as stat mod already shows up in debug view
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if c.StatusIsActive(c1Icd) {
-			return false
+			return
 		}
 		next := args[1].(int)
 		if next != c.Index() {
-			return false
+			return
 		}
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("heizou-c1", 300), // 5s
@@ -30,7 +30,6 @@ func (c *char) c1() {
 		})
 		c.addDecStack()
 		c.AddStatus(c1Icd, 600, true)
-		return false
 	}, "heizou enter")
 }
 

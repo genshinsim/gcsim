@@ -32,13 +32,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const buffKey = "mappa-mare"
 	buffDuration := 600 // 10s * 60
 
-	addStack := func(args ...any) bool {
+	addStack := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		if !char.StatusIsActive(buffKey) {
@@ -67,8 +67,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		c.Log.NewEvent("mappa-mare adding stack", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
-
-		return false
 	}
 
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {

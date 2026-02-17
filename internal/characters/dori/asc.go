@@ -19,29 +19,27 @@ func (c *char) a1() {
 
 	const icdKey = "dori-a1"
 	icd := 180 // 3s * 60
-	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	reduce := func(args ...any) bool {
+
+	reduce := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		if c.Core.Player.Active() != atk.Info.ActorIndex { // only for on field character
-			return false
+			return
 		}
 		if c.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		c.AddStatus(icdKey, icd, true)
 		c.ReduceActionCooldown(action.ActionSkill, 60)
 		c.Core.Log.NewEvent("dori a1 proc", glog.LogCharacterEvent, c.Index()).
 			Write("reaction", atk.Info.Abil).
 			Write("new cd", c.Cooldown(action.ActionSkill))
-		return false
 	}
 
-	reduceNoGadget := func(args ...any) bool {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+	reduceNoGadget := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); ok {
+			reduce(args...)
 		}
-		return reduce(args...)
 	}
 
 	c.Core.Events.Subscribe(event.OnOverload, reduceNoGadget, "dori-a1")
@@ -56,7 +54,6 @@ func (c *char) a1() {
 }
 
 // When the Troubleshooter Shots or After-Sales Service Rounds from Spirit-Warding Lamp: Troubleshooter Cannon hit opponents,
-// Dori will restore 5 Elemental Energy for every 100% Energy Recharge possessed.
 // Per Spirit-Warding Lamp: Troubleshooter Cannon, only one instance of Energy restoration can be triggered
 // and a maximum of 15 Energy can be restored this way.
 func (c *char) makeA4CB() info.AttackCBFunc {

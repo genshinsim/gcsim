@@ -39,14 +39,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const effectIcdKey = "endoftheline-effect-icd"
 	const dmgIcdKey = "endoftheline-dmg-icd"
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		// do nothing if holder is off-field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// do nothing if flowrider is on icd
 		if char.StatusIsActive(effectIcdKey) {
-			return false
+			return
 		}
 		// add flowrider status and proc flowrider icd
 		char.AddStatus(effectKey, 15*60, true)
@@ -57,26 +57,25 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		// reset proc count
 		w.procCount = 0
-		return false
 	}, fmt.Sprintf("endoftheline-effect-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		// do nothing if holder is off-field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// do nothing if attack not from holder
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// do nothing if flowrider is not active
 		if !char.StatusIsActive(effectKey) {
-			return false
+			return
 		}
 		// do nothing if flowrider dmg is on icd
 		if char.StatusIsActive(dmgIcdKey) {
-			return false
+			return
 		}
 		// queue up flowrider proc
 		ai := info.AttackInfo{
@@ -101,8 +100,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		} else {
 			char.AddStatus(dmgIcdKey, 2*60, true)
 		}
-
-		return false
 	}, fmt.Sprintf("endoftheline-dmg-%v", char.Base.Key.String()))
 
 	return w, nil

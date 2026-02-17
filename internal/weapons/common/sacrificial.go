@@ -39,33 +39,32 @@ func (s *Sacrificial) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		cd = (19 - (r-4)*3) * 60
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if char.Cooldown(action.ActionSkill) == 0 {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		if c.Rand.Float64() < prob {
 			char.ResetActionCooldown(action.ActionSkill)
 			char.AddStatus(icdKey, cd, true)
 			c.Log.NewEvent("sacrificial proc'd", glog.LogWeaponEvent, char.Index())
 		}
-		return false
 	}, fmt.Sprintf("sac-%v", char.Base.Key.String()))
 
 	return s, nil

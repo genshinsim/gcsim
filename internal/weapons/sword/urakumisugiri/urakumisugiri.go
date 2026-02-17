@@ -81,13 +81,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Element != attributes.Geo {
-			return false
+			return
 		}
 		char.AddStatus(buffKey, 900, true)
-		return false
 	}, fmt.Sprintf("urakumisugiri-%v", char.Base.Key.String()))
 
 	return w, nil

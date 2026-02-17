@@ -59,10 +59,9 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if c.StatusIsActive(burstBuffKey) {
 			c.DeleteStatus(burstBuffKey)
 		}
-		return false
 	}, "sethos-exit")
 }

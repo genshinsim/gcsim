@@ -28,9 +28,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	e := 3.5 + float64(r)*0.5
 
-	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		// task for self energy gain
@@ -55,7 +55,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				}, i)
 			}
 		}
-		return false
 	}, fmt.Sprintf("prototype-amber-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -159,10 +159,9 @@ func (c *char) burstStackCB(a info.AttackCB) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}
-		return false
 	}, "eula-exit")
 }

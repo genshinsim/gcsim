@@ -42,12 +42,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.QueueCharTask(w.enemyCheck(char, c, c.F), 60)
 
 	// need to requeue enemy checks once swapping back to the char
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if c.Player.Active() == char.Index() {
 			w.src = c.F
 			char.QueueCharTask(w.enemyCheck(char, c, c.F), 60)
 		}
-		return false
 	}, fmt.Sprintf("deathmatch-%v", char.Base.Key.String()))
 
 	char.AddStatMod(character.StatMod{

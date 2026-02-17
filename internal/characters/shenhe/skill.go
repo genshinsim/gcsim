@@ -214,11 +214,11 @@ func (c *char) skillHoldBuff() {
 }
 
 func (c *char) quillDamageMod() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		consumeStack := true
 		if atk.Info.Element != attributes.Cryo {
-			return false
+			return
 		}
 
 		switch atk.Info.AttackTag {
@@ -231,13 +231,13 @@ func (c *char) quillDamageMod() {
 			consumeStack = c.Base.Cons < 6
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 
 		if !char.StatusIsActive(quillKey) {
-			return false
+			return
 		}
 
 		if char.Tags[quillKey] > 0 {
@@ -259,7 +259,5 @@ func (c *char) quillDamageMod() {
 				atk.Callbacks = append(atk.Callbacks, c.c4CB)
 			}
 		}
-
-		return false
 	}, "shenhe-quill-hook")
 }

@@ -50,8 +50,8 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		events: make([][]stats.ReactionEvent, len(core.Player.Chars())),
 	}
 
-	eventSubFunc := func(reaction info.ReactionType) func(args ...any) bool {
-		return func(args ...any) bool {
+	eventSubFunc := func(reaction info.ReactionType) func(args ...any) {
+		return func(args ...any) {
 			target := args[0].(info.Target)
 			attack := args[1].(*info.AttackEvent)
 
@@ -62,7 +62,6 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 				Reaction: string(reaction),
 			}
 			out.events[attack.Info.ActorIndex] = append(out.events[attack.Info.ActorIndex], event)
-			return false
 		}
 	}
 

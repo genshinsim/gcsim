@@ -45,16 +45,16 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 
-		core.Events.Subscribe(event.OnShielded, func(args ...any) bool {
+		core.Events.Subscribe(event.OnShielded, func(args ...any) {
 			// Character that picks it up must be the petra set holder
 			if core.Player.Active() != char.Index() {
-				return false
+				return
 			}
 
 			// Check shield
 			shd := args[0].(shield.Shield)
 			if shd.Type() != shield.Crystallize {
-				return false
+				return
 			}
 			s.element = shd.Element()
 
@@ -82,8 +82,6 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 					},
 				})
 			}
-
-			return false
 		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
 	}
 

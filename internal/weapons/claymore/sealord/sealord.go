@@ -48,19 +48,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	tunaDmg := .75 + float64(r)*0.25
 	const icdKey = "sealord-icd"
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 900, true)
 		ai := info.AttackInfo{
@@ -76,8 +76,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
-
-		return false
 	}, fmt.Sprintf("sealord-%v", char.Base.Key.String()))
 	return w, nil
 }

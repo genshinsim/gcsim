@@ -44,15 +44,14 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, c.a1CB, "clorinde-a1-crystallize-electro")
 }
 
-func (c *char) a1CB(args ...any) bool {
+func (c *char) a1CB(args ...any) {
 	// no requirement who triggers other than that it must be against an enemy
-	if _, ok := args[0].(*enemy.Enemy); !ok {
-		return false
+	if _, ok := args[0].(*enemy.Enemy); ok {
+		c.a1CBGadget(args...)
 	}
-	return c.a1CBGadget(args...)
 }
 
-func (c *char) a1CBGadget(...any) bool {
+func (c *char) a1CBGadget(...any) {
 	// add a stack and refresh the mod for 15s
 	c.a1stacks.Add(clordineA1BuffDuration)
 	c.AddAttackMod(character.AttackMod{
@@ -79,7 +78,6 @@ func (c *char) a1CBGadget(...any) bool {
 			return nil
 		},
 	})
-	return false
 }
 
 func (c *char) a4Init() {
@@ -90,15 +88,14 @@ func (c *char) a4Init() {
 	c.a4bonus = make([]float64, attributes.EndStatType)
 	c.prevHpDebt = c.CurrentHPDebtRatio()
 
-	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 		index := args[0].(int)
 		amount := -args[1].(float64)
 		if c.Index() != index {
-			return false
+			return
 		}
 		c.a4(amount)
 		c.prevHpDebt = c.CurrentHPDebtRatio()
-		return false
 	}, "clorinde-a4")
 }
 

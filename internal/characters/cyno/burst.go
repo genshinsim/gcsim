@@ -77,16 +77,15 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		prev := args[0].(int)
 		if prev == c.Index() {
 			c.DeleteStatus(burstKey)
 			c.onBurstExpiry(c.burstSrc)
 		}
-		return false
 	}, "cyno-burst-clear")
 }
 

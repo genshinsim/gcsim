@@ -37,9 +37,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = .15 + float64(r)*.05
 	stamReduction := .12 + float64(r)*.02
 	key := fmt.Sprintf("wineandsong-%v", char.Base.Key.String())
-	c.Events.Subscribe(event.OnDash, func(args ...any) bool {
+	c.Events.Subscribe(event.OnDash, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("wineandsong", 60*5),
@@ -48,19 +48,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-		return false
 	}, key)
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if ae.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		c.Player.AddStamPercentMod(key, 300, func(a action.Action) (float64, bool) {
@@ -69,7 +68,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			return 0, false
 		})
-		return false
 	}, key)
 
 	return w, nil

@@ -108,22 +108,22 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDmgHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		trg := args[0].(info.Target)
 		// atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if !c.StatusIsActive(dehyaFieldKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(skillICDKey) {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		// don't proc if target hit is outside of the skill area
 		if !trg.IsWithinArea(c.skillArea) {
-			return false
+			return
 		}
 
 		// this ICD is most likely tied to the construct, so it's not hitlag extendable
@@ -142,8 +142,6 @@ func (c *char) skillDmgHook() {
 		}
 
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
-
-		return false
 	}, "dehya-skill")
 }
 
@@ -241,31 +239,31 @@ func (c *char) addField(dur int) {
 func (c *char) skillHurtHook() {
 	// mitigates true dmg
 	// should not mitigate corrosion (probably will never be added to sim...)
-	c.Core.Events.Subscribe(event.OnPlayerPreHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerPreHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		// only mitigate external damage
 		if !di.External {
-			return false
+			return
 		}
 		// no need to mitigate if 0 dmg
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		// field needs to be active for mitigation
 		if !c.StatusIsActive(dehyaFieldKey) {
-			return false
+			return
 		}
 		// player needs to be in field for mitigation
 		if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
-			return false
+			return
 		}
 		// ignore self dot
 		if di.Abil == skillSelfDoTAbil {
-			return false
+			return
 		}
 		// stop mitigating dmg if reached threshold
 		if c.skillRedmanesBlood >= 2*c.MaxHP() {
-			return false
+			return
 		}
 		beforeAmount := di.Amount
 		// calc mitigation based on skill level
@@ -285,11 +283,10 @@ func (c *char) skillHurtHook() {
 		// -> retrigger should not reset interval (unsure)
 		// -> has to be like this otherwise if you keep mitigating between DoT ticks then Dehya will never get damaged
 		if c.skillSelfDoTQueued {
-			return false
+			return
 		}
 		c.skillSelfDoTQueued = true
 		c.QueueCharTask(c.skillSelfDoT, skillSelfDoTStart)
-		return false
 	}, "dehya-field-dmgtaken")
 }
 

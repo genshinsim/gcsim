@@ -35,31 +35,30 @@ func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) {
 		c.nightsoulState.GeneratePoints(40)
-		return false
 	}, a1NSBurstKey)
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		// ignores ororon himself
 		if atk.Info.ActorIndex == c.Index() {
-			return false
+			return
 		}
 
 		switch atk.Info.Element {
 		case attributes.Hydro:
 		case attributes.Electro:
 		default:
-			return false
+			return
 		}
 
 		if !c.StatusIsActive(a1OnSkillKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(a1GainIcdKey) {
-			return false
+			return
 		}
 		c.AddStatus(a1GainIcdKey, 0.3*60, true)
 
@@ -68,39 +67,34 @@ func (c *char) a1Init() {
 		if c.Tag(a1ElectroHydroKey) >= 10 {
 			c.DeleteStatus(a1OnSkillKey)
 		}
-		return false
 	}, a1ElectroHydroKey)
 
-	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		c.a1NightSoulAttack(atk)
-		return false
 	}, a1ECTriggerKey)
 
-	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		c.a1NightSoulAttack(atk)
-		return false
 	}, a1LCTriggerKey)
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.ActorIndex == c.Index() {
-			return false
+			return
 		}
 		if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
-			return false
+			return
 		}
 		c.a1NightSoulAttack(atk)
-
-		return false
 	}, a1NSTriggerKey)
 }
 
@@ -170,11 +164,11 @@ func (c *char) a4Init() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		active := c.Core.Player.ActiveChar()
 		if atk.Info.ActorIndex != active.Index() {
-			return false
+			return
 		}
 
 		switch atk.Info.AttackTag {
@@ -182,14 +176,14 @@ func (c *char) a4Init() {
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 
 		if !c.StatusIsActive(a4Key) {
-			return false
+			return
 		}
 		if c.StatusIsActive(a4IcdKey) {
-			return false
+			return
 		}
 		c.AddStatus(a4IcdKey, 60, true)
 
@@ -202,7 +196,6 @@ func (c *char) a4Init() {
 		if c.Tag(a4Key) >= 3 {
 			c.DeleteStatus(a4Key)
 		}
-		return false
 	}, a4Key)
 }
 

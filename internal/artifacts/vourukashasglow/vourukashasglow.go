@@ -64,20 +64,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				},
 			})
 		}
-		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 			di := args[0].(*info.DrainInfo)
 			if di.ActorIndex != char.Index() {
-				return false
+				return
 			}
 			if di.Amount <= 0 {
-				return false
+				return
 			}
 			if !di.External {
-				return false
+				return
 			}
 			addStackMod(counter, 300)
 			counter = (counter + 1) % 5
-			return false
 		}, fmt.Sprintf("vg-4pc-%v", char.Base.Key.String()))
 
 		mBase := make([]float64, attributes.EndStatType)

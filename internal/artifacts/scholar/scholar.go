@@ -45,12 +45,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		const icdKey = "scholar-4pc-icd"
 		icd := 180
 		// TODO: test lmao
-		c.Events.Subscribe(event.OnParticleReceived, func(args ...any) bool {
+		c.Events.Subscribe(event.OnParticleReceived, func(args ...any) {
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, icd, true)
 
@@ -60,8 +60,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					this.AddEnergy("scholar-4pc", 3)
 				}
 			}
-
-			return false
 		}, fmt.Sprintf("scholar-4pc-%v", char.Base.Key.String()))
 	}
 

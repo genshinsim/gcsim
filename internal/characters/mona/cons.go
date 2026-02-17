@@ -29,14 +29,14 @@ const (
 // - Frozen duration is extended by 15%.
 func (c *char) c1() {
 	// TODO: "Frozen duration is extended by 15%." is bugged
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		// ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if !t.StatusIsActive(bubbleKey) && !t.StatusIsActive(omenKey) {
-			return false
+			return
 		}
 		// add c1 to all party members, delay by 1, because:
 		// "This bonus does not apply in the triggering attack nor from the resulting Hydro DMG dealt by Illusory Bubble in Stellaris Phantasm regardless if they were from resulting reactions."
@@ -72,7 +72,6 @@ func (c *char) c1() {
 				})
 			}, 1)
 		}
-		return false
 	}, "mona-c1-check")
 }
 
@@ -83,25 +82,25 @@ func (c *char) c2() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		trg, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		if c.Core.Rand.Float64() > .2 {
-			return false
+			return
 		}
 		if c.StatusIsActive(c2icdkey) {
-			return false
+			return
 		}
 		c.AddStatus(c2icdkey, 5*60, true)
 
@@ -119,8 +118,6 @@ func (c *char) c2() {
 			}
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 0)
 		}, .7*60)
-
-		return false
 	}, "mona-c2-followup")
 }
 
@@ -148,19 +145,19 @@ func (c *char) c4() {
 	}
 
 	// workaround for giving lunarcharge the 15% CR
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
 		x, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 
 		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 
 		if !x.StatusIsActive(bubbleKey) && !x.StatusIsActive(omenKey) {
-			return false
+			return
 		}
 
 		if c.Core.Flags.LogDebug {
@@ -170,7 +167,6 @@ func (c *char) c4() {
 		}
 
 		ae.Snapshot.Stats[attributes.CR] += 0.15
-		return false
 	}, c4key+"-lunarcharged")
 }
 

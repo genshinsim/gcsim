@@ -28,20 +28,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	healPercentage := 0.06 + float64(r)*0.02
-	c.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		// don't proc if someone else defeated the enemy
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// don't proc if off-field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// heal char
 		c.Player.Heal(info.HealInfo{
@@ -49,7 +49,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Message: "Recurve Bow (Proc)",
 			Src:     healPercentage,
 		})
-		return false
 	}, fmt.Sprintf("recurvebow-%v", char.Base.Key.String()))
 
 	return w, nil

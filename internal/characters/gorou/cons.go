@@ -17,14 +17,14 @@ import (
 // is decreased by 2s. This effect can occur once every 10s.
 func (c *char) c1() {
 	icd := -1
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		eActive := c.Core.Status.Duration(generalWarBannerKey) > 0
 		qActive := c.Core.Status.Duration(generalGloryKey) > 0
 		if !eActive && !qActive {
-			return false
+			return
 		}
 		if icd > c.Core.F {
-			return false
+			return
 		}
 
 		trg := args[0].(info.Target)
@@ -38,25 +38,24 @@ func (c *char) c1() {
 			area = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
 		}
 		if !trg.IsWithinArea(area) {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex == c.Index() {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Geo {
-			return false
+			return
 		}
 
 		dmg := args[2].(float64)
 		if dmg == 0 {
-			return false
+			return
 		}
 
 		icd = c.Core.F + 600
 		c.ReduceActionCooldown(action.ActionSkill, 120)
-		return false
 	}, "gorou-c1")
 }
 
@@ -65,21 +64,20 @@ func (c *char) c1() {
 // active character obtains an Elemental Shard from a Crystallize reaction.
 // This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
-			return false
+			return
 		}
 		// Check shield
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {
-			return false
+			return
 		}
 		if c.c2Extension >= 3 {
-			return false
+			return
 		}
 		c.c2Extension++
 		c.Core.Status.Extend(generalGloryKey, 60)
-		return false
 	}, "gorou-c2")
 }
 

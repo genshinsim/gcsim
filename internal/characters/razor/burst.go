@@ -119,15 +119,14 @@ func (c *char) wolfBurst(normalCounter int) func(info.AttackCB) {
 }
 
 func (c *char) onSwapClearBurst() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(burstBuffKey) {
-			return false
+			return
 		}
 		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
 		if prev == c.Index() {
 			c.DeleteStatus(burstBuffKey)
 		}
-		return false
 	}, "razor-burst-clear")
 }

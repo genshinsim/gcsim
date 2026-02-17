@@ -28,25 +28,24 @@ func NewLithic(data *model.WeaponData) *Lithic {
 
 func (l *Lithic) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	r := p.Refine
-
 	stacks := 0
-	val := make([]float64, attributes.EndStatType)
+	m := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...any) bool {
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) {
 		for _, char := range c.Player.Chars() {
 			if char.CharZone == info.ZoneLiyue {
 				stacks++
 			}
 		}
-		val[attributes.CR] = (0.02 + float64(r)*0.01) * float64(stacks)
-		val[attributes.ATKP] = (0.06 + float64(r)*0.01) * float64(stacks)
-		return true
+		m[attributes.CR] = (0.02 + float64(r)*0.01) * float64(stacks)
+		m[attributes.ATKP] = (0.06 + float64(r)*0.01) * float64(stacks)
 	}, fmt.Sprintf("lithic-%v", char.Base.Key.String()))
+
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("lithic", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() []float64 {
-			return val
+			return m
 		},
 	})
 

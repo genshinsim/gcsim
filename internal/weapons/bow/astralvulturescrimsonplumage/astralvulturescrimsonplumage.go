@@ -69,13 +69,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkp[attributes.ATKP] = 0.06*float64(p.Refine) + 0.18
 
 	for i := event.OnSwirlHydro; i <= event.OnSwirlPyro; i++ {
-		c.Events.Subscribe(i, func(args ...any) bool {
+		c.Events.Subscribe(i, func(args ...any) {
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index() {
-				return false
+				return
 			}
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("astralvulturescrimsonplumage-atkp", 12*60),
@@ -84,7 +84,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					return atkp
 				},
 			})
-			return false
 		}, "astralvulturescrimsonplumage-swirl-"+char.Base.Key.String())
 	}
 

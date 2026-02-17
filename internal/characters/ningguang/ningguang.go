@@ -70,13 +70,12 @@ func (c *char) Init() error {
 
 // remove star jades on swap
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		if prev != c.Index() {
-			return false
+			return
 		}
 		c.jadeCount = 0
-		return false
 	}, "ningguang-exit")
 }
 

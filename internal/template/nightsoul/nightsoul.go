@@ -76,14 +76,15 @@ func (s *State) SetNightsoulExitTimer(duration int, cb func()) {
 		}
 
 		// If NS shouldn't expire because the player is in the state; delay expiry until state ends
-		evtKey := fmt.Sprintf("%v-%v", delayEventKey, s.char.Base.Key.String())
-		f := func(...any) bool {
+		evtRemovalTyp := event.OnStateChange
+		evtRemovalKey := fmt.Sprintf("%v-%v", delayEventKey, s.char.Base.Key.String())
+		f := func(...any) {
 			if s.ExitStateF == src {
 				cb()
 			}
-			return true
+			s.c.Events.Unsubscribe(evtRemovalTyp, evtRemovalKey)
 		}
-		s.c.Events.Subscribe(event.OnStateChange, f, evtKey)
+		s.c.Events.Subscribe(evtRemovalTyp, f, evtRemovalKey)
 
 		// Extend NS until removed on state end
 		s.char.AddStatus(NightsoulBlessingStatus, -1, false)

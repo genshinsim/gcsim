@@ -36,13 +36,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	n := make([]float64, attributes.EndStatType)
 	n[attributes.ATKP] = .06 + float64(r)*0.02
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
@@ -64,7 +64,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				},
 			})
 		}
-		return false
 	}, fmt.Sprintf("dodoco-%v", char.Base.Key.String()))
 
 	return w, nil

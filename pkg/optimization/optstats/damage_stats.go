@@ -19,7 +19,7 @@ func OptimizerDmgStat(core *core.Core) (CollectorCustomStats[CustomDamageStatsBu
 		ExpectedDmgCumu: make([]float64, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		target := args[0].(info.Target)
 		attack := args[1].(*info.AttackEvent)
 		damage := args[2].(float64)
@@ -28,7 +28,7 @@ func OptimizerDmgStat(core *core.Core) (CollectorCustomStats[CustomDamageStatsBu
 		// TODO: validate if this is still true?
 		// No need to pull damage stats for non-enemies
 		if target.Type() != info.TargettableEnemy {
-			return false
+			return
 		}
 		cr := attack.Snapshot.Stats[attributes.CR]
 		cd := attack.Snapshot.Stats[attributes.CD]
@@ -38,8 +38,6 @@ func OptimizerDmgStat(core *core.Core) (CollectorCustomStats[CustomDamageStatsBu
 			damage /= (1 + cd)
 		}
 		out.ExpectedDmgCumu[attack.Info.ActorIndex] += damage * (1.0 + cr*cd)
-
-		return false
 	}, "substat-opt-dmg-log")
 	return &out, nil
 }

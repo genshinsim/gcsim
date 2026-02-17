@@ -57,23 +57,22 @@ func (c *char) c2() {
 			return val
 		},
 	})
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) {
 		char := args[0].(int)
 		// don't trigger if active char not hit
 		if char != c.Core.Player.Active() {
-			return false
+			return
 		}
 		// field needs to be active
 		if !c.StatusIsActive(dehyaFieldKey) {
-			return false
+			return
 		}
 		// player needs to be in field
 		if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
-			return false
+			return
 		}
 		c.Core.Log.NewEvent("dehya-sanctum-c2-damage activated", glog.LogCharacterEvent, c.Index())
 		c.hasC2DamageBuff = true
-		return false
 	}, "dehya-c2")
 }
 

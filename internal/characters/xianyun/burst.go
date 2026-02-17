@@ -104,7 +104,7 @@ func (c *char) burstCast() {
 }
 
 func (c *char) burstPlungeDoTTrigger() {
-	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) {
 		// ApplyAttack occurs only once per attack, so we do not need to add an ICD status
 		atk := args[0].(*info.AttackEvent)
 
@@ -113,28 +113,28 @@ func (c *char) burstPlungeDoTTrigger() {
 		if atk.Info.AttackTag != attacks.AttackTagPlunge &&
 			!strings.Contains(atk.Info.Abil, "Low Plunge") &&
 			!strings.Contains(atk.Info.Abil, "High Plunge") {
-			return false
+			return
 		}
 
 		if atk.Info.Durability == 0 {
 			// plunge collisions have 0 durability
-			return false
+			return
 		}
 
 		active := c.Core.Player.ActiveChar()
 		if active.Index() != atk.Info.ActorIndex {
-			return false
+			return
 		}
 		if !active.StatusIsActive(player.XianyunAirborneBuff) {
-			return false
+			return
 		}
 
 		if c.adeptalAssistStacks <= 0 {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(lossKey) {
-			return false
+			return
 		}
 		c.AddStatus(lossKey, lossIcd, false)
 
@@ -167,7 +167,6 @@ func (c *char) burstPlungeDoTTrigger() {
 		}
 		// keep a window open for a4 to be able to apply
 		c.AddStatus(a4WindowKey, 1, false)
-		return false
 	}, "xianyun-starwicker-plunge-hook")
 }
 

@@ -111,29 +111,27 @@ func (c *char) burstHook() {
 	// TODO: this implementation would currently cause bubble to break immediately on the first EC tick.
 	// According to: https://docs.google.com/document/d/1pXlgCaYEpoizMIP9-QKlSkQbmRicWfrEoxb9USWD1Ro/edit#
 	// only 2nd ec tick should break
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		// ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if !t.StatusIsActive(bubbleKey) {
-			return false
+			return
 		}
 		// always break if it's due to time up
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag == attacks.AttackTagMonaBubbleBreak {
 			c.triggerBubbleBurst(t)
-			return false
+			return
 		}
 		// dont break if no impulse
 		if atk.Info.NoImpulse {
-			return false
+			return
 		}
 		// otherwise break on damage
 		c.triggerBubbleBurst(t)
-
-		return false
 	}, "mona-bubble-check")
 }
 

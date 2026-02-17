@@ -50,15 +50,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stats := []string{"em", "dmg%", "atk%"}
 	buff := [][]float64{mEM, mDmg, mATK}
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		next := args[1].(int)
 
 		if next != char.Index() {
-			return false
+			return
 		}
 
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 
@@ -79,8 +79,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Log.NewEvent("widsith proc'd", glog.LogWeaponEvent, char.Index()).
 			Write("stat", stats[state]).
 			Write("expiring (without hitlag)", expiry)
-
-		return false
 	}, fmt.Sprintf("width-%v", char.Base.Key.String()))
 
 	return w, nil

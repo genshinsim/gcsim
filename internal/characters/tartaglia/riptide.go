@@ -239,15 +239,15 @@ func (c *char) rtBlastCallback(a info.AttackCB) {
 // that inflicts the Riptide status on nearby opponents hit.
 // Handles Childe riptide burst and C2 on death effects
 func (c *char) onDefeatTargets() {
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		// do nothing if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		// do nothing if no riptide on target
 		if !t.StatusIsActive(riptideKey) {
-			return false
+			return
 		}
 		c.Core.Tasks.Add(func() {
 			ai := info.AttackInfo{
@@ -267,6 +267,5 @@ func (c *char) onDefeatTargets() {
 		if c.Base.Cons >= 2 {
 			c.AddEnergy("tartaglia-c2", 4)
 		}
-		return false
 	}, "tartaglia-on-enemy-death")
 }

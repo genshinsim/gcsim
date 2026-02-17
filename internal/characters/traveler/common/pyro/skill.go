@@ -191,27 +191,27 @@ func (c *Traveler) blazingThresholdHit(src int) func() {
 }
 
 func (c *Traveler) scorchingThresholdOnDamage() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if !ok {
-			return false
+			return
 		}
 		if c.StatusIsActive(scorchingThresholdICDKey) {
-			return false
+			return
 		}
 		if !c.StatusIsActive(scoringThresholdKey) {
-			return false
+			return
 		}
 		// ignore burning damage
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage ||
 			ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
-			return false
+			return
 		}
 		// ignore 0 damage
 		if dmg == 0 {
-			return false
+			return
 		}
 
 		ai := info.AttackInfo{
@@ -234,7 +234,6 @@ func (c *Traveler) scorchingThresholdOnDamage() {
 			scorchingThresholdHitmarkDelay, scorchingThresholdHitmarkDelay, c.particleCB)
 
 		c.AddStatus(scorchingThresholdICDKey, scorchingThresholdICD, true)
-		return false
 	}, "travelerpyro-scorching-threshold")
 }
 

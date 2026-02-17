@@ -48,12 +48,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bondPercentage := 0.018 + float64(r)*0.006
 	bondAtkCap := 112.5 + float64(r)*37.5
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 
@@ -66,25 +66,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 
 		char.ModifyHPDebtByRatio(hp)
-
-		return false
 	}, fmt.Sprintf("finaleofthedeep-atk%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 		index := args[0].(int)
 		debtChange := args[1].(float64)
 		if index != char.Index() {
-			return false
+			return
 		}
 
 		if debtChange < 0 {
 			w.collectedDebt += -float64(debtChange)
 		}
 		if char.CurrentHPDebt() > 0 {
-			return false
+			return
 		}
 		if w.collectedDebt < 0.0001 {
-			return false
+			return
 		}
 
 		bondAtk := min(bondAtkCap, w.collectedDebt*bondPercentage)
@@ -98,7 +96,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return bond
 			},
 		})
-		return false
 	}, fmt.Sprintf("finaleofthedeep-flatatk%v", char.Base.Key.String()))
 	return w, nil
 }

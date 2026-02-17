@@ -54,9 +54,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	erval := make([]float64, attributes.EndStatType)
 	erval[attributes.ER] = .25 + .05*float64(r)
 
-	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("engulfing-er", 720),
@@ -65,7 +65,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return erval
 			},
 		})
-		return false
 	}, fmt.Sprintf("engulfing-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -31,14 +31,14 @@ func (c *char) a1Init() {
 }
 
 func (c *char) a1Nascent() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		if !c.StatusIsActive(a1Key) {
-			return false
+			return
 		}
 
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		ae := args[1].(*info.AttackEvent)
 
@@ -47,7 +47,7 @@ func (c *char) a1Nascent() {
 		case attacks.AttackTagHyperbloom:
 		case attacks.AttackTagBurgeon:
 		default:
-			return false
+			return
 		}
 
 		// critrate stacks with nahida c2 while critdmg is overwritten
@@ -56,27 +56,25 @@ func (c *char) a1Nascent() {
 
 		c.Core.Log.NewEvent("lauma a1 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
 			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
-
-		return false
 	}, "lauma-a1-reaction-dmg-buff")
 }
 
 func (c *char) a1Ascendant() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		if !c.StatusIsActive(a1Key) {
-			return false
+			return
 		}
 
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		ae := args[1].(*info.AttackEvent)
 
 		switch ae.Info.AttackTag {
 		case attacks.AttackTagDirectLunarBloom:
 		default:
-			return false
+			return
 		}
 
 		ae.Snapshot.Stats[attributes.CR] += 0.1
@@ -86,8 +84,6 @@ func (c *char) a1Ascendant() {
 				Write("final_critrate", ae.Snapshot.Stats[attributes.CR]).
 				Write("final_critdmg", ae.Snapshot.Stats[attributes.CD])
 		}
-
-		return false
 	}, "lauma-a1-reaction-dmg-buff")
 }
 
@@ -114,13 +110,13 @@ func (c *char) a4Init() {
 func (c *char) lunarbloomInit() {
 	c.Core.Flags.Custom[reactable.LunarBloomEnableKey] = 1
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagDirectLunarBloom:
 		default:
-			return false
+			return
 		}
 
 		em := c.Stat(attributes.EM)
@@ -131,7 +127,6 @@ func (c *char) lunarbloomInit() {
 		}
 
 		atk.Info.BaseDmgBonus += bonus
-		return false
 	}, lunarbloomBonusKey)
 }
 

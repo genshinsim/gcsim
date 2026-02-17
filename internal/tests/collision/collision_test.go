@@ -88,17 +88,14 @@ func TestMain(m *testing.M) {
 func TestSingleTarget(t *testing.T) {
 	c, trgs := makeCore(rand.Intn(10))
 	count := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
 
 	for i := range trgs {
@@ -161,17 +158,14 @@ func (t *testGadget) HandleAttack(atk *info.AttackEvent) float64 {
 func TestDefaultHitGadget(t *testing.T) {
 	c, trgs := makeCore(rand.Intn(10))
 	count := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
 
 	g := &testGadget{
@@ -197,17 +191,14 @@ func TestDefaultHitGadget(t *testing.T) {
 func TestSkipTargets(t *testing.T) {
 	c, trgs := makeCore(rand.Intn(10))
 	count := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnPlayerHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
 
 	g := &testGadget{
@@ -294,9 +285,8 @@ func circleAttackCollision(attackRadius float64, attackOffset info.Point, fanAng
 	player := c.Combat.Player()
 	count := 0
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
 	trgs[0].SetPos(info.Point{X: 2, Y: 2})
 	trgs[1].SetPos(info.Point{X: 7, Y: 4})
@@ -346,9 +336,8 @@ func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset in
 	player := c.Combat.Player()
 	count := 0
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		count++
-		return false
 	}, "dmg-count")
 	trgs[0].SetPos(info.Point{X: 2, Y: 2})
 	trgs[1].SetPos(info.Point{X: 7, Y: 4})

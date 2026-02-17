@@ -30,10 +30,10 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Element != attributes.Anemo {
-			return false
+			return
 		}
 
 		switch atk.Info.AttackTag {
@@ -44,7 +44,7 @@ func (c *char) a4() {
 			attacks.AttackTagElementalArtHold,
 			attacks.AttackTagElementalBurst:
 		default:
-			return false
+			return
 		}
 
 		active := c.Core.Player.ByIndex(atk.Info.ActorIndex)
@@ -58,7 +58,5 @@ func (c *char) a4() {
 			atk.Info.FlatDmg += amt
 			c.AddStatus(a4ICDKey, 48, false)
 		}
-
-		return false
 	}, "faruzan-a4-hook")
 }

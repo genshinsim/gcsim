@@ -60,13 +60,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	mult := 1.2 + float64(r)*0.4
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		trg := args[0].(info.Target)
 
@@ -76,11 +76,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 
@@ -99,8 +99,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.QueueCharTask(func() {
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 0)
 		}, hitmark)
-
-		return false
 	}, fmt.Sprintf("swordofnarzissenkreuz-%v", char.Base.Key.String()))
 
 	return w, nil

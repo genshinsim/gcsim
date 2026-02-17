@@ -23,17 +23,15 @@ var (
 )
 
 func (c *char) a1Init() {
-	a1Hook := func(args ...any) bool {
+	a1Hook := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		if c.StatusIsActive(a1IcdKey) {
-			return false
+			return
 		}
 		c.AddStatus(a1IcdKey, 2.5*60, true)
 		c.createVoidRift()
-
-		return false
 	}
 	c.voidRifts = NewRingQueue[int](3)
 	c.Core.Events.Subscribe(event.OnFrozen, a1Hook, a1Key+"frozen")
@@ -86,24 +84,22 @@ func (c *char) createVoidRift() {
 }
 
 func (c *char) a4Init() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		charElem := c.Core.Player.Chars()[atk.Info.ActorIndex].Base.Element
 		if atk.Info.ActorIndex == c.Index() {
-			return false
+			return
 		}
 		if atk.Info.Element != charElem {
-			return false
+			return
 		}
 		switch charElem {
 		case attributes.Cryo:
 		case attributes.Hydro:
 		default:
-			return false
+			return
 		}
 		c.AddStatus(getA4StackName(atk.Info.ActorIndex), a4Dur, true)
-
-		return false
 	}, a4Key+"-hook")
 }
 

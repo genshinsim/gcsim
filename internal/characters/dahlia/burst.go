@@ -98,27 +98,27 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 // Benison stack generation, max 4 stacks
 func (c *char) setupBurst() {
 	// Add Benison stack when 4 hits from NAs occur
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		if !c.StatusIsActive(burstFavonianFavor) {
-			return false
+			return
 		}
 
 		char := c.Core.Player.ActiveChar()
 		ae := args[1].(*info.AttackEvent)
 		if char.Index() != ae.Info.ActorIndex {
-			return false
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(normalAttackStackIcd) {
-			return false
+			return
 		}
 
 		// If already generated a total of 4 Benison stacks, do nothing
 		if c.benisonGenStackLimit == 0 {
-			return false
+			return
 		}
 
 		// If 4 hits from NAs occured, add Benison stack
@@ -128,8 +128,6 @@ func (c *char) setupBurst() {
 			c.normalAttackCount = 0
 		}
 		c.AddStatus(normalAttackStackIcd, 0.05*60, true)
-
-		return false
 	}, burstBenisonStacksKey)
 }
 

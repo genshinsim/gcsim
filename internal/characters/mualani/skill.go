@@ -143,21 +143,21 @@ func (c *char) particleCB(a info.AttackCB) {
 
 func (c *char) surfingTick() {
 	// TODO: create a gadget?
-	c.Core.Events.Subscribe(event.OnTick, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnTick, func(args ...any) {
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 		if !c.nightsoulState.HasBlessing() {
-			return false
+			return
 		}
 		if !c.StatusIsActive(surfingKey) {
-			return false
+			return
 		}
 
 		switch c.Core.Player.CurrentState() {
 		case action.DashState, action.JumpState, action.WalkState:
 		default:
-			return false
+			return
 		}
 
 		// to avoid spamming Surfing Hit logs
@@ -176,7 +176,7 @@ func (c *char) surfingTick() {
 			}
 		}
 		if !useAttack {
-			return false
+			return
 		}
 
 		ai := info.AttackInfo{
@@ -193,8 +193,6 @@ func (c *char) surfingTick() {
 			IsDeployable:       true,
 		}
 		c.Core.QueueAttack(ai, ap, 0, 0, c.surfingCB)
-
-		return false
 	}, "mualani-surfing")
 }
 

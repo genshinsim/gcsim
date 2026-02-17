@@ -38,19 +38,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	stacks := 0
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 30, true) // every 0.5s
 		if !char.StatusIsActive(durationKey) {
@@ -79,7 +79,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			trg := args[0].(info.Target)
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 0, 1)
 		}
-		return false
 	}, fmt.Sprintf("flute-%v", char.Base.Key.String()))
 	return w, nil
 }

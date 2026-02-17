@@ -23,17 +23,16 @@ func (c *char) c1Init() {
 	if c.Base.Cons < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		if c.StatusIsActive(c1IcdKey) {
-			return false
+			return
 		}
 
 		c.AddEnergy(c1Key, 8)
 		c.AddStatus(c1IcdKey, 5.5*60, true)
-		return false
 	}, c1Key)
 }
 
@@ -100,23 +99,23 @@ func (c *char) c2GleamInit() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Electro {
-			return false
+			return
 		}
 
 		t.AddResistMod(info.ResistMod{
@@ -124,7 +123,6 @@ func (c *char) c2GleamInit() {
 			Ele:   attributes.Electro,
 			Value: -0.25,
 		})
-		return false
 	}, c2Key+"-gleam")
 }
 
@@ -163,43 +161,41 @@ func (c *char) c6Init() {
 		other += 0.1
 	}
 
-	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) {
 		atk := args[0].(*info.AttackEvent)
 
 		// don't apply elevation to the reaction attack, since the subcomponent contributor attacks each got elevation applied already
 		if atk.Info.AttackTag != attacks.AttackTagDirectLunarCharged {
-			return false
+			return
 		}
 
 		if atk.Info.ActorIndex == c.Index() {
 			atk.Info.Elevation += flins
-			return false
+			return
 		}
 
 		if c.Core.Player.GetMoonsignLevel() < 2 {
-			return false
+			return
 		}
 
 		atk.Info.Elevation += other
-		return false
 	}, c6Key)
 
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCharge {
-			return false
+			return
 		}
 
 		if atk.Info.ActorIndex == c.Index() {
 			atk.Info.Elevation += flins
-			return false
+			return
 		}
 
 		if c.Core.Player.GetMoonsignLevel() < 2 {
-			return false
+			return
 		}
 
 		atk.Info.Elevation += other
-		return false
 	}, c6Key+"-lc-atk")
 }

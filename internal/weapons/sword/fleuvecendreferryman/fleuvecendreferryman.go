@@ -45,9 +45,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// er up after skill
 	mER := make([]float64, attributes.EndStatType)
 	mER[attributes.ER] = 0.12 + 0.04*float64(r)
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("fleuvecendreferryman-er", 5*60),
@@ -56,7 +56,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return mER
 			},
 		})
-		return false
 	}, fmt.Sprintf("fleuvecendreferryman-%v", char.Base.Key.String()))
 
 	return w, nil

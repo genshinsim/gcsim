@@ -24,14 +24,14 @@ func (c *char) a1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnFrozen, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnFrozen, func(args ...any) {
 		if !c.StatusIsActive(burstFavonianFavor) {
-			return false
+			return
 		}
 
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 
 		ae := args[1].(*info.AttackEvent)
@@ -39,8 +39,6 @@ func (c *char) a1() {
 			c.AddStatus(benisonStackGenerationIcd, 8*60, true)
 			c.addBenisonStack(2, ae.Info.ActorIndex)
 		}
-
-		return false
 	}, onFrozenReaction)
 }
 
@@ -55,9 +53,9 @@ func (c *char) a4() {
 	c.attackSpeedBuff = make([]float64, attributes.EndStatType)
 
 	// Swaps update Attack Speed buff and provide a new 0.5s timer for the on-fielder
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(burstFavonianFavor) {
-			return false
+			return
 		}
 
 		prev, next := args[0].(int), args[1].(int)
@@ -73,8 +71,6 @@ func (c *char) a4() {
 		}
 
 		c.updateSpeedBuff(next)() // ID of swapped in character
-
-		return false
 	}, attackSpeedKey)
 }
 

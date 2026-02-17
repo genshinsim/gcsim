@@ -258,26 +258,25 @@ func (c *char) bubbleTierDamageMod() {
 
 func (c *char) energyBondClearMod() {
 	// TODO: override healing functions?
-	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 		index := args[0].(int)
 		if index != c.Index() {
-			return false
+			return
 		}
 		debtChange := args[1].(float64)
 		if debtChange < 0 {
 			c.collectedHpDebt += -float32(debtChange)
 		}
 		if c.CurrentHPDebt() > 0 {
-			return false
+			return
 		}
 		if c.collectedHpDebt < 0.0001 {
-			return false
+			return
 		}
 
 		energyAmt := min(5., c.collectedHpDebt/hpDebtEnergyRatio)
 		c.collectedHpDebt = 0
 		c.AddEnergy("sigewinne-skill", float64(energyAmt))
-		return false
 	}, "sigewinne-hpdebt-hook")
 }
 

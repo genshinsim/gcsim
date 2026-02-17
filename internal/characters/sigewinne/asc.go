@@ -21,26 +21,26 @@ const (
 )
 
 func (c *char) a1() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalArt:
 		case attacks.AttackTagElementalArtHold:
 		default:
-			return false
+			return
 		}
 
 		if atk.Info.ActorIndex == c.Index() {
-			return false
+			return
 		}
 
 		active := c.Core.Player.ActiveChar()
 		if active.Index() == atk.Info.ActorIndex {
-			return false
+			return
 		}
 
 		if !c.StatusIsActive(convalescenceKey) || c.Tag(convalescenceKey) == 0 {
-			return false
+			return
 		}
 		c.SetTag(convalescenceKey, c.Tag(convalescenceKey)-1)
 
@@ -61,8 +61,6 @@ func (c *char) a1() {
 		}
 
 		atk.Info.FlatDmg += amt
-
-		return false
 	}, "sigewinne-convalescence-hook")
 }
 

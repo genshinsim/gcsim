@@ -85,27 +85,25 @@ func (c *char) burstInit() {
 	}
 	c.burstBuff = make([]float64, attributes.EndStatType)
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 
 		di := args[0].(*info.DrainInfo)
 
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
 		char := c.Core.Player.ByIndex(di.ActorIndex)
 		amt := di.Amount / char.MaxHP() * 100
 		c.queueFanfareGain(amt)
-
-		return false
 	}, "furina-fanfare-on-hp-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 
 		target := args[1].(int)
@@ -113,19 +111,17 @@ func (c *char) burstInit() {
 		overheal := args[3].(float64)
 
 		if amount <= 0 {
-			return false
+			return
 		}
 
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 
 		char := c.Core.Player.ByIndex(target)
 		amt := (amount - overheal) / char.MaxHP() * 100
 
 		c.queueFanfareGain(amt)
-
-		return false
 	}, "furina-fanfare-on-heal")
 
 	burstDMGRatio := burstFanfareDMGRatio[c.TalentLvlBurst()]

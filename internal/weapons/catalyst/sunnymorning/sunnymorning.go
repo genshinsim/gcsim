@@ -54,23 +54,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w.emBuffBurst[attributes.EM] = 32 * multiplier
 
 	frameSwirlBuffApplied := -1
-	swirlFunc := func(args ...any) bool {
+	swirlFunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		// Although from the description it can be implied that anyone's swirl can trigger it,
 		// only the wielder swirls trigger.
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if frameSwirlBuffApplied == c.F {
 			// avoid doing this 2 times on double swirls
-			return false
+			return
 		}
 		frameSwirlBuffApplied = c.F
 
@@ -80,20 +80,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return w.emBuffSwirl
 			},
 		})
-
-		return false
 	}
 
-	skillFunc := func(args ...any) bool {
+	skillFunc := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -102,19 +100,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return w.emBuffSkill
 			},
 		})
-		return false
 	}
 
-	burstFunc := func(args ...any) bool {
+	burstFunc := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -123,8 +120,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return w.emBuffBurst
 			},
 		})
-
-		return false
 	}
 
 	c.Events.Subscribe(event.OnSwirlElectro, swirlFunc, fmt.Sprintf("sunny-morning-%v-electro-swirl", char.Base.Key.String()))

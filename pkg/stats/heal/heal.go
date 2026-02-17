@@ -23,7 +23,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		events: make([][]stats.HealEvent, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		info := args[0].(*info.HealInfo)
 		target := args[1].(int)
 		amount := args[2].(float64)
@@ -35,8 +35,6 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 			Heal:   amount,
 		}
 		out.events[info.Caller] = append(out.events[info.Caller], event)
-
-		return false
 	}, "stats-heal-log")
 
 	return &out, nil

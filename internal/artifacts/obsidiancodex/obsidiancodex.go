@@ -51,17 +51,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		const icdKey = "obsidiancodex-4pc-icd"
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CR] = 0.4
-		c.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) bool {
+		c.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) {
 			idx := args[0].(int)
 			amount := args[1].(float64)
 			if char.Index() != idx {
-				return false
+				return
 			}
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			s.consumeCount += amount
 			if s.consumeCount >= 1 {
@@ -74,7 +74,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					},
 				})
 			}
-			return false
 		}, fmt.Sprintf("obsidiancodex-4pc-%v", char.Base.Key.String()))
 	}
 

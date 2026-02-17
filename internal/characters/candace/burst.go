@@ -101,15 +101,15 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 }
 
 func (c *char) burstSwap() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		next := args[1].(int)
 		char := c.Core.Player.Chars()[next]
 		c.burstInfuseFn(char, c.burstSrc)
 		if c.waveCount > 2 {
-			return false
+			return
 		}
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
@@ -131,7 +131,6 @@ func (c *char) burstSwap() {
 			waveHitmark,
 		)
 		c.waveCount++
-		return false
 	}, "candace-q-swap")
 }
 

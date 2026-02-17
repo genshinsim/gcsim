@@ -179,7 +179,7 @@ func (c *char) particleCB(a info.AttackCB) {
 
 // Hook to end Tartaglia's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if c.StatusIsActive(meleeKey) {
 			// TODO: need to verify if this is correct
 			// but if childe is currently in melee stance and skill is on CD that means that
@@ -188,7 +188,6 @@ func (c *char) onExitField() {
 			c.ResetActionCooldown(action.ActionSkill)
 			c.onExitMeleeStance(0)
 		}
-		return false
 	}, "tartaglia-exit")
 }
 

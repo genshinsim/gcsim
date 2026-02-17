@@ -154,35 +154,31 @@ func (c *char) updateTriKarmaInterval() {
 	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
 }
 
-func (c *char) triKarmaOnReaction(args ...any) bool {
-	t, ok := args[0].(*enemy.Enemy)
-	if !ok {
-		return false
+func (c *char) triKarmaOnReaction(args ...any) {
+	if t, ok := args[0].(*enemy.Enemy); ok {
+		c.triggerTriKarmaDamageIfAvail(t)
 	}
-	c.triggerTriKarmaDamageIfAvail(t)
-	return false
 }
 
-func (c *char) triKarmaOnBloomDamage(args ...any) bool {
+func (c *char) triKarmaOnBloomDamage(args ...any) {
 	t, ok := args[0].(*enemy.Enemy)
 	if !ok {
-		return false
+		return
 	}
 	// only on bloom, burgeon, hyperbloom damage
 	ae, ok := args[1].(*info.AttackEvent)
 	if !ok {
-		return false
+		return
 	}
 	switch ae.Info.AttackTag {
 	case attacks.AttackTagBloom:
 	case attacks.AttackTagHyperbloom:
 	case attacks.AttackTagBurgeon:
 	default:
-		return false
+		return
 	}
 
 	c.triggerTriKarmaDamageIfAvail(t)
-	return false
 }
 
 func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {

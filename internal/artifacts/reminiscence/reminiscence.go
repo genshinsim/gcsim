@@ -52,15 +52,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.50
-		c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+		c.Events.Subscribe(event.OnSkill, func(args ...any) {
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 			if char.Energy < 15 {
-				return false
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, icd, true)
 
@@ -82,8 +82,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return m
 				},
 			})
-
-			return false
 		}, fmt.Sprintf("shim-4pc-%v", char.Base.Key.String()))
 	}
 

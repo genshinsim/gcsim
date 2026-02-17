@@ -434,14 +434,12 @@ func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	fn := objs[0].(*funcval)
 
-	e.Core.Events.Subscribe(event.OnTick, func(args ...any) bool {
+	e.Core.Events.Subscribe(event.OnTick, func(args ...any) {
 		_, err := e.evalNode(fn.Body, env)
 		if err != nil {
 			// handle the error
 			e.err = err
 		}
-
-		return false
 	}, "sysfunc-ontick")
 	return &null{}, nil
 }
