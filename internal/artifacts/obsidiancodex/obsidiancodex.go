@@ -35,14 +35,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.15
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase("obsidiancodex-2pc", -1),
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if !char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
-					return nil, false
+					return nil
 				}
 				if c.Player.Active() != char.Index() {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 	}
@@ -69,8 +69,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				char.AddStatus(icdKey, 60, true)
 				char.AddStatMod(character.StatMod{
 					Base: modifier.NewBaseWithHitlag("obsidiancodex-4pc", 6*60),
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}

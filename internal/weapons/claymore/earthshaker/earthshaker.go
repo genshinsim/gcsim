@@ -39,11 +39,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffSkill := func(...any) bool {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("earth-shaker", 8*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 		return false

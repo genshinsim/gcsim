@@ -20,8 +20,8 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("candace-c2", 15*60),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

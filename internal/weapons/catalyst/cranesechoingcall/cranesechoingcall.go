@@ -60,11 +60,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			for _, char := range c.Player.Chars() {
 				char.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBaseWithHitlag(buffKey, buffDuration),
-					Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+					Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 						if atk.Info.AttackTag != attacks.AttackTagPlunge {
-							return nil, false
+							return nil
 						}
-						return mDmg, true
+						return mDmg
 					},
 				})
 			}

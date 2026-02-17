@@ -37,8 +37,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("maiden-2pc", -1),
 			AffectedStat: attributes.Heal,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -52,8 +52,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				this := x
 				this.AddHealBonusMod(character.HealBonusMod{
 					Base: modifier.NewBaseWithHitlag("maiden-4pc", 600),
-					Amount: func() (float64, bool) {
-						return 0.2, false
+					Amount: func() float64 {
+						return 0.2
 					},
 				})
 			}

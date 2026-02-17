@@ -75,8 +75,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("gd-2pc", -1),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -95,8 +95,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("gd-4pc", 8*60),
 				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
-					return s.buff, true
+				Amount: func() []float64 {
+					return s.buff
 				},
 			})
 			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index()).

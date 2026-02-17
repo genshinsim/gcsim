@@ -27,19 +27,19 @@ func (c *Traveler) c1Init() {
 		this := char
 		this.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c1AttackModKey, -1),
-			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) []float64 {
 				// char must be active
 				if c.Core.Player.Active() != this.Index() {
-					return nil, false
+					return nil
 				}
 				if !c.nightsoulState.HasBlessing() {
-					return nil, false
+					return nil
 				}
 				mDmg[attributes.DmgP] = 0.06
 				if this.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
 					mDmg[attributes.DmgP] += 0.09
 				}
-				return mDmg, true
+				return mDmg
 			},
 		})
 	}
@@ -87,8 +87,8 @@ func (c *Traveler) c4AddMod() {
 	mPyroDmg[attributes.PyroP] = 0.2
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag("travelerpyro-c4", 9*60),
-		Amount: func() ([]float64, bool) {
-			return mPyroDmg, true
+		Amount: func() []float64 {
+			return mPyroDmg
 		},
 	})
 }
@@ -101,18 +101,18 @@ func (c *Traveler) c6Init() {
 	mCD[attributes.CD] = 0.4
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c6AttackModKey, -1),
-		Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(ae *info.AttackEvent, _ info.Target) []float64 {
 			switch ae.Info.AttackTag {
 			case attacks.AttackTagNormal:
 			case attacks.AttackTagExtra:
 			case attacks.AttackTagPlunge:
 			default:
-				return nil, false
+				return nil
 			}
 			if !slices.Contains(ae.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
-				return nil, false
+				return nil
 			}
-			return mCD, true
+			return mCD
 		},
 	})
 }

@@ -26,8 +26,8 @@ func (c *char) c1() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("yoimiya-c1", 1200),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 
@@ -57,8 +57,8 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("yoimiya-c2", 360),
 			AffectedStat: attributes.PyroP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

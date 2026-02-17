@@ -51,8 +51,8 @@ func (c *char) c4() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("lanyan-c4", 12*60),
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

@@ -55,11 +55,11 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		m[attributes.DmgP] = amt
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("wavebreaker", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
 		return true

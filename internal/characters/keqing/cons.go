@@ -51,8 +51,8 @@ func (c *char) c4() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("keqing-c4", 600),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return c.c4buff, true
+			Amount: func() []float64 {
+				return c.c4buff
 			},
 		})
 
@@ -80,8 +80,8 @@ func (c *char) c6(src string) {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("keqing-c6-"+src, 480),
 		AffectedStat: attributes.ElectroP,
-		Amount: func() ([]float64, bool) {
-			return c.c6buff, true
+		Amount: func() []float64 {
+			return c.c6buff
 		},
 	})
 }

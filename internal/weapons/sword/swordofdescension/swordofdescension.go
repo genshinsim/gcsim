@@ -52,9 +52,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("swordofdescension", -1),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				m[attributes.ATK] = 66
-				return m, true
+				return m
 			},
 		})
 	}

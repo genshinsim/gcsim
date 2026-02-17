@@ -197,8 +197,8 @@ func (c *char) applyA4Buff() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(a4BuffKey, a4Duration),
 		AffectedStat: attributes.GeoP,
-		Amount: func() ([]float64, bool) {
-			return c.a4Buff, true
+		Amount: func() []float64 {
+			return c.a4Buff
 		},
 	})
 }

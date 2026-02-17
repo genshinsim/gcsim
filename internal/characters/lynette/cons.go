@@ -48,8 +48,8 @@ func (c *char) c6() {
 	m[attributes.AnemoP] = 0.2
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag("lynette-c6-buff", duration),
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

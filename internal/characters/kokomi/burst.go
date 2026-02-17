@@ -70,8 +70,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("kokomi-c4", 10*60),
 			AffectedStat: attributes.AtkSpd,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

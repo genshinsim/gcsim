@@ -17,8 +17,11 @@ func (c *char) a1() {
 	m[attributes.DmgP] = 0.3
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("ayaka-a1", 360),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			return m, atk.Info.AttackTag == attacks.AttackTagNormal || atk.Info.AttackTag == attacks.AttackTagExtra
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			if atk.Info.AttackTag == attacks.AttackTagNormal || atk.Info.AttackTag == attacks.AttackTagExtra {
+				return m
+			}
+			return nil
 		},
 	})
 }
@@ -49,8 +52,8 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("ayaka-a4", 600),
 			AffectedStat: attributes.CryoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

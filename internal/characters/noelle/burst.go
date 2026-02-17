@@ -75,8 +75,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Base:         modifier.NewBaseWithHitlag("noelle-burst", dur),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return c.burstBuff, true
+		Amount: func() []float64 {
+			return c.burstBuff
 		},
 	})
 	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index()).

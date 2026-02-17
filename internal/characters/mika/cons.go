@@ -32,14 +32,14 @@ func (c *char) c2() func(info.AttackCB) {
 func (c *char) c6(char *character.CharWrapper) {
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("mika-c6", skillBuffDuration),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if c.Core.Player.Active() != char.Index() {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Element != attributes.Physical {
-				return nil, false
+				return nil
 			}
-			return c.c6buff, true
+			return c.c6buff
 		},
 	})
 }

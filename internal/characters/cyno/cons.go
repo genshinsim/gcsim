@@ -29,11 +29,11 @@ func (c *char) c1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(c1Key, 600), // 10s
 		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.Core.Player.CurrentState() != action.NormalAttackState {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -71,9 +71,9 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c2Key, 4*60),
 			AffectedStat: attributes.ElectroP,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				m[attributes.ElectroP] = 0.1 * float64(c.c2Stacks)
-				return m, true
+				return m
 			},
 		})
 	}

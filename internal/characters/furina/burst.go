@@ -133,22 +133,22 @@ func (c *char) burstInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("furina-burst-damage-buff", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if !c.StatusIsActive(burstKey) {
-					return nil, false
+					return nil
 				}
 				c.burstBuff[attributes.DmgP] = min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
-				return c.burstBuff, true
+				return c.burstBuff
 			},
 		})
 
 		char.AddHealBonusMod(character.HealBonusMod{
 			Base: modifier.NewBase("furina-burst-heal-buff", -1),
-			Amount: func() (float64, bool) {
+			Amount: func() float64 {
 				if c.StatusIsActive(burstKey) {
-					return min(c.curFanfare, c.maxQFanfare) * burstHealRatio, false
+					return min(c.curFanfare, c.maxQFanfare) * burstHealRatio
 				}
-				return 0, false
+				return 0
 			},
 		})
 	}

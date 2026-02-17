@@ -59,11 +59,11 @@ func (c *char) c6Init() {
 func (c *char) c6(char *character.CharWrapper) {
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6Key, 360),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.Element != attributes.Electro {
-				return nil, false
+				return nil
 			}
-			return c.c6buff, true
+			return c.c6buff
 		},
 	})
 }

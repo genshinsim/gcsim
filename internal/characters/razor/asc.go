@@ -33,11 +33,11 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("razor-a4", -1),
 		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.Energy/c.EnergyMax >= 0.5 {
-				return nil, false
+				return nil
 			}
-			return c.a4Bonus, true
+			return c.a4Bonus
 		},
 	})
 }

@@ -14,8 +14,11 @@ func (c *char) c2() {
 	m[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("diona-c2", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			return m, atk.Info.AttackTag == attacks.AttackTagElementalArt
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			if atk.Info.AttackTag == attacks.AttackTagElementalArt {
+				return m
+			}
+			return nil
 		},
 	})
 }
@@ -34,8 +37,8 @@ func (c *char) c6() {
 				active.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("diona-c6", 120),
 					AffectedStat: attributes.EM,
-					Amount: func() ([]float64, bool) {
-						return c.c6buff, true
+					Amount: func() []float64 {
+						return c.c6buff
 					},
 				})
 			} else {
@@ -43,10 +46,12 @@ func (c *char) c6() {
 				// bonus only lasts for 120 frames
 				active.AddHealBonusMod(character.HealBonusMod{
 					Base: modifier.NewBaseWithHitlag("diona-c6-healbonus", 120),
-					Amount: func() (float64, bool) {
+					Amount: func() float64 {
 						// is this log even needed?
-						c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", glog.LogCharacterEvent, c.Index())
-						return 0.3, false
+						if c.Core.Flags.LogDebug {
+							c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", glog.LogCharacterEvent, c.Index())
+						}
+						return 0.3
 					},
 				})
 				c.Tags["c6bonus-"+active.Base.Key.String()] = c.Core.F + 120

@@ -53,10 +53,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase(buffKey, -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.EM] = em * float64(w.stacks)
 			m[attributes.ATKP] = atkLoss * float64(w.stacks)
-			return m, true
+			return m
 		},
 	})
 

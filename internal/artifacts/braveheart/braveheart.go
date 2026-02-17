@@ -33,8 +33,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("braveheart-2pc", -1),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -51,15 +51,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	m[attributes.DmgP] = 0.30
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("braveheart-4pc", -1),
-		Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(_ *info.AttackEvent, t info.Target) []float64 {
 			x, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if x.HP()/x.MaxHP() > 0.5 {
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 

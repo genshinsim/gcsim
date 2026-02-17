@@ -56,32 +56,30 @@ func (c *char) a1CBGadget(...any) bool {
 	// add a stack and refresh the mod for 15s
 	c.a1stacks.Add(clordineA1BuffDuration)
 	c.AddAttackMod(character.AttackMod{
-		Base:   modifier.NewBaseWithHitlag(clorindeA1BuffKey, clordineA1BuffDuration),
-		Amount: c.a1Amount,
+		Base: modifier.NewBaseWithHitlag(clorindeA1BuffKey, clordineA1BuffDuration),
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			var amt float64
+			switch atk.Info.AttackTag {
+			case attacks.AttackTagNormal:
+				if atk.Info.Element != attributes.Electro {
+					// only app
+					return nil
+				}
+			case attacks.AttackTagElementalBurst:
+			default:
+				return nil
+			}
+			totalAtk := atk.Snapshot.Stats.TotalATK()
+			amt = min(totalAtk*c.a1BuffPercent*float64(c.a1stacks.Count()), c.a1Cap)
+			atk.Info.FlatDmg += amt
+			c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index()).
+				Write("amt", amt).
+				Write("c2_applied", c.Base.Cons >= 2)
+			// we don't actually change any stats here..
+			return nil
+		},
 	})
 	return false
-}
-
-func (c *char) a1Amount(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-	var amt float64
-	switch atk.Info.AttackTag {
-	case attacks.AttackTagNormal:
-		if atk.Info.Element != attributes.Electro {
-			// only app
-			return nil, false
-		}
-	case attacks.AttackTagElementalBurst:
-	default:
-		return nil, false
-	}
-	totalAtk := atk.Snapshot.Stats.TotalATK()
-	amt = min(totalAtk*c.a1BuffPercent*float64(c.a1stacks.Count()), c.a1Cap)
-	atk.Info.FlatDmg += amt
-	c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index()).
-		Write("amt", amt).
-		Write("c2_applied", c.Base.Cons >= 2)
-	// we don't actually change any stats here..
-	return nil, true
 }
 
 func (c *char) a4Init() {
@@ -117,14 +115,12 @@ func (c *char) a4(change float64) {
 	}
 	c.a4stacks.Add(clordineA4BuffDuration)
 	c.AddStatMod(character.StatMod{
-		Base:   modifier.NewBaseWithHitlag(clorindeA4BuffKey, clordineA4BuffDuration),
-		Amount: c.a4Amount,
+		Base: modifier.NewBaseWithHitlag(clorindeA4BuffKey, clordineA4BuffDuration),
+		Amount: func() []float64 {
+			c.a4bonus[attributes.CR] = float64(c.a4stacks.Count()) * a4CritBuff
+			return c.a4bonus
+		},
 	})
 	c.Core.Log.NewEvent("a4 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.a4stacks.Count())
-}
-
-func (c *char) a4Amount() ([]float64, bool) {
-	c.a4bonus[attributes.CR] = float64(c.a4stacks.Count()) * a4CritBuff
-	return c.a4bonus, true
 }

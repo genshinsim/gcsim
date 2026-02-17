@@ -45,8 +45,8 @@ func (c *char) c2(src int) func() {
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return c.c2buff, true
+			Amount: func() []float64 {
+				return c.c2buff
 			},
 		})
 
@@ -55,8 +55,8 @@ func (c *char) c2(src int) func() {
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
 				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return c.c2buff, true
+				Amount: func() []float64 {
+					return c.c2buff
 				},
 			})
 		}
@@ -82,16 +82,16 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("kazuha-c6-dmgup", 60*5), // 5s
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			// skip if not normal/charged/plunge
 			if atk.Info.AttackTag != attacks.AttackTagNormal &&
 				atk.Info.AttackTag != attacks.AttackTagExtra &&
 				atk.Info.AttackTag != attacks.AttackTagPlunge {
-				return nil, false
+				return nil
 			}
 			// apply buff
 			m[attributes.DmgP] = 0.002 * c.Stat(attributes.EM)
-			return m, true
+			return m
 		},
 	})
 }

@@ -42,16 +42,16 @@ func (w *Weapon) Init() error {
 
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("astralvulturescrimsonplumage-dmg", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagExtra:
 				m[attributes.DmgP] = dmg * 2
 			case attacks.AttackTagElementalBurst:
 				m[attributes.DmgP] = dmg
 			default:
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 
@@ -80,8 +80,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("astralvulturescrimsonplumage-atkp", 12*60),
 				AffectedStat: attributes.ATKP,
-				Amount: func() ([]float64, bool) {
-					return atkp, true
+				Amount: func() []float64 {
+					return atkp
 				},
 			})
 			return false

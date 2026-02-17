@@ -23,11 +23,11 @@ func (c *char) a4() {
 	mDmg[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("beidou-a4-dmg", 600),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
-			return mDmg, true
+			return mDmg
 		},
 	})
 
@@ -36,8 +36,8 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("beidou-a4-atkspd", 600),
 		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
-			return mAtkSpd, true
+		Amount: func() []float64 {
+			return mAtkSpd
 		},
 	})
 }

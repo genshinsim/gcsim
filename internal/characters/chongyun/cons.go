@@ -45,18 +45,18 @@ func (c *char) c6() {
 		m[attributes.DmgP] = 0.15
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("chongyun-c6", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-					return nil, false
+					return nil
 				}
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				if x.HP()/x.MaxHP() < c.CurrentHPRatio() {
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
 	}

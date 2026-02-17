@@ -53,8 +53,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("sacrificial-jade", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return w.buff, true
+		Amount: func() []float64 {
+			return w.buff
 		},
 	})
 

@@ -22,18 +22,18 @@ func (c *char) a4(char *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a4Key, -1),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if !c.StatusIsActive(burstKey) {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag != attacks.AttackTagNormal {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = 0.005 * c.MaxHP() / 1000
-			return m, true
+			return m
 		},
 	})
 }

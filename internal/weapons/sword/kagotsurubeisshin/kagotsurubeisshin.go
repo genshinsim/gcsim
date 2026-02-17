@@ -55,8 +55,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("kagotsurube-isshin", duration),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return val, true
+			Amount: func() []float64 {
+				return val
 			},
 		})
 		// add a new action that deals % dmg immediately

@@ -38,8 +38,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("hod-2pc", -1),
 			AffectedStat: attributes.HydroP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -56,11 +56,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			// add stat mod here
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("hod-4pc", buffDuration),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-						return nil, false
+						return nil
 					}
-					return m, true
+					return m
 				},
 			})
 			return false

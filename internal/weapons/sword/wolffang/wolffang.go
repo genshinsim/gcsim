@@ -42,15 +42,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mFirst[attributes.DmgP] = 0.12 + 0.04*float64(p.Refine)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("wolf-fang", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:
 			case attacks.AttackTagElementalBurst:
 			default:
-				return nil, false
+				return nil
 			}
-			return mFirst, true
+			return mFirst
 		},
 	})
 
@@ -91,12 +91,12 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 
 		w.char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(name, 10*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if !requiredTag(atk.Info.AttackTag, tags...) {
-					return nil, false
+					return nil
 				}
 				m[attributes.CR] = cr * float64(stacks)
-				return m, true
+				return m
 			},
 		})
 		return false

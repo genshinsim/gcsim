@@ -49,8 +49,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("verm-2pc", -1),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -83,8 +83,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(verm4pckey, 16*60),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return s.buff, true
+			Amount: func() []float64 {
+				return s.buff
 			},
 		})
 

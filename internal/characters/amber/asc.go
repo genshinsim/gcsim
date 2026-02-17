@@ -18,8 +18,11 @@ func (c *char) a1() {
 	m[attributes.CR] = .1
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("amber-a1", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			return m, atk.Info.AttackTag == attacks.AttackTagElementalBurst
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
+				return m
+			}
+			return nil
 		},
 	})
 	// AoE
@@ -49,8 +52,8 @@ func (c *char) makeA4CB() info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("amber-a4", 600),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

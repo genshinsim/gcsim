@@ -64,16 +64,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case attacks.AttackTagNormal, attacks.AttackTagExtra:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(buffKey, 6*60),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagNormal:
 						na[attributes.DmgP] = (0.06 + 0.02*float64(r)) * float64(stacks)
-						return na, true
+						return na
 					case attacks.AttackTagExtra:
 						ca[attributes.DmgP] = (0.045 + 0.015*float64(r)) * float64(stacks)
-						return ca, true
+						return ca
 					default:
-						return nil, false
+						return nil
 					}
 				},
 			})

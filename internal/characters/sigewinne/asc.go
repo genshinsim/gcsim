@@ -74,8 +74,8 @@ func (c *char) a1Self() {
 	buff[attributes.HydroP] = a1DmgBuff
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("sigewinne-a1", skillCD*60),
-		Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
-			return buff, true
+		Amount: func(a *info.AttackEvent, _ info.Target) []float64 {
+			return buff
 		},
 	})
 }
@@ -85,14 +85,14 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("sigewinne-a4", -1),
 		AffectedStat: attributes.Heal,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			totalHpDebt := 0.
 			for _, other := range c.Core.Player.Chars() {
 				totalHpDebt += other.CurrentHPDebt()
 			}
 			heal := min(a4HealingBonusCap, totalHpDebt*a4HpDebtHealingBonusRatio)
 			m[attributes.Heal] = heal
-			return m, true
+			return m
 		},
 	})
 }

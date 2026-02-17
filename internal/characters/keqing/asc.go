@@ -36,8 +36,8 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("keqing-a4", 480),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return c.a4buff, true
+		Amount: func() []float64 {
+			return c.a4buff
 		},
 	})
 }

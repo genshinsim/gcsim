@@ -17,8 +17,8 @@ func (c *char) passive() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("kokomi-passive", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

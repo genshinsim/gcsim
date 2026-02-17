@@ -77,14 +77,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(BuffKey, BuffDur),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				m[attributes.ATKP] = 0.21 + 0.07*r
 				m[attributes.CD] = 0.15 + 0.05*r
 				if char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
 					m[attributes.ATKP] *= 1.75
 					m[attributes.CD] *= 1.75
 				}
-				return m, true
+				return m
 			},
 		})
 

@@ -43,8 +43,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("predator-atk", -1),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return mATK, true
+			Amount: func() []float64 {
+				return mATK
 			},
 		})
 	}
@@ -84,12 +84,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("predator-dmg", stackDuration),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if (atk.Info.AttackTag == attacks.AttackTagNormal) || (atk.Info.AttackTag == attacks.AttackTagExtra) {
 					mDMG[attributes.DmgP] = buffDmgP * float64(stacks)
-					return mDMG, true
+					return mDMG
 				}
-				return nil, false
+				return nil
 			},
 		})
 

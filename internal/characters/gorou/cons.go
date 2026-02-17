@@ -94,11 +94,11 @@ func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c6key, 720),
-			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) []float64 {
 				if ae.Info.Element != attributes.Geo {
-					return nil, false
+					return nil
 				}
-				return c.c6Buff, true
+				return c.c6Buff
 			},
 		})
 	}

@@ -67,11 +67,11 @@ func (s *Set) pc2() {
 	m[attributes.DmgP] = 0.25
 	s.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("longnightsoath-2pc", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -114,12 +114,12 @@ func (s *Set) pc4() {
 	m := make([]float64, attributes.EndStatType)
 	s.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("longnightsoath-4pc", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = 0.15 * float64(s.stacks.Count())
-			return m, true
+			return m
 		},
 	})
 }

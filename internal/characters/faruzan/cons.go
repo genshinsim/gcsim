@@ -42,11 +42,11 @@ func (c *char) c6Buff(char *character.CharWrapper) {
 	m[attributes.CD] = 0.4
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("faruzan-c6", 240),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.Element != attributes.Anemo {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

@@ -36,14 +36,14 @@ func (c *char) c1() {
 	m[attributes.CR] = 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("sethos-c1", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Abil != shadowPierceShotAil {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -55,13 +55,13 @@ func (c *char) c2() {
 	mElectro := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBase(c2Key, -1),
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			stackCount := c.c2Stacks()
 			if stackCount == 0 {
-				return nil, false
+				return nil
 			}
 			mElectro[attributes.ElectroP] = 0.15 * float64(stackCount)
-			return mElectro, true
+			return mElectro
 		},
 	})
 }
@@ -113,8 +113,8 @@ func (c *char) makeC4cb() info.AttackCBFunc {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(c4Key, c4Dur),
 					AffectedStat: attributes.EM,
-					Amount: func() ([]float64, bool) {
-						return c.c4Buff, true
+					Amount: func() []float64 {
+						return c.c4Buff
 					},
 				})
 			}

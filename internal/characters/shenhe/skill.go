@@ -175,15 +175,15 @@ func (c *char) skillPressBuff() {
 		char.SetTag(quillKey, 5)              // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 10*60),
-			Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(a *info.AttackEvent, _ info.Target) []float64 {
 				switch a.Info.AttackTag {
 				case attacks.AttackTagElementalArt:
 				case attacks.AttackTagElementalArtHold:
 				case attacks.AttackTagElementalBurst:
 				default:
-					return nil, false
+					return nil
 				}
-				return c.skillBuff, true
+				return c.skillBuff
 			},
 		})
 	}
@@ -199,15 +199,15 @@ func (c *char) skillHoldBuff() {
 		char.SetTag(quillKey, 7)              // 5 quill on hold
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
-			Amount: func(a *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(a *info.AttackEvent, _ info.Target) []float64 {
 				switch a.Info.AttackTag {
 				case attacks.AttackTagNormal:
 				case attacks.AttackTagExtra:
 				case attacks.AttackTagPlunge:
 				default:
-					return nil, false
+					return nil
 				}
-				return c.skillBuff, true
+				return c.skillBuff
 			},
 		})
 	}

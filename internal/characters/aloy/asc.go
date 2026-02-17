@@ -21,8 +21,8 @@ func (c *char) a1() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("aloy-a1", rushingIceDuration),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -39,12 +39,12 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("aloy-strong-strike", rushingIceDuration),
 		AffectedStat: attributes.CryoP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if stacks > 10 {
 				stacks = 10
 			}
 			m[attributes.CryoP] = float64(stacks) * 0.035
-			return m, true
+			return m
 		},
 	})
 

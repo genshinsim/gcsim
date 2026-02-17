@@ -13,8 +13,11 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("bennett-c2", -1),
 		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
-			return m, c.CurrentHPRatio() < 0.7
+		Amount: func() []float64 {
+			if c.CurrentHPRatio() < 0.7 {
+				return m
+			}
+			return nil
 		},
 	})
 }

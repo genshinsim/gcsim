@@ -44,11 +44,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("beacon-of-the-reed-sea-hp", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
-				return nil, false
+				return nil
 			}
-			return mHP, true
+			return mHP
 		},
 	})
 
@@ -66,8 +66,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(skillKey, stackDuration),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return mATK, true
+			Amount: func() []float64 {
+				return mATK
 			},
 		})
 
@@ -89,8 +89,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(damagedKey, stackDuration),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return mATK, true
+			Amount: func() []float64 {
+				return mATK
 			},
 		})
 		return false

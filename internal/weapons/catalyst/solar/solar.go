@@ -43,23 +43,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("solar-na-buff", 6*60),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					if atk.Info.AttackTag == attacks.AttackTagNormal {
-						return val, true
+						return val
 					}
-					return nil, false
+					return nil
 				},
 			})
 
 		case attacks.AttackTagNormal:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("solar-skill-burst-buff", 6*60),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
-						return val, true
+						return val
 					}
-					return nil, false
+					return nil
 				},
 			})
 

@@ -25,8 +25,8 @@ func (c *char) c1() {
 	m[attributes.AtkSpd] = 0.1
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag("wanderer-c1-atkspd", 1200),
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
@@ -41,8 +41,8 @@ func (c *char) c2() {
 	m[attributes.DmgP] = min(float64(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

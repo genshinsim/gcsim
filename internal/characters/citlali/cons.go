@@ -71,8 +71,8 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("citlali-c2-em", -1),
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
-			return buffSelf, true
+		Amount: func() []float64 {
+			return buffSelf
 		},
 	})
 
@@ -85,15 +85,15 @@ func (c *char) c2() {
 		this.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("citlali-c2-em", -1),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				// character should be followed by Itzpapa, i.e. the character is active
 				if c.Core.Player.Active() != this.Index() {
-					return nil, false
+					return nil
 				}
 				if c.Core.Player.Shields.Get(shield.CitlaliSkill) == nil && !c.nightsoulState.HasBlessing() {
-					return nil, false
+					return nil
 				}
-				return buffOther, true
+				return buffOther
 			},
 		})
 	}
@@ -147,18 +147,18 @@ func (c *char) c6() {
 		}
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("citlali-c6", -1),
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				buffOther[attributes.PyroP] = 0.015 * c.numC6Stacks
 				buffOther[attributes.HydroP] = 0.015 * c.numC6Stacks
-				return buffOther, true
+				return buffOther
 			},
 		})
 	}
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("citlali-c6", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			buffSelf[attributes.DmgP] = 0.025 * c.numC6Stacks
-			return buffSelf, true
+			return buffSelf
 		},
 	})
 }

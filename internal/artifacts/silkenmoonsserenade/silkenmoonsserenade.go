@@ -43,8 +43,8 @@ func (s *Set) Init() error {
 	s.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase(setKey2, -1),
 		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -82,9 +82,9 @@ func (s *Set) Init() error {
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase(gleamingMoonDevotionEMKey, 8*60),
 				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
+				Amount: func() []float64 {
 					m2[attributes.EM] = 120
-					return m2, true
+					return m2
 				},
 			})
 		}
@@ -96,9 +96,9 @@ func (s *Set) Init() error {
 	for _, char := range s.core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase(gleamingMoonDevotionReactKey, -1),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				if !attacks.AttackTagIsLunar(ai.AttackTag) {
-					return 0, false
+					return 0
 				}
 
 				hasGleamingMoonDevotion := false
@@ -110,9 +110,9 @@ func (s *Set) Init() error {
 				}
 
 				if !hasGleamingMoonDevotion {
-					return 0, false
+					return 0
 				}
-				return 0.1, false
+				return 0.1
 			},
 		})
 	}

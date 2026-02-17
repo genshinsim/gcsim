@@ -29,16 +29,16 @@ func (c *char) a1() {
 		mCR := make([]float64, attributes.EndStatType)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("xianyun-a1-buff", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagPlunge {
-					return nil, false
+					return nil
 				}
 				stackCount := min(c.a1Buffer[i], 4)
 				if stackCount == 0 {
-					return nil, false
+					return nil
 				}
 				mCR[attributes.CR] = a1Crit[stackCount]
-				return mCR, true
+				return mCR
 			},
 		})
 	}

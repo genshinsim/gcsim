@@ -118,8 +118,8 @@ func (c *char) gorouSkillBuffField(src int) func() {
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(defenseBuffKey, 120), // looks like it lasts 2 seconds
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return c.gorouBuff, true
+			Amount: func() []float64 {
+				return c.gorouBuff
 			},
 		})
 

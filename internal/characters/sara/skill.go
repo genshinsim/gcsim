@@ -100,8 +100,8 @@ func (c *char) attackBuff(a info.AttackPattern, delay int) {
 			Base:         modifier.NewBaseWithHitlag("sara-attack-buff", 360),
 			AffectedStat: attributes.ATK,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 

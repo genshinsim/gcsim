@@ -55,11 +55,11 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("gaming-a4-heal-bonus", -1),
 		AffectedStat: attributes.Heal,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.CurrentHPRatio() >= 0.5 {
-				return nil, false
+				return nil
 			}
-			return mHeal, true
+			return mHeal
 		},
 	})
 
@@ -67,14 +67,14 @@ func (c *char) a4() {
 	mDmg[attributes.DmgP] = 0.2
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("gaming-a4-dmg-bonus", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if c.CurrentHPRatio() < 0.5 {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Abil != specialPlungeKey {
-				return nil, false
+				return nil
 			}
-			return mDmg, true
+			return mDmg
 		},
 	})
 }

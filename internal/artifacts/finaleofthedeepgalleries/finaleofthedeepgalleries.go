@@ -58,8 +58,8 @@ func (s *Set) pc2() {
 	s.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("deep-galleries-2pc", -1),
 		AffectedStat: attributes.CryoP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
@@ -77,20 +77,20 @@ func (s *Set) pc4() {
 
 	s.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("deep-galleries-4pc", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if s.char.Energy != 0 {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag == attacks.AttackTagNormal && s.char.StatusIsActive(normalDebuffKey) {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag == attacks.AttackTagElementalBurst && s.char.StatusIsActive(burstDebuffKey) {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 

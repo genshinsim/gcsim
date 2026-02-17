@@ -46,13 +46,13 @@ func (c *char) c6CritMode() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("sigewinne-c6", 15*60),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 			m[attributes.CD] = min(c6CDmgCap, c.MaxHP()*c6CDmgHpRatio)
 			m[attributes.CR] = min(c6CRateCap, c.MaxHP()*c6CRateHpRatio)
-			return m, true
+			return m
 		},
 	})
 }

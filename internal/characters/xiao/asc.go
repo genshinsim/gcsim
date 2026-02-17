@@ -21,10 +21,10 @@ func (c *char) a1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(a1Key, 900+burstStart),
 		AffectedStat: attributes.DmgP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			stacks := min(1+(c.Core.F-c.qStarted)/180, 5)
 			m[attributes.DmgP] = float64(stacks) * 0.05
-			return m, true
+			return m
 		},
 	})
 }
@@ -46,8 +46,11 @@ func (c *char) a4() {
 	c.a4buff[attributes.DmgP] = float64(c.a4stacks) * 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(a4BuffKey, 420),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			return c.a4buff, atk.Info.AttackTag == attacks.AttackTagElementalArt
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			if atk.Info.AttackTag == attacks.AttackTagElementalArt {
+				return c.a4buff
+			}
+			return nil
 		},
 	})
 }

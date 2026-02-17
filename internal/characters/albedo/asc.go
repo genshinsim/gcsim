@@ -22,18 +22,18 @@ func (c *char) a1() {
 	m[attributes.DmgP] = 0.25
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("albedo-a1", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
+				return nil
 			}
 			// Can't be triggered by itself when refreshing
 			if atk.Info.Abil == skillAbilInitial {
-				return nil, false
+				return nil
 			}
 			if e, ok := t.(*enemy.Enemy); !(ok && e.HP()/e.MaxHP() < .5) {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -49,8 +49,8 @@ func (c *char) a4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("albedo-a4", 600),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

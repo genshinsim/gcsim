@@ -43,8 +43,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(burstBuffKey, duration),
 			AffectedStat: attributes.PyroP,
-			Amount: func() ([]float64, bool) {
-				return c.a4buff, true
+			Amount: func() []float64 {
+				return c.a4buff
 			},
 		})
 	}

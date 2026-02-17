@@ -37,8 +37,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("wolf-flat", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return val, true
+		Amount: func() []float64 {
+			return val
 		},
 	})
 
@@ -76,8 +76,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("wolf-proc", 720),
 				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
-					return bonus, true
+				Amount: func() []float64 {
+					return bonus
 				},
 			})
 		}

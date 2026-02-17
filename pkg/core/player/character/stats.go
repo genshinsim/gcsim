@@ -33,11 +33,10 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []any) {
 			continue
 		}
 
-		amt, ok := m.Amount()
-		if ok {
-			for k, v := range amt {
-				stats[k] += v
-			}
+		amt := m.Amount()
+		reject := amt == nil
+		for k, v := range amt {
+			stats[k] += v
 		}
 		c.mods[n] = m
 		n++
@@ -45,10 +44,9 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []any) {
 		if !c.debug {
 			continue
 		}
-		modStatus := make([]string, 0)
-
-		if ok {
-			sb.WriteString(m.Key())
+		modStatus := make([]string, 0, 2)
+		sb.WriteString(m.Key())
+		if !reject {
 			modStatus = append(
 				modStatus,
 				"status: added",
@@ -58,18 +56,15 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []any) {
 				modStatus,
 				attributes.PrettyPrintStatsSlice(amt)...,
 			)
-			debugDetails = append(debugDetails, sb.String(), modStatus)
-			sb.Reset()
 		} else {
-			sb.WriteString(m.Key())
 			modStatus = append(
 				modStatus,
 				"status: rejected",
 				"reason: conditions not met",
 			)
-			debugDetails = append(debugDetails, sb.String(), modStatus)
-			sb.Reset()
 		}
+		debugDetails = append(debugDetails, sb.String(), modStatus)
+		sb.Reset()
 	}
 	c.mods = c.mods[:n]
 
@@ -89,7 +84,7 @@ func (c *CharWrapper) Stat(s attributes.Stat) float64 {
 		}
 		// check expiry
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			if amt, ok := m.Amount(); ok {
+			if amt := m.Amount(); amt != nil {
 				val += amt[s]
 			}
 		}
@@ -115,7 +110,7 @@ func (c *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
 		}
 		// check expiry
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			if amt, ok := m.Amount(); ok {
+			if amt := m.Amount(); amt != nil {
 				val += amt[s]
 			}
 		}
@@ -145,7 +140,7 @@ func (c *CharWrapper) SelectStat(nonExtra bool, stat ...attributes.Stat) attribu
 		}
 		// check expiry
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			if amt, ok := m.Amount(); ok {
+			if amt := m.Amount(); amt != nil {
 				for _, k := range stat {
 					stats[k] += amt[k]
 				}

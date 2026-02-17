@@ -40,8 +40,8 @@ func (c *Traveler) c1(ticks int) func() {
 			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("geo-traveler-c1", 120), // 2s
 				AffectedStat: attributes.CR,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}

@@ -49,8 +49,8 @@ func (c *char) c4() {
 	if active.CurrentHPRatio() < 0.5 {
 		active.AddHealBonusMod(character.HealBonusMod{
 			Base: modifier.NewBaseWithHitlag("dori-c4-healbonus", 48),
-			Amount: func() (float64, bool) {
-				return 0.5, false
+			Amount: func() float64 {
+				return 0.5
 			},
 		})
 	}
@@ -61,8 +61,8 @@ func (c *char) c4() {
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("dori-c4-er-bonus", 48),
 			AffectedStat: attributes.ER,
-			Amount: func() ([]float64, bool) {
-				return erMod, true
+			Amount: func() []float64 {
+				return erMod
 			},
 		})
 	}

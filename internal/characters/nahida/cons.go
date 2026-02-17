@@ -54,7 +54,7 @@ func (c *char) c2() {
 		return false
 	}, "nahida-c2-reaction-dmg-buff")
 
-	cb := func(rx event.Event) event.Hook {
+	cb := func(_ event.Event) event.Hook {
 		return func(args ...any) bool {
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
@@ -83,7 +83,7 @@ func (c *char) c4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("nahida-c4", -1),
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			enemies := c.Core.Combat.EnemiesWithinArea(
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 30),
 				func(t info.Enemy) bool {
@@ -92,10 +92,10 @@ func (c *char) c4() {
 			)
 			count := min(len(enemies), 4)
 			if count == 0 {
-				return nil, false
+				return nil
 			}
 			c.c4Buff[attributes.EM] = float64(80 + count*20)
-			return c.c4Buff, true
+			return c.c4Buff
 		},
 	})
 }

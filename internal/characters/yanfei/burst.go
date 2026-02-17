@@ -36,11 +36,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.AttackTag == attacks.AttackTagExtra {
-				return c.burstBuff, true
+				return c.burstBuff
 			}
-			return nil, false
+			return nil
 		},
 	})
 

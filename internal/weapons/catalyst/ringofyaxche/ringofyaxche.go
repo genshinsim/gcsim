@@ -44,12 +44,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		m := make([]float64, attributes.EndStatType)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("ring-of-yaxche", 10*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
-					return nil, false
+					return nil
 				}
 				m[attributes.DmgP] = buffAmt
-				return m, true
+				return m
 			},
 		})
 		return false

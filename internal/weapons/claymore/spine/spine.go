@@ -107,8 +107,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("spine", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return w.buff, w.stacks > 0
+		Amount: func() []float64 {
+			if w.stacks > 0 {
+				return w.buff
+			}
+			return nil
 		},
 	})
 

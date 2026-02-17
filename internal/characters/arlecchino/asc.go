@@ -18,8 +18,8 @@ func (c *char) passive() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("arlecchino-passive", -1),
 		AffectedStat: attributes.PyroP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

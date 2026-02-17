@@ -81,10 +81,10 @@ func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...any)
 				other.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%v", ele), 15*60),
 					AffectedStat: stat,
-					Amount: func() ([]float64, bool) {
+					Amount: func() []float64 {
 						clear(s.buff)
 						s.buff[stat] = 0.12
-						return s.buff, true
+						return s.buff
 					},
 				})
 
@@ -94,10 +94,10 @@ func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...any)
 				other.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%v", ele), 20*60),
 					AffectedStat: stat,
-					Amount: func() ([]float64, bool) {
+					Amount: func() []float64 {
 						clear(s.nightsoulBuff)
 						s.nightsoulBuff[stat] = 0.28
-						return s.nightsoulBuff, true
+						return s.nightsoulBuff
 					},
 				})
 			}

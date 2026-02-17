@@ -62,15 +62,15 @@ func (c *char) a4() {
 	m[attributes.DmgP] = a4Dmg
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("lyney-a4", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			r, ok := t.(core.Reactable)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if !r.AuraContains(attributes.Pyro) {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

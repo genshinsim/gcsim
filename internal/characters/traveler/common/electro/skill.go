@@ -184,8 +184,8 @@ func (c *Traveler) collectAmulets(collector *character.CharWrapper) bool {
 		Base:         modifier.NewBaseWithHitlag("abundance-amulet", 360),
 		AffectedStat: attributes.ER,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return mER, true
+		Amount: func() []float64 {
+			return mER
 		},
 	})
 

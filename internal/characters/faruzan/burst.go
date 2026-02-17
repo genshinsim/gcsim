@@ -132,8 +132,8 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstBuffKey, 240),
 		AffectedStat: attributes.CR,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 	if c.Base.Cons >= 6 {

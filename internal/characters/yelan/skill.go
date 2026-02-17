@@ -140,8 +140,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("yelan-c4", 25*60),
 					AffectedStat: attributes.HPP,
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}

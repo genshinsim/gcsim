@@ -44,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, 12*60),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if char.Energy == 0 {
 					m[attributes.ATKP] = atkp * 2
 					m[attributes.CD] = cd
@@ -52,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					m[attributes.ATKP] = atkp
 					m[attributes.CD] = 0
 				}
-				return m, true
+				return m
 			},
 		})
 

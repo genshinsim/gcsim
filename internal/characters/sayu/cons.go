@@ -18,15 +18,15 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("sayu-c2", -1),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.ActorIndex != c.Index() {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = c.c2Bonus
-			return m, true
+			return m
 		},
 	})
 }

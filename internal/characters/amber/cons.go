@@ -15,14 +15,14 @@ func (c *char) c2() {
 	m[attributes.DmgP] = 2
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("amber-c2", -1),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Abil != manualExplosionAbil {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

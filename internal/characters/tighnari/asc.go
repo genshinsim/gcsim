@@ -17,8 +17,8 @@ func (c *char) a1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("tighnari-a1", 4*60),
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
@@ -32,9 +32,9 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("tighnari-a4", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagExtra && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 
 			bonus := c.Stat(attributes.EM) * 0.0006
@@ -42,7 +42,7 @@ func (c *char) a4() {
 				bonus = 0.6
 			}
 			m[attributes.DmgP] = bonus
-			return m, true
+			return m
 		},
 	})
 }

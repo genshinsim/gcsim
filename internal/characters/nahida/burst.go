@@ -51,8 +51,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				if c.pyroCount > 0 {
 					c.AddAttackMod(character.AttackMod{
 						Base: modifier.NewBaseWithHitlag(burstKey, 60),
-						Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-							return c.pyroBurstBuff, atk.Info.Abil == triKarmaAbil
+						Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+							if atk.Info.Abil == triKarmaAbil {
+								return c.pyroBurstBuff
+							}
+							return nil
 						},
 					})
 				}

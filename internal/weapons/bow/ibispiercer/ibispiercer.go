@@ -82,9 +82,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(stackKey, stackDuration),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				m[attributes.EM] = em * float64(stacks)
-				return m, true
+				return m
 			},
 		})
 

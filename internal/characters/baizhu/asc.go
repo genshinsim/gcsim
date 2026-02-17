@@ -22,12 +22,12 @@ func (c *char) a1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("baizhu-a1-heal-bonus", -1),
 		AffectedStat: attributes.Heal,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			active := c.Core.Player.ActiveChar()
 			if active.CurrentHPRatio() < 0.5 {
-				return mHeal, true
+				return mHeal
 			}
-			return nil, false
+			return nil
 		},
 	})
 
@@ -37,12 +37,12 @@ func (c *char) a1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("baizhu-a1-dendro-dmg", -1),
 		AffectedStat: attributes.DendroP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			active := c.Core.Player.ActiveChar()
 			if active.CurrentHPRatio() >= 0.5 {
-				return mDendroP, true
+				return mDendroP
 			}
-			return nil, false
+			return nil
 		},
 	})
 }
@@ -58,13 +58,13 @@ func (c *char) a4() {
 	}
 	c.Core.Player.ActiveChar().AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBaseWithHitlag("baizhu-a4", 6*60),
-		Amount: func(ai info.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) float64 {
 			limitHP := c.MaxHP() / 1000.0
 			if limitHP > 50 {
 				limitHP = 50
 			}
 			if ai.Catalyzed && (ai.CatalyzedType == info.ReactionTypeAggravate || ai.CatalyzedType == info.ReactionTypeSpread) {
-				return limitHP * 0.008, false
+				return limitHP * 0.008
 			}
 			mult := 0.02
 			switch ai.AttackTag {
@@ -75,10 +75,10 @@ func (c *char) a4() {
 			case attacks.AttackTagDirectLunarBloom:
 				mult = 0.007
 			default:
-				return 0, false
+				return 0
 			}
 
-			return limitHP * mult, false
+			return limitHP * mult
 		},
 	})
 }

@@ -40,8 +40,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("desert-2pc", -1),
 			AffectedStat: attributes.AnemoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -61,11 +61,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("desert-4pc-spd", 15*60),
 				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
+				Amount: func() []float64 {
 					if c.Player.CurrentState() != action.NormalAttackState {
-						return nil, false
+						return nil
 					}
-					return mSpd, true
+					return mSpd
 				},
 			})
 
@@ -73,15 +73,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			mDmg[attributes.DmgP] = 0.4
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("desert-4pc-dmg", 15*60),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagNormal:
 					case attacks.AttackTagExtra:
 					case attacks.AttackTagPlunge:
 					default:
-						return nil, false
+						return nil
 					}
-					return mDmg, true
+					return mDmg
 				},
 			})
 

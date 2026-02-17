@@ -73,8 +73,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			active := c.Core.Player.ActiveChar()
 			active.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("ayato-burst", 90),
-				Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
-					return m, a.Info.AttackTag == attacks.AttackTagNormal
+				Amount: func(a *info.AttackEvent, t info.Target) []float64 {
+					if a.Info.AttackTag == attacks.AttackTagNormal {
+						return m
+					}
+					return nil
 				},
 			})
 		}, i+burstStart)
@@ -87,8 +90,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("ayato-c4", 15*60),
 				AffectedStat: attributes.AtkSpd,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}

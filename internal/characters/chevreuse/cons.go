@@ -156,8 +156,8 @@ func (c *char) c6(char *character.CharWrapper) {
 
 	char.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("chev-c6-%v-stack", c.c6StackCounts[char.Index()]+1), 8*60),
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 	c.c6StackCounts[char.Index()] = (c.c6StackCounts[char.Index()] + 1) % 3

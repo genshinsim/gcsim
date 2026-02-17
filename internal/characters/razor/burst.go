@@ -42,8 +42,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
 			AffectedStat: attributes.AtkSpd,
-			Amount: func() ([]float64, bool) {
-				return val, true
+			Amount: func() []float64 {
+				return val
 			},
 		})
 	}, burstHitmark)

@@ -31,8 +31,8 @@ func (c *char) a4(a4Delay int) {
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("xiangling-a4", 10*60),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 		c.Core.Log.NewEvent(

@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = base
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("twilight-bonus-dmg", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch cycle {
 			case 2:
 				base = 0.105 + float64(r)*0.035
@@ -46,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 
 			m[attributes.DmgP] = base
-			return m, true
+			return m
 		},
 	})
 

@@ -51,8 +51,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("flower-2pc", -1),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -61,17 +61,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("flower-4pc", -1),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				switch ai.AttackTag {
 				case attacks.AttackTagBloom:
 				case attacks.AttackTagHyperbloom:
 				case attacks.AttackTagBurgeon:
 				case attacks.AttackTagDirectLunarBloom:
-					return 0.1, false
+					return 0.1
 				default:
-					return 0, false
+					return 0
 				}
-				return 0.4, false
+				return 0.4
 			},
 		})
 
@@ -98,17 +98,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			char.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBaseWithHitlag(buffKey, 10*60),
-				Amount: func(ai info.AttackInfo) (float64, bool) {
+				Amount: func(ai info.AttackInfo) float64 {
 					switch ai.AttackTag {
 					case attacks.AttackTagBloom:
 					case attacks.AttackTagHyperbloom:
 					case attacks.AttackTagBurgeon:
 					case attacks.AttackTagDirectLunarBloom:
-						return 0.1 * float64(s.stacks) * 0.25, false
+						return 0.1 * float64(s.stacks) * 0.25
 					default:
-						return 0, false
+						return 0
 					}
-					return 0.4 * float64(s.stacks) * 0.25, false
+					return 0.4 * float64(s.stacks) * 0.25
 				},
 			})
 

@@ -33,8 +33,8 @@ func (c *char) c2() {
 			this.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("jean-c2", 900),
 				AffectedStat: attributes.AtkSpd,
-				Amount: func() ([]float64, bool) {
-					return c.c2buff, true
+				Amount: func() []float64 {
+					return c.c2buff
 				},
 			})
 		}

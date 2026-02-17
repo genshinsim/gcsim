@@ -64,11 +64,11 @@ func (c *char) c1() {
 		// Currently assuming affected by hitlag on characters
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c1Key, c1Dur),
-			Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) []float64 {
 				if ae.Info.Element != attributes.Cryo {
-					return nil, false
+					return nil
 				}
-				return c.c1Buff, true
+				return c.c1Buff
 			},
 		})
 	}

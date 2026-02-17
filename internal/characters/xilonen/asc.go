@@ -37,14 +37,14 @@ func (c *char) a1() {
 	m[attributes.DmgP] = 0.30
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a1Key, -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge && atk.Info.AttackTag != attacks.AttackTagNormal {
-				return nil, false
+				return nil
 			}
 			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -94,8 +94,8 @@ func (c *char) a4() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a4Key, 15*60),
 			AffectedStat: attributes.DEFP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 		return false

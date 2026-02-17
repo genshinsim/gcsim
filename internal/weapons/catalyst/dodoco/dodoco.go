@@ -48,19 +48,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case attacks.AttackTagNormal:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("dodoco-ca", 360),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					if atk.Info.AttackTag != attacks.AttackTagExtra {
-						return nil, false
+						return nil
 					}
-					return m, true
+					return m
 				},
 			})
 		case attacks.AttackTagExtra:
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("dodoco-atk", 360),
 				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
-					return n, true
+				Amount: func() []float64 {
+					return n
 				},
 			})
 		}

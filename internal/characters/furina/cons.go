@@ -26,12 +26,12 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase(c2BuffKey, -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if !c.StatusIsActive(burstKey) {
-				return nil, false
+				return nil
 			}
 			m[attributes.HPP] = max(c.curFanfare-c.maxQFanfare, 0) * 0.0035
-			return m, true
+			return m
 		},
 	})
 }

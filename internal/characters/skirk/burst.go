@@ -97,22 +97,22 @@ func (c *char) BurstInit() {
 	mDmg := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(burstExtinctKey+"-dmg", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if c.burstCount <= 0 {
-				return nil, false
+				return nil
 			}
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagNormal:
 			default:
-				return nil, false
+				return nil
 			}
 
 			if !c.StatusIsActive(burstExtinctKey) {
-				return nil, false
+				return nil
 			}
 
 			if c.StatusIsActive(burstICDKey) {
-				return nil, false
+				return nil
 			}
 			c.AddStatus(burstICDKey, 0.1*60, true)
 			c.burstCount--
@@ -121,7 +121,7 @@ func (c *char) BurstInit() {
 				c.AddStatus(burstExtinctKey, 0, false)
 			}
 			mDmg[attributes.DmgP] = burstDMG[c.burstVoids][c.TalentLvlBurst()]
-			return mDmg, true
+			return mDmg
 		},
 	})
 }

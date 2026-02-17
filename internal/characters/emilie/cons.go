@@ -66,11 +66,11 @@ func (c *char) c1A1() {
 	m[attributes.DmgP] = 0.2
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1ModKey, -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.Abil != a1Abil {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

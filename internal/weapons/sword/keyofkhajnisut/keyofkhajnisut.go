@@ -49,8 +49,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("khaj-nisut", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -82,8 +82,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Base:         modifier.NewBaseWithHitlag(buffKey, duration),
 			AffectedStat: attributes.EM,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return val, true
+			Amount: func() []float64 {
+				return val
 			},
 		})
 
@@ -95,8 +95,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					Base:         modifier.NewBaseWithHitlag(teamBuffKey, duration),
 					AffectedStat: attributes.EM,
 					Extra:        true,
-					Amount: func() ([]float64, bool) {
-						return val, true
+					Amount: func() []float64 {
+						return val
 					},
 				})
 			}

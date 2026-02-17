@@ -30,16 +30,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	inc := .3 + float64(r)*0.1
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("rust", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag == attacks.AttackTagNormal {
 				m[attributes.DmgP] = inc
-				return m, true
+				return m
 			}
 			if atk.Info.AttackTag == attacks.AttackTagExtra {
 				m[attributes.DmgP] = -0.1
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 

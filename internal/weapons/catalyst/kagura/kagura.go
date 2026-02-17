@@ -75,16 +75,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		// add mod for duration, override last
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("kaguras-verity", stackDuration),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.ActorIndex != char.Index() {
-					return nil, false
+					return nil
 				}
 				if atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold {
 					val[attributes.DmgP] = dmg * float64(stacks)
 				} else {
 					val[attributes.DmgP] = 0
 				}
-				return val, true
+				return val
 			},
 		})
 		return false

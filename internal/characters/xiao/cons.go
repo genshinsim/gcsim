@@ -17,11 +17,11 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("xiao-c2", -1),
 		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.Core.Player.Active() != c.Index() {
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 }
@@ -36,11 +36,11 @@ func (c *char) c4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("xiao-c4", -1),
 		AffectedStat: attributes.DEFP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.CurrentHPRatio() <= 0.5 {
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 }

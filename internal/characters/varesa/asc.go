@@ -63,9 +63,9 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("varesa-a4", -1),
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.ATKP] = 0.35 * float64(c.a4Stacks.Count())
-			return m, true
+			return m
 		},
 	})
 

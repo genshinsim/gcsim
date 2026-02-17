@@ -55,17 +55,17 @@ func (c *char) a4Init() {
 			Base:         modifier.NewBaseWithHitlag(a4Key+"-buff", -1),
 			Extra:        true,
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if c.Core.Player.Active() != char.Index() && c.Index() != char.Index() {
-					return nil, false
+					return nil
 				}
 				if !c.StatusIsActive(a4Key) {
-					return nil, false
+					return nil
 				}
 
 				stats := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
 				m[attributes.EM] = stats.TotalATK() * 0.06
-				return m, true
+				return m
 			},
 		})
 	}

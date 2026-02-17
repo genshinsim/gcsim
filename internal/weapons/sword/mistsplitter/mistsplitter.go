@@ -80,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("mistsplitter", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			count := 0
 			if char.Energy < char.EnergyMax || char.EnergyMax == 0 {
 				count++
@@ -96,7 +96,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				dmg += maxBonus
 			}
 			m[bonus] = base + dmg
-			return m, true
+			return m
 		},
 	})
 

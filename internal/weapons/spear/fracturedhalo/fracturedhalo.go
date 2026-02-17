@@ -49,8 +49,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(AtkpBuff, 20*60),
-			Amount: func() ([]float64, bool) {
-				return mAtk, true
+			Amount: func() []float64 {
+				return mAtk
 			},
 		})
 
@@ -64,17 +64,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	for _, ch := range c.Player.Chars() {
 		ch.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("fracturedhalo-lc-dmg", -1),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				switch ai.AttackTag {
 				case attacks.AttackTagDirectLunarCharged:
 				case attacks.AttackTagReactionLunarCharge:
 				default:
-					return 0, false
+					return 0
 				}
 				if !char.StatusIsActive(LcBuff) {
-					return 0, false
+					return 0
 				}
-				return lcBonus, false
+				return lcBonus
 			},
 		})
 	}

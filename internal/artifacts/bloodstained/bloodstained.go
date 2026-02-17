@@ -38,8 +38,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("bloodstained-2pc", -1),
 			AffectedStat: attributes.PhyP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -71,11 +71,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		// charged attack dmg% part
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("bloodstained-4pc-dmg%", 600),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagExtra {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 

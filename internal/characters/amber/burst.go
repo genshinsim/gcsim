@@ -75,8 +75,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("amber-c6", 900),
 				AffectedStat: attributes.ATKP,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}

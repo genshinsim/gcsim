@@ -66,15 +66,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		m[attributes.DmgP] = 0.3
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("diluc-c6-dmg", 360),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
-					return nil, false
+					return nil
 				}
 				if c.c6Count > 1 {
-					return nil, false
+					return nil
 				}
 				c.c6Count++
-				return m, true
+				return m
 			},
 		})
 
@@ -83,14 +83,14 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("diluc-c6-speed", 360),
 			AffectedStat: attributes.AtkSpd,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if c.Core.Player.CurrentState() != action.NormalAttackState {
-					return nil, false
+					return nil
 				}
 				if c.c6Count > 1 {
-					return nil, false
+					return nil
 				}
-				return mAtkSpd, true
+				return mAtkSpd
 			},
 		})
 	}

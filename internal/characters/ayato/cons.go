@@ -21,15 +21,15 @@ func (c *char) c1() {
 		m[attributes.DmgP] = 0.4
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("ayato-c1", -1),
-			Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(a *info.AttackEvent, t info.Target) []float64 {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				if a.Info.AttackTag != attacks.AttackTagNormal || x.HP()/x.MaxHP() > 0.5 {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 	}
@@ -41,11 +41,11 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("ayato-c2", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.stacks >= 3 {
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 }

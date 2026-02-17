@@ -41,24 +41,24 @@ func (c *char) a4() {
 	mSkill := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kirara-a4-skill", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-				return nil, false
+				return nil
 			}
 			mSkill[attributes.DmgP] = c.MaxHP() * 0.001 * 0.004
-			return mSkill, true
+			return mSkill
 		},
 	})
 
 	mBurst := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kirara-a4-burst", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 			mBurst[attributes.DmgP] = c.MaxHP() * 0.001 * 0.003
-			return mBurst, true
+			return mBurst
 		},
 	})
 }

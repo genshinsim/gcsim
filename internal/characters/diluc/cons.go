@@ -16,15 +16,15 @@ func (c *char) c1() {
 		m[attributes.DmgP] = 0.15
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("diluc-c1", -1),
-			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) []float64 {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				if x.HP()/x.MaxHP() > 0.5 {
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
 	}
@@ -60,8 +60,8 @@ func (c *char) c2() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c2BuffKey, 600),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return c.c2buff, true
+			Amount: func() []float64 {
+				return c.c2buff
 			},
 		})
 		return false
@@ -73,12 +73,12 @@ const c4BuffKey = "diluc-c4"
 func (c *char) c4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c4BuffKey, 120),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			// should only affect skill dmg
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
+				return nil
 			}
-			return c.c4buff, true
+			return c.c4buff
 		},
 	})
 }

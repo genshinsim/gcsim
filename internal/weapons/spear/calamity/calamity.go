@@ -80,8 +80,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("calamity-dmg", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -106,14 +106,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, buffDuration),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				atk := atkbonus * float64(w.stacks)
 				if c.Player.Active() != char.Index() {
 					atk *= 2
 				}
 				skillPressBonus[attributes.ATKP] = atk
 
-				return skillPressBonus, true
+				return skillPressBonus
 			},
 		})
 

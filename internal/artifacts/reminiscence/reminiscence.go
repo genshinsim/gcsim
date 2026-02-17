@@ -37,8 +37,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("shim-2pc", -1),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -71,15 +71,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("shim-4pc", 60*10),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagNormal:
 					case attacks.AttackTagExtra:
 					case attacks.AttackTagPlunge:
 					default:
-						return nil, false
+						return nil
 					}
-					return m, true
+					return m
 				},
 			})
 

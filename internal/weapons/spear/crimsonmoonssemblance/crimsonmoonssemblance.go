@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("crimsonmoonssemblance-bonus", -1),
 		AffectedStat: attributes.DmgP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			maxhp := char.MaxHP()
 			m[attributes.DmgP] = 0.0
 			if char.CurrentHPDebt() > 0 {
@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			if char.CurrentHPDebt() >= 0.3*maxhp {
 				m[attributes.DmgP] += 0.16 + 0.08*float64(refine)
 			}
-			return m, true
+			return m
 		},
 	})
 

@@ -45,8 +45,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("pines-atk", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -90,18 +90,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("pines-proc", buffDuration),
 					AffectedStat: attributes.AtkSpd,
-					Amount: func() ([]float64, bool) {
+					Amount: func() []float64 {
 						if c.Player.CurrentState() != action.NormalAttackState {
-							return nil, false
+							return nil
 						}
-						return uniqueVal, true
+						return uniqueVal
 					},
 				})
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
 					AffectedStat: attributes.ATKP,
-					Amount: func() ([]float64, bool) {
-						return sharedVal, true
+					Amount: func() []float64 {
+						return sharedVal
 					},
 				})
 			}

@@ -53,8 +53,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("surfs-up-hp%", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return mHP, true
+		Amount: func() []float64 {
+			return mHP
 		},
 	})
 
@@ -72,12 +72,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 14*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag == attacks.AttackTagNormal {
 					mNA[attributes.DmgP] = dmgPerStack * float64(min(w.stacks, 4))
-					return mNA, true
+					return mNA
 				}
-				return nil, false
+				return nil
 			},
 		})
 

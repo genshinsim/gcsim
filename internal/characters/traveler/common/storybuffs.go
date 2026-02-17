@@ -38,8 +38,8 @@ func TravelerStoryBuffs(c *character.CharWrapper, p info.CharacterProfile) {
 	}
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("traveler-story-quest-buffs", -1),
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

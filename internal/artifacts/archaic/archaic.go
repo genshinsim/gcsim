@@ -37,8 +37,8 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("archaic-2pc", -1),
 			AffectedStat: attributes.GeoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -77,8 +77,8 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 				c.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("archaic-4pc", 10*60),
 					AffectedStat: attributes.NoStat,
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}

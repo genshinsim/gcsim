@@ -60,8 +60,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("finaleofthedeep-atk-boost", duration),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 
@@ -94,8 +94,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("finaleofthedeep-bond-flatatk-boost", duration),
 			AffectedStat: attributes.ATK,
-			Amount: func() ([]float64, bool) {
-				return bond, true
+			Amount: func() []float64 {
+				return bond
 			},
 		})
 		return false

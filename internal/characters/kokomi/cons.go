@@ -78,8 +78,8 @@ func (c *char) c6() {
 			Base:         modifier.NewBase("kokomi-c6", 480),
 			AffectedStat: attributes.HydroP,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 		// No need to continue checking if we found one

@@ -44,8 +44,8 @@ func (c *char) a1() {
 				this.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("sucrose-a1", 480), // 8s
 					AffectedStat: attributes.EM,
-					Amount: func() ([]float64, bool) {
-						return c.a1Buff, true
+					Amount: func() []float64 {
+						return c.a1Buff
 					},
 				})
 			}
@@ -82,8 +82,8 @@ func (c *char) a4() {
 			Base:         modifier.NewBaseWithHitlag("sucrose-a4", 480), // 8 s
 			AffectedStat: attributes.EM,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return c.a4Buff, true
+			Amount: func() []float64 {
+				return c.a4Buff
 			},
 		})
 	}

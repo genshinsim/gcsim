@@ -74,8 +74,8 @@ func (c *char) c6(dur int) {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("xiangling-c6", dur),
 			AffectedStat: attributes.PyroP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

@@ -38,8 +38,8 @@ func (c *char) c2(generated int) {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c2ModName(c.c2Counter+1), 480), // 8s
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 		c.c2Counter = (c.c2Counter + 1) % c2MaxStacks // stacks are independent from each other, this will cycle them
@@ -69,8 +69,8 @@ func (c *char) c4Loss(consumed int) {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("alhaitham-c4-loss", 900),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -85,8 +85,8 @@ func (c *char) c4Gain(generated int) {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("alhaitham-c4-gain", 900),
 		AffectedStat: attributes.DendroP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
@@ -112,8 +112,8 @@ func (c *char) c6(generated int) {
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag((c6key), 360), // 6s
 				AffectedStat: attributes.CR,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}

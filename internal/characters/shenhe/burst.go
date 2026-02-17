@@ -99,8 +99,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					active.AddStatMod(character.StatMod{
 						Base:         modifier.NewBaseWithHitlag("shenhe-a1", buffDuration),
 						AffectedStat: attributes.CryoP,
-						Amount: func() ([]float64, bool) {
-							return c.burstBuff, true
+						Amount: func() []float64 {
+							return c.burstBuff
 						},
 					})
 				}

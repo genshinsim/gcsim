@@ -33,12 +33,12 @@ func (c *char) c2() {
 	c2Buff := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("neuvillette-c2", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if strings.Contains(atk.Info.Abil, chargeJudgementName) {
 				c2Buff[attributes.CD] = 0.14 * float64(c.countA1())
-				return c2Buff, true
+				return c2Buff
 			}
-			return nil, false
+			return nil
 		},
 	})
 }

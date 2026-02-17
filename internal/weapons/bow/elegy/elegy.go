@@ -43,8 +43,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("elegy-em", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -89,15 +89,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("elegy-proc", buffDuration),
 					AffectedStat: attributes.EM,
-					Amount: func() ([]float64, bool) {
-						return uniqueVal, true
+					Amount: func() []float64 {
+						return uniqueVal
 					},
 				})
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
 					AffectedStat: attributes.ATKP,
-					Amount: func() ([]float64, bool) {
-						return sharedVal, true
+					Amount: func() []float64 {
+						return sharedVal
 					},
 				})
 			}

@@ -31,20 +31,20 @@ func (c *char) c2() {
 	m[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("qiqi-c2", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
 
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if !e.AuraContains(attributes.Cryo, attributes.Frozen) {
-				return nil, false
+				return nil
 			}
 
-			return m, true
+			return m
 		},
 	})
 }

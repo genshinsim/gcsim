@@ -136,15 +136,15 @@ func (c *char) skillInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase(dreamDrifterSwirlBuffKey, -1),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				if !c.StatusIsActive(dreamDrifterStateKey) {
-					return 0, false
+					return 0
 				}
 				// These flags imply AOE Swirl, in which case this Swirl DMG bonus does not apply because
 				// it was calculated in a prior call of this callback. In these cases the other reaction bonuses
 				// apply instead (e.g. Melt DMG Bonus, Aggravate DMG Bonus, etc.)
 				if ai.Amped || ai.Catalyzed {
-					return 0, false
+					return 0
 				}
 				switch ai.AttackTag {
 				case attacks.AttackTagSwirlCryo:
@@ -152,10 +152,10 @@ func (c *char) skillInit() {
 				case attacks.AttackTagSwirlHydro:
 				case attacks.AttackTagSwirlPyro:
 				default:
-					return 0, false
+					return 0
 				}
 
-				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM), false
+				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 			},
 		})
 	}

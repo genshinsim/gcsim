@@ -52,11 +52,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase(atkSpdKey, -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.Player.CurrentState() != action.NormalAttackState {
-				return nil, false
+				return nil
 			}
-			return mAtkSpd, true
+			return mAtkSpd
 		},
 	})
 
@@ -78,12 +78,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 14*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
-					return nil, false
+					return nil
 				}
 				mDmg[attributes.DmgP] = incDmg * float64(w.stacks)
-				return mDmg, true
+				return mDmg
 			},
 		})
 		return false

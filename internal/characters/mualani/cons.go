@@ -55,11 +55,11 @@ func (c *char) c4() {
 	m[attributes.DmgP] = 0.75
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c4key, -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 }

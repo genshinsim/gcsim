@@ -43,8 +43,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("tf-2pc", -1),
 			AffectedStat: attributes.ElectroP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -58,20 +58,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	char.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("tf-4pc", -1),
-		Amount: func(ai info.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) float64 {
 			if ai.Catalyzed && ai.CatalyzedType == info.ReactionTypeAggravate {
-				return 0.2, false
+				return 0.2
 			}
 			switch ai.AttackTag {
 			case attacks.AttackTagOverloadDamage,
 				attacks.AttackTagECDamage,
 				attacks.AttackTagSuperconductDamage,
 				attacks.AttackTagHyperbloom:
-				return 0.4, false
+				return 0.4
 			case attacks.AttackTagDirectLunarCharged, attacks.AttackTagReactionLunarCharge:
-				return 0.2, false
+				return 0.2
 			}
-			return 0, false
+			return 0
 		},
 	})
 

@@ -40,15 +40,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = 0.12 + 0.04*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("toukaboushigure", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if !e.StatusIsActive(debuffKey) {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 

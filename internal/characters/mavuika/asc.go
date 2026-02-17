@@ -24,8 +24,8 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
 		c.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(a1Key, 10*60),
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 		return false
@@ -40,18 +40,18 @@ func (c *char) a4Init() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(a4BufKey, -1),
-			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, _ info.Target) []float64 {
 				// char must be active
 				if c.Core.Player.Active() != char.Index() {
-					return nil, false
+					return nil
 				}
 				if !c.StatusIsActive(a4Key) {
-					return nil, false
+					return nil
 				}
 				dmg := c.burstStacks*0.002 + c.c4BonusVal()
 				dmg *= float64(c.a4stacks) / 20.0
 				c.a4buff[attributes.DmgP] = dmg
-				return c.a4buff, true
+				return c.a4buff
 			},
 		})
 	}
