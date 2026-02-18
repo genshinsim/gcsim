@@ -35,7 +35,10 @@ func (c *char) a1() {
 			return
 		}
 		c.sproutShouldProc = true
-		c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index())
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index())
+		}
 	}
 
 	for _, evt := range dendroEvents {
@@ -88,8 +91,11 @@ func (c *char) a4() {
 		}
 		c.ExtendStatus(burstKey, 60)
 		c.burstExtendCount++
-		c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index()).
-			Write("extend_count", c.burstExtendCount)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index()).
+				Write("extend_count", c.burstExtendCount)
+		}
 	}
 
 	for _, evt := range dendroEvents {

@@ -171,7 +171,6 @@ func SetupResonance(s *core.Core) {
 				})
 				last = s.F
 			}
-
 			recoverNoGadget := func(args ...any) {
 				if _, ok := args[0].(*enemy.Enemy); ok {
 					recoverParticle(args...)

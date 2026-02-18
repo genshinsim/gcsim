@@ -19,7 +19,6 @@ func (c *char) a1() {
 
 	const icdKey = "dori-a1"
 	icd := 180 // 3s * 60
-
 	reduce := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
@@ -35,7 +34,6 @@ func (c *char) a1() {
 			Write("reaction", atk.Info.Abil).
 			Write("new cd", c.Cooldown(action.ActionSkill))
 	}
-
 	reduceNoGadget := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); ok {
 			reduce(args...)
@@ -54,6 +52,7 @@ func (c *char) a1() {
 }
 
 // When the Troubleshooter Shots or After-Sales Service Rounds from Spirit-Warding Lamp: Troubleshooter Cannon hit opponents,
+// Dori will restore 5 Elemental Energy for every 100% Energy Recharge possessed.
 // Per Spirit-Warding Lamp: Troubleshooter Cannon, only one instance of Energy restoration can be triggered
 // and a maximum of 15 Energy can be restored this way.
 func (c *char) makeA4CB() info.AttackCBFunc {

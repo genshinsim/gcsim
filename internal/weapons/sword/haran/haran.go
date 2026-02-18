@@ -59,7 +59,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	wavespikeStacks := 0
-
 	nonActiveFn := func() {
 		// once every 0.3s
 		if char.StatusIsActive(icdKey) {
@@ -74,29 +73,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, 18, true)
 	}
 
-	val := make([]float64, attributes.EndStatType)
-	activeFn := func() bool {
-		val[attributes.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
+	mDmg := make([]float64, attributes.EndStatType)
+	activeFn := func() {
+		mDmg[attributes.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("ripping-upheaval", 480),
 			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil
 				}
-				return val
+				return mDmg
 			},
 		})
 		wavespikeStacks = 0
-		return false
 	}
 
 	// TODO: this used to be on post. make sure nothing broke here
 	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
 			nonActiveFn()
-			return
-		}
-		if wavespikeStacks != 0 {
+		} else if wavespikeStacks > 0 {
 			activeFn()
 		}
 	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))

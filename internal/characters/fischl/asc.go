@@ -22,7 +22,6 @@ func (c *char) a4() {
 	}
 
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
-
 	a4cb := func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 
