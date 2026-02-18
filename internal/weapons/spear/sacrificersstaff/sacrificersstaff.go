@@ -38,13 +38,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	erBuff := 0.045 + 0.015*float64(r)
 
 	// add on hit effect
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
@@ -60,7 +60,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return w.buff
 			},
 		})
-		return false
 	}, fmt.Sprintf("sacrificersstaff-%v", char.Base.Key.String()))
 
 	return w, nil

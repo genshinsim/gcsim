@@ -35,19 +35,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	energyRestore := 6 + float64(r)*2
 
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		src := args[0].(*info.HealInfo)
 
 		if src.Caller != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 		char.AddEnergy(energySrc, energyRestore)
-
-		return false
 	}, fmt.Sprintf("dialoguesofthedesertsages-%v", char.Base.Key.String()))
 
 	return w, nil

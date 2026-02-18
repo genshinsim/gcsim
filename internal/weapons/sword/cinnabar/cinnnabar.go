@@ -36,17 +36,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	defPer := .3 + float64(r)*.1
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 		// don't do anything if we're in icd period
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// otherwise if this is first time proc'ing, set the duration and queue
 		// task to set icd
@@ -62,7 +62,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		c.Log.NewEvent("Cinnabar Spindle proc dmg add", glog.LogPreDamageMod, char.Index()).
 			Write("damage_added", damageAdd)
-		return false
 	}, fmt.Sprintf("cinnabar-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -54,13 +54,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	mATK := make([]float64, attributes.EndStatType)
 	mATK[attributes.ATKP] = stackAtk
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -70,20 +70,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return mATK
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("beacon-of-the-reed-sea-enemy-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if !di.External {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -93,7 +91,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return mATK
 			},
 		})
-		return false
 	}, fmt.Sprintf("beacon-of-the-reed-sea-player-%v", char.Base.Key.String()))
 
 	return w, nil

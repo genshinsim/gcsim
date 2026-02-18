@@ -56,20 +56,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = float64(45 + r*15)
 
-	//nolint:unparam // why events have a return value...
-	handleProc := func(args ...any) bool {
+	handleProc := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 1200, true)
 		c.Log.NewEvent("sapwood proc'd", glog.LogWeaponEvent, char.Index())
 		if pickupDelay <= 0 {
 			c.Log.NewEvent("sapwood leaf ignored", glog.LogWeaponEvent, char.Index())
-			return false
+			return
 		}
 		c.Tasks.Add(func() {
 			active := c.Player.ActiveChar()
@@ -86,7 +85,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				char.Index(),
 			)
 		}, pickupDelay)
-		return false
 	}
 
 	key := fmt.Sprintf("sapwoodblade-%v", char.Base.Key.String())
@@ -95,11 +93,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Events.Subscribe(e, handleProc, key)
 		default:
-			c.Events.Subscribe(e, func(args ...any) bool {
-				if _, ok := args[0].(*enemy.Enemy); !ok {
-					return false
+			c.Events.Subscribe(e, func(args ...any) {
+				if _, ok := args[0].(*enemy.Enemy); ok {
+					handleProc(args...)
 				}
-				return handleProc(args...)
 			}, key)
 		}
 	}

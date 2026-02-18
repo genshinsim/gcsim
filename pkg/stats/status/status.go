@@ -91,7 +91,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 	}
 
-	core.Events.Subscribe(event.OnTick, func(args ...any) bool {
+	core.Events.Subscribe(event.OnTick, func(args ...any) {
 		bucket := core.F / bucketSize
 		active := core.Player.ActiveChar()
 
@@ -146,8 +146,6 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 			out.activeReactions[i] = current
 		}
-
-		return false
 	}, "stats-status-log")
 
 	return &out, nil

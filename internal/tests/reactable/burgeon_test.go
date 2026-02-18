@@ -20,13 +20,12 @@ func TestBurgeon(t *testing.T) {
 		t.FailNow()
 	}
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "burgeon" {
 			count++
 		}
-		return false
 	}, "burgeon")
 
 	c.QueueAttackEvent(&info.AttackEvent{
@@ -82,13 +81,12 @@ func TestECBurgeon(t *testing.T) {
 	}
 
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
 		if trg.Type() == info.TargettableEnemy && ae.Info.Abil == "burgeon" {
 			count++
 		}
-		return false
 	}, "burgeon")
 
 	// create 2 seeds with ec

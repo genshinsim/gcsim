@@ -47,13 +47,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	if count >= 4 {
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index() {
-				return false
+				return
 			}
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return false
+				return
 			}
 
 			mSpd := make([]float64, attributes.EndStatType)
@@ -84,8 +84,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return mDmg
 				},
 			})
-
-			return false
 		}, fmt.Sprintf("desert-4pc-%v", char.Base.Key.String()))
 	}
 

@@ -17,13 +17,12 @@ func TestEC(t *testing.T) {
 	}
 
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if ae, ok := args[1].(*info.AttackEvent); ok {
 			if ae.Info.Abil == "electrocharged" {
 				count++
 			}
 		}
-		return false
 	}, "ec-dmg")
 
 	c.QueueAttackEvent(makeAOEAttack(attributes.Hydro, 25), 0)

@@ -17,20 +17,20 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	swirlfunc := func(args ...any) bool {
+	swirlfunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 		if c.StatusIsActive(a1ICDKey) {
-			return false
+			return
 		}
 		c.AddStatus(a1ICDKey, 120, true) // 2s
 
@@ -46,8 +46,6 @@ func (c *char) a1() {
 			Src:     heal,
 			Bonus:   c.Stat(attributes.Heal),
 		})
-
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlfunc, "sayu-a1-cryo")

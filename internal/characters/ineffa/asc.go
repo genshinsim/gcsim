@@ -84,13 +84,13 @@ func (c *char) lunarchargeInit() {
 	c.Core.Flags.Custom[reactable.LunarChargeEnableKey] = 1
 
 	// TODO: every 100 ATK that Ineffa has increasing Lunar-Charged's Base DMG by 0.7%, up to a maximum of 14%.
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagDirectLunarCharged:
 		default:
-			return false
+			return
 		}
 
 		stats := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
@@ -101,19 +101,17 @@ func (c *char) lunarchargeInit() {
 		}
 
 		atk.Info.BaseDmgBonus += bonus
-		return false
 	}, lunarchargeBonusKey)
 
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCharge {
-			return false
+			return
 		}
 
 		stats := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
 		bonus := min(stats.TotalATK()/100.0*0.007, 0.14)
 
 		atk.Info.BaseDmgBonus += bonus
-		return false
 	}, lunarchargeBonusKey+"-lc-atk")
 }

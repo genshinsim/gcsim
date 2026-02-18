@@ -33,10 +33,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	duration := 8 * 60
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = dmg
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		if index != char.Index() {
-			return false
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("songofstillness-dmg-boost", duration),
@@ -45,7 +45,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return val
 			},
 		})
-		return false
 	}, fmt.Sprintf("songofstillness-%v", char.Base.Key.String()))
 	return w, nil
 }

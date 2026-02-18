@@ -110,11 +110,11 @@ func (w *Watcher) Kill() {
 }
 
 func (w *Watcher) stateChangeHook() {
-	w.core.Events.Subscribe(event.OnStateChange, func(args ...any) bool {
+	w.core.Events.Subscribe(event.OnStateChange, func(args ...any) {
 		next := args[1].(action.AnimationState)
 		// ignore if it's not the state we are looking for
 		if next != w.state {
-			return false
+			return
 		}
 
 		// if we need to check for delay, and there is a delay, then we delay the execution
@@ -129,12 +129,10 @@ func (w *Watcher) stateChangeHook() {
 				w.core.Log.NewEventBuildMsg(glog.LogDebugEvent, c.Index(), w.abil, " delay on state change").
 					Write("delay", delay)
 				w.core.Tasks.Add(w.onStateChange(next), delay)
-				return false
+				return
 			}
 		}
 		w.onStateChange(next)()
-
-		return false
 	}, fmt.Sprintf("%v-burst-state-change-hook", w.key.String()))
 }
 

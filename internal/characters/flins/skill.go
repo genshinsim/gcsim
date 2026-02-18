@@ -43,21 +43,19 @@ func init() {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		// do nothing if previous char wasn't flins
 		prev := args[0].(int)
 		if prev != c.Index() {
-			return false
+			return
 		}
 		if !c.StatusIsActive(skillKey) {
-			return false
+			return
 		}
 
 		c.DeleteStatus(skillKey)
 		c.DeleteStatus(spearStormCDKey)
 		c.DeleteStatus(thunderousSymphonyKey)
-
-		return false
 	}, "flins-exit")
 }
 

@@ -39,9 +39,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stackDuration := 960 // 16s * 60
 
 	// TODO: this used to be on postskill. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if !char.StatusIsActive(stackKey) {
 			// reset stacks back to 0
@@ -87,7 +87,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return val
 			},
 		})
-		return false
 	}, key)
 
 	return w, nil

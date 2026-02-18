@@ -93,9 +93,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// double bonus if not on field
 	atkbonus := .024 + float64(r)*.008
 	skillPressBonus := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		// asummes that stacks are not reset on refreshing calamity buff
@@ -116,8 +116,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return skillPressBonus
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("calamity-queller-%v", char.Base.Key.String()))
 
 	return w, nil

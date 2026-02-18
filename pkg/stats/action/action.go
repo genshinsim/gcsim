@@ -49,7 +49,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		out.activeFailures[i] = make(map[action.Action]activeFailure)
 	}
 
-	core.Events.Subscribe(event.OnActionExec, func(args ...any) bool {
+	core.Events.Subscribe(event.OnActionExec, func(args ...any) {
 		char := args[0].(int)
 		e := args[1].(action.Action)
 
@@ -68,10 +68,9 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 			out.addFailure(core, char, active)
 			delete(out.activeFailures[char], e)
 		}
-		return false
 	}, "stats-action-exec-log")
 
-	core.Events.Subscribe(event.OnActionFailed, func(args ...any) bool {
+	core.Events.Subscribe(event.OnActionFailed, func(args ...any) {
 		char := args[0].(int)
 		e := args[1].(action.Action)
 		reason := args[3].(action.Failure)
@@ -85,8 +84,6 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 				reason: reason,
 			}
 		}
-
-		return false
 	}, "stats-action-failed-log")
 
 	return &out, nil

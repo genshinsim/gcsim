@@ -12,15 +12,15 @@ import (
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		trg, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		// ignore if debuff not on enemy
 		if !trg.StatusIsActive(abDebuff) {
-			return false
+			return
 		}
 
 		c.AddStatMod(character.StatMod{
@@ -30,8 +30,6 @@ func (c *char) c1() {
 				return m
 			},
 		})
-
-		return false
 	}, "yoimiya-c1")
 }
 

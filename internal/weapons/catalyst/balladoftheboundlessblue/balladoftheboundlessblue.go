@@ -39,16 +39,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	na := make([]float64, attributes.EndStatType)
 	ca := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(buffIcd) {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
@@ -78,7 +78,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				},
 			})
 		}
-		return false
 	}, fmt.Sprintf("ballad-of-the-boundless-blue-%v", char.Base.Key.String()))
 
 	return w, nil

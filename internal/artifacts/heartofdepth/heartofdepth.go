@@ -49,9 +49,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.30
 
 		// TODO: this used to be on Post, need to be checked
-		c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+		c.Events.Subscribe(event.OnSkill, func(args ...any) {
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 			// add stat mod here
 			char.AddAttackMod(character.AttackMod{
@@ -63,7 +63,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return m
 				},
 			})
-			return false
 		}, s.key)
 	}
 

@@ -29,14 +29,14 @@ func (c *char) a4() {
 		return
 	}
 
-	a4BuffFunc := func(args ...any) bool {
+	a4BuffFunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 
 		buff := make([]float64, attributes.EndStatType)
@@ -53,8 +53,6 @@ func (c *char) a4() {
 		})
 
 		c.Core.Log.NewEvent("freminet a4 proc", glog.LogCharacterEvent, c.Index())
-
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnShatter, a4BuffFunc, "freminet-a4")

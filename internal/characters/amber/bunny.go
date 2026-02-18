@@ -210,19 +210,19 @@ func (c *char) manualExplode() {
 
 // explode all bunnies on overload
 func (c *char) overloadExplode() {
-	c.Core.Events.Subscribe(event.OnOverload, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnOverload, func(args ...any) {
 		target := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if len(c.bunnies) == 0 {
-			return false
+			return
 		}
 		// TODO: only amber trigger?
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 
 		if atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 
 		for _, v := range c.bunnies {
@@ -233,7 +233,5 @@ func (c *char) overloadExplode() {
 				v.Kill()
 			}
 		}
-
-		return false
 	}, "amber-bunny-explode-overload")
 }

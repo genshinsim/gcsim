@@ -64,12 +64,11 @@ func (c *char) Init() error {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if c.StatModIsActive(paramitaBuff) {
 			c.a1()
 			c.DeleteStatMod(paramitaBuff)
 		}
-		return false
 	}, "hutao-exit")
 }
 

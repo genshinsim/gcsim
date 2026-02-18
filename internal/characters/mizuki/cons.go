@@ -38,16 +38,16 @@ func (c *char) c1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 
 		// Check if enemy has the debuff
 		if !e.StatusIsActive(c1Key) {
-			return false
+			return
 		}
 
 		// Only on swirls. The swirl source does not matter, it can be either mizuki or another anemo char.
@@ -57,12 +57,12 @@ func (c *char) c1() {
 		case attacks.AttackTagSwirlHydro:
 		case attacks.AttackTagSwirlPyro:
 		default:
-			return false
+			return
 		}
 
 		// do not proc on 0 DMG swirls (e.g. hydro AOE swirls or swirl ICD)
 		if atk.Info.FlatDmg == 0 {
-			return false
+			return
 		}
 
 		additionalDmg := c1Multiplier * c.c1EM
@@ -77,8 +77,6 @@ func (c *char) c1() {
 
 		// Cancel the effect
 		e.DeleteStatus(c1Key)
-
-		return false
 	}, c1Key)
 }
 
@@ -167,10 +165,10 @@ func (c *char) c6() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 
 		ae := args[1].(*info.AttackEvent)
@@ -182,18 +180,16 @@ func (c *char) c6() {
 		case attacks.AttackTagSwirlHydro:
 		case attacks.AttackTagSwirlElectro:
 		default:
-			return false
+			return
 		}
 
 		// The effect is only when mizuki is in dreamDrifter state
 		if !c.StatusIsActive(dreamDrifterStateKey) {
-			return false
+			return
 		}
 
 		// Crit rate/DMG is fixed to 30% CR and 100% CD
 		ae.Snapshot.Stats[attributes.CR] = c6CR
 		ae.Snapshot.Stats[attributes.CD] = c6CD
-
-		return false
 	}, c6Key)
 }

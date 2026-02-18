@@ -27,20 +27,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	c.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		// don't proc if someone else defeated the enemy
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// don't proc if off-field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// heal
 		c.Player.Heal(info.HealInfo{
@@ -48,7 +48,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Message: "White Iron Greatsword (Proc)",
 			Src:     0.06 + float64(r)*0.02,
 		})
-		return false
 	}, fmt.Sprintf("whiteirongreatsword-%v", char.Base.Key.String()))
 
 	return w, nil

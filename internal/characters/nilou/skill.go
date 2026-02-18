@@ -333,10 +333,9 @@ func (c *char) TranquilityAura(src int) func() {
 
 // Clears Nilou skill when she leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		c.DeleteStatus(pirouetteStatus)
 		c.DeleteStatus(lunarPrayerStatus)
 		c.SetTag(skillStep, 0)
-		return false
 	}, "nilou-exit")
 }

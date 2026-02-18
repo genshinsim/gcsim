@@ -192,10 +192,10 @@ func (c *char) coilMod() {
 
 // Exit Field Hook to start timer to clear coil stacks
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		if prev != c.Index() {
-			return false
+			return
 		}
 		c.lastFieldExit = c.Core.F
 
@@ -205,7 +205,5 @@ func (c *char) onExitField() {
 			}
 			c.coils = 0
 		}, 30*60)
-
-		return false
 	}, "aloy-exit")
 }

@@ -41,9 +41,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCrit := make([]float64, attributes.EndStatType)
 	mCrit[attributes.CD] = 0.21 + float64(r)*0.07
 
-	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		char.AddReactBonusMod(character.ReactBonusMod{
@@ -55,18 +55,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return lcBonus
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("bloodsoakedruins-burst-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnLunarCharged, func(args ...any) bool {
+	c.Events.Subscribe(event.OnLunarCharged, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -78,12 +76,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 
 		if char.StatusIsActive(energyIcdKey) {
-			return false
+			return
 		}
 		char.AddStatus(energyIcdKey, 14*60, true)
 		char.AddEnergy("bloodsoakedruins", energyRestore)
-
-		return false
 	}, fmt.Sprintf("bloodsoakedruins-lunarcharged-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -63,9 +63,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// normal attack dmg part
 	incDmg := 0.036 + float64(r)*0.012
 	mDmg := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		// remove stacks on skill in any case
@@ -86,20 +86,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return mDmg
 			},
 		})
-		return false
 	}, fmt.Sprintf("tulaytullahsremembrance-%v", char.Base.Key.String()))
 
 	// gain 2 stacks on normal attack dmg, 0.3s icd
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 0.3*60, true)
 
@@ -110,7 +109,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		gain := w.stacks - previous
 		if gain == 0 {
-			return false
+			return
 		}
 		gainMsg := "2 stacks"
 		if gain == 1 {
@@ -118,22 +117,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		w.core.Log.NewEvent(fmt.Sprintf("Tulaytullah's Remembrance gained %v via normal attack", gainMsg), glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
-		return false
 	}, fmt.Sprintf("tulaytullahsremembrance-ondmg-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		if prev != char.Index() {
-			return false
+			return
 		}
 		if !char.StatusIsActive(buffKey) {
-			return false
+			return
 		}
 		// remove stacks, invalidate incStack task and remove buff on swap
 		w.stacks = 0
 		w.src = -1
 		char.DeleteStatus(buffKey)
-		return false
 	}, fmt.Sprintf("tulaytullahsremembrance-exit-%v", char.Base.Key.String()))
 
 	return w, nil

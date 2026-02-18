@@ -53,36 +53,34 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	w.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnBurning, func(args ...any) bool {
+	c.Events.Subscribe(event.OnBurning, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != w.char.Index() {
-			return false
+			return
 		}
 		w.bonusCB()
-		return false
 	}, fmt.Sprintf("lumidouceelegy-on-burning-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 		if !t.IsBurning() {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Dendro {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != w.char.Index() {
-			return false
+			return
 		}
 		w.bonusCB()
-		return false
 	}, fmt.Sprintf("lumidouceelegy-on-damage-%v", char.Base.Key.String()))
 
 	return &w, nil

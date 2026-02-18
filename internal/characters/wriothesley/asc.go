@@ -74,48 +74,46 @@ func (c *char) a4() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 		if di.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(skillKey) && c.a4Stack < 5 {
 			c.a4Stack++
 			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index()).Write("stacks", c.a4Stack)
 		}
-		return false
 	}, "wriothesley-a4-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 		if index != c.Index() {
-			return false
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 		// do not trigger if at max hp already
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(skillKey) && c.a4Stack < 5 {
 			c.a4Stack++
 			c.Core.Log.NewEvent("a4 gained stack", glog.LogCharacterEvent, c.Index()).Write("stacks", c.a4Stack)
 		}
-		return false
 	}, "wriothesley-a4-heal")
 }
 

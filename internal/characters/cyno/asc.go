@@ -49,19 +49,18 @@ func (c *char) a1Buff() {
 // If Cyno dashes with the a1 modifier, he will increase the modifier's
 // durability by 20. This translates to a 0.28s extension.
 func (c *char) a1Extension() {
-	c.Core.Events.Subscribe(event.OnDash, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnDash, func(_ ...any) {
 		if c.a1Extended {
-			return false
+			return
 		}
 		active := c.Core.Player.ActiveChar()
 		if active.Index() != c.Index() || !active.StatusIsActive(a1Key) {
-			return false
+			return
 		}
 		c.ExtendStatus(a1Key, 17)
 		c.a1Extended = true
 		c.Core.Log.NewEvent("a1 dash pp slide", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.StatusExpiry(a1Key))
-		return false
 	}, "cyno-a1-dash")
 }
 

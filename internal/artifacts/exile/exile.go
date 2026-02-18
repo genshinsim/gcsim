@@ -46,9 +46,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	buffDuration := 360 // 6s * 60
 
 	if count >= 4 {
-		c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+		c.Events.Subscribe(event.OnBurst, func(args ...any) {
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 
 			// TODO: does multiple exile holders extend the duration?
@@ -56,7 +56,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			for _, x := range c.Player.Chars() {
 				this := x
 				if this.StatusIsActive(buffKey) {
-					return false
+					return
 				}
 			}
 
@@ -75,8 +75,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					}, i)
 				}
 			}
-
-			return false
 		}, fmt.Sprintf("exile-4pc-%v", char.Base.Key.String()))
 	}
 

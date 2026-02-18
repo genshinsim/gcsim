@@ -78,11 +78,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) starsSkill() {
-	c.Core.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnSkill, func(args ...any) {
 		exist := c.Core.Player.Shields.Get(shield.LaylaSkill)
 		if exist != nil {
 			c.addNightStars(2, ICDNightStarSkill)
 		}
-		return false
 	}, "stars-skill")
 }

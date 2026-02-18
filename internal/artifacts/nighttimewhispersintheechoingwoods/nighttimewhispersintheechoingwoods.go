@@ -59,60 +59,54 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	return &s, nil
 }
 
-func (s *Set) OnShielded() func(args ...any) bool {
-	return func(args ...any) bool {
+func (s *Set) OnShielded() func(args ...any) {
+	return func(args ...any) {
 		shd := args[0].(shield.Shield)
 		if s.core.Player.Active() != s.char.Index() {
-			return false
+			return
 		}
 		if shd.Type() == shield.Crystallize {
 			s.lastF = shd.Expiry()
-			return false
 		}
-		return false
 	}
 }
 
-func (s *Set) OnShieldBreak() func(args ...any) bool {
-	return func(args ...any) bool {
+func (s *Set) OnShieldBreak() func(args ...any) {
+	return func(args ...any) {
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {
-			return false
+			return
 		}
 		if s.core.Player.Active() != s.char.Index() {
-			return false
+			return
 		}
 		s.lastF = s.core.F + 60
-		return false
 	}
 }
 
-func (s *Set) OnCharacterSwap() func(args ...any) bool {
-	return func(args ...any) bool {
+func (s *Set) OnCharacterSwap() func(args ...any) {
+	return func(args ...any) {
 		prev := args[0].(int)
 		active := args[1].(int)
 		shd := s.core.Player.Shields.Get(shield.Crystallize)
 		if shd == nil {
-			return false
+			return
 		}
-		if active == s.char.Index() {
+		switch s.char.Index() {
+		case active:
 			s.lastF = shd.Expiry()
-			return false
-		}
-		if prev == s.char.Index() {
+		case prev:
 			s.lastF = s.core.F + 60
-			return false
 		}
-		return false
 	}
 }
 
-func (s *Set) OnSkill() func(args ...any) bool {
-	return func(args ...any) bool {
+func (s *Set) OnSkill() func(args ...any) {
+	m := make([]float64, attributes.EndStatType)
+	return func(args ...any) {
 		if s.core.Player.Active() != s.char.Index() {
-			return false
+			return
 		}
-		m := make([]float64, attributes.EndStatType)
 		s.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("nighttimewhispers-4pc", 10*60),
 			AffectedStat: attributes.GeoP,
@@ -125,6 +119,5 @@ func (s *Set) OnSkill() func(args ...any) bool {
 				return m
 			},
 		})
-		return false
 	}
 }

@@ -34,7 +34,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	out.cumuChar = append(out.cumuChar, make([]float64, len(core.Player.Chars())))
 	out.cumuTarget = append(out.cumuTarget, make([]float64, len(core.Combat.Enemies())))
 
-	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		target := args[0].(info.Target)
 		targetKey := target.Key()
 		attack := args[1].(*info.AttackEvent)
@@ -44,7 +44,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		// TODO: validate if this is still true?
 		// No need to pull damage stats for non-enemies
 		if target.Type() != info.TargettableEnemy {
-			return false
+			return
 		}
 
 		bucket := core.F / bucketSize
@@ -102,7 +102,6 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 
 		out.events[attack.Info.ActorIndex] = append(out.events[attack.Info.ActorIndex], event)
-		return false
 	}, "stats-dmg-log")
 
 	return &out, nil

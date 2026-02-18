@@ -46,18 +46,18 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 			atk := args[1].(*info.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
-				return false
+				return
 			}
 			if atk.Info.ActorIndex != char.Index() {
-				return false
+				return
 			}
 
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return false
+				return
 			}
 
 			t.AddResistMod(info.ResistMod{
@@ -66,8 +66,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Value: -0.3,
 			})
 			c.Log.NewEvent("dm 4pc proc", glog.LogArtifactEvent, char.Index()).Write("char", char.Index())
-
-			return false
 		}, fmt.Sprintf("dm-4pc-%v", char.Base.Key.String()))
 	}
 

@@ -53,12 +53,11 @@ func (c *char) particleCB(a info.AttackCB) {
 }
 
 func (c *char) onExit() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		next := args[1].(int)
 		if prev == c.Index() && next != c.Index() {
 			c.DeleteStatus(skillKey)
 		}
-		return false
 	}, "yoimiya-exit")
 }

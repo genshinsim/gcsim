@@ -26,18 +26,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	c.Events.Subscribe(event.OnParticleReceived, func(args ...any) bool {
+	c.Events.Subscribe(event.OnParticleReceived, func(args ...any) {
 		// ignore if character not on field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		c.Player.Heal(info.HealInfo{
 			Type:    info.HealTypePercent,
 			Message: "Traveler's Handy Sword (Proc)",
 			Src:     0.0075 + float64(r)*0.0025,
 		})
-
-		return false
 	}, fmt.Sprintf("travelershandysword-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -49,9 +49,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() == char.Index() {
-			return false
+			return
 		}
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(otherBuffKey, 8*60),
@@ -62,7 +62,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("mountain-bracing-bolt-%v", char.Base.Key.String()))
 
 	return w, nil

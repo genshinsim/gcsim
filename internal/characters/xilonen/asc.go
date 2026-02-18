@@ -24,12 +24,11 @@ func (c *char) a1() {
 		return
 	}
 	if c.samplersConverted >= 2 {
-		c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+		c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 			if c.StatusIsActive(activeSamplerKey) {
 				c.sampleSrc = c.Core.F
 				c.activeSamplers(c.sampleSrc)()
 			}
-			return false
 		}, "xilonen-a1-swap")
 		return
 	}
@@ -90,7 +89,7 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DEFP] = 0.20
 
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a4Key, 15*60),
 			AffectedStat: attributes.DEFP,
@@ -98,7 +97,6 @@ func (c *char) a4() {
 				return m
 			},
 		})
-		return false
 	}, a4Key)
 }
 

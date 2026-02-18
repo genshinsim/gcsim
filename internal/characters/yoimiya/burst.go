@@ -97,24 +97,24 @@ func (c *char) applyAB(a info.AttackCB) {
 func (c *char) burstHook() {
 	// check on attack landed for target 0
 	// if aurous active then trigger dmg if not on cd
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		trg, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		// ignore if debuff not on enemy
 		if !trg.StatusIsActive(abDebuff) {
-			return false
+			return
 		}
 		// ignore for self
 		if ae.Info.ActorIndex == c.Index() {
-			return false
+			return
 		}
 		// ignore if on icd
 		if trg.StatusIsActive(abIcdKey) {
-			return false
+			return
 		}
 		// ignore if wrong tags
 		switch ae.Info.AttackTag {
@@ -125,7 +125,7 @@ func (c *char) burstHook() {
 		case attacks.AttackTagElementalArtHold:
 		case attacks.AttackTagElementalBurst:
 		default:
-			return false
+			return
 		}
 		// do explosion, set icd
 		ai := info.AttackInfo{
@@ -148,13 +148,11 @@ func (c *char) burstHook() {
 		if c.Base.Cons >= 4 {
 			c.ReduceActionCooldown(action.ActionSkill, 72)
 		}
-
-		return false
 	}, "yoimiya-burst-check")
 
 	if c.Core.Flags.DamageMode {
 		// add check for if yoimiya dies
-		c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(_ ...any) bool {
+		c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(_ ...any) {
 			if c.CurrentHPRatio() <= 0 {
 				// remove Aurous Blaze from target
 				for _, x := range c.Core.Combat.Enemies() {
@@ -164,7 +162,6 @@ func (c *char) burstHook() {
 					}
 				}
 			}
-			return false
 		}, "yoimiya-died")
 	}
 }

@@ -59,30 +59,30 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// ignore if character not on field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// Ignore if neither a charged nor normal attack
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// Ignore if icd is still up
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// Ignore 50% of the time, 1:1 ratio
 		if c.Rand.Float64() < 0.5 {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 600, true)
 
@@ -99,8 +99,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 1.5), 0, 1)
-
-		return false
 	}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))
 
 	return w, nil

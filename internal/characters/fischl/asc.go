@@ -22,20 +22,19 @@ func (c *char) a4() {
 	}
 
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
-	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	a4cb := func(args ...any) bool {
+	a4cb := func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		// do nothing if oz not on field
 		if !c.StatusIsActive(ozActiveKey) {
-			return false
+			return
 		}
 		active := c.Core.Player.ActiveChar()
 		if active.StatusIsActive(a4IcdKey) {
-			return false
+			return
 		}
 		active.AddStatus(a4IcdKey, 0.5*60, true)
 
@@ -58,14 +57,11 @@ func (c *char) a4() {
 			c.ozSnapshot.Snapshot,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.5),
 			4)
-		return false
 	}
-
-	a4cbNoGadget := func(args ...any) bool {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+	a4cbNoGadget := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); ok {
+			a4cb(args...)
 		}
-		return a4cb(args...)
 	}
 
 	c.Core.Events.Subscribe(event.OnOverload, a4cbNoGadget, "fischl-a4")

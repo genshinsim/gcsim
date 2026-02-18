@@ -50,47 +50,42 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		mBuff:        make([]float64, attributes.EndStatType),
 	}
 
-	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	onReact := func(...any) bool {
+	onReact := func(...any) {
 		if char.StatusIsActive(reactIcdKey) {
-			return false
+			return
 		}
 		char.AddStatus(reactIcdKey, 2*60, true)
-
 		w.addStacks(3)
-		return false
 	}
-	c.Events.Subscribe(event.OnBurning, func(args ...any) bool {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+	c.Events.Subscribe(event.OnBurning, func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); ok {
+			onReact()
 		}
-		return onReact()
 	}, fmt.Sprintf("fangofthemountainking-burning-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnBurgeon, onReact, fmt.Sprintf("fangofthemountainking-burgeon-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != w.char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 
 		if char.StatusIsActive(skillIcdKey) {
-			return false
+			return
 		}
 		char.AddStatus(skillIcdKey, .5*60, false)
 
 		w.addStacks(1)
-		return false
 	}, fmt.Sprintf("fangofthemountainking-ondmg-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -44,15 +44,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	// gain symbols
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 		amount := args[2].(float64)
 		if source.Caller != char.Index() && index != char.Index() { // heal others and get healed including wielder
-			return false
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 
 		if !char.StatusIsActive(symbolKey) {
@@ -64,25 +64,24 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Log.NewEvent("range-gauge adding stack", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 		char.AddStatus(symbolKey, symbolDuration, true)
-		return false
 	}, fmt.Sprintf("range-gauge-heal-%v", char.Base.Key.String()))
 
 	// consume symbols
 	baseEle := 0.055 + 0.015*float64(r)
 	atk := 0.02 + 0.01*float64(r)
 	m := make([]float64, attributes.EndStatType)
-	buffFunc := func(args ...any) bool {
+	buffFunc := func(args ...any) {
 		// skip if no symbols (status not active implies symbols == 0)
 		if !char.StatusIsActive(symbolKey) {
-			return false
+			return
 		}
 		// skip if trigger on icd
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// check for active before deleting symbol
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// add icd
 		char.AddStatus(icdKey, icdDuration, true)
@@ -104,8 +103,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-
-		return false
 	}
 	key := fmt.Sprintf("range-gauge-struggle-%v", char.Base.Key.String())
 	c.Events.Subscribe(event.OnBurst, buffFunc, key)

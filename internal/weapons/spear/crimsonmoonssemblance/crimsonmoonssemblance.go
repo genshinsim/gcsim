@@ -33,25 +33,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	var w Weapon
 	refine := p.Refine
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 
 		if ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		char.AddStatus(icdKey, icdDuration, true)
 		char.ModifyHPDebtByRatio(0.25)
-
-		return false
 	}, fmt.Sprintf("crimsonmoonssemblance-hit-%v", char.Base.Key.String()))
 
 	m := make([]float64, attributes.EndStatType)

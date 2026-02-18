@@ -37,20 +37,18 @@ func TestBeidouBounce(t *testing.T) {
 
 	// start tests
 	dmgCount := make(map[info.TargetKey]int)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 		if ae.Info.Abil == "Stormbreaker (Bounce)" {
 			dmgCount[t.Key()]++
 		}
-
-		return false
 	}, "q-bounce-count")
 
 	p := make(map[string]int)

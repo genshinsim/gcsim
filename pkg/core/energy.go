@@ -46,14 +46,14 @@ func (c *Core) SetupOnNormalHitEnergy() {
 
 	// TODO: not sure if there's like a 0.2s icd on this. for now let's add it in to be safe
 	icd := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// check icd
 		if icd > c.F {
-			return false
+			return
 		}
 		// check chance
 		char := c.Player.ByIndex(atk.Info.ActorIndex)
@@ -61,7 +61,7 @@ func (c *Core) SetupOnNormalHitEnergy() {
 		if c.Rand.Float64() > current[atk.Info.ActorIndex][char.Weapon.Class] {
 			// increment chance
 			current[atk.Info.ActorIndex][char.Weapon.Class] += inc[char.Weapon.Class]
-			return false
+			return
 		}
 
 		// add energy
@@ -76,17 +76,15 @@ func (c *Core) SetupOnNormalHitEnergy() {
 		if char.Weapon.Class == info.WeaponClassSword {
 			current[atk.Info.ActorIndex][char.Weapon.Class] = 0.10
 		}
-		return false
 	}, "random-energy-restore-on-hit")
 
 	// TODO: assuming we clear the probability on swap
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		for i := range current {
 			for j := range current[i] {
 				current[i][j] = 0
 			}
 			current[i][info.WeaponClassSword] = 0.10
 		}
-		return false
 	}, "random-energy-restore-on-hit-swap")
 }

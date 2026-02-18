@@ -66,19 +66,19 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 	m := make([]float64, attributes.EndStatType)
 	icd := name + "-icd"
 
-	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != w.char.Index() {
-			return false
+			return
 		}
 		if w.c.Player.Active() != w.char.Index() {
-			return false
+			return
 		}
 		if !requiredTag(atk.Info.AttackTag, tags...) {
-			return false
+			return
 		}
 		if w.char.StatusIsActive(icd) {
-			return false
+			return
 		}
 		w.char.AddStatus(icd, 0.1*60, true)
 
@@ -99,7 +99,6 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("%v-%v", name, w.char.Base.Key.String()))
 }
 

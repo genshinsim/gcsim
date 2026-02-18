@@ -24,13 +24,13 @@ func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if c.Index() == atk.Info.ActorIndex {
-			return false
+			return
 		}
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
-			return false
+			return
 		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
@@ -40,7 +40,7 @@ func (c *char) c1() {
 		case attacks.AttackTagElementalBurst:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 		if c.numStellarBlades > 0 {
 			em := c.Stat(attributes.EM)
@@ -54,7 +54,6 @@ func (c *char) c1() {
 			atk.Info.FlatDmg += amt
 			c.numStellarBlades--
 		}
-		return false
 	}, "citlali-c1-on-dmg")
 }
 

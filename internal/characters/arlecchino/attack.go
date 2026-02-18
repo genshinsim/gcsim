@@ -91,10 +91,10 @@ func init() {
 }
 
 func (c *char) naBuff() {
-	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 		target := args[0].(int)
 		if target != c.Index() {
-			return false
+			return
 		}
 		// TODO: Remove when BoL changes get logged for all characters
 		c.Core.Log.NewEvent("Bond of Life changed", glog.LogCharacterEvent, c.Index()).
@@ -106,7 +106,6 @@ func (c *char) naBuff() {
 		} else {
 			c.DeleteStatus(naBuffKey)
 		}
-		return false
 	}, "arlechinno-bol-hook")
 }
 

@@ -84,14 +84,13 @@ func (c *char) chillingPenalty(a info.AttackCB) {
 }
 
 func (c *char) onExit() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(skillKey) {
-			return false
+			return
 		}
 		prev := args[0].(int)
 		if prev == c.Index() {
 			c.DeleteStatus(skillKey)
 		}
-		return false
 	}, "wriothesley-exit")
 }

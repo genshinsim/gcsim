@@ -52,20 +52,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.50
-	c.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		// don't proc if someone else defeated the enemy
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// don't proc if off-field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		// charged attack dmg% part
@@ -87,8 +87,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			return 0, false
 		})
-
-		return false
 	}, fmt.Sprintf("bloodstained-4pc-%v", char.Base.Key.String()))
 
 	return &s, nil

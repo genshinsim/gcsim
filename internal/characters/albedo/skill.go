@@ -103,26 +103,26 @@ func (c *char) particleCB(a info.AttackCB) {
 }
 
 func (c *char) skillHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		trg := args[0].(info.Target)
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if !c.skillActive {
-			return false
+			return
 		}
 		if c.StatusIsActive(skillICDKey) {
-			return false
+			return
 		}
 		// Can't be triggered by itself when refreshing
 		if atk.Info.Abil == skillAbilInitial {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		// don't proc if target hit is outside of the skill area
 		if !trg.IsWithinArea(c.skillArea) {
-			return false
+			return
 		}
 
 		// this ICD is most likely tied to the construct, so it's not hitlag extendable
@@ -153,7 +153,5 @@ func (c *char) skillHook() {
 				c.c2stacks = 4
 			}
 		}
-
-		return false
 	}, "albedo-skill")
 }

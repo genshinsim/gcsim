@@ -54,18 +54,18 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) onBurstHeal() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if !c.StatusIsActive(healKey) {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		active := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if active.StatusIsActive(healIcdKey) {
-			return false
+			return
 		}
 		active.AddStatus(healIcdKey, c.healIcd, true)
 
@@ -84,7 +84,5 @@ func (c *char) onBurstHeal() {
 			c.AddEnergy("mika-c4", 3)
 			c.c4Count--
 		}
-
-		return false
 	}, "mika-eagleplume")
 }

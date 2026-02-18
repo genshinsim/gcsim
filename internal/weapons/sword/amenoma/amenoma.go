@@ -31,13 +31,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const icdKey = "amenoma-icd"
 
 	// TODO: this used to be on postskill. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// add 1 seed
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// find oldest seed to overwrite
 		index := 0
@@ -52,14 +52,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Write("index", index)
 
 		char.AddStatus(icdKey, 300, true) // 5 sec icd
-
-		return false
 	}, fmt.Sprintf("amenoma-skill-%v", char.Base.Key.String()))
 
 	// TODO: this used to be on postburst. make sure nothing broke here
-	c.Events.Subscribe(event.OnBurst, func(args ...any) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		count := 0
 		for _, s := range seeds {
@@ -69,14 +67,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.DeleteStatus(s)
 		}
 		if count == 0 {
-			return false
+			return
 		}
 		// regen energy after 2 seconds
 		char.QueueCharTask(func() {
 			char.AddEnergy("amenoma", refund*float64(count))
 		}, 120+60) // added 1 extra sec for burst animation but who knows if this is true
-
-		return false
 	}, fmt.Sprintf("amenoma-burst-%v", char.Base.Key.String()))
 	return w, nil
 }

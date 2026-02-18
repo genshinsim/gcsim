@@ -85,17 +85,16 @@ func (c *char) skillStacks(ac info.AttackCB) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		// do nothing if previous char wasn't ayato
 		prev := args[0].(int)
 		if prev != c.Index() {
-			return false
+			return
 		}
 		// clear skill status on field exit
 		c.stacks = 0
 		c.DeleteStatus(skillBuffKey)
 		// queue up a4
 		c.Core.Tasks.Add(c.a4, 60)
-		return false
 	}, "ayato-exit")
 }

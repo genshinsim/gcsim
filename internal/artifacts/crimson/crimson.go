@@ -49,9 +49,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		mStacks := make([]float64, attributes.EndStatType)
 		// post snap shot to increase stacks
-		c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+		c.Events.Subscribe(event.OnSkill, func(args ...any) {
 			if c.Player.Active() != char.Index() {
-				return false
+				return
 			}
 
 			// every exectuion, add 1 stack, to a max of 3, reset cd to 10 seconds
@@ -73,8 +73,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return mStacks
 				},
 			})
-
-			return false
 		}, fmt.Sprintf("%v-cw-4pc", char.Base.Key.String()))
 
 		char.AddReactBonusMod(character.ReactBonusMod{

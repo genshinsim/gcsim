@@ -75,31 +75,27 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		},
 	})
 
-	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	reduce := func(args ...any) bool {
+	reduce := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 		char.ReduceActionCooldown(action.ActionSkill, 60)
 		c.Log.NewEvent("thunderfury 4pc proc", glog.LogArtifactEvent, char.Index()).
 			Write("reaction", atk.Info.Abil).
 			Write("new cd", char.Cooldown(action.ActionSkill))
-		return false
 	}
-
-	reduceNoGadget := func(args ...any) bool {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+	reduceNoGadget := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); ok {
+			reduce(args...)
 		}
-		return reduce(args...)
 	}
 
 	c.Events.Subscribe(event.OnOverload, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))

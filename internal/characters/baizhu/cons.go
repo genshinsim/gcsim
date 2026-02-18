@@ -23,15 +23,15 @@ func (c *char) c1() {
 // DMG dealt this way is considered Elemental Skill DMG.
 // This effect can be triggered once every 5s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		t := args[0].(info.Target)
 		// only trigger with the active character
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		if c.StatusIsActive(c2ICDKey) {
-			return false
+			return
 		}
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
@@ -70,7 +70,6 @@ func (c *char) c2() {
 		}, skillReturnTravel) // reuse skill for now
 
 		c.AddStatus(c2ICDKey, 60*5, false) // 5s
-		return false
 	}, "baizhu-c2")
 }
 

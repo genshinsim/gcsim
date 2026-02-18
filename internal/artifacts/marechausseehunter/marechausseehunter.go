@@ -80,42 +80,40 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	s.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
 		s.onChangeHP()
-		return false
 	}, fmt.Sprintf("mh-4pc-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if index != char.Index() {
-			return false
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 		// do not trigger if at max hp already
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 
 		s.onChangeHP()
-		return false
 	}, fmt.Sprintf("mh-4pc-heal-%v", char.Base.Key.String()))
 
 	// TODO: OnCharacterHurt?

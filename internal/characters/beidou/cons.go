@@ -13,18 +13,17 @@ const c4Key = "beidou-c4"
 
 // Upon being attacked, Beidou's Normal Attacks gain an additional instance of 20% Electro DMG for 10s.
 func (c *char) c4Init() {
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if !di.External {
-			return false
+			return
 		}
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 		c.AddStatus(c4Key, 10*60, true)
 		c.Core.Log.NewEvent("c4 triggered on damage", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.StatusExpiry(c4Key))
-		return false
 	}, c4Key)
 }
 

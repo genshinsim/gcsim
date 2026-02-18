@@ -44,17 +44,17 @@ func (c *char) c2() {
 }
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		target := args[1].(int)
 
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 		if c.Index() != target {
-			return false
+			return
 		}
 		if c.StatusIsActive(c4ICDKey) {
-			return false
+			return
 		}
 
 		// 4s CD
@@ -75,8 +75,6 @@ func (c *char) c4() {
 			info.GadgetTypSourcewaterDropletNeuv,
 		)
 		c.Core.Combat.Log.NewEvent("C4: Spawned 1 droplet", glog.LogCharacterEvent, c.Index())
-
-		return false
 	}, "neuvillette-c4")
 }
 

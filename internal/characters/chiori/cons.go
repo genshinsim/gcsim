@@ -117,14 +117,14 @@ func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		// c4 status not active
 		if !c.StatusIsActive(c4Key) {
-			return false
+			return
 		}
 		// c4 attack on icd
 		if c.StatusIsActive(c4ICDKey) {
-			return false
+			return
 		}
 		// attack not na/ca/plunge
 		atk := args[1].(*info.AttackEvent)
@@ -133,11 +133,11 @@ func (c *char) c4() {
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 		// atk not by active char
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 
 		// apply icd
@@ -153,8 +153,6 @@ func (c *char) c4() {
 		if c.c4AttackCount == c4AttackLimit {
 			c.DeleteStatus(c4Key)
 		}
-
-		return false
 	}, "chiori-c4")
 }
 

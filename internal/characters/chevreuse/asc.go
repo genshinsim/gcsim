@@ -34,16 +34,16 @@ func (c *char) a1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		// don't trigger if no overload dmg
 		if atk.Info.AttackTag != attacks.AttackTagOverloadDamage {
-			return false
+			return
 		}
 
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		t.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("chev-a1-pyro", 6*60),
@@ -55,8 +55,6 @@ func (c *char) a1() {
 			Ele:   attributes.Electro,
 			Value: -0.40,
 		})
-
-		return false
 	}, "cheuv-a1")
 }
 

@@ -53,16 +53,16 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.2
 
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index() {
-				return false
+				return
 			}
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-				return false
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, icd, true)
 
@@ -82,7 +82,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			})
 
 			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index()).Write("expiry (without hitlag)", c.F+180).Write("icd (without hitlag)", c.F+s.icd)
-			return false
 		}, fmt.Sprintf("tom4-%v", char.Base.Key.String()))
 	}
 

@@ -36,15 +36,15 @@ func (c *char) a1() {
 	c.a4()
 
 	// Bountiful Cores
-	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if !char.StatusIsActive(a1Status) {
-			return false
+			return
 		}
 		g, ok := args[0].(*dendrocore.Gadget)
 		if !ok {
-			return false
+			return
 		}
 
 		b := newBountifulCore(c.Core, g.Pos(), atk)
@@ -53,19 +53,17 @@ func (c *char) a1() {
 		// prevent blowing up
 		g.OnExpiry = nil
 		g.OnKill = nil
-
-		return false
 	}, "nilou-a1-cores")
 
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) {
 		charIndex := args[0].(int)
 		char := c.Core.Player.ByIndex(charIndex)
 		if !char.StatusIsActive(a1Status) {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Element != attributes.Dendro {
-			return false
+			return
 		}
 
 		m := make([]float64, attributes.EndStatType)
@@ -79,8 +77,6 @@ func (c *char) a1() {
 				},
 			})
 		}
-
-		return false
 	}, "nilou-a1")
 }
 

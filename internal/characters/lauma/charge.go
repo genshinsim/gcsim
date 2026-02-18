@@ -117,35 +117,32 @@ func (c *char) enterDeerState() (action.Info, error) {
 }
 
 func (c *char) chargeInit() {
-	c.Core.Events.Subscribe(event.OnActionExec, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnActionExec, func(args ...any) {
 		if !c.StatusIsActive(deerStatusKey) {
-			return false
+			return
 		}
 
 		if c.Core.Player.Active() != c.Index() {
-			return false
+			return
 		}
 
 		a := args[1].(action.Action)
 		if a == action.ActionJump || a == action.ActionWalk {
-			return false
+			return
 		}
 		c.endDeerState()
-		return false
 	}, "lauma-exit-deer-state")
 
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(deerStatusKey) {
-			return false
+			return
 		}
 
 		prev := args[0].(int)
 		if prev != c.Index() {
-			return false
+			return
 		}
 		c.endDeerState()
-
-		return false
 	}, "lauma-exit-deer-state-swap")
 }
 

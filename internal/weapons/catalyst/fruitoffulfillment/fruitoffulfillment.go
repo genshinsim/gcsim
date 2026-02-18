@@ -60,13 +60,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	f := func(args ...any) bool {
+	f := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != w.char.Index() {
-			return false
+			return
 		}
 		if w.char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		w.char.AddStatus(icdKey, 18, true)
 
@@ -80,8 +80,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		w.core.Log.NewEvent("fruitoffulfillment gained stack", glog.LogWeaponEvent, w.char.Index()).
 			Write("stacks", w.stacks)
-
-		return false
 	}
 
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {

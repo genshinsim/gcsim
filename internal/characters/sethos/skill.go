@@ -26,7 +26,7 @@ func init() {
 }
 
 func (c *char) skillRefundHook() {
-	refundCB := func(args ...any) bool {
+	refundCB := func(args ...any) {
 		// TODO: Check if Sethos E filters by enemy
 		// a := args[0].(info.Target)
 		// if a.Type() != info.TargettableEnemy {
@@ -34,20 +34,18 @@ func (c *char) skillRefundHook() {
 		// }
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagElementalArt {
-			return false
+			return
 		}
 		// to avoid procing twice in aoe
 		if c.lastSkillFrame == ae.SourceFrame {
-			return false
+			return
 		}
 		c.lastSkillFrame = ae.SourceFrame
 		c.AddEnergy("sethos-skill", skillEnergyRegen[c.TalentLvlSkill()])
 		c.c2AddStack(c2RegainingKey)
-
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnOverload, refundCB, "sethos-e-refund")

@@ -46,16 +46,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	teamBonus := 0.06 + 0.02*r
 	maxTeamBonus := 0.192 + 0.064*r
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagPlunge {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
@@ -95,7 +95,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatus(icdKey, icdDur, true)
-		return false
 	}, fmt.Sprintf("peakpatrolsong-hit-%v", char.Base.Key.String()))
 
 	return w, nil

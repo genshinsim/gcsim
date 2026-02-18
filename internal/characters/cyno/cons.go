@@ -86,14 +86,13 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 // himself.)
 // This effect can occur 5 times within one use of Sacred Rite: Wolf’s Swiftness.
 func (c *char) c4() {
-	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	restore := func(args ...any) bool {
+	restore := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if c.c4Counter > 4 { // counting from 0 to 4, 5 instances max
-			return false
+			return
 		}
 		c.c4Counter++
 		for _, this := range c.Core.Player.Chars() {
@@ -102,15 +101,11 @@ func (c *char) c4() {
 				this.AddEnergy("cyno-c4", 3)
 			}
 		}
-
-		return false
 	}
-
-	restoreNoGadget := func(args ...any) bool {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+	restoreNoGadget := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); ok {
+			restore(args...)
 		}
-		return restore(args...)
 	}
 	c.Core.Events.Subscribe(event.OnOverload, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnElectroCharged, restoreNoGadget, "cyno-c4")

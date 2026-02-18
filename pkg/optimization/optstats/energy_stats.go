@@ -39,7 +39,7 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 		rawPerParticleEvent[ind] = append(rawPerParticleEvent[ind], 0)
 	}
 
-	core.Events.Subscribe(event.OnEnergyChange, func(args ...any) bool {
+	core.Events.Subscribe(event.OnEnergyChange, func(args ...any) {
 		character := args[0].(*character.CharWrapper)
 		preEnergy := args[1].(float64)
 		amount := args[2].(float64)
@@ -61,10 +61,9 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 				charFlatEnergy[ind] += amount
 			}
 		}
-		return false
 	}, "substat-opt-energy-log")
 
-	core.Events.Subscribe(event.OnEnergyBurst, func(args ...any) bool {
+	core.Events.Subscribe(event.OnEnergyBurst, func(args ...any) {
 		char := args[0].(*character.CharWrapper)
 		ind := char.Index()
 		amount := args[2].(float64)
@@ -94,7 +93,6 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 		charFlatEnergy[ind] = 0
 		burstCount[ind]++
 		// log.Println("After burst", char.Base.Key, out.charFlatEnergy[ind])
-		return false
 	}, "substat-opt-energy-burst-log")
 
 	return &out, nil

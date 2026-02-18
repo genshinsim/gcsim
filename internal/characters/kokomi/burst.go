@@ -154,7 +154,7 @@ func (c *char) makeBurstHealCB() info.AttackCBFunc {
 
 // Clears Kokomi burst when she leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		// update jellyfish flat damage. regardless if burst is active or not
 		if prev == c.Index() {
@@ -162,6 +162,5 @@ func (c *char) onExitField() {
 			c.skillFlatDmg = c.burstDmgBonus(attacks.AttackTagElementalArt)
 		}
 		c.Core.Status.Delete("kokomiburst")
-		return false
 	}, "kokomi-exit")
 }

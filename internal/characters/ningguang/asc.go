@@ -21,10 +21,10 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.GeoP] = 0.12
 	// TODO: this used to be on PostDash; need to check if working correctly still
-	c.Core.Events.Subscribe(event.OnDash, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnDash, func(_ ...any) {
 		// check for jade screen
 		if c.Core.Constructs.CountByType(construct.GeoConstructNingSkill) <= 0 {
-			return false
+			return
 		}
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
@@ -34,6 +34,5 @@ func (c *char) a4() {
 				return m
 			},
 		})
-		return false
 	}, "ningguang-a4")
 }

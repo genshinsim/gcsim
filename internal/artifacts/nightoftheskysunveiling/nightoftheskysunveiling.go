@@ -61,13 +61,13 @@ func (s *Set) Init() error {
 		m2[attributes.CR] = 0.30
 	}
 
-	lunarReactHook := func(args ...any) bool {
+	lunarReactHook := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		if s.core.Player.Active() != s.char.Index() {
-			return false
+			return
 		}
 
 		s.char.AddStatMod(character.StatMod{
@@ -77,8 +77,6 @@ func (s *Set) Init() error {
 				return m2
 			},
 		})
-
-		return false
 	}
 	s.core.Events.Subscribe(event.OnLunarCharged, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())
 	s.core.Events.Subscribe(event.OnLunarBloom, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())

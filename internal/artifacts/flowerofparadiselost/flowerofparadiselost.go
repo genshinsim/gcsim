@@ -75,14 +75,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 
-		//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-		f := func(args ...any) bool {
+		f := func(args ...any) {
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index() {
-				return false
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, icd, true)
 
@@ -111,14 +110,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return 0.4 * float64(s.stacks) * 0.25
 				},
 			})
-
-			return false
 		}
-		noGadget := func(args ...any) bool {
-			if _, ok := args[0].(*enemy.Enemy); !ok {
-				return false
+		noGadget := func(args ...any) {
+			if _, ok := args[0].(*enemy.Enemy); ok {
+				f(args...)
 			}
-			return f(args...)
 		}
 
 		c.Events.Subscribe(event.OnBloom, noGadget, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))

@@ -54,13 +54,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	caBoost := 1.2 + 0.4*float64(r)
 	procCount := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't
 		// have extra damage.
@@ -68,10 +68,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddStatus(buffKey, 600, true)
 			char.AddStatus(icdKey, 720, true)
 			procCount = 12
-			return false
+			return
 		}
 		if !char.StatusIsActive(buffKey) {
-			return false
+			return
 		}
 		baseDmgAdd := char.Stat(attributes.EM) * caBoost
 		atk.Info.FlatDmg += baseDmgAdd
@@ -82,7 +82,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Log.NewEvent("hunterspath proc dmg add", glog.LogPreDamageMod, char.Index()).
 			Write("base_added_dmg", baseDmgAdd).
 			Write("remaining_stacks", procCount)
-		return false
 	}, fmt.Sprintf("hunterspath-%v", char.Base.Key.String()))
 
 	return w, nil

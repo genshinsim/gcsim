@@ -112,9 +112,9 @@ func (c *char) particleCB(a info.AttackCB) {
 }
 
 func (c *char) onSwapHook() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if c.Core.Status.Duration("chongyunfield") == 0 {
-			return false
+			return
 		}
 		// add infusion on swap
 		dur := int(infuseDur[c.TalentLvlSkill()] * 60)
@@ -122,7 +122,6 @@ func (c *char) onSwapHook() {
 			Write("expiry", c.Core.F+dur)
 		active := c.Core.Player.ActiveChar()
 		c.infuse(active)
-		return false
 	}, "chongyun-field")
 }
 

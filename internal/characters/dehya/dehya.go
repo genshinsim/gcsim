@@ -79,17 +79,15 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if !c.StatusIsActive(burstKey) && !c.StatusIsActive(kickKey) {
-			return false
+			return
 		}
 		c.DeleteStatus(burstKey)
 		if dur := c.sanctumSavedDur; dur > 0 { // place field
 			c.sanctumSavedDur = 0
 			c.QueueCharTask(func() { c.addField(dur) }, burstKickHitmark)
 		}
-
-		return false
 	}, "dehya-exit")
 }
 

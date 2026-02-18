@@ -15,9 +15,9 @@ func (c *char) a1() {
 		return
 	}
 	particleICD := 0
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) {
 		if particleICD > c.Core.F {
-			return false
+			return
 		}
 		particleICD = c.Core.F + 180 // once every 3 seconds
 		previous := c.stacks
@@ -29,7 +29,6 @@ func (c *char) a1() {
 			Write("previous", previous).
 			Write("amount", 2).
 			Write("final", c.stacks)
-		return false
 	}, "raiden-particle-stacks")
 }
 

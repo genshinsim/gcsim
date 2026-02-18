@@ -6,9 +6,9 @@ import (
 )
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if c.Core.F < c.c6icd && c.c6icd != 0 {
-			return false
+			return
 		}
 		if c.Core.Player.Active() == c.Index() {
 			// swapped to lisa
@@ -18,6 +18,5 @@ func (c *char) c6() {
 			}
 			c.c6icd = c.Core.F + 300
 		}
-		return false
 	}, "lisa-c6")
 }

@@ -19,20 +19,20 @@ func (c *char) a1() {
 
 	c.a1Buff = make([]float64, attributes.EndStatType)
 	c.a1Buff[attributes.EM] = 50
-	swirlfunc := func(ele attributes.Element) func(args ...any) bool {
+	swirlfunc := func(ele attributes.Element) func(args ...any) {
 		icd := -1
-		return func(args ...any) bool {
+		return func(args ...any) {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
-				return false
+				return
 			}
 
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != c.Index() {
-				return false
+				return
 			}
 			// do not overwrite mod if same frame
 			if c.Core.F < icd {
-				return false
+				return
 			}
 			icd = c.Core.F + 1
 
@@ -53,7 +53,6 @@ func (c *char) a1() {
 			c.Core.Log.NewEvent("sucrose a1 triggered", glog.LogCharacterEvent, c.Index()).
 				Write("reaction", "swirl-"+ele.String()).
 				Write("expiry", c.Core.F+480)
-			return false
 		}
 	}
 

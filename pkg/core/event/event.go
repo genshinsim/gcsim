@@ -88,7 +88,7 @@ type Handler struct {
 	events [][]ehook
 }
 
-type Hook func(args ...any) bool
+type Hook func(args ...any)
 
 type Eventter interface {
 	Subscribe(e Event, f Hook, key string)
@@ -137,23 +137,17 @@ func (h *Handler) Subscribe(e Event, f Hook, key string) {
 }
 
 func (h *Handler) Unsubscribe(e Event, key string) {
-	n := 0
-	for _, v := range h.events[e] {
-		if v.key != key {
-			h.events[e][n] = v
-			n++
+	for i, v := range h.events[e] {
+		if v.key == key {
+			h.events[e][i].f = nil
 		}
 	}
-	h.events[e] = h.events[e][:n]
 }
 
 func (h *Handler) Emit(e Event, args ...any) {
-	n := 0
 	for _, v := range h.events[e] {
-		if !v.f(args...) {
-			h.events[e][n] = v
-			n++
+		if v.f != nil {
+			v.f(args...)
 		}
 	}
-	h.events[e] = h.events[e][:n]
 }

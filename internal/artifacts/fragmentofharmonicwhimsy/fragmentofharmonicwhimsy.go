@@ -48,11 +48,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		c.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
+		c.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 			index := args[0].(int)
 			amount := args[1].(float64)
 			if char.Index() != index || amount == 0 {
-				return false
+				return
 			}
 
 			if !char.StatModIsActive(fohw4pc) {
@@ -71,8 +71,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return m
 				},
 			})
-
-			return false
 		}, fmt.Sprintf("fragmentofharmonicwhimsy-hp-debt-%v", char.Base.Key.String()))
 	}
 

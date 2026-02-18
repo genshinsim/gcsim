@@ -15,9 +15,8 @@ func TestCrystallizeCryo(t *testing.T) {
 	trg := addTargetToCore(c)
 
 	ok := false
-	c.Events.Subscribe(event.OnCrystallizeCryo, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCrystallizeCryo, func(args ...any) {
 		ok = true
-		return true
 	}, "crystallize-check")
 
 	c.Init()
@@ -64,9 +63,8 @@ func TestCrystallizePyro(t *testing.T) {
 	trg := addTargetToCore(c)
 
 	ok := false
-	c.Events.Subscribe(event.OnCrystallizePyro, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCrystallizePyro, func(args ...any) {
 		ok = true
-		return true
 	}, "crystallize-check")
 
 	c.Init()

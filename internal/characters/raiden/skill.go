@@ -102,33 +102,33 @@ The Eye can initiate one coordinated attack every 0.9s per party.
 *
 */
 func (c *char) eyeOnDamage() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		trg := args[0].(info.Target)
 		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		// ignore if eye on icd
 		if c.eyeICD > c.Core.F {
-			return false
+			return
 		}
 		// ignore if eye status not active on char that's doing dmg
 		if !c.Core.Player.ByIndex(ae.Info.ActorIndex).StatusIsActive(skillKey) {
-			return false
+			return
 		}
 		// ignore EC, hydro swirl, and burning damage
 		// this clause is here since these damage types are sourced to the target rather than character
 		if ae.Info.AttackTag == attacks.AttackTagECDamage || ae.Info.AttackTag == attacks.AttackTagBurningDamage ||
 			ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
-			return false
+			return
 		}
 		// ignore self dmg
 		if ae.Info.ActorIndex == c.Index() &&
 			ae.Info.AttackTag == attacks.AttackTagElementalArt &&
 			ae.Info.StrikeType == attacks.StrikeTypeSlash {
-			return false
+			return
 		}
 		// ignore 0 damage
 		if dmg == 0 {
-			return false
+			return
 		}
 
 		// hit mark 857, eye land 862
@@ -150,6 +150,5 @@ func (c *char) eyeOnDamage() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 5, 5, c.particleCB)
 
 		c.eyeICD = c.Core.F + 54 // 0.9 sec icd
-		return false
 	}, "raiden-eye")
 }

@@ -35,9 +35,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DEFP] = def
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -47,8 +47,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("flute-of-ezpitzal-def%v", char.Base.Key.String()))
 
 	return w, nil

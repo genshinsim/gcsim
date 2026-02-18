@@ -36,22 +36,22 @@ func (c *char) c1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if !c.StatusIsActive(skillStateKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c1IcdKey) {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Electro {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		c.AddStatus(c1IcdKey, c1Icd, false)
 		c1AI := info.AttackInfo{
@@ -76,7 +76,6 @@ func (c *char) c1() {
 				c.particleCB,
 			)
 		}
-		return false
 	}, "clorinde-c1")
 }
 

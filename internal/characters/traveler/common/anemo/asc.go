@@ -48,19 +48,19 @@ func (c *Traveler) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 		if c.StatusIsActive(a4ICDKey) {
-			return false
+			return
 		}
 
 		c.AddStatus(a4ICDKey, 300, true)
@@ -76,7 +76,5 @@ func (c *Traveler) a4() {
 				})
 			}, (i+1)*60) // healing starts 1s after death
 		}
-
-		return false
 	}, "traveleranemo-a4")
 }

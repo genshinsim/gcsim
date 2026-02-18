@@ -59,12 +59,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	mNA := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		char.AddStatus(icdKey, 15*60, true)
@@ -80,29 +80,27 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return nil
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("surfs-up-skill-%v", char.Base.Key.String()))
 
 	// Gain stack on vape
-	c.Events.Subscribe(event.OnVaporize, func(args ...any) bool {
+	c.Events.Subscribe(event.OnVaporize, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
-			return false
+			return
 		}
 		if char.StatusIsActive(gainStackIcd) {
-			return false
+			return
 		}
 
 		if w.stacks < 5 { // limit to 5 so it can carry over when NA hits
@@ -116,33 +114,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		c.Log.NewEvent("Surf's Up gained stack", glog.LogWeaponEvent, char.Index())
 		char.AddStatus(gainStackIcd, 1.5*60, true)
-
-		return false
 	}, fmt.Sprintf("surfs-up-vape-%v", char.Base.Key.String()))
 
 	// Lose stack on NA
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
-			return false
+			return
 		}
 		if char.StatusIsActive(loseStackIcd) {
-			return false
+			return
 		}
 
 		if w.stacks > 0 {
@@ -151,8 +147,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		c.Log.NewEvent("Surf's Up lost stack", glog.LogWeaponEvent, char.Index())
 		char.AddStatus(loseStackIcd, 1.5*60, true)
-
-		return false
 	}, fmt.Sprintf("surfs-up-dmg-%v", char.Base.Key.String()))
 
 	return w, nil

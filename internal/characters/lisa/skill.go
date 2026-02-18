@@ -175,14 +175,14 @@ func (c *char) skillHold() action.Info {
 }
 
 func (c *char) skillHoldMult() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if atk.Info.Abil != skillHoldAbil {
-			return false
+			return
 		}
 		stacks := t.GetTag(conductiveTag)
 
@@ -190,7 +190,5 @@ func (c *char) skillHoldMult() {
 
 		// consume the stacks
 		t.SetTag(conductiveTag, 0)
-
-		return false
 	}, "lisa-skill-hold-mul")
 }

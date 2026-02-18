@@ -20,13 +20,13 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnFrozen, c.a1Hook, "citlali-a1-onfrozen")
 }
 
-func (c *char) a1Hook(args ...any) bool {
+func (c *char) a1Hook(args ...any) {
 	t, ok := args[0].(*enemy.Enemy)
 	if !ok {
-		return false
+		return
 	}
 	if !c.nightsoulState.HasBlessing() {
-		return false
+		return
 	}
 
 	if !c.StatusIsActive(nightSoulGenerationIcd) {
@@ -52,17 +52,14 @@ func (c *char) a1Hook(args ...any) bool {
 		Ele:   attributes.Pyro,
 		Value: amt,
 	})
-
-	return false
 }
 
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) {
 		c.generateNightsoulPoints(4)
-		return false
 	}, "citlali-a4-ns-gain")
 }
 

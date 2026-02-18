@@ -63,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	key := fmt.Sprintf("alley-hunter-%v", char.Base.Key.String())
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		next := args[1].(int)
 		if next == char.Index() {
@@ -75,7 +75,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			w.lastActiveChange = c.F
 			c.Tasks.Add(w.incStack(char, c.F), 60)
 		}
-		return false
 	}, key)
 
 	return &w, nil

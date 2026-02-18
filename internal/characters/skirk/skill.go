@@ -129,28 +129,26 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) particleInit() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 
 		if atk.Info.Element != attributes.Cryo {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(particleICDKey) {
-			return false
+			return
 		}
 		c.AddStatus(particleICDKey, particleICD, false)
 
 		count := 4.0
 		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
-
-		return false
 	}, c.Base.Key.String()+"-particles")
 }

@@ -45,27 +45,27 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	cd := 18 // frames = 0.3s * 60fps
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		// Attack belongs to the equipped character
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 
 		// Active character has weapon equipped
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		// Only apply on normal or charged attacks
 		if (atk.Info.AttackTag != attacks.AttackTagNormal) && (atk.Info.AttackTag != attacks.AttackTagExtra) {
-			return false
+			return
 		}
 
 		// Check if cd is up
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		// Reset stacks if they've expired
@@ -93,8 +93,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("compoundbow-%v", char.Base.Key.String()))
 
 	return w, nil

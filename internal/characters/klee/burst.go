@@ -123,10 +123,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 // clear klee burst when she leaves the field and handle c4
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		// check if burst is active
 		if c.Core.Status.Duration("kleeq") <= 0 {
-			return false
+			return
 		}
 		c.Core.Status.Delete("kleeq")
 
@@ -147,7 +147,5 @@ func (c *char) onExitField() {
 			}
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, 0)
 		}
-
-		return false
 	}, "klee-exit")
 }

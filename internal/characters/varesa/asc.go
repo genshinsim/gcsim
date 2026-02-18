@@ -70,8 +70,7 @@ func (c *char) a4() {
 	})
 
 	c.a4Stacks = stacks.NewMultipleRefreshNoRemove(2, c.QueueCharTask, &c.Core.F)
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) {
 		c.a4Stacks.Add(12 * 60)
-		return false
 	}, "varesa-a4")
 }

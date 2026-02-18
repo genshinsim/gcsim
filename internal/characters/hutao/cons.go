@@ -17,13 +17,12 @@ func (c *char) c6() {
 	c.c6buff = make([]float64, attributes.EndStatType)
 	c.c6buff[attributes.CR] = 1
 	// check for C6 proc on hurt
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		c.checkc6(false)
-		return false
 	}, "hutao-c6")
 	// check for C6 proc every 2s from start of sim regardless of hurt
 	c.Core.Tasks.Add(func() { c.checkc6(true) }, 1) // start to check after hp set
@@ -69,14 +68,14 @@ func (c *char) checkc6(check1HP bool) {
 func (c *char) c4() {
 	c.c4buff = make([]float64, attributes.EndStatType)
 	c.c4buff[attributes.CR] = 0.12
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		// do nothing if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		if !t.StatusIsActive(bbDebuff) {
-			return false
+			return
 		}
 		for i, char := range c.Core.Player.Chars() {
 			// does not affect hutao
@@ -91,7 +90,5 @@ func (c *char) c4() {
 				},
 			})
 		}
-
-		return false
 	}, "hutao-c4")
 }

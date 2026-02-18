@@ -54,28 +54,27 @@ func (c *char) a1(char *character.CharWrapper) {
 // Additionally, the maximum number of stacks that can be gained through Soulwind alone is increased by 1.
 // Requires Suppressive Barrage to be unlocked first.
 func (c *char) a4() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if c.a4Stack {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if char.Index() != c.Core.Player.Active() {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(skillBuffKey) || !c.StatusIsActive(healKey) {
-			return false
+			return
 		}
 
 		crit := args[3].(bool)
 		if !crit {
-			return false
+			return
 		}
 
 		c.addDetectorStack()
 		c.a4Stack = true
-		return false
 	}, "mika-a4")
 }

@@ -32,20 +32,20 @@ func (c *char) c1() {
 // After a triggered Bloom reaction deals DMG to opponents, their Dendro RES will be decreased by 35% for 10s.
 // You need to have unlocked the “Court of Dancing Petals” Talent.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if !char.StatusIsActive(a1Status) {
-			return false
+			return
 		}
 
 		if atk.Info.Element == attributes.Hydro {
@@ -61,8 +61,6 @@ func (c *char) c2() {
 				Value: -0.35,
 			})
 		}
-
-		return false
 	}, "nilou-c2")
 }
 

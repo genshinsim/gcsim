@@ -78,22 +78,22 @@ func (c *char) c2Init() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if c.Index() == atk.Info.ActorIndex {
-			return false
+			return
 		}
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
-			return false
+			return
 		}
 		if !c.StatusIsActive(c2Key) {
-			return false
+			return
 		}
 		if c.c2Count <= 0 {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Cryo {
-			return false
+			return
 		}
 
 		switch atk.Info.AttackTag {
@@ -104,7 +104,7 @@ func (c *char) c2Init() {
 		case attacks.AttackTagElementalArtHold:
 		case attacks.AttackTagElementalBurst:
 		default:
-			return false
+			return
 		}
 
 		amt := c.TotalAtk() * c2Per
@@ -116,7 +116,6 @@ func (c *char) c2Init() {
 				Write("Cold Dishes left", c.c2Count)
 		}
 		atk.Info.FlatDmg += amt
-		return false
 	}, c2Key+"-on-dmg")
 }
 
@@ -163,24 +162,24 @@ func (c *char) c6Init() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if c.Core.Player.Active() != atk.Info.ActorIndex {
-			return false
+			return
 		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 		if !c.StatusIsActive(skillKey) {
-			return false
+			return
 		}
 		if c.c6Count <= 0 {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6ICDKey) {
-			return false
+			return
 		}
 
 		c.AddStatus(c6ICDKey, c6ICD, true)
@@ -199,8 +198,6 @@ func (c *char) c6Init() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4), 0, c.skillTravel, c.makeA4CB())
 
 		c.c6Count--
-
-		return false
 	}, c6Key+"-on-nacp")
 }
 

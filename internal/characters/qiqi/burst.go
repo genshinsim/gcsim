@@ -71,20 +71,20 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) talismanHealHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 
 		// do nothing if talisman expired
 		if !e.StatusIsActive(talismanKey) {
-			return false
+			return
 		}
 		// do nothing if talisman still on icd
 		if e.GetTag(talismanICDKey) >= c.Core.F {
-			return false
+			return
 		}
 
 		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
@@ -96,22 +96,20 @@ func (c *char) talismanHealHook() {
 			Bonus:   c.Stat(attributes.Heal),
 		})
 		e.SetTag(talismanICDKey, c.Core.F+60)
-
-		return false
 	}, "talisman-heal-hook")
 }
 
 // Handles C2, A4, and skill NA/CA on hit hooks
 // Additionally handles burst Talisman hook - can't be done another way since Talisman is applied before the burst damage is dealt
 func (c *char) onNACAHitHook() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 
 		// All of the below only occur on Qiqi NA/CA hits
@@ -119,7 +117,7 @@ func (c *char) onNACAHitHook() {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
 		default:
-			return false
+			return
 		}
 
 		// A4:
@@ -153,7 +151,5 @@ func (c *char) onNACAHitHook() {
 				Bonus:   c.skillHealSnapshot.Stats[attributes.Heal],
 			})
 		}
-
-		return false
 	}, "qiqi-onhit-naca-hook")
 }

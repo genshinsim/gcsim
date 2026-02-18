@@ -35,30 +35,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	isActive := false
 	key := fmt.Sprintf("ttds-%v", char.Base.Key.String())
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...any) bool {
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) {
 		isActive = c.Player.Active() == char.Index()
-		return true
 	}, key)
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .18 + float64(r)*0.06
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !isActive && c.Player.Active() == char.Index() {
 			isActive = true
-			return false
+			return
 		}
 
 		if isActive && c.Player.Active() != char.Index() {
 			isActive = false
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, icd, true)
 			active := c.Player.ActiveChar()
 			// When TTDS mod is active, don't reapply
 			if active.StatModIsActive("ttds") {
-				return false
+				return
 			}
 			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("ttds", 600),
@@ -71,8 +70,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			c.Log.NewEvent("ttds activated", glog.LogWeaponEvent, c.Player.Active()).
 				Write("expiry (without hitlag)", c.F+600)
 		}
-
-		return false
 	}, key)
 
 	return w, nil

@@ -60,21 +60,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Write("counter", icdCounter)
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 		if icdCounter >= 3 {
 			c.Log.NewEvent("scarletsands did not gain stacks due to icd", glog.LogWeaponEvent, char.Index())
-			return false
+			return
 		}
 		icdCounterAdd()
 
@@ -98,7 +98,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 
 		c.Log.NewEvent("scarletsands adding stack", glog.LogWeaponEvent, char.Index()).Write("stacks", w.stacks)
-		return false
 	}, fmt.Sprintf("scarletsands-%v", char.Base.Key.String()))
 
 	return w, nil

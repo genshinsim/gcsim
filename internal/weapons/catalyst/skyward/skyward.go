@@ -41,22 +41,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		travel = 10
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if c.Rand.Float64() < 0.5 {
-			return false
+			return
 		}
 		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index())
 
@@ -82,7 +82,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}, i*147)
 		}
 		char.AddStatus(icdKey, icd, true)
-		return false
 	}, fmt.Sprintf("skyward-atlas-%v", char.Base.Key.String()))
 
 	// permanent stat buff

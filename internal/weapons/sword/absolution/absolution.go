@@ -43,11 +43,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	bonus := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 		index := args[0].(int)
 		amount := args[1].(float64)
 		if char.Index() != index || amount >= 0 {
-			return false
+			return
 		}
 		if !char.StatModIsActive(dmgBonusKey) {
 			w.stacks = 0
@@ -62,8 +62,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return bonus
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("absolution-%v", char.Base.Key))
 
 	return &w, nil

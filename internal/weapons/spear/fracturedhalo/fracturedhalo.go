@@ -42,9 +42,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mAtk := make([]float64, attributes.EndStatType)
 	mAtk[attributes.ATKP] = 0.18 + float64(r)*0.06
 
-	atkBuffHook := func(args ...any) bool {
+	atkBuffHook := func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -53,8 +53,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return mAtk
 			},
 		})
-
-		return false
 	}
 
 	c.Events.Subscribe(event.OnBurst, atkBuffHook, fmt.Sprintf("fracturedhalo-burst-%v", char.Base.Key.String()))
@@ -79,16 +77,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 	}
 
-	c.Events.Subscribe(event.OnShielded, func(args ...any) bool {
+	c.Events.Subscribe(event.OnShielded, func(args ...any) {
 		shd := args[0].(shield.Shield)
 		if shd.ShieldOwner() != char.Index() {
-			return false
+			return
 		}
 		if !char.StatModIsActive(AtkpBuff) {
-			return false
+			return
 		}
 		char.AddStatus(LcBuff, 20*60, true)
-		return false
 	}, fmt.Sprintf("fracturedhalo-shield-%v", char.Base.Key.String()))
 
 	return w, nil

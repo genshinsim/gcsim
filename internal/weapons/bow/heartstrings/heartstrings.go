@@ -72,38 +72,35 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	// Using skill
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		w.AddStack(skillKey, 25*60)
-		return false
 	}, fmt.Sprintf("heartstrings-%v", char.Base.Key.String()))
 
 	// Gaining Bond
-	c.Events.Subscribe(event.OnHPDebt, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 		index := args[0].(int)
 		amount := args[1].(float64)
 
 		if char.Index() != index || amount > 0 {
-			return false
+			return
 		}
 
 		w.AddStack(bondKey, 25*60)
-		return false
 	}, fmt.Sprintf("heartstrings-%v", char.Base.Key.String()))
 
 	// Healing
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		src := args[0].(*info.HealInfo)
 
 		if src.Caller != char.Index() {
-			return false
+			return
 		}
 
 		w.AddStack(healingKey, 20*60)
-		return false
 	}, fmt.Sprintf("heartstrings-%v", char.Base.Key.String()))
 
 	// Burst CR buff if 3 stacks

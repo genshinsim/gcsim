@@ -58,20 +58,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		next := args[1].(int)
 		if prev == char.Index() {
 			w.lastSwap = c.F
 			w.c.Tasks.Add(w.getBuffs(w.lastSwap), 5*60)
-			return false
+			return
 		}
 		if next == char.Index() {
 			w.lastSwap = c.F
 			w.c.Tasks.Add(w.clearBuffs(w.lastSwap), 10*60)
-			return false
+			return
 		}
-		return false
 	}, fmt.Sprintf("sacrificial-jade-%v", char.Base.Key.String()))
 
 	return w, nil

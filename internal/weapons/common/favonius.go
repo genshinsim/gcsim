@@ -31,27 +31,27 @@ func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.W
 	prob := 0.50 + float64(p.Refine)*0.1
 	cd := 810 - p.Refine*90
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		crit := args[3].(bool)
 		if dmg == 0 {
-			return false
+			return
 		}
 		if !crit {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if c.Rand.Float64() > prob {
-			return false
+			return
 		}
 		c.Log.NewEvent("favonius proc'd", glog.LogWeaponEvent, char.Index())
 
@@ -60,8 +60,6 @@ func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.W
 
 		// adds a modifier to track icd; this should be fine since it's per char and not global
 		char.AddStatus(icdKey, cd, true)
-
-		return false
 	}, fmt.Sprintf("favo-%v", char.Base.Key.String()))
 
 	return b, nil

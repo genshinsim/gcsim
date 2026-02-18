@@ -616,15 +616,15 @@ func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) (bool,
 
 // Currently used for dendro cores spawning, other movements/additions should not happen mid-CA anim
 func (c *char) bikeChargeAttackHook() {
-	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) {
 		// Ignore if not in bike state
 		if c.armamentState != bike && !c.nightsoulState.HasBlessing() {
-			return false
+			return
 		}
 		// If in bike state, add gadget to target list if it can be hit
 		g, ok := args[0].(info.Gadget)
 		if !ok {
-			return false
+			return
 		}
 		if g.GadgetTyp() == info.GadgetTypDendroCore {
 			// Might not be necessary to add to list?
@@ -644,8 +644,6 @@ func (c *char) bikeChargeAttackHook() {
 				c.caState.LastHit[g.Key()] += c.Core.F
 			}
 		}
-
-		return false
 	}, "mavuika-bike-gadget-check")
 }
 

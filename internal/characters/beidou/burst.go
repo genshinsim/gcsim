@@ -114,22 +114,22 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) burstProc() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		t := args[0].(info.Target)
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// make sure the person triggering the attack is on field still
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(burstICDKey) {
 			c.Core.Log.NewEvent("Stormbreaker (active) on icd", glog.LogCharacterEvent, c.Index())
-			return false
+			return
 		}
 
 		// trigger a chain of attacks starting at the first target
@@ -148,7 +148,6 @@ func (c *char) burstProc() {
 
 		// this ICD is most likely tied to the deployable, so it's not hitlag extendable
 		c.AddStatus(burstICDKey, 60, false)
-		return false
 	}, "beidou-burst")
 }
 

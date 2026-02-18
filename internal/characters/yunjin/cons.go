@@ -51,14 +51,14 @@ func (c *char) c4() {
 	}
 	c.c4bonus = make([]float64, attributes.EndStatType)
 	c.c4bonus[attributes.DEFP] = .2
-	charModFunc := func(args ...any) bool {
+	charModFunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != c.Index() {
-			return false
+			return
 		}
 
 		c.AddStatMod(character.StatMod{
@@ -68,8 +68,6 @@ func (c *char) c4() {
 				return c.c4bonus
 			},
 		})
-
-		return false
 	}
 	c.Core.Events.Subscribe(event.OnCrystallizeCryo, charModFunc, "yunjin-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, charModFunc, "yunjin-c4")

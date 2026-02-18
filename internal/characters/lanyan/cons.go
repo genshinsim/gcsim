@@ -18,26 +18,25 @@ func (c *char) c2() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		if !c.hasShield() {
-			return false
+			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(c2Icd) {
-			return false
+			return
 		}
 		c.AddStatus(c2Icd, 2*60, true)
 
 		c.restoreShield(0.4)
-		return false
 	}, "lanyan-c2")
 }
 

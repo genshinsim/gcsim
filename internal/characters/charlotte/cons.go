@@ -39,21 +39,19 @@ func (c *char) c1Heal(char *character.CharWrapper) func() {
 }
 
 func (c *char) c1() {
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		src := args[0].(*info.HealInfo)
 		if src.Message != healInitialMsg && src.Message != healDotMsg && src.Message != c6HealMsg {
-			return false
+			return
 		}
 
 		target := args[1].(int)
 		char := c.Core.Player.ByIndex(target)
 		if char.StatusIsActive(c1StatusKey) {
-			return false
+			return
 		}
 		char.AddStatus(c1StatusKey, 6*60, true)
 		c.c1Heal(char)()
-
-		return false
 	}, "charlotte-c1")
 }
 
@@ -84,20 +82,20 @@ func (c *char) makeC2CB() info.AttackCBFunc {
 
 func (c *char) c4() {
 	counter := 0
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		ae := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 		if counter == 5 {
-			return false
+			return
 		}
 		if !t.StatusIsActive(skillPressMarkKey) && !t.StatusIsActive(skillHoldMarkKey) {
-			return false
+			return
 		}
 		if ae.Info.Abil != burstInitialAbil && ae.Info.Abil != burstDotAbil {
-			return false
+			return
 		}
 		if counter == 0 {
 			c.Core.Tasks.Add(func() {
@@ -109,28 +107,27 @@ func (c *char) c4() {
 		c.Core.Log.NewEvent("charlotte c4 adding dmg%", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 		c.AddEnergy("charlotte-c4", 2)
 		counter++
-		return false
 	}, "charlotte-c4")
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6IcdKey) {
-			return false
+			return
 		}
 		if !t.StatusIsActive(skillHoldMarkKey) {
-			return false
+			return
 		}
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		c.AddStatus(c6IcdKey, 6*60, true)
 		ai := info.AttackInfo{
@@ -160,6 +157,5 @@ func (c *char) c6() {
 				})
 			}
 		}, 14)
-		return false
 	}, "charlotte-c6")
 }

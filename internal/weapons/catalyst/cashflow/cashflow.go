@@ -66,48 +66,46 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return val
 		},
 	})
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if di.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if char.StatusIsActive(buffIcd) {
-			return false
+			return
 		}
 
 		w.onChangeHP()
-		return false
 	}, fmt.Sprintf("cashflow-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if index != char.Index() {
-			return false
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 		if char.StatusIsActive(buffIcd) {
-			return false
+			return
 		}
 
 		w.onChangeHP()
-		return false
 	}, fmt.Sprintf("cashflow-heal-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -62,20 +62,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	var dmgAdded float64
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		// if the active char is not the equipped char then ignore
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		// If attack does not belong to the equipped character then ignore
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// If this is not a normal attack then ignore
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		// if buff is already active then buff attack
@@ -88,14 +88,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Write("buff_expiry", s.procExpireF).
 				Write("icd_up", s.icd)
 
-			return false
+			return
 		}
 
 		// If Artifact set effect is still on CD then ignore
 		if c.F < s.icd {
 			c.Log.NewEvent("echoes 4pc failed to proc due icd", glog.LogArtifactEvent, char.Index()).
 				Write("icd_up", s.icd)
-			return false
+			return
 		}
 
 		if c.Rand.Float64() > s.prob {
@@ -104,7 +104,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Log.NewEvent("echoes 4pc failed to proc due to chance", glog.LogArtifactEvent, char.Index()).
 				Write("probability_now", s.prob).
 				Write("icd_up", s.icd)
-			return false
+			return
 		}
 
 		dmgAdded = snATK * 0.7
@@ -119,8 +119,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			Write("dmg_added", dmgAdded).
 			Write("buff_expiry", s.procExpireF).
 			Write("icd_up", s.icd)
-
-		return false
 	}, fmt.Sprintf("echoes-4pc-%v", char.Base.Key.String()))
 
 	return &s, nil

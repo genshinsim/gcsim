@@ -30,10 +30,9 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 		t.FailNow()
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		log.Printf("hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
-		return false
 	}, "hit-check")
 	advanceCoreFrame(c)
 
@@ -101,19 +100,17 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 		t.FailNow()
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) bool {
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		log.Printf("gadget hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
-		return false
 	}, "hit-check")
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp (Explosion)" {
 			dmgCount++
 			log.Println("big boom at: ", c.F)
 		}
-		return false
 	}, "hit-check")
 	advanceCoreFrame(c)
 
@@ -191,13 +188,12 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
 			log.Println("boom at (adjusted): ", c.F-54-1)
 		}
-		return false
 	}, "hit-check")
 	advanceCoreFrame(c)
 
@@ -237,13 +233,12 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
 			log.Println("boom at (adjusted): ", c.F-54-1)
 		}
-		return false
 	}, "hit-check")
 	advanceCoreFrame(c)
 

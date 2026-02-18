@@ -68,17 +68,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		bubbleICDExpiry := 0
 
 		// On Heal subscription to start accumulating the healing
-		c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+		c.Events.Subscribe(event.OnHeal, func(args ...any) {
 			src := args[0].(*info.HealInfo)
 			healAmt := args[4].(float64)
 
 			if src.Caller != char.Index() {
-				return false
+				return
 			}
 
 			// OHC must either be inactive or this equipped character has to have an OHC bubble active
 			if c.Flags.Custom["OHCActiveChar"] != -1 && c.Flags.Custom["OHCActiveChar"] != float64(char.Index()) {
-				return false
+				return
 			}
 
 			s.bubbleHealStacks += healAmt
@@ -138,8 +138,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Log.NewEvent("ohc bubble accumulation", glog.LogArtifactEvent, char.Index()).
 				Write("bubble_pops_at", s.bubbleDurationExpiry).
 				Write("bubble_total", s.bubbleHealStacks)
-
-			return false
 		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", char.Base.Key.String()))
 	}
 

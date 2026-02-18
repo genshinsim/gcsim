@@ -82,13 +82,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		const icdKey = "gd-4pc-icd"
-		add := func(args ...any) bool {
+		add := func(args ...any) {
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != char.Index() {
-				return false
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, 8*60, true)
 
@@ -102,7 +102,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index()).
 				Write("em", s.buff[attributes.EM]).
 				Write("atk", s.buff[attributes.ATKP])
-			return false
 		}
 
 		for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {

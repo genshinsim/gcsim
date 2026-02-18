@@ -32,18 +32,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	icd := 10 * 60
 	const icdKey = "rightfulreward-icd"
 
-	c.Events.Subscribe(event.OnHeal, func(args ...any) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		if index != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true) // 10s icd
 		char.AddEnergy("rightfulreward", refund)
-
-		return false
 	}, fmt.Sprintf("rightfulreward-%v", char.Base.Key.String()))
 	return w, nil
 }

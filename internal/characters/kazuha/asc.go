@@ -42,20 +42,20 @@ func (c *char) a4() {
 
 	m := make([]float64, attributes.EndStatType)
 
-	swirlfunc := func(ele attributes.Stat, key string) func(args ...any) bool {
+	swirlfunc := func(ele attributes.Stat, key string) func(args ...any) {
 		icd := -1
-		return func(args ...any) bool {
+		return func(args ...any) {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
-				return false
+				return
 			}
 
 			atk := args[1].(*info.AttackEvent)
 			if atk.Info.ActorIndex != c.Index() {
-				return false
+				return
 			}
 			// do not overwrite mod if same frame
 			if c.Core.F < icd {
-				return false
+				return
 			}
 			icd = c.Core.F + 1
 
@@ -77,8 +77,6 @@ func (c *char) a4() {
 
 			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index()).
 				Write("reaction", ele.String())
-
-			return false
 		}
 	}
 

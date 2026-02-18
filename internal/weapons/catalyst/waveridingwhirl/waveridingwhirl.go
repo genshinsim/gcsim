@@ -38,24 +38,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := float64(p.Refine)
 
 	stacks := 0
-	val := make([]float64, attributes.EndStatType)
+	m := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...any) bool {
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) {
 		for _, char := range c.Player.Chars() {
 			if char.Base.Element == attributes.Hydro {
 				stacks++
 			}
 		}
-		val[attributes.HPP] = (0.15 + 0.05*r) + (0.09+0.03*r)*float64(min(2, stacks))
-		return true
+		m[attributes.HPP] = (0.15 + 0.05*r) + (0.09+0.03*r)*float64(min(2, stacks))
 	}, fmt.Sprintf("waveridingwhirl-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(buffICD) {
-			return false
+			return
 		}
 		char.AddStatus(buffICD, ICDDur, true)
 
@@ -63,10 +62,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Base:         modifier.NewBaseWithHitlag(buffKey, buffDur),
 			AffectedStat: attributes.HPP,
 			Amount: func() []float64 {
-				return val
+				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("waveridingwhirl-skill-%v", char.Base.Key.String()))
 
 	return w, nil

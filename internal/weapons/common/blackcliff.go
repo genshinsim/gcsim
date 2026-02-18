@@ -38,20 +38,20 @@ func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info
 	}
 	m := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
+	c.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		// don't proc if someone else defeated the enemy
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		// don't proc if off-field
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		// add status to char given index
 		char.AddStatus(stackKey[index], 1800, true)
@@ -74,7 +74,6 @@ func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info
 		if index == 3 {
 			index = 0
 		}
-		return false
 	}, fmt.Sprintf("blackcliff-%v", char.Base.Key.String()))
 
 	return b, nil

@@ -24,11 +24,10 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		endingEnergy: make([]float64, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnSimEndedSuccessfully, func(args ...any) bool {
+	core.Events.Subscribe(event.OnSimEndedSuccessfully, func(args ...any) {
 		for i, c := range core.Player.Chars() {
 			out.endingEnergy[i] = c.Energy
 		}
-		return true
 	}, "stats-ending-energy")
 
 	return &out, nil

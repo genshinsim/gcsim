@@ -21,12 +21,11 @@ func TestBurningTicks(t *testing.T) {
 	}
 	// expecting 8 ticks: https://www.youtube.com/watch?v=PdZ6Qxo7pSY
 	count := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 		}
-		return false
 	}, "burning-ticks")
 
 	// yanfei auto at 80
@@ -93,13 +92,12 @@ func TestBurningQuickenFuel(t *testing.T) {
 	// https://www.youtube.com/watch?v=En3Ki_vVgR0
 	count := 0
 	countByActor := []int{0, 0}
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 			countByActor[ae.Info.ActorIndex]++
 		}
-		return false
 	}, "burning-ticks")
 
 	c.QueueAttackEvent(&info.AttackEvent{
@@ -142,10 +140,9 @@ func TestBurningQuickenFuel(t *testing.T) {
 	}, 536)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...any) bool {
-		return func(args ...any) bool {
+	cb := func(evt event.Event) func(args ...any) {
+		return func(args ...any) {
 			f[evt] = c.F
-			return false
 		}
 	}
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
@@ -253,10 +250,9 @@ func TestPyroDendroCoexist(t *testing.T) {
 	// pyro ended 546, dendro ended 689
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...any) bool {
-		return func(args ...any) bool {
+	cb := func(evt event.Event) func(args ...any) {
+		return func(args ...any) {
 			f[evt] = c.F
-			return false
 		}
 	}
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
@@ -307,10 +303,9 @@ func TestDendroDecayTry1(t *testing.T) {
 	}, 263)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...any) bool {
-		return func(args ...any) bool {
+	cb := func(evt event.Event) func(args ...any) {
+		return func(args ...any) {
 			f[evt] = c.F
-			return false
 		}
 	}
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
@@ -357,10 +352,9 @@ func TestDendroDecayTry2(t *testing.T) {
 	}, 453)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...any) bool {
-		return func(args ...any) bool {
+	cb := func(evt event.Event) func(args ...any) {
+		return func(args ...any) {
 			f[evt] = c.F
-			return false
 		}
 	}
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
@@ -414,10 +408,9 @@ func TestQuickenBurningDecay(t *testing.T) {
 	}, 206)
 
 	f := make(map[event.Event]int)
-	cb := func(evt event.Event) func(args ...any) bool {
-		return func(args ...any) bool {
+	cb := func(evt event.Event) func(args ...any) {
+		return func(args ...any) {
 			f[evt] = c.F
-			return false
 		}
 	}
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {

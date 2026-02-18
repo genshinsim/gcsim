@@ -35,9 +35,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffBy := 0.005 + 0.001*float64(r)
 	maxBuff := 0.12 + 0.04*float64(r)
 
-	c.Events.Subscribe(event.OnSkill, func(args ...any) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 
 		buffAmt := min(maxBuff, char.MaxHP()*0.001*buffBy)
@@ -52,7 +52,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("ring-of-yaxche-%v", char.Base.Key.String()))
 
 	return w, nil

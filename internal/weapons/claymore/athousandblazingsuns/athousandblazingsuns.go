@@ -64,12 +64,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := float64(p.Refine)
 
 	m := make([]float64, attributes.EndStatType)
-	scorchingBrilliance := func(args ...any) bool {
+	scorchingBrilliance := func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		if char.StatusIsActive(BuffICDKey) {
-			return false
+			return
 		}
 		char.AddStatus(BuffICDKey, BuffICDDur, true)
 		w.extended = 0
@@ -87,44 +87,40 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m
 			},
 		})
-
-		return false
 	}
 	c.Events.Subscribe(event.OnSkill, scorchingBrilliance, fmt.Sprintf("%v-athousandblazingsuns-skill", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnBurst, scorchingBrilliance, fmt.Sprintf("%v-athousandblazingsuns-burst", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if c.Player.Active() != char.Index() {
-			return false
+			return
 		}
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
-			return false
+			return
 		}
 		if w.extended >= 3 {
-			return false
+			return
 		}
 		if !char.StatModIsActive(BuffKey) {
-			return false
+			return
 		}
 		if char.StatusIsActive(ExtendICDKey) {
-			return false
+			return
 		}
 
 		w.extended++
 		char.AddStatus(ExtendICDKey, ExtendICDDur, true)
 		char.ExtendStatus(BuffKey, ExtendDur)
-
-		return false
 	}, fmt.Sprintf("%v-athousandblazingsuns-damage", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev, next := args[0].(int), args[1].(int)
 		if prev == char.Index() && char.StatModIsActive(BuffKey) {
 			// swapping out
@@ -134,7 +130,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			// swapping in
 			w.tickSrc = -1
 		}
-		return false
 	}, fmt.Sprintf("thousand-blazing-suns-%v-swap", char.Base.Key.String()))
 
 	return w, nil
