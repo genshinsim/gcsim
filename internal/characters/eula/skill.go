@@ -246,8 +246,8 @@ func (c *char) holdSkill() action.Info {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("eula-c1", (6*v+6)*60),
 			AffectedStat: attributes.PhyP,
-			Amount: func() ([]float64, bool) {
-				return c.c1buff, true
+			Amount: func() []float64 {
+				return c.c1buff
 			},
 		})
 	}

@@ -38,9 +38,9 @@ func (c *char) makeA1CB() info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(a1Key, 3*60),
 			AffectedStat: attributes.PyroP,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				m[attributes.PyroP] = float64(c.a1Stacks) * 0.02
-				return m, true
+				return m
 			},
 		})
 	}
@@ -60,8 +60,8 @@ func (c *char) a4() {
 		x.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("yoimiya-a4", 900),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return c.a4Bonus, true
+			Amount: func() []float64 {
+				return c.a4Bonus
 			},
 		})
 	}

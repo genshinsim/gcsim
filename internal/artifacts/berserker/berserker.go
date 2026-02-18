@@ -32,8 +32,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("berserker-2pc", -1),
 			AffectedStat: attributes.CR,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -43,11 +43,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.CR] = 0.24
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("berserker-4pc", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if char.CurrentHPRatio() > 0.7 {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 	}

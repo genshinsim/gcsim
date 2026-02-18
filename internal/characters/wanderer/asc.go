@@ -148,8 +148,8 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a1PyroKey, 1200),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 
@@ -159,8 +159,8 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a1CryoKey, 1200),
 			AffectedStat: attributes.CR,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 

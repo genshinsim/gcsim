@@ -65,12 +65,12 @@ func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p i
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, 60*8),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				m[attributes.ATKP] = atkbuff * float64(stacks)
 				if c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
 					m[attributes.ATKP] *= 2
 				}
-				return m, true
+				return m
 			},
 		})
 		return false

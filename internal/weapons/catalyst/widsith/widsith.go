@@ -68,12 +68,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("widsith", 600),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				// sanity check; should never happen
 				if state == -1 {
-					return nil, false
+					return nil
 				}
-				return buff[state], true
+				return buff[state]
 			},
 		})
 		c.Log.NewEvent("widsith proc'd", glog.LogWeaponEvent, char.Index()).

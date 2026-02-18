@@ -215,8 +215,8 @@ func (c *char) addSigil(done bool) info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(skillSigilKey, 18*60),
 			AffectedStat: attributes.ER,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

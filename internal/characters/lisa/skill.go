@@ -134,8 +134,8 @@ func (c *char) skillHold() action.Info {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("lisa-c2", 126),
 			AffectedStat: attributes.DEFP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

@@ -30,12 +30,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = .12 + 0.04*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("festering", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 

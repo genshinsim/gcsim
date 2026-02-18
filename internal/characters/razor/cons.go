@@ -24,8 +24,8 @@ func (c *char) c1() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("razor-c1", 8*60),
 			AffectedStat: attributes.DmgP,
-			Amount: func() ([]float64, bool) {
-				return c.c1bonus, true
+			Amount: func() []float64 {
+				return c.c1bonus
 			},
 		})
 		return false
@@ -40,15 +40,15 @@ func (c *char) c2() {
 
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("razor-c2", -1),
-			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) []float64 {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				if x.HP()/x.MaxHP() < 0.3 {
-					return c.c2bonus, true
+					return c.c2bonus
 				}
-				return nil, false
+				return nil
 			},
 		})
 	}

@@ -40,8 +40,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("crimson-2pc", -1),
 			AffectedStat: attributes.PyroP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -69,8 +69,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(cw4pc, 10*60),
 				AffectedStat: attributes.PyroP,
-				Amount: func() ([]float64, bool) {
-					return mStacks, true
+				Amount: func() []float64 {
+					return mStacks
 				},
 			})
 
@@ -79,17 +79,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("crimson-4pc", -1),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				switch ai.AttackTag {
 				case attacks.AttackTagOverloadDamage,
 					attacks.AttackTagBurningDamage,
 					attacks.AttackTagBurgeon:
-					return 0.4, false
+					return 0.4
 				}
 				if ai.Amped {
-					return 0.15, false
+					return 0.15
 				}
-				return 0, false
+				return 0
 			},
 		})
 	}

@@ -47,10 +47,10 @@ func (c *char) c1() {
 				// requires ReactBonusMod refactor
 				char.AddReactBonusMod(character.ReactBonusMod{
 					Base: modifier.NewBase("mona-c1", 8*60),
-					Amount: func(ai info.AttackInfo) (float64, bool) {
+					Amount: func(ai info.AttackInfo) float64 {
 						// doesn't work off-field
 						if c.Core.Player.Active() != char.Index() {
-							return 0, false
+							return 0
 						}
 
 						switch ai.AttackTag {
@@ -58,16 +58,16 @@ func (c *char) c1() {
 						// Electro-Charged DMG increases by 15%.
 						// Lunar-Charged DMG increases by 15%.
 						case attacks.AttackTagSwirlHydro, attacks.AttackTagECDamage, attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged:
-							return 0.15, false
+							return 0.15
 						}
 
 						// Vaporize DMG increases by 15%.
 						// the only way Hydro Swirl can vape is via an AoE Hydro Swirl which doesn't do damage anyways, so this is fine
 						if ai.Amped {
-							return 0.15, false
+							return 0.15
 						}
 
-						return 0, false
+						return 0
 					},
 				})
 			}, 1)
@@ -133,16 +133,16 @@ func (c *char) c4() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c4key, -1),
-			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) []float64 {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				// ok only if either bubble or omen is present
 				if x.StatusIsActive(bubbleKey) || x.StatusIsActive(omenKey) {
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
 	}
@@ -205,12 +205,12 @@ func (c *char) c6(src int) func() {
 		m := make([]float64, attributes.EndStatType)
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c6Key, 8*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagExtra {
-					return nil, false
+					return nil
 				}
 				m[attributes.DmgP] = 0.60 * float64(c.c6Stacks)
-				return m, true
+				return m
 			},
 		})
 

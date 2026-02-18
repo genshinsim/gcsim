@@ -59,11 +59,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		for _, char := range c.Core.Player.Chars() {
 			char.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBaseWithHitlag(burstDmgBonusKey, burstDuration),
-				Amount: func(ai info.AttackInfo) (float64, bool) {
+				Amount: func(ai info.AttackInfo) float64 {
 					if ai.AttackTag == attacks.AttackTagBloom {
-						return burstDmgBonus[c.TalentLvlBurst()], false
+						return burstDmgBonus[c.TalentLvlBurst()]
 					}
-					return 0, false
+					return 0
 				},
 			})
 		}

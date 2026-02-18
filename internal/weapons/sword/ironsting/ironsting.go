@@ -64,8 +64,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("ironsting", 360),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return w.buff, true
+			Amount: func() []float64 {
+				return w.buff
 			},
 		})
 		return false

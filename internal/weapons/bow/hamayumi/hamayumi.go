@@ -29,14 +29,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	ca := .09 + .03*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("hamayumi", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			val := make([]float64, attributes.EndStatType)
 			if atk.Info.AttackTag == attacks.AttackTagNormal {
 				val[attributes.DmgP] = nm
 				if char.Energy == char.EnergyMax {
 					val[attributes.DmgP] = nm * 2
 				}
-				return val, true
+				return val
 			}
 
 			if atk.Info.AttackTag == attacks.AttackTagExtra {
@@ -44,9 +44,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				if char.Energy == char.EnergyMax {
 					val[attributes.DmgP] = ca * 2
 				}
-				return val, true
+				return val
 			}
-			return nil, false
+			return nil
 		},
 	})
 

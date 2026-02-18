@@ -120,11 +120,11 @@ func (c *char) c2() {
 		// TODO: Test whether this is indeed a static buff once we have C2
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase(c2Key, -1),
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if !c.StatusIsActive(dreamDrifterStateKey) {
-					return nil, false
+					return nil
 				}
-				return c.c2Buff, true
+				return c.c2Buff
 			},
 		})
 	}

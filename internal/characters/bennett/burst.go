@@ -147,8 +147,8 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64, firstTic
 				Base:         modifier.NewBaseWithHitlag(burstFieldKey, burstBuffDuration),
 				AffectedStat: attributes.NoStat,
 				Extra:        true,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 

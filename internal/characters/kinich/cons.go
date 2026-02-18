@@ -26,18 +26,18 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kinich-c1", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
 			default:
-				return nil, false
+				return nil
 			}
 			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagKinichCannon) {
-				return nil, false
+				return nil
 			}
 
 			m[attributes.CD] = 1
-			return m, true
+			return m
 		},
 	})
 }
@@ -74,12 +74,12 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kinich-c4-dmgp", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = 0.7
-			return m, true
+			return m
 		},
 	})
 }

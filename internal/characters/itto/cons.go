@@ -49,8 +49,8 @@ func (c *char) c4() {
 		x.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("itto-c4", 10*60),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -63,11 +63,11 @@ func (c *char) c6() {
 	m[attributes.CD] = 0.7
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("itto-c6", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

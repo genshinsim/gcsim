@@ -35,16 +35,16 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.35
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("ts-4pc", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				r, ok := t.(core.Reactable)
 				if !ok {
-					return nil, false
+					return nil
 				}
 
 				if r.AuraContains(attributes.Electro) {
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
 	}

@@ -15,8 +15,8 @@ func (c *Traveler) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("amc-c2", -1),
 		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

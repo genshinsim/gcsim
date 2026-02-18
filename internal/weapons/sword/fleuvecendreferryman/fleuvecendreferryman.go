@@ -34,11 +34,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR[attributes.CR] = 0.06 + 0.02*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("fleuvecendreferryman-cr", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold {
-				return mCR, true
+				return mCR
 			}
-			return nil, false
+			return nil
 		},
 	})
 
@@ -52,8 +52,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("fleuvecendreferryman-er", 5*60),
 			AffectedStat: attributes.ER,
-			Amount: func() ([]float64, bool) {
-				return mER, true
+			Amount: func() []float64 {
+				return mER
 			},
 		})
 		return false

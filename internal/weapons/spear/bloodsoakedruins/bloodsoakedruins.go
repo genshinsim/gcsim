@@ -48,11 +48,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag("bloodsoakedruins-lc", 3.5*60),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				if ai.AttackTag != attacks.AttackTagReactionLunarCharge && ai.AttackTag != attacks.AttackTagDirectLunarCharged {
-					return 0, false
+					return 0
 				}
-				return lcBonus, false
+				return lcBonus
 			},
 		})
 
@@ -72,8 +72,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("bloodsoakedruins-cd", 6*60),
 			AffectedStat: attributes.CD,
-			Amount: func() ([]float64, bool) {
-				return mCrit, true
+			Amount: func() []float64 {
+				return mCrit
 			},
 		})
 

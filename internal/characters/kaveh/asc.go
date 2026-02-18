@@ -51,9 +51,9 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(a4Key, burstDuration),
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.EM] = float64(25 * c.a4Stacks)
-			return m, true
+			return m
 		},
 	})
 }

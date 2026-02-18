@@ -69,8 +69,8 @@ func (c *char) c2() {
 		}
 		ch.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c2BuffKey, -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-				return c2Buffs[attributes.Geo], true
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				return c2Buffs[attributes.Geo]
 			},
 		})
 	}
@@ -86,8 +86,8 @@ func (c *char) applyC2Buff(src int, other *character.CharWrapper) func() {
 		}
 		other.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(c2BuffKey, 60),
-			Amount: func() ([]float64, bool) {
-				return c2Buffs[other.Base.Element], true
+			Amount: func() []float64 {
+				return c2Buffs[other.Base.Element]
 			},
 		})
 		c.QueueCharTask(c.applyC2Buff(src, other), c2Interval)
@@ -207,14 +207,14 @@ func (c *char) applyC6() {
 func (c *char) c6FlatDmg() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6key, c6Duration),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagNormal, attacks.AttackTagPlunge:
 			default:
-				return nil, false
+				return nil
 			}
 			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
-				return nil, false
+				return nil
 			}
 
 			amt := c.TotalDef(false) * 3.0
@@ -222,7 +222,7 @@ func (c *char) c6FlatDmg() {
 				Write("amt", amt)
 
 			atk.Info.FlatDmg += amt
-			return nil, true
+			return nil
 		},
 	})
 }

@@ -115,48 +115,46 @@ func SetupResonance(s *core.Core) {
 		}
 		switch k {
 		case attributes.Pyro:
-			val := make([]float64, attributes.EndStatType)
-			val[attributes.ATKP] = 0.25
-			f := func() ([]float64, bool) {
-				return val, true
-			}
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.ATKP] = 0.25
 			for _, c := range chars {
 				c.AddStatMod(character.StatMod{
 					Base:         modifier.NewBase("pyro-res", -1),
 					AffectedStat: attributes.NoStat,
-					Amount:       f,
+					Amount: func() []float64 {
+						return m
+					},
 				})
 			}
 		case attributes.Hydro:
 			// TODO: reduce pyro duration not implemented; may affect bennett Q?
-			val := make([]float64, attributes.EndStatType)
-			val[attributes.HPP] = 0.25
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.HPP] = 0.25
 			for _, c := range chars {
 				c.AddStatMod(character.StatMod{
 					Base:         modifier.NewBase("hydro-res-hpp", -1),
 					AffectedStat: attributes.HPP,
-					Amount: func() ([]float64, bool) {
-						return val, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}
 		case attributes.Cryo:
-			val := make([]float64, attributes.EndStatType)
-			val[attributes.CR] = .15
-			f := func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
-				r, ok := t.(*enemy.Enemy)
-				if !ok {
-					return nil, false
-				}
-				if r.AuraContains(attributes.Cryo) || r.AuraContains(attributes.Frozen) {
-					return val, true
-				}
-				return nil, false
-			}
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.CR] = .15
 			for _, c := range chars {
 				c.AddAttackMod(character.AttackMod{
-					Base:   modifier.NewBase("cryo-res", -1),
-					Amount: f,
+					Base: modifier.NewBase("cryo-res", -1),
+					Amount: func(ae *info.AttackEvent, t info.Target) []float64 {
+						r, ok := t.(*enemy.Enemy)
+						if !ok {
+							return nil
+						}
+						if r.AuraContains(attributes.Cryo) || r.AuraContains(attributes.Frozen) {
+							return m
+						}
+						return nil
+					},
 				})
 			}
 		case attributes.Electro:
@@ -213,18 +211,17 @@ func SetupResonance(s *core.Core) {
 				return false
 			}, "geo res")
 
-			val := make([]float64, attributes.EndStatType)
-			val[attributes.DmgP] = .15
-			atkf := func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
-				if s.Player.Shields.CharacterIsShielded(ae.Info.ActorIndex, s.Player.Active()) {
-					return val, true
-				}
-				return nil, false
-			}
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.DmgP] = .15
 			for _, c := range chars {
 				c.AddAttackMod(character.AttackMod{
-					Base:   modifier.NewBase("geo-res", -1),
-					Amount: atkf,
+					Base: modifier.NewBase("geo-res", -1),
+					Amount: func(ae *info.AttackEvent, t info.Target) []float64 {
+						if s.Player.Shields.CharacterIsShielded(ae.Info.ActorIndex, s.Player.Active()) {
+							return m
+						}
+						return nil
+					},
 				})
 			}
 
@@ -240,14 +237,14 @@ func SetupResonance(s *core.Core) {
 				})
 			}
 		case attributes.Dendro:
-			val := make([]float64, attributes.EndStatType)
-			val[attributes.EM] = 50
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.EM] = 50
 			for _, c := range chars {
 				c.AddStatMod(character.StatMod{
 					Base:         modifier.NewBase("dendro-res-50", -1),
 					AffectedStat: attributes.EM,
-					Amount: func() ([]float64, bool) {
-						return val, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}
@@ -262,8 +259,8 @@ func SetupResonance(s *core.Core) {
 					c.AddStatMod(character.StatMod{
 						Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
 						AffectedStat: attributes.EM,
-						Amount: func() ([]float64, bool) {
-							return twoBuff, true
+						Amount: func() []float64 {
+							return twoBuff
 						},
 					})
 				}
@@ -281,8 +278,8 @@ func SetupResonance(s *core.Core) {
 					c.AddStatMod(character.StatMod{
 						Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
 						AffectedStat: attributes.EM,
-						Amount: func() ([]float64, bool) {
-							return threeBuff, true
+						Amount: func() []float64 {
+							return threeBuff
 						},
 					})
 				}
@@ -423,14 +420,14 @@ func setupAscendantGleam(core *core.Core) {
 		for _, c := range core.Player.Chars() {
 			c.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBase("ascendant-gleam", 20*60),
-				Amount: func(ai info.AttackInfo) (float64, bool) {
+				Amount: func(ai info.AttackInfo) float64 {
 					if !attacks.AttackTagIsLunar(ai.AttackTag) {
-						return 0, false
+						return 0
 					}
 					if core.Flags.LogDebug {
 						core.Log.NewEvent("Adding ascendant gleam react bonus", glog.LogPreDamageMod, char.Index()).Write("amt", buff)
 					}
-					return buff, false
+					return buff
 				},
 			})
 		}

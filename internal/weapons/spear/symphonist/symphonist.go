@@ -46,12 +46,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("symphonist-atkp", -1),
 		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.ATKP] = selfAtkP
 			if c.Player.Active() != char.Index() {
 				m[attributes.ATKP] += selfAtkP
 			}
-			return m, true
+			return m
 		},
 	})
 
@@ -69,8 +69,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, bufDur),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return buffOnHeal, true
+			Amount: func() []float64 {
+				return buffOnHeal
 			},
 		})
 
@@ -79,8 +79,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			otherChar.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(buffKey, bufDur),
 				AffectedStat: attributes.ATKP,
-				Amount: func() ([]float64, bool) {
-					return buffOnHeal, true
+				Amount: func() []float64 {
+					return buffOnHeal
 				},
 			})
 		}

@@ -27,16 +27,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("magic-guide", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			x, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if x.AuraContains(attributes.Hydro, attributes.Electro, attributes.Cryo) {
 				m[attributes.DmgP] = 0.09 + float64(r)*0.03
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 

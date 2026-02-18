@@ -66,8 +66,8 @@ func (c *char) a4() {
 		Base:         modifier.NewBase("neuvillette-a4", -1),
 		AffectedStat: attributes.HydroP,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return c.a4Buff, true
+		Amount: func() []float64 {
+			return c.a4Buff
 		},
 	})
 

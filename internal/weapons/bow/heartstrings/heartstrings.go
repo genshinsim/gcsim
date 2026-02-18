@@ -61,13 +61,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("heartstrings", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			stacks := w.Stacks()
 			mHP[attributes.HPP] = hpStack * float64(stacks)
 			if stacks >= 3 {
 				mHP[attributes.HPP] += hpMaxStack
 			}
-			return mHP, true
+			return mHP
 		},
 	})
 
@@ -111,14 +111,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR[attributes.CR] = 0.21 + float64(r)*0.07
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(burstCRKey, -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 			if w.Stacks() < 3 && !char.StatusIsActive(burstCRKeyCancel) {
-				return nil, false
+				return nil
 			}
-			return mCR, true
+			return mCR
 		},
 	})
 

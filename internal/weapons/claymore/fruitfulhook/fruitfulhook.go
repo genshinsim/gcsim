@@ -35,11 +35,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR[attributes.CR] = 0.12 + 0.04*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("fruitful-hook-cr", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag == attacks.AttackTagPlunge {
-				return mCR, true
+				return mCR
 			}
-			return nil, false
+			return nil
 		},
 	})
 
@@ -56,15 +56,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("fruitful-hook-dmg%", 10*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				switch atk.Info.AttackTag {
 				case attacks.AttackTagNormal:
 				case attacks.AttackTagExtra:
 				case attacks.AttackTagPlunge:
 				default:
-					return nil, false
+					return nil
 				}
-				return mDMG, true
+				return mDMG
 			},
 		})
 

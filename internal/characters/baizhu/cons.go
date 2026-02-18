@@ -82,8 +82,8 @@ func (c *char) c4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("baizhu-c4", 900),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

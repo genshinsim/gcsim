@@ -37,8 +37,8 @@ func (c *char) c1OnFightingSpirit() {
 	}
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag(c1Key, 10*60),
-		Amount: func() ([]float64, bool) {
-			return c.c1buff, true
+		Amount: func() []float64 {
+			return c.c1buff
 		},
 	})
 }
@@ -51,11 +51,11 @@ func (c *char) c2Init() {
 	m[attributes.BaseATK] = 200
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("mavuika-c2-base-atk", -1),
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.nightsoulState.HasBlessing() {
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 }

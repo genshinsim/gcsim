@@ -76,8 +76,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("sunny-morning-swirl", 6*60),
-			Amount: func() ([]float64, bool) {
-				return w.emBuffSwirl, true
+			Amount: func() []float64 {
+				return w.emBuffSwirl
 			},
 		})
 
@@ -98,8 +98,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("sunny-morning-skill", 9*60),
-			Amount: func() ([]float64, bool) {
-				return w.emBuffSkill, true
+			Amount: func() []float64 {
+				return w.emBuffSkill
 			},
 		})
 		return false
@@ -119,8 +119,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase("sunny-morning-burst", 30*60),
-			Amount: func() ([]float64, bool) {
-				return w.emBuffBurst, true
+			Amount: func() []float64 {
+				return w.emBuffBurst
 			},
 		})
 

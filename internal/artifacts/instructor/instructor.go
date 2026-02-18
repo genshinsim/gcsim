@@ -37,8 +37,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("instructor-2pc", -1),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -63,8 +63,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				this.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("instructor-4pc", 480),
 					AffectedStat: attributes.EM,
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}

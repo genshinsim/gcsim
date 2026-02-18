@@ -74,8 +74,8 @@ func (c *char) a1() {
 			this.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("nilou-a1-em", 10*60),
 				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}
@@ -95,16 +95,18 @@ func (c *char) a4() {
 		// TODO: a4 should be an extra buff
 		this.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				if ai.AttackTag != attacks.AttackTagBloom {
-					return 0, false
+					return 0
 				}
+				// TODO(shizuka): should be attacktag, see comment in bountifulcore.go
 				if ai.ICDTag != attacks.ICDTagBountifulCoreDamage {
-					return 0, false
+					return 0
 				}
-
-				c.Core.Combat.Log.NewEvent("adding nilou a4 bonus", glog.LogCharacterEvent, c.Index()).Write("bonus", c.a4Bonus)
-				return c.a4Bonus, false
+				if c.Core.Flags.LogDebug {
+					c.Core.Combat.Log.NewEvent("adding nilou a4 bonus", glog.LogCharacterEvent, c.Index()).Write("bonus", c.a4Bonus)
+				}
+				return c.a4Bonus
 			},
 		})
 	}

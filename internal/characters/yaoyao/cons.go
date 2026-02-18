@@ -23,8 +23,8 @@ func (c *char) c1() {
 	active.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("yaoyao-c1", 8*60),
 		AffectedStat: attributes.DendroP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 	if c.StatusIsActive(c1ICDkey) {
@@ -64,8 +64,8 @@ func (c *char) c4() {
 		Base:         modifier.NewBaseWithHitlag("yaoyao-c4", 8.8*60),
 		AffectedStat: attributes.EM,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

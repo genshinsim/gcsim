@@ -30,8 +30,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = 0.18 + 0.06*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("whitetassel", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
-			return m, atk.Info.AttackTag == attacks.AttackTagNormal
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			if atk.Info.AttackTag == attacks.AttackTagNormal {
+				return m
+			}
+			return nil
 		},
 	})
 

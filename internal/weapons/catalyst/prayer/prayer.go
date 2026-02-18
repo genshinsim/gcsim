@@ -81,11 +81,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("lost-prayer", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if w.stacks == 0 {
-				return nil, false
+				return nil
 			}
-			return w.buff, true
+			return w.buff
 		},
 	})
 

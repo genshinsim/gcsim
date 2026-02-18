@@ -21,8 +21,8 @@ func (c *char) a1(stacks int) {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("yanfei-a1", 360),
 		AffectedStat: attributes.PyroP,
-		Amount: func() ([]float64, bool) {
-			return c.a1Buff, true
+		Amount: func() []float64 {
+			return c.a1Buff
 		},
 	})
 }

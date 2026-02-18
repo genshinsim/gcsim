@@ -60,13 +60,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(func() {
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
-				Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 					if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-						return nil, false
+						return nil
 					}
 
 					m[attributes.DmgP] = mult * this.EnergyMax
-					return m, true
+					return m
 				},
 			})
 		}, 6+60)

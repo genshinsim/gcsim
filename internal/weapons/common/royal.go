@@ -62,9 +62,9 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("royal", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.CR] = float64(stacks) * rate
-			return m, true
+			return m
 		},
 	})
 

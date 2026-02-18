@@ -27,8 +27,8 @@ func (c *char) a1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("yelan-a1", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
@@ -45,10 +45,10 @@ func (c *char) a4() {
 		this := char
 		this.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("yelan-a4", 15*60),
-			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, _ info.Target) []float64 {
 				// char must be active
 				if c.Core.Player.Active() != this.Index() {
-					return nil, false
+					return nil
 				}
 				// floor time elapsed
 				dmg := float64((c.Core.F-started)/60)*0.035 + 0.01
@@ -56,7 +56,7 @@ func (c *char) a4() {
 					dmg = 0.5
 				}
 				c.a4buff[attributes.DmgP] = dmg
-				return c.a4buff, true
+				return c.a4buff
 			},
 		})
 	}

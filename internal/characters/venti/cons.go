@@ -70,8 +70,8 @@ func (c *char) c4() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("venti-c4", 600),
 			AffectedStat: attributes.AnemoP,
-			Amount: func() ([]float64, bool) {
-				return c.c4bonus, true
+			Amount: func() []float64 {
+				return c.c4bonus
 			},
 		})
 		return false

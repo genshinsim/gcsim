@@ -28,13 +28,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	dmg := 0.18 + float64(r)*0.06
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("sharpshooter", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			m := make([]float64, attributes.EndStatType)
 			if atk.Info.HitWeakPoint {
 				m[attributes.DmgP] = dmg
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 

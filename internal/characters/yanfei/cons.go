@@ -17,19 +17,19 @@ func (c *char) c2() {
 		m := make([]float64, attributes.EndStatType)
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("yanfei-c2", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagExtra {
-					return nil, false
+					return nil
 				}
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				if x.HP()/x.MaxHP() >= .5 {
-					return nil, false
+					return nil
 				}
 				m[attributes.CR] = 0.20
-				return m, true
+				return m
 			},
 		})
 	}

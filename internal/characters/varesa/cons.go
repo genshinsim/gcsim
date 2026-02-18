@@ -38,14 +38,14 @@ func (c *char) c4() {
 	m[attributes.DmgP] = 1.0
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("varesa-c4", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst && atk.Info.Abil != kablamAbil {
-				return nil, false
+				return nil
 			}
 			if !c.nightsoulState.HasBlessing() && !c.StatusIsActive(apexState) {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -93,14 +93,14 @@ func (c *char) c6() {
 	m[attributes.CD] = 1.0
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("varesa-c6", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch {
 			case atk.Info.AttackTag == attacks.AttackTagElementalBurst:
 			case atk.Info.AttackTag == attacks.AttackTagPlunge && atk.Info.Durability > 0: // TODO: collision?
 			default:
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

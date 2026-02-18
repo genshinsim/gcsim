@@ -53,11 +53,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.2
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("troupe-2pc", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 	}
@@ -83,11 +83,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("troupe-4pc", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-					return nil, false
+					return nil
 				}
-				return s.buff, true
+				return s.buff
 			},
 		})
 	}

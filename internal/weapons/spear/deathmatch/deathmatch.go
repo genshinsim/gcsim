@@ -53,11 +53,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("deathmatch", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if w.useMultiple {
-				return multiple, true
+				return multiple
 			}
-			return single, true
+			return single
 		},
 	})
 

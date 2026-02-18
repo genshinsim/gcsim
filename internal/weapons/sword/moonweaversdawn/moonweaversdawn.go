@@ -36,11 +36,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("moonweavers-dawn", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
-				return val, true
+				return val
 			}
-			return nil, false
+			return nil
 		},
 	})
 

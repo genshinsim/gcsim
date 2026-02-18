@@ -22,8 +22,8 @@ func (c *char) c4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("raiden-c4", 600),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

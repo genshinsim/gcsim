@@ -49,11 +49,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 720),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-					return nil, false
+					return nil
 				}
-				return w.buff, true
+				return w.buff
 			},
 		})
 		return false

@@ -13,11 +13,11 @@ const c4BuffKey = "shenhe-c4"
 func (c *char) c2(active *character.CharWrapper, dur int) {
 	active.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("shenhe-c2", dur),
-		Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(ae *info.AttackEvent, _ info.Target) []float64 {
 			if ae.Info.Element != attributes.Cryo {
-				return nil, false
+				return nil
 			}
-			return c.c2buff, true
+			return c.c2buff
 		},
 	})
 }

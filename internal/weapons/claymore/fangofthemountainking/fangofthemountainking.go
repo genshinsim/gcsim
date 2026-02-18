@@ -103,16 +103,16 @@ func (w *Weapon) addStacks(num int) {
 
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(canopyFavorKey, stackDuration),
-		Amount: func(a *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(a *info.AttackEvent, t info.Target) []float64 {
 			switch a.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:
 			case attacks.AttackTagElementalBurst:
 			default:
-				return nil, false
+				return nil
 			}
 			w.mBuff[attributes.DmgP] = w.buffStack * float64(w.stackTracker.Count())
-			return w.mBuff, true
+			return w.mBuff
 		},
 	})
 }

@@ -23,18 +23,18 @@ func (c *char) a1Init() {
 
 	c.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase(a1Key, -1),
-		Amount: func(ai info.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) float64 {
 			if c.Core.Player.GetMoonsignLevel() < 2 {
-				return 0, false
+				return 0
 			}
 
 			switch ai.AttackTag {
 			case attacks.AttackTagDirectLunarCharged:
 			case attacks.AttackTagReactionLunarCharge:
 			default:
-				return 0, false
+				return 0
 			}
-			return 0.2, false
+			return 0.2
 		},
 	})
 }
@@ -50,10 +50,10 @@ func (c *char) a4Init() {
 		Base:         modifier.NewBase(a4Key, -1),
 		Extra:        true,
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			stats := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
 			m[attributes.EM] = min(stats.TotalATK()*scale, maxBuff)
-			return m, true
+			return m
 		},
 	})
 }

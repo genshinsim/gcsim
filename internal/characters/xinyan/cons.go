@@ -38,11 +38,11 @@ func (c *char) makeC1CB() info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("xinyan-c1", 5*60),
 			AffectedStat: attributes.AtkSpd,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if c.Core.Player.CurrentState() != action.NormalAttackState && c.Core.Player.CurrentState() != action.ChargeAttackState {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 	}
@@ -55,14 +55,14 @@ func (c *char) c2() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("xinyan-c2", -1),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Element != attributes.Physical {
-				return nil, false
+				return nil
 			}
-			return c.c2Buff, true
+			return c.c2Buff
 		},
 	})
 }

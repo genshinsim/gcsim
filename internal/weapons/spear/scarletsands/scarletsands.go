@@ -39,10 +39,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		Base:         modifier.NewBase("scarletsands", -1),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			em := char.NonExtraStat(attributes.EM)
 			mATK[attributes.ATK] = atkBuff * em
-			return mATK, true
+			return mATK
 		},
 	})
 
@@ -90,10 +90,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Base:         modifier.NewBaseWithHitlag(skillBuff, 10*60),
 			AffectedStat: attributes.ATK,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				em := char.NonExtraStat(attributes.EM)
 				mATK[attributes.ATK] = atkSkillBuff * em * float64(w.stacks)
-				return mATK, true
+				return mATK
 			},
 		})
 

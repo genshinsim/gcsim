@@ -140,17 +140,17 @@ func (c *char) burstInit(char *character.CharWrapper) {
 	m[attributes.DmgP] = 0.2
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(burstDmgKey, -1),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if !c.StatusIsActive(burstKey) {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag != attacks.AttackTagNormal {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

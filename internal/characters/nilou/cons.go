@@ -19,11 +19,11 @@ func (c *char) c1() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("nilou-c1", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.Abil != skillIllusionAbil {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -75,11 +75,11 @@ func (c *char) c4() {
 	m[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("nilou-c4", 8*60),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -114,13 +114,13 @@ func (c *char) c6() {
 		Base:         modifier.NewBase("nilou-c6-cr", -1),
 		AffectedStat: attributes.CR,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			cr := c.MaxHP() * 0.001 * 0.006
 			if cr > 0.3 {
 				cr = 0.3
 			}
 			mCR[attributes.CR] = cr
-			return mCR, true
+			return mCR
 		},
 	})
 
@@ -129,13 +129,13 @@ func (c *char) c6() {
 		Base:         modifier.NewBase("nilou-c6-cd", -1),
 		AffectedStat: attributes.CD,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			cd := c.MaxHP() * 0.001 * 0.012
 			if cd > 0.6 {
 				cd = 0.6
 			}
 			mCD[attributes.CD] = cd
-			return mCD, true
+			return mCD
 		},
 	})
 

@@ -41,8 +41,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Base:         modifier.NewBaseWithHitlag(paramitaBuff, 540+skillStart),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return c.ppbuff, true
+		Amount: func() []float64 {
+			return c.ppbuff
 		},
 	})
 	// TODO: this applies a1 at the end of paramita without checking for "pp extend" (if that's real)

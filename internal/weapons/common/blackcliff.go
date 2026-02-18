@@ -29,7 +29,7 @@ func NewBlackcliff(data *model.WeaponData) *Blackcliff {
 }
 
 func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	atk := 0.09 + float64(p.Refine)*0.03
+	atkRefine := 0.09 + float64(p.Refine)*0.03
 	index := 0
 	stackKey := []string{
 		"blackcliff-stack-1",
@@ -37,17 +37,6 @@ func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info
 		"blackcliff-stack-3",
 	}
 	m := make([]float64, attributes.EndStatType)
-
-	amtfn := func() ([]float64, bool) {
-		count := 0
-		for _, v := range stackKey {
-			if char.StatusIsActive(v) {
-				count++
-			}
-		}
-		m[attributes.ATKP] = atk * float64(count)
-		return m, true
-	}
 
 	c.Events.Subscribe(event.OnTargetDied, func(args ...any) bool {
 		_, ok := args[0].(*enemy.Enemy)
@@ -70,7 +59,16 @@ func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("blackcliff", 1800),
 			AffectedStat: attributes.ATKP,
-			Amount:       amtfn,
+			Amount: func() []float64 {
+				count := 0
+				for _, v := range stackKey {
+					if char.StatusIsActive(v) {
+						count++
+					}
+				}
+				m[attributes.ATKP] = atkRefine * float64(count)
+				return m
+			},
 		})
 		index++
 		if index == 3 {

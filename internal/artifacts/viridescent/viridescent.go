@@ -37,8 +37,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("vv-2pc", -1),
 			AffectedStat: attributes.AnemoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -50,10 +50,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// add +0.6 reaction damage
 	char.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("vv-4pc", -1),
-		Amount: func(ai info.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) float64 {
 			// check to make sure this is not an amped swirl
 			if ai.Amped || ai.Catalyzed {
-				return 0, false
+				return 0
 			}
 			switch ai.AttackTag {
 			case attacks.AttackTagSwirlCryo:
@@ -61,9 +61,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			case attacks.AttackTagSwirlHydro:
 			case attacks.AttackTagSwirlPyro:
 			default:
-				return 0, false
+				return 0
 			}
-			return 0.6, false
+			return 0.6
 		},
 	})
 

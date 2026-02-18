@@ -26,13 +26,13 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("yaemiko-a4", -1),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			// only trigger on elemental art damage
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = c.Stat(attributes.EM) * 0.0015
-			return m, true
+			return m
 		},
 	})
 }

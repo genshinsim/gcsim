@@ -88,16 +88,16 @@ func (c *char) burstDamageBonus() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("mona-omen", -1),
-			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) []float64 {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				// ok only if either bubble or omen is present
 				if x.StatusIsActive(bubbleKey) || x.StatusIsActive(omenKey) {
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
 	}

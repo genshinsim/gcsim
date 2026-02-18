@@ -76,15 +76,15 @@ func (c *char) a4() {
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a4BuffKey, -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
+				return nil
 			}
 
 			if !strings.Contains(atk.Info.Abil, salonMemberKey) {
-				return nil, false
+				return nil
 			}
-			return c.a4Buff, true
+			return c.a4Buff
 		},
 	})
 }

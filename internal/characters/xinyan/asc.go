@@ -32,12 +32,12 @@ func (c *char) a4() {
 		idx := i
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("xinyan-a4", -1),
-			Amount: func(_ *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, _ info.Target) []float64 {
 				shd := c.Core.Player.Shields.Get(shield.XinyanSkill)
-				if shd == nil {
-					return nil, false
+				if shd != nil && c.Core.Player.Active() == idx {
+					return m
 				}
-				return m, c.Core.Player.Active() == idx
+				return nil
 			},
 		})
 	}

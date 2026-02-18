@@ -54,8 +54,8 @@ func (c *char) c2buff() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(c2Key, c2Dur),
 		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
-			return c2BuffMod, true
+		Amount: func() []float64 {
+			return c2BuffMod
 		},
 	})
 }

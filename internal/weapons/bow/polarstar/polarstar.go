@@ -47,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("polar-star-atk", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			count := 0
 			if char.StatusIsActive(normalKey) {
 				count++
@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			mATK[attributes.ATKP] = atkbonus
 
-			return mATK, true
+			return mATK
 		},
 	})
 
@@ -99,12 +99,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mDmg[attributes.DmgP] = dmg
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("polar-star-dmg", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
-				return mDmg, true
+				return mDmg
 			}
-			return nil, false
+			return nil
 		},
 	})
 

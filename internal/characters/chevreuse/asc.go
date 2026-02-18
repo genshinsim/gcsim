@@ -77,8 +77,8 @@ func (c *char) a4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("chev-a4", 30*60),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

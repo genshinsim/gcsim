@@ -44,8 +44,8 @@ func (c *Traveler) a1Buff(delay int) {
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a1Key, 60),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}, delay)
@@ -69,16 +69,16 @@ func (c *Traveler) a4Init() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("dmc-a4", -1),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 				m[attributes.DmgP] = c.Stat(attributes.EM) * 0.0015
-				return m, true
+				return m
 			case attacks.AttackTagElementalBurst:
 				m[attributes.DmgP] = c.Stat(attributes.EM) * 0.001
-				return m, true
+				return m
 			default:
-				return nil, false
+				return nil
 			}
 		},
 	})

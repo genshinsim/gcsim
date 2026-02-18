@@ -75,11 +75,11 @@ func (c *char) c2OnBurstExtinction() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(c2Key, 12.5*60),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if !c.StatusIsActive(skillKey) {
-					return nil, false
+					return nil
 				}
-				return c.c2Atk, true
+				return c.c2Atk
 			},
 		})
 	}, 39)
@@ -94,9 +94,9 @@ func (c *char) c4Init() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("skirk-c4", -1),
 		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.ATKP] = c4Atkp[c.getA4Stacks()]
-			return m, true
+			return m
 		},
 	})
 }

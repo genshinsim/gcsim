@@ -33,15 +33,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("amos", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = flat
 			travel := float64(c.F-atk.Snapshot.SourceFrame) / 60
 			stacks := min(int(travel/0.1), 5)
 			m[attributes.DmgP] += dmgpers * float64(stacks)
-			return m, true
+			return m
 		},
 	})
 

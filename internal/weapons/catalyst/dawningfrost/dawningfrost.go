@@ -49,15 +49,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case attacks.AttackTagExtra:
 			char.AddStatMod(character.StatMod{
 				Base: modifier.NewBaseWithHitlag("dawning-frost-ca", 10*60),
-				Amount: func() ([]float64, bool) {
-					return emBuffCa, true
+				Amount: func() []float64 {
+					return emBuffCa
 				},
 			})
 		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
 			char.AddStatMod(character.StatMod{
 				Base: modifier.NewBaseWithHitlag("dawning-frost-skill", 10*60),
-				Amount: func() ([]float64, bool) {
-					return emBuffSkill, true
+				Amount: func() []float64 {
+					return emBuffSkill
 				},
 			})
 		}

@@ -39,8 +39,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("vg-2pc", -1),
 			AffectedStat: attributes.HPP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -52,14 +52,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		addStackMod := func(idx int, duration int) {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(fmt.Sprintf("vg-4pc-%v-stack", idx+1), duration),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagElementalArt,
 						attacks.AttackTagElementalArtHold,
 						attacks.AttackTagElementalBurst:
-						return mStack, true
+						return mStack
 					default:
-						return nil, false
+						return nil
 					}
 				},
 			})
@@ -84,14 +84,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		mBase[attributes.DmgP] = 0.1
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("vg-4pc", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				switch atk.Info.AttackTag {
 				case attacks.AttackTagElementalArt,
 					attacks.AttackTagElementalArtHold,
 					attacks.AttackTagElementalBurst:
-					return mBase, true
+					return mBase
 				default:
-					return nil, false
+					return nil
 				}
 			},
 		})

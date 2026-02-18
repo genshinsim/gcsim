@@ -82,16 +82,16 @@ func (c *char) addAttackSpeedbuff(char *character.CharWrapper) {
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase(attackSpeedKey, -1),
 		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			// No Attack Speed buff if Favonian Favor from Dahlia's Burst is not active
 			if !c.StatusIsActive(burstFavonianFavor) {
-				return nil, false
+				return nil
 			}
 			// No Attack Speed for Charged Attacks
 			if c.Core.Player.CurrentState() != action.NormalAttackState {
-				return nil, false
+				return nil
 			}
-			return c.attackSpeedBuff, true
+			return c.attackSpeedBuff
 		},
 	})
 }

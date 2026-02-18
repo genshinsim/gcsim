@@ -102,11 +102,11 @@ func (c *char) a4Init() {
 	m[attributes.DmgP] = min(0.004*em, 0.32)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("lauma-a4", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

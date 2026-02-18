@@ -40,8 +40,8 @@ func (w *Weapon) Init() error {
 		}
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase(fmt.Sprintf("a-thousand-floating-dreams-party-%v", w.self.Base.Key.String()), -1),
-			Amount: func() ([]float64, bool) {
-				return w.teamBuff, true
+			Amount: func() []float64 {
+				return w.teamBuff
 			},
 		})
 	}
@@ -67,8 +67,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	char.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("a-thousand-floating-dreams", -1),
-		Amount: func() ([]float64, bool) {
-			return w.buff, true
+		Amount: func() []float64 {
+			return w.buff
 		},
 	})
 	return w, nil

@@ -42,12 +42,12 @@ func (c *char) genShield(src string, shieldamt float64, shouldStack bool) {
 		for _, char := range c.Core.Player.Chars() {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("thoma-c6", 360),
-				Amount: func(ae *info.AttackEvent, _ info.Target) ([]float64, bool) {
+				Amount: func(ae *info.AttackEvent, _ info.Target) []float64 {
 					switch ae.Info.AttackTag {
 					case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
-						return c.c6buff, true
+						return c.c6buff
 					}
-					return nil, false
+					return nil
 				},
 			})
 		}

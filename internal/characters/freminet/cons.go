@@ -30,11 +30,11 @@ func (c *char) c1() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1Key, -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if !strings.HasPrefix(atk.Info.Abil, pressureBaseName) {
-				return nil, false
+				return nil
 			}
-			return buff, true
+			return buff
 		},
 	})
 }
@@ -89,9 +89,9 @@ func (c *char) c4c6() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c4Key, 6*60),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				c4M[attributes.ATKP] = float64(c.c4Stacks) * 0.09
-				return c4M, true
+				return c4M
 			},
 		})
 
@@ -116,9 +116,9 @@ func (c *char) c4c6() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c6Key, 6*60),
 			AffectedStat: attributes.CD,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				c6M[attributes.CD] = float64(c.c6Stacks) * 0.12
-				return c6M, true
+				return c6M
 			},
 		})
 

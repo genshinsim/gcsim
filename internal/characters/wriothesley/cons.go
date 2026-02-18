@@ -169,8 +169,8 @@ func (c *char) c4() {
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(c4Status, 4*60),
 				AffectedStat: attributes.AtkSpd,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		} else {
@@ -179,8 +179,8 @@ func (c *char) c4() {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(c4Status, 6*60),
 					AffectedStat: attributes.AtkSpd,
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}

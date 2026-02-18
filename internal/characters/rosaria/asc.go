@@ -29,8 +29,8 @@ func (c *char) makeA1CB() info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("rosaria-a1", 300),
 			AffectedStat: attributes.CR,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index()).
@@ -62,8 +62,8 @@ func (c *char) a4() {
 			Base:         modifier.NewBaseWithHitlag("rosaria-a4", 600),
 			AffectedStat: attributes.CR,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}

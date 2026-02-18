@@ -237,21 +237,21 @@ func (c *char) bubbleTierDamageMod() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("sigewinne-bubble-tier", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:
 			default:
-				return nil, false
+				return nil
 			}
 			if c.currentBubbleTier == 0 {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Abil != c.skillAttackInfo.Abil {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = float64(c.currentBubbleTier) * bubbleTierBuff
-			return m, true
+			return m
 		},
 	})
 }

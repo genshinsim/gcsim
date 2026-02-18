@@ -43,8 +43,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("nighttimewhispers-2pc", -1),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -116,13 +116,13 @@ func (s *Set) OnSkill() func(args ...any) bool {
 		s.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("nighttimewhispers-4pc", 10*60),
 			AffectedStat: attributes.GeoP,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if s.core.F <= s.lastF {
 					m[attributes.GeoP] = 0.2 * 2.5
 				} else {
 					m[attributes.GeoP] = 0.20
 				}
-				return m, true
+				return m
 			},
 		})
 		return false

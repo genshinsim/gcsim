@@ -82,9 +82,9 @@ func (c *char) c2Setup() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("lyney-c2", -1),
 		AffectedStat: attributes.CD,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.CD] = float64(c.c2Stacks) * 0.2
-			return m, true
+			return m
 		},
 	})
 }

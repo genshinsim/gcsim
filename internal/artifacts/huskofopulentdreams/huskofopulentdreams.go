@@ -74,8 +74,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("husk-2pc", -1),
 			AffectedStat: attributes.DEFP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -132,10 +132,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("husk-4pc", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.DEFP] = 0.06 * float64(s.stacks)
 			m[attributes.GeoP] = 0.06 * float64(s.stacks)
-			return m, true
+			return m
 		},
 	})
 

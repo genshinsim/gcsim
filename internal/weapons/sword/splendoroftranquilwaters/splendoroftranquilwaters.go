@@ -124,14 +124,14 @@ func (w *Weapon) onEquipChangeHP() {
 	w.buffSkill[attributes.DmgP] = (0.06 + 0.02*float64(w.refine)) * float64(w.skillStacks)
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(skillBuffKey, 6*60),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
-				return w.buffSkill, true
+				return w.buffSkill
 			case attacks.AttackTagElementalArtHold:
-				return w.buffSkill, true
+				return w.buffSkill
 			default:
-				return nil, false
+				return nil
 			}
 		},
 	})
@@ -155,8 +155,8 @@ func (w *Weapon) onOtherChangeHP() {
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(hpBuffKey, 6*60),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return val, true
+		Amount: func() []float64 {
+			return val
 		},
 	})
 }

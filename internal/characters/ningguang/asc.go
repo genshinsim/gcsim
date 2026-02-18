@@ -30,8 +30,8 @@ func (c *char) a4() {
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("ning-screen", 600),
 			AffectedStat: attributes.GeoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 		return false

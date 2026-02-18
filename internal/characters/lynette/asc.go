@@ -36,8 +36,8 @@ func (c *char) a1() {
 		this.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("lynette-a1", 10*60),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return c.a1Buff, true
+			Amount: func() []float64 {
+				return c.a1Buff
 			},
 		})
 	}
@@ -54,11 +54,11 @@ func (c *char) a4(duration int) {
 	m[attributes.DmgP] = 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("lynette-a4", duration),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

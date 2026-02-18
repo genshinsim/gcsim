@@ -118,8 +118,8 @@ func (c *char) a4() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a4Key, a4Duration), // 4s
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return c.a4Buff, true
+			Amount: func() []float64 {
+				return c.a4Buff
 			},
 		})
 

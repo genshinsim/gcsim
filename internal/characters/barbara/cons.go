@@ -23,8 +23,8 @@ func (c *char) c2() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("barbara-c2", skillDuration),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return c.c2buff, true
+			Amount: func() []float64 {
+				return c.c2buff
 			},
 		})
 	}

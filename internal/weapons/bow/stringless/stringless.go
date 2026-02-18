@@ -29,15 +29,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = 0.18 + float64(r)*0.06
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("stringless", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:
 			case attacks.AttackTagElementalBurst:
 			default:
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 

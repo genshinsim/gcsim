@@ -91,11 +91,11 @@ func (c *char) c2Init() {
 	for _, x := range c.Core.Player.Chars() {
 		x.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("lauma-c2-lunarbloom-buff", -1),
-			Amount: func(atk info.AttackInfo) (float64, bool) {
+			Amount: func(atk info.AttackInfo) float64 {
 				if atk.AttackTag != attacks.AttackTagDirectLunarBloom {
-					return 0, false
+					return 0
 				}
-				return 0.4, false
+				return 0.4
 			},
 		})
 	}

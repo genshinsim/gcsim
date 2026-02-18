@@ -26,18 +26,18 @@ func (c *char) c1Init() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1Key, -1),
-		Amount: func(ae *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(ae *info.AttackEvent, t info.Target) []float64 {
 			trg, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if ae.Info.Abil != a1Abil {
-				return nil, false
+				return nil
 			}
 			if !trg.StatusIsActive(c1Key) {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -83,9 +83,9 @@ func (c *char) c2OnBurst() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(c2Key, 9*60),
 		AffectedStat: attributes.ElectroP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			c.c2Bonus[attributes.ElectroP] = min(0.08*float64(c.Tag(c2Key)), 0.32)
-			return c.c2Bonus, true
+			return c.c2Bonus
 		},
 	})
 }
@@ -148,12 +148,12 @@ func (c *char) c6onHypersense() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(c6Key, 9*60),
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if c.Core.Player.Active() != char.Index() {
-					return nil, false
+					return nil
 				}
 				c.c6bonus[attributes.ATKP] = float64(c.c6stacks.Count()) * 0.1
-				return c.c6bonus, true
+				return c.c6bonus
 			},
 		})
 	}

@@ -66,10 +66,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("thundering-pulse", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			m[attributes.DmgP] = 0
 			if atk.Info.AttackTag != attacks.AttackTagNormal {
-				return m, true
+				return m
 			}
 			count := 0
 			if char.Energy < char.EnergyMax {
@@ -86,7 +86,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				dmg = maxBonus
 			}
 			m[attributes.DmgP] = dmg
-			return m, true
+			return m
 		},
 	})
 

@@ -343,7 +343,7 @@ func PrettyPrintStatsCounts(statsCounts []int) string {
 		if v > 0 {
 			sb.WriteString(attributes.StatTypeString[i])
 			sb.WriteString(": ")
-			sb.WriteString(fmt.Sprintf("%v", v))
+			fmt.Fprintf(&sb, "%v", v)
 			sb.WriteString(" ")
 		}
 	}

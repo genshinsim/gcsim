@@ -46,18 +46,18 @@ func (c *char) c4() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c4Key, -1),
-			Amount: func(_ *info.AttackEvent, t info.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, t info.Target) []float64 {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				// reset stacks on expiry
 				if !x.StatusIsActive(c4Key) {
 					x.RemoveTag(c4Key)
-					return nil, false
+					return nil
 				}
 				m[attributes.DmgP] = float64(x.GetTag(c4Key)) * 0.05
-				return m, true
+				return m
 			},
 		})
 	}

@@ -55,8 +55,8 @@ func (c *char) checkc6(check1HP bool) {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("hutao-c6", 600),
 		AffectedStat: attributes.CR,
-		Amount: func() ([]float64, bool) {
-			return c.c6buff, true
+		Amount: func() []float64 {
+			return c.c6buff
 		},
 	})
 
@@ -86,8 +86,8 @@ func (c *char) c4() {
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("hutao-c4", 900),
 				AffectedStat: attributes.CR,
-				Amount: func() ([]float64, bool) {
-					return c.c4buff, true
+				Amount: func() []float64 {
+					return c.c4buff
 				},
 			})
 		}

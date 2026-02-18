@@ -69,8 +69,8 @@ func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(c6Status, 15*60),
-			Amount: func() ([]float64, bool) {
-				return c.c6Buff, true
+			Amount: func() []float64 {
+				return c.c6Buff
 			},
 		})
 	}

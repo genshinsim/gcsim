@@ -33,11 +33,11 @@ func (c *char) makeC1CB() info.AttackCBFunc {
 		m[attributes.DmgP] = 0.1
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("rosaria-c1-dmg", 240), // 4s
-			Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 
@@ -46,11 +46,11 @@ func (c *char) makeC1CB() info.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("rosaria-c1-speed", 240), // 4s
 			AffectedStat: attributes.AtkSpd,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if c.Core.Player.CurrentState() != action.NormalAttackState {
-					return nil, false
+					return nil
 				}
-				return mAtkSpd, true
+				return mAtkSpd
 			},
 		})
 	}

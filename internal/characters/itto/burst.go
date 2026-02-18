@@ -59,8 +59,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Base:         modifier.NewBaseWithHitlag(burstBuffKey, burstDuration),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return mATK, true
+		Amount: func() []float64 {
+			return mATK
 		},
 	})
 
@@ -70,11 +70,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstAtkSpdKey, burstDuration),
 		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.Core.Player.CurrentState() != action.NormalAttackState {
-				return nil, false
+				return nil
 			}
-			return mAtkSpd, true
+			return mAtkSpd
 		},
 	})
 

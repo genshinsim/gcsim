@@ -74,10 +74,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				other.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf(buffKey, charEle), 6*60),
 					AffectedStat: stat,
-					Amount: func() ([]float64, bool) {
+					Amount: func() []float64 {
 						clear(m)
 						m[stat] = dmg
-						return m, true
+						return m
 					},
 				})
 			}

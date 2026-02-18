@@ -41,8 +41,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	char.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("starcallerswatch-em", -1),
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -80,11 +80,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			this := x
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase(buffKey, -1),
-				Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					if c.Player.Active() != this.Index() {
-						return nil, false
+						return nil
 					}
-					return bonus, true
+					return bonus
 				},
 			})
 		}

@@ -38,8 +38,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = 0.21 + float64(r)*0.07
 	char.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("vividnotions-atk", -1),
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -49,9 +49,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("vividnotions-cd", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge {
-				return nil, false
+				return nil
 			}
 
 			mCD[attributes.CD] = 0
@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			if char.StatusIsActive(skillBurstBuff) {
 				mCD[attributes.CD] += skillBurstCD
 			}
-			return mCD, true
+			return mCD
 		},
 	})
 

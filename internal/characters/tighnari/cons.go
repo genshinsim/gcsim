@@ -16,11 +16,11 @@ func (c *char) c1() {
 	m[attributes.CR] = 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("tighnari-c1", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -38,8 +38,8 @@ func (c *char) c2() {
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase("tighnari-c2", 6*60),
 				AffectedStat: attributes.DendroP,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}, i)
@@ -61,8 +61,8 @@ func (c *char) c4() {
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("tighnari-c4", 8*60),
 				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}
@@ -89,8 +89,8 @@ func (c *char) c4() {
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("tighnari-c4", 8*60),
 				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}

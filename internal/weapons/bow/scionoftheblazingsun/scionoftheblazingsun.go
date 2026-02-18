@@ -44,19 +44,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = 0.21 + 0.07*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("scion", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if !e.StatusIsActive(debuffKey) {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
 
-			return m, true
+			return m
 		},
 	})
 

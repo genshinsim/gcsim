@@ -18,42 +18,31 @@ type (
 		modifier.Base
 	}
 	AttackMod struct {
-		Amount AttackModFunc
 		modifier.Base
+		Amount func(atk *info.AttackEvent, t info.Target) []float64
 	}
-	AttackModFunc func(atk *info.AttackEvent, t info.Target) ([]float64, bool)
-
 	CooldownMod struct {
-		Amount CooldownModFunc
 		modifier.Base
+		Amount func(a action.Action) float64
 	}
-	CooldownModFunc func(a action.Action) float64
-
 	DamageReductionMod struct {
-		Amount DamageReductionModFunc
 		modifier.Base
+		Amount func() float64
 	}
-	DamageReductionModFunc func() (float64, bool)
-
 	HealBonusMod struct {
-		Amount HealBonusModFunc
 		modifier.Base
+		Amount func() float64
 	}
-	HealBonusModFunc func() (float64, bool)
-
 	ReactBonusMod struct {
-		Amount ReactBonusModFunc
 		modifier.Base
+		Amount func(info.AttackInfo) float64
 	}
-	ReactBonusModFunc func(info.AttackInfo) (float64, bool)
-
 	StatMod struct {
+		modifier.Base
 		AffectedStat attributes.Stat
 		Extra        bool
-		Amount       StatModFunc // return false to reject stat mod, true to use stat mod
-		modifier.Base
+		Amount       func() []float64
 	}
-	StatModFunc func() ([]float64, bool)
 )
 
 // Add.
@@ -213,11 +202,10 @@ func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []any 
 			continue
 		}
 
-		amt, ok := m.Amount(a, t)
-		if ok {
-			for k, v := range amt {
-				a.Snapshot.Stats[k] += v
-			}
+		amt := m.Amount(a, t)
+		reject := amt == nil
+		for k, v := range amt {
+			a.Snapshot.Stats[k] += v
 		}
 		c.mods[n] = v
 		n++
@@ -225,10 +213,9 @@ func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []any 
 		if !c.debug {
 			continue
 		}
-		modStatus := make([]string, 0)
-
-		if ok {
-			sb.WriteString(m.Key())
+		modStatus := make([]string, 0, 2)
+		sb.WriteString(m.Key())
+		if !reject {
 			modStatus = append(
 				modStatus,
 				"status: added",
@@ -238,16 +225,13 @@ func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []any 
 				modStatus,
 				attributes.PrettyPrintStatsSlice(amt)...,
 			)
-			logDetails = append(logDetails, sb.String(), modStatus)
-			sb.Reset()
-			continue
+		} else {
+			modStatus = append(
+				modStatus,
+				"status: rejected",
+				"reason: conditions not met",
+			)
 		}
-		sb.WriteString(m.Key())
-		modStatus = append(
-			modStatus,
-			"status: rejected",
-			"reason: conditions not met",
-		)
 		logDetails = append(logDetails, sb.String(), modStatus)
 		sb.Reset()
 	}
@@ -293,12 +277,9 @@ func (c *CharWrapper) DamageReduction(char int) float64 {
 			continue
 		}
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			a, done := m.Amount()
-			amt += a
-			if !done {
-				c.mods[n] = v
-				n++
-			}
+			amt += m.Amount()
+			c.mods[n] = v
+			n++
 		}
 	}
 	c.mods = c.mods[:n]
@@ -316,12 +297,9 @@ func (c *CharWrapper) HealBonus() float64 {
 			continue
 		}
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			a, done := m.Amount()
-			amt += a
-			if !done {
-				c.mods[n] = v
-				n++
-			}
+			amt += m.Amount()
+			c.mods[n] = v
+			n++
 		}
 	}
 	c.mods = c.mods[:n]
@@ -341,12 +319,9 @@ func (c *CharWrapper) ReactBonus(atk info.AttackInfo) float64 {
 			continue
 		}
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			a, done := m.Amount(atk)
-			amt += a
-			if !done {
-				c.mods[n] = v
-				n++
-			}
+			amt += m.Amount(atk)
+			c.mods[n] = v
+			n++
 		}
 	}
 	c.mods = c.mods[:n]

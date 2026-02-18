@@ -27,16 +27,16 @@ func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(a1Key, 60*4), // 4s
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			// skip if not normal/charged/plunge
 			if atk.Info.AttackTag != attacks.AttackTagNormal &&
 				atk.Info.AttackTag != attacks.AttackTagExtra &&
 				atk.Info.AttackTag != attacks.AttackTagPlunge {
-				return nil, false
+				return nil
 			}
 			// apply buff
 			m[attributes.DmgP] = 0.4
-			return m, true
+			return m
 		},
 	})
 }
@@ -64,8 +64,8 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("navia-a4", -1),
 		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

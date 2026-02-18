@@ -38,9 +38,12 @@ func (c *char) a1(char *character.CharWrapper) {
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(a1Buff, skillBuffDuration),
 		AffectedStat: attributes.PhyP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.PhyP] = 0.1 * float64(c.Tag(a1Stacks))
-			return m, c.Core.Player.Active() == char.Index()
+			if c.Core.Player.Active() == char.Index() {
+				return m
+			}
+			return nil
 		},
 	})
 }

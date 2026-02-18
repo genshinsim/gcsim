@@ -222,8 +222,8 @@ func (c *char) skillBuff() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(skillBuffKey, skillBuffDuration),
 			AffectedStat: attributes.AtkSpd,
-			Amount: func() ([]float64, bool) {
-				return c.skillbuff, true
+			Amount: func() []float64 {
+				return c.skillbuff
 			},
 		})
 

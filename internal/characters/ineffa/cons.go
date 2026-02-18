@@ -31,20 +31,20 @@ func (c *char) c1Init() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase(c1Key+"-buff", -1),
-			Amount: func(ai info.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				if !c.StatusIsActive(c1Key) {
-					return 0, false
+					return 0
 				}
 
 				switch ai.AttackTag {
 				case attacks.AttackTagReactionLunarCharge:
 				case attacks.AttackTagDirectLunarCharged:
 				default:
-					return 0, false
+					return 0
 				}
 
 				bonus := min(c.TotalAtk()/100*0.025, 0.50)
-				return bonus, false
+				return bonus
 			},
 		})
 	}

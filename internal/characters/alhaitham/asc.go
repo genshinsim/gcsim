@@ -40,18 +40,18 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("alhaitham-a4", -1),
-		Amount: func(atk *info.AttackEvent, _ info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			// only trigger on projection attack and burst damage
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst &&
 				atk.Info.ICDGroup != attacks.ICDGroupAlhaithamProjectionAttack {
-				return nil, false
+				return nil
 			}
 
 			m[attributes.DmgP] = 0.001 * c.Stat(attributes.EM)
 			if m[attributes.DmgP] > 1 {
 				m[attributes.DmgP] = 1
 			}
-			return m, true
+			return m
 		},
 	})
 }

@@ -127,9 +127,9 @@ func (c *char) applyA4(dur int) {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("wriothesley-a4", dur),
 		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.ATKP] = float64(c.a4Stack) * 0.06
-			return m, true
+			return m
 		},
 	})
 }

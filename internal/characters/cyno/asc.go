@@ -35,13 +35,13 @@ func (c *char) a1Buff() {
 	// game also implements dmg buff with 1s modifier
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("cyno-a1-dmg", 60),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			// actual game uses AttackTagElementalArtExtra for a1, this is a decent
 			// workaround
 			if atk.Info.Abil != skillBName {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }

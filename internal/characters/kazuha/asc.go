@@ -67,10 +67,10 @@ func (c *char) a4() {
 					Base:         modifier.NewBaseWithHitlag("kazuha-a4-"+key, 60*8),
 					AffectedStat: ele,
 					Extra:        true,
-					Amount: func() ([]float64, bool) {
+					Amount: func() []float64 {
 						clear(m)
 						m[ele] = dmg
-						return m, true
+						return m
 					},
 				})
 			}

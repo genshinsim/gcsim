@@ -51,8 +51,8 @@ func (w *Weapon) updateStats() {
 		Base:         modifier.NewBaseWithHitlag("wanderingevenstar", 12*60),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return val, true
+		Amount: func() []float64 {
+			return val
 		},
 	})
 
@@ -67,8 +67,8 @@ func (w *Weapon) updateStats() {
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("wanderingevenstar-%v", w.char.Base.Key.String()), 12*60),
 			AffectedStat: attributes.ATK,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return valTeam, true
+			Amount: func() []float64 {
+				return valTeam
 			},
 		})
 	}

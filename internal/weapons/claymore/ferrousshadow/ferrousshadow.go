@@ -33,16 +33,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("ferrousshadow", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			// don't apply buff if not Charged Attack
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
 			// don't apply buff if above hp threshold
 			if char.CurrentHPRatio() > hpCheck {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 

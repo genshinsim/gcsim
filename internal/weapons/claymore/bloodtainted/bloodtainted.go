@@ -31,15 +31,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = dmg
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("bloodtaintedgreatsword", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			x, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if x.AuraContains(attributes.Pyro, attributes.Electro) {
-				return m, true
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 

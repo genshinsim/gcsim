@@ -64,8 +64,8 @@ func (c *Traveler) c6Buff(delay int) {
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("dmc-c6", 60),
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}, delay)

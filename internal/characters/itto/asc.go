@@ -24,12 +24,12 @@ func (c *char) a1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("itto-a1", -1),
 		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.a1Stacks == 0 || c.Core.Player.CurrentState() != action.ChargeAttackState {
-				return nil, false
+				return nil
 			}
 			mAtkSpd[attributes.AtkSpd] = 0.10 * float64(c.a1Stacks)
-			return mAtkSpd, true
+			return mAtkSpd
 		},
 	})
 }

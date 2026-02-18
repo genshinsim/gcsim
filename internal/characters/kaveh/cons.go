@@ -22,8 +22,8 @@ func (c *char) c1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("kaveh-c1", 180),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
@@ -34,8 +34,8 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(c2Key, burstDuration),
 		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
@@ -43,11 +43,11 @@ func (c *char) c2() {
 func (c *char) c4() {
 	c.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("kaveh-c4", -1),
-		Amount: func(ai info.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) float64 {
 			if ai.AttackTag == attacks.AttackTagBloom {
-				return 0.6, false
+				return 0.6
 			}
-			return 0, false
+			return 0
 		},
 	})
 }

@@ -34,11 +34,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val[attributes.DmgP] = 0.15 + 0.05*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("blacksword", -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
-			return val, true
+			return val
 		},
 	})
 

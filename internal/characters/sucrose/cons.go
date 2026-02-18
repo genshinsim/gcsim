@@ -50,8 +50,8 @@ func (c *char) c6() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("sucrose-c6", 60*10),
 			AffectedStat: stat,
-			Amount: func() ([]float64, bool) {
-				return c.c6buff, true
+			Amount: func() []float64 {
+				return c.c6buff
 			},
 		})
 	}

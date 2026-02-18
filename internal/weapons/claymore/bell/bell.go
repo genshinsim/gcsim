@@ -33,8 +33,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	hp := 0.17 + float64(r)*0.03
-	val := make([]float64, attributes.EndStatType)
-	val[attributes.DmgP] = 0.09 + float64(r)*0.03
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.09 + float64(r)*0.03
 
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) bool {
 		di := args[0].(*info.DrainInfo)
@@ -66,8 +66,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("bell", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return val, c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active())
+		Amount: func() []float64 {
+			if c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
+				return m
+			}
+			return nil
 		},
 	})
 

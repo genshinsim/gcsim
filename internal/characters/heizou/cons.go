@@ -24,8 +24,8 @@ func (c *char) c1() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("heizou-c1", 300), // 5s
 			AffectedStat: attributes.AtkSpd,
-			Amount: func() ([]float64, bool) {
-				return c.c1buff, true
+			Amount: func() []float64 {
+				return c.c1buff
 			},
 		})
 		c.addDecStack()

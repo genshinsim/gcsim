@@ -52,16 +52,16 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a4ModKey, -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			x, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if !x.IsBurning() {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = min(c.TotalAtk()/1000*0.15, 0.36)
-			return m, true
+			return m
 		},
 	})
 }
