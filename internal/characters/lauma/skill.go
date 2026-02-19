@@ -56,6 +56,7 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.AddStatus(c1Key, 20*60, true)
 	c.AddStatus(a1Key, 20*60, true)
+	c.c1HealEnable()
 	c.c6OnSkill()
 	c.AddStatus(frostgroveSanctuaryKey, 15*60, true)
 	c.skillSrc = c.Core.F

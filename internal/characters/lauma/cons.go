@@ -56,7 +56,7 @@ func (c *char) c1Init() {
 	}, "lauma-c1")
 }
 
-func (c *char) c1OnBurst() {
+func (c *char) c1HealEnable() {
 	if c.Base.Cons < 1 {
 		return
 	}

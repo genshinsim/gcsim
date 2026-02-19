@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.setPaleHymnBurst(18)
 		c.AddStatus(burstKey, paleHymnDur, true)
 		c.moonSongOnBurst()
-		c.c1OnBurst()
+		c.c1HealEnable()
 	}, paleHymnGainFrame)
 
 	c.ConsumeEnergy(8)
