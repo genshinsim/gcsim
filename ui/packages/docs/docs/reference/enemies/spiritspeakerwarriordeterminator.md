@@ -1,5 +1,6 @@
 ---
-title: "Spiritspeaker Warrior: Determinator"
+title: >
+  Spiritspeaker Warrior: Determinator
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

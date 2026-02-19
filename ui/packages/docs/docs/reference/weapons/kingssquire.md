@@ -1,5 +1,6 @@
 ---
-title: King's Squire
+title: >
+  King's Squire
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Thundering Pulse
+title: >
+  Thundering Pulse
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

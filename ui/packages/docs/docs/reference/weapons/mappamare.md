@@ -1,5 +1,6 @@
 ---
-title: Mappa Mare
+title: >
+  Mappa Mare
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

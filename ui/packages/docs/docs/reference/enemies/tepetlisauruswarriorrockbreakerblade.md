@@ -1,5 +1,6 @@
 ---
-title: "Tepetlisaurus Warrior: Rockbreaker Blade"
+title: >
+  Tepetlisaurus Warrior: Rockbreaker Blade
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: Flower-Wreathed Feathers
+title: >
+  Flower-Wreathed Feathers
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

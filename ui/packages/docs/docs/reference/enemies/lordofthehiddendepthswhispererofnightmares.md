@@ -1,5 +1,6 @@
 ---
-title: "Lord of the Hidden Depths: Whisperer of Nightmares"
+title: >
+  Lord of the Hidden Depths: Whisperer of Nightmares
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: Qiqi
+title: >
+  Qiqi
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

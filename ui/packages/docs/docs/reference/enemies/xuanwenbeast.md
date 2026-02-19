@@ -1,5 +1,6 @@
 ---
-title: "Xuanwen Beast"
+title: >
+  Xuanwen Beast
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

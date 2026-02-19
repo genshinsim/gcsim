@@ -1,5 +1,6 @@
 ---
-title: Thoma
+title: >
+  Thoma
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: Mistsplitter Reforged
+title: >
+  Mistsplitter Reforged
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

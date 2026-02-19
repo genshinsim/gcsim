@@ -1,5 +1,6 @@
 ---
-title: Gambler
+title: >
+  Gambler
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

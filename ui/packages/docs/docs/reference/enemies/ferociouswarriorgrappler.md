@@ -1,5 +1,6 @@
 ---
-title: "Ferocious Warrior: Grappler"
+title: >
+  Ferocious Warrior: Grappler
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

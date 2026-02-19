@@ -1,5 +1,6 @@
 ---
-title: Beidou
+title: >
+  Beidou
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

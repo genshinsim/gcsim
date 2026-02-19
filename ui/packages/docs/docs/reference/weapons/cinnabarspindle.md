@@ -1,5 +1,6 @@
 ---
-title: Cinnabar Spindle
+title: >
+  Cinnabar Spindle
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

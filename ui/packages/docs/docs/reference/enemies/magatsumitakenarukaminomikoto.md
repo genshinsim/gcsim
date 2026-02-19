@@ -1,5 +1,6 @@
 ---
-title: "Magatsu Mitake Narukami no Mikoto"
+title: >
+  Magatsu Mitake Narukami no Mikoto
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

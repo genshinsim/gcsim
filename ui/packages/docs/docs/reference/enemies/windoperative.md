@@ -1,5 +1,6 @@
 ---
-title: "Wind Operative"
+title: >
+  Wind Operative
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

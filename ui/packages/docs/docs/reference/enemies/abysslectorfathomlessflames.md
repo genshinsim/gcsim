@@ -1,5 +1,6 @@
 ---
-title: "Abyss Lector: Fathomless Flames"
+title: >
+  Abyss Lector: Fathomless Flames
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

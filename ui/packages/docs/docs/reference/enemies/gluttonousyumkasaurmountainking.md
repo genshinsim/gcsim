@@ -1,5 +1,6 @@
 ---
-title: "Gluttonous Yumkasaur Mountain King"
+title: >
+  Gluttonous Yumkasaur Mountain King
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

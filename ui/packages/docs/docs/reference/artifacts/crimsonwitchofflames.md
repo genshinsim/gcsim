@@ -1,5 +1,6 @@
 ---
-title: Crimson Witch of Flames
+title: >
+  Crimson Witch of Flames
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

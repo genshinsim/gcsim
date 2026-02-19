@@ -1,5 +1,6 @@
 ---
-title: Freedom-Sworn
+title: >
+  Freedom-Sworn
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

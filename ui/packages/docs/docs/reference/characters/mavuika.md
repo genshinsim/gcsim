@@ -1,5 +1,6 @@
 ---
-title: Mavuika
+title: >
+  Mavuika
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

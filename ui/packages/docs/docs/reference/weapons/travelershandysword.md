@@ -1,5 +1,6 @@
 ---
-title: Traveler's Handy Sword
+title: >
+  Traveler's Handy Sword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

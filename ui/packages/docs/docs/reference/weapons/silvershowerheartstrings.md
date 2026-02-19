@@ -1,5 +1,6 @@
 ---
-title: Silvershower Heartstrings
+title: >
+  Silvershower Heartstrings
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

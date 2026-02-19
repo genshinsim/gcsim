@@ -1,5 +1,6 @@
 ---
-title: Alhaitham
+title: >
+  Alhaitham
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

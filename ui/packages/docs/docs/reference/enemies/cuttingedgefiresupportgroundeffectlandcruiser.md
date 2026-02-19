@@ -1,5 +1,6 @@
 ---
-title: "Cutting Edge Fire Support Ground Effect Landcruiser"
+title: >
+  Cutting Edge Fire Support Ground Effect Landcruiser
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

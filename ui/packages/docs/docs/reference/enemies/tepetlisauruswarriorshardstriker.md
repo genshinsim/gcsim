@@ -1,5 +1,6 @@
 ---
-title: "Tepetlisaurus Warrior: Shard Striker"
+title: >
+  Tepetlisaurus Warrior: Shard Striker
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

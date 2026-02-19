@@ -1,5 +1,6 @@
 ---
-title: Prototype Rancour
+title: >
+  Prototype Rancour
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

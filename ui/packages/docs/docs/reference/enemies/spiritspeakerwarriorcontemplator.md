@@ -1,5 +1,6 @@
 ---
-title: "Spiritspeaker Warrior: Contemplator"
+title: >
+  Spiritspeaker Warrior: Contemplator
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

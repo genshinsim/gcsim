@@ -1,5 +1,6 @@
 ---
-title: "Qucusaurus Chick"
+title: >
+  Qucusaurus Chick
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

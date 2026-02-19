@@ -1,5 +1,6 @@
 ---
-title: Pale Flame
+title: >
+  Pale Flame
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Gaming
+title: >
+  Gaming
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

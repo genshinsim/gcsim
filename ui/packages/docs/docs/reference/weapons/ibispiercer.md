@@ -1,5 +1,6 @@
 ---
-title: Ibis Piercer
+title: >
+  Ibis Piercer
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

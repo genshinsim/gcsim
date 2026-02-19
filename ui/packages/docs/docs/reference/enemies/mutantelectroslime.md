@@ -1,5 +1,6 @@
 ---
-title: "Mutant Electro Slime"
+title: >
+  Mutant Electro Slime
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

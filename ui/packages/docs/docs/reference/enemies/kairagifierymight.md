@@ -1,5 +1,6 @@
 ---
-title: "Kairagi: Fiery Might"
+title: >
+  Kairagi: Fiery Might
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: Ballad of the Boundless Blue
+title: >
+  Ballad of the Boundless Blue
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

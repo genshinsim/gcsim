@@ -1,5 +1,6 @@
 ---
-title: "Eremite Sword-Dancer"
+title: >
+  Eremite Sword-Dancer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

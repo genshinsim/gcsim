@@ -1,5 +1,6 @@
 ---
-title: Staff of the Scarlet Sands
+title: >
+  Staff of the Scarlet Sands
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Lion's Roar
+title: >
+  Lion's Roar
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

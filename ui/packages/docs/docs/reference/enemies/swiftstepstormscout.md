@@ -1,5 +1,6 @@
 ---
-title: "Swiftstep Storm Scout"
+title: >
+  Swiftstep Storm Scout
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

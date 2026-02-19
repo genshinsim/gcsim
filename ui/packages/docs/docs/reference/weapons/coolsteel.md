@@ -1,5 +1,6 @@
 ---
-title: Cool Steel
+title: >
+  Cool Steel
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

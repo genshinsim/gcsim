@@ -1,5 +1,6 @@
 ---
-title: "Primal Construct: Prospector"
+title: >
+  Primal Construct: Prospector
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

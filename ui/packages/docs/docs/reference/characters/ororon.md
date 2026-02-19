@@ -1,5 +1,6 @@
 ---
-title: Ororon
+title: >
+  Ororon
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

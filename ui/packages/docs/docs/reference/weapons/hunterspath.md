@@ -1,5 +1,6 @@
 ---
-title: Hunter's Path
+title: >
+  Hunter's Path
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

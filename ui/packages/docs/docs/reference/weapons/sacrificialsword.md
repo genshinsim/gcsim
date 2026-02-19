@@ -1,5 +1,6 @@
 ---
-title: Sacrificial Sword
+title: >
+  Sacrificial Sword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

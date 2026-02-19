@@ -1,5 +1,6 @@
 ---
-title: "Pyro Specter"
+title: >
+  Pyro Specter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: "Ascended King"
+title: >
+  Ascended King
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

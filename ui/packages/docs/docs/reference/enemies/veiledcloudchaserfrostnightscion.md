@@ -1,5 +1,6 @@
 ---
-title: "Veiled Cloudchaser: Frostnight Scion"
+title: >
+  Veiled Cloudchaser: Frostnight Scion
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

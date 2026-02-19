@@ -1,5 +1,6 @@
 ---
-title: Toukabou Shigure
+title: >
+  Toukabou Shigure
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

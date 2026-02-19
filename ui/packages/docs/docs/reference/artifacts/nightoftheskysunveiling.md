@@ -1,5 +1,6 @@
 ---
-title: Night of the Sky's Unveiling
+title: >
+  Night of the Sky's Unveiling
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

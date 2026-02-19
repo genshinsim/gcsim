@@ -1,5 +1,6 @@
 ---
-title: "Spirit of Omen: Stone Drake"
+title: >
+  Spirit of Omen: Stone Drake
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

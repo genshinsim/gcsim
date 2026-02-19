@@ -1,5 +1,6 @@
 ---
-title: Dragon's Bane
+title: >
+  Dragon's Bane
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Noelle
+title: >
+  Noelle
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: Prototype Amber
+title: >
+  Prototype Amber
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

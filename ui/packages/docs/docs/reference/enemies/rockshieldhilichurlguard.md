@@ -1,5 +1,6 @@
 ---
-title: "Rock Shield Hilichurl Guard"
+title: >
+  Rock Shield Hilichurl Guard
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

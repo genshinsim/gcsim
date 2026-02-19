@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Burning-Aflame Wayob Manifestation"
+title: >
+  Battle-Hardened Burning-Aflame Wayob Manifestation
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

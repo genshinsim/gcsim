@@ -1,5 +1,6 @@
 ---
-title: "Yumkasaurus Warrior: Whirling Leaves"
+title: >
+  Yumkasaurus Warrior: Whirling Leaves
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

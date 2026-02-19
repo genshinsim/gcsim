@@ -1,5 +1,6 @@
 ---
-title: "Radiant Bladehorn"
+title: >
+  Radiant Bladehorn
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

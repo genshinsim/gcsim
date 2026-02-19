@@ -1,5 +1,6 @@
 ---
-title: Diona
+title: >
+  Diona
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

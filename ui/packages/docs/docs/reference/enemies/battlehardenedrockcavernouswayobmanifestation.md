@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Rock-Cavernous Wayob Manifestation"
+title: >
+  Battle-Hardened Rock-Cavernous Wayob Manifestation
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

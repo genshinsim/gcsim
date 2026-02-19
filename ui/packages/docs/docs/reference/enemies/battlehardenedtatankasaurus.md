@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Tatankasaurus"
+title: >
+  Battle-Hardened Tatankasaurus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: Husk of Opulent Dreams
+title: >
+  Husk of Opulent Dreams
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

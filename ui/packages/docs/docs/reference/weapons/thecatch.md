@@ -1,5 +1,6 @@
 ---
-title: "The Catch"
+title: >
+  "The Catch"
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

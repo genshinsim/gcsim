@@ -1,5 +1,6 @@
 ---
-title: Deepwood Memories
+title: >
+  Deepwood Memories
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

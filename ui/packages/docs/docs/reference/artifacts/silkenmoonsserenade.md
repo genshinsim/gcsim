@@ -1,5 +1,6 @@
 ---
-title: Silken Moon's Serenade
+title: >
+  Silken Moon's Serenade
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

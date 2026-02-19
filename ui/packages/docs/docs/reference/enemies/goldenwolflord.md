@@ -1,5 +1,6 @@
 ---
-title: "Golden Wolflord"
+title: >
+  Golden Wolflord
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

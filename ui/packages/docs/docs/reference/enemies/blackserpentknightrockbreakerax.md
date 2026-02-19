@@ -1,5 +1,6 @@
 ---
-title: "Black Serpent Knight: Rockbreaker Ax"
+title: >
+  Black Serpent Knight: Rockbreaker Ax
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

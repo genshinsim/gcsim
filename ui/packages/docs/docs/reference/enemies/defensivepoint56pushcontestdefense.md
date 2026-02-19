@@ -1,5 +1,6 @@
 ---
-title: "Defensive Point (5.6 Push Contest) (Defense)"
+title: >
+  Defensive Point (5.6 Push Contest) (Defense)
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

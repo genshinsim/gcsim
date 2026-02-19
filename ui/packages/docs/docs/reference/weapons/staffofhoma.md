@@ -1,5 +1,6 @@
 ---
-title: Staff of Homa
+title: >
+  Staff of Homa
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

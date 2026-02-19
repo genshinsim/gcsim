@@ -1,5 +1,6 @@
 ---
-title: "Veteran Wind Operative"
+title: >
+  Veteran Wind Operative
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

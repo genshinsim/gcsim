@@ -1,5 +1,6 @@
 ---
-title: Sacrificial Fragments
+title: >
+  Sacrificial Fragments
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

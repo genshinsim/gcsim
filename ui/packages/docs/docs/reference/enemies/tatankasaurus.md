@@ -1,5 +1,6 @@
 ---
-title: "Tatankasaurus"
+title: >
+  Tatankasaurus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

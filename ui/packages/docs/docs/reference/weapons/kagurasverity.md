@@ -1,5 +1,6 @@
 ---
-title: Kagura's Verity
+title: >
+  Kagura's Verity
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

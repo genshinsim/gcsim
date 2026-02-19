@@ -1,5 +1,6 @@
 ---
-title: Thrilling Tales of Dragon Slayers
+title: >
+  Thrilling Tales of Dragon Slayers
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

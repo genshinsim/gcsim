@@ -1,5 +1,6 @@
 ---
-title: "Armored Crab"
+title: >
+  Armored Crab
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

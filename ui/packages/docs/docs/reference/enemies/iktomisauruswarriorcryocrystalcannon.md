@@ -1,5 +1,6 @@
 ---
-title: "Iktomisaurus Warrior: Cryocrystal Cannon"
+title: >
+  Iktomisaurus Warrior: Cryocrystal Cannon
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: The Unforged
+title: >
+  The Unforged
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

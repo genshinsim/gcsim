@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Radiant Glacial Wolf"
+title: >
+  Battle-Hardened Radiant Glacial Wolf
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

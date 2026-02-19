@@ -1,5 +1,6 @@
 ---
-title: "Angelic Sea Hare"
+title: >
+  Angelic Sea Hare
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

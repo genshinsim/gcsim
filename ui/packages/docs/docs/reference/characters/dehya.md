@@ -1,5 +1,6 @@
 ---
-title: Dehya
+title: >
+  Dehya
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

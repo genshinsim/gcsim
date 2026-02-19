@@ -1,5 +1,6 @@
 ---
-title: Tidal Shadow
+title: >
+  Tidal Shadow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

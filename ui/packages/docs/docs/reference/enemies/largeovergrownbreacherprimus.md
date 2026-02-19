@@ -1,5 +1,6 @@
 ---
-title: "Large Overgrown Breacher Primus"
+title: >
+  Large Overgrown Breacher Primus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

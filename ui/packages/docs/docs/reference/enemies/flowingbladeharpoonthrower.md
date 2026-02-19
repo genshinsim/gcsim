@@ -1,5 +1,6 @@
 ---
-title: "Flowing Blade Harpoon-Thrower"
+title: >
+  Flowing Blade Harpoon-Thrower
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

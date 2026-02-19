@@ -1,5 +1,6 @@
 ---
-title: Ash-Graven Drinking Horn
+title: >
+  Ash-Graven Drinking Horn
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

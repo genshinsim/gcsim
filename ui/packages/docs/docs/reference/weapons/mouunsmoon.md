@@ -1,5 +1,6 @@
 ---
-title: Mouun's Moon
+title: >
+  Mouun's Moon
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

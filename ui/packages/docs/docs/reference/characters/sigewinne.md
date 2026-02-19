@@ -1,5 +1,6 @@
 ---
-title: Sigewinne
+title: >
+  Sigewinne
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: Escoffier
+title: >
+  Escoffier
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

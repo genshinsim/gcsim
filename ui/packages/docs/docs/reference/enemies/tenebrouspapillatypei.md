@@ -1,5 +1,6 @@
 ---
-title: "Tenebrous Papilla: Type I"
+title: >
+  Tenebrous Papilla: Type I
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

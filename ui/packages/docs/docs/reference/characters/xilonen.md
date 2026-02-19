@@ -1,5 +1,6 @@
 ---
-title: Xilonen
+title: >
+  Xilonen
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

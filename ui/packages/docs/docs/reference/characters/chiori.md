@@ -1,5 +1,6 @@
 ---
-title: Chiori
+title: >
+  Chiori
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

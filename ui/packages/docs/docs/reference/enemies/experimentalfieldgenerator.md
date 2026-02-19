@@ -1,5 +1,6 @@
 ---
-title: "Experimental Field Generator"
+title: >
+  Experimental Field Generator
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

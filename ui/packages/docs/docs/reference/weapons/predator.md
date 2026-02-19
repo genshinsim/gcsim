@@ -1,5 +1,6 @@
 ---
-title: Predator
+title: >
+  Predator
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

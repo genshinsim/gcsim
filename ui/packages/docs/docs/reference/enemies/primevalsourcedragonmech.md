@@ -1,5 +1,6 @@
 ---
-title: "Primeval Source Dragon Mech"
+title: >
+  Primeval Source Dragon Mech
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

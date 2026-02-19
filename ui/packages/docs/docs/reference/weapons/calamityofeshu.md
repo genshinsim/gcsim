@@ -1,5 +1,6 @@
 ---
-title: Calamity of Eshu
+title: >
+  Calamity of Eshu
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

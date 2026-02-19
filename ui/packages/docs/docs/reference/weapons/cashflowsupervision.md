@@ -1,5 +1,6 @@
 ---
-title: Cashflow Supervision
+title: >
+  Cashflow Supervision
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

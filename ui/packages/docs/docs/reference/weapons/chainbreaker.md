@@ -1,5 +1,6 @@
 ---
-title: Chain Breaker
+title: >
+  Chain Breaker
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

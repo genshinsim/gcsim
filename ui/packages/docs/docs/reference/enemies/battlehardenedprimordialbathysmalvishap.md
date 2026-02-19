@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Primordial Bathysmal Vishap"
+title: >
+  Battle-Hardened Primordial Bathysmal Vishap
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

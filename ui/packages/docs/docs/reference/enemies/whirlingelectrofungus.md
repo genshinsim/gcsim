@@ -1,5 +1,6 @@
 ---
-title: "Whirling Electro Fungus"
+title: >
+  Whirling Electro Fungus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

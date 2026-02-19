@@ -1,5 +1,6 @@
 ---
-title: Summit Shaper
+title: >
+  Summit Shaper
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

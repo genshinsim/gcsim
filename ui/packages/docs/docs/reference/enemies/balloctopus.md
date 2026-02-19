@@ -1,5 +1,6 @@
 ---
-title: "Ball Octopus"
+title: >
+  Ball Octopus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

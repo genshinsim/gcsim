@@ -1,5 +1,6 @@
 ---
-title: The Exile
+title: >
+  The Exile
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

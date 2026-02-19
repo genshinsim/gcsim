@@ -1,5 +1,6 @@
 ---
-title: "Spirit of Omen: Wind Glede"
+title: >
+  Spirit of Omen: Wind Glede
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

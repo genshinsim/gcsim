@@ -1,5 +1,6 @@
 ---
-title: "Thundercraven Rifthound"
+title: >
+  Thundercraven Rifthound
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

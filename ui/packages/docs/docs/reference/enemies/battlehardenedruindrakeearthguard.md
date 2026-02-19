@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Ruin Drake: Earthguard"
+title: >
+  Battle-Hardened Ruin Drake: Earthguard
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

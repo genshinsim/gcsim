@@ -1,5 +1,6 @@
 ---
-title: "Yumkasaur Whelp"
+title: >
+  Yumkasaur Whelp
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

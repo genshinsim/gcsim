@@ -1,5 +1,6 @@
 ---
-title: "Wilderness Exile"
+title: >
+  Wilderness Exile
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

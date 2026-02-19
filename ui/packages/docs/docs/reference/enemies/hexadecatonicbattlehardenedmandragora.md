@@ -1,5 +1,6 @@
 ---
-title: "Hexadecatonic Battle-Hardened Mandragora"
+title: >
+  Hexadecatonic Battle-Hardened Mandragora
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

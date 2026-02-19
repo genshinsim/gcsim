@@ -1,5 +1,6 @@
 ---
-title: Maiden Beloved
+title: >
+  Maiden Beloved
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Cutting Edge All-Purpose Storm Landcruiser"
+title: >
+  Cutting Edge All-Purpose Storm Landcruiser
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

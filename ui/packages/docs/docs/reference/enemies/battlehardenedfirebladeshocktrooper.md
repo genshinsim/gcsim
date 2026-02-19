@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Fireblade Shock Trooper"
+title: >
+  Battle-Hardened Fireblade Shock Trooper
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

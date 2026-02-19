@@ -1,5 +1,6 @@
 ---
-title: Cloudforged
+title: >
+  Cloudforged
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

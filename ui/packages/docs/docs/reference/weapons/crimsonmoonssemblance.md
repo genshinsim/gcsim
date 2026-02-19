@@ -1,5 +1,6 @@
 ---
-title: Crimson Moon's Semblance
+title: >
+  Crimson Moon's Semblance
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

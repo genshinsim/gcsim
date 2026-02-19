@@ -1,5 +1,6 @@
 ---
-title: A Thousand Floating Dreams
+title: >
+  A Thousand Floating Dreams
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

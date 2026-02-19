@@ -1,5 +1,6 @@
 ---
-title: Flower of Paradise Lost
+title: >
+  Flower of Paradise Lost
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Long Night's Oath
+title: >
+  Long Night's Oath
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

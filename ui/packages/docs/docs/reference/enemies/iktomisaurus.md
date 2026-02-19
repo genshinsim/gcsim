@@ -1,5 +1,6 @@
 ---
-title: "Iktomisaurus"
+title: >
+  Iktomisaurus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

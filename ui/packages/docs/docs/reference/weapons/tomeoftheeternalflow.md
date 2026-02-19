@@ -1,5 +1,6 @@
 ---
-title: Tome of the Eternal Flow
+title: >
+  Tome of the Eternal Flow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

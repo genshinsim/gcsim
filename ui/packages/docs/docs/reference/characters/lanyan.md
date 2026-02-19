@@ -1,5 +1,6 @@
 ---
-title: Lan Yan
+title: >
+  Lan Yan
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

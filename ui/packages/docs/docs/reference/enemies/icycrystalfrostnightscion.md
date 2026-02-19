@@ -1,5 +1,6 @@
 ---
-title: "Icy Crystal: Frostnight Scion"
+title: >
+  Icy Crystal: Frostnight Scion
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

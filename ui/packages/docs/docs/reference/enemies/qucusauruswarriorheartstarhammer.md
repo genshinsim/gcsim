@@ -1,5 +1,6 @@
 ---
-title: "Qucusaurus Warrior: Heartstar Hammer"
+title: >
+  Qucusaurus Warrior: Heartstar Hammer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

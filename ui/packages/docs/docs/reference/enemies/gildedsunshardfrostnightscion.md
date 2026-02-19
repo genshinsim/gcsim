@@ -1,5 +1,6 @@
 ---
-title: "Gilded Sunshard: Frostnight Scion"
+title: >
+  Gilded Sunshard: Frostnight Scion
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

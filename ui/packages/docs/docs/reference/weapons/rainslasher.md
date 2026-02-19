@@ -1,5 +1,6 @@
 ---
-title: Rainslasher
+title: >
+  Rainslasher
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

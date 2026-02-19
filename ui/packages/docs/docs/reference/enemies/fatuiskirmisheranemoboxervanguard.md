@@ -1,5 +1,6 @@
 ---
-title: "Fatui Skirmisher - Anemoboxer Vanguard"
+title: >
+  Fatui Skirmisher - Anemoboxer Vanguard
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

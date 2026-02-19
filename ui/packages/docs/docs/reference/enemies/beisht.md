@@ -1,5 +1,6 @@
 ---
-title: "Beisht"
+title: >
+  Beisht
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

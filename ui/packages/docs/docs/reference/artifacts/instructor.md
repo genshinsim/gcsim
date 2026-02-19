@@ -1,5 +1,6 @@
 ---
-title: Instructor
+title: >
+  Instructor
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

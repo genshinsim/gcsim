@@ -1,5 +1,6 @@
 ---
-title: End of the Line
+title: >
+  End of the Line
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

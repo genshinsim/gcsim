@@ -1,5 +1,6 @@
 ---
-title: Blackcliff Agate
+title: >
+  Blackcliff Agate
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

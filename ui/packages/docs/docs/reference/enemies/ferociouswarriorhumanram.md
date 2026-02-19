@@ -1,5 +1,6 @@
 ---
-title: "Ferocious Warrior: Human Ram"
+title: >
+  Ferocious Warrior: Human Ram
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

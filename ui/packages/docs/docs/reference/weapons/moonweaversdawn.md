@@ -1,5 +1,6 @@
 ---
-title: Moonweaver's Dawn
+title: >
+  Moonweaver's Dawn
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

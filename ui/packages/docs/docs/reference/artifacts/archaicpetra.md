@@ -1,5 +1,6 @@
 ---
-title: Archaic Petra
+title: >
+  Archaic Petra
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

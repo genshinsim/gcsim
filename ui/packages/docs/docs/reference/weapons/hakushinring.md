@@ -1,5 +1,6 @@
 ---
-title: Hakushin Ring
+title: >
+  Hakushin Ring
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

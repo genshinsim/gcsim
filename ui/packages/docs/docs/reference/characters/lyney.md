@@ -1,5 +1,6 @@
 ---
-title: Lyney
+title: >
+  Lyney
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

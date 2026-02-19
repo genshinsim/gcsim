@@ -1,5 +1,6 @@
 ---
-title: "Nimble Harvester Mek"
+title: >
+  Nimble Harvester Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

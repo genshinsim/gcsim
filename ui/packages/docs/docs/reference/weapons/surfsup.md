@@ -1,5 +1,6 @@
 ---
-title: Surf's Up
+title: >
+  Surf's Up
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

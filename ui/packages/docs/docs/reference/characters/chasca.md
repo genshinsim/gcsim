@@ -1,5 +1,6 @@
 ---
-title: Chasca
+title: >
+  Chasca
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

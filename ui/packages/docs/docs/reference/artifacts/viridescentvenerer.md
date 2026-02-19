@@ -1,5 +1,6 @@
 ---
-title: Viridescent Venerer
+title: >
+  Viridescent Venerer
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Wooden Shieldwall Mitachurl"
+title: >
+  Wooden Shieldwall Mitachurl
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: "Perpetual Mechanical Array"
+title: >
+  Perpetual Mechanical Array
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

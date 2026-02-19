@@ -1,5 +1,6 @@
 ---
-title: "Half-Tulpa"
+title: >
+  Half-Tulpa
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

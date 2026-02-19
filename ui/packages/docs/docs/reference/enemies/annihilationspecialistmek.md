@@ -1,5 +1,6 @@
 ---
-title: "Annihilation Specialist Mek"
+title: >
+  Annihilation Specialist Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

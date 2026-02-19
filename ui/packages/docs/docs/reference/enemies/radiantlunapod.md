@@ -1,5 +1,6 @@
 ---
-title: "Radiant Lunapod"
+title: >
+  Radiant Lunapod
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

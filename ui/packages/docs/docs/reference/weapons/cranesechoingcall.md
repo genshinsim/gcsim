@@ -1,5 +1,6 @@
 ---
-title: Crane's Echoing Call
+title: >
+  Crane's Echoing Call
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

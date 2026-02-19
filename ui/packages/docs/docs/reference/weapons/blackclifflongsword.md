@@ -1,5 +1,6 @@
 ---
-title: Blackcliff Longsword
+title: >
+  Blackcliff Longsword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

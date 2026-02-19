@@ -1,5 +1,6 @@
 ---
-title: "Basic Defensive Anemo Tower"
+title: >
+  Basic Defensive Anemo Tower
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

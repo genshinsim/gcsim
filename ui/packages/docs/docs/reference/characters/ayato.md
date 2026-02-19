@@ -1,5 +1,6 @@
 ---
-title: Kamisato Ayato
+title: >
+  Kamisato Ayato
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

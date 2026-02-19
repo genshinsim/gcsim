@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Elite Treasure Hoarder"
+title: >
+  Battle-Hardened Elite Treasure Hoarder
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

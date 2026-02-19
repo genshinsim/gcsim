@@ -1,5 +1,6 @@
 ---
-title: "Oprichniki Thunderblitz Gvardiya"
+title: >
+  Oprichniki Thunderblitz Gvardiya
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

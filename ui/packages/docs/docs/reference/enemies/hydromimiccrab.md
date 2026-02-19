@@ -1,5 +1,6 @@
 ---
-title: "Hydro Mimic Crab"
+title: >
+  Hydro Mimic Crab
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

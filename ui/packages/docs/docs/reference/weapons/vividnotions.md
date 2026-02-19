@@ -1,5 +1,6 @@
 ---
-title: Vivid Notions
+title: >
+  Vivid Notions
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

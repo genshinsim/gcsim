@@ -1,5 +1,6 @@
 ---
-title: "Recon Log Mek"
+title: >
+  Recon Log Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: Dialogues of the Desert Sages
+title: >
+  Dialogues of the Desert Sages
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

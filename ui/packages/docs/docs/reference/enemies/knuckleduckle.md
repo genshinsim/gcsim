@@ -1,5 +1,6 @@
 ---
-title: "Knuckle Duckle"
+title: >
+  Knuckle Duckle
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

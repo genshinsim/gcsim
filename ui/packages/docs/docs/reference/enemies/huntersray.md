@@ -1,5 +1,6 @@
 ---
-title: "Hunter's Ray"
+title: >
+  Hunter's Ray
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

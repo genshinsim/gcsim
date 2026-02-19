@@ -1,5 +1,6 @@
 ---
-title: "Hydro Hypostasis Summon"
+title: >
+  Hydro Hypostasis Summon
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: "Frostnight Herra"
+title: >
+  Frostnight Herra
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

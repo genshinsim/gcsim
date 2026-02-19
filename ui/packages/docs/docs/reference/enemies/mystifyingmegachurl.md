@@ -1,5 +1,6 @@
 ---
-title: "Mystifying Megachurl"
+title: >
+  Mystifying Megachurl
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

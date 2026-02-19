@@ -1,5 +1,6 @@
 ---
-title: Dragonspine Spear
+title: >
+  Dragonspine Spear
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

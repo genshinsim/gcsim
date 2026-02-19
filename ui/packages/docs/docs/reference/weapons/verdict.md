@@ -1,5 +1,6 @@
 ---
-title: Verdict
+title: >
+  Verdict
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

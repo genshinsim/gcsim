@@ -1,5 +1,6 @@
 ---
-title: Azurelight
+title: >
+  Azurelight
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

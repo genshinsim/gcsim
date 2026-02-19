@@ -1,5 +1,6 @@
 ---
-title: "Legatus Golem"
+title: >
+  Legatus Golem
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

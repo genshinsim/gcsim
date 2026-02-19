@@ -1,5 +1,6 @@
 ---
-title: Blackcliff Warbow
+title: >
+  Blackcliff Warbow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

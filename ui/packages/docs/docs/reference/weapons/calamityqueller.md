@@ -1,5 +1,6 @@
 ---
-title: Calamity Queller
+title: >
+  Calamity Queller
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

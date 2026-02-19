@@ -1,5 +1,6 @@
 ---
-title: "Shadowy Husk: Standard Bearer"
+title: >
+  Shadowy Husk: Standard Bearer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

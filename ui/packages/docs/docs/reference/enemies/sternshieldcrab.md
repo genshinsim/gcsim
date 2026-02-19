@@ -1,5 +1,6 @@
 ---
-title: "Sternshield Crab"
+title: >
+  Sternshield Crab
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

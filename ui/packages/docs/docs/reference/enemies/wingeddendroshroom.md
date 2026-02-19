@@ -1,5 +1,6 @@
 ---
-title: "Winged Dendroshroom"
+title: >
+  Winged Dendroshroom
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";
