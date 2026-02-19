@@ -1,5 +1,6 @@
 ---
-title: "Defensive Physical Tower"
+title: >
+  Defensive Physical Tower
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

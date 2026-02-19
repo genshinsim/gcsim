@@ -1,5 +1,6 @@
 ---
-title: "Sangonomiya Cohort"
+title: >
+  Sangonomiya Cohort
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

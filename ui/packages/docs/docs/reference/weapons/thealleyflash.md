@@ -1,5 +1,6 @@
 ---
-title: The Alley Flash
+title: >
+  The Alley Flash
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

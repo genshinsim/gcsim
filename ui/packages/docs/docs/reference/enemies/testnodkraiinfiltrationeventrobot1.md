@@ -1,5 +1,6 @@
 ---
-title: "(test) Nod-Krai Infiltration Event - Robot 1"
+title: >
+  (test) Nod-Krai Infiltration Event - Robot 1
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

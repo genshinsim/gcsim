@@ -1,5 +1,6 @@
 ---
-title: "Spiritspeaker Warrior: Psychokinetic"
+title: >
+  Spiritspeaker Warrior: Psychokinetic
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

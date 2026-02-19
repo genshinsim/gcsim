@@ -1,5 +1,6 @@
 ---
-title: Akuoumaru
+title: >
+  Akuoumaru
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Varesa
+title: >
+  Varesa
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

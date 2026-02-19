@@ -1,5 +1,6 @@
 ---
-title: Twin Nephrite
+title: >
+  Twin Nephrite
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

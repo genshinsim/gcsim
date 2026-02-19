@@ -1,5 +1,6 @@
 ---
-title: Kujou Sara
+title: >
+  Kujou Sara
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

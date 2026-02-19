@@ -1,5 +1,6 @@
 ---
-title: Skyward Atlas
+title: >
+  Skyward Atlas
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Jadeplume Terrorshroom"
+title: >
+  Jadeplume Terrorshroom
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

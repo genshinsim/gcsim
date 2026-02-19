@@ -1,5 +1,6 @@
 ---
-title: "Oceanid"
+title: >
+  Oceanid
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

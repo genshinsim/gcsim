@@ -1,5 +1,6 @@
 ---
-title: "Ultimate Overlord's Mega Magic Sword"
+title: >
+  "Ultimate Overlord's Mega Magic Sword"
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

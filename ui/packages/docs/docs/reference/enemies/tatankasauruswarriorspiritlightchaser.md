@@ -1,5 +1,6 @@
 ---
-title: "Tatankasaurus Warrior: Spiritlight Chaser"
+title: >
+  Tatankasaurus Warrior: Spiritlight Chaser
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

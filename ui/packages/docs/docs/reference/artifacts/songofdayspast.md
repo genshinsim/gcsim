@@ -1,5 +1,6 @@
 ---
-title: Song of Days Past
+title: >
+  Song of Days Past
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

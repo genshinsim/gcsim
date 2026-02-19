@@ -1,5 +1,6 @@
 ---
-title: "Oprichniki Bombardier"
+title: >
+  Oprichniki Bombardier
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

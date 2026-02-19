@@ -1,5 +1,6 @@
 ---
-title: "Oprichniki Grenadier"
+title: >
+  Oprichniki Grenadier
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

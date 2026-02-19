@@ -1,5 +1,6 @@
 ---
-title: "Suppression Specialist Mek"
+title: >
+  Suppression Specialist Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

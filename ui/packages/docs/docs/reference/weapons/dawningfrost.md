@@ -1,5 +1,6 @@
 ---
-title: Dawning Frost
+title: >
+  Dawning Frost
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

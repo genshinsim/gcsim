@@ -1,5 +1,6 @@
 ---
-title: Amber
+title: >
+  Amber
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

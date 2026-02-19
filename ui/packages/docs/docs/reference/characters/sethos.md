@@ -1,5 +1,6 @@
 ---
-title: Sethos
+title: >
+  Sethos
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: Sequence of Solitude
+title: >
+  Sequence of Solitude
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

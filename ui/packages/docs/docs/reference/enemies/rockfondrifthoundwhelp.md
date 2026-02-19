@@ -1,5 +1,6 @@
 ---
-title: "Rockfond Rifthound Whelp"
+title: >
+  Rockfond Rifthound Whelp
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

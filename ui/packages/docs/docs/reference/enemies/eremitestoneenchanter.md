@@ -1,5 +1,6 @@
 ---
-title: "Eremite Stone Enchanter"
+title: >
+  Eremite Stone Enchanter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

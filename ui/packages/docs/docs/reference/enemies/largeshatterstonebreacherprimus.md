@@ -1,5 +1,6 @@
 ---
-title: "Large Shatterstone Breacher Primus"
+title: >
+  Large Shatterstone Breacher Primus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

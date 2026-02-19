@@ -1,5 +1,6 @@
 ---
-title: White Tassel
+title: >
+  White Tassel
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

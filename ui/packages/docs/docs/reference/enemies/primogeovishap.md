@@ -1,5 +1,6 @@
 ---
-title: "Primo Geovishap"
+title: >
+  Primo Geovishap
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

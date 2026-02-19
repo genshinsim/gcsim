@@ -1,5 +1,6 @@
 ---
-title: "Close Combat Storm Landcruiser"
+title: >
+  Close Combat Storm Landcruiser
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

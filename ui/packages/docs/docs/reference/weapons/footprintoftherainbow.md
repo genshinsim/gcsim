@@ -1,5 +1,6 @@
 ---
-title: Footprint of the Rainbow
+title: >
+  Footprint of the Rainbow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

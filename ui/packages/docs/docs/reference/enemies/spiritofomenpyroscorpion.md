@@ -1,5 +1,6 @@
 ---
-title: "Spirit of Omen: Pyro Scorpion"
+title: >
+  Spirit of Omen: Pyro Scorpion
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

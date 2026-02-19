@@ -1,5 +1,6 @@
 ---
-title: "Secret Source Automaton: Hunter-Seeker"
+title: >
+  Secret Source Automaton: Hunter-Seeker
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

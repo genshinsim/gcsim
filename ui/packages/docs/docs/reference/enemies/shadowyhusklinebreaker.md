@@ -1,5 +1,6 @@
 ---
-title: "Shadowy Husk: Line Breaker"
+title: >
+  Shadowy Husk: Line Breaker
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: Etherlight Spindlelute
+title: >
+  Etherlight Spindlelute
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

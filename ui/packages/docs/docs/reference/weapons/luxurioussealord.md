@@ -1,5 +1,6 @@
 ---
-title: Luxurious Sea-Lord
+title: >
+  Luxurious Sea-Lord
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Peak Patrol Song
+title: >
+  Peak Patrol Song
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

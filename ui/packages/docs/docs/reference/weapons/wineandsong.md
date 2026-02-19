@@ -1,5 +1,6 @@
 ---
-title: Wine and Song
+title: >
+  Wine and Song
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

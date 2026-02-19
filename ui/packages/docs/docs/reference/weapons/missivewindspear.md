@@ -1,5 +1,6 @@
 ---
-title: Missive Windspear
+title: >
+  Missive Windspear
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

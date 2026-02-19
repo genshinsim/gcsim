@@ -1,5 +1,6 @@
 ---
-title: The Viridescent Hunt
+title: >
+  The Viridescent Hunt
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

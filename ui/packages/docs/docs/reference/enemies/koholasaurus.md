@@ -1,5 +1,6 @@
 ---
-title: "Koholasaurus"
+title: >
+  Koholasaurus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

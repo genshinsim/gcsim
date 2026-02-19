@@ -1,5 +1,6 @@
 ---
-title: "Thunderhelm Lawachurl"
+title: >
+  Thunderhelm Lawachurl
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

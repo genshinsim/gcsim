@@ -1,5 +1,6 @@
 ---
-title: Favonius Lance
+title: >
+  Favonius Lance
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

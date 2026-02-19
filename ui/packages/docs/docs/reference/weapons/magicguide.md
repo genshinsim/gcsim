@@ -1,5 +1,6 @@
 ---
-title: Magic Guide
+title: >
+  Magic Guide
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

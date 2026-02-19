@@ -1,5 +1,6 @@
 ---
-title: "Area Alert Mek"
+title: >
+  Area Alert Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

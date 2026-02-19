@@ -1,5 +1,6 @@
 ---
-title: Finale of the Deep
+title: >
+  Finale of the Deep
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

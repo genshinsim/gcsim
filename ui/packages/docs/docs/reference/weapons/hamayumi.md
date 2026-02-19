@@ -1,5 +1,6 @@
 ---
-title: Hamayumi
+title: >
+  Hamayumi
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Lightkeeper"
+title: >
+  Battle-Hardened Lightkeeper
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

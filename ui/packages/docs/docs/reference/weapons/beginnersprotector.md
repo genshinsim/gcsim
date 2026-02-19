@@ -1,5 +1,6 @@
 ---
-title: Beginner's Protector
+title: >
+  Beginner's Protector
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

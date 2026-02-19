@@ -1,5 +1,6 @@
 ---
-title: "Hat Jellyfish"
+title: >
+  Hat Jellyfish
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

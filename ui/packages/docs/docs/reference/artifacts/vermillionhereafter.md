@@ -1,5 +1,6 @@
 ---
-title: Vermillion Hereafter
+title: >
+  Vermillion Hereafter
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

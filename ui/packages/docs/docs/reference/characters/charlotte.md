@@ -1,5 +1,6 @@
 ---
-title: Charlotte
+title: >
+  Charlotte
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

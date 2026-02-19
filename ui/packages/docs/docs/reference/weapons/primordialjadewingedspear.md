@@ -1,5 +1,6 @@
 ---
-title: Primordial Jade Winged-Spear
+title: >
+  Primordial Jade Winged-Spear
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

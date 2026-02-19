@@ -1,5 +1,6 @@
 ---
-title: "Eremite Floral Ring-Dancer"
+title: >
+  Eremite Floral Ring-Dancer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

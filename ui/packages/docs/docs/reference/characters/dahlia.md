@@ -1,5 +1,6 @@
 ---
-title: Dahlia
+title: >
+  Dahlia
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

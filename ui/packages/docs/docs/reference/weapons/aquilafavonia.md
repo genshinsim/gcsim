@@ -1,5 +1,6 @@
 ---
-title: Aquila Favonia
+title: >
+  Aquila Favonia
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Foliar-Swift Wayob Manifestation"
+title: >
+  Foliar-Swift Wayob Manifestation
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

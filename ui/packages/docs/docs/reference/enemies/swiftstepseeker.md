@@ -1,5 +1,6 @@
 ---
-title: "Swiftstep Seeker"
+title: >
+  Swiftstep Seeker
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

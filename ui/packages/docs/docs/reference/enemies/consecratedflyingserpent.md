@@ -1,5 +1,6 @@
 ---
-title: "Consecrated Flying Serpent"
+title: >
+  Consecrated Flying Serpent
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: Lithic Blade
+title: >
+  Lithic Blade
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Echoes of an Offering
+title: >
+  Echoes of an Offering
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

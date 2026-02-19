@@ -1,5 +1,6 @@
 ---
-title: Ring of Yaxche
+title: >
+  Ring of Yaxche
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

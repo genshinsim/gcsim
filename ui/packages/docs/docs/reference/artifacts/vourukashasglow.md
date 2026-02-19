@@ -1,5 +1,6 @@
 ---
-title: Vourukasha's Glow
+title: >
+  Vourukasha's Glow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

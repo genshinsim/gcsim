@@ -1,5 +1,6 @@
 ---
-title: Lavawalker
+title: >
+  Lavawalker
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

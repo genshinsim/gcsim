@@ -1,5 +1,6 @@
 ---
-title: Royal Bow
+title: >
+  Royal Bow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

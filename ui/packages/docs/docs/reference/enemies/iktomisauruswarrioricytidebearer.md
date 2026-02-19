@@ -1,5 +1,6 @@
 ---
-title: "Iktomisaurus Warrior: Icy Tidebearer"
+title: >
+  Iktomisaurus Warrior: Icy Tidebearer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

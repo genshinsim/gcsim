@@ -1,5 +1,6 @@
 ---
-title: Raiden Shogun
+title: >
+  Raiden Shogun
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: Flins
+title: >
+  Flins
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

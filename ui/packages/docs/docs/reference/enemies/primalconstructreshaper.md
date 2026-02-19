@@ -1,5 +1,6 @@
 ---
-title: "Primal Construct: Reshaper"
+title: >
+  Primal Construct: Reshaper
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

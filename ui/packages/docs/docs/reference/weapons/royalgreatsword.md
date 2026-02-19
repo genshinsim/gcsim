@@ -1,5 +1,6 @@
 ---
-title: Royal Greatsword
+title: >
+  Royal Greatsword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

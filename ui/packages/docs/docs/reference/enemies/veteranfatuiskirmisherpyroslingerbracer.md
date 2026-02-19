@@ -1,5 +1,6 @@
 ---
-title: "Veteran Fatui Skirmisher - Pyroslinger Bracer"
+title: >
+  Veteran Fatui Skirmisher - Pyroslinger Bracer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

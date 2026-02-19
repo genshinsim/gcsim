@@ -1,5 +1,6 @@
 ---
-title: Iron Point
+title: >
+  Iron Point
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Yae Miko
+title: >
+  Yae Miko
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

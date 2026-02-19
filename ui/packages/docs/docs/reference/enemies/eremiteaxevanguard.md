@@ -1,5 +1,6 @@
 ---
-title: "Eremite Axe Vanguard"
+title: >
+  Eremite Axe Vanguard
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

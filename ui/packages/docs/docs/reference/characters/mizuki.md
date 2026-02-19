@@ -1,5 +1,6 @@
 ---
-title: Yumemizuki Mizuki
+title: >
+  Yumemizuki Mizuki
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

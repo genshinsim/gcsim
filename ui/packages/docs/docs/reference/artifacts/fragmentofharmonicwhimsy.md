@@ -1,5 +1,6 @@
 ---
-title: Fragment of Harmonic Whimsy
+title: >
+  Fragment of Harmonic Whimsy
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

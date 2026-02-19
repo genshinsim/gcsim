@@ -1,5 +1,6 @@
 ---
-title: "Tangled Vines: Frostnight Scion"
+title: >
+  Tangled Vines: Frostnight Scion
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

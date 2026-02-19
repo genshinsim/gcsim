@@ -1,5 +1,6 @@
 ---
-title: "Geo Hypostasis"
+title: >
+  Geo Hypostasis
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

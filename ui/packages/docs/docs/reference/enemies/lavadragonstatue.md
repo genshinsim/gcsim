@@ -1,5 +1,6 @@
 ---
-title: "Lava Dragon Statue"
+title: >
+  Lava Dragon Statue
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

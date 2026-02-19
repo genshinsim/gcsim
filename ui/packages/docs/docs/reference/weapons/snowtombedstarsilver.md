@@ -1,5 +1,6 @@
 ---
-title: Snow-Tombed Starsilver
+title: >
+  Snow-Tombed Starsilver
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

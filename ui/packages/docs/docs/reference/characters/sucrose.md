@@ -1,5 +1,6 @@
 ---
-title: Sucrose
+title: >
+  Sucrose
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

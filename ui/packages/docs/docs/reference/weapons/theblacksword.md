@@ -1,5 +1,6 @@
 ---
-title: The Black Sword
+title: >
+  The Black Sword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

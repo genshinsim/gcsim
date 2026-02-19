@@ -1,5 +1,6 @@
 ---
-title: "Local Legend: Blubberbeast"
+title: >
+  Local Legend: Blubberbeast
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

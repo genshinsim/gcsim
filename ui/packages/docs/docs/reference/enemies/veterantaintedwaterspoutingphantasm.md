@@ -1,5 +1,6 @@
 ---
-title: "Veteran Tainted Water-Spouting Phantasm"
+title: >
+  Veteran Tainted Water-Spouting Phantasm
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

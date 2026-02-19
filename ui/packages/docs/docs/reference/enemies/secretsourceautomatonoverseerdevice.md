@@ -1,5 +1,6 @@
 ---
-title: "Secret Source Automaton: Overseer Device"
+title: >
+  Secret Source Automaton: Overseer Device
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

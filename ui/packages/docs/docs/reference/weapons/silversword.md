@@ -1,5 +1,6 @@
 ---
-title: Silver Sword
+title: >
+  Silver Sword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

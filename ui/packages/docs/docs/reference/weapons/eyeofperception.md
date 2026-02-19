@@ -1,5 +1,6 @@
 ---
-title: Eye of Perception
+title: >
+  Eye of Perception
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Emerald Orb
+title: >
+  Emerald Orb
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

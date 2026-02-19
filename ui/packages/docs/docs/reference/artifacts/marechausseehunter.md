@@ -1,5 +1,6 @@
 ---
-title: Marechaussee Hunter
+title: >
+  Marechaussee Hunter
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Wolf-Fang
+title: >
+  Wolf-Fang
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

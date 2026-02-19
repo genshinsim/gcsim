@@ -1,5 +1,6 @@
 ---
-title: "Secret Source Automaton: Configuration Device"
+title: >
+  Secret Source Automaton: Configuration Device
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

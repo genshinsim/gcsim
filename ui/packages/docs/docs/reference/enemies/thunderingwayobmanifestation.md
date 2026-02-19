@@ -1,5 +1,6 @@
 ---
-title: "Thundering Wayob Manifestation"
+title: >
+  Thundering Wayob Manifestation
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Flow-Inverted Wayob Manifestation"
+title: >
+  Battle-Hardened Flow-Inverted Wayob Manifestation
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

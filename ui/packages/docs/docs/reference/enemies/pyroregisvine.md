@@ -1,5 +1,6 @@
 ---
-title: "Pyro Regisvine"
+title: >
+  Pyro Regisvine
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

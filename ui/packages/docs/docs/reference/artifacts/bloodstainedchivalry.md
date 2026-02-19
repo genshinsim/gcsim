@@ -1,5 +1,6 @@
 ---
-title: Bloodstained Chivalry
+title: >
+  Bloodstained Chivalry
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

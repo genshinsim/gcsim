@@ -1,5 +1,6 @@
 ---
-title: "Wayward Hermetic Spiritspeaker"
+title: >
+  Wayward Hermetic Spiritspeaker
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

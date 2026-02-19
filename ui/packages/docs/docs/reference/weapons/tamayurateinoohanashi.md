@@ -1,5 +1,6 @@
 ---
-title: Tamayuratei no Ohanashi
+title: >
+  Tamayuratei no Ohanashi
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

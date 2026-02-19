@@ -1,5 +1,6 @@
 ---
-title: Fractured Halo
+title: >
+  Fractured Halo
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

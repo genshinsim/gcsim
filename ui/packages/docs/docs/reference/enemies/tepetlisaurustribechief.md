@@ -1,5 +1,6 @@
 ---
-title: "Tepetlisaurus Tribe Chief"
+title: >
+  Tepetlisaurus Tribe Chief
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

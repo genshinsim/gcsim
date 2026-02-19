@@ -1,5 +1,6 @@
 ---
-title: "Aeonblight Drake"
+title: >
+  Aeonblight Drake
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

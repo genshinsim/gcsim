@@ -1,5 +1,6 @@
 ---
-title: Astral Vulture's Crimson Plumage
+title: >
+  Astral Vulture's Crimson Plumage
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Veteran Arithmetic Enhancer Mek"
+title: >
+  Veteran Arithmetic Enhancer Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

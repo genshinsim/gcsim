@@ -1,5 +1,6 @@
 ---
-title: "Forged Sand Javelineer"
+title: >
+  Forged Sand Javelineer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

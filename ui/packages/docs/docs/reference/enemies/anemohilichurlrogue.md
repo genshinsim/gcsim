@@ -1,5 +1,6 @@
 ---
-title: "Anemo Hilichurl Rogue"
+title: >
+  Anemo Hilichurl Rogue
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

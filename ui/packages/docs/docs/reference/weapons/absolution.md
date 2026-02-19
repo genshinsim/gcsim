@@ -1,5 +1,6 @@
 ---
-title: Absolution
+title: >
+  Absolution
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Setekh Wenut"
+title: >
+  Setekh Wenut
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

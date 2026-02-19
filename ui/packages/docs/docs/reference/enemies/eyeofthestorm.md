@@ -1,5 +1,6 @@
 ---
-title: "Eye of the Storm"
+title: >
+  Eye of the Storm
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

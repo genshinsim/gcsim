@@ -1,5 +1,6 @@
 ---
-title: Tenacity of the Millelith
+title: >
+  Tenacity of the Millelith
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

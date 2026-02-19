@@ -1,5 +1,6 @@
 ---
-title: Wanderer's Troupe
+title: >
+  Wanderer's Troupe
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

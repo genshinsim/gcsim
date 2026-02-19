@@ -1,5 +1,6 @@
 ---
-title: "Lord of Eroded Primal Fire"
+title: >
+  Lord of Eroded Primal Fire
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

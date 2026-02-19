@@ -1,5 +1,6 @@
 ---
-title: Amos' Bow
+title: >
+  Amos' Bow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

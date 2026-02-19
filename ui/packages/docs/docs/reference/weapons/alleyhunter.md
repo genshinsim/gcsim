@@ -1,5 +1,6 @@
 ---
-title: Alley Hunter
+title: >
+  Alley Hunter
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

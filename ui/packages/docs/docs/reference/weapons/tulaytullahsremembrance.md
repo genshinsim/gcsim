@@ -1,5 +1,6 @@
 ---
-title: Tulaytullah's Remembrance
+title: >
+  Tulaytullah's Remembrance
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

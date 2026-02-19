@@ -1,5 +1,6 @@
 ---
-title: Unfinished Reverie
+title: >
+  Unfinished Reverie
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Local Legend: Armored Crab"
+title: >
+  Local Legend: Armored Crab
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

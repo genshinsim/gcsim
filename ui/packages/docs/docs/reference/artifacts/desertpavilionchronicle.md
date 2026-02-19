@@ -1,5 +1,6 @@
 ---
-title: Desert Pavilion Chronicle
+title: >
+  Desert Pavilion Chronicle
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

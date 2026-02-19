@@ -1,5 +1,6 @@
 ---
-title: Whiteblind
+title: >
+  Whiteblind
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

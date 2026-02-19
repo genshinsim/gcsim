@@ -1,5 +1,6 @@
 ---
-title: "Flowing Blade Skirmisher"
+title: >
+  Flowing Blade Skirmisher
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

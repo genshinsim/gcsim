@@ -1,5 +1,6 @@
 ---
-title: Ineffa
+title: >
+  Ineffa
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

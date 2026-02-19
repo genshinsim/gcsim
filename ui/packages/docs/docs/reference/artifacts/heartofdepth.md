@@ -1,5 +1,6 @@
 ---
-title: Heart of Depth
+title: >
+  Heart of Depth
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Wandering Evenstar
+title: >
+  Wandering Evenstar
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

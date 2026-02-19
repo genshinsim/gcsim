@@ -1,5 +1,6 @@
 ---
-title: Polar Star
+title: >
+  Polar Star
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Rimebiter Bathysmal Vishap"
+title: >
+  Rimebiter Bathysmal Vishap
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

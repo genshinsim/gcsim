@@ -1,5 +1,6 @@
 ---
-title: Blackcliff Slasher
+title: >
+  Blackcliff Slasher
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Key of Khaj-Nisut
+title: >
+  Key of Khaj-Nisut
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

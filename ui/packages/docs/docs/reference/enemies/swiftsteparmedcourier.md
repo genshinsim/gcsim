@@ -1,5 +1,6 @@
 ---
-title: "Swiftstep Armed Courier"
+title: >
+  Swiftstep Armed Courier
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

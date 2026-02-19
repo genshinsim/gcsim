@@ -1,5 +1,6 @@
 ---
-title: "Radiant Moonfly"
+title: >
+  Radiant Moonfly
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

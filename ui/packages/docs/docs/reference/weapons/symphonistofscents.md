@@ -1,5 +1,6 @@
 ---
-title: Symphonist of Scents
+title: >
+  Symphonist of Scents
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

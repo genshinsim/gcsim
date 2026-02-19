@@ -1,5 +1,6 @@
 ---
-title: "Large Hydro Slime"
+title: >
+  Large Hydro Slime
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

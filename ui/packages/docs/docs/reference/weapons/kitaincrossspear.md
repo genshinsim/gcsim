@@ -1,5 +1,6 @@
 ---
-title: Kitain Cross Spear
+title: >
+  Kitain Cross Spear
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Clorinde
+title: >
+  Clorinde
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

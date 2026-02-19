@@ -1,5 +1,6 @@
 ---
-title: "The Game Before the Gate"
+title: >
+  The Game Before the Gate
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

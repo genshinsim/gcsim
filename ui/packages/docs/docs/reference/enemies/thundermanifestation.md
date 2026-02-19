@@ -1,5 +1,6 @@
 ---
-title: "Thunder Manifestation"
+title: >
+  Thunder Manifestation
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

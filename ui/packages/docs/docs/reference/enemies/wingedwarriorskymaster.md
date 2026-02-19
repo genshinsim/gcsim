@@ -1,5 +1,6 @@
 ---
-title: "Winged Warrior: Skymaster"
+title: >
+  Winged Warrior: Skymaster
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

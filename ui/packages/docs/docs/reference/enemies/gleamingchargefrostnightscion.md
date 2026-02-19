@@ -1,5 +1,6 @@
 ---
-title: "Gleaming Charge: Frostnight Scion"
+title: >
+  Gleaming Charge: Frostnight Scion
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

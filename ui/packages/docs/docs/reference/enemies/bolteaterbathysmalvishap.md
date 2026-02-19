@@ -1,5 +1,6 @@
 ---
-title: "Bolteater Bathysmal Vishap"
+title: >
+  Bolteater Bathysmal Vishap
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

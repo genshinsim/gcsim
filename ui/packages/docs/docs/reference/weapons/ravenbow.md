@@ -1,5 +1,6 @@
 ---
-title: Raven Bow
+title: >
+  Raven Bow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -40,8 +40,8 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 		Weapons:    cfg.Weapons,
 		Artifacts:  cfg.Artifacts,
 		Enemies:    cfg.Enemies,
-		Languages: map[string]string{
-			"English": filepath.Join(cfg.Excels, "..", "TextMap", "TextMapEN.json"),
+		Languages: map[string][]string{
+			"English": {filepath.Join(cfg.Excels, "..", "TextMap", "TextMapEN.json")},
 		},
 	}
 	ts, err := translation.NewGenerator(transCfg)
@@ -113,7 +113,8 @@ func (g *Generator) generateDocPage(path string, data docsData, tmpl string) err
 }
 
 const enemyPageTmpl = `---
-title: "{{ .Name }}"
+title: >
+  {{ .Name }}
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";
@@ -138,7 +139,8 @@ import ParticleTable from "@site/src/components/Particle/ParticleTable";
 <ParticleTable item_key="{{ .Key }}" data_src="{{ .Type }}" />`
 
 const docPageTmpl = `---
-title: {{ .Name }}
+title: >
+  {{ .Name }}
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
@@ -169,7 +171,8 @@ import FieldsTable from "@site/src/components/Fields/FieldsTable";
 `
 
 const charDocsPageTmpl = `---
-title: {{ .Name }}
+title: >
+  {{ .Name }}
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

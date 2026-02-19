@@ -1,5 +1,6 @@
 ---
-title: Chevreuse
+title: >
+  Chevreuse
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: "Flowing Blade Grease-Saw"
+title: >
+  Flowing Blade Grease-Saw
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

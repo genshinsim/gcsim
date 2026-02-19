@@ -1,5 +1,6 @@
 ---
-title: "Rocky Avildsen"
+title: >
+  Rocky Avildsen
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

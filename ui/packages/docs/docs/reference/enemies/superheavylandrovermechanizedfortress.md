@@ -1,5 +1,6 @@
 ---
-title: "Super-Heavy Landrover: Mechanized Fortress"
+title: >
+  Super-Heavy Landrover: Mechanized Fortress
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

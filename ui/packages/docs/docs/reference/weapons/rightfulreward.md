@@ -1,5 +1,6 @@
 ---
-title: Rightful Reward
+title: >
+  Rightful Reward
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

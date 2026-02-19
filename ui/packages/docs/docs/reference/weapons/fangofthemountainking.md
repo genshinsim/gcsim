@@ -1,5 +1,6 @@
 ---
-title: Fang of the Mountain King
+title: >
+  Fang of the Mountain King
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

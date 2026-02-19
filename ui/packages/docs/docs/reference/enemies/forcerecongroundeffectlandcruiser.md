@@ -1,5 +1,6 @@
 ---
-title: "Force Recon Ground Effect Landcruiser"
+title: >
+  Force Recon Ground Effect Landcruiser
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

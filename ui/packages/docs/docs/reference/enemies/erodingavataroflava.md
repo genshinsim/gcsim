@@ -1,5 +1,6 @@
 ---
-title: "Eroding Avatar of Lava"
+title: >
+  Eroding Avatar of Lava
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

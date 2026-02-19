@@ -1,5 +1,6 @@
 ---
-title: "Radiant Antelope"
+title: >
+  Radiant Antelope
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

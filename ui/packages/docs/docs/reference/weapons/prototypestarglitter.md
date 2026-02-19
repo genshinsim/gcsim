@@ -1,5 +1,6 @@
 ---
-title: Prototype Starglitter
+title: >
+  Prototype Starglitter
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

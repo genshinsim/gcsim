@@ -1,5 +1,6 @@
 ---
-title: "Consecrated Horned Crocodile"
+title: >
+  Consecrated Horned Crocodile
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

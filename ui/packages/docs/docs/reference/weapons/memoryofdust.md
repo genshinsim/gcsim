@@ -1,5 +1,6 @@
 ---
-title: Memory of Dust
+title: >
+  Memory of Dust
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

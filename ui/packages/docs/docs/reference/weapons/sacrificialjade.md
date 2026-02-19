@@ -1,5 +1,6 @@
 ---
-title: Sacrificial Jade
+title: >
+  Sacrificial Jade
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

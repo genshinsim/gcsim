@@ -1,5 +1,6 @@
 ---
-title: "Koholasaurus Warrior: Reefsplitter"
+title: >
+  Koholasaurus Warrior: Reefsplitter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

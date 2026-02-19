@@ -1,5 +1,6 @@
 ---
-title: "Forged Sand Interrogator"
+title: >
+  Forged Sand Interrogator
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

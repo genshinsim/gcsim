@@ -1,5 +1,6 @@
 ---
-title: "Veteran Fatui Skirmisher - Electrohammer Vanguard"
+title: >
+  Veteran Fatui Skirmisher - Electrohammer Vanguard
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

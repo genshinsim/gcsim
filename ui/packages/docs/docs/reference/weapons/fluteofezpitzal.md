@@ -1,5 +1,6 @@
 ---
-title: Flute of Ezpitzal
+title: >
+  Flute of Ezpitzal
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

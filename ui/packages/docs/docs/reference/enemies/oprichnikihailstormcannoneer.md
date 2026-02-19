@@ -1,5 +1,6 @@
 ---
-title: "Oprichniki Hailstorm Cannoneer"
+title: >
+  Oprichniki Hailstorm Cannoneer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

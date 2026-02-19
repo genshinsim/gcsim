@@ -1,5 +1,6 @@
 ---
-title: "Force Recon Scout Landcruiser"
+title: >
+  Force Recon Scout Landcruiser
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

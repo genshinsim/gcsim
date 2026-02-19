@@ -1,5 +1,6 @@
 ---
-title: Bloodsoaked Ruins
+title: >
+  Bloodsoaked Ruins
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

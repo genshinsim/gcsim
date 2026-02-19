@@ -1,5 +1,6 @@
 ---
-title: "Electro Cicin"
+title: >
+  Electro Cicin
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

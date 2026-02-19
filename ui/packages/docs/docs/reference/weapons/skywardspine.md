@@ -1,5 +1,6 @@
 ---
-title: Skyward Spine
+title: >
+  Skyward Spine
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

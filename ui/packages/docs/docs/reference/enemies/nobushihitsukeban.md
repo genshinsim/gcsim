@@ -1,5 +1,6 @@
 ---
-title: "Nobushi: Hitsukeban"
+title: >
+  Nobushi: Hitsukeban
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: "Eremite Sunfrost"
+title: >
+  Eremite Sunfrost
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

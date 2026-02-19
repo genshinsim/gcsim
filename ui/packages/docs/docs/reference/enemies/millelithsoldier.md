@@ -1,5 +1,6 @@
 ---
-title: "Millelith Soldier"
+title: >
+  Millelith Soldier
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

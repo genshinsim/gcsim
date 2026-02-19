@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Iktomisaurus"
+title: >
+  Battle-Hardened Iktomisaurus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: "Tepetlisaur Whelp"
+title: >
+  Tepetlisaur Whelp
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

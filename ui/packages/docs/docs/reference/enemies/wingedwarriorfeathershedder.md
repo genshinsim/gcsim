@@ -1,5 +1,6 @@
 ---
-title: "Winged Warrior: Feathershedder"
+title: >
+  Winged Warrior: Feathershedder
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

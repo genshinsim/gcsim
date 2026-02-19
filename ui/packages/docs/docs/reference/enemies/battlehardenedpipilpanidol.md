@@ -1,5 +1,6 @@
 ---
-title: "Battle-Hardened Pipilpan Idol"
+title: >
+  Battle-Hardened Pipilpan Idol
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

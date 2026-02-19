@@ -1,5 +1,6 @@
 ---
-title: Xinyan
+title: >
+  Xinyan
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

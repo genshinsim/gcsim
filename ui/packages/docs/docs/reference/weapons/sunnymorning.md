@@ -1,5 +1,6 @@
 ---
-title: Sunny Morning Sleep-In
+title: >
+  Sunny Morning Sleep-In
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

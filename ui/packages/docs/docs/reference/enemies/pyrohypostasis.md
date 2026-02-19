@@ -1,5 +1,6 @@
 ---
-title: "Pyro Hypostasis"
+title: >
+  Pyro Hypostasis
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";
