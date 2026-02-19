@@ -17,7 +17,6 @@ func NewTextMapSource(paths []string) (*DataSource, error) {
 		d, err := os.ReadFile(path)
 		// if error, try next path, print warning
 		if err != nil {
-			fmt.Printf("warning: error reading textmap file %v: %v\n", path, err)
 			continue
 		}
 		err = json.Unmarshal(d, &res.TextMap)
