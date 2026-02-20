@@ -1208,6 +1208,14 @@
       "image_name": "UI_EquipIcon_Bow_Stinger",
       "name_text_hash_map ": "2846112523"
     },
+    "serenityscall": {
+      "id": 11433,
+      "key": "serenityscall",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Ilmarinen",
+      "name_text_hash_map ": "3426916507"
+    },
     "serpentspine": {
       "id": 12409,
       "key": "serpentspine",
