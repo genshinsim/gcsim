@@ -136,6 +136,7 @@ var weaponNames = []string{
 	"mailedflower",
 	"makhairaaquamarine",
 	"mappamare",
+	"masterkey",
 	"memoryofdust",
 	"messenger",
 	"missivewindspear",
@@ -198,6 +199,7 @@ var weaponNames = []string{
 	"skywardpride",
 	"skywardspine",
 	"slingshot",
+	"snarehook",
 	"snowtombedstarsilver",
 	"solarpearl",
 	"songofbrokenpines",
@@ -358,6 +360,7 @@ const (
 	MailedFlower
 	MakhairaAquamarine
 	MappaMare
+	MasterKey
 	MemoryOfDust
 	Messenger
 	MissiveWindspear
@@ -420,6 +423,7 @@ const (
 	SkywardPride
 	SkywardSpine
 	Slingshot
+	SnareHook
 	SnowTombedStarsilver
 	SolarPearl
 	SongOfBrokenPines

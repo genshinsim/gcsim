@@ -824,6 +824,14 @@
       "image_name": "UI_EquipIcon_Catalyst_Exotic",
       "name_text_hash_map ": "1072884907"
     },
+    "masterkey": {
+      "id": 12433,
+      "key": "masterkey",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_Ilmarinen",
+      "name_text_hash_map ": "3225522227"
+    },
     "memoryofdust": {
       "id": 14504,
       "key": "memoryofdust",
@@ -1319,6 +1327,14 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Sling",
       "name_text_hash_map ": "1021898539"
+    },
+    "snarehook": {
+      "id": 15433,
+      "key": "snarehook",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Ilmarinen",
+      "name_text_hash_map ": "3380505211"
     },
     "snowtombedstarsilver": {
       "id": 12411,
