@@ -57,7 +57,8 @@ func main() {
 	filters := strings.Split(opt.mustHaveChar, ",")
 	fmt.Println("diff_ok,chars,id,original,next,diff,abs_diff,per_diff,err")
 	for _, v := range res {
-		simcfg, gcsl, err := simulator.Parse(v.Config)
+		file := ast.NewFile()
+		simcfg, gcsl, err := simulator.Parse(file, v.Config)
 		if err != nil {
 			fmt.Printf(",,,,,,,%v\n", err)
 			continue
@@ -84,7 +85,7 @@ func main() {
 				continue
 			}
 		}
-		dps, err := runSim(simcfg, gcsl, v.Config)
+		dps, err := runSim(file, simcfg, gcsl, v.Config)
 		diff := dps - v.Summary.MeanDpsPerTarget
 		absDiff := math.Abs(diff)
 		percentDiff := absDiff / v.Summary.MeanDpsPerTarget
@@ -96,7 +97,7 @@ func main() {
 	}
 }
 
-func runSim(simcfg *info.ActionList, gcsl ast.Node, cfg string) (float64, error) {
+func runSim(file *ast.File, simcfg *info.ActionList, gcsl ast.Node, cfg string) (float64, error) {
 	// start := time.Now()
 	// compute work??
 	// log.Printf("got work %v; starting compute", w.Id)
@@ -106,7 +107,7 @@ func runSim(simcfg *info.ActionList, gcsl ast.Node, cfg string) (float64, error)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30)*time.Second)
 	defer cancel()
 
-	result, err := simulator.RunWithConfig(ctx, cfg, simcfg, gcsl, simulator.Options{}, time.Now())
+	result, err := simulator.RunWithConfig(ctx, file, cfg, simcfg, gcsl, simulator.Options{}, time.Now())
 	if err != nil {
 		// log.Printf("error running sim %v: %v\n", w.Id, err)
 		return 0, err

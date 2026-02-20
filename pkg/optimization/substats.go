@@ -37,7 +37,7 @@ func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLog
 //   - ER substat values are set in increments of 2 to make the search easier
 //
 // 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
-func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *info.ActionList, gcsl ast.Node) {
+func (o *SubstatOptimizer) Run(file *ast.File, cfg string, simopt simulator.Options, simcfg *info.ActionList, gcsl ast.Node) {
 	simcfg.Settings.Iterations = int(o.optionsMap["sim_iter"])
 	// disable stats collection since optimizer has no use for it
 	simcfg.Settings.CollectStats = []string{""}
@@ -46,6 +46,7 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 		o,
 		cfg,
 		simopt,
+		file,
 		simcfg,
 		gcsl,
 		int(o.optionsMap["indiv_liquid_cap"]),
@@ -118,6 +119,7 @@ func NewSubstatOptimizerDetails(
 	optimizer *SubstatOptimizer,
 	cfg string,
 	simopt simulator.Options,
+	file *ast.File,
 	simcfg *info.ActionList,
 	gcsl ast.Node,
 	indivLiquidCap int,
@@ -128,6 +130,7 @@ func NewSubstatOptimizerDetails(
 	s.optimizer = optimizer
 	s.cfg = cfg
 	s.simopt = simopt
+	s.file = file
 	s.simcfg = simcfg
 	s.fixedSubstatCount = fixedSubstatCount
 	s.indivSubstatLiquidCap = indivLiquidCap

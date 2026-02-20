@@ -8,6 +8,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
@@ -59,7 +60,8 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		sugarLog.Warn(err.Error())
 	}
 
-	parser := parser.New(clean)
+	file := ast.NewFile()
+	parser := parser.New(file, clean)
 	simcfg, gcsl, err := parser.Parse()
 	if err != nil {
 		log.Println(err)
@@ -67,7 +69,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	optimizer := NewSubstatOptimizer(optionsMap, sugarLog, verbose)
-	optimizer.Run(cfg, simopt, simcfg, gcsl)
+	optimizer.Run(file, cfg, simopt, simcfg, gcsl)
 	output := optimizer.PrettyPrint(clean, optimizer.details)
 
 	// Sticks optimized substat string into config and output
