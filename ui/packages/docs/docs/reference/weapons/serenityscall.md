@@ -1,5 +1,6 @@
 ---
-title: Serenity's Call
+title: >
+  Serenity's Call
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
