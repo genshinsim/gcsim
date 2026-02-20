@@ -158,6 +158,7 @@ var weaponMap = map[string]string{
 	"mountainbracingbolt":             "UI_EquipIcon_Pole_Umpakati",
 	"primordialjadewingedspear":       "UI_EquipIcon_Pole_Morax",
 	"prospectorsdrill":                "UI_EquipIcon_Pole_Mechanic",
+	"prospectorsshovel":               "UI_EquipIcon_Pole_Ilmarinen",
 	"prototypestarglitter":            "UI_EquipIcon_Pole_Proto",
 	"rightfulreward":                  "UI_EquipIcon_Pole_Vorpal",
 	"royalspear":                      "UI_EquipIcon_Pole_Theocrat",
