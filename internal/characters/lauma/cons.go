@@ -48,9 +48,11 @@ func (c *char) c1Init() {
 		// heal active character
 		c.Core.Tasks.Add(func() {
 			c.Core.Player.Heal(info.HealInfo{
-				Type:    info.HealTypeAbsolute,
+				Caller:  c.Index(),
+				Target:  c.Core.Player.Active(),
 				Message: "Lauma C1 (Heal)",
 				Src:     healAmt,
+				Bonus:   c.Stat(attributes.Heal),
 			})
 		}, c1HitMark)
 	}, "lauma-c1")
