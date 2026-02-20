@@ -1,5 +1,6 @@
 ---
-title: Master Key
+title: >
+  Master Key
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

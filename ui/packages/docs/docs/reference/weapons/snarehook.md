@@ -1,5 +1,6 @@
 ---
-title: Snare Hook
+title: >
+  Snare Hook
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

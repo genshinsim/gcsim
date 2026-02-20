@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,39 +31,36 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
+	const key = "snarehook-%v"
 	emBuff := 45 + 15*float64(r)
 	m := make([]float64, attributes.EndStatType)
 
-	add := func(args ...any) bool {
-		atk := args[1].(*info.AttackEvent)
+	onReact := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
 
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("snarehook-em", 12*60),
+			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf(key, "em"), 12*60),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				m[attributes.EM] = emBuff * moonsignBonus(c)
-				return m, true
+			Amount: func() []float64 {
+				if c.Player.GetMoonsignLevel() >= 2 {
+					m[attributes.EM] = emBuff * 2
+				} else {
+					m[attributes.EM] = emBuff
+				}
+				return m
 			},
 		})
-
-		return false
 	}
-
-	// TODO: Does shatter count?
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
-		c.Events.Subscribe(i, add, fmt.Sprintf("snarehook-%v", char.Base.Key.String()))
+		c.Events.Subscribe(i, onReact, fmt.Sprintf(key, char.Base.Key.String()))
 	}
 
 	return w, nil
-}
-
-func moonsignBonus(c *core.Core) float64 {
-	if c.Player.GetMoonsignLevel() >= 2 {
-		return 2.0
-	}
-	return 1.0
 }
