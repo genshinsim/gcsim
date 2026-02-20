@@ -19,33 +19,29 @@ type Weapon struct {
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
+
+// Electro-Charged DMG is increased by 48%, and Lunar-Charged DMG is increased by 12%.
+// Moonsign: Ascendant Gleam: Lunar-Charged DMG is increased by an additional 12%.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
-
 	refine := p.Refine
-
 	buff := 0.09 + 0.03*float64(refine)
 
 	char.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("prospectors-shovel", -1),
-		Amount: func(ai info.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) float64 {
 			switch ai.AttackTag {
 			case attacks.AttackTagECDamage:
-				return buff * 4.0, false
-			case attacks.AttackTagReactionLunarCharge:
-			case attacks.AttackTagDirectLunarCharged:
-				return buff * getBonus(c), false
+				return buff * 4
+			case attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged:
+				if c.Player.GetMoonsignLevel() >= 2 {
+					return buff * 2
+				}
+				return buff
 			}
-
-			return 0, false
+			return 0
 		},
 	})
-	return w, nil
-}
 
-func getBonus(c *core.Core) float64 {
-	if c.Player.GetMoonsignLevel() < 2 {
-		return 1.0
-	}
-	return 2.0
+	return w, nil
 }
