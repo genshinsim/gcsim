@@ -1,5 +1,6 @@
 ---
-title: Blackmarrow Lantern
+title: >
+  Blackmarrow Lantern
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
