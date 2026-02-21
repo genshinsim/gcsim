@@ -912,6 +912,14 @@
       "image_name": "UI_EquipIcon_Bow_Maria",
       "name_text_hash_map ": "1860795787"
     },
+    "nightweaverslookingglass": {
+      "id": 14520,
+      "key": "nightweaverslookingglass",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_MenulisRing",
+      "name_text_hash_map ": "1198975171"
+    },
     "oathsworneye": {
       "id": 14415,
       "key": "oathsworneye",
