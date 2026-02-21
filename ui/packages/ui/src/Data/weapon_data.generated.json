@@ -912,6 +912,14 @@
       "image_name": "UI_EquipIcon_Bow_Maria",
       "name_text_hash_map ": "1860795787"
     },
+    "nocturnescourtaincall": {
+      "id": 14522,
+      "key": "nocturnescourtaincall",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Brisingamen",
+      "name_text_hash_map ": "1441327747"
+    },
     "oathsworneye": {
       "id": 14415,
       "key": "oathsworneye",

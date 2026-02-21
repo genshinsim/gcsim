@@ -70,6 +70,7 @@ var weaponMap = map[string]string{
 	"mappamare":                       "UI_EquipIcon_Catalyst_Exotic",
 	"memoryofdust":                    "UI_EquipIcon_Catalyst_Kunwu",
 	"everlastingmoonglow":             "UI_EquipIcon_Catalyst_Kaleido",
+	"nocturnescourtaincall":           "UI_EquipIcon_Catalyst_Brisingamen",
 	"oathsworneye":                    "UI_EquipIcon_Catalyst_Jyanome",
 	"otherworldlystory":               "UI_EquipIcon_Catalyst_Lightnov",
 	"eyeofperception":                 "UI_EquipIcon_Catalyst_Truelens",
