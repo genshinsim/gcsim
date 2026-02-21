@@ -233,7 +233,6 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"starglitter":                     keys.PrototypeStarglitter,
 	"rainbowserpentbow":               keys.RainbowSerpentBow,
 	"rainbowserpent":                  keys.RainbowSerpentBow,
-	"rsb":                             keys.RainbowSerpentBow,
 	"rainslasher":                     keys.Rainslasher,
 	"rangegauge":                      keys.RangeGauge,
 	"ravenbow":                        keys.RavenBow,
