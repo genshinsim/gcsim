@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	a4IcdKey          = "fischl-a4-icd"
-	secretRiteAtkpKey = "fischl-secret-rite-atkp"
-	secretRiteEMKey   = "fischl-secret-rite-em"
+	a4IcdKey   = "fischl-a4-icd"
+	hexAtkpKey = "fischl-hexerei-atkp"
+	hexEMKey   = "fischl-hexerei-em"
 )
 
 // A1 is not implemented:
@@ -81,7 +81,7 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnAggravate, a4cbNoGadget, "fischl-a4")
 }
 
-func (c *char) secretRiteInit() {
+func (c *char) hexInit() {
 	if !c.IsHexerei {
 		return
 	}
@@ -101,31 +101,31 @@ func (c *char) secretRiteInit() {
 		}
 
 		other.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(secretRiteAtkpKey, -1),
+			Base:         modifier.NewBase(hexAtkpKey, -1),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
 				if c.Core.Player.Active() != other.Index() {
 					return nil
 				}
-				if !c.StatModIsActive(secretRiteAtkpKey) {
+				if !c.StatModIsActive(hexAtkpKey) {
 					return nil
 				}
-				mAtkp[attributes.ATKP] = 0.225 * (1 + c.c6SecretRiteBonus())
+				mAtkp[attributes.ATKP] = 0.225 * (1 + c.c6HexBonus())
 				return mAtkp
 			},
 		})
 
 		other.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(secretRiteEMKey, -1),
+			Base:         modifier.NewBase(hexEMKey, -1),
 			AffectedStat: attributes.EM,
 			Amount: func() []float64 {
 				if c.Core.Player.Active() != other.Index() {
 					return nil
 				}
-				if !c.StatModIsActive(secretRiteEMKey) {
+				if !c.StatModIsActive(hexEMKey) {
 					return nil
 				}
-				mEM[attributes.EM] = 90 * (1 + c.c6SecretRiteBonus())
+				mEM[attributes.EM] = 90 * (1 + c.c6HexBonus())
 				return mEM
 			},
 		})
@@ -141,10 +141,10 @@ func (c *char) secretRiteInit() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(secretRiteAtkpKey, 10*60),
+			Base:         modifier.NewBaseWithHitlag(hexAtkpKey, 10*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
-				mAtkp[attributes.ATKP] = 0.225 * (1 + c.c6SecretRiteBonus())
+				mAtkp[attributes.ATKP] = 0.225 * (1 + c.c6HexBonus())
 				return mAtkp
 			},
 		})
@@ -159,16 +159,16 @@ func (c *char) secretRiteInit() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(secretRiteEMKey, 10*60),
+			Base:         modifier.NewBaseWithHitlag(hexEMKey, 10*60),
 			AffectedStat: attributes.EM,
 			Amount: func() []float64 {
-				mEM[attributes.EM] = 90 * (1 + c.c6SecretRiteBonus())
+				mEM[attributes.EM] = 90 * (1 + c.c6HexBonus())
 				return mEM
 			},
 		})
 	}
 
-	c.Core.Events.Subscribe(event.OnOverload, atkpHook, "fischl-secret-rite-ol")
-	c.Core.Events.Subscribe(event.OnElectroCharged, emHook, "fischl-secret-rite-ec")
-	c.Core.Events.Subscribe(event.OnLunarCharged, emHook, "fischl-secret-rite-lc")
+	c.Core.Events.Subscribe(event.OnOverload, atkpHook, "fischl-hex-ol")
+	c.Core.Events.Subscribe(event.OnElectroCharged, emHook, "fischl-hex-ec")
+	c.Core.Events.Subscribe(event.OnLunarCharged, emHook, "fischl-hex-lc")
 }

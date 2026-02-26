@@ -60,7 +60,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a4()
-	c.secretRiteInit()
+	c.hexInit()
 	if c.Base.Cons >= 6 {
 		w, err := minazuki.New(
 			minazuki.WithMandatory(keys.Fischl, "fischl c6", ozActiveKey, "", 60, c.c6Wave, c.Core),

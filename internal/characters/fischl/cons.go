@@ -39,7 +39,7 @@ func (c *char) c6Wave() {
 	c.AddStatus(c6HexereiKey, 10*60, true)
 }
 
-func (c *char) c6SecretRiteBonus() float64 {
+func (c *char) c6HexBonus() float64 {
 	if c.Base.Cons < 6 {
 		return 0
 	}
