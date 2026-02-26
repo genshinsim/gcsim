@@ -6,10 +6,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a4IcdKey = "fischl-a4-icd"
+const (
+	a4IcdKey          = "fischl-a4-icd"
+	secretRiteAtkpKey = "fischl-secret-rite-atkp"
+	secretRiteEMKey   = "fischl-secret-rite-em"
+)
 
 // A1 is not implemented:
 // TODO: When Fischl hits Oz with a fully-charged Aimed Shot, Oz brings down Thundering Retribution, dealing AoE Electro DMG equal to 152.7% of the arrow's DMG.
@@ -73,4 +79,96 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnHyperbloom, a4cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnQuicken, a4cbNoGadget, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnAggravate, a4cbNoGadget, "fischl-a4")
+}
+
+func (c *char) secretRiteInit() {
+	if !c.IsHexerei {
+		return
+	}
+
+	if c.Core.Player.GetHexereiCount() < 2 {
+		return
+	}
+
+	mAtkp := make([]float64, attributes.EndStatType)
+	mAtkp[attributes.ATKP] = 0.225
+	mEM := make([]float64, attributes.EndStatType)
+	mEM[attributes.EM] = 90
+
+	for _, other := range c.Core.Player.Chars() {
+		if other.Index() == c.Index() {
+			continue
+		}
+
+		other.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(secretRiteAtkpKey, -1),
+			AffectedStat: attributes.ATKP,
+			Amount: func() []float64 {
+				if c.Core.Player.Active() != other.Index() {
+					return nil
+				}
+				if !c.StatModIsActive(secretRiteAtkpKey) {
+					return nil
+				}
+				mAtkp[attributes.ATKP] = 0.225 * (1 + c.c6SecretRiteBonus())
+				return mAtkp
+			},
+		})
+
+		other.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(secretRiteEMKey, -1),
+			AffectedStat: attributes.EM,
+			Amount: func() []float64 {
+				if c.Core.Player.Active() != other.Index() {
+					return nil
+				}
+				if !c.StatModIsActive(secretRiteEMKey) {
+					return nil
+				}
+				mEM[attributes.EM] = 90 * (1 + c.c6SecretRiteBonus())
+				return mEM
+			},
+		})
+	}
+
+	atkpHook := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
+		// do nothing if oz not on field
+		if !c.StatusIsActive(ozActiveKey) {
+			return
+		}
+
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(secretRiteAtkpKey, 10*60),
+			AffectedStat: attributes.ATKP,
+			Amount: func() []float64 {
+				mAtkp[attributes.ATKP] = 0.225 * (1 + c.c6SecretRiteBonus())
+				return mAtkp
+			},
+		})
+	}
+	emHook := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
+		// do nothing if oz not on field
+		if !c.StatusIsActive(ozActiveKey) {
+			return
+		}
+
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(secretRiteEMKey, 10*60),
+			AffectedStat: attributes.EM,
+			Amount: func() []float64 {
+				mEM[attributes.EM] = 90 * (1 + c.c6SecretRiteBonus())
+				return mEM
+			},
+		})
+	}
+
+	c.Core.Events.Subscribe(event.OnOverload, atkpHook, "fischl-secret-rite-ol")
+	c.Core.Events.Subscribe(event.OnElectroCharged, emHook, "fischl-secret-rite-ec")
+	c.Core.Events.Subscribe(event.OnLunarCharged, emHook, "fischl-secret-rite-lc")
 }
