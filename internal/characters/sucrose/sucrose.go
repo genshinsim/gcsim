@@ -24,7 +24,7 @@ type char struct {
 	c6buff              []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -35,6 +35,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)
+	}
+
+	isHexerei, ok := p.Params["is_hexerei"]
+	if ok && isHexerei != 0 {
+		c.Hexerei = 1
 	}
 
 	w.Character = &c
