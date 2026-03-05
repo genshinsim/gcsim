@@ -11,20 +11,20 @@ import FieldsTable from "@site/src/components/Fields/FieldsTable";
 
 ## AoE Data
 
-<AoETable item_key="nocturnescourtaincall" data_src="weapon" />
+<AoETable item_key="nocturnescurtaincall" data_src="weapon" />
 
 ## Known issues
 
-<IssuesTable item_key="nocturnescourtaincall" data_src="weapon" />
+<IssuesTable item_key="nocturnescurtaincall" data_src="weapon" />
 
 ## Names
 
-<NamesList item_key="nocturnescourtaincall" data_src="weapon" />
+<NamesList item_key="nocturnescurtaincall" data_src="weapon" />
 
 ## Params
 
-<ParamsTable item_key="nocturnescourtaincall" data_src="weapon" />
+<ParamsTable item_key="nocturnescurtaincall" data_src="weapon" />
 
 ## Fields
 
-<FieldsTable item_key="nocturnescourtaincall" data_src="weapon" />
+<FieldsTable item_key="nocturnescurtaincall" data_src="weapon" />
