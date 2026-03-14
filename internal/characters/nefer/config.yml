@@ -1,0 +1,51 @@
+package_name: nefer
+genshin_id: 10000122
+key: nefer
+skill_data_mapping:
+  attack: # Striking Serpent
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}x2
+    attack_4:
+      - 3 # 4-Hit DMG|{param3:F1P}
+    charge_attack:
+      - 4 # Charged Attack DMG|{param4:F1P}
+    collision_plunge:
+      - 7 # Plunge DMG|{param5:F1P}
+    low_plunge:
+      - 8 # Low/High Plunge DMG|{param6:P}/{param7:P}
+    high_plunge:
+      - 9 # Low/High Plunge DMG|{param6:P}/{param7:P}
+  skill: # Senet Strategy: Dance of a Thousand Nights
+    skill_att:
+      - 0 # Skill DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+    skill_em:
+      - 1 # Skill DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+    phantasm_nefer_1_att:
+      - 4 # Phantasm Performance 1-Hit DMG (Nefer)|{param4:F1P} ATK+{param5:F1P} Elemental Mastery
+    phantasm_nefer_1_em:
+      - 5 # Phantasm Performance 1-Hit DMG (Nefer)|{param4:F1P} ATK+{param5:F1P} Elemental Mastery
+    phantasm_nefer_2_att:
+      - 6 # Phantasm Performance 2-Hit DMG (Nefer)|{param6:F1P} ATK+{param7:F1P} Elemental Mastery
+    phantasm_nefer_2_em:
+      - 7 # Phantasm Performance 2-Hit DMG (Nefer)|{param6:F1P} ATK+{param7:F1P} Elemental Mastery
+    phantasm_shade_1_em:
+      - 8 # Phantasm Performance 1-Hit DMG (Shades)|{param8:F1P} Elemental Mastery
+    phantasm_shade_2_em:
+      - 9 # Phantasm Performance 2-Hit DMG (Shades)|{param9:F1P} Elemental Mastery
+    phantasm_shade_3_em:
+      - 10 # Phantasm Performance 3-Hit DMG (Shades)|{param10:F1P} Elemental Mastery
+  burst: # Sacred Vow: True Eye's Phantasm
+    vow_1_att:
+      - 0 # 1-Hit DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+    vow_1_em:
+      - 1 # 1-Hit DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+    vow_2_att:
+      - 2 # 2-Hit DMG|{param2:F1P} ATK+{param3:F1P} Elemental Mastery
+    vow_2_em:
+      - 3 # 2-Hit DMG|{param2:F1P} ATK+{param3:F1P} Elemental Mastery
+    veil_bonus:
+      - 4 # DMG Bonus|{param4:F1P} Per Veil of Falsehood Stack
