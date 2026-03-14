@@ -72,6 +72,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/mualani"
 	_ "github.com/genshinsim/gcsim/internal/characters/nahida"
 	_ "github.com/genshinsim/gcsim/internal/characters/navia"
+	_ "github.com/genshinsim/gcsim/internal/characters/nefer"
 	_ "github.com/genshinsim/gcsim/internal/characters/neuvillette"
 	_ "github.com/genshinsim/gcsim/internal/characters/nicole"
 	_ "github.com/genshinsim/gcsim/internal/characters/nilou"
