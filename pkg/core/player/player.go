@@ -45,6 +45,7 @@ type Handler struct {
 	Stam            float64
 	LastStamUse     int
 	stamPercentMods []stamPercentMod
+	verdantDewRateMods []verdantDewRateMod
 
 	// airborne source
 	airborne AirborneSource
@@ -87,6 +88,7 @@ func New(opt Opt) *Handler {
 		chars:           make([]*character.CharWrapper, 0, 4),
 		charPos:         make(map[keys.Char]int),
 		stamPercentMods: make([]stamPercentMod, 0, 5),
+		verdantDewRateMods: make([]verdantDewRateMod, 0, 4),
 		Opt:             opt,
 		Stam:            MaxStam,
 		SwapICD:         SwapCDFrames,
