@@ -16,7 +16,7 @@ const (
 	slitherMoveInterval     = 1
 	slitherMoveDistance     = 0.1
 	slitherStamInterval     = 1
-	slitherStamTickCost     = 25.0 / 60.0
+	slitherStamTickCost     = 18.15 / 60.0
 	phantasmAnimationLength = 106
 	phantasmRecoverFrame    = 89
 	phantasmConsumeDewFrame = 29
@@ -44,14 +44,17 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a != action.ActionCharge {
 		return c.Character.ActionStam(a, p)
 	}
-	if c.StatusIsActive(shadowDanceKey) && c.hasPhantasmCharge() {
+	if c.canTriggerPhantasm() {
 		return 0
+	}
+	if c.StatusIsActive(shadowDanceKey) {
+		return 25
 	}
 	return 50
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	if c.StatusIsActive(shadowDanceKey) && c.hasPhantasmCharge() {
+	if c.canTriggerPhantasm() {
 		return c.specialChargeAttack()
 	}
 	c.clearPhantasmChargeLoop()

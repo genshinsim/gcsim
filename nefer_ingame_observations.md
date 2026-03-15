@@ -28,7 +28,12 @@ Implementation choices, approximations, and remaining gaps should be tracked in 
 
 - While Slither is active, Nefer continuously absorbs nearby Seeds of Deceit while moving.
 - Slither movement speed matches ordinary character running speed.
-- Slither stamina consumption matches ordinary character running consumption.
+- Slither stamina consumption uses the sourced Charged Attack charging drain value of 18.15 stamina per second.
+
+### Shadow Dance Swap Reset
+
+- Swapping to another character removes Shadow Dance.
+- After swapping away and back, Nefer's next ordinary Charged Attack consumes the full 50 stamina cost instead of the reduced 25 stamina Shadow Dance route.
 
 ### Phantasm Charge Reset
 

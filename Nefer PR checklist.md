@@ -17,13 +17,13 @@ Status legend:
 | Update `mode_gcsim.js` with shortcuts for syntax highlighting | N/A | No `mode_gcsim.js` file exists in the current repository layout. |
 | Add Character package to imports | Done | Generated sim import exists in [pkg/simulation/imports_char_gen.go](pkg/simulation/imports_char_gen.go). |
 | Normal Attack | Done | Implemented in [internal/characters/nefer/attack.go](internal/characters/nefer/attack.go), with timing and geometry still tracked as approximate in [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
-| Charge Attack / Aimed Shot | Partial | Charged Attack, Slither, and Phantasm routing are implemented in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go), but exact finisher timing, geometry, and constellation-sensitive branching remain incomplete. |
-| Skill | Partial | Implemented in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go), but final geometry, startup validation, and full C2 interaction are not complete. |
+| Charge Attack / Aimed Shot | Partial | Charged Attack, Slither, and Phantasm routing are implemented in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go), including the observed 50/25/0 stamina split and swap reset behavior, but exact finisher timing, geometry, and some constellation-sensitive branching remain incomplete. |
+| Skill | Partial | Implemented in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go), but final geometry and startup validation are still not complete. |
 | Burst | Partial | Implemented in [internal/characters/nefer/burst.go](internal/characters/nefer/burst.go), but hit timeline and geometry remain provisional. |
 | A1 | Partial | Seed conversion window and core replacement path are implemented in [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go), but the passive still carries approximation risk. |
 | A4 | Partial | Lunar-Bloom EM bonus path is implemented in [internal/characters/nefer/asc.go](internal/characters/nefer/asc.go), but full source-specific validation is still open. |
 | C1 | Not done | Still missing; tracked in [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
-| C2 | Partial | Stack-cap increase and initial stack grant exist in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go) and [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go), but the rest of C2 is still missing. |
+| C2 | Done | The 5-stack cap, the Skill-side 2-stack grant, the sourced Veil duration extension, the Phantasm damage scaling, and the fifth-stack `+200 EM` handling are implemented across [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go), [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go), and [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go). |
 | C3 | Done | Covered by `SkillCon = 3` in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go). |
 | C4 | Not done | Still missing; tracked in [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
 | C5 | Done | Covered by `BurstCon = 5` in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go). |

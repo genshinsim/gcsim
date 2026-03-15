@@ -31,9 +31,11 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 ### [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go)
 
 - `AnimationYelanN0StartDelay = 10` is still a best-fit integration based on available sheet notes, not a fully validated engine-semantic confirmation.
-- `maxVeilStacks` now supports the base 3-stack cap and the current C2 5-stack cap, but full duration and refresh behavior for Veil of Falsehood is still not implemented.
+- `maxVeilStacks` now supports the base 3-stack cap and the current C2 5-stack cap.
+- Veil stacks now use sourced independent per-stack timers with a 9s base duration and the current C2 extension to 14s.
 - `ascendantGleam` is currently inferred from `Moonsign >= 2`; broader moonsign-specific behavior is not fully implemented.
-- Veil threshold buffs currently trigger on threshold crossing only; refresh-trigger behavior for the third and fifth stack is still missing.
+- Veil threshold buffs now retrigger when the capped third or fifth stack is refreshed.
+- When new stacks are added at cap, the current implementation refreshes the oldest active stack first; this is a reasonable independent-timer model, but the exact refresh-target semantics are still not source-confirmed.
 
 ### [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go)
 
@@ -66,10 +68,11 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 ### [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go)
 
 - The basic Slither or Phantasm transition loop is implemented, including self-completing standalone special charges, but the exact release or finisher sequence and fine-grained CA timing are still not final.
+- The observed three-way Charged Attack stamina split is now modeled: 50 stamina for ordinary CA, 25 stamina for ordinary CA during Shadow Dance, and 0 stamina for Phantasm Performance.
 - `queuePhantasmPerformance()` still uses provisional frame timings for consume and hit sequence.
 - Datamine exposes additional Nefer subSkill entries and lock shapes, which narrows the targeting picture, but Phantasm hit radii, ordering, ownership details, and spacing are still approximations.
 - Seeds of Deceit absorption is now implemented against nearby world objects, but not with final geometry or validated per-hit targeting rules.
-- C1, C2, and C6-sensitive Phantasm branching is not fully implemented.
+- C1 and C6-sensitive Phantasm branching is not fully implemented.
 
 ## Skill
 
@@ -78,7 +81,7 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 - Datamine indicates Nefer skill-family entries use `CircleLockEnemyR8H6HC` and `CircleLockEnemyR15H10HC` targeting shapes for relevant skill/subSkill records.
 - Current code still uses a simplified circular AoE and does not yet match datamine-informed targeting geometry closely enough to call final.
 - Skill startup, cancel timings, and geometry are not fully validated.
-- The current C2 interaction only grants 2 Veil stacks when conditions are met; the rest of C2 is not implemented.
+- The current C2 implementation covers the 5-stack cap, the initial 2-stack Skill grant, the total +40% Phantasm Performance damage at 5 Veil stacks, and the +200 EM handling at the fifth stack or fifth-stack refresh.
 - Skill now starts the current P1 conversion window, but the exact relationship between the 15s replacement window and any real seed lifetime after window end is still not fully verified.
 - Skill particle generation is now implemented from Lunaris metadata, but still needs gameplay validation against actual proc timing and enemy-hit edge cases.
 
@@ -100,20 +103,19 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 
 ### [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go)
 
-- Only the C6 elevation hook is implemented.
-- C1, C2, C4, and the C6 extra-damage instances are still missing.
+- The current C2 logic is implemented through Veil capacity, Skill-side stack grant, duration extension, fifth-stack EM handling, and Phantasm Performance damage scaling.
+- Only the C6 elevation hook is implemented beyond that.
+- C1, C4, and the C6 extra-damage instances are still missing.
 - Even the current C6 logic only covers elevation and not the full constellation behavior.
 
 ## Missing Mechanics
 
 ### Not yet implemented in the character package
 
-- Veil of Falsehood duration and refresh rules.
 - Fully verified Seeds of Deceit world geometry and absorb radius rules.
-- 3-stack and 5-stack Veil refresh-trigger handling beyond the current threshold-crossing grant path.
+- Exact Veil refresh-target semantics beyond the current oldest-stack-refresh model.
 - P1/P2 full behavior.
 - C1 full behavior.
-- C2 full behavior beyond the initial stack grant.
 - C4 full Verdant Dew gain-rate behavior and linger handling.
 - C6 extra damage instances.
 - Final particle behavior validation.

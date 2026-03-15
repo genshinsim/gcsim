@@ -26,7 +26,12 @@ It should not be used as the source of current readiness or open-gap status. For
 - Reworked Shadow Dance Charged Attack into a loop that alternates between Slither and queued Phantasm Performance based on both Phantasm Performance Charges and Verdant Dew in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go).
 - Adjusted Nefer charge action completion so one scripted `charge` resolves after one produced normal or special Charged Attack result, including standalone special charge completion without requiring a following scripted action, in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go).
 - Added initial Veil threshold EM buff handling for 3-stack and base C2 5-stack thresholds in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go).
+- Added C2 Phantasm Performance damage scaling from current Veil stacks and fifth-stack EM refresh handling in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go) and [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go).
+- Added sourced independent Veil stack timers with the C2 duration extension in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go).
 - Added initial Skill particle generation in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go) using the current Lunaris 66%/33% split with a 0.2s ICD.
+- Corrected Slither stamina drain to the sourced 18.15/s value and split Charged Attack stamina handling into the three observed modes in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go): normal 50 stamina, Shadow Dance normal 25 stamina, and Phantasm Performance 0 stamina.
+- Corrected swap handling so leaving the field clears Shadow Dance itself in addition to resetting Phantasm Performance Charges in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go).
+- Added regression coverage for the three Charged Attack stamina modes and for swap-driven Shadow Dance or charge reset behavior in [internal/characters/nefer/charge_test.go](internal/characters/nefer/charge_test.go).
 
 #### Validation
 

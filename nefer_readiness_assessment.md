@@ -24,7 +24,7 @@ It is a live readiness assessment. It should be read together with [Nefer PR che
 | Charged Attack, Slither, and Phantasm loop | Medium | Functional and substantially improved, but still not final on timing, geometry, and some branch-specific details. |
 | Skill and Burst | Medium | Playable and integrated, but still provisional on exact geometry and hit timelines. |
 | Seeds, Veil, and Lunar-Bloom integration | Medium | Core loop exists, but several semantics remain inferred rather than fully confirmed. |
-| Passives and constellations | Low | Only partial coverage is present; C1 and C4 are still missing, and C2/C6 are incomplete. |
+| Passives and constellations | Low | C2 is now implemented, but C1 and C4 are still missing and C6 remains incomplete. |
 | Combat metadata polish | Low | Hitlag, poise, exact StrikeType, durability, and some ICD validation are still pending. |
 | Documentation and review packaging | High | Progress log, live gap register, evidence notes, generated docs, and PR checklist exist and are aligned. |
 
@@ -41,6 +41,7 @@ It is a live readiness assessment. It should be read together with [Nefer PR che
 - [nefer_implementation_progress.md](nefer_implementation_progress.md) records a successful compile check with `go test ./internal/characters/nefer ./pkg/simulation`.
 - Recent smoke validation confirmed that a standalone Shadow Dance special charge now self-completes without requiring a following scripted action.
 - Recent smoke validation also confirmed the preserved Slither-to-Phantasm transition after the implementation simplification pass.
+- Recent smoke validation confirmed that swapping off Nefer clears Shadow Dance and Phantasm Performance Charges, so a charged attack after swapping back consumes the full 50 stamina normal route.
 
 ## Main Readiness Blockers
 
@@ -48,9 +49,8 @@ It is a live readiness assessment. It should be read together with [Nefer PR che
 
 - C1 is not implemented.
 - C4 is not implemented.
-- C2 is only partially implemented.
 - C6 only covers the Lunar-Bloom elevation hook and not the extra damage instances.
-- Veil of Falsehood duration and refresh behavior are still incomplete.
+- Veil of Falsehood now has a sourced duration model in code, but the exact refresh-target semantics at cap are still an implementation assumption.
 
 ### 2. Combat-Accuracy Gaps
 

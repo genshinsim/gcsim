@@ -85,6 +85,6 @@ func (c *char) absorbSeedsOfDeceit() {
 	}
 	c.addVeilStacks(count)
 	if c.Core.Flags.LogDebug {
-		c.Core.Log.NewEvent("nefer seeds of deceit absorbed", glog.LogCharacterEvent, c.Index()).Write("absorbed", count).Write("radius_assumption", seedAbsorbRadius).Write("veil", c.veilstacks)
+		c.Core.Log.NewEvent("nefer seeds of deceit absorbed", glog.LogCharacterEvent, c.Index()).Write("absorbed", count).Write("radius_assumption", seedAbsorbRadius).Write("veil", c.currentVeilStacks())
 	}
 }
