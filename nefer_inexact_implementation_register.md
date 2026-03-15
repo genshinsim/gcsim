@@ -29,8 +29,26 @@ This document tracks every currently known Nefer implementation point that is ap
 ### [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go)
 
 - `AnimationYelanN0StartDelay = 10` is still a best-fit integration based on available sheet notes, not a fully validated engine-semantic confirmation.
-- `maxVeilStacks = 3` is only the base stack cap; full duration and refresh behavior for Veil of Falsehood is still not implemented.
+- `maxVeilStacks` now supports the base 3-stack cap and the current C2 5-stack cap, but full duration and refresh behavior for Veil of Falsehood is still not implemented.
 - `ascendantGleam` is currently inferred from `Moonsign >= 2`; broader moonsign-specific behavior is not fully implemented.
+- Veil threshold buffs currently trigger on threshold crossing only; refresh-trigger behavior for the third and fifth stack is still missing.
+
+### [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go)
+
+- Seeds of Deceit are now represented as world-space gadgets rather than an internal counter.
+- Existing and newly spawned Dendro Cores are removed from the gadget layer during the active conversion window and replaced with seed gadgets.
+- This correctly prevents the converted cores from bursting, Hyperblooming, or Burgeoning through the normal Dendro Core gadget path.
+- [nefer_ingame_observations.md](nefer_ingame_observations.md) now records stronger in-game evidence that seeds should have a 12s lifetime and that conversion into a seed appears to reset lifetime.
+- The current implementation now models that 12s lifetime reset behavior by replacing a core with a newly created seed gadget on conversion.
+- Seed absorption currently consumes all nearby seeds found inside the assumed absorb radius on Charged Attack or Phantasm Performance.
+- Seed absorption currently assumes a simplified effective radius instead of verified geometry.
+- In-game observation also indicates a shared field limit of 5 across cores and seeds, with the oldest object disappearing or exploding first; the current implementation now relies on the shared `GadgetTypDendroCore` limit path to approximate that behavior.
+
+### [internal/characters/nefer/seed_gadget.go](internal/characters/nefer/seed_gadget.go)
+
+- Seed gadgets currently reuse `GadgetTypDendroCore` intentionally so they share the existing field cap with ordinary Dendro Cores.
+- This matches the newly documented in-game observation better than the previous counter model, but still depends on the engine's generic gadget-limit behavior rather than a Nefer-specific queue implementation.
+- Seed gadgets currently do not model any separate collision, visibility, or target interaction beyond existing as absorbable world objects.
 
 ## Normal Attacks and Plunge
 
@@ -53,7 +71,7 @@ This document tracks every currently known Nefer implementation point that is ap
 - `ActionStam()` returns `0` during Shadow Dance with Verdant Dew, but this is only a simplified gate for the replacement CA path.
 - `phantasmChargeAttack()` uses provisional frame timings for consume and hit sequence.
 - Datamine exposes additional Nefer subSkill entries and lock shapes, which narrows the targeting picture, but Phantasm hit radii, ordering, ownership details, and spacing are still approximations.
-- Seeds of Deceit absorption is not implemented here.
+- Seeds of Deceit absorption is now implemented against nearby world objects, but not with final geometry or validated per-hit targeting rules.
 - C1, C2, and C6-sensitive Phantasm branching is not fully implemented.
 
 ## Skill
@@ -65,6 +83,8 @@ This document tracks every currently known Nefer implementation point that is ap
 - Skill startup, cancel timings, and geometry are not fully validated.
 - Shadow Dance duration is implemented, but the full state interaction model with CA movement and transitions is incomplete.
 - The current C2 interaction only grants 2 Veil stacks when conditions are met; the rest of C2 is not implemented.
+- Skill now starts the current P1 conversion window, but the exact relationship between the 15s replacement window and any real seed lifetime after window end is still not fully verified.
+- Skill particle generation is now implemented from Lunaris metadata, but still needs gameplay validation against actual proc timing and enemy-hit edge cases.
 
 ## Burst
 
@@ -79,7 +99,7 @@ This document tracks every currently known Nefer implementation point that is ap
 ### [internal/characters/nefer/asc.go](internal/characters/nefer/asc.go)
 
 - Current implementation only covers the Lunar-Bloom EM bonus path.
-- Seeds of Deceit conversion and broader passive behavior are not implemented here.
+- Seeds of Deceit conversion has moved into [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go), but the broader passive behavior is still incomplete.
 - The hook applies to all direct Lunar-Bloom hits and still needs full validation against the intended source-specific behavior.
 
 ### [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go)
@@ -92,10 +112,9 @@ This document tracks every currently known Nefer implementation point that is ap
 
 ### Not yet implemented in the character package
 
-- Seeds of Deceit replacement logic.
-- Seeds of Deceit absorption logic.
 - Veil of Falsehood duration and refresh rules.
-- 3-stack and 5-stack Veil trigger handling beyond the current partial grant path.
+- Fully verified Seeds of Deceit world geometry and absorb radius rules.
+- 3-stack and 5-stack Veil refresh-trigger handling beyond the current threshold-crossing grant path.
 - P1/P2 full behavior.
 - C1 full behavior.
 - C2 full behavior beyond the initial stack grant.

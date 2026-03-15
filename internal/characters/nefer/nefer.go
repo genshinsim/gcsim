@@ -4,9 +4,11 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -14,7 +16,10 @@ func init() {
 }
 
 const (
-	shadowDanceKey = "nefer-shadow-dance"
+	shadowDanceKey   = "nefer-shadow-dance"
+	seedWindowKey    = "nefer-seed-window"
+	veilEMBuffKey    = "nefer-veil-em-buff"
+	seedAbsorbRadius = 6
 )
 
 type char struct {
@@ -42,7 +47,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.ascendantGleam = c.Core.Player.GetMoonsignLevel() >= 2
+	if c.Base.Cons >= 2 {
+		c.maxVeilStacks = 5
+	}
 	c.lunarbloomInit()
+	c.p1Init()
 	c.c6Init()
 	return nil
 }
@@ -60,11 +69,39 @@ func (c *char) addVeilStacks(count int) {
 	if count <= 0 {
 		return
 	}
+	prev := c.veilstacks
 	c.veilstacks = min(c.veilstacks+count, c.maxVeilStacks)
+	c.applyVeilThresholdBuff(prev, c.veilstacks)
 }
 
 func (c *char) consumeVeilStacks() int {
 	stacks := c.veilstacks
 	c.veilstacks = 0
 	return stacks
+}
+
+func (c *char) applyVeilThresholdBuff(prev, next int) {
+	if next <= prev {
+		return
+	}
+
+	amount := 0.0
+	if c.Base.Cons >= 2 && next >= 5 && prev < 5 {
+		amount = 200
+	} else if next >= 3 && prev < 3 {
+		amount = 100
+	}
+	if amount <= 0 {
+		return
+	}
+
+	buff := make([]float64, attributes.EndStatType)
+	buff[attributes.EM] = amount
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(veilEMBuffKey, 8*60),
+		AffectedStat: attributes.EM,
+		Amount: func() []float64 {
+			return buff
+		},
+	})
 }
