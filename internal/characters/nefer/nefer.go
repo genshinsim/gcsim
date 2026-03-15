@@ -66,6 +66,7 @@ func (c *char) Init() error {
 	c.swapResetInit()
 	c.lunarbloomInit()
 	c.p1Init()
+	c.p2Init()
 	c.c4Init()
 	c.c6Init()
 	return nil

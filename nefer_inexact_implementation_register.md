@@ -75,7 +75,7 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 - `queuePhantasmPerformance()` still uses provisional frame timings for consume and hit sequence.
 - Datamine exposes additional Nefer subSkill entries and lock shapes, which narrows the targeting picture, but Phantasm hit radii, ordering, ownership details, and spacing are still approximations.
 - Seeds of Deceit absorption is now implemented against nearby world objects, but not with final geometry or validated per-hit targeting rules.
-- C6-sensitive Phantasm branching is not fully implemented.
+- C6-sensitive Phantasm branching now converts the second Nefer Phantasm hit into a Lunar-Bloom EM hit and queues an additional post-Phantasm Lunar-Bloom hit, but the exact extra-hit timing and geometry still rely on the current shared Phantasm AoE approximation.
 
 ## Skill
 
@@ -100,9 +100,11 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 
 ### [internal/characters/nefer/asc.go](internal/characters/nefer/asc.go)
 
-- Current implementation only covers the Lunar-Bloom EM bonus path.
+- Current implementation covers the A4 Lunar-Bloom EM bonus path and the current branch P2 Verdant Dew model.
 - Seeds of Deceit conversion has moved into [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go), but the broader passive behavior is still incomplete.
-- The hook applies to all direct Lunar-Bloom hits and still needs full validation against the intended source-specific behavior.
+- P2 is currently implemented as a 5s status refreshed by any party-triggered Lunar-Bloom, during which Slither gains an additional Verdant Dew generation-rate bonus in the same mechanical lane used by C4.
+- The current P2 interpretation treats “provides additional Verdant Dew” as a Slither-only Verdant Dew acceleration bonus of `+0%` at `EM <= 500`, increased by `+10%` per 100 EM above 500 up to `+50%` total bonus.
+- This interpretation is now the branch baseline and replaces the earlier “separate extra Dew stream” interpretation.
 
 ### [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go)
 
@@ -111,9 +113,8 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 - C2 now increases the ceiling of that Veil-driven Phantasm bonus by raising the Veil cap to 5, while also still handling the Skill-side stack grant, duration extension, and fifth-stack EM behavior.
 - C4 now applies the Verdant Dew gain-rate increase and a lingering Dendro RES shred refresh loop while Nefer is on field in Shadow Dance.
 - The current C4 nearby-opponent check uses an explicit radius approximation around the player rather than a source-confirmed area definition.
-- Only the C6 elevation hook is implemented beyond that.
-- The C6 extra-damage instances are still missing.
-- Even the current C6 logic only covers elevation and not the full constellation behavior.
+- C6 now covers both the Lunar-Bloom elevation hook and the two extra Lunar-Bloom instances sourced from the current Lunaris wording.
+- The second-stage replacement hit and the post-Phantasm hit both currently reuse the existing Phantasm AoE pattern and timing assumptions rather than source-confirmed dedicated geometry.
 
 ## Missing Mechanics
 
@@ -121,8 +122,7 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 
 - Fully verified Seeds of Deceit world geometry and absorb radius rules.
 - Exact Veil refresh-target semantics beyond the current oldest-stack-refresh model.
-- P1/P2 full behavior.
-- C6 extra damage instances.
+- P1 full behavior.
 - Final particle behavior validation.
 - Final ICD, StrikeType, durability, poise, hitlag, and geometry pass.
 
