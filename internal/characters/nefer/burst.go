@@ -15,10 +15,26 @@ var burstFrames []int
 
 const neferBurstBonusKey = "nefer-burst-veil-bonus"
 
+const (
+	burstAttackCancelFrame         = 119
+	burstNormalChargeCancelFrame   = 131
+	burstPhantasmChargeCancelFrame = 124
+	burstSkillCancelFrame          = 119
+	burstDashCancelFrame           = 120
+	burstJumpCancelFrame           = 120
+	burstSwapCancelFrame           = 118
+	burstWalkCancelFrame           = 119
+	burstAnimationLength           = 131
+)
+
 func init() {
-	burstFrames = frames.InitAbilSlice(76)
-	burstFrames[action.ActionAttack] = 72
-	burstFrames[action.ActionSwap] = 73
+	burstFrames = frames.InitAbilSlice(burstAnimationLength)
+	burstFrames[action.ActionAttack] = burstAttackCancelFrame
+	burstFrames[action.ActionSkill] = burstSkillCancelFrame
+	burstFrames[action.ActionDash] = burstDashCancelFrame
+	burstFrames[action.ActionJump] = burstJumpCancelFrame
+	burstFrames[action.ActionSwap] = burstSwapCancelFrame
+	burstFrames[action.ActionWalk] = burstWalkCancelFrame
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -75,7 +91,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.ConsumeEnergy(60)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(burstFrames),
+		Frames: func(next action.Action) int {
+			if next == action.ActionCharge {
+				if c.canTriggerPhantasm() {
+					return burstPhantasmChargeCancelFrame
+				}
+				return burstNormalChargeCancelFrame
+			}
+			return burstFrames[next]
+		},
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionAttack],
 		State:           action.BurstState,

@@ -110,14 +110,13 @@
 - `Sacred Vow: True Eye's Phantasm (Hit 1) hitmark` currently uses `26`; workbook 1 row is mixed `99-101`.
 - `Sacred Vow: True Eye's Phantasm (Hit 2) hitmark` currently uses `46`; workbook 1 row is mixed `40-44`.
 - `Burst energy drain timing` currently consumes energy immediately through `ConsumeEnergy(60)`; workbook 1 row is mixed around `6-7` and includes an outlier.
-- `Burst -> Normal 1` currently uses `72`; workbook 1 row is mixed `118-119`.
-- `Burst -> Normal CA` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `129-131` including CA windup.
-- `Burst -> Phantasm CA` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `123-124` including CA windup.
-- `Burst -> Skill` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 confirms `119`.
-- `Burst -> Dash` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `119-120`.
-- `Burst -> Jump` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `119-120`.
-- `Burst -> Walk` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `118-119`.
-- `Burst -> Swap` currently uses `73`; workbook 1 row is mixed `117-118`.
+- `Burst -> Normal 1` currently uses `119`; workbook 1 row is mixed `118-119`.
+- `Burst -> Normal CA` currently uses `131` when the ordinary CA route is selected; workbook 1 row is mixed `129-131` including CA windup.
+- `Burst -> Phantasm CA` currently uses `124` when the Phantasm route is selected; workbook 1 row is mixed `123-124` including CA windup.
+- `Burst -> Dash` currently uses `120`; workbook 1 row is mixed `119-120`.
+- `Burst -> Jump` currently uses `120`; workbook 1 row is mixed `119-120`.
+- `Burst -> Walk` currently uses `119`; workbook 1 row is mixed `118-119`.
+- `Burst -> Swap` currently uses `118`; workbook 1 row is mixed `117-118`.
 
 ## [internal/characters/nefer/burst.go](internal/characters/nefer/burst.go): unresolved hitboxes and areas
 
