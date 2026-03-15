@@ -1,12 +1,10 @@
 # Nefer Implementation Progress
 
-## Status Summary
+## Purpose
 
-- Phase 1 is functionally complete on the updated datamine.
-- Phase 2 is partially complete.
-- Phase 3 is partially complete.
-- Phase 4 now has an initial functional P1 seed and Veil loop, but remains incomplete.
-- Phases 5-8 are not complete and still contain placeholder or incomplete behavior.
+This file is a dated changelog of completed Nefer work on the branch.
+
+It should not be used as the source of current readiness or open-gap status. For that, use [Nefer PR checklist.md](Nefer%20PR%20checklist.md), [nefer_readiness_assessment.md](nefer_readiness_assessment.md), and [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md).
 
 ## Completed Work Log
 
@@ -21,6 +19,12 @@
 - Added a 12s seed lifetime in [internal/characters/nefer/seed_gadget.go](internal/characters/nefer/seed_gadget.go).
 - Added lifetime reset on core-to-seed conversion by replacing the original core gadget with a newly created seed gadget in [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go).
 - Added nearby seed absorption on Charged Attack and Phantasm Performance in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go).
+- Replaced the previous Shadow Dance no-Dew Charged Attack placeholder with a persistent Slither state in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go).
+- Added Slither movement ticks, ordinary running-style continuous stamina drain, and continuous nearby seed absorption during the active CA state in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go).
+- Added swap reset handling for Slither and Phantasm Performance Charges in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go), while preserving shared Verdant Dew.
+- Added separate Phantasm Performance Charge tracking in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go) and refresh-on-Skill behavior in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go).
+- Reworked Shadow Dance Charged Attack into a loop that alternates between Slither and queued Phantasm Performance based on both Phantasm Performance Charges and Verdant Dew in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go).
+- Adjusted Nefer charge action completion so one scripted `charge` resolves after one produced normal or special Charged Attack result, including standalone special charge completion without requiring a following scripted action, in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go).
 - Added initial Veil threshold EM buff handling for 3-stack and base C2 5-stack thresholds in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go).
 - Added initial Skill particle generation in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go) using the current Lunaris 66%/33% split with a 0.2s ICD.
 
@@ -60,7 +64,3 @@
 
 - Implemented Lunar-Bloom EM bonus path in [internal/characters/nefer/asc.go](internal/characters/nefer/asc.go).
 - Implemented current C6 elevation hook in [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go).
-
-## Open Implementation State
-
-- Remaining work is now dominated by unfinished combat behavior, timing validation, missing exact stack-duration logic, and replacing placeholders with verified mechanics.
