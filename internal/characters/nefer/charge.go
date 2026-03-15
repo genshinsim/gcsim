@@ -224,6 +224,9 @@ func (c *char) queuePhantasmPerformance(src int) {
 		c.absorbSeedsOfDeceit()
 	}, consumeFrame)
 
+	shadeScaleBonus := c.c1ShadeScaleBonus()
+	phantasmVeilMultiplier := 1 + c.phantasmVeilBonus()
+
 	neferHit1 := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Phantasm Performance (Nefer 1)",
@@ -233,8 +236,8 @@ func (c *char) queuePhantasmPerformance(src int) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       phantasm[0][c.TalentLvlSkill()],
-		FlatDmg:    c.Stat(attributes.EM) * phantasm[1][c.TalentLvlSkill()],
+		Mult:       phantasm[0][c.TalentLvlSkill()] * phantasmVeilMultiplier,
+		FlatDmg:    c.Stat(attributes.EM) * phantasm[1][c.TalentLvlSkill()] * phantasmVeilMultiplier,
 	}
 	neferHit2 := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -245,8 +248,8 @@ func (c *char) queuePhantasmPerformance(src int) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       phantasm[2][c.TalentLvlSkill()],
-		FlatDmg:    c.Stat(attributes.EM) * phantasm[3][c.TalentLvlSkill()],
+		Mult:       phantasm[2][c.TalentLvlSkill()] * phantasmVeilMultiplier,
+		FlatDmg:    c.Stat(attributes.EM) * phantasm[3][c.TalentLvlSkill()] * phantasmVeilMultiplier,
 	}
 	shadeHit1 := info.AttackInfo{
 		ActorIndex:       c.Index(),
@@ -258,14 +261,14 @@ func (c *char) queuePhantasmPerformance(src int) {
 		Element:          attributes.Dendro,
 		UseEM:            true,
 		IgnoreDefPercent: 1,
-		Mult:             phantasm[4][c.TalentLvlSkill()],
+		Mult:             (phantasm[4][c.TalentLvlSkill()] + shadeScaleBonus) * phantasmVeilMultiplier,
 	}
 	shadeHit2 := shadeHit1
 	shadeHit2.Abil = "Phantasm Performance (Shade 2)"
-	shadeHit2.Mult = phantasm[5][c.TalentLvlSkill()]
+	shadeHit2.Mult = (phantasm[5][c.TalentLvlSkill()] + shadeScaleBonus) * phantasmVeilMultiplier
 	shadeHit3 := shadeHit1
 	shadeHit3.Abil = "Phantasm Performance (Shade 3)"
-	shadeHit3.Mult = phantasm[6][c.TalentLvlSkill()]
+	shadeHit3.Mult = (phantasm[6][c.TalentLvlSkill()] + shadeScaleBonus) * phantasmVeilMultiplier
 
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 	c.Core.QueueAttack(neferHit1, ap, phantasmHit1, phantasmHit1)

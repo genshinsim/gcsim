@@ -48,6 +48,7 @@ type Handler struct {
 	Stam            float64
 	LastStamUse     int
 	stamPercentMods []stamPercentMod
+	verdantDewRateMods []verdantDewRateMod
 
 	// airborne source
 	airborne AirborneSource
@@ -70,7 +71,7 @@ type Handler struct {
 
 	verdantDewExpiryFrame int
 	verdantDew            int
-	partialDewCount       int
+	partialDewCount       float64
 }
 
 type Opt struct {
@@ -88,6 +89,7 @@ func New(opt Opt) *Handler {
 		chars:           make([]*character.CharWrapper, 0, 4),
 		charPos:         make(map[keys.Char]int),
 		stamPercentMods: make([]stamPercentMod, 0, 5),
+		verdantDewRateMods: make([]verdantDewRateMod, 0, 4),
 		Opt:             opt,
 		Stam:            MaxStam,
 		SwapICD:         SwapCDFrames,
@@ -328,6 +330,7 @@ func (h *Handler) Tick() {
 // this has to be checked after the animation handler, since the task is set by the handler
 func (h *Handler) verdantDewTick() {
 	if h.verdantDew >= 3 {
+		h.partialDewCount = 0
 		return
 	}
 
@@ -335,10 +338,18 @@ func (h *Handler) verdantDewTick() {
 		return
 	}
 
-	h.partialDewCount++
-	if h.partialDewCount >= maxPartialDew {
+	rate := 1 + h.VerdantDewRateMod()
+	if rate < 0 {
+		rate = 0
+	}
+	h.partialDewCount += rate
+	for h.partialDewCount >= maxPartialDew {
 		h.AddVerdantDew()
-		h.partialDewCount = 0
+		h.partialDewCount -= maxPartialDew
+		if h.verdantDew >= 3 {
+			h.partialDewCount = 0
+			return
+		}
 	}
 }
 
