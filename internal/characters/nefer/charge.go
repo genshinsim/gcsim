@@ -25,6 +25,8 @@ const (
 	phantasmHit3            = 43
 	phantasmHit4            = 44
 	phantasmHit5            = 45
+	c6PhantasmHit2EM        = 0.85
+	c6PhantasmEndEM         = 1.20
 )
 
 var chargeFrames []int
@@ -251,6 +253,14 @@ func (c *char) queuePhantasmPerformance(src int) {
 		Mult:       phantasm[2][c.TalentLvlSkill()] * phantasmVeilMultiplier,
 		FlatDmg:    c.Stat(attributes.EM) * phantasm[3][c.TalentLvlSkill()] * phantasmVeilMultiplier,
 	}
+	if c.Base.Cons >= 6 {
+		neferHit2.AttackTag = attacks.AttackTagDirectLunarBloom
+		neferHit2.Durability = 0
+		neferHit2.UseEM = true
+		neferHit2.IgnoreDefPercent = 1
+		neferHit2.Mult = c6PhantasmHit2EM * phantasmVeilMultiplier
+		neferHit2.FlatDmg = 0
+	}
 	shadeHit1 := info.AttackInfo{
 		ActorIndex:       c.Index(),
 		Abil:             "Phantasm Performance (Shade 1)",
@@ -276,4 +286,19 @@ func (c *char) queuePhantasmPerformance(src int) {
 	c.Core.QueueAttack(shadeHit2, ap, phantasmHit3, phantasmHit3)
 	c.Core.QueueAttack(neferHit2, ap, phantasmHit4, phantasmHit4)
 	c.Core.QueueAttack(shadeHit3, ap, phantasmHit5, phantasmHit5)
+	if c.Base.Cons >= 6 {
+		c6EndHit := info.AttackInfo{
+			ActorIndex:       c.Index(),
+			Abil:             "Phantasm Performance (C6 End Hit)",
+			AttackTag:        attacks.AttackTagDirectLunarBloom,
+			ICDTag:           attacks.ICDTagNone,
+			ICDGroup:         attacks.ICDGroupDefault,
+			StrikeType:       attacks.StrikeTypeDefault,
+			Element:          attributes.Dendro,
+			UseEM:            true,
+			IgnoreDefPercent: 1,
+			Mult:             c6PhantasmEndEM * phantasmVeilMultiplier,
+		}
+		c.Core.QueueAttack(c6EndHit, ap, phantasmAnimationLength, phantasmAnimationLength)
+	}
 }
