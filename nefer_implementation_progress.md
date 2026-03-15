@@ -6,6 +6,20 @@ This file is a dated changelog of completed Nefer work on the branch.
 
 It should not be used as the source of current readiness or open-gap status. For that, use [Nefer PR checklist.md](Nefer%20PR%20checklist.md), [nefer_readiness_assessment.md](nefer_readiness_assessment.md), and [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md).
 
+## Accepted Implementation Decisions
+
+- `C1` is implemented as an additive `+0.6` increase to the EM-scaling multiplier of each Phantasm Performance Shades hit, not as a separate downstream damage bonus.
+- The Phantasm Veil bonus is applied locally to the base constructed Phantasm Performance hit terms in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go); later additive terms such as Spread remain outside that multiplier.
+- `C2` is interpreted as a Phantasm base-term multiplier ceiling of `1 + 5 * 8%` at 5 Veil stacks, not as a separate hidden `140%` formula lane.
+- When adding a Veil stack at cap, the branch refreshes the oldest active stack first.
+- `P1` only opens a 15s conversion window. When that window ends, existing Seeds of Deceit remain on field; there is no special cleanup or forced detonation.
+- Converting an existing core into a Seed of Deceit resets lifetime by replacing the old core gadget with a newly created seed gadget.
+- Seeds and ordinary Dendro Cores share a field cap of `5`, and the branch intentionally models that through the shared `GadgetTypDendroCore` engine path.
+- `P2` is modeled as a Slither-only Verdant Dew generation-rate bonus refreshed by party-triggered Lunar-Bloom for `5s`, scaling from `+0%` at `EM <= 500` by `+10%` per `100` EM above `500`, up to `+50%` total bonus.
+- `C4` nearby-opponent RES shred is modeled as an on-field Shadow Dance refresh loop with a `4.5s` linger, while the exact nearby-opponent area definition remains open.
+- `C6` is modeled as three separate pieces: the existing `+15%` Lunar-Bloom elevation hook, conversion of the second Nefer Phantasm hit into an `85% EM` Lunar-Bloom hit, and an additional `120% EM` Lunar-Bloom hit when Phantasm Performance ends.
+- `AnimationYelanN0StartDelay = 10` is the current best-fit branch choice for Nefer's Yelan N0 integration, but it remains an open integration assumption rather than a closed source-backed mapping.
+
 ## Completed Work Log
 
 ### 2026-03-15
@@ -29,6 +43,7 @@ It should not be used as the source of current readiness or open-gap status. For
 - Added C2 Phantasm Performance damage scaling from current Veil stacks and fifth-stack EM refresh handling in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go) and [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go).
 - Added sourced independent Veil stack timers with the C2 duration extension in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go).
 - Added initial Skill particle generation in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go) using the current Lunaris 66%/33% split with a 0.2s ICD.
+- Corrected [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go) so Skill cooldown now starts on the confirmed `22f` row and `Skill -> Walk` now uses the confirmed `34f` row.
 - Corrected Slither stamina drain to the sourced 18.15/s value and split Charged Attack stamina handling into the three observed modes in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go): normal 50 stamina, Shadow Dance normal 25 stamina, and Phantasm Performance 0 stamina.
 - Corrected swap handling so leaving the field clears Shadow Dance itself in addition to resetting Phantasm Performance Charges in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go).
 - Implemented C4 Verdant Dew gain-rate acceleration through a reusable player Verdant Dew rate modifier path in [pkg/core/player/dew.go](pkg/core/player/dew.go) and [pkg/core/player/player.go](pkg/core/player/player.go).

@@ -23,6 +23,7 @@ func init() {
 	skillFrames[action.ActionJump] = 38
 	skillFrames[action.ActionSwap] = 25
 	skillFrames[action.ActionBurst] = 38
+	skillFrames[action.ActionWalk] = 34
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -43,7 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.AddStatus(shadowDanceKey, 9*60, true)
 	c.phantasmCharges = phantasmChargesPerSkill
 	c.startSeedWindow()
-	c.SetCDWithDelay(action.ActionSkill, 9*60, 23)
+	c.SetCDWithDelay(action.ActionSkill, 9*60, 22)
 
 	if c.Base.Cons >= 2 && c.ascendantGleam {
 		c.addVeilStacks(2)

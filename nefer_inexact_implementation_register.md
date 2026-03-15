@@ -1,147 +1,156 @@
 # Nefer Inexact Implementation Register
 
-## Purpose
+## Rule
 
-This document tracks only the currently live Nefer implementation points that are approximate, assumed, incomplete, or intentionally scaffolded.
+- One bullet below equals one unresolved frame row, one unresolved hitbox or area definition, one unresolved metadata mapping, or one unresolved semantic assumption.
 
-It is not a changelog. Implemented work that is no longer meaningfully inexact should be recorded in [nefer_implementation_progress.md](nefer_implementation_progress.md) instead of repeated here.
+## [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go)
 
-## Current Overall State
+- `AnimationYelanN0StartDelay = 10` uses workbook 2 Yelan row `10`, but workbook 2 does not identify whether `10` maps to `info.AnimationYelanN0StartDelay` rather than another Yelan N0 hook.
+- No Nefer-specific Xingqiu N0 override is implemented in the package; workbook 2 summary suggests `11`, but workbook 2 does not identify which gcsim hook that `11` should drive.
 
-- Canonical generated data exists and is in use.
-- Core registration exists and is in use.
-- Combat logic now covers the main gameplay loop, but several timing, geometry, passive, and constellation details are still not final.
-- Anything listed below should not be treated as final behavior.
+## [internal/characters/nefer/attack.go](internal/characters/nefer/attack.go): unresolved frame rows
 
-## Data and Pipeline
+- `Normal 1 hitmark` currently uses `10`; workbook 1 row is mixed `10-13`.
+- `Normal 2 hitmark` currently uses `8`; workbook 1 row is mixed `8-11`.
+- `Normal 4 hitmark` currently uses `22`; workbook 1 row is mixed `22-24`.
+- `Normal 1 -> Normal CA` currently uses `40`; workbook 1 row is mixed `40-41` including CA windup.
+- `Normal 1 -> Walk` currently uses `33`; workbook 1 row is mixed `32-33`.
+- `Normal 1 -> Skill` has no workbook 1 row.
+- `Normal 1 -> Burst` has no workbook 1 row.
+- `Normal 1 -> Dash` has no workbook 1 row.
+- `Normal 1 -> Jump` has no workbook 1 row.
+- `Normal 1 -> Swap` has no workbook 1 row.
+- `Normal 2 -> Normal 3` currently uses `20`; workbook 1 row is mixed `18-21`.
+- `Normal 2 -> Phantasm CA` currently shares `ActionCharge = 38` with ordinary CA; workbook 1 row is mixed `38-39`.
+- `Normal 2 -> Skill` has no workbook 1 row.
+- `Normal 2 -> Burst` has no workbook 1 row.
+- `Normal 2 -> Dash` has no workbook 1 row.
+- `Normal 2 -> Jump` has no workbook 1 row.
+- `Normal 2 -> Swap` has no workbook 1 row.
+- `Normal 3 -> Normal 4` currently uses `49`; workbook 1 row is mixed `48-53`.
+- `Normal 3 -> Normal CA` currently uses `62`; workbook 1 row is mixed `61-62` including CA windup.
+- `Normal 3 -> Skill` has no workbook 1 row.
+- `Normal 3 -> Burst` has no workbook 1 row.
+- `Normal 3 -> Dash` has no workbook 1 row.
+- `Normal 3 -> Jump` has no workbook 1 row.
+- `Normal 3 -> Swap` has no workbook 1 row.
+- `Normal 4 -> Normal 1` currently uses `51`; workbook 1 row is mixed `50-54`.
+- `Normal 4 -> Walk` currently uses `63`; workbook 1 row is mixed `62-64`.
+- `Normal 4 -> Skill` has no workbook 1 row.
+- `Normal 4 -> Burst` has no workbook 1 row.
+- `Normal 4 -> Dash` has no workbook 1 row.
+- `Normal 4 -> Jump` has no workbook 1 row.
+- `Normal 4 -> Swap` has no workbook 1 row.
 
-### [pipeline/pkg/data/dm/model.go](pipeline/pkg/data/dm/model.go)
+## [internal/characters/nefer/attack.go](internal/characters/nefer/attack.go): unresolved hitboxes and areas
 
-- The loader supports multiple obfuscated `AvatarSkillDepot` passive-open field names.
-- This is a compatibility fix based on observed dump structure, not a stable schema guarantee.
-- If the datamine format changes again, this code may need another compatibility pass.
+- `Normal 1 hitbox` currently uses `NewBoxHit(..., Y=0, width=2, length=8)`; no source-backed per-hit melee geometry has been identified.
+- `Normal 2 hitbox` currently uses `NewBoxHit(..., Y=0, width=2, length=8)`; no source-backed per-hit melee geometry has been identified.
+- `Normal 3 hit 1 hitbox` currently uses `NewBoxHit(..., Y=0, width=2.5, length=9)`; no source-backed per-hit melee geometry has been identified.
+- `Normal 3 hit 2 hitbox` currently reuses `NewBoxHit(..., Y=0, width=2.5, length=9)` from `Normal 3 hit 1`; no source-backed per-hit melee geometry has been identified.
+- `Normal 4 hitbox` currently uses `NewBoxHit(..., Y=-0.5, width=2.8, length=8)`; no source-backed per-hit melee geometry has been identified.
+- `Low Plunge hitbox` currently uses `NewCircleHitOnTarget(..., radius=4.5)`; no Nefer-specific plunge AoE geometry has been identified.
+- `High Plunge hitbox` currently uses `NewCircleHitOnTarget(..., radius=4.5)`; no Nefer-specific plunge AoE geometry has been identified.
 
-### [pipeline/pkg/data/avatar/avatar.go](pipeline/pkg/data/avatar/avatar.go)
+## [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go): unresolved frame rows
 
-- Passive scaling extraction now skips `proudSkillGroupId == 0`.
-- This is a defensive compatibility behavior and assumes `0` means no passive scaling group should be parsed.
+- `Charge Attack -> Normal 1` currently uses `ActionAttack = 49`; workbook 1 confirms `29` excluding the first CA windup, so the code-side row still needs a deliberate mapping decision between full action length and post-windup timing.
+- `Charge Attack -> Charge Attack` currently uses `ActionCharge = 48`; workbook 1 row is mixed `48-49`.
+- `Charge Attack -> Skill` currently uses generic `48`; workbook 1 has no row.
+- `Charge Attack -> Burst` currently uses generic `48`; workbook 1 has no row.
+- `Charge Attack -> Dash` currently uses generic `48`; workbook 1 has no row.
+- `Charge Attack -> Jump` currently uses generic `48`; workbook 1 has no row.
+- `Charge Attack -> Swap` currently uses `48`; workbook 1 confirms `28`, but the row does not explicitly state whether that value is counted before or after the first CA windup, so the code-side mapping still needs to be closed deliberately.
+- `Phantasm Performance hit 4` currently uses frame `44`; workbook 1 row is mixed `44-45` after adding the 20f CA windup to the mixed `24-25` sub-row.
+- `Phantasm Performance hit 5` currently uses frame `45`; workbook 1 row allows only `44-45` after adding the 20f CA windup to the mixed `0-1` sub-row.
+- `Phantasm Performance -> Normal 1` is not encoded as a dedicated post-Phantasm row; workbook 1 confirms `69` excluding the first CA windup.
+- `Phantasm Performance -> Charge Attack` is not encoded as a dedicated post-Phantasm row; workbook 1 confirms `65` including the second CA windup.
+- `Phantasm Performance -> Phantasm Performance` is not encoded as a dedicated post-Phantasm row; workbook 1 confirms `65` including the second CA windup.
+- `Phantasm Performance -> Skill` currently falls back to the generic post-Phantasm branch; workbook 1 has no row.
+- `Phantasm Performance -> Burst` currently falls back to the generic post-Phantasm branch; workbook 1 has no row.
+- `Phantasm Performance -> Dash` currently falls back to the generic post-Phantasm branch; workbook 1 has no row.
+- `Phantasm Performance -> Jump` currently falls back to the generic post-Phantasm branch; workbook 1 has no row.
+- `Phantasm Performance -> Walk` currently follows `phantasmAnimationLength = 106`; workbook 1 row is mixed `104-105`.
+- `Phantasm Performance -> Swap` is not encoded as a dedicated `0f` row; workbook 1 confirms `0`.
+- `C6 post-Phantasm extra hit timing` currently uses `phantasmAnimationLength = 106`; no source-backed row for the extra hit timing has been identified.
+- `Slither minimum cancel frame` currently uses `24`; no source-backed row for this exact cancel gate has been identified.
+- `Slither movement cadence` currently uses `slitherMoveInterval = 1`; no source-backed row for this exact cadence has been identified.
+- `Slither movement distance per tick` currently uses `slitherMoveDistance = 0.1`; no source-backed distance mapping has been identified.
+- `Slither stamina drain cadence` currently uses `slitherStamInterval = 1`; no source-backed per-tick cadence has been identified.
 
-## Character State and Registration
+## [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go): unresolved hitboxes and areas
 
-### [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go)
+- `Charge Attack hitbox` currently uses `NewBoxHit(..., Y=-2, width=3, length=9)`; no source-backed release hitbox geometry has been identified.
+- `Phantasm Performance (Nefer 1) hitbox` currently uses `NewCircleHitOnTarget(..., radius=5)`; no source-backed Phantasm AoE radius has been identified.
+- `Phantasm Performance (Shade 1) hitbox` currently uses `NewCircleHitOnTarget(..., radius=5)`; no source-backed Phantasm AoE radius has been identified.
+- `Phantasm Performance (Shade 2) hitbox` currently uses `NewCircleHitOnTarget(..., radius=5)`; no source-backed Phantasm AoE radius has been identified.
+- `Phantasm Performance (Nefer 2) hitbox` currently uses `NewCircleHitOnTarget(..., radius=5)`; no source-backed Phantasm AoE radius has been identified.
+- `Phantasm Performance (Shade 3) hitbox` currently uses `NewCircleHitOnTarget(..., radius=5)`; no source-backed Phantasm AoE radius has been identified.
+- `Phantasm Performance (C6 End Hit) hitbox` currently uses `NewCircleHitOnTarget(..., radius=5)`; no source-backed C6 extra-hit AoE radius has been identified.
 
-- `AnimationYelanN0StartDelay = 10` is still a best-fit integration based on available sheet notes, not a fully validated engine-semantic confirmation.
-- `maxVeilStacks` now supports the base 3-stack cap and the current C2 5-stack cap.
-- Veil stacks now use sourced independent per-stack timers with a 9s base duration and the current C2 extension to 14s.
-- `ascendantGleam` is currently inferred from `Moonsign >= 2`; broader moonsign-specific behavior is not fully implemented.
-- Veil threshold buffs now retrigger when the capped third or fifth stack is refreshed.
-- When new stacks are added at cap, the current implementation refreshes the oldest active stack first; this is a reasonable independent-timer model, but the exact refresh-target semantics are still not source-confirmed.
+## [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go): unresolved frame rows
 
-### [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go)
+- `Skill -> Normal CA` currently shares `ActionCharge = 29`; workbook 1 row is mixed `47-49` including CA windup.
+- `Skill -> Phantasm CA` currently shares `ActionCharge = 29`; workbook 1 row is mixed `28-29` without CA windup.
+- `Skill -> Skill` currently falls back to the generic slice value from `InitAbilSlice(52)`; workbook 1 row is mixed `69-74`.
+- `Skill -> Burst` currently uses `38`; workbook 1 row is mixed `26-28`.
+- `Skill -> Dash` currently uses `38`; workbook 1 row is mixed `37-39`.
+- `Skill -> Swap` currently uses `25`; workbook 1 row is mixed `24-25`.
 
-- [nefer_ingame_observations.md](nefer_ingame_observations.md) now records stronger in-game evidence that seeds should have a 12s lifetime and that conversion into a seed appears to reset lifetime.
-- The current implementation models that 12s lifetime reset behavior by replacing a core with a newly created seed gadget on conversion, but the exact gameplay semantics of that reset are still inferred from observation rather than confirmed source data.
-- Seed absorption currently consumes all nearby seeds found inside an assumed absorb radius on Charged Attack or Phantasm Performance.
-- Seed absorption currently assumes a simplified effective radius instead of verified geometry.
-- In-game observation also indicates a shared field limit of 5 across cores and seeds, with the oldest object disappearing or exploding first; the current implementation relies on the shared `GadgetTypDendroCore` limit path to approximate that behavior rather than a Nefer-specific queue.
+## [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go): unresolved hitboxes, areas, and particles
 
-### [internal/characters/nefer/seed_gadget.go](internal/characters/nefer/seed_gadget.go)
+- `Senet Strategy: Dance of a Thousand Nights hitbox` currently uses `NewCircleHit(..., Y=1, radius=3)`; datamine points to skill-family lock shapes `CircleLockEnemyR8H6HC` and `CircleLockEnemyR15H10HC`, but the exact mapping from those shapes to this hit has not been closed.
+- `Skill particle proc timing` currently uses the skill hit callback on frame `24`; no in-game validation has been recorded for whether particle generation is tied to that exact contact frame in every case.
+- `Skill particle proc gating` currently uses `particleICDKey` with `0.2s`; no in-game validation has been recorded for multi-target or repeated-contact edge cases.
+- `Skill particle count` currently uses `2` with `34%` and `3` with `66%`; no in-game validation has been recorded for that exact distribution.
 
-- Seed gadgets currently reuse `GadgetTypDendroCore` intentionally so they share the existing field cap with ordinary Dendro Cores.
-- This matches the current in-game observation better than the previous counter model, but still depends on the engine's generic gadget-limit behavior rather than a Nefer-specific queue implementation.
-- Seed gadgets currently do not model any separate collision, visibility, or target interaction beyond existing as absorbable world objects.
+## [internal/characters/nefer/burst.go](internal/characters/nefer/burst.go): unresolved frame rows
 
-## Normal Attacks and Plunge
+- `Sacred Vow: True Eye's Phantasm (Hit 1) hitmark` currently uses `26`; workbook 1 row is mixed `99-101`.
+- `Sacred Vow: True Eye's Phantasm (Hit 2) hitmark` currently uses `46`; workbook 1 row is mixed `40-44`.
+- `Burst energy drain timing` currently consumes energy immediately through `ConsumeEnergy(60)`; workbook 1 row is mixed around `6-7` and includes an outlier.
+- `Burst -> Normal 1` currently uses `72`; workbook 1 row is mixed `118-119`.
+- `Burst -> Normal CA` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `129-131` including CA windup.
+- `Burst -> Phantasm CA` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `123-124` including CA windup.
+- `Burst -> Skill` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 confirms `119`.
+- `Burst -> Dash` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `119-120`.
+- `Burst -> Jump` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `119-120`.
+- `Burst -> Walk` currently falls back to the generic slice value from `InitAbilSlice(76)`; workbook 1 row is mixed `118-119`.
+- `Burst -> Swap` currently uses `73`; workbook 1 row is mixed `117-118`.
 
-### [internal/characters/nefer/attack.go](internal/characters/nefer/attack.go)
+## [internal/characters/nefer/burst.go](internal/characters/nefer/burst.go): unresolved hitboxes and areas
 
-- `attackHitmarks`, `attackFrames`, `attackHitboxes`, and `attackOffsets` are not fully validated against final frame data.
-- N3 attack chaining uses provisional timing derived from mixed measurements.
-- The corrected sheet label is `N3 -> N4`, but the timing is still mixed and not final.
-- Datamine now confirms lock-shape metadata for Nefer combat entries, but it still does not provide a full per-hit melee geometry specification for NA.
-- Hitbox sizes and offsets are still current approximations rather than verified geometry.
-- N3 two-hit scheduling exists, but exact intra-string timing and geometry still need validation.
-- Plunge uses a generic circle hit and does not yet have verified Nefer-specific geometry, hitlag, or strike typing nuances.
+- `Sacred Vow: True Eye's Phantasm (Hit 1) hitbox` currently uses `NewBoxHit(..., width=6, length=10)`; datamine points to `CircleLockEnemyR15H10HC`, but the exact mapping from that lock shape to this hitbox has not been closed.
+- `Sacred Vow: True Eye's Phantasm (Hit 2) hitbox` currently reuses `NewBoxHit(..., width=6, length=10)` from Hit 1; datamine points to `CircleLockEnemyR15H10HC`, but the exact mapping from that lock shape to this hitbox has not been closed.
 
-## Charged Attack and Phantasm
+## [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go) and [internal/characters/nefer/seed_gadget.go](internal/characters/nefer/seed_gadget.go)
 
-### [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go)
+- `Seed absorption area` currently uses `seedAbsorbRadius = 6` centered on the player through `NewCircleHitOnTarget`; no source-backed absorb radius has been identified.
+- `Seed absorption target-selection rule` currently absorbs every `seedGadget` inside that player-centered circle; no source-backed rule has been identified for whether vertical separation, line-of-travel, or another target-selection filter should apply.
+- `Core/seed shared field-cap removal order` currently relies on the generic `GadgetTypDendroCore` engine path after converting cores into `seedGadget`; no source-backed Nefer-specific queue implementation has been identified for mixed core/seed eviction order.
+- `Seed gadget collision and target interaction` currently have no Nefer-specific implementation beyond existing as absorbable gadgets; no source-backed collision or interactability rule has been identified.
 
-- The basic Slither or Phantasm transition loop is implemented, including self-completing standalone special charges, but the exact release or finisher sequence and fine-grained CA timing are still not final.
-- The observed three-way Charged Attack stamina split is now modeled: 50 stamina for ordinary CA, 25 stamina for ordinary CA during Shadow Dance, and 0 stamina for Phantasm Performance.
-- C1 is implemented by treating its bonus as an additive +0.6 increase to the EM-scaling multiplier of each Phantasm Performance Shades hit.
-- The current implementation explicitly treats the Veil bonus as a local multiplier on the base constructed Phantasm Performance hit terms, while C1 first raises only the Shades EM scaling through `AttackInfo.Mult`.
-- For the Shades hits, this means the implemented ordering is `(base Shades MV + C1 addl. MV) * (1 + Veil bonus)` before later additive terms such as Spread are applied.
-- `queuePhantasmPerformance()` still uses provisional frame timings for consume and hit sequence.
-- Datamine exposes additional Nefer subSkill entries and lock shapes, which narrows the targeting picture, but Phantasm hit radii, ordering, ownership details, and spacing are still approximations.
-- Seeds of Deceit absorption is now implemented against nearby world objects, but not with final geometry or validated per-hit targeting rules.
-- C6-sensitive Phantasm branching now converts the second Nefer Phantasm hit into a Lunar-Bloom EM hit and queues an additional post-Phantasm Lunar-Bloom hit, but the exact extra-hit timing and geometry still rely on the current shared Phantasm AoE approximation.
+## [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go)
 
-## Skill
+- `C4 nearby-opponent area` currently uses `c4NearbyRadius = 10` plus enemy circle radius; no source-backed area definition for “nearby opponents” has been identified.
 
-### [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go)
+## [internal/characters/nefer/*.go]: explicit poise and hitlag mappings still missing
 
-- Datamine indicates Nefer skill-family entries use `CircleLockEnemyR8H6HC` and `CircleLockEnemyR15H10HC` targeting shapes for relevant skill/subSkill records.
-- Current code still uses a simplified circular AoE and does not yet match datamine-informed targeting geometry closely enough to call final.
-- Skill startup, cancel timings, and geometry are not fully validated.
-- The current C2 implementation covers the 5-stack cap, the initial 2-stack Skill grant, the sourced Veil multiplier ceiling of `1 + 5 * 8%` on the base Phantasm Performance hit terms, and the +200 EM handling at the fifth stack or fifth-stack refresh.
-- Skill now starts the current P1 conversion window, but the exact relationship between the 15s replacement window and any real seed lifetime after window end is still not fully verified.
-- Skill particle generation is now implemented from Lunaris metadata, but still needs gameplay validation against actual proc timing and enemy-hit edge cases.
-
-## Burst
-
-### [internal/characters/nefer/burst.go](internal/characters/nefer/burst.go)
-
-- Burst is currently modeled as a two-hit scaffold with provisional hit timings.
-- Datamine indicates Burst-family targeting uses `CircleLockEnemyR15H10HC`, so the current geometry is better constrained than before, but exact Burst hit timeline, geometry, and any additional nuances are still not finalized.
-- Veil consumption is simplified to a direct per-stack damage bonus and does not yet cover every edge case from the final design.
-
-## Passives and Constellations
-
-### [internal/characters/nefer/asc.go](internal/characters/nefer/asc.go)
-
-- Current implementation covers the A4 Lunar-Bloom EM bonus path and the current branch P2 Verdant Dew model.
-- Seeds of Deceit conversion has moved into [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go), but the broader passive behavior is still incomplete.
-- P2 is currently implemented as a 5s status refreshed by any party-triggered Lunar-Bloom, during which Slither gains an additional Verdant Dew generation-rate bonus in the same mechanical lane used by C4.
-- The current P2 interpretation treats “provides additional Verdant Dew” as a Slither-only Verdant Dew acceleration bonus of `+0%` at `EM <= 500`, increased by `+10%` per 100 EM above 500 up to `+50%` total bonus.
-- This interpretation is now the branch baseline and replaces the earlier “separate extra Dew stream” interpretation.
-
-### [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go)
-
-- The current Veil-driven Phantasm bonus is implemented by multiplying the base constructed Phantasm Performance hit terms by `1 + 0.08 * currentVeilStacks()`: the two Nefer hits scale both their built-in `AttackInfo.Mult` and EM-derived `FlatDmg` terms, while the three Shades hits scale their `AttackInfo.Mult` terms. Later additive reaction terms such as Spread are not multiplied by Veil in this path.
-- C1 is considered complete under the current implementation decision that its wording is satisfied by raising the Shades EM scaling itself, which then flows through the normal downstream damage modifiers.
-- C2 now increases the ceiling of that Veil-driven Phantasm bonus by raising the Veil cap to 5, while also still handling the Skill-side stack grant, duration extension, and fifth-stack EM behavior.
-- C4 now applies the Verdant Dew gain-rate increase and a lingering Dendro RES shred refresh loop while Nefer is on field in Shadow Dance.
-- The current C4 nearby-opponent check uses an explicit radius approximation around the player rather than a source-confirmed area definition.
-- C6 now covers both the Lunar-Bloom elevation hook and the two extra Lunar-Bloom instances sourced from the current Lunaris wording.
-- The second-stage replacement hit and the post-Phantasm hit both currently reuse the existing Phantasm AoE pattern and timing assumptions rather than source-confirmed dedicated geometry.
-
-## Missing Mechanics
-
-### Not yet implemented in the character package
-
-- Fully verified Seeds of Deceit world geometry and absorb radius rules.
-- Exact Veil refresh-target semantics beyond the current oldest-stack-refresh model.
-- P1 full behavior.
-- Final particle behavior validation.
-- Final ICD, StrikeType, durability, poise, hitlag, and geometry pass.
-
-## Validation Gaps From Source Data
-
-### [nefer_frames_google_sheets.md](nefer_frames_google_sheets.md)
-
-- The workbook page inventory is now confirmed as 5 pages in workbook 1 and 3 pages in workbook 2.
-- Additional `Skill`, `Burst`, `DashJump`, and `N0` page data has been folded into the summary.
-- Mixed frame values are still unresolved.
-- Many cancel routes remain missing.
-- The corrected `N3 -> N4` row is still not fully confirmed because the measured values remain mixed.
-
-### [nefer_readiness_assessment.md](nefer_readiness_assessment.md)
-
-- This file is now historical source-analysis context only.
-- Current live implementation gaps should be maintained in this register instead of mirrored back into the readiness snapshot.
-
-## Exit Criteria For This Register
-
-- Remove an item only when its code path is implemented and verified against reliable source data.
-- If a placeholder becomes more precise but still not final, keep it in this document and update the wording instead of deleting it.
+- `Normal 1` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Normal 2` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Normal 3 hit 1` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Normal 3 hit 2` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Normal 4` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Low Plunge` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `High Plunge` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Charge Attack` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Senet Strategy: Dance of a Thousand Nights` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Phantasm Performance (Nefer 1)` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Phantasm Performance (Shade 1)` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Phantasm Performance (Shade 2)` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Phantasm Performance (Nefer 2)` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Phantasm Performance (Shade 3)` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Phantasm Performance (C6 End Hit)` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Sacred Vow: True Eye's Phantasm (Hit 1)` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.
+- `Sacred Vow: True Eye's Phantasm (Hit 2)` has no explicit `PoiseDMG`, `HitlagFactor`, or `HitlagHaltFrames`.

@@ -10,11 +10,11 @@ It is a live execution document, not a historical snapshot. Completed work belon
 
 - Canonical generated data is in place.
 - Character registration, imports, shortcuts, and generated docs are in place.
-- Nefer has a working Normal Attack string, Charged Attack routing, Skill, Burst, seed conversion window, seed gadgets, Veil stack scaffolding, Lunar-Bloom EM bonus path, and partial constellation coverage.
+- Nefer has a working Normal Attack string, Charged Attack routing, Skill, Burst, seed conversion window, seed gadgets, Veil stack scaffolding, Lunar-Bloom EM bonus path, and implemented constellation logic through C6.
 - Shadow Dance now supports a real Slither loop, Phantasm Performance Charges, swap reset, and self-completing standalone special charges.
 - C2 should be interpreted as a `1 + 5 * 8%` multiplier on the base Phantasm Performance hit terms at 5 Veil stacks, not as a separate hidden 140%-formula problem.
 - The current branch now encodes the Phantasm formula ordering explicitly: C1 raises Shades MV, and the Veil bonus is applied afterward by multiplying the base constructed Phantasm Performance hit terms directly in the Phantasm path.
-- The branch is no longer blocked on core scaffolding. The remaining work is about accuracy, missing mechanics, and review packaging.
+- The branch is no longer blocked on core scaffolding. The remaining work is specifically charge or burst timing closure, Skill or Burst or Phantasm or seed geometry closure, explicit poise or hitlag mapping, final validation of the already assigned ICD or StrikeType or durability or particle behavior, and review packaging.
 
 ## Planning Principles
 
@@ -33,9 +33,9 @@ Objective:
 
 Work:
 
-1. Close the remaining approximation gaps around P1 geometry and absorption semantics.
-2. Re-check C6 timing and geometry now that the extra hits are implemented.
-3. Perform the deferred hitlag, ICD, StrikeType, durability, and poise implementation pass where code changes are required.
+1. Close the remaining seed-side gaps around absorb geometry.
+2. Re-check the exact Phantasm and C6 extra-hit timing and geometry now that the extra hits are implemented.
+3. Perform the deferred explicit hitlag and poise mapping pass, and validate the already assigned ICD, StrikeType, durability, and particle behavior.
 
 Exit criteria:
 
@@ -59,7 +59,7 @@ Work:
 
 Exit criteria:
 
-- Remaining combat-data approximations are either resolved or reduced to a short, reviewable list, and the main Nefer gameplay loop no longer depends on unexamined behavior assumptions.
+- Remaining combat-data approximations are either resolved or reduced to a short list covering only mixed frame rows, open AoE mappings, and metadata validation.
 
 ### PR Packaging And Review Readiness
 
@@ -77,28 +77,27 @@ Work:
 
 Exit criteria:
 
-- A reviewer can understand what is complete, what is partial, and what still needs evidence without reconstructing the branch history manually.
+- A reviewer can identify exactly which rows, radii, timings, and semantic questions are still open without reconstructing the branch history manually.
 
 ## Recommended Execution Order
 
-1. Re-check the new P2 Verdant Dew interpretation against stronger source evidence, then close the remaining passive gaps around P1 before doing another C6 timing or geometry pass.
-2. Run the research and verification pass immediately around those code changes: frames, geometry, Slither or Phantasm chaining, seed behavior, particles, and swap semantics.
-3. Perform the remaining attack-metadata cleanup for hitlag, ICD, StrikeType, durability, and poise.
+1. Re-check the new P2 Verdant Dew interpretation against stronger source evidence, then close the remaining seed-system gaps before doing another C6 timing or geometry pass.
+2. Run the research and verification pass immediately around those code paths: frames, geometry, Slither or Phantasm timing, seed behavior, particles, and swap semantics.
+3. Perform the remaining attack-metadata cleanup for explicit hitlag and poise mapping, then validate the current ICD, StrikeType, durability, and particle assignments.
 4. Regenerate and re-check any generated artifacts affected by code changes.
 5. Refresh PR-facing documentation and gap summaries immediately before review.
 
 ## Explicit Non-Goals Until New Evidence Exists
 
-- Do not hard-claim exact Veil refresh-target semantics beyond the current oldest-stack-refresh model unless a stronger source confirms them.
 - Do not hard-claim exact geometry where only partial lock-shape metadata exists.
-- Do not mark C6 complete until the missing behavior is implemented rather than inferred from wording.
+- Do not claim final C6 timing or geometry until the extra-hit frame placement and AoE mapping are supported by stronger evidence.
 
 ## Done Definition For The Branch
 
 The branch is ready to present as a complete Nefer implementation only when:
 
 - core combat behavior is implemented,
-- remaining frame and geometry risk is narrow and documented,
+- remaining frame and geometry risk is narrow and documented as specific open rows or AoE mappings,
 - passives and constellations are implemented or defensibly blocked,
 - PR docs and generated artifacts are consistent with the actual code state.
 
