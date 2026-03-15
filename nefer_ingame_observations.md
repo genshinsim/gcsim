@@ -18,11 +18,17 @@ Implementation choices, approximations, and remaining gaps should be tracked in 
 
 ### Seed Lifetime Reset On Conversion
 
-- Based on in-game observation, converting an existing core into a seed appears to refresh or reset that object's lifetime.
+- Converting an existing core into a seed resets that object's lifetime.
+- When a core is converted on the last second of its lifetime, the resulting seed still persists for a full 12 seconds.
 
 ### Seed Lifetime
 
 - A seed exists for 12 seconds.
+
+### Seed Behavior After P1 Window End
+
+- When the 15s P1 conversion window ends, already existing Seeds of Deceit remain on the field.
+- No special cleanup, forced conversion, or immediate detonation was observed at P1 window end.
 
 ### Slither Behavior
 
