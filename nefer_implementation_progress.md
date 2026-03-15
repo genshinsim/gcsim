@@ -5,9 +5,28 @@
 - Phase 1 is functionally complete on the updated datamine.
 - Phase 2 is partially complete.
 - Phase 3 is partially complete.
-- Phases 4-8 are not complete and still contain placeholder or incomplete behavior.
+- Phase 4 now has an initial functional P1 seed and Veil loop, but remains incomplete.
+- Phases 5-8 are not complete and still contain placeholder or incomplete behavior.
 
 ## Completed Work Log
+
+### 2026-03-15
+
+#### Phase 4. Nefer-specific mechanics
+
+- Added a Seeds of Deceit conversion window in [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go).
+- Added conversion of existing on-field Dendro Cores into world-space Seeds of Deceit on Skill use in [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go).
+- Added conversion of newly spawned Dendro Cores into Seeds of Deceit during the active window by intercepting [pkg/core/event/event.go](pkg/core/event/event.go) `OnDendroCore` in [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go).
+- Added a dedicated seed gadget in [internal/characters/nefer/seed_gadget.go](internal/characters/nefer/seed_gadget.go) using the shared Dendro Core gadget type so cores and seeds respect the same cap behavior.
+- Added a 12s seed lifetime in [internal/characters/nefer/seed_gadget.go](internal/characters/nefer/seed_gadget.go).
+- Added lifetime reset on core-to-seed conversion by replacing the original core gadget with a newly created seed gadget in [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go).
+- Added nearby seed absorption on Charged Attack and Phantasm Performance in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go).
+- Added initial Veil threshold EM buff handling for 3-stack and base C2 5-stack thresholds in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go).
+- Added initial Skill particle generation in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go) using the current Lunaris 66%/33% split with a 0.2s ICD.
+
+#### Validation
+
+- Confirmed the updated package still compiles with `go test ./internal/characters/nefer ./pkg/simulation`.
 
 ### 2026-03-14
 
@@ -44,4 +63,4 @@
 
 ## Open Implementation State
 
-- Remaining work is now dominated by unfinished combat behavior, timing validation, and replacing placeholders with verified mechanics.
+- Remaining work is now dominated by unfinished combat behavior, timing validation, missing exact stack-duration logic, and replacing placeholders with verified mechanics.
