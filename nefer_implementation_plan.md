@@ -33,8 +33,8 @@ Objective:
 
 Work:
 
-1. Close the remaining passive gaps around P1 or P2 semantics where the current implementation is still partial.
-2. Complete C6 beyond the current Lunar-Bloom elevation hook.
+1. Close the remaining approximation gaps around P1 geometry and absorption semantics.
+2. Re-check C6 timing and geometry now that the extra hits are implemented.
 3. Perform the deferred hitlag, ICD, StrikeType, durability, and poise implementation pass where code changes are required.
 
 Exit criteria:
@@ -81,7 +81,7 @@ Exit criteria:
 
 ## Recommended Execution Order
 
-1. Implement the highest-confidence missing mechanics first: C6 extra hits, then close the remaining passive gaps around P1 or P2.
+1. Re-check the new P2 Verdant Dew interpretation against stronger source evidence, then close the remaining passive gaps around P1 before doing another C6 timing or geometry pass.
 2. Run the research and verification pass immediately around those code changes: frames, geometry, Slither or Phantasm chaining, seed behavior, particles, and swap semantics.
 3. Perform the remaining attack-metadata cleanup for hitlag, ICD, StrikeType, durability, and poise.
 4. Regenerate and re-check any generated artifacts affected by code changes.

@@ -25,7 +25,7 @@ It is a live readiness assessment. It should be read together with [Nefer PR che
 | Charged Attack, Slither, and Phantasm loop | Medium | Functional and substantially improved, but still not final on timing, geometry, and some branch-specific details. |
 | Skill and Burst | Medium | Playable and integrated, but still provisional on exact geometry and hit timelines. |
 | Seeds, Veil, and Lunar-Bloom integration | Medium | Core loop exists, but several semantics remain inferred rather than fully confirmed. |
-| Passives and constellations | Medium | C1, C2, and C4 are implemented, and C6 remains incomplete. |
+| Passives and constellations | Medium | A4 is implemented, P2 now has a fixed Verdant Dew acceleration interpretation on the branch, C1, C2, and C4 are implemented, and C6 still carries timing and geometry approximation risk. |
 | Combat metadata polish | Low | Hitlag, poise, exact StrikeType, durability, and some ICD validation are still pending. |
 | Documentation and review packaging | High | Progress log, live gap register, evidence notes, generated docs, and PR checklist exist and are aligned. |
 
@@ -48,7 +48,7 @@ It is a live readiness assessment. It should be read together with [Nefer PR che
 
 ### 1. Missing Character Mechanics
 
-- C6 only covers the Lunar-Bloom elevation hook and not the extra damage instances.
+- C6 extra damage instances are now implemented, but they still rely on provisional timing and shared AoE assumptions.
 - C4 is now implemented functionally, but its nearby-opponent radius is still an approximation rather than a source-confirmed area definition.
 - Veil of Falsehood now has a sourced duration model in code, but the exact refresh-target semantics at cap are still an implementation assumption.
 
