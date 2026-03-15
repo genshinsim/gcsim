@@ -41,6 +41,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: 1}, 3), skillHitmark, skillHitmark, c.skillParticleCB)
 	c.AddStatus(shadowDanceKey, 9*60, true)
+	c.phantasmCharges = phantasmChargesPerSkill
 	c.startSeedWindow()
 	c.SetCDWithDelay(action.ActionSkill, 9*60, 23)
 
