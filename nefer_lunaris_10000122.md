@@ -32,6 +32,7 @@
 - Burst name: Sacred Vow: True Eye's Phantasm.
 - Burst deals AoE Dendro damage in front and consumes all Veils of Falsehood to increase Burst damage.
 - Passive P1 converts on-field Dendro Cores and future Lunar-Bloom outputs into Seeds of Deceit for 15s after Skill, and lets Charged Attack / Phantasm Performance absorb Seeds of Deceit to gain Veil of Falsehood stacks.
+- Veil of Falsehood has an initial maximum of 3 stacks, each stack lasts 9s, and each stack's duration is tracked independently.
 - At 3 Veil stacks, or when the third stack is refreshed, Nefer gains +100 EM for 8s.
 - P2 strengthens Shadow Dance interaction with Verdant Dew after allies trigger Lunar-Bloom.
 - P3 converts Bloom into Lunar-Bloom and scales Lunar-Bloom base damage from Nefer's EM.
@@ -124,6 +125,7 @@ Multipliers (Talent Lv. 1-15):
 - For 15s, Lunar-Bloom results that would create Dendro Cores or Bountiful Cores instead create Seeds of Deceit.
 - Seeds of Deceit cannot trigger Hyperbloom or Burgeon and do not burst.
 - Charged Attack or Phantasm Performance can absorb Seeds of Deceit in range and gain 1 Veil of Falsehood stack per seed.
+- Veil of Falsehood has an initial maximum of 3 stacks, with each stack lasting 9s independently.
 - At 3 stacks, or when the third stack is refreshed, Nefer gains +100 EM for 8s.
 
 ### P2: Daughter of the Dust and Sand

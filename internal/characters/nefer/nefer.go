@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -23,6 +24,8 @@ const (
 	seedWindowKey           = "nefer-seed-window"
 	veilEMBuffKey           = "nefer-veil-em-buff"
 	seedAbsorbRadius        = 6
+	veilBaseDuration        = 9 * 60
+	c2VeilDurationBonus     = 5 * 60
 	phantasmChargesPerSkill = 3
 )
 
@@ -30,6 +33,7 @@ type char struct {
 	*tmpl.Character
 	ascendantGleam    bool
 	veilstacks        int
+	veilTracker       *stacks.MultipleRefreshNoRemove
 	maxVeilStacks     int
 	slitherSrc        int
 	phantasmCharges   int
@@ -58,9 +62,11 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 2 {
 		c.maxVeilStacks = 5
 	}
+	c.initVeilTracker()
 	c.swapResetInit()
 	c.lunarbloomInit()
 	c.p1Init()
+	c.c2Init()
 	c.c6Init()
 	return nil
 }
@@ -126,6 +132,7 @@ func (c *char) swapResetInit() {
 			return
 		}
 		c.clearPhantasmChargeLoop()
+		c.DeleteStatus(shadowDanceKey)
 		c.phantasmCharges = 0
 	}, "nefer-swap-reset")
 }
@@ -143,26 +150,62 @@ func (c *char) addVeilStacks(count int) {
 	if count <= 0 {
 		return
 	}
-	prev := c.veilstacks
-	c.veilstacks = min(c.veilstacks+count, c.maxVeilStacks)
-	c.applyVeilThresholdBuff(prev, c.veilstacks)
+	prev := c.currentVeilStacks()
+	for range count {
+		c.veilTracker.Add(c.veilStackDuration())
+		next := c.currentVeilStacks()
+		c.applyVeilThresholdBuff(prev, next, 1)
+		prev = next
+	}
 }
 
 func (c *char) consumeVeilStacks() int {
-	stacks := c.veilstacks
-	c.veilstacks = 0
-	return stacks
+	count := c.currentVeilStacks()
+	c.initVeilTracker()
+	return count
 }
 
-func (c *char) applyVeilThresholdBuff(prev, next int) {
-	if next <= prev {
+func (c *char) c2PhantasmBonus() float64 {
+	stacks := c.currentVeilStacks()
+	if c.Base.Cons < 2 || stacks <= 0 {
+		return 0
+	}
+	return float64(stacks) * 0.08
+}
+
+func (c *char) initVeilTracker() {
+	c.veilTracker = stacks.NewMultipleRefreshNoRemove(c.maxVeilStacks, c.QueueCharTask, &c.Core.F)
+	c.veilstacks = 0
+}
+
+func (c *char) currentVeilStacks() int {
+	if c.veilTracker == nil {
+		return c.veilstacks
+	}
+	c.veilstacks = c.veilTracker.Count()
+	return c.veilstacks
+}
+
+func (c *char) veilStackDuration() int {
+	dur := veilBaseDuration
+	if c.Base.Cons >= 2 {
+		dur += c2VeilDurationBonus
+	}
+	return dur
+}
+
+func (c *char) applyVeilThresholdBuff(prev, next, count int) {
+	if count <= 0 {
 		return
 	}
 
+	triggerFive := c.Base.Cons >= 2 && next >= 5 && (prev < 5 || prev == 5)
+	triggerThree := next >= 3 && (prev < 3 || prev == 3)
+
 	amount := 0.0
-	if c.Base.Cons >= 2 && next >= 5 && prev < 5 {
+	if triggerFive {
 		amount = 200
-	} else if next >= 3 && prev < 3 {
+	} else if triggerThree {
 		amount = 100
 	}
 	if amount <= 0 {

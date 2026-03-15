@@ -12,6 +12,7 @@ It is a live execution document, not a historical snapshot. Completed work belon
 - Character registration, imports, shortcuts, and generated docs are in place.
 - Nefer has a working Normal Attack string, Charged Attack routing, Skill, Burst, seed conversion window, seed gadgets, Veil stack scaffolding, Lunar-Bloom EM bonus path, and partial constellation coverage.
 - Shadow Dance now supports a real Slither loop, Phantasm Performance Charges, swap reset, and self-completing standalone special charges.
+- C2 should be interpreted as a total +40% Phantasm Performance damage increase at 5 Veil stacks, not as a separate hidden 140%-formula problem.
 - The branch is no longer blocked on core scaffolding. The remaining work is about accuracy, missing mechanics, and review packaging.
 
 ## Planning Principles
@@ -23,60 +24,45 @@ It is a live execution document, not a historical snapshot. Completed work belon
 
 ## Remaining Workstreams
 
-### 1. Combat Accuracy Pass
+### Implementation Track
 
 Objective:
 
-- Raise Nefer from functional to reviewable combat accuracy for timing, geometry, and attack metadata.
+- Finish the code paths that are still missing or only partially implemented.
+
+Work:
+
+1. Close the remaining passive gaps around P1 or P2 semantics where the current implementation is still partial.
+2. Implement C1.
+3. Implement C4.
+4. Complete C6 beyond the current Lunar-Bloom elevation hook.
+5. Perform the deferred hitlag, ICD, StrikeType, durability, and poise implementation pass where code changes are required.
+
+Exit criteria:
+
+- Every missing mechanic that already has a sufficiently clear interpretation is implemented in code.
+
+### Research And Verification Track
+
+Objective:
+
+- Reduce the remaining uncertainty that still depends on frame data, in-game checking, geometry validation, or datamine mapping.
 
 Work:
 
 1. Reconcile mixed frame values in [nefer_frames_google_sheets.md](nefer_frames_google_sheets.md) with the current NA, CA, Skill, and Burst implementations.
 2. Finalize or explicitly bound the remaining provisional timings in [internal/characters/nefer/attack.go](internal/characters/nefer/attack.go), [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go), [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go), and [internal/characters/nefer/burst.go](internal/characters/nefer/burst.go).
 3. Replace approximate hitboxes with better-supported geometry for NA, Slither exit behavior, Phantasm hits, Skill, Burst, and seed absorption.
-4. Perform the deferred hitlag, ICD, StrikeType, durability, and poise review pass.
+4. Re-validate the Slither to Phantasm loop against the current in-game observation notes, especially release timing and chaining behavior.
+5. Re-validate seed lifetime reset assumptions, shared cap behavior, and absorb radius behavior.
+6. Re-validate Skill particle behavior against hit timing and enemy-contact edge cases.
+7. Re-validate exact swap timing, lockout, and any on-exit edge cases around Shadow Dance only if later gameplay evidence contradicts the now-confirmed reset behavior.
 
 Exit criteria:
 
-- Remaining combat-data approximations are either resolved or reduced to a short, reviewable list.
+- Remaining combat-data approximations are either resolved or reduced to a short, reviewable list, and the main Nefer gameplay loop no longer depends on unexamined behavior assumptions.
 
-### 2. Passive And Constellation Completion
-
-Objective:
-
-- Finish the currently missing character mechanics without destabilizing the working core loop.
-
-Work:
-
-1. Finish Veil of Falsehood duration and refresh behavior.
-2. Close the remaining passive gaps around P1 or P2 semantics where the current implementation is still partial.
-3. Implement C1.
-4. Complete the rest of C2 beyond the current stack-cap and stack-grant behavior.
-5. Implement C4.
-6. Complete C6 beyond the current Lunar-Bloom elevation hook.
-
-Exit criteria:
-
-- Every passive and constellation is either implemented or explicitly blocked by a source-data gap that can be defended in review.
-
-### 3. Nefer-Specific Mechanic Validation
-
-Objective:
-
-- Validate the most branch-specific behavior so the remaining risk is narrow and explicit.
-
-Work:
-
-1. Re-validate the Slither to Phantasm loop against the current in-game observation notes, especially release timing and chaining behavior.
-2. Re-validate seed lifetime reset assumptions, shared cap behavior, and absorb radius behavior.
-3. Re-validate Skill particle behavior against hit timing and enemy-contact edge cases.
-4. Confirm swap-reset behavior for Phantasm Performance Charges against intended gameplay semantics.
-
-Exit criteria:
-
-- The main Nefer gameplay loop is validated well enough that open risk is concentrated in known precision gaps rather than state-machine uncertainty.
-
-### 4. PR Packaging And Review Readiness
+### PR Packaging And Review Readiness
 
 Objective:
 
@@ -96,15 +82,15 @@ Exit criteria:
 
 ## Recommended Execution Order
 
-1. Finish the combat accuracy pass where source data is already available.
-2. Finish the highest-value missing mechanics: Veil duration or refresh rules, C1, C2, C4, and C6 extra hits.
-3. Re-run focused smoke validation for Slither, Phantasm chaining, seed absorption, Burst stack consumption, and particle behavior.
+1. Implement the highest-confidence missing mechanics first: C1, C4, and C6 extra hits, then close the remaining passive gaps around P1 or P2.
+2. Run the research and verification pass immediately around those code changes: frames, geometry, Slither or Phantasm chaining, seed behavior, particles, and swap semantics.
+3. Perform the remaining attack-metadata cleanup for hitlag, ICD, StrikeType, durability, and poise.
 4. Regenerate and re-check any generated artifacts affected by code changes.
 5. Refresh PR-facing documentation and gap summaries immediately before review.
 
 ## Explicit Non-Goals Until New Evidence Exists
 
-- Do not invent hidden Veil durations or refresh rules.
+- Do not hard-claim exact Veil refresh-target semantics beyond the current oldest-stack-refresh model unless a stronger source confirms them.
 - Do not hard-claim exact geometry where only partial lock-shape metadata exists.
 - Do not mark C1, C2, C4, or C6 complete until the missing behavior is implemented rather than inferred from wording.
 
