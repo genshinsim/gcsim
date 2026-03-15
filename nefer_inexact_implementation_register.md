@@ -69,10 +69,13 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 
 - The basic Slither or Phantasm transition loop is implemented, including self-completing standalone special charges, but the exact release or finisher sequence and fine-grained CA timing are still not final.
 - The observed three-way Charged Attack stamina split is now modeled: 50 stamina for ordinary CA, 25 stamina for ordinary CA during Shadow Dance, and 0 stamina for Phantasm Performance.
+- C1 is implemented by treating its bonus as an additive +0.6 increase to the EM-scaling multiplier of each Phantasm Performance Shades hit.
+- The current implementation explicitly treats the Veil bonus as a local multiplier on the base constructed Phantasm Performance hit terms, while C1 first raises only the Shades EM scaling through `AttackInfo.Mult`.
+- For the Shades hits, this means the implemented ordering is `(base Shades MV + C1 addl. MV) * (1 + Veil bonus)` before later additive terms such as Spread are applied.
 - `queuePhantasmPerformance()` still uses provisional frame timings for consume and hit sequence.
 - Datamine exposes additional Nefer subSkill entries and lock shapes, which narrows the targeting picture, but Phantasm hit radii, ordering, ownership details, and spacing are still approximations.
 - Seeds of Deceit absorption is now implemented against nearby world objects, but not with final geometry or validated per-hit targeting rules.
-- C1 and C6-sensitive Phantasm branching is not fully implemented.
+- C6-sensitive Phantasm branching is not fully implemented.
 
 ## Skill
 
@@ -81,7 +84,7 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 - Datamine indicates Nefer skill-family entries use `CircleLockEnemyR8H6HC` and `CircleLockEnemyR15H10HC` targeting shapes for relevant skill/subSkill records.
 - Current code still uses a simplified circular AoE and does not yet match datamine-informed targeting geometry closely enough to call final.
 - Skill startup, cancel timings, and geometry are not fully validated.
-- The current C2 implementation covers the 5-stack cap, the initial 2-stack Skill grant, the total +40% Phantasm Performance damage at 5 Veil stacks, and the +200 EM handling at the fifth stack or fifth-stack refresh.
+- The current C2 implementation covers the 5-stack cap, the initial 2-stack Skill grant, the sourced Veil multiplier ceiling of `1 + 5 * 8%` on the base Phantasm Performance hit terms, and the +200 EM handling at the fifth stack or fifth-stack refresh.
 - Skill now starts the current P1 conversion window, but the exact relationship between the 15s replacement window and any real seed lifetime after window end is still not fully verified.
 - Skill particle generation is now implemented from Lunaris metadata, but still needs gameplay validation against actual proc timing and enemy-hit edge cases.
 
@@ -103,9 +106,13 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 
 ### [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go)
 
-- The current C2 logic is implemented through Veil capacity, Skill-side stack grant, duration extension, fifth-stack EM handling, and Phantasm Performance damage scaling.
+- The current Veil-driven Phantasm bonus is implemented by multiplying the base constructed Phantasm Performance hit terms by `1 + 0.08 * currentVeilStacks()`: the two Nefer hits scale both their built-in `AttackInfo.Mult` and EM-derived `FlatDmg` terms, while the three Shades hits scale their `AttackInfo.Mult` terms. Later additive reaction terms such as Spread are not multiplied by Veil in this path.
+- C1 is considered complete under the current implementation decision that its wording is satisfied by raising the Shades EM scaling itself, which then flows through the normal downstream damage modifiers.
+- C2 now increases the ceiling of that Veil-driven Phantasm bonus by raising the Veil cap to 5, while also still handling the Skill-side stack grant, duration extension, and fifth-stack EM behavior.
+- C4 now applies the Verdant Dew gain-rate increase and a lingering Dendro RES shred refresh loop while Nefer is on field in Shadow Dance.
+- The current C4 nearby-opponent check uses an explicit radius approximation around the player rather than a source-confirmed area definition.
 - Only the C6 elevation hook is implemented beyond that.
-- C1, C4, and the C6 extra-damage instances are still missing.
+- The C6 extra-damage instances are still missing.
 - Even the current C6 logic only covers elevation and not the full constellation behavior.
 
 ## Missing Mechanics
@@ -115,8 +122,6 @@ It is not a changelog. Implemented work that is no longer meaningfully inexact s
 - Fully verified Seeds of Deceit world geometry and absorb radius rules.
 - Exact Veil refresh-target semantics beyond the current oldest-stack-refresh model.
 - P1/P2 full behavior.
-- C1 full behavior.
-- C4 full Verdant Dew gain-rate behavior and linger handling.
 - C6 extra damage instances.
 - Final particle behavior validation.
 - Final ICD, StrikeType, durability, poise, hitlag, and geometry pass.

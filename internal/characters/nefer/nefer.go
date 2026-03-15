@@ -66,7 +66,7 @@ func (c *char) Init() error {
 	c.swapResetInit()
 	c.lunarbloomInit()
 	c.p1Init()
-	c.c2Init()
+	c.c4Init()
 	c.c6Init()
 	return nil
 }
@@ -165,9 +165,9 @@ func (c *char) consumeVeilStacks() int {
 	return count
 }
 
-func (c *char) c2PhantasmBonus() float64 {
+func (c *char) phantasmVeilBonus() float64 {
 	stacks := c.currentVeilStacks()
-	if c.Base.Cons < 2 || stacks <= 0 {
+	if stacks <= 0 {
 		return 0
 	}
 	return float64(stacks) * 0.08

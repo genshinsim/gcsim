@@ -31,7 +31,9 @@ It should not be used as the source of current readiness or open-gap status. For
 - Added initial Skill particle generation in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go) using the current Lunaris 66%/33% split with a 0.2s ICD.
 - Corrected Slither stamina drain to the sourced 18.15/s value and split Charged Attack stamina handling into the three observed modes in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go): normal 50 stamina, Shadow Dance normal 25 stamina, and Phantasm Performance 0 stamina.
 - Corrected swap handling so leaving the field clears Shadow Dance itself in addition to resetting Phantasm Performance Charges in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go).
-- Added regression coverage for the three Charged Attack stamina modes and for swap-driven Shadow Dance or charge reset behavior in [internal/characters/nefer/charge_test.go](internal/characters/nefer/charge_test.go).
+- Implemented C4 Verdant Dew gain-rate acceleration through a reusable player Verdant Dew rate modifier path in [pkg/core/player/dew.go](pkg/core/player/dew.go) and [pkg/core/player/player.go](pkg/core/player/player.go).
+- Implemented C4 on-field Shadow Dance Dendro RES shred with a 4.5s linger refresh model in [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go).
+- Implemented C1 by interpreting it as an additive +0.6 increase to the EM scaling multiplier of each Phantasm Performance Shades hit in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go), and applied the Veil bonus to the base constructed Phantasm Performance hit terms in that same path so the final ordering is `(base Phantasm term) * (1 + Veil bonus)`, with C1 only enlarging the Shades MV portion before that multiplier and later additive reaction terms remaining outside it.
 
 #### Validation
 

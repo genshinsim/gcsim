@@ -12,7 +12,8 @@ It is a live execution document, not a historical snapshot. Completed work belon
 - Character registration, imports, shortcuts, and generated docs are in place.
 - Nefer has a working Normal Attack string, Charged Attack routing, Skill, Burst, seed conversion window, seed gadgets, Veil stack scaffolding, Lunar-Bloom EM bonus path, and partial constellation coverage.
 - Shadow Dance now supports a real Slither loop, Phantasm Performance Charges, swap reset, and self-completing standalone special charges.
-- C2 should be interpreted as a total +40% Phantasm Performance damage increase at 5 Veil stacks, not as a separate hidden 140%-formula problem.
+- C2 should be interpreted as a `1 + 5 * 8%` multiplier on the base Phantasm Performance hit terms at 5 Veil stacks, not as a separate hidden 140%-formula problem.
+- The current branch now encodes the Phantasm formula ordering explicitly: C1 raises Shades MV, and the Veil bonus is applied afterward by multiplying the base constructed Phantasm Performance hit terms directly in the Phantasm path.
 - The branch is no longer blocked on core scaffolding. The remaining work is about accuracy, missing mechanics, and review packaging.
 
 ## Planning Principles
@@ -33,10 +34,8 @@ Objective:
 Work:
 
 1. Close the remaining passive gaps around P1 or P2 semantics where the current implementation is still partial.
-2. Implement C1.
-3. Implement C4.
-4. Complete C6 beyond the current Lunar-Bloom elevation hook.
-5. Perform the deferred hitlag, ICD, StrikeType, durability, and poise implementation pass where code changes are required.
+2. Complete C6 beyond the current Lunar-Bloom elevation hook.
+3. Perform the deferred hitlag, ICD, StrikeType, durability, and poise implementation pass where code changes are required.
 
 Exit criteria:
 
@@ -82,7 +81,7 @@ Exit criteria:
 
 ## Recommended Execution Order
 
-1. Implement the highest-confidence missing mechanics first: C1, C4, and C6 extra hits, then close the remaining passive gaps around P1 or P2.
+1. Implement the highest-confidence missing mechanics first: C6 extra hits, then close the remaining passive gaps around P1 or P2.
 2. Run the research and verification pass immediately around those code changes: frames, geometry, Slither or Phantasm chaining, seed behavior, particles, and swap semantics.
 3. Perform the remaining attack-metadata cleanup for hitlag, ICD, StrikeType, durability, and poise.
 4. Regenerate and re-check any generated artifacts affected by code changes.
@@ -92,7 +91,7 @@ Exit criteria:
 
 - Do not hard-claim exact Veil refresh-target semantics beyond the current oldest-stack-refresh model unless a stronger source confirms them.
 - Do not hard-claim exact geometry where only partial lock-shape metadata exists.
-- Do not mark C1, C2, C4, or C6 complete until the missing behavior is implemented rather than inferred from wording.
+- Do not mark C6 complete until the missing behavior is implemented rather than inferred from wording.
 
 ## Done Definition For The Branch
 

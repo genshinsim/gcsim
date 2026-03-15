@@ -45,6 +45,7 @@ type Handler struct {
 	Stam            float64
 	LastStamUse     int
 	stamPercentMods []stamPercentMod
+	verdantDewRateMods []verdantDewRateMod
 
 	// airborne source
 	airborne AirborneSource
@@ -67,10 +68,10 @@ type Handler struct {
 
 	verdantDewExpiryFrame int
 	verdantDew            int
-	partialDewCount       int
+	partialDewCount       float64
 
 	moonridgeDew int
-}
+
 
 type Opt struct {
 	F            *int
@@ -87,6 +88,7 @@ func New(opt Opt) *Handler {
 		chars:           make([]*character.CharWrapper, 0, 4),
 		charPos:         make(map[keys.Char]int),
 		stamPercentMods: make([]stamPercentMod, 0, 5),
+		verdantDewRateMods: make([]verdantDewRateMod, 0, 4),
 		Opt:             opt,
 		Stam:            MaxStam,
 		SwapICD:         SwapCDFrames,
@@ -322,6 +324,61 @@ func (h *Handler) Tick() {
 	for _, c := range h.chars {
 		c.Tick()
 	}
+}
+
+// this has to be checked after the animation handler, since the task is set by the handler
+func (h *Handler) verdantDewTick() {
+	if h.verdantDew >= 3 {
+		h.partialDewCount = 0
+		return
+	}
+
+	if h.verdantDewExpiryFrame < *h.F {
+		return
+	}
+
+	rate := 1 + h.VerdantDewRateMod()
+	if rate < 0 {
+		rate = 0
+	}
+	h.partialDewCount += rate
+	for h.partialDewCount >= maxPartialDew {
+		h.AddVerdantDew()
+		h.partialDewCount -= maxPartialDew
+		if h.verdantDew >= 3 {
+			h.partialDewCount = 0
+			return
+		}
+	}
+}
+
+func (h *Handler) OnLunarBloom() {
+	verdantDewEnd := *h.F + verdantDewEndFrame
+	h.Tasks.Add(func() { h.verdantDewExpiryFrame = verdantDewEnd }, 1)
+}
+
+// sets verdant dew to an amt between 0 and 3, inclusive.
+func (h *Handler) SetVerdantDew(amt int) {
+	h.verdantDew = max(min(amt, 3), 0)
+}
+
+func (h *Handler) AddVerdantDew() {
+	if h.verdantDew >= MaxVerdantDew {
+		return
+	}
+	h.verdantDew++
+
+	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
+}
+
+// returns the number of verdant dew the player has
+func (h *Handler) VerdantDew() int {
+	return h.verdantDew
+}
+
+func (h *Handler) ConsumeVerdantDew(amt int) {
+	h.verdantDew = max(h.verdantDew-amt, 0)
+	h.Log.NewEvent(fmt.Sprintf("%v verdant dew consumed: %v", amt, h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 }
 
 type AirborneSource int

@@ -13,6 +13,7 @@ It is a live readiness assessment. It should be read together with [Nefer PR che
 - The branch is ready for functional and architectural review.
 - The branch is not yet ready to claim final combat-accuracy completeness.
 - The main remaining risks are incomplete passives or constellations, unresolved timing or geometry details, and a still-open metadata validation pass for hitlag, poise, and some attack tagging details.
+- The current Phantasm formula interpretation is now explicit in code: C1 raises Shades MV and the Veil bonus is then applied locally to the base constructed Phantasm Performance hit terms rather than using a shared generic bonus slot; later additive reaction terms such as Spread remain outside that multiplier.
 
 ## Domain Readiness
 
@@ -24,7 +25,7 @@ It is a live readiness assessment. It should be read together with [Nefer PR che
 | Charged Attack, Slither, and Phantasm loop | Medium | Functional and substantially improved, but still not final on timing, geometry, and some branch-specific details. |
 | Skill and Burst | Medium | Playable and integrated, but still provisional on exact geometry and hit timelines. |
 | Seeds, Veil, and Lunar-Bloom integration | Medium | Core loop exists, but several semantics remain inferred rather than fully confirmed. |
-| Passives and constellations | Low | C2 is now implemented, but C1 and C4 are still missing and C6 remains incomplete. |
+| Passives and constellations | Medium | C1, C2, and C4 are implemented, and C6 remains incomplete. |
 | Combat metadata polish | Low | Hitlag, poise, exact StrikeType, durability, and some ICD validation are still pending. |
 | Documentation and review packaging | High | Progress log, live gap register, evidence notes, generated docs, and PR checklist exist and are aligned. |
 
@@ -47,9 +48,8 @@ It is a live readiness assessment. It should be read together with [Nefer PR che
 
 ### 1. Missing Character Mechanics
 
-- C1 is not implemented.
-- C4 is not implemented.
 - C6 only covers the Lunar-Bloom elevation hook and not the extra damage instances.
+- C4 is now implemented functionally, but its nearby-opponent radius is still an approximation rather than a source-confirmed area definition.
 - Veil of Falsehood now has a sourced duration model in code, but the exact refresh-target semantics at cap are still an implementation assumption.
 
 ### 2. Combat-Accuracy Gaps
