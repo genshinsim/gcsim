@@ -2,13 +2,15 @@
 
 ## Purpose
 
-This document tracks every currently known Nefer implementation point that is approximate, assumed, incomplete, or intentionally left as a scaffold.
+This document tracks only the currently live Nefer implementation points that are approximate, assumed, incomplete, or intentionally scaffolded.
+
+It is not a changelog. Implemented work that is no longer meaningfully inexact should be recorded in [nefer_implementation_progress.md](nefer_implementation_progress.md) instead of repeated here.
 
 ## Current Overall State
 
 - Canonical generated data exists and is in use.
 - Core registration exists and is in use.
-- Combat logic is still only a partial vertical slice.
+- Combat logic now covers the main gameplay loop, but several timing, geometry, passive, and constellation details are still not final.
 - Anything listed below should not be treated as final behavior.
 
 ## Data and Pipeline
@@ -35,19 +37,16 @@ This document tracks every currently known Nefer implementation point that is ap
 
 ### [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go)
 
-- Seeds of Deceit are now represented as world-space gadgets rather than an internal counter.
-- Existing and newly spawned Dendro Cores are removed from the gadget layer during the active conversion window and replaced with seed gadgets.
-- This correctly prevents the converted cores from bursting, Hyperblooming, or Burgeoning through the normal Dendro Core gadget path.
 - [nefer_ingame_observations.md](nefer_ingame_observations.md) now records stronger in-game evidence that seeds should have a 12s lifetime and that conversion into a seed appears to reset lifetime.
-- The current implementation now models that 12s lifetime reset behavior by replacing a core with a newly created seed gadget on conversion.
-- Seed absorption currently consumes all nearby seeds found inside the assumed absorb radius on Charged Attack or Phantasm Performance.
+- The current implementation models that 12s lifetime reset behavior by replacing a core with a newly created seed gadget on conversion, but the exact gameplay semantics of that reset are still inferred from observation rather than confirmed source data.
+- Seed absorption currently consumes all nearby seeds found inside an assumed absorb radius on Charged Attack or Phantasm Performance.
 - Seed absorption currently assumes a simplified effective radius instead of verified geometry.
-- In-game observation also indicates a shared field limit of 5 across cores and seeds, with the oldest object disappearing or exploding first; the current implementation now relies on the shared `GadgetTypDendroCore` limit path to approximate that behavior.
+- In-game observation also indicates a shared field limit of 5 across cores and seeds, with the oldest object disappearing or exploding first; the current implementation relies on the shared `GadgetTypDendroCore` limit path to approximate that behavior rather than a Nefer-specific queue.
 
 ### [internal/characters/nefer/seed_gadget.go](internal/characters/nefer/seed_gadget.go)
 
 - Seed gadgets currently reuse `GadgetTypDendroCore` intentionally so they share the existing field cap with ordinary Dendro Cores.
-- This matches the newly documented in-game observation better than the previous counter model, but still depends on the engine's generic gadget-limit behavior rather than a Nefer-specific queue implementation.
+- This matches the current in-game observation better than the previous counter model, but still depends on the engine's generic gadget-limit behavior rather than a Nefer-specific queue implementation.
 - Seed gadgets currently do not model any separate collision, visibility, or target interaction beyond existing as absorbable world objects.
 
 ## Normal Attacks and Plunge
@@ -66,10 +65,8 @@ This document tracks every currently known Nefer implementation point that is ap
 
 ### [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go)
 
-- `basicChargeAttack()` is only a simple hit scaffold and does not model full Slither behavior.
-- There is no real moving Slither state, no continuous stamina drain over time, and no verified exit-cost implementation.
-- `ActionStam()` returns `0` during Shadow Dance with Verdant Dew, but this is only a simplified gate for the replacement CA path.
-- `phantasmChargeAttack()` uses provisional frame timings for consume and hit sequence.
+- The basic Slither or Phantasm transition loop is implemented, including self-completing standalone special charges, but the exact release or finisher sequence and fine-grained CA timing are still not final.
+- `queuePhantasmPerformance()` still uses provisional frame timings for consume and hit sequence.
 - Datamine exposes additional Nefer subSkill entries and lock shapes, which narrows the targeting picture, but Phantasm hit radii, ordering, ownership details, and spacing are still approximations.
 - Seeds of Deceit absorption is now implemented against nearby world objects, but not with final geometry or validated per-hit targeting rules.
 - C1, C2, and C6-sensitive Phantasm branching is not fully implemented.
@@ -81,7 +78,6 @@ This document tracks every currently known Nefer implementation point that is ap
 - Datamine indicates Nefer skill-family entries use `CircleLockEnemyR8H6HC` and `CircleLockEnemyR15H10HC` targeting shapes for relevant skill/subSkill records.
 - Current code still uses a simplified circular AoE and does not yet match datamine-informed targeting geometry closely enough to call final.
 - Skill startup, cancel timings, and geometry are not fully validated.
-- Shadow Dance duration is implemented, but the full state interaction model with CA movement and transitions is incomplete.
 - The current C2 interaction only grants 2 Veil stacks when conditions are met; the rest of C2 is not implemented.
 - Skill now starts the current P1 conversion window, but the exact relationship between the 15s replacement window and any real seed lifetime after window end is still not fully verified.
 - Skill particle generation is now implemented from Lunaris metadata, but still needs gameplay validation against actual proc timing and enemy-hit edge cases.
@@ -135,7 +131,8 @@ This document tracks every currently known Nefer implementation point that is ap
 
 ### [nefer_readiness_assessment.md](nefer_readiness_assessment.md)
 
-- This file still represents the authoritative list of missing confirmations and should be kept in sync with code changes.
+- This file is now historical source-analysis context only.
+- Current live implementation gaps should be maintained in this register instead of mirrored back into the readiness snapshot.
 
 ## Exit Criteria For This Register
 
