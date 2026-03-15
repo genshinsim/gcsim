@@ -69,6 +69,7 @@ func (c *char) basicChargeAttack() (action.Info, error) {
 		basicChargeHitmark,
 		basicChargeHitmark,
 	)
+	c.QueueCharTask(c.absorbSeedsOfDeceit, basicChargeHitmark)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
@@ -82,6 +83,7 @@ func (c *char) phantasmChargeAttack() (action.Info, error) {
 	consumeFrame := phantasmConsumeDewFrame
 	c.QueueCharTask(func() {
 		c.Core.Player.ConsumeVerdantDew(1)
+		c.absorbSeedsOfDeceit()
 	}, consumeFrame)
 
 	neferHit1 := info.AttackInfo{
