@@ -41,8 +41,8 @@ func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 	}
 
 	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
-		req := h.AbilStamCost(char.Index(), t, param)
-		return req, h.Stam >= req
+		spec := h.AbilStaminaSpec(char.Index(), t, param)
+		return spec.Requirement, h.Stam >= spec.Requirement
 	}
 
 	switch t {
@@ -104,8 +104,10 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	var err error
 	switch t {
 	case action.ActionCharge: // require special calc for stam
-		req := h.AbilStamCost(char.Index(), t, param)
-		h.UseStam(req, t)
+		spec := h.AbilStaminaSpec(char.Index(), t, param)
+		if spec.Timing == action.StaminaConsumeOnExec && spec.Consume > 0 {
+			h.UseStam(spec.Consume, t)
+		}
 		err = h.useAbility(t, param, char.ChargeAttack) // TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash:
 		err = h.useAbility(t, param, char.Dash) // TODO: make sure characters are consuming stam in dashes

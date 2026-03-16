@@ -205,13 +205,39 @@ func (h *Handler) DistributeParticle(p character.Particle) {
 }
 
 func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64 {
-	// stam percent mods are negative
-	// cap it to 100% stam decrease
+	return h.AbilStaminaSpec(i, a, p).Consume
+}
+
+func (h *Handler) AbilStaminaSpec(i int, a action.Action, p map[string]int) action.StaminaSpec {
+	char := h.chars[i]
+	var spec action.StaminaSpec
+	if provider, ok := char.Character.(character.StaminaProvider); ok {
+		spec = provider.ActionStamina(a, p)
+	} else {
+		cost := char.ActionStam(a, p)
+		spec = action.StaminaSpec{
+			Requirement: cost,
+			Consume:     cost,
+			Timing:      action.StaminaConsumeOnExec,
+		}
+		if a == action.ActionDash {
+			spec.Timing = action.StaminaConsumeByAbility
+		}
+	}
+
 	r := 1 + h.StamPercentMod(a)
 	if r < 0 {
 		r = 0
 	}
-	return r * h.chars[i].ActionStam(a, p)
+	spec.Requirement *= r
+	spec.Consume *= r
+	if spec.Requirement < 0 {
+		spec.Requirement = 0
+	}
+	if spec.Consume < 0 {
+		spec.Consume = 0
+	}
+	return spec
 }
 
 func (h *Handler) UseStam(amount float64, a action.Action) {

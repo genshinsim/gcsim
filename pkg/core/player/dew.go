@@ -31,8 +31,12 @@ func (h *Handler) VerdantDewRateMod() float64 {
 func (h *Handler) AddVerdantDewRateMod(key string, dur int, f VerdantDewRateModFunc) {
 	mod := verdantDewRateMod{
 		Key:    key,
-		Expiry: *h.F + dur,
 		Amount: f,
+	}
+	if dur == -1 {
+		mod.Expiry = -1
+	} else {
+		mod.Expiry = *h.F + dur
 	}
 	ind := -1
 	for i, v := range h.verdantDewRateMods {
