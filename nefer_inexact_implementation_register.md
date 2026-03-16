@@ -71,7 +71,7 @@
 - `Phantasm Performance -> Walk` currently follows `phantasmAnimationLength = 106`; workbook 1 row is mixed `104-105`.
 - `Phantasm Performance -> Swap` is not encoded as a dedicated `0f` row; workbook 1 confirms `0`.
 - `C6 post-Phantasm extra hit timing` currently uses `phantasmAnimationLength = 106`; no source-backed row for the extra hit timing has been identified.
-- `Slither entry stamina threshold` currently uses `slitherActivationFrames = 60` times the sourced `18.15/s` drain, interpreted as roughly one second of available Slither stamina that is checked but not consumed up front; no source-backed activation threshold row has been identified.
+- `Slither entry stamina threshold` currently uses `slitherActivationFrames = 60` times the sourced `18.15/s` drain, interpreted as roughly one second of available Slither stamina; the branch now enforces that as a readiness requirement without consuming it up front, but no source-backed activation threshold row has been identified.
 - `Slither minimum cancel frame` currently uses `24`; no source-backed row for this exact cancel gate has been identified.
 - `Slither movement cadence` currently uses `slitherMoveInterval = 1`; no source-backed row for this exact cadence has been identified.
 - `Slither movement distance per tick` currently uses `slitherMoveDistance = 0.1`; no source-backed distance mapping has been identified.

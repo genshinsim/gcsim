@@ -38,6 +38,10 @@ func basicChargeCanQueueAfter() int {
 	return min(chargeFrames[action.ActionAttack], chargeFrames[action.ActionSwap])
 }
 
+func phantasmChargeCanQueueAfter(phaseStartOffset int) int {
+	return phaseStartOffset + 1
+}
+
 func init() {
 	chargeFrames = frames.InitAbilSlice(72)
 	chargeFrames[action.ActionAttack] = 29
@@ -53,15 +57,36 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a != action.ActionCharge {
 		return c.Character.ActionStam(a, p)
 	}
+	return 0
+}
+
+func (c *char) ActionStamina(a action.Action, p map[string]int) action.StaminaSpec {
+	if a != action.ActionCharge {
+		timing := action.StaminaConsumeOnExec
+		if a == action.ActionDash {
+			timing = action.StaminaConsumeByAbility
+		}
+		cost := c.Character.ActionStam(a, p)
+		return action.StaminaSpec{
+			Requirement: cost,
+			Consume:     cost,
+			Timing:      timing,
+		}
+	}
 	if c.canTriggerPhantasm() {
-		return 0
+		return action.StaminaSpec{
+			Timing: action.StaminaConsumeByAbility,
+		}
 	}
 	// Entering Slither is a hard prerequisite for any non-Phantasm charged-attack
 	// route. Based on current in-game observation, Nefer needs roughly one second
 	// worth of Slither stamina available to begin that route, but this threshold is
 	// not consumed up front. Actual stamina consumption still happens only through
 	// the Slither tick drain once Slither has non-zero duration.
-	return c.slitherActivationThreshold()
+	return action.StaminaSpec{
+		Requirement: c.slitherActivationThreshold(),
+		Timing:      action.StaminaConsumeByAbility,
+	}
 }
 
 func (c *char) slitherActivationThreshold() float64 {
@@ -264,7 +289,8 @@ func (c *char) triggerPhantasmFromLoop(src int) {
 
 	c.clearSlither()
 	c.startPhantasmPhase(src)
-	c.Core.Player.SetActionLength(c.chargeRoute.phantasmEndFrame-src, c.chargeRoute.phantasmEndFrame-src)
+	phaseStartOffset := c.chargeRoute.phantasmStartFrame - src
+	c.Core.Player.SetActionLength(c.chargeRoute.phantasmEndFrame-src, phantasmChargeCanQueueAfter(phaseStartOffset))
 }
 
 func (c *char) startPhantasmPhase(src int) {
