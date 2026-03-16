@@ -55,25 +55,23 @@
 
 ## [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go): unresolved frame rows
 
-- `Charge Attack -> Normal 1` currently uses `ActionAttack = 49`; workbook 1 confirms `29` excluding the first CA windup, so the code-side row still needs a deliberate mapping decision between full action length and post-windup timing.
+- `Charge Attack -> Normal 1` currently uses `ActionAttack = 29` under the accepted branch rule that ordinary non-Phantasm CA is the full no-hold Slither-release route and workbook 1 ordinary-CA rows are measured button-to-button across that whole route; no source-backed sub-breakdown for the embedded Slither-entry segment has been identified.
 - `Charge Attack -> Charge Attack` currently uses `ActionCharge = 48`; workbook 1 row is mixed `48-49`.
 - `Charge Attack -> Skill` currently uses generic `48`; workbook 1 has no row.
 - `Charge Attack -> Burst` currently uses generic `48`; workbook 1 has no row.
 - `Charge Attack -> Dash` currently uses generic `48`; workbook 1 has no row.
 - `Charge Attack -> Jump` currently uses generic `48`; workbook 1 has no row.
-- `Charge Attack -> Swap` currently uses `48`; workbook 1 confirms `28`, but the row does not explicitly state whether that value is counted before or after the first CA windup, so the code-side mapping still needs to be closed deliberately.
+- `Charge Attack -> Swap` currently uses `28` under the accepted branch rule that ordinary non-Phantasm CA is the full no-hold Slither-release route and workbook 1 ordinary-CA rows are measured button-to-button across that whole route; no source-backed sub-breakdown for the embedded Slither-entry segment has been identified.
 - `Phantasm Performance hit 4` currently uses frame `44`; workbook 1 row is mixed `44-45` after adding the 20f CA windup to the mixed `24-25` sub-row.
 - `Phantasm Performance hit 5` currently uses frame `45`; workbook 1 row allows only `44-45` after adding the 20f CA windup to the mixed `0-1` sub-row.
-- `Phantasm Performance -> Normal 1` is not encoded as a dedicated post-Phantasm row; workbook 1 confirms `69` excluding the first CA windup.
-- `Phantasm Performance -> Charge Attack` is not encoded as a dedicated post-Phantasm row; workbook 1 confirms `65` including the second CA windup.
-- `Phantasm Performance -> Phantasm Performance` is not encoded as a dedicated post-Phantasm row; workbook 1 confirms `65` including the second CA windup.
-- `Phantasm Performance -> Skill` currently falls back to the generic post-Phantasm branch; workbook 1 has no row.
-- `Phantasm Performance -> Burst` currently falls back to the generic post-Phantasm branch; workbook 1 has no row.
-- `Phantasm Performance -> Dash` currently falls back to the generic post-Phantasm branch; workbook 1 has no row.
-- `Phantasm Performance -> Jump` currently falls back to the generic post-Phantasm branch; workbook 1 has no row.
+- `Phantasm Performance -> Skill` currently falls back to the generic post-Phantasm branch because workbook 1 provides no source-backed row.
+- `Phantasm Performance -> Burst` currently falls back to the generic post-Phantasm branch because workbook 1 provides no source-backed row.
+- `Phantasm Performance -> Dash` currently falls back to the generic post-Phantasm branch because workbook 1 provides no source-backed row.
+- `Phantasm Performance -> Jump` currently falls back to the generic post-Phantasm branch because workbook 1 provides no source-backed row.
 - `Phantasm Performance -> Walk` currently follows `phantasmAnimationLength = 106`; workbook 1 row is mixed `104-105`.
 - `Phantasm Performance -> Swap` is not encoded as a dedicated `0f` row; workbook 1 confirms `0`.
 - `C6 post-Phantasm extra hit timing` currently uses `phantasmAnimationLength = 106`; no source-backed row for the extra hit timing has been identified.
+- `Slither entry stamina threshold` currently uses `slitherActivationFrames = 60` times the sourced `18.15/s` drain, interpreted as roughly one second of available Slither stamina that is checked but not consumed up front; no source-backed activation threshold row has been identified.
 - `Slither minimum cancel frame` currently uses `24`; no source-backed row for this exact cancel gate has been identified.
 - `Slither movement cadence` currently uses `slitherMoveInterval = 1`; no source-backed row for this exact cadence has been identified.
 - `Slither movement distance per tick` currently uses `slitherMoveDistance = 0.1`; no source-backed distance mapping has been identified.
