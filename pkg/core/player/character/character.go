@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/task"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -50,6 +51,15 @@ type Character interface {
 
 	ResetNormalCounter()
 	NextNormalCounter() int
+}
+
+type StaminaProvider interface {
+	ActionStamina(a action.Action, p map[string]int) action.StaminaSpec
+}
+
+// Base contains basic information for a character
+type Base interface {
+	Data() *model.AvatarData
 }
 
 // HP contains info and helper for dealing with character hp

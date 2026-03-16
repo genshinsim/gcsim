@@ -26,6 +26,19 @@ type Info struct {
 	queued []queuedAction
 }
 
+type StaminaConsumeTiming int
+
+const (
+	StaminaConsumeOnExec StaminaConsumeTiming = iota
+	StaminaConsumeByAbility
+)
+
+type StaminaSpec struct {
+	Requirement float64
+	Consume     float64
+	Timing      StaminaConsumeTiming
+}
+
 // Eval represents a sim action
 type Eval struct {
 	Char   keys.Char
