@@ -20,7 +20,6 @@ func init() {
 const (
 	shadowDanceKey          = "nefer-shadow-dance"
 	slitherKey              = "nefer-slither"
-	phantasmChargeHoldKey   = "nefer-phantasm-charge-hold"
 	seedWindowKey           = "nefer-seed-window"
 	veilEMBuffKey           = "nefer-veil-em-buff"
 	seedAbsorbRadius        = 6
@@ -35,9 +34,15 @@ type char struct {
 	veilstacks        int
 	veilTracker       *stacks.MultipleRefreshNoRemove
 	maxVeilStacks     int
-	slitherSrc        int
 	phantasmCharges   int
-	phantasmChargeSrc int
+	chargeRoute       chargeRouteState
+}
+
+type chargeRouteState struct {
+	src               int
+	slitherSrc        int
+	releaseStartFrame int
+	phantasmStartFrame int
 	phantasmEndFrame  int
 }
 
@@ -76,10 +81,6 @@ func (c *char) slitherActive() bool {
 	return c.StatusIsActive(slitherKey)
 }
 
-func (c *char) phantasmChargeHoldActive() bool {
-	return c.StatusIsActive(phantasmChargeHoldKey)
-}
-
 func (c *char) hasPhantasmCharge() bool {
 	return c.phantasmCharges > 0
 }
@@ -89,18 +90,15 @@ func (c *char) canTriggerPhantasm() bool {
 }
 
 func (c *char) phantasmActive() bool {
-	return c.phantasmEndFrame > c.Core.F
+	return c.chargeRoute.phantasmEndFrame > c.Core.F
 }
 
-func (c *char) chargeLoopActive(src int) bool {
-	return c.phantasmChargeSrc == src && c.phantasmChargeHoldActive()
+func (c *char) chargeRouteActive(src int) bool {
+	return c.chargeRoute.src == src && c.Core.Player.Active() == c.Index() && c.Core.Player.CurrentState() == action.ChargeAttackState
 }
 
-func (c *char) chargeLoopInterrupted(src int) bool {
-	if !c.chargeLoopActive(src) {
-		return true
-	}
-	if c.StatusIsActive(shadowDanceKey) && c.Core.Player.Active() == c.Index() && c.Core.Player.CurrentState() == action.ChargeAttackState {
+func (c *char) chargeRouteInterrupted(src int) bool {
+	if c.chargeRouteActive(src) {
 		return false
 	}
 	c.clearPhantasmChargeLoop()
@@ -108,22 +106,20 @@ func (c *char) chargeLoopInterrupted(src int) bool {
 }
 
 func (c *char) slitherLoopInterrupted(src int) bool {
-	if c.chargeLoopInterrupted(src) {
+	if c.chargeRouteInterrupted(src) {
 		return true
 	}
-	return c.slitherSrc != src || !c.slitherActive()
+	return c.chargeRoute.slitherSrc != src || !c.slitherActive()
 }
 
 func (c *char) clearSlither() {
 	c.DeleteStatus(slitherKey)
-	c.slitherSrc = 0
+	c.chargeRoute.slitherSrc = 0
 }
 
 func (c *char) clearPhantasmChargeLoop() {
 	c.clearSlither()
-	c.DeleteStatus(phantasmChargeHoldKey)
-	c.phantasmChargeSrc = 0
-	c.phantasmEndFrame = 0
+	c.chargeRoute = chargeRouteState{}
 }
 
 func (c *char) swapResetInit() {

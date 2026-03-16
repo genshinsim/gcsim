@@ -13,6 +13,10 @@ import (
 
 const normalHitNum = 4
 
+func normalAttackCanQueueAfter(normalIndex int) int {
+	return attackFrames[normalIndex][action.ActionSkill]
+}
+
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{10, 8, 26, 22}
@@ -76,7 +80,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackFrames[c.NormalCounter][action.ActionAttack],
+		CanQueueAfter:   normalAttackCanQueueAfter(c.NormalCounter),
 		State:           action.NormalAttackState,
 	}, nil
 }
