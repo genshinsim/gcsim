@@ -13,6 +13,7 @@ Wherever the spec says "Tailwind v5", read "Tailwind v4". Wherever it says "Vite
 | 0.2 | NOT STARTED | Root CLAUDE.md + auxiliary docs |
 | 0.3 | DONE | Basic CI pipeline |
 | 0.4 | DONE | Scaffolding skills |
+| 0.5 | DONE | Subagent definitions |
 
 ### Step 0.0 — Dependency Version Verification (DONE)
 
@@ -64,3 +65,11 @@ Created 7 Claude Code skills in `.claude/skills/`:
 - **`/new-store`** (0.4e) — scaffolds a typed Zustand store, optional `--persist` for localStorage middleware
 - **`/check`** (0.4f) — runs sequential pipeline: biome → typecheck → test → dependency-cruiser → build (stops on first failure)
 - **`/dev`** (0.4g) — builds dependencies then starts Vite dev server for specified app
+
+### Step 0.5 — Subagent Definitions (DONE)
+
+Created 4 Claude Code agent definitions in `.claude/agents/`:
+- **`package-reviewer`** (0.5a) — qualitative review of a single package for boundary violations, type alias misuse, data-fetching patterns, test quality, CLAUDE.md completeness, design token usage, error boundaries
+- **`package-tester`** (0.5b) — runs typecheck + tests for a package, diagnoses failures with specific fix suggestions
+- **`feature-implementer`** (0.5c) — TDD-based implementation of a single feature component (max 3 sub-components); reads canonical example, writes failing test first, implements, updates CLAUDE.md. Skeleton — to be refined after Phase 2 (primitives) and Phase 3 (feature components)
+- **`cross-package-integrator`** (0.5d) — wires completed packages into an app with composition components, integration tests, route updates; requires a composition spec in the dispatch call
