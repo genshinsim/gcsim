@@ -10,10 +10,12 @@ Wherever the spec says "Tailwind v5", read "Tailwind v4". Wherever it says "Vite
 |------|--------|-------------|
 | 0.0 | DONE | Dependency version verification |
 | 0.1 | DONE | Initialize monorepo root |
-| 0.2 | NOT STARTED | Root CLAUDE.md + auxiliary docs |
+| 0.2 | DONE | Root CLAUDE.md + auxiliary docs |
 | 0.3 | DONE | Basic CI pipeline |
 | 0.4 | DONE | Scaffolding skills |
 | 0.5 | DONE | Subagent definitions |
+| 0.6 | DONE | Claude Code hooks |
+| 0.7 | DONE | Git workflow protocol |
 
 ### Step 0.0 — Dependency Version Verification (DONE)
 
@@ -73,3 +75,50 @@ Created 4 Claude Code agent definitions in `.claude/agents/`:
 - **`package-tester`** (0.5b) — runs typecheck + tests for a package, diagnoses failures with specific fix suggestions
 - **`feature-implementer`** (0.5c) — TDD-based implementation of a single feature component (max 3 sub-components); reads canonical example, writes failing test first, implements, updates CLAUDE.md. Skeleton — to be refined after Phase 2 (primitives) and Phase 3 (feature components)
 - **`cross-package-integrator`** (0.5d) — wires completed packages into an app with composition components, integration tests, route updates; requires a composition spec in the dispatch call
+
+### Step 0.2 — Root CLAUDE.md + Auxiliary Docs (DONE)
+
+- Expanded `ui-next/CLAUDE.md` with full monorepo documentation:
+  - Monorepo structure overview (apps/ vs packages/ vs assets/ vs tooling/)
+  - Turborepo commands (build, test, typecheck with --filter)
+  - All 10 architecture rules
+  - Naming conventions (kebab-case files, PascalCase components, camelCase functions)
+  - pnpm commands for adding dependencies
+  - Biome usage and config summary
+  - Tailwind v4 CSS-first theming note
+  - Testing protocol table (what to test per package type)
+  - Environment variables reference
+  - WASM binary strategy (local dev vs production)
+  - Scaffolding skills and subagent references
+  - Commit discipline and git workflow protocol
+- Created `ui-next/apps/CLAUDE.md`:
+  - Apps own pages, stores, and route definitions
+  - Apps are composition layers wiring packages together
+  - Error boundary and lazy import requirements
+  - Dev server port assignments (web=5173, db=5174, embed=5175)
+  - References to `/new-app`, `/new-page`, `/new-store` skills
+- Created `ui-next/tooling/CLAUDE.md`:
+  - How to extend base tsconfig (with example)
+  - How to extend base vitest config (with example)
+  - Test fixtures usage (import from `tooling/test-fixtures/`, don't duplicate)
+  - Don'ts (no runtime imports from tooling, no config duplication)
+
+### Step 0.6 — Claude Code Hooks (DONE)
+
+- Created `.claude/settings.json` with hooks configuration:
+  - **PreToolUse (Bash):** `.claude/hooks/pre-commit-biome.sh` — intercepts `git commit` commands, runs `biome check --write` on staged ui-next files, blocks commit (exit 2) if biome fails
+  - **PostToolUse (Edit|Write):** `.claude/hooks/post-edit-test.sh` — async hook that detects which `@gcsim/` package owns the edited file and runs `turbo run test --filter=@gcsim/<pkg>`
+- Both scripts are executable and handle edge cases (non-ui-next files, missing paths)
+
+### Step 0.7 — Git Workflow Protocol (DONE)
+
+- Documented git workflow in `ui-next/CLAUDE.md`:
+  - Branch naming: `phase-{N}/step-{X.Y}-{package-name}`
+  - Worktree naming: `worktree-phase{N}-{package-name}`
+  - Merge order: foundation packages first at phase gates
+- Created `ui-next/tooling/cleanup-worktrees.sh`:
+  - Finds worktrees matching `worktree-phase*` naming convention
+  - Prunes missing worktrees
+  - Removes clean (no uncommitted changes) worktrees
+  - Skips worktrees with uncommitted changes (safety)
+  - Reports cleanup summary
