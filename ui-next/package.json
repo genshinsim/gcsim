@@ -1,0 +1,21 @@
+{
+  "name": "@gcsim/monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "check": "turbo run typecheck && turbo run test && turbo run build"
+  },
+  "packageManager": "pnpm@10.32.1",
+  "devDependencies": {
+    "@biomejs/biome": "2.4.8",
+    "dependency-cruiser": "17.3.9",
+    "turbo": "2.8.20",
+    "typescript": "5.9.3",
+    "vitest": "4.1.0"
+  }
+}
