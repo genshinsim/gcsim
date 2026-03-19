@@ -9,6 +9,18 @@ Branch: `web-rewrite`
 
 **IMPORTANT**: update `PROGRESS.md` once you have completed any implementation step. Include key details the next agent may require.
 
+## Scaffolding Skills
+
+Use these skills (via `/skill-name` or natural language) to scaffold new code consistently:
+
+- `/new-package` — create a new `@gcsim/` shared package in `packages/`
+- `/new-component` — create a React component in an existing package
+- `/new-page` — create a page with lazy-loaded routing in an app
+- `/new-app` — create a full Vite + React app in `apps/`
+- `/new-store` — create a typed Zustand store in an app
+- `/check` — run full lint → typecheck → test → dependency-cruiser → build pipeline
+- `/dev` — start Vite dev server for an app
+
 ## Commit Discipline
 
 Commit your work in sensible increments — don't let changes pile up. Guidelines:

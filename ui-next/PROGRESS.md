@@ -12,7 +12,7 @@ Wherever the spec says "Tailwind v5", read "Tailwind v4". Wherever it says "Vite
 | 0.1 | DONE | Initialize monorepo root |
 | 0.2 | NOT STARTED | Root CLAUDE.md + auxiliary docs |
 | 0.3 | DONE | Basic CI pipeline |
-| 0.4 | NOT STARTED | Scaffolding skills |
+| 0.4 | DONE | Scaffolding skills |
 
 ### Step 0.0 — Dependency Version Verification (DONE)
 
@@ -53,3 +53,14 @@ Wherever the spec says "Tailwind v5", read "Tailwind v4". Wherever it says "Vite
   - `no-package-to-app` — packages must not import from apps
 - Fixed `biome.json` for Biome 2.x: replaced deprecated `files.ignore` with `files.includes` scoped to `apps/**`, `packages/**`, `tooling/**` (excludes vendored `assets/wasm/wasm_exec.js`)
 - Verified: all CI steps pass locally against empty monorepo
+
+### Step 0.4 — Scaffolding Skills (DONE)
+
+Created 7 Claude Code skills in `.claude/skills/`:
+- **`/new-package`** (0.4a) — scaffolds `ui-next/packages/<name>/` with package.json, tsconfig, vitest config, CLAUDE.md, optional Tailwind
+- **`/new-component`** (0.4b) — scaffolds a React component with .tsx, .test.tsx, index.ts barrel, wires into package exports
+- **`/new-page`** (0.4c) — scaffolds a page in an app with lazy-loaded route entry
+- **`/new-app`** (0.4d) — scaffolds a full Vite + React app with TanStack Query, Router, Zustand, i18n, Tailwind
+- **`/new-store`** (0.4e) — scaffolds a typed Zustand store, optional `--persist` for localStorage middleware
+- **`/check`** (0.4f) — runs sequential pipeline: biome → typecheck → test → dependency-cruiser → build (stops on first failure)
+- **`/dev`** (0.4g) — builds dependencies then starts Vite dev server for specified app
