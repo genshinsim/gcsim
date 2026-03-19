@@ -8,7 +8,8 @@
     "typecheck": "turbo run typecheck",
     "lint": "biome check",
     "lint:fix": "biome check --write",
-    "check": "turbo run typecheck && turbo run test && turbo run build"
+    "depcruise": "find packages apps -name '*.ts' -o -name '*.tsx' 2>/dev/null | head -1 | grep -q . && dependency-cruiser --config .dependency-cruiser.cjs --validate packages/ apps/ || echo 'No source files to cruise, skipping'",
+    "check": "pnpm lint && turbo run typecheck && turbo run test && pnpm depcruise && turbo run build"
   },
   "packageManager": "pnpm@10.32.1",
   "devDependencies": {

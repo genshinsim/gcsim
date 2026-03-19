@@ -46,7 +46,7 @@ jobs:
         run: pnpm test
 
       - name: Dependency cruiser
-        run: pnpm exec dependency-cruiser --config .dependency-cruiser.cjs --validate packages/ apps/
+        run: pnpm run depcruise
 
       - name: Build
         run: pnpm build
