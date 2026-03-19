@@ -31,7 +31,7 @@ Verified 2026-03-19 via npm dist-tags. Agents should reference this file when ad
 | class-variance-authority | 0.7.1 | |
 | clsx | 2.1.1 | |
 | tailwind-merge | 3.5.0 | v3 line for Tailwind v4 compatibility |
-| tw-animate-css | latest | Replaces deprecated `tailwindcss-animate` for Tailwind v4 |
+| tw-animate-css | 1.3.4 | Replaces deprecated `tailwindcss-animate` for Tailwind v4 |
 
 ## UI Primitives
 
@@ -67,6 +67,8 @@ Verified 2026-03-19 via npm dist-tags. Agents should reference this file when ad
 | Package | Version | Notes |
 |---------|---------|-------|
 | vitest | 4.1.0 | |
+| @testing-library/react | 16.3.0 | Component testing |
+| @testing-library/jest-dom | 6.6.3 | DOM assertion matchers |
 | @playwright/test | 1.58.2 | |
 | storybook | 10.3.1 | Spec said v8; v10 is current |
 

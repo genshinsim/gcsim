@@ -50,7 +50,9 @@ Parse the user's message for:
   },
   "devDependencies": {
     "typescript": "5.9.3",
-    "vitest": "4.1.0"
+    "vitest": "4.1.0",
+    "@testing-library/react": "16.3.0",
+    "@testing-library/jest-dom": "6.6.3"
   }
 }
 ```

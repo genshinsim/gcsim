@@ -122,3 +122,15 @@ Created 4 Claude Code agent definitions in `.claude/agents/`:
   - Removes clean (no uncommitted changes) worktrees
   - Skips worktrees with uncommitted changes (safety)
   - Reports cleanup summary
+
+### Phase 0 Review Notes
+
+Post-review fixes applied:
+- Added `@testing-library/react` and `@testing-library/jest-dom` to `/new-package` skill devDependencies and DEPENDENCIES.md
+- Pinned `tw-animate-css` to `1.3.4` in DEPENDENCIES.md (was `latest`)
+- Fixed unquoted `$STAGED_FILES` in pre-commit hook (now uses `xargs`)
+- Spec says `.claude/hooks.json` but Claude Code uses `.claude/settings.json` — this is correct
+
+**TODO for Phase 1:** Test dependency-cruiser rules with deliberate violations. The `no-deep-package-imports` rule's `via` usage and the `no-app-to-app` rule's `{FROM_APP}` placeholder may not work as intended. Create a test file that imports from `@gcsim/<pkg>/src/...` and verify the rule fires.
+
+**Assets note:** Spec section 3 shows `assets/characters/`, `assets/elements/`, etc. but game assets (character portraits, weapon/artifact images) are served from `/api/assets/` at runtime, not stored in the repo. Current `assets/images/` contains only static UI assets (favicon, icons, logo). This is correct — the spec's asset directories are aspirational for when/if assets are bundled locally.
