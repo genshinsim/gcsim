@@ -24,11 +24,6 @@
     }
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      "dist",
-      "*.gen.ts",
-      "*.generated.ts"
-    ]
+    "includes": ["apps/**", "packages/**", "tooling/**"]
   }
 }

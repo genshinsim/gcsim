@@ -11,7 +11,7 @@ Wherever the spec says "Tailwind v5", read "Tailwind v4". Wherever it says "Vite
 | 0.0 | DONE | Dependency version verification |
 | 0.1 | DONE | Initialize monorepo root |
 | 0.2 | NOT STARTED | Root CLAUDE.md + auxiliary docs |
-| 0.3 | NOT STARTED | Basic CI pipeline |
+| 0.3 | DONE | Basic CI pipeline |
 | 0.4 | NOT STARTED | Scaffolding skills |
 
 ### Step 0.0 — Dependency Version Verification (DONE)
@@ -40,3 +40,16 @@ Wherever the spec says "Tailwind v5", read "Tailwind v4". Wherever it says "Vite
 - Copied static assets from `ui/` to `assets/` (favicon, stat icons, logos, wasm_exec.js)
 - Created `assets/wasm/` directory for local WASM dev builds
 - Verified: `pnpm install` succeeds, `turbo run build` succeeds (empty)
+
+### Step 0.3 — Basic CI Pipeline (DONE)
+
+- Created `.github/workflows/ui-next.yml` — GitHub Actions workflow triggered on push/PR to `web-rewrite` branch (path-filtered to `ui-next/**`)
+- Pipeline steps: pnpm install → biome check → typecheck → test → dependency-cruiser → build
+- Uses `pnpm/action-setup@v4` (v10), `actions/setup-node@v4` (Node 22), pnpm cache
+- Created `ui-next/.dependency-cruiser.cjs` with rules:
+  - `no-deep-package-imports` — import from package index only, never `@gcsim/<pkg>/src/...`
+  - `no-circular` — no circular dependencies
+  - `no-app-to-app` — apps must not import from other apps
+  - `no-package-to-app` — packages must not import from apps
+- Fixed `biome.json` for Biome 2.x: replaced deprecated `files.ignore` with `files.includes` scoped to `apps/**`, `packages/**`, `tooling/**` (excludes vendored `assets/wasm/wasm_exec.js`)
+- Verified: all CI steps pass locally against empty monorepo

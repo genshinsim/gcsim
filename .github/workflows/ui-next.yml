@@ -1,0 +1,52 @@
+name: ui-next
+
+on:
+  push:
+    branches: [web-rewrite]
+    paths:
+      - "ui-next/**"
+      - ".github/workflows/ui-next.yml"
+  pull_request:
+    branches: [web-rewrite]
+    paths:
+      - "ui-next/**"
+      - ".github/workflows/ui-next.yml"
+
+defaults:
+  run:
+    working-directory: ui-next
+
+jobs:
+  check:
+    name: Lint, Typecheck, Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: ui-next/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Biome check
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Dependency cruiser
+        run: pnpm exec dependency-cruiser --config .dependency-cruiser.cjs --validate packages/ apps/
+
+      - name: Build
+        run: pnpm build
