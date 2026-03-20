@@ -62,6 +62,22 @@ importers:
         specifier: 4.1.0
         version: 4.1.0(jsdom@29.0.0)(vite@8.0.1)
 
+  packages/executor:
+    dependencies:
+      '@gcsim/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      jsdom:
+        specifier: 29.0.0
+        version: 29.0.0
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: 4.1.0
+        version: 4.1.0(jsdom@29.0.0)(vite@8.0.1)
+
   packages/i18n:
     dependencies:
       i18next:
