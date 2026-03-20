@@ -1,0 +1,28 @@
+{
+  "name": "@gcsim/data",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check"
+  },
+  "dependencies": {
+    "@gcsim/types": "workspace:*"
+  },
+  "devDependencies": {
+    "jsdom": "29.0.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.0"
+  }
+}
