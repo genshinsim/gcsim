@@ -16,8 +16,9 @@ if [ -z "$STAGED_FILES" ]; then
 fi
 
 # Run biome check --write on staged files
+# Strip ui-next/ prefix since we cd into that directory
 cd "$(git rev-parse --show-toplevel)/ui-next" || exit 0
-echo "$STAGED_FILES" | xargs npx biome check --write 2>&1
+echo "$STAGED_FILES" | sed 's|^ui-next/||' | xargs npx biome check --write 2>&1
 
 if [ $? -ne 0 ]; then
   echo "Biome check failed on staged files. Fix issues before committing." >&2
