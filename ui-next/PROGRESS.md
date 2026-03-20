@@ -279,3 +279,32 @@ Post-review fixes applied:
 - All primitives: typecheck pass, 14 tests pass, build succeeds
 - Storybook: all 30 stories render with correct Tailwind styling
 - Total tests: 77 (Phase 1) + 14 (primitives) = 91 tests
+
+## Phase 3: Feature Packages
+
+| Step | Status | Description |
+|------|--------|-------------|
+| 3.3a-e | DONE | `@gcsim/viewer` metadata + result cards |
+| 3.4 | TODO | `@gcsim/viewer` charts |
+| 3.5 | TODO | `@gcsim/viewer` sample viewer |
+
+### Step 3.3 — `@gcsim/viewer` Metadata + Result Cards (DONE)
+
+- Created `packages/viewer/` with presentational components for simulation results
+- **Metadata sub-components** (3.3a): `Iterations`, `Mode`, `Commit`, `Warnings`
+  - Each takes a small slice of `Sim.SimResults` — pure presentational
+  - `Warnings` renders active warnings as destructive Badges
+- **TeamHeader** (3.3b): row of Cards showing character name, level, constellation, weapon
+  - Takes `Sim.Character[]`, renders one Card per character
+- **RollupCard** (3.3c): generic stat rollup card (mean, min, max, SD)
+  - Takes any `FloatStat`/`SummaryStat` and a label
+  - Formats numbers with `toLocaleString()`
+- **DPSCard** (3.3d): per-character DPS with proportional bar (canonical example)
+  - Takes character name, `FloatStat`, and `maxDPS` for proportional bar width
+- **TargetInfoCard** (3.3e): enemy info display (name, level, resistances)
+  - Takes `Sim.Enemy[]`, renders Card per target with resistance percentages
+- 32 tests passing (5 test files), typecheck clean, build succeeds
+- Dependencies: `@gcsim/primitives`, `@gcsim/types`, `@gcsim/i18n`
+- All components use `data-testid` attributes for testing
+- Uses relative imports (no `@/` aliases in library source)
+- Total tests: 91 (Phase 1+2) + 32 (viewer) = 123 tests
