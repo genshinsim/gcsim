@@ -38,6 +38,7 @@ computebin
 .cache
 .npm
 .task/
+.turbo/
 .venv
 # release binaries to avoid tinting repo
 gcsim_windows_amd64.exe
