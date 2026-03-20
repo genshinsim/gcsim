@@ -134,3 +134,44 @@ Post-review fixes applied:
 **TODO for Phase 1:** Test dependency-cruiser rules with deliberate violations. The `no-deep-package-imports` rule's `via` usage and the `no-app-to-app` rule's `{FROM_APP}` placeholder may not work as intended. Create a test file that imports from `@gcsim/<pkg>/src/...` and verify the rule fires.
 
 **Assets note:** Spec section 3 shows `assets/characters/`, `assets/elements/`, etc. but game assets (character portraits, weapon/artifact images) are served from `/api/assets/` at runtime, not stored in the repo. Current `assets/images/` contains only static UI assets (favicon, icons, logo). This is correct — the spec's asset directories are aspirational for when/if assets are bundled locally.
+
+## Phase 1: Foundation Packages
+
+| Step | Status | Description |
+|------|--------|-------------|
+| 1.1 | DONE | `@gcsim/types` + `tooling/test-fixtures` |
+| 1.2 | TODO | `@gcsim/data` |
+| 1.3 | TODO | `@gcsim/i18n` |
+| 1.4 | TODO | `@gcsim/api` |
+| 1.5 | TODO | `@gcsim/executor` |
+
+### Step 1.1 — `@gcsim/types` + `tooling/test-fixtures` (DONE)
+
+- Created `packages/types/` with buf/protobuf-es generation pipeline
+- `buf.gen.yaml` points at `protos/` at repo root, generates into `src/generated/`
+- Generated TypeScript types from all 10 `.proto` files (7 model + 3 backend)
+- Ported all custom interfaces from `ui/packages/types/src/sim.ts` into `src/sim.ts`
+  - Includes: SimResults, Statistics, SummaryStat, Character, Enemy, Weapon, Talent, etc.
+  - Did NOT port `user.ts` (auth removed per spec)
+- Public API via `src/index.ts`:
+  - Model proto types exported at top level (SimulationResult, Character, etc.)
+  - Backend proto types namespaced: `share`, `db`, `preview`
+  - Custom interfaces namespaced: `Sim` (use as `Sim.SimResults`, `Sim.Character`, etc.)
+- 16 tests passing, typecheck clean, build succeeds
+- Created `tooling/test-fixtures/` with canonical mock data:
+  - `sim-result.ts` — mock SimResults with 2 characters, stats, config
+  - `characters.ts` — mock Character objects (hutao, xingqiu)
+  - `index.ts` — re-exports
+- Dependencies: `@bufbuild/protobuf@2.11.0`, `@bufbuild/buf@1.66.1`, `@bufbuild/protoc-gen-es@2.11.0`
+- Branch `phase-1/step-1.1-types` merged into `web-rewrite`
+
+### Fixes applied during Phase 1
+
+- Fixed pre-commit biome hook: file paths weren't stripped of `ui-next/` prefix after `cd ui-next/` (caused biome to look for `ui-next/ui-next/...`)
+- Added `.turbo/` to root `.gitignore` (turbo cache dir was showing as untracked)
+
+### Phase 1 Learnings (for next session)
+
+- **Worktree branch issue:** `isolation: "worktree"` agents create branches from the repo's default HEAD (usually `main`), not from the current branch (`web-rewrite`). The `ui-next/` directory only exists on `web-rewrite`. Agents need explicit `git reset --hard origin/web-rewrite` instructions, but this gets blocked by sandbox permissions.
+- **Recommended approach:** Either (a) create branches and worktrees manually before dispatching agents, or (b) don't use worktree isolation and instead run agents sequentially on the main working tree, or (c) pre-create branches from `web-rewrite` and have agents use them.
+- **Steps 1.2–1.5 are independent** of each other (all depend only on `@gcsim/types` which is done). They can be parallelized once the worktree issue is resolved.
