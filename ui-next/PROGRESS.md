@@ -140,10 +140,10 @@ Post-review fixes applied:
 | Step | Status | Description |
 |------|--------|-------------|
 | 1.1 | DONE | `@gcsim/types` + `tooling/test-fixtures` |
-| 1.2 | TODO | `@gcsim/data` |
-| 1.3 | TODO | `@gcsim/i18n` |
-| 1.4 | TODO | `@gcsim/api` |
-| 1.5 | TODO | `@gcsim/executor` |
+| 1.2 | DONE | `@gcsim/data` |
+| 1.3 | DONE | `@gcsim/i18n` |
+| 1.4 | DONE | `@gcsim/api` |
+| 1.5 | DONE | `@gcsim/executor` |
 
 ### Step 1.1 — `@gcsim/types` + `tooling/test-fixtures` (DONE)
 
@@ -175,3 +175,52 @@ Post-review fixes applied:
 - **Worktree branch issue:** `isolation: "worktree"` agents create branches from the repo's default HEAD (usually `main`), not from the current branch (`web-rewrite`). The `ui-next/` directory only exists on `web-rewrite`. Agents need explicit `git reset --hard origin/web-rewrite` instructions, but this gets blocked by sandbox permissions.
 - **Recommended approach:** Either (a) create branches and worktrees manually before dispatching agents, or (b) don't use worktree isolation and instead run agents sequentially on the main working tree, or (c) pre-create branches from `web-rewrite` and have agents use them.
 - **Steps 1.2–1.5 are independent** of each other (all depend only on `@gcsim/types` which is done). They can be parallelized once the worktree issue is resolved.
+- **Worktree approach (resolved):** Pre-create worktrees with `git worktree add -b <branch> .claude/worktrees/<name> web-rewrite`, then dispatch agents to work in them. Agents can write files but cannot run bash in worktrees (sandbox limitation). Main agent must verify/commit each worktree's work.
+
+### Step 1.2 — `@gcsim/data` (DONE)
+
+- Created `packages/data/` with typed exports for game data
+- Ported `latest_chars.json` (version→character key mapping) and `tags.json` (tag ID→display info)
+- Typed interfaces: `TagInfo`, `TagMap`, `LatestCharsMap`
+- `tsconfig.json` requires `resolveJsonModule: true` and `include: ["src/**/*.ts", "src/**/*.json"]`
+- 11 tests passing, typecheck clean, build succeeds
+
+### Step 1.3 — `@gcsim/i18n` (DONE)
+
+- Created `packages/i18n/` with i18next + react-i18next
+- Ported 7 language JSON files + names.generated.json + names.traveler.json
+- Uses spread operator instead of lodash-es merge for combining name resources
+- `initI18n(lng)` function for app initialization, `resources` object, `specialLocales` array
+- Two namespaces: `translation` (UI strings) and `game` (character/entity names)
+- `tsconfig.json` requires `resolveJsonModule: true` and `include: ["src/**/*.ts", "src/**/*.json"]`
+- 6 tests passing, typecheck clean, build succeeds
+- Dependencies: `i18next@25.8.20`, `react-i18next@16.5.8`
+
+### Step 1.4 — `@gcsim/api` (DONE)
+
+- Created `packages/api/` with typed fetch functions (new package, not ported)
+- `apiFetch<T>()` base wrapper with gzip decompression via pako
+- `ApiError` class with HTTP status code
+- Endpoints: `fetchShareResult()`, `fetchDBResult()`, `queryDB()` (with pagination/abort), `fetchLocalResult()`
+- Uses native `fetch` (not axios)
+- 16 tests passing (4 test files), typecheck clean, build succeeds
+- Dependencies: `@gcsim/types`, `pako@2.1.0`
+
+### Step 1.5 — `@gcsim/executor` (DONE)
+
+- Created `packages/executor/` ported from `ui/packages/executors/`
+- `Executor` interface using `Sim` namespace types (`Sim.SimResults`, `Sim.ParsedResult`, `Sim.Sample`)
+- `ServerExecutor` — HTTP-based with native fetch (replaces axios), async/await polling
+- `WasmExecutor` — web worker pool with aggregator, configurable 1-30 workers
+- `ExecutorError` class with typed error codes (`NETWORK`/`SERVER`/`PARSE`/`UNKNOWN`)
+- Native throttle utility (replaces lodash-es)
+- Worker files excluded from tsconfig (standalone scripts with duplicate function names)
+- `tsconfig.json` excludes worker files: `"exclude": ["src/workers/worker.ts", "src/workers/aggregator.ts", "src/workers/helper.ts"]`
+- 28 tests passing (3 test files), typecheck clean, build succeeds
+
+### Phase 1 Gate (PASSED)
+
+- All 5 packages: biome clean, typecheck pass, tests pass, build succeeds
+- Total tests: 16 (types) + 11 (data) + 6 (i18n) + 16 (api) + 28 (executor) = 77 tests
+- Dependency-cruiser: no violations
+- All branches merged into `web-rewrite`, worktrees cleaned up
