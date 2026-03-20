@@ -231,7 +231,7 @@ Post-review fixes applied:
 |------|--------|-------------|
 | 2.1 | DONE | Design system tokens |
 | 2.2-2.4 | DONE | All shadcn primitives (installed via CLI) |
-| 2.5 | TODO | Storybook setup |
+| 2.5 | DONE | Storybook setup |
 
 ### Steps 2.1–2.4 — `@gcsim/primitives` (DONE)
 
@@ -242,7 +242,7 @@ Post-review fixes applied:
 - Custom Genshin element colors added: anemo, geo, electro, hydro, pyro, cryo, dendro
 - `cn()` utility from `src/lib/utils.ts` (clsx + tailwind-merge)
 - 11 shadcn components installed: Button, Card, Input, Tabs, Select, Badge, Dialog, DropdownMenu, Tooltip, ScrollArea, Skeleton
-- All components use unified `radix-ui` package and `@/lib/utils` path alias
+- All components use unified `radix-ui` package with relative imports (no `@/` path aliases — tsc doesn't rewrite them)
 - `tsconfig.json` has `baseUrl` + `paths` for `@/*` alias; `vitest.config.ts` mirrors with `resolve.alias`
 - `vitest.config.ts` includes `test-setup.ts` for `@testing-library/jest-dom/vitest` matchers
 - Barrel export in `src/index.ts` re-exports all components and `cn()`
@@ -251,6 +251,31 @@ Post-review fixes applied:
 - Dependencies: `radix-ui`, `class-variance-authority`, `clsx`, `tailwind-merge`, `shadcn`
 - DevDependencies: `tailwindcss@4.2.2`, `@tailwindcss/vite@4.2.2`, `tw-animate-css@1.3.4`, `lucide-react@0.577.0`
 
+### Step 2.5 — Storybook (DONE)
+
+- Created `apps/storybook/` with Storybook 10.3.1 + `@storybook/react-vite`
+- 30 stories covering all 11 primitives with autodocs
+- Tailwind integration via `@tailwindcss/postcss` (PostCSS, not Vite plugin — Storybook's Vite pipeline doesn't reliably pick up the Vite plugin)
+- `storybook.css` inlines theme.css content (can't `@import` across package boundaries for Tailwind processing)
+- `@source "../../../packages/primitives/src"` tells Tailwind to scan component source files for class names
+- Dev server: `pnpm --filter @gcsim/storybook dev` on port 6006
+
 ### Phase 2 Fixes
 
 - Enabled `tailwindDirectives: true` in `biome.json` CSS parser (Biome 2.x doesn't parse `@theme`, `@custom-variant`, `@apply` without it)
+- Replaced all `@/lib/utils` and `@/components/ui/*` imports in shadcn components with relative paths — TypeScript path aliases are NOT rewritten by `tsc --build`, causing runtime resolution failures
+- Removed embedded `.git` directory created by `shadcn init`
+
+### Phase 2 Learnings
+
+- **shadcn CLI creates a `.git` in the package** — must delete before committing
+- **`@/` path aliases don't work in library packages** — tsc emits them verbatim in `.js` output. Use relative imports instead. The `@/` alias in `tsconfig.json` + `vitest.config.ts` is kept only for test resolution.
+- **Storybook + Tailwind v4**: Use `@tailwindcss/postcss` with a `postcss.config.mjs`, not `@tailwindcss/vite`. The Vite plugin doesn't reliably activate in Storybook's internal Vite pipeline.
+- **`@source` paths are relative to the CSS file**, not the project root. Count `../` carefully.
+- **`@import "@gcsim/primitives/theme.css"` doesn't work for Tailwind processing** across package boundaries — inline the theme CSS in each consuming app's stylesheet instead.
+
+### Phase 2 Gate
+
+- All primitives: typecheck pass, 14 tests pass, build succeeds
+- Storybook: all 30 stories render with correct Tailwind styling
+- Total tests: 77 (Phase 1) + 14 (primitives) = 91 tests
