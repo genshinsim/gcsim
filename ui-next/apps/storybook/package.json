@@ -1,0 +1,28 @@
+{
+  "name": "@gcsim/storybook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build -o dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gcsim/primitives": "workspace:*"
+  },
+  "devDependencies": {
+    "@storybook/react": "10.3.1",
+    "@storybook/react-vite": "10.3.1",
+    "@tailwindcss/vite": "4.2.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.5.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "storybook": "10.3.1",
+    "tailwindcss": "4.2.2",
+    "typescript": "5.9.3",
+    "vite": "8.0.1"
+  }
+}
