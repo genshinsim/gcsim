@@ -123,15 +123,17 @@ Dispatch these via the Agent tool for specialized work:
 
 ## Commit Discipline
 
-- **Commit after completing each spec step** (e.g., after finishing step 0.1, commit before starting 0.2)
-- **Commit after any self-contained unit of work** — a new config file, a package scaffold, a batch of related changes
+- **Commit often with small, standalone, tested changes** — each commit should build and pass tests on its own
+- **Commit after any self-contained unit of work** — a new config file, a component + its tests, a batch of related changes
 - **Don't bundle unrelated changes** into a single commit
 - **Commit messages** should be concise and describe the "what"
 - **When in doubt, commit sooner** — small commits are easier to review and revert
+- **Each commit must be independently valid**: it should typecheck, pass tests, and not break the build
 
 ## Git Workflow
 
-- Each parallel agent works on a branch: `phase-{N}/step-{X.Y}-{package-name}`
-- At phase gates, branches are merged sequentially (foundation packages first)
-- Worktree naming: `worktree-phase{N}-{package-name}`
-- Run `ui-next/tooling/cleanup-worktrees.sh` to remove stale worktrees
+- Each feature/package works on a branch: `phase-{N}/step-{X.Y}-{package-name}`
+- **Each feature must be PR'd into `web-rewrite`** before the task is considered finished
+- Small commits make PRs easier to review — each commit should be standalone
+- PR title should reference the spec step (e.g., "Phase 3.1: @gcsim/avatar package")
+- After PR is merged, the feature branch can be deleted
