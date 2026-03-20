@@ -23,6 +23,12 @@
       "semicolons": "always"
     }
   },
+  "css": {
+    "parser": {
+      "cssModules": false,
+      "tailwindDirectives": true
+    }
+  },
   "files": {
     "includes": ["apps/**", "packages/**", "tooling/**"]
   }

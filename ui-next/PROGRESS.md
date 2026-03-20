@@ -224,3 +224,33 @@ Post-review fixes applied:
 - Total tests: 16 (types) + 11 (data) + 6 (i18n) + 16 (api) + 28 (executor) = 77 tests
 - Dependency-cruiser: no violations
 - All branches merged into `web-rewrite`, worktrees cleaned up
+
+## Phase 2: Design System + Primitives
+
+| Step | Status | Description |
+|------|--------|-------------|
+| 2.1 | DONE | Design system tokens |
+| 2.2-2.4 | DONE | All shadcn primitives (installed via CLI) |
+| 2.5 | TODO | Storybook setup |
+
+### Steps 2.1–2.4 — `@gcsim/primitives` (DONE)
+
+- Created `packages/primitives/` using shadcn CLI (`shadcn@4.1.0 init` + `shadcn add`)
+- **Used shadcn CLI** to install all components instead of hand-writing them
+- `components.json` configured for: `style: "radix-nova"`, `rsc: false`, `baseColor: "neutral"`, `iconLibrary: "lucide"`
+- Theme uses Tailwind v4 CSS-first `@theme inline` with OKLCH color system (light + `.dark` variants)
+- Custom Genshin element colors added: anemo, geo, electro, hydro, pyro, cryo, dendro
+- `cn()` utility from `src/lib/utils.ts` (clsx + tailwind-merge)
+- 11 shadcn components installed: Button, Card, Input, Tabs, Select, Badge, Dialog, DropdownMenu, Tooltip, ScrollArea, Skeleton
+- All components use unified `radix-ui` package and `@/lib/utils` path alias
+- `tsconfig.json` has `baseUrl` + `paths` for `@/*` alias; `vitest.config.ts` mirrors with `resolve.alias`
+- `vitest.config.ts` includes `test-setup.ts` for `@testing-library/jest-dom/vitest` matchers
+- Barrel export in `src/index.ts` re-exports all components and `cn()`
+- Apps import theme via `@import '@gcsim/primitives/theme.css';` (exported via `package.json` exports)
+- 14 tests passing (5 cn utility + 9 component rendering), typecheck clean, build succeeds
+- Dependencies: `radix-ui`, `class-variance-authority`, `clsx`, `tailwind-merge`, `shadcn`
+- DevDependencies: `tailwindcss@4.2.2`, `@tailwindcss/vite@4.2.2`, `tw-animate-css@1.3.4`, `lucide-react@0.577.0`
+
+### Phase 2 Fixes
+
+- Enabled `tailwindDirectives: true` in `biome.json` CSS parser (Biome 2.x doesn't parse `@theme`, `@custom-variant`, `@apply` without it)
