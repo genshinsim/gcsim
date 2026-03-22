@@ -79,7 +79,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 
 	seed := time.Now().UnixNano()
 	a := optstats.NewEnergyAggBuffer(stats.simcfg)
-	_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerERStat, a.Add)
+	_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.file, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerERStat, a.Add)
 	if err != nil {
 		stats.optimizer.logger.Fatal(err.Error())
 	}
