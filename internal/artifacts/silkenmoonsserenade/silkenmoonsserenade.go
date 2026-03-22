@@ -26,7 +26,6 @@ func init() {
 type Set struct {
 	char  *character.CharWrapper
 	core  *core.Core
-	count int
 	Index int
 	Count int
 }
@@ -34,7 +33,7 @@ type Set struct {
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error {
-	if s.count < 2 {
+	if s.Count < 2 {
 		return nil
 	}
 
@@ -48,7 +47,7 @@ func (s *Set) Init() error {
 		},
 	})
 
-	if s.count < 4 {
+	if s.Count < 4 {
 		return nil
 	}
 
@@ -76,6 +75,10 @@ func (s *Set) Init() error {
 		case attributes.Geo:
 		case attributes.Dendro:
 		default:
+			return
+		}
+
+		if atk.Info.ActorIndex != s.char.Index() {
 			return
 		}
 
@@ -122,7 +125,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	s := Set{
 		char:  char,
 		core:  c,
-		count: count,
 		Count: count,
 	}
 	return &s, nil
