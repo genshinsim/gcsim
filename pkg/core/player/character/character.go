@@ -99,6 +99,7 @@ type CharWrapper struct {
 	SkillCon  int
 	BurstCon  int
 	HasArkhe  bool
+	IsHexerei bool
 	Moonsign  int
 
 	Equip struct {
