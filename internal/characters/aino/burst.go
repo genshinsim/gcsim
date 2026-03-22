@@ -28,7 +28,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	tickrate, icdGroup, icdTag := c.a1BurstEnhance()
+	tickrate, radius, icdGroup, icdTag := c.a1BurstEnhance()
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Cool Your Jets Ducky",
@@ -55,13 +55,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			var pos info.Point
 			if enemy != nil {
 				pos = enemy.Pos()
-				enemy.AddStatus(burstMarkKey, 1*60, true) // same enemy can't be targeted again for 1s
+				enemy.AddStatus(burstMarkKey, 0.8*60, true) // same enemy can't be targeted again for 0.8s
 			} else {
-				pos = info.CalcRandomPointFromCenter(burstArea.Shape.Pos(), 1.5, 9.5, c.Core.Rand)
+				pos = info.CalcRandomPointFromCenter(burstArea.Shape.Pos(), 0, 20, c.Core.Rand)
 			}
 			ai.FlatDmg = c.a4Dmg()
 			// deal dmg after a certain delay
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(pos, nil, 2.5), 0, 10)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(pos, nil, radius), 0, 10)
 		}, i+burstStart)
 	}
 	c.QueueCharTask(func() { c.AddStatus(burstKey, 14*60, false) }, burstStart)

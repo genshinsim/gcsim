@@ -14,11 +14,11 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{23}, {20}, {35, 35 + 8}}
-	attackPoiseDMG        = []float64{80.5, 79.35, 48.3}
-	attackHitlagHaltFrame = [][]float64{{0.1}, {0.1}, {0, 0.08}}
+	attackPoiseDMG        = []float64{88.923, 88.512, 48.3}
+	attackHitlagHaltFrame = [][]float64{{0.1}, {0.1}, {0.0, 0.08}}
 	attackDefHalt         = [][]bool{{true}, {true}, {false, true}}
-	attackHitboxes        = [][][]float64{{{2.5, 3.2}}, {{2}}, {{2.5, 3.5}, {2}}}
-	attackOffsets         = [][]float64{{-0.7}, {0.5}, {-1, 0.5}, {-2}}
+	attackHitboxes        = [][][]float64{{{2}}, {{2}}, {{2.5, 3.5}, {2}}}
+	attackOffsets         = [][]float64{{0.5}, {0.8}, {-1, 0.5}}
 )
 
 const normalHitNum = 3
@@ -56,7 +56,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			info.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackHitboxes[c.NormalCounter][i][0],
 		)
-		if c.NormalCounter == 0 || (c.NormalCounter == 2 && i == 0) || c.NormalCounter == 3 {
+		if c.NormalCounter == 2 && i == 0 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
 				info.Point{Y: attackOffsets[c.NormalCounter][i]},

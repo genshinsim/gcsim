@@ -14,8 +14,8 @@ import (
 var (
 	skillFrames   []int
 	skillHitmarks = []int{15, 15 + 18}
-	skillHitboxes = [][]float64{{3}, {3.5, 4.5}}
-	skillOffsets  = []float64{0.8, -1.5}
+	skillHitboxes = []float64{1.2, 3.5}
+	skillOffsets  = []float64{0.0, 1.2}
 )
 
 const (
@@ -34,16 +34,13 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:         c.Index(),
-		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             attacks.ICDTagElementalArt,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeSlash,
-		Element:            attributes.Hydro,
-		Durability:         25,
-		HitlagHaltFrames:   0.02 * 60,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
+		ActorIndex: c.Index(),
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Hydro,
+		Durability: 25,
 	}
 
 	for i, v := range skill {
@@ -51,16 +48,19 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ax := ai
 		ax.Mult = v[c.TalentLvlSkill()]
 		ap := combat.NewCircleHitOnTarget(
-			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
 			info.Point{Y: skillOffsets[i]},
-			skillHitboxes[i][0],
+			skillHitboxes[i],
 		)
 		if i == 1 {
-			ap = combat.NewBoxHitOnTarget(
+			ai.StrikeType = attacks.StrikeTypeBlunt
+			ai.PoiseDMG = 60
+			ai.HitlagHaltFrames = 0.03 * 60
+			ai.HitlagFactor = 0.01
+			ap = combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
 				info.Point{Y: skillOffsets[i]},
-				skillHitboxes[i][0],
-				skillHitboxes[i][1],
+				skillHitboxes[i],
 			)
 		}
 		c.QueueCharTask(func() {

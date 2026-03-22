@@ -106,7 +106,7 @@ func (c *char) c2Init() {
 			FlatDmg:    em + c.a4Dmg(),
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 2.5), 0, 10)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 1.5), 0, 10)
 	}, c2Key)
 }
 
