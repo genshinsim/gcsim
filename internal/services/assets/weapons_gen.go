@@ -76,6 +76,7 @@ var weaponMap = map[string]string{
 	"pocketgrimoire":                  "UI_EquipIcon_Catalyst_Pocket",
 	"lostprayertothesacredwinds":      "UI_EquipIcon_Catalyst_Fourwinds",
 	"prototypeamber":                  "UI_EquipIcon_Catalyst_Proto",
+	"reliquaryoftruth":                "UI_EquipIcon_Catalyst_Sistrum",
 	"ringofyaxche":                    "UI_EquipIcon_Catalyst_Isikhulu",
 	"royalgrimoire":                   "UI_EquipIcon_Catalyst_Theocrat",
 	"sacrificialfragments":            "UI_EquipIcon_Catalyst_Fossil",

@@ -1088,6 +1088,14 @@
       "image_name": "UI_EquipIcon_Claymore_Itadorimaru",
       "name_text_hash_map ": "3914951691"
     },
+    "reliquaryoftruth": {
+      "id": 14521,
+      "key": "reliquaryoftruth",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Sistrum",
+      "name_text_hash_map ": "1566338363"
+    },
     "rightfulreward": {
       "id": 13425,
       "key": "rightfulreward",
