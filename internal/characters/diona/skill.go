@@ -121,13 +121,8 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 					shd.HP = shdHp
 					shd.Src = skillSrc
 					shd.Expires += dur
-					maxDur := c.Core.F + dur*5
-					if shd.Expires > maxDur {
-						shd.Expires = maxDur
-					}
-				} else {
-					shd.Expires += dur
 				}
+				shd.Expires += dur
 			} else {
 				shd = &shield.Tmpl{
 					ActorIndex: c.Index(),
@@ -139,6 +134,11 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 					Ele:        attributes.Cryo,
 					Expires:    c.Core.F + dur, // 15 sec
 				}
+			}
+
+			maxDur := c.Core.F + dur*5
+			if shd.Expires > maxDur {
+				shd.Expires = maxDur
 			}
 			// TODO: check that this is actually properly extending duration
 			c.Core.Player.Shields.Add(shd)
