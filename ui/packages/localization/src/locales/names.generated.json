@@ -339,6 +339,7 @@
       },
       "artifact_names": {
          "archaicpetra": "悠古的磐岩",
+         "aubade": "晨星与月的晓歌",
          "berserker": "战狂",
          "blizzardstrayer": "冰风迷途的勇士",
          "bloodstainedchivalry": "染血的骑士道",
@@ -1140,6 +1141,7 @@
       },
       "artifact_names": {
          "archaicpetra": "Archaic Petra",
+         "aubade": "Aubade of Morningstar and Moon",
          "berserker": "Berserker",
          "blizzardstrayer": "Blizzard Strayer",
          "bloodstainedchivalry": "Bloodstained Chivalry",
@@ -1941,6 +1943,7 @@
       },
       "artifact_names": {
          "archaicpetra": "Archaischer Fels",
+         "aubade": "Gesang von Stern und Mond",
          "berserker": "Berserker",
          "blizzardstrayer": "Im Schnee irrender Recke",
          "bloodstainedchivalry": "Blutiger Weg eines Ritters",
@@ -2742,6 +2745,7 @@
       },
       "artifact_names": {
          "archaicpetra": "悠久の磐岩",
+         "aubade": "暁の星と月の歌",
          "berserker": "狂戦士",
          "blizzardstrayer": "氷風を彷徨う勇士",
          "bloodstainedchivalry": "血染めの騎士道",
@@ -3543,6 +3547,7 @@
       },
       "artifact_names": {
          "archaicpetra": "유구한 반암",
+         "aubade": "샛별과 달의 여명",
          "berserker": "전투광",
          "blizzardstrayer": "얼음바람 속에서 길잃은 용사",
          "bloodstainedchivalry": "피에 물든 기사도",
@@ -4344,6 +4349,7 @@
       },
       "artifact_names": {
          "archaicpetra": "Архаичный камень",
+         "aubade": "Рассветная песнь звезды и луны",
          "berserker": "Берсерк",
          "blizzardstrayer": "Заблудший в метели",
          "bloodstainedchivalry": "Рыцарь крови",
@@ -5145,6 +5151,7 @@
       },
       "artifact_names": {
          "archaicpetra": "Petra Arcaica",
+         "aubade": "Alborada de la Estrella del Alba y la Luna",
          "berserker": "Berserker",
          "blizzardstrayer": "Nómada del Invierno",
          "bloodstainedchivalry": "Caballería Sanguinaria",
