@@ -96,6 +96,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	if c.Base.Cons >= 2 {
 		shdHp *= 1.15
 	}
+	skillSrc := c.Core.F
 	// call back to generate shield on hit
 	// note that each paw should only be able to trigger callback once (if hit multi target)
 	// and that subsequent shield generation should increase duation only
@@ -108,25 +109,34 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			// make sure this is only triggered once
 			done = true
 
-			// check if shield already exists, if so then just update duration
-			dur := int(pawDur[c.TalentLvlSkill()] * 60)
-			exist := c.Core.Player.Shields.Get(shield.DionaSkill)
 			var shd *shield.Tmpl
-			if exist != nil {
-				// update
-				shd, _ = exist.(*shield.Tmpl)
-				shd.Expires += dur
-			} else {
-				shd = &shield.Tmpl{
+			dur := int(pawDur[c.TalentLvlSkill()] * 60)
+			makeNewShield := func() *shield.Tmpl {
+				return &shield.Tmpl{
 					ActorIndex: c.Index(),
 					Target:     -1,
-					Src:        c.Core.F,
+					Src:        skillSrc,
 					ShieldType: shield.DionaSkill,
 					Name:       "Icy Paws (Shield)",
 					HP:         shdHp,
 					Ele:        attributes.Cryo,
 					Expires:    c.Core.F + dur, // 15 sec
 				}
+			}
+
+			// check if shield already exists, if so then just update duration
+			exist := c.Core.Player.Shields.Get(shield.DionaSkill)
+
+			if exist != nil {
+				// update
+				shd, _ = exist.(*shield.Tmpl)
+				if shd.Src != skillSrc {
+					shd = makeNewShield()
+				} else {
+					shd.Expires += dur
+				}
+			} else {
+				shd = makeNewShield()
 			}
 			// TODO: check that this is actually properly extending duration
 			c.Core.Player.Shields.Add(shd)
