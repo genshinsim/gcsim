@@ -109,10 +109,27 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			// make sure this is only triggered once
 			done = true
 
+			// check if shield already exists, if so then just update duration
 			var shd *shield.Tmpl
 			dur := int(pawDur[c.TalentLvlSkill()] * 60)
-			makeNewShield := func() *shield.Tmpl {
-				return &shield.Tmpl{
+			exist := c.Core.Player.Shields.Get(shield.DionaSkill)
+
+			if exist != nil {
+				// update
+				shd, _ = exist.(*shield.Tmpl)
+				if shd.Src != skillSrc {
+					shd.HP = shdHp
+					shd.Src = skillSrc
+					shd.Expires += dur
+					maxDur := c.Core.F + dur*5
+					if shd.Expires > maxDur {
+						shd.Expires = maxDur
+					}
+				} else {
+					shd.Expires += dur
+				}
+			} else {
+				shd = &shield.Tmpl{
 					ActorIndex: c.Index(),
 					Target:     -1,
 					Src:        skillSrc,
@@ -122,21 +139,6 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 					Ele:        attributes.Cryo,
 					Expires:    c.Core.F + dur, // 15 sec
 				}
-			}
-
-			// check if shield already exists, if so then just update duration
-			exist := c.Core.Player.Shields.Get(shield.DionaSkill)
-
-			if exist != nil {
-				// update
-				shd, _ = exist.(*shield.Tmpl)
-				if shd.Src != skillSrc {
-					shd = makeNewShield()
-				} else {
-					shd.Expires += dur
-				}
-			} else {
-				shd = makeNewShield()
 			}
 			// TODO: check that this is actually properly extending duration
 			c.Core.Player.Shields.Add(shd)
