@@ -113,12 +113,13 @@ func initialize(s *Simulation) (stateFn, error) {
 	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
 	// Run sim for 10 minutes if in damage mode
 	// run sim for 90s if no duration set
-	if s.C.Flags.DamageMode {
-		s.cfg.Settings.Duration = 10 * 60
-	}
 	if s.cfg.Settings.Duration == 0 {
-		// fmt.Println("no duration set, running for 90s")
-		s.cfg.Settings.Duration = 90
+		if s.C.Flags.DamageMode {
+			s.cfg.Settings.Duration = 10 * 60
+		} else {
+			// fmt.Println("no duration set, running for 90s")
+			s.cfg.Settings.Duration = 90
+		}
 	}
 
 	return s.advanceFrames(1, queuePhase)
