@@ -119,8 +119,8 @@ func initialize(s *Simulation) (stateFn, error) {
 	}
 
 	// Timeout frames are currently only used in damage mode
-	if s.cfg.Settings.TimeoutFrames == 0 {
-		s.cfg.Settings.TimeoutFrames = 10 * 60 * 60
+	if s.cfg.Settings.DamageModeDuration == 0 {
+		s.cfg.Settings.DamageModeDuration = 10 * 60
 	}
 
 	return s.advanceFrames(1, queuePhase)
@@ -310,7 +310,7 @@ func (s *Simulation) stopCheck() bool {
 		}
 
 		// stop if frames threshold passed
-		if s.C.F == s.cfg.Settings.TimeoutFrames {
+		if s.C.F == int(s.cfg.Settings.DamageModeDuration*60) {
 			return true
 		}
 
