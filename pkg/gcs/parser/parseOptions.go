@@ -36,6 +36,11 @@ func parseOptions(p *Parser) (parseFn, error) {
 				if err == nil {
 					p.res.Settings.Duration, err = itemNumberToFloat64(n)
 				}
+			case "timeout_frames":
+				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
+				if err == nil {
+					p.res.Settings.TimeoutFrames, err = itemNumberToInt(n)
+				}
 			case "workers":
 				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 				if err == nil {

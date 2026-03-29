@@ -42,6 +42,7 @@ type HurtSettings struct {
 
 type SimulatorSettings struct {
 	Duration          float64 `json:"-"`
+	TimeoutFrames     int     `json:"timeout_frames"`
 	DamageMode        bool    `json:"damage_mode"`
 	EnableHitlag      bool    `json:"enable_hitlag"`
 	DefHalt           bool    `json:"def_halt"` // for hitlag
