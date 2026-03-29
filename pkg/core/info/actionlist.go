@@ -41,11 +41,12 @@ type HurtSettings struct {
 }
 
 type SimulatorSettings struct {
-	Duration          float64 `json:"-"`
-	DamageMode        bool    `json:"damage_mode"`
-	EnableHitlag      bool    `json:"enable_hitlag"`
-	DefHalt           bool    `json:"def_halt"` // for hitlag
-	IgnoreBurstEnergy bool    `json:"ignore_burst_energy"`
+	Duration           float64 `json:"-"`
+	DamageModeDuration float64 `json:"timeout_frames"`
+	DamageMode         bool    `json:"damage_mode"`
+	EnableHitlag       bool    `json:"enable_hitlag"`
+	DefHalt            bool    `json:"def_halt"` // for hitlag
+	IgnoreBurstEnergy  bool    `json:"ignore_burst_energy"`
 	// other stuff
 	NumberOfWorkers int    `json:"-"`          // how many workers to run the simulation
 	Iterations      int    `json:"iterations"` // how many iterations to run
