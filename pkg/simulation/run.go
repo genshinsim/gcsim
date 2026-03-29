@@ -109,12 +109,17 @@ func (s *Simulation) popQueue() int {
 
 func initialize(s *Simulation) (stateFn, error) {
 	go s.eval.Start()
+
+	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
+	// Run sim for 10 minutes if in damage mode
 	// run sim for 90s if no duration set
+	if s.C.Flags.DamageMode {
+		s.cfg.Settings.Duration = 10 * 60
+	}
 	if s.cfg.Settings.Duration == 0 {
 		// fmt.Println("no duration set, running for 90s")
 		s.cfg.Settings.Duration = 90
 	}
-	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
 
 	return s.advanceFrames(1, queuePhase)
 }
@@ -296,22 +301,25 @@ func (s *Simulation) nextFrame() (bool, error) {
 }
 
 func (s *Simulation) stopCheck() bool {
-	if s.C.Combat.DamageMode {
-		// stop if no more actions
-		if s.noMoreActions {
-			return true
-		}
-		// stop if all targets are reporting dead
-		allDead := true
-		for _, t := range s.C.Combat.Enemies() {
-			if t.IsAlive() {
-				allDead = false
-				break
-			}
-		}
-		return allDead
+	// Exit after specified duration, or timeout duration if in damage mode
+	if s.C.F == int(s.cfg.Settings.Duration*60) {
+		return true
 	}
-	return s.C.F == int(s.cfg.Settings.Duration*60)
+
+	// stop if no more actions
+	if s.noMoreActions {
+		return true
+	}
+
+	// stop if all targets are reporting dead
+	allDead := true
+	for _, t := range s.C.Combat.Enemies() {
+		if t.IsAlive() {
+			allDead = false
+			break
+		}
+	}
+	return allDead
 }
 
 // TODO: remove defer in favour of every function actually returning error
