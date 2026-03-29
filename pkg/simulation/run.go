@@ -111,15 +111,16 @@ func initialize(s *Simulation) (stateFn, error) {
 	go s.eval.Start()
 
 	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
-	// Run sim for 10 minutes if in damage mode
+
 	// run sim for 90s if no duration set
 	if s.cfg.Settings.Duration == 0 {
-		if s.C.Flags.DamageMode {
-			s.cfg.Settings.Duration = 10 * 60
-		} else {
-			// fmt.Println("no duration set, running for 90s")
-			s.cfg.Settings.Duration = 90
-		}
+		// fmt.Println("no duration set, running for 90s")
+		s.cfg.Settings.Duration = 90
+	}
+
+	// Timeout frames are currently only used in damage mode
+	if s.cfg.Settings.TimeoutFrames == 0 {
+		s.cfg.Settings.TimeoutFrames = 10 * 60 * 60
 	}
 
 	return s.advanceFrames(1, queuePhase)
@@ -302,25 +303,28 @@ func (s *Simulation) nextFrame() (bool, error) {
 }
 
 func (s *Simulation) stopCheck() bool {
-	// Exit after specified duration, or timeout duration if in damage mode
-	if s.C.F == int(s.cfg.Settings.Duration*60) {
-		return true
-	}
-
-	// stop if no more actions
-	if s.noMoreActions {
-		return true
-	}
-
-	// stop if all targets are reporting dead
-	allDead := true
-	for _, t := range s.C.Combat.Enemies() {
-		if t.IsAlive() {
-			allDead = false
-			break
+	if s.C.Combat.DamageMode {
+		// stop if no more actions
+		if s.noMoreActions {
+			return true
 		}
+
+		// stop if frames threshold passed
+		if s.C.F == s.cfg.Settings.TimeoutFrames {
+			return true
+		}
+
+		// stop if all targets are reporting dead
+		allDead := true
+		for _, t := range s.C.Combat.Enemies() {
+			if t.IsAlive() {
+				allDead = false
+				break
+			}
+		}
+		return allDead
 	}
-	return allDead
+	return s.C.F == int(s.cfg.Settings.Duration*60)
 }
 
 // TODO: remove defer in favour of every function actually returning error
