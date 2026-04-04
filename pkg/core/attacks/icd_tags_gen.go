@@ -3,6 +3,7 @@ package attacks
 
 const (
 	ICDTagGeneratedStart ICDTag = iota + EndDefaultICDTags + 1
+	ICDTagAinoBurstMoonHit
 	ICDTagCharlotteMark
 	ICDTagCharlotteKamera
 	ICDTagChascaTap

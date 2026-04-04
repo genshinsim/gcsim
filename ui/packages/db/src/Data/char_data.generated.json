@@ -108,6 +108,23 @@
       },
       "name_text_hash_map ": "1533656818"
     },
+    "aino": {
+      "id": 10000121,
+      "key": "aino",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Water",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Aino",
+      "skill_details": {
+        "skill": 11212,
+        "burst": 11215,
+        "attack": 11211,
+        "burst_energy_cost": 50
+      },
+      "name_text_hash_map ": "3887688410"
+    },
     "albedo": {
       "id": 10000038,
       "key": "albedo",
