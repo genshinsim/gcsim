@@ -10,11 +10,14 @@ import (
 )
 
 const (
-	a1Dur    = 1054
-	a1Key    = "skirk-a1"
-	a1IcdKey = "skirk-a1-icd"
-	a4Key    = "deaths-crossing"
-	a4Dur    = 20 * 60
+	a1Dur                = 1054
+	a1Key                = "skirk-a1"
+	a1IcdKey             = "skirk-a1-icd"
+	a1SSPauseKey         = "skirk-a1-ss-pause"
+	a1SSPauseDurPerStack = 0.3 * 60
+	a1SSPauseMaxDur      = a1SSPauseDurPerStack * 3
+	a4Key                = "deaths-crossing"
+	a4Dur                = 20 * 60
 )
 
 var (
@@ -65,6 +68,9 @@ func (c *char) onVoidAbsorb(count int) {
 
 	c.AddSerpentsSubtlety("a1-void-rifts", float64(count)*8.0)
 
+	existingPauseDur := c.StatusDuration(a1SSPauseKey)
+	newPauseDur := min(existingPauseDur+count*a1SSPauseDurPerStack, a1SSPauseMaxDur)
+	c.AddStatus(a1SSPauseKey, newPauseDur, false)
 	for range count {
 		c.c1()
 		c.c6OnVoidAbsorb()
