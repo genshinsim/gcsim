@@ -10,11 +10,14 @@ import (
 )
 
 const (
-	a1Dur    = 1054
-	a1Key    = "skirk-a1"
-	a1IcdKey = "skirk-a1-icd"
-	a4Key    = "deaths-crossing"
-	a4Dur    = 20 * 60
+	a1Dur                = 1054
+	a1Key                = "skirk-a1"
+	a1IcdKey             = "skirk-a1-icd"
+	a1SSPauseKey         = "skirk-a1-ss-pause"
+	a1SSPauseDurPerStack = 0.3 * 60
+	a1SSPauseMaxDur      = a1SSPauseDurPerStack * 3
+	a4Key                = "deaths-crossing"
+	a4Dur                = 20 * 60
 )
 
 var (
@@ -64,11 +67,30 @@ func (c *char) onVoidAbsorb(count int) {
 	}
 
 	c.AddSerpentsSubtlety("a1-void-rifts", float64(count)*8.0)
-
+	c.addA1SSPauseDur(count)
+	existingPauseDur := c.StatusDuration(a1SSPauseKey)
+	// if the existing pause duration is more than 0.75s, we do not refill to the full 0.9s
+	if existingPauseDur <= 0.75*60 {
+		newPauseDur := min(existingPauseDur+count*a1SSPauseDurPerStack, a1SSPauseMaxDur)
+		c.AddStatus(a1SSPauseKey, newPauseDur, false)
+	}
 	for range count {
 		c.c1()
 		c.c6OnVoidAbsorb()
 	}
+}
+
+func (c *char) addA1SSPauseDur(count int) {
+	existingPauseDur := c.StatusDuration(a1SSPauseKey)
+	newDur := existingPauseDur
+	for range count {
+		if newDur <= 0.75*60 { // < 0.75*60 means there are 5 or less stacks. When at 6 stacks (duration from (0.75, 0.9]) we don't add stacks
+			newDur = min(existingPauseDur+count*a1SSPauseDurPerStack, a1SSPauseMaxDur)
+		} else {
+			break
+		}
+	}
+	c.AddStatus(a1SSPauseKey, newDur, false)
 }
 
 func (c *char) createVoidRift() {
