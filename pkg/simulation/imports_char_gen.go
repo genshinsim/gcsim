@@ -56,6 +56,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/lanyan"
 	_ "github.com/genshinsim/gcsim/internal/characters/lauma"
 	_ "github.com/genshinsim/gcsim/internal/characters/layla"
+	_ "github.com/genshinsim/gcsim/internal/characters/linnea"
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
 	_ "github.com/genshinsim/gcsim/internal/characters/lynette"
 	_ "github.com/genshinsim/gcsim/internal/characters/lyney"

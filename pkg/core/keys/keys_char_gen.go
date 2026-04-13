@@ -61,6 +61,7 @@ const (
 	Lanyan
 	Lauma
 	Layla
+	Linnea
 	Lisa
 	Lynette
 	Lyney
@@ -326,6 +327,10 @@ func init() {
 	charNames[Layla] = "layla"
 	charPrettyName[Layla] = "Layla"
 	CharKeyToEle[Layla] = attributes.Cryo
+
+	charNames[Linnea] = "linnea"
+	charPrettyName[Linnea] = "Linnea"
+	CharKeyToEle[Linnea] = attributes.Geo
 
 	charNames[Lisa] = "lisa"
 	charPrettyName[Lisa] = "Lisa"
