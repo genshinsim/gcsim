@@ -61,9 +61,23 @@ func (c *char) c1() {
 
 // C2:
 // While General's Glory is in effect, its duration is extended by 1s when a nearby
-// active character obtains an Elemental Shard from a Crystallize reaction.
+// active character obtains an Elemental Shard from a Crystallize reaction, or triggers a Lunar-Crystallize reaction.
 // This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
+	c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+		if c.Core.Status.Duration(generalGloryKey) <= 0 {
+			return
+		}
+		ae := args[1].(info.AttackEvent)
+		if ae.Info.ActorIndex != c.Core.Player.Active() {
+			return
+		}
+		if c.c2Extension >= 3 {
+			return
+		}
+		c.c2Extension++
+		c.Core.Status.Extend(generalGloryKey, 60)
+	}, "gorou-c2")
 	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
 			return

@@ -23,9 +23,11 @@ const (
 
 // C1:
 // When any of your own party members hits an opponent affected by an Omen, the effects of Hydro-related Elemental Reactions are enhanced for 8s:
-// - Electro-Charged DMG increases by 15%.
-// - Vaporize DMG increases by 15%.
-// - Hydro Swirl DMG increases by 15%.
+// - Electro-Charged DMG increases by 15%
+// - Lunar-Charged DMG increases by 15%
+// - Vaporize DMG increases by 15%
+// - Hydro Swirl DMG increases by 15%
+// - Lunar-Crystallize DMG increases by 15%.
 // - Frozen duration is extended by 15%.
 func (c *char) c1() {
 	// TODO: "Frozen duration is extended by 15%." is bugged
@@ -54,10 +56,11 @@ func (c *char) c1() {
 						}
 
 						switch ai.AttackTag {
-						// Hydro Swirl DMG increases by 15%.
-						// Electro-Charged DMG increases by 15%.
-						// Lunar-Charged DMG increases by 15%.
-						case attacks.AttackTagSwirlHydro, attacks.AttackTagECDamage, attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged:
+						// - Electro-Charged DMG increases by 15%
+						// - Lunar-Charged DMG increases by 15%
+						// - Hydro Swirl DMG increases by 15%
+						// - Lunar-Crystallize DMG increases by 15%.
+						case attacks.AttackTagSwirlHydro, attacks.AttackTagECDamage, attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged, attacks.AttackTagReactionLunarCrystallize, attacks.AttackTagDirectLunarCrystallize:
 							return 0.15
 						}
 

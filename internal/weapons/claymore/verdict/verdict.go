@@ -34,7 +34,7 @@ const (
 	dmgWindowDuration = 0.2 * 60
 )
 
-// Increases ATK by 20/25/30/35/40%. When party members obtain Elemental Shards from Crystallize reactions,
+// Increases ATK by 20/25/30/35/40%. When party members obtain Elemental Shards from Crystallize or trigger Lunar-Crystallize reactions,
 // the equipping character will gain 1 Seal, increasing Elemental Skill DMG by 18/22.5/27/31.5/36%.
 // The Seal lasts for 15s, and the equipper may have up to 2 Seals at once.
 // All of the equipper's Seals will disappear 0.2s after their Elemental Skill deals DMG.
@@ -53,6 +53,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
+	gainSeal := func() {
+		if !char.StatModIsActive(buffKey) {
+			w.stacks = 0
+		}
+		if w.stacks < 2 {
+			w.stacks++
+		}
+		c.Log.NewEvent("verdict adding stack", glog.LogWeaponEvent, char.Index()).
+			Write("stacks", w.stacks)
+		char.AddStatus(buffKey, buffDuration, true)
+	}
+
 	// seal gain on crystallize shard pickup
 	c.Events.Subscribe(event.OnShielded, func(args ...any) {
 		// Check shield
@@ -60,7 +72,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if shd.Type() != shield.Crystallize {
 			return
 		}
+		gainSeal()
+	}, fmt.Sprintf("verdict-seal-%v", char.Base.Key.String()))
 
+	// seal gain on lunar-crystallize trigger
+	c.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+		gainSeal()
+	}, fmt.Sprintf("verdict-seal-%v", char.Base.Key.String()))
+
+	// seal gain on lunar-crystallize trigger
+	c.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
 		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
 		}
