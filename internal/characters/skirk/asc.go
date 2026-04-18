@@ -68,12 +68,6 @@ func (c *char) onVoidAbsorb(count int) {
 
 	c.AddSerpentsSubtlety("a1-void-rifts", float64(count)*8.0)
 	c.addA1SSPauseDur(count)
-	existingPauseDur := c.StatusDuration(a1SSPauseKey)
-	// if the existing pause duration is more than 0.75s, we do not refill to the full 0.9s
-	if existingPauseDur <= 0.75*60 {
-		newPauseDur := min(existingPauseDur+count*a1SSPauseDurPerStack, a1SSPauseMaxDur)
-		c.AddStatus(a1SSPauseKey, newPauseDur, false)
-	}
 	for range count {
 		c.c1()
 		c.c6OnVoidAbsorb()
