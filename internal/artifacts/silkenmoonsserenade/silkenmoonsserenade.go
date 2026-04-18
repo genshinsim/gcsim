@@ -55,6 +55,7 @@ func (s *Set) Init() error {
 	m2 := make([]float64, attributes.EndStatType)
 	switch s.core.Player.GetMoonsignLevel() {
 	case 0:
+		return nil
 	case 1:
 		m2[attributes.EM] = 60
 	default:
@@ -83,7 +84,6 @@ func (s *Set) Init() error {
 				Base:         modifier.NewBase(gleamingMoonDevotionEMKey, 8*60),
 				AffectedStat: attributes.EM,
 				Amount: func() []float64 {
-					m2[attributes.EM] = 120
 					return m2
 				},
 			})
