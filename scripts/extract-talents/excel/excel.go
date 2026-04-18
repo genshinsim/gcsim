@@ -3,7 +3,7 @@ package excel
 var textMap map[TextMapHash]string
 
 func init() {
-	load("TextMap/TextMapEN.json", &textMap)
+	load("TextMap/TextMap_MediumEN.json", &textMap)
 }
 
 type TextMapHash uint32
