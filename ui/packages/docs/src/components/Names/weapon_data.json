@@ -51,6 +51,7 @@
   "blackcliffpole": [],
   "blackcliffslasher": [],
   "blackcliffwarbow": [],
+  "blackmarrowlantern": [],
   "blacktassel": [],
   "bloodsoakedruins": [
     "bloodsoaked"
@@ -234,6 +235,7 @@
   "mappamare": [
     "mappa"
   ],
+  "masterkey": [],
   "memoryofdust": [],
   "messenger": [],
   "missivewindspear": [
@@ -283,6 +285,7 @@
     "pjws"
   ],
   "prospectorsdrill": [],
+  "prospectorsshovel": [],
   "prototypeamber": [
     "pamber"
   ],
@@ -346,6 +349,7 @@
   "sequenceofsolitude": [
     "solitude"
   ],
+  "serenityscall": [],
   "serpentspine": [
     "serpent"
   ],
@@ -372,6 +376,7 @@
   ],
   "skywardspine": [],
   "slingshot": [],
+  "snarehook": [],
   "snowtombedstarsilver": [
     "snowtombed"
   ],
