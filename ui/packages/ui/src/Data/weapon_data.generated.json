@@ -14,7 +14,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Maria",
-      "name_text_hash_map ": "2359799475"
+      "name_text_hash_map ": "2359798963"
     },
     "alleyhunter": {
       "id": 15410,
@@ -78,7 +78,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Qoyllorsnova",
-      "name_text_hash_map ": "1363661611"
+      "name_text_hash_map ": "1363661099"
     },
     "athousandblazingsuns": {
       "id": 12514,
@@ -94,7 +94,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Ayus",
-      "name_text_hash_map ": "1201790667"
+      "name_text_hash_map ": "1201790155"
     },
     "azurelight": {
       "id": 11517,
@@ -102,7 +102,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_OuterSword",
-      "name_text_hash_map ": "1479741275"
+      "name_text_hash_map ": "1479740763"
     },
     "balladoftheboundlessblue": {
       "id": 14426,
@@ -118,7 +118,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Shanty",
-      "name_text_hash_map ": "449192923"
+      "name_text_hash_map ": "449192411"
     },
     "beaconofthereedsea": {
       "id": 12511,
@@ -142,7 +142,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Blackrock",
-      "name_text_hash_map ": "3273999011"
+      "name_text_hash_map ": "3273998499"
     },
     "blackclifflongsword": {
       "id": 11408,
@@ -174,7 +174,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Blackrock",
-      "name_text_hash_map ": "3447737235"
+      "name_text_hash_map ": "3447736723"
     },
     "blackmarrowlantern": {
       "id": 14433,
@@ -230,7 +230,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Wheatley",
-      "name_text_hash_map ": "724881171"
+      "name_text_hash_map ": "724880659"
     },
     "chainbreaker": {
       "id": 15431,
@@ -238,7 +238,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Isikhulu",
-      "name_text_hash_map ": "565052971"
+      "name_text_hash_map ": "565052459"
     },
     "cinnabarspindle": {
       "id": 11415,
@@ -246,7 +246,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Opus",
-      "name_text_hash_map ": "342097547"
+      "name_text_hash_map ": "342097035"
     },
     "cloudforged": {
       "id": 15426,
@@ -254,7 +254,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Ultimatum",
-      "name_text_hash_map ": "4038676067"
+      "name_text_hash_map ": "4038675555"
     },
     "compoundbow": {
       "id": 15407,
@@ -286,7 +286,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Exotic",
-      "name_text_hash_map ": "578575283"
+      "name_text_hash_map ": "578574771"
     },
     "crimsonmoonssemblance": {
       "id": 13512,
@@ -294,7 +294,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_BloodMoon",
-      "name_text_hash_map ": "2944936683"
+      "name_text_hash_map ": "2944936171"
     },
     "darkironsword": {
       "id": 11304,
@@ -302,7 +302,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Darker",
-      "name_text_hash_map ": "160493219"
+      "name_text_hash_map ": "160492707"
     },
     "dawningfrost": {
       "id": 14434,
@@ -310,7 +310,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Ziedas",
-      "name_text_hash_map ": "3497155131"
+      "name_text_hash_map ": "3497154619"
     },
     "deathmatch": {
       "id": 13405,
@@ -318,7 +318,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Gladiator",
-      "name_text_hash_map ": "4049410651"
+      "name_text_hash_map ": "4049410139"
     },
     "debateclub": {
       "id": 12305,
@@ -326,7 +326,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Reasoning",
-      "name_text_hash_map ": "3097441915"
+      "name_text_hash_map ": "3097441403"
     },
     "dialoguesofthedesertsages": {
       "id": 13426,
@@ -342,7 +342,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Ludiharpastum",
-      "name_text_hash_map ": "3456986819"
+      "name_text_hash_map ": "3456986307"
     },
     "dragonsbane": {
       "id": 13401,
@@ -350,7 +350,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Stardust",
-      "name_text_hash_map ": "2664629131"
+      "name_text_hash_map ": "2664628619"
     },
     "dragonspinespear": {
       "id": 13409,
@@ -374,7 +374,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Isikhulu",
-      "name_text_hash_map ": "2481464075"
+      "name_text_hash_map ": "2481463563"
     },
     "elegyfortheend": {
       "id": 15503,
@@ -382,7 +382,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Widsith",
-      "name_text_hash_map ": "3112679155"
+      "name_text_hash_map ": "3112678643"
     },
     "emeraldorb": {
       "id": 14304,
@@ -422,7 +422,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Kaleido",
-      "name_text_hash_map ": "1890163363"
+      "name_text_hash_map ": "1890162851"
     },
     "eyeofperception": {
       "id": 14409,
@@ -430,7 +430,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Truelens",
-      "name_text_hash_map ": "3156385731"
+      "name_text_hash_map ": "3156385219"
     },
     "fadingtwilight": {
       "id": 15411,
@@ -446,7 +446,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_EmeraldSword",
-      "name_text_hash_map ": "1183454019"
+      "name_text_hash_map ": "1183453507"
     },
     "favoniuscodex": {
       "id": 14401,
@@ -462,7 +462,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Zephyrus",
-      "name_text_hash_map ": "735056795"
+      "name_text_hash_map ": "735056283"
     },
     "favoniuslance": {
       "id": 13407,
@@ -494,7 +494,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Glaive",
-      "name_text_hash_map ": "1479961579"
+      "name_text_hash_map ": "1479961067"
     },
     "festeringdesire": {
       "id": 11413,
@@ -510,7 +510,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Sashimi",
-      "name_text_hash_map ": "3421967235"
+      "name_text_hash_map ": "3421966723"
     },
     "finaleofthedeep": {
       "id": 11425,
@@ -566,7 +566,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Arakalari",
-      "name_text_hash_map ": "902184579"
+      "name_text_hash_map ": "902184067"
     },
     "fracturedhalo": {
       "id": 13515,
@@ -582,7 +582,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Widsith",
-      "name_text_hash_map ": "2949448555"
+      "name_text_hash_map ": "2949448043"
     },
     "frostbearer": {
       "id": 14412,
@@ -622,7 +622,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Halberd",
-      "name_text_hash_map ": "618786571"
+      "name_text_hash_map ": "618786059"
     },
     "hamayumi": {
       "id": 15414,
@@ -638,7 +638,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Amenoma",
-      "name_text_hash_map ": "1600275315"
+      "name_text_hash_map ": "1600274803"
     },
     "harbingerofdawn": {
       "id": 11302,
@@ -646,7 +646,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Dawn",
-      "name_text_hash_map ": "1608953539"
+      "name_text_hash_map ": "1608953027"
     },
     "huntersbow": {
       "id": 15101,
@@ -670,7 +670,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Ibis",
-      "name_text_hash_map ": "316078811"
+      "name_text_hash_map ": "316078299"
     },
     "ironpoint": {
       "id": 13201,
@@ -686,7 +686,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Exotic",
-      "name_text_hash_map ": "4103022435"
+      "name_text_hash_map ": "4103021923"
     },
     "jadefallssplendor": {
       "id": 14505,
@@ -710,7 +710,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Narukami",
-      "name_text_hash_map ": "310247243"
+      "name_text_hash_map ": "310246731"
     },
     "katsuragikirinagamasa": {
       "id": 12414,
@@ -734,7 +734,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Arakalari",
-      "name_text_hash_map ": "3176599083"
+      "name_text_hash_map ": "3176598571"
     },
     "kitaincrossspear": {
       "id": 13414,
@@ -742,7 +742,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Bakufu",
-      "name_text_hash_map ": "2491797315"
+      "name_text_hash_map ": "2491796803"
     },
     "lightoffoliarincision": {
       "id": 11512,
@@ -758,7 +758,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Rockkiller",
-      "name_text_hash_map ": "1321135667"
+      "name_text_hash_map ": "1321135155"
     },
     "lithicblade": {
       "id": 12410,
@@ -782,7 +782,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Fourwinds",
-      "name_text_hash_map ": "1455107995"
+      "name_text_hash_map ": "1455107483"
     },
     "lumidouceelegy": {
       "id": 13513,
@@ -814,7 +814,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Fleurfair",
-      "name_text_hash_map ": "1200948859"
+      "name_text_hash_map ": "1200948347"
     },
     "makhairaaquamarine": {
       "id": 12415,
@@ -822,7 +822,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Pleroma",
-      "name_text_hash_map ": "3073454867"
+      "name_text_hash_map ": "3073454355"
     },
     "mappamare": {
       "id": 14407,
@@ -846,7 +846,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Kunwu",
-      "name_text_hash_map ": "693354267"
+      "name_text_hash_map ": "693353755"
     },
     "messenger": {
       "id": 15305,
@@ -854,7 +854,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Msg",
-      "name_text_hash_map ": "4139294531"
+      "name_text_hash_map ": "4139294019"
     },
     "missivewindspear": {
       "id": 13419,
@@ -878,7 +878,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Nachtblind",
-      "name_text_hash_map ": "3949653579"
+      "name_text_hash_map ": "3949653067"
     },
     "moonpiercer": {
       "id": 13417,
@@ -886,7 +886,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Arakalari",
-      "name_text_hash_map ": "452357939"
+      "name_text_hash_map ": "452357427"
     },
     "moonweaversdawn": {
       "id": 11434,
@@ -894,7 +894,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Miekka",
-      "name_text_hash_map ": "357888539"
+      "name_text_hash_map ": "357888027"
     },
     "mountainbracingbolt": {
       "id": 13430,
@@ -902,7 +902,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Umpakati",
-      "name_text_hash_map ": "1965515667"
+      "name_text_hash_map ": "1965515155"
     },
     "mouunsmoon": {
       "id": 15416,
@@ -918,7 +918,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Jyanome",
-      "name_text_hash_map ": "2539208459"
+      "name_text_hash_map ": "2539207947"
     },
     "oldmercspal": {
       "id": 12201,
@@ -926,7 +926,7 @@
       "rarity": 2,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Oyaji",
-      "name_text_hash_map ": "1182966603"
+      "name_text_hash_map ": "1182966091"
     },
     "otherworldlystory": {
       "id": 14303,
@@ -958,7 +958,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Worldbane",
-      "name_text_hash_map ": "1901973075"
+      "name_text_hash_map ": "1901972563"
     },
     "portablepowersaw": {
       "id": 12427,
@@ -998,7 +998,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Mechanic",
-      "name_text_hash_map ": "882305891"
+      "name_text_hash_map ": "882305379"
     },
     "prospectorsshovel": {
       "id": 13433,
@@ -1030,7 +1030,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Proto",
-      "name_text_hash_map ": "3625393819"
+      "name_text_hash_map ": "3625393307"
     },
     "prototyperancour": {
       "id": 11406,
@@ -1062,7 +1062,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Mechanic",
-      "name_text_hash_map ": "1055195035"
+      "name_text_hash_map ": "1055194523"
     },
     "ravenbow": {
       "id": 15301,
@@ -1110,7 +1110,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Theocrat",
-      "name_text_hash_map ": "2832648187"
+      "name_text_hash_map ": "2832647675"
     },
     "royalgreatsword": {
       "id": 12404,
@@ -1126,7 +1126,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Theocrat",
-      "name_text_hash_map ": "3827789435"
+      "name_text_hash_map ": "3827788923"
     },
     "royallongsword": {
       "id": 11404,
@@ -1142,7 +1142,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Theocrat",
-      "name_text_hash_map ": "2935286715"
+      "name_text_hash_map ": "2935286203"
     },
     "rust": {
       "id": 15405,
@@ -1166,7 +1166,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Fossil",
-      "name_text_hash_map ": "2400012995"
+      "name_text_hash_map ": "2400012483"
     },
     "sacrificialfragments": {
       "id": 14403,
@@ -1174,7 +1174,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Fossil",
-      "name_text_hash_map ": "2195665683"
+      "name_text_hash_map ": "2195665171"
     },
     "sacrificialgreatsword": {
       "id": 12403,
@@ -1190,7 +1190,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Yue",
-      "name_text_hash_map ": "2275710883"
+      "name_text_hash_map ": "2275710371"
     },
     "sacrificialsword": {
       "id": 11403,
@@ -1222,7 +1222,7 @@
       "rarity": 2,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Old",
-      "name_text_hash_map ": "2340970067"
+      "name_text_hash_map ": "2340969555"
     },
     "sequenceofsolitude": {
       "id": 15432,
@@ -1230,7 +1230,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Stinger",
-      "name_text_hash_map ": "2846112523"
+      "name_text_hash_map ": "2846112011"
     },
     "serenityscall": {
       "id": 11433,
@@ -1262,7 +1262,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Arcdange",
-      "name_text_hash_map ": "1257396043"
+      "name_text_hash_map ": "1257395531"
     },
     "silversword": {
       "id": 11201,
@@ -1270,7 +1270,7 @@
       "rarity": 2,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Silver",
-      "name_text_hash_map ": "2125206395"
+      "name_text_hash_map ": "2125205883"
     },
     "skyridergreatsword": {
       "id": 12306,
@@ -1278,7 +1278,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Mitsurugi",
-      "name_text_hash_map ": "2614170427"
+      "name_text_hash_map ": "2614169915"
     },
     "skyridersword": {
       "id": 11306,
@@ -1286,7 +1286,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Mitsurugi",
-      "name_text_hash_map ": "1388004931"
+      "name_text_hash_map ": "1388004419"
     },
     "skywardatlas": {
       "id": 14501,
@@ -1318,7 +1318,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Dvalin",
-      "name_text_hash_map ": "1089950259"
+      "name_text_hash_map ": "1089949747"
     },
     "skywardspine": {
       "id": 13502,
@@ -1326,7 +1326,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Dvalin",
-      "name_text_hash_map ": "4158505619"
+      "name_text_hash_map ": "4158505107"
     },
     "slingshot": {
       "id": 15304,
@@ -1334,7 +1334,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Sling",
-      "name_text_hash_map ": "1021898539"
+      "name_text_hash_map ": "1021898027"
     },
     "snarehook": {
       "id": 15433,
@@ -1342,7 +1342,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Ilmarinen",
-      "name_text_hash_map ": "3380505211"
+      "name_text_hash_map ": "3380504699"
     },
     "snowtombedstarsilver": {
       "id": 12411,
@@ -1350,7 +1350,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Dragonfell",
-      "name_text_hash_map ": "2753539619"
+      "name_text_hash_map ": "2753539107"
     },
     "solarpearl": {
       "id": 14405,
@@ -1358,7 +1358,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Resurrection",
-      "name_text_hash_map ": "37147251"
+      "name_text_hash_map ": "37146739"
     },
     "songofbrokenpines": {
       "id": 12503,
@@ -1366,7 +1366,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Widsith",
-      "name_text_hash_map ": "1075647299"
+      "name_text_hash_map ": "1075646787"
     },
     "songofstillness": {
       "id": 15425,
@@ -1382,7 +1382,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Regalis",
-      "name_text_hash_map ": "1473399443"
+      "name_text_hash_map ": "1473398931"
     },
     "staffofhoma": {
       "id": 13501,
@@ -1390,7 +1390,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Homa",
-      "name_text_hash_map ": "3235324891"
+      "name_text_hash_map ": "3235324379"
     },
     "staffofthescarletsands": {
       "id": 13511,
@@ -1430,7 +1430,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_SakuraFan",
-      "name_text_hash_map ": "3790622667"
+      "name_text_hash_map ": "3790622155"
     },
     "surfsup": {
       "id": 14516,
@@ -1446,7 +1446,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Psalmus",
-      "name_text_hash_map ": "1773425155"
+      "name_text_hash_map ": "1773424643"
     },
     "swordofnarzissenkreuz": {
       "id": 11428,
@@ -1454,7 +1454,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Purewill",
-      "name_text_hash_map ": "3016493955"
+      "name_text_hash_map ": "3016493443"
     },
     "symphonistofscents": {
       "id": 13514,
@@ -1478,7 +1478,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Aoandon",
-      "name_text_hash_map ": "486513155"
+      "name_text_hash_map ": "486512643"
     },
     "thealleyflash": {
       "id": 11410,
@@ -1502,7 +1502,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Bloodstained",
-      "name_text_hash_map ": "3796905611"
+      "name_text_hash_map ": "3796905099"
     },
     "thecatch": {
       "id": 13415,
@@ -1510,7 +1510,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Mori",
-      "name_text_hash_map ": "1148024603"
+      "name_text_hash_map ": "1148024091"
     },
     "thedockhandsassistant": {
       "id": 11427,
@@ -1518,7 +1518,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Mechanic",
-      "name_text_hash_map ": "1790067483"
+      "name_text_hash_map ": "1790066971"
     },
     "thefirstgreatmagic": {
       "id": 15512,
@@ -1542,7 +1542,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Troupe",
-      "name_text_hash_map ": "2556914683"
+      "name_text_hash_map ": "2556914171"
     },
     "theunforged": {
       "id": 12504,
@@ -1558,7 +1558,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Viridescent",
-      "name_text_hash_map ": "3439749859"
+      "name_text_hash_map ": "3439749347"
     },
     "thewidsith": {
       "id": 14402,
@@ -1574,7 +1574,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Pulpfic",
-      "name_text_hash_map ": "3500935003"
+      "name_text_hash_map ": "3500934491"
     },
     "thunderingpulse": {
       "id": 15509,
@@ -1582,7 +1582,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Narukami",
-      "name_text_hash_map ": "2918525947"
+      "name_text_hash_map ": "2918525435"
     },
     "tidalshadow": {
       "id": 12425,
@@ -1590,7 +1590,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Vorpal",
-      "name_text_hash_map ": "2077869763"
+      "name_text_hash_map ": "2077869251"
     },
     "tomeoftheeternalflow": {
       "id": 14514,
@@ -1598,7 +1598,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Iudex",
-      "name_text_hash_map ": "4176923379"
+      "name_text_hash_map ": "4176922867"
     },
     "toukaboushigure": {
       "id": 11422,
@@ -1614,7 +1614,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Traveler",
-      "name_text_hash_map ": "3673792067"
+      "name_text_hash_map ": "3673791555"
     },
     "tulaytullahsremembrance": {
       "id": 14512,
@@ -1630,7 +1630,7 @@
       "rarity": 3,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Phoney",
-      "name_text_hash_map ": "3719372715"
+      "name_text_hash_map ": "3719372203"
     },
     "ultimateoverlordsmegamagicsword": {
       "id": 12426,
@@ -1638,7 +1638,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Champion",
-      "name_text_hash_map ": "933442195"
+      "name_text_hash_map ": "933441683"
     },
     "urakumisugiri": {
       "id": 11514,
@@ -1678,7 +1678,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Pleroma",
-      "name_text_hash_map ": "426363739"
+      "name_text_hash_map ": "426363227"
     },
     "wastergreatsword": {
       "id": 12101,
@@ -1686,7 +1686,7 @@
       "rarity": 1,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Aniki",
-      "name_text_hash_map ": "2666951267"
+      "name_text_hash_map ": "2666950755"
     },
     "wavebreakersfin": {
       "id": 13416,
@@ -1694,7 +1694,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Maria",
-      "name_text_hash_map ": "4122509083"
+      "name_text_hash_map ": "4122508571"
     },
     "waveridingwhirl": {
       "id": 14430,
@@ -1710,7 +1710,7 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Exotic",
-      "name_text_hash_map ": "680510411"
+      "name_text_hash_map ": "680509899"
     },
     "whiteirongreatsword": {
       "id": 12303,
@@ -1758,7 +1758,7 @@
       "rarity": 5,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Wolfmound",
-      "name_text_hash_map ": "3995710363"
+      "name_text_hash_map ": "3995709851"
     },
     "xiphosmoonlight": {
       "id": 11418,
