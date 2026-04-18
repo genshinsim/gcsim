@@ -75,7 +75,7 @@ func (c *char) onVoidAbsorb(count int) {
 func (c *char) addA1SSPauseDur(count int) {
 	c.AddStatus(a1SSPauseKey, -1, false)
 	if c.a1PauseSSStacks == 0 {
-		c.QueueCharTask(c.a1SSPauseTicker, 0.15*60)
+		c.Core.Tasks.Add(c.a1SSPauseTicker, 0.15*60)
 	}
 	c.a1PauseSSStacks = min(c.a1PauseSSStacks+count*2, 6)
 }
@@ -86,7 +86,7 @@ func (c *char) a1SSPauseTicker() {
 		c.DeleteStatus(a1SSPauseKey)
 		return
 	}
-	c.QueueCharTask(c.a1SSPauseTicker, 0.15*60)
+	c.Core.Tasks.Add(c.a1SSPauseTicker, 0.15*60)
 }
 
 func (c *char) createVoidRift() {
