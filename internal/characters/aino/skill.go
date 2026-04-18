@@ -86,6 +86,6 @@ func (c *char) particleCB(a info.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 1*60, true)
+	c.AddStatus(particleICDKey, 0.6*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Hydro, c.ParticleDelay)
 }

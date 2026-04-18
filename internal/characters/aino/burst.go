@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10)
 
-	for i := 0; i < 14*60; i += tickrate {
+	for i := 0; i < 14.2*60; i += tickrate {
 		c.Core.Tasks.Add(func() {
 			// burst tick
 			enemy := c.Core.Combat.RandomEnemyWithinArea(
@@ -57,10 +57,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				pos = enemy.Pos()
 				enemy.AddStatus(burstMarkKey, 0.8*60, true) // same enemy can't be targeted again for 0.8s
 			} else {
-				pos = info.CalcRandomPointFromCenter(burstArea.Shape.Pos(), 0, 20, c.Core.Rand)
+				pos = info.CalcRandomPointFromCenter(burstArea.Shape.Pos(), 1.5, 9, c.Core.Rand)
 			}
 			ai.FlatDmg = c.a4Dmg()
-			// deal dmg after a certain delay
+			// TODO: Aino burst travel time
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(pos, nil, radius), 0, 10)
 		}, i+burstStart)
 	}
