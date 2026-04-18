@@ -48,7 +48,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	critBuff := make([]float64, attributes.EndStatType)
 	critBuff[attributes.CD] = 0.4 + float64(r)*0.2
 
-	onHitF := func(args ...any) {
+	energy := 13.0 + float64(r)
+
+	onDmgF := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return
@@ -56,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
 			return
 		}
-		w.nocturneBuff(char, r, hpBuff, critBuff)
+		nocturneBuff(char, energy, hpBuff, critBuff)
 	}
 
 	onReactF := func(args ...any) {
@@ -65,10 +67,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		w.nocturneBuff(char, r, hpBuff, critBuff)
+		nocturneBuff(char, energy, hpBuff, critBuff)
 	}
 
-	onLunarChargedF := func(args ...any) {
+	onLunarReactionAttackF := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return
@@ -79,9 +81,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 	}
 
-	c.Events.Subscribe(event.OnLunarChargedReactionAttack, onLunarChargedF, buffKey)
-	// c.Events.Subscribe(event.OnLunarCrystallizeReactionAttack, onLunarChargedF, buffKey)
-	c.Events.Subscribe(event.OnEnemyDamage, onHitF, buffKey)
+	c.Events.Subscribe(event.OnLunarChargedReactionAttack, onLunarReactionAttackF, buffKey)
+	// c.Events.Subscribe(event.OnLunarCrystallizeReactionAttack, onLunarReactionAttackF, buffKey)
+	c.Events.Subscribe(event.OnEnemyDamage, onDmgF, buffKey)
 	c.Events.Subscribe(event.OnLunarCharged, onReactF, buffKey)
 	c.Events.Subscribe(event.OnLunarBloom, onReactF, buffKey)
 	// c.Events.Subscribe(event.OnLunarCrystallize, onReactF, buffKey)
@@ -89,9 +91,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	return w, nil
 }
 
-func (w *Weapon) nocturneBuff(char *character.CharWrapper, r int, hpBuff []float64, critBuff []float64) {
+func nocturneBuff(char *character.CharWrapper, energy float64, hpBuff, critBuff []float64) {
 	if !char.StatusIsActive(ICDKey) {
-		char.AddEnergy("nocturnes-curtain-call", 13+float64(r))
+		char.AddEnergy("nocturnes-curtain-call", energy)
 		char.AddStatus(ICDKey, 18*60, true)
 	}
 
