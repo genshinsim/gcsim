@@ -147,8 +147,8 @@ func (c *char) c4() {
 		})
 	}
 
-	// workaround for giving lunarcharge the 15% CR
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	// workaround for giving lunarcharge and lunarcrystallize the 15% CR
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		x, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return
@@ -164,7 +164,15 @@ func (c *char) c4() {
 		}
 
 		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("Mona C4 CR added to Lunarcharged", glog.LogPreDamageMod, ae.Info.ActorIndex).
+			var reaction string
+			switch ae.Info.AttackTag {
+			case attacks.AttackTagDirectLunarCharged:
+				reaction = "Lunarcharged"
+			case attacks.AttackTagDirectLunarCrystallize:
+				reaction = "Lunarcrystallize"
+			}
+
+			c.Core.Log.NewEvent("Mona C4 CR added to "+reaction, glog.LogPreDamageMod, ae.Info.ActorIndex).
 				Write("before", ae.Snapshot.Stats[attributes.CR]).
 				Write("addition", 0.15)
 		}
