@@ -101,7 +101,7 @@ func (c *char) moonsignInit() {
 			return
 		}
 
-		bonus := min(c.TotalDef(true)/100.0*0.007, 0.14)
+		bonus := min(c.TotalDef(false)/100.0*0.007, 0.14)
 
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("linnea adding lunar crystallize base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
