@@ -35,6 +35,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
 		if c.Core.Player.VerdantDew() > 0 {
 			c.ChargeAttackBloom(p)
+			return
 		}
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
@@ -63,16 +64,17 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 func (c *char) ChargeAttackBloom(p map[string]int) {
 	ai := info.AttackInfo{
-		ActorIndex:   c.Index(),
-		Abil:         "Moondew Cleanse",
-		AttackTag:    attacks.AttackTagDirectLunarBloom,
-		ICDTag:       attacks.ICDTagNone,
-		ICDGroup:     attacks.ICDGroupDefault,
-		StrikeType:   attacks.StrikeTypeDefault,
-		Element:      attributes.Dendro,
-		Mult:         chargeLB[c.TalentLvlAttack()],
-		UseHP:        true,
-		IsDeployable: true,
+		ActorIndex:       c.Index(),
+		Abil:             "Moondew Cleanse",
+		AttackTag:        attacks.AttackTagDirectLunarBloom,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Element:          attributes.Dendro,
+		Mult:             chargeLB[c.TalentLvlAttack()],
+		UseHP:            true,
+		IgnoreDefPercent: 1.0,
+		IsDeployable:     true,
 	}
 
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadius)

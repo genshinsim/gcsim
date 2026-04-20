@@ -70,9 +70,9 @@ func (c *char) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnLunarCharged, c.a4OnLunarCharge, "columbina-gravity-lc")
-	c.Core.Events.Subscribe(event.OnLunarBloom, c.a4OnLunarBloom, "columbina-gravity-lb")
-	// c.Core.Events.Subscribe(event.OnLunarCrystallize, a4Hook, "columbina-gravity-lcr")
+	c.Core.Events.Subscribe(event.OnLunarCharged, c.a4OnLunarCharge, "columbina-a4-lc")
+	c.Core.Events.Subscribe(event.OnLunarBloom, c.a4OnLunarBloom, "columbina-a4-lb")
+	// c.Core.Events.Subscribe(event.OnLunarCrystallize, a4Hook, "columbina-a4-lcr")
 }
 
 func (c *char) a4OnLunarCrystallize(args ...any) {
