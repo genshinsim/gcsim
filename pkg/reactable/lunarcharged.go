@@ -13,9 +13,10 @@ import (
 )
 
 const (
-	LcKey    = "lunarcharged-cloud"
-	lcSrcKey = "lunarcharged-cloud-src"
-	lcIcdKey = "lunarcharged-cloud-icd"
+	LcKey            = "lunarcharged-cloud"
+	LcIcdOverrideKey = "lunarcharged-icd-override"
+	lcSrcKey         = "lunarcharged-cloud-src"
+	lcIcdKey         = "lunarcharged-cloud-icd"
 )
 
 var lcContributorMult = []float64{1.0, 1.0 / 2.0, 1.0 / 12.0, 1.0 / 12.0}
@@ -215,6 +216,11 @@ func (r *Reactable) nextLCTick(src int) func() {
 			return
 		}
 
+		icd := 2 * 60
+		if r.core.Flags.Custom[LcIcdOverrideKey] > 0 {
+			icd = int(r.core.Flags.Custom[LcIcdOverrideKey])
+		}
+
 		// check all enemies in area
 		// TODO: should be save the area when the cloud is generated or update when the player moves?
 		for _, e := range r.core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(r.core.Combat.Player(), nil, 8), nil) {
@@ -229,7 +235,8 @@ func (r *Reactable) nextLCTick(src int) func() {
 			if enemy.GetAuraDurability(info.ReactionModKeyElectro) <= info.ZeroDur || enemy.GetAuraDurability(info.ReactionModKeyHydro) <= info.ZeroDur {
 				continue
 			}
-			e.AddStatus(lcIcdKey, 2*60, true)
+
+			e.AddStatus(lcIcdKey, icd, true)
 			enemy.DoLCAttack()
 		}
 		// queue up next tick

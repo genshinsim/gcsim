@@ -31,6 +31,7 @@ const (
 	CitlaliSkill
 	DahliaBurst
 	IneffaSkill
+	ColumbinaC1
 	EndType
 )
 
