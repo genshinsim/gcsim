@@ -38,7 +38,7 @@ func newBountifulCore(c *core.Core, p info.Point, a *info.AttackEvent) *Bountifu
 
 			// self damage
 			ai.Abil += info.SelfDamageSuffix
-			ai.FlatDmg = 0.05 * ai.FlatDmg
+			ai.FlatDmg = 0.02 * ai.FlatDmg
 			ap.SkipTargets[info.TargettablePlayer] = false
 			ap.SkipTargets[info.TargettableEnemy] = true
 			ap.SkipTargets[info.TargettableGadget] = true
