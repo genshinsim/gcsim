@@ -25,6 +25,7 @@ const (
 	c4IcdKey     = "columbina-c4-icd"
 	c6Key        = "columbina-c6"
 	c6LCKey      = c6Key + "-lc"
+	c6LBKey      = c6Key + "-lb"
 	c6LCrKey     = c6Key + "-lcr"
 )
 
@@ -40,7 +41,7 @@ func (c *char) consElevationInit() {
 		}
 	}, elevationKey+"-direct")
 
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if attacks.LunarReactionStartDelim < atk.Info.AttackTag && atk.Info.AttackTag < attacks.LunarReactionEndDelim {
 			atk.Info.Elevation += amt
@@ -192,7 +193,6 @@ func (c *char) c4OnGravityTickFlatDMG(reaction lunarReaction) float64 {
 	case LunarBloom:
 		return 0.025 * c.MaxHP()
 	default:
-		// WHY DOESN'T GO HAVE EXHUASTIVE ENUM TYPES FOR SWITCHES
 		panic("unreachable: columbina c4 called with unknown reaction")
 	}
 }
@@ -205,7 +205,7 @@ func (c *char) c6Init() {
 	c.c6Buff = make([]float64, attributes.EndStatType)
 	c.c6Buff[attributes.CD] = 0.8
 
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return
@@ -219,9 +219,11 @@ func (c *char) c6Init() {
 		case attributes.Electro:
 			addBuff = char.StatusIsActive(c6LCKey)
 		case attributes.Hydro:
-			addBuff = char.StatusIsActive(c6LCKey) || char.StatusIsActive(c6LCrKey)
+			addBuff = char.StatusIsActive(c6LCKey) || char.StatusIsActive(c6LCrKey) || char.StatusIsActive(c6LBKey)
 		case attributes.Geo:
 			addBuff = char.StatusIsActive(c6LCrKey)
+		case attributes.Dendro:
+			addBuff = char.StatusIsActive(c6LBKey)
 		}
 
 		if !addBuff {
@@ -240,10 +242,6 @@ func (c *char) c6Init() {
 			return
 		}
 
-		if !c.Core.Combat.Player().IsWithinArea(c.burstArea) {
-			return
-		}
-
 		for _, char := range c.Core.Player.Chars() {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(c6LCKey, 8*60),
@@ -259,43 +257,53 @@ func (c *char) c6Init() {
 			})
 		}
 	}, c6LCKey)
+	c.Core.Events.Subscribe(event.OnLunarBloom, func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
 
-	// c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
-	// 	if _, ok := args[0].(*enemy.Enemy); !ok {
-	// 		return
-	// 	}
+		if !c.ReactBonusModIsActive(burstBuffKey) {
+			return
+		}
 
-	// 	if !c.ReactBonusModIsActive(burstBuffKey) {
-	// 		return
-	// 	}
+		for _, char := range c.Core.Player.Chars() {
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBaseWithHitlag(c6LBKey, 8*60),
+				Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
+					switch atk.Info.Element {
+					case attributes.Dendro:
+					case attributes.Hydro:
+					default:
+						return nil
+					}
+					return c.c6Buff
+				},
+			})
+		}
+	}, c6LBKey)
 
-	// 	if !c.Core.Combat.Player().IsWithinArea(c.burstArea) {
-	// 		return
-	// 	}
+	c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
 
-	// 	for _, char := range c.Core.Player.Chars() {
-	// 		char.AddAttackMod(character.AttackMod{
-	// 			Base: modifier.NewBaseWithHitlag(c6LCrKey, 8*60),
-	// 			Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
-	// 				switch atk.Info.Element {
-	// 				case attributes.Geo:
-	// 				case attributes.Hydro:
-	// 				default:
-	// 					return nil
-	// 				}
-	// 				return c.c6Buff
-	// 			},
-	// 		})
-	// 	}
+		if !c.ReactBonusModIsActive(burstBuffKey) {
+			return
+		}
 
-	// 	return
-	// }, c6LCrKey)
+		for _, char := range c.Core.Player.Chars() {
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBaseWithHitlag(c6LCrKey, 8*60),
+				Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
+					switch atk.Info.Element {
+					case attributes.Geo:
+					case attributes.Hydro:
+					default:
+						return nil
+					}
+					return c.c6Buff
+				},
+			})
+		}
+	}, c6LCrKey)
 }
-
-// func (h *Handler) GetMoonsignCount() int {
-//     count := 0
-//     for _, c := range h.Chars() {
-//         count += c.Moonsign
-//     }
-//     return count
-// }
