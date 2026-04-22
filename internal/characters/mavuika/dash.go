@@ -13,11 +13,6 @@ var dashFrames []int
 
 func init() {
 	dashFrames = frames.InitAbilSlice(24) // Dash -> Dash
-	dashFrames[action.ActionAttack] = 18
-	dashFrames[action.ActionSkill] = 20
-	dashFrames[action.ActionBurst] = 20
-	dashFrames[action.ActionSwap] = 0
-	dashFrames[action.ActionJump] = 0
 }
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {
@@ -38,7 +33,12 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 		earlyCancellable = 1
 	}
 
-	dashFrames[action.ActionCharge] = 20
+	dashFrames[action.ActionCharge] = max(20, travel)
+	dashFrames[action.ActionAttack] = max(18, travel)
+	dashFrames[action.ActionSkill] = max(20, travel)
+	dashFrames[action.ActionBurst] = max(20, travel)
+	dashFrames[action.ActionSwap] = travel
+	dashFrames[action.ActionJump] = travel
 
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		ai := info.AttackInfo{
