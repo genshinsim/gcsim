@@ -14,7 +14,6 @@ var dashFrames []int
 func init() {
 	dashFrames = frames.InitAbilSlice(24) // Dash -> Dash
 	dashFrames[action.ActionAttack] = 18
-	dashFrames[action.ActionCharge] = 20
 	dashFrames[action.ActionSkill] = 20
 	dashFrames[action.ActionBurst] = 20
 	dashFrames[action.ActionSwap] = 0
@@ -22,6 +21,25 @@ func init() {
 }
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 6
+	}
+	if travel > 24 {
+		travel = 24
+	}
+	if travel < 1 {
+		travel = 1
+	}
+
+	// Only applies when preceded and followed by a charge, otherwise does nothing
+	earlyCancellable, ok := p["early_cancellable"]
+	if !ok {
+		earlyCancellable = 1
+	}
+
+	dashFrames[action.ActionCharge] = 20
+
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		ai := info.AttackInfo{
 			ActorIndex:     c.Index(),
@@ -43,7 +61,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 			info.Point{Y: 1.0},
 			1.2,
 		)
-		c.Core.QueueAttack(ai, ap, 6, 6)
+		c.Core.QueueAttack(ai, ap, travel, travel)
 		c.reduceNightsoulPoints(10)
 		x := c.Core.Player.CurrentState()
 		c.isDashFromCA = false
@@ -52,8 +70,11 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 			// If dashing from NA while in bike, do not reset NA string
 			c.savedNormalCounter = c.NormalCounter
 		case action.ChargeAttackState:
-			// Used for n0 proc logic in charge.go
-			c.isDashFromCA = true
+			if earlyCancellable != 0 {
+				// Used for n0 proc logic in charge.go
+				c.isDashFromCA = true
+				dashFrames[action.ActionCharge] = 0
+			}
 		default:
 		}
 
@@ -62,7 +83,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 		return action.Info{
 			Frames:          frames.NewAbilFunc(dashFrames),
 			AnimationLength: dashFrames[action.InvalidAction],
-			CanQueueAfter:   dashFrames[action.ActionJump],
+			CanQueueAfter:   travel,
 			State:           action.DashState,
 		}, nil
 	}

@@ -47,6 +47,7 @@ const (
 	bikeChargeAttackSpinFrames   = 45  // One revolution every ~45f
 	bikeChargeAttackHitboxRadius = 3   // Placeholder
 	bikeChargeAttackSpinOffset   = 4.0 // Estimated center of hitbox from Mav origin
+	maxBufferedBikeChargeFrames  = 15
 )
 
 func init() {
@@ -137,7 +138,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	final := p["final"]
 	bufferedFrames, ok := p["buffered"]
 	if !ok {
-		bufferedFrames = 15 // Assume max buffered frames by default
+		bufferedFrames = maxBufferedBikeChargeFrames
 	}
 
 	bikeHittableEntities, hitboxError := c.BuildBikeChargeAttackHittableTargetList()
@@ -446,33 +447,31 @@ func (c *char) GetBikeChargeAttackAttackInfo() info.AttackInfo {
 
 func (c *char) GetSkippedWindupFrames(bufferedFrames int) int {
 	x := c.Core.Player.CurrentState()
-	var skippedWindupFrames int
+	var skippedWindupFrames int // If none of the following cases apply, no windup can be skipped
 	// TODO: Refactor this when handling initial CA frames in separate function for unique velocity
 	// Currently the angle/hitbox tracking uses raw CA frames to determine position
 	// Subtracting this at the wrong time can cause hits to get out of sync
 	switch {
 	case x == action.DashState:
-		// CA can be buffered up to 13f before a dash, which skips a total of 28f from idle CA start
-		skippedWindupFrames = min(bufferedFrames, 28)
-		// If buffering for more than dash frames out of a previous CA, n0 will not proc
-		if skippedWindupFrames <= 15 || !c.isDashFromCA {
-			c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
+		// You can only allow less than max buffered frames if you allow dash to finish completely
+		if c.isDashFromCA {
+			return maxBufferedBikeChargeFrames
 		}
-		return skippedWindupFrames
+		skippedWindupFrames = maxBufferedBikeChargeFrames
 	case x == action.NormalAttackState || x == action.ChargeAttackState && c.caState.StartFrame == c.Core.F:
-		skippedWindupFrames = 15
+		skippedWindupFrames = maxBufferedBikeChargeFrames
 	case x == action.BurstState:
 		if bufferedFrames == 0 {
 			skippedWindupFrames = 0
 		} else {
-			skippedWindupFrames = 15
+			skippedWindupFrames = maxBufferedBikeChargeFrames
 		}
 	// Skill recast is called from skill Hold and Recast, recast has forced n0 frames
 	case x == action.SkillState && c.StatusIsActive(skillRecastCDKey):
 		if c.StatusDuration(skillRecastCDKey) > 45 {
 			skippedWindupFrames = 13
 		} else {
-			skippedWindupFrames = 15
+			skippedWindupFrames = maxBufferedBikeChargeFrames
 		}
 	case x == action.PlungeAttackState:
 		skippedWindupFrames = 13
