@@ -45,9 +45,16 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 		)
 		c.Core.QueueAttack(ai, ap, 6, 6)
 		c.reduceNightsoulPoints(10)
-		// If dashing from NA while in bike, do not reset NA string
-		if c.Core.Player.CurrentState() == action.NormalAttackState {
+		x := c.Core.Player.CurrentState()
+		c.isDashFromCA = false
+		switch x {
+		case action.NormalAttackState:
+			// If dashing from NA while in bike, do not reset NA string
 			c.savedNormalCounter = c.NormalCounter
+		case action.ChargeAttackState:
+			// Used for n0 proc logic in charge.go
+			c.isDashFromCA = true
+		default:
 		}
 
 		// Execute dash CD logic
