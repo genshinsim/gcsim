@@ -70,7 +70,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 			// If dashing from NA while in bike, do not reset NA string
 			c.savedNormalCounter = c.NormalCounter
 		case action.ChargeAttackState:
-			if earlyCancellable != 0 {
+			if earlyCancellable != 0 && c.armamentState == bike && c.nightsoulState.HasBlessing() {
 				// Used for n0 proc logic in charge.go
 				c.isDashFromCA = true
 				dashFrames[action.ActionCharge] = 0

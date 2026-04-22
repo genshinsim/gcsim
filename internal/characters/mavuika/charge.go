@@ -96,6 +96,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		return c.BikeCharge(p)
 	}
+	if c.Core.Player.CurrentState() == action.DashState && c.isDashFromCA {
+		return action.Info{}, errors.New("Can only cancel a dash with a biked charge")
+	}
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
 		Abil:               "Charge",
