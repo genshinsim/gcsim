@@ -14,6 +14,7 @@ import (
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{4, 12, 28}
+	attackRadius   = []float64{1.0, 1.0, 2.5}
 )
 
 const normalHitNum = 3
@@ -46,7 +47,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	radius := 0.7
+	radius := attackRadius[c.NormalCounter]
 
 	c.Core.QueueAttack(
 		ai,

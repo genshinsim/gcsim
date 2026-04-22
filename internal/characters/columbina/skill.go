@@ -194,22 +194,28 @@ func (c *char) gravityTick(clearGravity bool) {
 	var atkTag attacks.AttackTag
 	var elem attributes.Element
 	var abil string
+	radius := 6.0
+	travel := 0
 	switch maxReaction {
 	case LunarCharge:
 		mult = skillLC[c.TalentLvlSkill()]
 		atkTag = attacks.AttackTagDirectLunarCharged
 		elem = attributes.Electro
 		abil = "Gravity Interference (Lunar-Charged)"
+
 	case LunarBloom:
 		mult = skillLB[c.TalentLvlSkill()]
 		atkTag = attacks.AttackTagDirectLunarBloom
 		elem = attributes.Dendro
 		abil = "Gravity Interference (Lunar-Bloom)"
+		radius = 0.5
+		travel = 20
 	case LunarCrystallize:
 		mult = skillLCr[c.TalentLvlSkill()]
 		atkTag = attacks.AttackTagDirectLunarCrystallize
 		elem = attributes.Geo
 		abil = "Gravity Interference (Lunar-Crystallize)"
+
 	default:
 		return
 	}
@@ -227,14 +233,14 @@ func (c *char) gravityTick(clearGravity bool) {
 		Mult:             mult,
 	}
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius)
 	c.a1OGravityTick()
 	c.c1OnGravityTick(maxReaction)
 	c.c2OnGravityTick(maxReaction)
 
 	for _, delay := range skillHitmarks[maxReaction] {
 		ai.FlatDmg = c.c4OnGravityTickFlatDMG(maxReaction)
-		c.Core.QueueAttack(ai, ap, delay, delay)
+		c.Core.QueueAttack(ai, ap, delay, delay+travel)
 	}
 }
 
@@ -301,7 +307,12 @@ func (c *char) skillTick() {
 		UseHP:      true,
 		Mult:       skillDoT[c.TalentLvlSkill()],
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
+
+	radius := 4.0
+	if c.Core.Player.GetMoonsignLevel() >= 2 {
+		radius = 6
+	}
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius)
 	c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 }
 

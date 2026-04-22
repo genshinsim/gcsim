@@ -16,8 +16,9 @@ var (
 )
 
 const (
-	chargeHitmark = 60
-	chargeRadius  = 0.8
+	chargeHitmark     = 60
+	chargeRadius      = 3.5
+	chargeRadiusBloom = 3.3
 )
 
 func init() {
@@ -77,7 +78,7 @@ func (c *char) ChargeAttackBloom(p map[string]int) {
 		IsDeployable:     true,
 	}
 
-	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadius)
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadiusBloom)
 	for _, hitmark := range chargeHitmarkBloom {
 		delay := hitmark - verdantDewFrame
 		c.Core.QueueAttack(ai, ap, delay, delay)

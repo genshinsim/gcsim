@@ -36,11 +36,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
-		Durability: 25,
+		Durability: 50,
 		UseHP:      true,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 6.5)
 	// TODO: is the field the same size as the hitbox?
 	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// if the character is in the field, they get a "in_field" status
 	// while they have the "in_field" status, they also get the lunar reaction buff
 
-	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 20)
+	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 20)
 	c.Core.Tasks.Add(func() {
 		c.burstSrc = c.Core.F
 		src := c.Core.F
