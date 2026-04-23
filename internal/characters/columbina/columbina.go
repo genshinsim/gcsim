@@ -65,8 +65,22 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if a == action.ActionCharge && c.Core.Player.VerdantDew() > 0 {
+	if a == action.ActionCharge && c.Core.Player.Dew() > 0 {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "gravity":
+		return c.totalGravity(), nil
+	case "a1-stacks":
+		if !c.StatModIsActive(a1Key) {
+			return 0, nil
+		}
+		return c.a1Stacks, nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }

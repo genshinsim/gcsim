@@ -34,7 +34,7 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
-		if c.Core.Player.VerdantDew() > 0 {
+		if c.Core.Player.Dew() > 0 {
 			c.ChargeAttackBloom(p)
 			return
 		}
@@ -55,6 +55,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		c.Core.QueueAttack(ai, ap, delay, delay)
 	}, verdantDewFrame)
 
+	// assuming actions have same frames?
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
@@ -83,5 +84,5 @@ func (c *char) ChargeAttackBloom(p map[string]int) {
 		delay := hitmark - verdantDewFrame
 		c.Core.QueueAttack(ai, ap, delay, delay)
 	}
-	c.Core.Player.ConsumeVerdantDew(1)
+	c.Core.Player.ConsumeDew(1)
 }

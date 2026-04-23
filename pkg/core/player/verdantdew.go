@@ -49,17 +49,38 @@ func (h *Handler) AddVerdantDew() {
 	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 }
 
-// returns the number of verdant dew the player has
+// returns the number of verdant and moonridge dew the player has
+func (h *Handler) Dew() int {
+	return h.verdantDew + h.moonridgeDew
+}
+
+func (h *Handler) ConsumeDew(amt int) int {
+	consumed := 0
+	if h.moonridgeDew > 0 {
+		consumed += h.consumeMoonridgeDew(amt)
+	}
+
+	if amt == consumed {
+		return consumed
+	}
+
+	if h.verdantDew > 0 {
+		consumed += h.consumeVerdantDew(amt)
+	}
+
+	return consumed
+}
+
+// returns the number of verdant  dew the player has
 func (h *Handler) VerdantDew() int {
 	return h.verdantDew
 }
 
-func (h *Handler) ConsumeVerdantDew(amt int) {
-	if h.moonridgeDew > 0 {
-		amt -= h.consumeMoonridgeDew(amt)
-	}
+func (h *Handler) consumeVerdantDew(amt int) int {
+	consumed := min(amt, h.verdantDew)
 	h.verdantDew = max(h.verdantDew-amt, 0)
 	h.Log.NewEvent(fmt.Sprintf("%v verdant dew consumed: %v", amt, h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
+	return consumed
 }
 
 // Moonridge Dew, Columbina A4 special resource for lunar bloom
@@ -70,6 +91,7 @@ func (h *Handler) SetMoonridgeDew(amt int) {
 	h.Log.NewEvent(fmt.Sprintf("moonridge dew set to %v", h.moonridgeDew), glog.LogElementEvent, -1)
 }
 
+// returns the number of moonridge dew the player has
 func (h *Handler) MoonridgeDew() int {
 	return h.moonridgeDew
 }
