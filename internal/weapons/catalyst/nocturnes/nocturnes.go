@@ -107,7 +107,7 @@ func nocturneBuff(char *character.CharWrapper, energy float64, hpBuff, critBuff 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("%v-cd", buffKey), 12*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-			if attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+			if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
 				return nil
 			}
 			return critBuff
