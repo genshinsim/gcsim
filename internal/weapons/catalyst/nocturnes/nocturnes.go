@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		if char.StatModIsActive(buffKey) {
+		if char.StatusIsActive(buffKey) {
 			atk.Snapshot.Stats[attributes.CD] += 0.4 + float64(r)*0.2
 		}
 	}
