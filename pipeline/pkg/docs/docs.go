@@ -41,7 +41,7 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 		Artifacts:  cfg.Artifacts,
 		Enemies:    cfg.Enemies,
 		Languages: map[string][]string{
-			"English": {filepath.Join(cfg.Excels, "..", "TextMap", "TextMapEN.json")},
+			"English": {filepath.Join(cfg.Excels, "..", "TextMap", "TextMap_MediumEN.json")},
 		},
 	}
 	ts, err := translation.NewGenerator(transCfg)

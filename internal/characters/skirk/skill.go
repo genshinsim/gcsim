@@ -95,10 +95,16 @@ func (c *char) serpentsReduceTask(src int) {
 			return
 		}
 		// reduce 1.4 point every 12f, which is 7 per second
-		c.ReduceSerpentsSubtlety(c.Base.Key.String()+"skill", 1.4)
-		if c.serpentsSubtlety == 0 && c.StatusIsActive(skillKey) {
-			c.exitSkillState(src)
+		// for 0.3s per absorbed void rift, SS consumption is frozen
+		if c.a1PauseSSStacks == 0 {
+			c.ReduceSerpentsSubtlety(c.Base.Key.String()+"skill", 1.4)
+			if c.serpentsSubtlety == 0 && c.StatusIsActive(skillKey) {
+				c.exitSkillState(src)
+			}
+		} else {
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), "skip SS drain due to "+a1SSPauseKey)
 		}
+
 		c.serpentsReduceTask(src)
 	}, 60*tickInterval)
 }
