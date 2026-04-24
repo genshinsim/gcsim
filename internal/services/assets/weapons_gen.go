@@ -27,6 +27,7 @@ var weaponMap = map[string]string{
 	"polarstar":                       "UI_EquipIcon_Bow_Worldbane",
 	"predator":                        "UI_EquipIcon_Bow_Predator",
 	"prototypecrescent":               "UI_EquipIcon_Bow_Proto",
+	"rainbowserpentbow":               "UI_EquipIcon_Bow_ElegguaBow",
 	"rangegauge":                      "UI_EquipIcon_Bow_Mechanic",
 	"ravenbow":                        "UI_EquipIcon_Bow_Crowfeather",
 	"recurvebow":                      "UI_EquipIcon_Bow_Curve",
