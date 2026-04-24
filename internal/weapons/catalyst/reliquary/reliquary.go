@@ -17,6 +17,11 @@ func init() {
 	core.RegisterWeaponFunc(keys.ReliquaryOfTruth, NewWeapon)
 }
 
+const (
+	secretOfLiesKey = "reliquary-secretoflies"
+	moonOfTruthKey  = "reliquary-moonoftruth"
+)
+
 type Weapon struct {
 	Index int
 }
@@ -24,6 +29,13 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+// CRIT Rate is increased by 8%/10%/12%/14%/16%. When the equipping character
+// unleashes an Elemental Skill, they gain the Secret of Lies effect: Elemental
+// Mastery is increased by 80/100/120/140/160 for 12s. When the equipping character
+// deals Lunar-Bloom DMG to an opponent, they gain the Moon of Truth effect:
+// CRIT DMG is increased by 24%/30%/36%/42%/48% for 4s. When both the Secret of
+// Lies and Moon of Truth effects are active at the same time, the results of
+// both effects will be increased by 50%.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -38,27 +50,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
+	emBuff := 60 + 20*float64(r)
+	m2 := make([]float64, attributes.EndStatType)
 	secretoflies := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.EM] = 60 + 20*float64(r)
-
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("reliquary-secretoflies", 10*60),
-			Extra:        true,
+			Base:         modifier.NewBaseWithHitlag(secretOfLiesKey, 12*60),
 			AffectedStat: attributes.EM,
 			Amount: func() []float64 {
-				return m
+				m2[attributes.EM] = emBuff
+				if char.StatModIsActive(moonOfTruthKey) {
+					m2[attributes.EM] = emBuff * 1.5
+				}
+				return m2
 			},
 		})
-
-		bothActive(char, r)
 	}
 
+	cdBuff := 0.18 + 0.06*float64(r)
+	m3 := make([]float64, attributes.EndStatType)
 	moonoftruth := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
@@ -68,43 +82,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.CR] = 0.18 + 0.06*float64(r)
-
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("reliquary-moonoftruth", 15*60),
-			Extra:        true,
-			AffectedStat: attributes.CR,
+			Base:         modifier.NewBaseWithHitlag(moonOfTruthKey, 4*60),
+			AffectedStat: attributes.CD,
 			Amount: func() []float64 {
-				return m
+				m3[attributes.CD] = cdBuff
+				if char.StatModIsActive(secretOfLiesKey) {
+					m3[attributes.CD] = cdBuff * 1.5
+				}
+				return m3
 			},
 		})
-
-		bothActive(char, r)
 	}
 
 	c.Events.Subscribe(event.OnSkill, secretoflies, fmt.Sprintf("reliquary-secretoflies-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnEnemyHit, moonoftruth, fmt.Sprintf("reliquary-moonoftruth-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnEnemyDamage, moonoftruth, fmt.Sprintf("reliquary-moonoftruth-%v", char.Base.Key.String()))
 
 	return w, nil
-}
-
-func bothActive(char *character.CharWrapper, r int) {
-	if !char.StatusIsActive("reliquary-secretoflies") || !char.StatusIsActive("reliquary-moonoftruth") {
-		return
-	}
-
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.EM] = 30 + 10*float64(r)
-	m[attributes.CR] = 0.09 + 0.03*float64(r)
-
-	duration := min(char.StatusDuration("reliquary-secretoflies"), char.StatusDuration("reliquary-moonoftruth"))
-
-	char.AddStatMod(character.StatMod{
-		Base:  modifier.NewBaseWithHitlag("reliquary-both", duration),
-		Extra: true,
-		Amount: func() []float64 {
-			return m
-		},
-	})
 }
