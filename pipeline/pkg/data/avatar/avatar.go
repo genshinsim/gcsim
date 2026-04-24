@@ -181,8 +181,8 @@ func (a *DataSource) parseSkillIDs(c *model.AvatarData, err error) error {
 	c.SkillDetails.Skill = sd.Skills[1]
 
 	// passive is a bit different
-	for _, v := range sd.InherentProudSkillOpens {
-		switch v.NeedAvatarPromoteLevel {
+	for _, v := range sd.PassiveProudSkillOpens() {
+		switch v.PromoteLevel() {
 		case 1:
 			c.SkillDetails.A1 = v.ProudSkillGroupId
 		case 4:
@@ -193,8 +193,12 @@ func (a *DataSource) parseSkillIDs(c *model.AvatarData, err error) error {
 	c.SkillDetails.AttackScaling, err = a.parseSkillScaling(c.SkillDetails.Attack, err)
 	c.SkillDetails.SkillScaling, err = a.parseSkillScaling(c.SkillDetails.Skill, err)
 	c.SkillDetails.BurstScaling, err = a.parseSkillScaling(c.SkillDetails.Burst, err)
-	c.SkillDetails.A1Scaling, err = a.parseSkillScalingFromProudGroup(c.SkillDetails.A1, err)
-	c.SkillDetails.A4Scaling, err = a.parseSkillScalingFromProudGroup(c.SkillDetails.A4, err)
+	if c.SkillDetails.A1 > 0 {
+		c.SkillDetails.A1Scaling, err = a.parseSkillScalingFromProudGroup(c.SkillDetails.A1, err)
+	}
+	if c.SkillDetails.A4 > 0 {
+		c.SkillDetails.A4Scaling, err = a.parseSkillScalingFromProudGroup(c.SkillDetails.A4, err)
+	}
 
 	return err
 }

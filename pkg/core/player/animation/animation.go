@@ -94,6 +94,25 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 	}
 }
 
+func (h *AnimationHandler) SetActionLength(animationLength, canQueueAfter int) {
+	if h.aniEvt == nil {
+		return
+	}
+	if canQueueAfter > animationLength {
+		canQueueAfter = animationLength
+	}
+	minLength := int(h.aniEvt.TimePassed)
+	if animationLength < minLength {
+		animationLength = minLength
+	}
+	if canQueueAfter < minLength {
+		canQueueAfter = minLength
+	}
+	h.aniEvt.AnimationLength = animationLength
+	h.aniEvt.CanQueueAfter = canQueueAfter
+	h.stateExpiry = h.started + animationLength
+}
+
 func (h *AnimationHandler) CurrentState() action.AnimationState {
 	if h.aniEvt == nil {
 		return action.Idle
