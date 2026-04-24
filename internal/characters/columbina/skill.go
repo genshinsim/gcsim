@@ -62,17 +62,9 @@ func (c *char) skillInit() {
 		}
 	}
 
-	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) {
-		makeHook(info.ReactionTypeLunarCharged)
-	}, "columbina-gravity-lc")
-
-	c.Core.Events.Subscribe(event.OnLunarBloom, func(args ...any) {
-		makeHook(info.ReactionTypeLunarBloom)
-	}, "columbina-gravity-lb")
-
-	c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
-		makeHook(info.ReactionTypeLunarCrystallize)
-	}, "columbina-gravity-lcr")
+	c.Core.Events.Subscribe(event.OnLunarCharged, makeHook(info.ReactionTypeLunarCharged), "columbina-gravity-lc")
+	c.Core.Events.Subscribe(event.OnLunarBloom, makeHook(info.ReactionTypeLunarBloom), "columbina-gravity-lb")
+	c.Core.Events.Subscribe(event.OnLunarCrystallize, makeHook(info.ReactionTypeLunarCrystallize), "columbina-gravity-lcr")
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)

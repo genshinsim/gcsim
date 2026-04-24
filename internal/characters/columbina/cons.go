@@ -120,6 +120,7 @@ func (c *char) c2OnGravityTick(reaction lunarReaction) {
 		return
 	}
 
+	// These buffs are NOT extra buffs, despite scaling off Columbina's Max HP.
 	switch reaction {
 	case LunarCharge:
 		for _, char := range c.Core.Player.Chars() {
@@ -127,7 +128,6 @@ func (c *char) c2OnGravityTick(reaction lunarReaction) {
 			char.DeleteStatMod(c2LBKey)
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase(c2LCKey, 8*60),
-				Extra:        true,
 				AffectedStat: attributes.ATK,
 				Amount: func() []float64 {
 					if c.Core.Player.Active() != char.Index() {
@@ -144,7 +144,6 @@ func (c *char) c2OnGravityTick(reaction lunarReaction) {
 			char.DeleteStatMod(c2LBKey)
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase(c2LCrKey, 8*60),
-				Extra:        true,
 				AffectedStat: attributes.DEF,
 				Amount: func() []float64 {
 					if c.Core.Player.Active() != char.Index() {
@@ -161,13 +160,12 @@ func (c *char) c2OnGravityTick(reaction lunarReaction) {
 			char.DeleteStatMod(c2LCrKey)
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase(c2LBKey, 8*60),
-				Extra:        true,
 				AffectedStat: attributes.EM,
 				Amount: func() []float64 {
 					if c.Core.Player.Active() != char.Index() {
 						return nil
 					}
-					c.c2LCrBuff[attributes.EM] = 0.0035 * c.MaxHP()
+					c.c2LBBuff[attributes.EM] = 0.0035 * c.MaxHP()
 					return c.c2LBBuff
 				},
 			})
