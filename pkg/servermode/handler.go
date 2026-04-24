@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 	"github.com/go-chi/chi"
 )
@@ -55,7 +56,8 @@ func (s *Server) validate() http.HandlerFunc {
 			w.Write([]byte(err.Error()))
 			return
 		}
-		cfg, _, err := simulator.Parse(payload.Config)
+		file := ast.NewFile()
+		cfg, _, err := simulator.Parse(file, payload.Config)
 		if err != nil {
 			w.Write([]byte(err.Error()))
 			w.WriteHeader(http.StatusBadRequest)

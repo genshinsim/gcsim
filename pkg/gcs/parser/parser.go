@@ -12,6 +12,7 @@ import (
 )
 
 type Parser struct {
+	file *ast.File
 	lex  *ast.Lexer
 	res  *info.ActionList
 	prog *ast.BlockStmt
@@ -35,7 +36,7 @@ type Parser struct {
 
 type parseFn func(*Parser) (parseFn, error)
 
-func New(input string) *Parser {
+func New(file *ast.File, input string) *Parser {
 	p := &Parser{
 		chars:          make(map[keys.Char]*info.CharacterProfile),
 		prefixParseFns: make(map[ast.TokenType]func() (ast.Expr, error)),
@@ -43,7 +44,8 @@ func New(input string) *Parser {
 		token:          make([]ast.Token, 0, 20),
 		pos:            -1,
 	}
-	p.lex = ast.NewLexer(input)
+	p.file = file
+	p.lex = ast.NewLexer(file, input)
 	p.res = &info.ActionList{
 		Settings: info.SimulatorSettings{
 			EnableHitlag:    true, // default hitlag enabled

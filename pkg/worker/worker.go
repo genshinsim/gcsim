@@ -16,6 +16,7 @@ type Pool struct {
 }
 
 type Job struct {
+	File    *ast.File
 	Cfg     *info.ActionList
 	Actions ast.Node
 	Seed    int64
@@ -48,7 +49,7 @@ func (p *Pool) worker() {
 				p.errCh <- err
 				break
 			}
-			eval, err := eval.NewEvaluator(job.Actions, c)
+			eval, err := eval.NewEvaluator(job.File, job.Actions, c)
 			if err != nil {
 				p.errCh <- err
 				break
