@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -19,14 +18,13 @@ func init() {
 }
 
 type Set struct {
-	lastSwap int
-	core     *core.Core
-	char     *character.CharWrapper
-	Index    int
-	Count    int
+	core  *core.Core
+	char  *character.CharWrapper
+	Index int
+	Count int
 }
 
-const aubade4pcKey = "aubade-4pc"
+const aubade4pcOnFieldKey = "aubade-4pc-onfield"
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) GetCount() int    { return s.Count }
@@ -58,30 +56,23 @@ func (s *Set) Init() error {
 		buff += 0.4
 	}
 
-	if s.core.Player.Active() != s.char.Index() {
-		s.gainBuff()
-	}
-
 	s.core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		next := args[1].(int)
 		if prev == s.char.Index() {
-			s.lastSwap = -1
-			s.gainBuff()
+			s.char.DeleteStatus(aubade4pcOnFieldKey)
 		} else if next == s.char.Index() {
-			s.lastSwap = s.core.F
-			s.char.AddStatus(aubade4pcKey, 3*60, false)
-			s.core.Tasks.Add(s.clearBuff(s.core.F), 3*60)
+			s.char.AddStatus(aubade4pcOnFieldKey, 3*60, true)
 		}
 	}, fmt.Sprintf("aubade-4pc-%v", s.char.Base.Key.String()))
 
 	s.char.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("aubade-4pc-dmg", -1),
 		Amount: func(ai info.AttackInfo) float64 {
-			if !s.char.StatusIsActive(aubade4pcKey) {
+			if s.core.Player.Active() == s.char.Index() && !s.char.StatusIsActive(aubade4pcOnFieldKey) {
 				return 0
 			}
-			if attacks.LunarReactionStartDelim < ai.AttackTag && ai.AttackTag < attacks.DirectLunarReactionEndDelim {
+			if attacks.AttackTagIsLunar(ai.AttackTag) {
 				return buff
 			}
 			return 0
@@ -93,28 +84,9 @@ func (s *Set) Init() error {
 
 func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		core:     core,
-		char:     char,
-		lastSwap: -1,
-		Count:    count,
+		core:  core,
+		char:  char,
+		Count: count,
 	}
 	return &s, nil
-}
-
-func (s *Set) gainBuff() {
-	s.char.AddStatus(aubade4pcKey, -1, false)
-	s.core.Log.NewEvent("aubade of morningstar and moon 4pc proc'd", glog.LogArtifactEvent, s.char.Index())
-}
-
-func (s *Set) clearBuff(src int) func() {
-	return func() {
-		if s.lastSwap != src {
-			return
-		}
-		if s.core.Player.Active() != s.char.Index() {
-			return
-		}
-
-		s.core.Log.NewEvent("aubade of morningstar and moon 4pc lost", glog.LogArtifactEvent, s.char.Index())
-	}
 }
