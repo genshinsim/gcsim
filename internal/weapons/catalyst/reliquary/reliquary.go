@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -53,11 +54,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	emBuff := 60 + 20*float64(r)
 	m2 := make([]float64, attributes.EndStatType)
 	secretoflies := func(args ...any) {
-		atk := args[1].(*info.AttackEvent)
-		if atk.Info.ActorIndex != char.Index() {
+		if c.Player.Active() != char.Index() {
 			return
 		}
-
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(secretOfLiesKey, 12*60),
 			AffectedStat: attributes.EM,
@@ -74,6 +73,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	cdBuff := 0.18 + 0.06*float64(r)
 	m3 := make([]float64, attributes.EndStatType)
 	moonoftruth := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
+
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != char.Index() {
 			return
