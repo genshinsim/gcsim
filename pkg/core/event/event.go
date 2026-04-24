@@ -41,6 +41,7 @@ const (
 	OnBurning            // target, AttackEvent
 	OnLunarCharged       // target, AttackEvent
 	OnLunarBloom         // target, AttackEvent
+	OnLunarCrystallize   // target, AttackEvent
 	OnShatter            // target, AttackEvent; at the end to simplify all reaction event subs since it's normally not considered as an elemental reaction
 	ReactionEventEndDelim
 	OnDendroCore // Gadget
@@ -48,7 +49,7 @@ const (
 	OnStamUse           // abil
 	OnShielded          // shield
 	OnShieldBreak       // shield break
-	OnConstructSpawned  // nil
+	OnConstructSpawned  // construct
 	OnCharacterSwap     // prev, next
 	OnParticleReceived  // particle
 	OnEnergyChange      // character_received, pre_energy, energy_change, src (post-energy available in character_received), is_particle (boolean)
@@ -74,7 +75,8 @@ const (
 	OnPlunge       // nil
 	OnAimShoot     // nil
 	OnDash
-	OnLunarChargedReactionAttack // target, AttackEvent; event so predamagemods can be applied to the individual LC contributions. Emitted once per contributor
+	OnLunarReactionAttack            // target, AttackEvent; event so predamagemods can be applied to the individual Lunar contributions. Emitted once per contributor // TODO: move to a lunar.go ?
+	OnMoondriftHarmony               // target, AttackEvent;
 	// sim stuff
 	OnInitialize  // nil
 	OnStateChange // prev, next

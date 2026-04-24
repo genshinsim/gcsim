@@ -44,7 +44,7 @@ func (c *char) deleteC2() {
 	}
 }
 
-// When Yun Jin triggers the Crystallize Reaction, her DEF is increased by 20% for 12s.
+// When Yun Jin triggers Crystallize or Lunar-Crystallize reactions, her DEF is increased by 20% for 12s.
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
@@ -73,6 +73,7 @@ func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, charModFunc, "yunjin-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizePyro, charModFunc, "yunjin-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizeHydro, charModFunc, "yunjin-c4")
+	c.Core.Events.Subscribe(event.OnLunarCrystallize, charModFunc, "yunjin-c4")
 }
 
 // Characters under the effects of the Flying Cloud Flag Formation have their Normal ATK SPD increased by 12%.

@@ -23,9 +23,11 @@ const (
 
 // C1:
 // When any of your own party members hits an opponent affected by an Omen, the effects of Hydro-related Elemental Reactions are enhanced for 8s:
-// - Electro-Charged DMG increases by 15%.
-// - Vaporize DMG increases by 15%.
-// - Hydro Swirl DMG increases by 15%.
+// - Electro-Charged DMG increases by 15%
+// - Lunar-Charged DMG increases by 15%
+// - Vaporize DMG increases by 15%
+// - Hydro Swirl DMG increases by 15%
+// - Lunar-Crystallize DMG increases by 15%.
 // - Frozen duration is extended by 15%.
 func (c *char) c1() {
 	// TODO: "Frozen duration is extended by 15%." is bugged
@@ -54,10 +56,11 @@ func (c *char) c1() {
 						}
 
 						switch ai.AttackTag {
-						// Hydro Swirl DMG increases by 15%.
-						// Electro-Charged DMG increases by 15%.
-						// Lunar-Charged DMG increases by 15%.
-						case attacks.AttackTagSwirlHydro, attacks.AttackTagECDamage, attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged:
+						// - Electro-Charged DMG increases by 15%
+						// - Lunar-Charged DMG increases by 15%
+						// - Hydro Swirl DMG increases by 15%
+						// - Lunar-Crystallize DMG increases by 15%.
+						case attacks.AttackTagSwirlHydro, attacks.AttackTagECDamage, attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged, attacks.AttackTagReactionLunarCrystallize, attacks.AttackTagDirectLunarCrystallize:
 							return 0.15
 						}
 
@@ -144,8 +147,8 @@ func (c *char) c4() {
 		})
 	}
 
-	// workaround for giving lunarcharge the 15% CR
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	// workaround for giving lunarcharge and lunarcrystallize the 15% CR
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		x, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return
@@ -161,7 +164,15 @@ func (c *char) c4() {
 		}
 
 		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("Mona C4 CR added to Lunarcharged", glog.LogPreDamageMod, ae.Info.ActorIndex).
+			var reaction string
+			switch ae.Info.AttackTag {
+			case attacks.AttackTagDirectLunarCharged:
+				reaction = "Lunarcharged"
+			case attacks.AttackTagDirectLunarCrystallize:
+				reaction = "Lunarcrystallize"
+			}
+
+			c.Core.Log.NewEvent("Mona C4 CR added to "+reaction, glog.LogPreDamageMod, ae.Info.ActorIndex).
 				Write("before", ae.Snapshot.Stats[attributes.CR]).
 				Write("addition", 0.15)
 		}

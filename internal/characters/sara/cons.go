@@ -2,6 +2,7 @@ package sara
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -35,9 +36,12 @@ func (c *char) c6Init() {
 	c.c6buff[attributes.CD] = 0.6
 
 	// workaround for giving lunarcharge the 60% CD
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
+			return
+		}
+		if ae.Info.AttackTag != attacks.AttackTagReactionLunarCharge {
 			return
 		}
 
