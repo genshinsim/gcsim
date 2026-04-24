@@ -36,7 +36,9 @@ func (c *char) c6Wave() {
 		c.ozTravel,
 	)
 
-	c.AddStatus(c6HexereiKey, 10*60, true)
+	if c.IsHexerei && c.Core.Player.GetHexereiCount() >= 2 {
+		c.AddStatus(c6HexereiKey, 10*60, true)
+	}
 }
 
 func (c *char) c6HexBonus() float64 {
