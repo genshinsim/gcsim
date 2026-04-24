@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
 func TestOrderPrecedence(t *testing.T) {
@@ -56,7 +57,8 @@ func TestOrderPrecedence(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		p := New(test.input)
+		file := ast.NewFile()
+		p := New(file, test.input)
 		p.constantFolding = false
 		_, prog, err := p.Parse()
 		if err != nil {
@@ -115,7 +117,8 @@ const cfg = `
 `
 
 func TestCfg(t *testing.T) {
-	p := New(cfg)
+	file := ast.NewFile()
+	p := New(file, cfg)
 	fmt.Printf("parsing:\n %v\n", cfg)
 	_, prog, err := p.Parse()
 	if err != nil {
@@ -133,7 +136,8 @@ active xingqiu;
 `
 
 func TestCharAction(t *testing.T) {
-	p := New(charaction)
+	file := ast.NewFile()
+	p := New(file, charaction)
 	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)
@@ -175,7 +179,8 @@ energy every interval=480,720 amount=1;
 `
 
 func TestCharAdd(t *testing.T) {
-	p := New(charstats)
+	file := ast.NewFile()
+	p := New(file, charstats)
 	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)
@@ -185,7 +190,8 @@ func TestCharAdd(t *testing.T) {
 }
 
 func TestField(t *testing.T) {
-	p := New(`if .status.field > 0 { print("hi"); }`)
+	file := ast.NewFile()
+	p := New(file, `if .status.field > 0 { print("hi"); }`)
 	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)
@@ -195,7 +201,8 @@ func TestField(t *testing.T) {
 }
 
 func TestActionStartLine(t *testing.T) {
-	p := New(`xingqiu attack; skill`)
+	file := ast.NewFile()
+	p := New(file, `xingqiu attack; skill`)
 	_, prog, err := p.Parse()
 	if err == nil {
 		t.Errorf("xingqiu attack; skill parsed incorrectly without error")
@@ -205,7 +212,8 @@ func TestActionStartLine(t *testing.T) {
 }
 
 func parseAndPrint(s string, t *testing.T) {
-	p := New(s)
+	file := ast.NewFile()
+	p := New(file, s)
 	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)

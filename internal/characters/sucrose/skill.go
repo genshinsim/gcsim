@@ -60,6 +60,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// reduce charge by 1
 	c.SetCDWithDelay(action.ActionSkill, 900, 9)
+	c.hexOnSkill()
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),

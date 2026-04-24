@@ -43,8 +43,8 @@ func flush(aggregators []agg.Aggregator) *model.SimulationStatistics {
 	return stats
 }
 
-func parse(cfg string) (*info.ActionList, ast.Node, error) {
-	parser := parser.New(cfg)
+func parse(file *ast.File, cfg string) (*info.ActionList, ast.Node, error) {
+	parser := parser.New(file, cfg)
 	simcfg, gcsl, err := parser.Parse()
 	if err != nil {
 		return &info.ActionList{}, nil, err

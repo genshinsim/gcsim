@@ -26,7 +26,6 @@ func init() {
 type Set struct {
 	char  *character.CharWrapper
 	core  *core.Core
-	count int
 	Index int
 	Count int
 }
@@ -34,7 +33,7 @@ type Set struct {
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error {
-	if s.count < 2 {
+	if s.Count < 2 {
 		return nil
 	}
 
@@ -48,13 +47,14 @@ func (s *Set) Init() error {
 		},
 	})
 
-	if s.count < 4 {
+	if s.Count < 4 {
 		return nil
 	}
 
 	m2 := make([]float64, attributes.EndStatType)
 	switch s.core.Player.GetMoonsignLevel() {
 	case 0:
+		return nil
 	case 1:
 		m2[attributes.EM] = 60
 	default:
@@ -78,12 +78,15 @@ func (s *Set) Init() error {
 			return
 		}
 
+		if atk.Info.ActorIndex != s.char.Index() {
+			return
+		}
+
 		for _, char := range s.core.Player.Chars() {
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase(gleamingMoonDevotionEMKey, 8*60),
 				AffectedStat: attributes.EM,
 				Amount: func() []float64 {
-					m2[attributes.EM] = 120
 					return m2
 				},
 			})
@@ -122,7 +125,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	s := Set{
 		char:  char,
 		core:  c,
-		count: count,
 		Count: count,
 	}
 	return &s, nil

@@ -6,16 +6,18 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 )
 
 func TestType(t *testing.T) {
-	p := parser.New("type(1);")
+	file := ast.NewFile()
+	p := parser.New(file, "type(1);")
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	resultChan := make(chan Obj)
 	go func() {
@@ -44,7 +46,8 @@ func TestType(t *testing.T) {
 
 func TestForceTerminate(t *testing.T) {
 	// test terminate eval early should gracefully exit
-	p := parser.New(`
+	file := ast.NewFile()
+	p := parser.New(file, `
 	for let i = 0; i < 50; i = i + 1 {
 		delay(1);
 	}`)
@@ -52,7 +55,7 @@ func TestForceTerminate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	go func() {
 		res, err := eval.Run()
@@ -94,12 +97,13 @@ func TestForceTerminate(t *testing.T) {
 
 func TestSleepAsWaitAlias(t *testing.T) {
 	// make sure sleep is evaluated as wait
-	p := parser.New("sleep(1);")
+	file := ast.NewFile()
+	p := parser.New(file, "sleep(1);")
 	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	go func() {
 		res, err := eval.Run()
@@ -129,7 +133,8 @@ func TestSleepAsWaitAlias(t *testing.T) {
 
 func TestDoneCheck(t *testing.T) {
 	// eval should exit once out of action; NextAction() should return nil
-	p := parser.New(`
+	file := ast.NewFile()
+	p := parser.New(file, `
 	for let i = 0; i < 4; i = i + 1 {
 		delay(1);
 	}`)
@@ -137,7 +142,7 @@ func TestDoneCheck(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	eval, _ := NewEvaluator(gcsl, nil)
+	eval, _ := NewEvaluator(file, gcsl, nil)
 	eval.Log = log.Default()
 	go func() {
 		res, err := eval.Run()
