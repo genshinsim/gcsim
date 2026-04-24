@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -51,6 +52,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		c.Events.Subscribe(event.OnShielded, s.OnShielded(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnConstructSpawned, s.OnConstructSpawned(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnShieldBreak, s.OnShieldBreak(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnCharacterSwap, s.OnCharacterSwap(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnSkill, s.OnSkill(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
@@ -67,6 +69,18 @@ func (s *Set) OnShielded() func(args ...any) {
 		}
 		if shd.Type() == shield.Crystallize {
 			s.lastF = shd.Expiry()
+		}
+	}
+}
+
+func (s *Set) OnConstructSpawned() func(args ...any) {
+	return func(args ...any) {
+		c := args[0].(construct.Construct)
+		if s.core.Player.Active() != s.char.Index() {
+			return
+		}
+		if c.Type() == construct.GeoConstructLunarCrystallize {
+			s.lastF = c.Expiry()
 		}
 	}
 }

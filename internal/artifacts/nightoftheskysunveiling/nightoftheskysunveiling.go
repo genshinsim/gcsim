@@ -78,6 +78,7 @@ func (s *Set) Init() error {
 			},
 		})
 	}
+	s.core.Events.Subscribe(event.OnLunarCrystallize, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())
 	s.core.Events.Subscribe(event.OnLunarCharged, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())
 	s.core.Events.Subscribe(event.OnLunarBloom, lunarReactHook, setKey4+"-lc-"+s.char.Base.Key.String())
 
