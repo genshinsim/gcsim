@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const c6HexereiKey = "fischl-c6-hexerei"
+
 func (c *char) c6Wave() {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -33,4 +35,20 @@ func (c *char) c6Wave() {
 		),
 		c.ozTravel,
 	)
+
+	if c.IsHexerei && c.Core.Player.GetHexereiCount() >= 2 {
+		c.AddStatus(c6HexereiKey, 10*60, true)
+	}
+}
+
+func (c *char) c6HexBonus() float64 {
+	if c.Base.Cons < 6 {
+		return 0
+	}
+
+	if !c.StatusIsActive(c6HexereiKey) {
+		return 0
+	}
+
+	return 1
 }

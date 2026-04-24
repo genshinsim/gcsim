@@ -51,6 +51,7 @@
   "blackcliffpole": [],
   "blackcliffslasher": [],
   "blackcliffwarbow": [],
+  "blackmarrowlantern": [],
   "blacktassel": [],
   "bloodsoakedruins": [
     "bloodsoaked"
@@ -234,6 +235,7 @@
   "mappamare": [
     "mappa"
   ],
+  "masterkey": [],
   "memoryofdust": [],
   "messenger": [],
   "missivewindspear": [
@@ -253,6 +255,9 @@
   "mouunsmoon": [
     "mouun",
     "mouuns"
+  ],
+  "nocturnescurtaincall": [
+    "nocturnes"
   ],
   "oathsworneye": [
     "oathsworn"
@@ -283,6 +288,7 @@
     "pjws"
   ],
   "prospectorsdrill": [],
+  "prospectorsshovel": [],
   "prototypeamber": [
     "pamber"
   ],
@@ -349,6 +355,7 @@
   "sequenceofsolitude": [
     "solitude"
   ],
+  "serenityscall": [],
   "serpentspine": [
     "serpent"
   ],
@@ -375,6 +382,7 @@
   ],
   "skywardspine": [],
   "slingshot": [],
+  "snarehook": [],
   "snowtombedstarsilver": [
     "snowtombed"
   ],

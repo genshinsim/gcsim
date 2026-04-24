@@ -123,17 +123,16 @@ func main() {
 			Artifacts:  artifactsData,
 			Enemies:    monsterData,
 			Languages: map[string][]string{
-				"English":  {filepath.Join(cfg.excelPath, "TextMap", "TextMapEN.json")},
-				"Chinese":  {filepath.Join(cfg.excelPath, "TextMap", "TextMapCHS.json")},
-				"Japanese": {filepath.Join(cfg.excelPath, "TextMap", "TextMapJP.json")},
-				"Korean":   {filepath.Join(cfg.excelPath, "TextMap", "TextMapKR.json")},
-				"Spanish":  {filepath.Join(cfg.excelPath, "TextMap", "TextMapES.json")},
+				"English":  {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumEN.json")},
+				"Chinese":  {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumCHS.json")},
+				"Japanese": {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumJP.json")},
+				"Korean":   {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumKR.json")},
+				"Spanish":  {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumES.json")},
 				"Russian": {
-					filepath.Join(cfg.excelPath, "TextMap", "TextMapRU.json"),
-					filepath.Join(cfg.excelPath, "TextMap", "TextMapRU_0.json"),
-					filepath.Join(cfg.excelPath, "TextMap", "TextMapRU_1.json"),
+					filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumRU_0.json"),
+					filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumRU_1.json"),
 				},
-				"German": {filepath.Join(cfg.excelPath, "TextMap", "TextMapDE.json")},
+				"German": {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumDE.json")},
 			},
 		}
 		ts, err := translation.NewGenerator(transCfg)

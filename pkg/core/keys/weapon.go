@@ -55,6 +55,7 @@ var weaponNames = []string{
 	"blackcliffpole",
 	"blackcliffslasher",
 	"blackcliffwarbow",
+	"blackmarrowlantern",
 	"blacktassel",
 	"bloodsoakedruins",
 	"bloodtaintedgreatsword",
@@ -136,6 +137,7 @@ var weaponNames = []string{
 	"mailedflower",
 	"makhairaaquamarine",
 	"mappamare",
+	"masterkey",
 	"memoryofdust",
 	"messenger",
 	"missivewindspear",
@@ -145,6 +147,7 @@ var weaponNames = []string{
 	"moonweaversdawn",
 	"mountainbracingbolt",
 	"mouunsmoon",
+	"nocturnescurtaincall",
 	"oathsworneye",
 	"oldmercspal",
 	"otherworldlystory",
@@ -156,6 +159,7 @@ var weaponNames = []string{
 	"primordialjadecutter",
 	"primordialjadewingedspear",
 	"prospectorsdrill",
+	"prospectorsshovel",
 	"prototypeamber",
 	"prototypearchaic",
 	"prototypecrescent",
@@ -185,6 +189,7 @@ var weaponNames = []string{
 	"scionoftheblazingsun",
 	"seasonedhuntersbow",
 	"sequenceofsolitude",
+	"serenityscall",
 	"serpentspine",
 	"sharpshootersoath",
 	"silvershowerheartstrings",
@@ -197,6 +202,7 @@ var weaponNames = []string{
 	"skywardpride",
 	"skywardspine",
 	"slingshot",
+	"snarehook",
 	"snowtombedstarsilver",
 	"solarpearl",
 	"songofbrokenpines",
@@ -276,6 +282,7 @@ const (
 	BlackcliffPole
 	BlackcliffSlasher
 	BlackcliffWarbow
+	BlackmarrowLantern
 	BlackTassel
 	BloodsoakedRuins
 	BloodtaintedGreatsword
@@ -357,6 +364,7 @@ const (
 	MailedFlower
 	MakhairaAquamarine
 	MappaMare
+	MasterKey
 	MemoryOfDust
 	Messenger
 	MissiveWindspear
@@ -366,6 +374,7 @@ const (
 	MoonweaversDawn
 	MountainBracingBolt
 	MouunsMoon
+	NocturnesCurtainCall
 	OathswornEye
 	OldMercsPal
 	OtherworldlyStory
@@ -377,6 +386,7 @@ const (
 	PrimordialJadeCutter
 	PrimordialJadeWingedSpear
 	ProspectorsDrill
+	ProspectorsShovel
 	PrototypeAmber
 	PrototypeArchaic
 	PrototypeCrescent
@@ -406,6 +416,7 @@ const (
 	ScionOfTheBlazingSun
 	SeasonedHuntersBow
 	SequenceOfSolitude
+	SerenitysCall
 	SerpentSpine
 	SharpshootersOath
 	SilvershowerHeartstrings
@@ -418,6 +429,7 @@ const (
 	SkywardPride
 	SkywardSpine
 	Slingshot
+	SnareHook
 	SnowTombedStarsilver
 	SolarPearl
 	SongOfBrokenPines
