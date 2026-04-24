@@ -23,6 +23,7 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+// ATK is increased by 28%/35%/42%/49%/56% for 8s after the equipping character's attacks hit an opponent while the equipping character is off-field.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -39,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("rainbow-serpent-bow", 60*8),
+			Base:         modifier.NewBaseWithHitlag("rainbow-serpent-bow", 8*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
 				return m
