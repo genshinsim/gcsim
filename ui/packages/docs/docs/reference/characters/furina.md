@@ -1,5 +1,6 @@
 ---
-title: Furina
+title: >
+  Furina
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

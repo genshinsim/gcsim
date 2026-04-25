@@ -35,34 +35,34 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	cd := 900 - r*60
 	mult := 0.3 + float64(r)*0.1
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 
 		// only proc on normal and charge attack
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
 		default:
-			return false
+			return
 		}
 
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		if c.Rand.Float64() > 0.5 {
-			return false
+			return
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Viridescent",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -78,8 +78,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatus(icdKey, cd, true)
-
-		return false
 	}, fmt.Sprintf("viridescent-%v", char.Base.Key.String()))
 
 	return w, nil

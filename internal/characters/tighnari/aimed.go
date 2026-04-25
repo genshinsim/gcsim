@@ -8,12 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var aimedFrames [][]int
-var aimedHitmarks = []int{14, 86}
-var aimedWreathFrames []int
+var (
+	aimedFrames       [][]int
+	aimedHitmarks     = []int{14, 86}
+	aimedWreathFrames []int
+)
 
 const aimedWreathHitmark = 175
 
@@ -58,8 +60,8 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	ai := combat.AttackInfo{
-		ActorIndex:           c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -84,7 +86,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
+			info.Point{Y: -0.5},
 			0.1,
 			1,
 		),
@@ -128,8 +130,8 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 		skip = aimedWreathHitmark
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:           c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot (Wreath Arrow)",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -149,7 +151,7 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
+			info.Point{Y: -0.5},
 			0.1,
 			1,
 		),
@@ -160,8 +162,8 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(c.a1, aimedWreathHitmark-skip+1)
 	}
 
-	ai = combat.AttackInfo{
-		ActorIndex:   c.Index,
+	ai = info.AttackInfo{
+		ActorIndex:   c.Index(),
 		Abil:         "Clusterbloom Arrow",
 		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       attacks.ICDTagExtraAttack,
@@ -174,7 +176,7 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 	}
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
-		for i := 0; i < 4; i++ {
+		for range 4 {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
@@ -189,8 +191,8 @@ func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 		}
 
 		if c.Base.Cons >= 6 {
-			ai = combat.AttackInfo{
-				ActorIndex: c.Index,
+			ai = info.AttackInfo{
+				ActorIndex: c.Index(),
 				Abil:       "Karma Adjudged From the Leaden Fruit",
 				AttackTag:  attacks.AttackTagExtra,
 				ICDTag:     attacks.ICDTagNone,

@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -18,8 +17,8 @@ func init() {
 type char struct {
 	*tmpl.Character
 	a1Buff         []float64
-	skillAI        combat.AttackInfo
-	skillAlignedAI combat.AttackInfo
+	skillAI        info.AttackInfo
+	skillAlignedAI info.AttackInfo
 	shadowsignSrc  int
 	vividCount     int
 }
@@ -40,8 +39,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.skillAI = combat.AttackInfo{
-		ActorIndex:         c.Index,
+	c.skillAI = info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Enigmatic Feint",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -53,8 +52,8 @@ func (c *char) Init() error {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	c.skillAlignedAI = combat.AttackInfo{
-		ActorIndex:         c.Index,
+	c.skillAlignedAI = info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Surging Blade (" + c.Base.Key.Pretty() + ")",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,

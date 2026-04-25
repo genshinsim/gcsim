@@ -1,5 +1,6 @@
 ---
-title: "Large Dendro Slime"
+title: >
+  Large Dendro Slime
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

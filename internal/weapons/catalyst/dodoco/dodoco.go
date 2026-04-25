@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -37,35 +36,34 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	n := make([]float64, attributes.EndStatType)
 	n[attributes.ATKP] = .06 + float64(r)*0.02
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("dodoco-ca", 360),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					if atk.Info.AttackTag != attacks.AttackTagExtra {
-						return nil, false
+						return nil
 					}
-					return m, true
+					return m
 				},
 			})
 		case attacks.AttackTagExtra:
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("dodoco-atk", 360),
 				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
-					return n, true
+				Amount: func() []float64 {
+					return n
 				},
 			})
 		}
-		return false
 	}, fmt.Sprintf("dodoco-%v", char.Base.Key.String()))
 
 	return w, nil

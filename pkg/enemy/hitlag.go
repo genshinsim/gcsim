@@ -8,7 +8,7 @@ import (
 )
 
 func (e *Enemy) ApplyHitlag(factor, dur float64) {
-	//TODO: extend all hitlag affected buff expiry by dur * (1 - factor) i think
+	// TODO: extend all hitlag affected buff expiry by dur * (1 - factor) i think
 	ext := int(math.Ceil(dur * (1 - factor)))
 	e.frozenFrames += ext
 
@@ -50,7 +50,7 @@ func (e *Enemy) QueueEnemyTask(f func(), delay int) {
 
 func (e *Enemy) Tick() {
 	// dead enemy don't tick
-	if !e.Target.Alive {
+	if !e.Alive {
 		return
 	}
 	// decrement frozen time first

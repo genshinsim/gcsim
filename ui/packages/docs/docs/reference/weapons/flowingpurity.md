@@ -1,5 +1,6 @@
 ---
-title: Flowing Purity
+title: >
+  Flowing Purity
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

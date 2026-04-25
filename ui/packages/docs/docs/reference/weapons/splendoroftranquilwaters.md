@@ -1,5 +1,6 @@
 ---
-title: Splendor of Tranquil Waters
+title: >
+  Splendor of Tranquil Waters
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

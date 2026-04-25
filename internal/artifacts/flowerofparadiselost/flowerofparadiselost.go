@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -52,8 +51,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("flower-2pc", -1),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -62,26 +61,27 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("flower-4pc", -1),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				switch ai.AttackTag {
 				case attacks.AttackTagBloom:
 				case attacks.AttackTagHyperbloom:
 				case attacks.AttackTagBurgeon:
+				case attacks.AttackTagDirectLunarBloom:
+					return 0.1
 				default:
-					return 0, false
+					return 0
 				}
-				return 0.4, false
+				return 0.4
 			},
 		})
 
-		//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-		f := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
-				return false
+		f := func(args ...any) {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != char.Index() {
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, icd, true)
 
@@ -92,35 +92,35 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks++
 			}
 
-			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index()).
 				Write("stacks", s.stacks)
 
 			char.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBaseWithHitlag(buffKey, 10*60),
-				Amount: func(ai combat.AttackInfo) (float64, bool) {
+				Amount: func(ai info.AttackInfo) float64 {
 					switch ai.AttackTag {
 					case attacks.AttackTagBloom:
 					case attacks.AttackTagHyperbloom:
 					case attacks.AttackTagBurgeon:
+					case attacks.AttackTagDirectLunarBloom:
+						return 0.1 * float64(s.stacks) * 0.25
 					default:
-						return 0, false
+						return 0
 					}
-					return 0.4 * float64(s.stacks) * 0.25, false
+					return 0.4 * float64(s.stacks) * 0.25
 				},
 			})
-
-			return false
 		}
-		noGadget := func(args ...interface{}) bool {
-			if _, ok := args[0].(*enemy.Enemy); !ok {
-				return false
+		noGadget := func(args ...any) {
+			if _, ok := args[0].(*enemy.Enemy); ok {
+				f(args...)
 			}
-			return f(args...)
 		}
 
 		c.Events.Subscribe(event.OnBloom, noGadget, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnHyperbloom, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnBurgeon, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnLunarBloom, f, fmt.Sprintf("flower-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

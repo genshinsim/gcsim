@@ -1,5 +1,6 @@
 ---
-title: Albedo
+title: >
+  Albedo
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

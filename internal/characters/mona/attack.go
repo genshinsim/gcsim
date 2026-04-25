@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -35,8 +36,8 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagMonaWaterDamage,
@@ -56,7 +57,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
-		c.c2,
 	)
 
 	defer c.AdvanceNormalIndex()

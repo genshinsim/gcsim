@@ -1,5 +1,6 @@
 ---
-title: "Local Legend: Cherubic Sea Hare"
+title: >
+  Local Legend: Cherubic Sea Hare
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

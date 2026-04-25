@@ -1,5 +1,6 @@
 ---
-title: "Hydro Hilichurl Rogue"
+title: >
+  Hydro Hilichurl Rogue
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

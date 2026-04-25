@@ -1,10 +1,11 @@
 package slingshot
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -34,21 +35,27 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	travel := 0
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("slingshot", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if (atk.Info.AttackTag != attacks.AttackTagNormal) && (atk.Info.AttackTag != attacks.AttackTagExtra) {
-				return nil, false
+				return nil
 			}
 			active := c.Player.ByIndex(atk.Info.ActorIndex)
 			if active.Base.Key == keys.Tartaglia &&
 				atk.Info.StrikeType == attacks.StrikeTypeSlash {
-				return nil, false
+				return nil
 			}
+
+			// chasca E/A4 bullets and C2/C4 Aoe don't count
+			if char.Base.Key == keys.Chasca && slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
+				return nil
+			}
+
 			travel = c.F - atk.Snapshot.SourceFrame
 			m[attributes.DmgP] = incrDmg
 			if travel > passiveThresholdF {
 				m[attributes.DmgP] = decrDmg
 			}
-			return m, true
+			return m
 		},
 	})
 

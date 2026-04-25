@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -41,49 +40,46 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = 0.12 + 0.04*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("toukaboushigure", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if !e.StatusIsActive(debuffKey) {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 15*60, true)
 		e.AddStatus(debuffKey, 10*60, true)
-
-		return false
 	}, fmt.Sprintf("toukaboushigure-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if !e.StatusIsActive(debuffKey) {
-			return false
+			return
 		}
 		if !char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.DeleteStatus(icdKey)
-		return false
 	}, fmt.Sprintf("toukaboushigure-reset-%v", char.Base.Key.String()))
 
 	return w, nil

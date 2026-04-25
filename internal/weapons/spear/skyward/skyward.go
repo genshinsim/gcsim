@@ -40,36 +40,36 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("skyward spine", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
 	const icdKey = "skyward-spine-icd"
 	atk := .25 + .15*float64(r)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		ae := args[1].(*info.AttackEvent)
 		// check if char is correct?
-		if ae.Info.ActorIndex != char.Index {
-			return false
+		if ae.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// check if cd is up
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if c.Rand.Float64() > .5 {
-			return false
+			return
 		}
 
 		// add a new action that deals % dmg immediately
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Skyward Spine Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -79,12 +79,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       atk,
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewBoxHitOnTarget(trg, nil, 0.1, 0.1), 0, 1)
 
 		// trigger cd
 		char.AddStatus(icdKey, 120, true)
-		return false
 	}, fmt.Sprintf("skyward-spine-%v", char.Base.Key.String()))
 	return w, nil
 }

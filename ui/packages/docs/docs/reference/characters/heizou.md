@@ -1,5 +1,6 @@
 ---
-title: Heizou
+title: >
+  Shikanoin Heizou
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

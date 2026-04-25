@@ -1,5 +1,6 @@
 ---
-title: Lumidouce Elegy
+title: >
+  Lumidouce Elegy
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

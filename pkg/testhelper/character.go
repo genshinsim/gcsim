@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -29,10 +28,11 @@ type Character struct {
 	*character.CharWrapper
 }
 
-func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot { return combat.Snapshot{} }
+func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot { return info.Snapshot{} }
 func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }
+
 func (c *Character) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]int) error {
 	return nil
 }
@@ -56,6 +56,7 @@ func (c *Character) ModifyHPDebtByAmount(float64)                         {}
 func (c *Character) ModifyHPDebtByRatio(float64)                          {}
 func (c *Character) Heal(*info.HealInfo) (float64, float64)               { return 0, 0 }
 func (c *Character) Drain(*info.DrainInfo) float64                        { return 0 }
+func (c *Character) ReceiveHeal(hi *info.HealInfo, heal float64) float64  { return heal }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := Character{}

@@ -1,5 +1,6 @@
 ---
-title: "Grounded Geoshroom"
+title: >
+  Grounded Geoshroom
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

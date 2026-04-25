@@ -1,5 +1,6 @@
 ---
-title: Recurve Bow
+title: >
+  Recurve Bow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

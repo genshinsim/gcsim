@@ -1,5 +1,6 @@
 ---
-title: Moonpiercer
+title: >
+  Moonpiercer
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

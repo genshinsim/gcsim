@@ -1,5 +1,6 @@
 ---
-title: Ayaka
+title: >
+  Kamisato Ayaka
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

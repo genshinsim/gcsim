@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -19,8 +20,8 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("candace-c2", 15*60),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
@@ -31,33 +32,33 @@ func (c *char) c2() {
 // AoE Hydro DMG equal to 15% of Candace's Max HP. This effect can trigger once
 // every 2.3s and is considered Elemental Burst DMG.
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
-		if atk.Info.ActorIndex == c.Index {
-			return false
+		if atk.Info.ActorIndex == c.Index() {
+			return
 		}
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6ICDKey) {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		c.AddStatus(c6ICDKey, 138, true)
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "The Overflow (C6)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNone,
@@ -74,6 +75,5 @@ func (c *char) c6() {
 			waveHitmark,
 			waveHitmark,
 		)
-		return false
 	}, "candace-c6")
 }

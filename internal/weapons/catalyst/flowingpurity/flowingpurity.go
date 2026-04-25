@@ -48,20 +48,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bondDMGPCap := 0.09 + float64(r)*0.03
 	debt := 0.0
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("flowingpurity-eledmg-boost", duration),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 
@@ -79,31 +79,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		for i := attributes.PyroP; i <= attributes.DendroP; i++ {
 			bond[i] = bondDMGP
 		}
-
-		return false
 	}, fmt.Sprintf("flowingpurity-eledmg%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
-		if index != char.Index {
-			return false
+		if index != char.Index() {
+			return
 		}
 		if char.CurrentHPDebt() > 0 {
-			return false
+			return
 		}
 		if !char.StatusIsActive(bondKey) {
-			return false
+			return
 		}
 		char.DeleteStatus(bondKey)
 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("flowingpurity-bond-eledmg-boost", duration),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return bond, true
+			Amount: func() []float64 {
+				return bond
 			},
 		})
-		return false
 	}, fmt.Sprintf("flowingpurity-bondeledmg%v", char.Base.Key.String()))
 	return w, nil
 }

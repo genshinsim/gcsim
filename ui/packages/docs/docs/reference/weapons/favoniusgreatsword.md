@@ -1,5 +1,6 @@
 ---
-title: Favonius Greatsword
+title: >
+  Favonius Greatsword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

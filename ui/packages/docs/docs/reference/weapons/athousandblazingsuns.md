@@ -1,5 +1,6 @@
 ---
-title: A Thousand Blazing Suns
+title: >
+  A Thousand Blazing Suns
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

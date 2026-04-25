@@ -1,5 +1,6 @@
 ---
-title: "Electro Samachurl"
+title: >
+  Electro Samachurl
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

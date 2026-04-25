@@ -1,5 +1,6 @@
 ---
-title: Ganyu
+title: >
+  Ganyu
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

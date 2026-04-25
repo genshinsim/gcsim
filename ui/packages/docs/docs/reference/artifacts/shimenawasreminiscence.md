@@ -1,5 +1,6 @@
 ---
-title: Shimenawa's Reminiscence
+title: >
+  Shimenawa's Reminiscence
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

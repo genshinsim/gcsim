@@ -3,9 +3,8 @@ package sethos
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -18,12 +17,16 @@ const (
 	c2Dur = 10 * 60
 )
 
-const c4Key = "sethos-c4"
-const c4Dur = 10 * 60
+const (
+	c4Key = "sethos-c4"
+	c4Dur = 10 * 60
+)
 
-const c6Key = "sethos-c6"
-const c6IcdKey = "sethos-c6-icd"
-const c6IcdDur = 15 * 60
+const (
+	c6Key    = "sethos-c6"
+	c6IcdKey = "sethos-c6-icd"
+	c6IcdDur = 15 * 60
+)
 
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
@@ -33,14 +36,14 @@ func (c *char) c1() {
 	m[attributes.CR] = 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("sethos-c1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Abil != shadowPierceShotAil {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -52,13 +55,13 @@ func (c *char) c2() {
 	mElectro := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBase(c2Key, -1),
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			stackCount := c.c2Stacks()
 			if stackCount == 0 {
-				return nil, false
+				return nil
 			}
 			mElectro[attributes.ElectroP] = 0.15 * float64(stackCount)
-			return mElectro, true
+			return mElectro
 		},
 	})
 }
@@ -92,13 +95,13 @@ func (c *char) c4() {
 	c.c4Buff[attributes.EM] = 80
 }
 
-func (c *char) makeC4cb() combat.AttackCBFunc {
+func (c *char) makeC4cb() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
 	count := 0
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if count >= 2 {
@@ -110,8 +113,8 @@ func (c *char) makeC4cb() combat.AttackCBFunc {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(c4Key, c4Dur),
 					AffectedStat: attributes.EM,
-					Amount: func() ([]float64, bool) {
-						return c.c4Buff, true
+					Amount: func() []float64 {
+						return c.c4Buff
 					},
 				})
 			}
@@ -119,7 +122,7 @@ func (c *char) makeC4cb() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) makeC6cb(energy float64) combat.AttackCBFunc {
+func (c *char) makeC6cb(energy float64) info.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
@@ -128,8 +131,8 @@ func (c *char) makeC6cb(energy float64) combat.AttackCBFunc {
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

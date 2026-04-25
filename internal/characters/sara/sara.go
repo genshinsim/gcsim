@@ -3,11 +3,9 @@ package sara
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -34,15 +32,12 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	if c.Base.Cons >= 6 {
-		c.c6buff = make([]float64, attributes.EndStatType)
-		c.c6buff[attributes.CD] = 0.6
-	}
+	c.c6Init()
 	return nil
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 14
 	}
 	return c.Character.AnimationStartDelay(k)

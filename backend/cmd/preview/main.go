@@ -19,7 +19,6 @@ func main() {
 		Files:        content,
 		AssetsFolder: os.Getenv(("ASSETS_DATA_PATH")),
 	})
-
 	if err != nil {
 		panic(err)
 	}

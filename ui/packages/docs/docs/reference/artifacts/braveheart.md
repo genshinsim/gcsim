@@ -1,5 +1,6 @@
 ---
-title: Brave Heart
+title: >
+  Brave Heart
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

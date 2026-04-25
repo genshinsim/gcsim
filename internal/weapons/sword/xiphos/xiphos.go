@@ -51,15 +51,15 @@ func (w *Weapon) updateStats() {
 		Base:         modifier.NewBaseWithHitlag("xiphos", 12*60),
 		AffectedStat: attributes.ER,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return val, true
+		Amount: func() []float64 {
+			return val
 		},
 	})
 
 	valTeam := make([]float64, attributes.EndStatType)
 	valTeam[attributes.ER] = val[attributes.ER] * 0.3
 	for _, this := range w.core.Player.Chars() {
-		if this.Index == w.char.Index {
+		if this.Index() == w.char.Index() {
 			continue
 		}
 
@@ -67,8 +67,8 @@ func (w *Weapon) updateStats() {
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("xiphos-%v", w.char.Base.Key.String()), 12*60),
 			AffectedStat: attributes.ER,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return valTeam, true
+			Amount: func() []float64 {
+				return valTeam
 			},
 		})
 	}

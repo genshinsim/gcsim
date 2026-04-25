@@ -1,5 +1,6 @@
 ---
-title: Mualani
+title: >
+  Mualani
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

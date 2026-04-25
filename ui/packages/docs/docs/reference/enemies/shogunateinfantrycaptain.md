@@ -1,5 +1,6 @@
 ---
-title: "Shogunate Infantry Captain"
+title: >
+  Shogunate Infantry Captain
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

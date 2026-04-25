@@ -1,5 +1,6 @@
 ---
-title: Kokomi
+title: >
+  Sangonomiya Kokomi
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

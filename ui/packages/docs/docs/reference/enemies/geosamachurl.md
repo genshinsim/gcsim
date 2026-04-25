@@ -1,5 +1,6 @@
 ---
-title: "Geo Samachurl"
+title: >
+  Geo Samachurl
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

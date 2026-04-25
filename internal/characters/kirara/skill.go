@@ -7,8 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -78,8 +77,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(), nil
 }
 
-func (c *char) kickParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) kickParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(kickParticleICDKey) {
@@ -89,8 +88,8 @@ func (c *char) kickParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle("kirara-kick", 3, attributes.Dendro, c.ParticleDelay)
 }
 
-func (c *char) rollParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) rollParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(rollParticleICDKey) {
@@ -101,8 +100,8 @@ func (c *char) rollParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Tail-Flicking Flying Kick",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -117,7 +116,7 @@ func (c *char) skillPress() action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.5, 270),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), info.Point{Y: 0.5}, 2.5, 270),
 		skillPressHitmark,
 		skillPressHitmark,
 		c.kickParticleCB,
@@ -148,8 +147,8 @@ func (c *char) skillShortHold() action.Info {
 	}, 17)
 
 	// Flipclaw Strike DMG
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Flipclaw Strike",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -166,7 +165,7 @@ func (c *char) skillShortHold() action.Info {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 2.6),
 		skillShortHoldKickHitmark,
 		c.kickParticleCB,
 	)
@@ -202,8 +201,8 @@ func (c *char) skillHold(duration int) action.Info {
 	}
 
 	// Flipclaw Strike DMG
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Flipclaw Strike",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -220,7 +219,7 @@ func (c *char) skillHold(duration int) action.Info {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 2.6),
 		(skillHoldKickHitmark-600)+duration,
 		c.kickParticleCB,
 	)
@@ -244,9 +243,9 @@ func (c *char) skillHold(duration int) action.Info {
 	}
 }
 
-func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+func (c *char) createSkillHoldSnapshot() *info.AttackEvent {
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Urgent Neko Parcel",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagElementalArtHold,
@@ -258,7 +257,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	}
 	snap := c.Snapshot(&ai)
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
-	ae := combat.AttackEvent{
+	ae := info.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,

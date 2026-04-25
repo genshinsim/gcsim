@@ -3,10 +3,11 @@ package conditional
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/template/crystallize"
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func evalGadgets(c *core.Core, fields []string) (int, error) {
@@ -30,7 +31,7 @@ func evalDendroCore(c *core.Core, key string) (int, error) {
 	case countField:
 		count := 0
 		for _, g := range c.Combat.Gadgets() {
-			if _, ok := g.(*reactable.DendroCore); ok {
+			if _, ok := g.(*dendrocore.Gadget); ok {
 				count++
 			}
 		}
@@ -60,7 +61,7 @@ func evalCrystallizeShard(c *core.Core, key string) (int, error) {
 	case "all":
 		count := 0
 		for _, g := range c.Combat.Gadgets() {
-			cs, ok := g.(*reactable.CrystallizeShard)
+			cs, ok := g.(*crystallize.Shard)
 			if !ok {
 				continue
 			}
@@ -80,7 +81,7 @@ func evalCrystallizeShard(c *core.Core, key string) (int, error) {
 func countElementalCrystallizeShards(c *core.Core, ele string) int {
 	count := 0
 	for _, g := range c.Combat.Gadgets() {
-		cs, ok := g.(*reactable.CrystallizeShard)
+		cs, ok := g.(*crystallize.Shard)
 		if !ok {
 			continue
 		}

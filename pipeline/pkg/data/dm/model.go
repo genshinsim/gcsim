@@ -48,6 +48,7 @@ type AvatarExcel struct {
 	HpBase          float64         `json:"hpBase"`
 	AttackBase      float64         `json:"attackBase"`
 	DefenseBase     float64         `json:"defenseBase"`
+	ElementMastery  float64         `json:"elementMastery"`
 	PropGrowCurves  []PropGrowCurve `json:"propGrowCurves"`
 	ID              int32           `json:"id"`
 	NameTextMapHash int64           `json:"nameTextMapHash"`
@@ -157,8 +158,7 @@ type WeaponExcel struct {
 	// GadgetID                   int32           `json:"gadgetId"`
 }
 
-type WeaponCurve struct {
-}
+type WeaponCurve struct{}
 
 //nolint:tagliatelle // need to match datamine
 type WeaponPromote struct {

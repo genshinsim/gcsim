@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -49,62 +48,58 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		buffHp:    make([]float64, attributes.EndStatType),
 	}
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
-		if di.ActorIndex != char.Index {
-			return false
+		if di.ActorIndex != char.Index() {
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		w.onEquipChangeHP()
-		return false
 	}, fmt.Sprintf("splendoroftranquilwaters-equip-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if index != char.Index {
-			return false
+		if index != char.Index() {
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 		w.onEquipChangeHP()
-		return false
 	}, fmt.Sprintf("splendoroftranquilwaters-equip-heal-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
-		if di.ActorIndex == char.Index {
-			return false
+		if di.ActorIndex == char.Index() {
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		w.onOtherChangeHP()
-		return false
 	}, fmt.Sprintf("splendoroftranquilwaters-other-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if index == char.Index {
-			return false
+		if index == char.Index() {
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 		w.onOtherChangeHP()
-		return false
 	}, fmt.Sprintf("splendoroftranquilwaters-other-heal-%v", char.Base.Key.String()))
 
 	return w, nil
@@ -125,14 +120,14 @@ func (w *Weapon) onEquipChangeHP() {
 	w.buffSkill[attributes.DmgP] = (0.06 + 0.02*float64(w.refine)) * float64(w.skillStacks)
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(skillBuffKey, 6*60),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
-				return w.buffSkill, true
+				return w.buffSkill
 			case attacks.AttackTagElementalArtHold:
-				return w.buffSkill, true
+				return w.buffSkill
 			default:
-				return nil, false
+				return nil
 			}
 		},
 	})
@@ -156,8 +151,8 @@ func (w *Weapon) onOtherChangeHP() {
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(hpBuffKey, 6*60),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return val, true
+		Amount: func() []float64 {
+			return val
 		},
 	})
 }

@@ -1,5 +1,6 @@
 ---
-title: Aqua Simulacra
+title: >
+  Aqua Simulacra
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Pocket Grimoire
+title: >
+  Pocket Grimoire
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Deepwater Assault Mek"
+title: >
+  Deepwater Assault Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

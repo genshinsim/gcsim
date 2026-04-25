@@ -1,0 +1,61 @@
+package ineffa
+
+import (
+	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+)
+
+var chargeFrames []int
+
+const chargeHitmark = 23
+
+func init() {
+	chargeFrames = frames.InitAbilSlice(60)
+	chargeFrames[action.ActionAttack] = 45
+	chargeFrames[action.ActionSkill] = 45
+	chargeFrames[action.ActionBurst] = 45
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = 43
+}
+
+// Charge attack damage queue generator
+// Very standard - consistent with other characters like Xiangling
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Charge",
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
+		StrikeType:         attacks.StrikeTypeSlash,
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               charge[c.TalentLvlAttack()],
+		HitlagHaltFrames:   0.06,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
+	}
+
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			info.Point{Y: 0.5},
+			2.35,
+		),
+		chargeHitmark,
+		chargeHitmark,
+	)
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(chargeFrames),
+		AnimationLength: chargeFrames[action.InvalidAction],
+		CanQueueAfter:   chargeHitmark,
+		State:           action.ChargeAttackState,
+	}, nil
+}

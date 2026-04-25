@@ -1,23 +1,19 @@
+version: "2"
+
 run:
-  timeout: 5m
   build-tags:
     - codeanalysis
 
 linters:
-  disable-all: true
+  default: none
   enable:
     ## golangci defaults (core linters)
     # - errcheck # checking for unchecked errors, these unchecked errors can be critical bugs in some cases
-    - gosimple # specializes in simplifying a code
     - govet # reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
     - ineffassign # detects when assignments to existing variables are not used
     - staticcheck # is a go vet on steroids, applying a ton of static analysis checks
-    - typecheck # like the front-end of a Go compiler, parses and type-checks Go code
 
     ## style & formatting
-    - gofmt # go fmt requirement
-    - goimports # in addition to fixing imports, goimports also formats your code in the same style as gofmt
-    - stylecheck # style check rules defined by staticcheck (minimum go standard style)
     - gocritic # provides diagnostics that check for bugs, performance and style issues
     - whitespace # detects leading and trailing whitespace
     - nolintlint # reports ill-formed or insufficient nolint directives
@@ -64,120 +60,147 @@ linters:
     - gocheckcompilerdirectives # validates go compiler directive comments (//go:)
     - gomodguard # allow and block lists linter for direct Go module dependencies.
     - mirror # reports wrong mirror patterns of bytes/strings usage
-    - tenv # detects using os.Setenv instead of t.Setenv since Go1.17
     - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
     - usestdlibvars # detects the possibility to use variables/constants from the Go standard library
 
-linters-settings:
-  cyclop:
-    max-complexity: 30
-    package-average: 10.0
+  settings:
+    cyclop:
+      max-complexity: 30
+      package-average: 10
 
-  errcheck:
-    check-type-assertions: true
+    errcheck:
+      check-type-assertions: true
 
-  exhaustruct:
-    exclude:
+    exhaustruct:
+      exclude:
       ## sim code
 
       ## dependencies
-      - "net/http"
-      # - 'github\.com/urfave/cli/v2'
-      - 'google\.golang\.org/protobuf/encoding/protojson'
+        - 'net/http'
+        # - 'github\.com/urfave/cli/v2'
+        - 'google\.golang\.org/protobuf/encoding/protojson'
 
-  funlen:
-    lines: 100
-    statements: 50
+    funlen:
+      lines: 100
+      statements: 50
 
-  gocognit:
-    min-complexity: 20
+    gocognit:
+      min-complexity: 20
 
-  gocritic:
-    enabled-tags:
-      - performance # finds places where we can make performance improvements
-      - opinionated # opinionated style rules
-    disabled-checks:
-      - importShadow # covered by another linter
-      - builtinShadow # covered by another linter
-      - unnamedResult # opposite of nonamedreturns
-      - hugeParam # probably want to enable for better performance. Benchmark first
-    settings:
-      captLocal:
-        paramsOnly: false
-      underef:
-        skipRecvDeref: false
+    gocritic:
+      enabled-tags:
+        - performance # finds places where we can make performance improvements
+        - opinionated # opinionated style rules
+      disabled-checks:
+        - importShadow # covered by another linter
+        - builtinShadow # covered by another linter
+        - unnamedResult # opposite of nonamedreturns
+        - hugeParam # probably want to enable for better performance. Benchmark first
+      settings:
+        captLocal:
+          paramsOnly: false
+        underef:
+          skipRecvDeref: false
 
-  revive:
-    # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md
-    rules:
-      - name: context-as-argument
-      - name: context-keys-type
-      - name: dot-imports
-      - name: error-return
-      - name: error-strings
-      - name: error-naming
-      - name: exported
-      - name: if-return
-      - name: var-naming
-      - name: var-declaration
-      - name: package-comments
-      - name: range
-      - name: receiver-naming
-      - name: time-naming
-      - name: unexported-return
-      - name: indent-error-flow
-      - name: errorf
-      - name: empty-block
-      - name: superfluous-else
-      - name: unreachable-code
-      - name: redefines-builtin-id
-
-  govet:
-    enable-all: true
-    disable:
-      - fieldalignment # great for micro-optimizations, too much work for us to maintain
-      - shadow # can help to find hard to find bugs, but annoying to make golang code compatible
-
-  gomodguard:
-    blocked:
-      modules:
-        - github.com/golang/protobuf:
-            recommendations:
-              - google.golang.org/protobuf
-            reason: "see https://protobuf.dev/reference/go/faq/#modules"
-
-  nakedret:
-    max-func-lines: 0
-
-  nolintlint:
-    allow-no-explanation: [funlen, gocognit, lll]
-    require-explanation: true
-    require-specific: true
-
-  tenv:
-    all: true
-
-  tagliatelle:
-    case:
-      use-field-name: true
+    revive:
+      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md
       rules:
-        json: snake
-        yaml: snake
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: exported
+        - name: if-return
+        - name: var-naming
+          arguments:
+            - [""] # AllowList
+            - [""] # DenyList
+            - - skip-package-name-checks: true # TODO: rename internal/characters/traveler/common and internal/weapons/common
+        - name: var-declaration
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: errorf
+        - name: empty-block
+        - name: superfluous-else
+        - name: unreachable-code
+        - name: redefines-builtin-id
+
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment # great for micro-optimizations, too much work for us to maintain
+        - shadow # can help to find hard to find bugs, but annoying to make golang code compatible
+
+    gomodguard:
+      blocked:
+        modules:
+          - github.com/golang/protobuf:
+              recommendations:
+                - google.golang.org/protobuf
+              reason: "see https://protobuf.dev/reference/go/faq/#modules"
+
+    nakedret:
+      max-func-lines: 0
+
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+      allow-no-explanation:
+        - funlen
+        - gocognit
+        - lll
+
+    tagliatelle:
+      case:
+        use-field-name: true
+        rules:
+          json: snake
+          yaml: snake
+
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - source: "//noinspection"
+        linters:
+          - gocritic
+      - linters:
+          - staticcheck
+          - revive
+        text: ".*Ids? should be .*IDs?"
+      - linters:
+          - tagliatelle
+        text: "got '_id' want 'id'" # play nice with MongoDB
+    paths:
+      - cmd/wasm/
+      - third_party$
+      - builtin$
+      - examples$
 
 severity:
-  default-severity: error
+  default: error
 
 issues:
   max-same-issues: 50
-  exclude-dirs:
-    - cmd/wasm/
-  exclude-rules:
-    - source: "//noinspection"
-      linters: [gocritic]
-    - linters:
-        - stylecheck
-        - revive
-      text: ".*Ids? should be .*IDs?"
-    - linters:
-        - tagliatelle
-      text: "got '_id' want 'id'" # play nice with MongoDB
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - cmd/wasm/
+      - third_party$
+      - builtin$
+      - examples$

@@ -1,5 +1,6 @@
 ---
-title: Blackcliff Pole
+title: >
+  Blackcliff Pole
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -31,7 +31,7 @@ func (s *Server) WorkStatus(ctx context.Context, req *WorkStatusRequest) (*WorkS
 }
 
 func (s *Server) CompleteWork(ctx context.Context, req *CompleteWorkRequest) (*CompleteWorkResponse, error) {
-	//steps:
+	// steps:
 	// 1. check hash matches
 	// 2. replace share if exists (or does not fail); else create
 	// 3. update meta data
@@ -88,11 +88,11 @@ func (s *Server) CompleteWork(ctx context.Context, req *CompleteWorkRequest) (*C
 }
 
 func (s *Server) RejectWork(ctx context.Context, req *RejectWorkRequest) (*RejectWorkResponse, error) {
-	//steps:
+	// steps:
 	// 1. check hash
 	// 2. if this is a pending sub; delete + notify
 	// 3. otherwise notify only
-	//TODO: should mark somehow in future
+	// TODO: should mark somehow in future
 	if req.GetHash() != s.ExpectedHash {
 		return nil, status.Error(codes.PermissionDenied, "incorrect hash, expecting "+s.ExpectedHash)
 	}

@@ -5,14 +5,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func (c *Traveler) c1cb() func(a combat.AttackCB) {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *Traveler) c1cb() func(a info.AttackCB) {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.skillC1 {
@@ -27,16 +27,15 @@ func (c *Traveler) c4() {
 	if c.burstOverflowingLotuslight > 10 {
 		c.burstOverflowingLotuslight = 10
 	}
-	c.Core.Log.NewEvent("dmc-c4-triggered", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("dmc-c4-triggered", glog.LogCharacterEvent, c.Index())
 }
 
 // Gets removed on swap - from Kolibri
 func (c *Traveler) c6Init() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		prevChar := c.Core.Player.ByIndex(prev)
 		prevChar.DeleteStatMod("dmc-c6")
-		return false
 	}, "dmc-c6-remove")
 }
 
@@ -64,8 +63,8 @@ func (c *Traveler) c6Buff(delay int) {
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("dmc-c6", 60),
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}, delay)

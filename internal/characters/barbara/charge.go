@@ -6,9 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var chargeFrames []int
@@ -26,8 +24,8 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNone,
@@ -39,8 +37,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	done := false
-	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	cb := func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -50,7 +48,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		if c.Core.Status.Duration(barbSkillKey) > 0 {
 			// heal target
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  -1,
 				Message: "Melody Loop (Charged Attack)",
 				Src:     4 * (prochpp[c.TalentLvlSkill()]*c.MaxHP() + prochp[c.TalentLvlSkill()]),
@@ -59,11 +57,11 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			done = true
 		}
 	}
-	var c4CB combat.AttackCBFunc
+	var c4CB info.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		energyCount := 0
-		c4CB = func(a combat.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+		c4CB = func(a info.AttackCB) {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			// check for healing
@@ -84,7 +82,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 5}, 3),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
 		cb,

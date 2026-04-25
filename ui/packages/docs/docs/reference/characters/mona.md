@@ -1,5 +1,6 @@
 ---
-title: Mona
+title: >
+  Mona
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -2,8 +2,8 @@ package optstats
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -17,6 +17,7 @@ type PoolCustomStats[T any] struct {
 }
 
 type JobCustomStats[T any] struct {
+	File    *ast.File
 	Cfg     *info.ActionList
 	Actions ast.Node
 	Seed    int64
@@ -35,7 +36,7 @@ func WorkerNewWithCustomStats[T any](maxWorker int, respCh chan stats.Result, er
 		StopCh:   make(chan bool),
 	}
 	// create workers
-	for i := 0; i < maxWorker; i++ {
+	for range maxWorker {
 		go p.worker()
 	}
 	return p
@@ -51,7 +52,7 @@ func (p *PoolCustomStats[T]) worker() {
 				p.errCh <- err
 				break
 			}
-			eval, err := gcs.NewEvaluator(job.Actions, c)
+			eval, err := eval.NewEvaluator(job.File, job.Actions, c)
 			if err != nil {
 				p.errCh <- err
 				break

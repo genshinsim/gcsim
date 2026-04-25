@@ -1,5 +1,6 @@
 ---
-title: Prototype Crescent
+title: >
+  Prototype Crescent
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

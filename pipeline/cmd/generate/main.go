@@ -8,6 +8,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/artifact"
 	"github.com/genshinsim/gcsim/pipeline/pkg/character"
+	"github.com/genshinsim/gcsim/pipeline/pkg/docs"
 	"github.com/genshinsim/gcsim/pipeline/pkg/enemy"
 	"github.com/genshinsim/gcsim/pipeline/pkg/translation"
 	"github.com/genshinsim/gcsim/pipeline/pkg/weapon"
@@ -36,6 +37,7 @@ type config struct {
 	keyPath     string
 	importsPath string
 	docRoot     string
+	docRef      string
 	assetsRoot  string
 }
 
@@ -56,7 +58,8 @@ func main() {
 	flag.StringVar(&cfg.icdPath, "icd", "./pkg/core/attacks", "file to store generated icd data")
 	flag.StringVar(&cfg.keyPath, "keys", "./pkg/core/keys", "path to store generated keys data")
 	flag.StringVar(&cfg.importsPath, "imports", "./pkg/simulation", "path to store generated imports data")
-	flag.StringVar(&cfg.docRoot, "outdocs", "./ui/packages/docs/src/components", "file to store generated icd data")
+	flag.StringVar(&cfg.docRoot, "outdocs", "./ui/packages/docs/src/components", "path to output generated docs components")
+	flag.StringVar(&cfg.docRef, "outdocsref", "./ui/packages/docs/docs/reference", "path to output generated docs pages")
 	flag.StringVar(&cfg.assetsRoot, "assets", "./internal/services/assets", "path to store generate asset data")
 	flag.Parse()
 
@@ -98,6 +101,19 @@ func main() {
 		monsterData = genEnemies(cfg, excels)
 	}
 
+	// generate documentation pages
+	docsGen, err := docs.NewGenerator(docs.GeneratorConfig{
+		Excels:     excels,
+		Characters: charData,
+		Weapons:    weapData,
+		Artifacts:  artifactsData,
+		Enemies:    monsterData,
+	})
+	if err != nil {
+		panic(err)
+	}
+	docsGen.GenerateDocsPages(cfg.docRef)
+
 	// generate translation data
 
 	if cfg.runChar && cfg.runArtifacts && cfg.runEnemies && cfg.runWeap {
@@ -106,14 +122,17 @@ func main() {
 			Weapons:    weapData,
 			Artifacts:  artifactsData,
 			Enemies:    monsterData,
-			Languages: map[string]string{
-				"English":  filepath.Join(cfg.excelPath, "TextMap", "TextMapEN.json"),
-				"Chinese":  filepath.Join(cfg.excelPath, "TextMap", "TextMapCHS.json"),
-				"Japanese": filepath.Join(cfg.excelPath, "TextMap", "TextMapJP.json"),
-				"Korean":   filepath.Join(cfg.excelPath, "TextMap", "TextMapKR.json"),
-				"Spanish":  filepath.Join(cfg.excelPath, "TextMap", "TextMapES.json"),
-				"Russian":  filepath.Join(cfg.excelPath, "TextMap", "TextMapRU.json"),
-				"German":   filepath.Join(cfg.excelPath, "TextMap", "TextMapDE.json"),
+			Languages: map[string][]string{
+				"English":  {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumEN.json")},
+				"Chinese":  {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumCHS.json")},
+				"Japanese": {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumJP.json")},
+				"Korean":   {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumKR.json")},
+				"Spanish":  {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumES.json")},
+				"Russian": {
+					filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumRU_0.json"),
+					filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumRU_1.json"),
+				},
+				"German": {filepath.Join(cfg.excelPath, "TextMap", "TextMap_MediumDE.json")},
 			},
 		}
 		ts, err := translation.NewGenerator(transCfg)
@@ -241,6 +260,7 @@ func genArtifacts(cfg config, excels string) []*model.ArtifactData {
 	if err != nil {
 		panic(err)
 	}
+
 	return g.Data()
 }
 

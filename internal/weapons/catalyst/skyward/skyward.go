@@ -41,27 +41,27 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		travel = 10
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if c.Rand.Float64() < 0.5 {
-			return false
+			return
 		}
-		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index())
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Skyward Atlas Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -82,7 +82,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}, i*147)
 		}
 		char.AddStatus(icdKey, icd, true)
-		return false
 	}, fmt.Sprintf("skyward-atlas-%v", char.Base.Key.String()))
 
 	// permanent stat buff
@@ -97,8 +96,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("skyward-atlas", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 

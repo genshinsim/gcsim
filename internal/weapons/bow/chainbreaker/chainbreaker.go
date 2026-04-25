@@ -41,8 +41,8 @@ func (w *Weapon) Init() error {
 	w.self.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("chain-breaker-atk", -1),
 		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
-			return mAtk, true
+		Amount: func() []float64 {
+			return mAtk
 		},
 	})
 
@@ -52,8 +52,8 @@ func (w *Weapon) Init() error {
 		w.self.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("chain-breaker-em", -1),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return mEm, true
+			Amount: func() []float64 {
+				return mEm
 			},
 		})
 	}

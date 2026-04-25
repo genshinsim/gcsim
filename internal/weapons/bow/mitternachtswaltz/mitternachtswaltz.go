@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -34,19 +33,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffAmount := .15 + .05*float64(r)
 	buffIcd := 0
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		if c.F <= buffIcd {
-			return false
+			return
 		}
 
 		buffIcd = c.F + 1
@@ -54,12 +53,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.AttackTag == attacks.AttackTagNormal {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("mitternachtswaltz-ele", 300),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					if (atk.Info.AttackTag == attacks.AttackTagElementalArt) || (atk.Info.AttackTag == attacks.AttackTagElementalArtHold) {
 						m[attributes.DmgP] = buffAmount
-						return m, true
+						return m
 					}
-					return nil, false
+					return nil
 				},
 			})
 		}
@@ -67,17 +66,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if (atk.Info.AttackTag == attacks.AttackTagElementalArt) || (atk.Info.AttackTag == attacks.AttackTagElementalArtHold) {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("mitternachtswaltz-na", 300),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					if atk.Info.AttackTag == attacks.AttackTagNormal {
 						m[attributes.DmgP] = buffAmount
-						return m, true
+						return m
 					}
-					return nil, false
+					return nil
 				},
 			})
 		}
-
-		return false
 	}, fmt.Sprintf("mitternachtswaltz-%v", char.Base.Key.String()))
 
 	return w, nil

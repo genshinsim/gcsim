@@ -73,7 +73,7 @@ var EnemyMap = map[int]*MonsterData{
 	21020201: {
 		Id:              21020201,
 		Key:             "blazingaxemitachurl",
-		NameTextHashMap: 2414837496,
+		NameTextHashMap: 2414836984,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -149,7 +149,7 @@ var EnemyMap = map[int]*MonsterData{
 	21020401: {
 		Id:              21020401,
 		Key:             "frostarmlawachurl",
-		NameTextHashMap: 3926747992,
+		NameTextHashMap: 3926747480,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.256,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -403,7 +403,7 @@ var EnemyMap = map[int]*MonsterData{
 	20010301: {
 		Id:              20010301,
 		Key:             "anemoslime",
-		NameTextHashMap: 1511587408,
+		NameTextHashMap: 1511586896,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.8672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -433,7 +433,7 @@ var EnemyMap = map[int]*MonsterData{
 	20010401: {
 		Id:              20010401,
 		Key:             "largeanemoslime",
-		NameTextHashMap: 1527751472,
+		NameTextHashMap: 1527750960,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -467,7 +467,7 @@ var EnemyMap = map[int]*MonsterData{
 	29010102: {
 		Id:              29010102,
 		Key:             "stormterror",
-		NameTextHashMap: 390703016,
+		NameTextHashMap: 390702504,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.92,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -488,7 +488,7 @@ var EnemyMap = map[int]*MonsterData{
 	29020101: {
 		Id:              29020101,
 		Key:             "lupusboreasdominatorofwolves",
-		NameTextHashMap: 1869267944,
+		NameTextHashMap: 1869267432,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  244.512,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -614,7 +614,7 @@ var EnemyMap = map[int]*MonsterData{
 	29080102: {
 		Id:              29080102,
 		Key:             "guardianofapepsoasis",
-		NameTextHashMap: 3115382544,
+		NameTextHashMap: 3115382032,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -635,7 +635,7 @@ var EnemyMap = map[int]*MonsterData{
 	29090101: {
 		Id:              29090101,
 		Key:             "alldevouringnarwhal",
-		NameTextHashMap: 2530298840,
+		NameTextHashMap: 2530298328,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  543.36,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -656,7 +656,7 @@ var EnemyMap = map[int]*MonsterData{
 	29100103: {
 		Id:              29100103,
 		Key:             "theknave",
-		NameTextHashMap: 4146578024,
+		NameTextHashMap: 4146577512,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  366.768,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -680,6 +680,90 @@ var EnemyMap = map[int]*MonsterData{
 		NameTextHashMap: 1392029848,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1290.48,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	29121101: {
+		Id:              29121101,
+		Key:             "ascendedking",
+		NameTextHashMap: 358736368,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  679.2,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.7,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	29121201: {
+		Id:              29121201,
+		Key:             "sublimatedqueen",
+		NameTextHashMap: 388834760,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  679.2,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.7,
+				ElectricResist: 0.7,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	29122000: {
+		Id:              29122000,
+		Key:             "thegamebeforethegate",
+		NameTextHashMap: 4102471160,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  679.2,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.7,
+				ElectricResist: 0.7,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	29130101: {
+		Id:              29130101,
+		Key:             "thedoctor",
+		NameTextHashMap: 995769600,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  2852.64,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
 			Resist: &MonsterResistData{
 				FireResist:     0.1,
@@ -732,7 +816,7 @@ var EnemyMap = map[int]*MonsterData{
 	20040101: {
 		Id:              20040101,
 		Key:             "electrohypostasis",
-		NameTextHashMap: 2576416432,
+		NameTextHashMap: 2576415920,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -846,7 +930,7 @@ var EnemyMap = map[int]*MonsterData{
 	20040401: {
 		Id:              20040401,
 		Key:             "hydrohypostasis",
-		NameTextHashMap: 2176969488,
+		NameTextHashMap: 2176968976,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.256,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -952,7 +1036,7 @@ var EnemyMap = map[int]*MonsterData{
 	20040701: {
 		Id:              20040701,
 		Key:             "dendrohypostasis",
-		NameTextHashMap: 2841278344,
+		NameTextHashMap: 2841277832,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  122.256,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1054,7 +1138,7 @@ var EnemyMap = map[int]*MonsterData{
 	20010701: {
 		Id:              20010701,
 		Key:             "mutantelectroslime",
-		NameTextHashMap: 3389920104,
+		NameTextHashMap: 3389919592,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1088,7 +1172,7 @@ var EnemyMap = map[int]*MonsterData{
 	20010801: {
 		Id:              20010801,
 		Key:             "cryoslime",
-		NameTextHashMap: 678013664,
+		NameTextHashMap: 678013152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.8672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1118,7 +1202,7 @@ var EnemyMap = map[int]*MonsterData{
 	20010901: {
 		Id:              20010901,
 		Key:             "largecryoslime",
-		NameTextHashMap: 2368926680,
+		NameTextHashMap: 2368926168,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1216,7 +1300,7 @@ var EnemyMap = map[int]*MonsterData{
 	20011601: {
 		Id:              20011601,
 		Key:             "hydrohypostasissummon",
-		NameTextHashMap: 544132088,
+		NameTextHashMap: 544131576,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1237,7 +1321,7 @@ var EnemyMap = map[int]*MonsterData{
 	20050101: {
 		Id:              20050101,
 		Key:             "oceanid",
-		NameTextHashMap: 1194478280,
+		NameTextHashMap: 1194477768,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  135.84,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1289,7 +1373,7 @@ var EnemyMap = map[int]*MonsterData{
 	20050301: {
 		Id:              20050301,
 		Key:             "hydromimiccrane",
-		NameTextHashMap: 1411333056,
+		NameTextHashMap: 1411332544,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.8672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1315,7 +1399,7 @@ var EnemyMap = map[int]*MonsterData{
 	20050401: {
 		Id:              20050401,
 		Key:             "hydromimiccrab",
-		NameTextHashMap: 3859189664,
+		NameTextHashMap: 3859189152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1341,7 +1425,7 @@ var EnemyMap = map[int]*MonsterData{
 	20050501: {
 		Id:              20050501,
 		Key:             "hydromimicfinch",
-		NameTextHashMap: 1517871784,
+		NameTextHashMap: 1517871272,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1401,7 +1485,7 @@ var EnemyMap = map[int]*MonsterData{
 	20050701: {
 		Id:              20050701,
 		Key:             "hydromimicsquirrel",
-		NameTextHashMap: 2695145104,
+		NameTextHashMap: 2695144592,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.0176,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1427,7 +1511,7 @@ var EnemyMap = map[int]*MonsterData{
 	20050801: {
 		Id:              20050801,
 		Key:             "hydromimicfrog",
-		NameTextHashMap: 2270056128,
+		NameTextHashMap: 2270055616,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1457,7 +1541,7 @@ var EnemyMap = map[int]*MonsterData{
 	20050901: {
 		Id:              20050901,
 		Key:             "hydromimicraptor",
-		NameTextHashMap: 1727202056,
+		NameTextHashMap: 1727201544,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.8672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1483,7 +1567,7 @@ var EnemyMap = map[int]*MonsterData{
 	20051001: {
 		Id:              20051001,
 		Key:             "taintedwatersplittingphantasm",
-		NameTextHashMap: 453148552,
+		NameTextHashMap: 453148040,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.92,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -1517,7 +1601,7 @@ var EnemyMap = map[int]*MonsterData{
 	20051002: {
 		Id:              20051002,
 		Key:             "veterantaintedwatersplittingphantasm",
-		NameTextHashMap: 2970448672,
+		NameTextHashMap: 2970448160,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  991.632,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -1589,7 +1673,7 @@ var EnemyMap = map[int]*MonsterData{
 	20051102: {
 		Id:              20051102,
 		Key:             "veterantaintedwaterspoutingphantasm",
-		NameTextHashMap: 3144622032,
+		NameTextHashMap: 3144621520,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  885.6768,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -1717,10 +1801,324 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	20080101: {
+		Id:              20080101,
+		Key:             "gleamingchargefrostnightscion",
+		NameTextHashMap: 2846356792,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  138.5568,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.5,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010024,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010024,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010024,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	20080201: {
+		Id:              20080201,
+		Key:             "tangledvinesfrostnightscion",
+		NameTextHashMap: 3329396192,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  138.5568,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.5,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010023,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010023,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010023,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	20080301: {
+		Id:              20080301,
+		Key:             "blazingbrilliancefrostnightscion",
+		NameTextHashMap: 2511205464,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  176.592,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.5,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010021,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010021,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010021,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	20080401: {
+		Id:              20080401,
+		Key:             "icycrystalfrostnightscion",
+		NameTextHashMap: 1589213360,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  176.592,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010026,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010026,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010026,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	20080501: {
+		Id:              20080501,
+		Key:             "surgingcurrentsfrostnightscion",
+		NameTextHashMap: 3514143808,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  173.8752,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.5,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010022,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010022,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010022,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	20080601: {
+		Id:              20080601,
+		Key:             "veiledcloudchaserfrostnightscion",
+		NameTextHashMap: 938126712,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  138.5568,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.5,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010025,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010025,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010025,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	20080701: {
+		Id:              20080701,
+		Key:             "gildedsunshardfrostnightscion",
+		NameTextHashMap: 818684048,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  138.5568,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.5,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010027,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010027,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010027,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	20081001: {
+		Id:              20081001,
+		Key:             "frostnightherra",
+		NameTextHashMap: 381920648,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  298.848,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	20081201: {
+		Id:              20081201,
+		Key:             "hexadecatonicbattlehardenedmandragora",
+		NameTextHashMap: 902722592,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  869.376,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    1.35,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010013,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010013,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010013,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010043,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	21010201: {
 		Id:              21010201,
 		Key:             "hilichurlfighter",
-		NameTextHashMap: 1502883680,
+		NameTextHashMap: 1502883168,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1750,7 +2148,7 @@ var EnemyMap = map[int]*MonsterData{
 	21010301: {
 		Id:              21010301,
 		Key:             "woodenshieldhilichurlguard",
-		NameTextHashMap: 2491960152,
+		NameTextHashMap: 2491959640,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1840,7 +2238,7 @@ var EnemyMap = map[int]*MonsterData{
 	21010601: {
 		Id:              21010601,
 		Key:             "hilichurlgrenadier",
-		NameTextHashMap: 4024598056,
+		NameTextHashMap: 4024597544,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -1930,7 +2328,7 @@ var EnemyMap = map[int]*MonsterData{
 	21011001: {
 		Id:              21011001,
 		Key:             "electrohilichurlshooter",
-		NameTextHashMap: 2963928784,
+		NameTextHashMap: 2963928272,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.8672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2110,7 +2508,7 @@ var EnemyMap = map[int]*MonsterData{
 	20011201: {
 		Id:              20011201,
 		Key:             "pyroslime",
-		NameTextHashMap: 3113209704,
+		NameTextHashMap: 3113209192,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.8672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2140,7 +2538,7 @@ var EnemyMap = map[int]*MonsterData{
 	20011301: {
 		Id:              20011301,
 		Key:             "largepyroslime",
-		NameTextHashMap: 3104668424,
+		NameTextHashMap: 3104667912,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2174,7 +2572,7 @@ var EnemyMap = map[int]*MonsterData{
 	20011401: {
 		Id:              20011401,
 		Key:             "geoslime",
-		NameTextHashMap: 1304425088,
+		NameTextHashMap: 1304424576,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  10.8672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2204,7 +2602,7 @@ var EnemyMap = map[int]*MonsterData{
 	20011501: {
 		Id:              20011501,
 		Key:             "largegeoslime",
-		NameTextHashMap: 2254956112,
+		NameTextHashMap: 2254955600,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2314,7 +2712,7 @@ var EnemyMap = map[int]*MonsterData{
 	22010301: {
 		Id:              22010301,
 		Key:             "hydroabyssmage",
-		NameTextHashMap: 2267848368,
+		NameTextHashMap: 2267847856,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2352,7 +2750,7 @@ var EnemyMap = map[int]*MonsterData{
 	22010401: {
 		Id:              22010401,
 		Key:             "electroabyssmage",
-		NameTextHashMap: 1299643312,
+		NameTextHashMap: 1299642800,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2390,7 +2788,7 @@ var EnemyMap = map[int]*MonsterData{
 	22020101: {
 		Id:              22020101,
 		Key:             "abyssheraldwickedtorrents",
-		NameTextHashMap: 2159496136,
+		NameTextHashMap: 2159495624,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2424,7 +2822,7 @@ var EnemyMap = map[int]*MonsterData{
 	22020201: {
 		Id:              22020201,
 		Key:             "abyssheraldfrostfall",
-		NameTextHashMap: 1561834088,
+		NameTextHashMap: 1561833576,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -2556,7 +2954,7 @@ var EnemyMap = map[int]*MonsterData{
 	22040201: {
 		Id:              22040201,
 		Key:             "thundercravenrifthoundwhelp",
-		NameTextHashMap: 717375112,
+		NameTextHashMap: 717374600,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.6016,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -2620,7 +3018,7 @@ var EnemyMap = map[int]*MonsterData{
 	22050201: {
 		Id:              22050201,
 		Key:             "thundercravenrifthound",
-		NameTextHashMap: 2530429496,
+		NameTextHashMap: 2530428984,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -2654,7 +3052,7 @@ var EnemyMap = map[int]*MonsterData{
 	22060101: {
 		Id:              22060101,
 		Key:             "goldenwolflord",
-		NameTextHashMap: 2218442544,
+		NameTextHashMap: 2218442032,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  163.008,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -2692,7 +3090,7 @@ var EnemyMap = map[int]*MonsterData{
 	22070101: {
 		Id:              22070101,
 		Key:             "shadowyhuskstandardbearer",
-		NameTextHashMap: 3775538896,
+		NameTextHashMap: 3775538384,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.92,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -2764,7 +3162,7 @@ var EnemyMap = map[int]*MonsterData{
 	22070301: {
 		Id:              22070301,
 		Key:             "shadowyhuskdefender",
-		NameTextHashMap: 784327392,
+		NameTextHashMap: 784326880,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.336,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -2802,7 +3200,7 @@ var EnemyMap = map[int]*MonsterData{
 	22080101: {
 		Id:              22080101,
 		Key:             "blackserpentknightwindcutter",
-		NameTextHashMap: 3259944648,
+		NameTextHashMap: 3259944136,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -2946,7 +3344,7 @@ var EnemyMap = map[int]*MonsterData{
 	22110201: {
 		Id:              22110201,
 		Key:             "shatterstonebreacherprimus",
-		NameTextHashMap: 3351302096,
+		NameTextHashMap: 3351301584,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.6016,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -2976,7 +3374,7 @@ var EnemyMap = map[int]*MonsterData{
 	22110301: {
 		Id:              22110301,
 		Key:             "largeovergrownbreacherprimus",
-		NameTextHashMap: 1920243392,
+		NameTextHashMap: 1920242880,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  114.1056,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3044,7 +3442,7 @@ var EnemyMap = map[int]*MonsterData{
 	22120101: {
 		Id:              22120101,
 		Key:             "tenebrouspapillatypei",
-		NameTextHashMap: 553381864,
+		NameTextHashMap: 553381352,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3082,7 +3480,7 @@ var EnemyMap = map[int]*MonsterData{
 	22120201: {
 		Id:              22120201,
 		Key:             "tenebrousmimiflora",
-		NameTextHashMap: 2988972984,
+		NameTextHashMap: 2988972472,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  46.1856,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3104,6 +3502,184 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	22130001: {
+		Id:              22130001,
+		Key:             "wildernessexile",
+		NameTextHashMap: 2128512256,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  32.6016,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	22131001: {
+		Id:              22131001,
+		Key:             "wildernesshunter",
+		NameTextHashMap: 2059481112,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  141.2736,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	22132001: {
+		Id:              22132001,
+		Key:             "battlehardenedlightkeeper",
+		NameTextHashMap: 2095384976,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  611.28,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	22140101: {
+		Id:              22140101,
+		Key:             "fisherofhiddendepths",
+		NameTextHashMap: 3600635288,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  40.752,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010020,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	22150101: {
+		Id:              22150101,
+		Key:             "lordofthehiddendepthswhispererofnightmares",
+		NameTextHashMap: 1197453696,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  366.768,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
 					HpPercent: 0,
 				},
 			},
@@ -3172,7 +3748,7 @@ var EnemyMap = map[int]*MonsterData{
 	21030301: {
 		Id:              21030301,
 		Key:             "anemosamachurl",
-		NameTextHashMap: 10553112,
+		NameTextHashMap: 10552600,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -3262,7 +3838,7 @@ var EnemyMap = map[int]*MonsterData{
 	21030601: {
 		Id:              21030601,
 		Key:             "electrosamachurl",
-		NameTextHashMap: 1596748696,
+		NameTextHashMap: 1596748184,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -3291,8 +3867,8 @@ var EnemyMap = map[int]*MonsterData{
 	},
 	21030701: {
 		Id:              21030701,
-		Key:             "samachurlboss",
-		NameTextHashMap: 4115780424,
+		Key:             "mystifyingmegachurl",
+		NameTextHashMap: 4115779912,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  320,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3327,10 +3903,48 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	21030801: {
+		Id:              21030801,
+		Key:             "battlehardenedsamachurl",
+		NameTextHashMap: 1887008944,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1086.72,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	21040101: {
 		Id:              21040101,
 		Key:             "anemohilichurlrogue",
-		NameTextHashMap: 3952856048,
+		NameTextHashMap: 3952855536,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.92,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3364,7 +3978,7 @@ var EnemyMap = map[int]*MonsterData{
 	21040201: {
 		Id:              21040201,
 		Key:             "hydrohilichurlrogue",
-		NameTextHashMap: 2508757576,
+		NameTextHashMap: 2508757064,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.92,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3436,7 +4050,7 @@ var EnemyMap = map[int]*MonsterData{
 	24010201: {
 		Id:              24010201,
 		Key:             "ruinhunter",
-		NameTextHashMap: 4243053360,
+		NameTextHashMap: 4243052848,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  81.504,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -3512,7 +4126,7 @@ var EnemyMap = map[int]*MonsterData{
 	24010401: {
 		Id:              24010401,
 		Key:             "ruinserpent",
-		NameTextHashMap: 2345695136,
+		NameTextHashMap: 2345694624,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3546,7 +4160,7 @@ var EnemyMap = map[int]*MonsterData{
 	24020101: {
 		Id:              24020101,
 		Key:             "ruincruiser",
-		NameTextHashMap: 2360166000,
+		NameTextHashMap: 2360165488,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3648,7 +4262,7 @@ var EnemyMap = map[int]*MonsterData{
 	24020401: {
 		Id:              24020401,
 		Key:             "ruinscout",
-		NameTextHashMap: 545245072,
+		NameTextHashMap: 545244560,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  57.0528,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3682,7 +4296,7 @@ var EnemyMap = map[int]*MonsterData{
 	24021101: {
 		Id:              24021101,
 		Key:             "perpetualmechanicalarray",
-		NameTextHashMap: 4062249480,
+		NameTextHashMap: 4062248968,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3894,7 +4508,7 @@ var EnemyMap = map[int]*MonsterData{
 	24040201: {
 		Id:              24040201,
 		Key:             "primalconstructreshaper",
-		NameTextHashMap: 3433160376,
+		NameTextHashMap: 3433159864,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  46.1856,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -3932,7 +4546,7 @@ var EnemyMap = map[int]*MonsterData{
 	24040301: {
 		Id:              24040301,
 		Key:             "primalconstructprospector",
-		NameTextHashMap: 960036488,
+		NameTextHashMap: 960035976,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  46.1856,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4004,7 +4618,7 @@ var EnemyMap = map[int]*MonsterData{
 	24060101: {
 		Id:              24060101,
 		Key:             "reconlogmek",
-		NameTextHashMap: 2479279968,
+		NameTextHashMap: 2479279456,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4034,7 +4648,7 @@ var EnemyMap = map[int]*MonsterData{
 	24060201: {
 		Id:              24060201,
 		Key:             "arithmeticenhancermek",
-		NameTextHashMap: 1945068152,
+		NameTextHashMap: 1945067640,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  24.4512,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4064,7 +4678,7 @@ var EnemyMap = map[int]*MonsterData{
 	24060301: {
 		Id:              24060301,
 		Key:             "underwatersurveymek",
-		NameTextHashMap: 2641906440,
+		NameTextHashMap: 2641905928,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.48134,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -4115,7 +4729,7 @@ var EnemyMap = map[int]*MonsterData{
 	24060501: {
 		Id:              24060501,
 		Key:             "underwaterpatrolmek",
-		NameTextHashMap: 723416032,
+		NameTextHashMap: 723415520,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.4689,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -4136,7 +4750,7 @@ var EnemyMap = map[int]*MonsterData{
 	24060601: {
 		Id:              24060601,
 		Key:             "deepwaterassaultmek",
-		NameTextHashMap: 3481979704,
+		NameTextHashMap: 3481979192,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  64.9378,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -4187,7 +4801,7 @@ var EnemyMap = map[int]*MonsterData{
 	24060801: {
 		Id:              24060801,
 		Key:             "assaultspecialistmek",
-		NameTextHashMap: 68049912,
+		NameTextHashMap: 68049400,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  65.2032,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4225,7 +4839,7 @@ var EnemyMap = map[int]*MonsterData{
 	24060901: {
 		Id:              24060901,
 		Key:             "suppressionspecialistmek",
-		NameTextHashMap: 1387101112,
+		NameTextHashMap: 1387100600,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.336,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4301,7 +4915,7 @@ var EnemyMap = map[int]*MonsterData{
 	24061101: {
 		Id:              24061101,
 		Key:             "areaalertmek",
-		NameTextHashMap: 3720326080,
+		NameTextHashMap: 3720325568,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.0176,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4331,7 +4945,7 @@ var EnemyMap = map[int]*MonsterData{
 	24061201: {
 		Id:              24061201,
 		Key:             "constructionspecialistmek",
-		NameTextHashMap: 3581880152,
+		NameTextHashMap: 3581879640,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4407,7 +5021,7 @@ var EnemyMap = map[int]*MonsterData{
 	24070101: {
 		Id:              24070101,
 		Key:             "icewindsuite",
-		NameTextHashMap: 242731664,
+		NameTextHashMap: 242731152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  203.76,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4479,7 +5093,7 @@ var EnemyMap = map[int]*MonsterData{
 	24090101: {
 		Id:              24090101,
 		Key:             "secretsourceautomatonhunterseeker",
-		NameTextHashMap: 1551385520,
+		NameTextHashMap: 1551385008,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4513,7 +5127,7 @@ var EnemyMap = map[int]*MonsterData{
 	24090201: {
 		Id:              24090201,
 		Key:             "secretsourceautomatonconfigurationdevice",
-		NameTextHashMap: 2834509656,
+		NameTextHashMap: 2834509144,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  353.184,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4539,6 +5153,179 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	24090301: {
+		Id:              24090301,
+		Key:             "primevalsourcedragonmech",
+		NameTextHashMap: 1465151824,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1426.32,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	24090501: {
+		Id:              24090501,
+		Key:             "secretsourceautomatonoverseerdevice",
+		NameTextHashMap: 3165674520,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  293.4144,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	24100101: {
+		Id:              24100101,
+		Key:             "knuckleduckle",
+		NameTextHashMap: 2933727304,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  366.768,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	24110101: {
+		Id:              24110101,
+		Key:             "domainkeeper",
+		NameTextHashMap: 3360117904,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  95.088,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	24111101: {
+		Id:              24111101,
+		Key:             "watcherfallenvigil",
+		NameTextHashMap: 4187782288,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  326.016,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010040,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010040,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010040,
 					HpPercent: 0.25,
 				},
 				{
@@ -4614,7 +5401,7 @@ var EnemyMap = map[int]*MonsterData{
 	24810401: {
 		Id:              24810401,
 		Key:             "advanceddefensiveelectrotower",
-		NameTextHashMap: 973459312,
+		NameTextHashMap: 973458800,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  180,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4656,7 +5443,7 @@ var EnemyMap = map[int]*MonsterData{
 	24810601: {
 		Id:              24810601,
 		Key:             "advanceddefensivehydrotower",
-		NameTextHashMap: 693132112,
+		NameTextHashMap: 693131600,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  180,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4698,7 +5485,7 @@ var EnemyMap = map[int]*MonsterData{
 	24810801: {
 		Id:              24810801,
 		Key:             "advanceddefensivecryotower",
-		NameTextHashMap: 3289322152,
+		NameTextHashMap: 3289321640,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  180,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4719,7 +5506,7 @@ var EnemyMap = map[int]*MonsterData{
 	24810901: {
 		Id:              24810901,
 		Key:             "basicdefensiveanemotower",
-		NameTextHashMap: 4171513648,
+		NameTextHashMap: 4171513136,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4779,10 +5566,31 @@ var EnemyMap = map[int]*MonsterData{
 			HpDrop:       []*MonsterHPDrop{},
 		},
 	},
+	24811201: {
+		Id:              24811201,
+		Key:             "defensivepoint56pushcontestdefense",
+		NameTextHashMap: 2439922824,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  16.3008,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
 	24920101: {
 		Id:              24920101,
 		Key:             "automatonsmallslimeballoon",
-		NameTextHashMap: 1647913616,
+		NameTextHashMap: 1647913104,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4824,7 +5632,49 @@ var EnemyMap = map[int]*MonsterData{
 	24920301: {
 		Id:              24920301,
 		Key:             "automatonfungusballoon",
-		NameTextHashMap: 652910120,
+		NameTextHashMap: 652909608,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  13.584,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	24920401: {
+		Id:              24920401,
+		Key:             "testnodkraiinfiltrationeventrobot1",
+		NameTextHashMap: 46132688,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  13.584,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	24920501: {
+		Id:              24920501,
+		Key:             "testnodkraiinfiltrationeventrobot2",
+		NameTextHashMap: 3151973536,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4845,7 +5695,7 @@ var EnemyMap = map[int]*MonsterData{
 	23011101: {
 		Id:              23011101,
 		Key:             "veteranfatuiskirmishercryogunnerlegionnaire",
-		NameTextHashMap: 3210971752,
+		NameTextHashMap: 3210971240,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  502.608,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4879,7 +5729,7 @@ var EnemyMap = map[int]*MonsterData{
 	23011301: {
 		Id:              23011301,
 		Key:             "veteranfatuiskirmisherelectrohammervanguard",
-		NameTextHashMap: 3243962240,
+		NameTextHashMap: 3243961728,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  448.272,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -4947,7 +5797,7 @@ var EnemyMap = map[int]*MonsterData{
 	23010101: {
 		Id:              23010101,
 		Key:             "fatuiskirmishercryogunnerlegionnaire",
-		NameTextHashMap: 995929064,
+		NameTextHashMap: 995928552,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.336,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -4981,7 +5831,7 @@ var EnemyMap = map[int]*MonsterData{
 	23010201: {
 		Id:              23010201,
 		Key:             "fatuiskirmisherhydrogunnerlegionnaire",
-		NameTextHashMap: 12762888,
+		NameTextHashMap: 12762376,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5049,7 +5899,7 @@ var EnemyMap = map[int]*MonsterData{
 	23010401: {
 		Id:              23010401,
 		Key:             "fatuiskirmishergeochanterbracer",
-		NameTextHashMap: 3627495392,
+		NameTextHashMap: 3627494880,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5083,7 +5933,7 @@ var EnemyMap = map[int]*MonsterData{
 	23010501: {
 		Id:              23010501,
 		Key:             "fatuiskirmisheranemoboxervanguard",
-		NameTextHashMap: 1426306032,
+		NameTextHashMap: 1426305520,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5117,7 +5967,7 @@ var EnemyMap = map[int]*MonsterData{
 	23010601: {
 		Id:              23010601,
 		Key:             "fatuiskirmisherpyroslingerbracer",
-		NameTextHashMap: 1434878968,
+		NameTextHashMap: 1434878456,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5223,7 +6073,7 @@ var EnemyMap = map[int]*MonsterData{
 	23030101: {
 		Id:              23030101,
 		Key:             "fatuielectrocicinmage",
-		NameTextHashMap: 1010609776,
+		NameTextHashMap: 1010609264,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.92,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5325,7 +6175,7 @@ var EnemyMap = map[int]*MonsterData{
 	23060101: {
 		Id:              23060101,
 		Key:             "frostoperative",
-		NameTextHashMap: 2059788056,
+		NameTextHashMap: 2059787544,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -5401,7 +6251,7 @@ var EnemyMap = map[int]*MonsterData{
 	23060301: {
 		Id:              23060301,
 		Key:             "veteranfrostoperative",
-		NameTextHashMap: 544837160,
+		NameTextHashMap: 544836648,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  896.544,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -5474,6 +6324,575 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	23070101: {
+		Id:              23070101,
+		Key:             "oprichnikilinetrooper",
+		NameTextHashMap: 190278912,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  16.3008,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23072101: {
+		Id:              23072101,
+		Key:             "oprichnikisupporttrooper",
+		NameTextHashMap: 1099340152,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  19.0176,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010017,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23073101: {
+		Id:              23073101,
+		Key:             "oprichnikigrenadier",
+		NameTextHashMap: 3478713720,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  13.584,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010015,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23074101: {
+		Id:              23074101,
+		Key:             "oprichnikivanguard",
+		NameTextHashMap: 511866336,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  16.3008,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23076101: {
+		Id:              23076101,
+		Key:             "oprichnikimedic",
+		NameTextHashMap: 2525906136,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  13.584,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010012,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23078101: {
+		Id:              23078101,
+		Key:             "oprichnikibombardier",
+		NameTextHashMap: 1604633904,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  13.584,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23079101: {
+		Id:              23079101,
+		Key:             "oprichnikifirebladeshocktrooper",
+		NameTextHashMap: 3439008008,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  59.7696,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23079401: {
+		Id:              23079401,
+		Key:             "battlehardenedfirebladeshocktrooper",
+		NameTextHashMap: 3163666680,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  278.472,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.3,
+				GrassResist:    0.3,
+				WaterResist:    0.3,
+				ElectricResist: 0.3,
+				WindResist:     0.3,
+				IceResist:      0.3,
+				RockResist:     0.3,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	23079201: {
+		Id:              23079201,
+		Key:             "oprichnikihailstormcannoneer",
+		NameTextHashMap: 3756557552,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  65.2032,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23079301: {
+		Id:              23079301,
+		Key:             "oprichnikithunderblitzgvardiya",
+		NameTextHashMap: 4026704272,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  54.336,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23080102: {
+		Id:              23080102,
+		Key:             "closecombatstormlandcruiser",
+		NameTextHashMap: 2580787240,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  32.6016,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23080201: {
+		Id:              23080201,
+		Key:             "closecombatscoutlandcruiser",
+		NameTextHashMap: 3699252296,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  32.6016,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23080301: {
+		Id:              23080301,
+		Key:             "forcereconstormlandcruiser",
+		NameTextHashMap: 2335792264,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  27.168,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23080401: {
+		Id:              23080401,
+		Key:             "forcereconscoutlandcruiser",
+		NameTextHashMap: 1602548864,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  27.168,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23080501: {
+		Id:              23080501,
+		Key:             "forcerecongroundeffectlandcruiser",
+		NameTextHashMap: 4219063728,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  21.7344,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23085101: {
+		Id:              23085101,
+		Key:             "cuttingedgeallpurposestormlandcruiser",
+		NameTextHashMap: 3789332680,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  95.088,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23085201: {
+		Id:              23085201,
+		Key:             "cuttingedgeallpurposescoutlandcruiser",
+		NameTextHashMap: 246817800,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  108.672,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23085301: {
+		Id:              23085301,
+		Key:             "cuttingedgefiresupportgroundeffectlandcruiser",
+		NameTextHashMap: 3027330464,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  81.504,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	23090101: {
+		Id:              23090101,
+		Key:             "superheavylandrovermechanizedfortress",
+		NameTextHashMap: 537013480,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  298.848,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	25010101: {
 		Id:              25010101,
 		Key:             "treasurehoardersliuliu",
@@ -5511,7 +6930,7 @@ var EnemyMap = map[int]*MonsterData{
 	25010201: {
 		Id:              25010201,
 		Key:             "treasurehoardersscout",
-		NameTextHashMap: 3059200712,
+		NameTextHashMap: 3059200200,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  16.3008,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5613,7 +7032,7 @@ var EnemyMap = map[int]*MonsterData{
 	25010501: {
 		Id:              25010501,
 		Key:             "treasurehoarderselectropotioneer",
-		NameTextHashMap: 1521590128,
+		NameTextHashMap: 1521589616,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5681,7 +7100,7 @@ var EnemyMap = map[int]*MonsterData{
 	25010701: {
 		Id:              25010701,
 		Key:             "treasurehoardershandyman",
-		NameTextHashMap: 3123684272,
+		NameTextHashMap: 3123683760,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5711,6 +7130,44 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010020,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25010801: {
+		Id:              25010801,
+		Key:             "liam",
+		NameTextHashMap: 2133536240,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  828.624,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
 					HpPercent: 0,
 				},
 			},
@@ -5787,7 +7244,7 @@ var EnemyMap = map[int]*MonsterData{
 	25030101: {
 		Id:              25030101,
 		Key:             "treasurehoarderscarmen",
-		NameTextHashMap: 531388104,
+		NameTextHashMap: 531387592,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5859,7 +7316,7 @@ var EnemyMap = map[int]*MonsterData{
 	25030301: {
 		Id:              25030301,
 		Key:             "treasurehoardersseaman",
-		NameTextHashMap: 1603081168,
+		NameTextHashMap: 1603080656,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5897,7 +7354,7 @@ var EnemyMap = map[int]*MonsterData{
 	25040101: {
 		Id:              25040101,
 		Key:             "treasurehoardersboss",
-		NameTextHashMap: 1914087968,
+		NameTextHashMap: 1914087456,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.6016,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5935,7 +7392,7 @@ var EnemyMap = map[int]*MonsterData{
 	25050101: {
 		Id:              25050101,
 		Key:             "millelithsoldier",
-		NameTextHashMap: 1541768712,
+		NameTextHashMap: 1541768200,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -5969,7 +7426,7 @@ var EnemyMap = map[int]*MonsterData{
 	25050201: {
 		Id:              25050201,
 		Key:             "millelithsergeant",
-		NameTextHashMap: 4161693360,
+		NameTextHashMap: 4161692848,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.6016,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -6007,7 +7464,7 @@ var EnemyMap = map[int]*MonsterData{
 	25050301: {
 		Id:              25050301,
 		Key:             "shogunateinfantry",
-		NameTextHashMap: 1175126584,
+		NameTextHashMap: 1175126072,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -6071,7 +7528,7 @@ var EnemyMap = map[int]*MonsterData{
 	25050501: {
 		Id:              25050501,
 		Key:             "sangonomiyacohort",
-		NameTextHashMap: 2581117880,
+		NameTextHashMap: 2581117368,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -6101,7 +7558,7 @@ var EnemyMap = map[int]*MonsterData{
 	25060101: {
 		Id:              25060101,
 		Key:             "treasurehoarderspugilist",
-		NameTextHashMap: 557874744,
+		NameTextHashMap: 557874232,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -6136,10 +7593,48 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	25060201: {
+		Id:              25060201,
+		Key:             "rockyavildsen",
+		NameTextHashMap: 2178383936,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  869.376,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	25070101: {
 		Id:              25070101,
 		Key:             "treasurehoarderscrusher",
-		NameTextHashMap: 2325739152,
+		NameTextHashMap: 2325738640,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -6177,7 +7672,7 @@ var EnemyMap = map[int]*MonsterData{
 	25070201: {
 		Id:              25070201,
 		Key:             "treasurehoarderswallenstein",
-		NameTextHashMap: 4260216696,
+		NameTextHashMap: 4260216184,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  108.672,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6241,7 +7736,7 @@ var EnemyMap = map[int]*MonsterData{
 	25080201: {
 		Id:              25080201,
 		Key:             "nobushihitsukeban",
-		NameTextHashMap: 2410706536,
+		NameTextHashMap: 2410706024,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6271,7 +7766,7 @@ var EnemyMap = map[int]*MonsterData{
 	25080301: {
 		Id:              25080301,
 		Key:             "nobushikikouban",
-		NameTextHashMap: 628782592,
+		NameTextHashMap: 628782080,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6339,7 +7834,7 @@ var EnemyMap = map[int]*MonsterData{
 	25090101: {
 		Id:              25090101,
 		Key:             "maguukenki",
-		NameTextHashMap: 1759704776,
+		NameTextHashMap: 1759704264,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  271.68,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -6415,7 +7910,7 @@ var EnemyMap = map[int]*MonsterData{
 	25090301: {
 		Id:              25090301,
 		Key:             "maguukenkigallopingfrost",
-		NameTextHashMap: 2743685832,
+		NameTextHashMap: 2743685320,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  217.344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -6550,7 +8045,7 @@ var EnemyMap = map[int]*MonsterData{
 	25100301: {
 		Id:              25100301,
 		Key:             "ochimushaensorcelledthunder",
-		NameTextHashMap: 3213672968,
+		NameTextHashMap: 3213672456,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  65.2032,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6626,7 +8121,7 @@ var EnemyMap = map[int]*MonsterData{
 	25110101: {
 		Id:              25110101,
 		Key:             "spiritofomenstonedrake",
-		NameTextHashMap: 1974811384,
+		NameTextHashMap: 1974810872,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  20.376,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6656,7 +8151,7 @@ var EnemyMap = map[int]*MonsterData{
 	25110201: {
 		Id:              25110201,
 		Key:             "spiritofomenwindglede",
-		NameTextHashMap: 212096752,
+		NameTextHashMap: 212096240,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  17.93088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6716,7 +8211,7 @@ var EnemyMap = map[int]*MonsterData{
 	25110401: {
 		Id:              25110401,
 		Key:             "spiritofomendendrospiritserpent",
-		NameTextHashMap: 2282634880,
+		NameTextHashMap: 2282634368,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  20.376,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6866,7 +8361,7 @@ var EnemyMap = map[int]*MonsterData{
 	25210501: {
 		Id:              25210501,
 		Key:             "eremitesworddancer",
-		NameTextHashMap: 2346894216,
+		NameTextHashMap: 2346893704,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6896,7 +8391,7 @@ var EnemyMap = map[int]*MonsterData{
 	25310101: {
 		Id:              25310101,
 		Key:             "eremitedesertclearwater",
-		NameTextHashMap: 2370874928,
+		NameTextHashMap: 2370874416,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  48.9024,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6934,7 +8429,7 @@ var EnemyMap = map[int]*MonsterData{
 	25310201: {
 		Id:              25310201,
 		Key:             "eremitesunfrost",
-		NameTextHashMap: 3916342008,
+		NameTextHashMap: 3916341496,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  48.9024,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -6972,7 +8467,7 @@ var EnemyMap = map[int]*MonsterData{
 	25310301: {
 		Id:              25310301,
 		Key:             "eremitedaythunder",
-		NameTextHashMap: 3814441896,
+		NameTextHashMap: 3814441384,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.336,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7010,7 +8505,7 @@ var EnemyMap = map[int]*MonsterData{
 	25410101: {
 		Id:              25410101,
 		Key:             "eremitestoneenchanter",
-		NameTextHashMap: 3908443880,
+		NameTextHashMap: 3908443368,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  67.92,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7086,7 +8581,7 @@ var EnemyMap = map[int]*MonsterData{
 	25410301: {
 		Id:              25410301,
 		Key:             "eremitescorchingloremaster",
-		NameTextHashMap: 2089267960,
+		NameTextHashMap: 2089267448,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  59.7696,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7222,7 +8717,7 @@ var EnemyMap = map[int]*MonsterData{
 	25501101: {
 		Id:              25501101,
 		Key:             "forgedsandinterrogator",
-		NameTextHashMap: 33272336,
+		NameTextHashMap: 33271824,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7282,7 +8777,7 @@ var EnemyMap = map[int]*MonsterData{
 	25501301: {
 		Id:              25501301,
 		Key:             "wingedwarriorfeathershedder",
-		NameTextHashMap: 2710230568,
+		NameTextHashMap: 2710230056,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7342,7 +8837,7 @@ var EnemyMap = map[int]*MonsterData{
 	25502101: {
 		Id:              25502101,
 		Key:             "swiftstepstormscout",
-		NameTextHashMap: 2970321712,
+		NameTextHashMap: 2970321200,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7372,7 +8867,7 @@ var EnemyMap = map[int]*MonsterData{
 	25502201: {
 		Id:              25502201,
 		Key:             "flowingbladegreasesaw",
-		NameTextHashMap: 930914872,
+		NameTextHashMap: 930914360,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7402,7 +8897,37 @@ var EnemyMap = map[int]*MonsterData{
 	25502301: {
 		Id:              25502301,
 		Key:             "spiritspeakerwarriorpsychokinetic",
-		NameTextHashMap: 1101241200,
+		NameTextHashMap: 1101240688,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  21.7344,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25502401: {
+		Id:              25502401,
+		Key:             "ferociouswarriorhumanram",
+		NameTextHashMap: 161384704,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7432,7 +8957,7 @@ var EnemyMap = map[int]*MonsterData{
 	25503101: {
 		Id:              25503101,
 		Key:             "swiftsteparmedcourier",
-		NameTextHashMap: 2389441328,
+		NameTextHashMap: 2389440816,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7462,7 +8987,7 @@ var EnemyMap = map[int]*MonsterData{
 	25503201: {
 		Id:              25503201,
 		Key:             "spiritspeakerwarriorcontemplator",
-		NameTextHashMap: 1757007824,
+		NameTextHashMap: 1757007312,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7549,10 +9074,40 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	25504301: {
+		Id:              25504301,
+		Key:             "ferociouswarriorwrestler",
+		NameTextHashMap: 424578088,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  27.168,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	25505101: {
 		Id:              25505101,
 		Key:             "forgedsandjavelineer",
-		NameTextHashMap: 3015752280,
+		NameTextHashMap: 3015751768,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7582,7 +9137,37 @@ var EnemyMap = map[int]*MonsterData{
 	25505201: {
 		Id:              25505201,
 		Key:             "flowingbladeharpoonthrower",
-		NameTextHashMap: 1683433088,
+		NameTextHashMap: 1683432576,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  21.7344,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25505301: {
+		Id:              25505301,
+		Key:             "ferociouswarriorgrappler",
+		NameTextHashMap: 4079510608,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7701,7 +9286,7 @@ var EnemyMap = map[int]*MonsterData{
 	25510301: {
 		Id:              25510301,
 		Key:             "yumkasauruswarriorwhirlingleaves",
-		NameTextHashMap: 3668070360,
+		NameTextHashMap: 3668069848,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.336,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7735,7 +9320,7 @@ var EnemyMap = map[int]*MonsterData{
 	25510401: {
 		Id:              25510401,
 		Key:             "yumkasauruswarriorflowingskyfire",
-		NameTextHashMap: 2621932064,
+		NameTextHashMap: 2621931552,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.336,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7803,7 +9388,7 @@ var EnemyMap = map[int]*MonsterData{
 	25510601: {
 		Id:              25510601,
 		Key:             "koholasauruswarriorreefsplitter",
-		NameTextHashMap: 2156885544,
+		NameTextHashMap: 2156885032,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  54.336,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -7970,10 +9555,78 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	25511101: {
+		Id:              25511101,
+		Key:             "tatankasauruswarriorskybreaker",
+		NameTextHashMap: 3408375160,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  59.7696,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010024,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25511201: {
+		Id:              25511201,
+		Key:             "tatankasauruswarriorspiritlightchaser",
+		NameTextHashMap: 2141714552,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  59.7696,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010024,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	25520101: {
 		Id:              25520101,
 		Key:             "waywardhermeticspiritspeaker",
-		NameTextHashMap: 2593603208,
+		NameTextHashMap: 2593602696,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  230.928,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -8008,10 +9661,86 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	25560201: {
+		Id:              25560201,
+		Key:             "battlehardenedpipilpanidol",
+		NameTextHashMap: 2646151448,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1141.056,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010044,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	25600101: {
+		Id:              25600101,
+		Key:             "battlehardenedelitetreasurehoarder",
+		NameTextHashMap: 2110752048,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1412.736,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: -0.2,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	26010101: {
 		Id:              26010101,
 		Key:             "cryowhopperflower",
-		NameTextHashMap: 883066616,
+		NameTextHashMap: 883066104,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -8087,7 +9816,7 @@ var EnemyMap = map[int]*MonsterData{
 	26010301: {
 		Id:              26010301,
 		Key:             "electrowhopperflower",
-		NameTextHashMap: 235094848,
+		NameTextHashMap: 235094336,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -8163,7 +9892,7 @@ var EnemyMap = map[int]*MonsterData{
 	26020201: {
 		Id:              26020201,
 		Key:             "pyroregisvine",
-		NameTextHashMap: 184117072,
+		NameTextHashMap: 184116560,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -8307,7 +10036,7 @@ var EnemyMap = map[int]*MonsterData{
 	26040201: {
 		Id:              26040201,
 		Key:             "rulerofthechizhangmountainsyiji",
-		NameTextHashMap: 1195283304,
+		NameTextHashMap: 1195282792,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  649.3152,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -8345,7 +10074,7 @@ var EnemyMap = map[int]*MonsterData{
 	26040301: {
 		Id:              26040301,
 		Key:             "rulerofthechizhangmountainstianyu",
-		NameTextHashMap: 218690344,
+		NameTextHashMap: 218689832,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  649.3152,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -8383,7 +10112,7 @@ var EnemyMap = map[int]*MonsterData{
 	26050101: {
 		Id:              26050101,
 		Key:             "primogeovishap",
-		NameTextHashMap: 1057217072,
+		NameTextHashMap: 1057216560,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  407.52,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -8531,7 +10260,7 @@ var EnemyMap = map[int]*MonsterData{
 	26051201: {
 		Id:              26051201,
 		Key:             "battlehardenedprimordialbathysmalvishap",
-		NameTextHashMap: 2327317008,
+		NameTextHashMap: 2327316496,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  733.536,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -8629,7 +10358,7 @@ var EnemyMap = map[int]*MonsterData{
 	26060301: {
 		Id:              26060301,
 		Key:             "cryocicin",
-		NameTextHashMap: 1902456384,
+		NameTextHashMap: 1902455872,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  6.792,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP,
@@ -8758,7 +10487,7 @@ var EnemyMap = map[int]*MonsterData{
 	26090401: {
 		Id:              26090401,
 		Key:             "whirlingelectrofungus",
-		NameTextHashMap: 4191543160,
+		NameTextHashMap: 4191542648,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -8836,7 +10565,7 @@ var EnemyMap = map[int]*MonsterData{
 	26090701: {
 		Id:              26090701,
 		Key:             "stretchypyrofungus",
-		NameTextHashMap: 3502126912,
+		NameTextHashMap: 3502126400,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -8940,7 +10669,7 @@ var EnemyMap = map[int]*MonsterData{
 	26100101: {
 		Id:              26100101,
 		Key:             "consecratedhornedcrocodile",
-		NameTextHashMap: 2762852304,
+		NameTextHashMap: 2762851792,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -9076,7 +10805,7 @@ var EnemyMap = map[int]*MonsterData{
 	26100501: {
 		Id:              26100501,
 		Key:             "consecratedflyingserpent",
-		NameTextHashMap: 2495079336,
+		NameTextHashMap: 2495078824,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -9110,7 +10839,7 @@ var EnemyMap = map[int]*MonsterData{
 	26110101: {
 		Id:              26110101,
 		Key:             "jadeplumeterrorshroom",
-		NameTextHashMap: 1551254368,
+		NameTextHashMap: 1551253856,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  190.176,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -9144,7 +10873,7 @@ var EnemyMap = map[int]*MonsterData{
 	26120101: {
 		Id:              26120101,
 		Key:             "wingeddendroshroom",
-		NameTextHashMap: 3206484936,
+		NameTextHashMap: 3206484424,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  27.168,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -9256,6 +10985,44 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010017,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26120501: {
+		Id:              26120501,
+		Key:             "battlehardenedgroundedgeoshroom",
+		NameTextHashMap: 1747281168,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1198.1088,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.3,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.3,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010017,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010017,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010017,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010047,
 					HpPercent: 0,
 				},
 			},
@@ -9420,7 +11187,7 @@ var EnemyMap = map[int]*MonsterData{
 	26153101: {
 		Id:              26153101,
 		Key:             "blubberbeast",
-		NameTextHashMap: 1164130192,
+		NameTextHashMap: 1164129680,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  32.4689,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9441,7 +11208,7 @@ var EnemyMap = map[int]*MonsterData{
 	26154101: {
 		Id:              26154101,
 		Key:             "hatjellyfish",
-		NameTextHashMap: 2955045776,
+		NameTextHashMap: 2955045264,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.48134,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9462,7 +11229,7 @@ var EnemyMap = map[int]*MonsterData{
 	26155101: {
 		Id:              26155101,
 		Key:             "bubblyseahorse",
-		NameTextHashMap: 2552310592,
+		NameTextHashMap: 2552310080,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.48134,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9504,7 +11271,7 @@ var EnemyMap = map[int]*MonsterData{
 	26157101: {
 		Id:              26157101,
 		Key:             "angelicseahare",
-		NameTextHashMap: 3467903536,
+		NameTextHashMap: 3467903024,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  19.48134,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9546,7 +11313,7 @@ var EnemyMap = map[int]*MonsterData{
 	26160201: {
 		Id:              26160201,
 		Key:             "cherubicseahare",
-		NameTextHashMap: 4031845888,
+		NameTextHashMap: 4031845376,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  64.9378,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9588,7 +11355,7 @@ var EnemyMap = map[int]*MonsterData{
 	26162101: {
 		Id:              26162101,
 		Key:             "locallegendarmoredcrab",
-		NameTextHashMap: 1008315040,
+		NameTextHashMap: 1008314528,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1753.3206,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9609,7 +11376,7 @@ var EnemyMap = map[int]*MonsterData{
 	26162201: {
 		Id:              26162201,
 		Key:             "locallegendhuntersray",
-		NameTextHashMap: 2197390984,
+		NameTextHashMap: 2197390472,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1623.445,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9630,7 +11397,7 @@ var EnemyMap = map[int]*MonsterData{
 	26162301: {
 		Id:              26162301,
 		Key:             "locallegendblubberbeast",
-		NameTextHashMap: 3222616904,
+		NameTextHashMap: 3222616392,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  389.6268,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9672,7 +11439,7 @@ var EnemyMap = map[int]*MonsterData{
 	26162501: {
 		Id:              26162501,
 		Key:             "locallegendhatjellyfish",
-		NameTextHashMap: 1353174704,
+		NameTextHashMap: 1353174192,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1753.3206,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_ENVIRONMENT,
@@ -9688,6 +11455,32 @@ var EnemyMap = map[int]*MonsterData{
 			},
 			FreezeResist: 0,
 			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	26162601: {
+		Id:              26162601,
+		Key:             "battlescarredrockcrab",
+		NameTextHashMap: 1995648384,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1429.0367,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22003500,
+					HpPercent: 0,
+				},
+			},
 		},
 	},
 	26170101: {
@@ -9769,7 +11562,7 @@ var EnemyMap = map[int]*MonsterData{
 	26190101: {
 		Id:              26190101,
 		Key:             "solitarysuanni",
-		NameTextHashMap: 3892364272,
+		NameTextHashMap: 3892363760,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  225.4944,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -9871,7 +11664,7 @@ var EnemyMap = map[int]*MonsterData{
 	26200201: {
 		Id:              26200201,
 		Key:             "tepetlisaurus",
-		NameTextHashMap: 2707723824,
+		NameTextHashMap: 2707723312,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -9931,7 +11724,7 @@ var EnemyMap = map[int]*MonsterData{
 	26210201: {
 		Id:              26210201,
 		Key:             "koholasaurus",
-		NameTextHashMap: 70228952,
+		NameTextHashMap: 70228440,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  36.6768,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -9965,7 +11758,7 @@ var EnemyMap = map[int]*MonsterData{
 	26220101: {
 		Id:              26220101,
 		Key:             "yumkasaurwhelp",
-		NameTextHashMap: 3061287512,
+		NameTextHashMap: 3061287000,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -9991,7 +11784,7 @@ var EnemyMap = map[int]*MonsterData{
 	26220201: {
 		Id:              26220201,
 		Key:             "yumkasaurus",
-		NameTextHashMap: 1633214416,
+		NameTextHashMap: 1633213904,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  36.6768,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10059,7 +11852,7 @@ var EnemyMap = map[int]*MonsterData{
 	26230101: {
 		Id:              26230101,
 		Key:             "qucusauruschick",
-		NameTextHashMap: 1687884752,
+		NameTextHashMap: 1687884240,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  14.9424,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10085,7 +11878,7 @@ var EnemyMap = map[int]*MonsterData{
 	26230201: {
 		Id:              26230201,
 		Key:             "qucusaurus",
-		NameTextHashMap: 3319624584,
+		NameTextHashMap: 3319624072,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  40.752,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10157,7 +11950,7 @@ var EnemyMap = map[int]*MonsterData{
 	26240101: {
 		Id:              26240101,
 		Key:             "iktomisauruschick",
-		NameTextHashMap: 2166596280,
+		NameTextHashMap: 2166595768,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  13.584,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10252,10 +12045,108 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	26250101: {
+		Id:              26250101,
+		Key:             "tatankasaurwhelp",
+		NameTextHashMap: 2173301056,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  16.3008,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.3,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26250201: {
+		Id:              26250201,
+		Key:             "tatankasaurus",
+		NameTextHashMap: 774950224,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  43.4688,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.5,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26250301: {
+		Id:              26250301,
+		Key:             "battlehardenedtatankasaurus",
+		NameTextHashMap: 586694912,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  858.5088,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.5,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010011,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010011,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010041,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	26260101: {
 		Id:              26260101,
 		Key:             "rockcavernouswayobmanifestation",
-		NameTextHashMap: 636886936,
+		NameTextHashMap: 636886424,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10285,7 +12176,7 @@ var EnemyMap = map[int]*MonsterData{
 	26260401: {
 		Id:              26260401,
 		Key:             "battlehardenedrockcavernouswayobmanifestation",
-		NameTextHashMap: 2316114856,
+		NameTextHashMap: 2316114344,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  298.848,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10353,7 +12244,7 @@ var EnemyMap = map[int]*MonsterData{
 	26260501: {
 		Id:              26260501,
 		Key:             "battlehardenedflowinvertedwayobmanifestation",
-		NameTextHashMap: 1795208920,
+		NameTextHashMap: 1795208408,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  489.024,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10391,7 +12282,7 @@ var EnemyMap = map[int]*MonsterData{
 	26260301: {
 		Id:              26260301,
 		Key:             "foliarswiftwayobmanifestation",
-		NameTextHashMap: 2032996200,
+		NameTextHashMap: 2032995688,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10459,7 +12350,7 @@ var EnemyMap = map[int]*MonsterData{
 	26260701: {
 		Id:              26260701,
 		Key:             "battlehardenedburningaflamewayobmanifestation",
-		NameTextHashMap: 1908093904,
+		NameTextHashMap: 1908093392,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  1184.5248,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10497,7 +12388,7 @@ var EnemyMap = map[int]*MonsterData{
 	26260801: {
 		Id:              26260801,
 		Key:             "bitingcoldwayobmanifestation",
-		NameTextHashMap: 3085615992,
+		NameTextHashMap: 3085615480,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10565,7 +12456,7 @@ var EnemyMap = map[int]*MonsterData{
 	26260901: {
 		Id:              26260901,
 		Key:             "burningaflamewayobmanifestation",
-		NameTextHashMap: 655496832,
+		NameTextHashMap: 655496320,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  95.088,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10587,6 +12478,74 @@ var EnemyMap = map[int]*MonsterData{
 				},
 				{
 					DropId:    22010021,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26261101: {
+		Id:              26261101,
+		Key:             "thunderingwayobmanifestation",
+		NameTextHashMap: 3160582320,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  95.088,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.5,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0.6,
+				},
+				{
+					DropId:    22010024,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26261201: {
+		Id:              26261201,
+		Key:             "battlehardenedthunderingwayobmanifestation",
+		NameTextHashMap: 3620741592,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1385.568,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.5,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010014,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010014,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010044,
 					HpPercent: 0,
 				},
 			},
@@ -10629,7 +12588,7 @@ var EnemyMap = map[int]*MonsterData{
 	26270201: {
 		Id:              26270201,
 		Key:             "erodingavataroflava",
-		NameTextHashMap: 3620410352,
+		NameTextHashMap: 3620409840,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  116.8224,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10660,10 +12619,349 @@ var EnemyMap = map[int]*MonsterData{
 			},
 		},
 	},
+	26270301: {
+		Id:              26270301,
+		Key:             "lavadragonstatue",
+		NameTextHashMap: 192380336,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  366.768,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010031,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010031,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010021,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26270401: {
+		Id:              26270401,
+		Key:             "infinitesimal",
+		NameTextHashMap: 2883184992,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  489.024,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010010,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010010,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010050,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26290101: {
+		Id:              26290101,
+		Key:             "furnaceshellmountainweasel",
+		NameTextHashMap: 3499579520,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  149.424,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.5,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010021,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010021,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010021,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26300101: {
+		Id:              26300101,
+		Key:             "radiantantelope",
+		NameTextHashMap: 3352031640,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  149.424,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.5,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010024,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010024,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010024,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26300201: {
+		Id:              26300201,
+		Key:             "radiantbladehorn",
+		NameTextHashMap: 1834975736,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  163.008,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.5,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010025,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010025,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010025,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26300301: {
+		Id:              26300301,
+		Key:             "radiantlunapod",
+		NameTextHashMap: 4289678832,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  135.84,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.5,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010022,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010022,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010022,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26300401: {
+		Id:              26300401,
+		Key:             "radiantglacialwolf",
+		NameTextHashMap: 3634713024,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  149.424,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010026,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010026,
+					HpPercent: 0.33,
+				},
+				{
+					DropId:    22010026,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26300501: {
+		Id:              26300501,
+		Key:             "battlehardenedglacialwolf",
+		NameTextHashMap: 3276126600,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  1127.472,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 0,
+			HpDrop:       []*MonsterHPDrop{},
+		},
+	},
+	26301101: {
+		Id:              26301101,
+		Key:             "radiantmoonfly",
+		NameTextHashMap: 632497376,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  217.344,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.7,
+				GrassResist:    0.7,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010030,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010030,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
+	26302101: {
+		Id:              26302101,
+		Key:             "radiantmoongecko",
+		NameTextHashMap: 1167032408,
+		BaseStats: &MonsterStatsData{
+			BaseHp:  285.264,
+			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
+			Resist: &MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.7,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1,
+			HpDrop: []*MonsterHPDrop{
+				{
+					DropId:    22010037,
+					HpPercent: 0.75,
+				},
+				{
+					DropId:    22010037,
+					HpPercent: 0.5,
+				},
+				{
+					DropId:    22010037,
+					HpPercent: 0.25,
+				},
+				{
+					DropId:    22010027,
+					HpPercent: 0,
+				},
+			},
+		},
+	},
 	20060701: {
 		Id:              20060701,
 		Key:             "dendrospecter",
-		NameTextHashMap: 2872478496,
+		NameTextHashMap: 2872477984,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10693,7 +12991,7 @@ var EnemyMap = map[int]*MonsterData{
 	20060101: {
 		Id:              20060101,
 		Key:             "hydrospecter",
-		NameTextHashMap: 3055427504,
+		NameTextHashMap: 3055426992,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10753,7 +13051,7 @@ var EnemyMap = map[int]*MonsterData{
 	20060301: {
 		Id:              20060301,
 		Key:             "anemospecter",
-		NameTextHashMap: 1685659344,
+		NameTextHashMap: 1685658832,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10783,7 +13081,7 @@ var EnemyMap = map[int]*MonsterData{
 	20060401: {
 		Id:              20060401,
 		Key:             "cryospecter",
-		NameTextHashMap: 1061667664,
+		NameTextHashMap: 1061667152,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,
@@ -10843,7 +13141,7 @@ var EnemyMap = map[int]*MonsterData{
 	20060601: {
 		Id:              20060601,
 		Key:             "pyrospecter",
-		NameTextHashMap: 3663897528,
+		NameTextHashMap: 3663897016,
 		BaseStats: &MonsterStatsData{
 			BaseHp:  21.7344,
 			HpCurve: MonsterCurveType_GROW_CURVE_HP_2,

@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -43,16 +42,16 @@ func (w *Weapon) Init() error {
 
 	w.char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("astralvulturescrimsonplumage-dmg", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagExtra:
 				m[attributes.DmgP] = dmg * 2
 			case attacks.AttackTagElementalBurst:
 				m[attributes.DmgP] = dmg
 			default:
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 
@@ -70,22 +69,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkp[attributes.ATKP] = 0.06*float64(p.Refine) + 0.18
 
 	for i := event.OnSwirlHydro; i <= event.OnSwirlPyro; i++ {
-		c.Events.Subscribe(i, func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
-				return false
+		c.Events.Subscribe(i, func(args ...any) {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != char.Index() {
+				return
 			}
-			if c.Player.Active() != char.Index {
-				return false
+			if c.Player.Active() != char.Index() {
+				return
 			}
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("astralvulturescrimsonplumage-atkp", 12*60),
 				AffectedStat: attributes.ATKP,
-				Amount: func() ([]float64, bool) {
-					return atkp, true
+				Amount: func() []float64 {
+					return atkp
 				},
 			})
-			return false
 		}, "astralvulturescrimsonplumage-swirl-"+char.Base.Key.String())
 	}
 

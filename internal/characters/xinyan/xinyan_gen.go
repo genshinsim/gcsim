@@ -4,13 +4,22 @@ package xinyan
 import (
 	_ "embed"
 
+	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
+	"slices"
 )
 
 //go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
+var paramKeysValidation = map[action.Action][]string{
+	5: {"collision"},
+	6: {"collision"},
+}
 
 func init() {
 	base = &model.AvatarData{}
@@ -18,6 +27,20 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	validation.RegisterCharParamValidationFunc(keys.Xinyan, ValidateParamKeys)
+}
+
+func ValidateParamKeys(a action.Action, keys []string) error {
+	valid, ok := paramKeysValidation[a]
+	if !ok {
+		return nil
+	}
+	for _, v := range keys {
+		if !slices.Contains(valid, v) {
+			return fmt.Errorf("key %v is invalid for action %v", v, a.String())
+		}
+	}
+	return nil
 }
 
 func (x *char) Data() *model.AvatarData {
@@ -105,6 +128,60 @@ var (
 		2.77482,
 		2.93646,
 		3.0981,
+	}
+	// attack: collision = [8]
+	collision = []float64{
+		0.745878,
+		0.806589,
+		0.8673,
+		0.95403,
+		1.014741,
+		1.084125,
+		1.179528,
+		1.274931,
+		1.370334,
+		1.47441,
+		1.578486,
+		1.682562,
+		1.786638,
+		1.890714,
+		1.99479,
+	}
+	// attack: highPlunge = [10]
+	highPlunge = []float64{
+		1.862889,
+		2.01452,
+		2.16615,
+		2.382765,
+		2.534396,
+		2.707688,
+		2.945964,
+		3.184241,
+		3.422517,
+		3.682455,
+		3.942393,
+		4.202331,
+		4.462269,
+		4.722207,
+		4.982145,
+	}
+	// attack: lowPlunge = [9]
+	lowPlunge = []float64{
+		1.49144,
+		1.612836,
+		1.734233,
+		1.907656,
+		2.029052,
+		2.167791,
+		2.358556,
+		2.549322,
+		2.740087,
+		2.948195,
+		3.156303,
+		3.364411,
+		3.572519,
+		3.780627,
+		3.988735,
 	}
 	// skill: shieldLevel1 = [1]
 	shieldLevel1 = []float64{

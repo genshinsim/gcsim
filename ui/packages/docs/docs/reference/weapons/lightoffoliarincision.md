@@ -1,5 +1,6 @@
 ---
-title: Light of Foliar Incision
+title: >
+  Light of Foliar Incision
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Emblem of Severed Fate
+title: >
+  Emblem of Severed Fate
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

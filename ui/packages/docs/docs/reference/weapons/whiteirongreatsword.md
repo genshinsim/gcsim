@@ -1,5 +1,6 @@
 ---
-title: White Iron Greatsword
+title: >
+  White Iron Greatsword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

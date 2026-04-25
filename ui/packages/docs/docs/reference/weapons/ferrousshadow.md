@@ -1,5 +1,6 @@
 ---
-title: Ferrous Shadow
+title: >
+  Ferrous Shadow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

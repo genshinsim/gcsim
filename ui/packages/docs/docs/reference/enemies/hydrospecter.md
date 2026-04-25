@@ -1,5 +1,6 @@
 ---
-title: "Hydro Specter"
+title: >
+  Hydro Specter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

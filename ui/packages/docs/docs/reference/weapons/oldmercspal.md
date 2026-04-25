@@ -1,5 +1,6 @@
 ---
-title: Old Merc's Pal
+title: >
+  Old Merc's Pal
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

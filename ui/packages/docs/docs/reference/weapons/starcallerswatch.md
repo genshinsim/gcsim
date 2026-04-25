@@ -1,5 +1,6 @@
 ---
-title: Starcaller's Watch
+title: >
+  Starcaller's Watch
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

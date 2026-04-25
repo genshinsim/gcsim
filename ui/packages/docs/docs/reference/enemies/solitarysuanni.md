@@ -1,5 +1,6 @@
 ---
-title: "Solitary Suanni"
+title: >
+  Solitary Suanni
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

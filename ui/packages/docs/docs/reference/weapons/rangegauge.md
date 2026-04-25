@@ -1,5 +1,6 @@
 ---
-title: Range Gauge
+title: >
+  Range Gauge
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

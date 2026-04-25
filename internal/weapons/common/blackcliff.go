@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -30,7 +29,7 @@ func NewBlackcliff(data *model.WeaponData) *Blackcliff {
 }
 
 func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	atk := 0.09 + float64(p.Refine)*0.03
+	atkRefine := 0.09 + float64(p.Refine)*0.03
 	index := 0
 	stackKey := []string{
 		"blackcliff-stack-1",
@@ -39,31 +38,20 @@ func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info
 	}
 	m := make([]float64, attributes.EndStatType)
 
-	amtfn := func() ([]float64, bool) {
-		count := 0
-		for _, v := range stackKey {
-			if char.StatusIsActive(v) {
-				count++
-			}
-		}
-		m[attributes.ATKP] = atk * float64(count)
-		return m, true
-	}
-
-	c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		// don't proc if someone else defeated the enemy
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		// don't proc if off-field
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		// add status to char given index
 		char.AddStatus(stackKey[index], 1800, true)
@@ -71,13 +59,21 @@ func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("blackcliff", 1800),
 			AffectedStat: attributes.ATKP,
-			Amount:       amtfn,
+			Amount: func() []float64 {
+				count := 0
+				for _, v := range stackKey {
+					if char.StatusIsActive(v) {
+						count++
+					}
+				}
+				m[attributes.ATKP] = atkRefine * float64(count)
+				return m
+			},
 		})
 		index++
 		if index == 3 {
 			index = 0
 		}
-		return false
 	}, fmt.Sprintf("blackcliff-%v", char.Base.Key.String()))
 
 	return b, nil

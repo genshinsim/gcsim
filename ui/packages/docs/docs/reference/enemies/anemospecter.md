@@ -1,5 +1,6 @@
 ---
-title: "Anemo Specter"
+title: >
+  Anemo Specter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

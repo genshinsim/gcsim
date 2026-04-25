@@ -1,5 +1,6 @@
 ---
-title: "Ruin Destroyer"
+title: >
+  Ruin Destroyer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

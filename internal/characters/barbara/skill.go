@@ -12,9 +12,11 @@ import (
 )
 
 // barbara skill - copied from bennett burst
-const skillDuration = 15*60 + 1
-const barbSkillKey = "barbara-e"
-const skillCDStart = 3
+const (
+	skillDuration = 15*60 + 1
+	barbSkillKey  = "barbara-e"
+	skillCDStart  = 3
+)
 
 var (
 	skillHitmarks = []int{42, 78}
@@ -36,8 +38,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// restart a4 counter
 	c.a4extendCount = 0
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Let the Show Begin♪ (Droplet)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -108,11 +110,11 @@ func (c *char) barbaraSelfTick(healAmt, hpplus float64, skillInitF int) func() {
 			return
 		}
 
-		c.Core.Log.NewEvent("barbara heal and wet ticking", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("barbara heal and wet ticking", glog.LogCharacterEvent, c.Index())
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Melody Loop (Tick)",
 			Src:     healAmt,
@@ -131,7 +133,7 @@ func (c *char) barbaraSelfTick(healAmt, hpplus float64, skillInitF int) func() {
 	}
 }
 
-func (c *char) barbaraMelodyTick(ai combat.AttackInfo, skillInitF int) func() {
+func (c *char) barbaraMelodyTick(ai info.AttackInfo, skillInitF int) func() {
 	return func() {
 		// make sure it's not overwritten
 		if c.skillInitF != skillInitF {
@@ -142,7 +144,7 @@ func (c *char) barbaraMelodyTick(ai combat.AttackInfo, skillInitF int) func() {
 			return
 		}
 
-		c.Core.Log.NewEvent("barbara melody loop ticking", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("barbara melody loop ticking", glog.LogCharacterEvent, c.Index())
 
 		// 0 DMG attack that causes hitlag on enemy only
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), -1, 0)

@@ -1,5 +1,6 @@
 ---
-title: "Local Legend: Hat Jellyfish"
+title: >
+  Local Legend: Hat Jellyfish
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

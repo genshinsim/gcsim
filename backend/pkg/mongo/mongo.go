@@ -86,7 +86,6 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 	// check connection
 	err = client.Ping(context.TODO(), nil)
-
 	if err != nil {
 		s.Log.Errorw("mongodb ping failed", "err", err)
 		return nil, err

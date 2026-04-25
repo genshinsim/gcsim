@@ -1,5 +1,6 @@
 ---
-title: Fischl
+title: >
+  Fischl
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

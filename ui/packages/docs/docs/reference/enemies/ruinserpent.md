@@ -1,5 +1,6 @@
 ---
-title: "Ruin Serpent"
+title: >
+  Ruin Serpent
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

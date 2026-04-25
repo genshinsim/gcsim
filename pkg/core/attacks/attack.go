@@ -13,7 +13,8 @@ const (
 	AttackTagWeaponSkill
 	AttackTagMonaBubbleBreak
 	AttackTagNoneStat
-	ReactionAttackDelim
+
+	ReactionAttackStartDelim
 	AttackTagOverloadDamage
 	AttackTagSuperconductDamage
 	AttackTagECDamage
@@ -24,8 +25,20 @@ const (
 	AttackTagSwirlElectro
 	AttackTagBurningDamage
 	AttackTagBloom
+	AttackTagBountifulCore // special tag for nilou
 	AttackTagBurgeon
 	AttackTagHyperbloom
+	ReactionAttackEndDelim
+
+	LunarReactionStartDelim
+	AttackTagReactionLunarCharge
+	LunarReactionEndDelim
+
+	DirectLunarReactionStartDelim
+	AttackTagDirectLunarCharged
+	AttackTagDirectLunarBloom
+	DirectLunarReactionEndDelim
+
 	AttackTagLength
 )
 
@@ -46,3 +59,9 @@ const (
 	AdditionalTagNightsoul
 	AdditionalTagKinichCannon
 )
+
+func AttackTagIsLunar(tag AttackTag) bool {
+	isReaction := LunarReactionStartDelim < tag && tag < LunarReactionEndDelim
+	isDirect := DirectLunarReactionStartDelim < tag && tag < DirectLunarReactionEndDelim
+	return isReaction || isDirect
+}

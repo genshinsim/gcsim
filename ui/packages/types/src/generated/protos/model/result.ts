@@ -99,7 +99,11 @@ export interface SimulationStatistics {
     | SourceStats[]
     | undefined;
   /** misc statistics at the end of each sim */
-  end_stats?: EndStats[] | undefined;
+  end_stats?:
+    | EndStats[]
+    | undefined;
+  /** --- optional dev debug data; not useful for anything else --- */
+  dev_debug?: DevDebugData | undefined;
 }
 
 export interface SimulationStatistics_ElementDpsEntry {
@@ -120,6 +124,20 @@ export interface SimulationStatistics_ShieldsEntry {
 export interface SignedSimulationStatistics {
   stats?: SimulationStatistics | undefined;
   hash?: string | undefined;
+}
+
+export interface DevDebugData {
+  /**
+   * add any dev debug data here
+   * this data is not guaranteed to be stable across versions
+   * and should not be used for anything other than debugging
+   */
+  seeded_dps?: DevDebugSeededDPSResult[] | undefined;
+}
+
+export interface DevDebugSeededDPSResult {
+  seed?: string | undefined;
+  dps?: number | undefined;
 }
 
 export interface OverviewStats {
@@ -212,6 +230,7 @@ export interface Warnings {
   swap_cd?: boolean | undefined;
   skill_cd?: boolean | undefined;
   dash_cd?: boolean | undefined;
+  burst_cd?: boolean | undefined;
 }
 
 export interface FailedActions {
@@ -220,6 +239,7 @@ export interface FailedActions {
   swap_cd?: DescriptiveStats | undefined;
   skill_cd?: DescriptiveStats | undefined;
   dash_cd?: DescriptiveStats | undefined;
+  burst_cd?: DescriptiveStats | undefined;
 }
 
 export interface ShieldInfo {
@@ -685,6 +705,7 @@ function createBaseSimulationStatistics(): SimulationStatistics {
     character_actions: [],
     target_aura_uptime: [],
     end_stats: [],
+    dev_debug: undefined,
   };
 }
 
@@ -809,6 +830,9 @@ export const SimulationStatistics = {
       for (const v of message.end_stats) {
         EndStats.encode(v!, writer.uint32(258).fork()).ldelim();
       }
+    }
+    if (message.dev_debug !== undefined) {
+      DevDebugData.encode(message.dev_debug, writer.uint32(802).fork()).ldelim();
     }
     return writer;
   },
@@ -1053,6 +1077,13 @@ export const SimulationStatistics = {
 
           message.end_stats!.push(EndStats.decode(reader, reader.uint32()));
           continue;
+        case 100:
+          if (tag !== 802) {
+            break;
+          }
+
+          message.dev_debug = DevDebugData.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1137,6 +1168,7 @@ export const SimulationStatistics = {
       end_stats: globalThis.Array.isArray(object?.end_stats)
         ? object.end_stats.map((e: any) => EndStats.fromJSON(e))
         : [],
+      dev_debug: isSet(object.dev_debug) ? DevDebugData.fromJSON(object.dev_debug) : undefined,
     };
   },
 
@@ -1256,6 +1288,9 @@ export const SimulationStatistics = {
     if (message.end_stats?.length) {
       obj.end_stats = message.end_stats.map((e) => EndStats.toJSON(e));
     }
+    if (message.dev_debug !== undefined) {
+      obj.dev_debug = DevDebugData.toJSON(message.dev_debug);
+    }
     return obj;
   },
 
@@ -1332,6 +1367,9 @@ export const SimulationStatistics = {
     message.character_actions = object.character_actions?.map((e) => SourceStats.fromPartial(e)) || [];
     message.target_aura_uptime = object.target_aura_uptime?.map((e) => SourceStats.fromPartial(e)) || [];
     message.end_stats = object.end_stats?.map((e) => EndStats.fromPartial(e)) || [];
+    message.dev_debug = (object.dev_debug !== undefined && object.dev_debug !== null)
+      ? DevDebugData.fromPartial(object.dev_debug)
+      : undefined;
     return message;
   },
 };
@@ -1648,6 +1686,143 @@ export const SignedSimulationStatistics = {
       ? SimulationStatistics.fromPartial(object.stats)
       : undefined;
     message.hash = object.hash ?? "";
+    return message;
+  },
+};
+
+function createBaseDevDebugData(): DevDebugData {
+  return { seeded_dps: [] };
+}
+
+export const DevDebugData = {
+  encode(message: DevDebugData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.seeded_dps !== undefined && message.seeded_dps.length !== 0) {
+      for (const v of message.seeded_dps) {
+        DevDebugSeededDPSResult.encode(v!, writer.uint32(10).fork()).ldelim();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DevDebugData {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDevDebugData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.seeded_dps!.push(DevDebugSeededDPSResult.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DevDebugData {
+    return {
+      seeded_dps: globalThis.Array.isArray(object?.seeded_dps)
+        ? object.seeded_dps.map((e: any) => DevDebugSeededDPSResult.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: DevDebugData): unknown {
+    const obj: any = {};
+    if (message.seeded_dps?.length) {
+      obj.seeded_dps = message.seeded_dps.map((e) => DevDebugSeededDPSResult.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DevDebugData>, I>>(base?: I): DevDebugData {
+    return DevDebugData.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<DevDebugData>, I>>(object: I): DevDebugData {
+    const message = createBaseDevDebugData();
+    message.seeded_dps = object.seeded_dps?.map((e) => DevDebugSeededDPSResult.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseDevDebugSeededDPSResult(): DevDebugSeededDPSResult {
+  return { seed: "", dps: 0 };
+}
+
+export const DevDebugSeededDPSResult = {
+  encode(message: DevDebugSeededDPSResult, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.seed !== undefined && message.seed !== "") {
+      writer.uint32(10).string(message.seed);
+    }
+    if (message.dps !== undefined && message.dps !== 0) {
+      writer.uint32(17).double(message.dps);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DevDebugSeededDPSResult {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDevDebugSeededDPSResult();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.seed = reader.string();
+          continue;
+        case 2:
+          if (tag !== 17) {
+            break;
+          }
+
+          message.dps = reader.double();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DevDebugSeededDPSResult {
+    return {
+      seed: isSet(object.seed) ? globalThis.String(object.seed) : "",
+      dps: isSet(object.dps) ? globalThis.Number(object.dps) : 0,
+    };
+  },
+
+  toJSON(message: DevDebugSeededDPSResult): unknown {
+    const obj: any = {};
+    if (message.seed !== undefined && message.seed !== "") {
+      obj.seed = message.seed;
+    }
+    if (message.dps !== undefined && message.dps !== 0) {
+      obj.dps = message.dps;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DevDebugSeededDPSResult>, I>>(base?: I): DevDebugSeededDPSResult {
+    return DevDebugSeededDPSResult.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<DevDebugSeededDPSResult>, I>>(object: I): DevDebugSeededDPSResult {
+    const message = createBaseDevDebugSeededDPSResult();
+    message.seed = object.seed ?? "";
+    message.dps = object.dps ?? 0;
     return message;
   },
 };
@@ -3084,6 +3259,7 @@ function createBaseWarnings(): Warnings {
     swap_cd: false,
     skill_cd: false,
     dash_cd: false,
+    burst_cd: false,
   };
 }
 
@@ -3106,6 +3282,9 @@ export const Warnings = {
     }
     if (message.dash_cd !== undefined && message.dash_cd !== false) {
       writer.uint32(48).bool(message.dash_cd);
+    }
+    if (message.burst_cd !== undefined && message.burst_cd !== false) {
+      writer.uint32(56).bool(message.burst_cd);
     }
     return writer;
   },
@@ -3159,6 +3338,13 @@ export const Warnings = {
 
           message.dash_cd = reader.bool();
           continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.burst_cd = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3178,6 +3364,7 @@ export const Warnings = {
       swap_cd: isSet(object.swap_cd) ? globalThis.Boolean(object.swap_cd) : false,
       skill_cd: isSet(object.skill_cd) ? globalThis.Boolean(object.skill_cd) : false,
       dash_cd: isSet(object.dash_cd) ? globalThis.Boolean(object.dash_cd) : false,
+      burst_cd: isSet(object.burst_cd) ? globalThis.Boolean(object.burst_cd) : false,
     };
   },
 
@@ -3201,6 +3388,9 @@ export const Warnings = {
     if (message.dash_cd !== undefined && message.dash_cd !== false) {
       obj.dash_cd = message.dash_cd;
     }
+    if (message.burst_cd !== undefined && message.burst_cd !== false) {
+      obj.burst_cd = message.burst_cd;
+    }
     return obj;
   },
 
@@ -3215,6 +3405,7 @@ export const Warnings = {
     message.swap_cd = object.swap_cd ?? false;
     message.skill_cd = object.skill_cd ?? false;
     message.dash_cd = object.dash_cd ?? false;
+    message.burst_cd = object.burst_cd ?? false;
     return message;
   },
 };
@@ -3226,6 +3417,7 @@ function createBaseFailedActions(): FailedActions {
     swap_cd: undefined,
     skill_cd: undefined,
     dash_cd: undefined,
+    burst_cd: undefined,
   };
 }
 
@@ -3245,6 +3437,9 @@ export const FailedActions = {
     }
     if (message.dash_cd !== undefined) {
       DescriptiveStats.encode(message.dash_cd, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.burst_cd !== undefined) {
+      DescriptiveStats.encode(message.burst_cd, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -3291,6 +3486,13 @@ export const FailedActions = {
 
           message.dash_cd = DescriptiveStats.decode(reader, reader.uint32());
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.burst_cd = DescriptiveStats.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3311,6 +3513,7 @@ export const FailedActions = {
       swap_cd: isSet(object.swap_cd) ? DescriptiveStats.fromJSON(object.swap_cd) : undefined,
       skill_cd: isSet(object.skill_cd) ? DescriptiveStats.fromJSON(object.skill_cd) : undefined,
       dash_cd: isSet(object.dash_cd) ? DescriptiveStats.fromJSON(object.dash_cd) : undefined,
+      burst_cd: isSet(object.burst_cd) ? DescriptiveStats.fromJSON(object.burst_cd) : undefined,
     };
   },
 
@@ -3330,6 +3533,9 @@ export const FailedActions = {
     }
     if (message.dash_cd !== undefined) {
       obj.dash_cd = DescriptiveStats.toJSON(message.dash_cd);
+    }
+    if (message.burst_cd !== undefined) {
+      obj.burst_cd = DescriptiveStats.toJSON(message.burst_cd);
     }
     return obj;
   },
@@ -3353,6 +3559,9 @@ export const FailedActions = {
       : undefined;
     message.dash_cd = (object.dash_cd !== undefined && object.dash_cd !== null)
       ? DescriptiveStats.fromPartial(object.dash_cd)
+      : undefined;
+    message.burst_cd = (object.burst_cd !== undefined && object.burst_cd !== null)
+      ? DescriptiveStats.fromPartial(object.burst_cd)
       : undefined;
     return message;
   },

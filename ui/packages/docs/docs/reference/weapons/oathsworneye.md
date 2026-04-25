@@ -1,5 +1,6 @@
 ---
-title: Oathsworn Eye
+title: >
+  Oathsworn Eye
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

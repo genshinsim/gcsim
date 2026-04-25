@@ -4,10 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,8 +23,8 @@ func (c *char) c1() {
 	active.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("yaoyao-c1", 8*60),
 		AffectedStat: attributes.DendroP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 	if c.StatusIsActive(c1ICDkey) {
@@ -36,7 +34,7 @@ func (c *char) c1() {
 	c.AddStatus(c1ICDkey, 5*60, false)
 }
 
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
@@ -44,8 +42,8 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 		return nil
 	}
 
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c2ICDkey) {
@@ -66,15 +64,15 @@ func (c *char) c4() {
 		Base:         modifier.NewBaseWithHitlag("yaoyao-c4", 8.8*60),
 		AffectedStat: attributes.EM,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }
 
-func (yg *yuegui) c6(target geometry.Point) {
-	ai := combat.AttackInfo{
-		ActorIndex:         yg.c.Index,
+func (yg *yuegui) c6(target info.Point) {
+	ai := info.AttackInfo{
+		ActorIndex:         yg.c.Index(),
 		Abil:               "Mega Radish",
 		AttackTag:          attacks.AttackTagNone,
 		ICDTag:             attacks.ICDTagNone,
@@ -87,7 +85,7 @@ func (yg *yuegui) c6(target geometry.Point) {
 		IsDeployable:       true,
 	}
 	hi := info.HealInfo{
-		Caller:  yg.c.Index,
+		Caller:  yg.c.Index(),
 		Message: c6HealMsg,
 		Src:     yg.c.MaxHP() * 0.075,
 		Bonus:   yg.c.Stat(attributes.Heal),

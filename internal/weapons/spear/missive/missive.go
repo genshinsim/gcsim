@@ -3,7 +3,6 @@ package missive
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -32,26 +31,25 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = atk
 	m[attributes.EM] = em
 
-	f := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	f := func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("missive", 10*60),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
-		return false
 	}
 
-	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, f, "missive-"+char.Base.Key.String())
 	}
 

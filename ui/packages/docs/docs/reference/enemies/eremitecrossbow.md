@@ -1,5 +1,6 @@
 ---
-title: "Eremite Crossbow"
+title: >
+  Eremite Crossbow
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

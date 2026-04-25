@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -26,8 +27,8 @@ func init() {
 // Twin swords leave their sheaths as Chiori slices with the clean cuts
 // of a master tailor, dealing AoE Geo DMG based on her ATK and DEF.
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Hiyoku: Twin Blades",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

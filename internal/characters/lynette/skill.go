@@ -5,9 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -79,7 +77,7 @@ func (c *char) skillPress() action.Info {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			c.skillAI,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, 1.8, 4.5),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.5}, 1.8, 4.5),
 			0,
 			0,
 			c.particleCB,
@@ -114,7 +112,7 @@ func (c *char) skillHold(duration int) action.Info {
 
 		c.Core.QueueAttack(
 			c.skillAI,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, 1.8, 5),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.5}, 1.8, 5),
 			0,
 			0,
 			c.particleCB,
@@ -162,8 +160,8 @@ func (c *char) clearShadowSign() {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -181,7 +179,7 @@ func (c *char) skillAligned(hitmark int) {
 
 	c.Core.QueueAttack(
 		c.skillAlignedAI,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.3}, 1.2, 4.5),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.3}, 1.2, 4.5),
 		hitmark,
 		hitmark,
 	)
@@ -189,10 +187,10 @@ func (c *char) skillAligned(hitmark int) {
 
 // When the Enigma Thrust hits an opponent, it will restore Lynette's HP based on her Max HP,
 // and in the 4s afterward, she will lose a certain amount of HP per second.
-func (c *char) makeSkillHealAndDrainCB() combat.AttackCBFunc {
+func (c *char) makeSkillHealAndDrainCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -202,8 +200,8 @@ func (c *char) makeSkillHealAndDrainCB() combat.AttackCBFunc {
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "Enigmatic Feint",
 			Src:     0.25 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
@@ -223,7 +221,7 @@ func (c *char) skillDrain(count int) func() {
 			return
 		}
 		c.Core.Player.Drain(info.DrainInfo{
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			Abil:       "Enigmatic Feint",
 			Amount:     0.06 * c.CurrentHP(),
 		})

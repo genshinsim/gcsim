@@ -1,5 +1,6 @@
 ---
-title: Retracing Bolide
+title: >
+  Retracing Bolide
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

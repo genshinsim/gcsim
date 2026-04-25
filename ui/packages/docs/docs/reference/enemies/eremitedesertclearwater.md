@@ -1,5 +1,6 @@
 ---
-title: "Eremite Desert Clearwater"
+title: >
+  Eremite Desert Clearwater
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

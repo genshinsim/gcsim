@@ -63,9 +63,10 @@ The option list has the following format: `<option>=<value>` with `;` as the sep
 | `indiv_liquid_cap` | Total liquid substats that can be assigned to a single substat. | 10 |  
 | `fixed_substats_count` | Amount of fixed substats that are assigned to all substats. | 2 |
 | `fine_tune` | 0 to disable and 1 to enable the fine-tune step. This step will compare ER vs DMG substats after having allocated all substats and cover when the initial ER heuristic fails due to not replacing `.<char>.burst.ready` with `.<char>.burst.ready && .<char>.energy == .<char>.energymax` in conditionals (Instead of `<char>`, put the name of the affected character). | 1 |
+| `show_substat_scalars` | 0 to disable and 1 to enable formatting substats by their scalars in the resulting config. | 1 |
 
 #### Example
 
 ```
-./gcsim.exe -c test.txt -s -substatOptimFull -options="total_liquid_substats=10;fixed_substats_count=4;fine_tune=0"
+./gcsim.exe -c test.txt -s -substatOptimFull -options="total_liquid_substats=10;fixed_substats_count=4;fine_tune=0;show_substat_scalars=0"
 ```

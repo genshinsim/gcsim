@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -26,17 +27,18 @@ func (c *char) a1() {
 		return
 	}
 
-	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	f := func(...interface{}) bool {
+	f := func(...any) {
 		if c.sproutShouldProc {
-			return false
+			return
 		}
 		if !c.StatusIsActive(skillKey) {
-			return false
+			return
 		}
 		c.sproutShouldProc = true
-		c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index)
-		return false
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index())
+		}
 	}
 
 	for _, evt := range dendroEvents {
@@ -44,19 +46,18 @@ func (c *char) a1() {
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Core.Events.Subscribe(evt, f, "collei-a1")
 		default:
-			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
-				if _, ok := args[0].(*enemy.Enemy); !ok {
-					return false
+			c.Core.Events.Subscribe(evt, func(args ...any) {
+				if _, ok := args[0].(*enemy.Enemy); ok {
+					f(args...)
 				}
-				return f(args...)
 			}, "collei-a1")
 		}
 	}
 }
 
-func (c *char) a1AttackInfo() combat.AttackInfo {
-	return combat.AttackInfo{
-		ActorIndex: c.Index,
+func (c *char) a1AttackInfo() info.AttackInfo {
+	return info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Floral Sidewinder (A1)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagColleiSprout,
@@ -76,24 +77,25 @@ func (c *char) a4() {
 		return
 	}
 
-	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	f := func(args ...interface{}) bool {
+	f := func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if !char.StatusIsActive(a4Key) {
-			return false
+			return
 		}
 		if c.burstExtendCount >= 3 {
-			return false
+			return
 		}
 		c.ExtendStatus(burstKey, 60)
 		c.burstExtendCount++
-		c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index).
-			Write("extend_count", c.burstExtendCount)
-		return false
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index()).
+				Write("extend_count", c.burstExtendCount)
+		}
 	}
 
 	for _, evt := range dendroEvents {
@@ -101,22 +103,21 @@ func (c *char) a4() {
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Core.Events.Subscribe(evt, f, "collei-a4")
 		default:
-			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
-				if _, ok := args[0].(*enemy.Enemy); !ok {
-					return false
+			c.Core.Events.Subscribe(evt, func(args ...any) {
+				if _, ok := args[0].(*enemy.Enemy); ok {
+					f(args...)
 				}
-				return f(args...)
 			}, "collei-a4")
 		}
 	}
 }
 
-func (c *char) a1Ticks(startFrame int, snap combat.Snapshot) {
+func (c *char) a1Ticks(startFrame int, snap info.Snapshot) {
 	if !c.StatusIsActive(sproutKey) {
 		return
 	}
 	if startFrame != c.sproutSrc {
-		c.Core.Log.NewEvent("collei a1 tick ignored, src diff", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("collei a1 tick ignored, src diff", glog.LogCharacterEvent, c.Index()).
 			Write("src", startFrame).
 			Write("new src", c.sproutSrc)
 		return

@@ -8,7 +8,6 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/ysmood/gson"
 )
 
 func (s *Server) do(id string) {
@@ -48,7 +47,7 @@ func (s *Server) listen() {
 				s.logger.Info("work done", "id", res.id, "err", res.err, "set_err", status.Err(), "publish_err", pubstatus.Err())
 			}
 		}
-		//TODO: more than 1 worker?
+		// TODO: more than 1 worker?
 		if !busy && len(queue) > 0 {
 			busy = true
 			next := queue[0]
@@ -117,7 +116,6 @@ func (s *Server) generateSnapshot(url string) ([]byte, error) {
 		}
 		return fmt.Errorf("generate preview failed: %v", *str)
 	}).Do()
-
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +124,11 @@ func (s *Server) generateSnapshot(url string) ([]byte, error) {
 
 	buf, err := page.Screenshot(true, &proto.PageCaptureScreenshot{
 		Format:  proto.PageCaptureScreenshotFormatWebp,
-		Quality: gson.Int(100),
+		Quality: intPtr(100),
 	})
 	return buf, err
+}
+
+func intPtr(v int) *int {
+	return &v
 }

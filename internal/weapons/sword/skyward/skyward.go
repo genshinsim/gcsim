@@ -43,49 +43,48 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("skyward-blade-crit", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
 	atkspdBuff := make([]float64, attributes.EndStatType)
 	atkspdBuff[attributes.AtkSpd] = 0.1
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnBurst, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, 720),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return atkspdBuff, true
+			Amount: func() []float64 {
+				return atkspdBuff
 			},
 		})
-		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
 	// deals damage proc on normal/charged attacks. i dont know why description in game sucks
 	dmgper := .15 + .05*float64(r)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		// check if char is correct?
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// check if buff up
 		if !char.StatModIsActive(buffKey) {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		// add a new action that deals % dmg immediately
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Skyward Blade Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -95,9 +94,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       dmgper,
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
-		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
 	return w, nil

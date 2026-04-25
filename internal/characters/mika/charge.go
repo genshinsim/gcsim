@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFrames []int
@@ -18,14 +19,14 @@ func init() {
 	chargeFrames[action.ActionAttack] = 63
 	chargeFrames[action.ActionSkill] = 62
 	chargeFrames[action.ActionBurst] = 62
-	chargeFrames[action.ActionDash] = 20
-	chargeFrames[action.ActionJump] = 20
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 61
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Charge Attack",
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagExtraAttack,

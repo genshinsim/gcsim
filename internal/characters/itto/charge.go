@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -185,8 +185,8 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -207,7 +207,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	// handle hitlag and talent%
 	ai.Abil = c.slashState.String(true)
-	c.Core.Log.NewEvent("performing CA", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("performing CA", glog.LogCharacterEvent, c.Index()).
 		Write("slash", c.slashState.String(false)).
 		Write("stacks", stacks)
 
@@ -244,13 +244,13 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+		info.Point{Y: chargeOffsets[burstIndex][c.slashState]},
 		chargeHitboxes[burstIndex][c.slashState][0],
 	)
 	if c.slashState == LeftSlash || c.slashState == RightSlash {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+			info.Point{Y: chargeOffsets[burstIndex][c.slashState]},
 			chargeHitboxes[burstIndex][c.slashState][0],
 			chargeHitboxes[burstIndex][c.slashState][1],
 		)

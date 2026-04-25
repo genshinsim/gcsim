@@ -153,7 +153,7 @@ func TestRejectAllUnapprovedTag(t *testing.T) {
 
 	total := rand.Intn(25)
 	// add a bunch of random entries
-	for i := 0; i < total; i++ {
+	for i := range total {
 		e := makeEntry(fmt.Sprintf("reject_all_unapproved_%v", i), "poop", true, false)
 		_, err := col.InsertOne(context.Background(), e)
 		if err != nil {

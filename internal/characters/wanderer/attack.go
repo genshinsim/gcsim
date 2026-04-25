@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -88,8 +89,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagNormalAttack,
@@ -140,8 +141,8 @@ func (c *char) WindfavoredAttack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("Normal %v (Windfavored)", c.NormalCounter),
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagNormalAttack,

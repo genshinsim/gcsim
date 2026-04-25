@@ -3,12 +3,10 @@ package dehya
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,8 +23,8 @@ func (c *char) c1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("dehya-c1", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 	// abil flat dmg
@@ -52,44 +50,45 @@ func (c *char) c2() {
 	val[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("dehya-sanctum-dot-c2", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.Abil != skillDoTAbil || !c.hasC2DamageBuff {
-				return nil, false
+				return nil
 			}
-			return val, true
+			return val
 		},
 	})
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) {
 		char := args[0].(int)
 		// don't trigger if active char not hit
 		if char != c.Core.Player.Active() {
-			return false
+			return
 		}
 		// field needs to be active
 		if !c.StatusIsActive(dehyaFieldKey) {
-			return false
+			return
 		}
 		// player needs to be in field
 		if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
-			return false
+			return
 		}
-		c.Core.Log.NewEvent("dehya-sanctum-c2-damage activated", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("dehya-sanctum-c2-damage activated", glog.LogCharacterEvent, c.Index())
 		c.hasC2DamageBuff = true
-		return false
 	}, "dehya-c2")
 }
 
 // When Flame-Mane's Fist and Incineration Drive attacks unleashed during Leonine Bite hit opponents,
 // they will restore 1.5 Energy for Dehya and 2.5% of her Max HP. This effect can be triggered once every 0.2s.
-const c4Key = "dehya-c4"
-const c4ICDKey = "dehya-c4-icd"
+const (
+	c4Key    = "dehya-c4"
+	c4ICDKey = "dehya-c4-icd"
+)
 
-func (c *char) c4CB() combat.AttackCBFunc {
+func (c *char) c4CB() info.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c4ICDKey) {
@@ -99,8 +98,8 @@ func (c *char) c4CB() combat.AttackCBFunc {
 
 		c.AddEnergy(c4Key, 1.5)
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "An Oath Abiding (C4)",
 			Src:     0.025 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
@@ -121,26 +120,26 @@ func (c *char) c6() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("dehya-c6", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 			val[attributes.CD] = 0.15 * float64(c.c6Count)
 
-			return val, true
+			return val
 		},
 	})
 }
 
 const c6ICDKey = "dehya-c6-icd"
 
-func (c *char) c6CB() combat.AttackCBFunc {
+func (c *char) c6CB() info.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
 
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if !a.IsCrit {

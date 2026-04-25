@@ -1,5 +1,6 @@
 ---
-title: Portable Power Saw
+title: >
+  Portable Power Saw
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

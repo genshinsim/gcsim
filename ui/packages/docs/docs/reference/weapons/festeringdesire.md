@@ -1,5 +1,6 @@
 ---
-title: Festering Desire
+title: >
+  Festering Desire
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

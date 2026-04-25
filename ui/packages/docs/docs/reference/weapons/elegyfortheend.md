@@ -1,5 +1,6 @@
 ---
-title: Elegy for the End
+title: >
+  Elegy for the End
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

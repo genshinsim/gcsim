@@ -34,8 +34,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 	c.burstSrc = c.Core.F
@@ -67,7 +67,7 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 	duration := c.StatusDuration(burstKey)
 	if 0 < duration && duration < hitmark {
 		c.ExtendStatus(burstKey, hitmark-duration+1)
-		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.StatusExpiry(burstKey))
 		src := c.burstSrc
 		c.QueueCharTask(func() {
@@ -77,16 +77,15 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.DeleteStatus(burstKey)
 			c.onBurstExpiry(c.burstSrc)
 		}
-		return false
 	}, "cyno-burst-clear")
 }
 

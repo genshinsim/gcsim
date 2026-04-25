@@ -1,5 +1,6 @@
 ---
-title: Compound Bow
+title: >
+  Compound Bow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

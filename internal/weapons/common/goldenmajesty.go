@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -40,17 +39,17 @@ func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p i
 	stacks := 0
 	m := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		ae := args[1].(*info.AttackEvent)
 
-		if ae.Info.ActorIndex != char.Index {
-			return false
+		if ae.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 18, true)
 
@@ -66,15 +65,14 @@ func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p i
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, 60*8),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				m[attributes.ATKP] = atkbuff * float64(stacks)
-				if c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
+				if c.Player.Shields.CharacterIsShielded(char.Index(), c.Player.Active()) {
 					m[attributes.ATKP] *= 2
 				}
-				return m, true
+				return m
 			},
 		})
-		return false
 	}, key)
 
 	return g, nil

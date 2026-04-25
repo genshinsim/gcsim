@@ -64,7 +64,7 @@ func main() {
 	b, err := discord.New(discord.Config{
 		Token:   os.Getenv("DISCORD_BOT_TOKEN"),
 		Backend: store,
-		//TODO: consider moving this mapping to models maybe?
+		// TODO: consider moving this mapping to models maybe?
 		TagMapping:   mapping,
 		AnnounceChan: announceChan,
 	}, func(b *discord.Bot) error {
@@ -85,7 +85,6 @@ func makeShareStore() api.ShareStore {
 	shareStore, err := share.NewClient(share.ClientCfg{
 		Addr: os.Getenv("SHARE_STORE_URL"),
 	})
-
 	if err != nil {
 		panic(err)
 	}

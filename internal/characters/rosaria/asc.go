@@ -2,22 +2,21 @@ package rosaria
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT Rate increases by 12% for 5s.
 // TODO: does this need to change if we add player position?
-func (c *char) makeA1CB() combat.AttackCBFunc {
+func (c *char) makeA1CB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -30,11 +29,11 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("rosaria-a1", 300),
 			AffectedStat: attributes.CR,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
-		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index()).
 			Write("ends_on", c.Core.F+300)
 	}
 }
@@ -56,19 +55,19 @@ func (c *char) a4() {
 	m[attributes.CR] = critShare
 	for i, char := range c.Core.Player.Chars() {
 		// skip Rosaria
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("rosaria-a4", 600),
 			AffectedStat: attributes.CR,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
-	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index()).
 		Write("ends_on", c.Core.F+600).
 		Write("crit_share", critShare)
 }

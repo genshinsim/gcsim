@@ -1,5 +1,6 @@
 ---
-title: Yoimiya
+title: >
+  Yoimiya
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

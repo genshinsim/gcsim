@@ -1,5 +1,6 @@
 ---
-title: "Shouki no Kami, the Prodigal"
+title: >
+  Shouki no Kami, the Prodigal
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: Royal Grimoire
+title: >
+  Royal Grimoire
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Eremite Ravenbeak Halberdier"
+title: >
+  Eremite Ravenbeak Halberdier
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

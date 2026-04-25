@@ -39,6 +39,8 @@ const (
 	OnHyperbloom         // target, AttackEvent
 	OnBurgeon            // target, AttackEvent
 	OnBurning            // target, AttackEvent
+	OnLunarCharged       // target, AttackEvent
+	OnLunarBloom         // target, AttackEvent
 	OnShatter            // target, AttackEvent; at the end to simplify all reaction event subs since it's normally not considered as an elemental reaction
 	ReactionEventEndDelim
 	OnDendroCore // Gadget
@@ -49,7 +51,8 @@ const (
 	OnConstructSpawned  // nil
 	OnCharacterSwap     // prev, next
 	OnParticleReceived  // particle
-	OnEnergyChange      // character_received_index, pre_energy, energy_change, src (post-energy available in character_received), is_particle (boolean)
+	OnEnergyChange      // character_received, pre_energy, energy_change, src (post-energy available in character_received), is_particle (boolean)
+	OnEnergyBurst       // character_drained, pre_energy, burst_cost
 	OnTargetDied        // target, AttackEvent
 	OnTargetMoved       // target
 	OnCharacterHit      // nil <- this is for when the character is going to get hit but might be shielded from dmg
@@ -71,6 +74,7 @@ const (
 	OnPlunge       // nil
 	OnAimShoot     // nil
 	OnDash
+	OnLunarChargedReactionAttack // target, AttackEvent; event so predamagemods can be applied to the individual LC contributions. Emitted once per contributor
 	// sim stuff
 	OnInitialize  // nil
 	OnStateChange // prev, next
@@ -84,12 +88,12 @@ type Handler struct {
 	events [][]ehook
 }
 
-type Hook func(args ...interface{}) bool
+type Hook func(args ...any)
 
 type Eventter interface {
 	Subscribe(e Event, f Hook, key string)
 	Unsubscribe(e Event, key string)
-	Emit(e Event, args ...interface{})
+	Emit(e Event, args ...any)
 }
 
 type ehook struct {
@@ -133,23 +137,17 @@ func (h *Handler) Subscribe(e Event, f Hook, key string) {
 }
 
 func (h *Handler) Unsubscribe(e Event, key string) {
-	n := 0
-	for _, v := range h.events[e] {
-		if v.key != key {
-			h.events[e][n] = v
-			n++
+	for i, v := range h.events[e] {
+		if v.key == key {
+			h.events[e][i].f = nil
 		}
 	}
-	h.events[e] = h.events[e][:n]
 }
 
-func (h *Handler) Emit(e Event, args ...interface{}) {
-	n := 0
+func (h *Handler) Emit(e Event, args ...any) {
 	for _, v := range h.events[e] {
-		if !v.f(args...) {
-			h.events[e][n] = v
-			n++
+		if v.f != nil {
+			v.f(args...)
 		}
 	}
-	h.events[e] = h.events[e][:n]
 }

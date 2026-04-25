@@ -1,5 +1,6 @@
 ---
-title: "Ruler of the Chizhang Mountains: Tianyu"
+title: >
+  Ruler of the Chizhang Mountains: Tianyu
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

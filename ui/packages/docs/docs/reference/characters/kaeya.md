@@ -1,5 +1,6 @@
 ---
-title: Kaeya
+title: >
+  Kaeya
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: Xiphos' Moonlight
+title: >
+  Xiphos' Moonlight
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

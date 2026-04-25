@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -51,8 +50,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("echoes-2pc", -1),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -63,20 +62,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	var dmgAdded float64
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		// if the active char is not the equipped char then ignore
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		// If attack does not belong to the equipped character then ignore
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		// If this is not a normal attack then ignore
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		// if buff is already active then buff attack
@@ -84,28 +83,28 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		if c.F < s.procExpireF {
 			dmgAdded = snATK * 0.7
 			atk.Info.FlatDmg += dmgAdded
-			c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index()).
 				Write("dmg_added", dmgAdded).
 				Write("buff_expiry", s.procExpireF).
 				Write("icd_up", s.icd)
 
-			return false
+			return
 		}
 
 		// If Artifact set effect is still on CD then ignore
 		if c.F < s.icd {
-			c.Log.NewEvent("echoes 4pc failed to proc due icd", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("echoes 4pc failed to proc due icd", glog.LogArtifactEvent, char.Index()).
 				Write("icd_up", s.icd)
-			return false
+			return
 		}
 
 		if c.Rand.Float64() > s.prob {
 			s.icd = c.F + 12 // 0.2s
 			s.prob += 0.2
-			c.Log.NewEvent("echoes 4pc failed to proc due to chance", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("echoes 4pc failed to proc due to chance", glog.LogArtifactEvent, char.Index()).
 				Write("probability_now", s.prob).
 				Write("icd_up", s.icd)
-			return false
+			return
 		}
 
 		dmgAdded = snATK * 0.7
@@ -116,12 +115,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		s.prob = 0.36
 
-		c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
+		c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index()).
 			Write("dmg_added", dmgAdded).
 			Write("buff_expiry", s.procExpireF).
 			Write("icd_up", s.icd)
-
-		return false
 	}, fmt.Sprintf("echoes-4pc-%v", char.Base.Key.String()))
 
 	return &s, nil

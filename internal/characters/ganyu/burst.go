@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -28,8 +28,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Celestial Shower",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -50,21 +50,20 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// tick every 0.3s from burstStart
 	for i := 0; i < 15*60; i += 18 {
 		// c4 related
-		tick := i
 		c.Core.Tasks.Add(func() {
 			// burst tick
 			enemy := c.Core.Combat.RandomEnemyWithinArea(
 				burstArea,
-				func(e combat.Enemy) bool {
+				func(e info.Enemy) bool {
 					return !e.StatusIsActive(burstMarkKey)
 				},
 			)
-			var pos geometry.Point
+			var pos info.Point
 			if enemy != nil {
 				pos = enemy.Pos()
 				enemy.AddStatus(burstMarkKey, 1.45*60, true) // same enemy can't be targeted again for 1.45s
 			} else {
-				pos = geometry.CalcRandomPointFromCenter(burstArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
+				pos = info.CalcRandomPointFromCenter(burstArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
 			}
 			// deal dmg after a certain delay
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(pos, nil, 2.5), 8)
@@ -76,8 +75,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				active.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("ganyu-field", 60),
 					AffectedStat: attributes.CryoP,
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}
@@ -86,16 +85,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				enemies := c.Core.Combat.EnemiesWithinArea(burstArea, nil)
 				// increase stacks every 3s but apply c4 status on every tick
 				// c4 lingers for 3s
-				increase := tick%180 == 0
+				increase := i%180 == 0
 				for _, e := range enemies {
 					e.AddStatus(c4Key, c4Dur, true)
 					if increase {
-						c4Stacks := e.GetTag(c4Key) + 1
-						if c4Stacks > 5 {
-							c4Stacks = 5
-						}
+						c4Stacks := min(e.GetTag(c4Key)+1, 5)
 						e.SetTag(c4Key, c4Stacks)
-						c.Core.Log.NewEvent(c4Key+" tick on enemy", glog.LogCharacterEvent, c.Index).
+						c.Core.Log.NewEvent(c4Key+" tick on enemy", glog.LogCharacterEvent, c.Index()).
 							Write("stacks", c4Stacks).
 							Write("enemy key", e.Key())
 					}

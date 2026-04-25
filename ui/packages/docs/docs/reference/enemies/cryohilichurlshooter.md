@@ -1,5 +1,6 @@
 ---
-title: "Cryo Hilichurl Shooter"
+title: >
+  Cryo Hilichurl Shooter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

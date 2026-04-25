@@ -1,5 +1,6 @@
 ---
-title: Deathmatch
+title: >
+  Deathmatch
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Skyward Harp
+title: >
+  Skyward Harp
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

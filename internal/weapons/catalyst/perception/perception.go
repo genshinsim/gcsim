@@ -20,8 +20,8 @@ func init() {
 
 type Weapon struct {
 	Index int
-	ai    combat.AttackInfo
-	snap  combat.Snapshot
+	ai    info.AttackInfo
+	snap  info.Snapshot
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -29,12 +29,12 @@ func (w *Weapon) Init() error      { return nil }
 
 const bounceKey = "eye-of-perception-bounce"
 
-func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) func(a combat.AttackCB) {
+func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) func(a info.AttackCB) {
 	if count == 4 {
 		return nil
 	}
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		// check target is an enemey
 		t, ok := a.Target.(*enemy.Enemy)
 		if !ok {
@@ -48,7 +48,7 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 
 		next := c.Combat.ClosestEnemyWithinArea(
 			combat.NewCircleHitOnTarget(t, nil, 8),
-			func(e combat.Enemy) bool {
+			func(e info.Enemy) bool {
 				return !e.StatusIsActive(bounceKey)
 			},
 		)
@@ -67,8 +67,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	cd := (13 - r) * 60
 	dmg := 2.1 * float64(r) * 0.3
 
-	w.ai = combat.AttackInfo{
-		ActorIndex: char.Index,
+	w.ai = info.AttackInfo{
+		ActorIndex: char.Index(),
 		Abil:       "Eye of Preception Proc",
 		AttackTag:  attacks.AttackTagWeaponSkill,
 		ICDTag:     attacks.ICDTagNone,
@@ -79,23 +79,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		Mult:       dmg,
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != char.Index() {
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, cd, true)
 		w.snap = char.Snapshot(&w.ai)
 
 		enemy := c.Combat.ClosestEnemyWithinArea(
 			combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8),
-			func(e combat.Enemy) bool {
+			func(e info.Enemy) bool {
 				return !e.StatusIsActive(bounceKey)
 			},
 		)
@@ -103,8 +103,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			enemy.AddStatus(bounceKey, 36, true)
 			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, w.chain(0, c, char))
 		}
-
-		return false
 	}, fmt.Sprintf("perception-%v", char.Base.Key.String()))
 
 	return w, nil

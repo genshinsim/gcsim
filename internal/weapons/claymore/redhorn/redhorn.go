@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -37,25 +36,24 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("redhorn-stonethrasher-def-boost", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return val, true
+		Amount: func() []float64 {
+			return val
 		},
 	})
 
 	nacaBoost := .3 + .1*float64(r)
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if !(atk.Info.AttackTag == attacks.AttackTagNormal || atk.Info.AttackTag == attacks.AttackTagExtra) {
-			return false
+		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
+			return
 		}
 		baseDmgAdd := char.TotalDef(false) * nacaBoost
 		atk.Info.FlatDmg += baseDmgAdd
-		c.Log.NewEvent("Redhorn proc dmg add", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("Redhorn proc dmg add", glog.LogPreDamageMod, char.Index()).
 			Write("base_added_dmg", baseDmgAdd)
-		return false
 	}, fmt.Sprintf("redhorn-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -49,15 +48,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		// determine attack pos
 		player := c.Combat.Player()
 		enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(player, nil, 15), nil)
-		var pos geometry.Point
+		var pos info.Point
 		if enemy == nil {
 			pos = player.Pos()
 		} else {
 			pos = enemy.Pos()
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "King's Squire Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -69,33 +68,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(pos, nil, 1.6), 0, 1)
 	}
 
-	f := func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	f := func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 20*60, true)
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, 12*60),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 		char.QueueCharTask(triggerAttack, 12*60)
-		return false
 	}
 
 	c.Events.Subscribe(event.OnSkill, f, fmt.Sprintf("kingssquire-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnBurst, f, fmt.Sprintf("kingssquire-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
-		if prev == char.Index {
+		if prev == char.Index() {
 			triggerAttack()
 		}
-		return false
 	}, fmt.Sprintf("kingssquire-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -2,23 +2,23 @@ package electro
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // C2 - Violet Vehemence
 // When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
-func (c *Traveler) c2() combat.AttackCBFunc {
+func (c *Traveler) c2() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("travelerelectro-c2", 480),
 			Ele:   attributes.Electro,
 			Value: -0.15,
@@ -43,7 +43,7 @@ func (c *Traveler) c4(buffEnergy float64) float64 {
 // Every 2 Falling Thunder attacks triggered by Bellowing Thunder will greatly increase the DMG
 // dealt by the next Falling Thunder, which will deal 200% of its original DMG [..]
 // * Electro traveller's C6 is a multiplicative buff
-func (c *Traveler) c6Damage(ai *combat.AttackEvent) {
+func (c *Traveler) c6Damage(ai *info.AttackEvent) {
 	if c.Base.Cons >= 6 {
 		c.burstC6Hits++
 		if c.burstC6Hits >= 3 {
@@ -58,8 +58,8 @@ func (c *Traveler) c6Damage(ai *combat.AttackEvent) {
 // World-Shaker
 //
 //	[..] and will restore an additional 1 Energy to the current character.
-func (c *Traveler) c6Energy() combat.AttackCBFunc {
-	return func(_ combat.AttackCB) {
+func (c *Traveler) c6Energy() info.AttackCBFunc {
+	return func(_ info.AttackCB) {
 		if c.burstC6WillGiveEnergy {
 			active := c.Core.Player.ActiveChar()
 			active.AddEnergy("travelerelectro-c6", 1)

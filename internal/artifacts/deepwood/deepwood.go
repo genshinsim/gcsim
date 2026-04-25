@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -41,34 +40,32 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("dm-2pc", -1),
 			AffectedStat: attributes.DendroP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 	if count >= 4 {
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+			atk := args[1].(*info.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
-				return false
+				return
 			}
-			if atk.Info.ActorIndex != char.Index {
-				return false
+			if atk.Info.ActorIndex != char.Index() {
+				return
 			}
 
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return false
+				return
 			}
 
-			t.AddResistMod(combat.ResistMod{
+			t.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("dm-4pc", 8*60),
 				Ele:   attributes.Dendro,
 				Value: -0.3,
 			})
-			c.Log.NewEvent("dm 4pc proc", glog.LogArtifactEvent, char.Index).Write("char", char.Index)
-
-			return false
+			c.Log.NewEvent("dm 4pc proc", glog.LogArtifactEvent, char.Index()).Write("char", char.Index())
 		}, fmt.Sprintf("dm-4pc-%v", char.Base.Key.String()))
 	}
 

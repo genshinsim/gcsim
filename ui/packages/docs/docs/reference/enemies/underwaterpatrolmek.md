@@ -1,5 +1,6 @@
 ---
-title: "Underwater Patrol Mek"
+title: >
+  Underwater Patrol Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: "Kairagi: Dancing Thunder"
+title: >
+  Kairagi: Dancing Thunder
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

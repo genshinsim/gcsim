@@ -6,10 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
-var ajawHitmarks = []int{145, 150}
+var (
+	burstFrames  []int
+	ajawHitmarks = []int{145, 150}
+)
 
 const (
 	cdStart            = 1
@@ -33,12 +36,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatus(burstKey, ajawDuration, false)
 	if c.nightsoulState.HasBlessing() {
 		// extend Nightsoul's Blessing time limit countdown
-		duration := (c.exitStateF - c.Core.F) + 1.7*60
-		c.setNightsoulExitTimer(duration)
+		duration := c.nightsoulState.Duration()
+		if duration > 0 {
+			c.nightsoulState.SetNightsoulExitTimer(duration+1.7*60, c.cancelNightsoul)
+		}
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Hail to the Almighty Dragonlord (Skill DMG)",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -57,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
@@ -76,8 +81,8 @@ func (c *char) QueueLaser(step, src int) func() {
 			c.DeleteStatus(burstKey)
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           "Hail to the Almighty Dragonlord (Dragon Breath DMG)",
 			AttackTag:      attacks.AttackTagElementalBurst,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},

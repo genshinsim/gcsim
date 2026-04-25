@@ -39,8 +39,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("aquila favonia", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -48,23 +48,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	heal := .85 + .15*float64(r)
 	const icdKey = "aquila-icd"
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if !di.External {
-			return false
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
-		if di.ActorIndex != char.Index {
-			return false
+		if di.ActorIndex != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 900, true) // 15 sec
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Aquila Favonia",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -78,13 +78,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 6), 1)
 
 		c.Player.Heal(info.HealInfo{
-			Caller:  char.Index,
+			Caller:  char.Index(),
 			Target:  c.Player.Active(),
 			Message: "Aquila Favonia",
 			Src:     snap.Stats.TotalATK() * heal,
 			Bonus:   char.Stat(attributes.Heal),
 		})
-		return false
 	}, fmt.Sprintf("aquila-%v", char.Base.Key.String()))
 	return w, nil
 }

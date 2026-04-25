@@ -1,5 +1,6 @@
 ---
-title: "Frostarm Lawachurl"
+title: >
+  Frostarm Lawachurl
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

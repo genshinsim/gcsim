@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -54,18 +53,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("surfs-up-hp%", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
-			return mHP, true
+		Amount: func() []float64 {
+			return mHP
 		},
 	})
 
 	mNA := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		char.AddStatus(icdKey, 15*60, true)
@@ -73,37 +72,35 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 14*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag == attacks.AttackTagNormal {
 					mNA[attributes.DmgP] = dmgPerStack * float64(min(w.stacks, 4))
-					return mNA, true
+					return mNA
 				}
-				return nil, false
+				return nil
 			},
 		})
-
-		return false
 	}, fmt.Sprintf("surfs-up-skill-%v", char.Base.Key.String()))
 
 	// Gain stack on vape
-	c.Events.Subscribe(event.OnVaporize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnVaporize, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
-			return false
+			return
 		}
 		if char.StatusIsActive(gainStackIcd) {
-			return false
+			return
 		}
 
 		if w.stacks < 5 { // limit to 5 so it can carry over when NA hits
@@ -115,45 +112,41 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}, .5*60)
 		}
 
-		c.Log.NewEvent("Surf's Up gained stack", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("Surf's Up gained stack", glog.LogWeaponEvent, char.Index())
 		char.AddStatus(gainStackIcd, 1.5*60, true)
-
-		return false
 	}, fmt.Sprintf("surfs-up-vape-%v", char.Base.Key.String()))
 
 	// Lose stack on NA
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
-			return false
+			return
 		}
 		if char.StatusIsActive(loseStackIcd) {
-			return false
+			return
 		}
 
 		if w.stacks > 0 {
 			w.stacks--
 		}
 
-		c.Log.NewEvent("Surf's Up lost stack", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("Surf's Up lost stack", glog.LogWeaponEvent, char.Index())
 		char.AddStatus(loseStackIcd, 1.5*60, true)
-
-		return false
 	}, fmt.Sprintf("surfs-up-dmg-%v", char.Base.Key.String()))
 
 	return w, nil

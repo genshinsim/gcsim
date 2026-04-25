@@ -2,10 +2,8 @@ package damage
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -36,17 +34,17 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	out.cumuChar = append(out.cumuChar, make([]float64, len(core.Player.Chars())))
 	out.cumuTarget = append(out.cumuTarget, make([]float64, len(core.Combat.Enemies())))
 
-	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		target := args[0].(combat.Target)
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		target := args[0].(info.Target)
 		targetKey := target.Key()
-		attack := args[1].(*combat.AttackEvent)
+		attack := args[1].(*info.AttackEvent)
 		damage := args[2].(float64)
 		crit := args[3].(bool)
 
 		// TODO: validate if this is still true?
 		// No need to pull damage stats for non-enemies
-		if target.Type() != targets.TargettableEnemy {
-			return false
+		if target.Type() != info.TargettableEnemy {
+			return
 		}
 
 		bucket := core.F / bucketSize
@@ -87,24 +85,23 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 		if attack.Info.Amped {
 			switch attack.Info.AmpType {
-			case reactions.Vaporize:
+			case info.ReactionTypeVaporize:
 				event.ReactionModifier = stats.Vaporize
-			case reactions.Melt:
+			case info.ReactionTypeMelt:
 				event.ReactionModifier = stats.Melt
 			}
 		}
 
 		if attack.Info.Catalyzed {
 			switch attack.Info.CatalyzedType {
-			case reactions.Aggravate:
+			case info.ReactionTypeAggravate:
 				event.ReactionModifier = stats.Aggravate
-			case reactions.Spread:
+			case info.ReactionTypeSpread:
 				event.ReactionModifier = stats.Spread
 			}
 		}
 
 		out.events[attack.Info.ActorIndex] = append(out.events[attack.Info.ActorIndex], event)
-		return false
 	}, "stats-dmg-log")
 
 	return &out, nil

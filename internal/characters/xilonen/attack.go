@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -27,8 +27,10 @@ var (
 	rollerPoiseDMG         = []float64{52.8, 51.9, 62.1, 81.1}
 )
 
-const normalHitNum = 3
-const rollerHitNum = 4
+const (
+	normalHitNum = 3
+	rollerHitNum = 4
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -43,7 +45,7 @@ func init() {
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 70)
 	attackFrames[2][action.ActionAttack] = 57
-	attackFrames[2][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[2][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 
 	rollerFrames = make([][]int, rollerHitNum)
 
@@ -68,8 +70,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		c.exitNightsoul()
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -88,7 +90,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+			info.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackHitboxes[c.NormalCounter][i],
 			attackFanAngles[c.NormalCounter][i],
 		)
@@ -107,8 +109,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) nightsoulAttack() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Blade Roller %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -126,18 +128,18 @@ func (c *char) nightsoulAttack() action.Info {
 		IgnoreInfusion:     true,
 	}
 
-	var ap combat.AttackPattern
+	var ap info.AttackPattern
 	if c.NormalCounter == 0 || c.NormalCounter == 3 {
 		ap = combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: rollerOffsets[c.NormalCounter]},
+			info.Point{Y: rollerOffsets[c.NormalCounter]},
 			rollerHitboxes[c.NormalCounter][0],
 			rollerHitboxes[c.NormalCounter][1],
 		)
 	} else {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: rollerOffsets[c.NormalCounter]},
+			info.Point{Y: rollerOffsets[c.NormalCounter]},
 			rollerHitboxes[c.NormalCounter][0],
 			rollerHitboxes[c.NormalCounter][1],
 		)

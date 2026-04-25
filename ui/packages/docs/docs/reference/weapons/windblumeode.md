@@ -1,5 +1,6 @@
 ---
-title: Windblume Ode
+title: >
+  Windblume Ode
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

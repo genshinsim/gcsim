@@ -7,9 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 var burstFrames []int
@@ -51,8 +51,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}, 420+burstHitmark)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Musou Shinsetsu",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -71,11 +71,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.stacksConsumed = c.stacks
 		c.stacks = 0
 		ai.Mult += resolveBaseBonus[c.TalentLvlBurst()] * c.stacksConsumed
-		c.Core.Log.NewEvent("resolve stacks", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("resolve stacks", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", c.stacksConsumed)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 13, 8),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -0.1}, 13, 8),
 			0,
 			0,
 		)
@@ -92,8 +92,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstRestorefunc(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) burstRestorefunc(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.Core.F > c.restoreICD && c.restoreCount < 5 {
@@ -107,32 +107,32 @@ func (c *char) burstRestorefunc(a combat.AttackCB) {
 }
 
 func (c *char) onSwapClearBurst() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(BurstKey) {
-			return false
+			return
 		}
 		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
-		if prev == c.Index {
+		if prev == c.Index() {
 			c.DeleteStatus(BurstKey)
 			if c.applyC4 {
 				c.applyC4 = false
 				c.c4()
 			}
 		}
-		return false
 	}, "raiden-burst-clear")
 }
 
 func (c *char) onBurstStackCount() {
 	// TODO: this used to be on PostBurst; need to check if it works correctly still
-	c.Core.Events.Subscribe(event.OnBurst, func(_ ...interface{}) bool {
-		if c.Core.Player.Active() == c.Index {
-			return false
+	c.Core.Events.Subscribe(event.OnEnergyBurst, func(args ...any) {
+		if c.Core.Player.Active() == c.Index() {
+			return
 		}
-		char := c.Core.Player.ActiveChar()
+		char := args[0].(*character.CharWrapper)
+		amount := args[2].(float64)
 		// add stacks based on char max energy
-		stacks := resolveStackGain[c.TalentLvlBurst()] * char.EnergyMax
+		stacks := resolveStackGain[c.TalentLvlBurst()] * amount
 		if c.Base.Cons > 0 {
 			if char.Base.Element == attributes.Electro {
 				stacks *= 1.8
@@ -140,10 +140,14 @@ func (c *char) onBurstStackCount() {
 				stacks *= 1.2
 			}
 		}
+		previous := c.stacks
 		c.stacks += stacks
 		if c.stacks > 60 {
 			c.stacks = 60
 		}
-		return false
+		c.Core.Log.NewEvent("resolve stacks gained", glog.LogCharacterEvent, c.Index()).
+			Write("previous", previous).
+			Write("amount", stacks).
+			Write("final", c.stacks)
 	}, "raiden-stacks")
 }

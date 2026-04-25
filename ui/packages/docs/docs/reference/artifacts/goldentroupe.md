@@ -1,5 +1,6 @@
 ---
-title: Golden Troupe
+title: >
+  Golden Troupe
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

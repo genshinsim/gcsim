@@ -1,5 +1,6 @@
 ---
-title: Serpent Spine
+title: >
+  Serpent Spine
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

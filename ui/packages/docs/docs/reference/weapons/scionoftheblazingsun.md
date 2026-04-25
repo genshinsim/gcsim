@@ -1,5 +1,6 @@
 ---
-title: Scion of the Blazing Sun
+title: >
+  Scion of the Blazing Sun
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

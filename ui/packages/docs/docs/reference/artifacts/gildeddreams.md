@@ -1,5 +1,6 @@
 ---
-title: Gilded Dreams
+title: >
+  Gilded Dreams
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -44,43 +44,43 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.DmgP] = 0.21 + 0.07*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("scion", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if !e.StatusIsActive(debuffKey) {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
 
-			return m, true
+			return m
 		},
 	})
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Sunfire Arrow",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -92,13 +92,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3.5), 0.25*60, 0.25*60, w.applyDebuff)
 		char.AddStatus(icdKey, 10*60, true)
-
-		return false
 	}, fmt.Sprintf("scion-%v", char.Base.Key.String()))
 	return w, nil
 }
 
-func (w *Weapon) applyDebuff(a combat.AttackCB) {
+func (w *Weapon) applyDebuff(a info.AttackCB) {
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return

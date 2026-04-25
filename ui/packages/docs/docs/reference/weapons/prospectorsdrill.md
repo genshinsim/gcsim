@@ -1,5 +1,6 @@
 ---
-title: Prospector's Drill
+title: >
+  Prospector's Drill
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -21,8 +21,10 @@ var a1Multipliers = [4]float64{1, 1.1, 1.25, 1.6}
 func (c *char) a1() {
 	a1 := []NeuvA1Keys{
 		{event.OnBloom, "neuvillette-a1-bloom"},
+		{event.OnLunarBloom, "neuvillette-a1-lunarbloom"},
 		{event.OnCrystallizeHydro, "neuvillette-a1-crystallize-hydro"},
 		{event.OnElectroCharged, "neuvillette-a1-electro-charged"},
+		{event.OnLunarCharged, "neuvillette-a1-lunar-charged"},
 		{event.OnFrozen, "neuvillette-a1-frozen"},
 		{event.OnSwirlHydro, "neuvillette-a1-swirl-hydro"},
 		{event.OnVaporize, "neuvillette-a1-vaporize"},
@@ -33,15 +35,12 @@ func (c *char) a1() {
 	)
 
 	for _, val := range a1 {
-		// need to make a copy of key for the status key
-		key := val.Key
-		c.Core.Events.Subscribe(val.Evt, func(args ...interface{}) bool {
+		c.Core.Events.Subscribe(val.Evt, func(args ...any) {
 			if _, ok := args[0].(*enemy.Enemy); !ok {
-				return false
+				return
 			}
-			c.AddStatus(key, 30*60, true)
-			return false
-		}, key)
+			c.AddStatus(val.Key, 30*60, true)
+		}, val.Key)
 	}
 }
 
@@ -66,47 +65,43 @@ func (c *char) a4() {
 		Base:         modifier.NewBase("neuvillette-a4", -1),
 		AffectedStat: attributes.HydroP,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return c.a4Buff, true
+		Amount: func() []float64 {
+			return c.a4Buff
 		},
 	})
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
-		if di.ActorIndex != c.Index {
-			return false
+		if di.ActorIndex != c.Index() {
+			return
 		}
 
 		c.updateA4()
-
-		return false
 	}, "neuv-a4-update-on-hp-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		target := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
 
 		if amount <= 0 {
-			return false
+			return
 		}
 
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 
-		if target != c.Index {
-			return false
+		if target != c.Index() {
+			return
 		}
 
 		c.updateA4()
-
-		return false
 	}, "neuv-a4-update-on-heal")
 
 	c.updateA4()

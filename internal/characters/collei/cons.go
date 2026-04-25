@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -17,30 +18,29 @@ func (c *char) c1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("collei-c1", -1),
 		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
-			if c.Core.Player.Active() != c.Index {
-				return m, true
+		Amount: func() []float64 {
+			if c.Core.Player.Active() != c.Index() {
+				return m
 			}
-			return nil, false
+			return nil
 		},
 	})
 }
 
 func (c *char) c2() {
 	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	f := func(args ...interface{}) bool {
+	f := func(args ...any) {
 		if c.sproutShouldExtend {
-			return false
+			return
 		}
-		if !(c.StatusIsActive(sproutKey) || c.StatusIsActive(skillKey)) {
-			return false
+		if !c.StatusIsActive(sproutKey) && !c.StatusIsActive(skillKey) {
+			return
 		}
 		c.sproutShouldExtend = true
 		if c.StatusIsActive(sproutKey) {
 			c.ExtendStatus(sproutKey, 180)
 		}
-		c.Core.Log.NewEvent("collei c2 proc", glog.LogCharacterEvent, c.Index)
-		return false
+		c.Core.Log.NewEvent("collei c2 proc", glog.LogCharacterEvent, c.Index())
 	}
 
 	for _, evt := range dendroEvents {
@@ -48,11 +48,10 @@ func (c *char) c2() {
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Core.Events.Subscribe(evt, f, "collei-c2")
 		default:
-			c.Core.Events.Subscribe(evt, func(args ...interface{}) bool {
-				if _, ok := args[0].(*enemy.Enemy); !ok {
-					return false
+			c.Core.Events.Subscribe(evt, func(args ...any) {
+				if _, ok := args[0].(*enemy.Enemy); ok {
+					f(args...)
 				}
-				return f(args...)
 			}, "collei-c2")
 		}
 	}
@@ -61,7 +60,7 @@ func (c *char) c2() {
 func (c *char) c4() {
 	for i, char := range c.Core.Player.Chars() {
 		// does not affect collei
-		if c.Index == i {
+		if c.Index() == i {
 			continue
 		}
 		amts := make([]float64, attributes.EndStatType)
@@ -69,16 +68,16 @@ func (c *char) c4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("collei-c4", 720),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return amts, true
+			Amount: func() []float64 {
+				return amts
 			},
 		})
 	}
 }
 
-func (c *char) c6(t combat.Target) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+func (c *char) c6(t info.Target) {
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Forest of Falling Arrows (C6)",
 		AttackTag:  attacks.AttackTagNone, // in game has this as AttackTagColleiC6
 		ICDTag:     attacks.ICDTagNone,

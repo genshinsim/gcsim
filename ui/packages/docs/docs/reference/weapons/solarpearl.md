@@ -1,5 +1,6 @@
 ---
-title: Solar Pearl
+title: >
+  Solar Pearl
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

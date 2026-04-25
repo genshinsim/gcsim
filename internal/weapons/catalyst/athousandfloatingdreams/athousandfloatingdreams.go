@@ -1,6 +1,8 @@
 package athousandfloatingdreams
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -28,7 +30,7 @@ func (w *Weapon) Init() error {
 	sameCount := 0
 	diffCount := 0
 	for i, char := range w.c.Player.Chars() {
-		if i == w.self.Index {
+		if i == w.self.Index() {
 			continue
 		}
 		if char.Base.Element == w.self.Base.Element {
@@ -37,9 +39,9 @@ func (w *Weapon) Init() error {
 			diffCount++
 		}
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBase("a-thousand-floating-dreams-party", -1),
-			Amount: func() ([]float64, bool) {
-				return w.teamBuff, true
+			Base: modifier.NewBase(fmt.Sprintf("a-thousand-floating-dreams-party-%v", w.self.Base.Key.String()), -1),
+			Amount: func() []float64 {
+				return w.teamBuff
 			},
 		})
 	}
@@ -65,8 +67,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	char.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("a-thousand-floating-dreams", -1),
-		Amount: func() ([]float64, bool) {
-			return w.buff, true
+		Amount: func() []float64 {
+			return w.buff
 		},
 	})
 	return w, nil

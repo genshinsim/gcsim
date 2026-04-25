@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -33,7 +32,7 @@ func (s *Set) Init() error {
 	atkCount := 0
 
 	for _, this := range s.c.Player.Chars() {
-		if s.char.Index == this.Index {
+		if s.char.Index() == this.Index() {
 			continue
 		}
 		if this.Base.Element != s.char.Base.Element {
@@ -76,37 +75,36 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("gd-2pc", -1),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 	if count >= 4 {
 		const icdKey = "gd-4pc-icd"
-		add := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
-				return false
+		add := func(args ...any) {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != char.Index() {
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, 8*60, true)
 
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("gd-4pc", 8*60),
 				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
-					return s.buff, true
+				Amount: func() []float64 {
+					return s.buff
 				},
 			})
-			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index()).
 				Write("em", s.buff[attributes.EM]).
 				Write("atk", s.buff[attributes.ATKP])
-			return false
 		}
 
-		for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
+		for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 			c.Events.Subscribe(i, add, fmt.Sprintf("gd-4pc-%v", char.Base.Key.String()))
 		}
 	}

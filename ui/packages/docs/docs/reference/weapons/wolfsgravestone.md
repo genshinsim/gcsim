@@ -1,5 +1,6 @@
 ---
-title: Wolf's Gravestone
+title: >
+  Wolf's Gravestone
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

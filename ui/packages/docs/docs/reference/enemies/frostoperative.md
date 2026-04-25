@@ -1,5 +1,6 @@
 ---
-title: "Frost Operative"
+title: >
+  Frost Operative
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

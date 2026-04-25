@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -57,9 +58,9 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	done := false
-	cb := func(_ combat.AttackCB) {
+	cb := func(_ info.AttackCB) {
 		// doesn't gain jades off-field
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if done {
@@ -72,7 +73,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			if count > 3 {
 				count = 3
 			} else {
-				c.Core.Log.NewEvent("adding star jade", glog.LogCharacterEvent, c.Index).
+				c.Core.Log.NewEvent("adding star jade", glog.LogCharacterEvent, c.Index()).
 					Write("count", count)
 			}
 			c.jadeCount = count
@@ -90,8 +91,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		nextAttack = attackTypeLeft
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal (%s)", nextAttack),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,
@@ -103,7 +104,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.TalentLvlAttack()],
 	}
 
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(

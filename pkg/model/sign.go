@@ -68,7 +68,7 @@ func (r *SimulationResult) hash() ([]byte, error) {
 		return nil, err
 	}
 
-	var res map[string]interface{}
+	var res map[string]any
 	json.Unmarshal(data, &res)
 	data, err = json.Marshal(res)
 	if err != nil {

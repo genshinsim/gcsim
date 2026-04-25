@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -39,7 +39,7 @@ func init() {
 	attackFrames[3][action.ActionAttack] = 31
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 66)
-	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[4][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -49,8 +49,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 	c2CB := c.makeC2CB()
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -66,14 +66,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ap := combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			centerTarget,
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 		)
 		if c.NormalCounter == 0 {
 			ap = combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				centerTarget,
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				info.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][0],
 				attackHitboxes[c.NormalCounter][1],
 			)

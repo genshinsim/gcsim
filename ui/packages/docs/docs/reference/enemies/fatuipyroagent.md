@@ -1,5 +1,6 @@
 ---
-title: "Fatui Pyro Agent"
+title: >
+  Fatui Pyro Agent
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

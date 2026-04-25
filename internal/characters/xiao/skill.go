@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -29,8 +29,8 @@ const a4BuffKey = "xiao-a4"
 // Additionally implements A4
 // Using Lemniscatic Wind Cycling increases the DMG of subsequent uses of Lemniscatic Wind Cycling by 15%. This effect lasts for 7s and has a maximum of 3 stacks. Gaining a new stack refreshes the duration of this effect.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Lemniscatic Wind Cycling",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -42,7 +42,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	// Cannot create energy during burst uptime
-	var particleCB combat.AttackCBFunc
+	var particleCB info.AttackCBFunc
 	if !c.StatusIsActive(burstBuffKey) {
 		particleCB = c.makeParticleCB()
 	}
@@ -68,7 +68,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// C6 handling - can use skill ignoring CD and without draining charges
 	// Can simply return early
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6BuffKey) {
-		c.Core.Log.NewEvent("xiao c6 active, Xiao E used, no charge used, no CD", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("xiao c6 active, Xiao E used, no charge used, no CD", glog.LogCharacterEvent, c.Index()).
 			Write("c6 remaining duration", c.Core.Status.Duration("xiaoc6"))
 	} else {
 		c.SetCD(action.ActionSkill, 600)
@@ -82,10 +82,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

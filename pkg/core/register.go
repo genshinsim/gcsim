@@ -15,9 +15,11 @@ var (
 	weaponMap      = make(map[keys.Weapon]NewWeaponFunc)
 )
 
-type NewCharacterFunc func(core *Core, char *character.CharWrapper, p info.CharacterProfile) error
-type NewSetFunc func(core *Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error)
-type NewWeaponFunc func(core *Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error)
+type (
+	NewCharacterFunc func(core *Core, char *character.CharWrapper, p info.CharacterProfile) error
+	NewSetFunc       func(core *Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error)
+	NewWeaponFunc    func(core *Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error)
+)
 
 func RegisterCharFunc(char keys.Char, f NewCharacterFunc) {
 	mu.Lock()

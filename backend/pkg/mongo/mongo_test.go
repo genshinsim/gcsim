@@ -82,7 +82,6 @@ func TestMain(m *testing.M) {
 		}
 		return s.client.Ping(context.TODO(), nil)
 	})
-
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
@@ -206,9 +205,11 @@ func makeEntry(id, src string, d, t bool) *db.Entry {
 	return e
 }
 
-var dbEntries map[string]*db.Entry = make(map[string]*db.Entry)
-var subs map[string]*db.Entry = make(map[string]*db.Entry)
-var dbNoTag map[string]*db.Entry = make(map[string]*db.Entry)
+var (
+	dbEntries map[string]*db.Entry = make(map[string]*db.Entry)
+	subs      map[string]*db.Entry = make(map[string]*db.Entry)
+	dbNoTag   map[string]*db.Entry = make(map[string]*db.Entry)
+)
 
 func insertFakeEntries() error {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
@@ -248,6 +249,7 @@ func insertFakeEntries() error {
 
 // https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 const (
 	letterIdxBits = 6                    // 6 bits to represent a letter index
 	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits

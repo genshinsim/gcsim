@@ -1,5 +1,6 @@
 ---
-title: "Ochimusha: Cankered Flame"
+title: >
+  Ochimusha: Cankered Flame
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

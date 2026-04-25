@@ -1,5 +1,6 @@
 ---
-title: "Ochimusha: Ensorcelled Thunder"
+title: >
+  Ochimusha: Ensorcelled Thunder
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

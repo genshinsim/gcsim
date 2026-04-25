@@ -13,9 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var (
-	sha1ver string
-)
+var sha1ver string
 
 func main() {
 	info, _ := debug.ReadBuildInfo()
@@ -44,7 +42,6 @@ func main() {
 	shareStore, err := share.NewClient(share.ClientCfg{
 		Addr: os.Getenv("SHARE_STORE_URL"),
 	})
-
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +57,6 @@ func main() {
 		ExpectedHash:  sha1ver,
 		NotifyService: n,
 	})
-
 	if err != nil {
 		panic(err)
 	}

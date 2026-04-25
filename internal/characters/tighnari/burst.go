@@ -6,14 +6,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
 
 const burstRelease = 77
 
-var burstHitmarks = []int{112, 117, 120, 121, 126, 128}
-var burstSecondHitmarks = []int{147, 153, 160, 161, 171, 175}
+var (
+	burstHitmarks       = []int{112, 117, 120, 121, 126, 128}
+	burstSecondHitmarks = []int{147, 153, 160, 161, 171, 175}
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(118)
@@ -30,8 +33,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		travel = 0
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Tanglevine Shaft",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -43,13 +46,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1)
 
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		c.Core.QueueAttack(ai, ap, burstRelease, burstHitmarks[i]+travel)
 	}
 
 	ai.Abil = "Secondary Tanglevine Shaft"
 	ai.Mult = burstSecond[c.TalentLvlBurst()]
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		c.Core.QueueAttack(ai, ap, burstHitmarks[i]+travel, burstSecondHitmarks[i]+travel)
 	}
 
@@ -59,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap],
+		CanQueueAfter:   burstFrames[action.ActionAttack],
 		State:           action.BurstState,
 	}, nil
 }

@@ -3,7 +3,6 @@ package mappa
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -33,13 +32,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const buffKey = "mappa-mare"
 	buffDuration := 600 // 10s * 60
 
-	addStack := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	addStack := func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		if !char.StatusIsActive(buffKey) {
@@ -61,18 +60,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, buffDuration),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 
-		c.Log.NewEvent("mappa-mare adding stack", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("mappa-mare adding stack", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
-
-		return false
 	}
 
-	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, addStack, "mappa-mare-"+char.Base.Key.String())
 	}
 

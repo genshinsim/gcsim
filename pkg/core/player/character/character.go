@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -42,12 +41,12 @@ type Character interface {
 	ReduceActionCooldown(a action.Action, v int)
 	Charges(a action.Action) int
 
-	Snapshot(a *combat.AttackInfo) combat.Snapshot
+	Snapshot(a *info.AttackInfo) info.Snapshot
 
 	AddEnergy(src string, amt float64)
 
 	ApplyHitlag(factor, dur float64)
-	AnimationStartDelay(model.AnimationDelayKey) int
+	AnimationStartDelay(info.AnimationDelayKey) int
 
 	Condition([]string) (any, error)
 
@@ -65,6 +64,7 @@ type HP interface {
 	CurrentHPRatio() float64
 	CurrentHP() float64
 	CurrentHPDebt() float64
+	CurrentHPDebtRatio() float64
 
 	SetHPByAmount(float64)
 	SetHPByRatio(float64)
@@ -76,10 +76,12 @@ type HP interface {
 
 	Heal(*info.HealInfo) (float64, float64) // return actual hp healed and amount of hp debt cleared
 	Drain(*info.DrainInfo) float64
+
+	ReceiveHeal(*info.HealInfo, float64) float64
 }
 
 type CharWrapper struct {
-	Index int
+	index int
 	f     *int // current frame
 	debug bool // debug mode?
 	Character
@@ -97,6 +99,8 @@ type CharWrapper struct {
 	SkillCon  int
 	BurstCon  int
 	HasArkhe  bool
+	IsHexerei bool
+	Moonsign  int
 
 	Equip struct {
 		Weapon info.Weapon
@@ -127,7 +131,7 @@ type CharWrapper struct {
 	DashLockout     bool
 
 	// hitlag stuff
-	timePassed   int // how many frames have passed since start of sim
+	TimePassed   int // how many frames have passed since start of sim
 	frozenFrames int // how many frames are we still frozen for
 	queue        *task.Handler
 }
@@ -153,7 +157,7 @@ func New(
 		f:             f,
 		debug:         debug,
 	}
-	c.queue = task.New(&c.timePassed)
+	c.queue = task.New(&c.TimePassed)
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]info.Set)
@@ -178,7 +182,11 @@ func New(
 }
 
 func (c *CharWrapper) SetIndex(index int) {
-	c.Index = index
+	c.index = index
+}
+
+func (c *CharWrapper) Index() int {
+	return c.index
 }
 
 func (c *CharWrapper) SetWeapon(w info.Weapon) {
@@ -231,9 +239,13 @@ func (c *CharWrapper) TalentLvlAttack() int {
 	}
 	return c.Talents.Attack + add
 }
+
 func (c *CharWrapper) TalentLvlSkill() int {
 	c.consCheck()
 	add := -1
+	if c.Tags[keys.SkirkPassive] > 0 {
+		add++
+	}
 	if c.SkillCon > 0 && c.Base.Cons >= c.SkillCon {
 		add += 3
 	}
@@ -242,6 +254,7 @@ func (c *CharWrapper) TalentLvlSkill() int {
 	}
 	return c.Talents.Skill + add
 }
+
 func (c *CharWrapper) TalentLvlBurst() int {
 	c.consCheck()
 	add := -1

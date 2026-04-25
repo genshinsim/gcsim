@@ -1,5 +1,6 @@
 ---
-title: Martial Artist
+title: >
+  Martial Artist
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -35,28 +35,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	const icdKey = "starsilver-icd"
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if c.Rand.Float64() < prob {
 			char.AddStatus(icdKey, 600, true)
-			ai := combat.AttackInfo{
-				ActorIndex: char.Index,
+			ai := info.AttackInfo{
+				ActorIndex: char.Index(),
 				Abil:       "Starsilver Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
 				ICDTag:     attacks.ICDTagNone,
@@ -71,7 +71,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 0, 1)
 		}
-		return false
 	}, fmt.Sprintf("starsilver-%v", char.Base.Key.String()))
 	return w, nil
 }

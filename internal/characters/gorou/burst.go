@@ -4,12 +4,12 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/internal/template/crystallize"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var burstFrames []int
@@ -28,8 +28,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Initial Hit
 	// A1/C6/Q duration all start on Initial Hit
 	c.Core.Tasks.Add(func() {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Juuga: Forward Unto Victory",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,
@@ -68,7 +68,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// C4
 		if c.Base.Cons >= 4 && c.geoCharCount > 1 {
 			// TODO: not sure if this actually snapshots stats
-			// ai := combat.AttackInfo{
+			// ai := info.AttackInfo{
 			// 	Abil:      "Inuzaka All-Round Defense C4",
 			// 	AttackTag: attacks.AttackTagNone,
 			// }
@@ -82,7 +82,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}, burstHitmark)
 
-	//TODO:  If Gorou falls, the effects of General's Glory will be cleared.
+	// TODO:  If Gorou falls, the effects of General's Glory will be cleared.
 
 	c.c2Extension = 0
 
@@ -109,8 +109,8 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			return
 		}
 		// trigger damage
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Crystal Collapse",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -125,13 +125,13 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		collapseArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
 		enemy := c.Core.Combat.ClosestEnemyWithinArea(collapseArea, nil)
 		if enemy != nil {
-			//TODO: skill damage frames
+			// TODO: skill damage frames
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(enemy, nil, 3.5), 0, 1)
 		}
 
 		// suck in 1 crystallize shard
 		for _, g := range c.Core.Combat.Gadgets() {
-			cs, ok := g.(*reactable.CrystallizeShard)
+			cs, ok := g.(*crystallize.Shard)
 			// skip if no shard
 			if !ok {
 				continue
@@ -171,7 +171,7 @@ func (c *char) gorouBurstHealField(src int) func() {
 		// When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
 		// within its AoE by 50% of Gorou's own DEF every 1.5s.
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Lapping Hound: Warm as Water",
 			Src:     c.healFieldStats.TotalDEF() * 0.5,

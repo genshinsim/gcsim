@@ -1,5 +1,6 @@
 ---
-title: Sayu
+title: >
+  Sayu
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

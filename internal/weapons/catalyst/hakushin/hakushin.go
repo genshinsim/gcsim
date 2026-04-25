@@ -5,13 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,22 +39,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	dmg := .075 + float64(r)*.025
 
-	hrfunc := func(otherEle attributes.Element, key string, gadgetEmit bool) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
-			trg := args[0].(combat.Target)
-			if gadgetEmit && trg.Type() != targets.TargettableGadget {
-				return false
+	hrfunc := func(otherEle attributes.Element, key string, gadgetEmit bool) func(args ...any) {
+		return func(args ...any) {
+			trg := args[0].(info.Target)
+			if gadgetEmit && trg.Type() != info.TargettableGadget {
+				return
 			}
-			if !gadgetEmit && trg.Type() != targets.TargettableEnemy {
-				return false
+			if !gadgetEmit && trg.Type() != info.TargettableEnemy {
+				return
 			}
-			ae := args[1].(*combat.AttackEvent)
+			ae := args[1].(*info.AttackEvent)
 
-			if c.Player.Active() != char.Index {
-				return false
+			if c.Player.Active() != char.Index() {
+				return
 			}
-			if ae.Info.ActorIndex != char.Index {
-				return false
+			if ae.Info.ActorIndex != char.Index() {
+				return
 			}
 
 			clear(w.elementICD)
@@ -76,10 +74,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				other.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf(buffKey, charEle), 6*60),
 					AffectedStat: stat,
-					Amount: func() ([]float64, bool) {
+					Amount: func() []float64 {
 						clear(m)
 						m[stat] = dmg
-						return m, true
+						return m
 					},
 				})
 			}
@@ -88,17 +86,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				char.AddStatus(fmt.Sprintf(icdKey, ele), 60, true)
 			}
 			if len(w.elementICD) > 0 {
-				c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index).
+				c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index()).
 					Write("trigger", key).
 					Write("expiring (without hitlag)", c.F+6*60)
 			}
-			return false
 		}
 	}
 
 	c.Events.Subscribe(event.OnCrystallizeElectro, hrfunc(attributes.Geo, "hr-crystallize", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlElectro, hrfunc(attributes.Anemo, "hr-swirl", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnElectroCharged, hrfunc(attributes.Hydro, "hr-ec", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnLunarCharged, hrfunc(attributes.Hydro, "hr-lc", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnOverload, hrfunc(attributes.Pyro, "hr-ol", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSuperconduct, hrfunc(attributes.Cryo, "hr-sc", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnQuicken, hrfunc(attributes.Dendro, "hr-quick", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))

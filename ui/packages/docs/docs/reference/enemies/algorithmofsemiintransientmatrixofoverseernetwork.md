@@ -1,5 +1,6 @@
 ---
-title: "Algorithm of Semi-Intransient Matrix of Overseer Network"
+title: >
+  Algorithm of Semi-Intransient Matrix of Overseer Network
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

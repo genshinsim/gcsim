@@ -1,5 +1,6 @@
 ---
-title: "Abyss Herald: Frost Fall"
+title: >
+  Abyss Herald: Frost Fall
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

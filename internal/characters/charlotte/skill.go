@@ -6,8 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -64,8 +63,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPress() (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Framing: Freezing Point Composition",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -99,19 +98,16 @@ func (c *char) skillPress() (action.Info, error) {
 }
 
 func (c *char) skillHold(p map[string]int) (action.Info, error) {
-	hold := p["hold"]
-	// earliest hold hitmark is ~111f
-	// latest hold hitmark is ~919f
-	// hold=1 gives 111f and hold=809 gives a 919f delay until hitmark.
-	if hold < 1 {
-		hold = 1
-	}
-	if hold > 809 {
-		hold = 809
-	}
+	hold := min(
+		// earliest hold hitmark is ~111f
+		// latest hold hitmark is ~919f
+		// hold=1 gives 111f and hold=809 gives a 919f delay until hitmark.
+		max(
+
+			p["hold"], 1), 809)
 	hitmark := hold + skillHoldHitmark
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Framing: Freezing Point Composition (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -122,7 +118,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: skillHoldOffsetX}, skillHoldBoxX, skillHoldBoxY)
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{X: skillHoldOffsetX}, skillHoldBoxX, skillHoldBoxY)
 
 	c.Core.QueueAttack(
 		ai,
@@ -144,21 +140,21 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) skillPressParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) skillPressParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), skillPressParticleCount, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) skillHoldParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) skillHoldParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), skillHoldParticleCount, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) skillPressMarkTargets(a combat.AttackCB) {
+func (c *char) skillPressMarkTargets(a info.AttackCB) {
 	if c.markCount == 5 {
 		return
 	}
@@ -180,7 +176,7 @@ func (c *char) skillPressMarkTargets(a combat.AttackCB) {
 	t.QueueEnemyTask(c.skillPressMark(c.Core.F, t), 1.5*60)
 }
 
-func (c *char) skillHoldMarkTargets(a combat.AttackCB) {
+func (c *char) skillHoldMarkTargets(a info.AttackCB) {
 	if c.markCount == 5 {
 		return
 	}
@@ -210,8 +206,8 @@ func (c *char) skillPressMark(src int, t *enemy.Enemy) func() {
 		if !t.StatusIsActive(skillPressMarkKey) {
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Snappy Silhouette Mark",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagCharlotteMark,
@@ -234,8 +230,8 @@ func (c *char) skillHoldMark(src int, t *enemy.Enemy) func() {
 		if !t.StatusIsActive(skillHoldMarkKey) {
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Focused Impression Mark",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagCharlotteMark,

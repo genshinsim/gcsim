@@ -1,5 +1,6 @@
 ---
-title: "Local Legend: Hunter's Ray"
+title: >
+  Local Legend: Hunter's Ray
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

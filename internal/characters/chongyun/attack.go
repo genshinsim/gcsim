@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -33,9 +33,9 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -50,14 +50,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTargetFanAngle(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: attackOffsets[c.NormalCounter]},
+		info.Point{Y: attackOffsets[c.NormalCounter]},
 		attackHitboxes[c.NormalCounter][0],
 		attackFanAngles[c.NormalCounter],
 	)
 	if c.NormalCounter == 3 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 			attackHitboxes[c.NormalCounter][1],
 		)
@@ -66,9 +66,9 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c4CB)
 
 	if c.Base.Cons >= 1 && c.NormalCounter == 3 {
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Chongyun C1",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -78,7 +78,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			Mult:       .5,
 		}
 		// 3 blades
-		for i := 0; i < 3; i++ {
+		for i := range 3 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHit(

@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -30,11 +30,11 @@ func (c *char) c1() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1Key, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if !strings.HasPrefix(atk.Info.Abil, pressureBaseName) {
-				return nil, false
+				return nil
 			}
-			return buff, true
+			return buff
 		},
 	})
 }
@@ -60,18 +60,18 @@ func (c *char) c4c6() {
 	c4M := make([]float64, attributes.EndStatType)
 	c6M := make([]float64, attributes.EndStatType)
 
-	c4c6Buff := func(args ...interface{}) bool {
+	c4c6Buff := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != c.Index() {
+			return
 		}
 
 		if c.StatusIsActive(c4c6IcdKey) {
-			return false
+			return
 		}
 
 		c.AddStatus(c4c6IcdKey, 18, true)
@@ -89,16 +89,16 @@ func (c *char) c4c6() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c4Key, 6*60),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				c4M[attributes.ATKP] = float64(c.c4Stacks) * 0.09
-				return c4M, true
+				return c4M
 			},
 		})
 
-		c.Core.Log.NewEvent("freminet c4 proc", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("freminet c4 proc", glog.LogCharacterEvent, c.Index())
 
 		if c.Base.Cons < 6 {
-			return false
+			return
 		}
 
 		// C6
@@ -116,15 +116,13 @@ func (c *char) c4c6() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c6Key, 6*60),
 			AffectedStat: attributes.CD,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				c6M[attributes.CD] = float64(c.c6Stacks) * 0.12
-				return c6M, true
+				return c6M
 			},
 		})
 
-		c.Core.Log.NewEvent("freminet c6 proc", glog.LogCharacterEvent, c.Index)
-
-		return false
+		c.Core.Log.NewEvent("freminet c6 proc", glog.LogCharacterEvent, c.Index())
 	}
 
 	c.Core.Events.Subscribe(event.OnShatter, c4c6Buff, "freminet-c4-c6-shatter")

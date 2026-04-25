@@ -38,8 +38,8 @@ func (w *Weapon) Init() error {
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("balladofthefjords", -1),
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 

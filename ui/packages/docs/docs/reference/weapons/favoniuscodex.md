@@ -1,5 +1,6 @@
 ---
-title: Favonius Codex
+title: >
+  Favonius Codex
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

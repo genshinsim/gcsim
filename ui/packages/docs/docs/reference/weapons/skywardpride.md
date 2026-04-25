@@ -1,5 +1,6 @@
 ---
-title: Skyward Pride
+title: >
+  Skyward Pride
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

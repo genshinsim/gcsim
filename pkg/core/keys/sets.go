@@ -35,6 +35,7 @@ var setNames = []string{
 	"",
 	"adventurer",
 	"archaicpetra",
+	"aubadeofmorningstarandmoon",
 	"berserker",
 	"blizzardstrayer",
 	"bloodstainedchivalry",
@@ -43,9 +44,9 @@ var setNames = []string{
 	"deepwoodmemories",
 	"defenderswill",
 	"desertpavilionchronicle",
-	"vourukashasglow",
 	"echoesofanoffering",
 	"emblemofseveredfate",
+	"finaleofthedeepgalleries",
 	"flowerofparadiselost",
 	"fragmentofharmonicwhimsy",
 	"gambler",
@@ -56,10 +57,12 @@ var setNames = []string{
 	"huskofopulentdreams",
 	"instructor",
 	"lavawalker",
+	"longnightsoath",
 	"luckydog",
 	"maidenbeloved",
 	"marechausseehunter",
 	"martialartist",
+	"nightoftheskysunveiling",
 	"nighttimewhispersintheechoingwoods",
 	"noblesseoblige",
 	"nymphsdream",
@@ -75,6 +78,7 @@ var setNames = []string{
 	"scholar",
 	"scrolloftheheroofcindercity",
 	"shimenawasreminiscence",
+	"silkenmoonsserenade",
 	"songofdayspast",
 	"tenacityofthemillelith",
 	"theexile",
@@ -85,6 +89,7 @@ var setNames = []string{
 	"unfinishedreverie",
 	"vermillionhereafter",
 	"viridescentvenerer",
+	"vourukashasglow",
 	"wandererstroupe",
 }
 
@@ -92,6 +97,7 @@ const (
 	NoSet Set = iota
 	Adventurer
 	ArchaicPetra
+	AubadeOfMorningstarAndMoon
 	Berserker
 	BlizzardStrayer
 	BloodstainedChivalry
@@ -100,9 +106,9 @@ const (
 	DeepwoodMemories
 	DefendersWill
 	DesertPavilionChronicle
-	VourukashasGlow
 	EchoesOfAnOffering
 	EmblemOfSeveredFate
+	FinaleOfTheDeepGalleries
 	FlowerOfParadiseLost
 	FragmentOfHarmonicWhimsy
 	Gambler
@@ -113,10 +119,12 @@ const (
 	HuskOfOpulentDreams
 	Instructor
 	Lavawalker
+	LongNightsOath
 	LuckyDog
 	MaidenBeloved
 	MarechausseeHunter
 	MartialArtist
+	NightOfTheSkysUnveiling
 	NighttimeWhispersInTheEchoingWoods
 	NoblesseOblige
 	NymphsDream
@@ -132,6 +140,7 @@ const (
 	Scholar
 	ScrollOfTheHeroOfCinderCity
 	ShimenawasReminiscence
+	SilkenMoonsSerenade
 	SongOfDaysPast
 	TenacityOfTheMillelith
 	TheExile
@@ -142,5 +151,6 @@ const (
 	UnfinishedReverie
 	VermillionHereafter
 	ViridescentVenerer
+	VourukashasGlow
 	WanderersTroupe
 )

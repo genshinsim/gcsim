@@ -1,5 +1,6 @@
 ---
-title: "Stretchy Geo Fungus"
+title: >
+  Stretchy Geo Fungus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

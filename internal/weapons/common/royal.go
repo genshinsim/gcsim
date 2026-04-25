@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -34,15 +33,15 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 
 	stacks := 0
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		crit := args[3].(bool)
 		if dmg == 0 {
-			return false
+			return
 		}
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if crit {
 			stacks = 0
@@ -52,10 +51,9 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 				stacks = 5
 			}
 			char.AddStatus(icdKey, 18, true)
-			c.Log.NewEvent("royal stacked", glog.LogWeaponEvent, char.Index).
+			c.Log.NewEvent("royal stacked", glog.LogWeaponEvent, char.Index()).
 				Write("stacks", stacks)
 		}
-		return false
 	}, fmt.Sprintf("royal-%v", char.Base.Key.String()))
 
 	rate := 0.06 + float64(refine)*0.02
@@ -63,9 +61,9 @@ func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Weap
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("royal", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			m[attributes.CR] = float64(stacks) * rate
-			return m, true
+			return m
 		},
 	})
 

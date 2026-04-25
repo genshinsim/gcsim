@@ -37,7 +37,7 @@ func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLog
 //   - ER substat values are set in increments of 2 to make the search easier
 //
 // 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
-func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *info.ActionList, gcsl ast.Node) {
+func (o *SubstatOptimizer) Run(file *ast.File, cfg string, simopt simulator.Options, simcfg *info.ActionList, gcsl ast.Node) {
 	simcfg.Settings.Iterations = int(o.optionsMap["sim_iter"])
 	// disable stats collection since optimizer has no use for it
 	simcfg.Settings.CollectStats = []string{""}
@@ -46,6 +46,7 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 		o,
 		cfg,
 		simopt,
+		file,
 		simcfg,
 		gcsl,
 		int(o.optionsMap["indiv_liquid_cap"]),
@@ -99,7 +100,11 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 				continue
 			}
 			value *= statsFinal.charSubstatRarityMod[idxChar]
-			finalString += fmt.Sprintf(" %v=%.6g", attributes.StatTypeString[idxSubstat], value*float64(statsFinal.fixedSubstatCount+statsFinal.charSubstatFinal[idxChar][idxSubstat]))
+			if o.optionsMap["show_substat_scalars"] > 0 {
+				finalString += fmt.Sprintf(" %v=%.6g*%v", attributes.StatTypeString[idxSubstat], value, float64(statsFinal.fixedSubstatCount+statsFinal.charSubstatFinal[idxChar][idxSubstat]))
+			} else {
+				finalString += fmt.Sprintf(" %v=%.6g", attributes.StatTypeString[idxSubstat], value*float64(statsFinal.fixedSubstatCount+statsFinal.charSubstatFinal[idxChar][idxSubstat]))
+			}
 		}
 
 		fmt.Println(finalString + ";")
@@ -114,6 +119,7 @@ func NewSubstatOptimizerDetails(
 	optimizer *SubstatOptimizer,
 	cfg string,
 	simopt simulator.Options,
+	file *ast.File,
 	simcfg *info.ActionList,
 	gcsl ast.Node,
 	indivLiquidCap int,
@@ -124,6 +130,7 @@ func NewSubstatOptimizerDetails(
 	s.optimizer = optimizer
 	s.cfg = cfg
 	s.simopt = simopt
+	s.file = file
 	s.simcfg = simcfg
 	s.fixedSubstatCount = fixedSubstatCount
 	s.indivSubstatLiquidCap = indivLiquidCap
@@ -178,6 +185,7 @@ func NewSubstatOptimizerDetails(
 	s.mainstatValues[attributes.GeoP] = 0.466
 	s.mainstatValues[attributes.DendroP] = 0.466
 	s.mainstatValues[attributes.PhyP] = 0.583
+	s.mainstatValues[attributes.Heal] = 0.359
 
 	s.mainstatTol = 0.005       // current main stat tolerance is 0.5%
 	s.fourstarMod = 0.746514762 // The average coefficient to convert 5* main stats to 4* main stats
@@ -338,7 +346,7 @@ func PrettyPrintStatsCounts(statsCounts []int) string {
 		if v > 0 {
 			sb.WriteString(attributes.StatTypeString[i])
 			sb.WriteString(": ")
-			sb.WriteString(fmt.Sprintf("%v", v))
+			fmt.Fprintf(&sb, "%v", v)
 			sb.WriteString(" ")
 		}
 	}

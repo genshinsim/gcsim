@@ -1,5 +1,6 @@
 ---
-title: "Cherubic Sea Hare"
+title: >
+  Cherubic Sea Hare
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

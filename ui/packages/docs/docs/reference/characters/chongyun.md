@@ -1,5 +1,6 @@
 ---
-title: Chongyun
+title: >
+  Chongyun
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

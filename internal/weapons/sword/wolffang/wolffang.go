@@ -2,11 +2,11 @@ package wolffang
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -42,15 +42,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mFirst[attributes.DmgP] = 0.12 + 0.04*float64(p.Refine)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("wolf-fang", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
 			case attacks.AttackTagElementalArtHold:
 			case attacks.AttackTagElementalBurst:
 			default:
-				return nil, false
+				return nil
 			}
-			return mFirst, true
+			return mFirst
 		},
 	})
 
@@ -66,19 +66,19 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 	m := make([]float64, attributes.EndStatType)
 	icd := name + "-icd"
 
-	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != w.char.Index {
-			return false
+	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != w.char.Index() {
+			return
 		}
-		if w.c.Player.Active() != w.char.Index {
-			return false
+		if w.c.Player.Active() != w.char.Index() {
+			return
 		}
 		if !requiredTag(atk.Info.AttackTag, tags...) {
-			return false
+			return
 		}
 		if w.char.StatusIsActive(icd) {
-			return false
+			return
 		}
 		w.char.AddStatus(icd, 0.1*60, true)
 
@@ -91,23 +91,17 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 
 		w.char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(name, 10*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if !requiredTag(atk.Info.AttackTag, tags...) {
-					return nil, false
+					return nil
 				}
 				m[attributes.CR] = cr * float64(stacks)
-				return m, true
+				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("%v-%v", name, w.char.Base.Key.String()))
 }
 
 func requiredTag(tag attacks.AttackTag, list ...attacks.AttackTag) bool {
-	for _, value := range list {
-		if tag == value {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(list, tag)
 }

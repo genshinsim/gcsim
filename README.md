@@ -10,7 +10,7 @@ Any issues or questions can be shared on our [Discord](https://discord.gg/m7jvjd
 
 ## Project Status
 
-The project is still under development. While the majority of characters, items, and game mechanics have been implemented, there are still improvements that can be made, which you can find in our [issues](https://github.com/genshinsim/gcsim/issues?q=is%3Aopen+is%3Aissue) and [discussions](https://github.com/genshinsim/gcsim/discussions).
+The project is entirely volunteer driven and under constant development as Genshin Impact is a live service game. A large majority of units, items, and game mechanics have been implemented, however there are limitations described in our [issues](https://github.com/genshinsim/gcsim/issues?q=is%3Aopen+is%3Aissue). Additionally, manpower is limited to provide timely releases especially as 5.8+ units require significant changes to the codebase to support.
 
 ## Contributing
 
@@ -20,4 +20,4 @@ Here are a few ways to help improve the quality of gcsim:
 - Build action lists aka "rotations" for any team composition and submit them to our [Config Database](https://simpact.app/) via [Discord](https://discord.gg/m7jvjdxx7q).
 - Use gcsim for gear, rotation, and team comparisons, while scrutinizing both expected and unexpected results. This is the best way potential issues can be spotted.
 
-gcsim is always looking for developers. If you would like to contribute code, please look at the [contributing guidelines](CONTRIBUTING.md).
+gcsim is always looking for volunteers and developers. If you would like to contribute, please inquire on our [Discord](https://discord.gg/m7jvjdxx7q) and look at the [contributing guidelines](CONTRIBUTING.md).

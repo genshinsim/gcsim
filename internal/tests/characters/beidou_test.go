@@ -7,11 +7,10 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/beidou"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -37,21 +36,19 @@ func TestBeidouBounce(t *testing.T) {
 	advanceCoreFrame(c)
 
 	// start tests
-	dmgCount := make(map[targets.TargetKey]int)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	dmgCount := make(map[info.TargetKey]int)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
-		ae, ok := args[1].(*combat.AttackEvent)
+		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
-		if ae.Info.Abil == "Stormbreak Proc (Q)" {
+		if ae.Info.Abil == "Stormbreaker (Bounce)" {
 			dmgCount[t.Key()]++
 		}
-
-		return false
 	}, "q-bounce-count")
 
 	p := make(map[string]int)
@@ -72,7 +69,7 @@ func TestBeidouBounce(t *testing.T) {
 			t.FailNow()
 		}
 	}
-	for i := 0; i < 200; i++ {
+	for range 200 {
 		advanceCoreFrame(c)
 	}
 

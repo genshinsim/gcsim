@@ -1,5 +1,6 @@
 ---
-title: Yaoyao
+title: >
+  Yaoyao
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

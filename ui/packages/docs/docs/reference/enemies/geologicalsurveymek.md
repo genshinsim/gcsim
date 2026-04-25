@@ -1,5 +1,6 @@
 ---
-title: "Geological Survey Mek"
+title: >
+  Geological Survey Mek
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

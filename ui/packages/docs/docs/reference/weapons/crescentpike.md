@@ -1,5 +1,6 @@
 ---
-title: Crescent Pike
+title: >
+  Crescent Pike
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

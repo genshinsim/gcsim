@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -29,8 +29,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		travel = 10
 	}
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Troubleshooter Shot",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 {
 		c.Core.Player.AddWeaponInfuse(
-			c.Index,
+			c.Index(),
 			c6Key,
 			attributes.Electro,
 			228, // 3s + 0.8s according to dm
@@ -79,8 +79,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -90,16 +90,16 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Electro, c.ParticleDelay)
 }
 
-func (c *char) afterSales() combat.AttackCBFunc {
+func (c *char) afterSales() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if done {
 			return
 		}
 		done = true
 
-		ae := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ae := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "After-Sales Service Round",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,

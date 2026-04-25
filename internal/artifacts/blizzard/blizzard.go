@@ -3,7 +3,6 @@ package blizzard
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -32,8 +31,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("bs-2pc", -1),
 			AffectedStat: attributes.CryoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -41,22 +40,22 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("bs-4pc", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				r, ok := t.(core.Reactable)
 				if !ok {
-					return nil, false
+					return nil
 				}
 
 				// Frozen check first so we don't mistaken coexisting cryo
 				if r.AuraContains(attributes.Frozen) {
 					m[attributes.CR] = 0.4
-					return m, true
+					return m
 				}
 				if r.AuraContains(attributes.Cryo) {
 					m[attributes.CR] = 0.2
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
 	}

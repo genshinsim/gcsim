@@ -24,9 +24,12 @@ import (
 )
 
 const (
-	MaxStam      = 240
-	StamCDFrames = 90
-	SwapCDFrames = 60
+	MaxStam            = 240
+	StamCDFrames       = 90
+	SwapCDFrames       = 60
+	MaxVerdantDew      = 3
+	verdantDewEndFrame = 149
+	maxPartialDew      = 146
 )
 
 type Handler struct {
@@ -50,7 +53,8 @@ type Handler struct {
 	airborne AirborneSource
 
 	// swap
-	SwapCD int
+	SwapCD  int
+	SwapICD int
 
 	// dash: dash fails iff lockout && on CD
 	DashCDExpirationFrame int
@@ -63,6 +67,10 @@ type Handler struct {
 		Param  map[string]int
 		Char   int
 	}
+
+	verdantDewExpiryFrame int
+	verdantDew            int
+	partialDewCount       int
 }
 
 type Opt struct {
@@ -82,11 +90,16 @@ func New(opt Opt) *Handler {
 		stamPercentMods: make([]stamPercentMod, 0, 5),
 		Opt:             opt,
 		Stam:            MaxStam,
+		SwapICD:         SwapCDFrames,
 	}
 	h.Shields = shield.New(opt.F, opt.Log, opt.Events)
 	h.Handler = infusion.New(opt.F, opt.Log, opt.Debug)
 	h.AnimationHandler = animation.New(opt.F, opt.Debug, opt.Log, opt.Events, opt.Tasks)
 	return h
+}
+
+func (h *Handler) SetSwapICD(delay int) {
+	h.SwapICD = delay
 }
 
 func (h *Handler) swap(to keys.Char) func() {
@@ -105,7 +118,7 @@ func (h *Handler) swap(to keys.Char) func() {
 		h.DashLockout = h.chars[h.active].DashLockout
 		h.chars[h.active].RemainingDashCD = 0
 
-		h.SwapCD = SwapCDFrames
+		h.SwapCD = h.SwapICD
 		h.ResetAllNormalCounter()
 
 		evt := h.Log.NewEvent("executed swap", glog.LogActionEvent, h.active).
@@ -198,6 +211,17 @@ func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64
 	}
 	return r * h.chars[i].ActionStam(a, p)
 }
+
+func (h *Handler) UseStam(amount float64, a action.Action) {
+	h.Stam -= amount
+	// this really shouldn't happen??
+	if h.Stam < 0 {
+		h.Stam = 0
+	}
+	h.LastStamUse = *h.F
+	h.Events.Emit(event.OnStamUse, a)
+}
+
 func (h *Handler) RestoreStam(v float64) {
 	h.Stam += v
 	if h.Stam > MaxStam {
@@ -214,7 +238,7 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	h.chars[char].ApplyHitlag(factor, dur)
 
 	// also extend infusion
-	//TODO: this is a really awkward place to apply this
+	// TODO: this is a really awkward place to apply this
 	h.ExtendInfusion(char, factor, dur)
 
 	// extend the dash cd by the hitlag extension amount
@@ -293,9 +317,58 @@ func (h *Handler) Tick() {
 	}
 	h.Shields.Tick()
 	h.AnimationHandler.Tick()
+
+	h.verdantDewTick()
+
 	for _, c := range h.chars {
 		c.Tick()
 	}
+}
+
+// this has to be checked after the animation handler, since the task is set by the handler
+func (h *Handler) verdantDewTick() {
+	if h.verdantDew >= 3 {
+		return
+	}
+
+	if h.verdantDewExpiryFrame < *h.F {
+		return
+	}
+
+	h.partialDewCount++
+	if h.partialDewCount >= maxPartialDew {
+		h.AddVerdantDew()
+		h.partialDewCount = 0
+	}
+}
+
+func (h *Handler) OnLunarBloom() {
+	verdantDewEnd := *h.F + verdantDewEndFrame
+	h.Tasks.Add(func() { h.verdantDewExpiryFrame = verdantDewEnd }, 1)
+}
+
+// sets verdant dew to an amt between 0 and 3, inclusive.
+func (h *Handler) SetVerdantDew(amt int) {
+	h.verdantDew = max(min(amt, 3), 0)
+}
+
+func (h *Handler) AddVerdantDew() {
+	if h.verdantDew >= MaxVerdantDew {
+		return
+	}
+	h.verdantDew++
+
+	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
+}
+
+// returns the number of verdant dew the player has
+func (h *Handler) VerdantDew() int {
+	return h.verdantDew
+}
+
+func (h *Handler) ConsumeVerdantDew(amt int) {
+	h.verdantDew = max(h.verdantDew-amt, 0)
+	h.Log.NewEvent(fmt.Sprintf("%v verdant dew consumed: %v", amt, h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 }
 
 type AirborneSource int
@@ -325,3 +398,22 @@ func (h *Handler) Airborne() AirborneSource {
 const (
 	XianyunAirborneBuff = "xianyun-airborne-buff"
 )
+
+func (h *Handler) GetMoonsignLevel() int {
+	count := 0
+	for _, c := range h.Chars() {
+		count += c.Moonsign
+	}
+	return count
+}
+
+func (h *Handler) GetHexereiCount() int {
+	count := 0
+	for _, char := range h.chars {
+		if char.IsHexerei {
+			count++
+		}
+	}
+
+	return count
+}

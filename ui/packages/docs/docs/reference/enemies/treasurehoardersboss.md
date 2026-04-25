@@ -1,5 +1,6 @@
 ---
-title: "Treasure Hoarders: Boss"
+title: >
+  Treasure Hoarders: Boss
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

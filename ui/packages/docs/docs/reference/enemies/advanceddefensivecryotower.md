@@ -1,5 +1,6 @@
 ---
-title: "Advanced Defensive Cryo Tower"
+title: >
+  Advanced Defensive Cryo Tower
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

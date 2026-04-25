@@ -13,13 +13,13 @@ type noelleShield struct {
 func (c *char) newShield(base float64, t shield.Type, dur int) *noelleShield {
 	n := &noelleShield{}
 	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.ActorIndex = c.Index
-	n.Tmpl.Target = -1
-	n.Tmpl.Src = c.Core.F
-	n.Tmpl.ShieldType = t
-	n.Tmpl.Name = "Noelle Skill"
-	n.Tmpl.HP = base
-	n.Tmpl.Expires = c.Core.F + dur
+	n.ActorIndex = c.Index()
+	n.Target = -1
+	n.Src = c.Core.F
+	n.ShieldType = t
+	n.Name = "Noelle Skill"
+	n.HP = base
+	n.Expires = c.Core.F + dur
 	n.c = c
 	return n
 }

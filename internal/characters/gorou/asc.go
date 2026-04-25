@@ -15,8 +15,8 @@ func (c *char) a1() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a1Key, 720),
 			AffectedStat: attributes.DEFP,
-			Amount: func() ([]float64, bool) {
-				return c.a1Buff, true
+			Amount: func() []float64 {
+				return c.a1Buff
 			},
 		})
 	}

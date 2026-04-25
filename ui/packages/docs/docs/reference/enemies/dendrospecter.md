@@ -1,5 +1,6 @@
 ---
-title: "Dendro Specter"
+title: >
+  Dendro Specter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

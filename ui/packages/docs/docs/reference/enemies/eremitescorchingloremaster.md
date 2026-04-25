@@ -1,5 +1,6 @@
 ---
-title: "Eremite Scorching Loremaster"
+title: >
+  Eremite Scorching Loremaster
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

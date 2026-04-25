@@ -52,42 +52,42 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("swordofdescension", -1),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				m[attributes.ATK] = 66
-				return m, true
+				return m
 			},
 		})
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		// ignore if character not on field
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		// Ignore if neither a charged nor normal attack
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// Ignore if icd is still up
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// Ignore 50% of the time, 1:1 ratio
 		if c.Rand.Float64() < 0.5 {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 600, true)
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Sword of Descension Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -97,10 +97,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       2.00,
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 1.5), 0, 1)
-
-		return false
 	}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))
 
 	return w, nil

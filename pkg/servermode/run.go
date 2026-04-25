@@ -11,10 +11,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func errorRecover(r interface{}) error {
+func errorRecover(r any) error {
 	var err error
 	switch x := r.(type) {
 	case string:
@@ -29,7 +30,7 @@ func errorRecover(r interface{}) error {
 
 // isRunning checks if an id is running
 func (s *Server) isRunning(id string) bool {
-	//WARNING: READ ONLY HERE NOT SAFE FOR WRITE
+	// WARNING: READ ONLY HERE NOT SAFE FOR WRITE
 	_, ok := s.pool[id]
 	return ok
 }
@@ -42,8 +43,8 @@ func flush(aggregators []agg.Aggregator) *model.SimulationStatistics {
 	return stats
 }
 
-func parse(cfg string) (*info.ActionList, ast.Node, error) {
-	parser := ast.New(cfg)
+func parse(file *ast.File, cfg string) (*info.ActionList, ast.Node, error) {
+	parser := parser.New(file, cfg)
 	simcfg, gcsl, err := parser.Parse()
 	if err != nil {
 		return &info.ActionList{}, nil, err

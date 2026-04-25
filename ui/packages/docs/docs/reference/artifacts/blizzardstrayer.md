@@ -1,5 +1,6 @@
 ---
-title: Blizzard Strayer
+title: >
+  Blizzard Strayer
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

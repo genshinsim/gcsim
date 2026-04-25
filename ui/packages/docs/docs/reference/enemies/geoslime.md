@@ -1,5 +1,6 @@
 ---
-title: "Geo Slime"
+title: >
+  Geo Slime
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

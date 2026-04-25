@@ -1,5 +1,6 @@
 ---
-title: "Emperor of Fire and Iron"
+title: >
+  Emperor of Fire and Iron
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

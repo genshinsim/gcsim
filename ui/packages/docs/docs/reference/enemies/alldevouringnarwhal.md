@@ -1,5 +1,6 @@
 ---
-title: "All-Devouring Narwhal"
+title: >
+  All-Devouring Narwhal
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

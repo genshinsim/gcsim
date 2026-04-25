@@ -1,5 +1,6 @@
 ---
-title: "Fatui Skirmisher - Geochanter Bracer"
+title: >
+  Fatui Skirmisher - Geochanter Bracer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

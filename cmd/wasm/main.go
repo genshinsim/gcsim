@@ -11,8 +11,9 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
@@ -21,21 +22,23 @@ import (
 
 const DefaultBufferLength = 1024 * 10
 
-// assigned by compiler
-var shareKey string
+var (
+	// assigned by compiler
+	shareKey string
 
-// shared variables
-var cfg string
-var simcfg *info.ActionList
-var gcsl ast.Node
-var buffer []byte
+	// shared variables
+	cfg    string
+	simcfg *info.ActionList
+	gcsl   ast.Node
+	buffer []byte
 
-// Aggregator variables
-var aggregators []agg.Aggregator
-var cachedResult *model.SimulationResult
+	// Aggregator variables
+	aggregators  []agg.Aggregator
+	cachedResult *model.SimulationResult
+)
 
 func main() {
-	//GOOS=js GOARCH=wasm go build -o main.wasm
+	// GOOS=js GOARCH=wasm go build -o main.wasm
 	ch := make(chan struct{}, 0)
 
 	// Helper Functions (stateless, no init call needed)
@@ -133,7 +136,7 @@ func simulate(this js.Value, args []js.Value) (out interface{}) {
 	if err != nil {
 		return marshal(err)
 	}
-	eval, err := gcs.NewEvaluator(program, core)
+	eval, err := eval.NewEvaluator(program, core)
 	if err != nil {
 		return marshal(err)
 	}
@@ -279,7 +282,7 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 // internal helper functions
 
 func initialize(raw string) error {
-	parser := ast.New(raw)
+	parser := parser.New(raw)
 	out, prog, err := parser.Parse()
 	if err != nil {
 		return err

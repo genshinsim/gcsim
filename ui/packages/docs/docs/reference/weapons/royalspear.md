@@ -1,5 +1,6 @@
 ---
-title: Royal Spear
+title: >
+  Royal Spear
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

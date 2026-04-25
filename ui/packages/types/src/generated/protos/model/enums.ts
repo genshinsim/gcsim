@@ -411,6 +411,8 @@ export enum ZoneType {
   ASSOC_TYPE_MAINACTOR = 8,
   ASSOC_TYPE_FONTAINE = 9,
   ASSOC_TYPE_NATLAN = 10,
+  ASSOC_TYPE_OMNI_SCOURGE = 11,
+  ASSOC_TYPE_NODKRAI = 12,
   UNRECOGNIZED = -1,
 }
 
@@ -449,6 +451,12 @@ export function zoneTypeFromJSON(object: any): ZoneType {
     case 10:
     case "ASSOC_TYPE_NATLAN":
       return ZoneType.ASSOC_TYPE_NATLAN;
+    case 11:
+    case "ASSOC_TYPE_OMNI_SCOURGE":
+      return ZoneType.ASSOC_TYPE_OMNI_SCOURGE;
+    case 12:
+    case "ASSOC_TYPE_NODKRAI":
+      return ZoneType.ASSOC_TYPE_NODKRAI;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -480,6 +488,10 @@ export function zoneTypeToJSON(object: ZoneType): string {
       return "ASSOC_TYPE_FONTAINE";
     case ZoneType.ASSOC_TYPE_NATLAN:
       return "ASSOC_TYPE_NATLAN";
+    case ZoneType.ASSOC_TYPE_OMNI_SCOURGE:
+      return "ASSOC_TYPE_OMNI_SCOURGE";
+    case ZoneType.ASSOC_TYPE_NODKRAI:
+      return "ASSOC_TYPE_NODKRAI";
     case ZoneType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";

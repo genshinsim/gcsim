@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -33,8 +33,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Eye of Stormy Judgement",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -60,13 +60,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(func() {
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
-				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 					if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-						return nil, false
+						return nil
 					}
 
 					m[attributes.DmgP] = mult * this.EnergyMax
-					return m, true
+					return m
 				},
 			})
 		}, 6+60)
@@ -82,8 +82,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -102,39 +102,39 @@ The Eye can initiate one coordinated attack every 0.9s per party.
 *
 */
 func (c *char) eyeOnDamage() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		trg := args[0].(combat.Target)
-		ae := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		trg := args[0].(info.Target)
+		ae := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
 		// ignore if eye on icd
 		if c.eyeICD > c.Core.F {
-			return false
+			return
 		}
 		// ignore if eye status not active on char that's doing dmg
 		if !c.Core.Player.ByIndex(ae.Info.ActorIndex).StatusIsActive(skillKey) {
-			return false
+			return
 		}
 		// ignore EC, hydro swirl, and burning damage
 		// this clause is here since these damage types are sourced to the target rather than character
 		if ae.Info.AttackTag == attacks.AttackTagECDamage || ae.Info.AttackTag == attacks.AttackTagBurningDamage ||
 			ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
-			return false
+			return
 		}
 		// ignore self dmg
-		if ae.Info.ActorIndex == c.Index &&
+		if ae.Info.ActorIndex == c.Index() &&
 			ae.Info.AttackTag == attacks.AttackTagElementalArt &&
 			ae.Info.StrikeType == attacks.StrikeTypeSlash {
-			return false
+			return
 		}
 		// ignore 0 damage
 		if dmg == 0 {
-			return false
+			return
 		}
 
 		// hit mark 857, eye land 862
 		// electro appears to be applied right away
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Eye of Stormy Judgement (Strike)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -150,6 +150,5 @@ func (c *char) eyeOnDamage() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 5, 5, c.particleCB)
 
 		c.eyeICD = c.Core.F + 54 // 0.9 sec icd
-		return false
 	}, "raiden-eye")
 }

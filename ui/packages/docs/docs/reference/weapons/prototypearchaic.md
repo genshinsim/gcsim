@@ -1,5 +1,6 @@
 ---
-title: Prototype Archaic
+title: >
+  Prototype Archaic
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

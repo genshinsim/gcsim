@@ -120,7 +120,7 @@ func (s *Store) Read(ctx context.Context, id string) ([]byte, error) {
 		item, err := txn.Get(key)
 		if err != nil {
 			if errors.Is(err, badger.ErrKeyNotFound) {
-				//TODO: responding with bad request here but not sure if that's ideal..
+				// TODO: responding with bad request here but not sure if that's ideal..
 				s.Log.Infow("bad request; user does not exist", "id", id)
 				return api.ErrInvalidRequest
 			}

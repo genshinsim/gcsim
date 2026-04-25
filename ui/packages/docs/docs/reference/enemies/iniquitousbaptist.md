@@ -1,5 +1,6 @@
 ---
-title: "Iniquitous Baptist"
+title: >
+  Iniquitous Baptist
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

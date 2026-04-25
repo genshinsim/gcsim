@@ -1,5 +1,6 @@
 ---
-title: Vortex Vanquisher
+title: >
+  Vortex Vanquisher
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

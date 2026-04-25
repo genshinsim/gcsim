@@ -36,33 +36,33 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	duration := 480
 	cd := 480
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra && atk.Info.AttackTag != attacks.AttackTagPlunge {
-			return false
+			return
 		}
 		val := make([]float64, attributes.EndStatType)
 		val[attributes.ATKP] = 0.15
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("kagotsurube-isshin", duration),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return val, true
+			Amount: func() []float64 {
+				return val
 			},
 		})
 		// add a new action that deals % dmg immediately
 		// superconduct attack
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "Kagotsurube Isshin Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -72,13 +72,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       1.8,
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
 
 		// trigger cd
 		char.AddStatus(icdKey, cd, true)
-
-		return false
 	}, fmt.Sprintf("kagotsurube-isshin-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -1,5 +1,6 @@
 ---
-title: "Geo Specter"
+title: >
+  Geo Specter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

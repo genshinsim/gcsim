@@ -1,5 +1,6 @@
 ---
-title: Freminet
+title: >
+  Freminet
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -15,14 +15,14 @@ func (c *char) a1() {
 	for _, char := range c.Core.Player.Chars() {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = .08
-		if char.Index == c.Index {
+		if char.Index() == c.Index() {
 			m[attributes.ATKP] = .16
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("aloy-a1", rushingIceDuration),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -39,16 +39,16 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("aloy-strong-strike", rushingIceDuration),
 		AffectedStat: attributes.CryoP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if stacks > 10 {
 				stacks = 10
 			}
 			m[attributes.CryoP] = float64(stacks) * 0.035
-			return m, true
+			return m
 		},
 	})
 
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		// every 1s, aloy can't experience hitlag so this way is fine
 		c.Core.Tasks.Add(func() { stacks++ }, 60*(1+i))
 	}

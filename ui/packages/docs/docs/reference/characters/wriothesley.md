@@ -1,5 +1,6 @@
 ---
-title: Wriothesley
+title: >
+  Wriothesley
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

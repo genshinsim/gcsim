@@ -1,5 +1,6 @@
 ---
-title: Apprentice's Notes
+title: >
+  Apprentice's Notes
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

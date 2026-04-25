@@ -1,5 +1,6 @@
 ---
-title: "Yoriki Samurai"
+title: >
+  Yoriki Samurai
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

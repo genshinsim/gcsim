@@ -1,5 +1,6 @@
 ---
-title: Engulfing Lightning
+title: >
+  Engulfing Lightning
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

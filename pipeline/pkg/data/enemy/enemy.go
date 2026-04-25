@@ -39,7 +39,7 @@ func NewDataSource(root string) (*DataSource, error) {
 	}
 
 	// TODO: crutch to get enemy names
-	e.textMap, err = textmap.NewTextMapSource(filepath.Join(root, "..", TextMapData))
+	e.textMap, err = textmap.NewTextMapSource([]string{filepath.Join(root, "..", TextMapData)})
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,6 @@ func (a *DataSource) ParseMonsterData(monsterInfo *dm.MonsterExcel) (*model.Mons
 	err = a.parseBaseHP(m, monsterInfo, err)
 	err = a.parseHPDrop(m, monsterInfo, err)
 	err = a.parseResist(m, monsterInfo, err)
-
 	if err != nil {
 		return nil, err
 	}

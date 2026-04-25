@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -18,11 +17,13 @@ func init() {
 type char struct {
 	*tmpl.Character
 	qAbsorb             attributes.Element
-	absorbCheckLocation combat.AttackPattern
+	absorbCheckLocation info.AttackPattern
 	a1Buff              []float64
 	a4Buff              []float64
 	c4Count             int
 	c6buff              []float64
+	hexereiBuffSkill    []float64
+	hexereiBuffBurst    []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -48,5 +49,8 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 6 {
 		c.c6buff = make([]float64, attributes.EndStatType)
 	}
+
+	c.hexInit()
+
 	return nil
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -40,16 +39,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	na := make([]float64, attributes.EndStatType)
 	ca := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(buffIcd) {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
@@ -65,21 +64,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case attacks.AttackTagNormal, attacks.AttackTagExtra:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(buffKey, 6*60),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagNormal:
 						na[attributes.DmgP] = (0.06 + 0.02*float64(r)) * float64(stacks)
-						return na, true
+						return na
 					case attacks.AttackTagExtra:
 						ca[attributes.DmgP] = (0.045 + 0.015*float64(r)) * float64(stacks)
-						return ca, true
+						return ca
 					default:
-						return nil, false
+						return nil
 					}
 				},
 			})
 		}
-		return false
 	}, fmt.Sprintf("ballad-of-the-boundless-blue-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -1,5 +1,6 @@
 ---
-title: Ocean-Hued Clam
+title: >
+  Ocean-Hued Clam
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

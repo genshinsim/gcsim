@@ -1,5 +1,6 @@
 ---
-title: Lost Prayer to the Sacred Winds
+title: >
+  Lost Prayer to the Sacred Winds
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Thundering Fury
+title: >
+  Thundering Fury
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

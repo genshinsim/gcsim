@@ -2,8 +2,8 @@ package faruzan
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -14,12 +14,12 @@ import (
 // will restore 2 Energy for Faruzan. Each additional opponent hit will
 // restore 0.5 more Energy for Faruzan.
 // A maximum of 4 Energy can be restored to her per vortex.
-func (c *char) makeC4Callback() func(combat.AttackCB) {
+func (c *char) makeC4Callback() func(info.AttackCB) {
 	if c.Base.Cons < 4 {
 		return nil
 	}
 	count := 0
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if count > 4 {
 			return
 		}
@@ -42,11 +42,11 @@ func (c *char) c6Buff(char *character.CharWrapper) {
 	m[attributes.CD] = 0.4
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("faruzan-c6", 240),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.Element != attributes.Anemo {
-				return nil, false
+				return nil
 			}
-			return m, true
+			return m
 		},
 	})
 }
@@ -54,24 +54,23 @@ func (c *char) c6Buff(char *character.CharWrapper) {
 const c6ICDKey = "faruzan-c6-icd"
 
 func (c *char) c6Collapse() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if dmg := args[2].(float64); dmg == 0 {
-			return false
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ActiveChar()
-		if char.Index != atk.Info.ActorIndex {
-			return false
+		if char.Index() != atk.Info.ActorIndex {
+			return
 		}
 		if !char.StatusIsActive(burstBuffKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6ICDKey) {
-			return false
+			return
 		}
 		c.AddStatus(c6ICDKey, 180, false)
 		enemy := args[0].(*enemy.Enemy)
 		c.pressurizedCollapse(enemy.Pos())
-		return false
 	}, "faruzan-c6-hook")
 }

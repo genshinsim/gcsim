@@ -1,5 +1,6 @@
 ---
-title: "Stormterror"
+title: >
+  Stormterror
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

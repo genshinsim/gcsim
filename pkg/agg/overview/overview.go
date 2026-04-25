@@ -23,6 +23,7 @@ type buffer struct {
 	hps         *calc.Sample
 	shp         *calc.Sample
 	totalDamage calc.StreamStats
+	iters       uint
 }
 
 func newSample(itr int) *calc.Sample {
@@ -58,10 +59,7 @@ func (b *buffer) Add(result stats.Result) {
 	iX := len(b.shp.Xs) - 1
 
 	for _, interval := range result.ShieldResults.EffectiveShield["normalized"] {
-		end := interval.End
-		if end > result.Duration {
-			end = result.Duration
-		}
+		end := min(interval.End, result.Duration)
 		b.shp.Xs[iX] += interval.HP * float64(end-interval.Start)
 	}
 	b.shp.Xs[iX] /= float64(result.Duration)
@@ -79,6 +77,7 @@ func (b *buffer) Add(result stats.Result) {
 	b.rps.Xs[iX] /= b.duration.Xs[iX]
 	b.hps.Xs[iX] /= b.duration.Xs[iX]
 	b.eps.Xs[iX] /= b.duration.Xs[iX]
+	b.iters++
 }
 
 func (b *buffer) Flush(result *model.SimulationStatistics) {

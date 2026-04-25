@@ -50,15 +50,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stats := []string{"em", "dmg%", "atk%"}
 	buff := [][]float64{mEM, mDmg, mATK}
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		next := args[1].(int)
 
-		if next != char.Index {
-			return false
+		if next != char.Index() {
+			return
 		}
 
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 
@@ -68,19 +68,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("widsith", 600),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				// sanity check; should never happen
 				if state == -1 {
-					return nil, false
+					return nil
 				}
-				return buff[state], true
+				return buff[state]
 			},
 		})
-		c.Log.NewEvent("widsith proc'd", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("widsith proc'd", glog.LogWeaponEvent, char.Index()).
 			Write("stat", stats[state]).
 			Write("expiring (without hitlag)", expiry)
-
-		return false
 	}, fmt.Sprintf("width-%v", char.Base.Key.String()))
 
 	return w, nil

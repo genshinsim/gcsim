@@ -1,5 +1,6 @@
 ---
-title: Kagotsurube Isshin
+title: >
+  Kagotsurube Isshin
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

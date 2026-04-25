@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -20,7 +19,7 @@ type char struct {
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
-	c.CharWrapper.ParticleDelay = 80 // special default for bennett
+	c.ParticleDelay = 80 // special default for bennett
 
 	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
@@ -39,8 +38,8 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 7
 	}
 	return c.Character.AnimationStartDelay(k)

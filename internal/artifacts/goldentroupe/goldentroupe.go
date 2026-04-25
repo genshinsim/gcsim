@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -34,7 +33,7 @@ func (s *Set) Init() error {
 	if s.buff == nil { // no 4pc
 		return nil
 	}
-	if s.core.Player.Active() != s.char.Index {
+	if s.core.Player.Active() != s.char.Index() {
 		s.gainBuff()
 	}
 	return nil
@@ -54,11 +53,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.2
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("troupe-2pc", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 	}
@@ -69,26 +68,25 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.buff = make([]float64, attributes.EndStatType)
 		s.buff[attributes.DmgP] = 0.25
 
-		c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 			prev := args[0].(int)
 			next := args[1].(int)
-			if prev == char.Index {
+			if prev == char.Index() {
 				s.lastSwap = -1
 				s.gainBuff()
-			} else if next == char.Index {
+			} else if next == char.Index() {
 				s.lastSwap = c.F
 				c.Tasks.Add(s.clearBuff(c.F), 2*60)
 			}
-			return false
 		}, fmt.Sprintf("troupe-4pc-%v", char.Base.Key.String()))
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("troupe-4pc", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-					return nil, false
+					return nil
 				}
-				return s.buff, true
+				return s.buff
 			},
 		})
 	}
@@ -98,7 +96,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 func (s *Set) gainBuff() {
 	s.buff[attributes.DmgP] = 0.5
-	s.core.Log.NewEvent("golden troupe 4pc proc'd", glog.LogArtifactEvent, s.char.Index)
+	s.core.Log.NewEvent("golden troupe 4pc proc'd", glog.LogArtifactEvent, s.char.Index())
 }
 
 func (s *Set) clearBuff(src int) func() {
@@ -106,11 +104,11 @@ func (s *Set) clearBuff(src int) func() {
 		if s.lastSwap != src {
 			return
 		}
-		if s.core.Player.Active() != s.char.Index {
+		if s.core.Player.Active() != s.char.Index() {
 			return
 		}
 
 		s.buff[attributes.DmgP] = 0.25
-		s.core.Log.NewEvent("golden troupe 4pc lost", glog.LogArtifactEvent, s.char.Index)
+		s.core.Log.NewEvent("golden troupe 4pc lost", glog.LogArtifactEvent, s.char.Index())
 	}
 }

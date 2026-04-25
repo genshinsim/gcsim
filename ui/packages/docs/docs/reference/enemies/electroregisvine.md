@@ -1,5 +1,6 @@
 ---
-title: "Electro Regisvine"
+title: >
+  Electro Regisvine
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

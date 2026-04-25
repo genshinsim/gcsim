@@ -2,8 +2,8 @@ package worker
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -16,6 +16,7 @@ type Pool struct {
 }
 
 type Job struct {
+	File    *ast.File
 	Cfg     *info.ActionList
 	Actions ast.Node
 	Seed    int64
@@ -32,7 +33,7 @@ func New(maxWorker int, respCh chan stats.Result, errCh chan error) *Pool {
 		StopCh:  make(chan bool),
 	}
 	// create workers
-	for i := 0; i < maxWorker; i++ {
+	for range maxWorker {
 		go p.worker()
 	}
 	return p
@@ -48,7 +49,7 @@ func (p *Pool) worker() {
 				p.errCh <- err
 				break
 			}
-			eval, err := gcs.NewEvaluator(job.Actions, c)
+			eval, err := eval.NewEvaluator(job.File, job.Actions, c)
 			if err != nil {
 				p.errCh <- err
 				break

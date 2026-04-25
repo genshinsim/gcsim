@@ -1,5 +1,6 @@
 ---
-title: The Widsith
+title: >
+  The Widsith
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Bloodtainted Greatsword
+title: >
+  Bloodtainted Greatsword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

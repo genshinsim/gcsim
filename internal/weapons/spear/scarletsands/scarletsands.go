@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -40,10 +39,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		Base:         modifier.NewBase("scarletsands", -1),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			em := char.NonExtraStat(attributes.EM)
 			mATK[attributes.ATK] = atkBuff * em
-			return mATK, true
+			return mATK
 		},
 	})
 
@@ -53,29 +52,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.QueueCharTask(func() {
 			icdCounter--
-			c.Log.NewEvent("scarletsands icd counter decreased", glog.LogWeaponEvent, char.Index).
+			c.Log.NewEvent("scarletsands icd counter decreased", glog.LogWeaponEvent, char.Index()).
 				Write("counter", icdCounter)
 		}, 0.3*60)
 
-		c.Log.NewEvent("scarletsands icd counter increased", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("scarletsands icd counter increased", glog.LogWeaponEvent, char.Index()).
 			Write("counter", icdCounter)
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 		if icdCounter >= 3 {
-			c.Log.NewEvent("scarletsands did not gain stacks due to icd", glog.LogWeaponEvent, char.Index)
-			return false
+			c.Log.NewEvent("scarletsands did not gain stacks due to icd", glog.LogWeaponEvent, char.Index())
+			return
 		}
 		icdCounterAdd()
 
@@ -91,15 +90,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Base:         modifier.NewBaseWithHitlag(skillBuff, 10*60),
 			AffectedStat: attributes.ATK,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				em := char.NonExtraStat(attributes.EM)
 				mATK[attributes.ATK] = atkSkillBuff * em * float64(w.stacks)
-				return mATK, true
+				return mATK
 			},
 		})
 
-		c.Log.NewEvent("scarletsands adding stack", glog.LogWeaponEvent, char.Index).Write("stacks", w.stacks)
-		return false
+		c.Log.NewEvent("scarletsands adding stack", glog.LogWeaponEvent, char.Index()).Write("stacks", w.stacks)
 	}, fmt.Sprintf("scarletsands-%v", char.Base.Key.String()))
 
 	return w, nil

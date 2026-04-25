@@ -1,5 +1,6 @@
 ---
-title: Nymph's Dream
+title: >
+  Nymph's Dream
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

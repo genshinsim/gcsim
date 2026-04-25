@@ -1,5 +1,6 @@
 ---
-title: Scholar
+title: >
+  Scholar
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

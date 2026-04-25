@@ -7,53 +7,58 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-const a1NSBurstKey = "ororon-a1-ns-burst"
-const a1ElectroHydroKey = "ororon-a1-electro-hydro"
-const a1ECTriggerKey = "ororon-a1-ec"
-const a1NSTriggerKey = "ororon-a1-ns"
+const (
+	a1NSBurstKey      = "ororon-a1-ns-burst"
+	a1ElectroHydroKey = "ororon-a1-electro-hydro"
+	a1ECTriggerKey    = "ororon-a1-ec"
+	a1LCTriggerKey    = "ororon-a1-lc"
+	a1NSTriggerKey    = "ororon-a1-ns"
+)
 
-const a1OnSkillKey = "ororon-a1"
-const a1GainIcdKey = "ororon-a1-gain-icd"
-const a1DamageIcdKey = "ororon-a1-dmg-icd"
-const a1Abil = "Hypersense"
+const (
+	a1OnSkillKey   = "ororon-a1"
+	a1GainIcdKey   = "ororon-a1-gain-icd"
+	a1DamageIcdKey = "ororon-a1-dmg-icd"
+	a1Abil         = "Hypersense"
+)
 
-const a4Key = "ororon-a4"
-const a4IcdKey = "ororon-a4-icd"
+const (
+	a4Key    = "ororon-a4"
+	a4IcdKey = "ororon-a4-icd"
+)
 
 func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) {
 		c.nightsoulState.GeneratePoints(40)
-		return false
 	}, a1NSBurstKey)
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 
 		// ignores ororon himself
-		if atk.Info.ActorIndex == c.Index {
-			return false
+		if atk.Info.ActorIndex == c.Index() {
+			return
 		}
 
 		switch atk.Info.Element {
 		case attributes.Hydro:
 		case attributes.Electro:
 		default:
-			return false
+			return
 		}
 
 		if !c.StatusIsActive(a1OnSkillKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(a1GainIcdKey) {
-			return false
+			return
 		}
 		c.AddStatus(a1GainIcdKey, 0.3*60, true)
 
@@ -62,34 +67,38 @@ func (c *char) a1Init() {
 		if c.Tag(a1ElectroHydroKey) >= 10 {
 			c.DeleteStatus(a1OnSkillKey)
 		}
-		return false
 	}, a1ElectroHydroKey)
 
-	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnElectroCharged, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 		c.a1NightSoulAttack(atk)
-		return false
 	}, a1ECTriggerKey)
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-
-		if atk.Info.ActorIndex == c.Index {
-			return false
-		}
-		if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
-			return false
+	c.Core.Events.Subscribe(event.OnLunarCharged, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
 		}
 		c.a1NightSoulAttack(atk)
+	}, a1LCTriggerKey)
 
-		return false
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+
+		if atk.Info.ActorIndex == c.Index() {
+			return
+		}
+		if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
+			return
+		}
+		c.a1NightSoulAttack(atk)
 	}, a1NSTriggerKey)
 }
 
-func (c *char) a1NightSoulAttack(atk *combat.AttackEvent) {
+func (c *char) a1NightSoulAttack(atk *info.AttackEvent) {
 	if c.nightsoulState.Points() < 10 {
 		return
 	}
@@ -104,9 +113,9 @@ func (c *char) a1NightSoulAttack(atk *combat.AttackEvent) {
 	c.hypersense(1.6, a1Abil, atk.Pattern.Shape.Pos())
 }
 
-func (c *char) hypersense(mult float64, abil string, initialTargetPos geometry.Point) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+func (c *char) hypersense(mult float64, abil string, initialTargetPos info.Point) {
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               abil,
 		AttackTag:          attacks.AttackTagNone,
 		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -155,11 +164,11 @@ func (c *char) a4Init() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		active := c.Core.Player.ActiveChar()
-		if atk.Info.ActorIndex != active.Index {
-			return false
+		if atk.Info.ActorIndex != active.Index() {
+			return
 		}
 
 		switch atk.Info.AttackTag {
@@ -167,19 +176,19 @@ func (c *char) a4Init() {
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 
 		if !c.StatusIsActive(a4Key) {
-			return false
+			return
 		}
 		if c.StatusIsActive(a4IcdKey) {
-			return false
+			return
 		}
 		c.AddStatus(a4IcdKey, 60, true)
 
 		active.AddEnergy(a4Key, 3)
-		if active.Index != c.Index {
+		if active.Index() != c.Index() {
 			c.AddEnergy(a4Key, 3)
 		}
 
@@ -187,16 +196,15 @@ func (c *char) a4Init() {
 		if c.Tag(a4Key) >= 3 {
 			c.DeleteStatus(a4Key)
 		}
-		return false
 	}, a4Key)
 }
 
-func (c *char) makeA4cb() func(combat.AttackCB) {
+func (c *char) makeA4cb() func(info.AttackCB) {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		c.AddStatus(a4Key, 15*60, true)

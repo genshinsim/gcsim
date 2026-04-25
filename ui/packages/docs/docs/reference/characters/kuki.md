@@ -1,5 +1,6 @@
 ---
-title: Kuki
+title: >
+  Kuki Shinobu
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

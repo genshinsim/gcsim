@@ -37,7 +37,10 @@ func (c Char) Pretty() string {
 	return charPrettyName[c]
 }
 
-const ChildePassive = "childe-talent-passive"
+const (
+	ChildePassive = "childe-talent-passive"
+	SkirkPassive  = "skirk-talent-passive"
+)
 
 const (
 	NoChar Char = iota

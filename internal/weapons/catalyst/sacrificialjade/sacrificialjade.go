@@ -29,7 +29,7 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 
 func (w *Weapon) Init() error {
-	if w.c.Player.Active() != w.char.Index {
+	if w.c.Player.Active() != w.char.Index() {
 		w.lastSwap = w.c.F
 		w.c.Tasks.Add(w.getBuffs(w.lastSwap), 5*60)
 	}
@@ -53,25 +53,24 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("sacrificial-jade", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return w.buff, true
+		Amount: func() []float64 {
+			return w.buff
 		},
 	})
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
 		next := args[1].(int)
-		if prev == char.Index {
+		if prev == char.Index() {
 			w.lastSwap = c.F
 			w.c.Tasks.Add(w.getBuffs(w.lastSwap), 5*60)
-			return false
+			return
 		}
-		if next == char.Index {
+		if next == char.Index() {
 			w.lastSwap = c.F
 			w.c.Tasks.Add(w.clearBuffs(w.lastSwap), 10*60)
-			return false
+			return
 		}
-		return false
 	}, fmt.Sprintf("sacrificial-jade-%v", char.Base.Key.String()))
 
 	return w, nil
@@ -80,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 func (w *Weapon) addBuff() {
 	w.buff[attributes.HPP] = 0.24 + 0.08*float64(w.refine)
 	w.buff[attributes.EM] = 30 + 10*float64(w.refine)
-	w.c.Log.NewEvent("sacrificial jade gained buffs", glog.LogWeaponEvent, w.char.Index)
+	w.c.Log.NewEvent("sacrificial jade gained buffs", glog.LogWeaponEvent, w.char.Index())
 }
 
 func (w *Weapon) getBuffs(src int) func() {
@@ -88,7 +87,7 @@ func (w *Weapon) getBuffs(src int) func() {
 		if w.lastSwap != src {
 			return
 		}
-		if w.c.Player.Active() == w.char.Index {
+		if w.c.Player.Active() == w.char.Index() {
 			return
 		}
 		w.addBuff()
@@ -100,12 +99,12 @@ func (w *Weapon) clearBuffs(src int) func() {
 		if w.lastSwap != src {
 			return
 		}
-		if w.c.Player.Active() != w.char.Index {
+		if w.c.Player.Active() != w.char.Index() {
 			return
 		}
 
 		w.buff[attributes.HPP] = 0
 		w.buff[attributes.EM] = 0
-		w.c.Log.NewEvent("sacrificial jade lost buffs", glog.LogWeaponEvent, w.char.Index)
+		w.c.Log.NewEvent("sacrificial jade lost buffs", glog.LogWeaponEvent, w.char.Index())
 	}
 }

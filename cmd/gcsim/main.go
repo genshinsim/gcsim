@@ -45,9 +45,11 @@ type opts struct {
 	update           bool
 }
 
-const resultServeFile = "serve_data.json"
-const sampleServeFile = "serve_sample.json"
-const address = ":8381"
+const (
+	resultServeFile = "serve_data.json"
+	sampleServeFile = "serve_sample.json"
+	address         = ":8381"
+)
 
 // command line tool; following options are available:
 func main() {
@@ -77,7 +79,8 @@ func mainImpl() error {
 - total_liquid_substats (default = 20): Total liquid substats available to be assigned across all substats
 - indiv_liquid_cap (default = 10): Total liquid substats that can be assigned to a single substat
 - fixed_substats_count (default = 2): Amount of fixed substats that are assigned to all substats
-- fine_tune (default = 1): Set to 0 to disable fine tune step of substat optimizer.`)
+- fine_tune (default = 1): Set to 0 to disable fine tune step of substat optimizer.
+- show_substat_scalars (default = 1): Set to 0 to disable formatting substats by their scalars in the resulting config.`)
 	flag.StringVar(&opt.cpuprofile, "cpuprofile", "", `write cpu profile to a file. supply file path (otherwise empty string for disabled). 
 can be viewed in the browser via "go tool pprof -http=localhost:3000 cpu.prof" (insert your desired host/port/filename, requires Graphviz)`)
 	flag.StringVar(&opt.memprofile, "memprofile", "", `write memory profile to a file. supply file path (otherwise empty string for disabled). 
@@ -132,7 +135,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	}
 
 	var secondOutput string
-	var secondOutputGZ = false
+	secondOutputGZ := false
 
 	if opt.serve {
 		// save output information in case -s and -out were both used in the same command
@@ -224,7 +227,6 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 			opt.gz,
 			simopt,
 		)
-
 		if err != nil {
 			return err
 		}
@@ -238,7 +240,6 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 			opt.gz,
 			simopt,
 		)
-
 		if err != nil {
 			return err
 		}
@@ -312,7 +313,6 @@ func openWSL(url string) error {
 
 func parseStrSeedAndWriteSample(seedStr, outputPath, config string, gz bool, simopt simulator.Options) error {
 	seed, err := strconv.ParseUint(seedStr, 10, 64)
-
 	if err != nil {
 		return err
 	}

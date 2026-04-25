@@ -1,5 +1,6 @@
 ---
-title: Forest Regalia
+title: >
+  Forest Regalia
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

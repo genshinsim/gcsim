@@ -1,5 +1,6 @@
 ---
-title: Resolution of Sojourner
+title: >
+  Resolution of Sojourner
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Consecrated Fanged Beast"
+title: >
+  Consecrated Fanged Beast
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

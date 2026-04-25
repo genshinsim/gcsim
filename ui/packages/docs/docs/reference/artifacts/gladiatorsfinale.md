@@ -1,5 +1,6 @@
 ---
-title: Gladiator's Finale
+title: >
+  Gladiator's Finale
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

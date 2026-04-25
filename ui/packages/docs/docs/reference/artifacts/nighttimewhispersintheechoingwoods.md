@@ -1,5 +1,6 @@
 ---
-title: Nighttime Whispers in the Echoing Woods
+title: >
+  Nighttime Whispers in the Echoing Woods
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

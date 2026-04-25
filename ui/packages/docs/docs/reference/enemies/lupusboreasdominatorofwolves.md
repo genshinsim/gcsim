@@ -1,5 +1,6 @@
 ---
-title: "Lupus Boreas, Dominator of Wolves"
+title: >
+  Lupus Boreas, Dominator of Wolves
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

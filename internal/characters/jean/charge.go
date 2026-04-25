@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFrames []int
@@ -23,8 +23,8 @@ func init() {
 
 // CA has no special interaction with her kit
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Charge",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNormalAttack,
@@ -39,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1},
+			info.Point{Y: 1},
 			1.8,
 			160,
 		),

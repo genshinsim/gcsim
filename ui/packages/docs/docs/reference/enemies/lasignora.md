@@ -1,5 +1,6 @@
 ---
-title: "La Signora"
+title: >
+  La Signora
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

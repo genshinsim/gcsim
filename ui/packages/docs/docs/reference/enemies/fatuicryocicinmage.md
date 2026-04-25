@@ -1,5 +1,6 @@
 ---
-title: "Fatui Cryo Cicin Mage"
+title: >
+  Fatui Cryo Cicin Mage
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

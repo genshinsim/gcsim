@@ -5,35 +5,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
 type GrinMalkinHat struct {
 	*gadget.Gadget
 	char                *char
-	pos                 geometry.Point
-	pyrotechnicAI       combat.AttackInfo
-	pyrotechnicSnapshot combat.Snapshot
+	pos                 info.Point
+	pyrotechnicAI       info.AttackInfo
+	pyrotechnicSnapshot info.Snapshot
 	hpDrained           bool
-	a1CB                combat.AttackCBFunc
+	a1CB                info.AttackCBFunc
 }
 
-func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool, duration int) *GrinMalkinHat {
+func (c *char) newGrinMalkinHat(pos info.Point, hpDrained bool, duration int) *GrinMalkinHat {
 	g := &GrinMalkinHat{}
 
 	g.pos = pos
 
 	// TODO: double check estimation of hitbox
-	g.Gadget = gadget.New(c.Core, g.pos, 1, combat.GadgetTypGrinMalkinHat)
+	g.Gadget = gadget.New(c.Core, g.pos, 1, info.GadgetTypGrinMalkinHat)
 	g.char = c
 
 	g.Duration = duration
 	g.char.AddStatus(grinMalkinHatKey, g.Duration, false)
 
-	g.pyrotechnicAI = combat.AttackInfo{
-		ActorIndex: c.Index,
+	g.pyrotechnicAI = info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Pyrotechnic Strike",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagLyneyEndBoom,
@@ -51,12 +51,12 @@ func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool, duration int
 	g.OnExpiry = g.skillPyrotechnic("expiry")
 	g.OnKill = g.skillPyrotechnic("kill")
 
-	g.Core.Log.NewEvent("Lyney Grin-Malkin Hat added", glog.LogCharacterEvent, c.Index).Write("src", g.Src()).Write("hp_drained", g.hpDrained)
+	g.Core.Log.NewEvent("Lyney Grin-Malkin Hat added", glog.LogCharacterEvent, c.Index()).Write("src", g.Src()).Write("hp_drained", g.hpDrained)
 
 	return g
 }
 
-func (g *GrinMalkinHat) HandleAttack(atk *combat.AttackEvent) float64 {
+func (g *GrinMalkinHat) HandleAttack(atk *info.AttackEvent) float64 {
 	g.Core.Events.Emit(event.OnGadgetHit, g, atk)
 
 	// TODO: gadget taking damage is not implemented
@@ -113,13 +113,13 @@ func (g *GrinMalkinHat) updateHats(removeReason string) {
 	for i := 0; i < len(g.char.hats); i++ {
 		if g.char.hats[i] == g {
 			g.char.hats = append(g.char.hats[:i], g.char.hats[i+1:]...)
-			g.Core.Log.NewEvent("Lyney Grin-Malkin Hat removed", glog.LogCharacterEvent, g.char.Index).Write("src", g.Src()).Write("hp_drained", g.hpDrained).Write("remove_reason", removeReason)
+			g.Core.Log.NewEvent("Lyney Grin-Malkin Hat removed", glog.LogCharacterEvent, g.char.Index()).Write("src", g.Src()).Write("hp_drained", g.hpDrained).Write("remove_reason", removeReason)
 		}
 	}
 }
 
-func (g *GrinMalkinHat) SetDirection(trg geometry.Point) {}
-func (g *GrinMalkinHat) SetDirectionToClosestEnemy()     {}
-func (g *GrinMalkinHat) CalcTempDirection(trg geometry.Point) geometry.Point {
-	return geometry.DefaultDirection()
+func (g *GrinMalkinHat) SetDirection(trg info.Point) {}
+func (g *GrinMalkinHat) SetDirectionToClosestEnemy() {}
+func (g *GrinMalkinHat) CalcTempDirection(trg info.Point) info.Point {
+	return info.DefaultDirection()
 }

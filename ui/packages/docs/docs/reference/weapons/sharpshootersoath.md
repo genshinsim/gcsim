@@ -1,5 +1,6 @@
 ---
-title: Sharpshooter's Oath
+title: >
+  Sharpshooter's Oath
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

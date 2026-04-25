@@ -1,5 +1,6 @@
 ---
-title: Wavebreaker's Fin
+title: >
+  Wavebreaker's Fin
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

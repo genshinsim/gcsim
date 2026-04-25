@@ -1,5 +1,6 @@
 ---
-title: Primordial Jade Cutter
+title: >
+  Primordial Jade Cutter
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

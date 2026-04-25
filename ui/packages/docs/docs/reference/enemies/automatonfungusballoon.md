@@ -1,5 +1,6 @@
 ---
-title: "Automaton: Fungus Balloon"
+title: >
+  Automaton: Fungus Balloon
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

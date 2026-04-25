@@ -8,10 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames [][]int
-var chargeHitmarks = [][]int{{9, 20}, {14, 25}}
+var (
+	chargeFrames   [][]int
+	chargeHitmarks = [][]int{{9, 20}, {14, 25}}
+)
 
 func init() {
 	chargeFrames = make([][]int, 2)
@@ -33,8 +36,8 @@ func init() {
 }
 
 func (c *Traveler) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNormalAttack,
 		ICDGroup:   attacks.ICDGroupDefault,

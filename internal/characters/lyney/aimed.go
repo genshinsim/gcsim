@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -73,8 +72,8 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	ai := combat.AttackInfo{
-		ActorIndex:           c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -99,7 +98,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
+			info.Point{Y: -0.5},
 			0.1,
 			1,
 		),
@@ -127,8 +126,8 @@ func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	propAI := combat.AttackInfo{
-		ActorIndex:           c.Index,
+	propAI := info.AttackInfo{
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot (Prop Arrow)",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -151,7 +150,7 @@ func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				target,
-				geometry.Point{Y: -0.5},
+				info.Point{Y: -0.5},
 				0.1,
 				1,
 			),
@@ -197,7 +196,7 @@ func (c *char) propSurplus() bool {
 		hpdrain = currentHP - propSurplusHPDrainThreshold*maxHP
 	}
 	c.Core.Player.Drain(info.DrainInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Prop Surplus",
 		Amount:     hpdrain,
 	})
@@ -211,18 +210,18 @@ func (c *char) increasePropSurplusStacks() {
 	if c.propSurplusStacks > 5 {
 		c.propSurplusStacks = 5
 	}
-	c.Core.Log.NewEvent("Lyney Prop Surplus stack added", glog.LogCharacterEvent, c.Index).Write("prop_surplus_stacks", c.propSurplusStacks)
+	c.Core.Log.NewEvent("Lyney Prop Surplus stack added", glog.LogCharacterEvent, c.Index()).Write("prop_surplus_stacks", c.propSurplusStacks)
 }
 
-func (c *char) skillAligned(pos geometry.Point) func() {
+func (c *char) skillAligned(pos info.Point) func() {
 	return func() {
 		if c.StatusIsActive(skillAlignedICDKey) {
 			return
 		}
 		c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
-		propAlignedAI := combat.AttackInfo{
-			ActorIndex: c.Index,
+		propAlignedAI := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 			AttackTag:  attacks.AttackTagExtra,
 			ICDTag:     attacks.ICDTagNone,
@@ -242,10 +241,10 @@ func (c *char) skillAligned(pos geometry.Point) func() {
 	}
 }
 
-func (c *char) makeGrinMalkinHat(pos geometry.Point, hpDrained bool) func() {
+func (c *char) makeGrinMalkinHat(pos info.Point, hpDrained bool) func() {
 	return func() {
 		hatIncrease := 1 + c.c1HatIncrease()
-		for i := 0; i < hatIncrease; i++ {
+		for range hatIncrease {
 			// kill existing hat if reached limit
 			if len(c.hats) == c.maxHatCount {
 				c.hats[0].Kill()

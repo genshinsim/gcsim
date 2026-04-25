@@ -1,8 +1,7 @@
 package klee
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -12,11 +11,11 @@ const (
 
 // When Jumpy Dumpty and Normal Attacks deal DMG, Klee has a 50% chance to obtain an Explosive Spark.
 // This Explosive Spark is consumed by the next Charged Attack, which costs no Stamina and deals 50% increased DMG.
-func (c *char) makeA1CB() combat.AttackCBFunc {
+func (c *char) makeA1CB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if c.StatusIsActive(a1IcdKey) {
 			return
 		}
@@ -34,12 +33,12 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 const a4ICDKey = "klee-a4-icd"
 
 // When Klee's Charged Attack results in a CRIT Hit, all party members gain 2 Elemental Energy.
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if !a.IsCrit {

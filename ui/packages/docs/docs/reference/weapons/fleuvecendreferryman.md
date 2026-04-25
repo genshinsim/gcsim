@@ -1,5 +1,6 @@
 ---
-title: Fleuve Cendre Ferryman
+title: >
+  Fleuve Cendre Ferryman
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Abyss Herald: Wicked Torrents"
+title: >
+  Abyss Herald: Wicked Torrents
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

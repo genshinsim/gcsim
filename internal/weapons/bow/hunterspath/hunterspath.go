@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -48,20 +47,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("hunterspath-dmg-bonus", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return val, true
+		Amount: func() []float64 {
+			return val
 		},
 	})
 
 	caBoost := 1.2 + 0.4*float64(r)
 	procCount := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't
 		// have extra damage.
@@ -69,10 +68,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddStatus(buffKey, 600, true)
 			char.AddStatus(icdKey, 720, true)
 			procCount = 12
-			return false
+			return
 		}
 		if !char.StatusIsActive(buffKey) {
-			return false
+			return
 		}
 		baseDmgAdd := char.Stat(attributes.EM) * caBoost
 		atk.Info.FlatDmg += baseDmgAdd
@@ -80,10 +79,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if procCount <= 0 {
 			char.DeleteStatus(buffKey)
 		}
-		c.Log.NewEvent("hunterspath proc dmg add", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("hunterspath proc dmg add", glog.LogPreDamageMod, char.Index()).
 			Write("base_added_dmg", baseDmgAdd).
 			Write("remaining_stacks", procCount)
-		return false
 	}, fmt.Sprintf("hunterspath-%v", char.Base.Key.String()))
 
 	return w, nil

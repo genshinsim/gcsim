@@ -1,5 +1,6 @@
 ---
-title: "Ruin Drake: Skywatch"
+title: >
+  Ruin Drake: Skywatch
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

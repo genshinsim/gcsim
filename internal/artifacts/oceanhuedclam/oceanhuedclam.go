@@ -59,8 +59,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("ohc-2pc", -1),
 			AffectedStat: attributes.Heal,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -68,17 +68,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		bubbleICDExpiry := 0
 
 		// On Heal subscription to start accumulating the healing
-		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnHeal, func(args ...any) {
 			src := args[0].(*info.HealInfo)
 			healAmt := args[4].(float64)
 
-			if src.Caller != char.Index {
-				return false
+			if src.Caller != char.Index() {
+				return
 			}
 
 			// OHC must either be inactive or this equipped character has to have an OHC bubble active
-			if c.Flags.Custom["OHCActiveChar"] != -1 && c.Flags.Custom["OHCActiveChar"] != float64(char.Index) {
-				return false
+			if c.Flags.Custom["OHCActiveChar"] != -1 && c.Flags.Custom["OHCActiveChar"] != float64(char.Index()) {
+				return
 			}
 
 			s.bubbleHealStacks += healAmt
@@ -91,7 +91,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.bubbleDurationExpiry = c.F + 3*60
 				bubbleICDExpiry = c.F + 3.5*60
 
-				c.Flags.Custom["OHCActiveChar"] = float64(char.Index)
+				c.Flags.Custom["OHCActiveChar"] = float64(char.Index())
 
 				// Bubble pop task
 				c.Tasks.Add(func() {
@@ -111,8 +111,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					// d.FlatDmg = bubbleHealStacks * .9
 					// c.QueueDmg(&d, 0)
 
-					atk := combat.AttackInfo{
-						ActorIndex:       char.Index,
+					atk := info.AttackInfo{
+						ActorIndex:       char.Index(),
 						Abil:             "Sea-Dyed Foam",
 						AttackTag:        attacks.AttackTagNoneStat,
 						ICDTag:           attacks.ICDTagNone,
@@ -130,16 +130,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					s.bubbleHealStacks = 0
 				}, 3*60)
 
-				c.Log.NewEvent("ohc bubble activated", glog.LogArtifactEvent, char.Index).
+				c.Log.NewEvent("ohc bubble activated", glog.LogArtifactEvent, char.Index()).
 					Write("bubble_pops_at", s.bubbleDurationExpiry).
 					Write("ohc_icd_expiry", bubbleICDExpiry)
 			}
 
-			c.Log.NewEvent("ohc bubble accumulation", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("ohc bubble accumulation", glog.LogArtifactEvent, char.Index()).
 				Write("bubble_pops_at", s.bubbleDurationExpiry).
 				Write("bubble_total", s.bubbleHealStacks)
-
-			return false
 		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", char.Base.Key.String()))
 	}
 

@@ -9,11 +9,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{12, 16, 37}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{12, 16, 37}
+)
 
 const (
 	normalHitNum = 3
@@ -41,12 +43,12 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	done := false
-	addSeal := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	addSeal := func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		// doesn't gain seals off-field
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		if done {
@@ -56,13 +58,13 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			c.sealCount++
 		}
 		c.AddStatus(sealBuffKey, 600, true)
-		c.Core.Log.NewEvent("yanfei gained a seal from normal attack", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yanfei gained a seal from normal attack", glog.LogCharacterEvent, c.Index()).
 			Write("current_seals", c.sealCount)
 		done = true
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,

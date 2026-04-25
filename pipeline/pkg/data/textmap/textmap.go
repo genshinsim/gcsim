@@ -10,16 +10,24 @@ type DataSource struct {
 	TextMap map[int64]string
 }
 
-func NewTextMapSource(path string) (*DataSource, error) {
-	d, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
+func NewTextMapSource(paths []string) (*DataSource, error) {
 	var res DataSource
-	err = json.Unmarshal(d, &res.TextMap)
-	if err != nil {
-		return nil, err
+
+	for _, path := range paths {
+		d, err := os.ReadFile(path)
+		// if error, try next path, print warning
+		if err != nil {
+			continue
+		}
+		err = json.Unmarshal(d, &res.TextMap)
+		if err != nil {
+			return nil, err
+		}
 	}
+	if res.TextMap == nil {
+		return nil, fmt.Errorf("error reading textmap files: no valid files found")
+	}
+
 	return &res, nil
 }
 

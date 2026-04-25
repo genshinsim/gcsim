@@ -2,7 +2,6 @@ package sayu
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -18,20 +17,20 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	swirlfunc := func(args ...interface{}) bool {
+	swirlfunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != c.Index() {
+			return
 		}
-		if c.Core.Player.Active() != c.Index {
-			return false
+		if c.Core.Player.Active() != c.Index() {
+			return
 		}
 		if c.StatusIsActive(a1ICDKey) {
-			return false
+			return
 		}
 		c.AddStatus(a1ICDKey, 120, true) // 2s
 
@@ -41,14 +40,12 @@ func (c *char) a1() {
 
 		heal := 300 + c.Stat(attributes.EM)*1.2
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Someone More Capable",
 			Src:     heal,
 			Bonus:   c.Stat(attributes.Heal),
 		})
-
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlfunc, "sayu-a1-cryo")

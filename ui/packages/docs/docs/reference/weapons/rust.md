@@ -1,5 +1,6 @@
 ---
-title: Rust
+title: >
+  Rust
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

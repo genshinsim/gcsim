@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -28,12 +28,12 @@ func init() {
 	skillPressFrames[action.ActionJump] = 11    // Tap E -> J
 	skillPressFrames[action.ActionSwap] = 16    // Tap E -> Swap
 
-	skillHoldFrames = frames.InitAbilSlice(49) // Hold E -> E
-	skillHoldFrames[action.ActionAttack] = 36  // Hold E -> N1
-	skillHoldFrames[action.ActionBurst] = 37   // Hold E -> Q
-	skillHoldFrames[action.ActionDash] = 31    // Hold E -> D
-	skillHoldFrames[action.ActionJump] = 31    // Hold E -> J
-	skillHoldFrames[action.ActionSwap] = 23    // Hold E -> Swap
+	skillHoldFrames = frames.InitAbilSlice(49)            // Hold E -> E
+	skillHoldFrames[action.ActionAttack] = 36             // Hold E -> N1
+	skillHoldFrames[action.ActionBurst] = 37              // Hold E -> Q
+	skillHoldFrames[action.ActionDash] = 31               // Hold E -> D
+	skillHoldFrames[action.ActionJump] = 31               // Hold E -> J
+	skillHoldFrames[action.ActionSwap] = skillHoldHitmark // Hold E -> Swap (actual: 23)
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -47,10 +47,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(travel)
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -82,7 +82,7 @@ func (c *char) skillHold(travel int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldFrames[action.ActionJump], // earliest cancel
+		CanQueueAfter:   skillHoldHitmark, // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
@@ -96,12 +96,13 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	if c.Base.Cons >= 2 {
 		shdHp *= 1.15
 	}
+	skillSrc := c.Core.F
 	// call back to generate shield on hit
 	// note that each paw should only be able to trigger callback once (if hit multi target)
 	// and that subsequent shield generation should increase duation only
 	// TODO: need to look into maybe additional paw hits actually create "new" shields?
-	pawCB := func(done bool) combat.AttackCBFunc {
-		return func(_ combat.AttackCB) {
+	pawCB := func(done bool) info.AttackCBFunc {
+		return func(_ info.AttackCB) {
 			if done {
 				return
 			}
@@ -109,32 +110,43 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			done = true
 
 			// check if shield already exists, if so then just update duration
+			var shd *shield.Tmpl
 			dur := int(pawDur[c.TalentLvlSkill()] * 60)
 			exist := c.Core.Player.Shields.Get(shield.DionaSkill)
-			var shd *shield.Tmpl
+
 			if exist != nil {
 				// update
 				shd, _ = exist.(*shield.Tmpl)
+				if shd.Src != skillSrc {
+					shd.HP = shdHp
+					shd.Src = skillSrc
+					shd.Expires += dur
+				}
 				shd.Expires += dur
 			} else {
 				shd = &shield.Tmpl{
-					ActorIndex: c.Index,
+					ActorIndex: c.Index(),
 					Target:     -1,
-					Src:        c.Core.F,
+					Src:        skillSrc,
 					ShieldType: shield.DionaSkill,
-					Name:       "Diona Skill",
+					Name:       "Icy Paws (Shield)",
 					HP:         shdHp,
 					Ele:        attributes.Cryo,
 					Expires:    c.Core.F + dur, // 15 sec
 				}
+			}
+
+			maxDur := c.Core.F + dur*5
+			if shd.Expires > maxDur {
+				shd.Expires = maxDur
 			}
 			// TODO: check that this is actually properly extending duration
 			c.Core.Player.Shields.Add(shd)
 		}
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Icy Paw",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -145,7 +157,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 		Mult:       paw[c.TalentLvlSkill()],
 	}
 
-	for i := 0; i < pawCount; i++ {
+	for i := range pawCount {
 		done := false
 		cb := pawCB(done)
 		c.Core.QueueAttack(

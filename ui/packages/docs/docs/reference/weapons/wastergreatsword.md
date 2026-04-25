@@ -1,5 +1,6 @@
 ---
-title: Waster Greatsword
+title: >
+  Waster Greatsword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

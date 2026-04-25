@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -45,8 +44,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("freedom-dmg", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
@@ -63,21 +62,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const cdKey = "freedom-sworn-cooldown"
 	cd := 20 * 60
 
-	stackFunc := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	stackFunc := func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if char.StatusIsActive(cdKey) {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		char.AddStatus(icdKey, icd, true)
 		stacks++
-		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index()).
 			Write("sigil", stacks)
 		if stacks == 2 {
 			stacks = 0
@@ -87,26 +86,25 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
 					AffectedStat: attributes.ATKP,
-					Amount: func() ([]float64, bool) {
-						return sharedVal, true
+					Amount: func() []float64 {
+						return sharedVal
 					},
 				})
 				char.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBaseWithHitlag("freedomsworn", buffDuration),
-					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 						switch atk.Info.AttackTag {
 						case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
-							return uniqueVal, true
+							return uniqueVal
 						}
-						return nil, false
+						return nil
 					},
 				})
 			}
 		}
-		return false
 	}
 
-	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, stackFunc, "freedom-"+char.Base.Key.String())
 	}
 

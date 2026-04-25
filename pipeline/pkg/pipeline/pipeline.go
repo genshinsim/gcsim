@@ -31,7 +31,6 @@ func Walk(root string) ([]string, error) {
 			c = append(c, path)
 			return nil
 		})
-
 	if err != nil {
 		return nil, err
 	}

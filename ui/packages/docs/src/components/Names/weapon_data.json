@@ -51,11 +51,17 @@
   "blackcliffpole": [],
   "blackcliffslasher": [],
   "blackcliffwarbow": [],
+  "blackmarrowlantern": [],
   "blacktassel": [],
+  "bloodsoakedruins": [
+    "bloodsoaked"
+  ],
   "bloodtaintedgreatsword": [
     "bloodtainted"
   ],
-  "calamityofeshu": [],
+  "calamityofeshu": [
+    "eshu"
+  ],
   "calamityqueller": [
     "calamity"
   ],
@@ -98,6 +104,7 @@
     "elegy"
   ],
   "emeraldorb": [],
+  "etherlightspindlelute": [],
   "endoftheline": [],
   "engulfinglightning": [
     "engulfing"
@@ -142,6 +149,7 @@
     "fleuve",
     "pipe"
   ],
+  "flowerwreathedfeathers": [],
   "fluteofezpitzal": [
     "ezpital"
   ],
@@ -152,6 +160,7 @@
     "footprint",
     "fotr"
   ],
+  "fracturedhalo": [],
   "freedomsworn": [
     "freedom",
     "fs"
@@ -226,6 +235,7 @@
   "mappamare": [
     "mappa"
   ],
+  "masterkey": [],
   "memoryofdust": [],
   "messenger": [],
   "missivewindspear": [
@@ -245,6 +255,12 @@
   "mouunsmoon": [
     "mouun",
     "mouuns"
+  ],
+  "nightweaverslookingglass": [
+    "nightweavers"
+  ],
+  "nocturnescurtaincall": [
+    "nocturnes"
   ],
   "oathsworneye": [
     "oathsworn"
@@ -275,6 +291,7 @@
     "pjws"
   ],
   "prospectorsdrill": [],
+  "prospectorsshovel": [],
   "prototypeamber": [
     "pamber"
   ],
@@ -290,6 +307,9 @@
   "prototypestarglitter": [
     "starglitter"
   ],
+  "rainbowserpentbow": [
+    "rainbowserpent"
+  ],
   "rainslasher": [],
   "rangegauge": [],
   "ravenbow": [
@@ -300,6 +320,9 @@
   ],
   "redhornstonethresher": [
     "redhorn"
+  ],
+  "reliquaryoftruth": [
+    "reliquary"
   ],
   "rightfulreward": [],
   "ringofyaxche": [],
@@ -335,6 +358,10 @@
   "seasonedhuntersbow": [
     "seasoned"
   ],
+  "sequenceofsolitude": [
+    "solitude"
+  ],
+  "serenityscall": [],
   "serpentspine": [
     "serpent"
   ],
@@ -361,6 +388,7 @@
   ],
   "skywardspine": [],
   "slingshot": [],
+  "snarehook": [],
   "snowtombedstarsilver": [
     "snowtombed"
   ],
@@ -369,7 +397,9 @@
     "pines",
     "sobp"
   ],
-  "songofstillness": [],
+  "songofstillness": [
+    "stillness"
+  ],
   "splendoroftranquilwaters": [
     "splendoroftranquilwaters",
     "tranquilwaters",
@@ -391,12 +421,22 @@
   "summitshaper": [
     "summit"
   ],
+  "sunnymorning": [
+    "sunnymorningsleepin"
+  ],
   "surfsup": [],
   "swordofdescension": [
     "descension"
   ],
   "swordofnarzissenkreuz": [
     "narzissenkreuz"
+  ],
+  "symphonistofscents": [
+    "symphonist"
+  ],
+  "tamayurateinoohanashi": [
+    "tamayuratei",
+    "lamppost"
   ],
   "talkingstick": [],
   "thealleyflash": [
@@ -465,6 +505,7 @@
     "misugiri"
   ],
   "verdict": [],
+  "vividnotions": [],
   "vortexvanquisher": [
     "vortex"
   ],

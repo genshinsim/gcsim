@@ -6,16 +6,17 @@ import (
 	"io"
 	"log"
 
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 )
 
 const Prompt = ">> "
 
 func Eval(s string, log *log.Logger) {
-	p := ast.New(s)
+	file := ast.NewFile()
+	p := parser.New(file, s)
 	res, gcsl, err := p.Parse()
-
 	if err != nil {
 		fmt.Println("Error parsing input:")
 		fmt.Printf("\t%v\n", err)
@@ -37,19 +38,19 @@ func Eval(s string, log *log.Logger) {
 		return
 	}
 	fmt.Println("Running program...:")
-	eval, _ := gcs.NewEvaluator(gcsl, nil)
-	eval.Log = log
-	resultChan := make(chan gcs.Obj)
+	e, _ := eval.NewEvaluator(file, gcsl, nil)
+	e.Log = log
+	resultChan := make(chan eval.Obj)
 	errChan := make(chan error)
 	go func() {
-		res, err := eval.Run()
+		res, err := e.Run()
 		// fmt.Printf("done with result: %v, err: %v\n", res, err)
 		resultChan <- res
 		errChan <- err
 	}()
 
 	for {
-		a, err := eval.NextAction()
+		a, err := e.NextAction()
 		if a == nil {
 			break
 		}

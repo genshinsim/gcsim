@@ -40,7 +40,7 @@ func (a *DataSource) parseArtifact(setID int64) (*model.ArtifactData, error) {
 	res := &model.ArtifactData{
 		SetId: setID,
 	}
-	//steps:
+	// steps:
 	// -> find equipaffix id
 	// -> find match equipaffix id in equipaffix list with highest lvl
 	// -> find nametexthash
@@ -80,7 +80,7 @@ func (a *DataSource) parseArtifactImageNames(setID int64) (*model.ArtifactImageD
 		return nil, fmt.Errorf("invalid set id: %v", setID)
 	}
 
-	var res = &model.ArtifactImageData{}
+	res := &model.ArtifactImageData{}
 
 	highest := make(map[model.EquipType]int32)
 

@@ -5,9 +5,9 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -29,14 +29,14 @@ func (c *char) a4() {
 		return
 	}
 
-	a4BuffFunc := func(args ...interface{}) bool {
+	a4BuffFunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != c.Index() {
+			return
 		}
 
 		buff := make([]float64, attributes.EndStatType)
@@ -44,17 +44,15 @@ func (c *char) a4() {
 
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(a4Key, 5*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if !strings.HasPrefix(atk.Info.Abil, pressureBaseName) {
-					return nil, false
+					return nil
 				}
-				return buff, true
+				return buff
 			},
 		})
 
-		c.Core.Log.NewEvent("freminet a4 proc", glog.LogCharacterEvent, c.Index)
-
-		return false
+		c.Core.Log.NewEvent("freminet a4 proc", glog.LogCharacterEvent, c.Index())
 	}
 
 	c.Core.Events.Subscribe(event.OnShatter, a4BuffFunc, "freminet-a4")

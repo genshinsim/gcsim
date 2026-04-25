@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -37,6 +36,7 @@ var procEvents = []event.Event{
 	event.OnAggravate,
 	event.OnSpread,
 	event.OnBloom,
+	event.OnLunarBloom,
 	event.OnHyperbloom,
 	event.OnBurgeon,
 }
@@ -56,37 +56,35 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = float64(45 + r*15)
 
-	//nolint:unparam // why events have a return value...
-	handleProc := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	handleProc := func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 1200, true)
-		c.Log.NewEvent("forestregalia proc'd", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("forestregalia proc'd", glog.LogWeaponEvent, char.Index())
 		if pickupDelay <= 0 {
-			c.Log.NewEvent("forestregalia leaf ignored", glog.LogWeaponEvent, char.Index)
-			return false
+			c.Log.NewEvent("forestregalia leaf ignored", glog.LogWeaponEvent, char.Index())
+			return
 		}
 		c.Tasks.Add(func() {
 			active := c.Player.ActiveChar()
 			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(buffKey, 720),
 				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 			c.Log.NewEvent(
 				fmt.Sprintf("forestregalia leaf picked up by %v", active.Base.Key.String()),
 				glog.LogWeaponEvent,
-				char.Index,
+				char.Index(),
 			)
 		}, pickupDelay)
-		return false
 	}
 
 	key := fmt.Sprintf("forestregalia-%v", char.Base.Key.String())
@@ -95,11 +93,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		case event.OnHyperbloom, event.OnBurgeon:
 			c.Events.Subscribe(e, handleProc, key)
 		default:
-			c.Events.Subscribe(e, func(args ...interface{}) bool {
-				if _, ok := args[0].(*enemy.Enemy); !ok {
-					return false
+			c.Events.Subscribe(e, func(args ...any) {
+				if _, ok := args[0].(*enemy.Enemy); ok {
+					handleProc(args...)
 				}
-				return handleProc(args...)
 			}, key)
 		}
 	}

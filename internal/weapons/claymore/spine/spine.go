@@ -31,7 +31,7 @@ func (w *Weapon) Init() error      { return nil }
 func (w *Weapon) stackCheck() func() {
 	return func() {
 		// if on field and stack < 5, add a stack
-		if w.char.Index == w.c.Player.Active() {
+		if w.char.Index() == w.c.Player.Active() {
 			if w.stacks < 5 {
 				w.stacks++
 				w.updateBuff()
@@ -40,6 +40,7 @@ func (w *Weapon) stackCheck() func() {
 		w.char.QueueCharTask(w.stackCheck(), 240) // check again in 4s
 	}
 }
+
 func (w *Weapon) updateBuff() {
 	w.buff[attributes.DmgP] = float64(w.stacks) * w.dmg
 }
@@ -65,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	// set initial
 	w.stacks = p.Params["stacks"]
 	c.Log.NewEvent(
-		"serpent spine stack check", glog.LogWeaponEvent, char.Index,
+		"serpent spine stack check", glog.LogWeaponEvent, char.Index(),
 	).
 		Write("params", p.Params)
 
@@ -78,36 +79,38 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.QueueCharTask(w.stackCheck(), 240)
 
 	// add event hook to check for dmg, subject to 1s icd
-	//TODO: taking 3% more damage not implemented
+	// TODO: taking 3% more damage not implemented
 	const icdKey = "spine-dmgtaken-icd"
 	icd := 60
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if !di.External {
-			return false
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 		if w.stacks > 0 {
 			w.stacks--
 			w.updateBuff()
 		}
-		return false
 	}, fmt.Sprintf("spine-%v", char.Base.Key.String()))
 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("spine", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return w.buff, w.stacks > 0
+		Amount: func() []float64 {
+			if w.stacks > 0 {
+				return w.buff
+			}
+			return nil
 		},
 	})
 

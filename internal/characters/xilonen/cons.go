@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -21,7 +20,6 @@ const (
 	c4key      = "xilonen-c4"
 	c6key      = "xilonen-c6"
 	c6IcdKey   = "xilonen-c6-icd"
-	c6StamKey  = "xilonen-c6-stam"
 	c2Interval = 0.3 * 60
 	c6Duration = 5 * 60
 )
@@ -70,8 +68,8 @@ func (c *char) c2() {
 		}
 		ch.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c2BuffKey, -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				return c2Buffs[attributes.Geo], true
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				return c2Buffs[attributes.Geo]
 			},
 		})
 	}
@@ -87,8 +85,8 @@ func (c *char) applyC2Buff(src int, other *character.CharWrapper) func() {
 		}
 		other.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(c2BuffKey, 60),
-			Amount: func() ([]float64, bool) {
-				return c2Buffs[other.Base.Element], true
+			Amount: func() []float64 {
+				return c2Buffs[other.Base.Element]
 			},
 		})
 		c.QueueCharTask(c.applyC2Buff(src, other), c2Interval)
@@ -129,20 +127,20 @@ func (c *char) c4Init() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if !char.StatusIsActive(c4key) || char.Tag(c4key) == 0 {
-			return false
+			return
 		}
 
 		amt := 0.65 * c.TotalDef(false)
@@ -155,7 +153,6 @@ func (c *char) c4Init() {
 			Write("c4_left", char.Tag(c4key))
 
 		atk.Info.FlatDmg += amt
-		return false
 	}, fmt.Sprintf("%s-hook", c4key))
 }
 
@@ -164,11 +161,10 @@ func (c *char) c6() {
 		return
 	}
 
-	onAction := func(...interface{}) bool {
-		if c.Core.Player.Active() == c.Index && c.nightsoulState.HasBlessing() {
+	onAction := func(...any) {
+		if c.Core.Player.Active() == c.Index() && c.nightsoulState.HasBlessing() {
 			c.applyC6()
 		}
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnAttack, onAction, "xilonen-c6-on-attack")
@@ -184,8 +180,8 @@ func (c *char) applyC6() {
 	c.c6FlatDmg() // sets c6 key
 
 	// "pause" Nightsoul's Blessing time limit countdown
-	duration := c.StatusDuration(skillMaxDurKey) + c6Duration
-	c.setNightsoulExitTimer(duration)
+	duration := c.nightsoulState.Duration() + c6Duration
+	c.nightsoulState.SetNightsoulExitTimer(duration, c.exitNightsoul)
 
 	for i := 1; i <= 3; i++ {
 		c.Core.Tasks.Add(func() {
@@ -195,7 +191,7 @@ func (c *char) applyC6() {
 			hpplus := c.Stat(attributes.Heal)
 			heal := c.TotalDef(false) * 1.2
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  -1,
 				Message: "Imperishable Night Carnival",
 				Src:     heal,
@@ -208,22 +204,22 @@ func (c *char) applyC6() {
 func (c *char) c6FlatDmg() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6key, c6Duration),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagNormal, attacks.AttackTagPlunge:
 			default:
-				return nil, false
+				return nil
 			}
 			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
-				return nil, false
+				return nil
 			}
 
 			amt := c.TotalDef(false) * 3.0
-			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index).
+			c.Core.Log.NewEvent("c6 proc dmg add", glog.LogPreDamageMod, c.Index()).
 				Write("amt", amt)
 
 			atk.Info.FlatDmg += amt
-			return nil, true
+			return nil
 		},
 	})
 }

@@ -1,5 +1,6 @@
 ---
-title: Zhongli
+title: >
+  Zhongli
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

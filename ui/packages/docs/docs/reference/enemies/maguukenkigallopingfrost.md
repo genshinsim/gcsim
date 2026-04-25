@@ -1,5 +1,6 @@
 ---
-title: "Maguu Kenki: Galloping Frost"
+title: >
+  Maguu Kenki: Galloping Frost
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,0 +1,143 @@
+package mavuika
+
+import (
+	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+)
+
+const (
+	burstKey          = "mavuika-burst"
+	energyNAICDKey    = "mavuika-fighting-spirit-na-icd"
+	burstDuration     = 7.0 * 60
+	burstHitmark      = 106
+	maxFightingSpirit = 200
+)
+
+var burstFrames []int
+
+func (c *char) nightsoulConsumptionMul() float64 {
+	if c.StatusIsActive(burstKey) {
+		return 0.0
+	}
+	return 1.0
+}
+
+func init() {
+	burstFrames = frames.InitAbilSlice(141) // Q -> Walk
+	burstFrames[action.ActionSwap] = 116
+	burstFrames[action.ActionAttack] = 116
+	burstFrames[action.ActionCharge] = 116
+	burstFrames[action.ActionSkill] = 116
+	burstFrames[action.ActionDash] = 116
+	burstFrames[action.ActionJump] = 116
+}
+
+func (c *char) Burst(p map[string]int) (action.Info, error) {
+	c.burstStacks = c.fightingSpirit
+	c.Core.Log.NewEvent("fighting spirit consumed", glog.LogCharacterEvent, c.Index()).
+		Write("amount", c.fightingSpirit)
+	c.fightingSpirit = 0
+	c.enterBike()
+	c.QueueCharTask(func() {
+		c.enterNightsoulOrRegenerate(10)
+	}, 87)
+	c.QueueCharTask(func() {
+		c.AddStatus(burstKey, burstDuration, true)
+	}, burstHitmark-1)
+	c.QueueCharTask(func() {
+		c.a4()
+
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
+			Abil:           "Sunfell Slice",
+			AttackTag:      attacks.AttackTagElementalBurst,
+			ICDTag:         attacks.ICDTagNone,
+			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			ICDGroup:       attacks.ICDGroupDefault,
+			StrikeType:     attacks.StrikeTypeBlunt,
+			PoiseDMG:       150,
+			Element:        attributes.Pyro,
+			Durability:     25,
+			Mult:           burst[c.TalentLvlBurst()],
+			FlatDmg:        c.burstBuffSunfell() + c.c2BikeQ(),
+			HitlagFactor:   0.01,
+		}
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			info.Point{Y: 2.5},
+			7,
+		)
+		c.Core.QueueAttack(ai, ap, 0, 0)
+	}, burstHitmark)
+
+	c.SetCD(action.ActionBurst, 18*60)
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(burstFrames),
+		AnimationLength: burstFrames[action.InvalidAction],
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
+		State:           action.BurstState,
+	}, nil
+}
+
+func (c *char) burstBuffCA() float64 {
+	if !c.StatusIsActive(burstKey) {
+		return 0.0
+	}
+	return c.burstStacks * burstCABonus[c.TalentLvlBurst()] * c.TotalAtk()
+}
+
+func (c *char) burstBuffNA() float64 {
+	if !c.StatusIsActive(burstKey) {
+		return 0.0
+	}
+	return c.burstStacks * burstNABonus[c.TalentLvlBurst()] * c.TotalAtk()
+}
+
+func (c *char) burstBuffSunfell() float64 {
+	if !c.StatusIsActive(burstKey) {
+		return 0.0
+	}
+	return c.burstStacks * burstQBonus[c.TalentLvlBurst()] * c.TotalAtk()
+}
+
+func (c *char) gainFightingSpirit(val float64) {
+	c.fightingSpirit += val * c.c1FightingSpiritEff()
+	if c.fightingSpirit > maxFightingSpirit {
+		c.fightingSpirit = maxFightingSpirit
+	}
+	c.c1OnFightingSpirit()
+}
+
+func (c *char) burstInit() {
+	c.Core.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) {
+		amount := args[1].(float64)
+		if amount < 0.0000001 {
+			return
+		}
+		c.gainFightingSpirit(amount)
+	}, "mavuika-fighting-spirit-ns")
+
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		ae := args[1].(*info.AttackEvent)
+		_, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return
+		}
+		if ae.Info.AttackTag != attacks.AttackTagNormal {
+			return
+		}
+		if c.StatusIsActive(energyNAICDKey) {
+			return
+		}
+		c.AddStatus(energyNAICDKey, 0.1*60, true)
+		c.gainFightingSpirit(1.5)
+	}, "mavuika-fighting-spirit-na")
+}

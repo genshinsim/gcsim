@@ -1,5 +1,6 @@
 ---
-title: "Spirit of Omen: Dendro Spirit-Serpent"
+title: >
+  Spirit of Omen: Dendro Spirit-Serpent
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

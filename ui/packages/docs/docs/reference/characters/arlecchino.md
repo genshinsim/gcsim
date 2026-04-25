@@ -1,5 +1,6 @@
 ---
-title: Arlecchino
+title: >
+  Arlecchino
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

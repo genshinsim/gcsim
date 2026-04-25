@@ -13,8 +13,8 @@ func (c *char) c4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("yaemiko-c4", 5*60),
 			AffectedStat: attributes.ElectroP,
-			Amount: func() ([]float64, bool) {
-				return c.c4buff, true
+			Amount: func() []float64 {
+				return c.c4buff
 			},
 		})
 	}

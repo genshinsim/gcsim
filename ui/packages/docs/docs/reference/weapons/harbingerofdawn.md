@@ -1,5 +1,6 @@
 ---
-title: Harbinger of Dawn
+title: >
+  Harbinger of Dawn
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -72,7 +72,6 @@ func (s *Server) Create(ctx context.Context, req *CreateRequest) (*CreateRespons
 		ExpiresAt: req.GetExpiresAt(),
 		Submitter: req.GetSubmitter(),
 	})
-
 	if err != nil {
 		s.Log.Infow("create request encountered error", "err", err)
 		return nil, err
@@ -87,7 +86,6 @@ func (s *Server) Read(ctx context.Context, req *ReadRequest) (*ReadResponse, err
 	s.Log.Infow("share read request", "key", req.GetId())
 
 	res, err := s.cfg.Store.Read(ctx, req.GetId())
-
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +106,6 @@ func (s *Server) Update(ctx context.Context, req *UpdateRequest) (*UpdateRespons
 		ExpiresAt: req.GetExpiresAt(),
 		Submitter: req.GetSubmitter(),
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +117,6 @@ func (s *Server) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLRespons
 	s.Log.Infow("share set ttl request", "key", req.GetId(), "expires_at", req.GetExpiresAt())
 
 	_, err := s.cfg.Store.SetTTL(ctx, req.GetId(), req.GetExpiresAt())
-
 	if err != nil {
 		return nil, err
 	}
@@ -132,13 +128,13 @@ func (s *Server) Delete(ctx context.Context, req *DeleteRequest) (*DeleteRespons
 	s.Log.Infow("share delete request", "key", req.GetId())
 
 	err := s.cfg.Store.Delete(ctx, req.GetId())
-
 	if err != nil {
 		return nil, err
 	}
 
 	return &DeleteResponse{}, nil
 }
+
 func (s *Server) Random(ctx context.Context, req *RandomRequest) (*RandomResponse, error) {
 	id, err := s.cfg.Store.Random(ctx)
 	if err != nil {

@@ -1,0 +1,61 @@
+package_name: escoffier
+genshin_id: 10000112
+key: escoffier
+action_param_keys:
+  skill:
+    - param: "travel"
+  low_plunge:
+    - param: "collision"
+  high_plunge:
+    - param: "collision"
+icd_groups:
+  - group_name: ICDGroupEscoffierSkill
+    reset_timer: 90
+    ele_app_sequence: [1, 0, 0, 0, 0, 0]
+    damage_sequence: [1, 1, 1, 1, 1]
+documentation:
+  fields_data:
+    - fields: [.escoffier.c2-count]
+      desc: "Number of Cold Dish (C2) stacks"
+    - fields: [.escoffier.c4-count]
+      desc: "Number of extra healing and energy restore effects (C4) left"
+    - fields: [.escoffier.c6-count]
+      desc: "Number of Special-Grade Frosty Parfait (C6) attacks left"
+
+skill_data_mapping:
+  attack: # Kitchen Skills
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
+    charge:
+      - 4 # Charged Attack DMG|{param4:F1P}
+    collision:
+      - 6 # Plunge DMG|{param6:F1P}
+    lowPlunge:
+      - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
+    highPlunge:
+      - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
+  skill: # Low-Temperature Cooking
+    skillInital:
+      - 0 # Skill DMG|{param0:F1P}
+    skillDot:
+      - 1 # Frozen Parfait Attack DMG|{param1:F1P}
+    skillDur:
+      - 2 # Cooking Mek: Cold Storage Mode Duration|{param2:F1}s
+    arkhe:
+      - 3 # Surging Blade DMG|{param3:F1P}
+  burst: # Scoring Cuts
+    burst:
+      - 0 # Skill DMG|{param0:F1P}
+    burstHealPer:
+      - 1 # Healing|{param1:F1P} ATK+{param2:I}
+    burstHealFlat:
+      - 2 # Healing|{param1:F1P} ATK+{param2:I}
+    burstCD:
+      - 3 # CD|{param3:F1}s
+    burstEnergy:
+      - 4 # Energy Cost|{param4:I}

@@ -7,8 +7,10 @@ import (
 
 var skillFrames []int
 
-const skillStart = 5 // cd start and bunny release frame on tap e
-const bunnyLand = 45 // bunny land/spawn on tap e
+const (
+	skillStart = 5  // cd start and bunny release frame on tap e
+	bunnyLand  = 45 // bunny land/spawn on tap e
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(33) // E -> E (C1 only)

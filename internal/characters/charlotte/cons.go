@@ -8,19 +8,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const (
-	c1StatusKey     = "charlotte-c1"
-	c1HealMsg       = "Verification"
-	c6HealMsg       = "charlotte-c6-heal"
-	c6CoordinateAtk = "charlotte-c6-coordinate-atk"
-	c6IcdKey        = "charlotte-c6-icd"
-	c6AttackRadius  = 3.5
-	c6HealRadius    = 5
+	c1StatusKey    = "charlotte-c1"
+	c1HealMsg      = "Verification"
+	c6HealMsg      = "charlotte-c6-heal"
+	c6IcdKey       = "charlotte-c6-icd"
+	c6AttackRadius = 3.5
+	c6HealRadius   = 5
 )
 
 func (c *char) c1Heal(char *character.CharWrapper) func() {
@@ -30,8 +28,8 @@ func (c *char) c1Heal(char *character.CharWrapper) func() {
 		}
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  char.Index,
+			Caller:  c.Index(),
+			Target:  char.Index(),
 			Message: c1HealMsg,
 			Src:     c.TotalAtk() * 0.8,
 			Bonus:   c.Stat(attributes.Heal),
@@ -41,31 +39,29 @@ func (c *char) c1Heal(char *character.CharWrapper) func() {
 }
 
 func (c *char) c1() {
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		src := args[0].(*info.HealInfo)
 		if src.Message != healInitialMsg && src.Message != healDotMsg && src.Message != c6HealMsg {
-			return false
+			return
 		}
 
 		target := args[1].(int)
 		char := c.Core.Player.ByIndex(target)
 		if char.StatusIsActive(c1StatusKey) {
-			return false
+			return
 		}
 		char.AddStatus(c1StatusKey, 6*60, true)
 		c.c1Heal(char)()
-
-		return false
 	}, "charlotte-c1")
 }
 
-func (c *char) makeC2CB() combat.AttackCBFunc {
+func (c *char) makeC2CB() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
 		return nil
 	}
 	c.c2Hits = 0
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.c2Hits == 3 {
@@ -77,8 +73,8 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("charlotte-c2", 12*60),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -86,20 +82,20 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 
 func (c *char) c4() {
 	counter := 0
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 		if counter == 5 {
-			return false
+			return
 		}
 		if !t.StatusIsActive(skillPressMarkKey) && !t.StatusIsActive(skillHoldMarkKey) {
-			return false
+			return
 		}
 		if ae.Info.Abil != burstInitialAbil && ae.Info.Abil != burstDotAbil {
-			return false
+			return
 		}
 		if counter == 0 {
 			c.Core.Tasks.Add(func() {
@@ -108,36 +104,35 @@ func (c *char) c4() {
 		}
 		dmg := 0.1
 		ae.Snapshot.Stats[attributes.DmgP] += dmg
-		c.Core.Log.NewEvent("charlotte c4 adding dmg%", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
+		c.Core.Log.NewEvent("charlotte c4 adding dmg%", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 		c.AddEnergy("charlotte-c4", 2)
 		counter++
-		return false
 	}, "charlotte-c4")
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6IcdKey) {
-			return false
+			return
 		}
 		if !t.StatusIsActive(skillHoldMarkKey) {
-			return false
+			return
 		}
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		c.AddStatus(c6IcdKey, 6*60, true)
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               c6CoordinateAtk,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
+			Abil:               "A Summation of Interest (C6)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNone,
 			ICDGroup:           attacks.ICDGroupDefault,
@@ -154,7 +149,7 @@ func (c *char) c6() {
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(pos, nil, c6AttackRadius), 0, 0)
 			if c.Core.Combat.Player().IsWithinArea(combat.NewCircleHitOnTarget(pos, nil, c6HealRadius)) {
 				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
+					Caller:  c.Index(),
 					Target:  c.Core.Player.Active(),
 					Message: c6HealMsg,
 					Src:     c.TotalAtk() * 0.42,
@@ -162,6 +157,5 @@ func (c *char) c6() {
 				})
 			}
 		}, 14)
-		return false
 	}, "charlotte-c6")
 }

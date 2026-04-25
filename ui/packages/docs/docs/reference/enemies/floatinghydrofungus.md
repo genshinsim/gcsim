@@ -1,5 +1,6 @@
 ---
-title: "Floating Hydro Fungus"
+title: >
+  Floating Hydro Fungus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -24,17 +24,14 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// p is the number of times enemy enters or exits the field
-	enter := p["enter"]
-	if enter < 1 {
-		enter = 1
-	}
+	enter := max(p["enter"], 1)
 	delay, ok := p["enter_delay"]
 	if !ok {
 		delay = 600 / enter
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Dandelion Breeze",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -57,7 +54,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
 	// first enter is on burst start
-	for i := 0; i < enter; i++ {
+	for i := range enter {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), burstStart+i*delay)
 	}
 
@@ -72,7 +69,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Dandelion Breeze",
 			Src:     heal,
@@ -86,8 +83,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// attack self
-	selfSwirl := combat.AttackInfo{
-		ActorIndex: c.Index,
+	selfSwirl := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Dandelion Breeze (Self Swirl)",
 		Element:    attributes.Anemo,
 		Durability: 25,
@@ -106,7 +103,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			if c.Core.Combat.Player().IsWithinArea(c.burstArea) {
 				// heal
 				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
+					Caller:  c.Index(),
 					Target:  c.Core.Player.Active(),
 					Message: "Dandelion Field",
 					Src:     healDot,
@@ -114,12 +111,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				})
 
 				// self swirl
-				ae := combat.AttackEvent{
+				ae := info.AttackEvent{
 					Info:        selfSwirl,
 					Pattern:     combat.NewSingleTargetHit(0),
 					SourceFrame: c.Core.F,
 				}
-				c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index)
+				c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index())
 				self.ReactWithSelf(&ae)
 			}
 			// C4

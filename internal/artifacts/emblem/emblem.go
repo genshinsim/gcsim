@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -33,8 +32,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("emblem-2pc", -1),
 			AffectedStat: attributes.ER,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -49,9 +48,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("emblem-4pc", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-					return nil, false
+					return nil
 				}
 				// calc er
 				er := char.NonExtraStat(attributes.ER)
@@ -60,7 +59,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					amt = 0.75
 				}
 				m[attributes.DmgP] = amt
-				return m, true
+				return m
 			},
 		})
 	}

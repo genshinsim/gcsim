@@ -1,5 +1,6 @@
 ---
-title: Haran Geppaku Futsu
+title: >
+  Haran Geppaku Futsu
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

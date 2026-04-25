@@ -6,13 +6,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const burstHitmarks = 108 // adjusted to swap frame
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 func init() {
 	burstFrames = frames.InitAbilSlice(180) // charge
@@ -30,8 +29,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		travel = 70
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Boomsharka-laka",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
@@ -44,7 +43,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5)
 
 	// snapshot at bullet creation
-	var snap combat.Snapshot
+	var snap info.Snapshot
 	stacks := c.a4Stacks
 	c.a4Stacks = 0
 	c.QueueCharTask(func() {

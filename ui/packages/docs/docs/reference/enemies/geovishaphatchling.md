@@ -1,5 +1,6 @@
 ---
-title: "Geovishap Hatchling"
+title: >
+  Geovishap Hatchling
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -39,19 +38,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	dmgbuff := 0.045 + 0.015*float64(r)
 	w.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if c.Player.Active() != char.Index() {
+			return
 		}
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.Element == attributes.Physical {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 60, true)
 		if !char.StatModIsActive(buffKey) {
@@ -65,11 +64,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("ironsting", 360),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return w.buff, true
+			Amount: func() []float64 {
+				return w.buff
 			},
 		})
-		return false
 	}, fmt.Sprintf("ironsting-%v", char.Base.Key.String()))
 
 	return w, nil

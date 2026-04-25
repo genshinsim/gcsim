@@ -29,8 +29,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("jadecutter-hp", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return mHP, true
+		Amount: func() []float64 {
+			return mHP
 		},
 	})
 
@@ -40,9 +40,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("jadecutter-atk-buff", -1),
 		AffectedStat: attributes.ATK,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			mATK[attributes.ATK] = atkp * char.MaxHP()
-			return mATK, true
+			return mATK
 		},
 	})
 

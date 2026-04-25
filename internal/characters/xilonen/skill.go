@@ -9,8 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -21,7 +20,6 @@ const (
 	samplerInterval = 0.3 * 60
 
 	skilRecastCD     = "xilonen-e-recast-cd"
-	skillMaxDurKey   = "xilonen-e-limit"
 	particleICDKey   = "xilonen-particle-icd"
 	samplerShredKey  = "xilonen-e-shred"
 	activeSamplerKey = "xilonen-samplers-activated"
@@ -58,14 +56,13 @@ func (c *char) canUseNightsoul() bool {
 }
 
 func (c *char) enterNightsoul() {
-	c.nightsoulState.EnterBlessing(45)
 	c.nightsoulSrc = c.Core.F
 	c.nightsoulPointReduceTask(c.nightsoulSrc)
 	c.NormalHitNum = rollerHitNum
 	c.NormalCounter = 0
 
 	duration := int(9 * 60 * c.nightsoulDurationMul())
-	c.setNightsoulExitTimer(duration)
+	c.nightsoulState.EnterTimedBlessing(45, duration, c.exitNightsoul)
 	c.skillLastStamF = c.Core.Player.LastStamUse
 	c.Core.Player.LastStamUse = math.MaxInt
 	// Don't queue the task if C2 or higher
@@ -79,7 +76,7 @@ func (c *char) exitNightsoul() {
 		return
 	}
 	c.nightsoulState.ExitBlessing()
-	c.nightsoulState.ClearPoints()
+	// c.nightsoulState.ClearPoints() // TODO: add a method to clear points without a consume event
 	c.nightsoulSrc = -1
 	c.exitStateSrc = -1
 	c.SetCD(action.ActionSkill, 7*60)
@@ -101,9 +98,9 @@ func (c *char) nightsoulPointReduceTask(src int) {
 	}, 60*tickInterval)
 }
 
-func (c *char) applySamplerShred(ele attributes.Element, enemies []combat.Enemy) {
+func (c *char) applySamplerShred(ele attributes.Element, enemies []info.Enemy) {
 	for _, e := range enemies {
-		e.AddResistMod(combat.ResistMod{
+		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag(fmt.Sprintf("%v-%v", samplerShredKey, ele.String()), 60),
 			Ele:   ele,
 			Value: -skillShred[c.TalentLvlSkill()],
@@ -171,8 +168,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Yohual's Scratch",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -189,7 +186,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		0.8,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmarks, skillHitmarks, c.particleCB)
@@ -213,8 +210,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -222,24 +219,4 @@ func (c *char) particleCB(a combat.AttackCB) {
 	}
 	c.AddStatus(particleICDKey, 0.5*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Geo, c.ParticleDelay)
-}
-
-func (c *char) setNightsoulExitTimer(duration int) {
-	c.exitStateSrc = c.Core.F
-	src := c.exitStateSrc
-	c.QueueCharTask(func() {
-		if c.exitStateSrc != src {
-			return
-		}
-		c.nightsoulState.ClearPoints()
-		if !c.canUseNightsoul() {
-			// don't exit nightsoul while in NA/Plunge
-			switch c.Core.Player.CurrentState() {
-			case action.NormalAttackState, action.PlungeAttackState:
-				return
-			}
-			c.exitNightsoul()
-		}
-	}, duration)
-	c.AddStatus(skillMaxDurKey, duration, true)
 }

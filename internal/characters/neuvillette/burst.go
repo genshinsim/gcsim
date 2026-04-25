@@ -9,18 +9,24 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
-var burstHitmarks = [3]int{95, 95 + 40, 95 + 40 + 19}
+var (
+	burstFrames   []int
+	burstHitmarks = [3]int{95, 95 + 40, 95 + 40 + 19}
+)
 
-var dropletPosOffsets = [][][]float64{{{0, 7}, {-1, 7.5}, {0.8, 6.5}}, {{-3.5, 7.5}, {-2.5, 6}}, {{3.3, 6}}}
-var dropletRandomRanges = [][]float64{{0.5, 2}, {0.5, 1.2}, {0.5, 1.2}}
+var (
+	dropletPosOffsets   = [][][]float64{{{0, 7}, {-1, 7.5}, {0.8, 6.5}}, {{-3.5, 7.5}, {-2.5, 6}}, {{3.3, 6}}}
+	dropletRandomRanges = [][]float64{{0.5, 2}, {0.5, 1.2}, {0.5, 1.2}}
+)
 
-var defaultBurstAtkPosOffsets = [][]float64{{-3, 7.5}, {4, 6}}
-var burstTickTargetXOffsets = []float64{1.5, -1.5}
+var (
+	defaultBurstAtkPosOffsets = [][]float64{{-3, 7.5}, {4, 6}}
+	burstTickTargetXOffsets   = []float64{1.5, -1.5}
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(135)
@@ -36,8 +42,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.chargeEarlyCancelled = false
 	player := c.Core.Combat.Player()
 
-	aiInitialHit := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiInitialHit := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "O Tides, I Have Returned: Skill DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -47,8 +53,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		FlatDmg:    burst[c.TalentLvlBurst()] * c.MaxHP(),
 	}
-	aiWaterfall := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiWaterfall := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "O Tides, I Have Returned: Waterfall DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -58,47 +64,45 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		FlatDmg:    burstWaterfall[c.TalentLvlBurst()] * c.MaxHP(),
 	}
-	for i := 0; i < 3; i++ {
-		ix := i // avoid closure issue
-
-		dropletCount := 3 - ix
+	for i := range 3 {
+		dropletCount := 3 - i
 		ai := aiInitialHit
-		if ix > 0 {
+		if i > 0 {
 			ai = aiWaterfall
 		}
 
 		c.QueueCharTask(func() {
 			// spawn droplets for current tick using random point from player pos with offset
-			for j := 0; j < dropletCount; j++ {
+			for j := range dropletCount {
 				sourcewaterdroplet.New(
 					c.Core,
-					geometry.CalcRandomPointFromCenter(
-						geometry.CalcOffsetPoint(
+					info.CalcRandomPointFromCenter(
+						info.CalcOffsetPoint(
 							player.Pos(),
-							geometry.Point{X: dropletPosOffsets[ix][j][0], Y: dropletPosOffsets[ix][j][1]},
+							info.Point{X: dropletPosOffsets[i][j][0], Y: dropletPosOffsets[i][j][1]},
 							player.Direction(),
 						),
-						dropletRandomRanges[ix][0],
-						dropletRandomRanges[ix][1],
+						dropletRandomRanges[i][0],
+						dropletRandomRanges[i][1],
 						c.Core.Rand,
 					),
-					combat.GadgetTypSourcewaterDropletNeuv,
+					info.GadgetTypSourcewaterDropletNeuv,
 				)
 			}
-			c.Core.Combat.Log.NewEvent(fmt.Sprint("Burst: Spawned ", dropletCount, " droplets"), glog.LogCharacterEvent, c.Index)
+			c.Core.Combat.Log.NewEvent(fmt.Sprint("Burst: Spawned ", dropletCount, " droplets"), glog.LogCharacterEvent, c.Index())
 
 			// determine attack pattern
 			// initial tick
-			ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 8)
+			ap := combat.NewCircleHitOnTarget(player, info.Point{Y: 1}, 8)
 			// 2nd and 3rd tick
-			if ix > 0 {
+			if i > 0 {
 				// determine attack pattern pos
 				// default assumption: no target in range -> ticks should spawn at specific offset from player
-				apPos := geometry.CalcOffsetPoint(
+				apPos := info.CalcOffsetPoint(
 					player.Pos(),
-					geometry.Point{
-						X: defaultBurstAtkPosOffsets[ix-1][0],
-						Y: defaultBurstAtkPosOffsets[ix-1][1],
+					info.Point{
+						X: defaultBurstAtkPosOffsets[i-1][0],
+						Y: defaultBurstAtkPosOffsets[i-1][1],
 					},
 					player.Direction(),
 				)
@@ -109,10 +113,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					// target in range -> adjust pos
 					// pos is a point in random range from target pos + offset
 					// TODO: offset is not accurate because currently target is always looking in default direction
-					apPos = geometry.CalcRandomPointFromCenter(
-						geometry.CalcOffsetPoint(
+					apPos = info.CalcRandomPointFromCenter(
+						info.CalcOffsetPoint(
 							target.Pos(),
-							geometry.Point{X: burstTickTargetXOffsets[ix-1]},
+							info.Point{X: burstTickTargetXOffsets[i-1]},
 							target.Direction(),
 						),
 						0,
@@ -130,7 +134,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				0,
 				0,
 			)
-		}, burstHitmarks[ix])
+		}, burstHitmarks[i])
 	}
 
 	c.SetCD(action.ActionBurst, 18*60)

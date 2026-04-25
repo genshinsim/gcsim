@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -74,15 +74,15 @@ func init() {
 	attackFrames[4][action.ActionAttack] = 24
 
 	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 79)
-	attackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[5][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other characters
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -102,14 +102,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+			info.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 			attackHitboxes[burstIndex][c.NormalCounter][i][0],
 			attackFanAngles[c.NormalCounter][i],
 		)
 		if (c.NormalCounter == 0 && i == 1) || c.NormalCounter == 4 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+				info.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 				attackHitboxes[burstIndex][c.NormalCounter][i][0],
 				attackHitboxes[burstIndex][c.NormalCounter][i][1],
 			)

@@ -1,5 +1,6 @@
 ---
-title: Sapwood Blade
+title: >
+  Sapwood Blade
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

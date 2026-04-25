@@ -1,5 +1,6 @@
 ---
-title: Iron Sting
+title: >
+  Iron Sting
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

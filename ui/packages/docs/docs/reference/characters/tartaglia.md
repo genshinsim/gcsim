@@ -1,5 +1,6 @@
 ---
-title: Tartaglia
+title: >
+  Tartaglia
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

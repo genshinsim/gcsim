@@ -1,5 +1,6 @@
 ---
-title: "Consecrated Red Vulture"
+title: >
+  Consecrated Red Vulture
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

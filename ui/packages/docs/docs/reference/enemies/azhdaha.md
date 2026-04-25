@@ -1,5 +1,6 @@
 ---
-title: "Azhdaha"
+title: >
+  Azhdaha
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

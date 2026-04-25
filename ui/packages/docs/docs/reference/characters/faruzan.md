@@ -1,5 +1,6 @@
 ---
-title: Faruzan
+title: >
+  Faruzan
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

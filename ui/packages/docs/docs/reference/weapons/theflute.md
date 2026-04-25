@@ -1,5 +1,6 @@
 ---
-title: The Flute
+title: >
+  The Flute
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

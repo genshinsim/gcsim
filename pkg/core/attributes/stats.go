@@ -64,7 +64,7 @@ func PrettyPrintStats(stats []float64) string {
 }
 
 func PrettyPrintStatsSlice(stats []float64) []string {
-	r := make([]string, 0)
+	r := make([]string, 0, EndStatType)
 	var sb strings.Builder
 	for i, v := range stats {
 		if v == 0 {
@@ -76,7 +76,6 @@ func PrettyPrintStatsSlice(stats []float64) []string {
 		r = append(r, sb.String())
 		sb.Reset()
 	}
-
 	return r
 }
 

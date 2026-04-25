@@ -3,9 +3,9 @@ package sigewinne
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -21,26 +21,26 @@ const (
 )
 
 func (c *char) a1() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalArt:
 		case attacks.AttackTagElementalArtHold:
 		default:
-			return false
+			return
 		}
 
-		if atk.Info.ActorIndex == c.Index {
-			return false
+		if atk.Info.ActorIndex == c.Index() {
+			return
 		}
 
 		active := c.Core.Player.ActiveChar()
-		if active.Index == atk.Info.ActorIndex {
-			return false
+		if active.Index() == atk.Info.ActorIndex {
+			return
 		}
 
 		if !c.StatusIsActive(convalescenceKey) || c.Tag(convalescenceKey) == 0 {
-			return false
+			return
 		}
 		c.SetTag(convalescenceKey, c.Tag(convalescenceKey)-1)
 
@@ -61,8 +61,6 @@ func (c *char) a1() {
 		}
 
 		atk.Info.FlatDmg += amt
-
-		return false
 	}, "sigewinne-convalescence-hook")
 }
 
@@ -74,8 +72,8 @@ func (c *char) a1Self() {
 	buff[attributes.HydroP] = a1DmgBuff
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("sigewinne-a1", skillCD*60),
-		Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			return buff, true
+		Amount: func(a *info.AttackEvent, _ info.Target) []float64 {
+			return buff
 		},
 	})
 }
@@ -85,14 +83,14 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("sigewinne-a4", -1),
 		AffectedStat: attributes.Heal,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			totalHpDebt := 0.
 			for _, other := range c.Core.Player.Chars() {
 				totalHpDebt += other.CurrentHPDebt()
 			}
 			heal := min(a4HealingBonusCap, totalHpDebt*a4HpDebtHealingBonusRatio)
 			m[attributes.Heal] = heal
-			return m, true
+			return m
 		},
 	})
 }

@@ -12,7 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -23,7 +22,6 @@ type char struct {
 	*tmpl.Character
 	nightsoulState           *nightsoul.State
 	nightsoulSrc             int
-	exitStateF               int
 	ajawSrc                  int
 	normalSCounter           int
 	characterAngularPosition float64 // [0, 360)
@@ -106,12 +104,12 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if c.nightsoulState.HasBlessing() {
 		return skillAttackFrames[0][action.ActionDash]
 	}
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 17
 	default:
 		return 18
@@ -136,11 +134,10 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if c.nightsoulState.HasBlessing() {
 			c.cancelNightsoul()
 		}
-		return false
 	}, "kinich-exit")
 }
 

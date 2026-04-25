@@ -15,16 +15,20 @@ func (c *char) a1() {
 		return
 	}
 	particleICD := 0
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...any) {
 		if particleICD > c.Core.F {
-			return false
+			return
 		}
 		particleICD = c.Core.F + 180 // once every 3 seconds
+		previous := c.stacks
 		c.stacks += 2
 		if c.stacks > 60 {
 			c.stacks = 60
 		}
-		return false
+		c.Core.Log.NewEvent("resolve stacks gained", glog.LogCharacterEvent, c.Index()).
+			Write("previous", previous).
+			Write("amount", 2).
+			Write("final", c.stacks)
 	}, "raiden-particle-stacks")
 }
 
@@ -37,7 +41,7 @@ func (c *char) a4Energy(er float64) float64 {
 	}
 	excess := int(er * 100)
 	increase := float64(excess) * 0.006
-	c.Core.Log.NewEvent("a4 energy restore stacks", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("a4 energy restore stacks", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", excess).
 		Write("increase", increase)
 	return increase
@@ -57,8 +61,8 @@ func (c *char) a4() {
 			Base:         modifier.NewBase("raiden-a4", -1),
 			AffectedStat: attributes.ElectroP,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return c.a4Stats, true
+			Amount: func() []float64 {
+				return c.a4Stats
 			},
 		})
 	}

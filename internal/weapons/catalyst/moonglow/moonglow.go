@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -35,27 +34,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("moonglow-heal-bonus", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return mheal, true
+		Amount: func() []float64 {
+			return mheal
 		},
 	})
 
 	nabuff := 0.005 + float64(r)*0.005
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		flatdmg := char.MaxHP() * nabuff
 		atk.Info.FlatDmg += flatdmg
 
-		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index()).
 			Write("damage_added", flatdmg)
-		return false
 	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Key.String()))
 
 	const buffKey = "moonglow-postburst"
@@ -63,30 +61,27 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const icdKey = "moonglow-energy-icd"
 	icd := 6 // 0.1s * 60
 
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnBurst, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		char.AddStatus(buffKey, buffDuration, true)
-		return false
 	}, fmt.Sprintf("moonglow-onburst-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if !char.StatusIsActive(buffKey) || char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		char.AddEnergy("moonglow", 0.6)
 		char.AddStatus(icdKey, icd, true)
-
-		return false
 	}, fmt.Sprintf("moonglow-energy-%v", char.Base.Key.String()))
 
 	return w, nil

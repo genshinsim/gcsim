@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -40,8 +39,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       burstInitialAbil,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -52,8 +51,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	attackAP := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: burstOffsetX, Y: burstOffsetY}, burstAttackRadius)
-	healAP := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: burstOffsetX, Y: burstOffsetY}, burstHealRadius)
+	attackAP := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{X: burstOffsetX, Y: burstOffsetY}, burstAttackRadius)
+	healAP := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{X: burstOffsetX, Y: burstOffsetY}, burstHealRadius)
 
 	snap := c.Snapshot(&ai)
 
@@ -72,7 +71,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: healInitialMsg,
 			Src:     heal,
@@ -86,7 +85,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					return
 				}
 				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
+					Caller:  c.Index(),
 					Target:  c.Core.Player.Active(),
 					Message: healDotMsg,
 					Src:     healDot,

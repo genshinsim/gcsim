@@ -7,15 +7,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillFrames []int
-var skillHitmarks = [2]int{23, 60}
-var skillDropletOffsets = [][][]float64{{{-1, 3}, {0, 3.8}, {1, 3}}, {{-2, 7}, {0, 8}, {2, 7}}, {{-3, 10}, {0, 11}, {3, 10}}}
-var skillDropletRandomRanges = [][][]float64{{{0.5, 1.5}, {0.5, 1.5}, {0.5, 1.5}}, {{1, 2.5}, {3.5, 4}, {1, 2.5}}, {{2, 3}, {2, 4}, {2, 3}}}
+var (
+	skillFrames              []int
+	skillHitmarks            = [2]int{23, 60}
+	skillDropletOffsets      = [][][]float64{{{-1, 3}, {0, 3.8}, {1, 3}}, {{-2, 7}, {0, 8}, {2, 7}}, {{-3, 10}, {0, 11}, {3, 10}}}
+	skillDropletRandomRanges = [][][]float64{{{0.5, 1.5}, {0.5, 1.5}, {0.5, 1.5}}, {{1, 2.5}, {3.5, 4}, {1, 2.5}}, {{2, 3}, {2, 4}, {2, 3}}}
+)
 
 const (
 	skillAlignedICD    = 10 * 60
@@ -40,8 +41,8 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.chargeEarlyCancelled = false
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "O Tears, I Shall Repay",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -56,15 +57,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(skillPos, nil, 6),
-		skillHitmarks[0], //TODO: snapshot delay?
+		skillHitmarks[0], // TODO: snapshot delay?
 		skillHitmarks[0],
 		c.makeDropletCB(),
 		c.particleCB,
 	)
 
-	aiThorn := combat.AttackInfo{
+	aiThorn := info.AttackInfo{
 		// TODO: Apply Pneuma
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		Abil:               "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -100,8 +101,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -112,10 +113,10 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Hydro, c.ParticleDelay)
 }
 
-func (c *char) makeDropletCB() combat.AttackCBFunc {
+func (c *char) makeDropletCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -132,22 +133,22 @@ func (c *char) makeDropletCB() combat.AttackCBFunc {
 			i = 1
 		}
 
-		for j := 0; j < 3; j++ {
+		for j := range 3 {
 			sourcewaterdroplet.New(
 				c.Core,
-				geometry.CalcRandomPointFromCenter(
-					geometry.CalcOffsetPoint(
+				info.CalcRandomPointFromCenter(
+					info.CalcOffsetPoint(
 						player.Pos(),
-						geometry.Point{X: skillDropletOffsets[i][j][0], Y: skillDropletOffsets[i][j][1]},
+						info.Point{X: skillDropletOffsets[i][j][0], Y: skillDropletOffsets[i][j][1]},
 						player.Direction(),
 					),
 					skillDropletRandomRanges[i][j][0],
 					skillDropletRandomRanges[i][j][1],
 					c.Core.Rand,
 				),
-				combat.GadgetTypSourcewaterDropletNeuv,
+				info.GadgetTypSourcewaterDropletNeuv,
 			)
 		}
-		c.Core.Combat.Log.NewEvent("Skill: Spawned 3 droplets", glog.LogCharacterEvent, c.Index)
+		c.Core.Combat.Log.NewEvent("Skill: Spawned 3 droplets", glog.LogCharacterEvent, c.Index())
 	}
 }

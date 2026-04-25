@@ -1,9 +1,12 @@
 package infusion
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 type WeaponInfusion struct {
@@ -14,13 +17,11 @@ type WeaponInfusion struct {
 	CanBeOverridden bool
 }
 
-const MaxTeamSize = 4
-
 type Handler struct {
 	f        *int
 	log      glog.Logger
 	debug    bool
-	infusion [MaxTeamSize]WeaponInfusion
+	infusion [info.MaxChars]WeaponInfusion
 }
 
 func New(f *int, log glog.Logger, debug bool) Handler {
@@ -69,13 +70,7 @@ func (i *Handler) WeaponInfuseIsActive(char int, key string) bool {
 
 func (i *Handler) Infused(char int, a attacks.AttackTag) attributes.Element {
 	if i.infusion[char].Key != "" {
-		ok := false
-		for _, v := range i.infusion[char].Tags {
-			if v == a {
-				ok = true
-				break
-			}
-		}
+		ok := slices.Contains(i.infusion[char].Tags, a)
 		if ok {
 			if i.infusion[char].Expiry > float64(*i.f) || i.infusion[char].Expiry == -1 {
 				return i.infusion[char].Ele

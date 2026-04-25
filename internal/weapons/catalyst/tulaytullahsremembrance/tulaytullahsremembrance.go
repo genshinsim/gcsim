@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -53,20 +52,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase(atkSpdKey, -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.Player.CurrentState() != action.NormalAttackState {
-				return nil, false
+				return nil
 			}
-			return mAtkSpd, true
+			return mAtkSpd
 		},
 	})
 
 	// normal attack dmg part
 	incDmg := 0.036 + float64(r)*0.012
 	mDmg := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		// remove stacks on skill in any case
@@ -79,28 +78,27 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 14*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
-					return nil, false
+					return nil
 				}
 				mDmg[attributes.DmgP] = incDmg * float64(w.stacks)
-				return mDmg, true
+				return mDmg
 			},
 		})
-		return false
 	}, fmt.Sprintf("tulaytullahsremembrance-%v", char.Base.Key.String()))
 
 	// gain 2 stacks on normal attack dmg, 0.3s icd
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 0.3*60, true)
 
@@ -111,30 +109,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		gain := w.stacks - previous
 		if gain == 0 {
-			return false
+			return
 		}
 		gainMsg := "2 stacks"
 		if gain == 1 {
 			gainMsg = "1 stack"
 		}
-		w.core.Log.NewEvent(fmt.Sprintf("Tulaytullah's Remembrance gained %v via normal attack", gainMsg), glog.LogWeaponEvent, char.Index).
+		w.core.Log.NewEvent(fmt.Sprintf("Tulaytullah's Remembrance gained %v via normal attack", gainMsg), glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
-		return false
 	}, fmt.Sprintf("tulaytullahsremembrance-ondmg-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
-		if prev != char.Index {
-			return false
+		if prev != char.Index() {
+			return
 		}
 		if !char.StatusIsActive(buffKey) {
-			return false
+			return
 		}
 		// remove stacks, invalidate incStack task and remove buff on swap
 		w.stacks = 0
 		w.src = -1
 		char.DeleteStatus(buffKey)
-		return false
 	}, fmt.Sprintf("tulaytullahsremembrance-exit-%v", char.Base.Key.String()))
 
 	return w, nil
@@ -149,7 +145,7 @@ func (w *Weapon) incStack(char *character.CharWrapper, src int) func() {
 			return
 		}
 		w.stacks++
-		w.core.Log.NewEvent("Tulaytullah's Remembrance gained stack via timer", glog.LogWeaponEvent, char.Index).
+		w.core.Log.NewEvent("Tulaytullah's Remembrance gained stack via timer", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks).
 			Write("weapon effect start", w.src).
 			Write("source", src)

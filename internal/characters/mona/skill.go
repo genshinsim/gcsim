@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -43,8 +43,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// DoT
 	// ticks 4 times
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Mirror Reflection of Doom (Tick)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -58,13 +58,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 
 	// tick every 1s
-	for i := skillHitmarks[hold]; i < 300; i += 60 {
+	for i := skillHitmarks[hold]; i < 300; i += 59 {
 		c.Core.QueueAttackWithSnap(ai, snap, ap, i)
 	}
 
 	// Explosion
-	aiExplode := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiExplode := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Mirror Reflection of Doom (Explode)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(aiExplode, ap, 0, skillHitmarks[hold]+313, c.particleCB)
+	c.Core.QueueAttack(aiExplode, ap, 0, skillHitmarks[hold]+243, c.particleCB)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 24)
 
@@ -86,8 +86,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

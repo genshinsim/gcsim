@@ -1,5 +1,6 @@
 ---
-title: "Stretchy Anemo Fungus"
+title: >
+  Stretchy Anemo Fungus
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

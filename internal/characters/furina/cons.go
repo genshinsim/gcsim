@@ -2,21 +2,23 @@ package furina
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const c2BuffKey = "furina-c2-hp"
 
-const c4Key = "furina-c4"
-const c4IcdKey = "furina-c4-icd"
+const (
+	c4Key    = "furina-c4"
+	c4IcdKey = "furina-c4-icd"
+)
 
-const c6Key = "center-of-attention"
-const c6IcdKey = "furina-c6-icd"
-const c6OusiaHealKey = "furina-c6-ousia-heal"
+const (
+	c6Key          = "center-of-attention"
+	c6IcdKey       = "furina-c6-icd"
+	c6OusiaHealKey = "furina-c6-ousia-heal"
+)
 
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
@@ -24,20 +26,24 @@ func (c *char) c2() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase(c2BuffKey, -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if !c.StatusIsActive(burstKey) {
-				return nil, false
+				return nil
 			}
 			m[attributes.HPP] = max(c.curFanfare-c.maxQFanfare, 0) * 0.0035
-			return m, true
+			return m
 		},
 	})
 }
 
-func (c *char) c4cb(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) c4cb(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
+	c.c4energy()
+}
+
+func (c *char) c4energy() {
 	if c.StatusIsActive(c4IcdKey) {
 		return
 	}
@@ -58,8 +64,8 @@ func (c *char) c6BonusDMGNoExtra() float64 {
 	return scaleHP * c.MaxHP()
 }
 
-func (c *char) c6cb(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) c6cb(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 
@@ -90,7 +96,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 		for _, char := range c.Core.Player.Chars() {
 			hpDrain := char.CurrentHP() * 0.01
 			c.Core.Player.Drain(info.DrainInfo{
-				ActorIndex: char.Index,
+				ActorIndex: char.Index(),
 				Abil:       "Furina C6 Pneuma Drain",
 				Amount:     hpDrain,
 			})
@@ -111,8 +117,8 @@ func (c *char) c6heal(char *character.CharWrapper, src int) func() {
 			return
 		}
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  char.Index,
+			Caller:  c.Index(),
+			Target:  char.Index(),
 			Message: "Furina C6 Ousia Heal",
 			Src:     0.04 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),

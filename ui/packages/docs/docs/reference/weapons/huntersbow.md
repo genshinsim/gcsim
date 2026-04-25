@@ -1,5 +1,6 @@
 ---
-title: Hunter's Bow
+title: >
+  Hunter's Bow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

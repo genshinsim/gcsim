@@ -1,5 +1,6 @@
 ---
-title: Berserker
+title: >
+  Berserker
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

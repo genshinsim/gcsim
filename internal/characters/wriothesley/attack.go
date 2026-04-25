@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -54,8 +54,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -69,21 +69,23 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			CanBeDefenseHalted: true,
 		}
 		c1N5CB := c.makeC1N5CB() // here so that the normalcounter check is correct
+		n := c.NormalCounter
 		c.QueueCharTask(func() {
 			// TODO: when should this check happen?
 			skillIndex := 0
-			var particleCB combat.AttackCBFunc
-			var chillingPenalty combat.AttackCBFunc
+			var particleCB info.AttackCBFunc
+			var chillingPenalty info.AttackCBFunc
 			if c.skillBuffActive() {
 				skillIndex = 1
 				particleCB = c.particleCB
 				chillingPenalty = c.chillingPenalty
+				ai.Abil = fmt.Sprintf("Normal %v (Enhanced)", n)
 			}
 			c.Core.QueueAttack(
 				ai,
 				combat.NewBoxHitOnTarget(
 					c.Core.Combat.Player(),
-					geometry.Point{Y: attackOffsets[skillIndex]},
+					info.Point{Y: attackOffsets[skillIndex]},
 					attackHitboxes[skillIndex][c.NormalCounter][0],
 					attackHitboxes[skillIndex][c.NormalCounter][1],
 				),

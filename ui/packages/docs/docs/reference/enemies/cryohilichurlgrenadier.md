@@ -1,5 +1,6 @@
 ---
-title: "Cryo Hilichurl Grenadier"
+title: >
+  Cryo Hilichurl Grenadier
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

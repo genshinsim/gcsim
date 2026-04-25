@@ -1,5 +1,6 @@
 ---
-title: Slingshot
+title: >
+  Slingshot
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

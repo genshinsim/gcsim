@@ -33,19 +33,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	duration := 8 * 60
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ATKP] = atk
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
-		if index != char.Index {
-			return false
+		if index != char.Index() {
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("tidal-shadow-atk-boost", duration),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return val, true
+			Amount: func() []float64 {
+				return val
 			},
 		})
-		return false
 	}, fmt.Sprintf("tidalshadow-%v", char.Base.Key.String()))
 	return w, nil
 }

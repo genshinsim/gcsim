@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -41,36 +40,34 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	key := fmt.Sprintf("thundering-pulse-%v", char.Base.Key.String())
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		char.AddStatus(normalKey, normalDuration, true)
-		return false
 	}, key)
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		char.AddStatus(skillKey, skillDuration, true)
-		return false
 	}, key)
 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("thundering-pulse", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			m[attributes.DmgP] = 0
 			if atk.Info.AttackTag != attacks.AttackTagNormal {
-				return m, true
+				return m
 			}
 			count := 0
 			if char.Energy < char.EnergyMax {
@@ -87,7 +84,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				dmg = maxBonus
 			}
 			m[attributes.DmgP] = dmg
-			return m, true
+			return m
 		},
 	})
 

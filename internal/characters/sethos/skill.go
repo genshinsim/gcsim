@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -26,32 +26,31 @@ func init() {
 }
 
 func (c *char) skillRefundHook() {
-	refundCB := func(args ...interface{}) bool {
+	refundCB := func(args ...any) {
 		// TODO: Check if Sethos E filters by enemy
-		// a := args[0].(combat.Target)
-		// if a.Type() != targets.TargettableEnemy {
+		// a := args[0].(info.Target)
+		// if a.Type() != info.TargettableEnemy {
 		// 	return false
 		// }
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != c.Index {
-			return false
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != c.Index() {
+			return
 		}
 		if ae.Info.AttackTag != attacks.AttackTagElementalArt {
-			return false
+			return
 		}
 		// to avoid procing twice in aoe
 		if c.lastSkillFrame == ae.SourceFrame {
-			return false
+			return
 		}
 		c.lastSkillFrame = ae.SourceFrame
 		c.AddEnergy("sethos-skill", skillEnergyRegen[c.TalentLvlSkill()])
 		c.c2AddStack(c2RegainingKey)
-
-		return false
 	}
 
 	c.Core.Events.Subscribe(event.OnOverload, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnElectroCharged, refundCB, "sethos-e-refund")
+	c.Core.Events.Subscribe(event.OnLunarCharged, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnSuperconduct, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, refundCB, "sethos-e-refund")
 	c.Core.Events.Subscribe(event.OnHyperbloom, refundCB, "sethos-e-refund")
@@ -60,8 +59,8 @@ func (c *char) skillRefundHook() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Ancient Rite: Thunderous Roar of Sand",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -80,13 +79,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionWalk], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(skillParticleICDKey) {

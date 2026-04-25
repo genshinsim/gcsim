@@ -30,18 +30,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	mDef := make([]float64, attributes.EndStatType)
 	mDef[attributes.DEFP] = 0.12 + float64(r)*0.04
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("footprint-def", 15*60),
 			AffectedStat: attributes.DEFP,
-			Amount: func() ([]float64, bool) {
-				return mDef, true
+			Amount: func() []float64 {
+				return mDef
 			},
 		})
-		return false
 	}, fmt.Sprintf("footprint-%v", char.Base.Key.String()))
 
 	return w, nil

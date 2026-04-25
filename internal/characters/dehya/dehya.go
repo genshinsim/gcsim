@@ -4,12 +4,10 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type char struct {
@@ -17,9 +15,9 @@ type char struct {
 	// tracking skill information
 	hasRecastSkill     bool
 	hasC2DamageBuff    bool
-	skillArea          combat.AttackPattern
-	skillAttackInfo    combat.AttackInfo
-	skillSnapshot      combat.Snapshot
+	skillArea          info.AttackPattern
+	skillAttackInfo    info.AttackInfo
+	skillSnapshot      info.Snapshot
 	skillRedmanesBlood float64
 	skillSelfDoTQueued bool
 	sanctumSavedDur    int
@@ -81,25 +79,23 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		if !c.StatusIsActive(burstKey) && !c.StatusIsActive(kickKey) {
-			return false
+			return
 		}
 		c.DeleteStatus(burstKey)
 		if dur := c.sanctumSavedDur; dur > 0 { // place field
 			c.sanctumSavedDur = 0
 			c.QueueCharTask(func() { c.addField(dur) }, burstKickHitmark)
 		}
-
-		return false
 	}, "dehya-exit")
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 22
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 22
 	default:
 		return c.Character.AnimationStartDelay(k)

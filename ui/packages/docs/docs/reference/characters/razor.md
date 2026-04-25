@@ -1,5 +1,6 @@
 ---
-title: Razor
+title: >
+  Razor
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: "Abyss Lector: Violet Lightning"
+title: >
+  Abyss Lector: Violet Lightning
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

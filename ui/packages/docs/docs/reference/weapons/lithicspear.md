@@ -1,5 +1,6 @@
 ---
-title: Lithic Spear
+title: >
+  Lithic Spear
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

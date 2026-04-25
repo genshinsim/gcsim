@@ -1,5 +1,6 @@
 ---
-title: "Advanced Defensive Electro Tower"
+title: >
+  Advanced Defensive Electro Tower
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

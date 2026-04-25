@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -26,8 +26,8 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// snapshots before or during Burst Animation
 	// https://library.keqingmains.com/evidence/characters/cryo/aloy#burst-mechanics
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Prophecies of Dawn",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 6.5}, 6.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 6.5}, 6.5),
 		burstHitmark,
 	)
 

@@ -1,5 +1,6 @@
 ---
-title: "Treasure Hoarders: Cryo Potioneer"
+title: >
+  Treasure Hoarders: Cryo Potioneer
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

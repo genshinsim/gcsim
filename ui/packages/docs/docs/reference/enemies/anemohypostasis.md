@@ -1,5 +1,6 @@
 ---
-title: "Anemo Hypostasis"
+title: >
+  Anemo Hypostasis
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -1,5 +1,6 @@
 ---
-title: "Maguu Kenki: Mask of Terror"
+title: >
+  Maguu Kenki: Mask of Terror
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

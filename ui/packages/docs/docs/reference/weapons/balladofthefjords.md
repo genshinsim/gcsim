@@ -1,5 +1,6 @@
 ---
-title: Ballad of the Fjords
+title: >
+  Ballad of the Fjords
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

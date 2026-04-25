@@ -3,10 +3,9 @@ package dori
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -20,33 +19,30 @@ func (c *char) a1() {
 
 	const icdKey = "dori-a1"
 	icd := 180 // 3s * 60
-	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
-	reduce := func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	reduce := func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 
 		if c.Core.Player.Active() != atk.Info.ActorIndex { // only for on field character
-			return false
+			return
 		}
 		if c.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		c.AddStatus(icdKey, icd, true)
 		c.ReduceActionCooldown(action.ActionSkill, 60)
-		c.Core.Log.NewEvent("dori a1 proc", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("dori a1 proc", glog.LogCharacterEvent, c.Index()).
 			Write("reaction", atk.Info.Abil).
 			Write("new cd", c.Cooldown(action.ActionSkill))
-		return false
 	}
-
-	reduceNoGadget := func(args ...interface{}) bool {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+	reduceNoGadget := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); ok {
+			reduce(args...)
 		}
-		return reduce(args...)
 	}
 
 	c.Core.Events.Subscribe(event.OnOverload, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnLunarCharged, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnQuicken, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnAggravate, reduceNoGadget, "dori-a1")
@@ -59,14 +55,14 @@ func (c *char) a1() {
 // Dori will restore 5 Elemental Energy for every 100% Energy Recharge possessed.
 // Per Spirit-Warding Lamp: Troubleshooter Cannon, only one instance of Energy restoration can be triggered
 // and a maximum of 15 Energy can be restored this way.
-func (c *char) makeA4CB() combat.AttackCBFunc {
+func (c *char) makeA4CB() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

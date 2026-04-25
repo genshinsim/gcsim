@@ -1,5 +1,6 @@
 ---
-title: Fading Twilight
+title: >
+  Fading Twilight
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

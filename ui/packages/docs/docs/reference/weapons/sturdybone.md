@@ -1,5 +1,6 @@
 ---
-title: Sturdy Bone
+title: >
+  Sturdy Bone
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

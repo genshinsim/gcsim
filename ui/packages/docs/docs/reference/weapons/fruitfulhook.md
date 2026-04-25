@@ -1,5 +1,6 @@
 ---
-title: Fruitful Hook
+title: >
+  Fruitful Hook
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

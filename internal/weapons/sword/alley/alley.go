@@ -34,19 +34,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 	r := p.Refine
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
-		if di.ActorIndex != char.Index {
-			return false
+		if di.ActorIndex != char.Index() {
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if !di.External {
-			return false
+			return
 		}
 		w.char.AddStatus(lockoutKey, 300, true)
-		return false
 	}, fmt.Sprintf("alleyflash-%v", char.Base.Key.String()))
 
 	m := make([]float64, attributes.EndStatType)
@@ -54,8 +53,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("alleyflash", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, !char.StatusIsActive(lockoutKey)
+		Amount: func() []float64 {
+			if char.StatusIsActive(lockoutKey) {
+				return nil
+			}
+			return m
 		},
 	})
 

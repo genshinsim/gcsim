@@ -4,10 +4,10 @@ import (
 	"math"
 	"testing"
 
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/reactable"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func TestHydroBloom(t *testing.T) {
@@ -18,25 +18,25 @@ func TestHydroBloom(t *testing.T) {
 		t.FailNow()
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 1 {
@@ -55,25 +55,25 @@ func TestDendroBloom(t *testing.T) {
 		t.FailNow()
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 1 {
@@ -93,16 +93,16 @@ func TestECBloom(t *testing.T) {
 	}
 
 	// create 2 seeds with ec
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
@@ -110,15 +110,15 @@ func TestECBloom(t *testing.T) {
 	}, 0)
 	advanceCoreFrame(c)
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 	if c.Combat.GadgetCount() != 2 {
@@ -137,16 +137,16 @@ func TestBloomSeedLimit(t *testing.T) {
 		t.FailNow()
 	}
 
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
@@ -154,7 +154,7 @@ func TestBloomSeedLimit(t *testing.T) {
 	}, 0)
 	advanceCoreFrame(c)
 
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 
@@ -172,17 +172,17 @@ func TestBloomOldestDeleted(t *testing.T) {
 	}
 
 	// oldest should be the 2nd one, which is frame 3 ?
-	for i := 0; i < 6; i++ {
-		c.QueueAttackEvent(&combat.AttackEvent{
-			Info: combat.AttackInfo{
+	for range 6 {
+		c.QueueAttackEvent(&info.AttackEvent{
+			Info: info.AttackInfo{
 				Element:    attributes.Hydro,
 				Durability: 25,
 			},
 			Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 		}, 0)
 		advanceCoreFrame(c)
-		c.QueueAttackEvent(&combat.AttackEvent{
-			Info: combat.AttackInfo{
+		c.QueueAttackEvent(&info.AttackEvent{
+			Info: info.AttackInfo{
 				Element:    attributes.Dendro,
 				Durability: 25,
 			},
@@ -191,7 +191,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 
-	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+	for range dendrocore.Delay + 1 {
 		advanceCoreFrame(c)
 	}
 
@@ -203,7 +203,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 	f := math.MaxInt
 	oldest := -1
 	for i, v := range c.Combat.Gadgets() {
-		if v == nil || v.GadgetTyp() != combat.GadgetTypDendroCore {
+		if v == nil || v.GadgetTyp() != info.GadgetTypDendroCore {
 			continue
 		}
 		if v.Src() < f {
@@ -212,7 +212,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 		}
 	}
 	og := c.Combat.Gadget(oldest)
-	if og.Src() != 3+reactable.DendroCoreDelay {
-		t.Errorf("expecting oldest gadget to be from frame %v, got %v", reactable.DendroCoreDelay+3, og.Src())
+	if og.Src() != 3+dendrocore.Delay {
+		t.Errorf("expecting oldest gadget to be from frame %v, got %v", dendrocore.Delay+3, og.Src())
 	}
 }

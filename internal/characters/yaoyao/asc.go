@@ -16,7 +16,7 @@ func (c *char) a1Ticker() {
 	}
 	switch c.Core.Player.CurrentState() {
 	case action.DashState, action.JumpState:
-		c.Core.Log.NewEvent("yaoyao a1 triggered", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yaoyao a1 triggered", glog.LogCharacterEvent, c.Index()).
 			Write("state", c.Core.Player.CurrentState())
 		c.a1Throw()
 	}
@@ -35,8 +35,8 @@ func (c *char) a1Throw() {
 
 	c.QueueCharTask(func() {
 		var hi info.HealInfo
-		var ai combat.AttackInfo
-		var snap combat.Snapshot
+		var ai info.AttackInfo
+		var snap info.Snapshot
 
 		if c.StatusIsActive(burstKey) {
 			ai = c.burstRadishAI
@@ -73,7 +73,7 @@ func (c *char) a4(index, src int) func() {
 		}
 
 		hi := info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  index,
 			Message: "Yaoyao A4",
 			Src:     0.008 * c.MaxHP(),

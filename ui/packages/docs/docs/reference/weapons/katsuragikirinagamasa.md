@@ -1,5 +1,6 @@
 ---
-title: Katsuragikiri Nagamasa
+title: >
+  Katsuragikiri Nagamasa
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -43,8 +43,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("nighttimewhispers-2pc", -1),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -59,72 +59,65 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	return &s, nil
 }
 
-func (s *Set) OnShielded() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnShielded() func(args ...any) {
+	return func(args ...any) {
 		shd := args[0].(shield.Shield)
-		if s.core.Player.Active() != s.char.Index {
-			return false
+		if s.core.Player.Active() != s.char.Index() {
+			return
 		}
 		if shd.Type() == shield.Crystallize {
 			s.lastF = shd.Expiry()
-			return false
 		}
-		return false
 	}
 }
 
-func (s *Set) OnShieldBreak() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnShieldBreak() func(args ...any) {
+	return func(args ...any) {
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {
-			return false
+			return
 		}
-		if s.core.Player.Active() != s.char.Index {
-			return false
+		if s.core.Player.Active() != s.char.Index() {
+			return
 		}
 		s.lastF = s.core.F + 60
-		return false
 	}
 }
 
-func (s *Set) OnCharacterSwap() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnCharacterSwap() func(args ...any) {
+	return func(args ...any) {
 		prev := args[0].(int)
 		active := args[1].(int)
 		shd := s.core.Player.Shields.Get(shield.Crystallize)
 		if shd == nil {
-			return false
+			return
 		}
-		if active == s.char.Index {
+		switch s.char.Index() {
+		case active:
 			s.lastF = shd.Expiry()
-			return false
-		}
-		if prev == s.char.Index {
+		case prev:
 			s.lastF = s.core.F + 60
-			return false
 		}
-		return false
 	}
 }
 
-func (s *Set) OnSkill() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
-		if s.core.Player.Active() != s.char.Index {
-			return false
+func (s *Set) OnSkill() func(args ...any) {
+	m := make([]float64, attributes.EndStatType)
+	return func(args ...any) {
+		if s.core.Player.Active() != s.char.Index() {
+			return
 		}
-		m := make([]float64, attributes.EndStatType)
 		s.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("nighttimewhispers-4pc", 10*60),
 			AffectedStat: attributes.GeoP,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if s.core.F <= s.lastF {
 					m[attributes.GeoP] = 0.2 * 2.5
 				} else {
 					m[attributes.GeoP] = 0.20
 				}
-				return m, true
+				return m
 			},
 		})
-		return false
 	}
 }

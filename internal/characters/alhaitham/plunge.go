@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -16,18 +16,26 @@ var lowPlungeFramesAL []int
 
 const lowPlungeHitmarkAL = 38
 
-const lowPlungeHitmarkXY = 46
-const highPlungeHitmarkXY = 48
-const collisionHitmarkXY = lowPlungeHitmarkXY - 6
+const (
+	lowPlungeHitmarkXY  = 46
+	highPlungeHitmarkXY = 48
+	collisionHitmarkXY  = lowPlungeHitmarkXY - 6
+)
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 150.0
+	highPlungeRadius   = 5.0
+)
 
-var highPlungeFramesXY []int
-var lowPlungeFramesXY []int
+var (
+	highPlungeFramesXY []int
+	lowPlungeFramesXY  []int
+)
 
 func init() {
 	lowPlungeFramesAL = frames.InitAbilSlice(70)
@@ -79,8 +87,8 @@ func (c *char) lowPlungeAl(p map[string]int) action.Info {
 		skip = 20
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Low Plunge Attack",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -94,7 +102,7 @@ func (c *char) lowPlungeAl(p map[string]int) action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 3),
 		lowPlungeHitmarkAL-skip,
 		lowPlungeHitmarkAL-skip,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
@@ -119,8 +127,8 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmarkXY)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Low Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -134,7 +142,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmarkXY,
 		lowPlungeHitmarkXY,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
@@ -172,8 +180,8 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmarkXY)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "High Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -186,7 +194,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmarkXY,
 		highPlungeHitmarkXY,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
@@ -204,8 +212,8 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -217,7 +225,7 @@ func (c *char) plungeCollision(delay int) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 1),
 		delay,
 		delay,
 		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined

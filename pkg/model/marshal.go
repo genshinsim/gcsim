@@ -11,6 +11,7 @@ func marshalOptions() protojson.MarshalOptions {
 		EmitUnpopulated: false,
 	}
 }
+
 func unmarshalOptions() protojson.UnmarshalOptions {
 	return protojson.UnmarshalOptions{
 		AllowPartial:   true,

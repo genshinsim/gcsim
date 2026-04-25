@@ -1,5 +1,6 @@
 ---
-title: Bennett
+title: >
+  Bennett
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

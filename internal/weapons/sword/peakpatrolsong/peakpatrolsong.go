@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -47,16 +46,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	teamBonus := 0.06 + 0.02*r
 	maxTeamBonus := 0.192 + 0.064*r
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagPlunge {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
@@ -74,8 +73,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, buffDur),
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 
@@ -88,15 +87,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			for _, this := range c.Player.Chars() {
 				this.AddStatMod(character.StatMod{
 					Base: modifier.NewBaseWithHitlag(teamBuffKey, teamBuffDur),
-					Amount: func() ([]float64, bool) {
-						return t, true
+					Amount: func() []float64 {
+						return t
 					},
 				})
 			}
 		}
 
 		char.AddStatus(icdKey, icdDur, true)
-		return false
 	}, fmt.Sprintf("peakpatrolsong-hit-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -36,24 +35,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	buffBy := 0.005 + 0.001*float64(r)
 	maxBuff := 0.12 + 0.04*float64(r)
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		buffAmt := min(maxBuff, char.MaxHP()*0.001*buffBy)
 		m := make([]float64, attributes.EndStatType)
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("ring-of-yaxche", 10*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal {
-					return nil, false
+					return nil
 				}
 				m[attributes.DmgP] = buffAmt
-				return m, true
+				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("ring-of-yaxche-%v", char.Base.Key.String()))
 
 	return w, nil

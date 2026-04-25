@@ -48,7 +48,7 @@ func (s *Simulation) run() (stats.Result, error) {
 	//  - all enemies dead
 	//  - no more actions left
 
-	//TODO: do we need to catch panic here still? or can it be done outside in the worker
+	// TODO: do we need to catch panic here still? or can it be done outside in the worker
 	var err error
 	for state := initialize; state != nil; {
 		state, err = state(s)
@@ -160,7 +160,7 @@ func queuePhase(s *Simulation) (stateFn, error) {
 }
 
 func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
-	//TODO: this sanity check is probably not necessary
+	// TODO: this sanity check is probably not necessary
 	if len(s.queue) == 0 {
 		return nil, errors.New("unexpected queue length is 0")
 	}
@@ -178,7 +178,7 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 		}
 	}
 
-	//TODO: this loop should be optimized to skip more than 1 frame at a time
+	// TODO: this loop should be optimized to skip more than 1 frame at a time
 	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
 		// repeat this phase until action is ready
 		switch {
@@ -228,7 +228,7 @@ func executeActionDelay(s *Simulation) (stateFn, error) {
 }
 
 func executeActionPhase(s *Simulation) (stateFn, error) {
-	//TODO: this sanity check is probably not necessary
+	// TODO: this sanity check is probably not necessary
 	if len(s.queue) == 0 {
 		return nil, errors.New("unexpected queue length is 0")
 	}
@@ -241,7 +241,7 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 	q := s.queue[0]
 	err := s.C.Player.Exec(q.Action, q.Char, q.Param)
 	if err != nil {
-		//TODO: this check probably doesn't do anything
+		// TODO: this check probably doesn't do anything
 		if errors.Is(err, player.ErrActionNoOp) {
 			if l := s.popQueue(); l > 0 {
 				// don't go back to queue if there are more actions already queued
@@ -253,7 +253,7 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 		// wrap the error for more context
 		return nil, fmt.Errorf("error encountered on %v executing %v: %w", q.Char.String(), q.Action.String(), err)
 	}
-	//TODO: this check here is probably unnecessary
+	// TODO: this check here is probably unnecessary
 	if l := s.popQueue(); l > 0 {
 		// don't go back to queue if there are more actions already queued
 		return actionReadyCheckPhase, nil
@@ -271,7 +271,7 @@ func skipUntilCanQueue(s *Simulation) (stateFn, error) {
 
 // nextFrame moves up the frame by 1, performing
 func (s *Simulation) advanceFrames(f int, next stateFn) (stateFn, error) {
-	for i := 0; i < f; i++ {
+	for range f {
 		done, err := s.nextFrame()
 		if err != nil {
 			return nil, err
@@ -316,7 +316,7 @@ func (s *Simulation) stopCheck() bool {
 
 // TODO: remove defer in favour of every function actually returning error
 //
-//nolint:nonamedreturns,nakedret // not possible to perform the res, err modification without named return
+//nolint:nonamedreturns // not possible to perform the res, err modification without named return
 func (s *Simulation) Run() (res stats.Result, err error) {
 	defer func() {
 		// recover from panic if one occured. Set err to nil otherwise.
@@ -326,5 +326,5 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 		}
 	}()
 	res, err = s.run()
-	return
+	return res, err
 }

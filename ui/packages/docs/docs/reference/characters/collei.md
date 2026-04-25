@@ -1,5 +1,6 @@
 ---
-title: Collei
+title: >
+  Collei
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -1,5 +1,6 @@
 ---
-title: Navia
+title: >
+  Navia
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

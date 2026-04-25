@@ -1,5 +1,6 @@
 ---
-title: Debate Club
+title: >
+  Debate Club
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

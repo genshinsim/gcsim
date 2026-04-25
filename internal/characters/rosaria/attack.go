@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -39,7 +39,7 @@ func init() {
 	attackFrames[3][action.ActionAttack] = 44
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 66)
-	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[4][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 // Normal attack damage queue generator
@@ -47,8 +47,8 @@ func init() {
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	c1CB := c.makeC1CB()
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
 			AttackTag:          attacks.AttackTagNormal,
@@ -66,14 +66,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+			info.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackHitboxes[c.NormalCounter][i][0],
 			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 2 || (c.NormalCounter == 4 && i == 0) {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+				info.Point{Y: attackOffsets[c.NormalCounter][i]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
 			)

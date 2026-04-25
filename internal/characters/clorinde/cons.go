@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -18,7 +18,6 @@ const (
 	c2A1PercentBuff    float64 = 0.3
 	c6Icd              int     = 12 * 60
 	c6IcdKey                   = "clorinde-c6-icd"
-	c6Mitigate                 = 0.8
 	c6GlimbrightIcdKey         = "glimbrightIcdKey"
 	c6GlimbrightAtkP           = 2
 )
@@ -37,47 +36,46 @@ func (c *char) c1() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if !c.StatusIsActive(skillStateKey) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c1IcdKey) {
-			return false
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 		if atk.Info.Element != attributes.Electro {
-			return false
+			return
 		}
-		if atk.Info.ActorIndex != c.Index {
-			return false
+		if atk.Info.ActorIndex != c.Index() {
+			return
 		}
 		c.AddStatus(c1IcdKey, c1Icd, false)
-		c1AI := combat.AttackInfo{
-			ActorIndex:       c.Index,
-			Abil:             "Nightwatch Shade (C1)",
-			AttackTag:        attacks.AttackTagNormal,
-			ICDTag:           attacks.ICDTagClorindeCons,
-			ICDGroup:         attacks.ICDGroupClorindeElementalArt,
-			StrikeType:       attacks.StrikeTypeSlash,
-			Element:          attributes.Electro,
-			Durability:       25,
-			Mult:             c1AtkP,
-			HitlagHaltFrames: 0.01,
-			IgnoreInfusion:   true,
+		c1AI := info.AttackInfo{
+			ActorIndex:     c.Index(),
+			Abil:           "Nightwatch Shade (C1)",
+			AttackTag:      attacks.AttackTagNormal,
+			ICDTag:         attacks.ICDTagNormalAttack,
+			ICDGroup:       attacks.ICDGroupClorindeElementalArt,
+			StrikeType:     attacks.StrikeTypeSlash,
+			Element:        attributes.Electro,
+			Durability:     25,
+			Mult:           c1AtkP,
+			HitlagFactor:   0.01,
+			IgnoreInfusion: true,
 		}
 		for _, hitmark := range c1Hitmarks {
 			c.Core.QueueAttack(
 				c1AI,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -3}, 4),
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -3}, 4),
 				hitmark,
 				hitmark,
 				c.particleCB,
 			)
 		}
-		return false
 	}, "clorinde-c1")
 }
 
@@ -94,12 +92,12 @@ func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("clorinde-c4-burst-bonus", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
-			m[attributes.DmgP] = min(c.currentHPDebtRatio()*100*0.02, 2)
-			return m, true
+			m[attributes.DmgP] = min(c.CurrentHPDebtRatio()*100*0.02, 2)
+			return m
 		},
 	})
 }
@@ -124,8 +122,8 @@ func (c *char) c6skill() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("clorinde-c6-cr-bonus", c6Icd),
 		AffectedStat: attributes.CR,
-		Amount: func() ([]float64, bool) {
-			return mCR, true
+		Amount: func() []float64 {
+			return mCR
 		},
 	})
 
@@ -134,8 +132,8 @@ func (c *char) c6skill() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("clorinde-c6-cd-bonus", c6Icd),
 		AffectedStat: attributes.CD,
-		Amount: func() ([]float64, bool) {
-			return mCD, true
+		Amount: func() []float64 {
+			return mCD
 		},
 	})
 }
@@ -152,11 +150,11 @@ func (c *char) c6() {
 	c.c6Stacks--
 	c.AddStatus(c6GlimbrightIcdKey, 1*60, true)
 
-	c6AI := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	c6AI := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Glimbright Shade (C6)",
 		AttackTag:      attacks.AttackTagNormal,
-		ICDTag:         attacks.ICDTagClorindeCons,
+		ICDTag:         attacks.ICDTagNormalAttack,
 		ICDGroup:       attacks.ICDGroupClorindeElementalArt,
 		StrikeType:     attacks.StrikeTypeSlash,
 		Element:        attributes.Electro,

@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -38,13 +38,13 @@ func init() {
 	attackFrames[3][action.ActionCharge] = 35
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][2], 72)
-	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[4][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -59,7 +59,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+			info.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackRadius[c.NormalCounter],
 		)
 		c.QueueCharTask(func() {

@@ -45,6 +45,7 @@ var weaponNames = []string{
 	"astralvulturescrimsonplumage",
 	"athousandblazingsuns",
 	"athousandfloatingdreams",
+	"azurelight",
 	"balladoftheboundlessblue",
 	"balladofthefjords",
 	"beaconofthereedsea",
@@ -54,7 +55,9 @@ var weaponNames = []string{
 	"blackcliffpole",
 	"blackcliffslasher",
 	"blackcliffwarbow",
+	"blackmarrowlantern",
 	"blacktassel",
+	"bloodsoakedruins",
 	"bloodtaintedgreatsword",
 	"calamityofeshu",
 	"calamityqueller",
@@ -68,6 +71,7 @@ var weaponNames = []string{
 	"crescentpike",
 	"crimsonmoonssemblance",
 	"darkironsword",
+	"dawningfrost",
 	"deathmatch",
 	"debateclub",
 	"dialoguesofthedesertsages",
@@ -80,6 +84,7 @@ var weaponNames = []string{
 	"emeraldorb",
 	"endoftheline",
 	"engulfinglightning",
+	"etherlightspindlelute",
 	"everlastingmoonglow",
 	"eyeofperception",
 	"fadingtwilight",
@@ -94,10 +99,12 @@ var weaponNames = []string{
 	"filletblade",
 	"finaleofthedeep",
 	"fleuvecendreferryman",
+	"flowerwreathedfeathers",
 	"fluteofezpitzal",
 	"flowingpurity",
 	"footprintoftherainbow",
 	"forestregalia",
+	"fracturedhalo",
 	"freedomsworn",
 	"frostbearer",
 	"fruitfulhook",
@@ -130,14 +137,18 @@ var weaponNames = []string{
 	"mailedflower",
 	"makhairaaquamarine",
 	"mappamare",
+	"masterkey",
 	"memoryofdust",
 	"messenger",
 	"missivewindspear",
 	"mistsplitterreforged",
 	"mitternachtswaltz",
 	"moonpiercer",
+	"moonweaversdawn",
 	"mountainbracingbolt",
 	"mouunsmoon",
+	"nightweaverslookingglass",
+	"nocturnescurtaincall",
 	"oathsworneye",
 	"oldmercspal",
 	"otherworldlystory",
@@ -149,16 +160,19 @@ var weaponNames = []string{
 	"primordialjadecutter",
 	"primordialjadewingedspear",
 	"prospectorsdrill",
+	"prospectorsshovel",
 	"prototypeamber",
 	"prototypearchaic",
 	"prototypecrescent",
 	"prototyperancour",
 	"prototypestarglitter",
+	"rainbowserpentbow",
 	"rainslasher",
 	"rangegauge",
 	"ravenbow",
 	"recurvebow",
 	"redhornstonethresher",
+	"reliquaryoftruth",
 	"rightfulreward",
 	"ringofyaxche",
 	"royalbow",
@@ -167,6 +181,7 @@ var weaponNames = []string{
 	"royallongsword",
 	"royalspear",
 	"rust",
+	"sacrificersstaff",
 	"sacrificialbow",
 	"sacrificialfragments",
 	"sacrificialgreatsword",
@@ -175,6 +190,8 @@ var weaponNames = []string{
 	"sapwoodblade",
 	"scionoftheblazingsun",
 	"seasonedhuntersbow",
+	"sequenceofsolitude",
+	"serenityscall",
 	"serpentspine",
 	"sharpshootersoath",
 	"silvershowerheartstrings",
@@ -187,6 +204,7 @@ var weaponNames = []string{
 	"skywardpride",
 	"skywardspine",
 	"slingshot",
+	"snarehook",
 	"snowtombedstarsilver",
 	"solarpearl",
 	"songofbrokenpines",
@@ -197,10 +215,13 @@ var weaponNames = []string{
 	"starcallerswatch",
 	"sturdybone",
 	"summitshaper",
+	"sunnymorningsleepin",
 	"surfsup",
 	"swordofdescension",
 	"swordofnarzissenkreuz",
+	"symphonistofscents",
 	"talkingstick",
+	"tamayurateinoohanashi",
 	"thealleyflash",
 	"thebell",
 	"theblacksword",
@@ -223,6 +244,7 @@ var weaponNames = []string{
 	"ultimateoverlordsmegamagicsword",
 	"urakumisugiri",
 	"verdict",
+	"vividnotions",
 	"vortexvanquisher",
 	"wanderingevenstar",
 	"wastergreatsword",
@@ -252,6 +274,7 @@ const (
 	AstralVulturesCrimsonPlumage
 	AThousandBlazingSuns
 	AThousandFloatingDreams
+	Azurelight
 	BalladOfTheBoundlessBlue
 	BalladOfTheFjords
 	BeaconOfTheReedSea
@@ -261,7 +284,9 @@ const (
 	BlackcliffPole
 	BlackcliffSlasher
 	BlackcliffWarbow
+	BlackmarrowLantern
 	BlackTassel
+	BloodsoakedRuins
 	BloodtaintedGreatsword
 	CalamityOfEshu
 	CalamityQueller
@@ -275,6 +300,7 @@ const (
 	CrescentPike
 	CrimsonMoonsSemblance
 	DarkIronSword
+	DawningFrost
 	Deathmatch
 	DebateClub
 	DialoguesOfTheDesertSages
@@ -287,6 +313,7 @@ const (
 	EmeraldOrb
 	EndOfTheLine
 	EngulfingLightning
+	EtherlightSpindlelute
 	EverlastingMoonglow
 	EyeOfPerception
 	FadingTwilight
@@ -301,10 +328,12 @@ const (
 	FilletBlade
 	FinaleOfTheDeep
 	FleuveCendreFerryman
+	FlowerWreathedFeathers
 	FluteOfEzpitzal
 	FlowingPurity
 	FootprintOfTheRainbow
 	ForestRegalia
+	FracturedHalo
 	FreedomSworn
 	Frostbearer
 	FruitfulHook
@@ -337,14 +366,18 @@ const (
 	MailedFlower
 	MakhairaAquamarine
 	MappaMare
+	MasterKey
 	MemoryOfDust
 	Messenger
 	MissiveWindspear
 	MistsplitterReforged
 	MitternachtsWaltz
 	Moonpiercer
+	MoonweaversDawn
 	MountainBracingBolt
 	MouunsMoon
+	NightweaversLookingGlass
+	NocturnesCurtainCall
 	OathswornEye
 	OldMercsPal
 	OtherworldlyStory
@@ -356,16 +389,19 @@ const (
 	PrimordialJadeCutter
 	PrimordialJadeWingedSpear
 	ProspectorsDrill
+	ProspectorsShovel
 	PrototypeAmber
 	PrototypeArchaic
 	PrototypeCrescent
 	PrototypeRancour
 	PrototypeStarglitter
+	RainbowSerpentBow
 	Rainslasher
 	RangeGauge
 	RavenBow
 	RecurveBow
 	RedhornStonethresher
+	ReliquaryOfTruth
 	RightfulReward
 	RingOfYaxche
 	RoyalBow
@@ -374,6 +410,7 @@ const (
 	RoyalLongsword
 	RoyalSpear
 	Rust
+	SacrificersStaff
 	SacrificialBow
 	SacrificialFragments
 	SacrificialGreatsword
@@ -382,6 +419,8 @@ const (
 	SapwoodBlade
 	ScionOfTheBlazingSun
 	SeasonedHuntersBow
+	SequenceOfSolitude
+	SerenitysCall
 	SerpentSpine
 	SharpshootersOath
 	SilvershowerHeartstrings
@@ -394,6 +433,7 @@ const (
 	SkywardPride
 	SkywardSpine
 	Slingshot
+	SnareHook
 	SnowTombedStarsilver
 	SolarPearl
 	SongOfBrokenPines
@@ -404,10 +444,13 @@ const (
 	StarcallersWatch
 	SturdyBone
 	SummitShaper
+	SunnyMorningSleepIn
 	SurfsUp
 	SwordOfDescension
 	SwordOfNarzissenkreuz
+	SymphonistOfScents
 	TalkingStick
+	TamayurateiNoOhanashi
 	TheAlleyFlash
 	TheBell
 	TheBlackSword
@@ -430,6 +473,7 @@ const (
 	UltimateOverlordsMegaMagicSword
 	UrakuMisugiri
 	Verdict
+	VividNotions
 	VortexVanquisher
 	WanderingEvenstar
 	WasterGreatsword

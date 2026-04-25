@@ -1,5 +1,6 @@
 ---
-title: Mountain-Bracing Bolt
+title: >
+  Mountain-Bracing Bolt
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

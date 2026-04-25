@@ -9,4 +9,6 @@ export * from "./GraphComponents/OuterLabelPie/OuterLabels";
 export * from "./GraphComponents/OuterLabelPie/Tooltip";
 export * from "./NoData";
 export * from "./Refresh";
+export * from "./LatestVersion";
+export * from "./Warning";
 export { OuterLabelPie, CardTitle, FloatStatTooltipContent };

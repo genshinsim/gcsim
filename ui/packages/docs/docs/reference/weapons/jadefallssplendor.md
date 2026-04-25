@@ -1,5 +1,6 @@
 ---
-title: Jadefall's Splendor
+title: >
+  Jadefall's Splendor
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

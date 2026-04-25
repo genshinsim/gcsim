@@ -1,5 +1,6 @@
 ---
-title: The Bell
+title: >
+  The Bell
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

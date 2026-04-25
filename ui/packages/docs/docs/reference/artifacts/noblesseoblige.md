@@ -1,5 +1,6 @@
 ---
-title: Noblesse Oblige
+title: >
+  Noblesse Oblige
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: "Guardian of Apep's Oasis"
+title: >
+  Guardian of Apep's Oasis
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

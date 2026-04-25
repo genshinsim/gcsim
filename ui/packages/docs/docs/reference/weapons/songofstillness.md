@@ -1,5 +1,6 @@
 ---
-title: Song of Stillness
+title: >
+  Song of Stillness
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

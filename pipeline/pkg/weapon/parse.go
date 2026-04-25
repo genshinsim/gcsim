@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/pipeline"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func ParseWeaponConfig(root string) ([]Config, error) {

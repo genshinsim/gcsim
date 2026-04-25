@@ -1,5 +1,6 @@
 ---
-title: Mailed Flower
+title: >
+  Mailed Flower
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

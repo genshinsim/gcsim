@@ -1,5 +1,6 @@
 ---
-title: Dull Blade
+title: >
+  Dull Blade
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

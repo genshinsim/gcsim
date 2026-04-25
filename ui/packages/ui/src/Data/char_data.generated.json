@@ -16,7 +16,7 @@
         "attack": 100543,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "1533656818"
+      "name_text_hash_map ": "1533656306"
     },
     "aetherdendro": {
       "id": 10000005,
@@ -34,7 +34,7 @@
         "attack": 100547,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "1533656818"
+      "name_text_hash_map ": "1533656306"
     },
     "aetherelectro": {
       "id": 10000005,
@@ -52,7 +52,7 @@
         "attack": 100546,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "1533656818"
+      "name_text_hash_map ": "1533656306"
     },
     "aethergeo": {
       "id": 10000005,
@@ -70,7 +70,7 @@
         "attack": 100545,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "1533656818"
+      "name_text_hash_map ": "1533656306"
     },
     "aetherhydro": {
       "id": 10000005,
@@ -88,7 +88,25 @@
         "attack": 100542,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "1533656818"
+      "name_text_hash_map ": "1533656306"
+    },
+    "aetherpyro": {
+      "id": 10000005,
+      "sub_id": 502,
+      "key": "aetherpyro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Fire",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
+      "skill_details": {
+        "skill": 10097,
+        "burst": 10098,
+        "attack": 100541,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "1533656306"
     },
     "albedo": {
       "id": 10000038,
@@ -105,7 +123,7 @@
         "attack": 10386,
         "burst_energy_cost": 40
       },
-      "name_text_hash_map ": "4108620722"
+      "name_text_hash_map ": "4108620210"
     },
     "alhaitham": {
       "id": 10000078,
@@ -122,7 +140,7 @@
         "attack": 10781,
         "burst_energy_cost": 70
       },
-      "name_text_hash_map ": "4002157418"
+      "name_text_hash_map ": "4002156906"
     },
     "aloy": {
       "id": 10000062,
@@ -139,7 +157,7 @@
         "attack": 10621,
         "burst_energy_cost": 40
       },
-      "name_text_hash_map ": "3689108098"
+      "name_text_hash_map ": "3689107586"
     },
     "amber": {
       "id": 10000021,
@@ -173,7 +191,7 @@
         "attack": 10961,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "167199474"
+      "name_text_hash_map ": "167198962"
     },
     "ayaka": {
       "id": 10000002,
@@ -241,7 +259,7 @@
         "attack": 10070,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "3775299170"
+      "name_text_hash_map ": "3775298658"
     },
     "beidou": {
       "id": 10000024,
@@ -275,7 +293,7 @@
         "attack": 10321,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "968893378"
+      "name_text_hash_map ": "968892866"
     },
     "candace": {
       "id": 10000072,
@@ -310,6 +328,23 @@
         "burst_energy_cost": 80
       },
       "name_text_hash_map ": "3831162130"
+    },
+    "chasca": {
+      "id": 10000104,
+      "key": "chasca",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Wind",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Chasca",
+      "skill_details": {
+        "skill": 11042,
+        "burst": 11045,
+        "attack": 11041,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "3746229466"
     },
     "chevreuse": {
       "id": 10000090,
@@ -362,6 +397,23 @@
       },
       "name_text_hash_map ": "2876340530"
     },
+    "citlali": {
+      "id": 10000107,
+      "key": "citlali",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Citlali",
+      "skill_details": {
+        "skill": 11072,
+        "burst": 11075,
+        "attack": 11071,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1197974530"
+    },
     "clorinde": {
       "id": 10000098,
       "key": "clorinde",
@@ -377,7 +429,7 @@
         "attack": 10981,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "2745369298"
+      "name_text_hash_map ": "2745368786"
     },
     "collei": {
       "id": 10000067,
@@ -394,7 +446,7 @@
         "attack": 10671,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "2948362178"
+      "name_text_hash_map ": "2948361666"
     },
     "cyno": {
       "id": 10000071,
@@ -412,6 +464,23 @@
         "burst_energy_cost": 80
       },
       "name_text_hash_map ": "1049891906"
+    },
+    "dahlia": {
+      "id": 10000115,
+      "key": "dahlia",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Dahlia",
+      "skill_details": {
+        "skill": 11152,
+        "burst": 11155,
+        "attack": 11151,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2332663914"
     },
     "dehya": {
       "id": 10000079,
@@ -445,7 +514,7 @@
         "attack": 10160,
         "burst_energy_cost": 40
       },
-      "name_text_hash_map ": "3608180322"
+      "name_text_hash_map ": "3608179810"
     },
     "diona": {
       "id": 10000039,
@@ -462,7 +531,7 @@
         "attack": 10391,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "1468367538"
+      "name_text_hash_map ": "1468367026"
     },
     "dori": {
       "id": 10000068,
@@ -496,7 +565,24 @@
         "attack": 10991,
         "burst_energy_cost": 50
       },
-      "name_text_hash_map ": "1705786122"
+      "name_text_hash_map ": "1705785610"
+    },
+    "escoffier": {
+      "id": 10000112,
+      "key": "escoffier",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_FONTAINE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Escoffier",
+      "skill_details": {
+        "skill": 11122,
+        "burst": 11125,
+        "attack": 11121,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "4035850498"
     },
     "eula": {
       "id": 10000051,
@@ -513,7 +599,7 @@
         "attack": 10511,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "3717667418"
+      "name_text_hash_map ": "3717666906"
     },
     "faruzan": {
       "id": 10000076,
@@ -530,7 +616,7 @@
         "attack": 10761,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "2387711994"
+      "name_text_hash_map ": "2387711482"
     },
     "fischl": {
       "id": 10000031,
@@ -549,6 +635,23 @@
       },
       "name_text_hash_map ": "3277782506"
     },
+    "flins": {
+      "id": 10000120,
+      "key": "flins",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Flins",
+      "skill_details": {
+        "skill": 11202,
+        "burst": 11205,
+        "attack": 11201,
+        "burst_energy_cost": 80
+      },
+      "name_text_hash_map ": "1804674298"
+    },
     "freminet": {
       "id": 10000085,
       "key": "freminet",
@@ -564,7 +667,7 @@
         "attack": 10851,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "4201964354"
+      "name_text_hash_map ": "4201963842"
     },
     "furina": {
       "id": 10000089,
@@ -615,7 +718,7 @@
         "attack": 10371,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "2679781122"
+      "name_text_hash_map ": "2679780610"
     },
     "gorou": {
       "id": 10000055,
@@ -632,7 +735,7 @@
         "attack": 10551,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "3400133546"
+      "name_text_hash_map ": "3400133034"
     },
     "heizou": {
       "id": 10000059,
@@ -649,7 +752,7 @@
         "attack": 10591,
         "burst_energy_cost": 40
       },
-      "name_text_hash_map ": "646032090"
+      "name_text_hash_map ": "646031578"
     },
     "hutao": {
       "id": 10000046,
@@ -666,7 +769,24 @@
         "attack": 10461,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "1940919994"
+      "name_text_hash_map ": "1940919482"
+    },
+    "ineffa": {
+      "id": 10000116,
+      "key": "ineffa",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Ineffa",
+      "skill_details": {
+        "skill": 11162,
+        "burst": 11165,
+        "attack": 11161,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "2759230658"
     },
     "itto": {
       "id": 10000057,
@@ -700,7 +820,7 @@
         "attack": 10031,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "3221566250"
+      "name_text_hash_map ": "3221565738"
     },
     "kaeya": {
       "id": 10000015,
@@ -717,7 +837,7 @@
         "attack": 10073,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "4119663210"
+      "name_text_hash_map ": "4119662698"
     },
     "kaveh": {
       "id": 10000081,
@@ -785,7 +905,7 @@
         "attack": 11011,
         "burst_energy_cost": 70
       },
-      "name_text_hash_map ": "4172712634"
+      "name_text_hash_map ": "4172712122"
     },
     "kirara": {
       "id": 10000061,
@@ -802,7 +922,7 @@
         "attack": 10611,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "1456643042"
+      "name_text_hash_map ": "1456642530"
     },
     "klee": {
       "id": 10000029,
@@ -853,7 +973,41 @@
         "attack": 10651,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "1940821986"
+      "name_text_hash_map ": "1940821474"
+    },
+    "lanyan": {
+      "id": 10000108,
+      "key": "lanyan",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Lanyan",
+      "skill_details": {
+        "skill": 11082,
+        "burst": 11085,
+        "attack": 11081,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1888132250"
+    },
+    "lauma": {
+      "id": 10000119,
+      "key": "lauma",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Grass",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Lauma",
+      "skill_details": {
+        "skill": 11192,
+        "burst": 11195,
+        "attack": 11191,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1776873506"
     },
     "layla": {
       "id": 10000074,
@@ -979,6 +1133,24 @@
       },
       "name_text_hash_map ": "3816664530"
     },
+    "luminepyro": {
+      "id": 10000007,
+      "sub_id": 702,
+      "key": "luminepyro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Fire",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10097,
+        "burst": 10098,
+        "attack": 100551,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "3816664530"
+    },
     "lynette": {
       "id": 10000083,
       "key": "lynette",
@@ -1013,6 +1185,22 @@
       },
       "name_text_hash_map ": "2472444970"
     },
+    "mavuika": {
+      "id": 10000106,
+      "key": "mavuika",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Mavuika",
+      "skill_details": {
+        "skill": 11062,
+        "burst": 11065,
+        "attack": 11061
+      },
+      "name_text_hash_map ": "113398050"
+    },
     "mika": {
       "id": 10000080,
       "key": "mika",
@@ -1029,6 +1217,23 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "231911858"
+    },
+    "mizuki": {
+      "id": 10000109,
+      "key": "mizuki",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Mizuki",
+      "skill_details": {
+        "skill": 11092,
+        "burst": 11095,
+        "attack": 11091,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "3784387026"
     },
     "mona": {
       "id": 10000041,
@@ -1079,7 +1284,7 @@
         "attack": 10731,
         "burst_energy_cost": 50
       },
-      "name_text_hash_map ": "712501082"
+      "name_text_hash_map ": "712500570"
     },
     "navia": {
       "id": 10000091,
@@ -1147,7 +1352,7 @@
         "attack": 10271,
         "burst_energy_cost": 40
       },
-      "name_text_hash_map ": "4127888970"
+      "name_text_hash_map ": "4127888458"
     },
     "noelle": {
       "id": 10000034,
@@ -1164,7 +1369,7 @@
         "attack": 10341,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "1921418842"
+      "name_text_hash_map ": "1921418330"
     },
     "ororon": {
       "id": 10000105,
@@ -1198,7 +1403,7 @@
         "attack": 10351,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "168956722"
+      "name_text_hash_map ": "168956210"
     },
     "raiden": {
       "id": 10000052,
@@ -1215,7 +1420,7 @@
         "attack": 10521,
         "burst_energy_cost": 90
       },
-      "name_text_hash_map ": "3024507506"
+      "name_text_hash_map ": "3024506994"
     },
     "razor": {
       "id": 10000020,
@@ -1232,7 +1437,7 @@
         "attack": 10201,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "4160147242"
+      "name_text_hash_map ": "4160146730"
     },
     "rosaria": {
       "id": 10000045,
@@ -1300,7 +1505,7 @@
         "attack": 10971,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "1431322346"
+      "name_text_hash_map ": "1431321834"
     },
     "shenhe": {
       "id": 10000063,
@@ -1317,7 +1522,7 @@
         "attack": 10631,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "334242634"
+      "name_text_hash_map ": "334242122"
     },
     "sigewinne": {
       "id": 10000095,
@@ -1334,7 +1539,23 @@
         "attack": 10951,
         "burst_energy_cost": 70
       },
-      "name_text_hash_map ": "781488962"
+      "name_text_hash_map ": "781488450"
+    },
+    "skirk": {
+      "id": 10000114,
+      "key": "skirk",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_OMNI_SCOURGE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_SkirkNew",
+      "skill_details": {
+        "skill": 11142,
+        "burst": 11145,
+        "attack": 11141
+      },
+      "name_text_hash_map ": "123650378"
     },
     "sucrose": {
       "id": 10000043,
@@ -1368,7 +1589,7 @@
         "attack": 10331,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "3847143266"
+      "name_text_hash_map ": "3847142754"
     },
     "thoma": {
       "id": 10000050,
@@ -1385,7 +1606,7 @@
         "attack": 10501,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "3555115602"
+      "name_text_hash_map ": "3555115090"
     },
     "tighnari": {
       "id": 10000069,
@@ -1403,6 +1624,23 @@
         "burst_energy_cost": 40
       },
       "name_text_hash_map ": "2506955778"
+    },
+    "varesa": {
+      "id": 10000111,
+      "key": "varesa",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Electric",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Varesa",
+      "skill_details": {
+        "skill": 11112,
+        "burst": 11115,
+        "attack": 11111,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "283438362"
     },
     "venti": {
       "id": 10000022,
@@ -1453,7 +1691,7 @@
         "attack": 10861,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "370151050"
+      "name_text_hash_map ": "370150538"
     },
     "xiangling": {
       "id": 10000023,
@@ -1470,7 +1708,7 @@
         "attack": 10231,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "1130996346"
+      "name_text_hash_map ": "1130995834"
     },
     "xianyun": {
       "id": 10000093,
@@ -1487,7 +1725,7 @@
         "attack": 10931,
         "burst_energy_cost": 70
       },
-      "name_text_hash_map ": "3648220770"
+      "name_text_hash_map ": "3648220258"
     },
     "xiao": {
       "id": 10000026,
@@ -1504,7 +1742,7 @@
         "attack": 10261,
         "burst_energy_cost": 70
       },
-      "name_text_hash_map ": "1021947690"
+      "name_text_hash_map ": "1021947178"
     },
     "xilonen": {
       "id": 10000103,
@@ -1521,7 +1759,7 @@
         "attack": 11031,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "2515292882"
+      "name_text_hash_map ": "2515292370"
     },
     "xingqiu": {
       "id": 10000025,
@@ -1538,7 +1776,7 @@
         "attack": 10381,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "4197635682"
+      "name_text_hash_map ": "4197635170"
     },
     "xinyan": {
       "id": 10000044,
@@ -1572,7 +1810,7 @@
         "attack": 10581,
         "burst_energy_cost": 90
       },
-      "name_text_hash_map ": "2713453234"
+      "name_text_hash_map ": "2713452722"
     },
     "yanfei": {
       "id": 10000048,
@@ -1606,7 +1844,7 @@
         "attack": 10771,
         "burst_energy_cost": 80
       },
-      "name_text_hash_map ": "1732418482"
+      "name_text_hash_map ": "1732417970"
     },
     "yelan": {
       "id": 10000060,
@@ -1623,7 +1861,7 @@
         "attack": 10606,
         "burst_energy_cost": 70
       },
-      "name_text_hash_map ": "2848374378"
+      "name_text_hash_map ": "2848373866"
     },
     "yoimiya": {
       "id": 10000049,
@@ -1657,7 +1895,7 @@
         "attack": 10641,
         "burst_energy_cost": 60
       },
-      "name_text_hash_map ": "655825874"
+      "name_text_hash_map ": "655825362"
     },
     "zhongli": {
       "id": 10000030,

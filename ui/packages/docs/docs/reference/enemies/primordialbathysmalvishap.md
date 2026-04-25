@@ -1,5 +1,6 @@
 ---
-title: "Primordial Bathysmal Vishap"
+title: >
+  Primordial Bathysmal Vishap
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

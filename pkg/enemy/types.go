@@ -15,7 +15,7 @@ type TargetParams struct {
 }
 
 func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParams) error {
-	if !(1 <= profile.Level && profile.Level <= 100) {
+	if 1 > profile.Level || profile.Level > 100 {
 		return fmt.Errorf("invalid target level: must be between 1 and 100")
 	}
 	if name == "dummy" {

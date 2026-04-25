@@ -1,5 +1,6 @@
 ---
-title: Otherworldly Story
+title: >
+  Otherworldly Story
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

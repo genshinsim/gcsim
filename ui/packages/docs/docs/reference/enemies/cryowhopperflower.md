@@ -1,5 +1,6 @@
 ---
-title: "Cryo Whopperflower"
+title: >
+  Cryo Whopperflower
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

@@ -39,14 +39,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	const effectIcdKey = "endoftheline-effect-icd"
 	const dmgIcdKey = "endoftheline-dmg-icd"
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		// do nothing if holder is off-field
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		// do nothing if flowrider is on icd
 		if char.StatusIsActive(effectIcdKey) {
-			return false
+			return
 		}
 		// add flowrider status and proc flowrider icd
 		char.AddStatus(effectKey, 15*60, true)
@@ -57,30 +57,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		// reset proc count
 		w.procCount = 0
-		return false
 	}, fmt.Sprintf("endoftheline-effect-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		// do nothing if holder is off-field
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		// do nothing if attack not from holder
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		// do nothing if flowrider is not active
 		if !char.StatusIsActive(effectKey) {
-			return false
+			return
 		}
 		// do nothing if flowrider dmg is on icd
 		if char.StatusIsActive(dmgIcdKey) {
-			return false
+			return
 		}
 		// queue up flowrider proc
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
+		ai := info.AttackInfo{
+			ActorIndex: char.Index(),
 			Abil:       "End of the Line Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
@@ -90,19 +89,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Durability: 100,
 			Mult:       flowriderDmg,
 		}
-		trg := args[0].(combat.Target)
+		trg := args[0].(info.Target)
 		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2.5), 0, 1)
 
 		w.procCount++
-		c.Log.NewEvent("endoftheline proc", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("endoftheline proc", glog.LogWeaponEvent, char.Index()).
 			Write("procCount", w.procCount)
 		if w.procCount == 3 {
 			char.DeleteStatus(effectKey)
 		} else {
 			char.AddStatus(dmgIcdKey, 2*60, true)
 		}
-
-		return false
 	}, fmt.Sprintf("endoftheline-dmg-%v", char.Base.Key.String()))
 
 	return w, nil

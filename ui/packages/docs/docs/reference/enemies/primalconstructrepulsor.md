@@ -1,5 +1,6 @@
 ---
-title: "Primal Construct: Repulsor"
+title: >
+  Primal Construct: Repulsor
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

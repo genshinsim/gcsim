@@ -1,5 +1,6 @@
 ---
-title: Dark Iron Sword
+title: >
+  Dark Iron Sword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -1,5 +1,6 @@
 ---
-title: Skyward Blade
+title: >
+  Skyward Blade
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

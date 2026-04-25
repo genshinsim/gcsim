@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -41,20 +40,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("desert-2pc", -1),
 			AffectedStat: attributes.AnemoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 
 	if count >= 4 {
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
-				return false
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != char.Index() {
+				return
 			}
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
-				return false
+				return
 			}
 
 			mSpd := make([]float64, attributes.EndStatType)
@@ -62,11 +61,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("desert-4pc-spd", 15*60),
 				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
+				Amount: func() []float64 {
 					if c.Player.CurrentState() != action.NormalAttackState {
-						return nil, false
+						return nil
 					}
-					return mSpd, true
+					return mSpd
 				},
 			})
 
@@ -74,19 +73,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			mDmg[attributes.DmgP] = 0.4
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("desert-4pc-dmg", 15*60),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagNormal:
 					case attacks.AttackTagExtra:
 					case attacks.AttackTagPlunge:
 					default:
-						return nil, false
+						return nil
 					}
-					return mDmg, true
+					return mDmg
 				},
 			})
-
-			return false
 		}, fmt.Sprintf("desert-4pc-%v", char.Base.Key.String()))
 	}
 

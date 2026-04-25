@@ -3,10 +3,7 @@ package hydro
 import (
 	"github.com/genshinsim/gcsim/internal/template/sourcewaterdroplet"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const a1ICDKey = "sourcewater-droplet-icd"
@@ -14,16 +11,16 @@ const a1ICDKey = "sourcewater-droplet-icd"
 // After the Dewdrop fired by the Hold Mode of the Aquacrest Saber hits an opponent, a Sourcewater Droplet will be
 // generated near to the Traveler. If the Traveler picks it up, they will restore 7% HP.
 // 1 Droplet can be created this way every second, and each use of Aquacrest Saber can create 4 Droplets at most.
-func (c *Traveler) makeA1CB() combat.AttackCBFunc {
+func (c *Traveler) makeA1CB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
 	count := 0
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if count >= 4 {
 			return
 		}
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(a1ICDKey) {
@@ -51,8 +48,8 @@ func (c *Traveler) a1PickUp(count int) {
 		count--
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: "Spotless Waters",
 			Src:     c.MaxHP() * 0.07,
 			Bonus:   c.Stat(attributes.Heal),
@@ -72,16 +69,16 @@ func (c *Traveler) a1PickUp(count int) {
 
 func (c *Traveler) newDroplet() *sourcewaterdroplet.Gadget {
 	player := c.Core.Combat.Player()
-	pos := geometry.CalcRandomPointFromCenter(
-		geometry.CalcOffsetPoint(
+	pos := info.CalcRandomPointFromCenter(
+		info.CalcOffsetPoint(
 			player.Pos(),
-			geometry.Point{Y: 3.5},
+			info.Point{Y: 3.5},
 			player.Direction(),
 		),
 		0.3,
 		3,
 		c.Core.Rand,
 	)
-	droplet := sourcewaterdroplet.New(c.Core, pos, combat.GadgetTypSourcewaterDropletHydroTrav)
+	droplet := sourcewaterdroplet.New(c.Core, pos, info.GadgetTypSourcewaterDropletHydroTrav)
 	return droplet
 }

@@ -1,5 +1,6 @@
 ---
-title: Neuvillette
+title: >
+  Neuvillette
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

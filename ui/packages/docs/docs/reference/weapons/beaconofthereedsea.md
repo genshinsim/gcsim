@@ -1,5 +1,6 @@
 ---
-title: Beacon of the Reed Sea
+title: >
+  Beacon of the Reed Sea
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

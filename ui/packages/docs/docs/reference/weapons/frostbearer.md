@@ -1,5 +1,6 @@
 ---
-title: Frostbearer
+title: >
+  Frostbearer
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

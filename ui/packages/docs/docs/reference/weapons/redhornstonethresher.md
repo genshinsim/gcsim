@@ -1,5 +1,6 @@
 ---
-title: Redhorn Stonethresher
+title: >
+  Redhorn Stonethresher
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

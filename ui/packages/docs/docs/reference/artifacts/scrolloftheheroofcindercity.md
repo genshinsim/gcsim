@@ -1,5 +1,6 @@
 ---
-title: Scroll of the Hero of Cinder City
+title: >
+  Scroll of the Hero of Cinder City
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

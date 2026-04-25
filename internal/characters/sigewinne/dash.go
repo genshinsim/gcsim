@@ -29,7 +29,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 		g := droplets[ind]
 		c.consumeDroplet(g)
 	}
-	c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", dropletsToPickup, " droplets"), glog.LogCharacterEvent, c.Index)
+	c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", dropletsToPickup, " droplets"), glog.LogCharacterEvent, c.Index())
 
 	return c.Character.Dash(p)
 }

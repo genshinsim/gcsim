@@ -27,6 +27,10 @@ const (
 	KiraraSkill
 	TravelerHydroC4
 	SigewinneC2
+	LanyanShield
+	CitlaliSkill
+	DahliaBurst
+	IneffaSkill
 	EndType
 )
 

@@ -1,5 +1,6 @@
 ---
-title: Amenoma Kageuchi
+title: >
+  Amenoma Kageuchi
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

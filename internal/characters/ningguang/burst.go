@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -28,8 +29,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		travel = 0
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Starshatter",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,
@@ -66,7 +67,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 {
 		c.jadeCount = 7
-		c.Core.Log.NewEvent("c6 - adding star jade", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("c6 - adding star jade", glog.LogCharacterEvent, c.Index()).
 			Write("count", c.jadeCount)
 	}
 

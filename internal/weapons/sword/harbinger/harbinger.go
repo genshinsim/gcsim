@@ -31,8 +31,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("harbinger", -1),
 		AffectedStat: attributes.CR,
-		Amount: func() ([]float64, bool) {
-			return m, char.CurrentHPRatio() >= 0.9
+		Amount: func() []float64 {
+			if char.CurrentHPRatio() >= 0.9 {
+				return m
+			}
+			return nil
 		},
 	})
 	return w, nil

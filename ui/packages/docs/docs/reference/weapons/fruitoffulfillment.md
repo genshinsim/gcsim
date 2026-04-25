@@ -1,5 +1,6 @@
 ---
-title: Fruit of Fulfillment
+title: >
+  Fruit of Fulfillment
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

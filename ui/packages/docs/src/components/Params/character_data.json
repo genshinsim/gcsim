@@ -204,6 +204,48 @@
       "ability": "skill",
       "param": "perfect",
       "desc": "0 for no A1 (default), non-zero value for A1. This sets hold to 1."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "chasca": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "hold",
+      "desc": "0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default)."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    },
+    {
+      "ability": "aim",
+      "param": "bullets",
+      "desc": "Number of bullets to fire. Default is maximum number of bullets. Must be between 1 and 6."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "charlotte": [
@@ -235,6 +277,30 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
+  "chongyun": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "citlali": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "charge",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
     }
   ],
   "collei": [
@@ -269,6 +335,13 @@
       "ability": "high_plunge",
       "param": "collision",
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "dahlia": [
+    {
+      "ability": "skill",
+      "param": "short_hold",
+      "desc": "0 for Tap (default), 1 for Short Hold."
     }
   ],
   "dehya": [
@@ -359,6 +432,23 @@
       "ability": "burst",
       "param": "travel",
       "desc": "Level 1/2 Lumidouce Case Attack travel time. Default 5 frames."
+    }
+  ],
+  "escoffier": [
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Frosty Parfait travel time. Default 5 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "eula": [
@@ -600,6 +690,18 @@
       "desc": "0 for Tap (default), value between 1 and 300 for Hold. Triggering C1 requires hold >= 60."
     }
   ],
+  "kaeya": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "kaveh": [
     {
       "ability": "low_plunge",
@@ -739,6 +841,30 @@
       "desc": "Projectile travel time. Default 10 frames."
     }
   ],
+  "lanyan": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 610 for Hold."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "lauma": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold. Must have a verdant dew available."
+    }
+  ],
   "layla": [
     {
       "ability": "burst",
@@ -822,11 +948,60 @@
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     }
   ],
+  "mavuika": [
+    {
+      "ability": "charge",
+      "param": "hold",
+      "desc": "Number of frames to extend Charge Attack by. Min 1, max 45, can only be used after a Charge attack has started."
+    },
+    {
+      "ability": "charge",
+      "param": "final",
+      "desc": "Used to explicitly initiate the Flamestrider's final hit of the charge attack."
+    },
+    {
+      "ability": "charge",
+      "param": "buffered",
+      "desc": "Number of frames to buffer CA. Range 0-15, lower values can be used to trigger certain N0 abilities."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold."
+    },
+    {
+      "ability": "skill",
+      "param": "recast",
+      "desc": "0 to use E (default), 1 to use Recast E. Recast E is only possible if Nightsoul Blessing is active and Recast E is not on cooldown."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision."
+    }
+  ],
   "mika": [
     {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
+  "mizuki": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time for Continuous Attack. Default 30 frames."
     }
   ],
   "mona": [
@@ -918,6 +1093,16 @@
   ],
   "noelle": [
     {
+      "ability": "charge",
+      "param": "final",
+      "desc": "0 for inserting a finisher based on next action, 1 for executing a finisher immediately. Default 0."
+    },
+    {
+      "ability": "charge",
+      "param": "no_limit",
+      "desc": "Whether to ignore charge attack duration limit. Default 0."
+    },
+    {
       "ability": "burst",
       "param": "extend",
       "desc": "Number of seconds to extend Burst by. Value must be between 0 and 10. Default 10."
@@ -950,6 +1135,16 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "rosaria": [
@@ -957,6 +1152,16 @@
       "ability": "skill",
       "param": "nobehind",
       "desc": "Default 0. 1 for disabling striking behind for A1 purposes."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "sara": [
@@ -1057,6 +1262,18 @@
       "ability": "burst",
       "param": "ticks",
       "desc": "Number of ticks for Elemental Burst. Default is maximum number of ticks, minimum 2. If the number of ticks is not the maximum, the next action must be Dash, or Jump."
+    }
+  ],
+  "skirk": [
+    {
+      "ability": "-",
+      "param": "start_serpents_subtlety",
+      "desc": "deprecated; use start_energy instead."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 184 for Hold. The number determines the hold E duration in frames."
     }
   ],
   "sucrose": [
@@ -1230,6 +1447,18 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "xinyan": [
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "wanderer": [
     {
       "ability": "attack",
@@ -1340,6 +1569,11 @@
       "ability": "skill",
       "param": "marked",
       "desc": "Number of enemies to mark with the Lifeline. Default 1."
+    },
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Exquisite Throw projectile travel time. Default 20 frames."
     }
   ],
   "yoimiya": [
@@ -1400,6 +1634,11 @@
       "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
     },
     {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "short_hold",
       "desc": "0 for Tap (default), 1 for Short Hold. The Short Hold version is the shortest possible Hold."
@@ -1427,6 +1666,11 @@
       "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
     },
     {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "hits",
       "desc": "Number of times Thunder Shadow hits. Default 1, maximum 3."
@@ -1449,6 +1693,11 @@
       "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
     },
     {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
@@ -1464,6 +1713,11 @@
       "ability": "-",
       "param": "base_atk_buff",
       "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -1491,6 +1745,38 @@
       "ability": "-",
       "param": "base_atk_buff",
       "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    }
+  ],
+  "travelerpyro": [
+    {
+      "ability": "-",
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "skirk_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Blazing Threshold; 1 for Scorching Threshold. Default 0."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "neuvillette": [

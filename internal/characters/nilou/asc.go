@@ -1,14 +1,14 @@
 package nilou
 
 import (
+	"github.com/genshinsim/gcsim/internal/template/dendrocore"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 const (
@@ -36,36 +36,34 @@ func (c *char) a1() {
 	c.a4()
 
 	// Bountiful Cores
-	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if !char.StatusIsActive(a1Status) {
-			return false
+			return
 		}
-		g, ok := args[0].(*reactable.DendroCore)
+		g, ok := args[0].(*dendrocore.Gadget)
 		if !ok {
-			return false
+			return
 		}
 
-		b := newBountifulCore(c.Core, g.Gadget.Pos(), atk)
-		b.Gadget.SetKey(g.Gadget.Key())
+		b := newBountifulCore(c.Core, g.Pos(), atk)
+		b.SetKey(g.Key())
 		c.Core.Combat.ReplaceGadget(g.Key(), b)
 		// prevent blowing up
-		g.Gadget.OnExpiry = nil
-		g.Gadget.OnKill = nil
-
-		return false
+		g.OnExpiry = nil
+		g.OnKill = nil
 	}, "nilou-a1-cores")
 
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...any) {
 		charIndex := args[0].(int)
 		char := c.Core.Player.ByIndex(charIndex)
 		if !char.StatusIsActive(a1Status) {
-			return false
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Element != attributes.Dendro {
-			return false
+			return
 		}
 
 		m := make([]float64, attributes.EndStatType)
@@ -74,13 +72,11 @@ func (c *char) a1() {
 			this.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("nilou-a1-em", 10*60),
 				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}
-
-		return false
 	}, "nilou-a1")
 }
 
@@ -95,24 +91,18 @@ func (c *char) a4() {
 		// TODO: a4 should be an extra buff
 		this.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
+			Amount: func(ai info.AttackInfo) float64 {
 				if ai.AttackTag != attacks.AttackTagBloom {
-					return 0, false
+					return 0
 				}
-
-				// check is bountiful core?
-				var t combat.Gadget
-				for _, v := range c.Core.Combat.Gadgets() {
-					if v != nil && v.Key() == ai.DamageSrc {
-						t = v
-					}
+				// TODO(shizuka): should be attacktag, see comment in bountifulcore.go
+				if ai.ICDTag != attacks.ICDTagBountifulCoreDamage {
+					return 0
 				}
-				if _, ok := t.(*BountifulCore); !ok {
-					return 0, false
+				if c.Core.Flags.LogDebug {
+					c.Core.Combat.Log.NewEvent("adding nilou a4 bonus", glog.LogCharacterEvent, c.Index()).Write("bonus", c.a4Bonus)
 				}
-
-				c.Core.Combat.Log.NewEvent("adding nilou a4 bonus", glog.LogCharacterEvent, c.Index).Write("bonus", c.a4Bonus)
-				return c.a4Bonus, false
+				return c.a4Bonus
 			},
 		})
 	}

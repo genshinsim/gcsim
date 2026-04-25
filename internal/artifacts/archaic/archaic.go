@@ -37,30 +37,30 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("archaic-2pc", -1),
 			AffectedStat: attributes.GeoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 
-		core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+		core.Events.Subscribe(event.OnShielded, func(args ...any) {
 			// Character that picks it up must be the petra set holder
-			if core.Player.Active() != char.Index {
-				return false
+			if core.Player.Active() != char.Index() {
+				return
 			}
 
 			// Check shield
 			shd := args[0].(shield.Shield)
 			if shd.Type() != shield.Crystallize {
-				return false
+				return
 			}
 			s.element = shd.Element()
 
 			// Activate
 			// TODO: cd for proc?
-			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index).
+			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index()).
 				Write("ele", s.element)
 
 			m[attributes.PyroP] = 0
@@ -77,13 +77,11 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 				c.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("archaic-4pc", 10*60),
 					AffectedStat: attributes.NoStat,
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}
-
-			return false
 		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
 	}
 

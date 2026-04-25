@@ -1,5 +1,6 @@
 ---
-title: Waveriding Whirl
+title: >
+  Waveriding Whirl
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -45,7 +45,7 @@ func init() {
 	attackFrames[3][action.ActionAttack] = 53
 }
 
-func (c *char) arkheCB(a combat.AttackCB) {
+func (c *char) arkheCB(a info.AttackCB) {
 	if c.StatusIsActive(arkheIcdKeys[c.arkhe]) {
 		return
 	}
@@ -53,10 +53,10 @@ func (c *char) arkheCB(a combat.AttackCB) {
 
 	// calc attack pos
 	player := c.Core.Combat.Player()
-	arkhePos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: -0.3}, player.Direction())
+	arkhePos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: -0.3}, player.Direction())
 	c.QueueCharTask(func() {
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           arkhePrettyPrint[c.arkhe] + " (" + c.Base.Key.Pretty() + ")",
 			AttackTag:      attacks.AttackTagNormal,
 			ICDTag:         attacks.ICDTagNone,
@@ -82,9 +82,10 @@ func (c *char) arkheCB(a combat.AttackCB) {
 		c.Core.QueueAttack(ai, ap, 0, 0)
 	}, 30)
 }
+
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
@@ -100,8 +101,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	c.QueueCharTask(
 		func() {
-			var c6cb combat.AttackCBFunc
-			var ap combat.AttackPattern
+			var c6cb info.AttackCBFunc
+			var ap info.AttackPattern
 			c6Index := 0
 			// TODO: Check if DMG bonus still applies if c6 runs out between start of NA and the hit
 
@@ -116,14 +117,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			case 0, 3:
 				ap = combat.NewBoxHitOnTarget(
 					c.Core.Combat.Player(),
-					geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
+					info.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
 					attackHitboxes[c6Index][c.NormalCounter][0],
 					attackHitboxes[c6Index][c.NormalCounter][1],
 				)
 			case 1, 2:
 				ap = combat.NewCircleHitOnTarget(
 					c.Core.Combat.Player(),
-					geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
+					info.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
 					attackHitboxes[c6Index][c.NormalCounter][0],
 				)
 			}

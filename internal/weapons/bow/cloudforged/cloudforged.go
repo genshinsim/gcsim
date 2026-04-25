@@ -31,12 +31,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	refine := p.Refine
 
 	m := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnEnergyChange, func(args ...interface{}) bool {
-		index := args[0].(*character.CharWrapper).Index
+	c.Events.Subscribe(event.OnEnergyChange, func(args ...any) {
+		index := args[0].(*character.CharWrapper).Index()
 		amount := args[2].(float64)
 
-		if char.Index != index || amount >= 0 {
-			return false
+		if char.Index() != index || amount >= 0 {
+			return
 		}
 		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
@@ -48,11 +48,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, 18*60),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
-		return false
 	}, fmt.Sprintf("cloudforged-%v", char.Base.Key))
 
 	return &w, nil

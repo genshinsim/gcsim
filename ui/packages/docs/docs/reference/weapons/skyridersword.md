@@ -1,5 +1,6 @@
 ---
-title: Skyrider Sword
+title: >
+  Skyrider Sword
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

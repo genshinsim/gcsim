@@ -1,5 +1,6 @@
 ---
-title: Dodoco Tales
+title: >
+  Dodoco Tales
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

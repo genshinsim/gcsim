@@ -5,8 +5,13 @@ const (
 	ICDTagGeneratedStart ICDTag = iota + EndDefaultICDTags + 1
 	ICDTagCharlotteMark
 	ICDTagCharlotteKamera
+	ICDTagChascaTap
+	ICDTagChascaShadowhunt
+	ICDTagChascaShining
+	ICDTagChascaBurst
 	ICDTagChioriSkill
-	ICDTagClorindeCons
+	ICDTagCitlaliSpiritVessel
+	ICDTagCitlaliFrostfallStorm
 	ICDTagColleiSprout
 	ICDTagCynoBolt
 	ICDTagDoriC2
@@ -17,16 +22,21 @@ const (
 	ICDTagKinichLoopShot
 	ICDTagKinichScalespikerCannon
 	ICDTagKleeFireDamage
+	ICDTagLanyanRingAttack
+	ICDTagLanyanRingAttackMix
 	ICDTagLisaElectro
 	ICDTagLyneyEndBoom
 	ICDTagLyneyEndBoomEnhanced
+	ICDTagMavuikaFlamestrider
 	ICDTagMonaWaterDamage
 	ICDTagNahidaSkill
 	ICDTagNahidaC6
 	ICDTagNeuvilletteC6
 	ICDTagNilouTranquilityAura
 	ICDTagOroronElmentalBurst
+	ICDTagSkirkCons
 	ICDTagTartagliaRiptideFlash
+	ICDTagVaresaCombatCycle
 	ICDTagWandererC6
 	ICDTagWandererA4
 	ICDTagXilonenSkate

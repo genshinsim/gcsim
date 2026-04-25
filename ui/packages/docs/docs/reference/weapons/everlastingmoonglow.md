@@ -1,5 +1,6 @@
 ---
-title: Everlasting Moonglow
+title: >
+  Everlasting Moonglow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

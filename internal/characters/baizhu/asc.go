@@ -3,9 +3,8 @@ package baizhu
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -23,12 +22,12 @@ func (c *char) a1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("baizhu-a1-heal-bonus", -1),
 		AffectedStat: attributes.Heal,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			active := c.Core.Player.ActiveChar()
 			if active.CurrentHPRatio() < 0.5 {
-				return mHeal, true
+				return mHeal
 			}
-			return nil, false
+			return nil
 		},
 	})
 
@@ -38,12 +37,12 @@ func (c *char) a1() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("baizhu-a1-dendro-dmg", -1),
 		AffectedStat: attributes.DendroP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			active := c.Core.Player.ActiveChar()
 			if active.CurrentHPRatio() >= 0.5 {
-				return mDendroP, true
+				return mDendroP
 			}
-			return nil, false
+			return nil
 		},
 	})
 }
@@ -59,24 +58,27 @@ func (c *char) a4() {
 	}
 	c.Core.Player.ActiveChar().AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBaseWithHitlag("baizhu-a4", 6*60),
-		Amount: func(ai combat.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) float64 {
 			limitHP := c.MaxHP() / 1000.0
 			if limitHP > 50 {
 				limitHP = 50
 			}
-			if ai.Catalyzed && (ai.CatalyzedType == reactions.Aggravate || ai.CatalyzedType == reactions.Spread) {
-				return limitHP * 0.008, false
+			if ai.Catalyzed && (ai.CatalyzedType == info.ReactionTypeAggravate || ai.CatalyzedType == info.ReactionTypeSpread) {
+				return limitHP * 0.008
 			}
+			mult := 0.02
 			switch ai.AttackTag {
 			case attacks.AttackTagBloom:
 			case attacks.AttackTagHyperbloom:
 			case attacks.AttackTagBurgeon:
 			case attacks.AttackTagBurningDamage:
+			case attacks.AttackTagDirectLunarBloom:
+				mult = 0.007
 			default:
-				return 0, false
+				return 0
 			}
 
-			return limitHP * 0.02, false
+			return limitHP * mult
 		},
 	})
 }

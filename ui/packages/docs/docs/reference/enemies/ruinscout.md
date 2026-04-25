@@ -1,5 +1,6 @@
 ---
-title: "Ruin Scout"
+title: >
+  Ruin Scout
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

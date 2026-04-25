@@ -6,11 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 func init() {
 	// skill (press) -> x
@@ -28,9 +30,9 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Skyward Sonnett",
+	ai := info.AttackInfo{
+		ActorIndex:   c.Index(),
+		Abil:         "Skyward Sonnett (Press)",
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagNone,
 		ICDGroup:     attacks.ICDGroupDefault,
@@ -62,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		trg = c.Core.Combat.Player()
 		count = 4
 		ai.Mult = skillHold[c.TalentLvlSkill()]
-
+		ai.Abil = "Skyward Sonnett (Hold)"
 		act = action.Info{
 			Frames:          frames.NewAbilFunc(skillHoldFrames),
 			AnimationLength: skillHoldFrames[action.InvalidAction],
@@ -78,10 +80,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return act, nil
 }
 
-func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
+func (c *char) makeParticleCB(count float64) info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

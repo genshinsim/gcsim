@@ -1,5 +1,6 @@
 ---
-title: "Millennial Pearl Seahorse"
+title: >
+  Millennial Pearl Seahorse
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

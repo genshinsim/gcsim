@@ -191,7 +191,7 @@ func (c *charData) buildSkillData(dm *model.AvatarData) error {
 
 func (c *charData) skillDataByType(typ string, data []*model.AvatarSkillExcelIndexData) ([]skillLvlData, error) {
 	var result []skillLvlData
-	for name, params := range c.Config.SkillDataMapping[typ] {
+	for name, params := range c.SkillDataMapping[typ] {
 		skill := skillLvlData{
 			Name:    name,
 			Params:  make([]skillParam, len(params)),

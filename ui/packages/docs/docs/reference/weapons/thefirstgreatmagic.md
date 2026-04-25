@@ -1,5 +1,6 @@
 ---
-title: The First Great Magic
+title: >
+  The First Great Magic
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

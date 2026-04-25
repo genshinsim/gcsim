@@ -1,5 +1,6 @@
 ---
-title: "Fatui Skirmisher - Hydrogunner Legionnaire"
+title: >
+  Fatui Skirmisher - Hydrogunner Legionnaire
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

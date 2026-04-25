@@ -61,6 +61,7 @@ type buffer struct {
 	cumulativeContrib [][]*calc.StreamStats
 	// first index is for target, 2nd for iteration
 	cumulativeDamage []runs
+	iters            uint
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
@@ -218,18 +219,21 @@ func (b *buffer) Add(result stats.Result) {
 			},
 		)
 	}
+	b.iters++
 }
 
 func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.ElementDps = make(map[string]*model.DescriptiveStats)
 	for k, v := range b.elementDPS {
 		if v.Mean() > 0 {
+			agg.PadStreamStatToCount(v, b.iters)
 			result.ElementDps[k] = agg.ToDescriptiveStats(v)
 		}
 	}
 
 	result.TargetDps = make(map[int32]*model.DescriptiveStats)
 	for k, v := range b.targetDPS {
+		agg.PadStreamStatToCount(v, b.iters)
 		result.TargetDps[int32(k)] = agg.ToDescriptiveStats(v)
 	}
 
@@ -243,6 +247,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		elements := make(map[string]*model.DescriptiveStats)
 		for k, v := range em {
 			if v.Mean() > 0 {
+				agg.PadStreamStatToCount(v, b.iters)
 				elements[k] = agg.ToDescriptiveStats(v)
 			}
 		}
@@ -256,6 +261,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, t := range b.dpsByTarget {
 		targets := make(map[int32]*model.DescriptiveStats)
 		for k, v := range t {
+			agg.PadStreamStatToCount(v, b.iters)
 			targets[int32(k)] = agg.ToDescriptiveStats(v)
 		}
 
@@ -288,6 +294,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, c := range b.sourceDPS {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
+			agg.PadStreamStatToCount(s, b.iters)
 			source[k] = agg.ToDescriptiveStats(s)
 		}
 
@@ -300,6 +307,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, c := range b.sourceDamageInstances {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
+			agg.PadStreamStatToCount(s, b.iters)
 			source[k] = agg.ToDescriptiveStats(s)
 		}
 

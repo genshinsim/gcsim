@@ -1,5 +1,6 @@
 ---
-title: Makhaira Aquamarine
+title: >
+  Makhaira Aquamarine
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

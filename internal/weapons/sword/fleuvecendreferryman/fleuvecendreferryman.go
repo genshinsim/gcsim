@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -35,29 +34,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR[attributes.CR] = 0.06 + 0.02*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("fleuvecendreferryman-cr", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold {
-				return mCR, true
+				return mCR
 			}
-			return nil, false
+			return nil
 		},
 	})
 
 	// er up after skill
 	mER := make([]float64, attributes.EndStatType)
 	mER[attributes.ER] = 0.12 + 0.04*float64(r)
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("fleuvecendreferryman-er", 5*60),
 			AffectedStat: attributes.ER,
-			Amount: func() ([]float64, bool) {
-				return mER, true
+			Amount: func() []float64 {
+				return mER
 			},
 		})
-		return false
 	}, fmt.Sprintf("fleuvecendreferryman-%v", char.Base.Key.String()))
 
 	return w, nil

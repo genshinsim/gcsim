@@ -2,6 +2,10 @@
   "archaicpetra": [
     "ap"
   ],
+  "aubadeofmorningstarandmoon": [
+    "aubadeofmorningstar",
+    "aubade"
+  ],
   "berserker": [],
   "blizzardstrayer": [
     "blizzard",
@@ -43,6 +47,9 @@
     "eosf",
     "esf"
   ],
+  "finaleofthedeepgalleries": [
+    "deepgalleries"
+  ],
   "flowerofparadiselost": [
     "paradiselost",
     "fopl"
@@ -76,6 +83,9 @@
   "lavawalker": [
     "lw"
   ],
+  "longnightsoath": [
+    "lno"
+  ],
   "maidenbeloved": [
     "maiden",
     "mb"
@@ -84,6 +94,10 @@
     "mh"
   ],
   "martialartist": [],
+  "nightoftheskysunveiling": [
+    "skysunveiling",
+    "notsu"
+  ],
   "nighttimewhispersintheechoingwoods": [
     "nighttimewhispers",
     "echoingwoods",
@@ -116,6 +130,10 @@
   "scrolloftheheroofcindercity": [
     "scroll",
     "sothocc"
+  ],
+  "silkenmoonsserenade": [
+    "silkenmoon",
+    "sms"
   ],
   "shimenawasreminiscence": [
     "shimenawa",

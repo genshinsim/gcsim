@@ -5,9 +5,9 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -34,6 +34,7 @@ func (c *char) a1() {
 	c.a1stacks = stacks.NewMultipleRefreshNoRemove(3, c.QueueCharTask, &c.Core.F)
 	// on electro reaction, add buff; 3 stacks independent
 	c.Core.Events.Subscribe(event.OnElectroCharged, c.a1CB, "clorinde-a1-ec")
+	c.Core.Events.Subscribe(event.OnLunarCharged, c.a1CB, "clorinde-a1-lc")
 	c.Core.Events.Subscribe(event.OnSuperconduct, c.a1CB, "clorinde-a1-superconduct")
 	c.Core.Events.Subscribe(event.OnAggravate, c.a1CB, "clorinde-a1-aggravate")
 	c.Core.Events.Subscribe(event.OnQuicken, c.a1CB, "clorinde-a1-quicken")
@@ -43,44 +44,40 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, c.a1CB, "clorinde-a1-crystallize-electro")
 }
 
-func (c *char) a1CB(args ...interface{}) bool {
+func (c *char) a1CB(args ...any) {
 	// no requirement who triggers other than that it must be against an enemy
-	if _, ok := args[0].(*enemy.Enemy); !ok {
-		return false
+	if _, ok := args[0].(*enemy.Enemy); ok {
+		c.a1CBGadget(args...)
 	}
-	return c.a1CBGadget(args...)
 }
 
-func (c *char) a1CBGadget(...interface{}) bool {
+func (c *char) a1CBGadget(...any) {
 	// add a stack and refresh the mod for 15s
 	c.a1stacks.Add(clordineA1BuffDuration)
 	c.AddAttackMod(character.AttackMod{
-		Base:   modifier.NewBaseWithHitlag(clorindeA1BuffKey, clordineA1BuffDuration),
-		Amount: c.a1Amount,
+		Base: modifier.NewBaseWithHitlag(clorindeA1BuffKey, clordineA1BuffDuration),
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			var amt float64
+			switch atk.Info.AttackTag {
+			case attacks.AttackTagNormal:
+				if atk.Info.Element != attributes.Electro {
+					// only app
+					return nil
+				}
+			case attacks.AttackTagElementalBurst:
+			default:
+				return nil
+			}
+			totalAtk := atk.Snapshot.Stats.TotalATK()
+			amt = min(totalAtk*c.a1BuffPercent*float64(c.a1stacks.Count()), c.a1Cap)
+			atk.Info.FlatDmg += amt
+			c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index()).
+				Write("amt", amt).
+				Write("c2_applied", c.Base.Cons >= 2)
+			// we don't actually change any stats here..
+			return nil
+		},
 	})
-	return false
-}
-
-func (c *char) a1Amount(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-	var amt float64
-	switch atk.Info.AttackTag {
-	case attacks.AttackTagNormal:
-		if atk.Info.Element != attributes.Electro {
-			// only app
-			return nil, false
-		}
-	case attacks.AttackTagElementalBurst:
-	default:
-		return nil, false
-	}
-	totalAtk := atk.Snapshot.Stats.TotalATK()
-	amt = min(totalAtk*c.a1BuffPercent*float64(c.a1stacks.Count()), c.a1Cap)
-	atk.Info.FlatDmg += amt
-	c.Core.Log.NewEvent("a1 adding flat dmg", glog.LogCharacterEvent, c.Index).
-		Write("amt", amt).
-		Write("c2_applied", c.Base.Cons >= 2)
-	// we don't actually change any stats here..
-	return nil, true
 }
 
 func (c *char) a4Init() {
@@ -89,6 +86,17 @@ func (c *char) a4Init() {
 	}
 	c.a4stacks = stacks.NewMultipleRefreshNoRemove(2, c.QueueCharTask, &c.Core.F)
 	c.a4bonus = make([]float64, attributes.EndStatType)
+	c.prevHpDebt = c.CurrentHPDebtRatio()
+
+	c.Core.Events.Subscribe(event.OnHPDebt, func(args ...any) {
+		index := args[0].(int)
+		amount := -args[1].(float64)
+		if c.Index() != index {
+			return
+		}
+		c.a4(amount)
+		c.prevHpDebt = c.CurrentHPDebtRatio()
+	}, "clorinde-a4")
 }
 
 func (c *char) a4(change float64) {
@@ -96,7 +104,7 @@ func (c *char) a4(change float64) {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	if c.currentHPDebtRatio() < 1 {
+	if c.prevHpDebt < 1 {
 		return
 	}
 	if math.Abs(change) < tolerance {
@@ -104,14 +112,12 @@ func (c *char) a4(change float64) {
 	}
 	c.a4stacks.Add(clordineA4BuffDuration)
 	c.AddStatMod(character.StatMod{
-		Base:   modifier.NewBaseWithHitlag(clorindeA4BuffKey, clordineA4BuffDuration),
-		Amount: c.a4Amount,
+		Base: modifier.NewBaseWithHitlag(clorindeA4BuffKey, clordineA4BuffDuration),
+		Amount: func() []float64 {
+			c.a4bonus[attributes.CR] = float64(c.a4stacks.Count()) * a4CritBuff
+			return c.a4bonus
+		},
 	})
-	c.Core.Log.NewEvent("a4 triggered", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("a4 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("stacks", c.a4stacks.Count())
-}
-
-func (c *char) a4Amount() ([]float64, bool) {
-	c.a4bonus[attributes.CR] = float64(c.a4stacks.Count()) * a4CritBuff
-	return c.a4bonus, true
 }

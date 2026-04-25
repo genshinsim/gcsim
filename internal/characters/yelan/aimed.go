@@ -8,12 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var aimedFrames [][]int
-var aimedBarbFrames []int
+var (
+	aimedFrames     [][]int
+	aimedBarbFrames []int
+)
 
 var aimedHitmarks = []int{15, 86}
 
@@ -58,10 +60,10 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 
 	if c.breakthrough && hold == attacks.AimParamLv1 {
 		c.breakthrough = false
-		c.Core.Log.NewEvent("breakthrough state deleted", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("breakthrough state deleted", glog.LogCharacterEvent, c.Index())
 
-		ai := combat.AttackInfo{
-			ActorIndex:   c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:   c.Index(),
 			Abil:         "Breakthrough Barb",
 			AttackTag:    attacks.AttackTagExtra,
 			ICDTag:       attacks.ICDTagYelanBreakthrough,
@@ -92,8 +94,8 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:   c.Index(),
 		Abil:         "Fully-Charged Aimed Shot",
 		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       attacks.ICDTagNone,
@@ -114,7 +116,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
+			info.Point{Y: -0.5},
 			0.1,
 			1,
 		),

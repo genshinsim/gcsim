@@ -48,7 +48,7 @@ type Flags struct {
 }
 
 type Reactable interface {
-	React(a *combat.AttackEvent)
+	React(a *info.AttackEvent)
 	AuraContains(e ...attributes.Element) bool
 	Tick()
 }
@@ -61,8 +61,6 @@ type Reactable interface {
 // 	DeleteDefMod(key string)
 // 	DefModIsActive(key string) bool
 // }
-
-const MaxTeamSize = 4
 
 type Opt struct {
 	Seed              int64
@@ -148,7 +146,7 @@ func (c *Core) Tick() error {
 	//		- stamina
 	//		- swap
 	//	- tasks
-	//TODO: check for errors here?
+	// TODO: check for errors here?
 	c.Combat.Tick()
 	c.Constructs.Tick()
 	c.Player.Tick()
@@ -221,7 +219,7 @@ func (c *Core) AddChar(p info.CharacterProfile) (int, error) {
 			return -1, fmt.Errorf("character %v has unrecognized artifact: %v", p.Base.Key.String(), key)
 		}
 	}
-	//TODO: this should be handled by parser
+	// TODO: this should be handled by parser
 	if total > 5 {
 		return -1, fmt.Errorf("total set count cannot exceed 5, got %v", total)
 	}

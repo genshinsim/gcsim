@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -45,9 +44,9 @@ func (s *Set) onChangeHP() {
 	s.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(buffKey, 5*60),
 		AffectedStat: attributes.CR,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			s.buff[attributes.CR] = 0.12 * float64(s.stacks)
-			return s.buff, true
+			return s.buff
 		},
 	})
 }
@@ -65,11 +64,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.15
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("mh-2pc", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-					return nil, false
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 	}
@@ -81,42 +80,40 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	s.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
-		if di.ActorIndex != char.Index {
-			return false
+		if di.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
 		s.onChangeHP()
-		return false
 	}, fmt.Sprintf("mh-4pc-drain-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
-		if index != char.Index {
-			return false
+		if index != char.Index() {
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 		// do not trigger if at max hp already
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 
 		s.onChangeHP()
-		return false
 	}, fmt.Sprintf("mh-4pc-heal-%v", char.Base.Key.String()))
 
 	// TODO: OnCharacterHurt?

@@ -1,5 +1,6 @@
 ---
-title: "Shadowy Husk: Defender"
+title: >
+  Shadowy Husk: Defender
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

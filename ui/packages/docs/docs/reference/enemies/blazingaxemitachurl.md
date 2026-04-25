@@ -1,5 +1,6 @@
 ---
-title: "Blazing Axe Mitachurl"
+title: >
+  Blazing Axe Mitachurl
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

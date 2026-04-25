@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -18,6 +16,10 @@ var (
 	skillShortHold0TicksFrames [][]int
 
 	skillPressHitmarks = []int{25, 26}
+
+	skillPressCanQueueAfter           = []int{40, 40}
+	skillShortHold0TicksCanQueueAfter = []int{29, 29}
+	skillShortHoldCanQueueAfter       = []int{74, 73}
 )
 
 const (
@@ -62,21 +64,22 @@ func init() {
 	skillShortHold0TicksFrames = make([][]int, 2)
 
 	// Male
-	skillShortHold0TicksFrames[0] = frames.InitAbilSlice(29) // Short Hold E (0 ticks) -> D/J
+	skillShortHold0TicksFrames[0] = frames.InitAbilSlice(44) // Short Hold E (0 ticks) -> Swap
 	skillShortHold0TicksFrames[0][action.ActionAttack] = 36  // Short Hold E (0 ticks) -> N1
 	skillShortHold0TicksFrames[0][action.ActionSkill] = 36   // Short Hold E (0 ticks) -> E
 	skillShortHold0TicksFrames[0][action.ActionBurst] = 36   // Short Hold E (0 ticks) -> Q
+	skillShortHold0TicksFrames[0][action.ActionDash] = 29    // Short Hold E (0 ticks) -> D
+	skillShortHold0TicksFrames[0][action.ActionJump] = 29    // Short Hold E (0 ticks) -> J
 	skillShortHold0TicksFrames[0][action.ActionWalk] = 35    // Short Hold E (0 ticks) -> Walk
-	skillShortHold0TicksFrames[0][action.ActionSwap] = 44    // Short Hold E (0 ticks) -> Swap
 
 	// Female
-	skillShortHold0TicksFrames[1] = frames.InitAbilSlice(29) // Short Hold E (0 ticks) -> D
+	skillShortHold0TicksFrames[1] = frames.InitAbilSlice(43) // Short Hold E (0 ticks) -> Swap
 	skillShortHold0TicksFrames[1][action.ActionAttack] = 36  // Short Hold E (0 ticks) -> N1
 	skillShortHold0TicksFrames[1][action.ActionSkill] = 37   // Short Hold E (0 ticks) -> E
 	skillShortHold0TicksFrames[1][action.ActionBurst] = 35   // Short Hold E (0 ticks) -> Q
+	skillShortHold0TicksFrames[1][action.ActionDash] = 29    // Short Hold E (0 ticks) -> D
 	skillShortHold0TicksFrames[1][action.ActionJump] = 30    // Short Hold E (0 ticks) -> J
 	skillShortHold0TicksFrames[1][action.ActionWalk] = 36    // Short Hold E (0 ticks) -> Walk
-	skillShortHold0TicksFrames[1][action.ActionSwap] = 43    // Short Hold E (0 ticks) -> Swap
 
 	// Short Hold E
 	skillShortHoldFrames = make([][]int, 2)
@@ -100,7 +103,7 @@ func init() {
 	skillShortHoldFrames[1][action.ActionWalk] = 80    // Short Hold E -> Walk
 }
 
-func (c *Traveler) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]int) (action.Info, error) {
+func (c *Traveler) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]int, canQueueAfter []int) (action.Info, error) {
 	c.torrentSurge(hitmark, spiritHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 10*60, cdStart)
 
@@ -111,15 +114,15 @@ func (c *Traveler) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),
 		AnimationLength: skillFrames[c.gender][action.InvalidAction],
-		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
+		CanQueueAfter:   canQueueAfter[c.gender], // earliest cancel
 		State:           action.SkillState,
 		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
 	}, nil
 }
 
 func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
-	aiHold := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiHold := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Dewdrop (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagTravelerDewdrop,
@@ -138,7 +141,7 @@ func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 		c.skillLosingHP(&aiHold)
 		c.Core.QueueAttack(
 			aiHold,
-			combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
+			combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.4}, 0.3, 1.3),
 			0,
 			1,
 			c.makeA1CB(),
@@ -152,15 +155,15 @@ func (c *Traveler) skillShortHold(travel int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillShortHoldFrames[c.gender]),
 		AnimationLength: skillShortHoldFrames[c.gender][action.InvalidAction],
-		CanQueueAfter:   skillShortHoldFrames[c.gender][action.ActionJump], // earliest cancel
+		CanQueueAfter:   skillShortHoldCanQueueAfter[c.gender], // earliest cancel
 		State:           action.SkillState,
 		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
 	}, nil
 }
 
 func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
-	aiHold := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiHold := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Dewdrop (Hold)",
 		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagTravelerDewdrop,
@@ -183,7 +186,7 @@ func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
 			c.skillLosingHP(&aiHold)
 			c.Core.QueueAttack(
 				aiHold,
-				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
+				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.4}, 0.3, 1.3),
 				0,
 				1,
 				a1cb,
@@ -199,7 +202,7 @@ func (c *Traveler) skillHold(travel, holdTicks int) (action.Info, error) {
 	return action.Info{
 		Frames:          func(next action.Action) int { return skillShortHoldFrames[c.gender][next] + extend },
 		AnimationLength: skillShortHoldFrames[c.gender][action.InvalidAction] + extend,
-		CanQueueAfter:   skillShortHoldFrames[c.gender][action.ActionJump] + extend, // earliest cancel
+		CanQueueAfter:   skillShortHoldCanQueueAfter[c.gender] + extend, // earliest cancel
 		State:           action.SkillState,
 		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
 	}, nil
@@ -230,6 +233,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 			skillPressSpiritThornHitmark,
 			skillPressCdStart,
 			skillPressFrames,
+			skillPressCanQueueAfter,
 		)
 	case holdTicks == 0:
 		// hold=1, hold_ticks=0
@@ -238,6 +242,7 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 			skillShortHold0TicksSpiritbreathThornHitmark,
 			skillShortHold0TicksCdStart,
 			skillShortHold0TicksFrames,
+			skillShortHold0TicksCanQueueAfter,
 		)
 	case holdTicks == 1:
 		// hold=1, hold_ticks=1
@@ -248,8 +253,8 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}
 }
 
-func (c *Traveler) skillParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *Traveler) skillParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -265,8 +270,8 @@ func (c *Traveler) skillParticleCB(a combat.AttackCB) {
 }
 
 func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Torrent Surge",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -286,8 +291,8 @@ func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 	c.Core.QueueAttack(ai, hitbox, hitmark, hitmark, c.skillParticleCB)
 
 	if !c.StatusIsActive(spiritbreathThornICDKey) {
-		ai = combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai = info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Spiritbreath Thorn",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagNone,
@@ -304,7 +309,7 @@ func (c *Traveler) torrentSurge(hitmark, spiritHitmark int) {
 	}
 }
 
-func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
+func (c *Traveler) skillLosingHP(ai *info.AttackInfo) {
 	if c.StatusIsActive(skillLosingHPICDKey) {
 		return
 	}
@@ -315,7 +320,7 @@ func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
 
 	drainHP := 0.04 * c.CurrentHP()
 	c.Core.Player.Drain(info.DrainInfo{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Abil:       "Suffusion",
 		Amount:     drainHP,
 	})
@@ -329,7 +334,7 @@ func (c *Traveler) skillLosingHP(ai *combat.AttackInfo) {
 			c.a4Bonus = 5000
 		}
 
-		c.Core.Log.NewEvent("travelerhydro a4 adding dmg bonus", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("travelerhydro a4 adding dmg bonus", glog.LogCharacterEvent, c.Index()).
 			Write("dmg bonus", c.a4Bonus)
 	}
 	c.AddStatus(skillLosingHPICDKey, 0.9*60, true)

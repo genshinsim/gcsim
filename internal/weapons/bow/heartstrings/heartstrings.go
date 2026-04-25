@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -62,49 +61,46 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("heartstrings", -1),
 		AffectedStat: attributes.HPP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			stacks := w.Stacks()
 			mHP[attributes.HPP] = hpStack * float64(stacks)
 			if stacks >= 3 {
 				mHP[attributes.HPP] += hpMaxStack
 			}
-			return mHP, true
+			return mHP
 		},
 	})
 
 	// Using skill
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		w.AddStack(skillKey, 25*60)
-		return false
 	}, fmt.Sprintf("heartstrings-%v", char.Base.Key.String()))
 
 	// Gaining Bond
-	c.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 		index := args[0].(int)
 		amount := args[1].(float64)
 
-		if char.Index != index || amount > 0 {
-			return false
+		if char.Index() != index || amount > 0 {
+			return
 		}
 
 		w.AddStack(bondKey, 25*60)
-		return false
 	}, fmt.Sprintf("heartstrings-%v", char.Base.Key.String()))
 
 	// Healing
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		src := args[0].(*info.HealInfo)
 
-		if src.Caller != char.Index {
-			return false
+		if src.Caller != char.Index() {
+			return
 		}
 
 		w.AddStack(healingKey, 20*60)
-		return false
 	}, fmt.Sprintf("heartstrings-%v", char.Base.Key.String()))
 
 	// Burst CR buff if 3 stacks
@@ -112,14 +108,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	mCR[attributes.CR] = 0.21 + float64(r)*0.07
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(burstCRKey, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-				return nil, false
+				return nil
 			}
 			if w.Stacks() < 3 && !char.StatusIsActive(burstCRKeyCancel) {
-				return nil, false
+				return nil
 			}
-			return mCR, true
+			return mCR
 		},
 	})
 
@@ -152,7 +148,7 @@ func (w *Weapon) Stacks() int {
 
 func (w *Weapon) OnUpdateStack() {
 	stacks := w.Stacks()
-	w.core.Log.NewEvent("heartstrings update stacks", glog.LogWeaponEvent, w.char.Index).
+	w.core.Log.NewEvent("heartstrings update stacks", glog.LogWeaponEvent, w.char.Index()).
 		Write("stacks", stacks).
 		Write("bol-stack", w.char.StatusIsActive(bondKey)).
 		Write("skill-stack", w.char.StatusIsActive(skillKey)).

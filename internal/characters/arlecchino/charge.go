@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var chargeFrames []int
@@ -48,8 +48,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	c.QueueCharTask(func() {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Charge",
 			AttackTag:          attacks.AttackTagExtra,
 			ICDTag:             attacks.ICDTagExtraAttack,
@@ -73,7 +73,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				geometry.Point{Y: 0.9},
+				info.Point{Y: 0.9},
 				4,
 			),
 			0,

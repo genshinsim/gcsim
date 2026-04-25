@@ -1,5 +1,6 @@
 ---
-title: "Rock Shieldwall Mitachurl"
+title: >
+  Rock Shieldwall Mitachurl
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

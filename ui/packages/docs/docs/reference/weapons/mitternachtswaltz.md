@@ -1,5 +1,6 @@
 ---
-title: Mitternachts Waltz
+title: >
+  Mitternachts Waltz
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

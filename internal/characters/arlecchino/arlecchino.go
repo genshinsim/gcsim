@@ -6,12 +6,9 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -51,7 +48,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
-	lastAction := c.Character.Core.Player.LastAction
+	lastAction := c.Core.Player.LastAction
 	if k != c.Base.Key && a != action.ActionSwap {
 		return fmt.Errorf("%v: Tried to execute %v when not on field", c.Base.Key, a)
 	}
@@ -72,53 +69,21 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 15
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 7
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
 }
 
-func (c *char) Heal(hi *info.HealInfo) (float64, float64) {
-	hp, bonus := c.CalcHealAmount(hi)
-
-	// save previous hp related values for logging
-	prevHPRatio := c.CurrentHPRatio()
-	prevHP := c.CurrentHP()
-	prevHPDebt := c.CurrentHPDebt()
-
-	// calc original heal amount
-	healAmt := hp * bonus
-
-	// calc actual heal amount considering hp debt
-	heal := healAmt - c.CurrentHPDebt()
-	if heal < 0 {
-		heal = 0
+func (c *char) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
+	// ignore all healing except hers
+	if hi.Caller == c.Index() && hi.Message == balemoonRisingHealAbil {
+		return c.Character.ReceiveHeal(hi, healAmt)
 	}
-
-	// overheal is always 0 when the healing is blocked
-	overheal := 0.0
-
-	// still emit event for clam, sodp, rightful reward, etc
-	c.Core.Log.NewEvent(hi.Message, glog.LogHealEvent, c.Index).
-		Write("previous_hp_ratio", prevHPRatio).
-		Write("previous_hp", prevHP).
-		Write("previous_hp_debt", prevHPDebt).
-		Write("base amount", hp).
-		Write("bonus", bonus).
-		Write("final amount before hp debt", healAmt).
-		Write("final amount after hp debt", heal).
-		Write("overheal", overheal).
-		Write("current_hp_ratio", c.CurrentHPRatio()).
-		Write("current_hp", c.CurrentHP()).
-		Write("current_hp_debt", c.CurrentHPDebt()).
-		Write("max_hp", c.MaxHP())
-
-	c.Core.Events.Emit(event.OnHeal, hi, c.Index, heal, overheal, healAmt)
-
-	return heal, healAmt
+	return 0
 }

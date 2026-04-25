@@ -3,9 +3,9 @@ package heizou
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -18,17 +18,17 @@ func (c *char) a1() {
 		return
 	}
 	const a1IcdKey = "heizou-a1-icd"
-	swirlCB := func() func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	swirlCB := func() func(args ...any) {
+		return func(args ...any) {
 			if c.StatusIsActive(a1IcdKey) {
-				return false
+				return
 			}
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != c.Index {
-				return false
+			atk := args[1].(*info.AttackEvent)
+			if atk.Info.ActorIndex != c.Index() {
+				return
 			}
-			if c.Core.Player.Active() != c.Index {
-				return false
+			if c.Core.Player.Active() != c.Index() {
+				return
 			}
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagSwirlPyro:
@@ -36,12 +36,11 @@ func (c *char) a1() {
 			case attacks.AttackTagSwirlElectro:
 			case attacks.AttackTagSwirlCryo:
 			default:
-				return false
+				return
 			}
 			// icd is triggered regardless if stacks are maxed or not
 			c.AddStatus(a1IcdKey, 6, true)
 			c.addDecStack()
-			return false
 		}
 	}
 
@@ -57,16 +56,16 @@ func (c *char) a4() {
 
 	dur := 60 * 10
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue // nothing for heizou
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("heizou-a4", dur),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return c.a4Buff, true
+			Amount: func() []float64 {
+				return c.a4Buff
 			},
 		})
 	}
-	c.Core.Log.NewEvent("heizou a4 triggered", glog.LogCharacterEvent, c.Index).Write("em snapshot", c.a4Buff[attributes.EM]).Write("expiry", c.Core.F+dur)
+	c.Core.Log.NewEvent("heizou a4 triggered", glog.LogCharacterEvent, c.Index()).Write("em snapshot", c.a4Buff[attributes.EM]).Write("expiry", c.Core.F+dur)
 }

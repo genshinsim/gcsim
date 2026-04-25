@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -42,32 +41,30 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	naDmg := 0.12 + 0.4*float64(r)
-	c.Events.Subscribe(event.OnDash, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnDash, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		char.SetTag(buffKey, 18)
 		char.AddStatus(buffKey, 7*60, true)
-
-		return false
 	}, fmt.Sprintf("sturdybone-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
-			return false
+			return
 		}
 
 		if !char.StatusIsActive(buffKey) || char.Tag(buffKey) == 0 {
-			return false
+			return
 		}
 
 		dmgAdded := char.Stat(attributes.ATK) * naDmg
@@ -75,11 +72,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.SetTag(buffKey, char.Tag(buffKey)-1)
 
-		c.Log.NewEvent("sturdy bone buff", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("sturdy bone buff", glog.LogPreDamageMod, char.Index()).
 			Write("damage_added", dmgAdded).
 			Write("remaining_stacks", char.Tags[buffKey])
-
-		return false
 	}, fmt.Sprintf("sturdybone-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -1,5 +1,6 @@
 ---
-title: "Eremite Galehunter"
+title: >
+  Eremite Galehunter
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

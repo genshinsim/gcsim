@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -55,35 +54,33 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	bonus := attributes.EleToDmgP(char.Base.Element)
 
 	// normal dealing dmg
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if atk.Info.Element == attributes.Physical {
-			return false
+			return
 		}
 		char.AddStatus(normalBuffKey, 300, true)
-		return false
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 
 	// using burst
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
+	c.Events.Subscribe(event.OnBurst, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		char.AddStatus(burstBuffKey, 600, true)
-		return false
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("mistsplitter", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			count := 0
-			if char.Energy < char.EnergyMax {
+			if char.Energy < char.EnergyMax || char.EnergyMax == 0 {
 				count++
 			}
 			if char.StatusIsActive(normalBuffKey) {
@@ -97,7 +94,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				dmg += maxBonus
 			}
 			m[bonus] = base + dmg
-			return m, true
+			return m
 		},
 	})
 

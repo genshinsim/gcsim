@@ -1,5 +1,6 @@
 ---
-title: Favonius Warbow
+title: >
+  Favonius Warbow
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

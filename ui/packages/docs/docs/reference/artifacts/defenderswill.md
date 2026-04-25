@@ -1,5 +1,6 @@
 ---
-title: Defender's Will
+title: >
+  Defender's Will
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

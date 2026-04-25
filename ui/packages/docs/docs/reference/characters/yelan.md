@@ -1,5 +1,6 @@
 ---
-title: Yelan
+title: >
+  Yelan
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -22,6 +22,8 @@ const (
 	skillPressHitmark = 22
 	skillHoldHitmark  = 117
 	particleICDKey    = "lisa-particle-icd"
+	skillPressAbil    = "Violet Arc (Press)"
+	skillHoldAbil     = "Violet Arc (Hold)"
 )
 
 func init() {
@@ -51,8 +53,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(), nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -64,9 +66,9 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // TODO: how long do stacks last?
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Violet Arc",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       skillPressAbil,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagLisaElectro,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -76,9 +78,9 @@ func (c *char) skillPress() action.Info {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	cb := func(a combat.AttackCB) {
+	cb := func(a info.AttackCB) {
 		// doesn't stack off-field
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 		t, ok := a.Target.(*enemy.Enemy)
@@ -113,9 +115,9 @@ func (c *char) skillPress() action.Info {
 // Deals great amounts of extra damage to opponents based on the number of Conductive stacks applied to them, and clears their Conductive status.
 func (c *char) skillHold() action.Info {
 	// no multiplier as that's target dependent
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Violet Arc (Hold)",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       skillHoldAbil,
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -132,17 +134,17 @@ func (c *char) skillHold() action.Info {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("lisa-c2", 126),
 			AffectedStat: attributes.DEFP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 
 	count := 0
-	var c1cb func(a combat.AttackCB)
+	var c1cb func(a info.AttackCB)
 	if c.Base.Cons > 0 {
-		c1cb = func(a combat.AttackCB) {
-			if a.Target.Type() != targets.TargettableEnemy {
+		c1cb = func(a info.AttackCB) {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			if count == 5 {
@@ -173,14 +175,14 @@ func (c *char) skillHold() action.Info {
 }
 
 func (c *char) skillHoldMult() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
-		if atk.Info.Abil != "Violet Arc (Hold)" {
-			return false
+		if atk.Info.Abil != skillHoldAbil {
+			return
 		}
 		stacks := t.GetTag(conductiveTag)
 
@@ -188,7 +190,5 @@ func (c *char) skillHoldMult() {
 
 		// consume the stacks
 		t.SetTag(conductiveTag, 0)
-
-		return false
 	}, "lisa-skill-hold-mul")
 }

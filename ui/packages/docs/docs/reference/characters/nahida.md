@@ -1,5 +1,6 @@
 ---
-title: Nahida
+title: >
+  Nahida
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

@@ -43,7 +43,7 @@ func (c *char) addFanfareFunc(amt float64) func() {
 		}
 		prevFanfare := c.curFanfare
 		c.curFanfare = min(c.maxC2Fanfare, c.curFanfare+amt)
-		c.Core.Log.NewEvent("Gained Fanfare", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Gained Fanfare", glog.LogCharacterEvent, c.Index()).
 			Write("previous fanfare", prevFanfare).
 			Write("current fanfare", c.curFanfare)
 	}
@@ -85,27 +85,25 @@ func (c *char) burstInit() {
 	}
 	c.burstBuff = make([]float64, attributes.EndStatType)
 
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 
 		di := args[0].(*info.DrainInfo)
 
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 
 		char := c.Core.Player.ByIndex(di.ActorIndex)
 		amt := di.Amount / char.MaxHP() * 100
 		c.queueFanfareGain(amt)
-
-		return false
 	}, "furina-fanfare-on-hp-drain")
 
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 
 		target := args[1].(int)
@@ -113,19 +111,17 @@ func (c *char) burstInit() {
 		overheal := args[3].(float64)
 
 		if amount <= 0 {
-			return false
+			return
 		}
 
 		if math.Abs(amount-overheal) <= 1e-9 {
-			return false
+			return
 		}
 
 		char := c.Core.Player.ByIndex(target)
 		amt := (amount - overheal) / char.MaxHP() * 100
 
 		c.queueFanfareGain(amt)
-
-		return false
 	}, "furina-fanfare-on-heal")
 
 	burstDMGRatio := burstFanfareDMGRatio[c.TalentLvlBurst()]
@@ -133,30 +129,30 @@ func (c *char) burstInit() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("furina-burst-damage-buff", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if !c.StatusIsActive(burstKey) {
-					return nil, false
+					return nil
 				}
 				c.burstBuff[attributes.DmgP] = min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
-				return c.burstBuff, true
+				return c.burstBuff
 			},
 		})
 
 		char.AddHealBonusMod(character.HealBonusMod{
 			Base: modifier.NewBase("furina-burst-heal-buff", -1),
-			Amount: func() (float64, bool) {
+			Amount: func() float64 {
 				if c.StatusIsActive(burstKey) {
-					return min(c.curFanfare, c.maxQFanfare) * burstHealRatio, false
+					return min(c.curFanfare, c.maxQFanfare) * burstHealRatio
 				}
-				return 0, false
+				return 0
 			},
 		})
 	}
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Let the People Rejoice",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,

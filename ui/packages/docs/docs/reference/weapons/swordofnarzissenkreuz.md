@@ -1,5 +1,6 @@
 ---
-title: Sword of Narzissenkreuz
+title: >
+  Sword of Narzissenkreuz
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

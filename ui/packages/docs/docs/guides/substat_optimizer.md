@@ -175,6 +175,12 @@ This is due to gcsim:
 - modelling the actual particle rng (example: Fischl Oz) by running the config for many times.
 :::
 
+:::info
+In the resulting config, the optimizer will format substats by their scalars (e.g. `cr=0.0331*10 cd=0.0662*12`) by default.
+It is possible to disable this with `-options="show_substat_scalars=0"` to output the multiplied values like `cr=0.331 cd=0.7944` instead.
+Please refer to [this page](/reference/cli#additional-options-for-substat-optimizer--options) for more information.
+:::
+
 ## Verbose Output
 In the [Example](#example) above, if you also add the flag for verbose output:
 ```

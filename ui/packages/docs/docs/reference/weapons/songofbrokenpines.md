@@ -1,5 +1,6 @@
 ---
-title: Song of Broken Pines
+title: >
+  Song of Broken Pines
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

@@ -6,13 +6,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
-const skillPressHimark = 24
-const skillHoldHitmark = 48
+const (
+	skillPressHimark = 24
+	skillHoldHitmark = 48
+)
 
 func init() {
 	// skill (press) -> x
@@ -55,8 +60,8 @@ func (c *char) skillPress() action.Info {
 
 func (c *char) skillHold(createStele bool) action.Info {
 	// hold does dmg
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Stone Stele (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,

@@ -6,20 +6,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Traveler struct {
 	*tmpl.Character
 	qAbsorb              attributes.Element
 	qICDTag              attacks.ICDTag
-	qAbsorbCheckLocation combat.AttackPattern
+	qAbsorbCheckLocation info.AttackPattern
 	eAbsorb              attributes.Element
 	eICDTag              attacks.ICDTag
-	eAbsorbCheckLocation combat.AttackPattern
+	eAbsorbCheckLocation info.AttackPattern
 	gender               int
 }
 
@@ -35,7 +33,7 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
-	common.TravelerBaseAtkIncrease(w, p)
+	common.TravelerStoryBuffs(w, p)
 	return &c, nil
 }
 
@@ -47,9 +45,9 @@ func (c *Traveler) Init() error {
 	return nil
 }
 
-func (c *Traveler) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *Traveler) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		if c.gender == 0 {
 			return 8
 		}

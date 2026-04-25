@@ -1,5 +1,6 @@
 ---
-title: Sword of Descension
+title: >
+  Sword of Descension
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

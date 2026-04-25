@@ -1,5 +1,6 @@
 ---
-title: Black Tassel
+title: >
+  Black Tassel
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

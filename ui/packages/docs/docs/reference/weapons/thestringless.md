@@ -1,5 +1,6 @@
 ---
-title: The Stringless
+title: >
+  The Stringless
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

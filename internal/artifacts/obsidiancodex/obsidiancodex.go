@@ -35,14 +35,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.DmgP] = 0.15
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase("obsidiancodex-2pc", -1),
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if !char.StatusIsActive(nightsoul.NightsoulBlessingStatus) {
-					return nil, false
+					return nil
 				}
-				if c.Player.Active() != char.Index {
-					return nil, false
+				if c.Player.Active() != char.Index() {
+					return nil
 				}
-				return m, true
+				return m
 			},
 		})
 	}
@@ -51,17 +51,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		const icdKey = "obsidiancodex-4pc-icd"
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CR] = 0.4
-		c.Events.Subscribe(event.OnNightsoulConsume, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnNightsoulConsume, func(args ...any) {
 			idx := args[0].(int)
 			amount := args[1].(float64)
-			if char.Index != idx {
-				return false
+			if char.Index() != idx {
+				return
 			}
-			if c.Player.Active() != char.Index {
-				return false
+			if c.Player.Active() != char.Index() {
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			s.consumeCount += amount
 			if s.consumeCount >= 1 {
@@ -69,12 +69,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				char.AddStatus(icdKey, 60, true)
 				char.AddStatMod(character.StatMod{
 					Base: modifier.NewBaseWithHitlag("obsidiancodex-4pc", 6*60),
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}
-			return false
 		}, fmt.Sprintf("obsidiancodex-4pc-%v", char.Base.Key.String()))
 	}
 

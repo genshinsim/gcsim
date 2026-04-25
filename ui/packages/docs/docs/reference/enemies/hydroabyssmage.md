@@ -1,5 +1,6 @@
 ---
-title: "Hydro Abyss Mage"
+title: >
+  Hydro Abyss Mage
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

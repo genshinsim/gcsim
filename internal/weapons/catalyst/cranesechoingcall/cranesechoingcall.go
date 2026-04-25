@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -48,24 +47,24 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	energyRestore := 2.25 + float64(r)*0.25
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 
 		// can only trigger on plunge dmg
 		if atk.Info.AttackTag != attacks.AttackTagPlunge {
-			return false
+			return
 		}
 
 		// if dmg came from equipping char, then buff team plunge dmg
-		if atk.Info.ActorIndex == char.Index {
+		if atk.Info.ActorIndex == char.Index() {
 			for _, char := range c.Player.Chars() {
 				char.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBaseWithHitlag(buffKey, buffDuration),
-					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 						if atk.Info.AttackTag != attacks.AttackTagPlunge {
-							return nil, false
+							return nil
 						}
-						return mDmg, true
+						return mDmg
 					},
 				})
 			}
@@ -73,12 +72,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		// restore energy regardless of who did plunge dmg
 		if char.StatusIsActive(energyIcdKey) {
-			return false
+			return
 		}
 		char.AddStatus(energyIcdKey, energyIcd, true)
 		char.AddEnergy(energySrc, energyRestore)
-
-		return false
 	}, fmt.Sprintf("crane-onhit-%v", char.Base.Key.String()))
 
 	return w, nil

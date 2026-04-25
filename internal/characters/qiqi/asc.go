@@ -1,8 +1,8 @@
 package qiqi
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -16,29 +16,27 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	a1Hook := func(args ...interface{}) bool {
+	a1Hook := func(args ...any) {
 		if c.StatusIsActive(skillBuffKey) {
-			return false
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 
 		// Active char is the only one under the effects of Qiqi skill
 		active := c.Core.Player.ActiveChar()
-		if atk.Info.ActorIndex != active.Index {
-			return false
+		if atk.Info.ActorIndex != active.Index() {
+			return
 		}
 
 		active.AddHealBonusMod(character.HealBonusMod{
 			Base: modifier.NewBaseWithHitlag("qiqi-a1", 8*60),
-			Amount: func() (float64, bool) {
-				return .2, false
+			Amount: func() float64 {
+				return .2
 			},
 		})
-
-		return false
 	}
 
-	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Core.Events.Subscribe(i, a1Hook, "qiqi-a1")
 	}
 }

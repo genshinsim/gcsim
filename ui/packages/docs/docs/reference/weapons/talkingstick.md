@@ -1,5 +1,6 @@
 ---
-title: Talking Stick
+title: >
+  Talking Stick
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";

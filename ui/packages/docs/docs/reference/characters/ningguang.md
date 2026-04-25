@@ -1,5 +1,6 @@
 ---
-title: Ningguang
+title: >
+  Ningguang
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

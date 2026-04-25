@@ -1,5 +1,6 @@
 ---
-title: "Maguu Kenki: Lone Gale"
+title: >
+  Maguu Kenki: Lone Gale
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

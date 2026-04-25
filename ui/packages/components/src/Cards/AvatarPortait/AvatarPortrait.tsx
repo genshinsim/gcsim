@@ -56,6 +56,7 @@ type AvatarPortraitProps = {
   i: number;
   invalid: boolean;
   onImageLoaded: () => void;
+  hideDetails?: boolean;
 
   //optional classes
   className?: string;
@@ -66,6 +67,7 @@ export const AvatarPortrait = ({
   i,
   invalid,
   onImageLoaded,
+  hideDetails = false,
   className = '',
 }: AvatarPortraitProps) => {
   //display an empty card here
@@ -89,7 +91,7 @@ export const AvatarPortrait = ({
   const sets: string[] = [];
   let half = false;
 
-  if (char.sets && char.sets !== null) {
+  if (!hideDetails && char.sets && char.sets !== null) {
     for (const [key] of Object.entries(char.sets)) {
       sets.push(key);
     }
@@ -122,7 +124,7 @@ export const AvatarPortrait = ({
             onLoad={onImageLoaded}
           />
         </div>
-        {char.weapon ? <WeaponImage weapon={char.weapon} /> : null}
+        {!hideDetails && char.weapon ? <WeaponImage weapon={char.weapon} /> : null}
         <div className="absolute bottom-0 left-0 opacity-85">
           <svg
             width={35}
@@ -135,6 +137,7 @@ export const AvatarPortrait = ({
           </svg>
         </div>
 
+        {!hideDetails ? <>
         <div
           className={
             'absolute left-[-1px] top-[-1px] flex flex-col gap-0 px-1 py-0 rounded-none ' +
@@ -143,7 +146,7 @@ export const AvatarPortrait = ({
           }>
           <div className="flex flex-row gap-1 min-h-fit">
             <span className="text-geo">{`C${char.cons ?? 0}`}</span>
-            {char.weapon ? (
+            {!hideDetails && char.weapon ? (
               <span className="text-electro">{`R${
                 char.weapon.refine ?? 0
               }`}</span>
@@ -165,7 +168,7 @@ export const AvatarPortrait = ({
               {char.level}
             </span>
           </div>
-        </div>
+        </div> </> : null}
 
         {invalid && (
           <div className="absolute left-0 top-1/3 w-full">

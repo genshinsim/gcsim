@@ -1,5 +1,6 @@
 ---
-title: "Maguu Kenki"
+title: >
+  Maguu Kenki
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";

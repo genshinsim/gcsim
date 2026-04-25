@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -49,17 +48,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("verdict-atk", -1),
 		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 
 	// seal gain on crystallize shard pickup
-	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnShielded, func(args ...any) {
 		// Check shield
 		shd := args[0].(shield.Shield)
 		if shd.Type() != shield.Crystallize {
-			return false
+			return
 		}
 
 		if !char.StatModIsActive(buffKey) {
@@ -68,25 +67,24 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.stacks < 2 {
 			w.stacks++
 		}
-		c.Log.NewEvent("verdict adding stack", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("verdict adding stack", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 		char.AddStatus(buffKey, buffDuration, true)
-		return false
 	}, fmt.Sprintf("verdict-seal-%v", char.Base.Key.String()))
 
 	// skill dmg increase while seals active
 	skillDmg := 0.135 + float64(r)*0.045
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 		// don't do anything if not in buff
 		if !char.StatusIsActive(buffKey) {
-			return false
+			return
 		}
 		// otherwise if this is first time proccing
 		// - set duration for dmg window
@@ -101,9 +99,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		skillDmgAdd := skillDmg * float64(w.stacks)
 		atk.Snapshot.Stats[attributes.DmgP] += skillDmgAdd
 
-		c.Log.NewEvent("verdict adding skill dmg", glog.LogPreDamageMod, char.Index).
+		c.Log.NewEvent("verdict adding skill dmg", glog.LogPreDamageMod, char.Index()).
 			Write("skill_dmg_added", skillDmgAdd)
-		return false
 	}, fmt.Sprintf("verdict-onhit-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -29,8 +29,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("homa-hp", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return mHP, true
+		Amount: func() []float64 {
+			return mHP
 		},
 	})
 
@@ -41,14 +41,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		Base:         modifier.NewBase("homa-atk-buff", -1),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			maxhp := char.MaxHP()
 			per := atkp
 			if char.CurrentHPRatio() <= 0.5 {
 				per += lowhp
 			}
 			mATK[attributes.ATK] = per * maxhp
-			return mATK, true
+			return mATK
 		},
 	})
 

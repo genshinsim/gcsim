@@ -4,8 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -24,14 +24,14 @@ func (c *char) createKinu(src int, centerOffset, minRandom, maxRandom float64) f
 	return func() {
 		// determine kinu pos
 		player := c.Core.Combat.Player()
-		center := geometry.CalcOffsetPoint(
+		center := info.CalcOffsetPoint(
 			player.Pos(),
-			geometry.Point{Y: centerOffset},
+			info.Point{Y: centerOffset},
 			player.Direction(),
 		)
-		kinuPos := geometry.CalcRandomPointFromCenter(center, minRandom, maxRandom, c.Core.Rand)
+		kinuPos := info.CalcRandomPointFromCenter(center, minRandom, maxRandom, c.Core.Rand)
 
-		c.Core.Log.NewEvent("kinu spawned", glog.LogCharacterEvent, c.Index).Write("src", src)
+		c.Core.Log.NewEvent("kinu spawned", glog.LogCharacterEvent, c.Index()).Write("src", src)
 
 		// spawn kinu
 		kinu := newTicker(c.Core, kinuDuration, nil)
@@ -42,12 +42,12 @@ func (c *char) createKinu(src int, centerOffset, minRandom, maxRandom float64) f
 	}
 }
 
-func (c *char) kinuAttack(src int, kinu *ticker, pos geometry.Point) func() {
+func (c *char) kinuAttack(src int, kinu *ticker, pos info.Point) func() {
 	return func() {
 		c.Core.Tasks.Add(func() {
-			ai := combat.AttackInfo{
+			ai := info.AttackInfo{
 				Abil:       "Fluttering Hasode (Kinu)",
-				ActorIndex: c.Index,
+				ActorIndex: c.Index(),
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagChioriSkill,
 				ICDGroup:   attacks.ICDGroupChioriSkill,
@@ -71,7 +71,7 @@ func (c *char) kinuAttack(src int, kinu *ticker, pos geometry.Point) func() {
 
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(t, nil, skillDollAoE), 0)
 
-			c.Core.Log.NewEvent("kinu killed on attack", glog.LogCharacterEvent, c.Index).Write("src", src)
+			c.Core.Log.NewEvent("kinu killed on attack", glog.LogCharacterEvent, c.Index()).Write("src", src)
 
 			kinu.kill()
 			c.cleanupKinu()
