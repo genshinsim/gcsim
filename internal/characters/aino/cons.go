@@ -81,7 +81,7 @@ func (c *char) c2Init() {
 		if c.Core.Player.Active() == c.Index() {
 			return
 		}
-		if atk.Info.ActorIndex == c.Index() {
+		if atk.Info.ActorIndex != c.Core.Player.Active() {
 			return
 		}
 		if !c.StatusIsActive(burstKey) {
