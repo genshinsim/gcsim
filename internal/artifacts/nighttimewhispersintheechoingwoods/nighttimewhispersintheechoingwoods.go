@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -12,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func init() {
@@ -53,6 +55,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		c.Events.Subscribe(event.OnShielded, s.OnShielded(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnConstructSpawned, s.OnConstructSpawned(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnLunarReactionAttack, s.OnLunarReactionAttack(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnShieldBreak, s.OnShieldBreak(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnCharacterSwap, s.OnCharacterSwap(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnSkill, s.OnSkill(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
@@ -76,11 +79,23 @@ func (s *Set) OnShielded() func(args ...any) {
 func (s *Set) OnConstructSpawned() func(args ...any) {
 	return func(args ...any) {
 		c := args[0].(construct.Construct)
-		if s.core.Player.Active() != s.char.Index() {
-			return
-		}
 		if c.Type() == construct.GeoConstructLunarCrystallize {
-			s.lastF = c.Expiry()
+			s.core.Status.Add("nighttimewhispers-4pc-moondrift", reactable.lcrDur)
+			if s.core.Player.Active() != s.char.Index() {
+				s.lastF = s.core.F + s.core.Status.Duration("nighttimewhispers-4pc-moondrift")
+			}
+		}
+	}
+}
+
+func (s *Set) OnLunarReactionAttack() func(args ...any) {
+	return func(args ...any) {
+		ae := args[1].(info.AttackEvent)
+		if ae.Info.AttackTag == attacks.AttackTagReactionLunarCrystallize && s.core.Status.Duration("nighttimewhispers-4pc-moondrift") > 0 { // should be impossible for a moondrift to be absent during a moondrift attack?
+			s.core.Status.Add("nighttimewhispers-4pc-moondrift", reactable.lcrDur)
+			if s.core.Player.Active() != s.char.Index() {
+				s.lastF = s.core.F + s.core.Status.Duration("nighttimewhispers-4pc-moondrift")
+			}
 		}
 	}
 }
@@ -103,12 +118,13 @@ func (s *Set) OnCharacterSwap() func(args ...any) {
 		prev := args[0].(int)
 		active := args[1].(int)
 		shd := s.core.Player.Shields.Get(shield.Crystallize)
+		moondriftExpiry := s.core.F + s.core.Status.Duration("nighttimewhispers-4pc-moondrift")
 		if shd == nil {
 			return
 		}
 		switch s.char.Index() {
 		case active:
-			s.lastF = shd.Expiry()
+			s.lastF = max(shd.Expiry(), moondriftExpiry)
 		case prev:
 			s.lastF = s.core.F + 60
 		}
