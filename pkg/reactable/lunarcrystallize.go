@@ -18,7 +18,7 @@ const (
 	LcrKey              = "lunarcrystallize"
 	LcrExtraHitOverride = "lunarcrystallize-bonus-hit-chance"
 	lcrCountKey         = "lunarcrystallize-count"
-	lcrDur              = 5.5 * 60
+	lcrDur              = 9 * 60
 )
 
 var lcrContributorMult = []float64{0.6, 0.3, 0.05, 0.05} // TODO: move to a lunar.go ?
