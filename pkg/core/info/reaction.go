@@ -144,5 +144,4 @@ type ReactableLunarBloom interface {
 type ReactableLunarCrystallize interface {
 	TryAddLCr(a *AttackEvent) bool
 	DoLCrAttack()
-	DoLCrAttackWithContrib(contribMap [MaxChars]bool)
 }

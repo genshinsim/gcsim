@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"slices"
 
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -124,7 +125,7 @@ type lcrContribution = struct {
 }
 
 func (r *Reactable) DoLCrAttack() {
-	r.DoLCrAttackWithContrib(r.lcrContributors)
+	DoLCrAttackWithContrib(r.lcrContributors, r.self, r.core, r.lcAtkOwner)
 	// clear contributors after last attack
 	r.core.Tasks.Add(func() {
 		for i := range r.lcrContributors {
@@ -134,23 +135,23 @@ func (r *Reactable) DoLCrAttack() {
 }
 
 // Perform a Lunar Crystallize reaction 3-hit attack with the given contributors
-func (r *Reactable) DoLCrAttackWithContrib(contribMap [info.MaxChars]bool) {
+func DoLCrAttackWithContrib(contribMap [info.MaxChars]bool, target info.Target, core *core.Core, owner int) {
 	for _, delay := range []int{1, 4, 7} {
-		r.core.Tasks.Add(func() { r.doSingleLCrAttack(contribMap) }, delay)
-		if chance, ok := r.core.Flags.Custom[LcrExtraHitOverride]; ok && r.core.Rand.Float64() < chance {
-			r.core.Tasks.Add(func() { r.doSingleLCrAttack(contribMap) }, delay)
+		core.Tasks.Add(func() { doSingleLCrAttack(contribMap, target, core, owner) }, delay)
+		if chance, ok := core.Flags.Custom[LcrExtraHitOverride]; ok && core.Rand.Float64() < chance {
+			core.Tasks.Add(func() { doSingleLCrAttack(contribMap, target, core, owner) }, delay)
 		}
 	}
 }
 
-func (r *Reactable) doSingleLCrAttack(contribMap [info.MaxChars]bool) {
+func doSingleLCrAttack(contribMap [info.MaxChars]bool, target info.Target, core *core.Core, owner int) {
 	contributions := []lcrContribution{}
 
-	ap := combat.NewSingleTargetHit(r.self.Key())
+	ap := combat.NewSingleTargetHit(target.Key())
 
 	// Do we need to make a new one for each character?
 	ai := info.AttackInfo{
-		DamageSrc:        r.self.Key(),
+		DamageSrc:        target.Key(),
 		Abil:             string(info.ReactionTypeLunarCrystallize),
 		AttackTag:        attacks.AttackTagReactionLunarCrystallize,
 		ICDTag:           attacks.ICDTagNone,
@@ -160,7 +161,7 @@ func (r *Reactable) doSingleLCrAttack(contribMap [info.MaxChars]bool) {
 		IgnoreDefPercent: 1,
 	}
 
-	for charInd, char := range r.core.Player.Chars() {
+	for charInd, char := range core.Player.Chars() {
 		if !contribMap[charInd] {
 			continue
 		}
@@ -171,12 +172,12 @@ func (r *Reactable) doSingleLCrAttack(contribMap [info.MaxChars]bool) {
 		ae := info.AttackEvent{
 			Info:        ai,
 			Pattern:     ap,
-			SourceFrame: r.core.F,
+			SourceFrame: core.F,
 			Snapshot:    snap,
 		}
 
 		// Emit even so PreDamageMods can be applied to the individual LCr contributions
-		r.core.Events.Emit(event.OnLunarReactionAttack, r.self, &ae)
+		core.Events.Emit(event.OnLunarReactionAttack, target, &ae)
 
 		em := ae.Snapshot.Stats[attributes.EM]
 		cr := ae.Snapshot.Stats[attributes.CR]
@@ -185,7 +186,7 @@ func (r *Reactable) doSingleLCrAttack(contribMap [info.MaxChars]bool) {
 		flatdmg := combat.CalcLunarReactionDmg(char.Base.Level, char.ReactBonus(ae.Info), ae.Info, em)
 		isCrit := false
 
-		if r.core.Rand.Float64() <= cr {
+		if core.Rand.Float64() <= cr {
 			flatdmg *= (1 + cd)
 			isCrit = true
 		}
@@ -211,8 +212,8 @@ func (r *Reactable) doSingleLCrAttack(contribMap [info.MaxChars]bool) {
 
 	for i := range contributions {
 		contr := &contributions[i]
-		r.core.Combat.Log.NewEvent(fmt.Sprint("lunarcrystallize contributor ", (i+1)), glog.LogElementEvent, contr.charInd).
-			Write("target", r.self.Key()).
+		core.Combat.Log.NewEvent(fmt.Sprint("lunarcrystallize contributor ", (i+1)), glog.LogElementEvent, contr.charInd).
+			Write("target", target.Key()).
 			Write("damage", &contr.dmg).
 			Write("crit", &contr.isCrit).
 			Write("mult", lcrContributorMult[i]).
@@ -221,7 +222,7 @@ func (r *Reactable) doSingleLCrAttack(contribMap [info.MaxChars]bool) {
 			Write("cd", &contr.ae.Snapshot.Stats[attributes.CD]).
 			Write("em", &contr.ae.Snapshot.Stats[attributes.EM]).
 			Write("base_damage_bonus", &contr.ae.Info.BaseDmgBonus).
-			Write("react_bonus", r.core.Player.Chars()[contr.charInd].ReactBonus(contr.ae.Info)).
+			Write("react_bonus", core.Player.Chars()[contr.charInd].ReactBonus(contr.ae.Info)).
 			Write("flat_dmg", &contr.ae.Info.FlatDmg).
 			Write("elevation", &contr.ae.Info.Elevation)
 
@@ -232,10 +233,9 @@ func (r *Reactable) doSingleLCrAttack(contribMap [info.MaxChars]bool) {
 	if contributions[0].isCrit {
 		snap.Stats[attributes.CR] = 1.0
 	}
-	// LCr is owned by the character that last triggered Lunar Crystallize
-	// FIXME: owner should be the character that last triggered Lunar Crystallize *for this instance of Lunar Crystallize*
-	ai.ActorIndex = r.lcrAtkOwner
-	r.core.QueueAttackWithSnap(
+	// LCr is owned by the character that last triggered Lunar Crystallize for this instance of Lunar Crystallize
+	ai.ActorIndex = owner
+	core.QueueAttackWithSnap(
 		ai,
 		snap,
 		ap,
