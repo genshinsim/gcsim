@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -66,6 +67,9 @@ func (c *char) c1() {
 func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
+			return
+		}
+		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return
 		}
 		ae := args[1].(info.AttackEvent)
