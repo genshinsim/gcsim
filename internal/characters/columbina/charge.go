@@ -11,8 +11,8 @@ import (
 
 var (
 	chargeFrames       []int
-	chargeHitmarkBloom = []int{60, 65, 70}
-	verdantDewFrame    = 57
+	chargeHitmarkBloom = []int{50, 50 + 8, 50 + 8 + 22}
+	verdantDewFrame    = 39
 )
 
 const (
@@ -22,38 +22,44 @@ const (
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(56) // CA -> Walk
-	chargeFrames[action.ActionAttack] = 49
-	chargeFrames[action.ActionCharge] = 52
-	chargeFrames[action.ActionSkill] = 52
-	chargeFrames[action.ActionBurst] = 51
-	chargeFrames[action.ActionDash] = 45
-	chargeFrames[action.ActionJump] = 46
-	chargeFrames[action.ActionSwap] = 50
+	chargeFrames = frames.InitAbilSlice(81) // CA -> Walk
+	chargeFrames[action.ActionAttack] = 81
+	chargeFrames[action.ActionCharge] = 81
+	chargeFrames[action.ActionSkill] = verdantDewFrame
+	chargeFrames[action.ActionBurst] = verdantDewFrame
+	chargeFrames[action.ActionDash] = verdantDewFrame
+	chargeFrames[action.ActionJump] = verdantDewFrame
+	chargeFrames[action.ActionSwap] = verdantDewFrame
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	c.QueueCharTask(func() {
-		if c.Core.Player.Dew() > 0 {
-			c.ChargeAttackBloom(p)
-			return
-		}
-		ai := info.AttackInfo{
-			ActorIndex: c.Index(),
-			Abil:       "Charge Attack",
-			AttackTag:  attacks.AttackTagExtra,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			Mult:       charge[c.TalentLvlAttack()],
-		}
+	if c.Core.Player.Dew() > 0 {
+		return c.ChargeAttackBloom(p), nil
+	}
 
-		ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadius)
-		delay := chargeHitmark - verdantDewFrame
-		c.Core.QueueAttack(ai, ap, delay, delay)
-	}, verdantDewFrame)
+	windup := 12
+	switch c.Core.Player.CurrentState() {
+	case action.ChargeAttackState:
+		windup = 3
+	case action.NormalAttackState:
+		windup = 0
+	}
+
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Charge Attack",
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Hydro,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+	}
+
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadius)
+	delay := chargeHitmark + windup
+	c.Core.QueueAttack(ai, ap, delay, delay)
 
 	// assuming actions have same frames?
 	return action.Info{
@@ -64,7 +70,15 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) ChargeAttackBloom(p map[string]int) {
+func (c *char) ChargeAttackBloom(p map[string]int) action.Info {
+	windup := 12
+	switch c.Core.Player.CurrentState() {
+	case action.ChargeAttackState:
+		windup = 3
+	case action.NormalAttackState:
+		windup = 0
+	}
+
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
 		Abil:             "Moondew Cleanse",
@@ -81,8 +95,16 @@ func (c *char) ChargeAttackBloom(p map[string]int) {
 
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadiusBloom)
 	for _, hitmark := range chargeHitmarkBloom {
-		delay := hitmark - verdantDewFrame
+		delay := hitmark + windup
 		c.Core.QueueAttack(ai, ap, delay, delay)
 	}
-	c.Core.Player.ConsumeDew(1)
+
+	c.QueueCharTask(func() { c.Core.Player.ConsumeDew(1) }, verdantDewFrame+windup)
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(chargeFrames),
+		AnimationLength: chargeFrames[action.InvalidAction],
+		CanQueueAfter:   chargeFrames[action.ActionDash],
+		State:           action.ChargeAttackState,
+	}
 }
