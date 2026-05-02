@@ -37,20 +37,23 @@ func (c *char) c2() {
 			return
 		}
 
+		eventLog := c.Core.Log.NewEvent("nahida c2 buff", glog.LogCharacterEvent, ae.Info.ActorIndex)
 		switch ae.Info.AttackTag {
 		case attacks.AttackTagBurningDamage, attacks.AttackTagBloom, attacks.AttackTagHyperbloom, attacks.AttackTagBurgeon, attacks.AttackTagBountifulCore:
 			// TODO: should this really be +=??
 			ae.Snapshot.Stats[attributes.CR] += 0.2
 			ae.Snapshot.Stats[attributes.CD] = 1
+			eventLog.
+				Write("final_critrate", ae.Snapshot.Stats[attributes.CR])
 		case attacks.AttackTagDirectLunarBloom:
 			ae.Snapshot.Stats[attributes.CR] += 0.1
 			ae.Snapshot.Stats[attributes.CD] += 0.2
+			eventLog.
+				Write("final_critrate", ae.Snapshot.Stats[attributes.CR]).
+				Write("final_critdmg", ae.Snapshot.Stats[attributes.CD])
 		default:
 			return
 		}
-
-		c.Core.Log.NewEvent("nahida c2 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
-			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
 	}, "nahida-c2-reaction-dmg-buff")
 
 	cb := func(_ event.Event) event.Hook {
