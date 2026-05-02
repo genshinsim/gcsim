@@ -50,6 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// while they have the "in_field" status, they also get the lunar reaction buff
 
 	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 20)
+
 	c.Core.Tasks.Add(func() {
 		c.burstSrc = c.Core.F
 		src := c.Core.F
@@ -69,7 +70,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				c.applyBurstBuff()
 			}, i)
 		}
-	}, burstHitmark)
+	}, burstHitmark-5) // field starts before hitmark, the Q hit can give a moonridge dew
+	// TODO get exact start/expiry time of Q.
 
 	c.ConsumeEnergy(5)
 	c.SetCD(action.ActionBurst, 15*60)

@@ -309,6 +309,7 @@ func (c *char) skillTick() {
 }
 
 func (c *char) skillTickTask(src int) func() {
+	// TODO: skill cast won't interrupt skill ticks if skill already active
 	return func() {
 		if c.skillSrc > src {
 			return
