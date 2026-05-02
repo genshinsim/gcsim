@@ -22,6 +22,10 @@ func (h *Handler) verdantDewTick() {
 		return
 	}
 
+	if h.verdantDewExpiryFrame == *h.F {
+		h.Log.NewEvent("verdant dew generation stopped", glog.LogElementEvent, -1)
+	}
+
 	h.partialDewCount++
 	if h.partialDewCount >= maxPartialDew {
 		h.AddVerdantDew()
@@ -56,16 +60,17 @@ func (h *Handler) Dew() int {
 
 func (h *Handler) ConsumeDew(amt int) int {
 	consumed := 0
-	if h.moonridgeDew > 0 {
-		consumed += h.consumeMoonridgeDew(amt)
+
+	if h.verdantDew > 0 {
+		consumed += h.consumeVerdantDew(amt)
 	}
 
 	if amt == consumed {
 		return consumed
 	}
 
-	if h.verdantDew > 0 {
-		consumed += h.consumeVerdantDew(amt)
+	if h.moonridgeDew > 0 {
+		consumed += h.consumeMoonridgeDew(amt - consumed)
 	}
 
 	return consumed
@@ -78,8 +83,8 @@ func (h *Handler) VerdantDew() int {
 
 func (h *Handler) consumeVerdantDew(amt int) int {
 	consumed := min(amt, h.verdantDew)
-	h.verdantDew = max(h.verdantDew-amt, 0)
-	h.Log.NewEvent(fmt.Sprintf("%v verdant dew consumed: %v", amt, h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
+	h.verdantDew = h.verdantDew - consumed
+	h.Log.NewEvent(fmt.Sprintf("%v verdant dew consumed: %v", consumed, h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 	return consumed
 }
 
@@ -106,7 +111,7 @@ func (h *Handler) AddMoonridgeDew() {
 
 func (h *Handler) consumeMoonridgeDew(amt int) int {
 	consumed := min(amt, h.moonridgeDew)
-	h.moonridgeDew = max(h.moonridgeDew-amt, 0)
-	h.Log.NewEvent(fmt.Sprintf("%v moonridge dew consumed: %v", amt, h.moonridgeDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
+	h.moonridgeDew = h.moonridgeDew - consumed
+	h.Log.NewEvent(fmt.Sprintf("%v moonridge dew consumed: %v", consumed, h.moonridgeDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 	return consumed
 }
