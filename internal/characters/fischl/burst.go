@@ -83,7 +83,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.ozActive = true
 	c.burstOzSpawnSrc = c.Core.F
 	burstFullOzFunc := c.burstOzSpawn(c.Core.F, 0, burstFullOzFirstTick, c4HealFunc)
-	burstShortOzFunc := c.burstOzSpawn(c.Core.F, burstShortOzSpawn, burstShortOzFirstTick, c4HealFunc)
+
+	// OnRemoved gets called when the swap starts, but Oz should spawn after
+	// the swap finishes executing and Fischl leaves the field, so we need
+	// to add in the swap delay as an additional delay
+	extraDelay := c.Core.Player.Delays.Swap
+	burstShortOzFunc := c.burstOzSpawn(c.Core.F, burstShortOzSpawn+extraDelay, burstShortOzFirstTick+extraDelay, c4HealFunc)
 
 	c.Core.Tasks.Add(burstFullOzFunc, burstFullOzSpawn)
 
@@ -92,7 +97,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-		OnRemoved:       func(next action.AnimationState) { burstShortOzFunc() },
+		OnRemoved: func(next action.AnimationState) {
+			// other actions are handled by burstFullOzFunc
+			if next == action.SwapState {
+				burstShortOzFunc()
+			}
+		},
 	}, nil
 }
 
