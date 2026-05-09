@@ -45,6 +45,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.c2OnBurst()
 	c.SetCD(action.ActionBurst, 15*60)
 
+	c.DeleteStatus(birgittaKey)
 	c.QueueCharTask(c.summonBirgitta, hitmark)
 
 	c.ConsumeEnergy(4)
