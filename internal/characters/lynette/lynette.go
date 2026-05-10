@@ -41,7 +41,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.skillAI = info.AttackInfo{
 		ActorIndex:         c.Index(),
-		Abil:               "Enigmatic Feint",
+		Abil:               skillAbil,
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,

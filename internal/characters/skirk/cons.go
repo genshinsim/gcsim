@@ -12,9 +12,12 @@ import (
 var c4Atkp = []float64{0.0, 0.1, 0.2, 0.4}
 
 const (
-	c2Key    = "skirk-c2"
-	c6Dur    = 15 * 60
-	c6Icd    = 0.2 * 60
+	c2Key = "skirk-c2"
+	c6Dur = 15 * 60
+
+	// the ICD is 0.2, but to prevent from triggering on N3 twice, we are adding two frames.
+	// at 60 FPS, we never see N3 trigger c6 twice, but at higher FPS "fast frames", N3 can trigger c6 twice
+	c6Icd    = 0.2*60 + 2
 	c6IcdKey = "skirk-c6-icd"
 )
 

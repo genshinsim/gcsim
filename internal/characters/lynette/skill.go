@@ -36,6 +36,8 @@ const (
 	skillTag           = "lynette-shadowsign"
 	skillAlignedICDKey = "lynette-aligned-icd"
 	skillAlignedICD    = 10 * 60
+
+	skillAbil = "Enigmatic Feint"
 )
 
 func init() {
@@ -202,7 +204,7 @@ func (c *char) makeSkillHealAndDrainCB() info.AttackCBFunc {
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index(),
 			Target:  c.Index(),
-			Message: "Enigmatic Feint",
+			Message: skillAbil,
 			Src:     0.25 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
