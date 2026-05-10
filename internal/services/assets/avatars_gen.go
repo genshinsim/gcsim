@@ -2,6 +2,7 @@
 package assets
 
 var avatarMap = map[string]string{
+	"aino":          "UI_AvatarIcon_Aino",
 	"albedo":        "UI_AvatarIcon_Albedo",
 	"alhaitham":     "UI_AvatarIcon_Alhatham",
 	"aloy":          "UI_AvatarIcon_Aloy",

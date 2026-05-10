@@ -3,6 +3,7 @@ package attacks
 
 const (
 	ICDGroupGeneratedStart ICDGroup = iota + EndDefaultICDGroups + 1
+	ICDGroupAinoBurstMoonHit
 	ICDGroupAlhaithamProjectionAttack
 	ICDGroupAlhaithamExtraAttack
 	ICDGroupAmber
@@ -54,6 +55,10 @@ const (
 )
 
 func init() {
+	ICDGroupResetTimer[ICDGroupAinoBurstMoonHit] = 108
+	ICDGroupEleApplicationSequence[ICDGroupAinoBurstMoonHit] = []float64{1, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupAinoBurstMoonHit] = []float64{1, 1, 1, 1}
+
 	ICDGroupResetTimer[ICDGroupAlhaithamProjectionAttack] = 720
 	ICDGroupEleApplicationSequence[ICDGroupAlhaithamProjectionAttack] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
 	ICDGroupDamageSequence[ICDGroupAlhaithamProjectionAttack] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}

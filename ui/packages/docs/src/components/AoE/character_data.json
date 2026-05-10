@@ -1,4 +1,74 @@
 {
+  "aino": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.8,
+        "radius": 2
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1,
+        "boxX": 2.5,
+        "boxY": 3.5
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.2
+      },
+      {
+        "ability": "E-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.2,
+        "radius": 3.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Water-Ball-A1-AG",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 4
+      },
+      {
+        "ability": "Q-Water-Ball",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 1
+      }
+    ],
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 1.5
+      }
+    ]
+  },
   "albedo": {
     "normal": [
       {
