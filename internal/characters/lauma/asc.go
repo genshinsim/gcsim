@@ -60,31 +60,21 @@ func (c *char) a1Nascent() {
 }
 
 func (c *char) a1Ascendant() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
-		if !c.StatusIsActive(a1Key) {
-			return
-		}
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.1
+	m[attributes.CD] = 0.2
 
-		_, ok := args[0].(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		ae := args[1].(*info.AttackEvent)
-
-		switch ae.Info.AttackTag {
-		case attacks.AttackTagDirectLunarBloom:
-		default:
-			return
-		}
-
-		ae.Snapshot.Stats[attributes.CR] += 0.1
-		ae.Snapshot.Stats[attributes.CD] += 0.2
-		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("lauma a1 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
-				Write("final_critrate", ae.Snapshot.Stats[attributes.CR]).
-				Write("final_critdmg", ae.Snapshot.Stats[attributes.CD])
-		}
-	}, "lauma-a1-reaction-dmg-buff")
+	for _, char := range c.Core.Player.Chars() {
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("lauma-a1-ascendant", -1),
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				if atk.Info.AttackTag == attacks.AttackTagDirectLunarBloom {
+					return m
+				}
+				return nil
+			},
+		})
+	}
 }
 
 func (c *char) a4Init() {
