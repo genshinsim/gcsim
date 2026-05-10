@@ -72,7 +72,7 @@ func (c *char) a4Init() {
 	}
 	c.Core.Events.Subscribe(event.OnLunarCharged, c.a4OnLunarCharge, "columbina-a4-lc")
 	c.Core.Events.Subscribe(event.OnLunarBloom, c.a4OnLunarBloom, "columbina-a4-lb")
-	c.Core.Events.Subscribe(event.OnLunarCrystallize, c.a4OnLunarCrystallize, "columbina-a4-lcr")
+	// c.Core.Events.Subscribe(event.OnLunarCrystallize, c.a4OnLunarCrystallize, "columbina-a4-lcr")
 }
 
 func (c *char) a4OnLunarCharge(args ...any) {
@@ -89,19 +89,19 @@ func (c *char) a4OnLunarCharge(args ...any) {
 	delete(c.Core.Flags.Custom, reactable.LcIcdOverrideKey)
 }
 
-func (c *char) a4OnLunarCrystallize(args ...any) {
-	if _, ok := args[0].(*enemy.Enemy); !ok {
-		return
-	}
+// func (c *char) a4OnLunarCrystallize(args ...any) {
+// 	if _, ok := args[0].(*enemy.Enemy); !ok {
+// 		return
+// 	}
 
-	if c.StatusIsActive(burstBuffKey) {
-		c.Core.Flags.Custom[reactable.LcrExtraHitOverride] = 0.33
-		return
-	}
+// 	if c.StatusIsActive(burstBuffKey) {
+// 		c.Core.Flags.Custom[reactable.LcrExtraHitOverride] = 0.33
+// 		return
+// 	}
 
-	// player is outside of lunar domain, reset buffs
-	delete(c.Core.Flags.Custom, reactable.LcrExtraHitOverride)
-}
+// 	// player is outside of lunar domain, reset buffs
+// 	delete(c.Core.Flags.Custom, reactable.LcrExtraHitOverride)
+// }
 
 func (c *char) a4OnLunarBloom(args ...any) {
 	if _, ok := args[0].(*enemy.Enemy); !ok {
