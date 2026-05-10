@@ -25,15 +25,16 @@ func (c *char) c1() {
 //   - Burning, Bloom, Hyperbloom, Burgeon Reaction DMG can score CRIT Hits.
 //     CRIT Rate and CRIT DMG are fixed at 20% and 100% respectively.
 //   - Within 8s of being affected by Quicken, Aggravate, Spread, DEF is decreased by 30%.
+//   - The CRIT Rate and CRIT DMG of Lunar-Bloom DMG received are increased by 10% and 20% respectively.
 func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
-		t, ok := args[0].(*enemy.Enemy)
+		e, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return
 		}
 		ae := args[1].(*info.AttackEvent)
 
-		if !t.StatusIsActive(skillMarkKey) {
+		if !e.StatusIsActive(skillMarkKey) {
 			return
 		}
 
@@ -42,15 +43,11 @@ func (c *char) c2() {
 			// TODO: should this really be +=??
 			ae.Snapshot.Stats[attributes.CR] += 0.2
 			ae.Snapshot.Stats[attributes.CD] = 1
-		case attacks.AttackTagDirectLunarBloom:
-			ae.Snapshot.Stats[attributes.CR] += 0.1
-			ae.Snapshot.Stats[attributes.CD] += 0.2
+			c.Core.Log.NewEvent("nahida c2 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
+				Write("final_critrate", ae.Snapshot.Stats[attributes.CR])
 		default:
 			return
 		}
-
-		c.Core.Log.NewEvent("nahida c2 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
-			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
 	}, "nahida-c2-reaction-dmg-buff")
 
 	cb := func(_ event.Event) event.Hook {
@@ -72,6 +69,28 @@ func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnQuicken, cb(event.OnQuicken), "nahida-c2-def-shred-quicken")
 	c.Core.Events.Subscribe(event.OnAggravate, cb(event.OnAggravate), "nahida-c2-def-shred-aggravate")
 	c.Core.Events.Subscribe(event.OnSpread, cb(event.OnSpread), "nahida-c2-def-shred-spread")
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.1
+	m[attributes.CD] = 0.2
+	for _, char := range c.Core.Player.Chars() {
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("nahida-c2-lunarbloom", -1),
+			Amount: func(ae *info.AttackEvent, t info.Target) []float64 {
+				e, ok := t.(*enemy.Enemy)
+				if !ok {
+					return nil
+				}
+				if !e.StatusIsActive(skillMarkKey) {
+					return nil
+				}
+				if ae.Info.AttackTag == attacks.AttackTagDirectLunarBloom {
+					return m
+				}
+				return nil
+			},
+		})
+	}
 }
 
 // When 1/2/3/(4 or more) nearby opponents are affected by All Schemes to Know's
