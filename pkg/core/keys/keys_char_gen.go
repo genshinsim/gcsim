@@ -28,6 +28,7 @@ const (
 	Citlali
 	Clorinde
 	Collei
+	Columbina
 	Cyno
 	Dahlia
 	Dehya
@@ -195,6 +196,10 @@ func init() {
 	charNames[Collei] = "collei"
 	charPrettyName[Collei] = "Collei"
 	CharKeyToEle[Collei] = attributes.Dendro
+
+	charNames[Columbina] = "columbina"
+	charPrettyName[Columbina] = "Columbina"
+	CharKeyToEle[Columbina] = attributes.Hydro
 
 	charNames[Cyno] = "cyno"
 	charPrettyName[Cyno] = "Cyno"

@@ -107,8 +107,8 @@ func (c *char) skillPress() (action.Info, error) {
 }
 
 func (c *char) skillHold() (action.Info, error) {
-	if c.Core.Player.VerdantDew() <= 0 {
-		return action.Info{}, fmt.Errorf("%v: Cannot use Skill Hold without Verdant Dew", c.Base.Key)
+	if c.Core.Player.Dew() <= 0 {
+		return action.Info{}, fmt.Errorf("%v: Cannot use Skill Hold without Dew", c.Base.Key)
 	}
 
 	ai := info.AttackInfo{
@@ -150,8 +150,8 @@ func (c *char) skillHold() (action.Info, error) {
 	)
 
 	c.QueueCharTask(func() {
-		dewCount := min(c.Core.Player.VerdantDew(), 3)
-		c.Core.Player.ConsumeVerdantDew(dewCount)
+		dewCount := min(c.Core.Player.Dew(), 3)
+		c.Core.Player.ConsumeDew(dewCount)
 
 		aiDirectLB.Mult = skillHold2[c.TalentLvlSkill()] * float64(dewCount)
 		c.addMoonSong(dewCount)

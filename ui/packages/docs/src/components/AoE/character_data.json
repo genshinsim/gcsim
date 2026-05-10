@@ -2367,6 +2367,96 @@
       }
     ]
   },
+  "columbina": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.0
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.0
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5
+      },
+      {
+        "ability": "CA-Moondew-Cleanse",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.3
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "E-Tick",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4
+      },
+      {
+        "ability": "E-Tick-Gleam",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      },
+      {
+        "ability": "E-Gravity-LC",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      },
+      {
+        "ability": "E-Gravity-LB",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.5
+      },
+      {
+        "ability": "E-Gravity-LCr",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Self",
+        "radius": 6.5,
+        "offsetY": 0.5
+      },
+      {
+        "ability": "Q-field",
+        "shape": "Circle",
+        "center": "Self",
+        "radius": 20,
+        "offsetY": 0.5
+      }
+    ]
+  },
   "cyno": {
     "asc": [
       {

@@ -70,6 +70,20 @@
       "desc": "Number of Cifra of the Secret Law (C6) points."
     }
   ],
+  "columbina": [
+    {
+      "fields": [
+        ".columbina.gravity"
+      ],
+      "desc": "Amount of gravity accumulated."
+    },
+    {
+      "fields": [
+        ".columbina.a1-stacks"
+      ],
+      "desc": "Number of A1 stacks."
+    }
+  ],
   "escoffier": [
     {
       "fields": [
