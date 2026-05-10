@@ -83,7 +83,7 @@ func (h *Handler) VerdantDew() int {
 
 func (h *Handler) consumeVerdantDew(amt int) int {
 	consumed := min(amt, h.verdantDew)
-	h.verdantDew = h.verdantDew - consumed
+	h.verdantDew -= consumed
 	h.Log.NewEvent(fmt.Sprintf("%v verdant dew consumed: %v", consumed, h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 	return consumed
 }
@@ -111,7 +111,7 @@ func (h *Handler) AddMoonridgeDew() {
 
 func (h *Handler) consumeMoonridgeDew(amt int) int {
 	consumed := min(amt, h.moonridgeDew)
-	h.moonridgeDew = h.moonridgeDew - consumed
+	h.moonridgeDew -= consumed
 	h.Log.NewEvent(fmt.Sprintf("%v moonridge dew consumed: %v", consumed, h.moonridgeDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
 	return consumed
 }

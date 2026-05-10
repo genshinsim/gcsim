@@ -139,15 +139,15 @@ func (c *char) clearGravity() {
 
 // returns the index of the maximum value. In case of ties, the earlier index is returned
 func argmax[T cmp.Ordered](x T, y ...T) int {
-	max_ind := 0
-	max_val := x
+	maxInd := 0
+	maxVal := x
 	for i, v := range y {
-		if v > max_val {
-			max_ind = i + 1
-			max_val = v
+		if v > maxVal {
+			maxInd = i + 1
+			maxVal = v
 		}
 	}
-	return max_ind
+	return maxInd
 }
 
 func (c *char) gravityTick(clearGravity bool) {
