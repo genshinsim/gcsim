@@ -32,9 +32,9 @@ func init() {
 	chargeFrames[action.ActionWalk] = 99
 	chargeFrames[action.ActionSwap] = chargeHitmark
 
-	chargeLBFrames = frames.InitAbilSlice(124) // CA -> Walk
+	chargeLBFrames = frames.InitAbilSlice(124) // CA-LB -> Walk
 	chargeLBFrames[action.ActionAttack] = 82
-	chargeLBFrames[action.ActionCharge] = 80 // Need to add 89 if the next CA isn't LB
+	chargeLBFrames[action.ActionCharge] = 80 // Need to set to 89 if the next CA isn't CA-LB
 	chargeLBFrames[action.ActionSkill] = verdantDewFrame
 	chargeLBFrames[action.ActionBurst] = verdantDewFrame
 	chargeLBFrames[action.ActionDash] = verdantDewFrame
@@ -99,7 +99,6 @@ func (c *char) ChargeAttackBloom(p map[string]int) action.Info {
 		Mult:             chargeLB[c.TalentLvlAttack()],
 		UseHP:            true,
 		IgnoreDefPercent: 1.0,
-		IsDeployable:     true,
 	}
 
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, chargeRadiusBloom)

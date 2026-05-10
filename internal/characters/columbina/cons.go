@@ -36,6 +36,7 @@ func (c *char) consElevationInit() {
 	amt := elevation[c.Base.Cons]
 	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) {
 		atk := args[0].(*info.AttackEvent)
+		// do not apply elevation to Reaction damage here because the elevation is already applied at the contributor level
 		if attacks.DirectLunarReactionStartDelim < atk.Info.AttackTag && atk.Info.AttackTag < attacks.DirectLunarReactionEndDelim {
 			atk.Info.Elevation += amt
 		}
@@ -43,7 +44,7 @@ func (c *char) consElevationInit() {
 
 	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-		if attacks.LunarReactionStartDelim < atk.Info.AttackTag && atk.Info.AttackTag < attacks.LunarReactionEndDelim {
+		if attacks.AttackTagIsLunar(atk.Info.AttackTag) {
 			atk.Info.Elevation += amt
 		}
 	}, elevationKey+"-reaction")
