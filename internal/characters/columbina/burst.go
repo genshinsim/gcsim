@@ -15,8 +15,12 @@ import (
 var burstFrames []int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(120)
-	burstFrames[action.ActionSwap] = 120
+	burstFrames = frames.InitAbilSlice(131)
+	burstFrames[action.ActionCharge] = 130
+	burstFrames[action.ActionSkill] = 122
+	burstFrames[action.ActionDash] = 122
+	burstFrames[action.ActionJump] = 124
+	burstFrames[action.ActionSwap] = 122
 }
 
 const (
@@ -24,7 +28,8 @@ const (
 	burstBuffKey = "columbina-q-buff"
 	withinTimer  = 1.2 * 60
 	burstDur     = 20 * 60
-	burstHitmark = 105
+	burstHitmark = 110
+	burstField   = 86
 )
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -70,10 +75,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				c.applyBurstBuff()
 			}, i)
 		}
-	}, burstHitmark-5) // field starts before hitmark, the Q hit can give a moonridge dew
-	// TODO get exact start/expiry time of Q.
+	}, burstField)
 
-	c.ConsumeEnergy(5)
+	c.ConsumeEnergy(6)
 	c.SetCD(action.ActionBurst, 15*60)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),

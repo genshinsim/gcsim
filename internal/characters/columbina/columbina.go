@@ -58,10 +58,14 @@ func (c *char) Init() error {
 }
 
 func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
-	if k == info.AnimationXingqiuN0StartDelay {
-		return 7
+	switch k {
+	case info.AnimationXingqiuN0StartDelay:
+		return 10
+	case info.AnimationYelanN0StartDelay:
+		return 10
+	default:
+		return c.Character.AnimationStartDelay(k)
 	}
-	return c.Character.AnimationStartDelay(k)
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {

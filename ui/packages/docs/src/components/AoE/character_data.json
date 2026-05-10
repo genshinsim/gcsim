@@ -2374,8 +2374,15 @@
       {
         "ability": "Q",
         "shape": "Circle",
-        "center": "PrimaryTarget",
+        "center": "Self",
         "radius": 6.5,
+        "offsetY": 0.5
+      },
+      {
+        "ability": "Q-field",
+        "shape": "Circle",
+        "center": "Self",
+        "radius": 20,
         "offsetY": 0.5
       }
     ]

@@ -15,18 +15,19 @@ import (
 
 var (
 	skillFrames      []int
-	skillHitmarksLCr = 40
-	skillHitmarksLC  = 40
-	skillHitmarksLB  = []int{40, 45, 50, 55, 60}
+	skillHitmarksLCr = 43
+	skillHitmarksLC  = 43
+	skillHitmarksLB  = []int{51, 51 + 5, 51 + 5 + 6, 51 + 5 + 6 + 9, 51 + 5 + 6 + 9 + 11}
 	skillHitmarks    [3][]int
 )
 
 const (
-	skillHitmark   = 24
+	skillHitmark   = 21
 	particleICDKey = "columbina-particle-icd"
 	skillKey       = "columbina-skill"
 	gravityKey     = "columbina-gravity"
 	gravityMax     = 60
+	skillLBTravel  = 20
 )
 
 type lunarReaction int
@@ -38,7 +39,13 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(26)
+	skillFrames = frames.InitAbilSlice(41)
+	skillFrames[action.ActionCharge] = 40
+	skillFrames[action.ActionSkill] = 28
+	skillFrames[action.ActionBurst] = 28
+	skillFrames[action.ActionDash] = 27
+	skillFrames[action.ActionJump] = 32
+	skillFrames[action.ActionSwap] = 26
 
 	skillHitmarks[LunarCharge] = []int{skillHitmarksLC}
 	skillHitmarks[LunarBloom] = skillHitmarksLB
@@ -201,7 +208,7 @@ func (c *char) gravityTick(clearGravity bool) {
 		elem = attributes.Dendro
 		abil = "Gravity Interference (Lunar-Bloom)"
 		radius = 0.5
-		travel = 20
+		travel = skillLBTravel
 	case LunarCrystallize:
 		mult = skillLCr[c.TalentLvlSkill()]
 		atkTag = attacks.AttackTagDirectLunarCrystallize
@@ -257,15 +264,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.clearGravity()
 		}
 		c.AddStatus(skillKey, 25*60+1, true)
-		c.QueueCharTask(c.skillTickTask(c.skillSrc), 126)
-		c.SetCDWithDelay(action.ActionSkill, 17*60, 0)
+		c.QueueCharTask(c.skillTickTask(c.skillSrc), 117)
+
 		c.c1OnSkill()
 	}, skillHitmark)
+
+	c.SetCDWithDelay(action.ActionSkill, 17*60, 20)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}, nil
 }
@@ -321,6 +330,6 @@ func (c *char) skillTickTask(src int) func() {
 
 		c.skillTick()
 
-		c.Core.Tasks.Add(c.skillTickTask(src), 120)
+		c.Core.Tasks.Add(c.skillTickTask(src), 117)
 	}
 }

@@ -74,7 +74,7 @@
       "fields": [
         ".columbina.gravity"
       ],
-      "desc": "Amount of gravity accumulated stacks."
+      "desc": "Amount of gravity accumulated."
     },
     {
       "fields": [

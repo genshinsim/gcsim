@@ -56,7 +56,6 @@ func (c *char) c1OnSkill() {
 	if c.StatusIsActive(c1IcdKey) {
 		return
 	}
-	// What's the default tick when you first cast this?
 	c.gravityTick(false)
 	c.AddStatus(c1IcdKey, 15*60, true)
 }

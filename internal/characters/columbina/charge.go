@@ -11,25 +11,35 @@ import (
 
 var (
 	chargeFrames       []int
+	chargeLBFrames     []int
 	chargeHitmarkBloom = []int{50, 50 + 8, 50 + 8 + 22}
-	verdantDewFrame    = 39
 )
 
 const (
-	chargeHitmark     = 60
+	chargeHitmark     = 57
+	verdantDewFrame   = 43
 	chargeRadius      = 3.5
 	chargeRadiusBloom = 3.3
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(81) // CA -> Walk
-	chargeFrames[action.ActionAttack] = 81
-	chargeFrames[action.ActionCharge] = 81
-	chargeFrames[action.ActionSkill] = verdantDewFrame
-	chargeFrames[action.ActionBurst] = verdantDewFrame
-	chargeFrames[action.ActionDash] = verdantDewFrame
-	chargeFrames[action.ActionJump] = verdantDewFrame
-	chargeFrames[action.ActionSwap] = verdantDewFrame
+	chargeFrames = frames.InitAbilSlice(101) // CA -> CA
+	chargeFrames[action.ActionAttack] = 94
+	chargeFrames[action.ActionSkill] = chargeHitmark
+	chargeFrames[action.ActionBurst] = chargeHitmark
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionWalk] = 99
+	chargeFrames[action.ActionSwap] = chargeHitmark
+
+	chargeLBFrames = frames.InitAbilSlice(124) // CA -> Walk
+	chargeLBFrames[action.ActionAttack] = 82
+	chargeLBFrames[action.ActionCharge] = 80 // Need to add 89 if the next CA isn't LB
+	chargeLBFrames[action.ActionSkill] = verdantDewFrame
+	chargeLBFrames[action.ActionBurst] = verdantDewFrame
+	chargeLBFrames[action.ActionDash] = verdantDewFrame
+	chargeLBFrames[action.ActionJump] = verdantDewFrame
+	chargeLBFrames[action.ActionSwap] = verdantDewFrame
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -37,12 +47,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.ChargeAttackBloom(p), nil
 	}
 
-	windup := 12
+	windup := 15
 	switch c.Core.Player.CurrentState() {
 	case action.ChargeAttackState:
 		windup = 3
 	case action.NormalAttackState:
-		windup = 0
+		windup = -2 // CA is faster when done out of NA
 	}
 
 	ai := info.AttackInfo{
@@ -61,7 +71,6 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	delay := chargeHitmark + windup
 	c.Core.QueueAttack(ai, ap, delay, delay)
 
-	// assuming actions have same frames?
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
@@ -76,7 +85,7 @@ func (c *char) ChargeAttackBloom(p map[string]int) action.Info {
 	case action.ChargeAttackState:
 		windup = 3
 	case action.NormalAttackState:
-		windup = 0
+		windup = -5
 	}
 
 	ai := info.AttackInfo{
@@ -102,9 +111,14 @@ func (c *char) ChargeAttackBloom(p map[string]int) action.Info {
 	c.QueueCharTask(func() { c.Core.Player.ConsumeDew(1) }, verdantDewFrame+windup)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeFrames[action.ActionDash],
+		Frames: func(next action.Action) int {
+			if next == action.ActionCharge && c.Core.Player.Dew() <= 0 {
+				return 89 // CAb -> CA is 89
+			}
+			return chargeLBFrames[next]
+		},
+		AnimationLength: chargeLBFrames[action.InvalidAction],
+		CanQueueAfter:   chargeLBFrames[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}
 }

@@ -13,7 +13,7 @@ import (
 
 var (
 	attackFrames   [][]int
-	attackHitmarks = []int{4, 12, 28}
+	attackHitmarks = []int{23, 20, 41}
 	attackRadius   = []float64{1.0, 1.0, 2.5}
 )
 
@@ -22,19 +22,30 @@ const normalHitNum = 3
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 30)
-	attackFrames[0][action.ActionAttack] = 14
-	attackFrames[0][action.ActionCharge] = 19
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 36)
+	attackFrames[0][action.ActionAttack] = 23
+	attackFrames[0][action.ActionCharge] = 22
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 34)
-	attackFrames[1][action.ActionAttack] = 30
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 37)
+	attackFrames[1][action.ActionAttack] = 20
+	attackFrames[1][action.ActionCharge] = 33
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 65)
-	attackFrames[2][action.ActionCharge] = 60
-	attackFrames[2][action.ActionWalk] = 60
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 76)
+	attackFrames[2][action.ActionAttack] = 74
+	attackFrames[2][action.ActionCharge] = 71
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
+	windup := 0
+	if c.NormalCounter == 0 {
+		switch c.Core.Player.CurrentState() {
+		case action.NormalAttackState:
+			windup = 2
+		case action.ChargeAttackState:
+			windup = 2
+		}
+	}
+
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -52,15 +63,23 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, radius),
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter]+windup,
+		attackHitmarks[c.NormalCounter]+windup,
 	)
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		Frames:          c.newAttackFunc(attackFrames, windup),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
+}
+
+func (c *char) newAttackFunc(slice [][]int, windup int) func(action.Action) int {
+	n := c.NormalCounter
+	atkspd := c.Stat(attributes.AtkSpd)
+	return func(next action.Action) int {
+		return frames.AtkSpdAdjust(slice[n][next], atkspd) + windup
+	}
 }
