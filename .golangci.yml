@@ -58,7 +58,7 @@ linters:
 
     ## misc linters
     - gocheckcompilerdirectives # validates go compiler directive comments (//go:)
-    - gomodguard # allow and block lists linter for direct Go module dependencies.
+    - gomodguard_v2 # allow and block lists linter for direct Go module dependencies.
     - mirror # reports wrong mirror patterns of bytes/strings usage
     - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
     - usestdlibvars # detects the possibility to use variables/constants from the Go standard library
@@ -131,19 +131,21 @@ linters:
         - name: unreachable-code
         - name: redefines-builtin-id
 
+    goconst:
+      ignore-tests: true
+
     govet:
       enable-all: true
       disable:
         - fieldalignment # great for micro-optimizations, too much work for us to maintain
         - shadow # can help to find hard to find bugs, but annoying to make golang code compatible
 
-    gomodguard:
+    gomodguard_v2:
       blocked:
-        modules:
-          - github.com/golang/protobuf:
-              recommendations:
-                - google.golang.org/protobuf
-              reason: "see https://protobuf.dev/reference/go/faq/#modules"
+        - module: github.com/golang/protobuf
+          recommendations:
+            - google.golang.org/protobuf
+          reason: see https://protobuf.dev/reference/go/faq/#modules
 
     nakedret:
       max-func-lines: 0
@@ -181,6 +183,12 @@ linters:
       - linters:
           - tagliatelle
         text: "got '_id' want 'id'" # play nice with MongoDB
+      - linters:
+          - goconst
+        text: 'UI_.*' # game assets
+      - path: 'backend/pkg' # mongodb yet again
+        linters:
+          - goconst
     paths:
       - cmd/wasm/
       - third_party$

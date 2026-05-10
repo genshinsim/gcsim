@@ -91,6 +91,7 @@ ace.define(
         'aethergeo',
         'aetherhydro',
         'aetherpyro',
+        'aino',
         'albedo',
         'alhaitham',
         'aloy',
