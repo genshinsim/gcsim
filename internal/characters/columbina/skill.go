@@ -265,7 +265,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		if !c.StatusIsActive(skillKey) {
 			c.clearGravity()
 		}
-		c.AddStatus(skillKey, 25*60+1, true)
+		c.AddStatus(skillKey, 25*60, true)
 		c.QueueCharTask(c.skillTickTask(c.skillSrc), 117)
 
 		c.c1OnSkill()
