@@ -238,8 +238,10 @@ func (c *char) gravityTick(clearGravity bool) {
 	c.c2OnGravityTick(maxReaction)
 
 	for _, delay := range skillHitmarks[maxReaction] {
-		ai.FlatDmg = c.c4OnGravityTickFlatDMG(maxReaction)
-		c.Core.QueueAttack(ai, ap, delay, delay+travel)
+		c.QueueCharTask(func() {
+			ai.FlatDmg = c.c4OnGravityTickFlatDMG(maxReaction)
+			c.Core.QueueAttack(ai, ap, 0, travel)
+		}, delay)
 	}
 }
 
