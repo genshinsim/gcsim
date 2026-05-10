@@ -296,7 +296,7 @@ func (c *char) particleCB(a info.AttackCB) {
 	}
 }
 
-// Helper function that handles damage, healing, and particle components of every tick of her E
+// Helper function that handles damage, particle components of every tick of her E
 func (c *char) skillTick() {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -322,7 +322,7 @@ func (c *char) skillTick() {
 func (c *char) skillTickTask(src int) func() {
 	// TODO: skill cast won't interrupt skill ticks if skill already active
 	return func() {
-		if c.skillSrc > src {
+		if c.skillSrc != src {
 			return
 		}
 
