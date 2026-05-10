@@ -22,6 +22,7 @@ const (
 func (c *char) moonsignInit() {
 	c.Core.Flags.Custom[reactable.LunarChargeEnableKey] = 1
 	c.Core.Flags.Custom[reactable.LunarBloomEnableKey] = 1
+	// c.Core.Flags.Custom[reactable.LunarCrystallizeEnableKey] = 1
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
