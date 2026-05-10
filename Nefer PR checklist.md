@@ -1,0 +1,48 @@
+# Nefer PR Checklist
+
+Status legend:
+
+- Done: implemented and present on the branch.
+- Partial: implemented in a usable form, but still approximate or incomplete.
+- Not done: missing or intentionally deferred.
+- N/A: checklist item does not apply to the current repository layout.
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| New character package | Done | [internal/characters/nefer](internal/characters/nefer) exists and is wired into the build. |
+| Config in character package | Done | [internal/characters/nefer/config.yml](internal/characters/nefer/config.yml) exists. |
+| Run pipeline with added config (generates character curve, talent stats, `.generated.json` files) | Done | Generated outputs are present in [internal/characters/nefer/nefer_gen.go](internal/characters/nefer/nefer_gen.go), [ui/packages/db/src/Data/char_data.generated.json](ui/packages/db/src/Data/char_data.generated.json), and [ui/packages/ui/src/Data/char_data.generated.json](ui/packages/ui/src/Data/char_data.generated.json). |
+| Character key | Done | Generated key exists in [pkg/core/keys/keys_char_gen.go](pkg/core/keys/keys_char_gen.go). |
+| Shortcuts for character key | Done | Shortcut registration includes Nefer in [pkg/shortcut/characters.go](pkg/shortcut/characters.go). |
+| Update `mode_gcsim.js` with shortcuts for syntax highlighting | N/A | No `mode_gcsim.js` file exists in the current repository layout. |
+| Add Character package to imports | Done | Generated sim import exists in [pkg/simulation/imports_char_gen.go](pkg/simulation/imports_char_gen.go). |
+| Normal Attack | Done | Implemented in [internal/characters/nefer/attack.go](internal/characters/nefer/attack.go); the remaining open rows are itemized in the `attack.go: unresolved frame rows`, `attack.go: unresolved hitboxes and areas`, and `internal/characters/nefer/*.go: explicit poise and hitlag mappings still missing` sections of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| Charge Attack / Aimed Shot | Done | Charged Attack, Slither, and Phantasm routing are implemented in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go), including the current explicit `hold` contract, the no-hold Slither-release model for tap non-Phantasm charge, the current button-to-button interpretation of workbook ordinary-CA rows with a temporary `0f` embedded Slither-entry assumption, the engine-level separation between Slither-entry readiness threshold and actual stamina consumption timing, swap reset behavior, and current constellation interactions; the remaining open rows are itemized in the `charge.go: unresolved frame rows`, `charge.go: unresolved hitboxes and areas`, `seeds.go and seed_gadget.go`, and `internal/characters/nefer/*.go: explicit poise and hitlag mappings still missing` sections of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| Skill | Done | Implemented in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go); the remaining open rows are itemized in the `skill.go: unresolved frame rows`, `skill.go: unresolved hitboxes, areas, and particles`, and `internal/characters/nefer/*.go: explicit poise and hitlag mappings still missing` sections of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| Burst | Done | Implemented in [internal/characters/nefer/burst.go](internal/characters/nefer/burst.go), including Veil consumption, per-stack burst bonus, cooldown, and energy drain; the remaining open rows are itemized in the `burst.go: unresolved frame rows`, `burst.go: unresolved hitboxes and areas`, and `internal/characters/nefer/*.go: explicit poise and hitlag mappings still missing` sections of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| A1 | Done | Seed conversion window, existing-core replacement, post-window seed persistence, and seed-to-Veil gain behavior are implemented in [internal/characters/nefer/seeds.go](internal/characters/nefer/seeds.go); the remaining open rows are itemized in the `seeds.go and seed_gadget.go` section of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| A4 | Done | The Lunar-Bloom EM bonus path is implemented in [internal/characters/nefer/asc.go](internal/characters/nefer/asc.go). |
+| C1 | Done | Implemented by interpreting the constellation as an increase to the EM scaling multiplier of Phantasm Performance Shades hits in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go), and then applying the Veil bonus locally to the base constructed Phantasm Performance hit terms rather than routing it through a shared bonus slot; the interpretation decision is documented in [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| C2 | Done | The 5-stack cap, the Skill-side 2-stack grant, the sourced Veil duration extension, the Veil multiplier ceiling increase to `1 + 5 * 8%` on the base Phantasm Performance hit terms, and the fifth-stack `+200 EM` handling are implemented across [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go), [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go), and [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go). |
+| C3 | Done | Covered by `SkillCon = 3` in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go). |
+| C4 | Done | Implemented in [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go), including the Verdant Dew gain-rate boost and the 4.5s lingering Dendro RES shred refresh model; the remaining nearby-opponent area question is itemized in the `cons.go` section of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| C5 | Done | Covered by `BurstCon = 5` in [internal/characters/nefer/nefer.go](internal/characters/nefer/nefer.go). |
+| C6 | Done | The Lunar-Bloom elevation hook is implemented in [internal/characters/nefer/cons.go](internal/characters/nefer/cons.go), and the second-stage replacement hit plus post-Phantasm extra hit are implemented in [internal/characters/nefer/charge.go](internal/characters/nefer/charge.go); the remaining open rows are itemized in the `charge.go: unresolved frame rows` and `charge.go: unresolved hitboxes and areas` sections of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| Other necessary talents (custom dash/jump, low/high plunge, ...) | Done | Low and high plunge are implemented in [internal/characters/nefer/attack.go](internal/characters/nefer/attack.go), and no separate Nefer-specific dash or jump mechanic remains to be implemented beyond the already-covered Slither or sprint interaction. |
+| Hitlag | Partial | The still-missing explicit hitlag mappings are listed attack-by-attack in the `internal/characters/nefer/*.go: explicit poise and hitlag mappings still missing` section of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| ICD | Done | ICD tags are assigned across NA, plunge, Skill, Burst, ordinary CA, Phantasm hits, and Lunar-Bloom-tagged hits in the current package; only final validation remains open. |
+| StrikeType | Done | Strike types are assigned across the current attack paths in the package, including the blunt Skill hit; only final validation remains open. |
+| PoiseDMG (blunt attacks only for now) | Not done | The still-missing explicit poise mappings are listed attack-by-attack in the `internal/characters/nefer/*.go: explicit poise and hitlag mappings still missing` section of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| Hitboxes | Partial | The still-approximate geometry is itemized by attack family in the `attack.go: unresolved hitboxes and areas`, `charge.go: unresolved hitboxes and areas`, `skill.go: unresolved hitboxes, areas, and particles`, `burst.go: unresolved hitboxes and areas`, `seeds.go and seed_gadget.go`, and `cons.go` sections of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| Attack durability | Done | Durability values are assigned on the current attack paths in the package; only final validation remains open. |
+| Particles | Done | Skill particle generation is implemented in [internal/characters/nefer/skill.go](internal/characters/nefer/skill.go); the remaining validation rows are itemized in the `skill.go: unresolved hitboxes, areas, and particles` section of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| Frames | Partial | The unresolved timing rows are itemized in the `attack.go: unresolved frame rows`, `charge.go: unresolved frame rows`, `skill.go: unresolved frame rows`, and `burst.go: unresolved frame rows` sections of [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md). |
+| Update documentation | Done | Nefer implementation, observations, progress, register, and generated docs are present and updated. |
+| Xingqiu/Yelan N0 (optional) | Not done | No Nefer-specific follow-up adjustment has been made here. |
+| Xianyun Plunge (optional) | Not done | No Nefer-specific follow-up adjustment has been made here. |
+
+## Summary
+
+- Branch status is good enough for functional review.
+- The remaining work is concentrated in the specific register sections for attack, charge, skill, burst, seed, C4 area, and explicit poise or hitlag mappings, rather than in unnamed shared buckets.
+- The authoritative live gap list is [nefer_inexact_implementation_register.md](nefer_inexact_implementation_register.md).

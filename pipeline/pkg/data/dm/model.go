@@ -64,6 +64,24 @@ type PropGrowCurve struct {
 type TextMap map[int64]string
 
 //nolint:tagliatelle // need to match datamine
+type InherentProudSkillOpen struct {
+	ProudSkillGroupId           int32 `json:"proudSkillGroupId"`
+	NeedAvatarPromoteLevel      int32 `json:"needAvatarPromoteLevel"`
+	NeedAvatarPromoteLevelObfV1 int32 `json:"AMKLKEEBGPM"`
+	NeedAvatarPromoteLevelObfV2 int32 `json:"AEELKPGFNEA"`
+}
+
+func (i InherentProudSkillOpen) PromoteLevel() int32 {
+	if i.NeedAvatarPromoteLevel != 0 {
+		return i.NeedAvatarPromoteLevel
+	}
+	if i.NeedAvatarPromoteLevelObfV1 != 0 {
+		return i.NeedAvatarPromoteLevelObfV1
+	}
+	return i.NeedAvatarPromoteLevelObfV2
+}
+
+//nolint:tagliatelle // need to match datamine
 type AvatarSkillDepot struct {
 	ID          int32   `json:"id"`
 	EnergySkill int32   `json:"energySkill"`
@@ -72,12 +90,21 @@ type AvatarSkillDepot struct {
 	// ExtraAbilities          []string `json:"extraAbilities"`
 	// Talents                 []int32    `json:"talents"`
 	// TalentStarName          string   `json:"talentStarName"`
-	InherentProudSkillOpens []struct {
-		ProudSkillGroupId      int32 `json:"proudSkillGroupId"`
-		NeedAvatarPromoteLevel int32 `json:"needAvatarPromoteLevel"`
-	} `json:"inherentProudSkillOpens"`
+	InherentProudSkillOpens      []InherentProudSkillOpen `json:"inherentProudSkillOpens"`
+	InherentProudSkillOpensObfV1 []InherentProudSkillOpen `json:"LOAMPGAFLMA"`
+	InherentProudSkillOpensObfV2 []InherentProudSkillOpen `json:"BKHEBEGJIAO"`
 	// SkillDepotAbilityGroup string `json:"skillDepotAbilityGroup"`
 	// LeaderTalent           int32    `json:"leaderTalent,omitempty"`
+}
+
+func (a AvatarSkillDepot) PassiveProudSkillOpens() []InherentProudSkillOpen {
+	if len(a.InherentProudSkillOpens) > 0 {
+		return a.InherentProudSkillOpens
+	}
+	if len(a.InherentProudSkillOpensObfV1) > 0 {
+		return a.InherentProudSkillOpensObfV1
+	}
+	return a.InherentProudSkillOpensObfV2
 }
 
 //nolint:tagliatelle // need to match datamine
