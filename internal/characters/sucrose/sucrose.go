@@ -26,7 +26,7 @@ type char struct {
 	hexereiBuffBurst    []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -38,6 +38,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)
 	}
+
+	hex, ok := p.Params["hexerei"]
+	if !ok {
+		// default hexerei is enabled
+		hex = 1
+	}
+	c.IsHexerei = (hex != 0)
 
 	w.Character = &c
 
