@@ -119,8 +119,8 @@ func (c *char) SkillPress(burstActive int) action.Info {
 		particleCB,
 		c4cb,
 		c.addSigil(false),
-		c.addSigilIfHexerei(false),
-		c.addSigilIfHexerei(false),
+		c.addSigilIfHexerei(),
+		c.addSigilIfHexerei(),
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(6*60), skillPressCDStarts[burstActive])
@@ -194,11 +194,11 @@ func (c *char) holdParticleCB(a info.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Electro, c.ParticleDelay)
 }
 
-func (c *char) addSigilIfHexerei(done bool) info.AttackCBFunc {
+func (c *char) addSigilIfHexerei() info.AttackCBFunc {
 	if c.Hexerei == 0 {
 		return func(a info.AttackCB) {}
 	}
-	return c.addSigil(done)
+	return c.addSigil(false)
 }
 
 func (c *char) addSigil(done bool) info.AttackCBFunc {
