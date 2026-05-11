@@ -100,8 +100,8 @@ func (c *char) c6cb(a info.AttackCB) {
 			return
 		}
 		c.addSigil(false)(a)
-		c.addSigilIfHexerei(false)(a)
-		c.addSigilIfHexerei(false)(a)
+		c.addSigilIfHexerei()(a)
+		c.addSigilIfHexerei()(a)
 	}
 
 	c.Core.QueueAttack(
