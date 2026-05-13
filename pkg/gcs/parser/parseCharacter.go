@@ -197,7 +197,7 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 	}
 	label, ok := shortcut.WeaponNameToKey[s]
 	if !ok {
-		return nil, fmt.Errorf("invalid set %v", s)
+		return nil, fmt.Errorf("invalid weapon %v", s)
 	}
 	c.Weapon.Key = label
 	c.Weapon.Name = c.Weapon.Key.String()
