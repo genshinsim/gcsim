@@ -1,5 +1,6 @@
 package attacks
 
+//go:generate enumer -type=AttackTag
 type AttackTag int // attacktag is used instead of actions etc..
 
 const (
