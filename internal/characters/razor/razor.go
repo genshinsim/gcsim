@@ -30,10 +30,12 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
-	isHexerei, ok := p.Params["is_hexerei"]
-	if ok && isHexerei != 0 {
-		c.Hexerei = 1
+	hex, ok := p.Params["hexerei"]
+	if !ok {
+		// default hexerei is enabled
+		hex = 1
 	}
+	c.IsHexerei = (hex != 0)
 
 	w.Character = &c
 
