@@ -5,6 +5,11 @@
       "text_map_id": "2040573235",
       "key": "archaicpetra"
     },
+    "aubade": {
+      "id": "15043",
+      "text_map_id": "894629371",
+      "key": "aubade"
+    },
     "berserker": {
       "id": "10005",
       "text_map_id": "855894507",
@@ -12,7 +17,7 @@
     },
     "blizzardstrayer": {
       "id": "14001",
-      "text_map_id": "933076627",
+      "text_map_id": "933076115",
       "key": "blizzardstrayer"
     },
     "bloodstainedchivalry": {
@@ -22,7 +27,7 @@
     },
     "braveheart": {
       "id": "10002",
-      "text_map_id": "3535784755",
+      "text_map_id": "3535784243",
       "key": "braveheart"
     },
     "crimsonwitchofflames": {
@@ -32,12 +37,12 @@
     },
     "deepwoodmemories": {
       "id": "15025",
-      "text_map_id": "1675079283",
+      "text_map_id": "1675078771",
       "key": "deepwoodmemories"
     },
     "defenderswill": {
       "id": "10003",
-      "text_map_id": "4082302819",
+      "text_map_id": "4082302307",
       "key": "defenderswill"
     },
     "desertpavilionchronicle": {
@@ -47,12 +52,12 @@
     },
     "echoesofanoffering": {
       "id": "15024",
-      "text_map_id": "3626268211",
+      "text_map_id": "3626267699",
       "key": "echoesofanoffering"
     },
     "emblemofseveredfate": {
       "id": "15020",
-      "text_map_id": "2276480763",
+      "text_map_id": "2276480251",
       "key": "emblemofseveredfate"
     },
     "finaleofthedeepgalleries": {
@@ -67,12 +72,12 @@
     },
     "fragmentofharmonicwhimsy": {
       "id": "15035",
-      "text_map_id": "1492570003",
+      "text_map_id": "1492569491",
       "key": "fragmentofharmonicwhimsy"
     },
     "gambler": {
       "id": "10008",
-      "text_map_id": "1186209435",
+      "text_map_id": "1186208923",
       "key": "gambler"
     },
     "gildeddreams": {
@@ -97,22 +102,22 @@
     },
     "huskofopulentdreams": {
       "id": "15021",
-      "text_map_id": "2546254811",
+      "text_map_id": "2546254299",
       "key": "huskofopulentdreams"
     },
     "instructor": {
       "id": "10007",
-      "text_map_id": "3890292467",
+      "text_map_id": "3890291955",
       "key": "instructor"
     },
     "lavawalker": {
       "id": "14003",
-      "text_map_id": "1632377563",
+      "text_map_id": "1632377051",
       "key": "lavawalker"
     },
     "longnightsoath": {
       "id": "15039",
-      "text_map_id": "3761477451",
+      "text_map_id": "3761476939",
       "key": "longnightsoath"
     },
     "maidenbeloved": {
@@ -122,12 +127,12 @@
     },
     "marechausseehunter": {
       "id": "15031",
-      "text_map_id": "1249831867",
+      "text_map_id": "1249831355",
       "key": "marechausseehunter"
     },
     "martialartist": {
       "id": "10006",
-      "text_map_id": "2890909531",
+      "text_map_id": "2890909019",
       "key": "martialartist"
     },
     "nightoftheskysunveiling": {
@@ -137,7 +142,7 @@
     },
     "nighttimewhispersintheechoingwoods": {
       "id": "15034",
-      "text_map_id": "279470883",
+      "text_map_id": "279470371",
       "key": "nighttimewhispersintheechoingwoods"
     },
     "noblesseoblige": {
@@ -152,7 +157,7 @@
     },
     "obsidiancodex": {
       "id": "15038",
-      "text_map_id": "1774579403",
+      "text_map_id": "1774578891",
       "key": "obsidiancodex"
     },
     "oceanhuedclam": {
@@ -167,32 +172,32 @@
     },
     "resolutionofsojourner": {
       "id": "10001",
-      "text_map_id": "2364208851",
+      "text_map_id": "2364208339",
       "key": "resolutionofsojourner"
     },
     "retracingbolide": {
       "id": "15015",
-      "text_map_id": "1438974835",
+      "text_map_id": "1438974323",
       "key": "retracingbolide"
     },
     "scholar": {
       "id": "10012",
-      "text_map_id": "3618167299",
+      "text_map_id": "3618166787",
       "key": "scholar"
     },
     "scrolloftheheroofcindercity": {
       "id": "15037",
-      "text_map_id": "2949388203",
+      "text_map_id": "2949387691",
       "key": "scrolloftheheroofcindercity"
     },
     "shimenawasreminiscence": {
       "id": "15019",
-      "text_map_id": "4144069251",
+      "text_map_id": "4144068739",
       "key": "shimenawasreminiscence"
     },
     "silkenmoonsserenade": {
       "id": "15042",
-      "text_map_id": "625305531",
+      "text_map_id": "625305019",
       "key": "silkenmoonsserenade"
     },
     "songofdayspast": {
@@ -202,7 +207,7 @@
     },
     "tenacityofthemillelith": {
       "id": "15017",
-      "text_map_id": "1337666507",
+      "text_map_id": "1337665995",
       "key": "tenacityofthemillelith"
     },
     "theexile": {
@@ -217,7 +222,7 @@
     },
     "thundersoother": {
       "id": "14002",
-      "text_map_id": "1873342283",
+      "text_map_id": "1873341771",
       "key": "thundersoother"
     },
     "unfinishedreverie": {
@@ -232,7 +237,7 @@
     },
     "viridescentvenerer": {
       "id": "15002",
-      "text_map_id": "1562601179",
+      "text_map_id": "1562600667",
       "key": "viridescentvenerer"
     },
     "vourukashasglow": {

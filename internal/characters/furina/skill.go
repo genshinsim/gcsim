@@ -313,6 +313,9 @@ func (c *char) singerOfManyWaters(src int) func() {
 		// +0.5 to ensure it rounds
 		interval := int(singerInterval*(1-c.a4IntervalReduction) + 0.5)
 		c.Core.Tasks.Add(c.singerOfManyWaters(src), interval)
+		if c.Base.Cons >= 4 {
+			c.c4energy()
+		}
 	}
 }
 

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 	"google.golang.org/grpc"
@@ -118,7 +119,8 @@ func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error)
 	// compute work??
 	log.Printf("got work %v; starting compute", w.Id)
 	// compute result
-	simcfg, gcsl, err := simulator.Parse(w.Config)
+	file := ast.NewFile()
+	simcfg, gcsl, err := simulator.Parse(file, w.Config)
 	if err != nil {
 		log.Printf("could not parse config for id %v: %v\n", w.Id, err)
 		// TODO: we should post something here??
@@ -130,7 +132,7 @@ func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.timeoutInSec)*time.Second)
 	defer cancel()
 
-	result, err := simulator.RunWithConfig(ctx, w.Config, simcfg, gcsl, simulator.Options{}, time.Now())
+	result, err := simulator.RunWithConfig(ctx, file, w.Config, simcfg, gcsl, simulator.Options{}, time.Now())
 	if err != nil {
 		log.Printf("error running sim %v: %v\n", w.Id, err)
 		return nil, err

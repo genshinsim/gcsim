@@ -71,8 +71,7 @@ func (c *char) lunarchargeInit() {
 			return
 		}
 
-		stats := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
-		bonus := min(stats.TotalATK()/100.0*0.007, 0.14)
+		bonus := min(c.TotalAtk()/100.0*0.007, 0.14)
 
 		atk.Info.BaseDmgBonus += bonus
 	}, lunarchargeBonusKey)
@@ -83,8 +82,7 @@ func (c *char) lunarchargeInit() {
 			return
 		}
 
-		stats := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
-		bonus := min(stats.TotalATK()/100.0*0.007, 0.14)
+		bonus := min(c.TotalAtk()/100.0*0.007, 0.14)
 
 		atk.Info.BaseDmgBonus += bonus
 	}, lunarchargeBonusKey+"-lc-atk")

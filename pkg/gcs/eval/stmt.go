@@ -1,8 +1,6 @@
 package eval
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -72,7 +70,7 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 	// }
 	_, exist := env.varMap[l.Ident.Val]
 	if exist {
-		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
+		return nil, ast.NewErrorf(e.file.Position(l.Pos), "variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	// num := *v //value copying
 	env.varMap[l.Ident.Val] = &res
@@ -83,7 +81,7 @@ func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
 	// functionally, a FnStmt is just a special type of let statement
 	_, exist := env.varMap[l.Ident.Val]
 	if exist {
-		return nil, fmt.Errorf("function %v already exists; cannot redeclare", l.Ident.Val)
+		return nil, ast.NewErrorf(e.file.Position(l.Pos), "function %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	var res Obj = &funcval{
 		Args:      l.Func.Args,
@@ -214,7 +212,7 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 		val, ok := cond.(*number)
 		// e.Log.Printf("let expr: %v, type: %T\n", res, res)
 		if !ok {
-			return nil, fmt.Errorf("switch condition does not evaluate to a number, got %v", cond.Inspect())
+			return nil, ast.NewErrorf(e.file.Position(swt.Pos), "switch condition does not evaluate to a number, got %v", cond.Inspect())
 		}
 		v = val
 	}
@@ -229,7 +227,7 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 		}
 		c, ok := cc.(*number)
 		if !ok {
-			return nil, fmt.Errorf("switch case condition does not evaluate to a number, got %v", cc.Inspect())
+			return nil, ast.NewErrorf(e.file.Position(swt.Pos), "switch case condition does not evaluate to a number, got %v", cc.Inspect())
 		}
 		if (v == nil && ntob(c)) || (v != nil && ntob(eq(c, v))) || ft {
 			found = true

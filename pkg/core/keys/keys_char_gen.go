@@ -7,6 +7,7 @@ import (
 
 const (
 	TestCharDoNotUse Char = iota + TravelerDelim + 1
+	Aino
 	Albedo
 	Alhaitham
 	Aloy
@@ -27,6 +28,7 @@ const (
 	Citlali
 	Clorinde
 	Collei
+	Columbina
 	Cyno
 	Dahlia
 	Dehya
@@ -111,6 +113,10 @@ const (
 )
 
 func init() {
+	charNames[Aino] = "aino"
+	charPrettyName[Aino] = "Aino"
+	CharKeyToEle[Aino] = attributes.Hydro
+
 	charNames[Albedo] = "albedo"
 	charPrettyName[Albedo] = "Albedo"
 	CharKeyToEle[Albedo] = attributes.Geo
@@ -190,6 +196,10 @@ func init() {
 	charNames[Collei] = "collei"
 	charPrettyName[Collei] = "Collei"
 	CharKeyToEle[Collei] = attributes.Dendro
+
+	charNames[Columbina] = "columbina"
+	charPrettyName[Columbina] = "Columbina"
+	CharKeyToEle[Columbina] = attributes.Hydro
 
 	charNames[Cyno] = "cyno"
 	charPrettyName[Cyno] = "Cyno"

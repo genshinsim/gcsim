@@ -27,6 +27,7 @@ type char struct {
 	burstCount       int
 	burstVoids       int
 	voidRifts        RingQueue[int]
+	a1PauseSSStacks  int
 	c2Atk            []float64
 	c6Stacks         RingQueue[int]
 }

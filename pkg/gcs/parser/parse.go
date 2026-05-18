@@ -92,7 +92,7 @@ func parseRows(p *Parser) (parseFn, error) {
 			key, ok := shortcut.CharNameToKey[n.Val]
 			if !ok {
 				// this would never happen
-				return nil, fmt.Errorf("ln%v: unexpected error; invalid char key %v", n.Line, n.Val)
+				return nil, ast.NewErrorf(p.file.Position(n.Pos), "unexpected error; invalid char key %v", n.Val)
 			}
 			if _, ok := p.chars[key]; !ok {
 				p.newChar(key)
@@ -114,12 +114,12 @@ func parseRows(p *Parser) (parseFn, error) {
 		// next should be char then end line
 		char, err := p.consume(ast.ItemCharacterKey)
 		if err != nil {
-			return nil, fmt.Errorf("ln%v: setting active char: invalid char %v", char.Line, char.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "setting active char: invalid char %v", char.Val)
 		}
 		p.res.InitialChar = shortcut.CharNameToKey[char.Val]
 		n, err := p.consume(ast.ItemTerminateLine)
 		if err != nil {
-			return nil, fmt.Errorf("ln%v: expecting ; after active <char>, got %v", n.Line, n.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting ; after active <char>, got %v", n.Val)
 		}
 		return parseRows, nil
 	case ast.KeywordTarget:
@@ -137,7 +137,7 @@ func parseRows(p *Parser) (parseFn, error) {
 	case ast.ItemEOF:
 		return nil, nil
 	case ast.ItemActionKey:
-		return nil, fmt.Errorf("ln%v: unexpected line starts with an action: %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "unexpected line starts with an action: %v", n.Val)
 	default: // default should be look for gcsl
 		node, err := p.parseStatement()
 		p.prog.Append(node)
@@ -213,7 +213,7 @@ func (p *Parser) parseStatement() (ast.Node, error) {
 	if hasSemi {
 		n, err := p.consume(ast.ItemTerminateLine)
 		if err != nil {
-			return nil, fmt.Errorf("ln%v: expecting ; at end of %v statement, got %v", n.Line, stmtType, n.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting ; at end of %v statement, got %v", stmtType, n.Val)
 		}
 	}
 	return node, nil
@@ -224,13 +224,13 @@ func (p *Parser) parseAssign() (ast.Stmt, error) {
 	ident, err := p.consume(ast.ItemIdentifier)
 	if err != nil {
 		// next token not and identifier
-		return nil, fmt.Errorf("ln%v: expecting identifier in assign statement, got %v", ident.Line, ident.Val)
+		return nil, ast.NewErrorf(p.file.Position(ident.Pos), "expecting identifier in assign statement, got %v", ident.Val)
 	}
 
 	a, err := p.consume(ast.ItemAssign)
 	if err != nil {
 		// next token not and identifier
-		return nil, fmt.Errorf("ln%v: expecting = after identifier in assign statement, got %v", a.Line, a.Val)
+		return nil, ast.NewErrorf(p.file.Position(ident.Pos), "expecting = after identifier in assign statement, got %v", a.Val)
 	}
 
 	expr, err := p.parseExpr(ast.Lowest)
@@ -263,7 +263,7 @@ func (p *Parser) parseIf() (ast.Stmt, error) {
 
 	// expecting a { next
 	if n := p.peek(); n.Typ != ast.ItemLeftBrace {
-		return nil, fmt.Errorf("ln%v: expecting { after if, got %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting { after if, got %v", n.Val)
 	}
 
 	stmt.IfBlock, err = p.parseBlock() // parse block here
@@ -285,7 +285,7 @@ func (p *Parser) parseIf() (ast.Stmt, error) {
 	case *ast.IfStmt, *ast.BlockStmt:
 	default:
 		stmt.ElseBlock = nil
-		return stmt, fmt.Errorf("ln%v: expecting either if or normal block after else", n.Line)
+		return stmt, ast.NewError(p.file.Position(n.Pos), "expecting either if or normal block after else")
 	}
 
 	stmt.ElseBlock = block.(ast.Stmt)
@@ -315,7 +315,7 @@ func (p *Parser) parseSwitch() (ast.Stmt, error) {
 	}
 
 	if n := p.next(); n.Typ != ast.ItemLeftBrace {
-		return nil, fmt.Errorf("ln%v: expecting { after switch, got %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting { after switch, got %v", n.Val)
 	}
 
 	// look for cases while not }
@@ -333,7 +333,7 @@ func (p *Parser) parseSwitch() (ast.Stmt, error) {
 			}
 			// colon, then read until we hit next case
 			if n := p.peek(); n.Typ != ast.ItemColon {
-				return nil, fmt.Errorf("ln%v: expecting : after case, got %v", n.Line, n.Val)
+				return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting : after case, got %v", n.Val)
 			}
 			cs.Body, err = p.parseCaseBody()
 			if err != nil {
@@ -343,14 +343,14 @@ func (p *Parser) parseSwitch() (ast.Stmt, error) {
 		case ast.KeywordDefault:
 			// colon, then read until we hit next case
 			if p.peek().Typ != ast.ItemColon {
-				return nil, fmt.Errorf("ln%v: expecting : after default, got %v", n.Line, n.Val)
+				return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting : after default, got %v", n.Val)
 			}
 			stmt.Default, err = p.parseCaseBody()
 			if err != nil {
 				return nil, err
 			}
 		default:
-			return nil, fmt.Errorf("ln%v: expecting case or default token, got %v", n.Line, n.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting case or default token, got %v", n.Val)
 		}
 	}
 
@@ -369,7 +369,7 @@ func (p *Parser) parseCaseBody() (*ast.BlockStmt, error) {
 		case ast.ItemCharacterKey:
 			if !p.peekValidCharAction() {
 				n = p.next()
-				return nil, fmt.Errorf("ln%v: expecting action after character token, got %v", n.Line, n.Val)
+				return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting action after character token, got %v", n.Val)
 			}
 		case ast.KeywordDefault:
 			fallthrough
@@ -406,7 +406,7 @@ func (p *Parser) parseWhile() (ast.Stmt, error) {
 
 	// expecting a { next
 	if n := p.peek(); n.Typ != ast.ItemLeftBrace {
-		return nil, fmt.Errorf("ln%v: expecting { after while, got %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting { after while, got %v", n.Val)
 	}
 
 	stmt.WhileBlock, err = p.parseBlock() // parse block here
@@ -455,7 +455,7 @@ func (p *Parser) parseFor() (ast.Stmt, error) {
 		}
 
 		if n := p.peek(); n.Typ != ast.ItemTerminateLine {
-			return nil, fmt.Errorf("ln%v: expecting ; after statement, got %v", n.Line, n.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting ; after statement, got %v", n.Val)
 		}
 		p.next() // skip ;
 	}
@@ -479,7 +479,7 @@ func (p *Parser) parseFor() (ast.Stmt, error) {
 
 	// expecting a { next
 	if n := p.peek(); n.Typ != ast.ItemLeftBrace {
-		return nil, fmt.Errorf("ln%v: expecting { after for, got %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting { after for, got %v", n.Val)
 	}
 
 	stmt.Body, err = p.parseBlock() // parse block here
@@ -510,7 +510,7 @@ func (p *Parser) parseCtrl() (ast.Stmt, error) {
 	case ast.KeywordFallthrough:
 		stmt.Typ = ast.CtrlFallthrough
 	default:
-		return nil, fmt.Errorf("ln%v: expecting ctrl token, got %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting ctrl token, got %v", n.Val)
 	}
 	return stmt, nil
 }
@@ -557,7 +557,7 @@ func (p *Parser) parseCallArgs() ([]ast.Expr, error) {
 
 	if n := p.next(); n.Typ != ast.ItemRightParen {
 		p.backup()
-		return nil, fmt.Errorf("ln%v: expecting ) at end of function call, got: %v", n.Line, n.Pos)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting ) at end of function call, got: %v", n.Pos)
 	}
 
 	return args, nil
@@ -581,7 +581,7 @@ func (p *Parser) parseBlock() (*ast.BlockStmt, error) {
 	// should be surronded by {}
 	n, err := p.consume(ast.ItemLeftBrace)
 	if err != nil {
-		return nil, fmt.Errorf("ln%v: expecting {, got %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting {, got %v", n.Val)
 	}
 	block := ast.NewBlockStmt(n.Pos)
 	var node ast.Node
@@ -592,7 +592,7 @@ func (p *Parser) parseBlock() (*ast.BlockStmt, error) {
 		case ast.ItemCharacterKey:
 			if !p.peekValidCharAction() {
 				n = p.next()
-				return nil, fmt.Errorf("ln%v: expecting action after character token, got %v", n.Line, n.Val)
+				return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting action after character token, got %v", n.Val)
 			}
 		case ast.ItemRightBrace:
 			p.next() // consume the braces
@@ -613,7 +613,7 @@ func (p *Parser) parseExpr(pre ast.Precedence) (ast.Expr, error) {
 	t := p.next()
 	prefix := p.prefixParseFns[t.Typ]
 	if prefix == nil {
-		return nil, fmt.Errorf("ln%v: no prefix parse function for %v", t.Line, t.Val)
+		return nil, ast.NewErrorf(p.file.Position(t.Pos), "no prefix parse function for %v", t.Val)
 	}
 	p.backup()
 	leftExp, err := prefix()
@@ -636,7 +636,7 @@ func (p *Parser) parseExpr(pre ast.Precedence) (ast.Expr, error) {
 	if p.constantFolding {
 		leftExp, err = foldConstants(leftExp)
 		if err != nil {
-			return nil, err
+			return nil, ast.NewError(p.file.Position(t.Pos), err.Error())
 		}
 	}
 
@@ -679,7 +679,7 @@ func (p *Parser) parseNumber() (ast.Expr, error) {
 	} else {
 		fv, err := strconv.ParseFloat(n.Val, 64)
 		if err != nil {
-			return nil, fmt.Errorf("ln%v: cannot parse %v to number", n.Line, n.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "cannot parse %v to number", n.Val)
 		}
 		num.IsFloat = true
 		num.FloatVal = fv
@@ -699,7 +699,7 @@ func (p *Parser) parseBool() (ast.Expr, error) {
 		num.IntVal = 0
 		num.FloatVal = 0
 	default:
-		return nil, fmt.Errorf("ln%v: expecting boolean, got %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting boolean, got %v", n.Val)
 	}
 	return num, nil
 }
@@ -710,7 +710,7 @@ func (p *Parser) parseUnaryExpr() (ast.Expr, error) {
 	case ast.LogicNot:
 	case ast.ItemMinus:
 	default:
-		return nil, fmt.Errorf("ln%v: unrecognized unary operator %v", n.Line, n.Val)
+		return nil, ast.NewErrorf(p.file.Position(n.Pos), "unrecognized unary operator %v", n.Val)
 	}
 	var err error
 	expr := &ast.UnaryExpr{
@@ -767,12 +767,12 @@ func (p *Parser) parseMap() (ast.Expr, error) {
 		// we're expecting ident = int
 		i, err := p.consume(ast.ItemIdentifier)
 		if err != nil {
-			return nil, fmt.Errorf("ln%v: expecting identifier in map expression, got %v", i.Line, i.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting identifier in map expression, got %v", i.Val)
 		}
 
 		a, err := p.consume(ast.ItemAssign)
 		if err != nil {
-			return nil, fmt.Errorf("ln%v: expecting = after identifier in map expression, got %v", a.Line, a.Val)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "expecting = after identifier in map expression, got %v", a.Val)
 		}
 
 		e, err := p.parseExpr(ast.Lowest)
@@ -789,7 +789,7 @@ func (p *Parser) parseMap() (ast.Expr, error) {
 		case ast.ItemComma:
 			// do nothing, keep going
 		default:
-			return nil, fmt.Errorf("ln%v: <action param> bad token %v", n.Line, n)
+			return nil, ast.NewErrorf(p.file.Position(n.Pos), "<action param> bad token %v", n)
 		}
 	}
 }

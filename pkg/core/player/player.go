@@ -24,12 +24,9 @@ import (
 )
 
 const (
-	MaxStam            = 240
-	StamCDFrames       = 90
-	SwapCDFrames       = 60
-	MaxVerdantDew      = 3
-	verdantDewEndFrame = 149
-	maxPartialDew      = 146
+	MaxStam      = 240
+	StamCDFrames = 90
+	SwapCDFrames = 60
 )
 
 type Handler struct {
@@ -71,6 +68,8 @@ type Handler struct {
 	verdantDewExpiryFrame int
 	verdantDew            int
 	partialDewCount       int
+
+	moonridgeDew int
 }
 
 type Opt struct {
@@ -325,52 +324,6 @@ func (h *Handler) Tick() {
 	}
 }
 
-// this has to be checked after the animation handler, since the task is set by the handler
-func (h *Handler) verdantDewTick() {
-	if h.verdantDew >= 3 {
-		return
-	}
-
-	if h.verdantDewExpiryFrame < *h.F {
-		return
-	}
-
-	h.partialDewCount++
-	if h.partialDewCount >= maxPartialDew {
-		h.AddVerdantDew()
-		h.partialDewCount = 0
-	}
-}
-
-func (h *Handler) OnLunarBloom() {
-	verdantDewEnd := *h.F + verdantDewEndFrame
-	h.Tasks.Add(func() { h.verdantDewExpiryFrame = verdantDewEnd }, 1)
-}
-
-// sets verdant dew to an amt between 0 and 3, inclusive.
-func (h *Handler) SetVerdantDew(amt int) {
-	h.verdantDew = max(min(amt, 3), 0)
-}
-
-func (h *Handler) AddVerdantDew() {
-	if h.verdantDew >= MaxVerdantDew {
-		return
-	}
-	h.verdantDew++
-
-	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
-}
-
-// returns the number of verdant dew the player has
-func (h *Handler) VerdantDew() int {
-	return h.verdantDew
-}
-
-func (h *Handler) ConsumeVerdantDew(amt int) {
-	h.verdantDew = max(h.verdantDew-amt, 0)
-	h.Log.NewEvent(fmt.Sprintf("%v verdant dew consumed: %v", amt, h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
-}
-
 type AirborneSource int
 
 const (
@@ -410,7 +363,7 @@ func (h *Handler) GetMoonsignLevel() int {
 func (h *Handler) GetHexereiCount() int {
 	count := 0
 	for _, char := range h.chars {
-		if char.Hexerei > 0 {
+		if char.IsHexerei {
 			count++
 		}
 	}

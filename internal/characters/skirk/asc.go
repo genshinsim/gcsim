@@ -10,11 +10,12 @@ import (
 )
 
 const (
-	a1Dur    = 1054
-	a1Key    = "skirk-a1"
-	a1IcdKey = "skirk-a1-icd"
-	a4Key    = "deaths-crossing"
-	a4Dur    = 20 * 60
+	a1Dur        = 1054
+	a1Key        = "skirk-a1"
+	a1IcdKey     = "skirk-a1-icd"
+	a1SSPauseKey = "skirk-a1-ss-pause"
+	a4Key        = "deaths-crossing"
+	a4Dur        = 20 * 60
 )
 
 var (
@@ -64,11 +65,28 @@ func (c *char) onVoidAbsorb(count int) {
 	}
 
 	c.AddSerpentsSubtlety("a1-void-rifts", float64(count)*8.0)
-
+	c.addA1SSPauseDur(count)
 	for range count {
 		c.c1()
 		c.c6OnVoidAbsorb()
 	}
+}
+
+func (c *char) addA1SSPauseDur(count int) {
+	c.AddStatus(a1SSPauseKey, -1, false)
+	if c.a1PauseSSStacks == 0 {
+		c.Core.Tasks.Add(c.a1SSPauseTicker, 0.15*60)
+	}
+	c.a1PauseSSStacks = min(c.a1PauseSSStacks+count*2, 6)
+}
+
+func (c *char) a1SSPauseTicker() {
+	c.a1PauseSSStacks -= 1
+	if c.a1PauseSSStacks == 0 {
+		c.DeleteStatus(a1SSPauseKey)
+		return
+	}
+	c.Core.Tasks.Add(c.a1SSPauseTicker, 0.15*60)
 }
 
 func (c *char) createVoidRift() {

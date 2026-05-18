@@ -52,7 +52,7 @@ func New(c *core.Core, shp info.Shape, a *info.AttackEvent) *Gadget {
 
 				// self damage
 				ai.Abil += info.SelfDamageSuffix
-				ai.FlatDmg = 0.05 * ai.FlatDmg
+				ai.FlatDmg = 0.02 * ai.FlatDmg
 				ap.SkipTargets[info.TargettablePlayer] = false
 				ap.SkipTargets[info.TargettableEnemy] = true
 				ap.SkipTargets[info.TargettableGadget] = true
@@ -104,7 +104,7 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 
 				// also queue self damage
 				ai.Abil += info.SelfDamageSuffix
-				ai.FlatDmg = 0.05 * ai.FlatDmg
+				ai.FlatDmg = 0.02 * ai.FlatDmg
 				ap.SkipTargets[info.TargettablePlayer] = false
 				ap.SkipTargets[info.TargettableEnemy] = true
 				ap.SkipTargets[info.TargettableGadget] = true
@@ -132,7 +132,7 @@ func (s *Gadget) Attack(atk *info.AttackEvent, evt glog.Event) (float64, bool) {
 
 			// queue self damage
 			ai.Abil += info.SelfDamageSuffix
-			ai.FlatDmg = 0.05 * ai.FlatDmg
+			ai.FlatDmg = 0.02 * ai.FlatDmg
 			ap.SkipTargets[info.TargettablePlayer] = false
 			ap.SkipTargets[info.TargettableEnemy] = true
 			ap.SkipTargets[info.TargettableGadget] = true

@@ -3,6 +3,8 @@ package parser
 import (
 	"fmt"
 	"testing"
+
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
 const fntest = `
@@ -23,7 +25,8 @@ print(xy(1,2));
 `
 
 func TestFnCall(t *testing.T) {
-	p := New(fntest)
+	file := ast.NewFile()
+	p := New(file, fntest)
 	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)

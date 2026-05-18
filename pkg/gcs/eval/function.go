@@ -1,16 +1,14 @@
 package eval
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-func validateNumberParams(c *ast.CallExpr, count int) error {
+func (e *Eval) validateNumberParams(c *ast.CallExpr, count int) error {
 	if len(c.Args) == count {
 		return nil
 	}
-	return fmt.Errorf("invalid number of params for %v (expected %v, got %v)", c.Fun, count, len(c.Args))
+	return ast.NewErrorf(e.file.Position(c.Pos), "invalid number of params for %v (expected %v, got %v)", c.Fun, count, len(c.Args))
 }
 
 func (e *Eval) validateArgument(c *ast.CallExpr, env *Env, index int, objType ObjTyp) (Obj, error) {
@@ -19,13 +17,13 @@ func (e *Eval) validateArgument(c *ast.CallExpr, env *Env, index int, objType Ob
 		return nil, err
 	}
 	if obj.Typ() != objType {
-		return nil, fmt.Errorf("%v argument #%v should evaluate to %v, got %v", c.Fun, index+1, objType, obj.Typ())
+		return nil, ast.NewErrorf(e.file.Position(c.Pos), "%v argument #%v should evaluate to %v, got %v", c.Fun, index+1, objType, obj.Typ())
 	}
 	return obj, nil
 }
 
 func (e *Eval) validateArguments(c *ast.CallExpr, env *Env, objTypes ...ObjTyp) ([]Obj, error) {
-	err := validateNumberParams(c, len(objTypes))
+	err := e.validateNumberParams(c, len(objTypes))
 	if err != nil {
 		return nil, err
 	}

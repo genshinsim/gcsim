@@ -40,6 +40,10 @@ func (c *char) c4cb(a info.AttackCB) {
 	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
+	c.c4energy()
+}
+
+func (c *char) c4energy() {
 	if c.StatusIsActive(c4IcdKey) {
 		return
 	}

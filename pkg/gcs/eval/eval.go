@@ -16,6 +16,7 @@ type Eval struct {
 	Core *core.Core
 	AST  ast.Node
 	Log  *log.Logger
+	file *ast.File
 
 	next chan bool         // wait on this before continuing
 	work chan *action.Eval // send work to this chan
@@ -31,10 +32,11 @@ type Env struct {
 	varMap map[string]*Obj
 }
 
-func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
+func NewEvaluator(file *ast.File, ast ast.Node, c *core.Core) (*Eval, error) {
 	e := &Eval{
 		AST:  ast,
 		Core: c,
+		file: file,
 		next: make(chan bool),
 		work: make(chan *action.Eval),
 	}

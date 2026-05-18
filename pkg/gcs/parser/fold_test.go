@@ -3,6 +3,8 @@ package parser
 import (
 	"strings"
 	"testing"
+
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
 func TestConstantFolding(t *testing.T) {
@@ -37,7 +39,8 @@ func TestConstantFolding(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		p := New(test.input)
+		file := ast.NewFile()
+		p := New(file, test.input)
 		_, prog, err := p.Parse()
 		if err != nil {
 			t.Error(err)

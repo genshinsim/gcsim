@@ -157,6 +157,22 @@ func SetupResonance(s *core.Core) {
 					},
 				})
 			}
+
+			// workaround for giving lunarcharge the 15% CR
+			s.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+				e, ok := args[0].(*enemy.Enemy)
+				if !ok {
+					return
+				}
+
+				ae, ok := args[1].(*info.AttackEvent)
+				if !ok {
+					return
+				}
+				if e.AuraContains(attributes.Cryo) || e.AuraContains(attributes.Frozen) {
+					ae.Snapshot.Stats[attributes.CR] += 0.15
+				}
+			}, "cryo-res-lunarcharge")
 		case attributes.Electro:
 			last := 0
 

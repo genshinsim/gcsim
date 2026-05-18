@@ -35,6 +35,7 @@ var setNames = []string{
 	"",
 	"adventurer",
 	"archaicpetra",
+	"aubadeofmorningstarandmoon",
 	"berserker",
 	"blizzardstrayer",
 	"bloodstainedchivalry",
@@ -96,6 +97,7 @@ const (
 	NoSet Set = iota
 	Adventurer
 	ArchaicPetra
+	AubadeOfMorningstarAndMoon
 	Berserker
 	BlizzardStrayer
 	BloodstainedChivalry
