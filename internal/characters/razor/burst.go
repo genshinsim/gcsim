@@ -99,7 +99,7 @@ func (c *char) wolfBurst(normalCounter int) func(info.AttackCB) {
 			Mult:       wolfDmg[c.TalentLvlBurst()] * a.AttackEvent.Info.Mult,
 		}
 
-		if c.Hexerei == 1 {
+		if c.IsHexerei {
 			ai.FlatDmg += 0.7 * c.TotalAtk()
 		}
 
