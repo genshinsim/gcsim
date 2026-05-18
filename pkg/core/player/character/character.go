@@ -94,7 +94,6 @@ type CharWrapper struct {
 	HasArkhe  bool
 	IsHexerei bool
 	Moonsign  int
-	Hexerei   int
 
 	Equip struct {
 		Weapon info.Weapon

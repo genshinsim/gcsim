@@ -195,7 +195,7 @@ func (c *char) holdParticleCB(a info.AttackCB) {
 }
 
 func (c *char) addSigilIfHexerei() info.AttackCBFunc {
-	if c.Hexerei == 0 {
+	if !c.IsHexerei {
 		return func(a info.AttackCB) {}
 	}
 	return c.addSigil(false)
