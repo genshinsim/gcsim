@@ -48,6 +48,14 @@ func (c *char) a4() {
 }
 
 func (c *char) thunderFallCB() {
+	if !c.IsHexerei {
+		return
+	}
+
+	if c.Core.Player.GetHexereiCount() < 2 {
+		return
+	}
+
 	if c.StatusIsActive(hexereiICDKey) {
 		return
 	}
