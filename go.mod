@@ -7,7 +7,10 @@ ignore (
 	node_modules
 )
 
-tool github.com/tinylib/msgp
+tool (
+	github.com/dmarkham/enumer
+	github.com/tinylib/msgp
+)
 
 require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
