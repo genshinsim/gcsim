@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -13,7 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func init() {
@@ -21,11 +19,12 @@ func init() {
 }
 
 type Set struct {
-	Index int
-	core  *core.Core
-	char  *character.CharWrapper
-	lastF int
-	Count int
+	Index      int
+	core       *core.Core
+	char       *character.CharWrapper
+	tickerSrcF int
+	lastF      int
+	Count      int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
@@ -54,8 +53,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		c.Events.Subscribe(event.OnShielded, s.OnShielded(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnConstructSpawned, s.OnConstructSpawned(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnLunarReactionAttack, s.OnLunarReactionAttack(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnShieldBreak, s.OnShieldBreak(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnCharacterSwap, s.OnCharacterSwap(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnSkill, s.OnSkill(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
@@ -72,30 +69,6 @@ func (s *Set) OnShielded() func(args ...any) {
 		}
 		if shd.Type() == shield.Crystallize {
 			s.lastF = shd.Expiry()
-		}
-	}
-}
-
-func (s *Set) OnConstructSpawned() func(args ...any) {
-	return func(args ...any) {
-		c := args[0].(construct.Construct)
-		if c.Type() == construct.GeoConstructLunarCrystallize {
-			s.core.Status.Add("nighttimewhispers-4pc-moondrift", reactable.lcrDur)
-			if s.core.Player.Active() != s.char.Index() {
-				s.lastF = s.core.F + s.core.Status.Duration("nighttimewhispers-4pc-moondrift")
-			}
-		}
-	}
-}
-
-func (s *Set) OnLunarReactionAttack() func(args ...any) {
-	return func(args ...any) {
-		ae := args[1].(info.AttackEvent)
-		if ae.Info.AttackTag == attacks.AttackTagReactionLunarCrystallize && s.core.Status.Duration("nighttimewhispers-4pc-moondrift") > 0 { // should be impossible for a moondrift to be absent during a moondrift attack?
-			s.core.Status.Add("nighttimewhispers-4pc-moondrift", reactable.lcrDur)
-			if s.core.Player.Active() != s.char.Index() {
-				s.lastF = s.core.F + s.core.Status.Duration("nighttimewhispers-4pc-moondrift")
-			}
 		}
 	}
 }
@@ -124,6 +97,8 @@ func (s *Set) OnCharacterSwap() func(args ...any) {
 		}
 		switch s.char.Index() {
 		case active:
+			s.tickerSrcF = s.core.F
+			s.moondrifTicker(s.tickerSrcF)
 			s.lastF = max(shd.Expiry(), moondriftExpiry)
 		case prev:
 			s.lastF = s.core.F + 60
@@ -137,6 +112,8 @@ func (s *Set) OnSkill() func(args ...any) {
 		if s.core.Player.Active() != s.char.Index() {
 			return
 		}
+		s.tickerSrcF = s.core.F
+		s.moondrifTicker(s.tickerSrcF)
 		s.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("nighttimewhispers-4pc", 10*60),
 			AffectedStat: attributes.GeoP,
@@ -150,4 +127,33 @@ func (s *Set) OnSkill() func(args ...any) {
 			},
 		})
 	}
+}
+
+func (s *Set) moondrifTicker(src int) {
+	if s.tickerSrcF != src {
+		return
+	}
+	if s.core.Player.Active() != s.char.Index() {
+		return
+	}
+	if !s.char.StatModIsActive("nighttimewhispers-4pc") {
+		return
+	}
+	moondriftNearby := false
+	moondrifts, _ := s.core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
+	playerPos := s.core.Combat.Player().Pos()
+	for _, moondrift := range moondrifts {
+		if playerPos.Distance(moondrift.Pos()) < 20 {
+			moondriftNearby = true
+			break
+		}
+	}
+	if moondriftNearby {
+		s.core.Status.Add("nighttimewhispers-4pc-moondrift", 60*2)
+		s.lastF = s.core.F + 60*2
+	} else if s.core.Status.Duration("nighttimewhispers-4pc-moondrift") > 0 {
+		s.core.Status.Add("nighttimewhispers-4pc-moondrift", 60)
+		s.lastF = s.core.F + 60
+	}
+	s.core.Tasks.Add(func() { s.moondrifTicker(src) }, 60*2)
 }
