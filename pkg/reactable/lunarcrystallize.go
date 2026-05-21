@@ -32,7 +32,11 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		return false
 	}
 
-	if r.core.Status.Duration(LcrKey) > 0 {
+	r.core.Flags.Custom[lcrCountKey] += 1
+	r.core.Status.Add(LcrKey, lcrDur)
+	r.addLCrContributor(a)
+
+	if r.core.Status.Duration(LcrKey) > 0 && r.core.Flags.Custom[lcrCountKey] >= 3 {
 		r.extendLunarCrystallizeConstructDur()
 	} else {
 		// TODO: Check if constructs expiring will reset the counter
@@ -41,9 +45,6 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		r.core.Constructs.NewNoLimitCons(r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(info.Point{Y: -0.5, X: -0.866})), false)
 	}
 
-	r.core.Flags.Custom[lcrCountKey] += 1
-	r.core.Status.Add(LcrKey, lcrDur)
-	r.addLCrContributor(a)
 
 	if r.core.Flags.Custom[lcrCountKey] >= 3 {
 		// trigger three attacks
