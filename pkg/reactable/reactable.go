@@ -22,7 +22,6 @@ type Reactable struct {
 	ecSnapshot      info.Snapshot
 	ecTickSrc       int
 	lcAtkOwner      int                 // index of owner of next LC tick
-	lcrAtkOwner     int                 // index of owner of next LCr attack of 3 moondrifts
 	lcrContributors [info.MaxChars]bool // patecipation map of the contributors of next LCr attack of 3 moondrifts
 	// burning specific
 	burningAtk      info.AttackInfo

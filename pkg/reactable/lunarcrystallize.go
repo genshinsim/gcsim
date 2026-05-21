@@ -58,7 +58,6 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
-	r.lcrAtkOwner = a.Info.ActorIndex
 
 	// event
 	r.core.Events.Emit(event.OnLunarCrystallize, r.self, a)
