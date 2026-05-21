@@ -49,7 +49,7 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		// trigger three attacks
 		r.core.Flags.Custom[lcrCountKey] = 0
 		r.core.Events.Emit(event.OnMoondriftHarmony, r.self, &a)
-		r.core.Log.NewEvent("Lunar Crystallize attack triggered", glog.LogElementEvent, a.Info.ActorIndex)
+		r.core.Log.NewEvent("Moondrift Harmony triggered", glog.LogElementEvent, a.Info.ActorIndex)
 		r.DoLCrAttack()
 	}
 
