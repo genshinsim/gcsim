@@ -58,6 +58,8 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		r.extendNearbyLunarCrystallizeConstructDur()
 	}
 
+	// event
+	r.core.Events.Emit(event.OnLunarCrystallize, r.self, a)
 
 	if r.core.Flags.Custom[lcrCountKey] >= 3 {
 		// trigger three attacks
@@ -72,9 +74,6 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
-
-	// event
-	r.core.Events.Emit(event.OnLunarCrystallize, r.self, a)
 
 	return true
 }
