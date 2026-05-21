@@ -166,9 +166,9 @@ func (c *char) c4() {
 		if c.Core.Flags.LogDebug {
 			var reaction string
 			switch ae.Info.AttackTag {
-			case attacks.AttackTagDirectLunarCharged:
+			case attacks.AttackTagReactionLunarCharge:
 				reaction = "Lunarcharged"
-			case attacks.AttackTagDirectLunarCrystallize:
+			case attacks.AttackTagReactionLunarCrystallize:
 				reaction = "Lunarcrystallize"
 			}
 
