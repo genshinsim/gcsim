@@ -36,13 +36,26 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	r.core.Status.Add(LcrKey, lcrDur)
 	r.addLCrContributor(a)
 
-	if r.core.Status.Duration(LcrKey) > 0 && r.core.Flags.Custom[lcrCountKey] >= 3 {
-		r.extendLunarCrystallizeConstructDur()
-	} else {
+	moondriftsNearby := 0
+	moondrifts, _ := r.core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
+	playerPos := r.core.Combat.Player().Pos()
+	for _, moondrift := range moondrifts {
+		if playerPos.Distance(moondrift.Pos()) < 20 {
+			moondriftsNearby += 1
+			break
+		}
+	}
+	if moondriftsNearby < 3 {
+		for _, moondrift := range moondrifts {
+			r.core.Constructs.Destroy(moondrift.Key())
+		}
 		// TODO: Check if constructs expiring will reset the counter
+		// TODO: Set accurate location for spawned moondrifts
 		r.core.Constructs.NewNoLimitCons(r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(info.Point{Y: 1, X: 0})), false)
 		r.core.Constructs.NewNoLimitCons(r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(info.Point{Y: -0.5, X: 0.866})), false)
 		r.core.Constructs.NewNoLimitCons(r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(info.Point{Y: -0.5, X: -0.866})), false)
+	} else if r.core.Status.Duration(LcrKey) > 0 && r.core.Flags.Custom[lcrCountKey] >= 3 {
+		r.extendNearbyLunarCrystallizeConstructDur()
 	}
 
 
@@ -77,11 +90,15 @@ func (r *Reactable) addLCrContributor(a *info.AttackEvent) {
 	}
 }
 
-func (r *Reactable) extendLunarCrystallizeConstructDur() {
+func (r *Reactable) extendNearbyLunarCrystallizeConstructDur() {
 	matched, _ := r.core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
+	playerPos := r.core.Combat.Player().Pos()
 	for _, construct := range matched {
 		c, ok := (construct).(*skillConstruct)
 		if !ok {
+			continue
+		}
+		if playerPos.Distance(construct.Pos()) >= 20 {
 			continue
 		}
 		c.expiry = r.core.F + lcrDur
