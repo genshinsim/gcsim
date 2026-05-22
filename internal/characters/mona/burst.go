@@ -57,6 +57,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), -1, burstHitmark, cb)
 
+	if c.IsHexerei {
+		omenRefreshCount = 0 // reset omen refresh count on burst use
+		c.AddStatus(c2HexereiICDKey, 60*5, false)
+	}
+
 	// queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
 	aiBreak := info.AttackInfo{
 		ActorIndex: c.Index(),
