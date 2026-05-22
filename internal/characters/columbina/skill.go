@@ -71,7 +71,7 @@ func (c *char) skillInit() {
 
 	c.Core.Events.Subscribe(event.OnLunarCharged, makeHook(info.ReactionTypeLunarCharged), "columbina-gravity-lc")
 	c.Core.Events.Subscribe(event.OnLunarBloom, makeHook(info.ReactionTypeLunarBloom), "columbina-gravity-lb")
-	// c.Core.Events.Subscribe(event.OnLunarCrystallize, makeHook(info.ReactionTypeLunarCrystallize), "columbina-gravity-lcr")
+	c.Core.Events.Subscribe(event.OnLunarCrystallize, makeHook(info.ReactionTypeLunarCrystallize), "columbina-gravity-lcr")
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
@@ -90,8 +90,8 @@ func (c *char) skillInit() {
 			c.gravityLastReaction = info.ReactionTypeLunarCharged
 		case attacks.AttackTagDirectLunarBloom:
 			c.gravityLastReaction = info.ReactionTypeLunarBloom
-			// case attacks.AttackTagDirectLunarCrystallize, attacks.AttackTagReactionLunarCrystallize:
-			// 	c.gravityLastReaction = info.ReactionTypeLunarCrystallize
+		case attacks.AttackTagDirectLunarCrystallize, attacks.AttackTagReactionLunarCrystallize:
+			c.gravityLastReaction = info.ReactionTypeLunarCrystallize
 		}
 	}, "columbina-gravity-on-dmg")
 }
@@ -113,8 +113,8 @@ func (c *char) gravityAccum() {
 		c.gravity[LunarCharge] += amt
 	case info.ReactionTypeLunarBloom:
 		c.gravity[LunarBloom] += amt
-		// case info.ReactionTypeLunarCrystallize:
-		// 	c.gravity[LunarCrystallize] += amt
+	case info.ReactionTypeLunarCrystallize:
+		c.gravity[LunarCrystallize] += amt
 	}
 
 	if c.totalGravity() >= gravityMax {
@@ -209,11 +209,11 @@ func (c *char) gravityTick(clearGravity bool) {
 		abil = "Gravity Interference (Lunar-Bloom)"
 		radius = 0.5
 		travel = skillLBTravel
-	// case LunarCrystallize:
-	// 	mult = skillLCr[c.TalentLvlSkill()]
-	// 	atkTag = attacks.AttackTagDirectLunarCrystallize
-	// 	elem = attributes.Geo
-	// 	abil = "Gravity Interference (Lunar-Crystallize)"
+	case LunarCrystallize:
+		mult = skillLCr[c.TalentLvlSkill()]
+		atkTag = attacks.AttackTagDirectLunarCrystallize
+		elem = attributes.Geo
+		abil = "Gravity Interference (Lunar-Crystallize)"
 
 	default:
 		return

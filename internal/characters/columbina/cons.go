@@ -42,7 +42,7 @@ func (c *char) consElevationInit() {
 		}
 	}, elevationKey+"-direct")
 
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if attacks.AttackTagIsLunar(atk.Info.AttackTag) {
 			atk.Info.Elevation += amt
@@ -203,7 +203,7 @@ func (c *char) c6Init() {
 	c.c6Buff = make([]float64, attributes.EndStatType)
 	c.c6Buff[attributes.CD] = 0.8
 
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return
@@ -280,28 +280,28 @@ func (c *char) c6Init() {
 		}
 	}, c6LBKey)
 
-	// c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
-	// 	if _, ok := args[0].(*enemy.Enemy); !ok {
-	// 		return
-	// 	}
+	c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
 
-	// 	if !c.ReactBonusModIsActive(burstBuffKey) {
-	// 		return
-	// 	}
+		if !c.ReactBonusModIsActive(burstBuffKey) {
+			return
+		}
 
-	// 	for _, char := range c.Core.Player.Chars() {
-	// 		char.AddAttackMod(character.AttackMod{
-	// 			Base: modifier.NewBaseWithHitlag(c6LCrKey, 8*60),
-	// 			Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
-	// 				switch atk.Info.Element {
-	// 				case attributes.Geo:
-	// 				case attributes.Hydro:
-	// 				default:
-	// 					return nil
-	// 				}
-	// 				return c.c6Buff
-	// 			},
-	// 		})
-	// 	}
-	// }, c6LCrKey)
+		for _, char := range c.Core.Player.Chars() {
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBaseWithHitlag(c6LCrKey, 8*60),
+				Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
+					switch atk.Info.Element {
+					case attributes.Geo:
+					case attributes.Hydro:
+					default:
+						return nil
+					}
+					return c.c6Buff
+				},
+			})
+		}
+	}, c6LCrKey)
 }
