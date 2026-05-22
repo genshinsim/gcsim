@@ -45,19 +45,8 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 
-		core.Events.Subscribe(event.OnShielded, func(args ...any) {
-			// Character that picks it up must be the petra set holder
-			if core.Player.Active() != char.Index() {
-				return
-			}
-
-			// Check shield
-			shd := args[0].(shield.Shield)
-			if shd.Type() != shield.Crystallize {
-				return
-			}
-			s.element = shd.Element()
-
+		enableSet := func(e attributes.Element) {
+			s.element = e
 			// Activate
 			// TODO: cd for proc?
 			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index()).
@@ -82,6 +71,30 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 					},
 				})
 			}
+		}
+
+		core.Events.Subscribe(event.OnShielded, func(args ...any) {
+			// Character that picks it up must be the petra set holder
+			if core.Player.Active() != char.Index() {
+				return
+			}
+
+			// Check shield
+			shd := args[0].(shield.Shield)
+			if shd.Type() != shield.Crystallize {
+				return
+			}
+			enableSet(shd.Element())
+		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
+
+		core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+			// Character that triggers it up must be the petra set holder
+			if core.Player.Active() != char.Index() {
+				return
+			}
+
+			ae := (args[1]).(info.AttackEvent)
+			enableSet(ae.Info.Element)
 		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
 	}
 
