@@ -9,6 +9,8 @@ import (
 // adding a character to this list will make the "incomplete warning" appear on the viewer
 var incompleteCharacters = []keys.Char{
 	keys.InvalidChar,
+	keys.Varka,
+	keys.Linnea,
 }
 
 func IsCharacterComplete(char keys.Char) bool {
