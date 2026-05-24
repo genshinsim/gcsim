@@ -242,7 +242,7 @@ func (c *char) c6(src int) func() {
 			return
 		}
 		// do nothing if we aren't dashing anymore
-		if c.Core.Player.CurrentState() != action.DashState && !(c.IsHexerei && (c.StatusIsActive(omenKey) || c.StatusIsActive(bubbleKey))) {
+		if c.Core.Player.CurrentState() != action.DashState && (!c.IsHexerei || (!c.StatusIsActive(omenKey) && !c.StatusIsActive(bubbleKey))) {
 			return
 		}
 
@@ -278,7 +278,7 @@ func (c *char) c6ChargeAttackInit() {
 	}
 
 	c6HexCABuff := func(args ...any) {
-		atk, ok := args[1].(*info.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return

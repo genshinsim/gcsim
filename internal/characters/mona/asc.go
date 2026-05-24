@@ -124,7 +124,7 @@ func (c *char) hexInit() {
 	}
 
 	omenRefreshHook := func(args ...any) {
-		atk, ok := args[1].(*info.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 
 		if !ok {
