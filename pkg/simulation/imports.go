@@ -25,6 +25,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/deepwood"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/defenderswill"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/desertpavilionchronicle"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/disenchantmentinthedeepshadow"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/echoes"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/emblem"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/exile"
