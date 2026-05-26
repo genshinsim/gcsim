@@ -3,6 +3,7 @@ package shortcut
 import "github.com/genshinsim/gcsim/pkg/core/keys"
 
 var SetNameToKey = map[string]keys.Set{
+	"adaycarvedfromrisingwinds":          keys.ADayCarvedFromRisingWinds,
 	"adventurer":                         keys.Adventurer,
 	"archaicpetra":                       keys.ArchaicPetra,
 	"ap":                                 keys.ArchaicPetra,

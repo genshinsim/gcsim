@@ -2,6 +2,11 @@
 package assets
 
 var artfactMap = map[string]string{
+	"adaycarvedfromrisingwinds_circlet":          "UI_RelicIcon_15044_3",
+	"adaycarvedfromrisingwinds_flower":           "UI_RelicIcon_15044_4",
+	"adaycarvedfromrisingwinds_goblet":           "UI_RelicIcon_15044_1",
+	"adaycarvedfromrisingwinds_plume":            "UI_RelicIcon_15044_2",
+	"adaycarvedfromrisingwinds_sands":            "UI_RelicIcon_15044_5",
 	"archaicpetra_circlet":                       "UI_RelicIcon_15014_3",
 	"archaicpetra_flower":                        "UI_RelicIcon_15014_4",
 	"archaicpetra_goblet":                        "UI_RelicIcon_15014_1",
