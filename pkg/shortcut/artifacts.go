@@ -18,6 +18,7 @@ var SetNameToKey = map[string]keys.Set{
 	"bsc":                                keys.BloodstainedChivalry,
 	"braveheart":                         keys.BraveHeart,
 	"brave":                              keys.BraveHeart,
+	"celestialgift":                      keys.CelestialGift,
 	"crimsonwitchofflames":               keys.CrimsonWitchOfFlames,
 	"cwof":                               keys.CrimsonWitchOfFlames,
 	"cw":                                 keys.CrimsonWitchOfFlames,
