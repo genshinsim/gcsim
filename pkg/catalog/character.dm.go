@@ -15055,6 +15055,158 @@ var CharacterMap = map[keys.Char]*model.AvatarData{
 			BurstEnergyCost: 70.0,
 		},
 	},
+	keys.Varka: {
+		Id:          10000128,
+		SubId:       12801,
+		Key:         "varka",
+		Rarity:      model.QualityType_QUALITY_ORANGE,
+		Body:        model.BodyType_BODY_MALE,
+		Region:      model.AssocType_ASSOC_TYPE_MONDSTADT,
+		Element:     model.ElementType_Wind,
+		WeaponClass: model.WeaponType_WEAPON_CLAYMORE,
+		IconName:    "UI_AvatarIcon_Varka",
+		Stats: &model.AvatarStatsData{
+			BaseHp:   981.9196,
+			BaseAtk:  27.4645,
+			BaseDef:  61.92405,
+			HpCurve:  model.GrowCurveType_GROW_CURVE_HP_S5,
+			AtkCurve: model.GrowCurveType_GROW_CURVE_ATTACK_S5,
+			DefCruve: model.GrowCurveType_GROW_CURVE_HP_S5,
+			PromoData: []*model.PromotionData{
+				{
+					MaxLevel: 20,
+				},
+				{
+					MaxLevel: 40,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    841.9073,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    53.0955,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    23.546604,
+						},
+					},
+				},
+				{
+					MaxLevel: 50,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    1440.1045,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    90.82125,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    40.27709,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.096,
+						},
+					},
+				},
+				{
+					MaxLevel: 60,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2237.701,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    141.12225,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    62.584396,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.192,
+						},
+					},
+				},
+				{
+					MaxLevel: 70,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2835.8982,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    178.848,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    79.31488,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.192,
+						},
+					},
+				},
+				{
+					MaxLevel: 80,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    3434.0955,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    216.57375,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    96.045364,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.288,
+						},
+					},
+				},
+				{
+					MaxLevel: 90,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    4032.2927,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    254.2995,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    112.77585,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.384,
+						},
+					},
+				},
+			},
+		},
+		SkillDetails: &model.AvatarSkillsData{
+			Skill:           11282,
+			Burst:           11285,
+			Attack:          11281,
+			BurstEnergyCost: 60.0,
+		},
+	},
 	keys.Venti: {
 		Id:          10000022,
 		SubId:       2201,

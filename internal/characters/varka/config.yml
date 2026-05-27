@@ -1,0 +1,46 @@
+use: pipeline
+kind: character
+name: varka
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - - attack(2-Hit DMG) # {}+{}
+        - attack(2-Hit DMG|1) # {}+{}
+        - attack(3-Hit DMG|1) # {}+{}
+      - - attack(3-Hit DMG) # {}+{}
+      - - attack(4-Hit DMG) # {}+{}
+        - attack(4-Hit DMG|1) # {}+{}
+      - - attack(5-Hit DMG) # {}+{}
+        - attack(5-Hit DMG|1) # {}+{}
+
+  - charge:
+      - attack(Charged Attack DMG) # {}+{}
+      - attack(Charged Attack DMG|1) # {}+{}
+
+  - skillInitial: skill(Skill DMG)
+  - skillAttack:
+      - skill(Sturm und Drang 1-Hit DMG)
+      - - skill(Sturm und Drang 2-Hit DMG) # {}+{}
+        - skill(Sturm und Drang 2-Hit DMG|1) # {}+{}
+      - - skill(Sturm und Drang 3-Hit DMG) # {}+{}
+        - skill(Sturm und Drang 3-Hit DMG|1) # {}+{}
+      - - skill(Sturm und Drang 4-Hit DMG) # {}+{}
+        - skill(Sturm und Drang 4-Hit DMG|1) # {}+{}
+      - - skill(Sturm und Drang 5-Hit DMG) # {}+{}
+        - skill(Sturm und Drang 5-Hit DMG|1) # {}+{}
+  - skillCharge:
+      - skill(Sturm und Drang Charged Attack DMG) # {}+{}
+      - skill(Sturm und Drang Charged Attack DMG|1) # {}+{}
+  - skillAscension:
+      - skill(Four Winds' Ascension DMG) # {}+{}
+      - skill(Four Winds' Ascension DMG|1) # {}+{}
+  - skillAzureDevour:
+      - skill(Azure Devour DMG) # {}×2+{}×2
+      - skill(Azure Devour DMG|1) # {}×2+{}×2
+      - skill(Azure Devour DMG) # {}×2+{}×2
+      - skill(Azure Devour DMG|1) # {}×2+{}×2
+
+  - burst:
+      - burst(Skill 1-Hit DMG)
+      - burst(Skill 2-Hit DMG)
