@@ -14,6 +14,21 @@ stats: {
    atk_curve: GROW_CURVE_ATTACK_S5
    def_cruve: GROW_CURVE_HP_S5
    promo_data: {
+      max_level: 20
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_HP
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_DEFENSE
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
+      }
+   }
+   promo_data: {
       max_level: 40
       add_props: {
          prop_type: FIGHT_PROP_BASE_HP
@@ -26,6 +41,9 @@ stats: {
       add_props: {
          prop_type: FIGHT_PROP_BASE_ATTACK
          value: 9.57828
+      }
+      add_props: {
+         prop_type: FIGHT_PROP_CRITICAL
       }
    }
    promo_data: {
@@ -124,3 +142,10 @@ stats: {
       }
    }
 }
+skill_details: {
+   skill: 11302
+   burst: 11305
+   attack: 11301
+   burst_energy_cost: 60
+}
+name_text_hash_map: 1961019898
