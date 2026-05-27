@@ -5,19 +5,19 @@ import (
 	_ "embed"
 
 	"fmt"
-	"slices"
-
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/validation"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/prototext"
+	"slices"
 )
 
 //go:embed data_gen.textproto
 var pbData []byte
 var base *model.AvatarData
 var paramKeysValidation = map[action.Action][]string{
+	1: {"recast"},
 	3: {"travel"},
 	7: {"hold", "travel", "weakspot"},
 }
@@ -57,7 +57,7 @@ var (
 )
 
 var (
-	// attack: aim = [4]
+	// attack: aim = [3]
 	aim = []float64{
 		0.4386,
 		0.4743,
@@ -129,7 +129,7 @@ var (
 		2.069256,
 		2.18316,
 	}
-	// attack: fullaim = [5]
+	// attack: fullaim = [4]
 	fullaim = []float64{
 		1.24,
 		1.333,
@@ -147,25 +147,7 @@ var (
 		2.79,
 		2.945,
 	}
-
-	skillPound = []float64{
-		0.96,
-		1.032,
-		1.104,
-		1.2,
-		1.272,
-		1.344,
-		1.44,
-		1.536,
-		1.632,
-		1.728,
-		1.824,
-		1.92,
-		2.04,
-		2.16,
-		2.28,
-	}
-
+	// skill: skillHeavy = [1]
 	skillHeavy = []float64{
 		1,
 		1.075,
@@ -183,7 +165,7 @@ var (
 		2.25,
 		2.375,
 	}
-	// attack: propHP = [12]
+	// skill: skillMillion = [2]
 	skillMillion = []float64{
 		4,
 		4.3,
@@ -201,7 +183,25 @@ var (
 		9,
 		9.5,
 	}
-
+	// skill: skillPound = [0]
+	skillPound = []float64{
+		0.96,
+		1.032,
+		1.104,
+		1.2,
+		1.272,
+		1.344,
+		1.44,
+		1.536,
+		1.632,
+		1.728,
+		1.824,
+		1.92,
+		2.04,
+		2.16,
+		2.28,
+	}
+	// burst: burstInitialDef = [1]
 	burstInitialDef = []float64{
 		1.6,
 		1.72,
@@ -219,7 +219,7 @@ var (
 		3.6,
 		3.8,
 	}
-
+	// burst: burstInitialFlat = [0]
 	burstInitialFlat = []float64{
 		770.3755,
 		847.42377,
@@ -237,7 +237,7 @@ var (
 		2272.8164,
 		2433.3337,
 	}
-
+	// burst: burstTickDef = [3]
 	burstTickDef = []float64{
 		0.32,
 		0.344,
@@ -255,7 +255,7 @@ var (
 		0.72,
 		0.76,
 	}
-
+	// burst: burstTickFlat = [2]
 	burstTickFlat = []float64{
 		154.0751,
 		169.48476,
