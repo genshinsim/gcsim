@@ -1709,6 +1709,23 @@
       },
       "name_text_hash_map ": "283438362"
     },
+    "varka": {
+      "id": 10000128,
+      "key": "varka",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Varka",
+      "skill_details": {
+        "skill": 11282,
+        "burst": 11285,
+        "attack": 11281,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "963351866"
+    },
     "venti": {
       "id": 10000022,
       "key": "venti",

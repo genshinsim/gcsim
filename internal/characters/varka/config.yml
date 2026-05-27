@@ -1,0 +1,54 @@
+package_name: varka
+genshin_id: 10000128
+key: varka
+skill_data_mapping:
+  attack: # Favonius Bladework: Dancing Radiance
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 2 # 2-Hit DMG|{param2:F1P}+{param1:F1P}
+      - 1 # 2-Hit DMG|{param2:F1P}+{param1:F1P}
+    attack_3:
+      - 4 # 3-Hit DMG|{param4:F1P}+{param3:F1P}
+      - 3 # 3-Hit DMG|{param4:F1P}+{param3:F1P}
+    attack_4:
+      - 5 # 4-Hit DMG|{param5:F1P}+{param6:F1P}
+      - 6 # 4-Hit DMG|{param5:F1P}+{param6:F1P}
+    attack_5:
+      - 7 # 5-Hit DMG|{param7:F1P}+{param8:F1P}
+      - 8 # 5-Hit DMG|{param7:F1P}+{param8:F1P}
+    charge:
+      - 9 # Charged Attack DMG|{param9:F1P}+{param10:F1P}
+      - 10 # Charged Attack DMG|{param9:F1P}+{param10:F1P}
+  skill: # Windbound Execution
+    skillInitial:
+      - 0 # Skill DMG|{param0:F1P}
+    skillAttack_1:
+      - 2 # Sturm und Drang 1-Hit DMG|{param2:F1P}
+    skillAttack_2:
+      - 4 # Sturm und Drang 2-Hit DMG|{param4:F1P}+{param3:F1P}
+      - 3 # Sturm und Drang 2-Hit DMG|{param4:F1P}+{param3:F1P}
+    skillAttack_3:
+      - 6 # Sturm und Drang 3-Hit DMG|{param6:F1P}+{param5:F1P}
+      - 5 # Sturm und Drang 3-Hit DMG|{param6:F1P}+{param5:F1P}
+    skillAttack_4:
+      - 7 # Sturm und Drang 4-Hit DMG|{param7:F1P}+{param8:F1P}
+      - 8 # Sturm und Drang 4-Hit DMG|{param7:F1P}+{param8:F1P}
+    skillAttack_5:
+      - 9 # Sturm und Drang 5-Hit DMG|{param9:F1P}+{param10:F1P}
+      - 10 # Sturm und Drang 5-Hit DMG|{param9:F1P}+{param10:F1P}
+    skillCharge:
+      - 11 # Sturm und Drang Charged Attack DMG|{param11:F1P}+{param12:F1P}
+      - 12 # Sturm und Drang Charged Attack DMG|{param11:F1P}+{param12:F1P}
+    skillAscension:
+      - 13 # Four Winds' Ascension DMG|{param13:F1P}+{param14:F1P}
+      - 14 # Four Winds' Ascension DMG|{param13:F1P}+{param14:F1P}
+    skillAzureDevour:
+      - 15 # Azure Devour DMG|{param15:F1P}×2+{param16:F1P}×2
+      - 16 # Azure Devour DMG|{param15:F1P}×2+{param16:F1P}×2
+      - 15 # Azure Devour DMG|{param15:F1P}×2+{param16:F1P}×2
+      - 16 # Azure Devour DMG|{param15:F1P}×2+{param16:F1P}×2
+  burst: # Northwind Avatar
+    burst:
+      - 0 # Skill 1-Hit DMG|{param0:F1P}
+      - 1 # Skill 2-Hit DMG|{param1:F1P}
