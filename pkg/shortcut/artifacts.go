@@ -33,6 +33,7 @@ var SetNameToKey = map[string]keys.Set{
 	"dpc":                                keys.DesertPavilionChronicle,
 	"disenchantmentinthedeepshadow":      keys.DisenchantmentInTheDeepShadow,
 	"disenchantment":                     keys.DisenchantmentInTheDeepShadow,
+	"deepshadow":                         keys.DisenchantmentInTheDeepShadow,
 	"echoesofanoffering":                 keys.EchoesOfAnOffering,
 	"echoes":                             keys.EchoesOfAnOffering,
 	"emblemofseveredfate":                keys.EmblemOfSeveredFate,
