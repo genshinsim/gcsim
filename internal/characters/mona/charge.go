@@ -54,6 +54,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		chargeHitmark-windup,
 		chargeHitmark-windup,
 		c.makeC6CAResetCB(),
+		c.astralGlowGainCB,
+		c.omenRefreshCB,
+		c.c2HexereiCB,
 	)
 
 	return action.Info{

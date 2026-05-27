@@ -49,6 +49,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		if !ok {
 			return
 		}
+
+		if c.IsHexerei && !c.omenIsNearby() {
+			c.Core.Tasks.Add(c.c6(c.Core.F), 60)
+		}
+
 		// bubble is applied to each target on a per target basis
 		// lasts 8 seconds if not popped normally
 		t.AddStatus(bubbleKey, 481, true) // 1 frame extra so we don't run into problems breaking
@@ -58,8 +63,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), -1, burstHitmark, cb)
 
 	if c.IsHexerei {
-		omenRefreshCount = 0 // reset omen refresh count on burst use
-		c.AddStatus(c2HexereiICDKey, 60*5, false)
+		c.AddStatus(c2HexereiPostBurstCAKey, 60*5, false)
 	}
 
 	// queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
@@ -146,6 +150,9 @@ func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	// add omen debuff
 	dur := int(omenDuration[c.TalentLvlBurst()] * 60)
 	t.AddStatus(omenKey, dur, true)
+	if c.IsHexerei {
+		t.SetTag(omenKey, 4)
+	}
 	// trigger dmg
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),

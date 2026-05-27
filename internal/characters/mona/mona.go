@@ -3,6 +3,7 @@ package mona
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -60,7 +61,18 @@ func (c *char) Init() error {
 		c.c4()
 	}
 	if c.Base.Cons >= 6 {
+		c.c6Init()
 		c.c6ChargeAttackInit()
 	}
 	return nil
+}
+
+func (c *char) omenIsNearby() bool {
+	// TODO: check range of this in DM
+	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 15), nil) {
+		if e.StatusIsActive(omenKey) || e.StatusIsActive(bubbleKey) {
+			return true
+		}
+	}
+	return false
 }

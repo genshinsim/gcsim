@@ -57,7 +57,10 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 		// need to keep track of src in case of Mona Dash Dash, where the second dash starts between two c6 ticks
 		// without a src check the second Dash would gain a stack before 1s is up and a second one at 1s
 		c.c6Src = c.Core.F
-		c.Core.Tasks.Add(c.c6(c.Core.F), 60)
+
+		if !c.IsHexerei || !c.omenIsNearby() {
+			c.Core.Tasks.Add(c.c6(c.Core.F), 60)
+		}
 	}
 
 	// handle stamina usage, avoid default dash implementation since dont want CD
