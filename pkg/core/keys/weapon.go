@@ -38,6 +38,7 @@ var weaponNames = []string{
 	"alleyhunter",
 	"amenomakageuchi",
 	"amosbow",
+	"angelosheptades",
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
@@ -267,6 +268,7 @@ const (
 	AlleyHunter
 	AmenomaKageuchi
 	AmosBow
+	AngelosHeptades
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia

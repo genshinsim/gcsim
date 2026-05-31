@@ -47,6 +47,7 @@ var weaponMap = map[string]string{
 	"fadingtwilight":                  "UI_EquipIcon_Bow_Fallensun",
 	"theviridescenthunt":              "UI_EquipIcon_Bow_Viridescent",
 	"windblumeode":                    "UI_EquipIcon_Bow_Fleurfair",
+	"angelosheptades":                 "UI_EquipIcon_Catalyst_FairyGarden",
 	"apprenticesnotes":                "UI_EquipIcon_Catalyst_Apprentice",
 	"ashgravendrinkinghorn":           "UI_EquipIcon_Catalyst_ConchSprayer",
 	"athousandfloatingdreams":         "UI_EquipIcon_Catalyst_Ayus",
