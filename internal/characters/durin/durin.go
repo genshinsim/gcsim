@@ -1,0 +1,65 @@
+package durin
+
+import (
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+)
+
+func init() {
+	core.RegisterCharFunc(keys.Durin, NewChar)
+}
+
+type char struct {
+	*tmpl.Character
+	burstSrc int
+	a4stacks int
+	c2Buff   []float64
+	c4Buff   []float64
+}
+
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
+	c := char{}
+	c.Character = tmpl.NewWithWrapper(s, w)
+
+	c.EnergyMax = 70
+	c.NormalHitNum = normalHitNum
+	c.BurstCon = 3
+	c.SkillCon = 5
+
+	w.Character = &c
+
+	hexerei, ok := p.Params["hexerei"]
+	if !ok {
+		hexerei = 1
+	}
+	c.IsHexerei = hexerei > 0
+
+	return nil
+}
+
+func (c *char) Init() error {
+	c.a1Init()
+	c.c1Init()
+	c.c2Init()
+	c.c4Init()
+	return nil
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	// check if a1 window is active is on-field
+	if a == action.ActionSkill && c.StatusIsActive(skillWindowKey) {
+		return true, action.NoFailure
+	}
+	return c.Character.ActionReady(a, p)
+}
+
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
+		return 7
+	}
+	return c.Character.AnimationStartDelay(k)
+}
