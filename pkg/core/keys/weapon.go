@@ -109,6 +109,7 @@ var weaponNames = []string{
 	"frostbearer",
 	"fruitfulhook",
 	"fruitoffulfillment",
+	"gestofthemightywolf",
 	"hakushinring",
 	"halberd",
 	"hamayumi",
@@ -338,6 +339,7 @@ const (
 	Frostbearer
 	FruitfulHook
 	FruitOfFulfillment
+	GestOfTheMightyWolf
 	HakushinRing
 	Halberd
 	Hamayumi

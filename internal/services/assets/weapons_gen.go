@@ -111,6 +111,7 @@ var weaponMap = map[string]string{
 	"ferrousshadow":                   "UI_EquipIcon_Claymore_Glaive",
 	"forestregalia":                   "UI_EquipIcon_Claymore_Arakalari",
 	"fruitfulhook":                    "UI_EquipIcon_Claymore_Umpakati",
+	"gestofthemightywolf":             "UI_EquipIcon_Claymore_EnsisAquilonis",
 	"lithicblade":                     "UI_EquipIcon_Claymore_Lapis",
 	"mailedflower":                    "UI_EquipIcon_Claymore_Fleurfair",
 	"masterkey":                       "UI_EquipIcon_Claymore_Ilmarinen",
