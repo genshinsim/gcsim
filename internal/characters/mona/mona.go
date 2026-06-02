@@ -20,9 +20,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a4Stats  []float64
-	c6Src    int
-	c6Stacks int
+	a4Stats          []float64
+	c6Src            int
+	c6Stacks         int
+	astralGlowStacks [2]int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {

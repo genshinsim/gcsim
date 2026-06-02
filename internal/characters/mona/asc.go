@@ -12,10 +12,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var (
+const (
 	astralGlowICDKey  = "mona-astral-glow-icd"
 	omenRefreshICDKey = "mona-omen-refresh-icd"
-	astralGlowStacks  = []int{0, 0}
 )
 
 // After she has used Illusory Torrent for 2s, if there are any opponents nearby,
@@ -94,11 +93,11 @@ func (c *char) astralGlowGainCB(a info.AttackCB) {
 
 	c.AddStatus(astralGlowICDKey, 0.1*60, false) // 0.1s ICD
 
-	if astralGlowStacks[0] < 3 {
-		astralGlowStacks[0]++
+	if c.astralGlowStacks[0] < 3 {
+		c.astralGlowStacks[0]++
 	}
 
-	astralGlowStacks[1] = c.Core.F + 60*8
+	c.astralGlowStacks[1] = c.Core.F + 60*8
 
 	c.Core.Log.NewEvent("mona hexerei proc: astral glow", glog.LogCharacterEvent, c.Index()).
 		Write("expiry:", c.Core.F+60*8)
@@ -159,6 +158,8 @@ func (c *char) hexInit() {
 		return
 	}
 
+	c.astralGlowStacks = [2]int{0, 0}
+
 	for _, char := range c.Core.Player.Chars() {
 		if char.Index() == c.Index() {
 			continue
@@ -167,10 +168,10 @@ func (c *char) hexInit() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("mona-hexerei-astral-glow-vaporize", -1),
 			Amount: func(ai info.AttackInfo) float64 {
-				m := 0.05 * float64(astralGlowStacks[0])
+				m := 0.05 * float64(c.astralGlowStacks[0])
 
 				if ai.Amped && ai.AmpType == info.ReactionTypeVaporize {
-					astralGlowStacks[0] = 0 // clear all stacks
+					c.astralGlowStacks[0] = 0 // clear all stacks
 					return m
 				}
 
@@ -181,12 +182,12 @@ func (c *char) hexInit() {
 }
 
 func (c *char) removeAstralGlowStack() {
-	if astralGlowStacks[0] == 0 {
+	if c.astralGlowStacks[0] == 0 {
 		return
 	}
 
-	if c.Core.F >= astralGlowStacks[1] {
-		astralGlowStacks[0] = 0
+	if c.Core.F >= c.astralGlowStacks[1] {
+		c.astralGlowStacks[0] = 0
 		c.Core.Log.NewEvent("mona hexerei expired: astral glow", glog.LogCharacterEvent, c.Index())
 	}
 }
