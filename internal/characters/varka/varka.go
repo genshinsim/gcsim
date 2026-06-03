@@ -12,13 +12,17 @@ import (
 
 type char struct {
 	*tmpl.Character
+	conversionElem attributes.Element
 
 	// when readyFrame is -1, it means that the skill was used
 	fourWindsCharge1ReadyF int
 	// when readyFrame is -1, it means that the skill was used
 	fourWindsCharge2ReadyF int
 	fourWindsCDStacks      int
-	conversionElem         attributes.Element
+
+	a1Buff       float64
+	a1Multiplier float64
+	a4Stacks     int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
@@ -37,6 +41,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.conversionElem = c.getConversionElem(attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+
+	c.a1Init()
+	c.a4Init()
 	return nil
 }
 

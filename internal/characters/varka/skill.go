@@ -121,19 +121,22 @@ func (c *char) fourWinds() (action.Info, error) {
 
 	for i := range 2 {
 		ai := info.AttackInfo{
-			ActorIndex: c.Index(),
-			Abil:       "Four Winds' Ascension",
-			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    ele[i],
-			Durability: 25,
-			Mult:       skillAscension[i][c.TalentLvlSkill()],
+			ActorIndex:     c.Index(),
+			Abil:           "Four Winds' Ascension",
+			AttackTag:      attacks.AttackTagElementalArt,
+			ICDTag:         attacks.ICDTagNone,
+			ICDGroup:       attacks.ICDGroupDefault,
+			StrikeType:     attacks.StrikeTypeDefault,
+			Element:        ele[i],
+			Durability:     25,
+			Mult:           skillAscension[i][c.TalentLvlSkill()] * c.a1SkillMulti(),
+			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
 		}
 		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 6)
 		c.Core.QueueAttack(ai, ap, fourWindsHitmark[i], fourWindsHitmark[i])
 	}
+
+	c.useFourWindsCharge()
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return spearStormFrames[next] },
@@ -243,6 +246,21 @@ func (c *char) fourWindsCharges() int {
 		charges += 1
 	}
 	return charges
+}
+
+func (c *char) useFourWindsCharge() {
+	if !c.StatusIsActive(skillKey) {
+		return
+	}
+	if 0 <= c.fourWindsCharge1ReadyF && c.fourWindsCharge1ReadyF <= c.Core.F {
+		c.fourWindsCharge1ReadyF = -1
+		return
+	}
+	if 0 <= c.fourWindsCharge2ReadyF && c.fourWindsCharge2ReadyF <= c.Core.F {
+		c.fourWindsCharge2ReadyF = -1
+		return
+	}
+	panic("unexpected charges less than 0")
 }
 
 func (c *char) particleCB(ac info.AttackCB) {
