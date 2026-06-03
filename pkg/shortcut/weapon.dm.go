@@ -80,6 +80,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"crimsonmoon":                     keys.CrimsonMoonsSemblance,
 	"darkironsword":                   keys.DarkIronSword,
 	"dawningfrost":                    keys.DawningFrost,
+	"daybreakchronicles":              keys.TheDaybreakChronicles,
+	"daybreak":                        keys.TheDaybreakChronicles,
 	"deathmatch":                      keys.Deathmatch,
 	"debateclub":                      keys.DebateClub,
 	"dialoguesofthedesertsages":       keys.DialoguesOfTheDesertSages,
