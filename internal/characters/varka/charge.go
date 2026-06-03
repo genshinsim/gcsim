@@ -21,7 +21,7 @@ var (
 	skillChargeCanBeDefenseHalted = []bool{false, true}
 
 	azureDevourFrames             []int
-	azureDevourHitmarks           = []int{20, 36, 50, 46}
+	azureDevourHitmarks           = []int{28, 36, 50, 58}
 	azureDevourHitlagHaltFrames   = []float64{0.0, 0.1, 0.0, 0.1}
 	azureDevourCanBeDefenseHalted = []bool{false, true, false, true}
 )
@@ -92,7 +92,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillCharge() (action.Info, error) {
-	if c.Charges(action.ActionSkill) > 0 {
+	if c.fourWindsCharges() > 0 {
 		return c.skillAzureDevour()
 	}
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
@@ -107,7 +107,7 @@ func (c *char) skillCharge() (action.Info, error) {
 			PoiseDMG:           120.0,
 			Element:            ele[i],
 			Durability:         25,
-			Mult:               charge[i][c.TalentLvlAttack()],
+			Mult:               charge[i][c.TalentLvlAttack()] * c.a1SkillMulti(),
 			HitlagHaltFrames:   skillChargeHitlagHaltFrames[i] * 60,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: skillChargeCanBeDefenseHalted[i],
@@ -135,7 +135,7 @@ func (c *char) skillCharge() (action.Info, error) {
 
 func (c *char) skillAzureDevour() (action.Info, error) {
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo, c.conversionElem, attributes.Anemo}
-	for i, hitmark := range chargeHitmarks {
+	for i, hitmark := range azureDevourHitmarks {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
 			Abil:               "Azure Devour",
@@ -146,7 +146,7 @@ func (c *char) skillAzureDevour() (action.Info, error) {
 			PoiseDMG:           120.0,
 			Element:            ele[i],
 			Durability:         25,
-			Mult:               skillAzureDevour[i][c.TalentLvlAttack()],
+			Mult:               skillAzureDevour[i][c.TalentLvlAttack()] * c.a1SkillMulti(),
 			HitlagHaltFrames:   azureDevourHitlagHaltFrames[i] * 60,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: azureDevourCanBeDefenseHalted[i],
@@ -163,7 +163,7 @@ func (c *char) skillAzureDevour() (action.Info, error) {
 			hitmark,
 		)
 	}
-	c.SetCDWithDelay(action.ActionSkill, fourWindsCD, 16)
+	c.useFourWindsCharge()
 	return action.Info{
 		Frames:          frames.NewAbilFunc(azureDevourFrames),
 		AnimationLength: azureDevourFrames[action.InvalidAction],

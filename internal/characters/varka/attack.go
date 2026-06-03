@@ -140,7 +140,7 @@ func (c *char) skillAttack() (action.Info, error) {
 			PoiseDMG:           attackPoiseDMG[c.NormalCounter],
 			Element:            ele[(i+offset)%2],
 			Durability:         25,
-			Mult:               attack[c.NormalCounter][i][c.TalentLvlAttack()],
+			Mult:               attack[c.NormalCounter][i][c.TalentLvlAttack()] * c.a1SkillMulti(),
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 			CanBeDefenseHalted: true,
