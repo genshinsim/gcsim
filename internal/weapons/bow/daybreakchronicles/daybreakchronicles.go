@@ -82,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		*stacks++
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return
