@@ -10,6 +10,7 @@ var weaponMap = map[string]string{
 	"chainbreaker":                    "UI_EquipIcon_Bow_Isikhulu",
 	"cloudforged":                     "UI_EquipIcon_Bow_Ultimatum",
 	"compoundbow":                     "UI_EquipIcon_Bow_Exotic",
+	"thedaybreakchronicles":           "UI_EquipIcon_Bow_Arianna",
 	"elegyfortheend":                  "UI_EquipIcon_Bow_Widsith",
 	"endoftheline":                    "UI_EquipIcon_Bow_Fin",
 	"favoniuswarbow":                  "UI_EquipIcon_Bow_Zephyrus",
