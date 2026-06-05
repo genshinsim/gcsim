@@ -38,53 +38,51 @@ func (c *char) c1() {
 		if !ok {
 			return
 		}
-		if !t.StatusIsActive(bubbleKey) && !t.StatusIsActive(omenKey) {
+		if !t.StatusIsActive(omenKey) {
 			return
 		}
-		// add c1 to all party members, delay by 1, because:
+
+		atk := args[1].(*info.AttackEvent)
+
+		char := c.Core.Player.Chars()[atk.Info.ActorIndex]
+
+		// add c1 to party member that triggered the effect, delay by 1, because:
 		// "This bonus does not apply in the triggering attack nor from the resulting Hydro DMG dealt by Illusory Bubble in Stellaris Phantasm regardless if they were from resulting reactions."
-		for _, x := range c.Core.Player.Chars() {
-			char := x
-			c.Core.Tasks.Add(func() {
-				// TODO: "Vaporize DMG increases by 15%." should be getting snapshot, see https://library.keqingmains.com/evidence/characters/hydro/mona#mona-c1-snapshot-for-vape
-				// requires ReactBonusMod refactor
-				char.AddReactBonusMod(character.ReactBonusMod{
-					Base: modifier.NewBase("mona-c1", 8*60),
-					Amount: func(ai info.AttackInfo) float64 {
-						m := 0.15
+		c.Core.Tasks.Add(func() {
+			char.AddReactBonusMod(character.ReactBonusMod{
+				Base: modifier.NewBase("mona-c1", 8*60),
+				Amount: func(ai info.AttackInfo) float64 {
+					m := 0.15
 
-						if c.Core.Player.Active() != char.Index() {
-							if c.IsHexerei {
-								m = 0.4
-							} else {
-								return 0
-							}
-						}
+					// Hexerei passive
+					// Additionally, when your off-field party members trigger the above effect, the DMG Bonus to the above Hydro-related Elemental Reactions is enhanced to 160% of its original effect.
+					if c.IsHexerei && c.Core.Player.Active() != char.Index() {
+						m = 0.24
+					}
 
-						switch ai.AttackTag {
-						// - Hydro Swirl DMG increases by 15%.
-						// - Electro-Charged DMG increases by 15%.
-						// - Lunar-Charged DMG increases by 15%.
-						// - Lunar-Crystallize DMG increases by 15%.
-						case attacks.AttackTagSwirlHydro,
-							attacks.AttackTagECDamage,
-							attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged,
-							attacks.AttackTagReactionLunarCrystallize, attacks.AttackTagDirectLunarCrystallize:
-							return m
-						}
+					switch ai.AttackTag {
+					// - Hydro Swirl DMG increases by 15%.
+					// - Electro-Charged DMG increases by 15%.
+					// - Lunar-Charged DMG increases by 15%.
+					// - Lunar-Crystallize DMG increases by 15%.
+					case attacks.AttackTagSwirlHydro,
+						attacks.AttackTagECDamage,
+						attacks.AttackTagReactionLunarCharge, attacks.AttackTagDirectLunarCharged,
+						attacks.AttackTagReactionLunarCrystallize, attacks.AttackTagDirectLunarCrystallize:
+						return m
+					}
 
-						// Vaporize DMG increases by 15%.
-						// the only way Hydro Swirl can vape is via an AoE Hydro Swirl which doesn't do damage anyways, so this is fine
+					// Vaporize DMG increases by 15%.
+					// the only way Hydro Swirl can vape is via an AoE Hydro Swirl which doesn't do damage anyways, so this is fine
 
-						if ai.Amped && ai.AmpType == info.ReactionTypeVaporize {
-							return m
-						}
+					if ai.Amped && ai.AmpType == info.ReactionTypeVaporize {
+						return m
+					}
 
-						return 0
-					},
-				})
-			}, 1)
-		}
+					return 0
+				},
+			})
+		}, 1)
 	}, "mona-c1-check")
 }
 
