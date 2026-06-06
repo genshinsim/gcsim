@@ -135,6 +135,8 @@ func (c *char) skillCharge() (action.Info, error) {
 
 func (c *char) skillAzureDevour() (action.Info, error) {
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo, c.conversionElem, attributes.Anemo}
+
+	c1Mult := c.c1OnSpecialSkill()
 	for i, hitmark := range azureDevourHitmarks {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
@@ -146,7 +148,7 @@ func (c *char) skillAzureDevour() (action.Info, error) {
 			PoiseDMG:           120.0,
 			Element:            ele[i],
 			Durability:         25,
-			Mult:               skillAzureDevour[i][c.TalentLvlAttack()] * c.a1SkillMulti(),
+			Mult:               skillAzureDevour[i][c.TalentLvlAttack()] * c.a1SkillMulti() * c1Mult,
 			HitlagHaltFrames:   azureDevourHitlagHaltFrames[i] * 60,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: azureDevourCanBeDefenseHalted[i],

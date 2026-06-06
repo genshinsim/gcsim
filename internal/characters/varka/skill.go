@@ -59,10 +59,6 @@ func (c *char) onExitField() {
 	}, "varka-exit")
 }
 
-func (c *char) exitSkill() {
-	c.SetNumCharges(action.ActionSkill, 1)
-}
-
 func (c *char) convertToFourWinds() bool {
 	return c.conversionElem != attributes.NoElement
 }
@@ -100,10 +96,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 		if c.convertToFourWinds() {
 			c.fourWindsCDStacks = 0
-
-			modified := c.CDReduction(action.ActionSkill, fourWindsCD)
-			c.fourWindsCharge1ReadyF = c.Core.F + modified
-			c.fourWindsCharge2ReadyF = c.Core.F + modified*2
+			c.fourWindsChargesStarted = 0
+			c.fourWindsChargesAva = 0
+			c.c1OnSkill()
+			c.startFourWindsCD()
 		}
 		c.SetCD(action.ActionSkill, skillCD)
 	}, skillHitmark)
@@ -119,6 +115,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) fourWinds() (action.Info, error) {
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
 
+	c1Mult := c.c1OnSpecialSkill()
 	for i := range 2 {
 		ai := info.AttackInfo{
 			ActorIndex:     c.Index(),
@@ -129,7 +126,7 @@ func (c *char) fourWinds() (action.Info, error) {
 			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        ele[i],
 			Durability:     25,
-			Mult:           skillAscension[i][c.TalentLvlSkill()] * c.a1SkillMulti(),
+			Mult:           skillAscension[i][c.TalentLvlSkill()] * c.a1SkillMulti() * c1Mult,
 			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
 		}
 		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 6)
@@ -163,6 +160,10 @@ func (c *char) fourWindsCDRedCB(ac info.AttackCB) {
 		return
 	}
 
+	if c.fourWindsCDDoneF < 0 {
+		return
+	}
+
 	c.AddStatus(fourWindsCDReduceICDKey, 0.1*60, true)
 	c.fourWindsCDStacks++
 
@@ -170,48 +171,50 @@ func (c *char) fourWindsCDRedCB(ac info.AttackCB) {
 }
 
 func (c *char) reduceFourWindsCD(amt int) {
-	before1 := c.fourWindsCharge1ReadyF
-	before2 := c.fourWindsCharge2ReadyF
-	if c.fourWindsCharge1ReadyF > 0 {
-		c.fourWindsCharge1ReadyF = max(c.fourWindsCharge1ReadyF-amt, 0)
+	if c.fourWindsCDDoneF < c.Core.F {
+		panic("c.fourWindsCDDoneF should not be less than c.Core.F")
 	}
-	if c.fourWindsCharge2ReadyF > 0 {
-		c.fourWindsCharge2ReadyF = max(c.fourWindsCharge2ReadyF-amt, 0)
-	}
+	c.fourWindsCDDoneF = max(c.fourWindsCDDoneF-amt, c.Core.F)
 
-	if before1 > c.Core.F || before2 > c.Core.F {
-		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), action.ActionSkill.String(), " (four winds) cooldown forcefully reduced").
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), action.ActionSkill.String(), " (four winds) cooldown forcefully reduced").
+		Write("type", action.ActionSkill.String()).
+		Write("expiry", c.fourWindsCDDoneF-amt).
+		Write("charges_remain", c.fourWindsCharges())
+
+	c.queueCDTask()
+}
+
+func (c *char) startFourWindsCD() {
+	modified := c.CDReduction(action.ActionSkill, fourWindsCD)
+	c.fourWindsCDDoneF = c.Core.F + modified
+	c.fourWindsChargesStarted += 1
+	c.queueCDTask()
+}
+
+func (c *char) queueCDTask() {
+	src := c.fourWindsCDDoneF
+	c.Core.Tasks.Add(func() {
+		if c.fourWindsCDDoneF != src {
+			return
+		}
+		c.fourWindsChargesAva += 1
+		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), action.ActionSkill.String(), " (four winds) cooldown ready").
 			Write("type", action.ActionSkill.String()).
-			Write("expiry", c.fourWindsCD()).
 			Write("charges_remain", c.fourWindsCharges())
 
-		var src_ptr *int
-		if before1 > c.Core.F {
-			src_ptr = &c.fourWindsCharge1ReadyF
-		} else {
-			src_ptr = &c.fourWindsCharge2ReadyF
+		if c.fourWindsChargesStarted < 2 {
+			c.startFourWindsCD()
+			return
 		}
-		src := *src_ptr
 
-		c.Core.Tasks.Add(func() {
-			if *src_ptr != src {
-				return
-			}
-			c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), action.ActionSkill.String(), " (four winds) cooldown ready").
-				Write("type", action.ActionSkill.String()).
-				Write("charges_remain", c.fourWindsCharges())
-		}, src-c.Core.F)
-	}
+		c.fourWindsCDDoneF = -1
+	}, src-c.Core.F)
 }
 
 func (c *char) resetFourWindsCD() {
-	if c.fourWindsCharge1ReadyF > c.Core.F {
-		c.fourWindsCharge1ReadyF = 0
-		return
-	}
-
-	if c.fourWindsCharge2ReadyF > c.Core.F {
-		c.fourWindsCharge2ReadyF = 0
+	if c.fourWindsCDDoneF > c.Core.F {
+		c.fourWindsCDDoneF = c.Core.F
+		c.queueCDTask()
 	}
 }
 
@@ -224,43 +227,33 @@ func (c *char) fourWindsCD() int {
 		return 0
 	}
 
-	if c.fourWindsCharge1ReadyF > c.Core.F {
-		return c.fourWindsCharge1ReadyF - c.Core.F
+	if c.fourWindsCDDoneF < 0 {
+		return -1
 	}
 
-	if c.fourWindsCharge2ReadyF > c.Core.F {
-		return c.fourWindsCharge2ReadyF - c.Core.F
-	}
-	return -1
+	return c.fourWindsCDDoneF - c.Core.F
 }
 
 func (c *char) fourWindsCharges() int {
 	if !c.StatusIsActive(skillKey) {
 		return -1
 	}
-	charges := 0
-	if 0 <= c.fourWindsCharge1ReadyF && c.fourWindsCharge1ReadyF <= c.Core.F {
-		charges += 1
-	}
-	if 0 <= c.fourWindsCharge2ReadyF && c.fourWindsCharge2ReadyF <= c.Core.F {
-		charges += 1
-	}
-	return charges
+	return c.fourWindsChargesAva
 }
 
 func (c *char) useFourWindsCharge() {
 	if !c.StatusIsActive(skillKey) {
 		return
 	}
-	if 0 <= c.fourWindsCharge1ReadyF && c.fourWindsCharge1ReadyF <= c.Core.F {
-		c.fourWindsCharge1ReadyF = -1
-		return
+	if c.fourWindsChargesAva <= 0 {
+		panic("unexpected charges less than 0")
 	}
-	if 0 <= c.fourWindsCharge2ReadyF && c.fourWindsCharge2ReadyF <= c.Core.F {
-		c.fourWindsCharge2ReadyF = -1
-		return
+	c.fourWindsChargesAva -= 1
+
+	// with C1, it's possible to stack up to 2, so we need to start a CD charge here
+	if c.fourWindsCDDoneF < 0 && c.fourWindsChargesStarted < 2 {
+		c.startFourWindsCD()
 	}
-	panic("unexpected charges less than 0")
 }
 
 func (c *char) particleCB(ac info.AttackCB) {
