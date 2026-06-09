@@ -13,8 +13,10 @@ import (
 )
 
 const (
-	duration = 60 * 20
-	set4Key  = "celestialgift-4pc"
+	duration      = 60 * 20
+	set4Key       = "celestialgift-4pc"
+	set4KeyHolder = set4Key + "-holder"
+	set4KeyActive = set4Key + "-active"
 )
 
 func init() {
@@ -32,28 +34,68 @@ type Set struct {
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) GetCount() int    { return s.Count }
 func (s *Set) Init() error {
+	count := s.Count
 	c := s.core
 	char := s.char
-	if s.Count < 4 || !char.IsHexerei {
+
+	if count < 4 || !char.IsHexerei {
 		return nil
 	}
 
-	buffActive := func() bool {
+	holderBuffActive := func() bool {
 		for _, c := range c.Player.Chars() {
-			if c.StatusIsActive(set4Key) {
+			if c.StatusIsActive(set4KeyHolder) {
 				return true
 			}
 		}
 		return false
 	}
 
-	buffActiveOfElement := func(e attributes.Element) bool {
+	holderBuffDuration := func() int {
+		x := 0
 		for _, c := range c.Player.Chars() {
-			if c.StatusIsActive(set4Key) && c.Base.Element == e {
+			x = max(x, c.StatusDuration(set4KeyHolder))
+		}
+		return x
+	}
+
+	holderBuffIsActiveOfElement := func(e attributes.Element) bool {
+		for _, c := range c.Player.Chars() {
+			if c.StatusIsActive(set4KeyHolder) && c.Base.Element == e {
 				return true
 			}
 		}
 		return false
+	}
+
+	holderBuffIsActiveOfElementNotFrom := func(e attributes.Element, i int) bool {
+		for _, x := range c.Player.Chars() {
+			if x.StatusIsActive(set4KeyHolder) && x.Base.Element == e && x.Index() != i {
+				return true
+			}
+		}
+		return false
+	}
+
+	activeBuffIsActive := func() bool {
+		for _, x := range c.Player.Chars() {
+			if x.StatusIsActive(set4KeyActive) {
+				return true
+			}
+		}
+		return false
+	}
+
+	clearActiveBuff := func() {
+		for _, x := range c.Player.Chars() {
+			x.DeleteStatus(set4KeyActive)
+		}
+	}
+
+	refreshActiveBuff := func() {
+		for _, x := range c.Player.Chars() {
+			x.AddStatus(set4KeyActive, duration, true)
+		}
 	}
 
 	elems := map[attributes.Element]bool{}
@@ -66,27 +108,67 @@ func (s *Set) Init() error {
 	if isHexereiSecretRite {
 		buffStrength = 0.4
 	}
-	for elem := range elems {
+
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		// NOTE: Description says "The equipping character can trigger this effect while off-field."
+		// but currently no characters can use skills while off field, so this is ignored
+		if c.Player.Active() != char.Index() {
+			return
+		}
+		refreshActiveBuff()
+		elem := char.Base.Element
+		if holderBuffIsActiveOfElementNotFrom(elem, char.Index()) {
+			return
+		}
+		char.AddStatus(set4KeyHolder, duration, true)
 		buffedDmgP := attributes.EleToDmgP(elem)
 		for _, x := range c.Player.Chars() {
 			x.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase(set4Key+"-"+elem.String(), -1),
+				Base:         modifier.NewBase(set4KeyHolder+"-"+elem.String(), -1),
 				AffectedStat: buffedDmgP,
 				Amount: func() []float64 {
 					clear(s.buff)
 					s.buff[buffedDmgP] = buffStrength
-					if buffActiveOfElement(elem) {
-						return s.buff
-					}
-					if isHexereiSecretRite && c.Player.ActiveChar().Base.Element == elem && buffActive() {
+					if holderBuffIsActiveOfElement(elem) {
 						return s.buff
 					}
 					return nil
 				},
 			})
 		}
+	}, fmt.Sprintf(set4KeyHolder+"-%v", char.Base.Key.String()))
+
+	if !isHexereiSecretRite {
+		return nil
 	}
 
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
+		clearActiveBuff()
+		remainingDuration := holderBuffDuration()
+		if remainingDuration == 0 {
+			return
+		}
+		elem := c.Player.ActiveChar().Base.Element
+		if holderBuffIsActiveOfElement(elem) {
+			return
+		}
+		char.AddStatus(set4KeyActive, remainingDuration, true)
+		buffedDmgP := attributes.EleToDmgP(elem)
+		for _, x := range c.Player.Chars() {
+			x.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase(set4KeyHolder+"-"+elem.String()+"-active", -1),
+				AffectedStat: buffedDmgP,
+				Amount: func() []float64 {
+					clear(s.buff)
+					s.buff[buffedDmgP] = buffStrength
+					if activeBuffIsActive() && holderBuffActive() {
+						return s.buff
+					}
+					return nil
+				},
+			})
+		}
+	}, fmt.Sprintf(set4KeyActive+"-%v", char.Base.Key.String()))
 	return nil
 }
 
@@ -111,19 +193,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return m
 		},
 	})
-
-	if count < 4 || !char.IsHexerei {
-		return &s, nil
-	}
-
-	// NOTE: Description says "The equipping character can trigger this effect while off-field."
-	// but currently no characters can use skills while off field, so this is ignored
-	c.Events.Subscribe(event.OnSkill, func(args ...any) {
-		if c.Player.Active() != char.Index() {
-			return
-		}
-		char.AddStatus(set4Key, duration, true)
-	}, fmt.Sprintf(set4Key+"-%v", char.Base.Key.String()))
 
 	return &s, nil
 }
