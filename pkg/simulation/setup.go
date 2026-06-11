@@ -422,8 +422,6 @@ func setupAscendantGleam(core *core.Core) {
 			return
 		}
 
-		gleamBuffUpdateGen(char, src)()
-
 		for _, c := range core.Player.Chars() {
 			c.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBase("ascendant-gleam", 20*60),
@@ -438,6 +436,7 @@ func setupAscendantGleam(core *core.Core) {
 				},
 			})
 		}
+		gleamBuffUpdateGen(char, src)()
 	}
 	core.Events.Subscribe(event.OnSkill, hook, "ascendant-gleam-on-skill")
 	core.Events.Subscribe(event.OnBurst, hook, "ascendant-gleam-on-burst")
