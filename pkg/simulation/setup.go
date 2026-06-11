@@ -17,6 +17,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 const nightsoulBurstICDStatus = "nightsoul-burst-icd"
@@ -321,7 +322,7 @@ func SetupMisc(c *core.Core) {
 		}
 		// add shred
 		t.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
+			Base:  modifier.NewBaseWithHitlag(reactable.SuperConductShredKey, 12*60),
 			Ele:   attributes.Physical,
 			Value: -0.4,
 		})

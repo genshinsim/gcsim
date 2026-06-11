@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func init() {
@@ -69,7 +70,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			if !ok {
 				return nil
 			}
-			if e.StatusIsActive("superconduct-phys-shred") {
+			if e.StatusIsActive(reactable.SuperConductShredKey) {
 				return c4Buff
 			}
 			return nil
