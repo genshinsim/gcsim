@@ -67,7 +67,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSkill],
+		CanQueueAfter:   skillFrames[action.ActionBurst],
 		State:           action.SkillState,
 	}, nil
 }
@@ -100,7 +100,7 @@ func (c *char) skillRecastWhite() action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillRecastWhiteFrames),
 		AnimationLength: skillRecastWhiteFrames[action.InvalidAction],
-		CanQueueAfter:   skillRecastWhiteFrames[action.ActionBurst],
+		CanQueueAfter:   skillRecastWhiteFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
 }
@@ -119,7 +119,7 @@ func (c *char) skillRecastBlack() action.Info {
 	for i, mult := range skillBlack {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -3}, 3, 7), 0, 0, c.particleCB)  
+			c.Core.QueueAttack(ai, combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -3}, 3, 7), 0, 0, c.particleCB)
 		}, skillBlackHitmarks[i])
 	}
 	c.DeleteStatus(skillWindowKey)
@@ -134,7 +134,7 @@ func (c *char) skillRecastBlack() action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillRecastBlackFrames),
 		AnimationLength: skillRecastBlackFrames[action.InvalidAction],
-		CanQueueAfter:   skillRecastBlackFrames[action.ActionBurst],
+		CanQueueAfter:   skillRecastBlackFrames[action.ActionJump],
 		State:           action.SkillState,
 	}
 }
