@@ -43,6 +43,7 @@ var setNames = []string{
 	"crimsonwitchofflames",
 	"deepwoodmemories",
 	"defenderswill",
+	"DisenchantmentinDeepShadow",
 	"desertpavilionchronicle",
 	"echoesofanoffering",
 	"emblemofseveredfate",
@@ -105,6 +106,7 @@ const (
 	CrimsonWitchOfFlames
 	DeepwoodMemories
 	DefendersWill
+	DisenchantmentinDeepShadow
 	DesertPavilionChronicle
 	EchoesOfAnOffering
 	EmblemOfSeveredFate

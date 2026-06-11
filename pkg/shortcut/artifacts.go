@@ -26,6 +26,7 @@ var SetNameToKey = map[string]keys.Set{
 	"deepwoodmemories":                   keys.DeepwoodMemories,
 	"deepwood":                           keys.DeepwoodMemories,
 	"defenderswill":                      keys.DefendersWill,
+	"disenchantmentindeepshadow":         keys.DisenchantmentinDeepShadow,
 	"defenders":                          keys.DefendersWill,
 	"defender":                           keys.DefendersWill,
 	"desertpavilionchronicle":            keys.DesertPavilionChronicle,
