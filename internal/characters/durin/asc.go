@@ -31,13 +31,16 @@ func (c *char) a1Init() {
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*info.AttackEvent)
 		if !ok {
 			return
 		}
+
+		atk := args[1].(*info.AttackEvent)
+
 		if !t.IsBurning() {
 			return
 		}
+
 		switch atk.Info.Element {
 		case attributes.Dendro:
 		case attributes.Pyro:

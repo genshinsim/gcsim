@@ -13,27 +13,30 @@ import (
 
 var (
 	burstFrames      []int
-	burstInitHitmark = []int{99, 99 + 25, 99 + 25 + 26} // Initial Hit
+	burstInitHitmark = []int{97, 97 + 24, 154} // Initial Hit
 )
 
 const (
 	burstTicksWhite          = 20
 	burstTicksBlack          = 16
-	burstIntervalWhite       = 59
-	burstIntervalBlack       = 73
-	burstFirstTickDelayBlack = 99 + 25 + 26 + 53
-	burstFirstTickDelayWhite = 99 + 25 + 26 + 22
+	burstIntervalWhite       = 58.8
+	burstIntervalBlack       = 73.6
+	burstFirstTickDelayWhite = 154 + 60
+	burstFirstTickDelayBlack = 154 + 95
 	burstCD                  = 18 * 60
-	burstKeyWhite            = "durin-burst-white"
-	burstKeyBlack            = "durin-burst-black"
+
+	burstKeyWhite = "durin-burst-white"
+	burstKeyBlack = "durin-burst-black"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(110) // E -> D/J
-	burstFrames[action.ActionAttack] = 110
-	burstFrames[action.ActionBurst] = 110
-	burstFrames[action.ActionWalk] = 110
-	burstFrames[action.ActionSwap] = 110
+	burstFrames = frames.InitAbilSlice(104)
+	burstFrames[action.ActionAttack] = 103
+	burstFrames[action.ActionSkill] = 103
+	burstFrames[action.ActionDash] = 102
+	burstFrames[action.ActionJump] = 104
+	burstFrames[action.ActionWalk] = 102
+	burstFrames[action.ActionSwap] = 102
 }
 
 func ceil(x float64) int {
@@ -42,7 +45,11 @@ func ceil(x float64) int {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(blackKey) {
-		return c.burstBlack()
+		travel, ok := p["travel"]
+		if !ok {
+			travel = 9
+		}
+		return c.burstBlack(travel)
 	}
 
 	return c.burstWhite()
@@ -78,7 +85,7 @@ func (c *char) burstWhite() (action.Info, error) {
 	c.DeleteStatus(burstKeyBlack)
 	c.AddStatus(burstKeyWhite, burstFirstTickDelayWhite+ceil((burstTicksWhite-1)*burstIntervalWhite), false)
 
-	c.SetCDWithDelay(action.ActionBurst, burstCD, 22)
+	c.SetCD(action.ActionBurst, burstCD)
 	c.ConsumeEnergy(10)
 	c.a1OnBurst(true)
 	c.a4OnBurst()
@@ -121,7 +128,7 @@ func (c *char) burstTickWhite(src int) func() {
 	}
 }
 
-func (c *char) burstBlack() (action.Info, error) {
+func (c *char) burstBlack(travel int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
 		Abil:             "As the Stars Smolder",
@@ -140,7 +147,7 @@ func (c *char) burstBlack() (action.Info, error) {
 
 	c.burstSrc = c.Core.F
 	for i := 0.0; i < burstTicksBlack; i++ {
-		c.Core.Tasks.Add(c.burstTickBlack(c.burstSrc), burstFirstTickDelayBlack+ceil(burstIntervalBlack*i))
+		c.Core.Tasks.Add(c.burstTickBlack(c.burstSrc, travel), burstFirstTickDelayBlack+ceil(burstIntervalBlack*i))
 	}
 	c.DeleteStatus(burstKeyWhite)
 	c.AddStatus(burstKeyBlack, burstFirstTickDelayBlack+ceil((burstTicksBlack-1)*burstIntervalBlack), false)
@@ -159,7 +166,7 @@ func (c *char) burstBlack() (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstTickBlack(src int) func() {
+func (c *char) burstTickBlack(src, travel int) func() {
 	return func() {
 		if src != c.burstSrc {
 			return
@@ -178,6 +185,6 @@ func (c *char) burstTickBlack(src int) func() {
 			IgnoreDefPercent: c.c6DefIgnore(false),
 		}
 
-		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, travel)
 	}
 }

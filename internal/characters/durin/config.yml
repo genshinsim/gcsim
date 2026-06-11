@@ -1,7 +1,9 @@
 package_name: durin
 genshin_id: 10000123
 key: durin
-
+action_param_keys:
+  burst:
+    - param: "travel"
 icd_groups:
   - group_name: ICDGroupDurinBurst
     reset_timer: 120

@@ -10,16 +10,16 @@ import (
 )
 
 var (
-	skillFrames        []int
-	skillRecastFrames  []int
-	skillBlackHitmarks = []int{38, 38 + 6, 38 + 6 + 7}
+	skillFrames            []int
+	skillRecastWhiteFrames []int
+	skillRecastBlackFrames []int
+	skillBlackHitmarks     = []int{32, 32 + 5, 32 + 5 + 5}
 )
 
 const (
 	particleICDKey     = "durin-particle-icd"
 	skillWindowKey     = "durin-essential-transformation"
-	skillWindowDur     = 3 * 60
-	skillCDStarts      = 2
+	skillWindowDur     = 6 * 60
 	skillWhiteHitmarks = 35
 
 	whiteKey     = "confirmation-of-purity"
@@ -29,13 +29,31 @@ const (
 
 func init() {
 	// Tap E
-	skillFrames = frames.InitAbilSlice(180)
-	skillFrames[action.ActionAttack] = 30
-	skillFrames[action.ActionSkill] = 30
+	skillFrames = frames.InitAbilSlice(49)
+	skillFrames[action.ActionAttack] = 16
+	skillFrames[action.ActionSkill] = 15
+	skillFrames[action.ActionBurst] = 4
+	skillFrames[action.ActionDash] = 14
+	skillFrames[action.ActionJump] = 14
+	skillFrames[action.ActionSwap] = 13
 
-	// Recast
-	skillRecastFrames = frames.InitAbilSlice(30)
-	skillRecastFrames[action.ActionBurst] = 30
+	// Recast white (skill)
+	skillRecastWhiteFrames = frames.InitAbilSlice(83)
+	skillRecastWhiteFrames[action.ActionAttack] = 62
+	skillRecastWhiteFrames[action.ActionSkill] = 53
+	skillRecastWhiteFrames[action.ActionBurst] = 50
+	skillRecastWhiteFrames[action.ActionDash] = 46
+	skillRecastWhiteFrames[action.ActionJump] = 47
+	skillRecastWhiteFrames[action.ActionSwap] = 48
+
+	// Recast black (attack)
+	skillRecastBlackFrames = frames.InitAbilSlice(67)
+	skillRecastBlackFrames[action.ActionAttack] = 64
+	skillRecastBlackFrames[action.ActionSkill] = 48
+	skillRecastBlackFrames[action.ActionBurst] = 45
+	skillRecastBlackFrames[action.ActionDash] = 42
+	skillRecastBlackFrames[action.ActionJump] = 41
+	skillRecastBlackFrames[action.ActionSwap] = 43
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -44,7 +62,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	c.AddStatus(skillWindowKey, skillWindowDur, true)
-	c.SetCDWithDelay(action.ActionSkill, 12*60, skillCDStarts)
+	c.SetCD(action.ActionSkill, 12*60)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -80,9 +98,9 @@ func (c *char) skillRecastWhite() action.Info {
 	}
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillRecastFrames),
-		AnimationLength: skillRecastFrames[action.InvalidAction],
-		CanQueueAfter:   skillRecastFrames[action.ActionBurst],
+		Frames:          frames.NewAbilFunc(skillRecastWhiteFrames),
+		AnimationLength: skillRecastWhiteFrames[action.InvalidAction],
+		CanQueueAfter:   skillRecastWhiteFrames[action.ActionBurst],
 		State:           action.SkillState,
 	}
 }
@@ -114,9 +132,9 @@ func (c *char) skillRecastBlack() action.Info {
 	}
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillRecastFrames),
-		AnimationLength: skillRecastFrames[action.InvalidAction],
-		CanQueueAfter:   skillRecastFrames[action.ActionBurst],
+		Frames:          frames.NewAbilFunc(skillRecastBlackFrames),
+		AnimationLength: skillRecastBlackFrames[action.InvalidAction],
+		CanQueueAfter:   skillRecastBlackFrames[action.ActionBurst],
 		State:           action.SkillState,
 	}
 }

@@ -13,7 +13,7 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = [][]int{{9}, {17}, {10, 10 + 11}, {27}}
+	attackHitmarks        = [][]int{{11}, {9}, {14, 14 + 23}, {38}}
 	attackHitlagHaltFrame = [][]float64{{0.06}, {0.06}, {0.00, 0.06}, {0.1}}
 	attackDefHalt         = [][]bool{{true}, {true}, {false, true}, {true}}
 	attackHitboxes        = [][][]float64{{{1.6}}, {{1.6}}, {{2.8, 2}, {2.8, 2}}, {{2.4, 4}}}
@@ -25,20 +25,20 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 35)
-	attackFrames[0][action.ActionAttack] = 12
-	attackFrames[0][action.ActionCharge] = 27
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 29)
+	attackFrames[0][action.ActionAttack] = 19
+	attackFrames[0][action.ActionCharge] = 21
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 46)
-	attackFrames[1][action.ActionAttack] = 19
-	attackFrames[1][action.ActionCharge] = 39
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 30)
+	attackFrames[1][action.ActionAttack] = 14
+	attackFrames[1][action.ActionCharge] = 21
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 48)
-	attackFrames[2][action.ActionAttack] = 33
-	attackFrames[2][action.ActionCharge] = 39
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 55)
+	attackFrames[2][action.ActionAttack] = 48
+	attackFrames[2][action.ActionCharge] = 43
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 55)
-	attackFrames[3][action.ActionAttack] = 52
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 66)
+	attackFrames[3][action.ActionWalk] = 65
 }
 
 // Normal attack damage queue generator

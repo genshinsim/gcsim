@@ -32,11 +32,12 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 	w.Character = &c
 
-	hexerei, ok := p.Params["hexerei"]
+	hex, ok := p.Params["hexerei"]
 	if !ok {
-		hexerei = 1
+		// default hexerei is enabled
+		hex = 1
 	}
-	c.IsHexerei = hexerei > 0
+	c.IsHexerei = (hex != 0)
 
 	return nil
 }
@@ -50,7 +51,6 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
-	// check if a1 window is active is on-field
 	if a == action.ActionSkill && c.StatusIsActive(skillWindowKey) {
 		return true, action.NoFailure
 	}
@@ -59,7 +59,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 
 func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if k == info.AnimationXingqiuN0StartDelay {
-		return 7
+		return 11
 	}
 	return c.Character.AnimationStartDelay(k)
 }
