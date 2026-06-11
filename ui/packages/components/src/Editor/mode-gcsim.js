@@ -131,6 +131,7 @@ ace.define(
         'diluc',
         'diona',
         'dori',
+        'durin',
         'emilie',
         'esco',
         'escoffier',
