@@ -17,7 +17,9 @@ const (
 	ICDTagCynoBolt
 	ICDTagDoriC2
 	ICDTagDoriChargingStation
-	ICDTagDurinBurst
+	ICDTagDurinBurstTornado
+	ICDTagDurinBurstWhite
+	ICDTagDurinBurstBlack
 	ICDTagEmilieLumidouce
 	ICDTagFurinaChevalmarin
 	ICDTagFurinaUsher

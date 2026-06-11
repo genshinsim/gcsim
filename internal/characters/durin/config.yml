@@ -1,11 +1,17 @@
 package_name: durin
 genshin_id: 10000123
 key: durin
+
 action_param_keys:
   burst:
     - param: "travel"
+
 icd_groups:
-  - group_name: ICDGroupDurinBurst
+  - group_name: ICDGroupDurinBurstWhite
+    reset_timer: 90
+    ele_app_sequence: [1, 0]
+    damage_sequence: [1, 1]
+  - group_name: ICDGroupDurinBurstBlack
     reset_timer: 120
     ele_app_sequence: [1, 0]
     damage_sequence: [1, 1]
@@ -15,7 +21,9 @@ icd_groups:
     damage_sequence: [1, 1, 1]
 
 icd_tags:
-  - ICDTagDurinBurst
+  - ICDTagDurinBurstTornado
+  - ICDTagDurinBurstWhite
+  - ICDTagDurinBurstBlack
 
 skill_data_mapping:
   attack: # Radiant Wingslash

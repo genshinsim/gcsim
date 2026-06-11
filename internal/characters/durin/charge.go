@@ -38,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), info.Point{Y: 0.3}, 2.2, 270),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.8}, 2.5),
 		chargeHitmark,
 		chargeHitmark,
 	)

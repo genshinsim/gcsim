@@ -60,18 +60,21 @@ func (c *char) burstWhite() (action.Info, error) {
 		ActorIndex:       c.Index(),
 		Abil:             "As the Light Shifts",
 		AttackTag:        attacks.AttackTagElementalBurst,
-		ICDTag:           attacks.ICDTagElementalBurst,
+		ICDTag:           attacks.ICDTagDurinBurstTornado,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Pyro,
 		Durability:       25,
 		IgnoreDefPercent: c.c6DefIgnore(true),
 	}
+
+	// TODO: if target is out of range then pos should be player pos + Y: 10 offset
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5)
 	for i, mult := range burstWhiteInitial {
 		ai.Mult = mult[c.TalentLvlBurst()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 5),
+			ap,
 			burstInitHitmark[i],
 			burstInitHitmark[i],
 			c.c6WhiteMakeCB(),
@@ -109,8 +112,8 @@ func (c *char) burstTickWhite(src int) func() {
 			ActorIndex:       c.Index(),
 			Abil:             "Dragon of White Flame",
 			AttackTag:        attacks.AttackTagElementalBurst,
-			ICDTag:           attacks.ICDTagDurinBurst,
-			ICDGroup:         attacks.ICDGroupDurinBurst,
+			ICDTag:           attacks.ICDTagDurinBurstWhite,
+			ICDGroup:         attacks.ICDGroupDurinBurstWhite,
 			StrikeType:       attacks.StrikeTypeDefault,
 			Element:          attributes.Pyro,
 			Durability:       25,
@@ -133,16 +136,19 @@ func (c *char) burstBlack(travel int) (action.Info, error) {
 		ActorIndex:       c.Index(),
 		Abil:             "As the Stars Smolder",
 		AttackTag:        attacks.AttackTagElementalBurst,
-		ICDTag:           attacks.ICDTagElementalBurst,
+		ICDTag:           attacks.ICDTagDurinBurstTornado,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Pyro,
 		Durability:       25,
 		IgnoreDefPercent: c.c6DefIgnore(false),
 	}
+
+	// TODO: if target is out of range then pos should be player pos + Y: 10 offset
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5)
 	for i, mult := range burstBlackInitial {
 		ai.Mult = mult[c.TalentLvlBurst()]
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.5}, 5), burstInitHitmark[i], burstInitHitmark[i])
+		c.Core.QueueAttack(ai, ap, burstInitHitmark[i], burstInitHitmark[i])
 	}
 
 	c.burstSrc = c.Core.F
@@ -176,8 +182,8 @@ func (c *char) burstTickBlack(src, travel int) func() {
 			ActorIndex:       c.Index(),
 			Abil:             "Dragon of Dark Decay",
 			AttackTag:        attacks.AttackTagElementalBurst,
-			ICDTag:           attacks.ICDTagDurinBurst,
-			ICDGroup:         attacks.ICDGroupDurinBurst,
+			ICDTag:           attacks.ICDTagDurinBurstBlack,
+			ICDGroup:         attacks.ICDGroupDurinBurstBlack,
 			StrikeType:       attacks.StrikeTypeDefault,
 			Element:          attributes.Pyro,
 			Durability:       25,
