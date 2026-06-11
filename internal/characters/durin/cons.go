@@ -40,31 +40,35 @@ func (c *char) c1Init() {
 			return
 		}
 
-		key, needOnField := burstKeyWhite, true
-		mult, consume := 0.6, 1
+		mult := 0.6
+		consume := 1
+		needsOnField := true
+		key := burstKeyWhite
 		if char.Index() == c.Index() {
-			key, needOnField = burstKeyBlack, false
-			mult, consume = 1.5, 2
+			mult = 1.5
+			consume = 2
+			needsOnField = false
+			key = burstKeyBlack
 		}
-		consume *= c.c4c1ConsumeMult()
 
 		if !c.StatusIsActive(key) {
 			return
 		}
 
-		if needOnField && atk.Info.ActorIndex != c.Core.Player.Active() {
+		if needsOnField && atk.Info.ActorIndex != c.Core.Player.Active() {
 			return
 		}
 
-		amt := mult * c.TotalAtk() // TODO: Is this affected by A4?
-
+		consume *= c.c4c1ConsumeMult()
 		char.Tags[c1Key] -= consume
+
+		amt := mult * c.TotalAtk()
 
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("Durin C1 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 				Write("before", atk.Info.FlatDmg).
 				Write("addition", amt).
-				Write("effect_ends_at", char.StatusExpiry(c1Key)).
+				Write("effect_ends_at", c.StatusExpiry(c1Key)).
 				Write("stacks_left", char.Tags[c1Key])
 		}
 
@@ -79,6 +83,7 @@ func (c *char) c1OnBurst(isWhite bool) {
 
 	if isWhite {
 		c.RemoveTag(c1Key)
+
 		for _, char := range c.Core.Player.Chars() {
 			if c.Index() == char.Index() {
 				continue
@@ -157,7 +162,7 @@ func (c *char) c2MakeBuff(elements []attributes.Element) {
 			stat := attributes.EleToDmgP(elem)
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("durin-c2-"+elem.String(), 6*60),
-				AffectedStat: attributes.EleToDmgP(elem),
+				AffectedStat: stat,
 				Amount: func() []float64 {
 					for i := range c.c2Buff {
 						c.c2Buff[i] = 0
@@ -174,22 +179,16 @@ func (c *char) c4Init() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.c4Buff = make([]float64, attributes.EndStatType)
-	c.c4Buff[attributes.DmgP] = 0.4
-}
-
-func (c *char) c4OnBurst() {
-	if c.Base.Cons < 4 {
-		return
-	}
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.4
 
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("durin-c4", 20*60),
+		Base: modifier.NewBaseWithHitlag("durin-c4", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil
 			}
-			return c.c4Buff
+			return m
 		},
 	})
 }

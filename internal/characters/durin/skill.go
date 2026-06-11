@@ -85,7 +85,8 @@ func (c *char) skillRecastWhite() action.Info {
 		Mult:       skillWhite[c.TalentLvlSkill()],
 	}
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 1.2}, 4.5), 0, 0, c.particleCB)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 1.2}, 4.5)
+		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 	}, skillWhiteHitmarks)
 	c.DeleteStatus(skillWindowKey)
 	c.DeleteStatus(blackKey)
@@ -119,7 +120,8 @@ func (c *char) skillRecastBlack() action.Info {
 	for i, mult := range skillBlack {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -3}, 3, 7), 0, 0, c.particleCB)
+			ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -3}, 3, 7)
+			c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 		}, skillBlackHitmarks[i])
 	}
 	c.DeleteStatus(skillWindowKey)
@@ -146,7 +148,7 @@ func (c *char) particleCB(a info.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 1*60, true)
+	c.AddStatus(particleICDKey, 0.3*60, true)
 
 	count := 4.0
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)

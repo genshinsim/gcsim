@@ -18,7 +18,6 @@ type char struct {
 	burstSrc int
 	a4stacks int
 	c2Buff   []float64
-	c4Buff   []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {

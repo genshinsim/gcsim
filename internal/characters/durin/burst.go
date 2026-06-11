@@ -24,6 +24,7 @@ const (
 	burstFirstTickDelayWhite = 154 + 60
 	burstFirstTickDelayBlack = 154 + 95
 	burstCD                  = 18 * 60
+	burstDuration            = 20.5 * 60 // starts on burstInitialHitmark[0]
 
 	burstKeyWhite = "durin-burst-white"
 	burstKeyBlack = "durin-burst-black"
@@ -82,18 +83,21 @@ func (c *char) burstWhite() (action.Info, error) {
 	}
 
 	c.burstSrc = c.Core.F
+	c.DeleteStatus(burstKeyBlack)
 	for i := 0.0; i < burstTicksWhite; i++ {
 		c.Core.Tasks.Add(c.burstTickWhite(c.burstSrc), burstFirstTickDelayWhite+ceil(burstIntervalWhite*i))
 	}
-	c.DeleteStatus(burstKeyBlack)
-	c.AddStatus(burstKeyWhite, burstFirstTickDelayWhite+ceil((burstTicksWhite-1)*burstIntervalWhite), false)
+
+	c.QueueCharTask(func() {
+		c.a1OnBurst(true)
+		c.a4OnBurst()
+		c.c1OnBurst(true)
+		c.AddStatus(burstKeyWhite, burstDuration, false)
+	}, burstInitHitmark[0])
 
 	c.SetCD(action.ActionBurst, burstCD)
 	c.ConsumeEnergy(10)
-	c.a1OnBurst(true)
-	c.a4OnBurst()
-	c.c1OnBurst(true)
-	c.c4OnBurst()
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
@@ -152,18 +156,20 @@ func (c *char) burstBlack(travel int) (action.Info, error) {
 	}
 
 	c.burstSrc = c.Core.F
+	c.DeleteStatus(burstKeyWhite)
 	for i := 0.0; i < burstTicksBlack; i++ {
 		c.Core.Tasks.Add(c.burstTickBlack(c.burstSrc, travel), burstFirstTickDelayBlack+ceil(burstIntervalBlack*i))
 	}
-	c.DeleteStatus(burstKeyWhite)
-	c.AddStatus(burstKeyBlack, burstFirstTickDelayBlack+ceil((burstTicksBlack-1)*burstIntervalBlack), false)
 
-	c.SetCDWithDelay(action.ActionBurst, burstCD, 22)
+	c.QueueCharTask(func() {
+		c.a1OnBurst(false)
+		c.a4OnBurst()
+		c.c1OnBurst(false)
+		c.AddStatus(burstKeyBlack, burstDuration, false)
+	}, burstInitHitmark[0])
+
+	c.SetCD(action.ActionBurst, burstCD)
 	c.ConsumeEnergy(10)
-	c.a1OnBurst(false)
-	c.a4OnBurst()
-	c.c1OnBurst(false)
-	c.c4OnBurst()
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],

@@ -76,7 +76,7 @@ func (c *char) a1OnBurst(isWhite bool) {
 		return
 	}
 	reactMod := character.ReactBonusMod{
-		Base: modifier.NewBaseWithHitlag(a1BlackKey, 20*60),
+		Base: modifier.NewBaseWithHitlag(a1BlackKey, burstDuration),
 		Amount: func(ai info.AttackInfo) float64 {
 			if ai.Amped {
 				return 0.40 * c.hexereiA1Bonus()
