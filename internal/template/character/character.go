@@ -143,8 +143,9 @@ func (c *Character) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[str
 	if a == action.ActionCharge {
 		switch c.Weapon.Class {
 		case info.WeaponClassSword, info.WeaponClassSpear:
-			// cannot do charge on most sword/polearm characters without attack beforehand
-			if c.Core.Player.LastAction.Type != action.ActionAttack {
+			// cannot do charge on most sword/polearm characters without doing N1 first
+			// this also prevents doing the last NA and then CAing
+			if c.Core.Player.ActiveChar().NormalCounter == 0 {
 				return player.ErrInvalidChargeAction
 			}
 		}
