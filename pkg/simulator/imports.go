@@ -2,7 +2,7 @@ package simulator
 
 import (
 	// Aggregators
-	_ "github.com/genshinsim/gcsim/internal/artifacts/disenchantmentindeepshadow"
+
 	_ "github.com/genshinsim/gcsim/pkg/agg/actions"
 	_ "github.com/genshinsim/gcsim/pkg/agg/aura"
 	_ "github.com/genshinsim/gcsim/pkg/agg/damage"

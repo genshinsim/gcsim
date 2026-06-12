@@ -51,7 +51,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	if count >= 4 {
-
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("deep-shadow-4pc", -1),
 			Amount: func(ai info.AttackInfo) float64 {
