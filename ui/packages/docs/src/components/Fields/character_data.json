@@ -263,6 +263,14 @@
       "desc": "Number of Sourcewater droplets in range for C6."
     }
   ],
+  "nicole": [
+    {
+      "fields": [
+        ".nicole.projections"
+      ],
+      "desc": "Number of Arcane Projection attacks remaining."
+    }
+  ],
   "ningguang": [
     {
       "fields": [

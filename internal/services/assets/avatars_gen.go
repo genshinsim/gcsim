@@ -69,6 +69,7 @@ var avatarMap = map[string]string{
 	"nahida":        "UI_AvatarIcon_Nahida",
 	"navia":         "UI_AvatarIcon_Navia",
 	"neuvillette":   "UI_AvatarIcon_Neuvillette",
+	"nicole":        "UI_AvatarIcon_Nicole",
 	"nilou":         "UI_AvatarIcon_Nilou",
 	"ningguang":     "UI_AvatarIcon_Ningguang",
 	"noelle":        "UI_AvatarIcon_Noel",
