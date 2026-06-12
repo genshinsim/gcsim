@@ -34,30 +34,26 @@ func (c *char) c1Init() {
 			return
 		}
 
+		if atk.Info.ActorIndex == c.Index() {
+			return
+		}
+
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 
-		if char.Tags[c1Key] == 0 {
+		if char.Tags[c1Key] <= 0 {
+			return
+		}
+
+		if !c.StatusIsActive(burstKeyWhite) {
+			return
+		}
+
+		if atk.Info.ActorIndex != c.Core.Player.Active() {
 			return
 		}
 
 		mult := 0.6
 		consume := 1
-		needsOnField := true
-		key := burstKeyWhite
-		if char.Index() == c.Index() {
-			mult = 1.5
-			consume = 2
-			needsOnField = false
-			key = burstKeyBlack
-		}
-
-		if !c.StatusIsActive(key) {
-			return
-		}
-
-		if needsOnField && atk.Info.ActorIndex != c.Core.Player.Active() {
-			return
-		}
 
 		consume *= c.c4c1ConsumeMult()
 		char.Tags[c1Key] -= consume
@@ -73,7 +69,45 @@ func (c *char) c1Init() {
 		}
 
 		atk.Info.FlatDmg += amt
-	}, "durin-c1-hook")
+	}, "durin-c1-white-hook")
+
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+
+		if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
+			return
+		}
+
+		if atk.Info.ActorIndex != c.Index() {
+			return
+		}
+
+		if c.Tags[c1Key] == 0 {
+			return
+		}
+
+		mult := 1.5
+		consume := 2
+
+		if !c.StatusIsActive(burstKeyBlack) {
+			return
+		}
+
+		consume *= c.c4c1ConsumeMult()
+		c.Tags[c1Key] -= consume
+
+		amt := mult * c.TotalAtk()
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("Durin C1 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
+				Write("before", atk.Info.FlatDmg).
+				Write("addition", amt).
+				Write("effect_ends_at", c.StatusExpiry(c1Key)).
+				Write("stacks_left", c.Tags[c1Key])
+		}
+
+		atk.Info.FlatDmg += amt
+	}, "durin-c1-black-hook")
 }
 
 func (c *char) c1OnBurst(isWhite bool) {

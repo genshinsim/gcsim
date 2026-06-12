@@ -124,7 +124,7 @@ func (c *char) a4Dmg() float64 {
 		return 1.0
 	}
 
-	if !c.StatusIsActive(blackKey) && !c.StatusIsActive(whiteKey) {
+	if !c.StatusIsActive(burstKeyWhite) && !c.StatusIsActive(burstKeyBlack) {
 		return 1.0
 	}
 
