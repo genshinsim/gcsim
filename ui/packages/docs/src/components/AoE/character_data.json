@@ -3177,6 +3177,95 @@
       }
     ]
   },
+  "durin": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.3,
+        "radius": 2.15
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.6,
+        "radius": 2.15
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.2,
+        "offsetY": 0.4,
+        "radius": 2.4
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": -0.2,
+        "offsetY": 0.4,
+        "radius": 2.4
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "Player",
+        "offsetX": -0.2,
+        "offsetY": -0.6,
+        "boxX": 3.3,
+        "boxY": 4.8
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.8,
+        "radius": 2.5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-White",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.2,
+        "radius": 4.5
+      },
+      {
+        "ability": "E-Black",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -3,
+        "boxX": 3,
+        "boxY": 7
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6.5
+      },
+      {
+        "ability": "Q-Tick-White",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5
+      },
+      {
+        "ability": "Q-Tick-Black",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.5
+      }
+    ]
+  },
   "emilie": {
     "asc": [
       {

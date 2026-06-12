@@ -49,6 +49,15 @@ func (c *char) Init() error {
 	return nil
 }
 
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "a4-stacks":
+		return c.a4stacks, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
+
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	if a == action.ActionSkill && c.StatusIsActive(skillWindowKey) {
 		return true, action.NoFailure
