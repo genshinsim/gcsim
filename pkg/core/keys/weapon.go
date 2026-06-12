@@ -43,6 +43,7 @@ var weaponNames = []string{
 	"aquilafavonia",
 	"ashgravendrinkinghorn",
 	"astralvulturescrimsonplumage",
+	"athameartis",
 	"athousandblazingsuns",
 	"athousandfloatingdreams",
 	"azurelight",
@@ -272,6 +273,7 @@ const (
 	AquilaFavonia
 	AshGravenDrinkingHorn
 	AstralVulturesCrimsonPlumage
+	AthameArtis
 	AThousandBlazingSuns
 	AThousandFloatingDreams
 	Azurelight
