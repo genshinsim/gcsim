@@ -21,8 +21,8 @@ const (
 	burstTicksBlack          = 16
 	burstIntervalWhite       = 58.8
 	burstIntervalBlack       = 73.6
-	burstFirstTickDelayWhite = 154 + 60
-	burstFirstTickDelayBlack = 154 + 95
+	burstFirstTickDelayWhite = 154 + 60 - burstIntervalWhite
+	burstFirstTickDelayBlack = 154 + 95 - burstIntervalBlack
 	burstCD                  = 18 * 60
 	burstDuration            = 20.5 * 60 // starts on burstInitialHitmark[0]
 
@@ -85,7 +85,7 @@ func (c *char) burstWhite() (action.Info, error) {
 	c.burstSrc = c.Core.F
 	c.DeleteStatus(burstKeyBlack)
 	for i := 0.0; i < burstTicksWhite; i++ {
-		c.Core.Tasks.Add(c.burstTickWhite(c.burstSrc), burstFirstTickDelayWhite+ceil(burstIntervalWhite*i))
+		c.Core.Tasks.Add(c.burstTickWhite(c.burstSrc), ceil(burstFirstTickDelayWhite+burstIntervalWhite*i))
 	}
 
 	c.QueueCharTask(func() {
@@ -158,7 +158,7 @@ func (c *char) burstBlack(travel int) (action.Info, error) {
 	c.burstSrc = c.Core.F
 	c.DeleteStatus(burstKeyWhite)
 	for i := 0.0; i < burstTicksBlack; i++ {
-		c.Core.Tasks.Add(c.burstTickBlack(c.burstSrc, travel), burstFirstTickDelayBlack+ceil(burstIntervalBlack*i))
+		c.Core.Tasks.Add(c.burstTickBlack(c.burstSrc, travel), ceil(burstFirstTickDelayBlack+burstIntervalBlack*i))
 	}
 
 	c.QueueCharTask(func() {
