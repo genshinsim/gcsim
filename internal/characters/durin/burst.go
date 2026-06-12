@@ -124,10 +124,10 @@ func (c *char) burstTickWhite(src int) func() {
 			Mult:             burstWhiteDoT[c.TalentLvlBurst()] * c.a4Dmg(),
 			IgnoreDefPercent: c.c6DefIgnore(true),
 		}
-
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
+			ap,
 			0,
 			0,
 			c.c6WhiteMakeCB(),
@@ -196,7 +196,7 @@ func (c *char) burstTickBlack(src, travel int) func() {
 			Mult:             burstBlackDoT[c.TalentLvlBurst()] * c.a4Dmg(),
 			IgnoreDefPercent: c.c6DefIgnore(false),
 		}
-
-		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, travel)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5)
+		c.Core.QueueAttack(ai, ap, 0, travel)
 	}
 }

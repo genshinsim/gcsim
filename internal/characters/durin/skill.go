@@ -85,7 +85,7 @@ func (c *char) skillRecastWhite() action.Info {
 		Mult:       skillWhite[c.TalentLvlSkill()],
 	}
 	c.QueueCharTask(func() {
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 1.2}, 4.5)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.2}, 4.5)
 		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 	}, skillWhiteHitmarks)
 	c.DeleteStatus(skillWindowKey)
@@ -120,7 +120,7 @@ func (c *char) skillRecastBlack() action.Info {
 	for i, mult := range skillBlack {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.QueueCharTask(func() {
-			ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -3}, 3, 7)
+			ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -3}, 3, 7)
 			c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 		}, skillBlackHitmarks[i])
 	}
