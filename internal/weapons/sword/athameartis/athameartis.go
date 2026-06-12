@@ -91,13 +91,11 @@ func NewWeapon(
 		teamVal := make([]float64, attributes.EndStatType)
 		teamVal[attributes.ATKP] = procTeamATK
 
-		for _, p := range c.Player.Chars() {
-			if p.Index() == char.Index() {
-				continue
-			}
+		active := c.Player.Active()
 
-			p.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("athame-team-atk", 3*60),
+		if active != char.Index() {
+			c.Player.Chars()[active].AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("athameartis-team-atk", 3*60),
 				AffectedStat: attributes.ATKP,
 				Amount: func() []float64 {
 					return teamVal
