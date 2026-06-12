@@ -1,4 +1,4 @@
-package athame
+package athameartis
 
 import (
 	"fmt"
@@ -72,7 +72,7 @@ func NewWeapon(
 		procTeamATK := teamATK
 
 		// TODO verify exact Hexerei condition
-		if char.IsHexerei && c.Player.GetHexereiCount() >= 2 {
+		if c.Player.GetHexereiCount() >= 2 {
 			procSelfATK *= 1.75
 			procTeamATK *= 1.75
 		}
@@ -81,7 +81,7 @@ func NewWeapon(
 		selfVal[attributes.ATKP] = procSelfATK
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("athame-self-atk", 180),
+			Base:         modifier.NewBaseWithHitlag("athame-self-atk", 3*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
 				return selfVal
@@ -97,7 +97,7 @@ func NewWeapon(
 			}
 
 			p.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("athame-team-atk", 180),
+				Base:         modifier.NewBaseWithHitlag("athame-team-atk", 3*60),
 				AffectedStat: attributes.ATKP,
 				Amount: func() []float64 {
 					return teamVal
