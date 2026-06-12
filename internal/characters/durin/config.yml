@@ -60,3 +60,7 @@ skill_data_mapping:
       - 6 # Dragon of White Flame DMG|{param6:F1P}
     burstBlackDoT:
       - 7 # Dragon of Dark Decay DMG|{param7:F1P}
+documentation:
+  fields_data:
+    - fields: [.durin.a4-stacks]
+      desc: "Number of A4 stacks remaining."
