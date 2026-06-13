@@ -15,8 +15,9 @@ import (
 )
 
 const (
-	angelosHeptadesEnergyICDKey = "angelos-heptades-energy-icd"
-	angelosHeptadesEnergyKey    = "angelos-heptades-energy"
+	angelosHeptadesEnergyICDKey  = "angelos-heptades-energy-icd"
+	angelosHeptadesEnergyKey     = "angelos-heptades-energy"
+	angelosHeptadesHolderBuffKey = "angelos-heptades-buff"
 )
 
 func init() {
@@ -25,16 +26,44 @@ func init() {
 
 type Weapon struct {
 	Index   int
+	Core    *core.Core
+	Char    *character.CharWrapper
 	BuffSrc int
 	BuffAmt float64
-	Refine  int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
-func (w *Weapon) Init() error      { return nil }
+func (w *Weapon) Init() error {
+	n := make([]float64, attributes.EndStatType)
+	for _, c := range w.Core.Player.Chars() {
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("pathfinders-light", -1),
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				if !w.Char.StatusIsActive(angelosHeptadesHolderBuffKey) {
+					return nil
+				}
+
+				n[attributes.DmgP] = w.BuffAmt
+				if c.Index() != w.Core.Player.Active() {
+					if c.IsHexerei {
+						n[attributes.DmgP] *= 0.5
+						return n
+					}
+					return nil
+				}
+
+				return n
+			},
+		})
+	}
+
+	return nil
+}
 
 func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
+		Core:    core,
+		Char:    char,
 		BuffSrc: -1,
 		BuffAmt: 0,
 	}
@@ -42,9 +71,6 @@ func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfil
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATK] = 0.09 + float64(r)*0.03
-
-	n := make([]float64, attributes.EndStatType)
-
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("angelos-heptades-atk", -1),
 		AffectedStat: attributes.NoStat,
@@ -59,32 +85,14 @@ func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfil
 			return
 		}
 		// TODO: Not sure if the character needs to be on the field
-		// if core.Player.Active() != char.Index() {
-		// 	return
-		// }
+		if core.Player.Active() != char.Index() {
+			return
+		}
 
 		w.BuffSrc = core.F
+		char.AddStatus(angelosHeptadesHolderBuffKey, 20*60, true)
 
 		w.updateBuff(char, core, r, w.BuffSrc)
-
-		for _, c := range core.Player.Chars() {
-			c.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("pathfinders-light", 20*60),
-				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-					n[attributes.DmgP] = w.BuffAmt
-					if c.Index() != core.Player.Active() {
-						if c.IsHexerei {
-							n[attributes.DmgP] *= 0.5
-							return n
-						}
-
-						return nil
-					}
-
-					return n
-				},
-			})
-		}
 
 		if char.StatusIsActive(angelosHeptadesEnergyICDKey) {
 			return
