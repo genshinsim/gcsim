@@ -19,13 +19,13 @@ func init() {
 }
 
 type Weapon struct {
-	Index                                int
-	stirringDawnBreezeNormalAttackStacks int
-	stirringDawnBreezeNormalAttackSource int
-	stirringDawnBreezeSkillStacks        int
-	stirringDawnBreezeSkillSource        int
-	stirringDawnBreezeBurstStacks        int
-	stirringDawnBreezeBurstSource        int
+	Index       int
+	naStacks    int
+	naSrc       int
+	skillStacks int
+	skillSrc    int
+	burstStacks int
+	burstSrc    int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -34,26 +34,22 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
-	w.stirringDawnBreezeNormalAttackStacks = 6
-	w.stirringDawnBreezeSkillStacks = 6
-	w.stirringDawnBreezeBurstStacks = 6
-	w.stirringDawnBreezeNormalAttackSource = c.F
-	w.stirringDawnBreezeSkillSource = c.F
-	w.stirringDawnBreezeBurstSource = c.F
+	w.naStacks = 6
+	w.skillStacks = 6
+	w.burstStacks = 6
 
 	m := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("stirring-dawn-breeze", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			dmgPerStack := 0.075 + float64(r)*0.025
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagNormal:
-				m[attributes.DmgP] = (0.075 + float64(r)*0.025) * float64(w.stirringDawnBreezeNormalAttackStacks)
-			case attacks.AttackTagElementalArt:
-				m[attributes.DmgP] = (0.075 + float64(r)*0.025) * float64(w.stirringDawnBreezeSkillStacks)
-			case attacks.AttackTagElementalArtHold:
-				m[attributes.DmgP] = (0.075 + float64(r)*0.025) * float64(w.stirringDawnBreezeSkillStacks)
+				m[attributes.DmgP] = dmgPerStack * float64(w.naStacks)
+			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
+				m[attributes.DmgP] = dmgPerStack * float64(w.skillStacks)
 			case attacks.AttackTagElementalBurst:
-				m[attributes.DmgP] = (0.075 + float64(r)*0.025) * float64(w.stirringDawnBreezeBurstStacks)
+				m[attributes.DmgP] = dmgPerStack * float64(w.burstStacks)
 			default:
 				return nil
 			}
@@ -61,26 +57,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return m
 		},
 	})
-
-	daybreakAddBuff := func(stacks *int, stacksSrc *int) {
-		if *stacks >= 6 {
-			*stacksSrc = c.F
-			c.Tasks.Add(w.decreaseStacks(c, c.F, stacks, stacksSrc), 60)
-			return
-		}
-		*stacks++
-
-		if c.Player.GetHexereiCount() < 2 {
-			return
-		}
-
-		if *stacks >= 6 {
-			*stacksSrc = c.F
-			c.Tasks.Add(w.decreaseStacks(c, c.F, stacks, stacksSrc), 60)
-			return
-		}
-		*stacks++
-	}
 
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk, ok := args[1].(*info.AttackEvent)
@@ -92,33 +68,34 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
-			daybreakAddBuff(&w.stirringDawnBreezeNormalAttackStacks, &w.stirringDawnBreezeNormalAttackSource)
+			w.daybreakAddBuff(c, &w.naStacks, &w.naSrc)
 			c.Log.NewEvent("daybreak-chronicles-normal", glog.LogWeaponEvent, char.Index()).
-				Write("stacks", w.stirringDawnBreezeNormalAttackStacks).
-				Write("src", w.stirringDawnBreezeNormalAttackSource)
+				Write("stacks", w.naStacks)
 		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
-			daybreakAddBuff(&w.stirringDawnBreezeSkillStacks, &w.stirringDawnBreezeSkillSource)
+			w.daybreakAddBuff(c, &w.skillStacks, &w.skillSrc)
 			c.Log.NewEvent("daybreak-chronicles-skill", glog.LogWeaponEvent, char.Index()).
-				Write("stacks", w.stirringDawnBreezeSkillStacks).
-				Write("src", w.stirringDawnBreezeSkillSource)
+				Write("stacks", w.skillStacks)
 		case attacks.AttackTagElementalBurst:
-			daybreakAddBuff(&w.stirringDawnBreezeBurstStacks, &w.stirringDawnBreezeBurstSource)
+			w.daybreakAddBuff(c, &w.burstStacks, &w.burstSrc)
 			c.Log.NewEvent("daybreak-chronicles-burst", glog.LogWeaponEvent, char.Index()).
-				Write("stacks", w.stirringDawnBreezeBurstStacks).
-				Write("src", w.stirringDawnBreezeBurstSource)
+				Write("stacks", w.burstStacks)
 		}
 	}, fmt.Sprintf("daybreak-chronicles-buff-refresh-%v", char.Base.Key.String()))
 
-	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.stirringDawnBreezeNormalAttackStacks, &w.stirringDawnBreezeNormalAttackSource), 60)
-	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.stirringDawnBreezeSkillStacks, &w.stirringDawnBreezeSkillSource), 60)
-	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.stirringDawnBreezeBurstStacks, &w.stirringDawnBreezeBurstSource), 60)
+	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.naStacks, &w.naSrc), 60)
+	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.skillStacks, &w.skillSrc), 60)
+	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.burstStacks, &w.burstSrc), 60)
 
 	return w, nil
 }
 
 func (w *Weapon) decreaseStacks(c *core.Core, src int, stacks, stacksSrc *int) func() {
 	return func() {
-		if *stacks == 0 || src != *stacksSrc {
+		if *stacks == 0 {
+			return
+		}
+
+		if src != *stacksSrc {
 			return
 		}
 
@@ -128,4 +105,23 @@ func (w *Weapon) decreaseStacks(c *core.Core, src int, stacks, stacksSrc *int) f
 			c.Tasks.Add(w.decreaseStacks(c, src, stacks, stacksSrc), 60)
 		}
 	}
+}
+
+func (w *Weapon) daybreakAddBuff(c *core.Core, stacks, stacksSrc *int) {
+	*stacksSrc = c.F
+	c.Tasks.Add(w.decreaseStacks(c, c.F, stacks, stacksSrc), 60)
+
+	if *stacks >= 6 {
+		return
+	}
+	*stacks++
+
+	if c.Player.GetHexereiCount() < 2 {
+		return
+	}
+
+	if *stacks >= 6 {
+		return
+	}
+	*stacks++
 }
