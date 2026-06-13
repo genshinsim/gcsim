@@ -53,3 +53,14 @@ func (c *char) Init() error {
 	c.c6Init()
 	return nil
 }
+
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	switch k {
+	case info.AnimationXingqiuN0StartDelay:
+		return 8
+	case info.AnimationYelanN0StartDelay:
+		return 5
+	default:
+		return c.Character.AnimationStartDelay(k)
+	}
+}

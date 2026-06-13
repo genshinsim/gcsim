@@ -61,6 +61,14 @@ func (c *char) c1Init() {
 	}, "nicole-c1")
 }
 
+func (c *char) c2Init() {
+	if c.Base.Cons < 2 {
+		return
+	}
+	c.c2Buff = make([]float64, attributes.EndStatType)
+	c.c2Buff[attributes.ATK] = 300
+}
+
 func (c *char) c2OnSkillRemoveBuff() {
 	if c.Base.Cons < 2 {
 		return
@@ -69,14 +77,6 @@ func (c *char) c2OnSkillRemoveBuff() {
 	for _, char := range c.Core.Player.Chars() {
 		char.DeleteStatMod(c2Key)
 	}
-}
-
-func (c *char) c2Init() {
-	if c.Base.Cons < 2 {
-		return
-	}
-	c.c2Buff = make([]float64, attributes.EndStatType)
-	c.c2Buff[attributes.ATK] = 300
 }
 
 func (c *char) c2OnSkillAddBuff() {
@@ -117,7 +117,7 @@ func (c *char) c2Ticker(char *character.CharWrapper, src int) {
 		return
 	}
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10)
 	for _, e := range c.Core.Combat.EnemiesWithinArea(ap, nil) {
 		e, ok := e.(*enemy.Enemy)
 		if !ok {
@@ -130,7 +130,7 @@ func (c *char) c2Ticker(char *character.CharWrapper, src int) {
 			Value: -0.25,
 		})
 	}
-	c.Core.Tasks.Add(func() { c.c2Ticker(char, src) }, 30)
+	c.Core.Tasks.Add(func() { c.c2Ticker(char, src) }, 0.3*60)
 }
 
 func (c *char) c4Init() {

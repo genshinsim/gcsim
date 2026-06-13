@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	burstHitmark      = 118
-	projectionHitmark = 20
+	burstHitmark      = 108
+	projectionHitmark = 30
 	burstKey          = "silent-contemplation"
 	burstICDKey       = "nicole-burst-projection-icd"
 )
@@ -21,13 +21,13 @@ const (
 var burstFrames []int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(113) // Q -> Jump
-	burstFrames[action.ActionAttack] = 112
-	burstFrames[action.ActionCharge] = 112
-	burstFrames[action.ActionSkill] = 111
-	burstFrames[action.ActionDash] = 112
-	burstFrames[action.ActionWalk] = 112
-	burstFrames[action.ActionSwap] = 110
+	burstFrames = frames.InitAbilSlice(128)
+	burstFrames[action.ActionAttack] = 117
+	burstFrames[action.ActionCharge] = 120
+	burstFrames[action.ActionSkill] = 116
+	burstFrames[action.ActionDash] = 118
+	burstFrames[action.ActionJump] = 117
+	burstFrames[action.ActionSwap] = 113
 }
 
 func (c *char) Burst(_ map[string]int) (action.Info, error) {
@@ -45,16 +45,17 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
 
-	// with delay
-	c.ConsumeEnergy(8)
+	c.ConsumeEnergy(12)
 	c.SetCD(action.ActionBurst, 15*60)
 
 	// initial hit
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5), burstHitmark, burstHitmark)
+
 	c.QueueCharTask(func() {
 		c.burstHits = 0
 		c.AddStatus(burstKey, 20*60, true)
 	}, burstHitmark+1)
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],

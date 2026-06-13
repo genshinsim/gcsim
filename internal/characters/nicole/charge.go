@@ -10,36 +10,28 @@ import (
 )
 
 const (
-	chargeHitmark  = 76
-	chargeSnapshot = 29 + 32
+	chargeHitmark = 66
 )
 
 var chargeFrames []int
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(113)
-	chargeFrames[action.ActionAttack] = 59
-	chargeFrames[action.ActionCharge] = 59
-	chargeFrames[action.ActionSkill] = 59
-	chargeFrames[action.ActionBurst] = 59
-	chargeFrames[action.ActionDash] = 31
-	chargeFrames[action.ActionJump] = 30
-	chargeFrames[action.ActionSwap] = 104
+	chargeFrames = frames.InitAbilSlice(99)
+	chargeFrames[action.ActionSkill] = chargeHitmark
+	chargeFrames[action.ActionBurst] = chargeHitmark
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = chargeHitmark
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	travel, ok := p["travel"]
-	if !ok {
-		travel = 10
-	}
+	// TODO: Find actual windup and conditions for windup
 	windup := 0
 	switch c.Core.Player.CurrentState() {
 	case action.NormalAttackState:
 		if c.NormalCounter == 1 || c.NormalCounter == 2 {
 			windup = 14
 		}
-	case action.SkillState:
-		windup = 14
 	}
 
 	c.Core.Tasks.Add(func() {
@@ -55,13 +47,14 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			Mult:       charge[c.TalentLvlAttack()],
 		}
 
+		ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 3)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 3),
-			(chargeHitmark - chargeSnapshot),
-			(chargeHitmark-chargeSnapshot)+travel,
+			ap,
+			0,
+			0,
 		)
-	}, chargeSnapshot-windup)
+	}, chargeHitmark)
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

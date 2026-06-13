@@ -14,21 +14,21 @@ import (
 var skillFrames []int
 
 const (
-	skillHitmark   = 30
+	skillHitmark   = 9
 	particleICDKey = "nicole-particle-icd"
 	skillBuffKey   = "grace-of-kenosis"
 	skillDur       = 20 * 60
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(75)
+	skillFrames = frames.InitAbilSlice(42)
 	skillFrames[action.ActionAttack] = 40
-	skillFrames[action.ActionCharge] = 69
-	skillFrames[action.ActionSkill] = 68
-	skillFrames[action.ActionBurst] = 34
-	skillFrames[action.ActionDash] = 37
-	skillFrames[action.ActionJump] = 35
-	skillFrames[action.ActionSwap] = 74
+	skillFrames[action.ActionCharge] = 40
+	skillFrames[action.ActionSkill] = 33
+	skillFrames[action.ActionBurst] = 32
+	skillFrames[action.ActionDash] = 34
+	skillFrames[action.ActionJump] = 32
+	skillFrames[action.ActionSwap] = 31
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -54,7 +54,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.a1OnSkillRemoveBuff()
 	c.c2OnSkillRemoveBuff()
 
+	// TODO: figure out order between shield, buff, and hitmark
 	c.QueueCharTask(func() {
+		c.addShield()
+
 		atk := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK).TotalATK()
 		ratio := skillBuffRatio[c.TalentLvlSkill()]
 		buffMax := skillBuffMax[c.TalentLvlSkill()]
@@ -70,10 +73,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			})
 			c.c2OnSkillAddBuff()
 		}
-		c.addShield()
 	}, skillHitmark-1)
 
-	c.SetCDWithDelay(action.ActionSkill, 16*60, 4)
+	c.SetCD(action.ActionSkill, 16*60)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
@@ -84,18 +86,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) skillInit() {
 	c.skillBuff = make([]float64, attributes.EndStatType)
-
-	// m := make([]float64, attributes.EndStatType)
-	// c.graceOfKenosis = character.StatMod{
-	// 	Base:         modifier.NewBase(skillBuffKey, 20*60),
-	// 	AffectedStat: attributes.ATK,
-	// 	Extra:        true,
-	// 	Amount: func() []float64 {
-	// 		atk := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK).TotalATK()
-	// 		m[attributes.ATK] = min(atk*skillBuffRatio[c.TalentLvlSkill()], skillBuffMax[c.TalentLvlSkill()]) + c.c2SkillBuff()
-	// 		return m
-	// 	},
-	// }
 }
 
 func (c *char) particleCB(a info.AttackCB) {

@@ -69,7 +69,15 @@ func (c *char) a4Init() {
 			return
 		}
 
-		if ae.Info.Element >= attributes.NoElement {
+		switch ae.Info.Element {
+		case attributes.Pyro:
+		case attributes.Hydro:
+		case attributes.Electro:
+		case attributes.Cryo:
+		case attributes.Anemo:
+		case attributes.Geo:
+		case attributes.Dendro:
+		default:
 			return
 		}
 
@@ -78,6 +86,7 @@ func (c *char) a4Init() {
 	}, "nicole-a4")
 }
 
+// Upgrades the skill buff for A1. If the dur is less than 0, the duration of the upgrade is equal to the duration of the skill buff.
 func (c *char) a1UpgradeBuff(char *character.CharWrapper, dur int) {
 	if dur < 0 {
 		dur = char.StatusDuration(skillBuffKey)
