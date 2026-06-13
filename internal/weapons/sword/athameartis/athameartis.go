@@ -10,7 +10,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+)
+
+const (
+	bladeOfDaylightHours = "blade-of-the-daylight-hours"
+	teamBuffKey          = "athameartis-team-buff"
 )
 
 func init() {
@@ -24,19 +30,13 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-func NewWeapon(
-	c *core.Core,
-	char *character.CharWrapper,
-	p info.WeaponProfile,
-) (info.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
-
 	r := p.Refine
 
 	burstCD := 0.12 + 0.04*float64(r)
 	selfATK := 0.15 + 0.05*float64(r)
 	teamATK := 0.12 + 0.04*float64(r)
-
 	burstCDMod := make([]float64, attributes.EndStatType)
 	burstCDMod[attributes.CD] = burstCD
 
@@ -50,12 +50,59 @@ func NewWeapon(
 		},
 	})
 
-	// TODO:
-	// Passive specifies "when an Elemental Burst hits an opponent".
-	// Currently implemented using OnEnemyDamage as a conservative
-	// approximation until hit-vs-damage behavior is verified.
+	selfVal := make([]float64, attributes.EndStatType)
+	selfVal[attributes.ATKP] = selfATK
 
+	selfValHex := make([]float64, attributes.EndStatType)
+	selfValHex[attributes.ATKP] = selfATK * 1.75
+
+	teamVal := make([]float64, attributes.EndStatType)
+	teamVal[attributes.ATKP] = teamATK
+
+	teamValHex := make([]float64, attributes.EndStatType)
+	teamValHex[attributes.ATKP] = teamATK * 1.75
+
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase(bladeOfDaylightHours, -1),
+		AffectedStat: attributes.ATKP,
+		Amount: func() []float64 {
+			if !char.StatusIsActive(bladeOfDaylightHours) {
+				return nil
+			}
+
+			if c.Player.GetHexereiCount() >= 2 {
+				return selfValHex
+			}
+
+			return selfVal
+		},
+	})
+
+	applyTeamBuff := func() {
+		active := c.Player.ActiveChar()
+
+		duration := 3 * 60
+		buff := teamVal
+
+		if c.Player.GetHexereiCount() >= 2 {
+			duration = 2 * 60
+			buff = teamValHex
+		}
+
+		active.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(teamBuffKey, duration),
+			AffectedStat: attributes.ATKP,
+			Amount: func() []float64 {
+				return buff
+			},
+		})
+	}
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		_, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return
+		}
+
 		atk := args[1].(*info.AttackEvent)
 
 		if atk.Info.ActorIndex != char.Index() {
@@ -66,42 +113,8 @@ func NewWeapon(
 			return
 		}
 
-		// Can trigger while off-field.
-
-		procSelfATK := selfATK
-		procTeamATK := teamATK
-
-		// TODO verify exact Hexerei condition
-		if c.Player.GetHexereiCount() >= 2 {
-			procSelfATK *= 1.75
-			procTeamATK *= 1.75
-		}
-
-		selfVal := make([]float64, attributes.EndStatType)
-		selfVal[attributes.ATKP] = procSelfATK
-
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("athame-self-atk", 3*60),
-			AffectedStat: attributes.ATKP,
-			Amount: func() []float64 {
-				return selfVal
-			},
-		})
-
-		teamVal := make([]float64, attributes.EndStatType)
-		teamVal[attributes.ATKP] = procTeamATK
-
-		active := c.Player.Active()
-
-		if active != char.Index() {
-			c.Player.Chars()[active].AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("athameartis-team-atk", 3*60),
-				AffectedStat: attributes.ATKP,
-				Amount: func() []float64 {
-					return teamVal
-				},
-			})
-		}
+		char.AddStatus(bladeOfDaylightHours, 3*60, true)
+		applyTeamBuff()
 	}, fmt.Sprintf("athame-%v", char.Base.Key.String()))
 
 	return w, nil
