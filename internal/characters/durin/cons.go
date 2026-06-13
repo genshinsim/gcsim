@@ -158,6 +158,11 @@ func (c *char) c2Init() {
 			if !ok {
 				return
 			}
+
+			if !c.StatusIsActive(burstKeyWhite) && !c.StatusIsActive(burstKeyBlack) {
+				return
+			}
+
 			c.c2MakeBuff(elements)
 		}
 	}
