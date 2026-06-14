@@ -15,8 +15,9 @@ import (
 )
 
 const (
-	bladeOfDaylightHours = "blade-of-the-daylight-hours"
-	teamBuffKey          = "athameartis-team-buff"
+	bladeOfDaylightHoursStatus = "blade-of-the-daylight-hours-status"
+	bladeOfDaylightHoursBuff   = "blade-of-the-daylight-hours-buff"
+	teamBuffKey                = "athameartis-team-buff"
 )
 
 func init() {
@@ -37,6 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	burstCD := 0.12 + 0.04*float64(r)
 	selfATK := 0.15 + 0.05*float64(r)
 	teamATK := 0.12 + 0.04*float64(r)
+
 	burstCDMod := make([]float64, attributes.EndStatType)
 	burstCDMod[attributes.CD] = burstCD
 
@@ -51,53 +53,69 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	selfVal := make([]float64, attributes.EndStatType)
-	selfVal[attributes.ATKP] = selfATK
-
-	selfValHex := make([]float64, attributes.EndStatType)
-	selfValHex[attributes.ATKP] = selfATK * 1.75
-
-	teamVal := make([]float64, attributes.EndStatType)
-	teamVal[attributes.ATKP] = teamATK
-
-	teamValHex := make([]float64, attributes.EndStatType)
-	teamValHex[attributes.ATKP] = teamATK * 1.75
 
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase(bladeOfDaylightHours, -1),
+		Base:         modifier.NewBase(bladeOfDaylightHoursBuff, -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() []float64 {
-			if !char.StatusIsActive(bladeOfDaylightHours) {
+			if !char.StatusIsActive(bladeOfDaylightHoursStatus) {
 				return nil
 			}
 
 			if c.Player.GetHexereiCount() >= 2 {
-				return selfValHex
+				selfVal[attributes.ATKP] = selfATK * 1.75
+			} else {
+				selfVal[attributes.ATKP] = selfATK
 			}
 
 			return selfVal
 		},
 	})
 
+	teamVal := make([]float64, attributes.EndStatType)
+
+	// TODO: When there are Athame Artis of different refines on the team,
+	// the team ATK% buff should use the higher refine value.
+
 	applyTeamBuff := func() {
 		active := c.Player.ActiveChar()
 
 		duration := 3 * 60
-		buff := teamVal
 
 		if c.Player.GetHexereiCount() >= 2 {
 			duration = 2 * 60
-			buff = teamValHex
+			teamVal[attributes.ATKP] = teamATK * 1.75
+		} else {
+			teamVal[attributes.ATKP] = teamATK
 		}
+
+		// TODO: When there are Athame Artis of different refines on the team,
+		// the team atk% buff should prioritize higher buff value
 
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(teamBuffKey, duration),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
-				return buff
+				return teamVal
 			},
 		})
 	}
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+	var refreshTeamBuff func()
+
+	refreshTeamBuff = func() {
+		if !char.StatusIsActive(bladeOfDaylightHoursStatus) {
+			return
+		}
+
+		applyTeamBuff()
+
+		c.Tasks.Add(refreshTeamBuff, 60)
+	}
+
+	// TODO: ATK% buff should affect hit that triggered it.
+	// Currently gcsim snapshots before OnEnemyHit event so it isn't buffing the triggering hit.
+
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return
@@ -113,8 +131,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		char.AddStatus(bladeOfDaylightHours, 3*60, true)
+		char.AddStatus(bladeOfDaylightHoursStatus, 3*60, true)
+
 		applyTeamBuff()
+		c.Tasks.Add(refreshTeamBuff, 60)
 	}, fmt.Sprintf("athame-%v", char.Base.Key.String()))
 
 	return w, nil
