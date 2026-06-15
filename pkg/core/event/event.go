@@ -65,6 +65,8 @@ const (
 	OnNightsoulBurst    // target, AttackEvent
 	OnNightsoulGenerate // char, amount
 	OnNightsoulConsume  // char, amount
+	OnNightsoulAdd      // char, amount
+	OnNightsoulRemove   // char, amount
 	// ability use
 	OnActionFailed // ActiveCharIndex, action.Action, param, action.ActionFailure
 	OnActionExec   // ActiveCharIndex, action.Action, param

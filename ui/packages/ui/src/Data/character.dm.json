@@ -782,6 +782,23 @@
         "burst_energy_cost": 60
       }
     },
+    "ifa": {
+      "id": 10000113,
+      "key": "ifa",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Ifa",
+      "skill_details": {
+        "skill": 11132,
+        "burst": 11135,
+        "attack": 11131,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "3398664506"
+    },
     "ineffa": {
       "id": 10000116,
       "sub_id": 11601,
