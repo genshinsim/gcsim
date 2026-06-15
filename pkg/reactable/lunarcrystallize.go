@@ -17,6 +17,7 @@ import (
 const (
 	LcrKey              = "lunarcrystallize"
 	LcrExtraHitOverride = "lunarcrystallize-bonus-hit-chance"
+	lcrContributionKey  = "lunarcrystallize-contribution"
 	lcrCountKey         = "lunarcrystallize-count"
 	lcrDur              = 9 * 60
 )
@@ -34,7 +35,7 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 
 	r.core.Flags.Custom[lcrCountKey] += 1
 	r.core.Status.Add(LcrKey, lcrDur)
-	r.addLCrContributor(a)
+	r.contributeToLCrWithAttack(a)
 
 	moondriftsNearby := 0
 	moondrifts, _ := r.core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
@@ -78,14 +79,29 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	return true
 }
 
-// TODO this needs to be global?
-func (r *Reactable) addLCrContributor(a *info.AttackEvent) {
-	r.lcrContributors[a.Info.ActorIndex] = true
+func AddLCrContributor(charInd int, core *core.Core) {
+	core.Flags.Custom[fmt.Sprintf("%v-%v", lcrContributionKey, charInd)] = 1
+}
+
+func RemoveLCrContributor(charInd int, core *core.Core) {
+	core.Flags.Custom[fmt.Sprintf("%v-%v", lcrContributionKey, charInd)] = 0
+}
+
+func LCrContributors(core *core.Core) [info.MaxChars]bool {
+	var contributors [info.MaxChars]bool
+	for _, char := range core.Player.Chars() {
+		contributors[char.Index()] = core.Flags.Custom[fmt.Sprintf("%v-%v", lcrContributionKey, char.Index())] == 1
+	}
+	return contributors
+}
+
+func (r *Reactable) contributeToLCrWithAttack(a *info.AttackEvent) {
+	AddLCrContributor(a.Info.ActorIndex, r.core)
 	for charInd, dur := range r.Durability[info.ReactionModKeyHydro] {
 		if dur <= info.ZeroDur {
 			continue
 		}
-		r.lcrContributors[charInd] = true
+		AddLCrContributor(charInd, r.core)
 	}
 }
 
@@ -141,11 +157,11 @@ type lcrContribution = struct {
 }
 
 func (r *Reactable) DoLCrAttack() {
-	DoLCrAttackWithContrib(r.lcrContributors, r.self, r.core, r.lcAtkOwner)
+	DoLCrAttackWithContrib(LCrContributors(r.core), r.self, r.core, r.lcAtkOwner)
 	// clear contributors after last attack
 	r.core.Tasks.Add(func() {
-		for i := range r.lcrContributors {
-			r.lcrContributors[i] = false
+		for _, char := range r.core.Player.Chars() {
+			RemoveLCrContributor(char.Index(), r.core)
 		}
 	}, 7)
 }
