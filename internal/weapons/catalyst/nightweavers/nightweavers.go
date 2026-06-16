@@ -29,6 +29,8 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error {
 	reactBuff := 0.3 + float64(w.Refine)*0.1
 	// add reaction bonus when both of previous bonuses are active
+
+	// TODO: figure out how the buff interacts with multiple holders
 	for _, otherChar := range w.Core.Player.Chars() {
 		otherChar.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("nightweavers", -1),
