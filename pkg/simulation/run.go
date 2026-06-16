@@ -118,7 +118,8 @@ func initialize(s *Simulation) (stateFn, error) {
 		s.cfg.Settings.Duration = 90
 	}
 
-	// Timeout frames are currently only used in damage mode
+	// Damage Mode Duration is currently only used in damage mode
+	// Cap sim at 10 min (600s) if no duration set
 	if s.cfg.Settings.DamageModeDuration == 0 {
 		s.cfg.Settings.DamageModeDuration = 10 * 60
 	}
