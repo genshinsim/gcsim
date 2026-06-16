@@ -117,7 +117,6 @@
          "zhongli": "钟离"
       },
       "weapon_names": {
-         "": "黑蚀",
          "absolution": "赦罪",
          "akuoumaru": "恶王丸",
          "alleyhunter": "暗巷猎手",
@@ -933,7 +932,6 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
-         "": "Athame Artis",
          "absolution": "Absolution",
          "akuoumaru": "Akuoumaru",
          "alleyhunter": "Alley Hunter",
@@ -1749,7 +1747,6 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
-         "": "Athame Artis",
          "absolution": "Absolution",
          "akuoumaru": "Akuoumaru",
          "alleyhunter": "Gassenjäger",
@@ -2565,7 +2562,6 @@
          "zhongli": "鍾離"
       },
       "weapon_names": {
-         "": "黒蝕",
          "absolution": "赦罪",
          "akuoumaru": "惡王丸",
          "alleyhunter": "ダークアレイの狩人",
@@ -3381,7 +3377,6 @@
          "zhongli": "종려"
       },
       "weapon_names": {
-         "": "검은 침식",
          "absolution": "사면",
          "akuoumaru": "아쿠오마루",
          "alleyhunter": "뒷골목 사냥꾼",
@@ -4197,7 +4192,6 @@
          "zhongli": "Чжун Ли"
       },
       "weapon_names": {
-         "": "Атаме артис",
          "absolution": "Отпущение грехов",
          "akuoumaru": "Акуомару",
          "alleyhunter": "Охотник во тьме",
@@ -5013,7 +5007,6 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
-         "": "Athame Artis",
          "absolution": "Expiadora",
          "akuoumaru": "Rey del Mal",
          "alleyhunter": "Cazador del Callejón",
