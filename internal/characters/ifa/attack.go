@@ -88,7 +88,7 @@ func (c *char) attackTapSkillState(_ map[string]int) action.Info {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,
 		Durability:     25,
-		Mult:           skill_dmg[c.TalentLvlAttack()],
+		Mult:           skill_dmg[c.TalentLvlSkill()],
 	}
 
 	ap := combat.NewCircleHitOnTarget(
@@ -107,6 +107,7 @@ func (c *char) attackTapSkillState(_ map[string]int) action.Info {
 			0,
 			0,
 			c.particleCB,
+			c.healCB,
 			c.c1CB,
 		)
 	}, 3)
@@ -139,7 +140,7 @@ func (c *char) attackHoldSkillState(_ map[string]int) action.Info {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,
 		Durability:     25,
-		Mult:           skill_dmg[c.TalentLvlAttack()],
+		Mult:           skill_dmg[c.TalentLvlSkill()],
 	}
 
 	ap := combat.NewCircleHitOnTarget(
@@ -158,6 +159,7 @@ func (c *char) attackHoldSkillState(_ map[string]int) action.Info {
 			0,
 			0,
 			c.particleCB,
+			c.healCB,
 			c.c1CB,
 		)
 	}, 1)
