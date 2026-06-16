@@ -148,6 +148,7 @@ var weaponMap = map[string]string{
 	"crimsonmoonssemblance":           "UI_EquipIcon_Pole_BloodMoon",
 	"deathmatch":                      "UI_EquipIcon_Pole_Gladiator",
 	"dialoguesofthedesertsages":       "UI_EquipIcon_Pole_Caduceus",
+	"disasterandremorse":              "UI_EquipIcon_Pole_Carbine",
 	"dragonsbane":                     "UI_EquipIcon_Pole_Stardust",
 	"dragonspinespear":                "UI_EquipIcon_Pole_Everfrost",
 	"engulfinglightning":              "UI_EquipIcon_Pole_Narukami",
@@ -181,6 +182,10 @@ var weaponMap = map[string]string{
 	"thealleyflash":                   "UI_EquipIcon_Sword_Outlaw",
 	"amenomakageuchi":                 "UI_EquipIcon_Sword_Bakufu",
 	"aquilafavonia":                   "UI_EquipIcon_Sword_Falcon",
+<<<<<<< Updated upstream
+=======
+	"":                                "UI_EquipIcon_Sword_Motsognir",
+>>>>>>> Stashed changes
 	"azurelight":                      "UI_EquipIcon_Sword_OuterSword",
 	"blackclifflongsword":             "UI_EquipIcon_Sword_Blackrock",
 	"theblacksword":                   "UI_EquipIcon_Sword_Bloodstained",
