@@ -109,6 +109,22 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+func (c *char) healCB(a info.AttackCB) {
+	em := c.Stat(attributes.EM)
+	healAmt := skill_heal[c.TalentLvlSkill()]*em + skill_heal_flat[c.TalentLvlSkill()]
+	healBonus := c.Stat(attributes.Heal)
+
+	hi := info.HealInfo{
+		Caller:  c.Index(),
+		Target:  -1,
+		Message: "Tonicshot Healing",
+		Src:     healAmt,
+		Bonus:   healBonus,
+	}
+
+	c.Core.Player.Heal(hi)
+}
+
 func (c *char) particleCB(a info.AttackCB) {
 	if a.Target.Type() != info.TargettableEnemy {
 		return
