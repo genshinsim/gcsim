@@ -87,6 +87,7 @@ const (
 	Deathmatch                                    // deathmatch
 	DebateClub                                    // debateclub
 	DialoguesOfTheDesertSages                     // dialoguesofthedesertsages
+	DisasterAndRemorse                            // disasterandremorse
 	DodocoTales                                   // dodocotales
 	DragonsBane                                   // dragonsbane
 	DragonspineSpear                              // dragonspinespear
@@ -323,6 +324,7 @@ var _WeaponNames = [...]string{
 	"deathmatch",
 	"debateclub",
 	"dialoguesofthedesertsages",
+	"disasterandremorse",
 	"dodocotales",
 	"dragonsbane",
 	"dragonspinespear",
@@ -559,6 +561,7 @@ var _WeaponValues = [...]Weapon{
 	Deathmatch,
 	DebateClub,
 	DialoguesOfTheDesertSages,
+	DisasterAndRemorse,
 	DodocoTales,
 	DragonsBane,
 	DragonspineSpear,

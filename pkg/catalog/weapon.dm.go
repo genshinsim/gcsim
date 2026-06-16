@@ -3482,6 +3482,86 @@ var WeaponMap = map[keys.Weapon]*model.WeaponData{
 			},
 		},
 	},
+	keys.DisasterAndRemorse: {
+		Id:          13517,
+		Key:         "disasterandremorse",
+		Rarity:      5,
+		WeaponClass: model.WeaponType_WEAPON_POLE,
+		ImageName:   "UI_EquipIcon_Pole_Carbine_Awaken",
+		BaseStats: &model.WeaponStatsData{
+			BaseProps: []*model.WeaponProp{
+				{
+					PropType:     model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+					InitialValue: 47.537,
+					Curve:        model.GrowCurveType_GROW_CURVE_ATTACK_302,
+				},
+				{
+					PropType:     model.FightPropType_FIGHT_PROP_CRITICAL,
+					InitialValue: 0.048,
+					Curve:        model.GrowCurveType_GROW_CURVE_CRITICAL_301,
+				},
+			},
+			PromoData: []*model.PromotionData{
+				{
+					MaxLevel: 20,
+				},
+				{
+					MaxLevel: 40,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    31.1,
+						},
+					},
+				},
+				{
+					MaxLevel: 50,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    62.2,
+						},
+					},
+				},
+				{
+					MaxLevel: 60,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    93.4,
+						},
+					},
+				},
+				{
+					MaxLevel: 70,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    124.5,
+						},
+					},
+				},
+				{
+					MaxLevel: 80,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    155.6,
+						},
+					},
+				},
+				{
+					MaxLevel: 90,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    186.7,
+						},
+					},
+				},
+			},
+		},
+	},
 	keys.DodocoTales: {
 		Id:          14413,
 		Key:         "dodocotales",

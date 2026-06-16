@@ -47,6 +47,7 @@ var weaponMap = map[string]string{
 	"deathmatch":                      "UI_EquipIcon_Pole_Gladiator_Awaken",
 	"debateclub":                      "UI_EquipIcon_Claymore_Reasoning_Awaken",
 	"dialoguesofthedesertsages":       "UI_EquipIcon_Pole_Caduceus_Awaken",
+	"disasterandremorse":              "UI_EquipIcon_Pole_Carbine_Awaken",
 	"dodocotales":                     "UI_EquipIcon_Catalyst_Ludiharpastum_Awaken",
 	"dragonsbane":                     "UI_EquipIcon_Pole_Stardust_Awaken",
 	"dragonspinespear":                "UI_EquipIcon_Pole_Everfrost_Awaken",
