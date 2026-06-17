@@ -18,7 +18,7 @@ options iteration=1000 duration=90 swap_delay=14;
 | name | description | default |
 | --- | --- | --- |
 | `iteration`| Number of iterations to run gcsim for. | 1000 |
-| `duration` | Duration to run gcsim for (in seconds). Fractional duration is allowed, for example: 11.5. In this case, gcsim will run until the duration has passed or there are no more actions to perform. This option is ignored if any `target` has `hp` specified. In that case, gcsim will run until all enemies are dead. | 90 |
+| `duration` | Duration to run gcsim for (in seconds). Fractional duration is allowed, for example: 11.5. In this case, gcsim will run until the duration has passed. This option is ignored if any `target` has `hp` specified. In that case, gcsim will run until all enemies are dead or there are no more actions to perform. | 90 |
 | `swap_delay` | Number of frames it takes to swap characters. | 1 |
 | `workers` | Number of workers to use. Only valid when using cli, ignored in web. | 20 |
 | `hitlag` | Whether hitlag should be enabled. See the [hitlag page](/mechanics/hitlag) for more details. | true |
@@ -146,7 +146,8 @@ target lvl=88 resist=0.1 pos=0,0 radius=2 freeze_resist=0.8 hp=9999 particle_thr
 | `pos` | Position of the enemy as x,y. | 0,0 |
 | `radius` | The radius of the enemy's circle [hurtbox](https://en.wiktionary.org/wiki/hurtbox) in meters. | 1 |
 | `freeze_resist` | How much freeze resistance the enemy has. `0` means no freeze resistance, `1` means immune to being frozen. The reaction still happens though. | 0 |
-| `hp` | HP of the enemy. If this is set, duration in the sim options will be ignored and the sim will run until all enemies have died. If `hp` is set for at least one enemy, then it has to be set for all enemies. | - |
+| `hp` | HP of the enemy. If this is set, duration in the sim options will be ignored and the sim will run until all enemies have died, there are no more actions to be performed, or the duration safeguard has been met. If `hp` is set for at least one enemy, then it has to be set for all enemies. | - |
+| `damage_mode_duration` | Duration safeguard for damage mode (when hp is set). In case a damage mode sim does not stop normally - via the depletion of all enemie's hp or the completion of all available actions- this option will stop the sim after the specified number of seconds have passed. | 600 |
 | `particle_threshold` | Only available if the `hp` is set. Determines after how much damage the enemy drops elemental particles. Example: If the enemy has 500 HP and this is set to 200, then the enemy will drop particles at 300 and 100 HP. | - |
 | `particle_drop_count` | Only available if the `hp` is set. Number of elemental particles to drop at `particle_threshold`. | - |
 | `particle_element` | Only available if the `hp` is set. Element of the particle at `particle_threshold`. Defaults to clear if not set. | - |
