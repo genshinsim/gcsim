@@ -17,8 +17,8 @@ options iteration=1000 duration=90 swap_delay=14;
 
 | name | description | default |
 | --- | --- | --- |
-| `iteration`| Number of iterations to run gcsim for. | 1000 |
-| `duration` | Duration to run gcsim for (in seconds). Fractional duration is allowed, for example: 11.5. In this case, gcsim will run until the duration has passed or there are no more actions to perform. This option is ignored if any `target` has `hp` specified. In that case, gcsim will run until all enemies are dead. | 90 |
+| `iteration` | Number of iterations to run gcsim for. | 1000 |
+| `duration` | Duration to run gcsim for (in seconds). Fractional duration is allowed, for example: 11.5. In this case, gcsim will run until the duration has passed. This option is ignored if any `target` has `hp` specified. In that case, gcsim will run until all enemies are dead or there are no more actions to perform. | 90 |
 | `swap_delay` | Number of frames it takes to swap characters. | 1 |
 | `workers` | Number of workers to use. Only valid when using cli, ignored in web. | 20 |
 | `hitlag` | Whether hitlag should be enabled. See the [hitlag page](/mechanics/hitlag) for more details. | true |
@@ -27,49 +27,47 @@ options iteration=1000 duration=90 swap_delay=14;
 
 ### Set energy generation
 
-Example: 
+Example:
+
 ```
 energy every interval=480,720 amount=1;
 ```
+
 This means that gcsim will generate 1 clear elemental particle every 480 to 720 frames randomly.
 
-:::note
-If multiple `energy every` lines are added, then the values specified by the final one will be used.
-:::
+:::note If multiple `energy every` lines are added, then the values specified by the final one will be used. :::
 
-:::info
-Generating energy only at a specific frame for one time can also be specified. 
-Multiple `energy once` lines can be added to spawn particles at different points in time.
+:::info Generating energy only at a specific frame for one time can also be specified. Multiple `energy once` lines can be added to spawn particles at different points in time.
 
 Example:
+
 ```
 energy once interval=300 amount=1;
 ```
-This drops 1 clear elemental particle once at frame 300.
-:::
 
-### Set hurt generation 
+This drops 1 clear elemental particle once at frame 300. :::
 
-Example: 
+### Set hurt generation
+
+Example:
+
 ```
 hurt every interval=480,720 amount=1,300 element=physical;
 ```
+
 This means that gcsim will deal between 1 and 300 physical damage to the active character every 480 to 720 frames randomly.
 
-:::note
-If multiple `hurt every` lines are added, then the values specified by the final one will be used.
-:::
+:::note If multiple `hurt every` lines are added, then the values specified by the final one will be used. :::
 
-:::info
-Generating hurt only at a specific frame for one time can also be specified. 
-Multiple `hurt once` lines can be added to deal damage at different points in time.
+:::info Generating hurt only at a specific frame for one time can also be specified. Multiple `hurt once` lines can be added to deal damage at different points in time.
 
 Example:
+
 ```
 hurt once interval=300 amount=1,300 element=physical;
 ```
-This will deal between 1 and 300 physical damage to the active character once at frame 300.
-:::
+
+This will deal between 1 and 300 physical damage to the active character once at frame 300. :::
 
 ### Perform character, weapon, artifact setup
 
@@ -77,7 +75,7 @@ Character data can be roughly broken into 4 parts:
 
 - `<name> char` data such as level, cons and talents
 - `<name> add weapon=<weapon name>` data such as refine and level
-- `<name> add set=<set name>` data such as count 
+- `<name> add set=<set name>` data such as count
 - `<name> add stats` for any character stats
 
 For example:
@@ -90,13 +88,9 @@ bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311; # main
 bennett add stats hp=717 hp%=0.058 atk=121 atk%=0.635 def=102 em=42 er=0.156 cr=0.128 cd=0.265; # subs
 ```
 
-:::danger
-With the exception of the stats (i.e. `hp`, `atk`, etc...), all other fields not starting with a `+` are mandatory.
-:::danger
+:::danger With the exception of the stats (i.e. `hp`, `atk`, etc...), all other fields not starting with a `+` are mandatory. :::danger
 
-:::info
-An optional param flag may be added to the character/weapon/artifact set via the `+params` flag. This optional param is defined by each character/weapon/artifact set.
-:::
+:::info An optional param flag may be added to the character/weapon/artifact set via the `+params` flag. This optional param is defined by each character/weapon/artifact set. :::
 
 #### Optional global character params
 
@@ -106,34 +100,32 @@ An optional param flag may be added to the character/weapon/artifact set via the
 | `start_hp%` | Set the character's starting hp ratio. | -1 (Character's max hp). Values should be 1 <= `start_hp%` <= 100. |
 | `start_energy` | Set the character's starting energy. | Character's max energy. |
 
-:::info
-Some details about `start_hp` and `start_hp%`:
+:::info Some details about `start_hp` and `start_hp%`:
+
 - a value <= 0 for both (manually supplied or by omission) will mean that the character's hp is set to max
 - `start_hp%` can only be set as a percentage without decimal places, so 50 or 49 but not 49.5.
 - the two params work additively so supplying both with a value > 0 will add them together
 
 Example:
+
 - `start_hp` is 10
 - `start_hp%` is 49
-- the sim will set the character's starting hp to be 49% of max hp + 10 flat hp
-:::
+- the sim will set the character's starting hp to be 49% of max hp + 10 flat hp :::
 
-:::info
-Example: 
+:::info Example:
+
 ```
 bennett char lvl=70/80 cons=2 talent=6,8,8 +params=[start_hp=10,start_hp%=49,start_energy=20];
 ```
-This will set Bennett's starting hp to 49% + 10 and starting energy to 20.
-:::
 
-:::caution
-There is no sanity check on these params. 
-If you set this to a negative number or a really large number, behaviour is undefined. 
-:::
+This will set Bennett's starting hp to 49% + 10 and starting energy to 20. :::
+
+:::caution There is no sanity check on these params. If you set this to a negative number or a really large number, behaviour is undefined. :::
 
 ### Add enemies
 
 Example:
+
 ```
 target lvl=88 resist=0.1 pos=0,0 radius=2 freeze_resist=0.8 hp=9999 particle_threshold=200 particle_drop_count=2;
 ```
@@ -146,52 +138,44 @@ target lvl=88 resist=0.1 pos=0,0 radius=2 freeze_resist=0.8 hp=9999 particle_thr
 | `pos` | Position of the enemy as x,y. | 0,0 |
 | `radius` | The radius of the enemy's circle [hurtbox](https://en.wiktionary.org/wiki/hurtbox) in meters. | 1 |
 | `freeze_resist` | How much freeze resistance the enemy has. `0` means no freeze resistance, `1` means immune to being frozen. The reaction still happens though. | 0 |
-| `hp` | HP of the enemy. If this is set, duration in the sim options will be ignored and the sim will run until all enemies have died. If `hp` is set for at least one enemy, then it has to be set for all enemies. | - |
+| `hp` | HP of the enemy. If this is set, duration in the sim options will be ignored and the sim will run until all enemies have died, there are no more actions to be performed, or the duration safeguard has been met. If `hp` is set for at least one enemy, then it has to be set for all enemies. | - |
+| `damage_mode_duration` | Duration safeguard for damage mode (when hp is set). In case a damage mode sim does not stop normally - via the depletion of all enemie's hp or the completion of all available actions- this option will stop the sim after the specified number of seconds have passed. | 600 |
 | `particle_threshold` | Only available if the `hp` is set. Determines after how much damage the enemy drops elemental particles. Example: If the enemy has 500 HP and this is set to 200, then the enemy will drop particles at 300 and 100 HP. | - |
 | `particle_drop_count` | Only available if the `hp` is set. Number of elemental particles to drop at `particle_threshold`. | - |
 | `particle_element` | Only available if the `hp` is set. Element of the particle at `particle_threshold`. Defaults to clear if not set. | - |
 | `type` | Sets the stats of the target to the one specified in this parameter by name. This overwrites HP, resistances, particle threshold and particle drop count. The `dummy` parameter sets a huge amount of HP to the target with 10% resistance to all types of elemental damage and no particle generation. | - |
 
-:::danger
-All configs must have at least one enemy specified. Otherwise you will get an error. 
-:::
+:::danger All configs must have at least one enemy specified. Otherwise you will get an error. :::
 
-:::info
-To use custom HP or resistances with `type`, include them after `type`.
-Example:
+:::info To use custom HP or resistances with `type`, include them after `type`. Example:
+
 ```
 target lvl=100 type=eremitegalehunter[hp_mult=1] radius=2 pos=0,2.4 hp=10000;
 ```
+
 :::
 
-:::info
-Optional params may be added to the target type via `[]` after the enemy name.
-:::
+:::info Optional params may be added to the target type via `[]` after the enemy name. :::
 
 #### Optional target type params
+
 | name | description | default |
 | --- | --- | --- |
 | `hp_mult` | HP multiplier for the enemy. The default multiplier is 2.5 (Spiral Abyss, Floor 12). | 2.5 |
 | `particles` | Use particle theresholds from the enemy. Use `0` if you want to use a custom threshold (`particle_threshold`). | 1 |
 
-:::info
-If you have multiple targets, make sure to set their starting position properly. 
-Otherwise you may get unintended behaviour such as otherwise single target abilities hitting multiple targets.
-:::
+:::info If you have multiple targets, make sure to set their starting position properly. Otherwise you may get unintended behaviour such as otherwise single target abilities hitting multiple targets. :::
 
-:::info
-To add multiple enemies, simply repeat the target line. 
-Each enemy does not have to have the same level/resistance/position.
+:::info To add multiple enemies, simply repeat the target line. Each enemy does not have to have the same level/resistance/position.
 
 For example:
+
 ```
 target lvl=100 resist=0.1;
 target lvl=88 resist=0.05;
 ```
 
-This would add two targets (making it a multi target simulation). 
-Each target has different level and resistance.
-:::
+This would add two targets (making it a multi target simulation). Each target has different level and resistance. :::
 
 ### Set the active character
 
@@ -201,9 +185,7 @@ Example:
 active xiangling;
 ```
 
-:::danger
-All configs must have an active character specified. Otherwise you will get an error. 
-:::
+:::danger All configs must have an active character specified. Otherwise you will get an error. :::
 
 ### Add comments
 
@@ -304,7 +286,7 @@ if <condition> {
 }
 ```
 
-- `<condition>` can be any expression that evalutes into a number. 
+- `<condition>` can be any expression that evalutes into a number.
 - `<condition>` is considered false if it evaluates to 0 and true otherwise.
 
 ### `switch` statement
@@ -325,8 +307,8 @@ switch <expr> {
 }
 ```
 
-- A case is executed if the switch expression equals the case expression. 
-- There is no `break;` at the end of each case. By default, once a case finishes evaluating, the switch statement will exit. 
+- A case is executed if the switch expression equals the case expression.
+- There is no `break;` at the end of each case. By default, once a case finishes evaluating, the switch statement will exit.
 - The exception to this is if a fallthrough is present. This will cause the case immediately below the current case to be executed as well.
 - The `default` case is executed if none of the cases equals the switch expression. If no `default` is present, the switch will simply exit.
 
@@ -340,7 +322,7 @@ while <condition> {
 }
 ```
 
-- `<condition>` can be any expression that evalutes into a number. 
+- `<condition>` can be any expression that evalutes into a number.
 - `<condition>` is considered false if it evaluates to 0 and true otherwise.
 - `while` will repeat the block for as long as `<condition>` evalutes true.
 
@@ -394,33 +376,33 @@ In this example the `xiangling attack;` can never be reached, causing the script
 `for` statement takes the following format:
 
 ```
-for <init>; <condition>; <post> { 
-    
+for <init>; <condition>; <post> {
+
 }
 ```
 
 - `<init>` must be a variable initialization.
-- `<condition>` can be any expression that evalutes into a number. 
+- `<condition>` can be any expression that evalutes into a number.
 - `<condition>` is considered false if it evaluates to 0 and true otherwise.
 - `<post>` must be a variable assignment without a `;`.
 - `for` will repeat the block for as long as `<condition>` evalutes true.
 
-:::info
-Example:
+:::info Example:
+
 ```
 for let i = 0; i < 5; i = i + 1 {
     xiangling attack;
 }
 ```
-This will execute `xiangling attack;` 5 times.
-:::
+
+This will execute `xiangling attack;` 5 times. :::
 
 ### `break` statement
 
-`break` immediately exits the innermost enclosing `while` loop, `for` loop or `switch` statement. 
+`break` immediately exits the innermost enclosing `while` loop, `for` loop or `switch` statement.
 
-:::info
-Example:
+:::info Example:
+
 ```
 let i = 0;
 while 1 {
@@ -431,15 +413,15 @@ while 1 {
     i = i + 1;
 }
 ```
-This will execute `xiangling attack;` one time, because in the second iteration it will execute the `break;` statement and thus exit the `while` loop.
-:::
+
+This will execute `xiangling attack;` one time, because in the second iteration it will execute the `break;` statement and thus exit the `while` loop. :::
 
 ### `continue` statement
 
 `continue` skips to the next iteration of a `while` or `for` loop.
 
-:::info
-Example:
+:::info Example:
+
 ```
 for let i = 0; i < 5; i = i + 1 {
     if i == 0 {
@@ -448,5 +430,5 @@ for let i = 0; i < 5; i = i + 1 {
     xiangling attack;
 }
 ```
-This will skip the very first iteration of the `for` loop and execute `xiangling attack;` 4 times.
-:::
+
+This will skip the very first iteration of the `for` loop and execute `xiangling attack;` 4 times. :::
