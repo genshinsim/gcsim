@@ -15,6 +15,8 @@ import (
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{15, 8, 38}
+	attackHitboxes = [][]float64{{4, 2}, {2}, {2.5}}
+	attackOffsets  = []*info.Point{{Y: -1}, nil, nil}
 )
 
 const (
@@ -49,35 +51,40 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		windup = -4
 	}
 
+	counter := c.NormalCounter
+
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		Abil:       fmt.Sprintf("Normal %v", counter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
-		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+		Mult:       attack[counter][c.TalentLvlAttack()],
+	}
+
+	var ap info.AttackPattern
+	switch counter {
+	case 0:
+		ap = combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), attackOffsets[0], attackHitboxes[counter][0], attackHitboxes[counter][1])
+	default:
+		ap = combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), attackOffsets[counter], attackHitboxes[counter][0])
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			c.Core.Combat.PrimaryTarget(),
-			nil,
-			0.75,
-		),
-		attackHitmarks[c.NormalCounter]+windup,
-		attackHitmarks[c.NormalCounter]+windup,
+		ap,
+		attackHitmarks[counter]+windup,
+		attackHitmarks[counter]+windup,
 	)
 
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
 		Frames:          attackFuncWithWindup(c.Character, attackFrames, windup),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		AnimationLength: attackFrames[counter][action.InvalidAction],
+		CanQueueAfter:   attackHitmarks[counter],
 		State:           action.NormalAttackState,
 	}, nil
 }

@@ -43,21 +43,23 @@ func (c *char) c1Init() {
 
 		char := c.Core.Player.Chars()[ae.Info.ActorIndex]
 
-		ai := info.AttackInfo{
-			ActorIndex: char.Index(),
-			Abil:       "Arcane Projection: Unity",
-			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    char.Base.Element,
-			Mult:       6,
-			FlatDmg:    c.hexereiOnProjection(char),
-		}
+		c.Core.Tasks.Add(func() {
+			ai := info.AttackInfo{
+				ActorIndex: char.Index(),
+				Abil:       "Arcane Projection: Unity",
+				AttackTag:  attacks.AttackTagNone,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Element:    char.Base.Element,
+				Mult:       6,
+				FlatDmg:    c.hexereiOnProjection(char),
+			}
 
-		ap := combat.NewCircleHitOnTarget(t, nil, 3)
+			ap := combat.NewCircleHitOnTarget(t, nil, 4.5)
 
-		c.Core.QueueAttack(ai, ap, projectionHitmark, projectionHitmark)
+			c.Core.QueueAttack(ai, ap, 0, 0)
+		}, projectionHitmark)
 	}, "nicole-c1")
 }
 

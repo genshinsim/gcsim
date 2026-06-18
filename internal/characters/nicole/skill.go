@@ -36,7 +36,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ActorIndex: c.Index(),
 		Abil:       "Revelation: Uncreated Light",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagKleeFireDamage,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,

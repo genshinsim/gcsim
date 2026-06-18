@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -18,7 +19,13 @@ const (
 	burstICDKey       = "nicole-burst-projection-icd"
 )
 
-var burstFrames []int
+type APFunc = func(*enemy.Enemy) info.AttackPattern
+
+var (
+	projectionHitbox map[keys.Char]func(*enemy.Enemy) info.AttackPattern
+	defaultHitBox    func(*enemy.Enemy) info.AttackPattern
+	burstFrames      []int
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(128)
@@ -28,6 +35,56 @@ func init() {
 	burstFrames[action.ActionDash] = 118
 	burstFrames[action.ActionJump] = 117
 	burstFrames[action.ActionSwap] = 113
+
+	meleeOffset := info.Point{X: -1.5, Y: 2.5}
+	rangeOffset := info.Point{X: -2.5, Y: 2.5}
+
+	projectionHitbox = make(map[keys.Char]func(*enemy.Enemy) info.AttackPattern)
+
+	norm := meleeOffset.Normalize()
+
+	// is this correct? The additional 3.2 offset uses direction from the melee position to the target
+	// varkaOffset := meleeOffset.Sub(norm.Scale(3.2))
+	// projectionHitbox[keys.Varka] = func(t *enemy.Enemy) info.AttackPattern {
+	// 	return combat.NewBoxHitOnTarget(t, varkaOffset, 4.5)
+	// }
+
+	// projectionHitbox[keys.Durin] = func(t *enemy.Enemy) info.AttackPattern {
+	// 	return combat.NewCircleHitOnTarget(t, meleeOffset, 4.5)
+	// }
+
+	projectionHitbox[keys.Albedo] = func(t *enemy.Enemy) info.AttackPattern {
+		return combat.NewBoxHitOnTarget(t, meleeOffset, 3, 8)
+	}
+
+	projectionHitbox[keys.Razor] = func(t *enemy.Enemy) info.AttackPattern {
+		return combat.NewCircleHitOnTarget(t, meleeOffset, 4.5)
+	}
+
+	// is this correct? The additional X=-0.5, Y=-2 offset uses direction from the melee position to the target
+	// lohenOffset := meleeOffset.Sub(norm.Scale(-2)).Add(norm.Perp().Scale(-0.5))
+	// projectionHitbox[keys.Lohen] = func(t *enemy.Enemy) info.AttackPattern {
+	// 	return combat.NewBoxHitOnTarget(t, lohenOffset, 4.5, 10)
+	// }
+
+	// projectionHitbox[keys.Prune] = func(t *enemy.Enemy) info.AttackPattern {
+	// 	return combat.NewCircleHitOnTarget(t, meleeOffset, 4.5)
+	// }
+
+	projectionHitbox[keys.Sucrose] = func(t *enemy.Enemy) info.AttackPattern {
+		return combat.NewCircleHitOnTarget(t, meleeOffset, 4.5)
+	}
+
+	// is this correct? The additional X=0.5, Y=1.5 offset uses direction from the melee position to the target
+	kleeOffset := meleeOffset.Sub(norm.Scale(1.5)).Add(norm.Perp().Scale(0.5))
+	projectionHitbox[keys.Klee] = func(t *enemy.Enemy) info.AttackPattern {
+		return combat.NewCircleHitOnTarget(t, kleeOffset, 4.5)
+	}
+
+	// Venti, Fischl, Mona, use the same attack pattern as the default
+	defaultHitBox = func(t *enemy.Enemy) info.AttackPattern {
+		return combat.NewCircleHitOnTarget(t, rangeOffset, 4.5)
+	}
 }
 
 func (c *char) Burst(_ map[string]int) (action.Info, error) {
@@ -94,20 +151,26 @@ func (c *char) burstInit() {
 
 		char := c.Core.Player.Chars()[ae.Info.ActorIndex]
 
-		ai := info.AttackInfo{
-			ActorIndex: char.Index(),
-			Abil:       "Arcane Projection",
-			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    char.Base.Element,
-			Mult:       burstProjection[c.TalentLvlBurst()],
-			FlatDmg:    c.hexereiOnProjection(char),
-		}
+		c.Core.Tasks.Add(func() {
+			ai := info.AttackInfo{
+				ActorIndex: char.Index(),
+				Abil:       "Arcane Projection",
+				AttackTag:  attacks.AttackTagNone,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Element:    char.Base.Element,
+				Mult:       burstProjection[c.TalentLvlBurst()],
+				FlatDmg:    c.hexereiOnProjection(char),
+			}
 
-		ap := combat.NewCircleHitOnTarget(t, nil, 3)
+			apFn, ok := projectionHitbox[char.Base.Key]
+			if !ok {
+				apFn = defaultHitBox
+			}
+			ap := apFn(t)
 
-		c.Core.QueueAttack(ai, ap, projectionHitmark, projectionHitmark)
+			c.Core.QueueAttack(ai, ap, 0, 0)
+		}, projectionHitmark)
 	}, "nicole-burst-hook")
 }
