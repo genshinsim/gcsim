@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 
